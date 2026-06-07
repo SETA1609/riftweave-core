@@ -1,0 +1,29 @@
+name: Validate Ruleset
+
+on:
+  push:
+    paths:
+      - "ruleset/**"
+  pull_request:
+    paths:
+      - "ruleset/**"
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        run: pip install -r ruleset/requirements.txt
+
+      - name: Validate JSON data against schemas
+        run: python ruleset/scripts/validate.py

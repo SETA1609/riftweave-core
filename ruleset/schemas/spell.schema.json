@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Spell",
+  "description": "A spell: a composition of one or more effects (drawn from the shared effect registry) tagged with a color magic school. The governing skill is <color>_magic.",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "spells": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/spell" }
+    }
+  },
+  "required": ["spells"],
+  "additionalProperties": false,
+  "definitions": {
+    "spell": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "source": { "$ref": "schema.json#/definitions/sourceRef" },
+        "color": { "$ref": "schema.json#/definitions/color" },
+        "effects": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "schema.json#/definitions/appliedEffect" }
+        },
+        "cost": {
+          "type": "object",
+          "description": "Casting cost. Derived in-engine from the sum of effects; stored here as the authored baseline.",
+          "properties": {
+            "mana": { "type": "integer", "minimum": 0 },
+            "stamina": { "type": "integer", "minimum": 0 },
+            "reagents": { "type": "array", "items": { "type": "string" } }
+          },
+          "additionalProperties": false
+        },
+        "cooldown": { "type": "number", "minimum": 0, "description": "Cooldown in seconds" },
+        "custom": { "type": "boolean", "description": "True for player-made (spellmaking) spells; false or omitted for authored content" }
+      },
+      "required": ["id", "name", "description", "color", "effects"],
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,9 @@
+# LLM / agent tooling — not part of the published ruleset
+CLAUDE.md
+.claude/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/

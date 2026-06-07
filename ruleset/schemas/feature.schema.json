@@ -1,0 +1,80 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Feature",
+  "description": "A perk, trait, or racial feature. In this classless ruleset, perks are the primary character-defining progression, gated by skill thresholds, prerequisite perks, and attributes.",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "features": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/feature" }
+    }
+  },
+  "required": ["features"],
+  "additionalProperties": false,
+  "definitions": {
+    "feature": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "source": { "$ref": "schema.json#/definitions/sourceRef" },
+        "type": {
+          "type": "string",
+          "enum": ["perk", "trait", "racial_trait", "universal"],
+          "description": "perk = chosen on level-up; trait = chosen at creation (usually with a tradeoff); racial_trait = granted by ancestry; universal = always available"
+        },
+        "category": {
+          "type": "string",
+          "enum": ["combat", "magic", "stealth", "social", "knowledge", "survival", "utility", "general"],
+          "description": "Perk-tree grouping, mirroring skill categories"
+        },
+        "prerequisite": {
+          "type": "object",
+          "properties": {
+            "level": { "type": "integer", "minimum": 1 },
+            "abilities": {
+              "type": "object",
+              "description": "Minimum attribute values, keyed by attribute id (e.g. { \"agi\": 6 })",
+              "additionalProperties": { "type": "integer", "minimum": 1, "maximum": 10 }
+            },
+            "skills": {
+              "type": "object",
+              "description": "Minimum skill values, keyed by skill id (e.g. { \"red_magic\": 50 })",
+              "additionalProperties": { "type": "integer", "minimum": 1, "maximum": 100 }
+            },
+            "perks": {
+              "type": "array",
+              "description": "Prerequisite perk ids that must already be owned",
+              "items": { "type": "string" }
+            },
+            "other": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        "ranks": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximum number of times this perk can be taken (1 = single-rank)"
+        },
+        "effects": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": { "type": "string" },
+              "description": { "type": "string" },
+              "target": { "type": "string" },
+              "value": {}
+            },
+            "required": ["type", "description"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["id", "name", "description", "type"],
+      "additionalProperties": false
+    }
+  }
+}

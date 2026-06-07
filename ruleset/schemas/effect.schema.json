@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Effect",
+  "description": "An atomic, reusable effect in the shared effect registry. Spells, consumables (potions/poisons/coatings), ingredients, and enchantments all reference these by id via schema.json#/definitions/appliedEffect.",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "effects": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/effect" }
+    }
+  },
+  "required": ["effects"],
+  "additionalProperties": false,
+  "definitions": {
+    "effect": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "source": { "$ref": "schema.json#/definitions/sourceRef" },
+        "category": {
+          "type": "string",
+          "enum": ["damage", "drain", "restore", "fortify", "resist", "cure", "conjure", "control", "movement", "detection", "utility"],
+          "description": "Functional class of the effect"
+        },
+        "polarity": {
+          "type": "string",
+          "enum": ["beneficial", "harmful", "neutral"],
+          "description": "Used by alchemy to sort effects into potions (beneficial) vs poisons (harmful)"
+        },
+        "color": {
+          "$ref": "schema.json#/definitions/color",
+          "description": "Default color magic school when this effect is delivered as a spell; omit for purely mundane effects"
+        },
+        "magnitudeUnit": {
+          "type": "string",
+          "enum": ["points", "percent", "dice", "count", "seconds", "level"],
+          "description": "How an appliedEffect.magnitude is interpreted for this effect"
+        },
+        "defaultDuration": { "type": "number", "minimum": 0, "description": "Default duration in seconds when not overridden by the appliedEffect" },
+        "stackable": { "type": "boolean", "description": "Whether multiple instances stack or refresh" },
+        "channels": {
+          "type": "array",
+          "description": "Delivery vectors permitted to draw this effect from the pool",
+          "items": { "type": "string", "enum": ["spell", "potion", "poison", "coating", "ingredient", "enchantment", "food"] },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "tags": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["id", "name", "description", "category", "polarity", "channels"],
+      "additionalProperties": false
+    }
+  }
+}

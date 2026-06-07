@@ -1,0 +1,53 @@
+{
+  "$schema": "../../schemas/ability.schema.json",
+  "abilities": [
+    {
+      "id": "str",
+      "name": "Strength",
+      "abbreviation": "STR",
+      "description": "Physical power. Governs melee damage, carrying capacity, and Strength-gated equipment. Scale 1-10."
+    },
+    {
+      "id": "per",
+      "name": "Perception",
+      "abbreviation": "PER",
+      "description": "Senses and awareness. Governs ranged accuracy, detection, and initiative. Scale 1-10."
+    },
+    {
+      "id": "end",
+      "name": "Endurance",
+      "abbreviation": "END",
+      "description": "Stamina and toughness. Governs hit points, fatigue, and resistance to poison and disease. Scale 1-10."
+    },
+    {
+      "id": "int",
+      "name": "Intelligence",
+      "abbreviation": "INT",
+      "description": "Reasoning and knowledge. Governs the skill-point gain rate, mana pool, and most knowledge and tech skills. Scale 1-10."
+    },
+    {
+      "id": "wil",
+      "name": "Willpower",
+      "abbreviation": "WIL",
+      "description": "Mental resilience and force of will. Governs magicka regeneration, magic resistance, and willpower-based magic. Scale 1-10."
+    },
+    {
+      "id": "agi",
+      "name": "Agility",
+      "abbreviation": "AGI",
+      "description": "Reflexes and finesse. Governs action economy, stealth, and dexterous skills. Scale 1-10."
+    },
+    {
+      "id": "cha",
+      "name": "Charisma",
+      "abbreviation": "CHA",
+      "description": "Force of personality. Governs persuasion, barter prices, and leadership. Scale 1-10."
+    },
+    {
+      "id": "lck",
+      "name": "Luck",
+      "abbreviation": "LCK",
+      "description": "Fortune. Adds a flat bonus to every check, raises critical-hit chance, and improves loot and random outcomes. Scale 1-10."
+    }
+  ]
+}

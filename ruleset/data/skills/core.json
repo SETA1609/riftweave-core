@@ -1,0 +1,39 @@
+{
+  "$schema": "../../schemas/skill.schema.json",
+  "skills": [
+    { "id": "melee_weapons", "name": "Melee Weapons", "description": "Strike with swords, axes, maces, and other hand weapons.", "associatedAbility": "str", "category": "combat", "taggable": true },
+    { "id": "unarmed", "name": "Unarmed", "description": "Fight with fists, claws, and brawling techniques.", "associatedAbility": "agi", "category": "combat", "taggable": true },
+    { "id": "marksmanship", "name": "Marksmanship", "description": "Attack with bows, crossbows, slings, and thrown weapons.", "associatedAbility": "per", "category": "combat", "taggable": true },
+    { "id": "block", "name": "Block", "description": "Absorb and deflect blows with shields and armor.", "associatedAbility": "end", "category": "combat", "taggable": true },
+
+    { "id": "red_magic", "name": "Red Magic", "description": "Offensive magic: fire, frost, shock, poison, and drains.", "associatedAbility": "wil", "category": "magic", "taggable": true },
+    { "id": "orange_magic", "name": "Orange Magic", "description": "Summoning, bound weapons, and energy creation.", "associatedAbility": "int", "category": "magic", "taggable": true },
+    { "id": "yellow_magic", "name": "Yellow Magic", "description": "Light, invisibility, charm, and calm.", "associatedAbility": "cha", "category": "magic", "taggable": true },
+    { "id": "green_magic", "name": "Green Magic", "description": "Mortal restoration: healing, buffs, and cures.", "associatedAbility": "wil", "category": "magic", "taggable": true },
+    { "id": "blue_magic", "name": "Blue Magic", "description": "Alteration of the physical: feather, water-walking, locks, transmutation.", "associatedAbility": "int", "category": "magic", "taggable": true },
+    { "id": "indigo_magic", "name": "Indigo Magic", "description": "Force manipulation and levitation.", "associatedAbility": "wil", "category": "magic", "taggable": true },
+    { "id": "violet_magic", "name": "Violet Magic", "description": "Soul detection and storage, telekinesis, mark/recall, dispel.", "associatedAbility": "int", "category": "magic", "taggable": true },
+    { "id": "white_magic", "name": "White Magic", "description": "Holy and divine power: protection auras, banish undead and demons, divine-grade healing, sanctify. Opposed by Black.", "associatedAbility": "wil", "category": "magic", "taggable": true },
+    { "id": "black_magic", "name": "Black Magic", "description": "Necromancy and death: raise undead, life-drain, decay, curses, soul-corruption. Opposed by White.", "associatedAbility": "int", "category": "magic", "taggable": true },
+
+    { "id": "stealth", "name": "Stealth", "description": "Move silently and stay unseen.", "associatedAbility": "agi", "category": "stealth", "taggable": true },
+    { "id": "lockpick", "name": "Lockpick", "description": "Open locks and disarm simple mechanisms.", "associatedAbility": "agi", "category": "stealth", "taggable": true },
+    { "id": "sleight_of_hand", "name": "Sleight of Hand", "description": "Pick pockets and conceal objects.", "associatedAbility": "agi", "category": "stealth", "taggable": true },
+
+    { "id": "persuasion", "name": "Persuasion", "description": "Influence others through charm, logic, and barter.", "associatedAbility": "cha", "category": "social", "taggable": true },
+    { "id": "deception", "name": "Deception", "description": "Lie convincingly and conceal your intent.", "associatedAbility": "cha", "category": "social", "taggable": true },
+    { "id": "intimidation", "name": "Intimidation", "description": "Coerce others through threats and force of presence.", "associatedAbility": "cha", "category": "social", "taggable": true },
+
+    { "id": "lore", "name": "Lore", "description": "Recall knowledge of magic, history, religion, nature, and the wider world.", "associatedAbility": "int", "category": "knowledge", "taggable": true },
+    { "id": "investigation", "name": "Investigation", "description": "Find clues, deduce conclusions, and search for hidden things.", "associatedAbility": "int", "category": "knowledge", "taggable": true },
+    { "id": "insight", "name": "Insight", "description": "Read motives, emotions, and intentions.", "associatedAbility": "per", "category": "knowledge", "taggable": true },
+
+    { "id": "survival", "name": "Survival", "description": "Track, forage, navigate, and endure the wilds.", "associatedAbility": "per", "category": "survival", "taggable": true },
+    { "id": "animal_handling", "name": "Animal Handling", "description": "Calm, train, and command beasts.", "associatedAbility": "wil", "category": "survival", "taggable": true },
+    { "id": "medicine", "name": "Medicine", "description": "Treat wounds, stabilize the dying, and diagnose illness without magic.", "associatedAbility": "int", "category": "survival", "taggable": true },
+
+    { "id": "athletics", "name": "Athletics", "description": "Climb, swim, jump, and grapple.", "associatedAbility": "str", "category": "utility", "taggable": true },
+    { "id": "repair", "name": "Repair", "description": "Mend, maintain, and improvise gear (see the crafting module).", "associatedAbility": "int", "category": "utility", "taggable": true },
+    { "id": "alchemy", "name": "Alchemy", "description": "Brew potions and poisons from reagents (see the alchemy module).", "associatedAbility": "int", "category": "utility", "taggable": true }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Race",
+  "description": "A playable race or ancestry",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "races": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/race" }
+    }
+  },
+  "required": ["races"],
+  "additionalProperties": false,
+  "definitions": {
+    "race": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z_][a-z0-9_]*$",
+          "description": "Unique identifier (e.g. human, high_elf)"
+        },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "source": { "$ref": "schema.json#/definitions/sourceRef" },
+        "abilityModifiers": {
+          "type": "object",
+          "description": "Attribute modifiers granted by this ancestry, keyed by attribute id (e.g. { \"end\": 2, \"agi\": -1 })",
+          "propertyNames": { "$ref": "schema.json#/definitions/ability" },
+          "additionalProperties": { "type": "integer" },
+          "minProperties": 1
+        },
+        "speed": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Walking speed in feet per round"
+        },
+        "size": {
+          "type": "string",
+          "enum": ["tiny", "small", "medium", "large"]
+        },
+        "traits": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" },
+              "description": { "type": "string" }
+            },
+            "required": ["id", "name", "description"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["id", "name", "description", "speed", "size"],
+      "additionalProperties": false
+    }
+  }
+}

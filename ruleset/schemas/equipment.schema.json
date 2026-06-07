@@ -1,0 +1,100 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Equipment",
+  "description": "Weapons, armor, and adventuring gear",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "equipment": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/equipment" }
+    }
+  },
+  "required": ["equipment"],
+  "additionalProperties": false,
+  "definitions": {
+    "equipment": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "source": { "$ref": "schema.json#/definitions/sourceRef" },
+        "type": {
+          "type": "string",
+          "enum": ["weapon", "armor", "shield", "potion", "poison", "coating", "oil", "food", "ring", "wand", "tool", "adventuring_gear", "ammunition"]
+        },
+        "cost": {
+          "type": "object",
+          "properties": {
+            "quantity": { "type": "integer", "minimum": 0 },
+            "unit": { "type": "string", "enum": ["cp", "sp", "gp", "pp"] }
+          },
+          "required": ["quantity", "unit"],
+          "additionalProperties": false
+        },
+        "weight": { "type": "number", "minimum": 0, "description": "Weight in pounds" },
+        "weapon": {
+          "type": "object",
+          "properties": {
+            "category": { "type": "string", "enum": ["simple", "martial"] },
+            "range": { "type": "string", "enum": ["melee", "ranged"] },
+            "damage": {
+              "type": "object",
+              "properties": {
+                "dice": { "$ref": "schema.json#/definitions/diceExpression" },
+                "type": { "type": "string", "enum": ["bludgeoning", "piercing", "slashing", "fire", "cold", "lightning", "acid", "poison", "necrotic", "radiant", "psychic", "force", "thunder"] }
+              },
+              "required": ["dice", "type"],
+              "additionalProperties": false
+            },
+            "properties": { "type": "array", "items": { "type": "string" } },
+            "rangeNormal": { "type": "integer", "minimum": 1 },
+            "rangeLong": { "type": "integer", "minimum": 1 }
+          },
+          "required": ["category", "range", "damage"],
+          "additionalProperties": false
+        },
+        "armor": {
+          "type": "object",
+          "properties": {
+            "category": { "type": "string", "enum": ["light", "medium", "heavy", "shield"] },
+            "acBase": { "type": "integer", "minimum": 0 },
+            "acDexBonus": { "type": "boolean" },
+            "acMaxDex": { "type": "integer", "minimum": 0 },
+            "strengthRequirement": { "type": "integer", "minimum": 1 },
+            "stealthDisadvantage": { "type": "boolean" }
+          },
+          "required": ["category", "acBase"],
+          "additionalProperties": false
+        },
+        "consumable": {
+          "type": "object",
+          "description": "A consumable or applied item (potion, poison, coating, oil, food) whose effects are drawn from the shared effect registry.",
+          "properties": {
+            "delivery": {
+              "type": "string",
+              "enum": ["drink", "eat", "apply_weapon", "throw"],
+              "description": "How the item is used: drink/eat (self), apply_weapon (poisons/coatings/oils), throw (bombs)"
+            },
+            "effects": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "schema.json#/definitions/appliedEffect" }
+            },
+            "uses": { "type": "integer", "minimum": 1, "description": "Number of applications/charges; e.g. a weapon coating may last several hits" }
+          },
+          "required": ["delivery", "effects"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["id", "name", "description", "type", "cost", "weight"],
+      "additionalProperties": false,
+      "oneOf": [
+        { "required": ["weapon"] },
+        { "required": ["armor"] },
+        { "required": ["consumable"] }
+      ]
+    }
+  }
+}

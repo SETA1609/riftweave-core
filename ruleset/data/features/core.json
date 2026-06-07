@@ -1,0 +1,148 @@
+{
+  "$schema": "../../schemas/feature.schema.json",
+  "features": [
+    {
+      "id": "toughness",
+      "name": "Toughness",
+      "description": "Hard living has thickened your hide. Your maximum hit points increase each time you take this perk.",
+      "type": "perk",
+      "category": "general",
+      "prerequisite": { "abilities": { "end": 5 } },
+      "ranks": 3,
+      "effects": [
+        { "type": "bonus", "description": "+15 maximum hit points per rank", "target": "hp_max", "value": 15 }
+      ]
+    },
+    {
+      "id": "alert",
+      "name": "Alert",
+      "description": "You are hard to catch off guard, gaining a sizeable edge on initiative and immunity to being surprised.",
+      "type": "perk",
+      "category": "general",
+      "prerequisite": { "abilities": { "per": 6 } },
+      "ranks": 1,
+      "effects": [
+        { "type": "bonus", "description": "+10 to initiative", "target": "initiative", "value": 10 },
+        { "type": "immunity", "description": "Cannot be surprised while conscious", "target": "surprise" }
+      ]
+    },
+    {
+      "id": "power_attack",
+      "name": "Power Attack",
+      "description": "You put your whole body behind each swing, dealing extra melee damage.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": { "abilities": { "str": 6 }, "skills": { "melee_weapons": 40 } },
+      "ranks": 1,
+      "effects": [
+        { "type": "bonus", "description": "+25% melee weapon damage", "target": "melee_damage", "value": 0.25 }
+      ]
+    },
+    {
+      "id": "deadeye",
+      "name": "Deadeye",
+      "description": "Your aim finds the gaps. Ranged attacks land critical hits more often.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": { "abilities": { "per": 6 }, "skills": { "marksmanship": 40 } },
+      "ranks": 1,
+      "effects": [
+        { "type": "bonus", "description": "+10% ranged critical chance", "target": "ranged_crit_chance", "value": 10 }
+      ]
+    },
+    {
+      "id": "shield_wall",
+      "name": "Shield Wall",
+      "description": "You turn a shield into a fortress, blocking a greater share of incoming damage.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": { "abilities": { "end": 6 }, "skills": { "block": 40 } },
+      "ranks": 1,
+      "effects": [
+        { "type": "bonus", "description": "+15% damage blocked", "target": "block_amount", "value": 0.15 }
+      ]
+    },
+    {
+      "id": "pyromancer",
+      "name": "Pyromancer",
+      "description": "Flame answers your call more fiercely, increasing the damage of Red Magic.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": { "skills": { "red_magic": 50 } },
+      "ranks": 2,
+      "effects": [
+        { "type": "bonus", "description": "+15% Red Magic effect magnitude per rank", "target": "red_magic_magnitude", "value": 0.15 }
+      ]
+    },
+    {
+      "id": "ghost",
+      "name": "Ghost",
+      "description": "You move like a shadow, far harder to detect while sneaking.",
+      "type": "perk",
+      "category": "stealth",
+      "prerequisite": { "abilities": { "agi": 6 }, "skills": { "stealth": 50 } },
+      "ranks": 1,
+      "effects": [
+        { "type": "bonus", "description": "-25% chance to be detected while sneaking", "target": "detection_chance", "value": -0.25 }
+      ]
+    },
+    {
+      "id": "silver_tongue",
+      "name": "Silver Tongue",
+      "description": "Your words open doors and purses alike, improving persuasion and barter prices.",
+      "type": "perk",
+      "category": "social",
+      "prerequisite": { "abilities": { "cha": 6 }, "skills": { "persuasion": 50 } },
+      "ranks": 1,
+      "effects": [
+        { "type": "bonus", "description": "+10 to persuasion checks", "target": "persuasion", "value": 10 },
+        { "type": "bonus", "description": "10% better barter prices", "target": "barter_prices", "value": 0.1 }
+      ]
+    },
+    {
+      "id": "field_medic",
+      "name": "Field Medic",
+      "description": "Your mundane healing is markedly more effective.",
+      "type": "perk",
+      "category": "survival",
+      "prerequisite": { "skills": { "medicine": 40 } },
+      "ranks": 1,
+      "effects": [
+        { "type": "bonus", "description": "+50% healing from Medicine", "target": "medicine_healing", "value": 0.5 }
+      ]
+    },
+    {
+      "id": "gifted",
+      "name": "Gifted",
+      "description": "You are exceptionally talented, but lean on raw aptitude over study. Chosen at character creation.",
+      "type": "trait",
+      "category": "general",
+      "effects": [
+        { "type": "bonus", "description": "+1 to every attribute", "target": "all_attributes", "value": 1 },
+        { "type": "penalty", "description": "-10% skill points per level", "target": "skill_points", "value": -0.1 }
+      ]
+    },
+    {
+      "id": "fast_shot",
+      "name": "Fast Shot",
+      "description": "You attack quickly but recklessly. Chosen at character creation.",
+      "type": "trait",
+      "category": "combat",
+      "effects": [
+        { "type": "bonus", "description": "Ranged attacks are 20% faster", "target": "ranged_attack_speed", "value": 0.2 },
+        { "type": "penalty", "description": "You cannot make aimed (targeted) shots", "target": "aimed_shots" }
+      ]
+    },
+    {
+      "id": "small_frame",
+      "name": "Small Frame",
+      "description": "You are slight of build: nimble, but you cannot carry as much. Chosen at character creation.",
+      "type": "trait",
+      "category": "general",
+      "effects": [
+        { "type": "bonus", "description": "+1 Agility", "target": "agi", "value": 1 },
+        { "type": "penalty", "description": "-25% carrying capacity", "target": "carry_weight", "value": -0.25 }
+      ]
+    }
+  ]
+}

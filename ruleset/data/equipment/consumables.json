@@ -1,0 +1,33 @@
+{
+  "$schema": "../../schemas/equipment.schema.json",
+  "equipment": [
+    {
+      "id": "potion_minor_healing", "name": "Potion of Minor Healing", "description": "A red draught that knits flesh and closes wounds.", "type": "potion", "cost": { "quantity": 25, "unit": "gp" }, "weight": 0.5,
+      "consumable": { "delivery": "drink", "effects": [ { "effect": "restore_health", "magnitude": 50 } ] }
+    },
+    {
+      "id": "potion_invisibility", "name": "Potion of Invisibility", "description": "A shimmering vial that bends light around the drinker.", "type": "potion", "cost": { "quantity": 120, "unit": "gp" }, "weight": 0.5,
+      "consumable": { "delivery": "drink", "effects": [ { "effect": "invisibility", "duration": 20 } ] }
+    },
+    {
+      "id": "potion_fire_resistance", "name": "Potion of Fire Resistance", "description": "Tastes of ash; wards the body against flame.", "type": "potion", "cost": { "quantity": 60, "unit": "gp" }, "weight": 0.5,
+      "consumable": { "delivery": "drink", "effects": [ { "effect": "resist_fire", "magnitude": 50, "duration": 120 } ] }
+    },
+    {
+      "id": "poison_weakness", "name": "Poison of Weakness", "description": "A foul tincture that saps health and vigor when struck.", "type": "poison", "cost": { "quantity": 40, "unit": "gp" }, "weight": 0.1,
+      "consumable": { "delivery": "apply_weapon", "uses": 3, "effects": [ { "effect": "damage_health", "magnitude": 10, "duration": 6 }, { "effect": "damage_stamina", "magnitude": 5 } ] }
+    },
+    {
+      "id": "coating_frost", "name": "Frost Coating", "description": "A rime-blue paste that chills any blade it touches.", "type": "coating", "cost": { "quantity": 35, "unit": "gp" }, "weight": 0.1,
+      "consumable": { "delivery": "apply_weapon", "uses": 5, "effects": [ { "effect": "damage_frost", "magnitude": 8 } ] }
+    },
+    {
+      "id": "oil_paralysis", "name": "Paralytic Oil", "description": "A weapon oil distilled from spider venom.", "type": "oil", "cost": { "quantity": 90, "unit": "gp" }, "weight": 0.1,
+      "consumable": { "delivery": "apply_weapon", "uses": 2, "effects": [ { "effect": "paralyze", "duration": 4 } ] }
+    },
+    {
+      "id": "ration_hearty_stew", "name": "Hearty Stew", "description": "A warm meal that restores stamina over time.", "type": "food", "cost": { "quantity": 5, "unit": "gp" }, "weight": 1,
+      "consumable": { "delivery": "eat", "effects": [ { "effect": "restore_stamina", "magnitude": 30, "duration": 30 } ] }
+    }
+  ]
+}

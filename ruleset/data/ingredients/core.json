@@ -1,0 +1,12 @@
+{
+  "$schema": "../../schemas/ingredient.schema.json",
+  "ingredients": [
+    { "id": "red_mushroom", "name": "Red Mushroom", "description": "A common cap that aids vigor.", "effects": ["restore_health", "fortify_strength"], "rarity": "common", "tags": ["fungus"] },
+    { "id": "frost_lily", "name": "Frost Lily", "description": "A pale flower that blooms in the cold.", "effects": ["damage_frost", "resist_fire"], "rarity": "uncommon", "tags": ["flower"] },
+    { "id": "nightshade", "name": "Nightshade", "description": "A toxic herb favored by poisoners.", "effects": ["damage_health", "damage_stamina"], "rarity": "uncommon", "tags": ["herb", "toxic"] },
+    { "id": "glowcap", "name": "Glowcap", "description": "A luminescent cave fungus.", "effects": ["restore_mana", "cure_poison"], "rarity": "uncommon", "tags": ["fungus"] },
+    { "id": "ironvine", "name": "Ironvine", "description": "A tough creeper that clings to stone.", "effects": ["feather", "fortify_agility"], "rarity": "common", "tags": ["plant"] },
+    { "id": "emberbloom", "name": "Emberbloom", "description": "A flower warm to the touch.", "effects": ["damage_fire", "fortify_attack"], "rarity": "rare", "tags": ["flower"] },
+    { "id": "sweetgrass", "name": "Sweetgrass", "description": "A fragrant grass with restorative properties.", "effects": ["restore_stamina", "resist_poison"], "rarity": "common", "tags": ["plant"] }
+  ]
+}

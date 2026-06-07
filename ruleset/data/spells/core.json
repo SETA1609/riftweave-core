@@ -1,0 +1,78 @@
+{
+  "$schema": "../../schemas/spell.schema.json",
+  "spells": [
+    {
+      "id": "fire_bolt",
+      "name": "Fire Bolt",
+      "description": "Hurl a mote of fire at a target.",
+      "color": "red",
+      "effects": [
+        { "effect": "damage_fire", "magnitude": 8, "target": "ranged" }
+      ],
+      "cost": { "mana": 5 }
+    },
+    {
+      "id": "force_dart",
+      "name": "Force Dart",
+      "description": "Loose glowing darts of force that strike unerringly.",
+      "color": "red",
+      "effects": [
+        { "effect": "damage_force", "magnitude": 10, "target": "ranged" }
+      ],
+      "cost": { "mana": 8 }
+    },
+    {
+      "id": "mend_wounds",
+      "name": "Mend Wounds",
+      "description": "Restore health to a creature you touch.",
+      "color": "green",
+      "effects": [
+        { "effect": "restore_health", "magnitude": 12, "target": "touch" }
+      ],
+      "cost": { "mana": 10 }
+    },
+    {
+      "id": "blessing",
+      "name": "Blessing",
+      "description": "Bolster an ally's prowess in battle for a short time.",
+      "color": "white",
+      "effects": [
+        { "effect": "fortify_attack", "magnitude": 10, "duration": 60, "target": "touch" }
+      ],
+      "cost": { "mana": 12 }
+    },
+    {
+      "id": "ward",
+      "name": "Ward",
+      "description": "Raise a barrier that hardens your defenses for a moment.",
+      "color": "blue",
+      "effects": [
+        { "effect": "ward_physical", "magnitude": 25, "duration": 12, "target": "self" }
+      ],
+      "cost": { "mana": 8 },
+      "cooldown": 6
+    },
+    {
+      "id": "fire_burst",
+      "name": "Fire Burst",
+      "description": "A streak of flame erupts into a fiery sphere at a chosen point.",
+      "color": "red",
+      "effects": [
+        { "effect": "damage_fire", "magnitude": 28, "target": "area", "radius": 6 }
+      ],
+      "cost": { "mana": 25 },
+      "cooldown": 4
+    },
+    {
+      "id": "raise_thrall",
+      "name": "Raise Thrall",
+      "description": "Animate a fallen corpse to fight at your side for a time.",
+      "color": "black",
+      "effects": [
+        { "effect": "summon_undead", "magnitude": 1, "duration": 120, "target": "ranged" }
+      ],
+      "cost": { "mana": 30, "reagents": ["bone_dust"] },
+      "cooldown": 30
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://riftweave.dev/ruleset/schemas/schema.json",
+  "title": "Riftweave cRPG Ruleset Root Schema",
+  "description": "Root schema referencing all rule data types. Each data file in the ruleset should reference its specific schema via $schema.",
+  "type": "object",
+  "definitions": {
+    "ability": {
+      "type": "string",
+      "enum": ["str", "per", "end", "int", "wil", "agi", "cha", "lck"],
+      "description": "Core attributes (1-10 scale): Strength, Perception, Endurance, Intelligence, Willpower, Agility, Charisma, Luck"
+    },
+    "diceExpression": {
+      "type": "string",
+      "pattern": "^\\d+d\\d+([+-]\\d+)?$",
+      "description": "Polyhedral dice notation used for damage and similar rolls, e.g. 1d8, 2d6+3. Resolution (skill/attack checks) uses d100 roll-under, not this."
+    },
+    "percentile": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 300,
+      "description": "A d100 roll-under value (skill rating, chance, or resistance), normally 0-100 but allowed above 100 for buffed/legendary values."
+    },
+    "color": {
+      "type": "string",
+      "enum": ["red", "orange", "yellow", "green", "blue", "indigo", "violet", "white", "black"],
+      "description": "Color magic school. The governing skill is <color>_magic."
+    },
+    "appliedEffect": {
+      "type": "object",
+      "description": "An instance of an effect drawn from the effect registry (data/effects), with its applied magnitude and duration. Shared by spells, consumables, ingredients, and enchantments.",
+      "properties": {
+        "effect": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "Effect id from the effect registry (data/effects)" },
+        "magnitude": { "type": "number", "description": "Effect strength; interpreted per the effect's magnitudeUnit" },
+        "duration": { "type": "number", "minimum": 0, "description": "Duration in seconds; 0 or omitted means instantaneous" },
+        "target": { "type": "string", "enum": ["self", "touch", "ranged", "area", "world"], "description": "Delivery shape (used by spells); omit for consumables/ingredients, which apply to the user" },
+        "radius": { "type": "number", "minimum": 0, "description": "Area radius in meters when target is 'area'" }
+      },
+      "required": ["effect"],
+      "additionalProperties": false
+    },
+    "sourceRef": {
+      "type": "object",
+      "properties": {
+        "source": { "type": "string", "description": "Source book or document" },
+        "page": { "type": "integer", "minimum": 1 }
+      },
+      "required": ["source"],
+      "additionalProperties": false
+    }
+  }
+}

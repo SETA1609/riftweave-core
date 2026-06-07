@@ -1,0 +1,100 @@
+{
+  "$schema": "../../schemas/race.schema.json",
+  "races": [
+    {
+      "id": "human",
+      "name": "Human",
+      "description": "The most common and adaptable people, found in every corner of the world.",
+      "speed": 30,
+      "size": "medium",
+      "abilityModifiers": { "cha": 1, "lck": 1 },
+      "traits": [
+        {
+          "id": "human_versatility",
+          "name": "Versatility",
+          "description": "You begin with one additional tag skill."
+        },
+        {
+          "id": "human_ambition",
+          "name": "Ambition",
+          "description": "You gain one bonus perk at 1st level."
+        }
+      ]
+    },
+    {
+      "id": "elf",
+      "name": "Elf",
+      "description": "Graceful, long-lived people with a deep connection to nature and magic.",
+      "speed": 30,
+      "size": "medium",
+      "abilityModifiers": { "agi": 1, "int": 1, "end": -1 },
+      "traits": [
+        {
+          "id": "elf_darkvision",
+          "name": "Darkvision",
+          "description": "You can see in dim light as if it were bright light, and in darkness as if it were dim light, out to 18 meters."
+        },
+        {
+          "id": "elf_fey_ancestry",
+          "name": "Fey Ancestry",
+          "description": "You resist charm and mind-affecting magic, and cannot be magically put to sleep."
+        },
+        {
+          "id": "elf_keen_senses",
+          "name": "Keen Senses",
+          "description": "+10 to detection (Perception) checks."
+        }
+      ]
+    },
+    {
+      "id": "dwarf",
+      "name": "Dwarf",
+      "description": "Sturdy, industrious folk carved from the mountain stone itself.",
+      "speed": 25,
+      "size": "medium",
+      "abilityModifiers": { "end": 2, "str": 1, "agi": -1 },
+      "traits": [
+        {
+          "id": "dwarf_darkvision",
+          "name": "Darkvision",
+          "description": "You can see in dim light as if it were bright light, and in darkness as if it were dim light, out to 18 meters."
+        },
+        {
+          "id": "dwarf_resilience",
+          "name": "Dwarven Resilience",
+          "description": "You resist poison and disease, taking reduced damage from both."
+        },
+        {
+          "id": "dwarf_stoneworker",
+          "name": "Stoneworker",
+          "description": "+10 to Repair and crafting checks."
+        }
+      ]
+    },
+    {
+      "id": "halfling",
+      "name": "Halfling",
+      "description": "Small, cheerful folk who make the most of life's simple pleasures.",
+      "speed": 25,
+      "size": "small",
+      "abilityModifiers": { "agi": 1, "lck": 2, "str": -1 },
+      "traits": [
+        {
+          "id": "halfling_lucky",
+          "name": "Lucky",
+          "description": "Once per day, when a check would critically fail (a fumble), you may reroll and keep the new result."
+        },
+        {
+          "id": "halfling_brave",
+          "name": "Brave",
+          "description": "You resist fear and intimidation effects."
+        },
+        {
+          "id": "halfling_nimble",
+          "name": "Nimble",
+          "description": "You can move through the space of any creature larger than you."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "$schema": "../../schemas/equipment.schema.json",
+  "equipment": [
+    {
+      "id": "dagger", "name": "Dagger", "description": "A small, double-edged blade.", "type": "weapon", "cost": { "quantity": 2, "unit": "gp" }, "weight": 1,
+      "weapon": { "category": "simple", "range": "melee", "damage": { "dice": "1d4", "type": "piercing" }, "properties": ["finesse", "light", "thrown"], "rangeNormal": 20, "rangeLong": 60 }
+    },
+    {
+      "id": "longsword", "name": "Longsword", "description": "A versatile blade wielded in one or two hands.", "type": "weapon", "cost": { "quantity": 15, "unit": "gp" }, "weight": 3,
+      "weapon": { "category": "martial", "range": "melee", "damage": { "dice": "1d8", "type": "slashing" }, "properties": ["versatile"] }
+    },
+    {
+      "id": "greatsword", "name": "Greatsword", "description": "A massive two-handed blade for devastating strikes.", "type": "weapon", "cost": { "quantity": 50, "unit": "gp" }, "weight": 6,
+      "weapon": { "category": "martial", "range": "melee", "damage": { "dice": "2d6", "type": "slashing" }, "properties": ["heavy", "two_handed"] }
+    },
+    {
+      "id": "shortbow", "name": "Shortbow", "description": "A small, versatile bow.", "type": "weapon", "cost": { "quantity": 25, "unit": "gp" }, "weight": 2,
+      "weapon": { "category": "simple", "range": "ranged", "damage": { "dice": "1d6", "type": "piercing" }, "properties": ["ammunition", "two_handed"], "rangeNormal": 80, "rangeLong": 320 }
+    },
+    {
+      "id": "longbow", "name": "Longbow", "description": "A large bow requiring strength and skill.", "type": "weapon", "cost": { "quantity": 50, "unit": "gp" }, "weight": 2,
+      "weapon": { "category": "martial", "range": "ranged", "damage": { "dice": "1d8", "type": "piercing" }, "properties": ["ammunition", "heavy", "two_handed"], "rangeNormal": 150, "rangeLong": 600 }
+    },
+    {
+      "id": "quarterstaff", "name": "Quarterstaff", "description": "A simple wooden staff.", "type": "weapon", "cost": { "quantity": 2, "unit": "sp" }, "weight": 4,
+      "weapon": { "category": "simple", "range": "melee", "damage": { "dice": "1d6", "type": "bludgeoning" }, "properties": ["versatile"] }
+    },
+    {
+      "id": "handaxe", "name": "Handaxe", "description": "A light axe suitable for throwing or melee.", "type": "weapon", "cost": { "quantity": 5, "unit": "gp" }, "weight": 2,
+      "weapon": { "category": "simple", "range": "melee", "damage": { "dice": "1d6", "type": "slashing" }, "properties": ["light", "thrown"], "rangeNormal": 20, "rangeLong": 60 }
+    },
+    {
+      "id": "rapier", "name": "Rapier", "description": "A slender, piercing sword favored by duelists.", "type": "weapon", "cost": { "quantity": 25, "unit": "gp" }, "weight": 2,
+      "weapon": { "category": "martial", "range": "melee", "damage": { "dice": "1d8", "type": "piercing" }, "properties": ["finesse"] }
+    }
+  ]
+}

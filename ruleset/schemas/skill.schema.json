@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Skill",
+  "description": "A skill governed by an attribute, rated 0-100+ as a d100 roll-under percentile",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "skills": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/skill" }
+    }
+  },
+  "required": ["skills"],
+  "additionalProperties": false,
+  "definitions": {
+    "skill": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "source": { "$ref": "schema.json#/definitions/sourceRef" },
+        "associatedAbility": {
+          "$ref": "schema.json#/definitions/ability",
+          "description": "Attribute that seeds this skill's starting rating: base = 2 + attr*2 + Luck/2"
+        },
+        "category": {
+          "type": "string",
+          "enum": ["combat", "magic", "stealth", "social", "knowledge", "survival", "utility"],
+          "description": "Grouping for character sheets and perk-tree organization"
+        },
+        "taggable": {
+          "type": "boolean",
+          "description": "Whether this skill may be chosen as one of the character's starting tag skills (+15 and faster growth). Defaults to true.",
+          "default": true
+        }
+      },
+      "required": ["id", "name", "description", "associatedAbility", "category"],
+      "additionalProperties": false
+    }
+  }
+}
