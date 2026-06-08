@@ -31,6 +31,11 @@
       "enum": ["wood", "fire", "earth", "metal", "water"],
       "description": "Wuxing (五行) five-phase tag. Governs how an effect INTERACTS with other effects via the generating/overcoming/insulting/weakening cycles (see data/wuxing). Orthogonal to color: color picks the governing <color>_magic skill, phase picks the elemental relationship. Omit for non-elemental effects, which do not participate in the cycles."
     },
+    "qualityGrade": {
+      "type": "string",
+      "enum": ["petty", "minor", "lesser", "common", "major", "greater", "grand", "legendary"],
+      "description": "Crafting quality ladder, listed lowest to highest (common is the baseline). Shared vocabulary reused across crafting conventions (gems, and future components)."
+    },
     "appliedEffect": {
       "type": "object",
       "description": "An instance of an effect drawn from the effect registry (data/effects), with its applied magnitude and duration. Shared by spells, consumables, ingredients, and enchantments.",

@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Material",
-  "description": "A crafting material for weapons, armor, and accessories. Each material has a five-phase element and the modifiers it confers on a crafted item: bonuses to attack, to defense, and/or to the magnitude of effects (enchantments) channeled through it. Consumed by the crafting and magic-crafting modules; the material's phase interacts with phased effects via data/wuxing.",
+  "description": "A crafting material for weapons, armor, and accessories. Each material has a five-phase element and the modifiers it confers on a crafted item: bonuses to attack (0 to +10 range for weapons; see attack property for details), to defense, and/or to the magnitude of effects (enchantments) channeled through it. Consumed by the crafting and magic-crafting modules; the material's phase interacts with phased effects via data/wuxing.",
   "type": "object",
   "properties": {
     "$schema": { "type": "string" },
@@ -42,7 +42,8 @@
           "properties": {
             "attack": {
               "type": "number",
-              "description": "Bonus to the item's attack/damage rating (weapons). May be negative for a soft material."
+              "minimum": 0,
+              "description": "Bonus to the item's attack/damage rating (weapons). This is the material's contribution to weapon attack power. Range is 0 (floor for materials that provide no direct combat bonus, e.g. gold or wood for arms) to +10 (maximum; none of the current materials reach +10). Typical values: wood 0 (structural/haft material), bronze +2, iron +3, steel +5, obsidian +6 (sharp but brittle)."
             },
             "defense": {
               "type": "number",

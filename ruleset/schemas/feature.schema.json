@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Feature",
-  "description": "A perk, trait, or racial feature. In this classless ruleset, perks are the primary character-defining progression, gated by skill thresholds, prerequisite perks, and attributes.",
+  "description": "A perk. In this classless ruleset, perks are the single character-defining progression table, gated by skill thresholds, prerequisite perks, and attributes. The `type` distinguishes how a perk is acquired: normal perks are chosen on level-up, `creation` perks (the former 'traits') are chosen at character creation and usually carry a tradeoff, and `racial_trait` perks are granted automatically by ancestry.",
   "type": "object",
   "properties": {
     "$schema": { "type": "string" },
@@ -22,8 +22,8 @@
         "source": { "$ref": "schema.json#/definitions/sourceRef" },
         "type": {
           "type": "string",
-          "enum": ["perk", "trait", "racial_trait", "universal"],
-          "description": "perk = chosen on level-up; trait = chosen at creation (usually with a tradeoff); racial_trait = granted by ancestry; universal = always available"
+          "enum": ["perk", "creation", "racial_trait", "universal"],
+          "description": "How the perk is acquired. perk = chosen from the perk table on level-up; creation = chosen at character creation (the former 'traits', usually with a tradeoff); racial_trait = granted automatically by ancestry (pinned to a race); universal = always available"
         },
         "category": {
           "type": "string",

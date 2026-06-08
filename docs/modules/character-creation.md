@@ -18,7 +18,7 @@ game may override them.
 
 1. [Choose a race](#1-choose-a-race) → ability modifiers, element, speed, size, traits
 2. [Assign attributes](#2-assign-attributes) → 8 attributes, 1–10
-3. [Choose traits](#3-choose-traits-optional) → creation-only, with tradeoffs
+3. [Choose creation perks](#3-choose-creation-perks-optional) → creation-only perks, with tradeoffs
 4. [Pick 3 tag skills](#4-pick-3-tag-skills)
 5. [Compute starting skills & spend the level-1 pool](#5-starting-skills--the-level-1-pool)
 6. [Take starting perks](#6-starting-perks) → usually none at level 1
@@ -66,19 +66,22 @@ Order matters: spend your 10 points first, then layer the racial deltas on top.
 
 ---
 
-## 3. Choose traits (optional)
+## 3. Choose creation perks (optional)
 
-Traits are `features` with `type: "trait"` — chosen **only at creation**, each a
-double-edged deal. Currently available:
+**Creation perks** (the former "traits") are perks in the perk table flagged
+`type: "creation"` — selectable **only at creation**, each a double-edged deal.
+Currently available:
 
-| Trait | Upside | Downside |
+| Creation perk | Upside | Downside |
 | --- | --- | --- |
 | **Gifted** | +1 to every attribute | −10% skill points per level |
 | **Fast Shot** | ranged attacks 20% faster | no aimed/targeted shots |
 | **Small Frame** | +1 Agility | −25% carrying capacity |
+| **Genius** | +1 tag skill | −15 starting skill points |
 
-Take **0–2** (suggested cap: 2). Trait attribute bonuses apply now, alongside the
-racial modifiers, and may exceed the normal caps.
+Take **0–2** (suggested cap: 2). Their attribute bonuses apply now, alongside the
+racial modifiers, and may exceed the normal caps. (*Genius* adds to your tag-skill
+count in step 4 and reduces the pool in step 5.)
 
 ---
 
@@ -92,9 +95,9 @@ A tag skill costs the **same** skill point but yields **+2 per point** instead o
 **+1** — an ongoing discount, *not* a flat starting bonus. Tagging is therefore about
 long-term efficiency in your focus skills.
 
-The 25 skills span seven categories — combat (`melee_weapons`, `marksmanship`,
+The skills span seven categories — combat (`blades`, `blunt`, `piercing`, `marksmanship`,
 `block`, `unarmed`), the nine `<color>_magic` schools, stealth, social, knowledge,
-survival, and utility (`alchemy`, `repair`, `athletics`).
+survival, and utility (`alchemy`, `repair`, `athletics`, plus crafting disciplines).
 
 ---
 
@@ -128,14 +131,15 @@ is **one perk every 3 levels**, so a 1st-level character normally has **none** �
 their skill prerequisites (e.g. *Pyromancer* needs `red_magic ≥ 50`) are out of reach
 at creation anyway.
 
-Exception: **Humans** *may* take **one perk at creation** (their *Ambition* trait) —
+Exception: **Humans** *may* take **one perk at creation** (their *Ambition* racial feature) —
 it is an option, not a requirement. Any perk whose prerequisites they already meet
 qualifies; at level 1 that means an ability-only perk such as *Toughness* (`end ≥ 5`)
 or *Alert* (`per ≥ 6`). A human who has no perk worth taking yet may decline and save
 it for later.
 
-Note: **traits ≠ perks**. Traits are the creation-only choices in step 3; perks come
-later.
+Note: creation perks (step 3) and level-up perks come from the **same table** —
+they differ only in *when* you may take them (`type: "creation"` is creation-only and
+not offered on level-up).
 
 ---
 
@@ -191,11 +195,11 @@ flat resistance — the cycles compute each matchup.
 2. **Attributes** — start all at 4; distribute +10 as
    str +2, end +2, per +1, int +1, agi +1, lck +3; then apply racial mods. Final:
    **STR 7 · PER 5 · END 8 · INT 5 · WIL 4 · AGI 4 · CHA 4 · LCK 7**.
-3. **Traits** — none.
-4. **Tag skills** — `melee_weapons`, `block`, `athletics`.
-5. **Skills** — bases `5 + abil×2`: melee 19, block 21, athletics 19. Level-1 pool
+3. **Creation perks** — none.
+4. **Tag skills** — `blunt`, `block`, `athletics`.
+5. **Skills** — bases `5 + abil×2`: blunt 19, block 21, athletics 19. Level-1 pool
    `5 + 5×2 + random(0…7)` → say a roll of 4 = **19 points**, all on tagged skills
-   (+2/pt): melee +16 → **35**, block +12 → **33**, athletics +10 → **29**.
+   (+2/pt): blunt +16 → **35**, block +12 → **33**, athletics +10 → **29**.
 6. **Perks** — none (not human).
 7. **Derived** — HP `15 + 8×8 + 4` = **83**; Mana `5×8 + 2` = **42**; third resource:
    Stamina `15 + 8×5 + 2` = **57** (action combat) *or* Action Points `2 + floor(4/3)`
@@ -215,7 +219,7 @@ flat resistance — the cycles compute each matchup.
 | Race | `data/races/core.json` | `race.schema.json` |
 | Attributes | `data/abilities/core.json` | `ability.schema.json` |
 | Skills / tags | `data/skills/core.json` | `skill.schema.json` |
-| Traits & perks | `data/features/core.json` | `feature.schema.json` |
+| Perks (level-up / creation / racial) | `data/features/core.json` | `feature.schema.json` |
 | Spells | `data/spells/core.json` | `spell.schema.json` |
 | Equipment | `data/equipment/*.json` | `equipment.schema.json` |
 | Element cycles | `data/wuxing/core.json` | `wuxing.schema.json` |
