@@ -29,7 +29,7 @@ for the pool itself.
 ## Brewing model (design)
 
 1. **Combine ingredients** that share at least one effect id. The shared effect(s)
-   become the brew's effect(s) (Elder Scrolls rule).
+   become the brew's effect(s) — only overlapping effects carry into the product.
 2. **Polarity decides the product:** beneficial shared effects → a **potion**
    (drink); harmful shared effects → a **poison** / **coating** (apply to weapon).
 3. **Quality / magnitude** is derived from `f(Alchemy skill, ingredient qualities,
