@@ -1,0 +1,10 @@
+{
+  "$schema": "../../schemas/tier.schema.json",
+  "tiers": [
+    { "id": 1, "name": "Common",    "description": "Plentiful, everyday quality.",          "effectMagnitude": 0.08, "valueFactor": 1.0 },
+    { "id": 2, "name": "Uncommon",  "description": "Better than most; worth seeking out.",   "effectMagnitude": 0.12, "valueFactor": 3.0 },
+    { "id": 3, "name": "Rare",      "description": "Hard to come by and notably potent.",     "effectMagnitude": 0.20, "valueFactor": 6.0 },
+    { "id": 4, "name": "Epic",      "description": "Exceptional, prized by master crafters.", "effectMagnitude": 0.25, "valueFactor": 10.0 },
+    { "id": 5, "name": "Legendary", "description": "The rarest and finest grade.",            "effectMagnitude": 0.35, "valueFactor": 20.0 }
+  ]
+}
