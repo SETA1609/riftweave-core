@@ -12,7 +12,7 @@
       "abilityModifiers": { "cha": 1, "lck": 1 },
       "traits": [
         { "id": "human_versatility", "name": "Versatility", "description": "You begin with one additional tag skill." },
-        { "id": "human_ambition", "name": "Ambition", "description": "You gain one bonus perk at 1st level." }
+        { "id": "human_ambition", "name": "Ambition", "description": "You may take one bonus perk at 1st level (any perk whose prerequisites you already meet)." }
       ]
     },
 
