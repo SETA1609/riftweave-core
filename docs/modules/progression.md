@@ -123,6 +123,40 @@ like the Elder Scrolls shared magic-effect table).
   stable; a referential-integrity check (every referenced id exists and respects
   its `channels`) is run alongside `validate.py`.
 
+## Elemental interaction — the five-phase cycle
+
+Layered **on top of** the color schools (it does not replace them) is a five-phase
+interaction system modeled on the Wuxing five-element cycle, defined in
+`ruleset/data/wuxing/core.json` (schema `wuxing.schema.json`). The two axes are
+**orthogonal**:
+
+- **Color** picks the governing `<color>_magic` skill — what you train, the
+  cost/power/success axis.
+- **Phase** picks the *elemental relationship* — how an effect interacts with other
+  effects in play. A Red-school `damage_fire` (phase **Fire**) and `damage_frost`
+  (phase **Water**) share a skill but interact with the world differently.
+
+`phase` is an **optional** field on effects (`effect.schema.json`), one of `wood`,
+`fire`, `earth`, `metal`, `water`. Non-elemental effects (invisibility, telekinesis,
+summons, attribute buffs) omit it and sit out the cycles entirely.
+
+The five phases relate through four cycles (each a set of directed `from → to`
+edges, where *from* acts upon *to*):
+
+| Cycle | Interaction | Effect | Reading |
+| --- | --- | --- | --- |
+| **Generating** | amplify (×1.5 recipient) | mother feeds child | Wood→Fire→Earth→Metal→Water→Wood |
+| **Overcoming** | suppress (×0.5 recipient) | controller restrains/dispels | Wood→Earth→Water→Fire→Metal→Wood |
+| **Weakening** | drain (×0.75 recipient) | child saps mother (reverse generating) | Fire→Wood, Earth→Fire, Metal→Earth, Water→Metal, Wood→Water |
+| **Insulting** | backlash (×1.25 recipient, conditional) | over-strong controlled rebels (reverse overcoming) | Earth→Wood, Water→Earth, Fire→Water, Metal→Fire, Wood→Metal |
+
+The multipliers are **reference values** the consuming engine tunes; the cycle table
+is the single source of truth for the matrix. This is a **runtime interaction
+system** — riftweave-core supplies the vocabulary, the per-effect tags, and the
+matrix; the engine implements resolution (it has no five-phase concept yet, so this
+data leads that design). Alchemy/crafting can reuse the same cycles (generating →
+potency, overcoming → cures/antidotes).
+
 ## Derived statistics (reference formulas)
 
 | Stat | Formula |
