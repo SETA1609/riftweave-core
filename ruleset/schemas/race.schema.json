@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Race",
-  "description": "A playable race or ancestry",
+  "description": "A race/ancestry. Races relate to one another in two distinct ways. (1) PARENT → SUBRACE is inheritance: a subrace descends from a parent race (green/black elves from elf, hill/mountain dwarves from dwarf) and an engine layers the subrace on top of the parent's defaults. (2) TEMPLATE → KIN is sister conformance, NOT inheritance: a template (e.g. beastman) defines only the shape; its kin (catman, wolfman, …) each define everything themselves and need share nothing. Parent and template entries are abstract scaffolding and are not played directly; standalone races, subraces, and kin are playable.",
   "type": "object",
   "properties": {
     "$schema": { "type": "string" },
@@ -13,20 +13,49 @@
   "required": ["races"],
   "additionalProperties": false,
   "definitions": {
+    "lineage": {
+      "type": "object",
+      "description": "How this race relates to others.",
+      "properties": {
+        "role": {
+          "type": "string",
+          "enum": ["standalone", "parent", "subrace", "template", "kin"],
+          "description": "standalone: a complete, unrelated race (human). parent: an abstract ancestor that subraces inherit from (elf, dwarf). subrace: descends from and extends a parent via `parentRace` (inherits its defaults, overrides freely). template: an abstract shape for sister races (beastman) — provides structure, not values. kin: a sister race conforming to a template via `parentRace`, sharing nothing mechanical with its siblings."
+        },
+        "parentRace": {
+          "type": "string",
+          "pattern": "^[a-z_][a-z0-9_]*$",
+          "description": "The id of the parent race (when role=subrace) or the template (when role=kin). Cross-file reference; not schema-validated."
+        }
+      },
+      "required": ["role"],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": { "properties": { "role": { "enum": ["subrace", "kin"] } }, "required": ["role"] },
+          "then": { "required": ["role", "parentRace"] }
+        }
+      ]
+    },
     "race": {
       "type": "object",
       "properties": {
         "id": {
           "type": "string",
           "pattern": "^[a-z_][a-z0-9_]*$",
-          "description": "Unique identifier (e.g. human, high_elf)"
+          "description": "Unique identifier (e.g. human, green_elf, mountain_dwarf, catman)"
         },
         "name": { "type": "string" },
         "description": { "type": "string" },
         "source": { "$ref": "schema.json#/definitions/sourceRef" },
+        "lineage": { "$ref": "#/definitions/lineage" },
+        "phase": {
+          "$ref": "schema.json#/definitions/phase",
+          "description": "The race's innate element (Wuxing five-phase). Required for playable races (standalone, parent, subrace, kin); omitted on templates, whose kin each declare their own. A subrace may inherit its parent's phase or override it. Drives elemental affinity via the cycles in data/wuxing."
+        },
         "abilityModifiers": {
           "type": "object",
-          "description": "Attribute modifiers granted by this ancestry, keyed by attribute id (e.g. { \"end\": 2, \"agi\": -1 })",
+          "description": "Attribute modifiers, keyed by attribute id (e.g. { \"end\": 2, \"agi\": -1 }). On a subrace these stack on top of the parent's (engine-resolved).",
           "propertyNames": { "$ref": "schema.json#/definitions/ability" },
           "additionalProperties": { "type": "integer" },
           "minProperties": 1
@@ -54,8 +83,26 @@
           }
         }
       },
-      "required": ["id", "name", "description", "speed", "size"],
-      "additionalProperties": false
+      "required": ["id", "name", "description", "lineage"],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "description": "Playable races (standalone/parent/subrace/kin) must declare a phase; templates may omit it.",
+          "if": {
+            "properties": { "lineage": { "properties": { "role": { "enum": ["standalone", "parent", "subrace", "kin"] } }, "required": ["role"] } },
+            "required": ["lineage"]
+          },
+          "then": { "required": ["phase"] }
+        },
+        {
+          "description": "Self-contained races (standalone/parent/kin) must declare speed and size; subraces may inherit them from the parent, templates omit them.",
+          "if": {
+            "properties": { "lineage": { "properties": { "role": { "enum": ["standalone", "parent", "kin"] } }, "required": ["role"] } },
+            "required": ["lineage"]
+          },
+          "then": { "required": ["speed", "size"] }
+        }
+      ]
     }
   }
 }
