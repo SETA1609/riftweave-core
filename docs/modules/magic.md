@@ -95,8 +95,8 @@ authored baseline; the engine derives it (§5).
 
 Casting uses the standard resolution from [`progression.md`](./progression.md):
 
-1. **Cost** is paid from the mana pool (`INT × 5 + WIL × 3`). Insufficient mana → no
-   cast.
+1. **Cost** is paid from the mana pool (`INT × 8 + level × 2`; regenerates with WIL).
+   Insufficient mana → no cast.
 2. **Success** — roll `1d100`, succeed if `≤ target`, where
    `target = <color>_magic + floor(LCK/2) + situational`. Crit on `01–05`, fumble on
    `96–00`.
@@ -106,7 +106,7 @@ Casting uses the standard resolution from [`progression.md`](./progression.md):
    on the target's element and any standing effects.
 
 Casting **never grants skill XP** — magic skills rise by point-buy like every other
-skill (Fallout 1/2 model).
+skill (advancement, not use-training).
 
 ---
 

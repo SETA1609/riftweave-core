@@ -17,25 +17,25 @@
       "id": "end",
       "name": "Endurance",
       "abbreviation": "END",
-      "description": "Stamina and toughness. Governs hit points, fatigue, and resistance to poison and disease. Scale 1-10."
+      "description": "Stamina and toughness. Governs hit points, the Stamina pool (action combat), fatigue, and resistance to poison and disease. Scale 1-10."
     },
     {
       "id": "int",
       "name": "Intelligence",
       "abbreviation": "INT",
-      "description": "Reasoning and knowledge. Governs the skill-point gain rate, mana pool, and most knowledge and tech skills. Scale 1-10."
+      "description": "Reasoning and knowledge. Governs the skill-point gain rate, the mana pool, the power of all magic, and most knowledge skills. Scale 1-10."
     },
     {
       "id": "wil",
       "name": "Willpower",
       "abbreviation": "WIL",
-      "description": "Mental resilience and force of will. Governs magicka regeneration, magic resistance, and willpower-based magic. Scale 1-10."
+      "description": "Mental resilience and force of will. Governs mana and stamina regeneration and magic resistance. Scale 1-10."
     },
     {
       "id": "agi",
       "name": "Agility",
       "abbreviation": "AGI",
-      "description": "Reflexes and finesse. Governs action economy, stealth, and dexterous skills. Scale 1-10."
+      "description": "Reflexes and finesse. Governs action economy and Action Points (turn-based), stealth, and dexterous skills. Scale 1-10."
     },
     {
       "id": "cha",

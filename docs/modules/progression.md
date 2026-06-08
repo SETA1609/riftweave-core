@@ -23,17 +23,17 @@ Eight attributes, defined in `ruleset/data/abilities/core.json`:
 | --- | --- | --- |
 | `str` | Strength | melee damage, carry weight |
 | `per` | Perception | ranged accuracy, detection, initiative |
-| `end` | Endurance | hit points, fatigue, poison/disease resistance |
-| `int` | Intelligence | skill-point rate, mana pool, knowledge/tech skills |
-| `wil` | Willpower | magicka regen, magic resistance, willpower magic |
-| `agi` | Agility | action economy, stealth, dexterous skills |
+| `end` | Endurance | hit points, Stamina, fatigue, poison/disease resistance |
+| `int` | Intelligence | skill-point rate, mana pool, **all magic power**, knowledge skills |
+| `wil` | Willpower | mana & stamina regeneration, magic resistance |
+| `agi` | Agility | action economy & Action Points, stealth, dexterous skills |
 | `cha` | Charisma | persuasion, barter, leadership |
 | `lck` | Luck | crits, loot, a flat bonus to every check, bonus skill points |
 
-This is the Fallout **SPECIAL** set plus **Willpower** (to give magic a home
-without overloading another stat). Suggested creation: each attribute starts at
-**4**, distribute **10** points (max 10 each), then apply racial modifiers from
-`races/core.json`.
+The eight attributes are seven physical and mental stats plus **Willpower**, which
+fuels resource regeneration and magic resistance. Suggested creation: each attribute
+starts at **4**, distribute **10** points (max 10 each), then apply racial modifiers
+from `races/core.json`.
 
 ## Skills (0–100, point-buy)
 
@@ -44,16 +44,16 @@ utility).
 - **Starting value** = `5 + associatedAbility × 2` (Luck is applied at check time,
   not stored in the rating).
 - **XP is event-driven** — quests, kills, exploration milestones grant XP via the
-  event bus. *Using* a skill does **not** train it. (This is the Fallout 1/2 model,
-  explicitly **not** Morrowind/Skyrim use-leveling.)
+  event bus. *Using* a skill does **not** train it — skills advance through earned
+  XP spent at level-up, never through repeated use.
 - On **level-up** you get a pool of skill points to spend:
   - **skill points/level = `5 + INT × 2 + random(0…LCK)`** — Luck adds a random
     bonus, so a luckier character gains more points per level on average, but
     unpredictably.
 - **Tag skills** — choose **3** at creation. Spending 1 point on a tagged skill
-  grants **+2**; an untagged skill grants **+1**. Same pool, double yield (this is
-  the F1/2 discount, **not** New Vegas's +15-at-start). Mark a skill non-taggable
-  with `"taggable": false`.
+  grants **+2**; an untagged skill grants **+1**. Same pool, double yield — an
+  ongoing discount on your focus skills, **not** a flat bonus at creation. Mark a
+  skill non-taggable with `"taggable": false`.
 - Skills cap at **100** in v1 (above-100 cost escalation is a per-game extension).
 
 ## Luck
@@ -94,6 +94,9 @@ Magic uses **nine color schools**, each a normal point-buy skill in
 - The matching `<color>_magic` skill gates the spell's cost, power, and success
   chance. **Casting does not grant skill XP** — magic skills rise by point-buy like
   any other.
+- **All nine schools are INT-seeded**: Intelligence sets the mana pool and the power
+  of every spell, while **Willpower** regenerates mana and resists hostile magic
+  (see `attributes.md`).
 - **Spellmaking**: players combine effects into custom spells; cost derives from the
   sum of effects (`custom: true`).
 
@@ -102,8 +105,8 @@ Magic uses **nine color schools**, each a normal point-buy skill in
 Effects are **atomic, reusable** building blocks defined once in
 `ruleset/data/effects/core.json` (schema `effect.schema.json`) and drawn from by
 every system that applies an effect — **magic, potions, poisons, coatings, oils,
-food, ingredients, and enchantments**. This is the single source of truth (much
-like the Elder Scrolls shared magic-effect table).
+food, ingredients, and enchantments**. This is the single source of truth — one
+shared effect table for the whole game.
 
 - Each effect declares a `category` (damage, restore, fortify, resist, cure,
   conjure, control, …), a `polarity` (beneficial / harmful / neutral — alchemy
@@ -159,10 +162,17 @@ potency, overcoming → cures/antidotes).
 
 ## Derived statistics (reference formulas)
 
+A character runs on **three resources**. The third changes shape with the combat
+mode: a turn-based (TTRPG) game spends **Action Points** each turn, while an
+action-combat game drains a **Stamina** pool. See `attributes.md` § The three
+resources.
+
 | Stat | Formula |
 | --- | --- |
 | Hit points | `15 + END × 8 + level × 4` |
-| Mana | `INT × 5 + WIL × 3` (regeneration scales with WIL) |
+| Mana | `INT × 8 + level × 2` (regen scales with WIL) |
+| Stamina (action combat) | `15 + END × 5 + level × 2` (regen scales with WIL) |
+| Action Points (turn-based) | `2 + floor(AGI / 3)` per turn |
 | Carry weight | `25 + STR × 10` |
 | Critical chance | `1% + LCK%` (+ perks) |
 | Initiative | `PER` (+ perks such as *Alert*) |
@@ -173,8 +183,9 @@ blow). A full defense model (dodge vs. block vs. armor) is a follow-up.
 
 ## Open items / follow-ups
 
-- **Combat mode** — turn-based (with Action Points from AGI) vs. real-time is
-  undecided; the AP formula and initiative detail depend on it.
+- **Combat mode** — turn-based vs. action-combat is undecided; it selects the third
+  resource (Action Points from AGI vs. a Stamina pool from END) and the initiative
+  detail. The formulas above are the reference for each.
 - **Weapons & armor** — `equipment/weapons.json` and `armor.json` are still on the
   original D&D shape (`acBase`, `acDexBonus`, weapon categories). Aligning them to
   the d100 model (armor as a defense/DR %, weapons declaring their governing skill)
