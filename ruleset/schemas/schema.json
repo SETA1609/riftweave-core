@@ -26,6 +26,11 @@
       "enum": ["red", "orange", "yellow", "green", "blue", "indigo", "violet", "white", "black"],
       "description": "Color magic school. The governing skill is <color>_magic."
     },
+    "phase": {
+      "type": "string",
+      "enum": ["wood", "fire", "earth", "metal", "water"],
+      "description": "Wuxing (五行) five-phase tag. Governs how an effect INTERACTS with other effects via the generating/overcoming/insulting/weakening cycles (see data/wuxing). Orthogonal to color: color picks the governing <color>_magic skill, phase picks the elemental relationship. Omit for non-elemental effects, which do not participate in the cycles."
+    },
     "appliedEffect": {
       "type": "object",
       "description": "An instance of an effect drawn from the effect registry (data/effects), with its applied magnitude and duration. Shared by spells, consumables, ingredients, and enchantments.",

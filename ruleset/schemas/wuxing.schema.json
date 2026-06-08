@@ -1,0 +1,81 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FivePhase",
+  "description": "The five-phase interaction matrix (modeled on the Wuxing five-element cycle): the single source of truth for how phased effects interact. Phases tag effects (effect.schema.json#/properties/phase); the cycles here define what happens when two phased effects meet. This is the relational layer and is orthogonal to the color magic schools — it changes how effects interact, not which skill governs them.",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "phases": {
+      "type": "array",
+      "description": "The five phases. Exactly five, one per id in schema.json#/definitions/phase.",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": { "$ref": "#/definitions/phaseDef" }
+    },
+    "cycles": {
+      "type": "array",
+      "description": "The relationship cycles. Each cycle is a set of directed edges sharing one interaction kind, multiplier, and resolution rule.",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/cycle" }
+    }
+  },
+  "required": ["phases", "cycles"],
+  "additionalProperties": false,
+  "definitions": {
+    "phaseDef": {
+      "type": "object",
+      "properties": {
+        "id": { "$ref": "schema.json#/definitions/phase" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "source": { "$ref": "schema.json#/definitions/sourceRef" }
+      },
+      "required": ["id", "name"],
+      "additionalProperties": false
+    },
+    "cycle": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
+        "name": { "type": "string" },
+        "interaction": {
+          "type": "string",
+          "enum": ["amplify", "suppress", "drain", "backlash"],
+          "description": "What firing this cycle does: amplify (generating, boost), suppress (overcoming, reduce/dispel), drain (weakening, sap), backlash (insulting, conditional reversal)."
+        },
+        "affects": {
+          "type": "string",
+          "enum": ["actor", "recipient"],
+          "description": "Which participant the magnitudeMultiplier modifies. An edge 'from → to' is the canonical Wuxing relation 'from acts upon to'; 'actor' = the from-phase party, 'recipient' = the to-phase party. Engines map a standing phase + an incoming phase onto from/to by matching the edge."
+        },
+        "magnitudeMultiplier": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Reference multiplier applied to the affected participant's magnitude (and/or duration) when this edge fires. >1 boosts, <1 reduces, 0 fully dispels. Tunable per game."
+        },
+        "condition": {
+          "type": "string",
+          "description": "Optional gating condition for imbalance cycles (e.g. backlash fires only when the actor's magnitude exceeds the recipient's)."
+        },
+        "description": { "type": "string" },
+        "edges": {
+          "type": "array",
+          "description": "Directed phase relationships. 'from' acts upon 'to' in the canonical Wuxing reading for this cycle.",
+          "minItems": 1,
+          "maxItems": 5,
+          "items": {
+            "type": "object",
+            "properties": {
+              "from": { "$ref": "schema.json#/definitions/phase" },
+              "to": { "$ref": "schema.json#/definitions/phase" }
+            },
+            "required": ["from", "to"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["id", "name", "interaction", "affects", "magnitudeMultiplier", "edges"],
+      "additionalProperties": false
+    }
+  }
+}

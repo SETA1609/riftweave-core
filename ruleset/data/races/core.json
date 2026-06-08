@@ -5,95 +5,143 @@
       "id": "human",
       "name": "Human",
       "description": "The most common and adaptable people, found in every corner of the world.",
+      "lineage": { "role": "standalone" },
+      "phase": "earth",
       "speed": 30,
       "size": "medium",
       "abilityModifiers": { "cha": 1, "lck": 1 },
       "traits": [
-        {
-          "id": "human_versatility",
-          "name": "Versatility",
-          "description": "You begin with one additional tag skill."
-        },
-        {
-          "id": "human_ambition",
-          "name": "Ambition",
-          "description": "You gain one bonus perk at 1st level."
-        }
+        { "id": "human_versatility", "name": "Versatility", "description": "You begin with one additional tag skill." },
+        { "id": "human_ambition", "name": "Ambition", "description": "You may take one bonus perk at 1st level (any perk whose prerequisites you already meet)." }
       ]
     },
+
     {
       "id": "elf",
       "name": "Elf",
-      "description": "Graceful, long-lived people with a deep connection to nature and magic.",
+      "description": "Graceful, long-lived people with a deep connection to nature and magic. An abstract ancestry: play one of its subraces, not the generic elf.",
+      "lineage": { "role": "parent" },
+      "phase": "wood",
       "speed": 30,
       "size": "medium",
       "abilityModifiers": { "agi": 1, "int": 1, "end": -1 },
       "traits": [
-        {
-          "id": "elf_darkvision",
-          "name": "Darkvision",
-          "description": "You can see in dim light as if it were bright light, and in darkness as if it were dim light, out to 18 meters."
-        },
-        {
-          "id": "elf_fey_ancestry",
-          "name": "Fey Ancestry",
-          "description": "You resist charm and mind-affecting magic, and cannot be magically put to sleep."
-        },
-        {
-          "id": "elf_keen_senses",
-          "name": "Keen Senses",
-          "description": "+10 to detection (Perception) checks."
-        }
+        { "id": "elf_darkvision", "name": "Darkvision", "description": "You can see in dim light as if it were bright light, and in darkness as if it were dim light, out to 18 meters." },
+        { "id": "elf_fey_ancestry", "name": "Fey Ancestry", "description": "You resist charm and mind-affecting magic, and cannot be magically put to sleep." },
+        { "id": "elf_keen_senses", "name": "Keen Senses", "description": "+10 to detection (Perception) checks." }
       ]
     },
     {
+      "id": "common_elf",
+      "name": "Common Elf",
+      "description": "The baseline playable elf. A subrace that overrides nothing — it inherits the elf parent's phase, speed, size, ability modifiers, and traits unchanged. Use this to play a 'plain' elf.",
+      "lineage": { "role": "subrace", "parentRace": "elf" },
+      "phase": "wood"
+    },
+    {
+      "id": "green_elf",
+      "name": "Green Elf",
+      "description": "Forest-dwelling elves bound to the living wood. Inherits the elf base; speed and size carry over from the parent.",
+      "lineage": { "role": "subrace", "parentRace": "elf" },
+      "phase": "wood",
+      "abilityModifiers": { "per": 1 },
+      "traits": [
+        { "id": "green_elf_woodland_stride", "name": "Woodland Stride", "description": "Difficult terrain of plants and undergrowth costs you no extra movement." }
+      ]
+    },
+    {
+      "id": "black_elf",
+      "name": "Black Elf",
+      "description": "Subterranean elves of the lightless deeps. A subrace that OVERRIDES the elf phase (wood → water), showing how descent need not preserve every trait.",
+      "lineage": { "role": "subrace", "parentRace": "elf" },
+      "phase": "water",
+      "abilityModifiers": { "agi": 1, "cha": -1 },
+      "traits": [
+        { "id": "black_elf_sunless_sight", "name": "Sunless Sight", "description": "Your darkvision extends to 36 meters, but you have disadvantage on checks in bright sunlight." },
+        { "id": "black_elf_shadowmeld", "name": "Shadowmeld", "description": "+10 to stealth while in dim light or darkness." }
+      ]
+    },
+
+    {
       "id": "dwarf",
       "name": "Dwarf",
-      "description": "Sturdy, industrious folk carved from the mountain stone itself.",
+      "description": "Sturdy, industrious folk carved from the mountain stone itself. An abstract ancestry: play one of its subraces.",
+      "lineage": { "role": "parent" },
+      "phase": "metal",
       "speed": 25,
       "size": "medium",
       "abilityModifiers": { "end": 2, "str": 1, "agi": -1 },
       "traits": [
-        {
-          "id": "dwarf_darkvision",
-          "name": "Darkvision",
-          "description": "You can see in dim light as if it were bright light, and in darkness as if it were dim light, out to 18 meters."
-        },
-        {
-          "id": "dwarf_resilience",
-          "name": "Dwarven Resilience",
-          "description": "You resist poison and disease, taking reduced damage from both."
-        },
-        {
-          "id": "dwarf_stoneworker",
-          "name": "Stoneworker",
-          "description": "+10 to Repair and crafting checks."
-        }
+        { "id": "dwarf_darkvision", "name": "Darkvision", "description": "You can see in dim light as if it were bright light, and in darkness as if it were dim light, out to 18 meters." },
+        { "id": "dwarf_resilience", "name": "Dwarven Resilience", "description": "You resist poison and disease, taking reduced damage from both." },
+        { "id": "dwarf_stoneworker", "name": "Stoneworker", "description": "+10 to Repair and crafting checks." }
       ]
     },
     {
-      "id": "halfling",
-      "name": "Halfling",
-      "description": "Small, cheerful folk who make the most of life's simple pleasures.",
-      "speed": 25,
-      "size": "small",
-      "abilityModifiers": { "agi": 1, "lck": 2, "str": -1 },
+      "id": "common_dwarf",
+      "name": "Common Dwarf",
+      "description": "The baseline playable dwarf. A subrace that overrides nothing — it inherits the dwarf parent's phase, speed, size, ability modifiers, and traits unchanged. Use this to play a 'plain' dwarf.",
+      "lineage": { "role": "subrace", "parentRace": "dwarf" },
+      "phase": "metal"
+    },
+    {
+      "id": "hill_dwarf",
+      "name": "Hill Dwarf",
+      "description": "Dwarves of the rolling foothills, closer to soil than ore. Inherits the dwarf base but OVERRIDES its phase (metal → earth).",
+      "lineage": { "role": "subrace", "parentRace": "dwarf" },
+      "phase": "earth",
+      "abilityModifiers": { "wil": 1 },
       "traits": [
-        {
-          "id": "halfling_lucky",
-          "name": "Lucky",
-          "description": "Once per day, when a check would critically fail (a fumble), you may reroll and keep the new result."
-        },
-        {
-          "id": "halfling_brave",
-          "name": "Brave",
-          "description": "You resist fear and intimidation effects."
-        },
-        {
-          "id": "halfling_nimble",
-          "name": "Nimble",
-          "description": "You can move through the space of any creature larger than you."
-        }
+        { "id": "hill_dwarf_toughness", "name": "Dwarven Toughness", "description": "Your hit point maximum increases by 1 per level." }
+      ]
+    },
+    {
+      "id": "mountain_dwarf",
+      "name": "Mountain Dwarf",
+      "description": "Dwarves of the high peaks and deep mines. Inherits the dwarf base, phase included.",
+      "lineage": { "role": "subrace", "parentRace": "dwarf" },
+      "phase": "metal",
+      "abilityModifiers": { "str": 1 },
+      "traits": [
+        { "id": "mountain_dwarf_armor_training", "name": "Mountain Armor Training", "description": "You are proficient with light and medium armor." }
+      ]
+    },
+
+    {
+      "id": "beastman",
+      "name": "Beastman",
+      "description": "A TEMPLATE, not a race you play. It defines the shape of anthropomorphic beastfolk so users can author their own kin (catman, wolfman, ratman, …). Kin are SISTERS: each declares its own phase, attributes, speed, size, and traits, and need share nothing mechanical with the others — only the template's shape and the 'beastfolk' kinship.",
+      "lineage": { "role": "template" },
+      "traits": [
+        { "id": "beastfolk_kinship", "name": "Beastfolk", "description": "Marks the race as beastfolk. A kin typically defines natural-weapon and heightened-sense traits, but no values are inherited from the template or from sibling kin." }
+      ]
+    },
+    {
+      "id": "catman",
+      "name": "Catman",
+      "description": "An agile feline beastfolk. A kin of the beastman template — fully self-defined, sharing nothing mechanical with other beastfolk.",
+      "lineage": { "role": "kin", "parentRace": "beastman" },
+      "phase": "metal",
+      "speed": 35,
+      "size": "medium",
+      "abilityModifiers": { "agi": 2, "per": 1, "wil": -1 },
+      "traits": [
+        { "id": "catman_claws", "name": "Retractable Claws", "description": "Your claws are natural weapons dealing 1d6 slashing damage." },
+        { "id": "catman_landing", "name": "Cat's Landing", "description": "You take no damage from falls of 6 meters or less and always land on your feet." }
+      ]
+    },
+    {
+      "id": "wolfman",
+      "name": "Wolfman",
+      "description": "A wild, pack-bonded lupine beastfolk. A sister kin to the catman with an entirely different phase, attributes, and traits — the template imposes shape, not commonality.",
+      "lineage": { "role": "kin", "parentRace": "beastman" },
+      "phase": "wood",
+      "speed": 30,
+      "size": "medium",
+      "abilityModifiers": { "str": 1, "end": 1, "int": -1 },
+      "traits": [
+        { "id": "wolfman_pack_tactics", "name": "Pack Tactics", "description": "+10 to attack checks against a foe that an ally is also engaging." },
+        { "id": "wolfman_keen_smell", "name": "Keen Smell", "description": "+10 to detection checks that rely on scent." }
       ]
     }
   ]

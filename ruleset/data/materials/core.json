@@ -1,0 +1,109 @@
+{
+  "$schema": "../../schemas/material.schema.json",
+  "materials": [
+    {
+      "id": "copper",
+      "name": "Copper",
+      "description": "A soft, conductive metal — prized for enchanted trinkets, poor as a blade.",
+      "phase": "metal",
+      "tier": 1,
+      "appliesTo": ["weapon", "armor", "accessory"],
+      "modifiers": { "attack": 1, "defense": 1, "effectMagnitude": 0.10 },
+      "weightFactor": 1.1,
+      "valueFactor": 1.0,
+      "tags": ["conductive"]
+    },
+    {
+      "id": "bronze",
+      "name": "Bronze",
+      "description": "A workmanlike alloy of the early forges, holding an edge better than copper.",
+      "phase": "metal",
+      "tier": 1,
+      "appliesTo": ["weapon", "armor"],
+      "modifiers": { "attack": 2, "defense": 2 },
+      "weightFactor": 1.05,
+      "valueFactor": 0.8
+    },
+    {
+      "id": "iron",
+      "name": "Iron",
+      "description": "The reliable standard of arms and armor.",
+      "phase": "metal",
+      "tier": 2,
+      "appliesTo": ["weapon", "armor"],
+      "modifiers": { "attack": 3, "defense": 3 },
+      "weightFactor": 1.0,
+      "valueFactor": 1.0
+    },
+    {
+      "id": "steel",
+      "name": "Steel",
+      "description": "Refined iron — sharper, tougher, and the smith's preferred metal.",
+      "phase": "metal",
+      "tier": 3,
+      "appliesTo": ["weapon", "armor"],
+      "modifiers": { "attack": 5, "defense": 5 },
+      "weightFactor": 0.95,
+      "valueFactor": 2.0
+    },
+    {
+      "id": "silver",
+      "name": "Silver",
+      "description": "Conducts magic well and bites the undead and unholy.",
+      "phase": "metal",
+      "tier": 2,
+      "appliesTo": ["weapon", "accessory"],
+      "modifiers": { "attack": 2, "effectMagnitude": 0.15 },
+      "weightFactor": 1.1,
+      "valueFactor": 3.0,
+      "tags": ["anti_undead", "conductive"]
+    },
+    {
+      "id": "gold",
+      "name": "Gold",
+      "description": "Too soft for arms, but the finest conductor of magic — the enchanter's metal.",
+      "phase": "metal",
+      "tier": 2,
+      "appliesTo": ["accessory"],
+      "modifiers": { "effectMagnitude": 0.30 },
+      "weightFactor": 1.3,
+      "valueFactor": 8.0,
+      "tags": ["conductive"]
+    },
+    {
+      "id": "wood",
+      "name": "Wood",
+      "description": "Common timber for hafts, bows, and shields — light and cheap.",
+      "phase": "wood",
+      "tier": 1,
+      "appliesTo": ["weapon", "armor", "accessory"],
+      "modifiers": { "attack": 1, "defense": 1 },
+      "weightFactor": 0.5,
+      "valueFactor": 0.5
+    },
+    {
+      "id": "elven_wood",
+      "name": "Elven Wood",
+      "description": "Living wood coaxed into shape by elven craft — light, resilient, and magically attuned.",
+      "phase": "wood",
+      "tier": 3,
+      "appliesTo": ["weapon", "armor", "accessory"],
+      "modifiers": { "attack": 3, "defense": 3, "effectMagnitude": 0.20 },
+      "weightFactor": 0.4,
+      "valueFactor": 4.0,
+      "tags": ["conductive"]
+    },
+    {
+      "id": "obsidian",
+      "name": "Obsidian",
+      "description": "Volcanic glass — wickedly sharp, but brittle and unfit for armor.",
+      "phase": "fire",
+      "tier": 2,
+      "appliesTo": ["weapon"],
+      "modifiers": { "attack": 6 },
+      "weightFactor": 0.8,
+      "valueFactor": 2.5,
+      "tags": ["brittle"]
+    }
+  ]
+}

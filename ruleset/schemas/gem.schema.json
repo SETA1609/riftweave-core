@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Gem",
+  "description": "A gemstone used for ENGRAVING items — distinct from enchanting. Engraving adds NO effects of its own. Instead the dominant gem (by quality, or by quantity) OVERWRITES the engraved item's element (phase): e.g. a ruby makes a wooden sword Fire, which then interacts through the five-phase cycles in data/wuxing. An engraved item also gains a bonus to the magnitude of effects later enchanted onto it — that bonus comes from the gem's `tier` (see data/tiers). A gem TYPE is defined by its `phase` (element) and `tier` (Common→Legendary rarity, the source of truth for numbers). Quality (the qualityGrade ladder petty→grand) is NOT part of the definition: it varies between individual stones and is assigned per instance. NOT defined here: socket count (an item-side concern), and exactly how the tier bonus and per-instance quality are consumed by recipes (specified by the crafting / magic-crafting modules).",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "gems": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/gem" }
+    }
+  },
+  "required": ["gems"],
+  "additionalProperties": false,
+  "definitions": {
+    "gem": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "source": { "$ref": "schema.json#/definitions/sourceRef" },
+        "phase": {
+          "$ref": "schema.json#/definitions/phase",
+          "description": "The element this gem imparts. Required — engraving overwrites the item's element with the dominant gem's phase, which then resolves through the cycles in data/wuxing."
+        },
+        "tier": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Rarity tier — references an id in data/tiers (the source of truth). The tier supplies the gem's engraving bonus (effectMagnitude) and relative value; do not restate those numbers here."
+        },
+        "tags": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["id", "name", "description", "phase", "tier"],
+      "additionalProperties": false
+    }
+  }
+}

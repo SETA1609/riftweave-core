@@ -1,0 +1,73 @@
+{
+  "$schema": "../../schemas/wuxing.schema.json",
+  "phases": [
+    { "id": "wood", "name": "Wood", "description": "Growth and life. Healing, nature, poison/blight, and lightning. Fed by Water, feeds Fire; parts Earth, is cut by Metal." },
+    { "id": "fire", "name": "Fire", "description": "Heat and combustion. Fed by Wood, feeds Earth (ash); melts Metal, is quenched by Water." },
+    { "id": "earth", "name": "Earth", "description": "Stone and stability. Rooting, paralysis, grounded vigor. Fed by Fire, feeds Metal; dams Water, is parted by Wood." },
+    { "id": "metal", "name": "Metal", "description": "Edge and force. Blades, blunt force, conduction, hardened armor. Fed by Earth, feeds Water; cuts Wood, is melted by Fire." },
+    { "id": "water", "name": "Water", "description": "Cold and flow. Frost, fluids, flowing energy. Fed by Metal, feeds Wood; quenches Fire, is dammed by Earth." }
+  ],
+  "cycles": [
+    {
+      "id": "generating",
+      "name": "Generating",
+      "interaction": "amplify",
+      "affects": "recipient",
+      "magnitudeMultiplier": 1.5,
+      "description": "The productive cycle: each phase nourishes the next. When an effect meets its child phase, the child is amplified (lay down Wood, then Fire burns hotter). 'from' is the mother (actor), 'to' is the strengthened child (recipient).",
+      "edges": [
+        { "from": "wood", "to": "fire" },
+        { "from": "fire", "to": "earth" },
+        { "from": "earth", "to": "metal" },
+        { "from": "metal", "to": "water" },
+        { "from": "water", "to": "wood" }
+      ]
+    },
+    {
+      "id": "overcoming",
+      "name": "Overcoming",
+      "interaction": "suppress",
+      "affects": "recipient",
+      "magnitudeMultiplier": 0.5,
+      "description": "The controlling cycle: each phase restrains another. The controlling effect suppresses (and at sufficient strength dispels) the controlled one — Water quenches Fire, Fire melts Metal. 'from' is the controller (actor), 'to' is the suppressed phase (recipient).",
+      "edges": [
+        { "from": "wood", "to": "earth" },
+        { "from": "earth", "to": "water" },
+        { "from": "water", "to": "fire" },
+        { "from": "fire", "to": "metal" },
+        { "from": "metal", "to": "wood" }
+      ]
+    },
+    {
+      "id": "weakening",
+      "name": "Weakening",
+      "interaction": "drain",
+      "affects": "recipient",
+      "magnitudeMultiplier": 0.75,
+      "description": "The exhaustion cycle (reverse of generating): a child drawn upon saps its mother. The child effect drains the mother it meets, reducing it. 'from' is the draining child (actor), 'to' is the depleted mother (recipient).",
+      "edges": [
+        { "from": "fire", "to": "wood" },
+        { "from": "earth", "to": "fire" },
+        { "from": "metal", "to": "earth" },
+        { "from": "water", "to": "metal" },
+        { "from": "wood", "to": "water" }
+      ]
+    },
+    {
+      "id": "insulting",
+      "name": "Insulting",
+      "interaction": "backlash",
+      "affects": "recipient",
+      "magnitudeMultiplier": 1.25,
+      "condition": "Fires only when the actor's magnitude exceeds the recipient's; otherwise the overcoming cycle applies normally.",
+      "description": "The rebellion cycle (reverse of overcoming): when the normally-controlled phase is overwhelming, it turns on its controller. An over-strong Fire insults the Water that should quench it, backlashing onto the controller. 'from' is the rebelling phase (actor), 'to' is the would-be controller taking backlash (recipient).",
+      "edges": [
+        { "from": "earth", "to": "wood" },
+        { "from": "water", "to": "earth" },
+        { "from": "fire", "to": "water" },
+        { "from": "metal", "to": "fire" },
+        { "from": "wood", "to": "metal" }
+      ]
+    }
+  ]
+}

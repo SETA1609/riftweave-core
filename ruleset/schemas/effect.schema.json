@@ -34,6 +34,10 @@
           "$ref": "schema.json#/definitions/color",
           "description": "Default color magic school when this effect is delivered as a spell; omit for purely mundane effects"
         },
+        "phase": {
+          "$ref": "schema.json#/definitions/phase",
+          "description": "Optional Wuxing five-phase tag. Drives elemental interaction (amplify/suppress/drain/backlash) with other phased effects per data/wuxing; orthogonal to color. Omit for non-elemental effects."
+        },
         "magnitudeUnit": {
           "type": "string",
           "enum": ["points", "percent", "dice", "count", "seconds", "level"],
