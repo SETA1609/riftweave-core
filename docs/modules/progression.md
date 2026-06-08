@@ -68,15 +68,21 @@ Luck is deliberately diffuse so it always helps but never dominates:
 ## Perks (and traits)
 
 Perks are the **character-defining** progression in this classless system, defined
-as `features` in `ruleset/data/features/core.json` (`type: "perk"`). They are gated
-by `prerequisite` — any of `level`, `abilities` (min attribute values), `skills`
-(min skill values), and `perks` (prerequisite perk ids) — and may have multiple
-`ranks`. Their `effects` compose into the character's active modifier set.
+in a single `features` table (`ruleset/data/features/core.json`). They are gated by
+`prerequisite` — any of `level`, `abilities` (min attribute values), `skills` (min
+skill values), and `perks` (prerequisite perk ids) — and may have multiple `ranks`.
+Their `effects` compose into the character's active modifier set. The `type` field
+says how each is acquired:
 
-- **Perks** are chosen on level-up (suggested cadence: one every 3 levels).
-- **Traits** (`type: "trait"`) are chosen at creation and usually carry a tradeoff
-  (e.g. *Gifted*: +1 to all attributes but −10% skill points).
-- **Racial features** come from `races/core.json`.
+- **`perk`** — chosen on level-up (suggested cadence: one every 3 levels).
+- **`creation`** — chosen at character creation (the former "traits"), usually with a
+  tradeoff (e.g. *Gifted*: +1 to all attributes but −10% skill points; *Genius*: +1
+  tag skill but −15 starting skill points). Not offered on level-up.
+- **`racial_trait`** — granted automatically by ancestry (pinned to a race).
+- **`universal`** — always available.
+
+All four live in the same perk table; "trait" is no longer a separate concept.
+Racial features may also be authored inline on a race in `races/core.json`.
 
 ## Magic — 9 color schools
 
@@ -186,10 +192,13 @@ blow). A full defense model (dodge vs. block vs. armor) is a follow-up.
 - **Combat mode** — turn-based vs. action-combat is undecided; it selects the third
   resource (Action Points from AGI vs. a Stamina pool from END) and the initiative
   detail. The formulas above are the reference for each.
-- **Weapons & armor** — `equipment/weapons.json` and `armor.json` are still on the
-  original D&D shape (`acBase`, `acDexBonus`, weapon categories). Aligning them to
-  the d100 model (armor as a defense/DR %, weapons declaring their governing skill)
-  is pending. (Consumables already use the effect pool.)
+- **Weapons** — Use two classification axes in `equipment/weapons.json` (full details and material variation rules in `docs/modules/weapons.md`):
+  - Damage type (`damage.type`: slashing / bludgeoning / piercing) → maps to the split combat skills (`blades` / `blunt` / `piercing`).
+  - Length category (`length`: short / normal / reach) + explicit `attackReach` (1 or 2 units of length). short and normal weapons are typically one-handed; reach weapons are two-handed.
+  Base damage uses classic 3.5-style dice. Material-based variations (how each material turns the same base weapon into a meaningfully different version, with attack bonuses in the 0 to +10 range — none of the current materials reach the full +10) are explained in `docs/modules/weapons.md`.
+  `category` (simple/martial) and free-form `properties` (finesse, versatile, heavy, two_handed, light, thrown, ...) are retained.
+  Armor is still closer to legacy shape.
+  (Consumables already use the shared effect pool.)
 - **Effect magnitudes for brewing** — the Alchemy quality formula
   (`f(skill, ingredient_qualities, station_tier)`) that turns ingredient effect ids
   into concrete potion/poison magnitudes is not yet specified.

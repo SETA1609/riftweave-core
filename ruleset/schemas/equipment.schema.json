@@ -36,9 +36,24 @@
         "weight": { "type": "number", "minimum": 0, "description": "Weight in pounds" },
         "weapon": {
           "type": "object",
+          "description": "Melee and ranged weapons. Weapons have two primary classification axes: (1) damage.type (slashing/bludgeoning/piercing maps to the blades/blunt/piercing combat skills), and (2) length (short/normal/reach) which also controls attackReach in 'units of length' (reach = 2 units). short + normal are typically one-handed; reach weapons are two-handed. Each weapon declares its governing 'skill' and 'attackReach'. Base damage uses classic D&D 3.5-style dice. Material-based variations and crafting restrictions are documented in docs/modules/weapons.md rather than enforced in the base schema.",
           "properties": {
             "category": { "type": "string", "enum": ["simple", "martial"] },
             "range": { "type": "string", "enum": ["melee", "ranged"] },
+            "length": {
+              "type": "string",
+              "enum": ["short", "normal", "reach"],
+              "description": "Physical length / engagement category of the weapon. Determines both handedness and attack reach in discrete 'units of length'. short and normal weapons are typically one-handed and attack 1 unit. Reach weapons are two-handed and can attack 2 units of length. One of the two primary weapon classification axes (the other being damage.type, which maps to blades/blunt/piercing skills)."
+            },
+            "skill": {
+              "type": "string",
+              "description": "The skill used to make attack rolls with this weapon. For melee this is normally derived from damage.type (slashing → blades, bludgeoning → blunt, piercing → piercing). Ranged weapons use marksmanship."
+            },
+            "attackReach": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "How many units of length this weapon can attack in melee. Most weapons (short/normal) have 1; reach weapons have 2. This is determined by the length category but stored explicitly for clarity."
+            },
             "damage": {
               "type": "object",
               "properties": {

@@ -48,11 +48,12 @@ changing these matchups.
 | Steel | metal | +5 | +5 | — | weapon, armor | 3 |
 | Silver | metal | +2 | — | +15% | weapon, accessory | 2 |
 | Gold | metal | — | — | +30% | accessory | 2 |
-| Wood | wood | +1 | +1 | — | weapon, armor, accessory | 1 |
+| Wood | wood | 0 | 0 | — | weapon, armor, accessory | 1 |
 | Elven Wood | wood | +3 | +3 | +20% | weapon, armor, accessory | 3 |
 | Obsidian | fire | +6 | — | — | weapon | 2 |
 
 Reading the table: workhorse metals (bronze→iron→steel) climb in attack/defense;
+wood provides 0 combat bonuses (it's for hafts, bows, and shields — light and cheap);
 **conductive** materials (copper, silver, gold, elven wood) trade combat stats for
 `effectMagnitude` — gold is useless as a blade but the best enchanting metal; obsidian
 is wickedly sharp but brittle (weapon only, no defense).

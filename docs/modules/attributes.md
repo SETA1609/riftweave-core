@@ -37,7 +37,7 @@ which fuels resource regeneration and resistance to hostile magic:
 Attributes run **1–10**: **1** is debilitating, **4** is the unmodified human
 baseline, **5–6** is trained/above-average, **8** is exceptional, **10** is the mortal
 peak. At creation you start every attribute at **4**, distribute **10** points
-(cap 10 each), then apply racial `abilityModifiers` and any trait bonuses — those
+(cap 10 each), then apply racial `abilityModifiers` and any creation-perk bonuses — those
 layers may push a stat above 10 or below 4 (see
 [`character-creation.md`](./character-creation.md) §2).
 
@@ -78,7 +78,7 @@ rating is `5 + associatedAbility × 2`), and the **resources/derived stats** it 
 
 ### Strength (STR)
 - **Governs:** melee damage, carrying capacity, Strength-gated equipment.
-- **Seeds skills:** `melee_weapons`, `athletics`.
+- **Seeds skills:** `blades`, `blunt`, `piercing`, `athletics`.
 - **Feeds:** Carry weight `25 + STR × 10`.
 
 ### Perception (PER)
@@ -194,5 +194,5 @@ to sustain longer fights and weather enemy spells. See [`magic.md`](./magic.md).
   knowledge skills riding on INT, it is by far the strongest attribute for a caster.
   A game wanting flatter builds may redistribute some knowledge skills or cap INT's
   reach; the ruleset leaves it concentrated by design.
-- **Above-10 attributes.** Racial/trait stacking can exceed 10; whether a game caps
+- **Above-10 attributes.** Racial and creation-perk stacking can exceed 10; whether a game caps
   the effective value is left to the game.

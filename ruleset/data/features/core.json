@@ -32,7 +32,7 @@
       "description": "You put your whole body behind each swing, dealing extra melee damage.",
       "type": "perk",
       "category": "combat",
-      "prerequisite": { "abilities": { "str": 6 }, "skills": { "melee_weapons": 40 } },
+      "prerequisite": { "abilities": { "str": 6 }, "skills": { "blades": 40 } },
       "ranks": 1,
       "effects": [
         { "type": "bonus", "description": "+25% melee weapon damage", "target": "melee_damage", "value": 0.25 }
@@ -115,7 +115,7 @@
       "id": "gifted",
       "name": "Gifted",
       "description": "You are exceptionally talented, but lean on raw aptitude over study. Chosen at character creation.",
-      "type": "trait",
+      "type": "creation",
       "category": "general",
       "effects": [
         { "type": "bonus", "description": "+1 to every attribute", "target": "all_attributes", "value": 1 },
@@ -126,7 +126,7 @@
       "id": "fast_shot",
       "name": "Fast Shot",
       "description": "You attack quickly but recklessly. Chosen at character creation.",
-      "type": "trait",
+      "type": "creation",
       "category": "combat",
       "effects": [
         { "type": "bonus", "description": "Ranged attacks are 20% faster", "target": "ranged_attack_speed", "value": 0.2 },
@@ -137,11 +137,22 @@
       "id": "small_frame",
       "name": "Small Frame",
       "description": "You are slight of build: nimble, but you cannot carry as much. Chosen at character creation.",
-      "type": "trait",
+      "type": "creation",
       "category": "general",
       "effects": [
         { "type": "bonus", "description": "+1 Agility", "target": "agi", "value": 1 },
         { "type": "penalty", "description": "-25% carrying capacity", "target": "carry_weight", "value": -0.25 }
+      ]
+    },
+    {
+      "id": "genius",
+      "name": "Genius",
+      "description": "A quick study with room for one more focus, at the cost of breadth. Chosen at character creation.",
+      "type": "creation",
+      "category": "knowledge",
+      "effects": [
+        { "type": "bonus", "description": "+1 tag skill", "target": "tag_skills", "value": 1 },
+        { "type": "penalty", "description": "-15 starting skill points", "target": "starting_skill_points", "value": -15 }
       ]
     }
   ]
