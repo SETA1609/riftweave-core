@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Monster",
+  "description": "A creature/enemy. Each monster has exactly one element (Wuxing five-phase) that governs how phased effects interact with it via data/wuxing. Its attacks and innate abilities are drawn from the shared effect registry through schema.json#/definitions/appliedEffect, exactly like spells and consumables.",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "monsters": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/monster" }
+    }
+  },
+  "required": ["monsters"],
+  "additionalProperties": false,
+  "definitions": {
+    "monster": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "source": { "$ref": "schema.json#/definitions/sourceRef" },
+        "phase": {
+          "$ref": "schema.json#/definitions/phase",
+          "description": "The monster's element. Required — every monster has exactly one. Determines elemental affinity: incoming phased effects resolve against it through the generating/overcoming/weakening/insulting cycles in data/wuxing."
+        },
+        "size": {
+          "type": "string",
+          "enum": ["tiny", "small", "medium", "large", "huge"]
+        },
+        "level": { "type": "integer", "minimum": 1, "description": "Encounter/threat level." },
+        "attributes": {
+          "type": "object",
+          "description": "The eight attributes (1-10), keyed by ability id. Optional; engines derive missing values from level.",
+          "propertyNames": { "$ref": "schema.json#/definitions/ability" },
+          "additionalProperties": { "type": "integer", "minimum": 1, "maximum": 10 }
+        },
+        "hitPoints": { "type": "integer", "minimum": 1, "description": "Authored baseline HP; engines may derive from END + level." },
+        "abilities": {
+          "type": "array",
+          "description": "The monster's attacks and innate powers, drawn from the shared effect registry (data/effects). A monster typically wields effects of its own phase, but need not.",
+          "items": { "$ref": "schema.json#/definitions/appliedEffect" }
+        },
+        "tags": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["id", "name", "description", "phase", "size"],
+      "additionalProperties": false
+    }
+  }
+}
