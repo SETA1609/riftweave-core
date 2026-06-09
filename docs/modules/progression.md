@@ -192,6 +192,12 @@ blow). A full defense model (dodge vs. block vs. armor) is a follow-up.
 - **Combat mode** — turn-based vs. action-combat is undecided; it selects the third
   resource (Action Points from AGI vs. a Stamina pool from END) and the initiative
   detail. The formulas above are the reference for each.
+- **Cultivation-style breakthroughs** — see the new `docs/modules/advancement.md`.
+  Base level-up (skill points, resource scaling, perks) is described here. The
+  optional item-boosted "breakthrough" system (monster cores + refined elixirs,
+  driven by `phase` + `qualityGrade` and Wuxing cycles) lives in the dedicated
+  advancement document. It lets players deliberately delay levels for stronger
+  permanent gains.
 - **Weapons** — Use two classification axes in `equipment/weapons.json` (full details and material variation rules in `docs/modules/weapons.md`):
   - Damage type (`damage.type`: slashing / bludgeoning / piercing) → maps to the split combat skills (`blades` / `blunt` / `piercing`).
   - Length category (`length`: short / normal / reach) + explicit `attackReach` (1 or 2 units of length). short and normal weapons are typically one-handed; reach weapons are two-handed.

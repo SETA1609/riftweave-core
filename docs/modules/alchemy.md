@@ -57,3 +57,7 @@ for the pool itself.
 - **Crafting** — general synthesis; alchemy is the consumables-focused sibling.
 - **Magic Crafting** — permanent enchantments (also draws from the effect pool via
   the `enchantment` channel).
+- **Advancement / Breakthroughs** (`docs/modules/advancement.md`) — Alchemy will
+  gain a "refining" or "pill crafting" path that turns raw monster cores into
+  higher-grade or harmonized essence elixirs for use in Wuxia-style level-up
+  breakthroughs (in addition to normal potion/poison brewing).

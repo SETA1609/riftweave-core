@@ -72,6 +72,7 @@ Create one document per module (or per major subsystem). Use it to:
 | Crafting          | General item creation, recipes     | New equipment types, recipes, features  | Planned  |
 | Alchemy           | Potion brewing, extracts, reagents | Equipment (potions), features, skills   | Planned  |
 | Magic Crafting    | Enchanting, wondrous items, runes  | Equipment, spells, features, effects    | Planned  |
+| Advancement       | XP level-up + item-boosted breakthroughs (cores, elixirs, Wuxing) | progression, alchemy, ingredients, effects, features | In design |
 | Psionics          | Psychic powers                     | New "power" collection or spell school  | Future   |
 | Vehicles / Mounts | Mounts, vehicles, ship combat      | New entities + rules                    | Future   |
 
