@@ -91,9 +91,10 @@ Choose **3 tag skills** from [`skills/core.json`](../../ruleset/data/skills/core
 (any skill with `"taggable": true` — currently all of them). Humans pick a **4th**
 (Versatility).
 
-A tag skill costs the **same** skill point but yields **+2 per point** instead of
-**+1** — an ongoing discount, *not* a flat starting bonus. Tagging is therefore about
-long-term efficiency in your focus skills.
+A tag skill costs **half as many** skill points for the same gain — normal skills
+are bought at a 2:1 ratio (2 points for +1 rating), while tagged skills are bought at
+a 1:1 ratio (1 point for +1 rating). Tagging is therefore about long-term efficiency
+in your focus skills (an ongoing discount, *not* a flat starting bonus).
 
 The skills span seven categories — combat (`blades`, `blunt`, `piercing`, `marksmanship`,
 `block`, `unarmed`), the nine `<color>_magic` schools, stealth, social, knowledge,
@@ -115,7 +116,7 @@ Then spend your **1st-level skill-point pool**:
 
 ```
 points = 5 + INT × 2 + random(0 … LCK)         // Gifted: ×0.9
-spend:  tagged skill +2 per point · untagged +1 per point
+spend:  normal skill 2:1 (2 points per +1) · tagged skill 1:1 (1 point per +1)
 ```
 
 Skills cap at **100**. (Whether a fresh character receives the level-1 pool or starts
@@ -199,7 +200,7 @@ flat resistance — the cycles compute each matchup.
 4. **Tag skills** — `blunt`, `block`, `athletics`.
 5. **Skills** — bases `5 + abil×2`: blunt 19, block 21, athletics 19. Level-1 pool
    `5 + 5×2 + random(0…7)` → say a roll of 4 = **19 points**, all on tagged skills
-   (+2/pt): blunt +16 → **35**, block +12 → **33**, athletics +10 → **29**.
+   (1:1): blunt +8 → **27**, block +6 → **27**, athletics +5 → **24**.
 6. **Perks** — none (not human).
 7. **Derived** — HP `15 + 8×8 + 4` = **83**; Mana `5×8 + 2` = **42**; third resource:
    Stamina `15 + 8×5 + 2` = **57** (action combat) *or* Action Points `2 + floor(4/3)`

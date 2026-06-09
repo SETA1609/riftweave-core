@@ -7,6 +7,12 @@
     { "id": "glowcap", "name": "Glowcap", "description": "A luminescent cave fungus.", "effects": ["restore_mana", "cure_poison"], "rarity": "uncommon", "tags": ["fungus"] },
     { "id": "ironvine", "name": "Ironvine", "description": "A tough creeper that clings to stone.", "effects": ["feather", "fortify_agility"], "rarity": "common", "tags": ["plant"] },
     { "id": "emberbloom", "name": "Emberbloom", "description": "A flower warm to the touch.", "effects": ["damage_fire", "fortify_attack"], "rarity": "rare", "tags": ["flower"] },
-    { "id": "sweetgrass", "name": "Sweetgrass", "description": "A fragrant grass with restorative properties.", "effects": ["restore_stamina", "resist_poison"], "rarity": "common", "tags": ["plant"] }
+    { "id": "sweetgrass", "name": "Sweetgrass", "description": "A fragrant grass with restorative properties.", "effects": ["restore_stamina", "resist_poison"], "rarity": "common", "tags": ["plant"] },
+
+    { "id": "greater_blazing_spirit_core", "name": "Blazing Spirit Core", "description": "A fist-sized crystal burning with inner flame. Holds concentrated fire-aspected essence, ideal for breakthroughs seeking power and transformation.", "effects": ["essence_fire"], "phase": "fire", "qualityGrade": "greater", "tags": ["essence", "core", "spirit"] },
+    { "id": "major_verdant_spirit_core", "name": "Verdant Spirit Core", "description": "A living green crystal thrumming with growth energy. Carries wood-aspected essence suited to vital and regenerative advancements.", "effects": ["essence_wood"], "phase": "wood", "qualityGrade": "major", "tags": ["essence", "core", "spirit"] },
+    { "id": "common_earthen_spirit_core", "name": "Earthen Spirit Core", "description": "A dense, heavy stone-like crystal embodying stability. Provides earth-aspected essence for breakthroughs emphasizing endurance and foundation.", "effects": ["essence_earth"], "phase": "earth", "qualityGrade": "common", "tags": ["essence", "core", "spirit"] },
+    { "id": "lesser_tempered_spirit_core", "name": "Tempered Spirit Core", "description": "A sharp, metallic crystal that rings when struck. Embodies metal-aspected essence for precise, conductive, or cutting advancements.", "effects": ["essence_metal"], "phase": "metal", "qualityGrade": "lesser", "tags": ["essence", "core", "spirit"] },
+    { "id": "grand_flowing_spirit_core", "name": "Flowing Spirit Core", "description": "A cool, translucent crystal that seems to shift like liquid. Holds water-aspected essence excellent for adaptive, perceptive, or restorative breakthroughs.", "effects": ["essence_water"], "phase": "water", "qualityGrade": "grand", "tags": ["essence", "core", "spirit"] }
   ]
 }

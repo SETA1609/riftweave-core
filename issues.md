@@ -44,10 +44,16 @@ This document is a living backlog. Items are grouped by category with current st
 See `docs/modules/advancement.md` for the cultivation-style item-boosted advancement design (players can delay level-ups to farm and refine better essence for stronger permanent gains to attributes, resources, or skill points).
 
 **Still missing / thin:**
-- Explicit XP thresholds or milestone system
-- Concrete "what you get at each level" full procedure + checklist
-- Detailed XP awarding guidance (quests, kills, exploration)
-- Full numeric tables for grade/phase breakthrough bonuses (reference values to be added)
+- Full numeric tables or resolution formulas for grade/phase breakthrough bonuses (exact gains from offered cores/elixirs — affinity table, drop rules, and grade bias exist, but concrete bonus application is still high-level).
+- Refining path details in alchemy (how cores become higher-grade or multi-phase elixirs).
+
+**Drafted (needs review/expansion):**
+- Concrete "what you get at each level" full procedure + checklist — A complete step-by-step level-up procedure (base package + optional breakthrough) with player checklist and GM notes has been drafted in `docs/modules/progression.md` § Full Level-Up Procedure. It integrates the new XP table, per-level gains (1 perk, skill points at 2:1/1:1, resource growth, TTRPG AP carry-over rules), breakthrough option (max 3 items; player selects one governed target per item from its phase — attributes only if grade > common and +1 max total this level; resources or skills otherwise), luck-based success per item using the proposed formula (base from grade + phase synergy + LCK × 2.5, with target-type weighting: skills easiest → resources → attributes hardest; even legendary items can fail), and the two-roll core drop system. On success: attributes +1 (high-grade only), skills 0–5 range (grade sets floor/ceiling), resources = higher of two level-growth rolls. Still needs concrete numeric success % tables and bonus ranges per grade/target, plus any additional breakthrough requirements (time, safety, etc.).
+
+**Recently addressed:**
+- XP thresholds: Formula **Total XP to reach level N = 450 × N × (N − 1)** (with difficulty tuning constants) + full sample table and event award guidance in `docs/modules/progression.md` § Experience Progression and Thresholds.
+- XP awarding rules: Strictly event/quest/radiant driven after the very first monster kill. Meaningful skill challenges (non-crafting) award XP. Crafting does not grant XP via skill rolls (uses separate quality/material/station mechanics). See `docs/modules/progression.md` § Experience.
+- Core acquisition: Only certain monsters can drop cores (no bandits/zombies). % drop chance based on monster level + killer’s Luck, using a two-roll process (drop roll → biased grade roll favoring lower tiers). See `docs/modules/advancement.md`.
 
 **Why it matters:** Players need to know how characters grow beyond "spend skill points." The breakthrough system makes Wuxing, Alchemy, and monster hunting matter for long-term power.
 

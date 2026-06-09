@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Monster",
-  "description": "A creature/enemy. Each monster has exactly one element (Wuxing five-phase) that governs how phased effects interact with it via data/wuxing. Its attacks and innate abilities are drawn from the shared effect registry through schema.json#/definitions/appliedEffect, exactly like spells and consumables.",
+  "description": "A creature/enemy. Each monster has exactly one element (Wuxing five-phase) that governs how phased effects interact with it via data/wuxing. Its attacks and innate abilities are drawn from the shared effect registry through schema.json#/definitions/appliedEffect, exactly like spells and consumables. Certain monsters can also drop spirit cores (see coreDrop).",
   "type": "object",
   "properties": {
     "$schema": { "type": "string" },
@@ -41,7 +41,28 @@
           "description": "The monster's attacks and innate powers, drawn from the shared effect registry (data/effects). A monster typically wields effects of its own phase, but need not.",
           "items": { "$ref": "schema.json#/definitions/appliedEffect" }
         },
-        "tags": { "type": "array", "items": { "type": "string" } }
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "coreDrop": {
+          "type": "object",
+          "description": "If present, this monster can drop a spirit core on death. Mundane creatures (bandits, zombies, etc.) must not have this field.",
+          "properties": {
+            "baseChance": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "Base drop chance (0.0–1.0). Final chance is increased by the killer’s Luck and the monster’s level."
+            },
+            "minGrade": {
+              "$ref": "schema.json#/definitions/qualityGrade",
+              "description": "Lowest possible qualityGrade of a dropped core from this monster."
+            },
+            "maxGrade": {
+              "$ref": "schema.json#/definitions/qualityGrade",
+              "description": "Highest possible qualityGrade of a dropped core from this monster."
+            }
+          },
+          "required": ["baseChance"]
+        }
       },
       "required": ["id", "name", "description", "phase", "size"],
       "additionalProperties": false

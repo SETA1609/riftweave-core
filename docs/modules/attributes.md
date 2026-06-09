@@ -55,14 +55,15 @@ changes shape with the combat mode**:
 | --- | --- | --- | --- |
 | **Health Points (HP)** | `15 + END × 8 + level × 4` | rest / healing | **END** |
 | **Mana Points (MP)** | `INT × 8 + level × 2` | **WIL** | **INT** (pool) |
-| **Action Points (AP)** — *turn-based / TTRPG* | `2 + floor(AGI / 3)` per turn | refreshes each turn | **AGI** |
+| **Action Points (AP)** — *turn-based / TTRPG* | Max 10. Pool carries from turn to turn but cannot exceed 10. (Typical starting value 2 + floor(AGI / 3) or as determined at the start of an encounter.) | carries over (capped at 10) | **AGI** |
 | **Stamina (SP)** — *action combat* | `15 + END × 5 + level × 2` | **WIL** | **END** |
 
-The third row is one resource with two faces: a **turn-based (TTRPG)** game spends
-**Action Points** each turn (how *many* things you can do — an AGI/action-economy
-quantity), while an **action-combat** game drains a **Stamina** pool for sprinting,
-blocking, and power moves (an END/fatigue quantity). **Willpower regenerates both Mana
-and Stamina.** A game picks one mode; the rest of the system is identical.
+The third row is one resource with two faces. In **turn-based (TTRPG)** mode the
+character has an **Action Point** pool (max 10) that carries over from turn to turn
+but cannot exceed 10; this governs how many discrete actions can be taken. In
+**action-combat** mode a **Stamina** pool is used for movement, blocking, and power
+moves (an END/fatigue quantity). **Willpower regenerates both Mana and Stamina.** A
+game picks one mode; the rest of the system is identical.
 
 > **Magic strength is INT, not WIL.** INT sets the size of the mana pool *and* the
 > power of every spell. Willpower's job in magic is purely to **regenerate** mana (and

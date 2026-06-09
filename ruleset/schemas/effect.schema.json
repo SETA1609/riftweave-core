@@ -48,7 +48,7 @@
         "channels": {
           "type": "array",
           "description": "Delivery vectors permitted to draw this effect from the pool",
-          "items": { "type": "string", "enum": ["spell", "potion", "poison", "coating", "ingredient", "enchantment", "food"] },
+          "items": { "type": "string", "enum": ["spell", "potion", "poison", "coating", "ingredient", "enchantment", "food", "essence"] },
           "minItems": 1,
           "uniqueItems": true
         },
