@@ -2,8 +2,9 @@
   "$schema": "../../schemas/monster.schema.json",
   "monsters": [
     {
-      "id": "ember_drake",
-      "name": "Ember Drake",
+      "id": 1,
+      "key": "ember_drake",
+      "label": "Ember Drake",
       "description": "A lesser dragon wreathed in living flame. Its breath sets the air alight.",
       "phase": "fire",
       "size": "large",
@@ -11,13 +12,14 @@
       "attributes": { "str": 7, "end": 6, "agi": 6, "per": 5, "wil": 4 },
       "hitPoints": 78,
       "abilities": [
-        { "effect": "damage_fire", "magnitude": 18, "target": "area", "radius": 5 }
+        { "effect": 1, "magnitude": 18, "target": "area", "radius": 5 }
       ],
       "tags": ["dragon", "elemental"]
     },
     {
-      "id": "stone_golem",
-      "name": "Stone Golem",
+      "id": 2,
+      "key": "stone_golem",
+      "label": "Stone Golem",
       "description": "A lumbering construct hewn from bedrock, slow but nearly unstoppable.",
       "phase": "earth",
       "size": "large",
@@ -25,14 +27,15 @@
       "attributes": { "str": 8, "end": 9, "agi": 2, "wil": 3 },
       "hitPoints": 110,
       "abilities": [
-        { "effect": "paralyze", "magnitude": 3, "target": "touch" },
-        { "effect": "damage_stamina", "magnitude": 12, "target": "touch" }
+        { "effect": 11, "magnitude": 3, "target": "touch" },
+        { "effect": 6, "magnitude": 12, "target": "touch" }
       ],
       "tags": ["construct", "elemental"]
     },
     {
-      "id": "grove_stalker",
-      "name": "Grove Stalker",
+      "id": 3,
+      "key": "grove_stalker",
+      "label": "Grove Stalker",
       "description": "A thorn-skinned predator of the deep wood, its claws weep venomous sap.",
       "phase": "wood",
       "size": "medium",
@@ -40,13 +43,14 @@
       "attributes": { "str": 5, "end": 4, "agi": 7, "per": 6 },
       "hitPoints": 38,
       "abilities": [
-        { "effect": "damage_health", "magnitude": 9, "target": "touch" }
+        { "effect": 5, "magnitude": 9, "target": "touch" }
       ],
       "tags": ["beast", "fey"]
     },
     {
-      "id": "frost_revenant",
-      "name": "Frost Revenant",
+      "id": 4,
+      "key": "frost_revenant",
+      "label": "Frost Revenant",
       "description": "The risen dead of those who froze in the high passes, exhaling killing cold.",
       "phase": "water",
       "size": "medium",
@@ -54,13 +58,14 @@
       "attributes": { "str": 5, "end": 6, "agi": 4, "wil": 6 },
       "hitPoints": 52,
       "abilities": [
-        { "effect": "damage_frost", "magnitude": 14, "target": "ranged" }
+        { "effect": 2, "magnitude": 14, "target": "ranged" }
       ],
       "tags": ["undead"]
     },
     {
-      "id": "iron_sentinel",
-      "name": "Iron Sentinel",
+      "id": 5,
+      "key": "iron_sentinel",
+      "label": "Iron Sentinel",
       "description": "An animated suit of war-plate that guards forgotten vaults, striking with crushing force.",
       "phase": "metal",
       "size": "large",
@@ -68,8 +73,8 @@
       "attributes": { "str": 9, "end": 8, "agi": 4, "wil": 4 },
       "hitPoints": 95,
       "abilities": [
-        { "effect": "damage_force", "magnitude": 16, "target": "touch" },
-        { "effect": "ward_physical", "magnitude": 30, "duration": 20, "target": "self" }
+        { "effect": 4, "magnitude": 16, "target": "touch" },
+        { "effect": 32, "parameter": "end", "magnitude": 2, "duration": 20, "target": "self", "durationType": "temporal" }
       ],
       "tags": ["construct"]
     }

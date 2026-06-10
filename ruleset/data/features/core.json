@@ -2,8 +2,9 @@
   "$schema": "../../schemas/feature.schema.json",
   "features": [
     {
-      "id": "toughness",
-      "name": "Toughness",
+      "id": 1,
+      "key": "toughness",
+      "label": "Toughness",
       "description": "Hard living has thickened your hide. Your maximum hit points increase each time you take this perk.",
       "type": "perk",
       "category": "general",
@@ -14,8 +15,9 @@
       ]
     },
     {
-      "id": "alert",
-      "name": "Alert",
+      "id": 2,
+      "key": "alert",
+      "label": "Alert",
       "description": "You are hard to catch off guard, gaining a sizeable edge on initiative and immunity to being surprised.",
       "type": "perk",
       "category": "general",
@@ -27,72 +29,78 @@
       ]
     },
     {
-      "id": "power_attack",
-      "name": "Power Attack",
+      "id": 3,
+      "key": "power_attack",
+      "label": "Power Attack",
       "description": "You put your whole body behind each swing, dealing extra melee damage.",
       "type": "perk",
       "category": "combat",
-      "prerequisite": { "abilities": { "str": 6 }, "skills": { "blades": 40 } },
+      "prerequisite": { "abilities": { "str": 6 }, "skills": { "1": 40 } },
       "ranks": 1,
       "effects": [
         { "type": "bonus", "description": "+25% melee weapon damage", "target": "melee_damage", "value": 0.25 }
       ]
     },
     {
-      "id": "deadeye",
-      "name": "Deadeye",
+      "id": 4,
+      "key": "deadeye",
+      "label": "Deadeye",
       "description": "Your aim finds the gaps. Ranged attacks land critical hits more often.",
       "type": "perk",
       "category": "combat",
-      "prerequisite": { "abilities": { "per": 6 }, "skills": { "marksmanship": 40 } },
+      "prerequisite": { "abilities": { "per": 6 }, "skills": { "5": 40 } },
       "ranks": 1,
       "effects": [
         { "type": "bonus", "description": "+10% ranged critical chance", "target": "ranged_crit_chance", "value": 10 }
       ]
     },
     {
-      "id": "shield_wall",
-      "name": "Shield Wall",
+      "id": 5,
+      "key": "shield_wall",
+      "label": "Shield Wall",
       "description": "You turn a shield into a fortress, blocking a greater share of incoming damage.",
       "type": "perk",
       "category": "combat",
-      "prerequisite": { "abilities": { "end": 6 }, "skills": { "block": 40 } },
+      "prerequisite": { "abilities": { "end": 6 }, "skills": { "6": 40 } },
       "ranks": 1,
       "effects": [
         { "type": "bonus", "description": "+15% damage blocked", "target": "block_amount", "value": 0.15 }
       ]
     },
     {
-      "id": "pyromancer",
-      "name": "Pyromancer",
+      "id": 6,
+      "key": "pyromancer",
+      "label": "Pyromancer",
       "description": "Flame answers your call more fiercely, increasing the damage of Red Magic.",
       "type": "perk",
       "category": "magic",
-      "prerequisite": { "skills": { "red_magic": 50 } },
+      "prerequisite": { "skills": { "7": 50 } },
       "ranks": 2,
       "effects": [
         { "type": "bonus", "description": "+15% Red Magic effect magnitude per rank", "target": "red_magic_magnitude", "value": 0.15 }
       ]
     },
     {
-      "id": "ghost",
-      "name": "Ghost",
+      "id": 7,
+      "key": "ghost",
+      "label": "Ghost",
       "description": "You move like a shadow, far harder to detect while sneaking.",
       "type": "perk",
       "category": "stealth",
-      "prerequisite": { "abilities": { "agi": 6 }, "skills": { "stealth": 50 } },
+      "prerequisite": { "abilities": { "agi": 6 }, "skills": { "16": 50 } },
       "ranks": 1,
       "effects": [
         { "type": "bonus", "description": "-25% chance to be detected while sneaking", "target": "detection_chance", "value": -0.25 }
       ]
     },
     {
-      "id": "silver_tongue",
-      "name": "Silver Tongue",
+      "id": 8,
+      "key": "silver_tongue",
+      "label": "Silver Tongue",
       "description": "Your words open doors and purses alike, improving persuasion and barter prices.",
       "type": "perk",
       "category": "social",
-      "prerequisite": { "abilities": { "cha": 6 }, "skills": { "persuasion": 50 } },
+      "prerequisite": { "abilities": { "cha": 6 }, "skills": { "19": 50 } },
       "ranks": 1,
       "effects": [
         { "type": "bonus", "description": "+10 to persuasion checks", "target": "persuasion", "value": 10 },
@@ -100,59 +108,142 @@
       ]
     },
     {
-      "id": "field_medic",
-      "name": "Field Medic",
+      "id": 9,
+      "key": "field_medic",
+      "label": "Field Medic",
       "description": "Your mundane healing is markedly more effective.",
       "type": "perk",
       "category": "survival",
-      "prerequisite": { "skills": { "medicine": 40 } },
+      "prerequisite": { "skills": { "27": 40 } },
       "ranks": 1,
       "effects": [
         { "type": "bonus", "description": "+50% healing from Medicine", "target": "medicine_healing", "value": 0.5 }
       ]
     },
     {
-      "id": "gifted",
-      "name": "Gifted",
+      "id": 10,
+      "key": "gifted",
+      "label": "Gifted",
       "description": "You are exceptionally talented, but lean on raw aptitude over study. Chosen at character creation.",
       "type": "creation",
       "category": "general",
       "effects": [
-        { "type": "bonus", "description": "+1 to every attribute", "target": "all_attributes", "value": 1 },
-        { "type": "penalty", "description": "-10% skill points per level", "target": "skill_points", "value": -0.1 }
+        { "type": "bonus", "description": "+1 to every attribute", "target": 32, "parameter": "all", "value": 1, "durationType": "unlimited" },
+        { "type": "penalty", "description": "-10% skill points per level", "target": 25, "parameter": "per_level", "value": -0.1 }
       ]
     },
     {
-      "id": "fast_shot",
-      "name": "Fast Shot",
+      "id": 11,
+      "key": "fast_shot",
+      "label": "Fast Shot",
       "description": "You attack quickly but recklessly. Chosen at character creation.",
       "type": "creation",
       "category": "combat",
       "effects": [
-        { "type": "bonus", "description": "Ranged attacks are 20% faster", "target": "ranged_attack_speed", "value": 0.2 },
-        { "type": "penalty", "description": "You cannot make aimed (targeted) shots", "target": "aimed_shots" }
+        { "type": "bonus", "description": "Ranged attacks are 20% faster", "target": 30, "value": 0.2 },
+        { "type": "penalty", "description": "You cannot make aimed (targeted) shots", "target": 26, "value": 1 }
       ]
     },
     {
-      "id": "small_frame",
-      "name": "Small Frame",
+      "id": 12,
+      "key": "small_frame",
+      "label": "Small Frame",
       "description": "You are slight of build: nimble, but you cannot carry as much. Chosen at character creation.",
       "type": "creation",
       "category": "general",
       "effects": [
-        { "type": "bonus", "description": "+1 Agility", "target": "agi", "value": 1 },
-        { "type": "penalty", "description": "-25% carrying capacity", "target": "carry_weight", "value": -0.25 }
+        { "type": "bonus", "description": "+1 Agility", "target": 32, "parameter": "agi", "value": 1, "durationType": "unlimited" },
+        { "type": "penalty", "description": "-25% carrying capacity", "target": 27, "value": -0.25 }
       ]
     },
     {
-      "id": "genius",
-      "name": "Genius",
+      "id": 13,
+      "key": "genius",
+      "label": "Genius",
       "description": "A quick study with room for one more focus, at the cost of breadth. Chosen at character creation.",
       "type": "creation",
       "category": "knowledge",
       "effects": [
-        { "type": "bonus", "description": "+1 tag skill", "target": "tag_skills", "value": 1 },
-        { "type": "penalty", "description": "-15 starting skill points", "target": "starting_skill_points", "value": -15 }
+        { "type": "bonus", "description": "+1 tag skill", "target": 28, "value": 1 },
+        { "type": "penalty", "description": "-15 starting skill points", "target": 25, "parameter": "starting", "value": -15 }
+      ]
+    },
+    {
+      "id": 14,
+      "key": "undead_phobia",
+      "label": "Undead Phobia",
+      "description": "The walking dead fill you with primal terror. Skeletons, zombies, and wraiths shake your resolve.",
+      "type": "creation",
+      "category": "general",
+      "effects": [
+        { "type": "penalty", "description": "Significant combat penalties against the undead", "target": 22, "parameter": "undead", "value": 1 },
+        { "type": "bonus", "description": "+2 Willpower", "target": 32, "parameter": "wil", "value": 2, "durationType": "unlimited" },
+        { "type": "bonus", "description": "Reduces damage and effects from undead", "target": 19, "parameter": "undead", "value": 0.25 }
+      ]
+    },
+    {
+      "id": 15,
+      "key": "beast_phobia",
+      "label": "Beast Phobia",
+      "description": "You have a deep fear of wild beasts and monstrous animals. Fighting them is a nightmare.",
+      "type": "creation",
+      "category": "general",
+      "effects": [
+        { "type": "penalty", "description": "Combat and survival penalties when fighting beasts", "target": 22, "parameter": "beast", "value": 1 },
+        { "type": "bonus", "description": "+1 Strength", "target": 32, "parameter": "str", "value": 1, "durationType": "unlimited" },
+        { "type": "bonus", "description": "+10 starting ranks in Animal Handling", "target": 31, "parameter": 26, "value": 10, "durationType": "unlimited" }
+      ]
+    },
+    {
+      "id": 16,
+      "key": "leather_allergy",
+      "label": "Leather Allergy",
+      "description": "You suffer painful rashes and breathing difficulty from leather and animal hides. Most common light armor is off-limits.",
+      "type": "creation",
+      "category": "general",
+      "effects": [
+        { "type": "penalty", "description": "Cannot equip or benefit from leather/hide items", "target": 23, "parameter": 10, "value": 1 },
+        { "type": "bonus", "description": "+1 Endurance", "target": 32, "parameter": "end", "value": 1, "durationType": "unlimited" },
+        { "type": "bonus", "description": "Improved defense and comfort in metal armor", "target": 32, "parameter": "end", "value": 1, "durationType": "unlimited" }
+      ]
+    },
+    {
+      "id": 17,
+      "key": "iron_allergy",
+      "label": "Iron Allergy",
+      "description": "Common iron and steel burn your flesh and interfere with your magic. You must seek rarer materials.",
+      "type": "creation",
+      "category": "general",
+      "effects": [
+        { "type": "penalty", "description": "Reduced effectiveness with iron or steel weapons and armor", "target": 23, "parameter": 3, "value": 1 },
+        { "type": "bonus", "description": "+10% magnitude on magical effects", "target": 32, "parameter": "int", "value": 1, "durationType": "unlimited" },
+        { "type": "bonus", "description": "Affinity with exotic materials (silver, elven wood, etc.)", "target": 24, "value": 1 }
+      ]
+    },
+    {
+      "id": 18,
+      "key": "silver_sensitivity",
+      "label": "Silver Sensitivity",
+      "description": "Silver weapons and objects are toxic to your body. You avoid them at all costs.",
+      "type": "creation",
+      "category": "general",
+      "effects": [
+        { "type": "penalty", "description": "Extra damage from silver; cannot benefit from silver equipment", "target": 23, "parameter": 5, "value": 1 },
+        { "type": "bonus", "description": "Strong resistance to undead and unholy effects", "target": 19, "parameter": "undead", "value": 0.3 },
+        { "type": "bonus", "description": "Chance to absorb incoming hostile magic as mana", "target": 21, "value": 0.1 }
+      ]
+    },
+    {
+      "id": 19,
+      "key": "arcane_phobia",
+      "label": "Arcane Phobia",
+      "description": "Magic and magically-created beings (constructs, golems, summoned creatures) terrify you.",
+      "type": "creation",
+      "category": "general",
+      "effects": [
+        { "type": "penalty", "description": "Reduced effectiveness against constructs and magically animated beings", "target": 22, "parameter": "construct", "value": 1 },
+        { "type": "bonus", "description": "Resistance to hostile magic", "target": 19, "parameter": "magic", "value": 0.2 },
+        { "type": "bonus", "description": "Chance to absorb a portion of incoming spell damage as mana", "target": 21, "value": 0.15 }
       ]
     }
   ]

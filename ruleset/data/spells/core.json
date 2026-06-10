@@ -2,76 +2,83 @@
   "$schema": "../../schemas/spell.schema.json",
   "spells": [
     {
-      "id": "fire_bolt",
-      "name": "Fire Bolt",
+      "id": 1,
+      "key": "fire_bolt",
+      "label": "Fire Bolt",
       "description": "Hurl a mote of fire at a target.",
       "color": "red",
       "effects": [
-        { "effect": "damage_fire", "magnitude": 8, "target": "ranged" }
+        { "effect": 1, "magnitude": 8, "target": "ranged" }
       ],
       "cost": { "mana": 5 }
     },
     {
-      "id": "force_dart",
-      "name": "Force Dart",
+      "id": 2,
+      "key": "force_dart",
+      "label": "Force Dart",
       "description": "Loose glowing darts of force that strike unerringly.",
       "color": "red",
       "effects": [
-        { "effect": "damage_force", "magnitude": 10, "target": "ranged" }
+        { "effect": 4, "magnitude": 10, "target": "ranged" }
       ],
       "cost": { "mana": 8 }
     },
     {
-      "id": "mend_wounds",
-      "name": "Mend Wounds",
+      "id": 3,
+      "key": "mend_wounds",
+      "label": "Mend Wounds",
       "description": "Restore health to a creature you touch.",
       "color": "green",
       "effects": [
-        { "effect": "restore_health", "magnitude": 12, "target": "touch" }
+        { "effect": 7, "parameter": "health", "magnitude": 12, "target": "touch" }
       ],
       "cost": { "mana": 10 }
     },
     {
-      "id": "blessing",
-      "name": "Blessing",
+      "id": 4,
+      "key": "blessing",
+      "label": "Blessing",
       "description": "Bolster an ally's prowess in battle for a short time.",
       "color": "white",
       "effects": [
-        { "effect": "fortify_attack", "magnitude": 10, "duration": 60, "target": "touch" }
+        { "effect": 31, "parameter": 1, "magnitude": 10, "duration": 60, "target": "touch", "durationType": "temporal" }
       ],
       "cost": { "mana": 12 }
     },
     {
-      "id": "ward",
-      "name": "Ward",
+      "id": 5,
+      "key": "ward",
+      "label": "Ward",
       "description": "Raise a barrier that hardens your defenses for a moment.",
       "color": "blue",
       "effects": [
-        { "effect": "ward_physical", "magnitude": 25, "duration": 12, "target": "self" }
+        { "effect": 32, "parameter": "end", "magnitude": 2, "duration": 12, "target": "self", "durationType": "temporal" }
       ],
       "cost": { "mana": 8 },
       "cooldown": 6
     },
     {
-      "id": "fire_burst",
-      "name": "Fire Burst",
+      "id": 6,
+      "key": "fire_burst",
+      "label": "Fire Burst",
       "description": "A streak of flame erupts into a fiery sphere at a chosen point.",
       "color": "red",
       "effects": [
-        { "effect": "damage_fire", "magnitude": 28, "target": "area", "radius": 6 }
+        { "effect": 1, "magnitude": 28, "target": "area", "radius": 6 }
       ],
       "cost": { "mana": 25 },
       "cooldown": 4
     },
     {
-      "id": "raise_thrall",
-      "name": "Raise Thrall",
+      "id": 7,
+      "key": "raise_thrall",
+      "label": "Raise Thrall",
       "description": "Animate a fallen corpse to fight at your side for a time.",
       "color": "black",
       "effects": [
-        { "effect": "summon_undead", "magnitude": 1, "duration": 120, "target": "ranged" }
+        { "effect": 13, "parameter": "undead", "magnitude": 1, "duration": 120, "target": "ranged" }
       ],
-      "cost": { "mana": 30, "reagents": ["bone_dust"] },
+      "cost": { "mana": 30, "reagents": [3] },
       "cooldown": 30
     }
   ]

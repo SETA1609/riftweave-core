@@ -16,8 +16,9 @@
     "monster": {
       "type": "object",
       "properties": {
-        "id": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
-        "name": { "type": "string" },
+        "id": { "$ref": "schema.json#/definitions/entryId" },
+        "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "Symbolic snake_case key (the old string id) for human readability when editing JSON." },
+        "label": { "type": "string", "description": "Human-readable display name with spaces and capitalization." },
         "description": { "type": "string" },
         "source": { "$ref": "schema.json#/definitions/sourceRef" },
         "phase": {
@@ -64,7 +65,7 @@
           "required": ["baseChance"]
         }
       },
-      "required": ["id", "name", "description", "phase", "size"],
+      "required": ["id", "key", "label", "description", "phase", "size"],
       "additionalProperties": false
     }
   }

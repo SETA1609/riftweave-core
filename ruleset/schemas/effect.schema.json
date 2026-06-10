@@ -16,8 +16,9 @@
     "effect": {
       "type": "object",
       "properties": {
-        "id": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
-        "name": { "type": "string" },
+        "id": { "$ref": "schema.json#/definitions/entryId" },
+        "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "Symbolic snake_case key (the old string id, e.g. 'fortify_skill', 'restore_resource') for human readability when editing JSON." },
+        "label": { "type": "string", "description": "Human-readable display name with spaces and capitalization (e.g. 'Fortify Skill')." },
         "description": { "type": "string" },
         "source": { "$ref": "schema.json#/definitions/sourceRef" },
         "category": {
@@ -44,17 +45,22 @@
           "description": "How an appliedEffect.magnitude is interpreted for this effect"
         },
         "defaultDuration": { "type": "number", "minimum": 0, "description": "Default duration in seconds when not overridden by the appliedEffect" },
+        "defaultDurationType": {
+          "type": "string",
+          "enum": ["temporal", "unlimited"],
+          "description": "Default for fortify effects: 'unlimited' (stackable) or 'temporal' (override with highest magnitude)."
+        },
         "stackable": { "type": "boolean", "description": "Whether multiple instances stack or refresh" },
         "channels": {
           "type": "array",
-          "description": "Delivery vectors permitted to draw this effect from the pool",
-          "items": { "type": "string", "enum": ["spell", "potion", "poison", "coating", "ingredient", "enchantment", "food", "essence"] },
+          "description": "Delivery vectors permitted to draw this effect from the pool. 'innate' is used for permanent character traits, racial features, and creation boons/drawbacks.",
+          "items": { "type": "string", "enum": ["spell", "potion", "poison", "coating", "ingredient", "enchantment", "food", "essence", "innate"] },
           "minItems": 1,
           "uniqueItems": true
         },
         "tags": { "type": "array", "items": { "type": "string" } }
       },
-      "required": ["id", "name", "description", "category", "polarity", "channels"],
+      "required": ["id", "key", "label", "description", "category", "polarity", "channels"],
       "additionalProperties": false
     }
   }

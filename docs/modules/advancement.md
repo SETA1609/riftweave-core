@@ -156,7 +156,7 @@ A single core or elixir is tied to one chosen target from its phase's governed o
 
 `qualityGrade` (from `schema.json#/definitions/qualityGrade`) primarily determines both the success chance *and* the range/strength of the bonus to the player-selected target (see the resolution rules above). Higher grades give better base success odds and better bonus ranges.
 
-**Proposed reference success formula** (for each item):
+**Reference success formula** (for each item):
 ```
 success = base_grade + phase_synergy + (LCK × 2.5) + target_weight
 final_success_chance = clamp(success, 5, 95)
@@ -166,22 +166,73 @@ final_success_chance = clamp(success, 5, 95)
 - `LCK × 2.5`: direct Luck contribution.
 - `target_weight` (skills easiest → resources → attributes hardest): +10 for skills, 0 for resources, -15 for attributes (attributes also restricted to grades > common).
 
-**Bonus ranges on success (skills now 0–10 overall):**
-Grade controls both floor and ceiling for the 0–10 skill bonus (lower grades have a lower maximum; higher grades raise the minimum as well as the maximum). Higher grades also improve the base success chance on the luck roll. Example ranges:
-- petty: 0–2
-- minor: 1–3
-- lesser: 2–4
-- common: 3–5
-- major: 4–6
-- greater: 6–8
-- grand: 7–9
-- legendary: 8–10
+**Reference Tables (these are the defined values for the ruleset)**
 
-**Resource pools**: second "level growth" roll; take the higher of normal level-up growth and breakthrough growth.
+**Base Success Chance (before phase synergy, LCK, and target weighting):**
 
-**Attributes**: +1 only (if grade > common; hard cap +1 total from breakthroughs this level).
+| qualityGrade | Base Success % |
+|--------------|----------------|
+| petty        | 15%            |
+| minor        | 25%            |
+| lesser       | 35%            |
+| common       | 45%            |
+| major        | 55%            |
+| greater      | 65%            |
+| grand        | 75%            |
+| legendary    | 85%            |
 
-Exact base success percentages and precise bonus values within each range are left to the consuming game, but the structure (luck-based per-item roll with target weighting, grade-controlled 0–10 skill ranges, second-roll max for resources) is the reference.
+**Skill Bonus Ranges on Success (0–10 overall):**
+
+| qualityGrade | Bonus Range | Notes |
+|--------------|-------------|-------|
+| petty        | 0–2         | Very small boost |
+| minor        | 1–3         | Modest |
+| lesser       | 2–4         | Noticeable |
+| common       | 3–5         | Solid |
+| major        | 4–6         | Strong |
+| greater      | 6–8         | Very strong |
+| grand        | 7–9         | Excellent |
+| legendary    | 8–10        | Outstanding |
+
+**Resource Pools (HP / Mana / Stamina):**  
+Perform a second growth roll using the normal per-level formula for that resource. Take the **higher** of the normal level-up growth and this breakthrough growth.
+
+**Attributes:**  
++1 only (if grade > common; maximum +1 total to any one attribute from breakthroughs this level).
+
+The success formula (reference) is shown in the resolution rules above. These values are the defined reference for the ruleset. Consuming games may tune them for their preferred power level, but the structure (per-item luck roll with target weighting, grade-controlled ranges, second growth for resources, attribute cap) is fixed. GMs in TTRPG play can add narrative flavor.
+
+**Skill Bonus Ranges on Success (0–10 overall):**
+
+| qualityGrade | Bonus Range | Notes |
+|--------------|-------------|-------|
+| petty        | 0–2         | Very small boost; often negligible |
+| minor        | 1–3         | Modest improvement |
+| lesser       | 2–4         | Noticeable for low-to-mid skills |
+| common       | 3–5         | Solid, reliable for most uses |
+| major        | 4–6         | Strong; good for pushing key skills |
+| greater      | 6–8         | Very strong; high floor |
+| grand        | 7–9         | Excellent; near-max for most needs |
+| legendary    | 8–10        | Outstanding; can push even high skills significantly |
+
+**Resource Pools (HP / Mana / Stamina):**  
+No fixed 0–10 range. Instead, perform a second "growth of a level" roll using the normal per-level formula for that resource (e.g. `END × 8 + 4` for HP). Take the **higher** of the normal level-up growth and this breakthrough growth. This effectively gives a chance at an extra level's worth of growth in the chosen pool.
+
+**Attributes:**  
+Fixed +1 (only selectable for grades > common; hard cap of +1 total to any single attribute from all breakthroughs this level, no matter how many items or how high the grades).
+
+**Target-Type Success Weighting (applied after base + phase + LCK):**  
+- Skill target: +10% (easiest to succeed on)  
+- Resource pool target: +0%  
+- Attribute target: -15% (hardest, plus grade restriction)
+
+The full success formula (proposed reference) is:
+```
+success = base_grade + phase_synergy + (LCK × 2.5) + target_weight
+final_success_chance = clamp(success, 5, 95)
+```
+
+These tables are **suggestions / reference**. Consuming games and GMs (especially in TTRPG play) are free to adjust the exact percentages and ranges for balance or flavor. There are no other hard mechanical requirements beyond the player selecting a valid target per item, the per-item luck roll, the grade-based range (or second growth for resources), the attribute restrictions, the max-3-items limit, and Wuxing interactions for final magnitude. GMs can easily add narrative flavor around "the breakthrough feeling risky," "the essence fighting back," "the phase resonating strongly," etc.
 
 A single core or elixir is tied to one chosen target from its phase's governed options (with restrictions: attributes only for grades > common, and only +1 total per level from breakthroughs). Up to 3 items may be offered per breakthrough. Each has its own independent luck-based success roll (influenced by grade, phase synergy, and LCK). On success, Wuxing interactions can amplify or reduce the bonus. Failures are possible even with excellent items.
 
@@ -236,7 +287,7 @@ For the major Wood elixir (target: HP growth):
 Normal level-up HP growth was rolled as + (END × 8 + 4) = +36.
 No second growth roll occurred because the breakthrough item failed.
 
-Net result: +4 to a combat skill from the Fire core. The Wood elixir failed its luck roll, so only the normal level growth applied. The character still gets their normal level-8 skill points, perk, and resource increases, plus the one successful breakthrough bonus.
+Net result: +7 to a combat skill from the Fire core. The Wood elixir failed its luck roll, so only the normal level growth applied. The character still gets their normal level-8 skill points, perk, and resource increases, plus the one successful breakthrough bonus.
 
 Had both items succeeded, the player would have received the skill bonus *and* a second HP growth roll (taking the higher of the normal +36 and the new roll).
 
@@ -244,7 +295,6 @@ Players who rush every level with whatever petty cores they have on hand will ha
 
 ## Open Questions & Future Work
 
-- Exact numeric tables for success % (base + LCK + phase synergy) and bonus ranges per grade/target (the mechanism is defined; numbers are left for campaigns or future reference).
 - Whether the +1 attribute cap per level (only for grades > common) feels right long-term, or if it needs further restrictions.
 - How a character's "foundation phase" or dominant element is tracked (race phase? highest attribute phase? chosen at key breakthroughs? cumulative?).
 - Risk / backlash mechanics for poor-phase or low-grade breakthroughs (purely smaller gains, or actual drawbacks?).

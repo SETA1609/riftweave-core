@@ -1,0 +1,157 @@
+{
+  "$schema": "../../schemas/background.schema.json",
+  "backgrounds": [
+    {
+      "id": 1,
+      "key": "scout",
+      "label": "Scout",
+      "description": "You spent years mapping trails, tracking game, and guiding travelers through dangerous wilds. You know how to read the land and stay unseen.",
+      "category": "wilderness",
+      "skill_bonuses": [
+        { "skill": 25, "bonus": 12 },
+        { "skill": 16, "bonus": 10 },
+        { "skill": 5, "bonus": 8 }
+      ],
+      "starting_equipment": [
+        { "item": 11, "quantity": 1 },
+        { "item": 22, "quantity": 1 },
+        { "item": 8, "quantity": 1 },
+        { "item": 7, "quantity": 5 }
+      ],
+      "suggested_tag_skills": [25, 16, 5],
+      "source": { "source": "Core", "page": 1 }
+    },
+    {
+      "id": 2,
+      "key": "former_soldier",
+      "label": "Former Soldier",
+      "description": "You served in a standing army, militia, or mercenary company. Drill, shield walls, and discipline are second nature.",
+      "category": "military",
+      "skill_bonuses": [
+        { "skill": 6, "bonus": 12 },
+        { "skill": 1, "bonus": 10 }
+      ],
+      "starting_equipment": [
+        { "item": 24, "quantity": 1 },
+        { "item": 28, "quantity": 1 },
+        { "item": 9, "quantity": 1 },
+        { "item": 16, "quantity": 1 }
+      ],
+      "wealth_bonus": 25,
+      "suggested_tag_skills": [6, 1, 28],
+      "source": { "source": "Core", "page": 1 }
+    },
+    {
+      "id": 3,
+      "key": "hedge_witch",
+      "label": "Hedge Witch",
+      "description": "You learned simple healing and warding from a local wise woman or forest spirit. Your magic is practical, not flashy.",
+      "category": "arcane",
+      "skill_bonuses": [
+        { "skill": 10, "bonus": 10 },
+        { "skill": 27, "bonus": 10 },
+        { "skill": 22, "bonus": 8 }
+      ],
+      "starting_equipment": [
+        { "item": 13, "quantity": 1 },
+        { "item": 22, "quantity": 1 },
+        { "item": 1, "quantity": 3 }
+      ],
+      "starting_spells": [3],
+      "suggested_tag_skills": [10, 27, 25],
+      "source": { "source": "Core", "page": 1 }
+    },
+    {
+      "id": 4,
+      "key": "street_urchin",
+      "label": "Street Urchin",
+      "description": "You grew up in the alleys of a large city, surviving by your wits, quick hands, and the ability to disappear when needed.",
+      "category": "criminal",
+      "skill_bonuses": [
+        { "skill": 16, "bonus": 12 },
+        { "skill": 17, "bonus": 10 },
+        { "skill": 18, "bonus": 8 },
+        { "skill": 20, "bonus": 6 }
+      ],
+      "starting_equipment": [
+        { "item": 8, "quantity": 2 },
+        { "item": 22, "quantity": 1 }
+      ],
+      "wealth_bonus": 15,
+      "suggested_tag_skills": [16, 17, 20],
+      "source": { "source": "Core", "page": 1 }
+    },
+    {
+      "id": 5,
+      "key": "noble_scion",
+      "label": "Noble Scion",
+      "description": "You were raised in a house of wealth and influence. You understand etiquette, leverage, and how to make problems (and people) go away quietly.",
+      "category": "noble",
+      "skill_bonuses": [
+        { "skill": 19, "bonus": 12 },
+        { "skill": 24, "bonus": 8 },
+        { "skill": 22, "bonus": 6 }
+      ],
+      "wealth_bonus": 75,
+      "suggested_tag_skills": [19, 20, 23],
+      "source": { "source": "Core", "page": 1 }
+    },
+    {
+      "id": 6,
+      "key": "arcane_apprentice",
+      "label": "Arcane Apprentice",
+      "description": "You served (or still serve) as an apprentice to a mage, scribe, or collegiate wizard. Theory, symbols, and the first cantrips came easily.",
+      "category": "arcane",
+      "skill_bonuses": [
+        { "skill": 7, "bonus": 10 },
+        { "skill": 22, "bonus": 12 },
+        { "skill": 23, "bonus": 6 }
+      ],
+      "starting_equipment": [
+        { "item": 13, "quantity": 1 }
+      ],
+      "starting_spells": [1, 5],
+      "suggested_tag_skills": [7, 22, 23],
+      "source": { "source": "Core", "page": 1 }
+    },
+    {
+      "id": 7,
+      "key": "wilderness_hunter",
+      "label": "Wilderness Hunter",
+      "description": "You made your living bringing in pelts, bounties, and dangerous beasts. Patience, tracking, and a steady shot kept you fed.",
+      "category": "wilderness",
+      "skill_bonuses": [
+        { "skill": 25, "bonus": 10 },
+        { "skill": 5, "bonus": 12 },
+        { "skill": 16, "bonus": 8 }
+      ],
+      "starting_equipment": [
+        { "item": 12, "quantity": 1 },
+        { "item": 22, "quantity": 1 },
+        { "item": 14, "quantity": 1 },
+        { "item": 7, "quantity": 3 }
+      ],
+      "suggested_tag_skills": [5, 25, 16],
+      "source": { "source": "Core", "page": 1 }
+    },
+    {
+      "id": 8,
+      "key": "itinerant_priest",
+      "label": "Itinerant Priest",
+      "description": "You wandered from village to village offering blessings, last rites, and what little protection the gods would grant through you.",
+      "category": "religious",
+      "skill_bonuses": [
+        { "skill": 14, "bonus": 10 },
+        { "skill": 19, "bonus": 8 },
+        { "skill": 22, "bonus": 8 }
+      ],
+      "starting_equipment": [
+        { "item": 13, "quantity": 1 },
+        { "item": 1, "quantity": 2 }
+      ],
+      "starting_spells": [3, 4],
+      "suggested_tag_skills": [14, 19, 24],
+      "source": { "source": "Core", "page": 1 }
+    }
+  ]
+}

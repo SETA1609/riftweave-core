@@ -1,15 +1,15 @@
 {
   "$schema": "../../schemas/gem.schema.json",
   "gems": [
-    { "id": "ruby",       "name": "Ruby",       "description": "A deep red stone of fire. Engrave it to make an item burn with the Fire element.", "phase": "fire",  "tier": 3 },
-    { "id": "garnet",     "name": "Garnet",     "description": "A common red stone — a lesser ember of the Fire element.",                            "phase": "fire",  "tier": 1 },
-    { "id": "emerald",    "name": "Emerald",    "description": "A vivid green stone of living growth, imparting the Wood element.",                  "phase": "wood",  "tier": 3 },
-    { "id": "jade",       "name": "Jade",       "description": "A soft green stone — a humble bearer of the Wood element.",                          "phase": "wood",  "tier": 1 },
-    { "id": "sapphire",   "name": "Sapphire",   "description": "A cold blue stone of deep water, imparting the Water element.",                      "phase": "water", "tier": 3 },
-    { "id": "aquamarine", "name": "Aquamarine", "description": "A pale blue stone — a lesser well of the Water element.",                            "phase": "water", "tier": 1 },
-    { "id": "topaz",      "name": "Topaz",      "description": "A golden-yellow stone of stone and soil, imparting the Earth element.",             "phase": "earth", "tier": 2 },
-    { "id": "citrine",    "name": "Citrine",    "description": "A pale yellow stone — a humble bearer of the Earth element.",                        "phase": "earth", "tier": 1 },
-    { "id": "diamond",    "name": "Diamond",    "description": "A flawless white stone of hardened edge, imparting the Metal element. The finest conductor of engraving.", "phase": "metal", "tier": 4 },
-    { "id": "moonstone",  "name": "Moonstone",  "description": "A pale, milky stone — a humble bearer of the Metal element.",                        "phase": "metal", "tier": 1 }
+    { "id": 1, "key": "ruby",       "label": "Ruby",       "description": "A deep red stone of fire. Engrave it to make an item burn with the Fire element.", "phase": "fire",  "tier": 3 },
+    { "id": 2, "key": "garnet",     "label": "Garnet",     "description": "A common red stone — a lesser ember of the Fire element.",                            "phase": "fire",  "tier": 1 },
+    { "id": 3, "key": "emerald",    "label": "Emerald",    "description": "A vivid green stone of living growth, imparting the Wood element.",                  "phase": "wood",  "tier": 3 },
+    { "id": 4, "key": "jade",       "label": "Jade",       "description": "A soft green stone — a humble bearer of the Wood element.",                          "phase": "wood",  "tier": 1 },
+    { "id": 5, "key": "sapphire",   "label": "Sapphire",   "description": "A cold blue stone of deep water, imparting the Water element.",                      "phase": "water", "tier": 3 },
+    { "id": 6, "key": "aquamarine", "label": "Aquamarine", "description": "A pale blue stone — a lesser well of the Water element.",                            "phase": "water", "tier": 1 },
+    { "id": 7, "key": "topaz",      "label": "Topaz",      "description": "A golden-yellow stone of stone and soil, imparting the Earth element.",             "phase": "earth", "tier": 2 },
+    { "id": 8, "key": "citrine",    "label": "Citrine",    "description": "A pale yellow stone — a humble bearer of the Earth element.",                        "phase": "earth", "tier": 1 },
+    { "id": 9, "key": "diamond",    "label": "Diamond",    "description": "A flawless white stone of hardened edge, imparting the Metal element. The finest conductor of engraving.", "phase": "metal", "tier": 4 },
+    { "id": 10, "key": "moonstone",  "label": "Moonstone",  "description": "A pale, milky stone — a humble bearer of the Metal element.",                        "phase": "metal", "tier": 1 }
   ]
 }

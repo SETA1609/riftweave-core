@@ -2,8 +2,9 @@
   "$schema": "../../schemas/material.schema.json",
   "materials": [
     {
-      "id": "copper",
-      "name": "Copper",
+      "id": 1,
+      "key": "copper",
+      "label": "Copper",
       "description": "A soft, conductive metal — prized for enchanted trinkets, poor as a blade.",
       "phase": "metal",
       "tier": 1,
@@ -14,8 +15,9 @@
       "tags": ["conductive"]
     },
     {
-      "id": "bronze",
-      "name": "Bronze",
+      "id": 2,
+      "key": "bronze",
+      "label": "Bronze",
       "description": "A workmanlike alloy of the early forges, holding an edge better than copper.",
       "phase": "metal",
       "tier": 1,
@@ -25,8 +27,9 @@
       "valueFactor": 0.8
     },
     {
-      "id": "iron",
-      "name": "Iron",
+      "id": 3,
+      "key": "iron",
+      "label": "Iron",
       "description": "The reliable standard of arms and armor.",
       "phase": "metal",
       "tier": 2,
@@ -36,8 +39,9 @@
       "valueFactor": 1.0
     },
     {
-      "id": "steel",
-      "name": "Steel",
+      "id": 4,
+      "key": "steel",
+      "label": "Steel",
       "description": "Refined iron — sharper, tougher, and the smith's preferred metal.",
       "phase": "metal",
       "tier": 3,
@@ -47,8 +51,9 @@
       "valueFactor": 2.0
     },
     {
-      "id": "silver",
-      "name": "Silver",
+      "id": 5,
+      "key": "silver",
+      "label": "Silver",
       "description": "Conducts magic well and bites the undead and unholy.",
       "phase": "metal",
       "tier": 2,
@@ -59,8 +64,9 @@
       "tags": ["anti_undead", "conductive"]
     },
     {
-      "id": "gold",
-      "name": "Gold",
+      "id": 6,
+      "key": "gold",
+      "label": "Gold",
       "description": "Too soft for arms, but the finest conductor of magic — the enchanter's metal.",
       "phase": "metal",
       "tier": 2,
@@ -71,8 +77,9 @@
       "tags": ["conductive"]
     },
     {
-      "id": "wood",
-      "name": "Wood",
+      "id": 7,
+      "key": "wood",
+      "label": "Wood",
       "description": "Common timber for hafts, bows, and shields — light and cheap.",
       "phase": "wood",
       "tier": 1,
@@ -82,8 +89,9 @@
       "valueFactor": 0.5
     },
     {
-      "id": "elven_wood",
-      "name": "Elven Wood",
+      "id": 8,
+      "key": "elven_wood",
+      "label": "Elven Wood",
       "description": "Living wood coaxed into shape by elven craft — light, resilient, and magically attuned.",
       "phase": "wood",
       "tier": 3,
@@ -94,8 +102,9 @@
       "tags": ["conductive"]
     },
     {
-      "id": "obsidian",
-      "name": "Obsidian",
+      "id": 9,
+      "key": "obsidian",
+      "label": "Obsidian",
       "description": "Volcanic glass — wickedly sharp, but brittle and unfit for armor.",
       "phase": "fire",
       "tier": 2,
@@ -104,6 +113,19 @@
       "weightFactor": 0.8,
       "valueFactor": 2.5,
       "tags": ["brittle"]
+    },
+    {
+      "id": 10,
+      "key": "leather",
+      "label": "Leather",
+      "description": "Cured animal hide. Common for light armor, straps, and flexible gear.",
+      "phase": "wood",
+      "tier": 1,
+      "appliesTo": ["armor", "accessory"],
+      "modifiers": { "defense": 1 },
+      "weightFactor": 0.7,
+      "valueFactor": 0.6,
+      "tags": ["organic", "flexible"]
     }
   ]
 }

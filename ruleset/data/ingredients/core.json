@@ -1,18 +1,18 @@
 {
   "$schema": "../../schemas/ingredient.schema.json",
   "ingredients": [
-    { "id": "red_mushroom", "name": "Red Mushroom", "description": "A common cap that aids vigor.", "effects": ["restore_health", "fortify_strength"], "rarity": "common", "tags": ["fungus"] },
-    { "id": "frost_lily", "name": "Frost Lily", "description": "A pale flower that blooms in the cold.", "effects": ["damage_frost", "resist_fire"], "rarity": "uncommon", "tags": ["flower"] },
-    { "id": "nightshade", "name": "Nightshade", "description": "A toxic herb favored by poisoners.", "effects": ["damage_health", "damage_stamina"], "rarity": "uncommon", "tags": ["herb", "toxic"] },
-    { "id": "glowcap", "name": "Glowcap", "description": "A luminescent cave fungus.", "effects": ["restore_mana", "cure_poison"], "rarity": "uncommon", "tags": ["fungus"] },
-    { "id": "ironvine", "name": "Ironvine", "description": "A tough creeper that clings to stone.", "effects": ["feather", "fortify_agility"], "rarity": "common", "tags": ["plant"] },
-    { "id": "emberbloom", "name": "Emberbloom", "description": "A flower warm to the touch.", "effects": ["damage_fire", "fortify_attack"], "rarity": "rare", "tags": ["flower"] },
-    { "id": "sweetgrass", "name": "Sweetgrass", "description": "A fragrant grass with restorative properties.", "effects": ["restore_stamina", "resist_poison"], "rarity": "common", "tags": ["plant"] },
+    { "id": 1, "key": "red_mushroom", "label": "Red Mushroom", "description": "A common cap that aids vigor.", "effects": [7, 32], "rarity": "common", "tags": ["fungus"] },
+    { "id": 2, "key": "frost_lily", "label": "Frost Lily", "description": "A pale flower that blooms in the cold.", "effects": [2, 19], "rarity": "uncommon", "tags": ["flower"] },
+    { "id": 3, "key": "nightshade", "label": "Nightshade", "description": "A toxic herb favored by poisoners.", "effects": [5, 6], "rarity": "uncommon", "tags": ["herb", "toxic"] },
+    { "id": 4, "key": "glowcap", "label": "Glowcap", "description": "A luminescent cave fungus.", "effects": [7, 20], "rarity": "uncommon", "tags": ["fungus"] },
+    { "id": 5, "key": "ironvine", "label": "Ironvine", "description": "A tough creeper that clings to stone.", "effects": [10, 32], "rarity": "common", "tags": ["plant"] },
+    { "id": 6, "key": "emberbloom", "label": "Emberbloom", "description": "A flower warm to the touch.", "effects": [1, 32], "rarity": "rare", "tags": ["flower"] },
+    { "id": 7, "key": "sweetgrass", "label": "Sweetgrass", "description": "A fragrant grass with restorative properties.", "effects": [7, 19], "rarity": "common", "tags": ["plant"] },
 
-    { "id": "greater_blazing_spirit_core", "name": "Blazing Spirit Core", "description": "A fist-sized crystal burning with inner flame. Holds concentrated fire-aspected essence, ideal for breakthroughs seeking power and transformation.", "effects": ["essence_fire"], "phase": "fire", "qualityGrade": "greater", "tags": ["essence", "core", "spirit"] },
-    { "id": "major_verdant_spirit_core", "name": "Verdant Spirit Core", "description": "A living green crystal thrumming with growth energy. Carries wood-aspected essence suited to vital and regenerative advancements.", "effects": ["essence_wood"], "phase": "wood", "qualityGrade": "major", "tags": ["essence", "core", "spirit"] },
-    { "id": "common_earthen_spirit_core", "name": "Earthen Spirit Core", "description": "A dense, heavy stone-like crystal embodying stability. Provides earth-aspected essence for breakthroughs emphasizing endurance and foundation.", "effects": ["essence_earth"], "phase": "earth", "qualityGrade": "common", "tags": ["essence", "core", "spirit"] },
-    { "id": "lesser_tempered_spirit_core", "name": "Tempered Spirit Core", "description": "A sharp, metallic crystal that rings when struck. Embodies metal-aspected essence for precise, conductive, or cutting advancements.", "effects": ["essence_metal"], "phase": "metal", "qualityGrade": "lesser", "tags": ["essence", "core", "spirit"] },
-    { "id": "grand_flowing_spirit_core", "name": "Flowing Spirit Core", "description": "A cool, translucent crystal that seems to shift like liquid. Holds water-aspected essence excellent for adaptive, perceptive, or restorative breakthroughs.", "effects": ["essence_water"], "phase": "water", "qualityGrade": "grand", "tags": ["essence", "core", "spirit"] }
+    { "id": 8, "key": "greater_blazing_spirit_core", "label": "Blazing Spirit Core", "description": "A fist-sized crystal burning with inner flame. Holds concentrated fire-aspected essence, ideal for breakthroughs seeking power and transformation.", "effects": [14], "phase": "fire", "qualityGrade": "greater", "tags": ["essence", "core", "spirit"] },
+    { "id": 9, "key": "major_verdant_spirit_core", "label": "Verdant Spirit Core", "description": "A living green crystal thrumming with growth energy. Carries wood-aspected essence suited to vital and regenerative advancements.", "effects": [15], "phase": "wood", "qualityGrade": "major", "tags": ["essence", "core", "spirit"] },
+    { "id": 10, "key": "common_earthen_spirit_core", "label": "Earthen Spirit Core", "description": "A dense, heavy stone-like crystal embodying stability. Provides earth-aspected essence for breakthroughs emphasizing endurance and foundation.", "effects": [16], "phase": "earth", "qualityGrade": "common", "tags": ["essence", "core", "spirit"] },
+    { "id": 11, "key": "lesser_tempered_spirit_core", "label": "Tempered Spirit Core", "description": "A sharp, metallic crystal that rings when struck. Embodies metal-aspected essence for precise, conductive, or cutting advancements.", "effects": [17], "phase": "metal", "qualityGrade": "lesser", "tags": ["essence", "core", "spirit"] },
+    { "id": 12, "key": "grand_flowing_spirit_core", "label": "Flowing Spirit Core", "description": "A cool, translucent crystal that seems to shift like liquid. Holds water-aspected essence excellent for adaptive, perceptive, or restorative breakthroughs.", "effects": [18], "phase": "water", "qualityGrade": "grand", "tags": ["essence", "core", "spirit"] }
   ]
 }

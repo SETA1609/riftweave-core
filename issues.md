@@ -43,17 +43,20 @@ This document is a living backlog. Items are grouped by category with current st
 
 See `docs/modules/advancement.md` for the cultivation-style item-boosted advancement design (players can delay level-ups to farm and refine better essence for stronger permanent gains to attributes, resources, or skill points).
 
-**Still missing / thin:**
-- Full numeric tables or resolution formulas for grade/phase breakthrough bonuses (exact gains from offered cores/elixirs — affinity table, drop rules, and grade bias exist, but concrete bonus application is still high-level).
+**Still missing / thin (broader, affecting creation & long-term progression):**
 - Refining path details in alchemy (how cores become higher-grade or multi-phase elixirs).
-
-**Drafted (needs review/expansion):**
-- Concrete "what you get at each level" full procedure + checklist — A complete step-by-step level-up procedure (base package + optional breakthrough) with player checklist and GM notes has been drafted in `docs/modules/progression.md` § Full Level-Up Procedure. It integrates the new XP table, per-level gains (1 perk, skill points at 2:1/1:1, resource growth, TTRPG AP carry-over rules), breakthrough option (max 3 items; player selects one governed target per item from its phase — attributes only if grade > common and +1 max total this level; resources or skills otherwise), luck-based success per item using the proposed formula (base from grade + phase synergy + LCK × 2.5, with target-type weighting: skills easiest → resources → attributes hardest; even legendary items can fail), and the two-roll core drop system. On success: attributes +1 (high-grade only), skills 0–5 range (grade sets floor/ceiling), resources = higher of two level-growth rolls. Still needs concrete numeric success % tables and bonus ranges per grade/target, plus any additional breakthrough requirements (time, safety, etc.).
+- Any requirements for performing a breakthrough (e.g. safe location, time investment, special catalysts) — currently none defined; can be added per campaign.
+- Data expansion for creation/progression: more low-level perks, more spells (especially for new magic users), more equipment variety for starting characters.
+- Full multi-level example characters that walk through creation → several levels with breakthroughs, using the new rules end-to-end (single-level creation examples now exist and are consistent).
+- Data support for creation: more creation perks, more low-level / ability-gated perks, curated example starting gear/spells lists.
 
 **Recently addressed:**
+- Full numeric tables and resolution formulas for breakthrough bonuses (success % per grade, 0–10 skill bonus ranges with per-grade floor/ceiling, resource second-growth "higher of two", attribute +1 with restrictions). See `docs/modules/advancement.md` § Grade Scaling, Target Selection, and Luck-Based Success.
 - XP thresholds: Formula **Total XP to reach level N = 450 × N × (N − 1)** (with difficulty tuning constants) + full sample table and event award guidance in `docs/modules/progression.md` § Experience Progression and Thresholds.
 - XP awarding rules: Strictly event/quest/radiant driven after the very first monster kill. Meaningful skill challenges (non-crafting) award XP. Crafting does not grant XP via skill rolls (uses separate quality/material/station mechanics). See `docs/modules/progression.md` § Experience.
 - Core acquisition: Only certain monsters can drop cores (no bandits/zombies). % drop chance based on monster level + killer’s Luck, using a two-roll process (drop roll → biased grade roll favoring lower tiers). See `docs/modules/advancement.md`.
+- Character creation reference procedure: full consistency pass on `docs/modules/character-creation.md` against the finalized per-level gains, 2:1/1:1 tag skill ratios, AP carry rules, and breakthrough positioning language. Added explicit "Creation choices that shape long-term advancement" section (phase as foundation, INT/LCK compounding, permanent tag efficiency), strengthened the 100 gp + kit as the recommended reference baseline, added "advancement outlook" paragraphs to both worked examples (Borin metal-phase tank and Lira water-phase scout), and improved cross-references to `progression.md` (Base Gains on a Normal Level + Full Level-Up Procedure + level-30 skill cap note) and `advancement.md`. Single-level creation examples are now solid and demonstrate the new systems. Full multi-level (creation through several breakthroughs) examples remain a high-value follow-up item.
+- Backgrounds: New `backgrounds` collection + `background.schema.json`. Optional one-time creation packages giving skill bonuses (additive to normal `5 + ability×2` base), starting equipment, known spells, wealth bonuses, and suggested tags. 8 varied examples implemented. Full design and many additional suggestions documented in `docs/modules/backgrounds.md`. Integrated into the official character creation sequence and both worked examples in `character-creation.md`.
 
 **Why it matters:** Players need to know how characters grow beyond "spend skill points." The breakthrough system makes Wuxing, Alchemy, and monster hunting matter for long-term power.
 
@@ -181,6 +184,7 @@ Materials, gems, and tiers data exist and are well-structured. Weapons now suppo
 | features       | Decent but limited   | Needs many more perks for real progression | Medium |
 | equipment      | Basic weapons + armor + consumables | Missing tools, kits, vehicles, more armor types | Medium |
 | effects        | Good foundation      | Needs many more condition-style effects | Medium |
+| backgrounds    | 8 entries (new)      | Solid starter set + design doc     | Low (more examples always welcome) |
 
 **Other missing data collections:**
 - Conditions / status effects
@@ -269,4 +273,4 @@ Materials, gems, and tiers data exist and are well-structured. Weapons now suppo
 **How to use this file:**  
 Update this document as items are completed or new gaps are discovered. When starting work on a module or system, create a dedicated design doc in `docs/modules/` first (as recommended in `docs/modules/README.md`), then link it here.
 
-Last major review: Added `docs/modules/advancement.md` (Wuxia-style item-boosted breakthroughs with monster cores + alchemical elixirs using Wuxing phases and qualityGrade) (current session).
+Last major review: Polished `docs/modules/character-creation.md` for full consistency with advancement + progression rules + added creation-to-breakthrough guidance and improved examples (current session).

@@ -166,8 +166,76 @@ to sustain longer fights and weather enemy spells. See [`magic.md`](./magic.md).
 | Critical chance (LCK) | `1% + LCK%` |
 | Initiative (PER) | `PER` |
 | Every check (LCK) | `+floor(LCK / 2)%` to the target |
+| Movement / Attack Speed (AGI) | Base from race + AGI modifiers; % or units in combat (see Secondary Statistics) |
+| Magic Resistance (WIL) | WIL-based % or resist bonus + effects |
+| Physical / Elemental Resist (END + effects) | Armor DR + phase resists via Wuxing |
 | Perk prerequisites | `prerequisite.abilities`, e.g. *Alert* needs `per ≥ 6` |
 | Racial modifiers | `race.abilityModifiers`, e.g. dwarf `{ end: +2, str: +1, agi: −1 }` |
+
+## Secondary & Combat Statistics (Derived)
+
+These are computed from attributes, race, equipment, perks, and effects. They are the "surface" numbers an engine or character sheet uses in play. Many can be further modified by the shared effect system (see `effects/core.json` and `magic.md`).
+
+### Movement Speed
+Racial base speed (in feet per round for exploration) is the foundation. Combat movement depends on mode.
+
+- **Base**: Race `speed` (e.g. human 30, dwarf ~25).
+- **Exploration**: Base speed. Modifiers from AGI (+1 ft per 2 AGI above 4?), encumbrance (see Carry weight), heavy armor (penalties via equipment properties), effects/perks (e.g. Woodland Stride ignores plant difficult terrain).
+- **Turn-based combat movement**: Units per turn = floor(base speed / 5) + floor(AGI / 3) – encumbrance penalties. Typical human: 6 units.
+- **Action-combat movement**: Speed rating (derived from AGI and base speed) that affects positioning, dodge chance, and how quickly you close distance or escape. High speed can grant "free" movement or reduce enemy attack opportunities.
+- **Modifiers**: AGI primary; STR/END for carrying load; racial traits; effects (e.g. feather for carry, haste-like effects).
+
+Races declare the base. Equipment and effects apply deltas or multipliers.
+
+### Attack Speed
+Governs how frequently or quickly attacks resolve.
+
+- **Base**: Primarily from AGI (finesse/speed) and weapon properties (light weapons faster than heavy).
+- **Turn-based**: May reduce "recovery" time between attacks or grant extra attacks when high (e.g. via AP economy or specific perks). Fast Shot perk gives +20% ranged speed.
+- **Action combat**: Directly affects attack recovery, combo windows, or number of attacks in a flurry. Higher speed = more actions before opponent reacts.
+- **Modifiers**: AGI, perks (Fast Shot), effects (haste/slow), weapon category/length, encumbrance.
+- Reference: AGI "movement/attack speed in action combat." Can be expressed as a percentage multiplier on base recovery.
+
+### Magic Resistance
+Reduces incoming hostile magic (damage, duration, success chance).
+
+- **Base**: WIL × 3–5 (or similar) + racial traits (e.g. Fey Ancestry).
+- **Formula reference**: `Magic Resistance % = (WIL × 4) + bonuses from equipment/effects/perks – penalties`.
+- **Application**: Flat % reduction on magic damage/effects, or bonus to resist rolls (d100 under effective WIL + MR). Can be general or per color/phase.
+- **Ties to system**: WIL already "resists hostile magic." Effects like `resist` (with parameter "magic", "undead", etc.) provide the implementation. Wuxing phases can interact (e.g. certain phases resist better against opposing colors).
+- High WIL casters are harder to shut down.
+
+### Damage Resistance (Physical & Elemental)
+Reduces incoming damage after a hit is confirmed.
+
+- **Physical DR**: Primarily from armor (base rating + material modifiers + quality/enchants). Flat subtraction or % reduction. Block skill can add temporary DR.
+  - Example: Armor provides "damage-reduction rating". Heavy armor high flat DR but speed/stealth penalties.
+- **Elemental / Phased DR**: Per Wuxing phase (wood/fire/earth/metal/water). Governed by race phase, equipment materials (phase-tagged), effects, and perks.
+  - Leverages the wuxing matrix for interactions (e.g. generating cycle amplifies resistance or weakness).
+  - Effects provide `resist` (parameter e.g. "fire", "poison", "physical", "undead"). Innate or temporary.
+- **General formula**: Incoming damage reduced by DR (flat or %). Can stack physical + specific elemental.
+- **Modifiers**: END (general toughness), armor, effects (resist_*), racial traits (Dwarven Resilience), material phase vs. incoming effect phase.
+- Note: Separate from "to-hit" (skill roll) and Block (active defense).
+
+### Other Recommended Secondary Statistics
+
+These fit the existing design (attributes + effects + Wuxing + dual combat modes + classless perks) and close gaps:
+
+- **Evasion / Dodge**: AGI-based chance or bonus to avoid being hit entirely (before armor DR). Complements Block. "Dodge vs block vs armor" is noted as a follow-up in progression.
+- **Block Value / Power**: How much damage a successful Block negates (END or block skill + shield material). Already referenced in perks (e.g. +15% damage blocked).
+- **Critical Damage Multiplier**: LCK for chance; add multiplier (e.g. 1.5× + LCK/10 or weapon-based). Currently only chance is defined.
+- **Regeneration Rates** (formal): 
+  - Mana/Stamina: "scales with WIL" – e.g. WIL × 2 per turn/round or per 6 seconds.
+  - HP: Slow natural (END-based) or effect-driven only.
+- **Encumbrance Penalty**: When carry > weight, apply speed reduction (–1 unit/move or % speed), attack penalties, skill penalties (athletics, stealth). Ties directly to Carry weight.
+- **Elemental Resistances** (explicit per phase): Even without full DR, % resist vs wood/fire/etc. damage/effects. Strong Wuxing synergy (your race phase + equipment phase + incoming effect phase via cycles).
+- **Status / Effect Resistance**: Bonus to resist specific categories (paralyze, poison, fear, charm) beyond general magic resist. Useful for effects system.
+- **Mana / Stamina Efficiency**: % reduction in resource cost for spells/actions (INT or WIL + perks/effects). Helps casters and action-combat characters.
+- **Initiative Bonus**: Already PER base + perks (Alert +10). Can be expanded with effects or racial traits for "acting first" in turn-based.
+
+These can all be implemented primarily through the existing **effect system** (innate, applied, or temporary) + attribute formulas + equipment properties. No new top-level collections needed initially — extend the effect vocabulary and document the derived formulas here.
+
+Racial `speed` and traits already provide starting points. Perks and the shared `effects` table handle most modifiers. Wuxing phases give elemental stats flavorful interactions without new mechanics.
 
 > **Note — attributes vs. element.** A character's **`phase`** (its Wuxing element)
 > comes from its **race**, not from an attribute. Attributes drive your numbers;

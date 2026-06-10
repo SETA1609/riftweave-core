@@ -260,7 +260,7 @@ narrative downtime activity tied to the level-up.
      - Breakthrough success for this item is luck-based: base chance from the item's `qualityGrade` (a petty_ember_core has a much lower success % than a refined legendary essence), modified by phase synergy (with foundation or target) and the character's Luck (LCK). Higher Luck and better grade/phase dramatically improve odds, but failure is always possible for any item.
      - On success:
        - **Attributes**: +1 (only if eligible; max +1 total this level from breakthroughs).
-       - **Skills**: bonus in the 0–10 range (grade sets the floor and ceiling; lower grades have a lower ceiling, higher grades raise both floor and ceiling). Higher grades also improve success chance on the luck roll.
+       - **Skills**: bonus in the 0–10 range using the reference tables in `advancement.md` (grade sets floor and ceiling; e.g. petty 0–2, greater 6–8, grand/legendary 8–10). Higher grades also improve success chance on the luck roll.
        - **Resources** (HP, Mana, or Stamina): the normal level-up growth for that resource is rolled first. A second "growth of a level" roll is performed for the breakthrough (same growth formula). The higher of the two rolls is used for the final growth at this level-up.
      - Wuxing cycle interactions (from `data/wuxing/core.json`) may amplify or reduce results across multiple items.
    - Apply any resulting **extra permanent bonuses** (to the selected targets) on top of the base package. See `docs/modules/advancement.md` for full resolution details.
@@ -282,7 +282,7 @@ narrative downtime activity tied to the level-up.
 - [ ] Decide whether to perform a breakthrough (do I have good cores/elixirs? Max 3 items).
 - [ ] If breakthrough: Select up to 3 items → for each, choose one governed target (attribute only if grade > common and +1 max total this level; resource or skill otherwise) → roll for luck-based success using the formula in `advancement.md` (base from grade + phase + LCK, with target-type weighting: skills easiest, then resources, then attributes hardest) → on success:
   - Attributes: +1 (if eligible).
-  - Skills: 0–10 range bonus (grade sets floor/ceiling; e.g. petty 0–2, greater 6–8, grand/legendary 8–10). Higher grades also improve success chance.
+  - Skills: 0–10 range bonus using the reference tables in `advancement.md` (grade sets floor and ceiling; e.g. petty 0–2, greater 6–8, grand/legendary 8–10). Higher grades also improve success chance.
   - Resources: second level-growth roll; take the higher of the normal growth and the breakthrough growth.
   (Wuxing may modify across items) → apply extras.
 - [ ] Update all derived stats and current pools (especially AP in TTRPG mode).
@@ -298,7 +298,7 @@ narrative downtime activity tied to the level-up.
 
 ### Open Notes on This Procedure
 
-- Exact numeric formulas for what specific bonuses a breakthrough provides (based on offered items’ grades, phases, and Wuxing interactions) are still being finalized.
+- Reference tables for success % per grade and per-target bonus ranges (0–10 for skills, second growth for resources, +1 for eligible attributes) are defined in `advancement.md`.
 - Any requirements for performing a breakthrough (e.g., safe location, time investment, special catalysts) can be added per campaign or module.
 
 ## Perks (and traits)
@@ -420,9 +420,19 @@ resources.
 | Critical chance | `1% + LCK%` (+ perks) |
 | Initiative | `PER` (+ perks such as *Alert*) |
 
+### Additional Secondary & Combat Statistics
+
+See `attributes.md` § Secondary & Combat Statistics for full details and rationale. The most relevant new or expanded ones for character sheets and engines are:
+
+- **Movement Speed** (racial base + AGI/encumbrance; exploration vs combat units or speed rating).
+- **Attack Speed** (AGI + weapon; % faster or extra actions/recovery; e.g. Fast Shot).
+- **Magic Resistance** (WIL-based; % or resist bonus via the generalized `resist` effect with parameter "magic").
+- **Physical & Elemental Damage Resistance** (armor DR + Wuxing phase resists from materials/effects).
+- **Evasion / Dodge**, **Block Value**, **Critical Damage Multiplier**, **Encumbrance Penalties**, **Elemental Resistances** (per phase), **Status Resistance**, **Mana/Stamina Efficiency**.
+
 **Combat & defense** are roll-under: an attacker rolls under their weapon skill to
 hit; armor provides a damage-reduction **rating** (and Block can negate a share of a
-blow). A full defense model (dodge vs. block vs. armor) is a follow-up.
+blow). A full defense model (dodge vs. block vs. armor) is a follow-up. Many secondary stats are delivered through the shared **effect system**.
 
 ## Open items / follow-ups
 

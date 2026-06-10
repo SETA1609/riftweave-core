@@ -36,15 +36,32 @@
       "enum": ["petty", "minor", "lesser", "common", "major", "greater", "grand", "legendary"],
       "description": "Crafting quality ladder, listed lowest to highest (common is the baseline). Shared vocabulary reused across crafting conventions (gems, and future components)."
     },
+    "entryId": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Stable numeric primary identifier for an entry within a collection (effects, skills, features/perks, races, materials, ingredients, equipment, spells, monsters, backgrounds, etc.). Used for all cross-references in the data."
+    },
     "appliedEffect": {
       "type": "object",
-      "description": "An instance of an effect drawn from the effect registry (data/effects), with its applied magnitude and duration. Shared by spells, consumables, ingredients, and enchantments.",
+      "description": "An instance of an effect drawn from the effect registry (data/effects), with its applied magnitude and duration. Shared by spells, consumables, ingredients, and enchantments. Use 'parameter' for generic effects (e.g. fortify_skill with a specific skill id, fortify_attribute with an ability, restore_resource with 'health'/'stamina'/'mana', resist with 'fire'/'poison'/'undead'/'magic'/'physical', cure with a condition, summon with a type, allergy with a material id).",
       "properties": {
-        "effect": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "Effect id from the effect registry (data/effects)" },
+        "effect": { "$ref": "#/definitions/entryId", "description": "Effect id (numeric) from the effect registry (data/effects)" },
         "magnitude": { "type": "number", "description": "Effect strength; interpreted per the effect's magnitudeUnit" },
         "duration": { "type": "number", "minimum": 0, "description": "Duration in seconds; 0 or omitted means instantaneous" },
         "target": { "type": "string", "enum": ["self", "touch", "ranged", "area", "world"], "description": "Delivery shape (used by spells); omit for consumables/ingredients, which apply to the user" },
-        "radius": { "type": "number", "minimum": 0, "description": "Area radius in meters when target is 'area'" }
+        "radius": { "type": "number", "minimum": 0, "description": "Area radius in meters when target is 'area'" },
+        "parameter": {
+          "oneOf": [
+            { "$ref": "#/definitions/entryId" },
+            { "type": "string" }
+          ],
+          "description": "For generic parameterized effects (fortify_skill, fortify_attribute, restore_resource, resist, cure, summon, phobia, allergy, etc.), specifies the subject. Use the numeric entryId when it references another collection's primary id (e.g. a skill for fortify_skill, a material for allergy). Use string for vocabulary values (e.g. 'health', 'fire', 'all', ability codes, creature categories)."
+        },
+        "durationType": {
+          "type": "string",
+          "enum": ["temporal", "unlimited"],
+          "description": "For fortify effects (especially on skills/attributes): 'unlimited' effects are normally stackable (magnitudes add). 'temporal' effects of the same type (same effect id + parameter) override each other, taking the highest magnitude as the effective value (and usually the longest duration)."
+        }
       },
       "required": ["effect"],
       "additionalProperties": false
@@ -57,6 +74,10 @@
       },
       "required": ["source"],
       "additionalProperties": false
+    },
+    "creatureCategory": {
+      "type": "string",
+      "description": "Standard categories used for phobias, creature-specific effects, and interactions (e.g. in generic 'phobia' effects). Common values: undead, beast, construct, humanoid, dragon, spirit, aberration, plant, ooze. Material ids for 'allergy' effects come from materials/core.json. These are string cross-references and not strictly schema-enforced."
     }
   }
 }

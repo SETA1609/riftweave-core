@@ -19,7 +19,11 @@
         "id": {
           "type": "integer",
           "minimum": 1,
-          "description": "The tier's rank. Graded content references this number."
+          "description": "The tier's rank (numeric entry id). Graded content references this number."
+        },
+        "key": {
+          "type": "string",
+          "description": "Symbolic key for the tier (e.g. 'common'). Optional for backward compatibility with tier data."
         },
         "name": {
           "type": "string",

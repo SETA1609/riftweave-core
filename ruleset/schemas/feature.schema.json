@@ -16,8 +16,9 @@
     "feature": {
       "type": "object",
       "properties": {
-        "id": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
-        "name": { "type": "string" },
+        "id": { "$ref": "schema.json#/definitions/entryId" },
+        "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "Symbolic snake_case key (the old string id) for human readability when editing JSON." },
+        "label": { "type": "string", "description": "Human-readable display name with spaces and capitalization." },
         "description": { "type": "string" },
         "source": { "$ref": "schema.json#/definitions/sourceRef" },
         "type": {
@@ -46,8 +47,8 @@
             },
             "perks": {
               "type": "array",
-              "description": "Prerequisite perk ids that must already be owned",
-              "items": { "type": "string" }
+              "description": "Prerequisite perk ids (numeric entryId) that must already be owned",
+              "items": { "$ref": "schema.json#/definitions/entryId" }
             },
             "other": { "type": "string" }
           },
@@ -65,15 +66,33 @@
             "properties": {
               "type": { "type": "string" },
               "description": { "type": "string" },
-              "target": { "type": "string" },
-              "value": {}
+              "target": {
+                "description": "When the bonus/penalty is delivered via a registered effect (e.g. fortify_skill, resist, phobia), this is the numeric effect id. For ad-hoc bonus targets (hp_max, melee_damage, persuasion, etc.) it is a string key.",
+                "oneOf": [
+                  { "$ref": "schema.json#/definitions/entryId" },
+                  { "type": "string" }
+                ]
+              },
+              "value": {},
+              "parameter": {
+                "oneOf": [
+                  { "$ref": "schema.json#/definitions/entryId" },
+                  { "type": "string" }
+                ],
+                "description": "For generic parameterized effects (e.g. 'resist', 'restore_resource', 'fortify_attribute', 'phobia', 'allergy', 'cure'), specifies the subject. Use numeric entryId when referencing another collection's id (skill, material, etc.); string for vocabulary values."
+              },
+              "durationType": {
+                "type": "string",
+                "enum": ["temporal", "unlimited"],
+                "description": "For fortify effects on skills/attributes/resources: 'unlimited' are stackable (additive magnitudes for permanent traits). 'temporal' override with the highest magnitude."
+              }
             },
             "required": ["type", "description"],
             "additionalProperties": false
           }
         }
       },
-      "required": ["id", "name", "description", "type"],
+      "required": ["id", "key", "label", "description", "type"],
       "additionalProperties": false
     }
   }
