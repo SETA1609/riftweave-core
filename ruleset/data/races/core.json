@@ -12,8 +12,8 @@
       "size": "medium",
       "abilityModifiers": { "cha": 1, "lck": 1 },
       "traits": [
-        { "id": "human_versatility", "name": "Versatility", "description": "You begin with one additional tag skill." },
-        { "id": "human_ambition", "name": "Ambition", "description": "You may take one bonus perk at 1st level (any perk whose prerequisites you already meet)." }
+        { "id": 1, "label": "Versatility" },
+        { "id": 2, "label": "Ambition" }
       ]
     },
 
@@ -28,9 +28,9 @@
       "size": "medium",
       "abilityModifiers": { "agi": 1, "int": 1, "end": -1 },
       "traits": [
-        { "id": "elf_darkvision", "name": "Darkvision", "description": "You can see in dim light as if it were bright light, and in darkness as if it were dim light, out to 18 meters." },
-        { "id": "elf_fey_ancestry", "name": "Fey Ancestry", "description": "You resist charm and mind-affecting magic, and cannot be magically put to sleep." },
-        { "id": "elf_keen_senses", "name": "Keen Senses", "description": "+10 to detection (Perception) checks." }
+        { "id": 3, "label": "Darkvision" },
+        { "id": 4, "label": "Fey Ancestry" },
+        { "id": 5, "label": "Keen Senses" }
       ]
     },
     {
@@ -50,7 +50,7 @@
       "phase": "wood",
       "abilityModifiers": { "per": 1 },
       "traits": [
-        { "id": "green_elf_woodland_stride", "name": "Woodland Stride", "description": "Difficult terrain of plants and undergrowth costs you no extra movement." }
+        { "id": 6, "label": "Woodland Stride" }
       ]
     },
     {
@@ -62,8 +62,8 @@
       "phase": "water",
       "abilityModifiers": { "agi": 1, "cha": -1 },
       "traits": [
-        { "id": "black_elf_sunless_sight", "name": "Sunless Sight", "description": "Your darkvision extends to 36 meters, but you have disadvantage on checks in bright sunlight." },
-        { "id": "black_elf_shadowmeld", "name": "Shadowmeld", "description": "+10 to stealth while in dim light or darkness." }
+        { "id": 7, "label": "Sunless Sight" },
+        { "id": 8, "label": "Shadowmeld" }
       ]
     },
 
@@ -78,9 +78,9 @@
       "size": "medium",
       "abilityModifiers": { "end": 2, "str": 1, "agi": -1 },
       "traits": [
-        { "id": "dwarf_darkvision", "name": "Darkvision", "description": "You can see in dim light as if it were bright light, and in darkness as if it were dim light, out to 18 meters." },
-        { "id": "dwarf_resilience", "name": "Dwarven Resilience", "description": "You resist poison and disease, taking reduced damage from both." },
-        { "id": "dwarf_stoneworker", "name": "Stoneworker", "description": "+10 to Repair and crafting checks." }
+        { "id": 9, "label": "Darkvision" },
+        { "id": 10, "label": "Dwarven Resilience" },
+        { "id": 11, "label": "Stoneworker" }
       ]
     },
     {
@@ -100,7 +100,7 @@
       "phase": "earth",
       "abilityModifiers": { "wil": 1 },
       "traits": [
-        { "id": "hill_dwarf_toughness", "name": "Dwarven Toughness", "description": "Your hit point maximum increases by 1 per level." }
+        { "id": 12, "label": "Dwarven Toughness" }
       ]
     },
     {
@@ -112,7 +112,7 @@
       "phase": "metal",
       "abilityModifiers": { "str": 1 },
       "traits": [
-        { "id": "mountain_dwarf_armor_training", "name": "Mountain Armor Training", "description": "You are proficient with light and medium armor." }
+        { "id": 13, "label": "Mountain Armor Training" }
       ]
     },
 
@@ -123,7 +123,7 @@
       "description": "A TEMPLATE, not a race you play. It defines the shape of anthropomorphic beastfolk so users can author their own kin (catman, wolfman, ratman, …). Kin are SISTERS: each declares its own phase, attributes, speed, size, and traits, and need share nothing mechanical with the others — only the template's shape and the 'beastfolk' kinship.",
       "lineage": { "role": "template" },
       "traits": [
-        { "id": "beastfolk_kinship", "name": "Beastfolk", "description": "Marks the race as beastfolk. A kin typically defines natural-weapon and heightened-sense traits, but no values are inherited from the template or from sibling kin." }
+        { "id": 14, "label": "Beastfolk" }
       ]
     },
     {
@@ -137,8 +137,8 @@
       "size": "medium",
       "abilityModifiers": { "agi": 2, "per": 1, "wil": -1 },
       "traits": [
-        { "id": "catman_claws", "name": "Retractable Claws", "description": "Your claws are natural weapons dealing 1d6 slashing damage." },
-        { "id": "catman_landing", "name": "Cat's Landing", "description": "You take no damage from falls of 6 meters or less and always land on your feet." }
+        { "id": 15, "label": "Retractable Claws" },
+        { "id": 16, "label": "Cat's Landing" }
       ]
     },
     {
@@ -152,8 +152,8 @@
       "size": "medium",
       "abilityModifiers": { "str": 1, "end": 1, "int": -1 },
       "traits": [
-        { "id": "wolfman_pack_tactics", "name": "Pack Tactics", "description": "+10 to attack checks against a foe that an ally is also engaging." },
-        { "id": "wolfman_keen_smell", "name": "Keen Smell", "description": "+10 to detection checks that rely on scent." }
+        { "id": 17, "label": "Pack Tactics" },
+        { "id": 18, "label": "Keen Smell" }
       ]
     }
   ]

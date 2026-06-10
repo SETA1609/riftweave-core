@@ -23,7 +23,7 @@ A background lives in `data/backgrounds/core.json` and is validated by `backgrou
 
 ### Fields
 
-- `id`, `name`, `description`, optional `source` — standard.
+- `id` (integer), `key`, `label`, `description`, optional `source` — standard (new ID convention).
 - `category` — loose string for grouping (wilderness, military, arcane, criminal, noble, religious, scholarly, merchant, etc.). Not mechanically enforced.
 - `skill_bonuses` — array of `{ skill, bonus }`. The `bonus` (typically 6–12) is added once at creation after the normal attribute-seeded base is calculated. These are permanent starting ranks.
 - `starting_equipment` — array of `{ item, quantity? }`. Item ids reference any equipment collection (weapons, armor, consumables). The engine is responsible for actually adding the items to the character's inventory.
@@ -32,7 +32,7 @@ A background lives in `data/backgrounds/core.json` and is validated by `backgrou
 - `wealth_bonus` — extra gp added to whatever the campaign's normal starting wealth is (the reference baseline is 100 gp + kit).
 - `suggested_tag_skills` — purely advisory list. Helps players make coherent tag choices that reinforce the background.
 
-All cross-references (skills, spells, equipment, features) are by stable string ID and are **not** enforced by JSON Schema.
+All cross-references (skills, spells, equipment, features) are by the target's stable numeric `id` (from its collection) and are **not** enforced by JSON Schema. The `key` of the target collection is still useful for human readability.
 
 ### Interaction with the rest of creation
 
@@ -130,10 +130,10 @@ Here are concrete, ready-to-use backgrounds plus additional ideas for expansion.
 | Concern              | File                              | Schema                        |
 |----------------------|-----------------------------------|-------------------------------|
 | Background definitions | `data/backgrounds/core.json`     | `background.schema.json` (new) |
-| Skill references     | `data/skills/core.json`           | — (string IDs)                |
-| Spell references     | `data/spells/core.json`           | — (string IDs)                |
-| Equipment references | `data/equipment/*.json`           | — (string IDs)                |
-| Feature references   | `data/features/core.json`         | — (string IDs)                |
+| Skill references     | `data/skills/core.json`           | — (numeric id)                |
+| Spell references     | `data/spells/core.json`           | — (numeric id)                |
+| Equipment references | `data/equipment/*.json`           | — (numeric id)                |
+| Feature references   | `data/features/core.json`         | — (numeric id)                |
 | Shared vocabulary    | `schemas/schema.json`             | (sourceRef, etc.)             |
 
 See also:

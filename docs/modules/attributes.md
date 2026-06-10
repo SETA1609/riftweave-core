@@ -230,12 +230,97 @@ These fit the existing design (attributes + effects + Wuxing + dual combat modes
 - **Encumbrance Penalty**: When carry > weight, apply speed reduction (–1 unit/move or % speed), attack penalties, skill penalties (athletics, stealth). Ties directly to Carry weight.
 - **Elemental Resistances** (explicit per phase): Even without full DR, % resist vs wood/fire/etc. damage/effects. Strong Wuxing synergy (your race phase + equipment phase + incoming effect phase via cycles).
 - **Status / Effect Resistance**: Bonus to resist specific categories (paralyze, poison, fear, charm) beyond general magic resist. Useful for effects system.
-- **Mana / Stamina Efficiency**: % reduction in resource cost for spells/actions (INT or WIL + perks/effects). Helps casters and action-combat characters.
-- **Initiative Bonus**: Already PER base + perks (Alert +10). Can be expanded with effects or racial traits for "acting first" in turn-based.
 
-These can all be implemented primarily through the existing **effect system** (innate, applied, or temporary) + attribute formulas + equipment properties. No new top-level collections needed initially — extend the effect vocabulary and document the derived formulas here.
+### Resistance System (General, Disease & Poison)
 
-Racial `speed` and traits already provide starting points. Perks and the shared `effects` table handle most modifiers. Wuxing phases give elemental stats flavorful interactions without new mechanics.
+A character's resistance to harmful effects, damage types, and conditions is derived primarily from attributes (especially END and WIL), modified by race, equipment, perks, and the shared effect system.
+
+**Base Formulas (reference):**
+- **General Physical / Poison / Disease Resistance**: `END × 5 + bonuses` (as % reduction or bonus to d100 resistance roll). END governs toughness against physical harm, toxins, and illness.
+- **Magic Resistance**: `WIL × 4 + bonuses` (as above). WIL governs mental and arcane resilience.
+- **Per-type / Phased Resistance**: Handled via `resist` effects with `parameter` (e.g. "poison", "fire", "undead", "physical", or Wuxing phase). These stack with or override base.
+- **Status Resistance** (paralyze, fear, disease, poison): `END × 3 + specific bonuses` (e.g. from Dwarven Resilience or creation perks). Reduces chance or severity of application.
+
+**At Character Creation** (see character-creation.md):
+- Start with base from final END/WIL after racial + creation perk modifiers.
+- Add flat % or roll bonuses from race traits, backgrounds, and creation perks (modeled as innate `resist` effects with appropriate `parameter` and `value` as %).
+- Example: A dwarf with END 8 starts with ~40 base disease/poison resistance + 25% from racial trait.
+
+**Resolution**:
+- When exposed to a disease or poison (via effect application, injury, contact), make a d100 roll under (base resistance + modifiers).
+- Success: effect is negated, reduced in magnitude, or delayed.
+- Failure: full effect applied (often as damage/drain/control effects over time or with duration).
+- Wuxing phase of the disease/poison vs character's phase can amplify/weaken via cycles.
+- Ongoing diseases may require periodic resistance rolls.
+
+Resistances are a core part of character sheet and creation — they make END and certain racial/creation choices meaningful for survival and exploration play.
+
+### Disease System
+
+Diseases are persistent harmful conditions, often contracted through contact, injury, or specific effects (e.g. monster abilities, blighted areas, poor hygiene). They are modeled using the shared `effects` system but form a distinct "system" for resolution and progression.
+
+**Core Mechanics**:
+- **Contraction**: Triggered by failing a resistance roll against a disease effect (see Resistance System). Common vectors: poison channel, contact with diseased creatures, contaminated food/water, or environmental effects.
+- **Incubation**: Optional delay (hours to days, represented by effect `duration` or separate timer).
+- **Symptoms**: Applied as one or more effects (typically `damage_health`, `drain_stamina`, `damage_attribute`, `control` like fatigue or paralysis). Severity scales with the disease's magnitude or stage.
+- **Progression**: Periodic checks (e.g. daily or per rest) or fixed duration. Failing resistance may worsen symptoms (increase magnitude) or spread (contagion tag).
+- **Resistance**: As above — END-based + specific disease resistance bonuses. High resistance can prevent contraction or reduce severity.
+- **Cure**: Via `cure` effect with `parameter` "disease" or specific (e.g. "blight"). Also herbal remedies, rest in clean conditions, or magic. Some diseases may require specific cures or have permanent effects if untreated.
+- **Wuxing Interaction**: A disease's phase (often wood for blight/growth-related) interacts with the victim's phase.
+
+**Sample Diseases** (defined in `effects/core.json` as reusable effects with `category: "control"`, `tags: ["disease"]`, and `channels` including "innate", "poison"):
+- Blight: Drains vitality (damage_health over time), wood phase. Common in blighted regions or from undead/plants.
+- Fever: Drains stamina and causes weakness (drain_stamina + damage_attribute "end").
+- Plague: Highly contagious, high magnitude damage + attribute drain.
+
+**In Character Creation**:
+- Racial traits and creation perks can grant starting resistance bonuses (e.g. Dwarven Resilience: +25% poison/disease resistance modeled as innate `resist` effect with parameter "poison" / "disease").
+- Backgrounds or perks may provide immunity or vulnerability.
+- Calculate base disease resistance from END + bonuses as part of derived stats (step 8 in character-creation).
+
+Diseases add risk to exploration and survival play, making END and resistance choices meaningful beyond combat.
+
+### Poison System
+
+Poisons are fast-acting harmful substances, typically delivered via weapons (coating), traps, consumables, or monster attacks. Like diseases, they leverage the effects system but have distinct delivery and timing.
+
+**Core Mechanics**:
+- **Application**: Via "poison" channel (e.g. `coating` on weapons, `poison` delivery in consumables, or direct effect). On hit or consumption, the target makes a resistance roll.
+- **Resistance**: END-based (poison resistance) + bonuses. Success may negate, halve magnitude, or shorten duration.
+- **Effects**: Usually immediate or short-term `damage_health`, `drain_stamina`, `damage_attribute`, `control` (paralyze, weakness). Magnitude determines strength; duration for lingering.
+- **Duration & Stages**: Instant damage or over-time (DoT). Some have stages (e.g. initial damage, then secondary effect if untreated).
+- **Cure**: `cure` effect with parameter "poison" (antidotes, alchemy remedies). Time or rest may also mitigate weak poisons.
+- **Wuxing**: Poison phase (often wood or earth) vs victim phase.
+- **Delivery Channels**: Explicit in effects (poison, coating) and equipment (poisons as consumables with delivery "apply_weapon").
+
+**Sample Poisons** (in `effects/core.json` with `tags: ["poison"]`, channels including "poison", "coating"):
+- Weakness Poison: Drains stamina and strength (drain_stamina + damage_attribute "str").
+- Paralytic Poison: Applies `paralyze` effect (already in effects, usable via poison channel).
+- Health Drain Poison: Direct `damage_health` over short duration.
+
+**In Character Creation**:
+- Same as disease: base poison resistance from END + racial/creation bonuses (e.g. creation perks like Undead Phobia or Silver Sensitivity grant % resistance via `resist` effects).
+- Some creation perks or backgrounds grant poison kits or vulnerabilities.
+- Poisons tie into Alchemy skill for brewing (see alchemy.md) and combat (coatings).
+
+Poisons make weapons and consumables dangerous, rewarding resistance investment and cure preparation. They interact with the generalized `resist` and `cure` effects for consistency.
+
+**Poison, diseases, and resistances are handled entirely as effects from the shared registry (`data/effects/core.json`).**
+
+- **Resistances**: The generalized `resist` effect (id 19) with `parameter` for the type ("poison", "disease", "physical", "magic", Wuxing phase, "undead", etc.) and `value` as the % reduction or bonus to resistance rolls. These are granted as innate effects (channel "innate") at creation via race traits (e.g. Dwarven Resilience), backgrounds, or creation perks (see `features/core.json` and `traits/core.json`, which reference the resist effect by id with the appropriate parameter).
+- **Diseases**: Specific effects tagged ["disease"] (e.g. blight id 40, fever id 41, plague id 42 in effects/core.json), typically category "control" or "damage", long duration, symptoms delivered as other effects (damage_health, drain_*, control). Applied on exposure (failed resistance or via poison channel/spell). Cured via the generalized `cure` effect (id 20) with `parameter` "disease" or specific (e.g. "blight").
+- **Poisons**: Handled via effects tagged ["poison"] or the generic `poison` effect (id 46). These use "poison" or "coating" channels. The generic poison (and specific poison entries) can list `sub_effects` (array of other effect IDs) which are applied as the symptoms/payload when the poison takes hold (e.g. sub_effects: [5] for damage_health, [6] for damage_stamina, [11] for paralyze). This allows recursive application of other effects (damage, drain, control, etc.) as symptoms. However, a poison effect MUST NOT list any other effect tagged "poison" in its sub_effects (enforced in data and documented to prevent infinite recursion or self-poisoning). Specific poisons (e.g. poison_paralytic id 43 with sub_effects [11], etc.) are concrete instances using the generic mechanism. Applied via weapon coatings, consumables, or monster attacks. Cured via `cure` with `parameter` "poison". Resistance via `resist` effect with parameter "poison".
+
+The full systems (resistance checks on exposure using d100 under base resistance from attributes + resist effect bonuses; symptoms as applied effects; progression and contagion via duration/tags; cures; Wuxing phase interactions) are all implemented through the effects system for consistency with spells, alchemy, monsters, and perks. No separate top-level collections for "diseases" or "poisons" — they are effects.
+
+**In Character Creation** (see `character-creation.md`):
+- Base resistance calculated from END (for poison/disease/physical) and WIL (for magic/status), plus bonuses granted as the resist effects (id 19 with parameter).
+- Creation perks and racial traits (in traits/core.json) grant these resist effects explicitly (e.g. Undead Phobia and Dwarven Resilience grant resist for "poison" and "disease").
+- The systems are part of derived stats and make END and certain creation choices meaningful for survival.
+
+See the sample effects in `effects/core.json` and the resist/cure generalized effects (ids 19 and 20) for the building blocks. The "other 3 points in #5" (full derived stats, encumbrance, light/vision) are deferred.
+
+(The "Other Recommended Secondary Statistics" and formula sections above provide the attribute baselines that feed into these effect-based systems.)
 
 > **Note — attributes vs. element.** A character's **`phase`** (its Wuxing element)
 > comes from its **race**, not from an attribute. Attributes drive your numbers;
@@ -265,3 +350,5 @@ Racial `speed` and traits already provide starting points. Perks and the shared 
   reach; the ruleset leaves it concentrated by design.
 - **Above-10 attributes.** Racial and creation-perk stacking can exceed 10; whether a game caps
   the effective value is left to the game.
+
+**Note**: The Resistance, Disease, and Poison systems (detailed above) have been implemented as full mechanics tied to character creation. They close several of the prior gaps in #5. The remaining points in #5 (complete derived stats formulas, encumbrance rules, and light/vision systems) are deferred per instructions and will be addressed after these.

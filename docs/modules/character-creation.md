@@ -102,12 +102,12 @@ Currently available:
 | **Fast Shot** | ranged attacks 20% faster | no aimed/targeted shots |
 | **Small Frame** | +1 Agility | −25% carrying capacity |
 | **Genius** | +1 tag skill | −15 starting skill points |
-| **Undead Phobia** | +2 WIL + 25% disease/poison resistance | −20% attack & damage vs undead |
+| **Undead Phobia** | +2 WIL + 25% disease/poison resistance (via innate `resist` effects) | −20% attack & damage vs undead |
 | **Beast Phobia** | +1 STR + 10 starting ranks in Animal Handling | Major combat & survival penalties vs beasts |
 | **Leather Allergy** | +1 END + 15% defense when wearing metal armor | Cannot equip leather/hide armor (or severe penalties) |
 | **Iron Allergy** | +10% magic effect magnitude + strong exotic material affinity | −25% effectiveness with iron/steel weapons & armor |
-| **Silver Sensitivity** | +30% resistance to undead/unholy + chance to absorb hostile magic | Extra damage from silver weapons; cannot benefit from silver gear |
-| **Arcane Phobia** | +20% resistance to hostile magic + improved spell absorption | −15% effectiveness vs constructs and magically-animated beings |
+| **Silver Sensitivity** | +30% resistance to undead/unholy + chance to absorb hostile magic (via `resist` + `spell_absorption`) | Extra damage from silver weapons; cannot benefit from silver gear |
+| **Arcane Phobia** | +20% resistance to hostile magic + improved spell absorption (via `resist` + `spell_absorption`) | −15% effectiveness vs constructs and magically-animated beings |
 
 Take **0–2** (suggested cap: 2). Their attribute bonuses apply now, alongside the
 racial modifiers, and may exceed the normal caps. (*Genius* adds to your tag-skill
@@ -187,6 +187,22 @@ From your final attributes (`progression.md` § Derived statistics), at `level =
 | Mana | `INT × 8 + level × 2` (regen via WIL) | `2 + INT × 8` |
 | Stamina *(action combat)* | `15 + END × 5 + level × 2` (regen via WIL) | `17 + END × 5` |
 | Action Points *(turn-based)* | Max 10 pool; carries over between turns but cannot exceed 10. Starting pool is typically 2 + floor(AGI / 3) or set by the GM at the start of play. | — |
+
+**Resistance, Disease & Poison (new full systems — see `attributes.md` for complete rules):**
+
+- **Base Disease/Poison Resistance**: `END × 5 + bonuses` (as % reduction or d100 roll bonus). Add flat bonuses from race traits, backgrounds, and creation perks (implemented as innate `resist` effects with parameter "poison" or "disease" and value as %).
+  - Example: Dwarf (END 8 base + racial) starts with ~40 + 25% = 65% base disease/poison resistance.
+  - Magic/Status Resistance: `WIL × 4 + bonuses` (for magic, paralyze, fear, etc.). Per-type via `resist` effects (parameter "magic", "undead", phases, etc.).
+- **Disease System**: Exposure (failed resistance roll vs disease effect) leads to incubation (duration), symptoms (applied as damage/drain/control effects), and possible progression/contagion. Periodic resistance rolls (e.g. daily) to fight it off. Cure via `cure` effect (parameter "disease" or specific like "blight").
+  - Samples in effects: Blight (wood-phase vitality drain), Fever (stamina/END drain), Plague (severe contagious damage).
+  - At creation: Calculate base from END + bonuses. Some creation perks (e.g. Undead Phobia, Silver Sensitivity) or racial traits grant starting % resistance or vulnerabilities.
+- **Poison System**: Delivered via "poison" channel (coatings, consumables, monster attacks). Resistance roll on application to negate/reduce. Poisons are effects tagged ["poison"] (or the generic `poison` effect id 46) that can generically apply other effects via their `sub_effects` array (the symptoms: damage, drain, control like paralyze). This supports recursive application of non-poison effects as payload. However, sub_effects of a poison must not include any effect with "poison" tag (to prevent recursion). 
+  - Samples: poison_paralytic (sub_effects: [11] paralyze), poison_weakness (sub_effects: [6] damage_stamina), poison_health_drain (sub_effects: [5] damage_health). The generic poison (id 46) provides the mechanism for custom/generic poisons.
+  - At creation: Same base resistance calc as disease. Alchemy skill and poison kits from backgrounds enable brewing/preparation. Creation perks can provide resistance or poison-related benefits/drawbacks (granted as resist effects with parameter "poison").
+
+These systems make END and certain creation choices (race, perks) matter for survival and exploration, not just combat. Full resolution (d100 under resistance vs potency/DC from effect magnitude) and Wuxing interactions are detailed in `attributes.md`. Add your final resistance values to the character sheet as part of derived stats. 
+
+(The other 3 points in character creation — full derived stats formulas beyond the basics above, encumbrance rules, and light/vision systems — will be expanded after these three systems are complete, per your direction.)
 | Carry weight | `25 + STR × 10` | — |
 | Critical chance | `1% + LCK%` | — |
 | Initiative | `PER` | — |

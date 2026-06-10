@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Trait",
+  "description": "A trait or feature granted by a race, lineage, or ancestry. Traits are atomic and reusable across races (e.g. Darkvision, Fey Ancestry).",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "traits": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/trait" }
+    }
+  },
+  "required": ["traits"],
+  "additionalProperties": false,
+  "definitions": {
+    "trait": {
+      "type": "object",
+      "properties": {
+        "id": { "$ref": "schema.json#/definitions/entryId" },
+        "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "Stable symbolic identifier (snake_case)." },
+        "label": { "type": "string", "description": "Human-readable name of the trait." },
+        "description": { "type": "string" },
+        "source": { "$ref": "schema.json#/definitions/sourceRef" }
+      },
+      "required": ["id", "key", "label", "description"],
+      "additionalProperties": false
+    }
+  }
+}

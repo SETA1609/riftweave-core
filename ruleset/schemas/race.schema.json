@@ -67,14 +67,14 @@
         },
         "traits": {
           "type": "array",
+          "description": "List of traits granted or defined by this race entry. Each item references a trait from the global traits registry (data/traits) by its numeric id. The label is duplicated here for readability when viewing the race data. For parent races these are the base traits; for subraces and kin these are the traits they specifically provide or override.",
           "items": {
             "type": "object",
             "properties": {
-              "id": { "type": "string" },
-              "name": { "type": "string" },
-              "description": { "type": "string" }
+              "id": { "$ref": "schema.json#/definitions/entryId" },
+              "label": { "type": "string", "description": "Human-readable label of the trait (duplicated from the traits registry for convenience)." }
             },
-            "required": ["id", "name", "description"],
+            "required": ["id", "label"],
             "additionalProperties": false
           }
         }

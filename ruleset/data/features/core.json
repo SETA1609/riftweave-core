@@ -35,7 +35,7 @@
       "description": "You put your whole body behind each swing, dealing extra melee damage.",
       "type": "perk",
       "category": "combat",
-      "prerequisite": { "abilities": { "str": 6 }, "skills": { "1": 40 } },
+      "prerequisite": { "abilities": { "str": 6 }, "skills": [ { "id": 1, "label": "Blades", "min": 40 } ] },
       "ranks": 1,
       "effects": [
         { "type": "bonus", "description": "+25% melee weapon damage", "target": "melee_damage", "value": 0.25 }
@@ -48,7 +48,7 @@
       "description": "Your aim finds the gaps. Ranged attacks land critical hits more often.",
       "type": "perk",
       "category": "combat",
-      "prerequisite": { "abilities": { "per": 6 }, "skills": { "5": 40 } },
+      "prerequisite": { "abilities": { "per": 6 }, "skills": [ { "id": 5, "label": "Marksmanship", "min": 40 } ] },
       "ranks": 1,
       "effects": [
         { "type": "bonus", "description": "+10% ranged critical chance", "target": "ranged_crit_chance", "value": 10 }
@@ -61,7 +61,7 @@
       "description": "You turn a shield into a fortress, blocking a greater share of incoming damage.",
       "type": "perk",
       "category": "combat",
-      "prerequisite": { "abilities": { "end": 6 }, "skills": { "6": 40 } },
+      "prerequisite": { "abilities": { "end": 6 }, "skills": [ { "id": 6, "label": "Block", "min": 40 } ] },
       "ranks": 1,
       "effects": [
         { "type": "bonus", "description": "+15% damage blocked", "target": "block_amount", "value": 0.15 }
@@ -74,7 +74,7 @@
       "description": "Flame answers your call more fiercely, increasing the damage of Red Magic.",
       "type": "perk",
       "category": "magic",
-      "prerequisite": { "skills": { "7": 50 } },
+      "prerequisite": { "skills": [ { "id": 7, "label": "Red Magic", "min": 50 } ] },
       "ranks": 2,
       "effects": [
         { "type": "bonus", "description": "+15% Red Magic effect magnitude per rank", "target": "red_magic_magnitude", "value": 0.15 }
@@ -87,7 +87,7 @@
       "description": "You move like a shadow, far harder to detect while sneaking.",
       "type": "perk",
       "category": "stealth",
-      "prerequisite": { "abilities": { "agi": 6 }, "skills": { "16": 50 } },
+      "prerequisite": { "abilities": { "agi": 6 }, "skills": [ { "id": 16, "label": "Stealth", "min": 50 } ] },
       "ranks": 1,
       "effects": [
         { "type": "bonus", "description": "-25% chance to be detected while sneaking", "target": "detection_chance", "value": -0.25 }
@@ -100,7 +100,7 @@
       "description": "Your words open doors and purses alike, improving persuasion and barter prices.",
       "type": "perk",
       "category": "social",
-      "prerequisite": { "abilities": { "cha": 6 }, "skills": { "19": 50 } },
+      "prerequisite": { "abilities": { "cha": 6 }, "skills": [ { "id": 19, "label": "Persuasion", "min": 50 } ] },
       "ranks": 1,
       "effects": [
         { "type": "bonus", "description": "+10 to persuasion checks", "target": "persuasion", "value": 10 },
@@ -114,7 +114,7 @@
       "description": "Your mundane healing is markedly more effective.",
       "type": "perk",
       "category": "survival",
-      "prerequisite": { "skills": { "27": 40 } },
+      "prerequisite": { "skills": [ { "id": 27, "label": "Medicine", "min": 40 } ] },
       "ranks": 1,
       "effects": [
         { "type": "bonus", "description": "+50% healing from Medicine", "target": "medicine_healing", "value": 0.5 }
@@ -178,7 +178,9 @@
       "effects": [
         { "type": "penalty", "description": "Significant combat penalties against the undead", "target": 22, "parameter": "undead", "value": 1 },
         { "type": "bonus", "description": "+2 Willpower", "target": 32, "parameter": "wil", "value": 2, "durationType": "unlimited" },
-        { "type": "bonus", "description": "Reduces damage and effects from undead", "target": 19, "parameter": "undead", "value": 0.25 }
+        { "type": "bonus", "description": "Reduces damage and effects from undead", "target": 19, "parameter": "undead", "value": 0.25 },
+        { "type": "bonus", "description": "25% resistance to poison and disease", "target": 19, "parameter": "poison", "value": 0.25, "durationType": "unlimited" },
+        { "type": "bonus", "description": "25% resistance to poison and disease", "target": 19, "parameter": "disease", "value": 0.25, "durationType": "unlimited" }
       ]
     },
     {

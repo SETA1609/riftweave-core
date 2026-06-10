@@ -41,9 +41,18 @@
               "additionalProperties": { "type": "integer", "minimum": 1, "maximum": 10 }
             },
             "skills": {
-              "type": "object",
-              "description": "Minimum skill values, keyed by skill id (e.g. { \"red_magic\": 50 })",
-              "additionalProperties": { "type": "integer", "minimum": 1, "maximum": 100 }
+              "type": "array",
+              "description": "Minimum skill values. Each item references a skill by its numeric id (from skills/core.json). The label is duplicated for readability. The 'min' field is the required value.",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": { "$ref": "schema.json#/definitions/entryId" },
+                  "label": { "type": "string", "description": "Human-readable label of the skill (duplicated from the skills registry for convenience)." },
+                  "min": { "type": "integer", "minimum": 1, "maximum": 100 }
+                },
+                "required": ["id", "label", "min"],
+                "additionalProperties": false
+              }
             },
             "perks": {
               "type": "array",
