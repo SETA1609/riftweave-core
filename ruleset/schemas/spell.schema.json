@@ -16,8 +16,9 @@
     "spell": {
       "type": "object",
       "properties": {
-        "id": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
-        "name": { "type": "string" },
+        "id": { "$ref": "schema.json#/definitions/entryId" },
+        "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "Symbolic snake_case key (the old string id) for human readability when editing JSON." },
+        "label": { "type": "string", "description": "Human-readable display name with spaces and capitalization." },
         "description": { "type": "string" },
         "source": { "$ref": "schema.json#/definitions/sourceRef" },
         "color": { "$ref": "schema.json#/definitions/color" },
@@ -32,14 +33,14 @@
           "properties": {
             "mana": { "type": "integer", "minimum": 0 },
             "stamina": { "type": "integer", "minimum": 0 },
-            "reagents": { "type": "array", "items": { "type": "string" } }
+            "reagents": { "type": "array", "items": { "$ref": "schema.json#/definitions/entryId" }, "description": "Ingredient ids (numeric) used as reagents for this spell" }
           },
           "additionalProperties": false
         },
         "cooldown": { "type": "number", "minimum": 0, "description": "Cooldown in seconds" },
         "custom": { "type": "boolean", "description": "True for player-made (spellmaking) spells; false or omitted for authored content" }
       },
-      "required": ["id", "name", "description", "color", "effects"],
+      "required": ["id", "key", "label", "description", "color", "effects"],
       "additionalProperties": false
     }
   }

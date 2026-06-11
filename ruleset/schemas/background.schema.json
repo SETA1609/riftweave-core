@@ -1,0 +1,114 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Background",
+  "description": "A background represents a character's prior life, training, or origin. Backgrounds are chosen at character creation and grant a package of starting skill bonuses, equipment, spells, and minor features. They provide flavorful competence and concrete starting gear without consuming the character's normal level-1 skill point pool or tag choices.",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "backgrounds": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/background" }
+    }
+  },
+  "required": ["backgrounds"],
+  "additionalProperties": false,
+  "definitions": {
+    "background": {
+      "type": "object",
+      "properties": {
+        "id": { "$ref": "schema.json#/definitions/entryId" },
+        "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "Symbolic snake_case key (the old string id) for human readability when editing JSON." },
+        "label": { "type": "string", "description": "Human-readable display name with spaces and capitalization." },
+        "description": { "type": "string" },
+        "source": { "$ref": "schema.json#/definitions/sourceRef" },
+        "category": {
+          "type": "string",
+          "description": "Loose organizational tag for grouping on sheets and in UIs (e.g. wilderness, military, arcane, criminal, noble, scholarly, religious, merchant)"
+        },
+        "skill_bonuses": {
+          "type": "array",
+          "description": "One-time flat bonuses added to the normal skill base (5 + associatedAbility × 2) at character creation. These do not count against the level-1 skill point pool and do not affect tag skill ratios.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "skill": {
+                "oneOf": [
+                  { "$ref": "schema.json#/definitions/entryId" },
+                  { "type": "string" }
+                ],
+                "description": "Skill id (numeric) or key from skills/core.json"
+              },
+              "bonus": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 30,
+                "description": "Flat ranks added to the skill at creation (typical useful range 8-15)"
+              }
+            },
+            "required": ["skill", "bonus"],
+            "additionalProperties": false
+          }
+        },
+        "starting_equipment": {
+          "type": "array",
+          "description": "Items granted at creation. References equipment ids from equipment/weapons.json, equipment/armor.json, or equipment/consumables.json (plus any future equipment types). Quantities default to 1 if omitted.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "item": {
+                "oneOf": [
+                  { "$ref": "schema.json#/definitions/entryId" },
+                  { "type": "string" }
+                ],
+                "description": "Equipment id (numeric) or key from the equipment files"
+              },
+              "quantity": {
+                "type": "integer",
+                "minimum": 1,
+                "default": 1
+              }
+            },
+            "required": ["item"],
+            "additionalProperties": false
+          }
+        },
+        "starting_spells": {
+          "type": "array",
+          "description": "Spells the character begins knowing. These are granted regardless of current skill level (though casting them effectively still requires investment in the governing <color>_magic skill). References spells/core.json by id.",
+          "items": {
+            "oneOf": [
+              { "$ref": "schema.json#/definitions/entryId" },
+              { "type": "string" }
+            ]
+          }
+        },
+        "granted_features": {
+          "type": "array",
+          "description": "Features (perks) granted automatically by this background. Typically universal or low-prerequisite entries from features/core.json. These are in addition to any chosen creation perks or racial traits.",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z_][a-z0-9_]*$",
+            "description": "Feature id (string reference)"
+          }
+        },
+        "wealth_bonus": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Extra starting gold (in gp) granted by this background, added to the normal campaign starting wealth (recommended baseline 100 gp)."
+        },
+        "suggested_tag_skills": {
+          "type": "array",
+          "description": "Skills this background naturally pairs well with for tag skill selection. Purely advisory; does not mechanically force or grant tags.",
+          "items": {
+            "oneOf": [
+              { "$ref": "schema.json#/definitions/entryId" },
+              { "type": "string" }
+            ]
+          }
+        }
+      },
+      "required": ["id", "key", "label", "description"],
+      "additionalProperties": false
+    }
+  }
+}

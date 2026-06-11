@@ -10,9 +10,9 @@ Weapons use two primary orthogonal classification systems:
    - `slashing` → `blades` skill
    - `bludgeoning` → `blunt` skill
    - `piercing` → `piercing` skill
-   - Ranged weapons use `marksmanship`.
+   - Ranged weapons use one of the split archery skills: `bows`, `crossbows`, `guns`, or `throwing_weapons`.
 
-   This split replaced the old single `melee_weapons` skill. A weapon's `damage.type` determines which skill is used for the attack roll.
+   This split replaced the old unified `marksmanship` skill (and the earlier single `melee_weapons`). A weapon's `damage.type` (for melee) or explicit `skill` (for ranged) determines the governing skill for the attack roll.
 
 2. **Length / Reach Category** (determines engagement distance and handedness)
    - `short`: Close-quarters weapons (daggers, handaxes, small training tools). Typically one-handed.
@@ -36,15 +36,14 @@ All weapons use standard D&D 3.5 / Pathfinder-style dice expressions for their b
 | Weapon          | Damage     | Type      | Length | Attack Reach | Skill      | Notes / Properties          |
 |-----------------|------------|-----------|--------|--------------|------------|-----------------------------|
 | Dagger          | 1d4        | piercing  | short  | 1            | piercing   | finesse, light, thrown     |
-| Obsidian Dagger | 1d4        | piercing  | short  | 1            | piercing   | finesse, light, thrown     |
 | Handaxe         | 1d6        | slashing  | short  | 1            | blades     | light, thrown              |
 | Quarterstaff    | 1d6        | bludgeoning | normal | 1          | blunt      | versatile                  |
 | Mace            | 1d6        | bludgeoning | normal | 1          | blunt      | -                          |
 | Spear           | 1d6        | piercing  | reach  | 2            | piercing   | thrown, two_handed         |
 | Longsword       | 1d8        | slashing  | normal | 1            | blades     | versatile                  |
 | Rapier          | 1d6        | piercing  | normal | 1            | piercing   | finesse, light             |
-| Shortbow        | 1d6        | piercing  | -      | -            | marksmanship | ammunition, two_handed   |
-| Longbow         | 1d8        | piercing  | -      | -            | marksmanship | ammunition, heavy, two_handed |
+| Shortbow        | 1d6        | piercing  | -      | -            | bows         | ammunition, two_handed   |
+| Longbow         | 1d8        | piercing  | -      | -            | bows         | ammunition, heavy, two_handed |
 | Greatsword      | 2d6        | slashing  | normal | 1            | blades     | heavy, two_handed          |
 | Glaive          | 1d10       | slashing  | reach  | 2            | blades     | heavy, two_handed          |
 | Warhammer       | 1d10       | bludgeoning | reach | 2            | blunt      | heavy, two_handed          |
@@ -84,18 +83,18 @@ The same base weapon type becomes a different effective weapon depending on mate
   - Iron: solid, reliable 1d8 +3. Everyday soldier's weapon.
   - Steel: 1d8 +5. Sharper, tougher, the preferred martial blade.
   - Wood: 1d8 +0 (no combat bonus). Classic training waster / practice sword. Very light (weightFactor 0.5) and cheap, safe for sparring, but poor against real armor. The "variation" comes from low weight and cost rather than stat bonuses.
-  - Obsidian: high +6 damage on the edge but brittle — risky on a large blade (prone to chipping).
+  - Obsidian (material): high +6 attack but brittle — risky on a large blade (prone to chipping).
   - Gold: useless for combat (0 attack) but excellent conduction if you want to enchant it heavily.
 
 - **Greatsword (base 2d6 slashing)**:
   - Steel: devastating 2d6 +5 heavy blade.
   - Wood: possible as an oversized training or ceremonial piece (very light, 0 combat bonus).
-  - Obsidian or copper: generally avoided (brittle or soft for such a large, high-force weapon).
+  - Obsidian (material) or copper: generally avoided (brittle or soft for such a large, high-force weapon).
 
 - **Mace (base 1d6 bludgeoning)**:
   - Iron/Steel: good crushing power.
   - Wood: possible but weak (0 combat bonus, more like a heavy club). Better represented by the quarterstaff entry.
-  - Obsidian: poor choice — the material is optimized for cutting, not impact.
+  - Obsidian (material): poor choice — the material is optimized for cutting, not impact.
 
 - **Spear / Glaive / Halberd (reach weapons, base 1d6 or 1d10)**:
   - Wood (for spear): natural for the haft; head can still benefit from metal modifiers in a real crafted item.
@@ -104,7 +103,7 @@ The same base weapon type becomes a different effective weapon depending on mate
 
 - **Dagger (base 1d4 piercing)**:
   - Iron/Steel: standard sidearm.
-  - Obsidian: exceptionally sharp (+6) — excellent for a small blade.
+  - **Obsidian (base dagger + obsidian material)**: exceptionally sharp (+6 attack bonus) — excellent for a small blade. This is the profile that was previously listed as a separate "Obsidian Dagger" base entry; it is now correctly represented as the generic dagger form modified by the obsidian material at crafting time.
   - Wood: almost never (a wooden dagger is barely a weapon).
 
 - **Bows (shortbow 1d6, longbow 1d8 piercing)**:

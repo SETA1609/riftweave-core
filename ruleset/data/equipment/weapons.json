@@ -2,60 +2,56 @@
   "$schema": "../../schemas/equipment.schema.json",
   "equipment": [
     {
-      "id": "dagger", "name": "Dagger", "description": "A small, double-edged blade.", "type": "weapon", "cost": { "quantity": 2, "unit": "gp" }, "weight": 1,
+      "id": 8, "key": "dagger", "label": "Dagger", "description": "A small, double-edged blade.", "type": "weapon", "cost": { "quantity": 2, "unit": "gp" }, "weight": 1,
       "weapon": { "category": "simple", "range": "melee", "length": "short", "attackReach": 1, "skill": "piercing", "damage": { "dice": "1d4", "type": "piercing" }, "properties": ["finesse", "light", "thrown"], "rangeNormal": 20, "rangeLong": 60 }
     },
     {
-      "id": "longsword", "name": "Longsword", "description": "A versatile blade wielded in one or two hands. Can be made of wood for training wasters.", "type": "weapon", "cost": { "quantity": 15, "unit": "gp" }, "weight": 3,
+      "id": 9, "key": "longsword", "label": "Longsword", "description": "A versatile blade wielded in one or two hands. Can be made of wood for training wasters.", "type": "weapon", "cost": { "quantity": 15, "unit": "gp" }, "weight": 3,
       "weapon": { "category": "martial", "range": "melee", "length": "normal", "attackReach": 1, "skill": "blades", "damage": { "dice": "1d8", "type": "slashing" }, "properties": ["versatile"] }
     },
     {
-      "id": "greatsword", "name": "Greatsword", "description": "A massive two-handed blade for devastating strikes. Wooden versions exist for training.", "type": "weapon", "cost": { "quantity": 50, "unit": "gp" }, "weight": 6,
+      "id": 10, "key": "greatsword", "label": "Greatsword", "description": "A massive two-handed blade for devastating strikes. Wooden versions exist for training.", "type": "weapon", "cost": { "quantity": 50, "unit": "gp" }, "weight": 6,
       "weapon": { "category": "martial", "range": "melee", "length": "normal", "attackReach": 1, "skill": "blades", "damage": { "dice": "2d6", "type": "slashing" }, "properties": ["heavy", "two_handed"] }
     },
     {
-      "id": "shortbow", "name": "Shortbow", "description": "A small, versatile bow.", "type": "weapon", "cost": { "quantity": 25, "unit": "gp" }, "weight": 2,
-      "weapon": { "category": "simple", "range": "ranged", "skill": "marksmanship", "damage": { "dice": "1d6", "type": "piercing" }, "properties": ["ammunition", "two_handed"], "rangeNormal": 80, "rangeLong": 320 }
+      "id": 11, "key": "shortbow", "label": "Shortbow", "description": "A small, versatile bow.", "type": "weapon", "cost": { "quantity": 25, "unit": "gp" }, "weight": 2,
+      "weapon": { "category": "simple", "range": "ranged", "skill": "bows", "damage": { "dice": "1d6", "type": "piercing" }, "properties": ["ammunition", "two_handed"], "rangeNormal": 80, "rangeLong": 320 }
     },
     {
-      "id": "longbow", "name": "Longbow", "description": "A large bow requiring strength and skill.", "type": "weapon", "cost": { "quantity": 50, "unit": "gp" }, "weight": 2,
-      "weapon": { "category": "martial", "range": "ranged", "skill": "marksmanship", "damage": { "dice": "1d8", "type": "piercing" }, "properties": ["ammunition", "heavy", "two_handed"], "rangeNormal": 150, "rangeLong": 600 }
+      "id": 12, "key": "longbow", "label": "Longbow", "description": "A large bow requiring strength and skill.", "type": "weapon", "cost": { "quantity": 50, "unit": "gp" }, "weight": 2,
+      "weapon": { "category": "martial", "range": "ranged", "skill": "bows", "damage": { "dice": "1d8", "type": "piercing" }, "properties": ["ammunition", "heavy", "two_handed"], "rangeNormal": 150, "rangeLong": 600 }
     },
     {
-      "id": "quarterstaff", "name": "Quarterstaff", "description": "A simple wooden staff.", "type": "weapon", "cost": { "quantity": 2, "unit": "sp" }, "weight": 4,
+      "id": 13, "key": "quarterstaff", "label": "Quarterstaff", "description": "A simple wooden staff.", "type": "weapon", "cost": { "quantity": 2, "unit": "sp" }, "weight": 4,
       "weapon": { "category": "simple", "range": "melee", "length": "normal", "attackReach": 1, "skill": "blunt", "damage": { "dice": "1d6", "type": "bludgeoning" }, "properties": ["versatile"] }
     },
     {
-      "id": "handaxe", "name": "Handaxe", "description": "A light axe suitable for throwing or melee.", "type": "weapon", "cost": { "quantity": 5, "unit": "gp" }, "weight": 2,
+      "id": 14, "key": "handaxe", "label": "Handaxe", "description": "A light axe suitable for throwing or melee.", "type": "weapon", "cost": { "quantity": 5, "unit": "gp" }, "weight": 2,
       "weapon": { "category": "simple", "range": "melee", "length": "short", "attackReach": 1, "skill": "blades", "damage": { "dice": "1d6", "type": "slashing" }, "properties": ["light", "thrown"], "rangeNormal": 20, "rangeLong": 60 }
     },
     {
-      "id": "rapier", "name": "Rapier", "description": "A slender, piercing sword favored by duelists.", "type": "weapon", "cost": { "quantity": 25, "unit": "gp" }, "weight": 2,
+      "id": 15, "key": "rapier", "label": "Rapier", "description": "A slender, piercing sword favored by duelists.", "type": "weapon", "cost": { "quantity": 25, "unit": "gp" }, "weight": 2,
       "weapon": { "category": "martial", "range": "melee", "length": "normal", "attackReach": 1, "skill": "piercing", "damage": { "dice": "1d6", "type": "piercing" }, "properties": ["finesse", "light"] }
     },
     {
-      "id": "mace", "name": "Mace", "description": "A heavy one-handed blunt weapon for crushing blows.", "type": "weapon", "cost": { "quantity": 10, "unit": "gp" }, "weight": 3,
+      "id": 16, "key": "mace", "label": "Mace", "description": "A heavy one-handed blunt weapon for crushing blows.", "type": "weapon", "cost": { "quantity": 10, "unit": "gp" }, "weight": 3,
       "weapon": { "category": "simple", "range": "melee", "length": "normal", "attackReach": 1, "skill": "blunt", "damage": { "dice": "1d6", "type": "bludgeoning" }, "properties": [] }
     },
     {
-      "id": "spear", "name": "Spear", "description": "A long shaft with a piercing head. Effective at reach.", "type": "weapon", "cost": { "quantity": 5, "unit": "gp" }, "weight": 3,
+      "id": 17, "key": "spear", "label": "Spear", "description": "A long shaft with a piercing head. Effective at reach.", "type": "weapon", "cost": { "quantity": 5, "unit": "gp" }, "weight": 3,
       "weapon": { "category": "simple", "range": "melee", "length": "reach", "attackReach": 2, "skill": "piercing", "damage": { "dice": "1d6", "type": "piercing" }, "properties": ["thrown", "two_handed"], "rangeNormal": 20, "rangeLong": 60 }
     },
     {
-      "id": "glaive", "name": "Glaive", "description": "A long polearm with a slashing blade, effective at extended reach.", "type": "weapon", "cost": { "quantity": 20, "unit": "gp" }, "weight": 6,
+      "id": 18, "key": "glaive", "label": "Glaive", "description": "A long polearm with a slashing blade, effective at extended reach.", "type": "weapon", "cost": { "quantity": 20, "unit": "gp" }, "weight": 6,
       "weapon": { "category": "martial", "range": "melee", "length": "reach", "attackReach": 2, "skill": "blades", "damage": { "dice": "1d10", "type": "slashing" }, "properties": ["heavy", "two_handed"] }
     },
     {
-      "id": "warhammer", "name": "Warhammer", "description": "A heavy two-handed crushing weapon with a long haft for reach.", "type": "weapon", "cost": { "quantity": 15, "unit": "gp" }, "weight": 5,
+      "id": 19, "key": "warhammer", "label": "Warhammer", "description": "A heavy two-handed crushing weapon with a long haft for reach.", "type": "weapon", "cost": { "quantity": 15, "unit": "gp" }, "weight": 5,
       "weapon": { "category": "martial", "range": "melee", "length": "reach", "attackReach": 2, "skill": "blunt", "damage": { "dice": "1d10", "type": "bludgeoning" }, "properties": ["heavy", "two_handed"] }
     },
     {
-      "id": "halberd", "name": "Halberd", "description": "A versatile polearm combining axe, spike, and hook for reach combat.", "type": "weapon", "cost": { "quantity": 25, "unit": "gp" }, "weight": 7,
+      "id": 20, "key": "halberd", "label": "Halberd", "description": "A versatile polearm combining axe, spike, and hook for reach combat.", "type": "weapon", "cost": { "quantity": 25, "unit": "gp" }, "weight": 7,
       "weapon": { "category": "martial", "range": "melee", "length": "reach", "attackReach": 2, "skill": "blades", "damage": { "dice": "1d10", "type": "slashing" }, "properties": ["heavy", "two_handed"] }
-    },
-    {
-      "id": "obsidian_dagger", "name": "Obsidian Dagger", "description": "A razor-sharp volcanic glass blade, brittle but deadly for piercing.", "type": "weapon", "cost": { "quantity": 10, "unit": "gp" }, "weight": 1,
-      "weapon": { "category": "simple", "range": "melee", "length": "short", "attackReach": 1, "skill": "piercing", "damage": { "dice": "1d4", "type": "piercing" }, "properties": ["finesse", "light", "thrown"] }
     }
   ]
 }

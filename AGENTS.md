@@ -59,7 +59,9 @@ This is the most important thing to understand before editing schemas or data:
 
 - **All schemas set `additionalProperties: false`**. To add any new field to a data entry, you **must** first add it to the corresponding schema, or validation will fail.
 
-- Entry `id`s are lowercase `snake_case` matching `^[a-z_][a-z0-9_]*$`. IDs are stable identifiers — data cross-references other files by raw string ID (not schema-enforced).
+- Entries use a numeric `id` (positive integer, unique within the collection). This is the stable primary identifier. All data cross-references (effects, perks/features, skills, races via `parentRace`, materials for allergies, ingredients, equipment, spells, etc.) use this integer `id`.
+- Each entry also carries a `key` (the familiar lowercase snake_case string, often with prefixes like `damage_`, `fortify_`, for human readability when editing the JSON source) and a `label` (the human-readable display title with spaces and capitalization, e.g. "Restore Resource").
+- Schemas define `id` (and cross-ref fields like `appliedEffect.effect`) as integer. String cross-refs are no longer used for primary entry identification. (A future referential integrity check will validate that integer ids resolve.)
 
 - Use the optional `source: { source, page }` field (defined in `schema.json`) for provenance instead of inventing per-file metadata.
 

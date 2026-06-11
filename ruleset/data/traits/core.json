@@ -1,0 +1,113 @@
+{
+  "$schema": "../../schemas/trait.schema.json",
+  "traits": [
+    {
+      "id": 1,
+      "key": "human_versatility",
+      "label": "Versatility",
+      "description": "You begin with one additional tag skill."
+    },
+    {
+      "id": 2,
+      "key": "human_ambition",
+      "label": "Ambition",
+      "description": "You may take one bonus perk at 1st level (any perk whose prerequisites you already meet)."
+    },
+    {
+      "id": 3,
+      "key": "elf_darkvision",
+      "label": "Darkvision",
+      "description": "You can see in dim light as if it were bright light, and in darkness as if it were dim light, out to 18 meters."
+    },
+    {
+      "id": 4,
+      "key": "elf_fey_ancestry",
+      "label": "Fey Ancestry",
+      "description": "You resist charm and mind-affecting magic, and cannot be magically put to sleep."
+    },
+    {
+      "id": 5,
+      "key": "elf_keen_senses",
+      "label": "Keen Senses",
+      "description": "+10 to detection (Perception) checks."
+    },
+    {
+      "id": 6,
+      "key": "green_elf_woodland_stride",
+      "label": "Woodland Stride",
+      "description": "Difficult terrain of plants and undergrowth costs you no extra movement."
+    },
+    {
+      "id": 7,
+      "key": "black_elf_sunless_sight",
+      "label": "Sunless Sight",
+      "description": "Your darkvision extends to 36 meters, but you have disadvantage on checks in bright sunlight."
+    },
+    {
+      "id": 8,
+      "key": "black_elf_shadowmeld",
+      "label": "Shadowmeld",
+      "description": "+10 to stealth while in dim light or darkness."
+    },
+    {
+      "id": 9,
+      "key": "dwarf_darkvision",
+      "label": "Darkvision",
+      "description": "You can see in dim light as if it were bright light, and in darkness as if it were dim light, out to 18 meters."
+    },
+    {
+      "id": 10,
+      "key": "dwarf_resilience",
+      "label": "Dwarven Resilience",
+      "description": "You resist poison and disease, taking reduced damage from both. (Modeled as innate resist effects with parameter 'poison' and 'disease' granting +25% resistance.)"
+    },
+    {
+      "id": 11,
+      "key": "dwarf_stoneworker",
+      "label": "Stoneworker",
+      "description": "+10 to Repair and crafting checks."
+    },
+    {
+      "id": 12,
+      "key": "hill_dwarf_toughness",
+      "label": "Dwarven Toughness",
+      "description": "Your hit point maximum increases by 1 per level."
+    },
+    {
+      "id": 13,
+      "key": "mountain_dwarf_armor_training",
+      "label": "Mountain Armor Training",
+      "description": "You are proficient with light and medium armor."
+    },
+    {
+      "id": 14,
+      "key": "beastfolk_kinship",
+      "label": "Beastfolk",
+      "description": "Marks the race as beastfolk. A kin typically defines natural-weapon and heightened-sense traits, but no values are inherited from the template or from sibling kin."
+    },
+    {
+      "id": 15,
+      "key": "catman_claws",
+      "label": "Retractable Claws",
+      "description": "Your claws are natural weapons dealing 1d6 slashing damage."
+    },
+    {
+      "id": 16,
+      "key": "catman_landing",
+      "label": "Cat's Landing",
+      "description": "You take no damage from falls of 6 meters or less and always land on your feet."
+    },
+    {
+      "id": 17,
+      "key": "wolfman_pack_tactics",
+      "label": "Pack Tactics",
+      "description": "+10 to attack checks against a foe that an ally is also engaging."
+    },
+    {
+      "id": 18,
+      "key": "wolfman_keen_smell",
+      "label": "Keen Smell",
+      "description": "+10 to detection checks that rely on scent."
+    }
+  ]
+}

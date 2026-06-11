@@ -16,8 +16,9 @@
     "feature": {
       "type": "object",
       "properties": {
-        "id": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
-        "name": { "type": "string" },
+        "id": { "$ref": "schema.json#/definitions/entryId" },
+        "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "Symbolic snake_case key (the old string id) for human readability when editing JSON." },
+        "label": { "type": "string", "description": "Human-readable display name with spaces and capitalization." },
         "description": { "type": "string" },
         "source": { "$ref": "schema.json#/definitions/sourceRef" },
         "type": {
@@ -40,14 +41,43 @@
               "additionalProperties": { "type": "integer", "minimum": 1, "maximum": 10 }
             },
             "skills": {
-              "type": "object",
-              "description": "Minimum skill values, keyed by skill id (e.g. { \"red_magic\": 50 })",
-              "additionalProperties": { "type": "integer", "minimum": 1, "maximum": 100 }
+              "type": "array",
+              "description": "Minimum skill values. Each item references a skill by its numeric id (from skills/core.json). The label is duplicated for readability. The 'min' field is the required value.\n\nTo support general 'range' perks (e.g. any of the split ranged skills), 'id' and 'label' may be arrays. When 'id' is an array, the prerequisite is satisfied by meeting the 'min' value in *any one* of the listed skills (with matching names in the 'label' array). This reuses the original single-id structure while allowing multiple acceptable skills. Specific perks should continue using a single scalar id.",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "oneOf": [
+                      { "$ref": "schema.json#/definitions/entryId" },
+                      {
+                        "type": "array",
+                        "items": { "$ref": "schema.json#/definitions/entryId" },
+                        "minItems": 1,
+                        "description": "Array of acceptable skill ids. The prerequisite is met if the character has the required min in any one of them."
+                      }
+                    ]
+                  },
+                  "label": {
+                    "oneOf": [
+                      { "type": "string" },
+                      {
+                        "type": "array",
+                        "items": { "type": "string" },
+                        "minItems": 1
+                      }
+                    ],
+                    "description": "Human-readable label of the skill (duplicated from the skills registry for convenience). When 'id' is an array, this should be a parallel array of the corresponding skill names, or a single descriptive string."
+                  },
+                  "min": { "type": "integer", "minimum": 1, "maximum": 100 }
+                },
+                "required": ["min"],
+                "additionalProperties": false
+              }
             },
             "perks": {
               "type": "array",
-              "description": "Prerequisite perk ids that must already be owned",
-              "items": { "type": "string" }
+              "description": "Prerequisite perk ids (numeric entryId) that must already be owned",
+              "items": { "$ref": "schema.json#/definitions/entryId" }
             },
             "other": { "type": "string" }
           },
@@ -65,15 +95,33 @@
             "properties": {
               "type": { "type": "string" },
               "description": { "type": "string" },
-              "target": { "type": "string" },
-              "value": {}
+              "target": {
+                "description": "When the bonus/penalty is delivered via a registered effect (e.g. fortify_skill, resist, phobia), this is the numeric effect id. For ad-hoc bonus targets (hp_max, melee_damage, persuasion, etc.) it is a string key.",
+                "oneOf": [
+                  { "$ref": "schema.json#/definitions/entryId" },
+                  { "type": "string" }
+                ]
+              },
+              "value": {},
+              "parameter": {
+                "oneOf": [
+                  { "$ref": "schema.json#/definitions/entryId" },
+                  { "type": "string" }
+                ],
+                "description": "For generic parameterized effects (e.g. 'resist', 'restore_resource', 'fortify_attribute', 'phobia', 'allergy', 'cure'), specifies the subject. Use numeric entryId when referencing another collection's id (skill, material, etc.); string for vocabulary values."
+              },
+              "durationType": {
+                "type": "string",
+                "enum": ["temporal", "unlimited"],
+                "description": "For fortify effects on skills/attributes/resources: 'unlimited' are stackable (additive magnitudes for permanent traits). 'temporal' override with the highest magnitude."
+              }
             },
             "required": ["type", "description"],
             "additionalProperties": false
           }
         }
       },
-      "required": ["id", "name", "description", "type"],
+      "required": ["id", "key", "label", "description", "type"],
       "additionalProperties": false
     }
   }

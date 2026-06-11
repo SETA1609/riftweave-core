@@ -72,10 +72,11 @@ more applied effects**:
 
 ```json
 {
-  "id": "fire_bolt",
-  "name": "Fire Bolt",
+  "id": 1,
+  "key": "fire_bolt",
+  "label": "Fire Bolt",
   "color": "red",
-  "effects": [ { "effect": "damage_fire", "magnitude": 8, "target": "ranged" } ],
+  "effects": [ { "effect": 1, "magnitude": 8, "target": "ranged" } ],
   "cost": { "mana": 5 }
 }
 ```

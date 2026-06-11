@@ -28,9 +28,131 @@ def collect_data_files():
                 yield Path(dirpath) / f
 
 
+def build_id_index(data_files):
+    """Build a map of collection name -> set of integer ids for referential integrity."""
+    id_index = {}
+    for fp in data_files:
+        try:
+            data = json.loads(fp.read_text())
+            for k, v in data.items():
+                if k.startswith("$") or not isinstance(v, list):
+                    continue
+                id_index.setdefault(k, set())
+                for item in v:
+                    if isinstance(item, dict):
+                        iid = item.get("id")
+                        if isinstance(iid, int):
+                            id_index[k].add(iid)
+        except Exception:
+            pass  # ignore malformed for index
+    return id_index
+
+
+def check_references(data, coll_name, id_index):
+    """Return list of referential integrity error messages."""
+    errors = []
+    if coll_name == "races":
+        for r in data.get("races", []):
+            if not isinstance(r, dict):
+                continue
+            lineage = r.get("lineage", {})
+            if "parentRace" in lineage:
+                pid = lineage["parentRace"]
+                if not isinstance(pid, int) or pid not in id_index.get("races", set()):
+                    errors.append(f"parentRace {pid} does not exist in races")
+            for t in r.get("traits", []):
+                if isinstance(t, dict):
+                    tid = t.get("id")
+                    if isinstance(tid, int) and tid not in id_index.get("traits", set()):
+                        errors.append(f"trait {tid} does not exist in traits")
+
+    elif coll_name == "features":
+        for f in data.get("features", []):
+            if not isinstance(f, dict):
+                continue
+            pr = f.get("prerequisite", {})
+            for pid in pr.get("perks", []):
+                if isinstance(pid, int) and pid not in id_index.get("features", set()):
+                    errors.append(f"prereq perk {pid} does not exist")
+            for s in pr.get("skills", []):
+                if isinstance(s, dict):
+                    sid = s.get("id")
+                    if isinstance(sid, int) and sid not in id_index.get("skills", set()):
+                        errors.append(f"prereq skill {sid} does not exist")
+
+    elif coll_name == "spells":
+        for s in data.get("spells", []):
+            if not isinstance(s, dict):
+                continue
+            for e in s.get("effects", []):
+                if isinstance(e, dict):
+                    eid = e.get("effect")
+                    if isinstance(eid, int) and eid not in id_index.get("effects", set()):
+                        errors.append(f"effect {eid} does not exist")
+            for rid in (s.get("cost", {}) or {}).get("reagents", []) or []:
+                if isinstance(rid, int) and rid not in id_index.get("ingredients", set()):
+                    errors.append(f"reagent {rid} does not exist")
+
+    elif coll_name == "backgrounds":
+        for b in data.get("backgrounds", []):
+            if not isinstance(b, dict):
+                continue
+            for sb in b.get("skill_bonuses", []) or []:
+                if isinstance(sb, dict):
+                    sid = sb.get("skill")
+                    if isinstance(sid, int) and sid not in id_index.get("skills", set()):
+                        errors.append(f"skill bonus {sid} does not exist")
+            for ts in b.get("suggested_tag_skills", []) or []:
+                if isinstance(ts, int) and ts not in id_index.get("skills", set()):
+                    errors.append(f"suggested tag skill {ts} does not exist")
+            for ss in b.get("starting_spells", []) or []:
+                if isinstance(ss, int) and ss not in id_index.get("spells", set()):
+                    errors.append(f"starting spell {ss} does not exist")
+            for se in b.get("starting_equipment", []) or []:
+                if isinstance(se, dict):
+                    iid = se.get("item")
+                    if isinstance(iid, int) and iid not in id_index.get("equipment", set()):
+                        errors.append(f"starting equipment {iid} does not exist")
+
+    elif coll_name == "monsters":
+        for m in data.get("monsters", []):
+            if not isinstance(m, dict):
+                continue
+            for a in m.get("abilities", []) or []:
+                if isinstance(a, dict):
+                    eid = a.get("effect")
+                    if isinstance(eid, int) and eid not in id_index.get("effects", set()):
+                        errors.append(f"ability effect {eid} does not exist")
+
+    elif coll_name == "ingredients":
+        for i in data.get("ingredients", []):
+            if not isinstance(i, dict):
+                continue
+            for eid in i.get("effects", []) or []:
+                if isinstance(eid, int) and eid not in id_index.get("effects", set()):
+                    errors.append(f"effect {eid} does not exist")
+
+    elif coll_name == "equipment":
+        for e in data.get("equipment", []) or []:
+            if not isinstance(e, dict):
+                continue
+            cons = e.get("consumable") or {}
+            for eff in cons.get("effects", []) or []:
+                if isinstance(eff, dict):
+                    eid = eff.get("effect")
+                    if isinstance(eid, int) and eid not in id_index.get("effects", set()):
+                        errors.append(f"effect {eid} does not exist")
+
+    return errors
+
+
 def main():
     store = load_store()
     data_files = list(collect_data_files())
+
+    # Build ID index first for referential integrity checks
+    id_index = build_id_index(data_files)
+
     total = passed = failed = 0
 
     for fp in data_files:
@@ -59,19 +181,37 @@ def main():
             store=store,
         )
 
+        errors = []
         try:
             validate(data, schema, resolver=resolver)
-            print(f"  \u2713  {fp.relative_to(ROOT)}")
-            passed += 1
         except ValidationError as e:
             rel = fp.relative_to(ROOT)
-            print(f"  \u2717  {rel}")
             path = (
                 "/" + "/".join(str(p) for p in e.absolute_path)
                 if e.absolute_path
                 else "/"
             )
-            print(f"       {path} {e.message}")
+            errors.append(f"SCHEMA {path} {e.message}")
+
+        # Determine collection name (top-level array key)
+        coll_name = None
+        for k, v in data.items():
+            if not k.startswith("$") and isinstance(v, list):
+                coll_name = k
+                break
+
+        if coll_name:
+            ref_errors = check_references(data, coll_name, id_index)
+            errors.extend(f"REF: {e}" for e in ref_errors)
+
+        rel = fp.relative_to(ROOT)
+        if not errors:
+            print(f"  \u2713  {rel}")
+            passed += 1
+        else:
+            print(f"  \u2717  {rel}")
+            for e in errors:
+                print(f"       {e}")
             failed += 1
 
     print(f"\n{total} file(s): {passed} passed, {failed} failed")

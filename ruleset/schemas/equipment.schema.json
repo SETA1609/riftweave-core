@@ -16,8 +16,9 @@
     "equipment": {
       "type": "object",
       "properties": {
-        "id": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
-        "name": { "type": "string" },
+        "id": { "$ref": "schema.json#/definitions/entryId" },
+        "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "Symbolic snake_case key (the old string id) for human readability when editing JSON." },
+        "label": { "type": "string", "description": "Human-readable display name with spaces and capitalization." },
         "description": { "type": "string" },
         "source": { "$ref": "schema.json#/definitions/sourceRef" },
         "type": {
@@ -47,7 +48,7 @@
             },
             "skill": {
               "type": "string",
-              "description": "The skill used to make attack rolls with this weapon. For melee this is normally derived from damage.type (slashing → blades, bludgeoning → blunt, piercing → piercing). Ranged weapons use marksmanship."
+              "description": "The skill used to make attack rolls with this weapon. For melee this is normally derived from damage.type (slashing → blades, bludgeoning → blunt, piercing → piercing). Ranged weapons use one of the split archery skills (bows, crossbows, guns, or throwing_weapons)."
             },
             "attackReach": {
               "type": "integer",
@@ -103,7 +104,7 @@
           "additionalProperties": false
         }
       },
-      "required": ["id", "name", "description", "type", "cost", "weight"],
+      "required": ["id", "key", "label", "description", "type", "cost", "weight"],
       "additionalProperties": false,
       "oneOf": [
         { "required": ["weapon"] },

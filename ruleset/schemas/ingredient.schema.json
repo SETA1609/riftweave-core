@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Ingredient",
-  "description": "An alchemical reagent. Its effects are ids drawn from the shared effect registry (data/effects); brewing combines ingredients that share an effect to produce a potion or poison.",
+  "description": "An alchemical reagent. Its effects are ids drawn from the shared effect registry (data/effects); brewing combines ingredients that share an effect to produce a potion or poison.\n\nSome ingredients are condensed essences or spirit cores used primarily for character advancement (breakthroughs) and alchemical refining rather than direct consumption. These carry a Wuxing phase and qualityGrade to determine their potency and elemental affinity.",
   "type": "object",
   "properties": {
     "$schema": { "type": "string" },
@@ -16,21 +16,30 @@
     "ingredient": {
       "type": "object",
       "properties": {
-        "id": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
-        "name": { "type": "string" },
+        "id": { "$ref": "schema.json#/definitions/entryId" },
+        "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "Symbolic snake_case key (the old string id) for human readability when editing JSON." },
+        "label": { "type": "string", "description": "Human-readable display name with spaces and capitalization." },
         "description": { "type": "string" },
         "source": { "$ref": "schema.json#/definitions/sourceRef" },
         "effects": {
           "type": "array",
-          "description": "Effect ids this ingredient can impart (must have 'ingredient' in their channels). Magnitude/duration are derived at brew time from Alchemy skill.",
-          "items": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
+          "description": "Effect ids this ingredient can impart (must have 'ingredient' in their channels). For normal reagents, magnitude/duration are derived at brew time from Alchemy skill. For spirit cores and essences, effects are typically marker effects (e.g. essence_fire) used to identify the core's nature during refinement or breakthrough resolution.",
+          "items": { "$ref": "schema.json#/definitions/entryId" },
           "minItems": 1,
           "uniqueItems": true
         },
         "rarity": { "type": "string", "enum": ["common", "uncommon", "rare", "legendary"] },
+        "phase": {
+          "$ref": "schema.json#/definitions/phase",
+          "description": "The Wuxing elemental phase of this essence or spirit core. Determines affinity and how it interacts with other phased essences via the cycles in data/wuxing when used for breakthroughs or refining."
+        },
+        "qualityGrade": {
+          "$ref": "schema.json#/definitions/qualityGrade",
+          "description": "The quality grade of the essence. Higher grades yield significantly stronger bonuses when consumed in a breakthrough or used as a refining component. This is the primary power ladder for advancement essences (distinct from the simpler 'rarity' field)."
+        },
         "tags": { "type": "array", "items": { "type": "string" } }
       },
-      "required": ["id", "name", "description", "effects"],
+      "required": ["id", "key", "label", "description", "effects"],
       "additionalProperties": false
     }
   }

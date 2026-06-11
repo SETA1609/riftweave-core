@@ -23,9 +23,8 @@
           "description": "standalone: a complete, unrelated race (human). parent: an abstract ancestor that subraces inherit from (elf, dwarf). subrace: descends from and extends a parent via `parentRace` (inherits its defaults, overrides freely). template: an abstract shape for sister races (beastman) — provides structure, not values. kin: a sister race conforming to a template via `parentRace`, sharing nothing mechanical with its siblings."
         },
         "parentRace": {
-          "type": "string",
-          "pattern": "^[a-z_][a-z0-9_]*$",
-          "description": "The id of the parent race (when role=subrace) or the template (when role=kin). Cross-file reference; not schema-validated."
+          "$ref": "schema.json#/definitions/entryId",
+          "description": "The id (numeric) of the parent race (when role=subrace) or the template (when role=kin)."
         }
       },
       "required": ["role"],
@@ -40,12 +39,9 @@
     "race": {
       "type": "object",
       "properties": {
-        "id": {
-          "type": "string",
-          "pattern": "^[a-z_][a-z0-9_]*$",
-          "description": "Unique identifier (e.g. human, green_elf, mountain_dwarf, catman)"
-        },
-        "name": { "type": "string" },
+        "id": { "$ref": "schema.json#/definitions/entryId" },
+        "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "Symbolic snake_case key (the old string id) for human readability when editing JSON." },
+        "label": { "type": "string", "description": "Human-readable display name with spaces and capitalization." },
         "description": { "type": "string" },
         "source": { "$ref": "schema.json#/definitions/sourceRef" },
         "lineage": { "$ref": "#/definitions/lineage" },
@@ -71,19 +67,19 @@
         },
         "traits": {
           "type": "array",
+          "description": "List of traits granted or defined by this race entry. Each item references a trait from the global traits registry (data/traits) by its numeric id. The label is duplicated here for readability when viewing the race data. For parent races these are the base traits; for subraces and kin these are the traits they specifically provide or override.",
           "items": {
             "type": "object",
             "properties": {
-              "id": { "type": "string" },
-              "name": { "type": "string" },
-              "description": { "type": "string" }
+              "id": { "$ref": "schema.json#/definitions/entryId" },
+              "label": { "type": "string", "description": "Human-readable label of the trait (duplicated from the traits registry for convenience)." }
             },
-            "required": ["id", "name", "description"],
+            "required": ["id", "label"],
             "additionalProperties": false
           }
         }
       },
-      "required": ["id", "name", "description", "lineage"],
+      "required": ["id", "key", "label", "description", "lineage"],
       "additionalProperties": false,
       "allOf": [
         {

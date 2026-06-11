@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Effect",
-  "description": "An atomic, reusable effect in the shared effect registry. Spells, consumables (potions/poisons/coatings), ingredients, and enchantments all reference these by id via schema.json#/definitions/appliedEffect.",
+  "description": "An atomic, reusable effect in the shared effect registry. Spells, consumables (potions/poisons/coatings), ingredients, and enchantments all reference these by id via schema.json#/definitions/appliedEffect. Some effects (especially poisons) support composition via sub_effects (other effects applied as payload/symptoms when this one takes hold).",
   "type": "object",
   "properties": {
     "$schema": { "type": "string" },
@@ -16,8 +16,9 @@
     "effect": {
       "type": "object",
       "properties": {
-        "id": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
-        "name": { "type": "string" },
+        "id": { "$ref": "schema.json#/definitions/entryId" },
+        "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "Symbolic snake_case key (the old string id, e.g. 'fortify_skill', 'restore_resource') for human readability when editing JSON." },
+        "label": { "type": "string", "description": "Human-readable display name with spaces and capitalization (e.g. 'Fortify Skill')." },
         "description": { "type": "string" },
         "source": { "$ref": "schema.json#/definitions/sourceRef" },
         "category": {
@@ -44,17 +45,27 @@
           "description": "How an appliedEffect.magnitude is interpreted for this effect"
         },
         "defaultDuration": { "type": "number", "minimum": 0, "description": "Default duration in seconds when not overridden by the appliedEffect" },
+        "defaultDurationType": {
+          "type": "string",
+          "enum": ["temporal", "unlimited"],
+          "description": "Default for fortify effects: 'unlimited' (stackable) or 'temporal' (override with highest magnitude)."
+        },
         "stackable": { "type": "boolean", "description": "Whether multiple instances stack or refresh" },
         "channels": {
           "type": "array",
-          "description": "Delivery vectors permitted to draw this effect from the pool",
-          "items": { "type": "string", "enum": ["spell", "potion", "poison", "coating", "ingredient", "enchantment", "food"] },
+          "description": "Delivery vectors permitted to draw this effect from the pool. 'innate' is used for permanent character traits, racial features, and creation boons/drawbacks.",
+          "items": { "type": "string", "enum": ["spell", "potion", "poison", "coating", "ingredient", "enchantment", "food", "essence", "innate"] },
           "minItems": 1,
           "uniqueItems": true
         },
-        "tags": { "type": "array", "items": { "type": "string" } }
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "sub_effects": {
+          "type": "array",
+          "items": { "type": "integer" },
+          "description": "Other effect IDs that this effect applies (recursively) when it takes hold on a target. Used by poison effects to deliver symptoms (e.g. damage, drain, control effects). A poison effect (any effect with 'poison' in its tags or delivered via poison/coating channel) MUST NOT list any other effect that has 'poison' in its tags, to prevent infinite recursion or self-poisoning."
+        }
       },
-      "required": ["id", "name", "description", "category", "polarity", "channels"],
+      "required": ["id", "key", "label", "description", "category", "polarity", "channels"],
       "additionalProperties": false
     }
   }

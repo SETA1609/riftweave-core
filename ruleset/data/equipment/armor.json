@@ -2,31 +2,31 @@
   "$schema": "../../schemas/equipment.schema.json",
   "equipment": [
     {
-      "id": "leather_armor", "name": "Leather Armor", "description": "Light armor made from hardened leather.", "type": "armor", "cost": { "quantity": 10, "unit": "gp" }, "weight": 10,
+      "id": 22, "key": "leather_armor", "label": "Leather Armor", "description": "Light armor made from hardened leather.", "type": "armor", "cost": { "quantity": 10, "unit": "gp" }, "weight": 10,
       "armor": { "category": "light", "acBase": 11, "acDexBonus": true }
     },
     {
-      "id": "studded_leather", "name": "Studded Leather Armor", "description": "Leather reinforced with metal studs.", "type": "armor", "cost": { "quantity": 45, "unit": "gp" }, "weight": 13,
+      "id": 23, "key": "studded_leather", "label": "Studded Leather Armor", "description": "Leather reinforced with metal studs.", "type": "armor", "cost": { "quantity": 45, "unit": "gp" }, "weight": 13,
       "armor": { "category": "light", "acBase": 12, "acDexBonus": true }
     },
     {
-      "id": "chain_shirt", "name": "Chain Shirt", "description": "A shirt of interlocking metal rings.", "type": "armor", "cost": { "quantity": 50, "unit": "gp" }, "weight": 20,
+      "id": 24, "key": "chain_shirt", "label": "Chain Shirt", "description": "A shirt of interlocking metal rings.", "type": "armor", "cost": { "quantity": 50, "unit": "gp" }, "weight": 20,
       "armor": { "category": "medium", "acBase": 13, "acDexBonus": true, "acMaxDex": 2 }
     },
     {
-      "id": "breastplate", "name": "Breastplate", "description": "A metal plate covering the torso.", "type": "armor", "cost": { "quantity": 400, "unit": "gp" }, "weight": 20,
+      "id": 25, "key": "breastplate", "label": "Breastplate", "description": "A metal plate covering the torso.", "type": "armor", "cost": { "quantity": 400, "unit": "gp" }, "weight": 20,
       "armor": { "category": "medium", "acBase": 14, "acDexBonus": true, "acMaxDex": 2 }
     },
     {
-      "id": "chainmail", "name": "Chainmail", "description": "Full-body armor of interlocking rings.", "type": "armor", "cost": { "quantity": 75, "unit": "gp" }, "weight": 55,
+      "id": 26, "key": "chainmail", "label": "Chainmail", "description": "Full-body armor of interlocking rings.", "type": "armor", "cost": { "quantity": 75, "unit": "gp" }, "weight": 55,
       "armor": { "category": "heavy", "acBase": 16, "acDexBonus": false, "strengthRequirement": 13, "stealthDisadvantage": true }
     },
     {
-      "id": "plate_armor", "name": "Plate Armor", "description": "Full plate armor offering maximum protection.", "type": "armor", "cost": { "quantity": 1500, "unit": "gp" }, "weight": 65,
+      "id": 27, "key": "plate_armor", "label": "Plate Armor", "description": "Full plate armor offering maximum protection.", "type": "armor", "cost": { "quantity": 1500, "unit": "gp" }, "weight": 65,
       "armor": { "category": "heavy", "acBase": 18, "acDexBonus": false, "strengthRequirement": 15, "stealthDisadvantage": true }
     },
     {
-      "id": "shield", "name": "Shield", "description": "A wooden or metal shield worn on the arm.", "type": "shield", "cost": { "quantity": 10, "unit": "gp" }, "weight": 6,
+      "id": 28, "key": "shield", "label": "Shield", "description": "A wooden or metal shield worn on the arm.", "type": "shield", "cost": { "quantity": 10, "unit": "gp" }, "weight": 6,
       "armor": { "category": "shield", "acBase": 2, "acDexBonus": false }
     }
   ]

@@ -16,8 +16,9 @@
     "skill": {
       "type": "object",
       "properties": {
-        "id": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
-        "name": { "type": "string" },
+        "id": { "$ref": "schema.json#/definitions/entryId" },
+        "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "Symbolic snake_case key (the old string id) for human readability when editing JSON." },
+        "label": { "type": "string", "description": "Human-readable display name with spaces and capitalization." },
         "description": { "type": "string" },
         "source": { "$ref": "schema.json#/definitions/sourceRef" },
         "associatedAbility": {
@@ -35,7 +36,7 @@
           "default": true
         }
       },
-      "required": ["id", "name", "description", "associatedAbility", "category"],
+      "required": ["id", "key", "label", "description", "associatedAbility", "category"],
       "additionalProperties": false
     }
   }
