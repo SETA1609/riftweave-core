@@ -37,9 +37,38 @@ Start of turn → Action → Bonus action → Movement (split) → Reaction → 
 - **Movement:** Speed in units (from race, modified by AGI and encumbrance). Can be
   split before and after the action. e.g. move 3 → attack → move 2 (total 5).
 
-**AP pool variant:** AGI-based Action Points (`2 + floor(AGI / 3)` per turn, max 10,
-carry over between turns) can replace the discrete action/bonus action model for
-groups that prefer a resource-budget approach.
+**AP pool variant (TTRPG):** AGI-based Action Points can replace the discrete
+action/bonus action model for groups that prefer a resource-budget approach.
+
+| Rule | Value |
+|------|-------|
+| Starting pool per turn | `2 + floor(AGI / 3)` |
+| Maximum pool | 10 (cannot exceed) |
+| Carry-over | Unspent AP carry over between turns (capped at max) |
+| Recovery after combat | Full pool restored after a short rest |
+
+**AP costs for common actions:**
+
+| Action | AP Cost |
+|--------|---------|
+| Standard attack (melee or ranged) | 3 |
+| Cast spell | 2–5 (varies by spell level) |
+| Move (per unit of speed) | 1 |
+| Dash (double movement for the turn) | 2 |
+| Disengage | 2 |
+| Dodge | 3 |
+| Block / Parry (reaction) | 2 (reserved from pool) |
+| Use object / interact | 1 |
+| Stand from prone | 2 |
+| Aimed shot (see §8) | +2 (added to attack cost) |
+| Ready action | 2 |
+
+**Reactions** reserve AP from the pool ahead of time (declared at turn start or
+when the trigger occurs, consuming the cost immediately on use). Unused reaction
+AP is refunded at end of round.
+
+This variant works well for groups that want granular resource management over
+set action types.
 
 ### Video game (action-combat)
 
@@ -169,15 +198,33 @@ A natural **01–05** on the d100 attack roll is a **critical window**. A critic
 ### TTRPG
 
 - **Confirmed crit:** Roll damage dice twice and sum both (alternatively: max dice + roll).
-- **Optional:** Special effects table (disarm, bleed, stagger, sever limb) — GM discretion.
-  Effects may include:
-  | d20 | Effect |
-  |-----|--------|
-  | 1–5 | Extra damage only |
-  | 6–10 | + target bleeds (1 HP/round until healed) |
-  | 11–15 | + target disarmed (weapon dropped) |
-  | 16–19 | + target staggered (loses next reaction) |
-  | 20 | + sever limb or permanent injury |
+- **Roll on the Critical Effects Table** to determine bonus effects. Apply the result
+  immediately.
+
+#### Critical Effects Table (d100)
+
+| d100 | Effect | Description |
+|------|--------|-------------|
+| 1–15 | Bludgeoning Blow | Extra damage only (max damage dice + roll again) |
+| 16–30 | Deep Wound | Target bleeds: takes `damage_health` (effect id 5, magnitude 2) at start of each turn until healed or DC 10 Medicine check |
+| 31–40 | Stagger | Target loses next reaction and takes −10 on next action for 1 round. See `staggered` condition |
+| 41–50 | Disarm | Weapon knocked from grip. STR save (DC 12) or weapon lands 1d4 units away |
+| 51–60 | Crippled Arm | Dominant arm crippled: −20 to attack rolls, −50% damage. Two-handed weapons unusable. Heals after combat or via `cure` effect |
+| 61–70 | Crippled Leg | Leg crippled: speed −50%, cannot dodge/evade. Heals after combat or via `cure` effect |
+| 71–80 | Knockdown | Target knocked prone (see `prone` condition). Loses next action standing. OA provoked |
+| 81–85 | Armor Pierce | Ignore all armor DR on this hit + extra damage (max dice) |
+| 86–92 | Stun | Target stunned for 1 full turn (no actions, reactions, movement). See `stunned` condition |
+| 93–97 | Grievous Wound | Max ×2 damage + Deep Wound (permanent until long rest) + crippled limb (random) |
+| 98–100 | Overkill | Damage ×3 + Deep Wound + Stun 2 turns + permanent injury (GM discretion) |
+
+- **Luck modifier:** The player adds `+floor(LCK / 2)` to the d100 roll (shifts toward
+  better effects). If LCK ≥ 8, they may re-roll once and keep the better result.
+- **Interaction with Called Shots:** When a called shot (see §6) scores a confirmed crit,
+  the called-shot location effect is **guaranteed** (no save). Roll on this table for an
+  additional effect.
+- **Interaction with Conditions:** Effects on this table (bleed, stagger, knockdown, stun)
+  correspond to entries in `conditions/core.json` and the effects they reference. Engines
+  apply them via the shared effect system.
 - **Fumble:** Only on a natural **100** (not 96–00). Flavor-only for TTRPG:
   drop weapon, stumble, hit an ally by accident. No mechanical penalty enforced.
   High Luck does not affect fumble range.
@@ -186,6 +233,9 @@ A natural **01–05** on the d100 attack roll is a **critical window**. A critic
 
 - **Confirmed crit:** Fixed multiplier (×1.5 or ×2) applied after DR.
   `Final damage = (base damage × crit multiplier) - armor DR`
+- **Automatic effects:** Critical hits automatically apply a minor status effect based on
+  weapon type (blade → bleed, blunt → stagger, piercing → armor impair). Drawn from the
+  effects registry, lasting 1–2 ticks.
 - **No fumble mechanic.** A roll of 100 is simply a miss (or a glancing blow
   that deals 0 damage).
 - Luck feeds into crit chance via expanded window and confirmation bonus.
@@ -222,7 +272,57 @@ rules throughout.
 
 ---
 
-## 6. Initiative
+## 6. Called / Targeted Shots
+
+A character may declare a **targeted shot** before making an attack roll, aiming at
+a specific body part instead of making a general attack. This imposes a penalty to
+the attack roll but grants bonus effects on a hit.
+
+### Shot Locations
+
+| Location | Attack Penalty | Damage Multiplier | Special Effect on Hit |
+|----------|---------------|-------------------|----------------------|
+| **Torso** | 0 (standard) | ×1.0 | No special effect — the default |
+| **Head** | −20 | ×1.5 (or max dice) | + Stagger (enemy loses next reaction). Video game: + bonus crit %, screen shake |
+| **Arms** | −15 | ×0.75 | + Disarm chance (STR check or drop weapon). Video game: −X% enemy attack for 5s |
+| **Legs** | −15 | ×0.75 | + Knockdown or slow (speed −50% for 2 rounds). Video game: slow + stumble animation |
+| **Groin / Eyes** | −30 | ×2.0 | + Stagger + possible stun (END save or stunned 1 round). Video game: extended stagger, screen flash |
+
+**Ranged note:** Called shots with ranged weapons beyond short range take an
+additional −10 penalty. At long range, called shots are not possible.
+
+### TTRPG Resolution
+
+1. Declare the target location before rolling.
+2. Apply the attack penalty to the d100 roll-under check.
+3. On a hit (≤ modified skill), the damage multiplier applies and the special effect
+   takes hold (GM determines duration or makes a save for the target).
+4. On a miss, the action is wasted (no grazing or partial effect).
+5. Perks can reduce penalties: *Marksman* (halve ranged penalty), *Street Samurai*
+   (halve called shot penalties in general), *Surgeon* (remove damage penalty on arm/leg shots).
+
+Rolling a **critical hit** on a called shot:
+- Crit confirmation bonuses apply as normal.
+- On a confirmed crit, the special effect is guaranteed (no save).
+- The damage multiplier stacks with the crit multiplier (×1.5 ×2 = ×3 damage).
+
+### Video Game Resolution
+
+- Called shots are **manual aim** — the player aims at a body part using a targeting
+  mechanic (V.A.T.S.-style pause-and-target or free-aim reticle shift).
+- Hit probability is computed from the player's weapon skill + distance + target
+  movement, displayed as a % in the targeting UI.
+- On hit, the location-specific effect fires automatically (slow on legs, disarm
+  on arms, stagger on head).
+- Damage multipliers apply before DR.
+- Perks reduce the penalty or unlock new targeting options.
+
+**cRPG note:** For tactical cRPGs, use TTRPG-style called shot resolution with
+% hit chance displayed per body part.
+
+---
+
+## 7. Initiative
 
 ### TTRPG
 
@@ -243,7 +343,7 @@ is determined by:
 
 ---
 
-## 7. Mode Comparison Table
+## 8. Mode Comparison Table
 
 | Aspect | TTRPG (turn-based) | Video game (action-combat) |
 |--------|-------------------|---------------------------|
@@ -263,7 +363,7 @@ is determined by:
 
 ---
 
-## 8. Deferred Combat Sections
+## 9. Deferred Combat Sections
 
 The following areas are noted for future expansion but not yet specified:
 

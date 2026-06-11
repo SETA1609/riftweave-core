@@ -54,7 +54,7 @@
         "channels": {
           "type": "array",
           "description": "Delivery vectors permitted to draw this effect from the pool. 'innate' is used for permanent character traits, racial features, and creation boons/drawbacks.",
-          "items": { "type": "string", "enum": ["spell", "potion", "poison", "coating", "ingredient", "enchantment", "food", "essence", "innate"] },
+          "items": { "type": "string", "enum": ["spell", "potion", "poison", "coating", "ingredient", "enchantment", "food", "essence", "innate", "trap"] },
           "minItems": 1,
           "uniqueItems": true
         },

@@ -79,7 +79,7 @@ rating is `5 + associatedAbility × 2`), and the **resources/derived stats** it 
 
 ### Strength (STR)
 - **Governs:** melee damage, carrying capacity, Strength-gated equipment.
-- **Seeds skills:** `blades`, `blunt`, `piercing`, `athletics`.
+- **Seeds skills:** `blades`, `blunt`, `heavy_armor`, `athletics`.
 - **Feeds:** Carry weight `25 + STR × 10`.
 
 ### Perception (PER)
@@ -89,7 +89,7 @@ rating is `5 + associatedAbility × 2`), and the **resources/derived stats** it 
 
 ### Endurance (END)
 - **Governs:** hit points, fatigue, resistance to poison and disease.
-- **Seeds skills:** `block`.
+- **Seeds skills:** `block`, `medium_armor`.
 - **Feeds:** **Hit points** `15 + END × 8 + level × 4`; **Stamina** pool
   `15 + END × 5 + level × 2` (action-combat mode). END is the single biggest lever on
   survivability.
@@ -115,7 +115,7 @@ rating is `5 + associatedAbility × 2`), and the **resources/derived stats** it 
 
 ### Agility (AGI)
 - **Governs:** action economy, stealth, and dexterous skills.
-- **Seeds skills:** `unarmed`, `stealth`, `lockpick`, `sleight_of_hand`.
+- **Seeds skills:** `piercing`, `unarmed`, `light_armor`, `unarmored`, `evasion`, `stealth`, `lockpick`, `sleight_of_hand`.
 - **Feeds:** **Action Points** `2 + floor(AGI / 3)` per turn (turn-based mode);
   movement/attack speed in action combat.
 

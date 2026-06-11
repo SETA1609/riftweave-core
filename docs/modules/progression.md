@@ -432,13 +432,16 @@ See `attributes.md` § Secondary & Combat Statistics for full details and ration
 
 **Combat & defense** are roll-under: an attacker rolls under their weapon skill to
 hit; armor provides a damage-reduction **rating** (and Block can negate a share of a
-blow). A full defense model (dodge vs. block vs. armor) is a follow-up. Many secondary stats are delivered through the shared **effect system**.
+blow). See [`combat.md`](./combat.md) for the full defense model (evasion → block → armor DR),
+[`armor.md`](./armor.md) for the slot/layer DR system, and
+[`conditions.md`](./conditions.md) for condition effects. Many secondary stats are
+delivered through the shared **effect system**.
 
 ## Open items / follow-ups
 
-- **Combat mode** — turn-based vs. action-combat is undecided; it selects the third
-  resource (Action Points from AGI vs. a Stamina pool from END) and the initiative
-  detail. The formulas above are the reference for each.
+- **Combat mode** — fully specified in [`combat.md`](./combat.md) with dual-resolution
+  (TTRPG turn-based and video game action-combat). Turn-based uses Action Points from AGI;
+  action-combat uses a Stamina pool from END. Initiative varies by mode.
 - **Cultivation-style breakthroughs** — see the new `docs/modules/advancement.md`.
   Base level-up (skill points, resource scaling, perks) is described here. The
   optional item-boosted "breakthrough" system (monster cores + refined elixirs,
