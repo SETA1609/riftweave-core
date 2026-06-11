@@ -23,7 +23,7 @@
         "source": { "$ref": "schema.json#/definitions/sourceRef" },
         "type": {
           "type": "string",
-          "enum": ["weapon", "armor", "shield", "potion", "poison", "coating", "oil", "food", "ring", "wand", "tool", "adventuring_gear", "ammunition"]
+          "enum": ["weapon", "armor", "shield", "accessory", "potion", "poison", "coating", "oil", "food", "wand", "tool", "adventuring_gear", "ammunition"]
         },
         "cost": {
           "type": "object",
@@ -73,15 +73,28 @@
         },
         "armor": {
           "type": "object",
+          "description": "An armor piece that covers a specific slot and layer. Each piece provides base damage reduction (drBase) modified by the crafting material's modifiers.defense. Shields use slot 'offhand' and layer null.",
           "properties": {
-            "category": { "type": "string", "enum": ["light", "medium", "heavy", "shield"] },
-            "acBase": { "type": "integer", "minimum": 0 },
-            "acDexBonus": { "type": "boolean" },
-            "acMaxDex": { "type": "integer", "minimum": 0 },
-            "strengthRequirement": { "type": "integer", "minimum": 1 },
-            "stealthDisadvantage": { "type": "boolean" }
+            "slot": { "type": "string", "enum": ["head", "torso", "back", "hands", "feet", "offhand"], "description": "Body slot this piece occupies. 'offhand' is for shields." },
+            "layer": { "type": "string", "enum": ["skin", "middle", "upper", "on_top"], "description": "Layering position. null for shields (no layering)." },
+            "category": {
+              "type": "string",
+              "enum": ["light", "medium", "heavy"],
+              "description": "Governing skill for this piece. Omit for back/on_top items (no skill requirement)."
+            },
+            "drBase": { "type": "integer", "minimum": 0, "description": "Base damage reduction before material modifier. Summed across all worn pieces per incoming physical hit." },
+            "evasionPenalty": { "type": "integer", "description": "Penalty to evasion skill while worn. light 0, medium −5, heavy −15.", "default": 0 },
+            "speedPenalty": { "type": "integer", "description": "Movement speed reduction in units. light 0, medium −1, heavy −2.", "default": 0 },
+            "strengthRequirement": { "type": "integer", "minimum": 1, "maximum": 10, "description": "Minimum STR attribute required to wear effectively (1–10 range)." },
+            "stealthPenalty": { "type": "boolean", "description": "Whether this piece imposes stealth penalties.", "default": false },
+            "requiresLayer": {
+              "type": "array",
+              "items": { "type": "string", "enum": ["skin", "middle"] },
+              "description": "Layer dependency. e.g. 'middle' layer requires a 'skin' layer in the same slot.",
+              "minItems": 1
+            }
           },
-          "required": ["category", "acBase"],
+          "required": ["slot", "layer", "drBase"],
           "additionalProperties": false
         },
         "consumable": {
@@ -102,6 +115,24 @@
           },
           "required": ["delivery", "effects"],
           "additionalProperties": false
+        },
+        "accessory": {
+          "type": "object",
+          "description": "A wearable magical or decorative item. Up to 5 accessories may be worn simultaneously, one per type.",
+          "properties": {
+            "accessoryType": {
+              "type": "string",
+              "enum": ["ring", "amulet", "trinket", "belt", "misc"],
+              "description": "The kind of accessory. Only one of each type can be worn at a time."
+            },
+            "effects": {
+              "type": "array",
+              "items": { "$ref": "schema.json#/definitions/appliedEffect" },
+              "description": "Magical effects provided by this accessory."
+            }
+          },
+          "required": ["accessoryType"],
+          "additionalProperties": false
         }
       },
       "required": ["id", "key", "label", "description", "type", "cost", "weight"],
@@ -109,7 +140,8 @@
       "oneOf": [
         { "required": ["weapon"] },
         { "required": ["armor"] },
-        { "required": ["consumable"] }
+        { "required": ["consumable"] },
+        { "required": ["accessory"] }
       ]
     }
   }

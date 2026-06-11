@@ -2,32 +2,88 @@
   "$schema": "../../schemas/equipment.schema.json",
   "equipment": [
     {
-      "id": 22, "key": "leather_armor", "label": "Leather Armor", "description": "Light armor made from hardened leather.", "type": "armor", "cost": { "quantity": 10, "unit": "gp" }, "weight": 10,
-      "armor": { "category": "light", "acBase": 11, "acDexBonus": true }
+      "id": 22, "key": "padded_tunic", "label": "Padded Tunic", "description": "A quilted cloth tunic worn as a base layer under armor or alone.", "type": "armor", "cost": { "quantity": 5, "unit": "gp" }, "weight": 4,
+      "armor": { "slot": "torso", "layer": "skin", "category": "light", "drBase": 0 }
     },
     {
-      "id": 23, "key": "studded_leather", "label": "Studded Leather Armor", "description": "Leather reinforced with metal studs.", "type": "armor", "cost": { "quantity": 45, "unit": "gp" }, "weight": 13,
-      "armor": { "category": "light", "acBase": 12, "acDexBonus": true }
+      "id": 23, "key": "cloth_robe", "label": "Cloth Robe", "description": "A simple cloth robe. Offers negligible protection but is comfortable and light.", "type": "armor", "cost": { "quantity": 2, "unit": "gp" }, "weight": 3,
+      "armor": { "slot": "torso", "layer": "skin", "category": "light", "drBase": 0 }
     },
     {
-      "id": 24, "key": "chain_shirt", "label": "Chain Shirt", "description": "A shirt of interlocking metal rings.", "type": "armor", "cost": { "quantity": 50, "unit": "gp" }, "weight": 20,
-      "armor": { "category": "medium", "acBase": 13, "acDexBonus": true, "acMaxDex": 2 }
+      "id": 24, "key": "leather_jerkin", "label": "Leather Jerkin", "description": "A tough leather vest worn over the torso. Stiffened by boiling or waxing.", "type": "armor", "cost": { "quantity": 10, "unit": "gp" }, "weight": 8,
+      "armor": { "slot": "torso", "layer": "upper", "category": "light", "drBase": 1 }
     },
     {
-      "id": 25, "key": "breastplate", "label": "Breastplate", "description": "A metal plate covering the torso.", "type": "armor", "cost": { "quantity": 400, "unit": "gp" }, "weight": 20,
-      "armor": { "category": "medium", "acBase": 14, "acDexBonus": true, "acMaxDex": 2 }
+      "id": 25, "key": "studded_leather_jerkin", "label": "Studded Leather Jerkin", "description": "A leather jerkin reinforced with metal studs and small plates.", "type": "armor", "cost": { "quantity": 30, "unit": "gp" }, "weight": 10,
+      "armor": { "slot": "torso", "layer": "upper", "category": "light", "drBase": 2 }
     },
     {
-      "id": 26, "key": "chainmail", "label": "Chainmail", "description": "Full-body armor of interlocking rings.", "type": "armor", "cost": { "quantity": 75, "unit": "gp" }, "weight": 55,
-      "armor": { "category": "heavy", "acBase": 16, "acDexBonus": false, "strengthRequirement": 13, "stealthDisadvantage": true }
+      "id": 26, "key": "chainmail", "label": "Chainmail", "description": "A shirt of interlocking metal rings. Requires a padded layer underneath.", "type": "armor", "cost": { "quantity": 50, "unit": "gp" }, "weight": 20,
+      "armor": { "slot": "torso", "layer": "middle", "category": "medium", "drBase": 2, "evasionPenalty": -5, "speedPenalty": -1, "requiresLayer": ["skin"] }
     },
     {
-      "id": 27, "key": "plate_armor", "label": "Plate Armor", "description": "Full plate armor offering maximum protection.", "type": "armor", "cost": { "quantity": 1500, "unit": "gp" }, "weight": 65,
-      "armor": { "category": "heavy", "acBase": 18, "acDexBonus": false, "strengthRequirement": 15, "stealthDisadvantage": true }
+      "id": 27, "key": "scale_shirt", "label": "Scale Shirt", "description": "Overlapping metal scales riveted to a leather backing. Good protection for its weight.", "type": "armor", "cost": { "quantity": 70, "unit": "gp" }, "weight": 25,
+      "armor": { "slot": "torso", "layer": "middle", "category": "medium", "drBase": 3, "evasionPenalty": -5, "speedPenalty": -1, "requiresLayer": ["skin"] }
     },
     {
-      "id": 28, "key": "shield", "label": "Shield", "description": "A wooden or metal shield worn on the arm.", "type": "shield", "cost": { "quantity": 10, "unit": "gp" }, "weight": 6,
-      "armor": { "category": "shield", "acBase": 2, "acDexBonus": false }
+      "id": 28, "key": "shield", "label": "Shield", "description": "A wooden or metal shield worn on the arm. Provides DR when actively blocking.", "type": "shield", "cost": { "quantity": 10, "unit": "gp" }, "weight": 6,
+      "armor": { "slot": "offhand", "layer": "skin", "drBase": 2 }
+    },
+    {
+      "id": 29, "key": "brigandine", "label": "Brigandine", "description": "Small metal plates riveted between layers of leather or cloth. Flexible and protective.", "type": "armor", "cost": { "quantity": 90, "unit": "gp" }, "weight": 22,
+      "armor": { "slot": "torso", "layer": "middle", "category": "medium", "drBase": 3, "evasionPenalty": -5, "speedPenalty": -1, "requiresLayer": ["skin"] }
+    },
+    {
+      "id": 30, "key": "breastplate", "label": "Breastplate", "description": "A formed metal plate covering the chest and abdomen. Often worn over chain or padding.", "type": "armor", "cost": { "quantity": 200, "unit": "gp" }, "weight": 15,
+      "armor": { "slot": "torso", "layer": "upper", "category": "heavy", "drBase": 4, "evasionPenalty": -15, "speedPenalty": -2 }
+    },
+    {
+      "id": 31, "key": "plate_cuirass", "label": "Plate Cuirass", "description": "A full steel cuirass covering the torso. Requires considerable strength to wear effectively.", "type": "armor", "cost": { "quantity": 500, "unit": "gp" }, "weight": 30,
+      "armor": { "slot": "torso", "layer": "upper", "category": "heavy", "drBase": 5, "evasionPenalty": -15, "speedPenalty": -2, "strengthRequirement": 8 }
+    },
+    {
+      "id": 32, "key": "full_plate", "label": "Full Plate", "description": "Complete plate armor with integrated greaves and pauldrons. The pinnacle of protection.", "type": "armor", "cost": { "quantity": 1200, "unit": "gp" }, "weight": 50,
+      "armor": { "slot": "torso", "layer": "upper", "category": "heavy", "drBase": 6, "evasionPenalty": -15, "speedPenalty": -2, "strengthRequirement": 10, "stealthPenalty": true }
+    },
+    {
+      "id": 33, "key": "cap_hood", "label": "Cap/Hood", "description": "A simple cloth cap or hood. Offers minimal protection but keeps the elements at bay.", "type": "armor", "cost": { "quantity": 1, "unit": "gp" }, "weight": 1,
+      "armor": { "slot": "head", "layer": "skin", "category": "light", "drBase": 0 }
+    },
+    {
+      "id": 34, "key": "coif", "label": "Coif", "description": "A chainmail hood covering the head and neck. Requires a padded cap underneath.", "type": "armor", "cost": { "quantity": 20, "unit": "gp" }, "weight": 5,
+      "armor": { "slot": "head", "layer": "middle", "category": "medium", "drBase": 1, "evasionPenalty": -5, "requiresLayer": ["skin"] }
+    },
+    {
+      "id": 35, "key": "helmet", "label": "Helmet", "description": "A formed metal helmet protecting the head and face.", "type": "armor", "cost": { "quantity": 60, "unit": "gp" }, "weight": 6,
+      "armor": { "slot": "head", "layer": "upper", "category": "heavy", "drBase": 2, "evasionPenalty": -15 }
+    },
+    {
+      "id": 36, "key": "gloves", "label": "Gloves", "description": "Simple cloth or leather hand coverings. Minimal protection.", "type": "armor", "cost": { "quantity": 1, "unit": "gp" }, "weight": 0.5,
+      "armor": { "slot": "hands", "layer": "skin", "category": "light", "drBase": 0 }
+    },
+    {
+      "id": 37, "key": "gauntlets", "label": "Gauntlets", "description": "Armored metal gloves protecting the hands in combat.", "type": "armor", "cost": { "quantity": 40, "unit": "gp" }, "weight": 4,
+      "armor": { "slot": "hands", "layer": "upper", "category": "heavy", "drBase": 1, "evasionPenalty": -15 }
+    },
+    {
+      "id": 38, "key": "shoes", "label": "Shoes", "description": "Simple leather or cloth footwear. No combat protection.", "type": "armor", "cost": { "quantity": 2, "unit": "gp" }, "weight": 1,
+      "armor": { "slot": "feet", "layer": "skin", "category": "light", "drBase": 0 }
+    },
+    {
+      "id": 39, "key": "boots", "label": "Boots", "description": "Sturdy leather boots reaching to the mid-calf. Light protection for the feet.", "type": "armor", "cost": { "quantity": 5, "unit": "gp" }, "weight": 3,
+      "armor": { "slot": "feet", "layer": "skin", "category": "light", "drBase": 1 }
+    },
+    {
+      "id": 40, "key": "greaves", "label": "Greaves", "description": "Metal leg guards protecting the shins and knees. Part of heavy armor sets.", "type": "armor", "cost": { "quantity": 50, "unit": "gp" }, "weight": 8,
+      "armor": { "slot": "feet", "layer": "upper", "category": "heavy", "drBase": 2, "evasionPenalty": -15, "speedPenalty": -2 }
+    },
+    {
+      "id": 41, "key": "cloak", "label": "Cloak", "description": "A heavy wool or leather cloak. Offers warmth and can carry enchantments but negligible DR.", "type": "armor", "cost": { "quantity": 5, "unit": "gp" }, "weight": 3,
+      "armor": { "slot": "back", "layer": "on_top", "drBase": 0 }
+    },
+    {
+      "id": 42, "key": "backpack", "label": "Backpack", "description": "A sturdy backpack for carrying gear. No protective value.", "type": "armor", "cost": { "quantity": 2, "unit": "gp" }, "weight": 2,
+      "armor": { "slot": "back", "layer": "on_top", "drBase": 0 }
     }
   ]
 }

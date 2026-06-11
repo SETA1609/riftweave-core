@@ -6,11 +6,6 @@
     { "id": 3, "key": "piercing", "label": "Piercing", "description": "Thrust and stab with spears, rapiers, daggers, and other piercing melee weapons.", "associatedAbility": "agi", "category": "combat", "taggable": true },
     { "id": 4, "key": "unarmed", "label": "Unarmed", "description": "Fight with fists, claws, and brawling techniques.", "associatedAbility": "agi", "category": "combat", "taggable": true },
     { "id": 6, "key": "block", "label": "Block", "description": "Absorb and deflect blows with a shield.", "associatedAbility": "end", "category": "combat", "taggable": true },
-    { "id": 41, "key": "light_armor", "label": "Light Armor", "description": "Move and fight effectively while wearing light armor (leather, padded, studded).", "associatedAbility": "agi", "category": "combat", "taggable": true },
-    { "id": 42, "key": "medium_armor", "label": "Medium Armor", "description": "Move and fight effectively while wearing medium armor (chain, scale, brigandine).", "associatedAbility": "end", "category": "combat", "taggable": true },
-    { "id": 43, "key": "heavy_armor", "label": "Heavy Armor", "description": "Move and fight effectively while wearing heavy armor (plate, full plate).", "associatedAbility": "str", "category": "combat", "taggable": true },
-    { "id": 44, "key": "unarmored", "label": "Unarmored", "description": "Defend yourself without armor through nimble footwork and body positioning.", "associatedAbility": "agi", "category": "combat", "taggable": true },
-    { "id": 45, "key": "evasion", "label": "Evasion", "description": "Dodge area effects, traps, and incoming attacks through quick reflexes.", "associatedAbility": "agi", "category": "combat", "taggable": true },
 
     { "id": 7, "key": "red_magic", "label": "Red Magic", "description": "Offensive magic: fire, frost, shock, poison, and drains.", "associatedAbility": "int", "category": "magic", "taggable": true },
     { "id": 8, "key": "orange_magic", "label": "Orange Magic", "description": "Summoning, bound weapons, and energy creation.", "associatedAbility": "int", "category": "magic", "taggable": true },
@@ -51,6 +46,12 @@
     { "id": 37, "key": "bows", "label": "Bows", "description": "Attack with bows of all kinds.", "associatedAbility": "per", "category": "combat", "taggable": true },
     { "id": 38, "key": "crossbows", "label": "Crossbows", "description": "Attack with crossbows and other mechanical projectile weapons.", "associatedAbility": "per", "category": "combat", "taggable": true },
     { "id": 39, "key": "guns", "label": "Guns", "description": "Attack with firearms and gunpowder weapons.", "associatedAbility": "per", "category": "combat", "taggable": true },
-    { "id": 40, "key": "throwing_weapons", "label": "Throwing Weapons", "description": "Attack with javelins, throwing knives, axes, darts, and slings.", "associatedAbility": "per", "category": "combat", "taggable": true }
+    { "id": 40, "key": "throwing_weapons", "label": "Throwing Weapons", "description": "Attack with javelins, throwing knives, axes, darts, and slings.", "associatedAbility": "per", "category": "combat", "taggable": true },
+
+    { "id": 41, "key": "light_armor", "label": "Light Armor", "description": "Move and fight effectively while wearing light armor (leather, padded, studded).", "associatedAbility": "agi", "category": "combat", "taggable": true },
+    { "id": 42, "key": "medium_armor", "label": "Medium Armor", "description": "Move and fight effectively while wearing medium armor (chain, scale, brigandine).", "associatedAbility": "end", "category": "combat", "taggable": true },
+    { "id": 43, "key": "heavy_armor", "label": "Heavy Armor", "description": "Move and fight effectively while wearing heavy armor (plate, full plate).", "associatedAbility": "str", "category": "combat", "taggable": true },
+    { "id": 44, "key": "unarmored", "label": "Unarmored", "description": "Defend yourself without armor through nimble footwork and body positioning.", "associatedAbility": "agi", "category": "combat", "taggable": true },
+    { "id": 45, "key": "evasion", "label": "Evasion", "description": "Dodge area effects, traps, and incoming attacks through quick reflexes.", "associatedAbility": "agi", "category": "combat", "taggable": true }
   ]
 }
