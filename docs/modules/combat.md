@@ -573,7 +573,270 @@ Goblins bottled up by Dorn's position.
 
 ---
 
-## 11. Deferred Combat Sections
+## 11. Combat Flow Checklist
+
+### TTRPG (Turn-Based) — Full Round Flow
+
+```
+┌─ START OF ROUND ─────────────────────────────────────────┐
+│ 1. Roll initiative (d20 + PER) if first round             │
+│ 2. Refresh reactions for all participants                 │
+│ 3. Refill AP pools (AP variant)                           │
+│ 4. Process start-of-round effects (bleed, burn, regen)    │
+└───────────────────────────────────────────────────────────┘
+        │
+        ▼
+┌─ EACH CHARACTER'S TURN (initiative order) ───────────────┐
+│ ☐ Declare reactions (AP variant: reserve AP from pool)    │
+│ ☐ Take Action (one): Attack / Cast / Dash / Disengage /  │
+│   Dodge / Hide / Ready / Use Object / Help                │
+│ ☐ Take Bonus Action (one): Off-hand attack / Quick Cast   │
+│ ☐ Move (split before/after action; speed in units)        │
+│ ☐ End turn → process end-of-turn effects                  │
+│   (duration ticks, save ends)                             │
+└───────────────────────────────────────────────────────────┘
+        │
+        ▼
+┌─ REACTIONS (triggered, any turn) ────────────────────────┐
+│ ☐ Opportunity attack (enemy leaves reach)                 │
+│ ☐ Block (incoming melee, declared before hit)             │
+│ ☐ Parry (incoming melee, weapon skill, declared before)   │
+│ ☐ Evasion / Dodge (incoming attack, declared before)      │
+│ ☐ Perk-triggered reactions (intercept, guard ally, etc.)  │
+└───────────────────────────────────────────────────────────┘
+        │
+        ▼
+┌─ END OF ROUND ───────────────────────────────────────────┐
+│ 1. Process end-of-round effects (duration ticks, saves)   │
+│ 2. Refund unused reaction AP (AP variant)                 │
+│ 3. Start next round                                       │
+└───────────────────────────────────────────────────────────┘
+```
+
+### Video Game (Action-Combat) — Combat Loop
+
+```
+┌─ ENGAGEMENT ──────────────────────────────────────────────┐
+│ 1. Aggro/threat system determines enemy targets           │
+│ 2. Player enters combat range → enemies aggro             │
+│ 3. Combat music / HUD elements activate                   │
+└───────────────────────────────────────────────────────────┘
+        │
+        ▼
+┌─ GAMEPLAY LOOP ──────────────────────────────────────────┐
+│ (continuous, player-input-driven)                         │
+│                                                          │
+│ ☐ Move (free, WASD; sprint costs Stamina)                │
+│ ☐ Attack (button press, drains Stamina)                  │
+│   → Auto-dodge check (evasion skill %, automatic)         │
+│   → Hit → armor DR applied → damage popup                │
+│ ☐ Block (hold/timed button; skill determines window)     │
+│ ☐ Parry (tap within narrow window, high risk/reward)     │
+│ ☐ Use ability / item (cooldown-gated, Stamina cost)      │
+│ ☐ Dodge roll (invincibility frames, Stamina cost)        │
+│ ☐ Regenerate (Stamina regens from WIL, slow out of combat)│
+└───────────────────────────────────────────────────────────┘
+        │
+        ▼
+┌─ DISENGAGEMENT ──────────────────────────────────────────┐
+│ 1. All enemies in area defeated → combat ends             │
+│ 2. Out-of-combat regen kicks in (HP, Mana, Stamina)       │
+│ 3. Cooldowns reset or begin reduced recovery              │
+└───────────────────────────────────────────────────────────┘
+```
+
+### cRPG (Party-Based Tactical)
+
+For party-based tactical cRPGs, the TTRPG checklist applies with these additions:
+- **AI-controlled companions** follow scripted tactics (aggro nearest, protect squishy, focus fire).
+- **Auto-pause triggers:** enemy death, OA triggered, new enemy spotted, low HP.
+- **Queue system:** actions can be queued during auto-pause for simultaneous execution.
+- **Camera/positioning:** grid or free-placement with LoS checking for ranged attacks.
+
+---
+
+## 12. Edge Cases & Common Questions
+
+### Attacking While Prone
+- **TTRPG:** −20 penalty to melee attack rolls. Ranged attacks are impossible without the *Point Blank Shot* perk (or similar). Cannot take the Dash or Dodge action.
+- **Video game:** Cannot attack during the knockdown animation. Partial attack penalty (−30%) during the recovery (standing) animation.
+
+### Attacking Invisible Targets
+- **TTRPG:** −20 penalty on attack rolls (blind swing). A PER-based check (DC 15 + target's stealth skill / 10) may reveal the square. Area-of-effect spells hit regardless. Damage still applies on a hit.
+- **Video game:** The invisible target cannot be locked on. Area attacks and cone abilities still hit. A detection effect (e.g. *Detect Life*) reveals the target.
+- **Perception perks:** *Blind Fighting* reduces the penalty to −10. *Tremorsense* negates it entirely if the target is on the ground.
+
+### Shooting Into Melee
+- **TTRPG:** −10 penalty if an ally is engaged in melee with the target. On a miss (roll > modified skill but within 10 of the target), the attack hits a random adjacent creature in melee (GM determines). The *Sharpshooter* perk negates both penalty and friendly fire.
+- **Video game:** Friendly fire is on by default (damaging allies). A perk or difficulty setting may disable it. The penalty is automatic aim deviation if an ally is between the shooter and target.
+- **cRPG note:** With grid positioning, check LoS — if an ally occupies a grid cell between attacker and target, apply the penalty.
+
+### Invisible Target in Melee
+- An invisible target still provokes OA when leaving reach — you can hear them move. The OA roll takes the −20 blind penalty.
+- Invisibility breaks when the target attacks, casts a spell, or takes damage (GM call for TTRPG; automatic for video game).
+
+### Stacks & Durations (Common Rulings)
+| Question | Answer |
+|----------|--------|
+| Do same-condition effects stack? | No — refresh duration (or increase stack counter if `stacking: true`). |
+| Do same-effect (id) buffs stack? | No — only the highest magnitude applies (`fortify` default). Effects with `stackable: true` do stack. |
+| Does a `cure` effect remove all conditions? | Only if its `parameter` matches the condition key, or is `"all"`. |
+| Can you block while stunned? | No. Stunned and incapacitated prevent reactions. |
+| Does DR reduce elemental damage? | Only if specified (e.g. fire resistance DR). Physical DR does not reduce magic damage. |
+
+### Mounted Combat (Stub)
+- **Mounted character:** Uses the mount's speed and movement. The mount acts on the rider's initiative.
+- **Mounted attacks:** The rider attacks with their own weapon skill. Melee attacks against a mounted target can hit either rider or mount (GM decides or random 50/50).
+- **Dismounting:** Voluntary (costs half movement) or forced (knockdown check for rider when mount is killed or tripped).
+- **Charge attacks:** Moving 4+ units in a straight line before attacking grants +2 damage per unit moved (capped at +10). Requires a Ride check (DC 12) to maintain balance.
+
+### Underwater Combat (Stub)
+- **Movement:** Speed halved. Only piercing weapons deal full damage; slashing and bludgeoning deal half.
+- **Ranged:** Thrown and projectile weapons are ineffective beyond 1 unit. Crossbows and magic work normally.
+- **Breath:** Characters can hold breath for `END × 15` seconds. After that, begin suffocation (1 HP/round, save END DC 10 + rounds without air).
+- **Spellcasting:** Fire-phase spells and effects are nullified underwater. Water-phase spells are amplified (×1.5).
+
+---
+
+## 13. Balance Guidelines
+
+These are **reference values** for GMs and developers building encounters, equipment, and character options. Actual tuning depends on campaign difficulty and game mode.
+
+### Expected Damage per Hit by Tier
+
+| Tier | Level Range | Weapon Die (Typical) | Expected Pre-DR Damage | Typical Enemy HP | Hits to Kill |
+|------|-------------|---------------------|----------------------|-----------------|--------------|
+| Early | 1–5 | 1d6–1d8 (3–5 avg) | 4–7 | 15–30 | 3–6 |
+| Mid | 6–14 | 1d8–1d10 (5–7 avg) | 7–12 | 30–60 | 3–7 |
+| High | 15–20 | 1d10–2d8 (7–11 avg) | 10–16 | 60–100 | 4–8 |
+| Endgame | 21–30 | 2d8–2d10 (9–13 avg) | 14–22 | 100–200 | 5–10 |
+
+### Armor DR by Tier
+
+| Tier | Light Armor DR | Medium Armor DR | Heavy Armor DR | Expected Material |
+|------|---------------|-----------------|----------------|-------------------|
+| Early | 1–3 | 2–4 | 3–6 | Leather, Iron |
+| Mid | 2–4 | 3–6 | 5–10 | Bronze, Steel |
+| High | 3–5 | 5–8 | 8–14 | Steel, Elven Wood |
+| Endgame | 4–6 | 6–10 | 10–18 | Steel + enchanted materials |
+
+**Total character DR** (all slots) is roughly:
+- Light: 3–8 (e.g. studded leather jerkin + boots + gloves)
+- Medium: 8–18 (e.g. chainmail + coif + greaves)
+- Heavy: 14–28 (e.g. full plate + helm + gauntlets + greaves)
+
+### Hit Points by Role
+
+| Role | END | Level 1 HP | Level 10 HP | Level 20 HP | Level 30 HP |
+|------|-----|-----------|-------------|-------------|-------------|
+| Glass cannon (mage) | 4 | 47 | 191 | 371 | 551 |
+| Skirmisher (rogue) | 5 | 55 | 215 | 415 | 615 |
+| Frontline (fighter) | 7 | 71 | 263 | 503 | 743 |
+| Tank (paladin) | 9 | 87 | 311 | 591 | 871 |
+
+Formula: `15 + END × 8 + level × 4` (per level after 1st: `END × 8 + 4`).
+
+### How Many Hits Can a Character Take?
+
+Assuming a mid-tier character (level 10, END 7, 263 HP) facing an enemy that deals 9 damage per hit:
+
+| Armor | Net Damage per Hit | Hits to Down |
+|-------|-------------------|--------------|
+| None | 9 | 29 |
+| Light (DR 4) | 5 | 52 |
+| Medium (DR 8) | 1 | 263 |
+| Heavy (DR 14) | 0 | — |
+
+Heavy armor nearly negates low-to-mid-tier physical damage. This is intentional — heavy armor is the tank's defining feature. Counterplay exists via magic, called shots (head/arm ignore partial DR), effects that expose or corrode armor, and flanking bonuses that improve hit chance.
+
+### Skill Benchmarks
+
+| Level | Expected Weapon Skill | Expected Evasion | Expected Block | d100 Hit Chance vs. Equal Foe |
+|-------|----------------------|------------------|----------------|------------------------------|
+| 1 | 20–30 | 15–25 | 15–25 | 25–35% |
+| 5 | 35–50 | 25–40 | 25–40 | 40–55% |
+| 10 | 50–65 | 35–55 | 35–55 | 55–70% |
+| 20 | 70–85 | 55–75 | 55–75 | 75–90% |
+| 30 | 85–100 | 70–90 | 70–90 | 85–95% |
+
+### Quick Balance Heuristics
+
+- A fair 1v1 fight: both sides should down each other in **4–6 hits** (accounting for misses, blocks, DR).
+- A "boss" enemy should take **8–12 party hits** to down (with 3–4 party members).
+- A "minion" should go down in **1–2 hits**.
+- Armor DR should never exceed the expected enemy damage per hit (or combat becomes stalemate). If DR ≥ expected damage, the enemy needs magic, called shots, armor-piercing traits, or environmental advantages.
+- Crit chance of 5–10% (before LCK) means roughly 1 crit per 10–20 attack rolls. With LCK 10, roughly 1 in 10 attacks crits.
+
+---
+
+## 14. Video Game Implementation Notes
+
+### Timed Block / Parry System
+
+| Mechanic | Block | Parry |
+|----------|-------|-------|
+| Input | Hold button (or tap before hit) | Tap within narrow window |
+| Window length | `blockSkill × 0.01` seconds (e.g. skill 70 → 0.7s window) | `weaponSkill × 0.005` seconds (skill 70 → 0.35s) |
+| On success | Damage reduced by shield DR % | Attack negated (or reflected with perk) |
+| On failure | Full damage (shield provides no passive DR) | Full damage + recovery animation lock |
+| Cooldown | None (but Stamina cost per block) | 0.5–1s recovery |
+| Visual feedback | Shield flash, clang sound, damage popup with "Blocked!" text | Weapon ring, spark effect, enemy stagger animation |
+
+**Implementation recommendations:**
+- Use a **two-phase input model**: the block button enters a "ready" stance (reduced movement, Stamina drain per second), releasing or getting hit triggers the block. This avoids pixel-perfect timing frustration.
+- Parry should be strictly **optional** — design the game so that holding block is viable for casual play, while parry rewards mastery.
+- Show a **block indicator** (shield icon) when the player is in the block-window frame.
+
+### Auto-Dodge Calculation
+
+Video game evasion is a **passive percentage** computed from:
+```
+Dodge% = baseEvasion% + (evasionSkill × 0.15) + (AGI × 2)
+       − sum(armorEvasionPenalties) − encumbrancePenalty
+```
+
+- Rolled automatically on each incoming attack.
+- Visually: a "dodge" animation plays (lean back, sidestep, or roll based on distance to attacker).
+- Dodging an attack should briefly interrupt the enemy's combo (giving the player a window to counter).
+- Overcapped dodge (>100%) grants a chance to **counter-attack** (optional mechanic).
+
+### Aggro / Threat System
+
+| Action | Threat Generated | Notes |
+|--------|-----------------|-------|
+| Deal damage | Damage × 1.0 | Maintains aggro on current target |
+| Taunt (effect id 63) | Fixed high value | Overrides current aggro for duration |
+| Heal ally | Heal amount × 0.5 | Causes healer to gain threat from healed target's enemies |
+| Block / Parry | Low constant | Does not significantly pull aggro |
+| Stay in melee range | Passive decay | Being near the enemy slowly builds "presence" aggro |
+
+- **Threat table:** each enemy tracks a numeric threat score per party member. Attacks the highest.
+- **Threat decay:** Out of melee range for 5+ seconds → threat decays by 50%.
+- **Tanking:** Tanks should generate 2–3× the threat of DPS characters to hold aggro without taunts.
+
+### Damage Popup UI
+
+Display damage numbers clearly with color coding:
+- **White:** Normal physical damage
+- **Orange:** Critical hit
+- **Blue:** Magic damage
+- **Green:** Healing / restoration
+- **Red:** Damage over time (tick)
+- **Gray:** Damage fully absorbed (0 net damage)
+
+Format: `12 - 4 (DR) = 8` — shows pre-DR, DR, and net. Optionally collapse to just `8` for clean HUD.
+
+### Animation & Timing Guidelines
+
+- **Attack recovery:** After a melee attack, 0.3–0.5s recovery before the next action. Heavy weapons: 0.6–0.8s.
+- **Hit stun:** On taking damage, brief animation lock (0.1–0.2s). Prevents infinite stun-locks.
+- **Knockdown:** 0.5–0.8s fall animation, 0.5s get-up. Can be interrupted by high-damage attacks during get-up.
+- **Dodge roll:** 0.3–0.5s animation with i-frames (invincibility frames) for the middle 60% of the animation.
+- **Stamina regen delay:** After spending Stamina, a 0.5s delay before regen begins. Heavy actions add a longer delay (1–2s).
+
+---
+
+## 15. Deferred Combat Sections
 
 The following areas are noted for future expansion but not yet specified:
 

@@ -17,26 +17,33 @@ This document is a living backlog. Items are grouped by category with current st
 ## 1. Core Mechanics (High Priority)
 
 ### Combat Resolution
-**Current state:** High-level only.  
-`docs/modules/progression.md` covers d100 roll-under, margin of success, criticals (01–05 success / 96–00 fumble), and basic derived stats (HP, Stamina/Mana, carry weight, initiative). Weapons now have good classification (length/reach, damage type → skill). Armor is described vaguely as "damage-reduction rating".
+**Current state:** Significantly advanced.  
+`docs/modules/combat.md` is a comprehensive 590+ line document covering:
+- Full action economy (actions, bonus actions, reactions, AP variant with cost table)
+- Opportunity attacks (TTRPG + video game dual resolution)
+- Defense model (physical + magic trees with 4/5 layers each)
+- Critical hits with confirmation roll, Luck interaction table, and d100 effects table (11 entries)
+- Cover, flanking, difficult terrain, prone
+- Called / targeted shots (5 locations with penalties and effects)
+- Initiative (TTRPG d20+PER, video game aggro/proximity)
+- Mode comparison table (17 aspects)
+- Encumbrance in combat (TTRPG + video game tables)
+- 3 full worked examples (knight vs bandit, crit effects, party combat)
+- Combat flow checklists (TTRPG, video game, cRPG)
+- Edge cases (prone, invisible, shooting into melee, stacks, mounted stub, underwater stub)
+- Balance guidelines (damage by tier, DR by tier, HP by role, hits-to-kill, skill benchmarks)
+- Video game implementation notes (timed block/parry, auto-dodge formula, aggro/threat, damage popup UI, animation timing)
 
-**Missing:**
-- Full action economy (actions, bonus actions, reactions, movement)
-- Opportunity attacks / attacks of opportunity
-- Detailed conditions (blinded, grappled, prone, poisoned, etc.) with mechanical effects
-- Cover, flanking, difficult terrain
-- Called shots / limb damage (Fallout-style)
-- Critical hit tables or special effects
-- Full defense model (dodge vs block vs armor) — explicitly called a "follow-up"
-- Turn-based vs action-combat resolution details (still undecided per progression.md)
+`docs/modules/conditions.md` and `data/conditions/core.json` define 24 conditions with effect-driven application/removal. `docs/modules/armor.md` defines the full DR-based slot+layer armor system with encumbrance. `data/equipment/armor.json` has 21 base types by slot/layer.
 
-**Why it matters:** Combat is the most visible part of any cRPG/TTRPG. Current state is too abstract to run a real game.
+**Still missing / lower priority:**
+- Mounted combat rules (stub exists in edge cases)
+- Underwater combat rules (stub exists)
+- Vehicle combat
+- Mass combat
+- More perks that interact with combat-specific mechanics (e.g. timed block bonuses, OA improvements)
 
-**Suggested files/steps:**
-- Create `docs/modules/combat.md`
-- Create `docs/modules/conditions.md` (or `data/conditions/core.json` + schema)
-- Expand `equipment/armor.json` with more detailed DR properties
-- Decide on action points vs stamina model
+**Why it matters:** Combat was the #1 gap. It is now documented well enough to run a game or implement in an engine.
 
 ### Character Advancement & Leveling
 **Current state:** Base formulas exist in `progression.md` (skill points = `5 + INT × 2 + random(0…LCK)`, HP/Mana/Stamina scaling with level, perk cadence ~every 3 levels). A full Wuxia-inspired "breakthrough" system using phased monster cores and alchemically refined elixirs (leveraging `qualityGrade` + Wuxing cycles for bonus growth) is now documented.
@@ -183,11 +190,10 @@ Materials, gems, and tiers data exist and are well-structured. Weapons now suppo
 | spells         | Small list           | Needs many more examples           | Medium-High |
 | features       | Decent but limited   | Needs many more perks for real progression | Medium |
 | equipment      | Basic weapons + armor + consumables | Missing tools, kits, vehicles, more armor types | Medium |
-| effects        | Good foundation      | Needs many more condition-style effects | Medium |
-| backgrounds    | 8 entries (new)      | Solid starter set + design doc     | Low (more examples always welcome) |
+| effects        | Good foundation      | Could use more variety | Medium |
+| backgrounds    | 8 entries (new)      | Solid starter set + design doc           | Low (more examples always welcome) |
 
 **Other missing data collections:**
-- Conditions / status effects
 - Recipes (crafting)
 - Loot / treasure tables
 - Factions / reputation
@@ -199,8 +205,6 @@ Materials, gems, and tiers data exist and are well-structured. Weapons now suppo
 ## 6. Documentation & Examples
 
 **Missing or Stubs:**
-- `docs/modules/combat.md` (critical)
-- `docs/modules/conditions.md`
 - `docs/modules/factions.md`
 - `docs/modules/companions.md`
 - `docs/modules/economy.md`
@@ -210,8 +214,13 @@ Materials, gems, and tiers data exist and are well-structured. Weapons now suppo
 - Balance / power level guidelines
 - "How to run a game" or GM section
 
-**Partially addressed:**
+**Recently addressed (no longer stubs):**
+- `docs/modules/combat.md` (comprehensive — action economy, defense, crits, cover, called shots, examples, balance, edge cases, video game notes)
+- `docs/modules/conditions.md` (24 conditions with effect-driven application/removal)
+- `docs/modules/armor.md` (DR model, slots, layers, shields, encumbrance)
 - `docs/modules/weapons.md` (good recent addition)
+
+**Partially addressed:**
 - Most planned modules have design docs but no implementation
 
 ---
@@ -249,7 +258,7 @@ Materials, gems, and tiers data exist and are well-structured. Weapons now suppo
 ## Priority Summary (Suggested Order)
 
 **High (blocks playability):**
-- Combat system + conditions
+- ~~Combat system + conditions~~ **⦿ DONE** — see `combat.md`, `conditions.md`, `armor.md`
 - Actual crafting recipes + quality rules (start with one module)
 - Full character advancement / XP procedure (base + breakthrough system — design doc started in `advancement.md`)
 
@@ -273,4 +282,4 @@ Materials, gems, and tiers data exist and are well-structured. Weapons now suppo
 **How to use this file:**  
 Update this document as items are completed or new gaps are discovered. When starting work on a module or system, create a dedicated design doc in `docs/modules/` first (as recommended in `docs/modules/README.md`), then link it here.
 
-Last major review: Polished `docs/modules/character-creation.md` for full consistency with advancement + progression rules + added creation-to-breakthrough guidance and improved examples (current session).
+Last major review: Combat resolution system completed — `docs/modules/combat.md`, `docs/modules/conditions.md`, `docs/modules/armor.md` all finalized with dual-resolution mechanics, data, examples, edge cases, and balance guidelines. Phase 3 documentation and future-proofing (flow checklist, edge cases, balance numbers, video game notes) also finished.
