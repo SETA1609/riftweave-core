@@ -130,9 +130,7 @@ are bought at a 2:1 ratio (2 points for +1 rating), while tagged skills are boug
 a 1:1 ratio (1 point for +1 rating). Tagging is therefore about long-term efficiency
 in your focus skills (an ongoing discount, *not* a flat starting bonus).
 
-The skills span seven categories — combat (`blades`, `blunt`, `piercing`, `marksmanship`,
-`block`, `unarmed`), the nine `<color>_magic` schools, stealth, social, knowledge,
-survival, and utility (`alchemy`, `repair`, `athletics`, plus crafting disciplines).
+The skills span seven categories — combat (`blades`, `blunt`, `piercing`, `unarmed`, `block`, `bows`, `crossbows`, `guns`, `throwing_weapons`), the nine `<color>_magic` schools, stealth, social, knowledge, survival, and utility (`alchemy`, `repair`, `athletics`, plus crafting disciplines).
 
 ---
 
@@ -280,15 +278,15 @@ A "deliberate cultivator" often prioritizes LCK and a clear phase identity at cr
 
 1. **Race** — human: phase **any** (player choice; here water), speed 30, medium; no ability modifiers; traits *Versatility* (+1 tag skill) and *Ambition* (option for +1 creation perk).
 2. **Attributes** — start all at 4; distribute +10 as per +3, agi +3, lck +2, int +1, end +1. Final: **STR 4 · PER 7 · END 5 · INT 5 · WIL 4 · AGI 7 · CHA 4 · LCK 6**.
-3. **Background** — `scout`. Adds Survival +12, Stealth +10, Marksmanship +8; starts with shortbow, leather armor, dagger, and some rations. Perfect thematic fit for a human scout.
+3. **Background** — `scout`. Adds Survival +12, Stealth +10, Bows +8; starts with shortbow, leather armor, dagger, and some rations. Perfect thematic fit for a human scout.
 4. **Creation perks** — via *Ambition*, takes *Fast Shot* (ranged 20% faster, but no aimed shots). (Chosen in step 4; recorded here for the sheet.)
-5. **Tag skills** — `marksmanship`, `stealth`, `survival`, `investigation` (the extra from Versatility).
-6. **Skills** — bases: marksmanship 19, stealth 19, survival 19, investigation 15. Apply background: marksmanship 19+8=**27**, stealth 19+10=**29**, survival 19+12=**31**. Level-1 pool `5 + 5×2 + random(0…6)` → roll 3 = **18 points**.
-   Spend on tagged (1:1): marksmanship +3 → 30, stealth +3 → 32, survival +3 → 34, investigation +3 → 18. (She already has a very strong wilderness base from the background.)
+5. **Tag skills** — `bows`, `stealth`, `survival`, `investigation` (the extra from Versatility).
+6. **Skills** — bases: bows 19, stealth 19, survival 19, investigation 15. Apply background: bows 19+8=**27**, stealth 19+10=**29**, survival 19+12=**31**. Level-1 pool `5 + 5×2 + random(0…6)` → roll 3 = **18 points**.
+   Spend on tagged (1:1): bows +3 → 30, stealth +3 → 32, survival +3 → 34, investigation +3 → 18. (She already has a very strong wilderness base from the background.)
 7. **Perks** — *Fast Shot* (the creation perk taken via human Ambition). No normal level-up perk yet.
 8. **Derived** — HP 15+5×8+4=59; Mana 5×8+2=42; Action Points pool (max 10, carry, typical start ~4); Carry 25+4×10=65; Crit 1+6=7%; Initiative 7.
 9. **Spells / gear** — no magic tagged. Background already supplied shortbow + leather armor + dagger. Starting wealth 100 gp. Adds basic kit, 20–30 arrows, thieves' tools or a few potions, and keeps the rest for roleplay or future breakthroughs.
-10. **Element** — **water** (player choice): good synergy with flow/adaptability themes. **Advancement outlook**: LCK 6 + chosen water phase positions Lira well for mana/recovery or magic-school breakthroughs later (water favors WIL/INT/Mana and magic skills). Her four tag skills (thanks to Versatility) give her unusually broad 1:1 efficiency. The *Fast Shot* tradeoff is permanent, so she will lean into burst ranged play rather than precision sniping. The scout background gives her an excellent head start on the exact skills she will want to push further with both normal points and future breakthroughs.
+10. **Element** — **water** (player choice): good synergy with flow/adaptability themes. **Advancement outlook**: LCK 6 + chosen water phase positions Lira well for mana/recovery or magic-school breakthroughs later (water favors WIL/INT/Mana and magic skills). Her four tag skills (thanks to Versatility) give her unusually broad 1:1 efficiency. The *Fast Shot* tradeoff is permanent, so she will lean into burst ranged play rather than precision sniping. The scout background gives her an excellent head start on the exact skills (now including the split bows skill) she will want to push further with both normal points and future breakthroughs.
 
 These examples show the 2:1 vs 1:1 spending, tag skill efficiency, creation perk option for humans (including ability-gated perks via Ambition), the recommended 100 gp + kit baseline, and how starting choices (especially backgrounds) set up both immediate competence and the long-term breakthrough system. You can (and should) play with the attribute spreads, background, creation perks, and gear choices to fit the concept and your intended cultivation path.
 

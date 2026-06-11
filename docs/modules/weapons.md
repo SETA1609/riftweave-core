@@ -10,9 +10,9 @@ Weapons use two primary orthogonal classification systems:
    - `slashing` → `blades` skill
    - `bludgeoning` → `blunt` skill
    - `piercing` → `piercing` skill
-   - Ranged weapons use `marksmanship`.
+   - Ranged weapons use one of the split archery skills: `bows`, `crossbows`, `guns`, or `throwing_weapons`.
 
-   This split replaced the old single `melee_weapons` skill. A weapon's `damage.type` determines which skill is used for the attack roll.
+   This split replaced the old unified `marksmanship` skill (and the earlier single `melee_weapons`). A weapon's `damage.type` (for melee) or explicit `skill` (for ranged) determines the governing skill for the attack roll.
 
 2. **Length / Reach Category** (determines engagement distance and handedness)
    - `short`: Close-quarters weapons (daggers, handaxes, small training tools). Typically one-handed.
@@ -42,8 +42,8 @@ All weapons use standard D&D 3.5 / Pathfinder-style dice expressions for their b
 | Spear           | 1d6        | piercing  | reach  | 2            | piercing   | thrown, two_handed         |
 | Longsword       | 1d8        | slashing  | normal | 1            | blades     | versatile                  |
 | Rapier          | 1d6        | piercing  | normal | 1            | piercing   | finesse, light             |
-| Shortbow        | 1d6        | piercing  | -      | -            | marksmanship | ammunition, two_handed   |
-| Longbow         | 1d8        | piercing  | -      | -            | marksmanship | ammunition, heavy, two_handed |
+| Shortbow        | 1d6        | piercing  | -      | -            | bows         | ammunition, two_handed   |
+| Longbow         | 1d8        | piercing  | -      | -            | bows         | ammunition, heavy, two_handed |
 | Greatsword      | 2d6        | slashing  | normal | 1            | blades     | heavy, two_handed          |
 | Glaive          | 1d10       | slashing  | reach  | 2            | blades     | heavy, two_handed          |
 | Warhammer       | 1d10       | bludgeoning | reach | 2            | blunt      | heavy, two_handed          |

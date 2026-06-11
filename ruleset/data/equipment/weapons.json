@@ -15,11 +15,11 @@
     },
     {
       "id": 11, "key": "shortbow", "label": "Shortbow", "description": "A small, versatile bow.", "type": "weapon", "cost": { "quantity": 25, "unit": "gp" }, "weight": 2,
-      "weapon": { "category": "simple", "range": "ranged", "skill": "marksmanship", "damage": { "dice": "1d6", "type": "piercing" }, "properties": ["ammunition", "two_handed"], "rangeNormal": 80, "rangeLong": 320 }
+      "weapon": { "category": "simple", "range": "ranged", "skill": "bows", "damage": { "dice": "1d6", "type": "piercing" }, "properties": ["ammunition", "two_handed"], "rangeNormal": 80, "rangeLong": 320 }
     },
     {
       "id": 12, "key": "longbow", "label": "Longbow", "description": "A large bow requiring strength and skill.", "type": "weapon", "cost": { "quantity": 50, "unit": "gp" }, "weight": 2,
-      "weapon": { "category": "martial", "range": "ranged", "skill": "marksmanship", "damage": { "dice": "1d8", "type": "piercing" }, "properties": ["ammunition", "heavy", "two_handed"], "rangeNormal": 150, "rangeLong": 600 }
+      "weapon": { "category": "martial", "range": "ranged", "skill": "bows", "damage": { "dice": "1d8", "type": "piercing" }, "properties": ["ammunition", "heavy", "two_handed"], "rangeNormal": 150, "rangeLong": 600 }
     },
     {
       "id": 13, "key": "quarterstaff", "label": "Quarterstaff", "description": "A simple wooden staff.", "type": "weapon", "cost": { "quantity": 2, "unit": "sp" }, "weight": 4,

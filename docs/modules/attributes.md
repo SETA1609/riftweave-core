@@ -84,7 +84,7 @@ rating is `5 + associatedAbility × 2`), and the **resources/derived stats** it 
 
 ### Perception (PER)
 - **Governs:** ranged accuracy, detection, initiative order.
-- **Seeds skills:** `marksmanship`, `insight`, `survival`.
+- **Seeds skills:** the archery skills (`bows`, `crossbows`, `guns`, `throwing_weapons`), `insight`, `survival`.
 - **Feeds:** Initiative `= PER`. (The *Alert* perk adds +10.)
 
 ### Endurance (END)

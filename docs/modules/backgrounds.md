@@ -60,13 +60,13 @@ Here are concrete, ready-to-use backgrounds plus additional ideas for expansion.
 
 | ID                | Category    | Signature Grants                              | Flavor                              |
 |-------------------|-------------|-----------------------------------------------|-------------------------------------|
-| `scout`           | wilderness  | Survival +12, Stealth +10, Marksmanship +8 + shortbow + leather + rations | Wilderness guide / ranger archetype |
+| `scout`           | wilderness  | Survival +12, Stealth +10, Bows +8 + shortbow + leather + rations | Wilderness guide / ranger archetype |
 | `former_soldier`  | military    | Block +12, Blades +10 + chain shirt + shield + longsword + mace + 25gp | Professional fighter / veteran      |
 | `hedge_witch`     | arcane      | Green Magic +10, Medicine +10, Lore +8 + *Mend Wounds* + staff + potions | Practical village healer / wise one |
 | `street_urchin`   | criminal    | Stealth +12, Lockpick +10, Sleight +8, Deception +6 + 2×dagger + leather + 15gp | Alley rat / cutpurse                |
 | `noble_scion`     | noble       | Persuasion +12, Insight +8, Lore +6 + 75gp    | Well-bred, connected, soft hands    |
 | `arcane_apprentice`| arcane     | Red Magic +10, Lore +12, Investigation +6 + *Fire Bolt* + *Ward* + staff | Collegiate or tower apprentice      |
-| `wilderness_hunter`| wilderness | Survival +10, Marksmanship +12, Stealth +8 + longbow + leather + handaxe | Bounty hunter / trapper             |
+| `wilderness_hunter`| wilderness | Survival +10, Bows +12, Stealth +8 + longbow + leather + handaxe | Bounty hunter / trapper             |
 | `itinerant_priest`| religious   | White Magic +10, Persuasion +8, Lore +8 + *Mend Wounds* + *Blessing* + staff + potions | Wandering holy person               |
 
 ### Additional Strong Suggestions (not yet in data)
@@ -78,7 +78,7 @@ Here are concrete, ready-to-use backgrounds plus additional ideas for expansion.
 
 **Military / Mercenary**
 - City Watch / Guard — Block, Intimidation, Investigation; club or mace, uniform (light/medium armor), whistle or signal horn.
-- Skirmisher / Light Infantry — Marksmanship or Piercing, Stealth, Survival; shortbow or javelins, studded leather.
+- Skirmisher / Light Infantry — Bows (or Crossbows/Throwing Weapons), Piercing, Stealth, Survival; shortbow or javelins, studded leather.
 - Sapper / Engineer (early) — Engineering, Repair, Athletics; tools, some explosives precursors (future).
 
 **Criminal / Underworld**

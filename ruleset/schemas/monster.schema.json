@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Monster",
-  "description": "A creature/enemy. Each monster has exactly one element (Wuxing five-phase) that governs how phased effects interact with it via data/wuxing. Its attacks and innate abilities are drawn from the shared effect registry through schema.json#/definitions/appliedEffect, exactly like spells and consumables. Certain monsters can also drop spirit cores (see coreDrop).",
+  "description": "A creature/enemy. Each monster has exactly one element (Wuxing five-phase) that governs how phased effects interact with it via data/wuxing. Its attacks and innate abilities are drawn from the shared effect registry through schema.json#/definitions/appliedEffect, exactly like spells and consumables. Certain monsters with living spiritual or elemental essence can also drop spirit cores (see coreDrop); undead and humanoids must never have coreDrop.",
   "type": "object",
   "properties": {
     "$schema": { "type": "string" },
@@ -45,7 +45,7 @@
         "tags": { "type": "array", "items": { "type": "string" } },
         "coreDrop": {
           "type": "object",
-          "description": "If present, this monster can drop a spirit core on death. Mundane creatures (bandits, zombies, etc.) must not have this field.",
+          "description": "If present, this monster can drop a spirit core on death. **Hard rule**: undead (revenants, zombies, skeletons, etc.) and humanoids (bandits, soldiers, cultists, etc.) must never have this field, even at high level or with magical abilities. Only monsters with genuine living spiritual or elemental essence (certain beasts, fey, dragons, elementals, awakened constructs, true spirits, etc.) may include it. minGrade/maxGrade act as floor and ceiling for the qualityGrade of any dropped core (see docs/modules/advancement.md for the suggested ranges by monster level). Designers may freely assign higher ranges than the level-based suggestion for unique, story, or hand-crafted monsters that *do* qualify.",
           "properties": {
             "baseChance": {
               "type": "number",
@@ -55,11 +55,11 @@
             },
             "minGrade": {
               "$ref": "schema.json#/definitions/qualityGrade",
-              "description": "Lowest possible qualityGrade of a dropped core from this monster."
+              "description": "Floor (lowest possible qualityGrade) of a dropped core from this monster."
             },
             "maxGrade": {
               "$ref": "schema.json#/definitions/qualityGrade",
-              "description": "Highest possible qualityGrade of a dropped core from this monster."
+              "description": "Ceiling (highest possible qualityGrade) of a dropped core from this monster."
             }
           },
           "required": ["baseChance"]

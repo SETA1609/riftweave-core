@@ -5,7 +5,6 @@
     { "id": 2, "key": "blunt", "label": "Blunt", "description": "Strike with maces, hammers, staves, and other bludgeoning melee weapons.", "associatedAbility": "str", "category": "combat", "taggable": true },
     { "id": 3, "key": "piercing", "label": "Piercing", "description": "Thrust and stab with spears, rapiers, daggers, and other piercing melee weapons.", "associatedAbility": "agi", "category": "combat", "taggable": true },
     { "id": 4, "key": "unarmed", "label": "Unarmed", "description": "Fight with fists, claws, and brawling techniques.", "associatedAbility": "agi", "category": "combat", "taggable": true },
-    { "id": 5, "key": "marksmanship", "label": "Marksmanship", "description": "Attack with bows, crossbows, slings, and thrown weapons.", "associatedAbility": "per", "category": "combat", "taggable": true },
     { "id": 6, "key": "block", "label": "Block", "description": "Absorb and deflect blows with shields and armor.", "associatedAbility": "end", "category": "combat", "taggable": true },
 
     { "id": 7, "key": "red_magic", "label": "Red Magic", "description": "Offensive magic: fire, frost, shock, poison, and drains.", "associatedAbility": "int", "category": "magic", "taggable": true },
@@ -42,6 +41,11 @@
     { "id": 33, "key": "enchanting", "label": "Enchanting", "description": "Craft magical trinkets and permanently enchant items with magical effects (see the magic-crafting module).", "associatedAbility": "int", "category": "utility", "taggable": true },
     { "id": 34, "key": "engineering", "label": "Engineering", "description": "Design and construct complex mechanisms, devices, and siege engines.", "associatedAbility": "int", "category": "knowledge", "taggable": true },
     { "id": 35, "key": "building", "label": "Building", "description": "Construct buildings, fortifications, bridges, and other large-scale structures.", "associatedAbility": "str", "category": "utility", "taggable": true },
-    { "id": 36, "key": "farming", "label": "Farming", "description": "Cultivate crops, tend livestock, and produce food and other agricultural goods.", "associatedAbility": "end", "category": "survival", "taggable": true }
+    { "id": 36, "key": "farming", "label": "Farming", "description": "Cultivate crops, tend livestock, and produce food and other agricultural goods.", "associatedAbility": "end", "category": "survival", "taggable": true },
+
+    { "id": 37, "key": "bows", "label": "Bows", "description": "Attack with bows of all kinds.", "associatedAbility": "per", "category": "combat", "taggable": true },
+    { "id": 38, "key": "crossbows", "label": "Crossbows", "description": "Attack with crossbows and other mechanical projectile weapons.", "associatedAbility": "per", "category": "combat", "taggable": true },
+    { "id": 39, "key": "guns", "label": "Guns", "description": "Attack with firearms and gunpowder weapons.", "associatedAbility": "per", "category": "combat", "taggable": true },
+    { "id": 40, "key": "throwing_weapons", "label": "Throwing Weapons", "description": "Attack with javelins, throwing knives, axes, darts, and slings.", "associatedAbility": "per", "category": "combat", "taggable": true }
   ]
 }

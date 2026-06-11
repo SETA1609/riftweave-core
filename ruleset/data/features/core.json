@@ -45,10 +45,10 @@
       "id": 4,
       "key": "deadeye",
       "label": "Deadeye",
-      "description": "Your aim finds the gaps. Ranged attacks land critical hits more often.",
+      "description": "Your aim finds the gaps. Ranged attacks (with bows, crossbows, guns, or throwing weapons) land critical hits more often.",
       "type": "perk",
       "category": "combat",
-      "prerequisite": { "abilities": { "per": 6 }, "skills": [ { "id": 5, "label": "Marksmanship", "min": 40 } ] },
+      "prerequisite": { "abilities": { "per": 6 }, "skills": [ { "id": [37, 38, 39, 40], "label": ["Bows", "Crossbows", "Guns", "Throwing Weapons"], "min": 40 } ] },
       "ranks": 1,
       "effects": [
         { "type": "bonus", "description": "+10% ranged critical chance", "target": "ranged_crit_chance", "value": 10 }

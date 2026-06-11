@@ -14,7 +14,12 @@
       "abilities": [
         { "effect": 1, "magnitude": 18, "target": "area", "radius": 5 }
       ],
-      "tags": ["dragon", "elemental"]
+      "tags": ["dragon", "elemental"],
+      "coreDrop": {
+        "baseChance": 0.09,
+        "minGrade": "lesser",
+        "maxGrade": "common"
+      }
     },
     {
       "id": 2,
@@ -30,7 +35,12 @@
         { "effect": 11, "magnitude": 3, "target": "touch" },
         { "effect": 6, "magnitude": 12, "target": "touch" }
       ],
-      "tags": ["construct", "elemental"]
+      "tags": ["construct", "elemental"],
+      "coreDrop": {
+        "baseChance": 0.08,
+        "minGrade": "lesser",
+        "maxGrade": "common"
+      }
     },
     {
       "id": 3,
@@ -45,7 +55,12 @@
       "abilities": [
         { "effect": 5, "magnitude": 9, "target": "touch" }
       ],
-      "tags": ["beast", "fey"]
+      "tags": ["beast", "fey"],
+      "coreDrop": {
+        "baseChance": 0.07,
+        "minGrade": "minor",
+        "maxGrade": "lesser"
+      }
     },
     {
       "id": 4,
@@ -76,7 +91,12 @@
         { "effect": 4, "magnitude": 16, "target": "touch" },
         { "effect": 32, "parameter": "end", "magnitude": 2, "duration": 20, "target": "self", "durationType": "temporal" }
       ],
-      "tags": ["construct"]
+      "tags": ["construct"],
+      "coreDrop": {
+        "baseChance": 0.10,
+        "minGrade": "common",
+        "maxGrade": "major"
+      }
     }
   ]
 }

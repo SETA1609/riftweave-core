@@ -48,7 +48,7 @@
             },
             "skill": {
               "type": "string",
-              "description": "The skill used to make attack rolls with this weapon. For melee this is normally derived from damage.type (slashing → blades, bludgeoning → blunt, piercing → piercing). Ranged weapons use marksmanship."
+              "description": "The skill used to make attack rolls with this weapon. For melee this is normally derived from damage.type (slashing → blades, bludgeoning → blunt, piercing → piercing). Ranged weapons use one of the split archery skills (bows, crossbows, guns, or throwing_weapons)."
             },
             "attackReach": {
               "type": "integer",

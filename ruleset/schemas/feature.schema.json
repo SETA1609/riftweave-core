@@ -42,15 +42,35 @@
             },
             "skills": {
               "type": "array",
-              "description": "Minimum skill values. Each item references a skill by its numeric id (from skills/core.json). The label is duplicated for readability. The 'min' field is the required value.",
+              "description": "Minimum skill values. Each item references a skill by its numeric id (from skills/core.json). The label is duplicated for readability. The 'min' field is the required value.\n\nTo support general 'range' perks (e.g. any of the split ranged skills), 'id' and 'label' may be arrays. When 'id' is an array, the prerequisite is satisfied by meeting the 'min' value in *any one* of the listed skills (with matching names in the 'label' array). This reuses the original single-id structure while allowing multiple acceptable skills. Specific perks should continue using a single scalar id.",
               "items": {
                 "type": "object",
                 "properties": {
-                  "id": { "$ref": "schema.json#/definitions/entryId" },
-                  "label": { "type": "string", "description": "Human-readable label of the skill (duplicated from the skills registry for convenience)." },
+                  "id": {
+                    "oneOf": [
+                      { "$ref": "schema.json#/definitions/entryId" },
+                      {
+                        "type": "array",
+                        "items": { "$ref": "schema.json#/definitions/entryId" },
+                        "minItems": 1,
+                        "description": "Array of acceptable skill ids. The prerequisite is met if the character has the required min in any one of them."
+                      }
+                    ]
+                  },
+                  "label": {
+                    "oneOf": [
+                      { "type": "string" },
+                      {
+                        "type": "array",
+                        "items": { "type": "string" },
+                        "minItems": 1
+                      }
+                    ],
+                    "description": "Human-readable label of the skill (duplicated from the skills registry for convenience). When 'id' is an array, this should be a parallel array of the corresponding skill names, or a single descriptive string."
+                  },
                   "min": { "type": "integer", "minimum": 1, "maximum": 100 }
                 },
-                "required": ["id", "label", "min"],
+                "required": ["min"],
                 "additionalProperties": false
               }
             },

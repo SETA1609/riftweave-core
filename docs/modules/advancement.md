@@ -35,7 +35,7 @@ At the moment a character is eligible to level (or as a distinct "cultivation / 
 ### Essence Item Types
 
 1. **Monster Cores** (raw essence)
-   - Only certain monsters can drop cores. Mundane or spiritually empty creatures such as bandits and zombies never drop cores. Only monsters with meaningful elemental or spiritual essence are eligible.
+   - Only certain monsters can drop cores. **Undead (zombies, revenants, skeletons, liches, etc.) and humanoids (bandits, soldiers, cultists, common folk, etc.) never drop cores**, even if they wield magic or have elemental tags. Only monsters with living spiritual or elemental essence (certain beasts, fey, dragons, elementals, awakened constructs, spirits, etc.) are eligible. Mundane or spiritually empty creatures must never have a `coreDrop` field.
    - Eligible monsters have a base percentage drop chance.
    - The final drop chance is improved by two factors:
      - The monster’s **level** (higher-level monsters are significantly more likely to yield a core).
@@ -99,6 +99,34 @@ At the moment a character is eligible to level (or as a distinct "cultivation / 
    - On a successful drop + grade roll, award the matching spirit core ingredient (e.g. `common_earthen_spirit_core` or `greater_blazing_spirit_core`). The awarded core uses the monster’s `phase`.
    - Spirit cores are represented as special ingredients (see `data/ingredients/core.json`). Examples of the expected naming pattern include `greater_blazing_spirit_core`, `major_verdant_spirit_core`, etc.
    - Cores can also rarely appear as loot or treasure.
+
+### Suggested Grade Ranges for Monster Core Drops (minGrade / maxGrade)
+
+The `coreDrop` object on a monster declares a **floor** (`minGrade`) and **ceiling** (`maxGrade`) using values from the shared `qualityGrade` vocabulary (`petty` … `legendary`).
+
+These are **design suggestions for typical randomly-generated or standard encounters**. The system deliberately allows (and encourages) manual overrides:
+
+- A low-level but narratively important hand-crafted monster (e.g. an ancient shrine guardian, a unique spirit-touched beast, or a story boss) can be given a significantly higher `maxGrade` — or even a higher `minGrade` — than its combat level would normally warrant.
+- Conversely, a high-level but spiritually "hollow" or recently-created construct might have a depressed range.
+
+#### Reference Table — Typical Random Encounters
+
+| Monster Level | Recommended `minGrade` (floor) | Recommended `maxGrade` (ceil) | Notes |
+|---------------|--------------------------------|-------------------------------|-------|
+| 1–3           | `petty`                        | `minor`                       | Fledgling or weak spirits. Essence is thin and low-value. |
+| 4–6           | `minor`                        | `lesser`                      | Common low-to-mid threats. Matches early examples (e.g. Grove Stalker lv 3). The Frost Revenant (lv 4) is undead and therefore has no core drop. |
+| 5–8           | `lesser`                       | `common`                      | Solid early-game magical creatures and elementals. The worked example of a level 5 monster uses `lesser`–`common`. |
+| 7–11          | `common`                       | `major`                       | Dangerous regional threats and minor bosses (e.g. Iron Sentinel lv 7 can reach `major`). |
+| 12–16         | `major`                        | `greater`                     | High-threat apex creatures and lieutenants. |
+| 17–23         | `greater`                      | `grand`                       | Legendary beasts, ancient guardians, powerful named spirits. |
+| 24+           | `grand`                        | `legendary`                   | Cataclysmic or mythic entities. Grand/legendary results remain rare even here due to the weighted grade roll. |
+
+**Design notes:**
+- The internal grade roll (when a core drops) is deliberately biased toward the lower end of the declared range. See "Grade Roll (proposed reference method)" above.
+- `baseChance` values are typically in the 0.05–0.18 range for most monsters; higher values are appropriate for especially "essence-rich" creatures.
+- **Undead and humanoids never drop cores.** This is a hard design rule: revenants, zombies, bandits, soldiers, and similar creatures must never have a `coreDrop` field, regardless of level or abilities. Only creatures with genuine living spiritual/elemental essence qualify (e.g. certain beasts, fey, dragons, elementals, and spiritually awakened constructs). Mundane or spiritually empty creatures **must omit the field entirely**.
+
+This table is the recommended starting point when authoring or balancing monster entries in `data/monsters/`.
 
 2. **Refined Elixirs / Essence Pills / Spirit Elixirs** (processed)
    - Created through Alchemy by refining one or more cores, often with stabilizing or amplifying ingredients.
@@ -250,7 +278,7 @@ This makes the Wuxing data a first-class part of long-term character building, n
 
 - **Ingredients**: `ingredient.schema.json` has been extended to support optional `phase` and `qualityGrade`. Spirit cores are implemented as ingredients (see current examples in `data/ingredients/core.json` using the `greater_blazing_spirit_core` / `major_verdant_spirit_core` naming pattern).
 - **Effects**: Marker effects (`essence_fire`, `essence_wood`, etc.) have been added to `data/effects/core.json` using the new `"essence"` channel. These identify cores for the breakthrough and refining systems.
-- **Monsters**: The monster schema (`monster.schema.json`) has been extended with an optional `coreDrop` object (`baseChance`, `minGrade`, `maxGrade`). Only monsters that include this field can drop spirit cores. Mundane creatures (bandits, zombies, etc.) must omit the field entirely. The final drop chance is calculated at runtime using the reference formula above (`baseChance` modified by monster level and the killer’s Luck (LCK)). When a core drops, a matching spirit core ingredient (e.g. `greater_blazing_spirit_core`) is awarded using the monster’s phase and a grade within the declared range.
+- **Monsters**: The monster schema (`monster.schema.json`) has been extended with an optional `coreDrop` object (`baseChance`, `minGrade`, `maxGrade`). `minGrade`/`maxGrade` are the floor and ceiling (see the Suggested Grade Ranges table above for designer guidance). **Undead and humanoids must never have `coreDrop`** (see rule above). Only monsters with living spiritual or elemental essence may include the field. The final drop chance is calculated at runtime using the reference formula above (`baseChance` modified by monster level and the killer’s Luck (LCK)). When a core drops, a matching spirit core ingredient (e.g. `greater_blazing_spirit_core`) is awarded using the monster’s phase and a grade within the declared range.
 - **Features / Perks**: Perks can gate, enhance, or mitigate breakthrough results (e.g. "Stable Foundation", "Heavenly Refiner", "Phase Harmony").
 - **Alchemy module**: Gains a distinct "refining / pill crafting" sub-system on top of normal potion brewing. Refining recipes consume cores + catalysts and output higher-grade or multi-phase elixirs. Quality formula (still TBD in alchemy.md) becomes especially important here.
 
@@ -316,7 +344,7 @@ Players who rush every level with whatever petty cores they have on hand will ha
 ## Next Steps (Non-Exhaustive)
 
 - Flesh out concrete reference tables or formulas for grade + phase + Luck modifiers once stakeholder feedback is gathered.
-- Add `coreDrop` data to appropriate monsters in `data/monsters/core.json` (only those with spiritual/elemental essence).
+- Add `coreDrop` data to appropriate monsters in `data/monsters/core.json` (only those with spiritual/elemental essence). — Initial examples added for the core sample set (levels 3–7). Designers should expand with more monsters and hand-crafted exceptions.
 - Add growth/essence effects and a refinement delivery type (partially done for essence markers).
 - Write example refining recipes (once a recipe shape exists or as prose in alchemy).
 - Tune and finalize the runtime formula for core drop chance (a reference proposal has been added to this document; constants are open to adjustment).
