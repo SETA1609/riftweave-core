@@ -92,10 +92,15 @@ Data in `conditions/core.json` (15 entries). Each entry:
 | 13 | stunned | Incapacitated + immobile, −20 all, +10 attacker | Staggered (1–3s), cannot act, incoming +25% | 55* |
 | 14 | unconscious | Incapacitated + prone; auto-fail STR/AGI; melee auto-crit | KO state; 0 HP, revive with healing | 56* |
 | 15 | exhaustion | Stacking (6 levels). L1: −10 checks. L3: −20, speed halved. L5: speed 0. L6: death | Stacking debuff with diminishing stats. L6: death | 40, 41, 42 |
-
-\* Effect IDs 47–56 do not yet exist in the effects registry. They represent placeholders
-for new effects needed to apply these conditions (e.g. a `blind` effect for blinded,
-a `charm` effect for charmed). See § Open Items below.
+| 16 | burning | 1d4 fire/round; action to extinguish (AGI DC 10) | Fire DoT every 2s; extinguished by water/cure | 57 |
+| 17 | bleeding | 1 HP/round; DC 10 Medicine or bandage stops | Health DoT every 2s; severity 1–3 | 58 |
+| 18 | slowed | Speed halved; −10 AGI; no Dash; +1 AP cost | Speed −30%; attack speed −20%; dodge −10% | 59 |
+| 19 | silenced | Verbal spells blocked; −20 social speech | Spellcasting disabled for verbal skills | 60 |
+| 20 | diseased | Symptoms from disease effect (blight/fever/plague) | Periodic stat drain; worsens if untreated | 40, 41, 42 |
+| 21 | cursed | −2 all stats; needs remove curse or ritual | −X stats; requires specialized cure | 61 |
+| 22 | exposed | −10 evasion/block; DR halved; ×1.25 damage | Evasion −15%; resist −20%; incoming +X% | 62 |
+| 23 | taunted | −20 attacks vs non-taunter; cannot flee | Forced aggro; −20% damage to others | 63 |
+| 24 | staggered | Loses reaction; −10 next action; ends next turn | Cannot block/dodge 1–2s | 64 |
 
 ---
 
@@ -176,10 +181,6 @@ To add a new condition:
 
 ## Open Items
 
-- **Missing effects (IDs 47–56):** Eight conditions (blinded, charmed, deafened,
-  grappled, incapacitated, petrified, prone, stunned, unconscious) reference
-  effect IDs that do not yet exist in the registry. These need new effect entries
-  added to `effects/core.json` before the conditions can be applied in play.
 - **Cure parameter convention:** The `cure` effect (id 20) cures by `parameter`.
   The convention is for `parameter` to match the condition's `key` string
   (e.g. `cure { parameter: "poisoned" }`). This should be standardized into a

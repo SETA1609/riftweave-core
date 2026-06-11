@@ -182,6 +182,114 @@
       "removedBy": [20],
       "stacking": true,
       "maxStacks": 6
+    },
+    {
+      "id": 16,
+      "key": "burning",
+      "label": "Burning",
+      "description": "On fire. Takes fire damage over time until extinguished.",
+      "effects": {
+        "ttrpg": "Takes 1d4 fire damage per round at start of turn. Can use an action to extinguish (AGI check DC 10 or drop-and-roll). Water or cure effect ends it immediately.",
+        "video_game": "Fire DoT tick every 2 seconds. Duration refreshed on reapplication. Extinguished by water, rolling, or cure effect."
+      },
+      "appliedBy": [57],
+      "removedBy": [20]
+    },
+    {
+      "id": 17,
+      "key": "bleeding",
+      "label": "Bleeding",
+      "description": "A wound that bleeds, dealing health damage over time.",
+      "effects": {
+        "ttrpg": "Takes 1 HP damage per round at start of turn. DC 10 Medicine check or bandage (use object) stops the bleed. Some attacks cause severe bleeding (2 HP/round).",
+        "video_game": "Health DoT tick every 2 seconds. Severity stacks (1–3). Stopped by bandage, healing spell, or out-of-combat rest."
+      },
+      "appliedBy": [58],
+      "removedBy": [20]
+    },
+    {
+      "id": 18,
+      "key": "slowed",
+      "label": "Slowed",
+      "description": "Movement speed and action economy are impaired.",
+      "effects": {
+        "ttrpg": "Speed halved (rounded down). −10 on AGI-based skills. Cannot take the Dash action. One fewer bonus action per turn if using AP pool: +1 AP cost on all actions.",
+        "video_game": "Movement speed −30%. Attack speed −20%. Dodge chance −10%. Duration in seconds."
+      },
+      "appliedBy": [59],
+      "removedBy": [20]
+    },
+    {
+      "id": 19,
+      "key": "silenced",
+      "label": "Silenced",
+      "description": "Cannot speak or make verbal sounds. Spells with verbal components cannot be cast.",
+      "effects": {
+        "ttrpg": "Cannot cast spells that require verbal components (GM determines which schools or specific spells require speech). −20 on social checks that rely on speaking.",
+        "video_game": "Spellcasting disabled for skills that use verbal components. Subtle/innate casting (if perk-gated) still works. Duration in seconds."
+      },
+      "appliedBy": [60],
+      "removedBy": [20]
+    },
+    {
+      "id": 20,
+      "key": "diseased",
+      "label": "Diseased",
+      "description": "Afflicted by a disease effect. Symptoms vary by source.",
+      "effects": {
+        "ttrpg": "The disease effect (blight, fever, plague) applies its symptoms. Resistance via END reduces severity. Cured via cure effect with parameter 'disease' or specific antidote.",
+        "video_game": "Disease debuff with periodic stat drains and health damage. Persistent until cured. May worsen over time if untreated."
+      },
+      "appliedBy": [40, 41, 42],
+      "removedBy": [20]
+    },
+    {
+      "id": 21,
+      "key": "cursed",
+      "label": "Cursed",
+      "description": "Under a hex. All attributes or specific ones are reduced.",
+      "effects": {
+        "ttrpg": "−2 to all attributes (or specific ones per source). Removed by remove curse spell, cure effect with parameter 'curse', or special ritual. Cannot be removed by rest.",
+        "video_game": "−X to all relevant stats. Displayed as a red debuff icon. Requires specialized cure item or quest reward to remove."
+      },
+      "appliedBy": [61],
+      "removedBy": [20]
+    },
+    {
+      "id": 22,
+      "key": "exposed",
+      "label": "Exposed",
+      "description": "Defenses are compromised. Takes extra damage from all sources.",
+      "effects": {
+        "ttrpg": "−10 on evasion and block checks. Armor DR halved. Incoming damage multiplied by ×1.25.",
+        "video_game": "Evasion −15%. Damage resistance −20%. Incoming damage +X%. Duration in seconds."
+      },
+      "appliedBy": [62],
+      "removedBy": [20]
+    },
+    {
+      "id": 23,
+      "key": "taunted",
+      "label": "Taunted",
+      "description": "Forced to focus on the taunter. Attacks against other targets are penalized.",
+      "effects": {
+        "ttrpg": "−20 on attack rolls against anyone other than the taunter. Cannot willingly move away from the taunter. Effects break if the taunter attacks an ally or moves out of line of sight.",
+        "video_game": "Forced aggro on the taunter. −20% damage against non-taunter targets. Taunt immunity after 3 applications (diminishing returns)."
+      },
+      "appliedBy": [63],
+      "removedBy": [20]
+    },
+    {
+      "id": 24,
+      "key": "staggered",
+      "label": "Staggered",
+      "description": "Knocked off-balance. Cannot react and suffers a penalty to the next action.",
+      "effects": {
+        "ttrpg": "Loses next reaction. −10 on the next action taken. Removed at end of next turn or when taking damage.",
+        "video_game": "Stagger animation plays. Cannot block or dodge for 1–2 seconds. Recovery roll animation plays on exit."
+      },
+      "appliedBy": [64],
+      "removedBy": [20]
     }
   ]
 }

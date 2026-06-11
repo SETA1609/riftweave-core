@@ -36,6 +36,9 @@ Start of turn → Action → Bonus action → Movement (split) → Reaction → 
   Refreshes at the start of the character's turn.
 - **Movement:** Speed in units (from race, modified by AGI and encumbrance). Can be
   split before and after the action. e.g. move 3 → attack → move 2 (total 5).
+  - **Encumbrance effects:** See [`armor.md`](./armor.md) §9. Carrying more than
+    `STR × 10` lbs reduces speed by 1 unit and doubles evasion penalties. At
+    `STR × 15`, speed drops by 2 and sprinting/dodging is prevented.
 
 **AP pool variant (TTRPG):** AGI-based Action Points can replace the discrete
 action/bonus action model for groups that prefer a resource-budget approach.
@@ -150,9 +153,20 @@ targeted spells.
 - **Evasion:** Passive penalty to the attacker's roll (reduces their effective skill),
   or an active dodge as a reaction (declared before the attack roll, contested vs
   the attacker's margin). Magic evasion only with the perk.
-- **Block:** Declared reaction before the attack roll. The blocker makes a block skill
-  check against the attacker's margin of success. On success, the shield's DR is
-  subtracted from incoming damage. On failure, no block benefit.
+- **Block (shield):** Declared reaction before the attack roll. The blocker makes a
+  block skill check against the attacker's margin of success. On success, the shield's
+  DR is subtracted from incoming damage. On failure, no block benefit.
+  - **Shield types:** Buckler (DR +1, light off-hand item allowed), Standard shield
+    (DR +2), Tower shield (DR +4, grants cover to adjacent allies, heavy).
+  - **Parry (weapon):** Some weapons (rapiers, swords) and the *Duelist* perk allow
+    a parry instead of a block. The parry uses the weapon skill instead of block skill.
+    On success, the attack is negated (not reduced). On failure, the attack hits with
+    no DR reduction. Parry does not require a shield.
+  - **Two-weapon fighting:** An off-hand weapon can parry (use the off-hand weapon
+    skill) but cannot block. A character with two weapons may choose to attack with
+    the off-hand as a bonus action OR reserve it to parry — not both in the same turn.
+  - **Unarmed block:** The *Deflect Arrows* perk allows blocking missiles with
+    unarmored skill. Melee unarmed block is not possible without specific perks.
 - **Armor DR:** Flat subtraction from incoming physical damage after the hit is confirmed.
   Sum of all worn armor pieces (see [`armor.md`](./armor.md) for slot+layer rules).
 - **Magic:** Each layer is a separate roll or percentage reduction applied sequentially.
@@ -194,6 +208,41 @@ A natural **01–05** on the d100 attack roll is a **critical window**. A critic
    - `+floor(LCK / 2)` bonus to the confirmation roll.
    - Every 2 points of LCK expands the critical window by +1.
      - e.g. LCK 4 → window is 01–07. LCK 10 → window is 01–10.
+
+### Luck & Critical Hit Examples
+
+#### Critical Window by Luck
+
+| LCK | Natural Crit Range | Effective Crit Chance | Confirmation Bonus |
+|-----|-------------------|----------------------|-------------------|
+| 1   | 01–05             | 5%                   | `+0`              |
+| 2   | 01–06             | 6%                   | `+1`              |
+| 4   | 01–07             | 7%                   | `+2`              |
+| 6   | 01–08             | 8%                   | `+3`              |
+| 8   | 01–09             | 9%                   | `+4`              |
+| 10  | 01–10             | 10%                  | `+5`              |
+
+The confirmation roll uses the **same modified target number** as the original
+attack — the attacker's effective skill after all modifiers. If the original
+attack roll benefited from a situational bonus (e.g. flanking +10), the
+confirmation roll uses the same total. If the roll has advantage or multiple
+dice (video game), the confirmation is a single flat roll against the modified TN.
+
+#### Example: Confirmation with LCK
+
+> A character with Blades **65**, LCK **6** attacks a bandit. They roll a natural
+> **04** — inside the crit window (01–08 at LCK 6). The confirmation roll target
+> is their effective skill of 65, plus `+floor(LCK/2) = +3`, giving an effective
+> target of **68**. They roll a **57** — success! The crit is confirmed. Had they
+> rolled **72**, it would have been a normal hit (no doubled damage).
+
+#### Example: LCK Expanding the Window
+
+> With LCK **10** (window 01–10), a character rolls **09** on their attack. Without
+> LCK this would be a normal hit. With LCK, it falls inside the expanded crit
+> window. The confirmation roll gets `+floor(10/2) = +5`, making the confirmation
+> much more likely. A character with LCK 10 and high skill can reliably convert
+> the top 10% of their rolls into critical hits.
 
 ### TTRPG
 
@@ -354,8 +403,13 @@ is determined by:
 | **Initiative** | d20 + PER | Aggro/threat or proximity |
 | **Physical defense** | Evasion check, Block reaction, flat DR | Auto-dodge %, timed block/parry, flat DR |
 | **Magic defense** | Sequential rolls per layer (evasion only with perk) | Auto-mitigation from stats + effects (evasion only with perk) |
-| **Critical hits** | Confirmation roll, double dice (or effects table) | Confirmation roll, ×1.5–2 multiplier |
+| **Critical hits** | Confirmation roll, double dice + d100 effects table | Confirmation roll, ×1.5–2 multiplier, auto-status effect |
 | **Fumble** | On 100 only; flavor table | None — 100 is a miss |
+| **Critical effects** | d100 table (bleed, stagger, disarm, cripple, stun, etc.) | Weapon-type auto-status (blade→bleed, blunt→stagger) |
+| **Block / Parry** | Shield block (block skill) or weapon parry (weapon skill) | Timed input block; parry optional (narrow window) |
+| **Shields** | Passive DR only during active block; tower shields grant cover | Block button; shield type affects block window size |
+| **Two-weapon** | Off-hand attacks OR parry (not both) | Dual-wield attack chain; no block while dual-wielding |
+| **Encumbrance** | Speed penalty, doubled evasion penalties, no sprint at heavy | Speed % reduction, dodge penalty, stamina drain |
 | **Cover** | −10/−20 to-hit | LoS blockers only (no to-hit modifier) |
 | **Flanking** | +10 to-hit | +25% damage |
 | **Terrain** | Double movement cost | % speed slow |
@@ -363,7 +417,163 @@ is determined by:
 
 ---
 
-## 9. Deferred Combat Sections
+## 9. Encumbrance in Combat
+
+Encumbrance affects combat performance directly. See [`armor.md`](./armor.md) §9
+for the full encumbrance table (weight thresholds by STR). This section describes
+how those thresholds translate into combat mechanics.
+
+### TTRPG
+
+| Encumbrance Level | Speed Penalty | Evasion Penalty | Action Cost | Other |
+|-------------------|---------------|-----------------|-------------|-------|
+| Unencumbered (≤ STR×10) | None | None | Normal | — |
+| Encumbered (> STR×10) | −1 unit | Doubled (sum evasion penalties ×2) | Dash costs +1 AP | Cannot jump full distance |
+| Heavily encumbered (> STR×15) | −2 units | Tripled | Dash and Dodge disabled | Cannot sprint, −20 athletics |
+| Overburdened (> STR×20) | 0 (cannot move) | Auto-fail evasion | Only drop items and talk | Requires STR check to lift anything |
+
+- Evasion penalties from armor (per piece) are doubled or tripled at encumbered
+  and heavily encumbered levels respectively.
+- Encumbrance is calculated from all carried items (worn + inventory), not just armor.
+
+### Video Game
+
+| Encumbrance Level | Speed | Dodge | Stamina | Other |
+|-------------------|-------|-------|---------|-------|
+| Unencumbered | 100% | Normal | Normal regen | — |
+| Encumbered | −20% speed | −10% dodge chance | Stamina regen −25% | Jump height reduced |
+| Heavily encumbered | −40% speed | −25% dodge chance | Stamina regen −50%, sprint drains ×2 | Cannot climb |
+| Overburdened | Cannot move | Cannot dodge | No regen, actions cost ×2 | Only drop items |
+
+### cRPG Note
+
+For party-based tactical cRPGs, use TTRPG-style encumbrance with automated
+calculation. Display encumbrance level on the character sheet and warn when
+approaching thresholds. Consider a "container" system (inventory weight ≠ worn
+weight) for realism vs. convenience.
+
+---
+
+## 10. Worked Combat Examples
+
+### Example 1: TTRPG Turn-Based — Knight vs. Bandit
+
+**Setup:**
+- **Sir Aldric** (human knight): Blades 72, Block 55, Evasion 30, heavy_armor 65.
+  Wears steel plate (torso/upper, DR 10) + steel helm (head/upper, DR 5) + steel
+  gauntlets (hands/upper, DR 3) + steel greaves (feet/upper, DR 4) = **22 total DR**.
+  Carries a longsword (1d10 slashing) and a standard shield (DR +2 on block).
+  Attributes: STR 8, AGI 6, END 7, LCK 4.
+- **Bandit** (human): Blades 45, Evasion 25. Wears leather jerkin (torso/upper, DR 2)
+  + leather cap (head/skin, DR 0) = **2 total DR**. Wields a shortsword (1d6).
+  No shield.
+
+**Round 1:**
+
+1. **Initiative:** Sir Aldric rolls d20 + PER (4) = 18. Bandit rolls 11. Aldric acts first.
+
+2. **Aldric's turn:**
+   - **Action:** Attacks bandit with longsword. Roll Blades 72 → d100 = **47** (success).
+   - **Bandit's reaction (evasion):** Bandit attempts active dodge: Evasion 25 → d100 = **63** (fail). Hit lands.
+   - **Damage:** Longsword 1d10 = **8** slashing. Bandit's armor DR = 2. Net damage = 8 − 2 = **6**.
+   - Bandit HP: 30 → **24**.
+   - **Movement:** Aldric moves 2 units north to block the path (speed 6, unencumbered).
+
+3. **Bandit's turn:**
+   - **Action:** Attacks Aldric with shortsword. Roll Blades 45 → d100 = **32** (success).
+   - **Aldric's reaction (block):** Aldric declares block. Roll Block 55 vs. attacker's
+     margin (45 − 32 = 13). Block check: d100 = **41** ≤ 55 (success, margin = 14 ≥ 13).
+     Block negates full shield DR. Shield DR = 2 (base) + 0 (steel material) = **2**.
+   - **Damage:** Shortsword 1d6 = **5**. Shield blocks 2 → 3 penetrates. Aldric's
+     armor DR 22 absorbs all 3. **0 damage** to Aldric.
+   - **Movement:** Bandit attempts to disengage (move east). Aldric's OA triggers.
+   - **OA:** Aldric's reaction. Roll Blades 72 → d100 = **61** (success).
+     Damage: 1d10 = **7** − bandit DR 2 = **5** damage. Bandit HP: 24 → **19**.
+
+**Round 1 result:** Bandit took 11 total damage (6 + 5). Aldric unscathed.
+
+---
+
+### Example 2: TTRPG Turn-Based — Critical Hit with Effects Table
+
+Continuing from Example 1, Round 2:
+
+1. **Aldric's turn (Round 2):**
+   - **Action:** Attacks bandit again.
+   - Roll Blades 72 → d100 = **natural 04** (inside crit window, LCK 4 → window 01–07).
+   - **Confirmation:** Roll d100 ≤ effective skill (72) + `floor(LCK/2) = +2` → target **74**.
+     Roll d100 = **52** (confirmed crit!).
+   - **Damage dice:** 1d10 × 2 = (8 × 2) = **16** slashing.
+   - **Critical effects table:** d100 = **44** → **Disarm**. Bandit's weapon flies
+     1d4 = **3** units away.
+   - **Armor DR:** 16 − bandit DR 2 = **14** damage.
+   - Bandit HP: 19 → **5**. Bandit is now disarmed and at critical HP.
+
+2. **Bandit's turn (Round 2):**
+   - **No weapon.** Bandit uses movement to retrieve shortsword (3 units away).
+   - **No action left** to attack. Ends turn.
+
+3. **Aldric's OA:** None (bandit did not leave reach).
+
+**Round 2 result:** Bandit nearly dead, disarmed for 1 turn. Aldric can finish
+next round.
+
+---
+
+### Example 3: cRPG Party Combat — Tactical Engagement
+
+**Setup:**
+- **Valeria** (elven archer): Bows 78, Evasion 55, light_armor 60. Wears studded
+  leather (torso/upper, DR 3) + leather boots (feet/skin, DR 1) = **4 DR**.
+  Longbow (1d8 piercing). LCK 6.
+- **Dorn** (dwarven tank): Blunt 68, Block 70, heavy_armor 72. Wears full plate
+  (DR 17 total across all slots) + tower shield (DR +4 on block). Warhammer (1d10
+  bludgeoning). STR 10.
+- **Lyra** (human mage): Red_magic 65, Evasion 20, light_armor 15. Wears cloth
+  robe (DR 0). Unarmored defense. INT 9.
+- **Enemies:** 3 goblins (Blades 35, Evasion 20, DR 1 each, HP 15).
+
+**Round 1:**
+
+1. **Initiative:** Valeria 22, Dorn 14, Lyra 9, Goblins 7. Valeria acts first.
+
+2. **Valeria's turn:**
+   - **Called shot (head):** −20 penalty. Effective Bows = 78 − 20 = **58**.
+     Roll d100 = **44** (success).
+   - **Damage:** Longbow 1d8 = **5** × 1.5 (head multiplier) = **7** (rounded up).
+   - Goblin 1 DR 1 → net **6 damage**. Goblin 1 HP: 15 → **9**.
+   - **Special effect:** Head shot staggers. Goblin 1 loses its reaction.
+   - **Movement:** Valeria repositions to high ground (+10 to-hit next round).
+
+3. **Dorn's turn:**
+   - **Action:** Charges Goblin 2. Roll Blunt 68 → d100 = **23** (success).
+     Damage: 1d10 = **9** − goblin DR 1 = **8**. Goblin 2 HP: 15 → **7**.
+   - **Bonus action:** Dorn raises tower shield (readies block reaction).
+   - **Movement:** Blocks the corridor, preventing goblins from reaching Lyra.
+
+4. **Lyra's turn:**
+   - **Action:** Casts *Fire Bolt* (red_magic) at Goblin 3. Roll red_magic 65 →
+     d100 = **51** (success).
+   - **Damage:** Effect magnitude 4 (fire). Goblin 3 has no fire resistance.
+     Net **4 damage**. Goblin 3 HP: 15 → **11**.
+   - **Movement:** None (maintains position behind Dorn).
+
+5. **Goblins' turn:**
+   - **Goblin 1** (staggered, no reaction): Attacks Valeria with shortbow.
+     Roll Blades 35 → d100 = **67** (miss).
+   - **Goblin 2:** Attacks Dorn. Roll 35 → d100 = **28** (success).
+     Dorn's block reaction: Block 70 → d100 = **22** (success). Tower shield
+     negates 4 DR. Warhammer damage 1d6 = **3** − 4 = **0**.
+   - **Goblin 3:** Attempts to run past Dorn to reach Lyra. OA from Dorn:
+     Roll Blunt 68 → d100 = **31** (success). Damage: 1d10 = **6** − goblin DR 1
+     = **5**. Goblin 3 HP: 11 → **6**. Goblin 3 stops (cannot afford the OA).
+
+**Round 1 result:** Goblins heavily wounded (9, 7, 6 HP). Party at full health.
+Goblins bottled up by Dorn's position.
+
+---
+
+## 11. Deferred Combat Sections
 
 The following areas are noted for future expansion but not yet specified:
 

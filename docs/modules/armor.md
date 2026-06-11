@@ -196,14 +196,53 @@ evasion skill. Cumulative across all worn pieces.
 
 Shields are a separate equipment type (`type: "shield"`) governed by the **block**
 skill (END). They occupy the **offhand** slot and do not contribute to passive DR.
-Instead, their DR value (base 2, modified by material) applies only during an
-**active block** action (see [`combat.md`](./combat.md) §3 — Layer 2).
+Instead, their DR value applies only during an **active block** action
+(see [`combat.md`](./combat.md) §3 — Layer 2).
 
-- Shield DR is not added to the passive DR total.
-- Shields can be crafted from materials that allow `"armor"` in `appliesTo`.
-- Two-handed weapons occupy both hand slots and prevent shield use.
-- Small shields (bucklers) may allow light off-hand items; rule deferred to
-  per-item properties.
+### Active Block vs. Passive DR
+
+- **Shield DR is NOT added to the passive DR total.** A shield provides no benefit
+  unless the wearer actively blocks.
+- **Active block:** A reaction declared when an attack is incoming. The blocker
+  makes a block skill check; on success, the shield's DR (base + material modifier)
+  is subtracted from incoming damage. On failure, no block benefit.
+- **Shield DR does not stack with armor DR during a block** — the shield's DR
+  replaces the armor DR contribution for that specific hit (whichever is higher
+  applies). Alternatively, if using additive DR: shield DR adds on top of armor DR
+  for that hit (GM/engine choice, set once per campaign).
+
+### Shield Types
+
+| Type | Base DR | Properties | Skill |
+|------|---------|------------|-------|
+| **Buckler** | 1 | Light (0.5 weight). Allows light off-hand item (dagger, wand). −5 evasion penalty. | block |
+| **Standard shield** | 2 | Normal weight (1.0). Occupies off-hand fully. −10 evasion penalty. | block |
+| **Tower shield** | 4 | Heavy (2.0 weight). Grants half cover to adjacent allies. −20 evasion penalty. Speed −1. STR 8+ required. | block |
+
+Shield DR is further modified by material (`material.modifiers.defense`) just
+like armor pieces.
+
+### Parry (Weapon Block)
+
+Some weapons (rapiers, longswords, fencing swords) and the *Duelist* perk allow
+a **parry** instead of a shield block:
+
+- **Parry uses the weapon skill** (e.g. blades) instead of block skill.
+- **On success:** The attack is negated entirely (not reduced).
+- **On failure:** The attack hits with full effect (no DR reduction).
+- Parry does not require a shield, but requires a free hand or a light off-hand
+  weapon.
+- **Two-weapon fighting:** A character wielding two weapons may use the off-hand
+  weapon to parry. The off-hand can either attack (bonus action) or be reserved
+  to parry — **not both** in the same turn.
+- Perks can improve parry windows and success chances.
+
+### Shield Crafting
+
+- Shields can be crafted from materials that include `"armor"` in their `appliesTo`.
+- Material phase applies for Wuxing interactions (e.g. a steel shield has metal
+  phase, affecting incoming phased attacks via the overcoming cycle).
+- Material weight factor multiplies the shield's base weight, affecting encumbrance.
 
 ---
 
@@ -287,3 +326,12 @@ Total encumbrance = sum of (base weight × material.weightFactor) for all worn i
 
 Each armor piece's `evasionPenalty` and `speedPenalty` apply independently of
 encumbrance — they stack additively with encumbrance penalties.
+
+### Combat Interaction
+
+See [`combat.md`](./combat.md) §9 for how encumbrance affects combat:
+- Speed reduction (units for TTRPG, % for video game).
+- Evasion penalty multiplication (doubled at encumbered, tripled at heavily encumbered).
+- Action restrictions (Dash and Dodge disabled at heavily encumbered).
+- Stamina regeneration penalties (video game mode).
+- Detailed worked examples in [`combat.md`](./combat.md) §10.
