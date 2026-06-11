@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Condition",
+  "description": "A binary state container applied/removed by effects from the shared effect registry. Each condition is an 'envelope' that a consuming effect (e.g. paralyze, poison) fills when applied to a target. Conditions do not define their own mechanics inline — they reference effect IDs that apply or remove them.",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "conditions": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/condition" }
+    }
+  },
+  "required": ["conditions"],
+  "additionalProperties": false,
+  "definitions": {
+    "condition": {
+      "type": "object",
+      "properties": {
+        "id": { "$ref": "schema.json#/definitions/entryId" },
+        "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "Stable symbolic identifier (snake_case)." },
+        "label": { "type": "string", "description": "Human-readable name with spaces and capitalization." },
+        "description": { "type": "string", "description": "What the condition is and what it does at a glance." },
+        "source": { "$ref": "schema.json#/definitions/sourceRef" },
+        "effects": {
+          "type": "object",
+          "description": "Narrative/descriptive effects of this condition in each resolution mode.",
+          "properties": {
+            "ttrpg": { "type": "string", "description": "Mechanical effect in TTRPG/turn-based mode." },
+            "video_game": { "type": "string", "description": "Mechanical effect in video game/action-combat mode." }
+          },
+          "required": ["ttrpg", "video_game"],
+          "additionalProperties": false
+        },
+        "appliedBy": {
+          "type": "array",
+          "description": "Effect IDs from the effects registry that can apply this condition.",
+          "items": { "$ref": "schema.json#/definitions/entryId" },
+          "minItems": 1
+        },
+        "removedBy": {
+          "type": "array",
+          "description": "Effect IDs that can remove this condition (typically cure id 20 with appropriate parameter).",
+          "items": { "$ref": "schema.json#/definitions/entryId" },
+          "minItems": 1
+        },
+        "stacking": {
+          "type": "boolean",
+          "description": "Whether multiple instances of this condition stack (e.g. exhaustion has 6 levels).",
+          "default": false
+        },
+        "maxStacks": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximum stack count if stacking is true."
+        }
+      },
+      "required": ["id", "key", "label", "description", "effects", "appliedBy", "removedBy"],
+      "additionalProperties": false
+    }
+  }
+}
