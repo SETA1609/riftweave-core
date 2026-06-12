@@ -453,7 +453,7 @@ delivered through the shared **effect system**.
   - Length category (`length`: short / normal / reach) + explicit `attackReach` (1 or 2 units of length). short and normal weapons are typically one-handed; reach weapons are two-handed.
   Base damage uses classic 3.5-style dice. Material-based variations (how each material turns the same base weapon into a meaningfully different version, with attack bonuses in the 0 to +10 range — none of the current materials reach the full +10) are explained in `docs/modules/weapons.md`.
   `category` (simple/martial) and free-form `properties` (finesse, versatile, heavy, two_handed, light, thrown, ...) are retained.
-  Armor is still closer to legacy shape.
+  Armor has been replaced with the DR + slot + layer model — see [`armor.md`](./armor.md) and [`combat.md`](./combat.md). No legacy AC fields remain.
   (Consumables already use the shared effect pool.)
 - **Effect magnitudes for brewing** — the Alchemy quality formula
   (`f(skill, ingredient_qualities, station_tier)`) that turns ingredient effect ids

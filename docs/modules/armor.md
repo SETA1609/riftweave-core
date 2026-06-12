@@ -172,6 +172,37 @@ Piece DR = drBase + material.modifiers.defense
 Total DR = sum of all worn armor pieces' Piece DR (head + torso + hands + feet)
 ```
 
+### Concrete Examples (Material × Base Type)
+
+The table below shows how different materials modify the same base types into meaningfully different armor sets:
+
+| Character | Torso | Head | Hands | Feet | Shield | Material | Total DR |
+|-----------|-------|------|-------|------|--------|----------|----------|
+| Light skirmisher | Leather jerkin (DR 1) | Cap/hood (DR 0) | Gloves (DR 0) | Boots (DR 1) | Buckler (DR 1) | Leather (+1) | **4** (1+1+0+1+1) + leather ×4 = 1+1+0+1+1 = 4 |
+| Iron footman | Chainmail (DR 2) | Coif (DR 1) | Gloves (DR 0) | Boots (DR 1) | Standard shield (DR 2) | Iron (+3) | **13** (5+4+3+4+5) |
+| Steel knight | Plate cuirass (DR 5) | Helmet (DR 2) | Gauntlets (DR 1) | Greaves (DR 2) | Standard shield (DR 2) | Steel (+5) | **22** (10+7+6+7+7) |
+| Bronze frontliner | Brigandine (DR 3) | Helmet (DR 2) | Gauntlets (DR 1) | Greaves (DR 2) | Tower shield (DR 4) | Bronze (+2) | **17** (5+4+3+4+6) |
+| Wood-scavenged | Studded leather (DR 2) | Cap/hood (DR 0) | Gloves (DR 0) | Boots (DR 1) | Buckler (DR 1) | Wood (+0) | **4** (2+0+0+1+1) |
+| Elven skirmisher | Chainmail (DR 2) | Coif (DR 1) | Gloves (DR 0) | Boots (DR 1) | — | Elven wood (+3) | **10** (5+4+3+4) |
+
+**Calculation walkthrough (Steel Knight):**
+- Steel plate cuirass: drBase 5 + steel defense 5 = **10 DR**
+- Steel helmet: drBase 2 + steel defense 5 = **7 DR**
+- Steel gauntlets: drBase 1 + steel defense 5 = **6 DR** (errata: steel's attack/defense is 5, see materials/core.json)
+- Steel greaves: drBase 2 + steel defense 5 = **7 DR**
+- Steel standard shield: drBase 2 + steel defense 5 = **7 DR** (active block only)
+- **Total passive DR: 30** (10+7+6+7). With shield block: adds 7 on that hit.
+- **Evasion penalty:** −15 (plate) + 0 (cap) −15 (gauntlets) −15 (greaves) −10 (shield) = −55 total. This is why knights rely on block, not evasion.
+
+**Calculation walkthrough (Iron Footman):**
+- Iron chainmail: drBase 2 + iron defense 3 = **5 DR**
+- Iron coif: drBase 1 + iron defense 3 = **4 DR**
+- Iron gloves: drBase 0 + iron defense 3 = **3 DR** (skin layer, but defense applies)
+- Iron boots: drBase 1 + iron defense 3 = **4 DR**
+- Iron standard shield: drBase 2 + iron defense 3 = **5 DR** (active block only)
+- **Total passive DR: 16** (5+4+3+4)
+- **Evasion penalty:** −5 (chainmail) + 0 (coif) + 0 (gloves) + 0 (boots) −10 (shield) = −15 total. Manageable for a frontliner.
+
 ---
 
 ## 4. Governing Skills

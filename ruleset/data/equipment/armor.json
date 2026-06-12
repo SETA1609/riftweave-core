@@ -26,8 +26,16 @@
       "armor": { "slot": "torso", "layer": "middle", "category": "medium", "drBase": 3, "evasionPenalty": -5, "speedPenalty": -1, "requiresLayer": ["skin"] }
     },
     {
-      "id": 28, "key": "shield", "label": "Shield", "description": "A wooden or metal shield worn on the arm. Provides DR when actively blocking.", "type": "shield", "cost": { "quantity": 10, "unit": "gp" }, "weight": 6,
-      "armor": { "slot": "offhand", "layer": "skin", "drBase": 2 }
+      "id": 28, "key": "standard_shield", "label": "Standard Shield", "description": "A wooden or metal shield worn on the arm. Provides DR when actively blocking.", "type": "shield", "cost": { "quantity": 10, "unit": "gp" }, "weight": 6,
+      "armor": { "slot": "offhand", "layer": "skin", "category": "medium", "drBase": 2, "evasionPenalty": -10 }
+    },
+    {
+      "id": 43, "key": "buckler", "label": "Buckler", "description": "A small center-grip shield. Lightweight and allows a weapon or item in the same hand.", "type": "shield", "cost": { "quantity": 5, "unit": "gp" }, "weight": 3,
+      "armor": { "slot": "offhand", "layer": "skin", "category": "light", "drBase": 1, "evasionPenalty": -5 }
+    },
+    {
+      "id": 44, "key": "tower_shield", "label": "Tower Shield", "description": "A massive shield covering most of the body. Grants half cover to adjacent allies. Requires considerable strength.", "type": "shield", "cost": { "quantity": 30, "unit": "gp" }, "weight": 14,
+      "armor": { "slot": "offhand", "layer": "skin", "category": "heavy", "drBase": 4, "evasionPenalty": -20, "speedPenalty": -1, "strengthRequirement": 8 }
     },
     {
       "id": 29, "key": "brigandine", "label": "Brigandine", "description": "Small metal plates riveted between layers of leather or cloth. Flexible and protective.", "type": "armor", "cost": { "quantity": 90, "unit": "gp" }, "weight": 22,

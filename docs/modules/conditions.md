@@ -60,7 +60,7 @@ landing. By tying each condition to specific effect IDs, the data stays consiste
 
 ## 3. Complete Condition Catalog
 
-Data in `conditions/core.json` (15 entries). Each entry:
+Data in `conditions/core.json` (24 entries). Each entry:
 
 | Field | Meaning |
 |-------|---------|

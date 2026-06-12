@@ -1,6 +1,21 @@
 # Combat Resolution
 
-**Status:** Design (planned) · data structures exist (skills, conditions, equipment schema) · runtime resolution lives in the engine or GM adjudication.
+**Status:** Core (implemented as data + schema) · runtime resolution lives in the engine or GM adjudication.
+
+## How to Use This Module
+
+This document is the **single source of truth** for combat resolution in Riftweave. Consuming engines (Zig, Godot, custom TTRPG sheet, etc.) should treat each section as a contract:
+
+- **Data files**: `ruleset/data/equipment/weapons.json`, `ruleset/data/equipment/armor.json`, `ruleset/data/conditions/core.json`, `ruleset/data/effects/core.json` — these supply the building blocks (weapon stats, armor DR, conditions, effects). The schemas in `ruleset/schemas/` enforce shape; this doc explains how to use them at runtime.
+- **Skills & attributes**: See `progression.md` and `attributes.md` for seeding formulas. Combat-relevant skills are `blades`, `blunt`, `piercing`, `bows`, `crossbows`, `guns`, `throwing_weapons`, `block`, `evasion`, `light_armor`, `medium_armor`, `heavy_armor`, `unarmored`, plus all nine `<color>_magic` schools.
+- **Perks**: Many combat perks live in `ruleset/data/features/core.json`. See §16 (Combat Perks & Traits) below for integration guidance.
+- **GM (TTRPG)**: Roll d100, adjudicate reactions, track conditions manually. Use the TTRPG resolution blocks.
+- **Engine developer**: Implement the Video Game resolution blocks. Use the comparison table (§8) as a quick reference for which mode applies to your game type.
+- **cRPG (party-based tactical)**: Lean toward TTRPG resolution with automation. Notes are marked throughout.
+
+Key relationships: `combat.md` → [`armor.md`](./armor.md) (slots, layers, DR stacking) → [`conditions.md`](./conditions.md) (status effects) → [`progression.md`](./progression.md) (skill/attribute formulas). Effects from the shared registry (`effects/core.json`) are the atomic units that spells, conditions, and consumables apply.
+
+---
 
 This document defines the full combat resolution system for Riftweave: action economy,
 opportunity attacks, defense, critical hits, cover and terrain, and initiative. Every
@@ -460,10 +475,11 @@ weight) for realism vs. convenience.
 
 **Setup:**
 - **Sir Aldric** (human knight): Blades 72, Block 55, Evasion 30, heavy_armor 65.
-  Wears steel plate (torso/upper, DR 10) + steel helm (head/upper, DR 5) + steel
-  gauntlets (hands/upper, DR 3) + steel greaves (feet/upper, DR 4) = **22 total DR**.
-  Carries a longsword (1d10 slashing) and a standard shield (DR +2 on block).
-  Attributes: STR 8, AGI 6, END 7, LCK 4.
+  Wears iron plate cuirass (torso/upper, DR 8 = base 5 + iron defense 3) + iron
+  helm (head/upper, DR 5 = base 2 + iron defense 3) + iron gauntlets (hands/upper,
+  DR 4 = base 1 + iron defense 3) + iron greaves (feet/upper, DR 5 = base 2 + iron
+  defense 3) = **22 total DR**. Carries a longsword (1d10 slashing) and a standard
+  shield (DR +2 on block). Attributes: STR 8, AGI 6, END 7, LCK 4.
 - **Bandit** (human): Blades 45, Evasion 25. Wears leather jerkin (torso/upper, DR 2)
   + leather cap (head/skin, DR 0) = **2 total DR**. Wields a shortsword (1d6).
   No shield.
@@ -570,6 +586,137 @@ next round.
 
 **Round 1 result:** Goblins heavily wounded (9, 7, 6 HP). Party at full health.
 Goblins bottled up by Dorn's position.
+
+---
+
+### Example 4: Video Game Action-Combat — Rogue vs. Guard Captain
+
+**Setup:**
+- **Kestrel** (shadow elf rogue): Piercing 68, Evasion 60, light_armor 55. Wears
+  studded leather jerkin (torso/upper, DR 2, leather) + leather boots (feet/skin, DR 1)
+  + leather gloves (hands/skin, DR 0) + cloth hood (head/skin, DR 0) = **3 total DR**.
+  Wields a rapier (1d6 piercing, finesse, parry-capable) and a dagger (off-hand).
+  Attributes: STR 5, AGI 9, END 5, LCK 7. Stamina pool: `15 + 5×5 + 10×2 = 60`.
+  Has the *Ghost* perk (−25% detection).
+- **Captain Voss** (human guard): Blades 62, Block 45, heavy_armor 60. Wears
+  breastplate (torso/upper, DR 4, iron, evasion −15, speed −2) + iron helmet
+  (head/upper, DR 2) + leather gauntlets (hands/upper, DR 1) + leather boots
+  (feet/skin, DR 1) = **8 total DR**. Wields a longsword (1d8 slashing). Standard
+  shield (DR +2 on block). No shield equipped (two-handed longsword). Attributes:
+  STR 8, END 7, AGI 4.
+
+**Encounter (Video Game / Action-Combat Mode):**
+
+1. **Engagement:** Kestrel enters melee range. Voss detects her (PER check failed
+   due to Ghost perk, but proximity triggers aggro). Combat HUD activates.
+
+2. **Kestrel opens:**
+   - **Input:** Presses light attack (rapier) → drains **8 Stamina** (52 remaining).
+   - **Auto-hit check:** Voss's auto-dodge: base 10% + (evasion 25 × 0.15 = 3.75%)
+     + (AGI 4 × 2 = 8%) ≈ **22% dodge chance**. Roll d100 = **73** (does not dodge).
+   - **Hit confirmed.** Rapier 1d6 = **5** piercing − Voss's DR 8 = **0 net damage**
+     (fully absorbed by armor). Gray "0" damage popup.
+   - **Kestrel recovers** (0.3s), circles.
+
+3. **Voss counter-attacks:**
+   - **AI attack:** Voss executes a heavy swing (longsword). Drains 12 Stamina.
+   - **Kestrel's player input:** Taps block (parry attempt). Parry window:
+     `piercing 68 × 0.005 = 0.34s`. Input timing succeeds → **parry!**
+   - **Parry result:** Attack negated. Voss is staggered (1s stun, cannot act).
+   - **Kestrel's follow-up:** During Voss's stagger window, Kestrel inputs
+     light attack + off-hand dagger strike (dual-wield chain). Drains **14 Stamina**
+     total (38 remaining).
+   - **First hit (rapier):** 1d6 = **4** − DR 8 = 0 (absorbed).
+   - **Second hit (dagger):** 1d4 = **3** piercing − DR 8 = 0 (absorbed).
+   - Both hits show gray damage (0 net). Kestrel's weapons cannot penetrate Voss's
+     armor with chip damage alone.
+
+4. **Kestrel adapts:**
+   - **Input:** Dodges backward (dodge roll, drains 10 Stamina, 28 remaining).
+     Invincibility frames active for 0.3s.
+   - **Draws and applies** a paralytic poison coating (consumable, uses 1 charge).
+     Next successful hit will apply `paralyze` effect (id 11) → `paralyzed` condition.
+   - **Input:** Lunging attack (heavy, drains 15 Stamina, 13 remaining).
+   - **Auto-hit check:** Voss's dodge rolls **87** (miss). Hit confirmed.
+   - **Damage:** Rapier 1d6 = **6** − DR 8 = 0 (armor still holds).
+   - **Poison triggers:** Paralyze effect (id 11) bypasses armor. Voss must resist:
+     END save vs DC 12. Roll d100 = **34** (fail). Voss is **paralyzed** for 4 seconds.
+   - Condition icon appears on Voss's HUD. He is immobilized and defenseless.
+
+5. **Kestrel's finishing sequence:**
+   - **Paralyzed target:** Melee attacks against paralyzed targets auto-crit (TTRPG)
+     or deal ×2 damage (video game).
+   - **Rapier crit:** 1d6 × 2 = **12** − DR 8 = **4 net damage** (orange popup).
+     Voss HP: 40 → **36**.
+   - **Dagger crit:** 1d4 × 2 = **6** − DR 8 = 0 (gray).
+   - Voss remains paralyzed. Kestrel can continue attacking until paralysis ends.
+
+**Result:** Kestrel cannot brute-force through Voss's armor (DR 8 exceeds her
+base damage). By using a consumable (paralytic poison) to bypass the physical
+defense tree and trigger a condition, she lands meaningful damage. The parry
+(stagger) created the opening to apply the poison. Video game rhythm: parry →
+stagger → apply poison → capitalized damage during paralysis.
+
+---
+
+### Example 5: TTRPG — Magic Defense Tree, Condition Spread, and Active Effects
+
+**Setup:**
+- **Lyra** (human mage, from Example 3): Red_magic 65, Evasion 20, WIL 8, INT 9.
+  Cloth robe (DR 0). Mana pool: `9×8 + 10×2 = 92`. No armor evasion penalty.
+- **Cinder** (fire salamander, caster enemy): Red_magic 55, Evasion 30, WIL 6.
+  Natural scales provide DR 3. Has `spell_absorption` (effect id 21, 15% chance).
+  Knows *Fire Bolt* (damage_fire, magnitude 6) and *Blinding Flash* (blind effect
+  id 47, 4s duration).
+- **Terrain:** Open field, no cover. Distance 8 units.
+
+**Round 1:**
+
+1. **Initiative:** Lyra rolls d20 + PER (5) = **17**. Cinder rolls **12**. Lyra acts first.
+
+2. **Lyra's action (cast *Fire Bolt*):**
+   - **Cast check:** Roll red_magic 65 → d100 = **38** (success, margin 27).
+   - **Magic Defense Tree Resolution:**
+     - **Layer 1 (Evasion):** No perk. Baseline evasion **does not apply** to magic.
+     - **Layer 2 (Spell Absorption):** Cinder has 15% spell absorption. Roll d100 =
+       **73** (no absorption).
+     - **Layer 3 (Magic Resistance):** Cinder's WIL-based resistance. WIL 6 gives
+       base 24%. Roll d100 = **61** (no resist).
+     - **Layer 4 (Elemental/Phase Resistance):** Fire vs. fire. Cinder is a fire
+       salamander — innate fire resistance (resist effect id 19, parameter "fire",
+       magnitude 50%). **50% reduction**.
+     - **Layer 5 (Active Effects):** None active.
+   - **Final damage:** Fire Bolt magnitude 6 × 50% (fire resistance) = **3 fire damage**.
+     Cinder's natural DR 3 does not apply to magic (physical DR only).
+     Cinder HP: 40 → **37**.
+
+3. **Cinder's action:**
+   - **Cast check:** Roll red_magic 55 → d100 = **29** (success, margin 26).
+   - **Chooses *Blinding Flash* (blind effect id 47) instead of direct damage.**
+   - **Magic Defense Tree Resolution:**
+     - **Layer 1:** No perk — evasion does not apply.
+     - **Layer 2:** Lyra has no spell absorption.
+     - **Layer 3:** Lyra's WIL 8 → base MR 32%. Roll d100 = **44** (fail, no resist).
+     - **Layer 4:** Blind has no phase (non-elemental). No elemental resistance.
+     - **Layer 5:** No active effects.
+   - **Blind lands.** Lyra is now **blinded** (condition id 1, applied by effect id 47).
+     - **TTRPG effect:** −20 on PER-based checks, auto-fail sight-dependent rolls.
+       Attacks against Lyra have +10.
+     - Duration: 4 rounds (Cinder's base duration modified by margin of success).
+
+4. **Lyra's recovery (Round 2):**
+   - **Blinded penalty active.** Lyra attempts to cast *Cure* (effect id 20,
+     parameter "blinded") on herself — but sight-dependent targeting is required.
+     **Auto-fail.** Lyra cannot target herself with a visual spell.
+   - **Alternative:** Lyra uses a pre-prepared potion (consumable, cure effect id 20
+     with parameter "blinded").
+   - **Drink potion** (use object, 1 AP or input action). Blind removed.
+   - **Back to full effectiveness.** Lyra re-engages.
+
+**Result:** The magic defense tree absorbed most of Lyra's Fire Bolt (50% fire
+resist). Cinder's Blinding Flash bypassed armor entirely — conditions are a
+powerful tool against casters who lack physical protection. Lyra's prepared
+consumable (a potion) saved her from multiple turns of ineffectiveness.
 
 ---
 
@@ -838,9 +985,150 @@ Format: `12 - 4 (DR) = 8` — shows pre-DR, DR, and net. Optionally collapse to 
 
 ## 15. Deferred Combat Sections
 
-The following areas are noted for future expansion but not yet specified:
+The following areas are noted for future expansion. They are **not yet implemented** — the entries below are design notes for later specification.
 
-- **Mounted combat:** Ride checks, mount speed, charge attacks, dismounting.
-- **Underwater combat:** Movement penalties, breath tracking, weapon ineffectiveness.
-- **Vehicle combat:** Chases, ship-to-ship, siege engine operation.
-- **Mass combat:** Unit formations, morale, commander checks.
+### Mounted Combat
+
+**Future / Not Yet Implemented.** A mounted character uses the mount's speed and movement instead of their own. The mount acts on the rider's initiative (shared turn). The rider attacks with their own weapon skill. Attacks against a mounted target can hit either rider or mount (GM determination or 50/50 random in TTRPG; automatic target selection in video game). Dismounting costs half movement (voluntary) or requires a knockdown check (forced). **Charge attacks** (moving 4+ units straight before attacking) grant bonus damage: +2 per unit moved (capped at +10) for TTRPG; a flat % multiplier for video game. Requires a Ride check to maintain balance.
+
+- **TTRPG:** Ride skill (AGI-based) for mounted maneuvers; DC 12 base for combat riding. Mount has its own HP pool and acts as additional HP buffer for the rider.
+- **Video game:** Mount is a separate entity with its own HP, Stamina, and AI. The rider controls the mount's movement; attacks are made from the saddle. Mount death triggers a dismount animation and stun.
+
+### Underwater Combat
+
+**Future / Not Yet Implemented.** Movement is halved. Only piercing weapons deal full damage; slashing and bludgeoning deal half. Thrown and projectile weapons are ineffective beyond 1 unit; crossbows (with special underwater bolts) and magic work normally. Characters hold their breath for `END × 15` seconds, then begin suffocation (1 HP/round, END save DC 10 + rounds without air). Fire-phase spells and effects are nullified; water-phase spells are amplified (×1.5).
+
+- **TTRPG:** GM tracks breath and movement penalties. Swim skill checks for complex maneuvers. Suffocation begins after breath-hold duration expires.
+- **Video game:** Underwater sections use a breath meter UI. Movement speed debuff applied automatically. Weapon damage type check on hit.
+
+### Vehicle Combat
+
+**Future / Not Yet Implemented.** Chases, ship-to-ship, and siege engine operation. Vehicles have their own stat block (speed, HP, crew capacity, weapon mounts). Vehicle-to-vehicle combat uses the crew's relevant skills (gunnery, piloting/navigation). Boarding actions revert to standard combat rules on the vehicle's deck.
+
+### Mass / Group Combat
+
+**Future / Not Yet Implemented.** Proposed design uses a **unit abstraction**: formations of 10–50 combatants are represented as a single "unit" with pooled HP, damage output based on member count and quality, and morale tracking. Commander checks (CHA and relevant tactical skills) modify unit effectiveness. Skirmisher characters can operate independently (as "hero units") using standard combat rules while the mass battle resolves around them.
+
+- **TTRPG:** Resolution uses unit-vs-unit opposed checks (tactical skill of the commander) rather than per-soldier rolls. Morale thresholds trigger rout or surrender. Player characters act as hero units or squad leaders.
+- **Video game:** Large battles use simplified crowd AI with hero characters as focal points. Units follow formation waypoints and auto-engage nearby enemies. Performance optimization (LOD, crowd instancing) is engine-specific.
+
+---
+
+## 16. Combat Perks & Traits
+
+Perks (from `data/features/core.json`) are the primary way characters customize their combat capabilities. This section maps existing perks to combat mechanics and provides guidance for designing combat-themed perks.
+
+### Existing Combat Perks
+
+| Perk | Effect on Combat | Type | Prerequisites |
+|------|-----------------|------|---------------|
+| **Toughness** | +15 max HP per rank (up to 3 ranks). Increases survivability across all combat modes. | perk | END 5 |
+| **Alert** | +10 initiative (TTRPG); cannot be surprised. Video game: larger aggro detection radius, faster reaction to flankers. | perk | PER 6 |
+| **Power Attack** | +25% melee weapon damage. Stacks additively with other damage multipliers. Most effective with heavy, slow weapons. | perk | STR 6, Blades 40 |
+| **Deadeye** | +10% ranged critical chance. Compounds with LCK's crit window expansion. | perk | PER 6, any archery 40 |
+| **Shield Wall** | +15% damage blocked. Multiplies the effective DR of a successful block. Works with all shield types. | perk | END 6, Block 40 |
+| **Fast Shot** (creation) | Ranged attacks 20% faster. Video game: reduced recovery time. TTRPG: may allow additional shot (GM discretion). Cannot make aimed shots. | creation | — |
+| **Field Medic** | +50% healing from Medicine skill. Relevant in combat for stabilizing allies during or after engagement. | perk | Medicine 40 |
+
+### Perk-Equipped Example Builds
+
+**The Tank (Dorn):** Shield Wall (+15% block) + Toughness (+45 HP over 3 ranks) → effective HP pool for holding chokepoints. Synergizes with heavy armor and tower shield.
+
+**The Sharpshooter (Valeria):** Deadeye (+10% crit) + high LCK (expanded crit window) → ~15–20% crit rate on called shots. Video game: auto-crit on headshots with Deadeye active.
+
+**The Berserker:** Power Attack (+25% damage) + high STR (carry heavy weapons without penalty) + low armor (unarmored or light for speed). Glass-cannon melee build.
+
+### Designing Combat Perks
+
+When adding new combat perks, follow these guidelines:
+
+1. **Effect magnitude:** A single perk rank should provide a +10–25% improvement to a specific combat dimension (damage, defense, crit, speed). Rarely exceed +50% in one perk.
+2. **Prerequisites:** Gate combat perks behind the relevant attribute (STR for melee damage, PER for ranged, END for defense/block) and a skill threshold of 30–50.
+3. **Dual resolution:** Every perk's effect must be expressible in both TTRPG and video game terms. See examples above.
+4. **Stacking:** Two perks that modify the same dimension should stack additively, not multiplicatively, to avoid runaway scaling.
+5. **Effects integration:** Perks that apply ongoing modifiers should reference the shared effects registry by effect ID where possible (e.g., a "Spell Dodger" perk grants resist effect id 19 with parameter "magic" at magnitude 25).
+
+### Racial Traits Affecting Combat
+
+Racial traits from `data/traits/core.json` also modify combat:
+
+- **Elf — Fey Ancestry:** Resistance to charm and mind-affecting magic (relevant in the magic defense tree, Layer 3–4).
+- **Elf — Keen Senses:** +PER-based bonus; helps initiative and perception in combat.
+- **Dwarf — Dwarven Resilience:** +25% poison/disease resistance; affects combat vs. poison-using enemies.
+- **Orc — Berserker Strength:** Temporary STR boost on taking damage; affects melee damage output.
+
+### Creation Perks (Traits) with Combat Impact
+
+Creation perks chosen at character creation have permanent combat implications:
+
+- **Fast Shot:** Ranged attack speed +20%, but no aimed shots. Build-enabling for rapid-fire archers.
+- **Small Frame:** +1 AGI (action economy, evasion) but −25% carry capacity (equipment restrictions).
+- **Undead Phobia:** Combat penalties vs undead but +2 WIL (magic resist) and 25% undead/poison resistance.
+- **Iron Allergy:** Metal armor/weapons penalized; forces reliance on leather, wood, or exotic materials.
+- **Leather Allergy:** Leather armor unusable; forces cloth or metal armor.
+
+---
+
+## 17. Open Design Questions & Resolutions
+
+This section addresses the open questions raised during the combat system design (originally in `plan.md`).
+
+### Slot + Layer Complexity
+
+**Question:** 16+ equipment positions is a lot of equipment management. How should a video game handle this?
+
+**Resolution:** The slot+layer model is the **canonical data model** — it is the single source of truth for what a piece of armor is. Consuming engines may simplify the player-facing UI without changing the data:
+
+- **TTRPG:** All 16 positions are on the character sheet. Paper tracking is fine; groups may use a simplified sheet that folds "on_top" into the back slot and "skin" into the appropriate slot as base clothing.
+- **Video game (recommended simplification):** Hide the layer system behind an **auto-undergarment** mechanic. The engine automatically equips the best available skin-layer item when a middle or upper layer item is added to a slot. The player only manages visible armor (middle + upper slots in each body zone). Layer dependency penalties (−1 AGI for missing skin layer) are handled automatically.
+  - Alternative: Use a **3-zone UI** (Head, Body, Legs+Feet) with layered slots as sub-tabs within each zone. Hands and Back are separate top-level slots.
+- **cRPG:** Show all layers in an inventory grid with slot filtering, similar to Diablo-style equipment screens. Tooltips indicate layer dependencies and total DR contributions.
+
+### Shield Slot and Layer
+
+**Question:** How do shields work in the slot/layer model? Are they an offhand slot? Do they have a layer?
+
+**Resolution:** Shields use `slot: "offhand"` with `layer: null` (no layering). Key rules:
+
+- Shields **do not contribute to passive DR**. Their DR only applies during an active block (see §3).
+- Shields occupy the offhand position. Two-handed weapons implicitly occupy both main hand and offhand.
+- A character with a shield in the offhand can still carry a light item (wand, torch, dagger) in the shield hand — the shield is strapped to the arm.
+- Bucklers allow a light off-hand weapon simultaneously (the buckler is small enough to coexist).
+- In video game rendering: the shield appears on the character's arm/side. The block animation brings it to the front.
+- Shield `evasionPenalty` applies at all times (the shield is always worn, even when not actively blocking).
+- Shield `strengthRequirement` gates effective use (like armor STR requirements).
+
+### Condition → Effect Linking
+
+**Question:** Some conditions (blinded, charmed, etc.) use placeholder effect IDs (47–64). Are these real effects in the registry?
+
+**Resolution:** Yes. Effects 47–64 were added alongside the conditions system (see `data/effects/core.json`):
+- id 47 `blind` → condition `blinded` (id 1)
+- id 48 `charm` → condition `charmed` (id 2)
+- id 49 `deafen` → condition `deafened` (id 3)
+- id 50 `grapple` → condition `grappled` (id 5)
+- id 51 `incapacitate` → condition `incapacitated` (id 6)
+- id 52 `petrify` → condition `petrified` (id 9)
+- id 53 `knockdown` → condition `prone` (id 11)
+- id 54 `restrain` → condition `restrained` (id 12)
+- id 55 `stun` → condition `stunned` (id 13)
+- id 56 `unconsciousness` → condition `unconscious` (id 14)
+- id 57 `burn` → condition `burning` (id 16)
+- id 58 `bleed` → condition `bleeding` (id 17)
+- id 59 `slow` → condition `slowed` (id 18)
+- id 60 `silence` → condition `silenced` (id 19)
+- id 61 `curse` → condition `cursed` (id 21)
+- id 62 `expose` → condition `exposed` (id 22)
+- id 63 `taunt` → condition `taunted` (id 23)
+- id 64 `stagger` → condition `staggered` (id 24)
+
+Every condition's `appliedBy` array references a real effect that exists in the shared registry. No placeholder effects remain.
+
+### Shield Styles & Two-Weapon Fighting
+
+**Clarification on two-weapon fighting and shields:**
+
+- A character with two weapons may use the off-hand weapon to **parry** (using the off-hand weapon skill) but cannot **block** (no shield skill benefit).
+- The off-hand weapon in a turn can either **attack** (as a bonus action in TTRPG, or as part of a chain in video game) OR be **reserved for parry** — not both in the same turn.
+- Dual-wielding provides no passive DR benefit. The advantage is offensive throughput (extra attack) or defensive flexibility (parry capability), not protection.
+- In video game mode, dual-wielding uses a dedicated attack chain animation set. Block is unavailable; the player relies on dodge rolls and parry timing.

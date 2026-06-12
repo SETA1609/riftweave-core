@@ -63,7 +63,9 @@ def check_references(data, coll_name, id_index):
             for t in r.get("traits", []):
                 if isinstance(t, dict):
                     tid = t.get("id")
-                    if isinstance(tid, int) and tid not in id_index.get("traits", set()):
+                    if isinstance(tid, int) and tid not in id_index.get(
+                        "traits", set()
+                    ):
                         errors.append(f"trait {tid} does not exist in traits")
 
     elif coll_name == "features":
@@ -77,7 +79,9 @@ def check_references(data, coll_name, id_index):
             for s in pr.get("skills", []):
                 if isinstance(s, dict):
                     sid = s.get("id")
-                    if isinstance(sid, int) and sid not in id_index.get("skills", set()):
+                    if isinstance(sid, int) and sid not in id_index.get(
+                        "skills", set()
+                    ):
                         errors.append(f"prereq skill {sid} does not exist")
 
     elif coll_name == "spells":
@@ -87,10 +91,14 @@ def check_references(data, coll_name, id_index):
             for e in s.get("effects", []):
                 if isinstance(e, dict):
                     eid = e.get("effect")
-                    if isinstance(eid, int) and eid not in id_index.get("effects", set()):
+                    if isinstance(eid, int) and eid not in id_index.get(
+                        "effects", set()
+                    ):
                         errors.append(f"effect {eid} does not exist")
             for rid in (s.get("cost", {}) or {}).get("reagents", []) or []:
-                if isinstance(rid, int) and rid not in id_index.get("ingredients", set()):
+                if isinstance(rid, int) and rid not in id_index.get(
+                    "ingredients", set()
+                ):
                     errors.append(f"reagent {rid} does not exist")
 
     elif coll_name == "backgrounds":
@@ -100,7 +108,9 @@ def check_references(data, coll_name, id_index):
             for sb in b.get("skill_bonuses", []) or []:
                 if isinstance(sb, dict):
                     sid = sb.get("skill")
-                    if isinstance(sid, int) and sid not in id_index.get("skills", set()):
+                    if isinstance(sid, int) and sid not in id_index.get(
+                        "skills", set()
+                    ):
                         errors.append(f"skill bonus {sid} does not exist")
             for ts in b.get("suggested_tag_skills", []) or []:
                 if isinstance(ts, int) and ts not in id_index.get("skills", set()):
@@ -111,7 +121,9 @@ def check_references(data, coll_name, id_index):
             for se in b.get("starting_equipment", []) or []:
                 if isinstance(se, dict):
                     iid = se.get("item")
-                    if isinstance(iid, int) and iid not in id_index.get("equipment", set()):
+                    if isinstance(iid, int) and iid not in id_index.get(
+                        "equipment", set()
+                    ):
                         errors.append(f"starting equipment {iid} does not exist")
 
     elif coll_name == "monsters":
@@ -121,7 +133,9 @@ def check_references(data, coll_name, id_index):
             for a in m.get("abilities", []) or []:
                 if isinstance(a, dict):
                     eid = a.get("effect")
-                    if isinstance(eid, int) and eid not in id_index.get("effects", set()):
+                    if isinstance(eid, int) and eid not in id_index.get(
+                        "effects", set()
+                    ):
                         errors.append(f"ability effect {eid} does not exist")
 
     elif coll_name == "ingredients":
@@ -132,6 +146,17 @@ def check_references(data, coll_name, id_index):
                 if isinstance(eid, int) and eid not in id_index.get("effects", set()):
                     errors.append(f"effect {eid} does not exist")
 
+    elif coll_name == "conditions":
+        for c in data.get("conditions", []):
+            if not isinstance(c, dict):
+                continue
+            for eid in c.get("appliedBy", []) or []:
+                if isinstance(eid, int) and eid not in id_index.get("effects", set()):
+                    errors.append(f"appliedBy effect {eid} does not exist in effects")
+            for eid in c.get("removedBy", []) or []:
+                if isinstance(eid, int) and eid not in id_index.get("effects", set()):
+                    errors.append(f"removedBy effect {eid} does not exist in effects")
+
     elif coll_name == "equipment":
         for e in data.get("equipment", []) or []:
             if not isinstance(e, dict):
@@ -140,7 +165,9 @@ def check_references(data, coll_name, id_index):
             for eff in cons.get("effects", []) or []:
                 if isinstance(eff, dict):
                     eid = eff.get("effect")
-                    if isinstance(eid, int) and eid not in id_index.get("effects", set()):
+                    if isinstance(eid, int) and eid not in id_index.get(
+                        "effects", set()
+                    ):
                         errors.append(f"effect {eid} does not exist")
 
     return errors
