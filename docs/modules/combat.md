@@ -469,6 +469,183 @@ weight) for realism vs. convenience.
 
 ---
 
+## 9a. Armor Weight & Action Costs
+
+Armor category (Light / Medium / Heavy) imposes a **stamina or AP surcharge** on
+demanding actions. This is separate from encumbrance (total carried weight) —
+it applies based on the **heaviest armor category worn in any slot**. A character
+wearing a steel breastplate (heavy torso) with leather boots (light feet) is
+considered Heavy for action cost purposes (the heaviest category wins).
+
+**Design rationale:** The penalty only hits aggressive/mobile actions, not passive
+existence. Heavy armor tanks can stand and trade blows without extra cost — they
+pay when they dodge, sprint, or wind up a power attack. This reinforces role
+identity (tanks hold ground, skirmishers move) without making heavy armor feel
+punishing just for being equipped.
+
+### Category Determination
+
+| Armor Category | Heaviest Piece Worn | Label |
+|----------------|---------------------|-------|
+| Unarmored | No armor (skin-layer clothing only) | Unarmored |
+| Light | All worn armor pieces are Light or skin-layer | Light |
+| Mixed Light/Medium | At least one Medium piece, no Heavy pieces | Medium |
+| Any Heavy | At least one Heavy piece in any slot | Heavy |
+
+- Shields contribute their `category` (light for buckler, medium for standard,
+  heavy for tower shield) to the determination.
+- Back slot and accessory items do not affect the category.
+
+### Video Game (Action-Combat) — Stamina Surcharges
+
+The base stamina costs for demanding actions are multiplied by the character's
+armor category factor:
+
+| Action | Base Stamina Cost | Light Multiplier | Medium Multiplier | Heavy Multiplier |
+|--------|------------------|-----------------|-------------------|------------------|
+| Dodge roll | 15 | ×1.0 | ×1.5 (22.5 → 23) | ×2.0 (30) |
+| Sprint (per second) | 5/s | ×1.0 | ×1.4 (7/s) | ×1.8 (9/s) |
+| Power attack / heavy attack | 20 | ×1.0 | ×1.3 (26) | ×1.6 (32) |
+| Jump | 8 | ×1.0 | ×1.25 (10) | ×1.5 (12) |
+| Clamber / vault | 10 | ×1.0 | ×1.5 (15) | ×2.0 (20) |
+| Block (shield) | 8 | ×1.0 | ×1.25 (10) | ×1.5 (12) |
+
+**Key principles:**
+- **Light armor:** No surcharge on any action. Default costs. This is the mobility
+  advantage of light armor.
+- **Medium armor:** Moderate surcharge (×1.25 to ×1.5). Penalties are noticeable but
+  manageable with good stamina management. A frontliner in chainmail can dodge
+  occasionally but not repeatedly.
+- **Heavy armor:** Significant surcharge (×1.5 to ×2.0). Dodge rolls are very
+  expensive — a knight should block or tank hits, not dodge out of the way. Sprint
+  cost is nearly doubled, encouraging measured positioning over hit-and-run.
+
+**Actions that are NOT penalized:**
+- Light attack / basic attack (flat stamina cost, independent of armor)
+- Walking / normal movement (no stamina cost)
+- Standing still / idle
+- Using items / interacting
+- Casting spells (magic has its own stamina cost rules)
+
+**Stamina regen interaction:**
+- Armor action surcharges do not affect stamina regen rate (that's handled by
+  encumbrance, see §9 above).
+- However, because the surcharges make actions more expensive, the effective
+  stamina budget per fight is tighter for heavier armor — the same pool must
+  cover fewer high-cost actions.
+
+**UI feedback:**
+- Tooltip on the stamina bar or action button: "Dodge: 15 Stamina (×2.0 Heavy Armor)"
+- Color code the stamina cost indicator: white (light), yellow (medium), red (heavy).
+- Consider an optional HUD element showing "Effective Action Cost" when hovering
+  over the armor weight indicator.
+
+### TTRPG (Turn-Based) — AP Surcharges
+
+In TTRPG mode, the same concept translates to additional AP costs on the AP pool
+variant (see §1):
+
+| Action | Base AP Cost | Light Surcharge | Medium Surcharge | Heavy Surcharge |
+|--------|-------------|-----------------|------------------|-----------------|
+| Dodge | 3 | — | +1 (4) | +2 (5) |
+| Dash (double movement) | 2 | — | +1 (3) | +1 (3) |
+| Stand from prone | 2 | — | +1 (3) | +2 (4) |
+| Sprint / Run (discrete move) | 1 per extra unit | — | — | +1 per unit beyond normal speed |
+| Power attack / aimed shot | +2 | — | +1 (+3 total) | +2 (+4 total) |
+| Jump (chasm, obstacle) | 2 | — | +1 (3) | +2 (4) |
+
+**Discrete action model note:** In the standard action/bonus action/reaction model
+(not the AP pool variant), the surcharge manifests as a **restriction** rather than
+a numeric cost:
+- **Heavy armor:** Cannot take the Dodge action. Dash costs both the action and
+  bonus action (effectively preventing any other action that turn).
+- **Medium armor:** Dodge and Dash are available but cost both the action and bonus
+  action (no attack or spell on a dodge turn).
+- **Light armor:** No additional restrictions.
+
+This mirrors the video game design: heavy armor trades mobility for protection,
+and the tradeoff is expressed as opportunity cost rather than a flat penalty.
+
+### Interaction with Encumbrance
+
+The armor category surcharge and the encumbrance system stack **additively** on
+affected actions:
+
+- An encumbered character in heavy armor pays: base AP cost + heavy surcharge +
+  encumbrance AP penalty (Dash costs +1 AP at encumbered).
+- Example: A heavily encumbered knight Dashing pays: Dash base 2 + heavy surcharge
+  +1 + encumbrance penalty +1 = **4 AP** for a single Dash.
+- This is intentional — being overburdened AND wearing heavy armor should be
+  prohibitive for mobility. Players are incentivised to manage both their carried
+  weight and their equipped armor strategically.
+
+### Perks That Modify Armor Action Costs
+
+Several perks can reduce or eliminate armor action surcharges:
+
+| Perk | Effect | Category |
+|------|--------|----------|
+| **Heavy Armor Expert** (new) | Halve all heavy armor stamina/AP surcharges (×1.5 instead of ×2.0 for dodge, etc.). Requires heavy_armor 60+ and STR 8. | perk |
+| **Light Foot** (new) | Ignore medium armor surcharges entirely. Requires light_armor 50+ and AGI 7. | perk |
+| **Brutal Charge** (new) | Power attacks in heavy armor cost stamina equal to a light attack (no heavy surcharge). Requires STR 9 and Power Attack perk. | perk |
+| **Acrobat** (existing, reimagined) | Reduce dodge roll stamina cost by 25% (stacks multiplicatively with armor surcharges — +1.5× dodge cost becomes +1.125× effective). | perk |
+
+These perks provide build-specific relief without removing the baseline tradeoff.
+
+### Worked Example: Light vs Heavy Armor Dodge
+
+**Video game comparison:**
+
+| Stat | Light Skirmisher (leather) | Steel Knight (full plate) |
+|------|---------------------------|--------------------------|
+| Armor category | Light | Heavy |
+| Base dodge stamina cost | 15 | 15 |
+| Armor surcharge | ×1.0 (none) | ×2.0 |
+| **Actual dodge cost** | **15 stamina** | **30 stamina** |
+| Dodge chance (auto-dodge %) | ~45% (evasion 60, AGI 9) | ~5% (evasion 15, AGI 6, −55 penalties) |
+| Dodges per full stamina pool (60 stamina) | 4 dodges | 2 dodges |
+| Recommended defense strategy | Dodge + parry | Block + tank hits |
+
+The steel knight pays double stamina for a dodge that only succeeds 5% of the time
+— he should never be dodging. The light skirmisher pays 15 stamina for a 45%-chance
+dodge, making it a viable (but not spammable) defense option.
+
+**TTRPG comparison (AP pool variant):**
+
+| Stat | Light Skirmisher | Steel Knight |
+|------|-----------------|--------------|
+| Armor category | Light | Heavy |
+| Base dodge AP cost | 3 | 3 |
+| Armor surcharge | — | +2 |
+| **Actual dodge cost** | **3 AP** | **5 AP** |
+| AP pool per turn | 5 (AGI 9) | 4 (AGI 6) |
+| Maximum dodges per turn | 1 (leaves 2 AP for other actions) | 0 (cannot afford; 5 > 4 pool) |
+
+The knight cannot dodge in the standard AP model — his pool of 4 is less than the
+5 AP a dodge costs in heavy armor. This is intentional: the knight's defense comes
+from Block (2 AP) and raw DR, not evasion. The light skirmisher can dodge once
+and still act.
+
+### Open Questions
+
+- **Shield weight interaction:** Should a heavy shield (tower shield) increase the
+  armor category for action costs even if the torso armor is light? Current design
+  says yes — shields contribute their category to the determination. A character
+  wearing leather + tower shield is treated as Heavy for action costs.
+- **Per-tier refinement:** The current model uses a single multiplier per category.
+  Future refinement could add per-piece granularity (e.g., "each heavy piece adds
+  +10% to dodge cost" vs. "any heavy piece = ×2.0"). The current binary model is
+  simpler and recommended for initial implementation.
+- **Skill mitigation:** Should a high heavy_armor skill reduce the stamina surcharge?
+  This is modeled through the proposed Heavy Armor Expert perk for now, but a skill
+  scaling formula (e.g., `effectiveMultiplier = max(1.0, baseMultiplier − skill/100)`)
+  could be explored for deeper simulation systems.
+- **Stamina cost display:** In the Video Game UI, should the displayed stamina cost
+  show the pre-multiplier or post-multiplier value? Recommended: show post-multiplier
+  with a breakdown tooltip. Example: "Dodge: 30 Stamina (15 × 2.0 Heavy Armor)".
+
+---
+
 ## 10. Worked Combat Examples
 
 ### Example 1: TTRPG Turn-Based — Knight vs. Bandit
