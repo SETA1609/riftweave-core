@@ -177,11 +177,11 @@ to sustain longer fights and weather enemy spells. See [`magic.md`](./magic.md).
 These are computed from attributes, race, equipment, perks, and effects. They are the "surface" numbers an engine or character sheet uses in play. Many can be further modified by the shared effect system (see `effects/core.json` and `magic.md`).
 
 ### Movement Speed
-Racial base speed (in feet per round for exploration) is the foundation. Combat movement depends on mode.
+Racial base speed in abstract units is the foundation. Combat movement depends on mode.
 
-- **Base**: Race `speed` (e.g. human 30, dwarf ~25).
-- **Exploration**: Base speed. Modifiers from AGI (+1 ft per 2 AGI above 4?), encumbrance (see Carry weight), heavy armor (penalties via equipment properties), effects/perks (e.g. Woodland Stride ignores plant difficult terrain).
-- **Turn-based combat movement**: Units per turn = floor(base speed / 5) + floor(AGI / 3) – encumbrance penalties. Typical human: 6 units.
+- **Base**: Race `speed` in units (e.g. human 6, dwarf ~5).
+- **Exploration**: Base speed in units. Modifiers from AGI (+1 unit per 2 AGI above 4?), encumbrance (see Carry weight), heavy armor (penalties via equipment properties), effects/perks (e.g. Woodland Stride ignores plant difficult terrain).
+- **Turn-based combat movement**: Units per turn = base speed (units) + floor(AGI / 3) – encumbrance penalties. Typical human: 6 units.
 - **Action-combat movement**: Speed rating (derived from AGI and base speed) that affects positioning, dodge chance, and how quickly you close distance or escape. High speed can grant "free" movement or reduce enemy attack opportunities.
 - **Modifiers**: AGI primary; STR/END for carrying load; racial traits; effects (e.g. feather for carry, haste-like effects).
 

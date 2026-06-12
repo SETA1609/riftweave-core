@@ -109,7 +109,7 @@ actions with AI-controlled companions and optional auto-pause on events.
 
 ### TTRPG
 
-- **Provoking movement:** Exiting a threatened square or unit of length. Reach weapons
+- **Provoking movement:** Exiting a threatened area (measured in units). Reach weapons
   (attackReach 2) threaten 2 units; normal and short weapons threaten 1 unit.
 - **Resolve:** A single melee attack as a reaction, resolved as a normal attack roll.
   The attacker uses their weapon skill; the defender's armor DR applies normally.
@@ -270,9 +270,9 @@ dice (video game), the confirmation is a single flat roll against the modified T
 | d100 | Effect | Description |
 |------|--------|-------------|
 | 1–15 | Bludgeoning Blow | Extra damage only (max damage dice + roll again) |
-| 16–30 | Deep Wound | Target bleeds: takes `damage_health` (effect id 5, magnitude 2) at start of each turn until healed or DC 10 Medicine check |
+| 16–30 | Deep Wound | Target bleeds: takes `damage_health` (effect id 5, magnitude 2) at start of each turn until healed or a Medicine check (difficulty 10) |
 | 31–40 | Stagger | Target loses next reaction and takes −10 on next action for 1 round. See `staggered` condition |
-| 41–50 | Disarm | Weapon knocked from grip. STR save (DC 12) or weapon lands 1d4 units away |
+| 41–50 | Disarm | Weapon knocked from grip. STR check (difficulty 12) or weapon lands 1d4 units away |
 | 51–60 | Crippled Arm | Dominant arm crippled: −20 to attack rolls, −50% damage. Two-handed weapons unusable. Heals after combat or via `cure` effect |
 | 61–70 | Crippled Leg | Leg crippled: speed −50%, cannot dodge/evade. Heals after combat or via `cure` effect |
 | 71–80 | Knockdown | Target knocked prone (see `prone` condition). Loses next action standing. OA provoked |
@@ -312,8 +312,8 @@ dice (video game), the confirmation is a single flat roll against the modified T
 
 | Feature | Effect |
 |---------|--------|
-| **Cover (half)** | −10 to attack roll; +2 to DEX saves (or equivalent AGI-based check) |
-| **Cover (three-quarters)** | −20 to attack roll; +5 to DEX saves |
+| **Cover (half)** | −10 to attack roll; +2 to AGI-based checks |
+| **Cover (three-quarters)** | −20 to attack roll; +5 to AGI-based checks |
 | **Cover (full)** | Immune to ranged attacks (cannot be targeted) |
 | **Flanking** | +10 to melee attack when two allies are on opposite sides of the target |
 | **Difficult terrain** | Movement costs double. Cannot use Disengage while in difficult terrain |
@@ -350,7 +350,7 @@ the attack roll but grants bonus effects on a hit.
 | **Head** | −20 | ×1.5 (or max dice) | + Stagger (enemy loses next reaction). Video game: + bonus crit %, screen shake |
 | **Arms** | −15 | ×0.75 | + Disarm chance (STR check or drop weapon). Video game: −X% enemy attack for 5s |
 | **Legs** | −15 | ×0.75 | + Knockdown or slow (speed −50% for 2 rounds). Video game: slow + stumble animation |
-| **Groin / Eyes** | −30 | ×2.0 | + Stagger + possible stun (END save or stunned 1 round). Video game: extended stagger, screen flash |
+| **Groin / Eyes** | −30 | ×2.0 | + Stagger + possible stun (END check or stunned 1 round). Video game: extended stagger, screen flash |
 
 **Ranged note:** Called shots with ranged weapons beyond short range take an
 additional −10 penalty. At long range, called shots are not possible.
@@ -817,7 +817,7 @@ Goblins bottled up by Dorn's position.
    - **Auto-hit check:** Voss's dodge rolls **87** (miss). Hit confirmed.
    - **Damage:** Rapier 1d6 = **6** − DR 8 = 0 (armor still holds).
    - **Poison triggers:** Paralyze effect (id 11) bypasses armor. Voss must resist:
-     END save vs DC 12. Roll d100 = **34** (fail). Voss is **paralyzed** for 4 seconds.
+      END check (difficulty 12). Roll d100 = **34** (fail). Voss is **paralyzed** for 4 seconds.
    - Condition icon appears on Voss's HUD. He is immobilized and defenseless.
 
 5. **Kestrel's finishing sequence:**
@@ -986,14 +986,14 @@ For party-based tactical cRPGs, the TTRPG checklist applies with these additions
 - **Video game:** Cannot attack during the knockdown animation. Partial attack penalty (−30%) during the recovery (standing) animation.
 
 ### Attacking Invisible Targets
-- **TTRPG:** −20 penalty on attack rolls (blind swing). A PER-based check (DC 15 + target's stealth skill / 10) may reveal the square. Area-of-effect spells hit regardless. Damage still applies on a hit.
+- **TTRPG:** −20 penalty on attack rolls (blind swing). A PER-based check (difficulty 15 + target's stealth skill / 10) may reveal their location. Area-of-effect spells hit regardless. Damage still applies on a hit.
 - **Video game:** The invisible target cannot be locked on. Area attacks and cone abilities still hit. A detection effect (e.g. *Detect Life*) reveals the target.
 - **Perception perks:** *Blind Fighting* reduces the penalty to −10. *Tremorsense* negates it entirely if the target is on the ground.
 
 ### Shooting Into Melee
 - **TTRPG:** −10 penalty if an ally is engaged in melee with the target. On a miss (roll > modified skill but within 10 of the target), the attack hits a random adjacent creature in melee (GM determines). The *Sharpshooter* perk negates both penalty and friendly fire.
 - **Video game:** Friendly fire is on by default (damaging allies). A perk or difficulty setting may disable it. The penalty is automatic aim deviation if an ally is between the shooter and target.
-- **cRPG note:** With grid positioning, check LoS — if an ally occupies a grid cell between attacker and target, apply the penalty.
+- **cRPG note:** With grid positioning, check LoS — if an ally occupies a unit between attacker and target, apply the penalty.
 
 ### Invisible Target in Melee
 - An invisible target still provokes OA when leaving reach — you can hear them move. The OA roll takes the −20 blind penalty.
@@ -1012,12 +1012,12 @@ For party-based tactical cRPGs, the TTRPG checklist applies with these additions
 - **Mounted character:** Uses the mount's speed and movement. The mount acts on the rider's initiative.
 - **Mounted attacks:** The rider attacks with their own weapon skill. Melee attacks against a mounted target can hit either rider or mount (GM decides or random 50/50).
 - **Dismounting:** Voluntary (costs half movement) or forced (knockdown check for rider when mount is killed or tripped).
-- **Charge attacks:** Moving 4+ units in a straight line before attacking grants +2 damage per unit moved (capped at +10). Requires a Ride check (DC 12) to maintain balance.
+- **Charge attacks:** Moving 4+ units in a straight line before attacking grants +2 damage per unit moved (capped at +10). Requires a Ride check (difficulty 12) to maintain balance.
 
 ### Underwater Combat (Stub)
 - **Movement:** Speed halved. Only piercing weapons deal full damage; slashing and bludgeoning deal half.
 - **Ranged:** Thrown and projectile weapons are ineffective beyond 1 unit. Crossbows and magic work normally.
-- **Breath:** Characters can hold breath for `END × 15` seconds. After that, begin suffocation (1 HP/round, save END DC 10 + rounds without air).
+- **Breath:** Characters can hold breath for `END × 15` seconds. After that, begin suffocation (1 HP/round, END check difficulty 10 + rounds without air).
 - **Spellcasting:** Fire-phase spells and effects are nullified underwater. Water-phase spells are amplified (×1.5).
 
 ---
@@ -1168,12 +1168,12 @@ The following areas are noted for future expansion. They are **not yet implement
 
 **Future / Not Yet Implemented.** A mounted character uses the mount's speed and movement instead of their own. The mount acts on the rider's initiative (shared turn). The rider attacks with their own weapon skill. Attacks against a mounted target can hit either rider or mount (GM determination or 50/50 random in TTRPG; automatic target selection in video game). Dismounting costs half movement (voluntary) or requires a knockdown check (forced). **Charge attacks** (moving 4+ units straight before attacking) grant bonus damage: +2 per unit moved (capped at +10) for TTRPG; a flat % multiplier for video game. Requires a Ride check to maintain balance.
 
-- **TTRPG:** Ride skill (AGI-based) for mounted maneuvers; DC 12 base for combat riding. Mount has its own HP pool and acts as additional HP buffer for the rider.
+- **TTRPG:** Ride skill (AGI-based) for mounted maneuvers; difficulty 12 base for combat riding. Mount has its own HP pool and acts as additional HP buffer for the rider.
 - **Video game:** Mount is a separate entity with its own HP, Stamina, and AI. The rider controls the mount's movement; attacks are made from the saddle. Mount death triggers a dismount animation and stun.
 
 ### Underwater Combat
 
-**Future / Not Yet Implemented.** Movement is halved. Only piercing weapons deal full damage; slashing and bludgeoning deal half. Thrown and projectile weapons are ineffective beyond 1 unit; crossbows (with special underwater bolts) and magic work normally. Characters hold their breath for `END × 15` seconds, then begin suffocation (1 HP/round, END save DC 10 + rounds without air). Fire-phase spells and effects are nullified; water-phase spells are amplified (×1.5).
+**Future / Not Yet Implemented.** Movement is halved. Only piercing weapons deal full damage; slashing and bludgeoning deal half. Thrown and projectile weapons are ineffective beyond 1 unit; crossbows (with special underwater bolts) and magic work normally. Characters hold their breath for `END × 15` seconds, then begin suffocation (1 HP/round, END check difficulty 10 + rounds without air). Fire-phase spells and effects are nullified; water-phase spells are amplified (×1.5).
 
 - **TTRPG:** GM tracks breath and movement penalties. Swim skill checks for complex maneuvers. Suffocation begins after breath-hold duration expires.
 - **Video game:** Underwater sections use a breath meter UI. Movement speed debuff applied automatically. Weapon damage type check on hit.
