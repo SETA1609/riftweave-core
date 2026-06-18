@@ -1,5 +1,7 @@
 # Plan: Implement Full Combat Resolution System
 
+**Branch Status (ft/combat):** Core combat resolution system complete. See `docs/modules/combat.md` for the full specification. Validation passes. New combat perks added to data. This plan document is historical — the combat system has been implemented.
+
 **Priority:** High — blocks both TTRPG and game engine delivery.
 **Labels:** core-mechanics, combat, ttrpg, engine
 

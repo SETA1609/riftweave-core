@@ -1,5 +1,7 @@
 # Combat Resolution
 
+**Branch Status (ft/combat):** Core combat resolution system complete (action economy, defense trees, conditions, DR armor with slots/layers, criticals, encumbrance, worked examples). Validation passes. New combat perks added. Legacy armor references cleaned from weapons.md. Deferred (intentionally stubbed): mounted combat, underwater combat, vehicle combat, mass combat.
+
 **Status:** Core (implemented as data + schema) · runtime resolution lives in the engine or GM adjudication.
 
 ## How to Use This Module
