@@ -25,7 +25,7 @@ the racial `abilityModifiers` — see [`progression.md`](./progression.md)
 | --- | --- |
 | `abilityModifiers` | Integer deltas to the eight attributes, e.g. `{ "end": 2, "str": 1, "agi": -1 }`. |
 | `phase` | The race's single **element** (Wuxing five-phase). Drives elemental affinity — see §4. |
-| `speed` | Walking speed (feet per round). |
+| `speed` | Walking speed in abstract units (e.g. 6 for a human). |
 | `size` | `tiny` · `small` · `medium` · `large`. |
 | `traits` | Array of `{ id, label }` references into the global traits registry (`data/traits/core.json`). |
 | `lineage` | How this race relates to others — see §2. **The defining structural field.** |

@@ -79,7 +79,7 @@ rating is `5 + associatedAbility × 2`), and the **resources/derived stats** it 
 
 ### Strength (STR)
 - **Governs:** melee damage, carrying capacity, Strength-gated equipment.
-- **Seeds skills:** `blades`, `blunt`, `piercing`, `athletics`.
+- **Seeds skills:** `blades`, `blunt`, `heavy_armor`, `athletics`.
 - **Feeds:** Carry weight `25 + STR × 10`.
 
 ### Perception (PER)
@@ -89,7 +89,7 @@ rating is `5 + associatedAbility × 2`), and the **resources/derived stats** it 
 
 ### Endurance (END)
 - **Governs:** hit points, fatigue, resistance to poison and disease.
-- **Seeds skills:** `block`.
+- **Seeds skills:** `block`, `medium_armor`.
 - **Feeds:** **Hit points** `15 + END × 8 + level × 4`; **Stamina** pool
   `15 + END × 5 + level × 2` (action-combat mode). END is the single biggest lever on
   survivability.
@@ -115,7 +115,7 @@ rating is `5 + associatedAbility × 2`), and the **resources/derived stats** it 
 
 ### Agility (AGI)
 - **Governs:** action economy, stealth, and dexterous skills.
-- **Seeds skills:** `unarmed`, `stealth`, `lockpick`, `sleight_of_hand`.
+- **Seeds skills:** `piercing`, `unarmed`, `light_armor`, `unarmored`, `evasion`, `stealth`, `lockpick`, `sleight_of_hand`.
 - **Feeds:** **Action Points** `2 + floor(AGI / 3)` per turn (turn-based mode);
   movement/attack speed in action combat.
 
@@ -177,11 +177,11 @@ to sustain longer fights and weather enemy spells. See [`magic.md`](./magic.md).
 These are computed from attributes, race, equipment, perks, and effects. They are the "surface" numbers an engine or character sheet uses in play. Many can be further modified by the shared effect system (see `effects/core.json` and `magic.md`).
 
 ### Movement Speed
-Racial base speed (in feet per round for exploration) is the foundation. Combat movement depends on mode.
+Racial base speed in abstract units is the foundation. Combat movement depends on mode.
 
-- **Base**: Race `speed` (e.g. human 30, dwarf ~25).
-- **Exploration**: Base speed. Modifiers from AGI (+1 ft per 2 AGI above 4?), encumbrance (see Carry weight), heavy armor (penalties via equipment properties), effects/perks (e.g. Woodland Stride ignores plant difficult terrain).
-- **Turn-based combat movement**: Units per turn = floor(base speed / 5) + floor(AGI / 3) – encumbrance penalties. Typical human: 6 units.
+- **Base**: Race `speed` in units (e.g. human 6, dwarf ~5).
+- **Exploration**: Base speed in units. Modifiers from AGI (+1 unit per 2 AGI above 4?), encumbrance (see Carry weight), heavy armor (penalties via equipment properties), effects/perks (e.g. Woodland Stride ignores plant difficult terrain).
+- **Turn-based combat movement**: Units per turn = base speed (units) + floor(AGI / 3) – encumbrance penalties. Typical human: 6 units.
 - **Action-combat movement**: Speed rating (derived from AGI and base speed) that affects positioning, dodge chance, and how quickly you close distance or escape. High speed can grant "free" movement or reduce enemy attack opportunities.
 - **Modifiers**: AGI primary; STR/END for carrying load; racial traits; effects (e.g. feather for carry, haste-like effects).
 

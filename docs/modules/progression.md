@@ -432,13 +432,16 @@ See `attributes.md` § Secondary & Combat Statistics for full details and ration
 
 **Combat & defense** are roll-under: an attacker rolls under their weapon skill to
 hit; armor provides a damage-reduction **rating** (and Block can negate a share of a
-blow). A full defense model (dodge vs. block vs. armor) is a follow-up. Many secondary stats are delivered through the shared **effect system**.
+blow). See [`combat.md`](./combat.md) for the full defense model (evasion → block → armor DR),
+[`armor.md`](./armor.md) for the slot/layer DR system, and
+[`conditions.md`](./conditions.md) for condition effects. Many secondary stats are
+delivered through the shared **effect system**.
 
 ## Open items / follow-ups
 
-- **Combat mode** — turn-based vs. action-combat is undecided; it selects the third
-  resource (Action Points from AGI vs. a Stamina pool from END) and the initiative
-  detail. The formulas above are the reference for each.
+- **Combat mode** — fully specified in [`combat.md`](./combat.md) with dual-resolution
+  (TTRPG turn-based and video game action-combat). Turn-based uses Action Points from AGI;
+  action-combat uses a Stamina pool from END. Initiative varies by mode.
 - **Cultivation-style breakthroughs** — see the new `docs/modules/advancement.md`.
   Base level-up (skill points, resource scaling, perks) is described here. The
   optional item-boosted "breakthrough" system (monster cores + refined elixirs,
@@ -450,7 +453,7 @@ blow). A full defense model (dodge vs. block vs. armor) is a follow-up. Many sec
   - Length category (`length`: short / normal / reach) + explicit `attackReach` (1 or 2 units of length). short and normal weapons are typically one-handed; reach weapons are two-handed.
   Base damage uses classic 3.5-style dice. Material-based variations (how each material turns the same base weapon into a meaningfully different version, with attack bonuses in the 0 to +10 range — none of the current materials reach the full +10) are explained in `docs/modules/weapons.md`.
   `category` (simple/martial) and free-form `properties` (finesse, versatile, heavy, two_handed, light, thrown, ...) are retained.
-  Armor is still closer to legacy shape.
+  Armor has been replaced with the DR + slot + layer model — see [`armor.md`](./armor.md) and [`combat.md`](./combat.md). No legacy AC fields remain.
   (Consumables already use the shared effect pool.)
 - **Effect magnitudes for brewing** — the Alchemy quality formula
   (`f(skill, ingredient_qualities, station_tier)`) that turns ingredient effect ids
