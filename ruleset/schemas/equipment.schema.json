@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Equipment",
-  "description": "Weapons, armor, and adventuring gear",
+  "description": "Weapons, armor, and adventuring gear. Shields reuse the armor sub-object for DR stats but are distinguished by type and slot=offhand; they provide no passive DR and only apply during active block/parry.",
   "type": "object",
   "properties": {
     "$schema": { "type": "string" },
@@ -51,8 +51,7 @@
               "description": "The skill used to make attack rolls with this weapon. For melee this is normally derived from damage.type (slashing → blades, bludgeoning → blunt, piercing → piercing). Ranged weapons use one of the split archery skills (bows, crossbows, guns, or throwing_weapons)."
             },
             "attackReach": {
-              "type": "integer",
-              "minimum": 1,
+              "type": "integer", "minimum": 1,
               "description": "How many units of length this weapon can attack in melee. Most weapons (short/normal) have 1; reach weapons have 2. This is determined by the length category but stored explicitly for clarity."
             },
             "damage": {
@@ -73,10 +72,10 @@
         },
         "armor": {
           "type": "object",
-          "description": "An armor piece that covers a specific slot and layer. Each piece provides base damage reduction (drBase) modified by the crafting material's modifiers.defense. Shields use slot 'offhand' and layer null.",
+          "description": "An armor piece (or shield) that covers a specific slot and layer. Each piece provides base damage reduction (drBase) modified by the crafting material's modifiers.defense. Shields use slot 'offhand' and layer null (they do not layer on body and provide DR only during active block).",
           "properties": {
             "slot": { "type": "string", "enum": ["head", "torso", "back", "hands", "feet", "offhand"], "description": "Body slot this piece occupies. 'offhand' is for shields." },
-            "layer": { "type": "string", "enum": ["skin", "middle", "upper", "on_top"], "description": "Layering position. null for shields (no layering)." },
+            "layer": { "type": ["string", "null"], "enum": ["skin", "middle", "upper", "on_top", null], "description": "Layering position. null for shields (offhand, no body layering) and some back items. Required for torso/head/hands/feet armor." },
             "category": {
               "type": "string",
               "enum": ["light", "medium", "heavy"],
@@ -94,7 +93,7 @@
               "minItems": 1
             }
           },
-          "required": ["slot", "layer", "drBase"],
+          "required": ["slot", "drBase"],
           "additionalProperties": false
         },
         "consumable": {
