@@ -11,13 +11,15 @@ Riftweave is designed to be extended through optional **modules**. Modules allow
 
 ## Current State
 
-Today the ruleset is monolithic:
+The module system foundation is **implemented** as of the `ft/modules-foundation` branch:
 
-- All data lives under `ruleset/data/` in "core" collections.
-- There is a single set of schemas under `ruleset/schemas/`.
-- The validation system treats everything as one ruleset.
+- A formal module directory structure exists under `ruleset/modules/`.
+- Each module is self-describing via `manifest.json` (validated by `module.manifest.schema.json`).
+- The Python module loader (`ruleset/scripts/module_loader.py`) handles discovery, validation, data loading, schema loading, and conflict detection.
+- An `example-module` demonstrates the pattern.
+- 26 unit tests cover manifest validation, discovery, loading, merging, and edge cases.
 
-There is no module system, no dependency declaration, and no composition model yet.
+The validator (`validate.py`) validates core data only — module data is merged at load time by consuming engines or test tools. See `docs/modules/module-system.md` for the full specification.
 
 ## Philosophy (Data-Oriented)
 
@@ -29,30 +31,29 @@ Modules should follow the same data-oriented principles as the core:
 - **Source traceability** — use the `source` field so tools can attribute content to specific modules/books.
 - **Composable** — a module should be possible to include or exclude without breaking core validation (future goal).
 
-## Planned / Recommended Structure (Future)
+## Module Structure
 
-A possible future layout (not yet implemented):
+See `docs/modules/module-system.md` for the full specification.
+
+Current layout:
 
 ```
 ruleset/
   data/                 # core (always loaded)
   schemas/
+    module.manifest.schema.json
   modules/
-    crafting/
-      schemas/          # optional additional schemas or extensions
+    example-module/
+      manifest.json
       data/
-        recipes.json
-        ...
-    alchemy/
-      data/
-        ...
-    magic_crafting/
-      ...
+  scripts/
+    module_loader.py    # Python module loader
+    test_module_system.py
 ```
 
 Modules may:
 - Add entirely new top-level collections (e.g. `recipes`).
-- Contribute new entries to existing collections (e.g. new `features`, new `equipment` items of custom types).
+- Contribute new entries to existing collections (e.g. new `features`, new `equipment` items).
 - Define new effect types or prerequisite kinds (documented in the module's schema/docs).
 
 ## Using This Directory
@@ -78,12 +79,16 @@ Create one document per module (or per major subsystem). Use it to:
 
 Start a new document in this directory when you begin designing a module (e.g. `crafting.md`).
 
-## Next Steps (Non-Exhaustive)
+## Next Steps (After Foundation Merge)
 
-- [ ] Decide on module metadata (id, version, dependencies, authors).
-- [ ] Design how modules register new `equipment.type` values or `feature.type` values.
+- [x] Decide on module metadata (id, version, dependencies, authors).
+- [x] Design module manifest format and JSON Schema.
+- [x] Implement Python module loader with discovery, validation, and merging.
+- [x] Basic conflict detection (duplicate IDs across modules/core).
+- [ ] Register new `equipment.type` values or `feature.type` values from module schemas.
 - [ ] Define a stable effect type vocabulary that modules can extend.
-- [ ] Update the validator (or create a module-aware validator) to handle multiple schema/data roots.
+- [ ] Module-aware validator that validates core + selected modules together.
 - [ ] Add optional module loading to the README and CI examples.
+- [ ] Dependency resolution (module A requires module B).
 
 Contributions to module design are welcome via documentation and proposals in this directory even before any code or data changes.
