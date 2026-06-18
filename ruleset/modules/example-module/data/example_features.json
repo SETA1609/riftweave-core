@@ -1,0 +1,18 @@
+{
+  "$schema": "../../../schemas/feature.schema.json",
+  "features": [
+    {
+      "id": 1001,
+      "key": "module_demo_perk",
+      "label": "Module Demo Perk",
+      "description": "A perk added by the example module to demonstrate how modules extend core collections. Provides a small damage bonus.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": { "abilities": { "str": 5 } },
+      "ranks": 1,
+      "effects": [
+        { "type": "bonus", "description": "+5% melee weapon damage (module perk)", "target": "melee_damage", "value": 0.05 }
+      ]
+    }
+  ]
+}

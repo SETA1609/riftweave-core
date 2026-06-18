@@ -1,0 +1,13 @@
+{
+  "$schema": "../../schemas/module.manifest.schema.json",
+  "id": "example_module",
+  "version": "1.0.0",
+  "description": "Demonstration module for the Riftweave module system. Adds example combat perks to showcase how modules extend core collections.",
+  "author": "Riftweave Core Team",
+  "requires": [],
+  "extends": {
+    "collections": ["features"]
+  },
+  "data": ["data/example_features.json"],
+  "schemas": []
+}
