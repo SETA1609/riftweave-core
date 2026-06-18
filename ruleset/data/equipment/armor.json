@@ -70,7 +70,7 @@
       "armor": { "slot": "hands", "layer": "skin", "category": "light", "drBase": 0 }
     },
     {
-      "id": 37, "key": "gauntlets", "label": "Armored metal gloves protecting the hands in combat.", "type": "armor", "cost": { "quantity": 40, "unit": "gp" }, "weight": 4,
+      "id": 37, "key": "gauntlets", "label": "Gauntlets", "description": "Armored metal gloves protecting the hands in combat.", "type": "armor", "cost": { "quantity": 40, "unit": "gp" }, "weight": 4,
       "armor": { "slot": "hands", "layer": "upper", "category": "heavy", "drBase": 1, "evasionPenalty": -15 }
     },
     {
