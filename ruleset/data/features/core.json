@@ -247,6 +247,58 @@
         { "type": "bonus", "description": "Resistance to hostile magic", "target": 19, "parameter": "magic", "value": 0.2 },
         { "type": "bonus", "description": "Chance to absorb a portion of incoming spell damage as mana", "target": 21, "value": 0.15 }
       ]
+    },
+    {
+      "id": 20,
+      "key": "heavy_armor_expert",
+      "label": "Heavy Armor Expert",
+      "description": "You have trained extensively in heavy plate. The stamina and AP surcharges for demanding actions are halved (×1.5 instead of ×2.0 for dodge, etc.).",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": { "abilities": { "str": 8 }, "skills": [ { "id": 43, "label": "Heavy Armor", "min": 60 } ] },
+      "ranks": 1,
+      "effects": [
+        { "type": "bonus", "description": "Halve heavy armor action cost surcharges", "target": "heavy_armor_surcharge", "value": 0.5 }
+      ]
+    },
+    {
+      "id": 21,
+      "key": "light_foot",
+      "label": "Light Foot",
+      "description": "You move with grace even in medium armor. All medium armor stamina and AP surcharges on movement and dodging are eliminated.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": { "abilities": { "agi": 7 }, "skills": [ { "id": 41, "label": "Light Armor", "min": 50 } ] },
+      "ranks": 1,
+      "effects": [
+        { "type": "bonus", "description": "Ignore medium armor action cost surcharges", "target": "medium_armor_surcharge", "value": 1.0 }
+      ]
+    },
+    {
+      "id": 22,
+      "key": "brutal_charge",
+      "label": "Brutal Charge",
+      "description": "You barrel through enemies in heavy armor. Power attacks and charges cost stamina equal to a light attack — the heavy surcharge is negated.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": { "abilities": { "str": 9 }, "perks": [3] },
+      "ranks": 1,
+      "effects": [
+        { "type": "bonus", "description": "Power attacks in heavy armor cost light attack stamina (no heavy surcharge)", "target": "brutal_charge_surcharge", "value": 1 }
+      ]
+    },
+    {
+      "id": 23,
+      "key": "acrobat",
+      "label": "Acrobat",
+      "description": "You are exceptionally nimble and coordinated. Dodge rolls cost 25% less stamina, and you recover from knockdowns faster.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": { "abilities": { "agi": 7 }, "skills": [ { "id": 45, "label": "Evasion", "min": 40 } ] },
+      "ranks": 1,
+      "effects": [
+        { "type": "bonus", "description": "-25% dodge roll stamina cost", "target": "dodge_stamina_cost", "value": -0.25 }
+      ]
     }
   ]
 }
