@@ -188,7 +188,12 @@ def build_identity_map(modules):
 
 
 def merge_data(core_data, modules):
-    """Merge module data into core data in-place.
+    """Merge module data into core data.
+
+    Returns a *new* dictionary. Does not mutate the input core_data.
+    Conflicts are detected but conflicting entries are not included
+    (first source wins).
+
     core_data is a dict in the same shape as loaded core JSON files:
       { "features": [...], "equipment": [...], ... }
 
@@ -201,27 +206,30 @@ def merge_data(core_data, modules):
     """
     from collections import defaultdict
 
+    # Shallow-copy core so we never mutate the original
+    merged = {k: list(v) if isinstance(v, list) else v for k, v in core_data.items()}
+
     # Track which source owns each entry ID in each collection
     # sources[coll_name][entry_id] = module_id or "core"
     sources = defaultdict(dict)
     conflicts = []
 
-    # Register core entries
-    for coll_name, entries in core_data.items():
-        if coll_name.startswith("$") or not isinstance(entries, list):
+    # Register core entries from the copy
+    for coll_name, entries in merged.items():
+        if not isinstance(entries, list):
             continue
         for entry in entries:
             if isinstance(entry, dict) and "id" in entry:
                 sources[coll_name][entry["id"]] = "core"
 
-    # Merge module entries
+    # Merge module entries into the copy
     for mod in modules:
         for coll_name, entries in mod.data.items():
-            if coll_name not in core_data:
-                core_data[coll_name] = []
+            if coll_name not in merged:
+                merged[coll_name] = []
             for entry in entries:
                 if not isinstance(entry, dict) or "id" not in entry:
-                    core_data[coll_name].append(entry)
+                    merged[coll_name].append(entry)
                     continue
                 eid = entry["id"]
                 existing = sources[coll_name].get(eid)
@@ -229,6 +237,6 @@ def merge_data(core_data, modules):
                     conflicts.append((coll_name, eid, existing, mod.id))
                 else:
                     sources[coll_name][eid] = mod.id
-                    core_data[coll_name].append(entry)
+                    merged[coll_name].append(entry)
 
-    return core_data, conflicts
+    return merged, conflicts

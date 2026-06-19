@@ -214,6 +214,62 @@ def check_references(data, coll_name, id_index):
     return errors
 
 
+def _validate_single_data_file(fp, store, id_index, rel_base):
+    """Validate one data file against its $schema and check cross-references.
+
+    Returns (passed, errors, rel_path) where:
+      passed  — True on success, False on failure, None if skipped (no $schema)
+      errors  — list of error message strings
+      rel_path — file path relative to rel_base for display
+    """
+    rel = fp.relative_to(rel_base)
+
+    try:
+        data = json.loads(fp.read_text())
+    except json.JSONDecodeError as e:
+        return False, [f"JSON {e}"], rel
+
+    schema_ref = data.get("$schema")
+    if not schema_ref:
+        return None, [], rel
+
+    schema_path = (fp.parent / schema_ref).resolve()
+    schema_uri = schema_path.as_uri()
+
+    if schema_uri not in store:
+        return False, [f"SCHEMA '{schema_path.name}' not in store"], rel
+
+    schema = store[schema_uri]
+    resolver = RefResolver(
+        base_uri=schema_uri,
+        referrer=schema,
+        store=store,
+    )
+
+    errors = []
+    try:
+        validate(data, schema, resolver=resolver)
+    except ValidationError as e:
+        path = (
+            "/" + "/".join(str(p) for p in e.absolute_path) if e.absolute_path else "/"
+        )
+        errors.append(f"SCHEMA {path} {e.message}")
+
+    coll_name = None
+    for k, v in data.items():
+        if not k.startswith("$") and isinstance(v, list):
+            coll_name = k
+            break
+
+    if coll_name:
+        ref_errors = check_references(data, coll_name, id_index)
+        errors.extend(f"REF: {e}" for e in ref_errors)
+
+    if errors:
+        return False, errors, rel
+    return True, [], rel
+
+
 def validate_modules(store, id_index):
     """Discover and validate modules.
     Returns (module_passed, module_failed, module_total, module_conflicts).
@@ -268,70 +324,17 @@ def validate_modules(store, id_index):
                 failed += 1
                 continue
 
-            try:
-                data = json.loads(fp.read_text())
-            except json.JSONDecodeError as e:
-                rel = fp.relative_to(ROOT.parent)
-                print(f"  \u2717  {rel}")
-                print(f"       JSON {e}")
-                failed += 1
-                continue
-
-            schema_ref = data.get("$schema")
-            if not schema_ref:
-                rel = fp.relative_to(ROOT.parent)
+            p, errs, rel = _validate_single_data_file(fp, store, id_index, ROOT.parent)
+            if p is None:
                 print(f"  \u26a0  {rel}: no $schema field, skipping")
-                # Not counting as failed, but not passing either
                 total -= 1
                 continue
-
-            schema_path = (fp.parent / schema_ref).resolve()
-            schema_uri = schema_path.as_uri()
-
-            if schema_uri not in store:
-                rel = fp.relative_to(ROOT.parent)
-                print(f"  \u2717  {rel}")
-                print(f"       SCHEMA '{schema_path.name}' not in store")
-                failed += 1
-                continue
-
-            schema = store[schema_uri]
-
-            resolver = RefResolver(
-                base_uri=schema_uri,
-                referrer=schema,
-                store=store,
-            )
-
-            file_errors = []
-            try:
-                validate(data, schema, resolver=resolver)
-            except ValidationError as e:
-                path = (
-                    "/" + "/".join(str(p) for p in e.absolute_path)
-                    if e.absolute_path
-                    else "/"
-                )
-                file_errors.append(f"SCHEMA {path} {e.message}")
-
-            # Determine collection name for ref checks
-            coll_name = None
-            for k, v in data.items():
-                if not k.startswith("$") and isinstance(v, list):
-                    coll_name = k
-                    break
-
-            if coll_name:
-                ref_errors = check_references(data, coll_name, id_index)
-                file_errors.extend(f"REF: {e}" for e in ref_errors)
-
-            rel = fp.relative_to(ROOT.parent)
-            if not file_errors:
+            if p:
                 print(f"  \u2713  {rel}")
                 passed += 1
             else:
                 print(f"  \u2717  {rel}")
-                for e in file_errors:
+                for e in errs:
                     print(f"       {e}")
                 failed += 1
 
@@ -351,61 +354,22 @@ def main():
     total = passed = failed = 0
 
     for fp in data_files:
-        data = json.loads(fp.read_text())
-        schema_ref = data.get("$schema")
-        if not schema_ref:
-            rel = fp.relative_to(ROOT)
+        p, errs, rel = _validate_single_data_file(fp, store, id_index, ROOT)
+        if p is None:
             print(f"  \u26a0  {rel}: no $schema field, skipping")
             continue
-
-        schema_path = (fp.parent / schema_ref).resolve()
-        schema_uri = schema_path.as_uri()
-
-        if schema_uri not in store:
-            rel = fp.relative_to(ROOT)
-            print(f"  \u2717  {rel}: schema '{schema_path.name}' not in store")
+        if not p and errs and "not in store" in errs[0]:
+            # Schema not found — fail but don't count in total
+            print(f"  \u2717  {rel}: {errs[0]}")
             failed += 1
             continue
-
         total += 1
-        schema = store[schema_uri]
-
-        resolver = RefResolver(
-            base_uri=schema_uri,
-            referrer=schema,
-            store=store,
-        )
-
-        errors = []
-        try:
-            validate(data, schema, resolver=resolver)
-        except ValidationError as e:
-            rel = fp.relative_to(ROOT)
-            path = (
-                "/" + "/".join(str(p) for p in e.absolute_path)
-                if e.absolute_path
-                else "/"
-            )
-            errors.append(f"SCHEMA {path} {e.message}")
-
-        # Determine collection name (top-level array key)
-        coll_name = None
-        for k, v in data.items():
-            if not k.startswith("$") and isinstance(v, list):
-                coll_name = k
-                break
-
-        if coll_name:
-            ref_errors = check_references(data, coll_name, id_index)
-            errors.extend(f"REF: {e}" for e in ref_errors)
-
-        rel = fp.relative_to(ROOT)
-        if not errors:
+        if p:
             print(f"  \u2713  {rel}")
             passed += 1
         else:
             print(f"  \u2717  {rel}")
-            for e in errors:
+            for e in errs:
                 print(f"       {e}")
             failed += 1
 

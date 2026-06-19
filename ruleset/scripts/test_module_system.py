@@ -7,6 +7,7 @@ Run with:
     python ruleset/scripts/test_module_system.py
 """
 
+import copy
 import json
 import os
 import sys
@@ -398,6 +399,22 @@ class TestModuleDataMerging(unittest.TestCase):
         self.assertIn("new_collection", merged)
         self.assertEqual(len(merged["new_collection"]), 1)
 
+    def test_merge_does_not_mutate_core(self):
+        """merge_data must not mutate its core_data argument."""
+        core = {"features": [{"id": 1, "key": "original"}]}
+        core_copy = copy.deepcopy(core)
+        module_data = {
+            "features": [{"id": 100, "key": "module_perk", "label": "Module Perk"}]
+        }
+        manifest = make_manifest({"id": "mod_nm", "data": ["data/nm.json"]})
+        mod_dir = make_temp_module(manifest, data_files={"nm.json": module_data})
+        mod = load_module(mod_dir, manifest, self.schema)
+
+        merged, conflicts = merge_data(core, [mod])
+        self.assertEqual(core, core_copy)
+        self.assertIsNot(merged, core)
+        self.assertEqual(len(merged["features"]), 2)
+
 
 class TestIntegration(unittest.TestCase):
     """Integration tests using the real example module."""
@@ -441,26 +458,16 @@ class TestNegativeCases(unittest.TestCase):
         self.schema = load_manifest_schema()
 
     def test_duplicate_module_ids_in_discovery(self):
-        """Two modules with the same id should both be discovered (loader doesn't dedupe)."""
-        tmpdir = Path(tempfile.mkdtemp())
-        for name in ["my_mod", "my_mod"]:  # same dir name, same id
-            mod_dir = tmpdir / name
-            mod_dir.mkdir(exist_ok=True)
-            # Suffix with a unique name to avoid clobbering
-            actual_dir = tmpdir / f"{name}_{id(tmpdir)}"
-            actual_dir.mkdir(exist_ok=True)
-            manifest = make_manifest({"id": "dup_id"})
-            (actual_dir / "manifest.json").write_text(json.dumps(manifest))
-        # Actually test properly: two dirs with same manifest id
+        """Duplicate module IDs are allowed during discovery (conflict happens at merge)."""
         base = Path(tempfile.mkdtemp())
         for label in ["a", "b"]:
             d = base / f"module_{label}"
             d.mkdir()
             m = make_manifest({"id": "clashing_id"})
             (d / "manifest.json").write_text(json.dumps(m))
+
         results = discover_modules(base)
         ids = [m["id"] for _, m in results]
-        # Both discovered; duplicate ids are valid at discovery stage
         self.assertEqual(len(results), 2)
         self.assertEqual(ids, ["clashing_id", "clashing_id"])
 
