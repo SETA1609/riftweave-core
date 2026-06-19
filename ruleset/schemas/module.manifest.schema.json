@@ -1,0 +1,82 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Module Manifest",
+  "description": "Schema for Riftweave module manifests. Each module is a self-describing directory under ruleset/modules/ containing a manifest.json, optional data files, and optional schemas.",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "description": "Unique snake_case identifier for this module."
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic version string (MAJOR.MINOR.PATCH)."
+    },
+    "description": { "type": "string" },
+    "author": { "type": "string" },
+    "requires": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+      "description": "List of module IDs this module depends on. Future use — not enforced in the initial loader."
+    },
+    "extends": {
+      "type": "object",
+      "description": "Declares what core structures this module extends. Helps loaders and tools understand compatibility.",
+      "properties": {
+        "collections": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Names of top-level collections (e.g. 'features', 'equipment', 'skills') that this module adds entries to."
+        },
+        "types": {
+          "type": "object",
+          "description": "New enum values this module adds to shared vocabularies.",
+          "properties": {
+            "equipment": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "New equipment.type values (e.g. 'ammunition', 'tool') that this module introduces."
+            },
+            "feature": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "New feature.type enum values this module introduces."
+            },
+            "condition": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "New condition keys this module introduces."
+            },
+            "effect": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "New effect categories or tags this module introduces."
+            },
+            "ability": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "New ability attribute codes this module introduces."
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "data": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Relative paths (from the module directory) to JSON data files. Loaded and merged into the appropriate core collections."
+    },
+    "schemas": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Relative paths (from the module directory) to JSON Schema files. These are loaded into the schema store and available for $ref resolution."
+    }
+  },
+  "required": ["id", "version", "description"],
+  "additionalProperties": false
+}

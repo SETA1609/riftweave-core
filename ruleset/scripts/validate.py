@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Validate all JSON data files against their $schema references."""
+"""Validate all JSON data files against their $schema references.
+
+If modules exist under ruleset/modules/, each module's manifest and data files
+are also validated. Module data files share the same schema store as core data.
+"""
 
 import json
 import os
@@ -12,6 +16,7 @@ from jsonschema import validate, ValidationError, RefResolver
 ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "data"
 SCHEMA_DIR = ROOT / "schemas"
+MODULES_DIR = ROOT / "modules"
 
 
 def load_store():
@@ -28,7 +33,27 @@ def collect_data_files():
                 yield Path(dirpath) / f
 
 
-def build_id_index(data_files):
+def collect_module_data_files():
+    """Yield (file_path, module_dir) for each data file declared in a module manifest."""
+    if not MODULES_DIR.exists():
+        return
+    for entry in sorted(MODULES_DIR.iterdir()):
+        if not entry.is_dir() or entry.name.startswith("."):
+            continue
+        manifest_path = entry / "manifest.json"
+        if not manifest_path.exists():
+            continue
+        try:
+            manifest = json.loads(manifest_path.read_text())
+        except (json.JSONDecodeError, OSError):
+            continue
+        for rel in manifest.get("data", []):
+            fp = (entry / rel).resolve()
+            if fp.exists():
+                yield fp, entry
+
+
+def build_id_index(data_files, module_data_files=None):
     """Build a map of collection name -> set of integer ids for referential integrity."""
     id_index = {}
     for fp in data_files:
@@ -45,6 +70,22 @@ def build_id_index(data_files):
                             id_index[k].add(iid)
         except Exception:
             pass  # ignore malformed for index
+    # Also index module data files
+    if module_data_files:
+        for fp, _ in module_data_files:
+            try:
+                data = json.loads(fp.read_text())
+                for k, v in data.items():
+                    if k.startswith("$") or not isinstance(v, list):
+                        continue
+                    id_index.setdefault(k, set())
+                    for item in v:
+                        if isinstance(item, dict):
+                            iid = item.get("id")
+                            if isinstance(iid, int):
+                                id_index[k].add(iid)
+            except Exception:
+                pass
     return id_index
 
 
@@ -173,76 +214,181 @@ def check_references(data, coll_name, id_index):
     return errors
 
 
+def _validate_single_data_file(fp, store, id_index, rel_base):
+    """Validate one data file against its $schema and check cross-references.
+
+    Returns (passed, errors, rel_path) where:
+      passed  — True on success, False on failure, None if skipped (no $schema)
+      errors  — list of error message strings
+      rel_path — file path relative to rel_base for display
+    """
+    rel = fp.relative_to(rel_base)
+
+    try:
+        data = json.loads(fp.read_text())
+    except json.JSONDecodeError as e:
+        return False, [f"JSON {e}"], rel
+
+    schema_ref = data.get("$schema")
+    if not schema_ref:
+        return None, [], rel
+
+    schema_path = (fp.parent / schema_ref).resolve()
+    schema_uri = schema_path.as_uri()
+
+    if schema_uri not in store:
+        return False, [f"SCHEMA '{schema_path.name}' not in store"], rel
+
+    schema = store[schema_uri]
+    resolver = RefResolver(
+        base_uri=schema_uri,
+        referrer=schema,
+        store=store,
+    )
+
+    errors = []
+    try:
+        validate(data, schema, resolver=resolver)
+    except ValidationError as e:
+        path = (
+            "/" + "/".join(str(p) for p in e.absolute_path) if e.absolute_path else "/"
+        )
+        errors.append(f"SCHEMA {path} {e.message}")
+
+    coll_name = None
+    for k, v in data.items():
+        if not k.startswith("$") and isinstance(v, list):
+            coll_name = k
+            break
+
+    if coll_name:
+        ref_errors = check_references(data, coll_name, id_index)
+        errors.extend(f"REF: {e}" for e in ref_errors)
+
+    if errors:
+        return False, errors, rel
+    return True, [], rel
+
+
+def validate_modules(store, id_index):
+    """Discover and validate modules.
+    Returns (module_passed, module_failed, module_total, module_conflicts).
+    """
+    try:
+        from module_loader import (
+            discover_modules,
+            load_module,
+            load_manifest_schema,
+            ModuleLoadError,
+        )
+    except ImportError:
+        return 0, 0, 0, []
+
+    if not MODULES_DIR.exists():
+        return 0, 0, 0, []
+
+    manifest_schema = load_manifest_schema()
+    discovered = discover_modules()
+    if not discovered:
+        return 0, 0, 0, []
+
+    total = passed = failed = 0
+    conflicts = []
+
+    for module_dir, manifest in discovered:
+        try:
+            mod = load_module(module_dir, manifest, manifest_schema, store)
+        except ModuleLoadError as e:
+            rel = module_dir.relative_to(ROOT.parent)
+            print(f"  \u2717  {rel}/manifest.json")
+            print(f"       MANIFEST {e}")
+            failed += 1
+            # Count each data file as failed too
+            for rel_path in manifest.get("data", []):
+                fp = (module_dir / rel_path).resolve()
+                if fp.exists():
+                    rel_fp = fp.relative_to(ROOT.parent)
+                    print(f"  \u2717  {rel_fp}")
+                    print(f"       MANIFEST (parent module failed)")
+                    failed += 1
+            continue
+
+        # Validate each data file in the module
+        for rel_path in manifest.get("data", []):
+            total += 1
+            fp = (module_dir / rel_path).resolve()
+            if not fp.exists():
+                rel = fp.relative_to(ROOT.parent)
+                print(f"  \u2717  {rel}")
+                print(f"       DATA FILE NOT FOUND: {rel_path}")
+                failed += 1
+                continue
+
+            p, errs, rel = _validate_single_data_file(fp, store, id_index, ROOT.parent)
+            if p is None:
+                print(f"  \u26a0  {rel}: no $schema field, skipping")
+                total -= 1
+                continue
+            if p:
+                print(f"  \u2713  {rel}")
+                passed += 1
+            else:
+                print(f"  \u2717  {rel}")
+                for e in errs:
+                    print(f"       {e}")
+                failed += 1
+
+    return passed, failed, total, conflicts
+
+
 def main():
     store = load_store()
     data_files = list(collect_data_files())
 
-    # Build ID index first for referential integrity checks
-    id_index = build_id_index(data_files)
+    # Collect module data files for ID index build
+    module_data_files = list(collect_module_data_files())
+
+    # Build ID index from core + module data for referential integrity
+    id_index = build_id_index(data_files, module_data_files)
 
     total = passed = failed = 0
 
     for fp in data_files:
-        data = json.loads(fp.read_text())
-        schema_ref = data.get("$schema")
-        if not schema_ref:
-            rel = fp.relative_to(ROOT)
+        p, errs, rel = _validate_single_data_file(fp, store, id_index, ROOT)
+        if p is None:
             print(f"  \u26a0  {rel}: no $schema field, skipping")
             continue
-
-        schema_path = (fp.parent / schema_ref).resolve()
-        schema_uri = schema_path.as_uri()
-
-        if schema_uri not in store:
-            rel = fp.relative_to(ROOT)
-            print(f"  \u2717  {rel}: schema '{schema_path.name}' not in store")
+        if not p and errs and "not in store" in errs[0]:
+            # Schema not found — fail but don't count in total
+            print(f"  \u2717  {rel}: {errs[0]}")
             failed += 1
             continue
-
         total += 1
-        schema = store[schema_uri]
-
-        resolver = RefResolver(
-            base_uri=schema_uri,
-            referrer=schema,
-            store=store,
-        )
-
-        errors = []
-        try:
-            validate(data, schema, resolver=resolver)
-        except ValidationError as e:
-            rel = fp.relative_to(ROOT)
-            path = (
-                "/" + "/".join(str(p) for p in e.absolute_path)
-                if e.absolute_path
-                else "/"
-            )
-            errors.append(f"SCHEMA {path} {e.message}")
-
-        # Determine collection name (top-level array key)
-        coll_name = None
-        for k, v in data.items():
-            if not k.startswith("$") and isinstance(v, list):
-                coll_name = k
-                break
-
-        if coll_name:
-            ref_errors = check_references(data, coll_name, id_index)
-            errors.extend(f"REF: {e}" for e in ref_errors)
-
-        rel = fp.relative_to(ROOT)
-        if not errors:
+        if p:
             print(f"  \u2713  {rel}")
             passed += 1
         else:
             print(f"  \u2717  {rel}")
-            for e in errors:
+            for e in errs:
                 print(f"       {e}")
             failed += 1
 
-    print(f"\n{total} file(s): {passed} passed, {failed} failed")
-    return 1 if failed else 0
+    # Module validation pass
+    mod_passed, mod_failed, mod_total, mod_conflicts = validate_modules(store, id_index)
+
+    combined_passed = passed + mod_passed
+    combined_failed = failed + mod_failed
+    combined_total = total + mod_total
+
+    print()
+    if mod_total > 0:
+        print(
+            f"  Modules: {mod_passed} passed, {mod_failed} failed (of {mod_total} module data files)"
+        )
+    print(
+        f"{combined_total} file(s): {combined_passed} passed, {combined_failed} failed"
+    )
+    return 1 if combined_failed else 0
 
 
 if __name__ == "__main__":
