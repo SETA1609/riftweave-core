@@ -67,7 +67,7 @@
       "id": 5,
       "key": "poisoned_obsidian_dagger",
       "label": "Poisoned Obsidian Dagger",
-      "description": "An obsidian dagger enchanted with a burn effect and coated with paralytic + stamina-drain poisons. The blade's Fire phase interacts with the stamina-drain coating's Earth phase through the generating cycle (Fire feeds Earth), amplifying it ×1.5.",
+      "description": "An obsidian dagger with a burn enchantment and temporary coatings (paralytic poison + stamina drain). The Fire phase of the blade interacts with the Earth-phase stamina-drain coating via Wuxing cycles. See crafting_reference.py --verbose for exact interaction output.",
       "base_key": "dagger",
       "material_key": "obsidian",
       "phase": "fire",

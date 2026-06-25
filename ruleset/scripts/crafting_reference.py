@@ -58,6 +58,9 @@ def get_interaction(cycles, item_phase, effect_phase):
     result = find_cycle(cycles, item_phase, effect_phase)
     if result:
         return result
+    # TODO: The current reverse logic (1.0 / mult) works for generating/overcoming/weakening.
+    #       The "insulting" cycle has special conditions (magnitude check).
+    #       Revisit when we add full insulting cycle support.
     result = find_cycle(cycles, effect_phase, item_phase)
     if result:
         cycle_id, interaction, mult, affects = result
