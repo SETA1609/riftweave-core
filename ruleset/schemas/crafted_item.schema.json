@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Crafted Item",
+  "description": "A composed item produced by crafting: a base template + material, optionally engraved with a jewel, enchanted with permanent effects, or coated with a temporary consumable. Phase is inherited from the material unless overwritten by an engraving jewel. Effects coming from or through the item interact via Wuxing cycles in data/wuxing.",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "crafted_items": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/crafted_item" }
+    }
+  },
+  "required": ["crafted_items"],
+  "additionalProperties": false,
+  "definitions": {
+    "crafted_item": {
+      "type": "object",
+      "properties": {
+        "id": { "$ref": "schema.json#/definitions/entryId" },
+        "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "Symbolic snake_case identifier." },
+        "label": { "type": "string", "description": "Human-readable display name." },
+        "description": { "type": "string" },
+        "source": { "$ref": "schema.json#/definitions/sourceRef" },
+        "base_key": { "type": "string", "description": "Key of the base equipment template (from equipment/weapons.json or armor.json)." },
+        "material_key": { "type": "string", "description": "Key of the material (from materials/core.json)." },
+        "phase": {
+          "$ref": "schema.json#/definitions/phase",
+          "description": "Effective element of the crafted item. Defaults to the material's phase. Overwritten by engraving_jewel's phase when present."
+        },
+        "attack_bonus": { "type": "number", "description": "Derived from material.modifiers.attack. Added to the base weapon's damage or attack." },
+        "defense_bonus": { "type": "number", "description": "Derived from material.modifiers.defense. Added to armor DR." },
+        "effect_magnitude_mult": { "type": "number", "minimum": 0, "default": 1.0, "description": "Multiplier to enchantment/coating magnitudes. Base 1.0; material.modifiers.effectMagnitude adds to this." },
+        "engraving_jewel": {
+          "type": "object",
+          "description": "Optional jewel engraved into the item. Overwrites the item's effective phase with the jewel's phase. In v1, this is the entire engraving mechanic — no additional effects.",
+          "properties": {
+            "gem_key": { "type": "string", "description": "Key of the gem in data/gems/core.json." },
+            "phase": { "$ref": "schema.json#/definitions/phase", "description": "Gem's phase, which becomes the item's effective phase." }
+          },
+          "required": ["gem_key", "phase"],
+          "additionalProperties": false
+        },
+        "enchantments": {
+          "type": "array",
+          "description": "Permanent magical effects on this item. Each entry is an appliedEffect from the shared registry. These persist as long as the item exists.",
+          "items": { "$ref": "schema.json#/definitions/appliedEffect" }
+        },
+        "coatings": {
+          "type": "array",
+          "description": "Temporary consumable effects applied to this item (poisons, oils). Each coating has uses_left that decrements on hit. When uses_left reaches 0, the coating is consumed and no longer applies.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "effect": { "$ref": "schema.json#/definitions/entryId", "description": "Effect id from the effect registry." },
+              "magnitude": { "type": "number", "description": "Effect strength." },
+              "duration": { "type": "number", "minimum": 0, "description": "Duration in seconds; 0 = instantaneous." },
+              "uses_left": { "type": "integer", "minimum": 1, "description": "Number of hits or applications remaining before the coating is consumed." }
+            },
+            "required": ["effect", "uses_left"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["id", "key", "label", "description", "base_key", "material_key", "phase"],
+      "additionalProperties": false
+    }
+  }
+}

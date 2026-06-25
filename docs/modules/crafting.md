@@ -1,6 +1,6 @@
 # Crafting Module
 
-**Status:** Planned / Design Phase
+**Status:** First slice implemented in `feat/crafting-blacksmithing` — composition model, phase propagation, recipe stubs.
 
 ## Overview
 
@@ -33,6 +33,39 @@ consume materials and read these modifiers onto the produced item.
 - Can modules introduce new top-level collections, or should everything flow through `features` + `equipment` + effects?
 - How do we handle "downtime" or activity systems that many crafting systems need?
 - Should there be a generic "activity" or "task" abstraction that multiple modules (crafting, research, training) can use?
+
+## Implemented Slice (feat/crafting-blacksmithing)
+
+The following was added in this branch:
+
+| Artifact | Description |
+|----------|-------------|
+| `schemas/crafted_item.schema.json` | Schema for composed items: base + material + optional engraving jewel + optional enchantments + optional coatings |
+| `schemas/recipe.schema.json` | Stub schema for crafting recipes (data only, no resolution implemented) |
+| `data/crafting/crafted_items.json` | 6 example items demonstrating phase inheritance, jewel overwrite, enchantments, and coatings |
+| `data/crafting/basic_recipes.json` | 3 recipe stubs showing the input/output structure for future resolution |
+| `scripts/crafting_reference.py` | Reference resolver demonstrating phase propagation, Wuxing interaction, and permanent vs temporary tracking |
+
+### Composition Model
+
+```
+Base Template  +  Material  +  [Jewel]  +  [Enchantments]  +  [Coatings]
+(longsword)       (steel)      (ruby)       (burn id 57)      (paralytic)
+     │               │            │               │                │
+     ▼               ▼            ▼               ▼                ▼
+     └───────────────┴────────────┴───────────────┴────────────────┘
+                              │
+                              ▼
+                     Crafted Item Instance
+                     ├── phase: "fire" (jewel overwrites material's "metal")
+                     ├── attack_bonus: +5
+                     ├── enchantments: [permanent]
+                     └── coatings: [temporary, 3 uses]
+```
+
+Key rule: **phase defaults to material's phase; engraving jewel overwrites it entirely.** This is the full engraving mechanic for v1.
+
+See `scripts/crafting_reference.py --verbose` for a runnable demonstration.
 
 ## Integration Points
 

@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Recipe",
+  "description": "A crafting recipe stub. Defines the inputs (base template + material + optional extras) and the output (a composed crafted item). This is a DATA STRUCTURE ONLY — no resolution logic is implemented. A future PR will consume these with skill checks, ingredient consumption, and success rates.",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "recipes": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/recipe" }
+    }
+  },
+  "required": ["recipes"],
+  "additionalProperties": false,
+  "definitions": {
+    "recipe": {
+      "type": "object",
+      "properties": {
+        "id": { "$ref": "schema.json#/definitions/entryId" },
+        "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "Symbolic snake_case identifier." },
+        "label": { "type": "string", "description": "Human-readable display name." },
+        "description": { "type": "string" },
+        "source": { "$ref": "schema.json#/definitions/sourceRef" },
+        "skill": { "type": "string", "description": "Governing skill key (e.g. 'blacksmithing', 'crafting') for the check." },
+        "category": {
+          "type": "string",
+          "enum": ["weapon", "armor", "accessory", "consumable"],
+          "description": "What kind of item this recipe produces."
+        },
+        "difficulty": { "type": "integer", "minimum": 1, "maximum": 30, "description": "Target number for the skill check (future use)." },
+        "time": { "type": "integer", "minimum": 1, "description": "Base time in hours (future use)." },
+        "inputs": {
+          "type": "array",
+          "description": "Ingredients required. Each entry references data by key.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": { "type": "string", "enum": ["base_item", "material", "gem", "ingredient", "reagent"], "description": "Kind of input." },
+              "key": { "type": "string", "description": "Data key of the required input." },
+              "quantity": { "type": "integer", "minimum": 1, "default": 1 }
+            },
+            "required": ["type", "key"],
+            "additionalProperties": false
+          }
+        },
+        "output": {
+          "type": "object",
+          "description": "The resulting crafted_item key. In future, this will be the recipe's product with any quality/grade modifications.",
+          "properties": {
+            "crafted_item_key": { "type": "string", "description": "Key of the crafted_item this recipe produces." },
+            "quantity": { "type": "integer", "minimum": 1, "default": 1 }
+          },
+          "required": ["crafted_item_key"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["id", "key", "label", "description", "skill", "category", "difficulty", "inputs", "output"],
+      "additionalProperties": false
+    }
+  }
+}
