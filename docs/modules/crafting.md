@@ -1,6 +1,7 @@
 # Crafting Module
 
-**Status:** First slice implemented in `feat/crafting-blacksmithing` — composition model, phase propagation, recipe stubs.
+**Status Update (feat/crafting-blacksmithing):**  
+Initial slice complete. Material phase inheritance + jewel engraving (phase overwrite) + permanent vs temporary coatings are implemented. See `ruleset/data/crafting/crafted_items.json` for concrete examples and `basic_recipes.json` for future recipe stubs.
 
 ## Overview
 

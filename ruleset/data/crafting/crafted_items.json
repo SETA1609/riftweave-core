@@ -74,7 +74,6 @@
       "attack_bonus": 6,
       "defense_bonus": 0,
       "effect_magnitude_mult": 1.0,
-      "enchantments": [],
       "enchantments": [
         { "effect": 57, "magnitude": 3, "duration": 10 }
       ],
