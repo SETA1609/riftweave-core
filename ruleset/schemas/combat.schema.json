@@ -1,0 +1,144 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Combat Resolution Config",
+  "description": "Tunable combat resolution parameters. Critical hit ranges, margin thresholds, base target numbers, and other configurable values. Engines and GMs may override these per campaign; these are the reference defaults.",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "resolution": {
+      "type": "object",
+      "description": "Top-level wrapper for resolution configuration.",
+      "properties": {
+        "critical": {
+          "type": "object",
+          "description": "Critical hit configuration.",
+          "properties": {
+            "naturalCritRange": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 20,
+              "default": 5,
+              "description": "Natural d100 roll threshold for critical window (01 to N). Default 5 (roll 01-05 = crit window). Luck expands this by +1 per 2 LCK."
+            },
+            "fumbleRange": {
+              "type": "integer",
+              "minimum": 96,
+              "maximum": 100,
+              "default": 100,
+              "description": "Natural d100 roll for fumble. Default 100 only (single value)."
+            },
+            "confirmationBonusPerLck": {
+              "type": "number",
+              "default": 0.5,
+              "description": "Bonus to confirmation roll per point of Luck. Default floor(LCK/2)."
+            },
+            "critDamageMultiplier": {
+              "type": "number",
+              "minimum": 1,
+              "default": 2.0,
+              "description": "Damage multiplier on confirmed critical hits. Default 2.0 (double damage dice)."
+            },
+            "videoGameCritMultiplier": {
+              "type": "number",
+              "default": 1.5,
+              "description": "Video game crit multiplier (applied after DR by default). Default 1.5."
+            }
+          },
+          "additionalProperties": false
+        },
+        "hitQuality": {
+          "type": "object",
+          "description": "Margin-based hit quality thresholds.",
+          "properties": {
+            "solidMarginThreshold": {
+              "type": "integer",
+              "default": 20,
+              "description": "Margin >= this value = 'solid' hit (bonus damage or effect)."
+            },
+            "glancingMarginThreshold": {
+              "type": "integer",
+              "default": 0,
+              "description": "Margin > this value = normal hit. Margin <= 0 = miss."
+            }
+          },
+          "additionalProperties": false
+        },
+        "defense": {
+          "type": "object",
+          "description": "Defense calculation parameters.",
+          "properties": {
+            "baseEvasion": {
+              "type": "number",
+              "default": 10,
+              "description": "Base dodge/evasion chance in percent for video game mode."
+            },
+            "evasionSkillFactor": {
+              "type": "number",
+              "default": 0.15,
+              "description": "Evasion skill contribution to dodge percent."
+            },
+            "agiEvasionFactor": {
+              "type": "number",
+              "default": 2.0,
+              "description": "AGI contribution to dodge percent."
+            },
+            "shieldBlockFactor": {
+              "type": "number",
+              "default": 1.0,
+              "description": "Shield DR multiplier on successful block."
+            }
+          },
+          "additionalProperties": false
+        },
+        "calledShots": {
+          "type": "object",
+          "description": "Called shot penalty table (reference values).",
+          "properties": {
+            "headPenalty": { "type": "integer", "default": -20 },
+            "headDamageMultiplier": { "type": "number", "default": 1.5 },
+            "armsPenalty": { "type": "integer", "default": -15 },
+            "armsDamageMultiplier": { "type": "number", "default": 0.75 },
+            "legsPenalty": { "type": "integer", "default": -15 },
+            "legsDamageMultiplier": { "type": "number", "default": 0.75 },
+            "groinEyesPenalty": { "type": "integer", "default": -30 },
+            "groinEyesDamageMultiplier": { "type": "number", "default": 2.0 },
+            "rangedExtraPenalty": { "type": "integer", "default": -10, "description": "Additional penalty for ranged called shots beyond short range." }
+          },
+          "additionalProperties": false
+        },
+        "actionEconomy": {
+          "type": "object",
+          "description": "Action economy parameters.",
+          "properties": {
+            "apBasePool": { "type": "integer", "default": 2, "description": "Base AP per turn formula: 2 + floor(AGI/3)." },
+            "apMaxPool": { "type": "integer", "default": 10 },
+            "standardAttackAp": { "type": "integer", "default": 3 },
+            "movePerUnitAp": { "type": "integer", "default": 1 },
+            "dodgeAp": { "type": "integer", "default": 3 },
+            "blockAp": { "type": "integer", "default": 2 },
+            "standFromProneAp": { "type": "integer", "default": 2 },
+            "reactionsPerRound": { "type": "integer", "default": 1 }
+          },
+          "additionalProperties": false
+        },
+        "videoGame": {
+          "type": "object",
+          "description": "Video game action-combat mode parameters.",
+          "properties": {
+            "staminaBasePool": { "type": "integer", "default": 15, "description": "Base stamina pool: 15 + END*5 + level*2." },
+            "staminaRegenDelay": { "type": "number", "default": 0.5, "description": "Seconds before stamina regen begins after spending." },
+            "attackRecoveryLight": { "type": "number", "default": 0.3, "description": "Light weapon attack recovery in seconds." },
+            "attackRecoveryHeavy": { "type": "number", "default": 0.8, "description": "Heavy weapon attack recovery in seconds." },
+            "dodgeIFrameFraction": { "type": "number", "default": 0.6, "description": "Fraction of dodge animation with invincibility frames." },
+            "blockWindowSkillFactor": { "type": "number", "default": 0.01, "description": "blockSkill * this = block window in seconds." },
+            "parryWindowSkillFactor": { "type": "number", "default": 0.005, "description": "weaponSkill * this = parry window in seconds." }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": ["critical", "hitQuality", "defense", "calledShots"]
+    }
+  },
+  "required": ["resolution"],
+  "additionalProperties": false
+}
