@@ -97,6 +97,11 @@ class CombatResolver:
         self.defense_cfg = self.resolution["defense"]
 
         self._build_condition_mappings()
+        self.reset_conditions()
+
+    def reset_conditions(self):
+        self.active_conditions = {}
+        self.simulation_time = 0
 
     def get_skill(self, skill_key):
         s = find_by_key(self.skills_data, skill_key)
@@ -136,65 +141,119 @@ class CombatResolver:
             for eid in cond.get("removedBy", []):
                 self.effect_to_dispels.setdefault(eid, []).append((cond["key"], cond))
 
+    def _get_duration(self, effect_id, dur):
+        if dur and dur > 0:
+            return dur
+        eff = self.get_effect(effect_id)
+        if eff:
+            return eff.get("defaultDuration", 0)
+        return 0
+
     def _get_duration_type(self, effect_id, dur):
+        if effect_id in (40, 41, 42):
+            return "permanent"
         if dur and dur > 0:
             return "timed"
-        if effect_id in (57, 58):  # burn, bleed — DoT effects are timed
+        if effect_id in (57, 58):
             return "timed"
-        if effect_id in (40, 41, 42):  # diseases — permanent until cured
-            return "permanent"
         return "timed"
 
-    def apply_condition(self, condition_key, source_effect_id, duration=0):
+    def _list_active_conditions(self):
+        if not self.active_conditions:
+            self.log("  Active conditions: none")
+            return
+        self.log(f"  Active conditions ({len(self.active_conditions)}):")
+        for ck, entry in self.active_conditions.items():
+            dur = entry["remaining_duration"]
+            dtype = entry["duration_type"]
+            if dtype == "permanent":
+                dstr = "permanent"
+            elif dtype == "until_dispelled":
+                dstr = "until_dispelled"
+            else:
+                dstr = f"{dur}s remaining"
+            self.log(
+                f"    [{entry['label']}] ({dstr}, source: {entry['source_label']})"
+            )
+
+    def apply_condition(
+        self, condition_key, source_effect_id, duration=0, source_label="effect"
+    ):
         cond = self.get_condition(condition_key)
         if not cond:
             self.log(f"  Unknown condition: {condition_key}")
             return False
-        dtype = self._get_duration_type(source_effect_id, duration)
+
+        if condition_key in self.active_conditions:
+            self.log(f"  -> Condition [{cond['label']}] already active, refreshing")
+            self.active_conditions[condition_key]["remaining_duration"] = (
+                self._get_duration(source_effect_id, duration)
+            )
+            return True
+
+        dur = self._get_duration(source_effect_id, duration)
+        dtype = self._get_duration_type(source_effect_id, dur)
+        remaining = dur if dtype == "timed" else 0
+
+        entry = {
+            "key": condition_key,
+            "label": cond["label"],
+            "applied_by_effect": source_effect_id,
+            "duration_type": dtype,
+            "remaining_duration": remaining,
+            "applied_at": self.simulation_time,
+            "source_label": source_label,
+        }
+        self.active_conditions[condition_key] = entry
+
         if dtype == "permanent":
-            duration_str = "permanent"
-        elif dtype == "timed":
-            if duration and duration > 0:
-                duration_str = f"{duration}s"
-            else:
-                dur = self.get_effect(source_effect_id)
-                default_dur = dur.get("defaultDuration", 0) if dur else 0
-                duration_str = f"{default_dur}s" if default_dur > 0 else "indefinite"
+            dstr = "permanent"
+        elif dtype == "until_dispelled":
+            dstr = "until_dispelled"
         else:
-            duration_str = "until_dispelled"
-        self.log(f"  -> Condition [{cond['label']}] applied (duration: {duration_str})")
+            dstr = f"{remaining}s"
+        self.log(f"  -> Condition [{cond['label']}] applied (duration: {dstr})")
         return True
 
-    def try_dispel_condition(self, condition_key, dispelling_effect_id):
+    def try_dispel_condition(
+        self, condition_key, dispelling_effect_id, source_label="effect"
+    ):
         cond = self.get_condition(condition_key)
         if not cond:
             return False
+        if condition_key not in self.active_conditions:
+            return False
         removed_by = cond.get("removedBy", [])
         if dispelling_effect_id in removed_by:
-            self.log(
-                f"  -> Condition [{cond['label']}] dispelled"
-                f" by effect {dispelling_effect_id}"
-            )
+            label = self.active_conditions[condition_key]["label"]
+            del self.active_conditions[condition_key]
+            self.log(f"  -> Condition [{label}] dispelled by {source_label}")
             return True
         return False
 
-    def _process_effect_conditions(self, eff, label):
+    def _advance_time(self, seconds):
+        self.simulation_time += seconds
+        expired = []
+        for ck, entry in self.active_conditions.items():
+            if entry["duration_type"] != "timed":
+                continue
+            entry["remaining_duration"] -= seconds
+            if entry["remaining_duration"] <= 0:
+                expired.append(ck)
+        for ck in expired:
+            label = self.active_conditions[ck]["label"]
+            del self.active_conditions[ck]
+            self.log(f"  -> Condition [{label}] expired (duration elapsed)")
+
+    def _process_effect_conditions(self, eff, source_label):
         if not eff:
             return
         eid = eff["id"]
-        for ckey, cond in self.effect_to_conditions.get(eid, []):
-            self.log(f"  -> Condition [{cond['label']}] applied by {label}")
-            default_dur = eff.get("defaultDuration", 0)
-            dtype = self._get_duration_type(eid, default_dur)
-            if dtype == "permanent":
-                dur_str = "permanent"
-            elif default_dur > 0:
-                dur_str = f"{default_dur}s"
-            else:
-                dur_str = "timed"
-            self.log(f"    Duration: {dur_str}")
         for ckey, cond in self.effect_to_dispels.get(eid, []):
-            self.log(f"  -> Condition [{cond['label']}] would be dispelled by {label}")
+            self.try_dispel_condition(ckey, eid, source_label)
+        for ckey, cond in self.effect_to_conditions.get(eid, []):
+            default_dur = eff.get("defaultDuration", 0)
+            self.apply_condition(ckey, eid, default_dur, source_label)
 
     def log(self, msg):
         if self.verbose:
@@ -210,6 +269,7 @@ class CombatResolver:
         defender_evasion: int = 0,
     ):
         """Resolve a single attack using a crafted item as primary input."""
+        self.reset_conditions()
         item = self.get_crafted_item(crafted_item_key)
         base_weapon = self.get_weapon(item["base_key"])
         wspec = base_weapon["weapon"]
@@ -491,32 +551,44 @@ class CombatResolver:
             "attack_bonus_applied": effective_attack_bonus,
             "effects_applied": effects_applied,
             "coatings_consumed": coatings_consumed,
+            "conditions_active": dict(self.active_conditions),
         }
 
     def demo_condition_interactions(self):
-        self.log("")
+        self.reset_conditions()
         print(f"\n{'=' * 60}")
-        print("  Condition Interaction Demo")
+        print("  Condition Interaction Demo (Active Tracking)")
         print(f"{'=' * 60}")
         print("")
-        print("  1. Applying conditions via effect IDs:")
-        self.apply_condition("paralyzed", 43, duration=10)
-        self.apply_condition("burning", 57)
-        self.apply_condition("bleeding", 58)
+        print("  --- Phase 1: Apply multiple conditions ---")
+        self.apply_condition("bleeding", 58, source_label="bleed weapon")
+        self.apply_condition("burning", 57, source_label="fire enchantment")
+        self.apply_condition("slowed", 59, source_label="frost trap")
+        self._list_active_conditions()
         print("")
-        print("  2. Opposite-effect dispels:")
-        self.log("  Scenario: Bleeding + RestoreResource (healing)")
-        self.try_dispel_condition("bleeding", 7)
-        self.log("  Scenario: Burning + DamageFrost (water quenches fire)")
-        self.try_dispel_condition("burning", 2)
-        self.log("  Scenario: Slowed + HasteAttack")
-        self.try_dispel_condition("slowed", 70)
+        print("  --- Phase 2: Opposite-effect dispels ---")
+        self.log("  Healing (restore_resource) dispels bleeding:")
+        self.try_dispel_condition("bleeding", 7, "restore_resource")
+        self.log("  Haste (haste_attack) dispels slowed:")
+        self.try_dispel_condition("slowed", 70, "haste_attack")
+        self._list_active_conditions()
         print("")
-        print("  3. Cure effect dispels anything:")
-        self.log("  Scenario: Paralyzed + Cure")
-        self.try_dispel_condition("paralyzed", 20)
-        self.log("  Scenario: Poisoned + Cure")
-        self.try_dispel_condition("poisoned", 20)
+        print("  --- Phase 3: Cure dispel ---")
+        self.log("  Cure effect dispels burning:")
+        self.try_dispel_condition("burning", 20, "cure")
+        self._list_active_conditions()
+        print("")
+        print("  --- Phase 4: Apply timed condition + advance time ---")
+        self.apply_condition(
+            "paralyzed", 43, duration=8, source_label="paralytic poison"
+        )
+        self._list_active_conditions()
+        self.log("  Advancing time by 6 seconds...")
+        self._advance_time(6)
+        self._list_active_conditions()
+        self.log("  Advancing time by 3 seconds...")
+        self._advance_time(3)
+        self._list_active_conditions()
         print(f"{'=' * 60}")
 
     def simulate_example(self, label, **kwargs):
@@ -540,6 +612,19 @@ class CombatResolver:
                         f"  Effect [{e['source']}]: {e['effect_key']}"
                         f" ({mag_str}, dur: {e['duration']}s)"
                     )
+            active = result.get("conditions_active", {})
+            if active:
+                print(f"  Conditions active after hit:")
+                for ck, entry in active.items():
+                    dur = entry["remaining_duration"]
+                    dtype = entry["duration_type"]
+                    if dtype == "permanent":
+                        dstr = "permanent"
+                    elif dtype == "until_dispelled":
+                        dstr = "until dispelled"
+                    else:
+                        dstr = f"{dur}s"
+                    print(f"    [{entry['label']}] ({dstr})")
         print(f"{'=' * 60}")
 
 
