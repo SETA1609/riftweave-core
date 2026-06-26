@@ -40,6 +40,32 @@ landing. By tying each condition to specific effect IDs, the data stays consiste
 
 ---
 
+## 1b. Duration Types
+
+Conditions follow one of three duration behaviors:
+
+| Type | How It Works | Example |
+|------|-------------|---------|
+| `timed` | Has a finite duration in seconds. Expires automatically when the timer elapses. | Poison, burn, bleed (most combat conditions) |
+| `permanent` | Stays indefinitely until explicitly removed by a `removedBy` effect. | Diseases (blight, fever, plague), curses |
+| `until_dispelled` | Permanent in practice, but removable by a specific opposite effect rather than a generic cure. | Haste dispels Slow, frost dispels Burning |
+
+### Opposite-Effect Dispel Pairs
+
+Certain conditions can be removed by effects that are mechanically opposite, even if those effects are not classified as `cure`. This is data-driven — each condition's `removedBy` array in `conditions/core.json` lists the effect IDs that can remove it.
+
+| Condition | Applying Effect | Dispelling Effect | Rationale |
+|-----------|---------------|-------------------|-----------|
+| Burning (id 16) | Burn (id 57) | Damage Frost (id 2) | Water (frost) overcomes Fire (burn) |
+| Bleeding (id 17) | Bleed (id 58) | Restore Resource (id 7) | Healing stops bleeding |
+| Slowed (id 18) | Slow (id 59) | Haste Attack (id 70) | Haste dispels Slow |
+| Poisoned (id 10) | Poison (id 46) | Restore Resource (id 7) | Healing flushes poison |
+| Any | Any | Cure (id 20) | Generic cure, the primary remover |
+
+This allows conditions to interact naturally — applying a frost enchantment doesn't just deal damage, it also extinguishes any existing burn on the target.
+
+---
+
 ## 2. Resolution Modes
 
 ### TTRPG (turn-based)
@@ -110,18 +136,45 @@ Data in `conditions/core.json` (24 entries). Each entry:
 1. An effect lands on a target (attack roll, spell check, poison injection, etc.).
 2. The engine or GM checks the target's **resistance** or **immunity** to the condition
    (via `resist` effect id 19 with appropriate parameter, racial traits, or active buffs).
-3. If not resisted/immune, the condition is applied (or its stack counter incremented).
-4. The condition's duration equals the applying effect's duration. Instantaneous effects
-   apply the condition for a default duration (defined per condition or per effect).
+3. If not resisted/immune, the condition is added to the target's `active_conditions` tracker
+   (or its stack counter incremented for stacking conditions).
+4. Duration is derived from the applying effect's `defaultDuration` field. If the effect has
+   no duration, the condition uses `defaultDuration` from the applying effect entry.
+
+### Active Tracking (Reference Implementation)
+
+In `combat_reference.py`, conditions are tracked in a `self.active_conditions` dict keyed by
+condition key. Each entry stores:
+
+```python
+{
+    "key": "bleeding",
+    "label": "Bleeding",
+    "applied_by_effect": 58,
+    "duration_type": "timed",        # timed | permanent | until_dispelled
+    "remaining_duration": 15,        # seconds remaining (0 = indefinite)
+    "applied_at": 0,                 # simulation_time when applied
+    "source_label": "bleed weapon",  # human-readable source context
+}
+```
+
+The `apply_condition()` method adds conditions; `try_dispel_condition()` removes them.
+`reset_conditions()` clears the tracker between combat simulations.
 
 ### Removal
 - **`cure` effect (id 20):** The primary remover. The spell or item declares which
   condition it cures via `parameter` (e.g. `"poisoned"`, `"paralyzed"`, `"all"`).
+  In the reference resolver, any effect in a condition's `removedBy` array can dispel
+  it — `cure` (id 20) is in every condition's `removedBy`.
+- **Opposite-effect dispel:** Certain conditions can be removed by their mechanical
+  opposite (frost dispels burn, healing dispels bleeding, haste dispels slow).
+  This is data-driven: the dispelling effect ID is listed in the condition's `removedBy`.
 - **Rest:** A full rest removes exhaustion (1 level) and most temporary conditions.
 - **Special actions:** Standing removes prone. Breaking line of sight can remove
   frightened. Dealing damage to the charmer breaks charm.
-- **Duration expiry:** When the applying effect's duration runs out, the condition
-  is removed automatically (video game) or should be removed by the GM (TTRPG).
+- **Duration expiry (timed conditions):** When the applying effect's duration runs out,
+  the condition is removed automatically. In the reference resolver, `_advance_time(seconds)`
+  decrements `remaining_duration` on all timed conditions and removes expired entries.
 
 ### Immunity & Resistance
 - Racial traits can grant immunity to specific conditions via the `resist` effect
@@ -173,9 +226,85 @@ To add a new condition:
 2. Assign an `appliedBy` effect — either an existing one from `effects/core.json`
    or a new one (if new, add the effect entry first).
 3. Assign a `removedBy` — typically `cure` (id 20) with the appropriate `parameter`.
+   Optionally add opposite-effect dispels (e.g., healing for bleeding, frost for burn).
 4. Write the `effects.ttrpg` and `effects.video_game` strings.
 5. Set `stacking` and `maxStacks` as appropriate.
 6. Run `validate.py`.
+
+---
+
+## 8. Reference Implementation
+
+The reference condition system lives in `combat_reference.py` and is exercised
+via `demo_condition_interactions()` when run with `--verbose`:
+
+```bash
+python ruleset/scripts/combat_reference.py --verbose
+```
+
+### Lifecycle
+
+```
+effect lands on target
+  → _process_effect_conditions(eff, source_label)
+    → try_dispel_condition(key, eid, label)    # check removedBy
+    → apply_condition(key, eid, dur, label)     # check appliedBy
+      → adds to active_conditions dict
+        → later: _advance_time(n) removes expired timed conditions
+```
+
+### Key Methods in `CombatResolver`
+
+| Method | Function |
+|--------|----------|
+| `apply_condition(key, effect_id, duration, source)` | Adds to `active_conditions`. Refreshes if already active. Derives duration type and remaining time from the effect. |
+| `try_dispel_condition(key, effect_id, source)` | Checks `removedBy` on the condition. If the effect ID matches and the condition is active, removes it. |
+| `_advance_time(seconds)` | Decrements `remaining_duration` on all timed conditions. Removes expired entries. |
+| `_process_effect_conditions(eff, label)` | Dispatch: calls dispel first, then apply for any matching condition mappings. |
+| `_list_active_conditions()` | Pretty-prints all active conditions with durations and sources. |
+| `reset_conditions()` | Clears the tracker and simulation clock. Called at the start of each `resolve_attack`. |
+
+### Integration Points
+
+Condition checks fire automatically after every effect in these processing loops:
+
+- **Base weapon on-hit effects** (`source: "base weapon on-hit"`)
+- **Crafted item on-hit effects** (`source: "crafted item on-hit"`)
+- **Enchantments** (`source: "enchantment"`)
+- **Coatings** (`source: "coating"`)
+
+For each effect, the resolver first checks if it dispels any existing condition
+(via `removedBy`), then checks if it applies any new condition (via `appliedBy`).
+This means applying frost damage on a burning target both deals damage and
+extinguishes the fire — in a single hit.
+
+### Example Output
+
+```
+Enchantment: Burn (base mag 3)
+  -> Condition [Burning] applied (duration: 10s)
+
+Coating: Paralytic Poison (mag 4, uses 3)
+  -> Condition [Paralyzed] applied (duration: timed)
+
+  Conditions active after hit:
+    [Burning] (10s)
+    [Paralyzed] (0s)
+```
+
+```
+  --- Phase 2: Opposite-effect dispels ---
+  Healing (restore_resource) dispels bleeding:
+  -> Condition [Bleeding] dispelled by restore_resource
+  Haste (haste_attack) dispels slowed:
+  -> Condition [Slowed] dispelled by haste_attack
+```
+
+```
+  Advancing time by 6 seconds...
+  Advancing time by 3 seconds...
+  -> Condition [Paralyzed] expired (duration elapsed)
+```
 
 ---
 
@@ -188,3 +317,12 @@ To add a new condition:
 - **Prone as special case:** Prone is the only condition not removed by a `cure`
   effect — it requires the "stand" action. This is intentional but worth
   documenting as an exception in any engine implementation.
+- **ConditionManager class:** The active tracking logic currently lives inside
+  `CombatResolver` in `combat_reference.py`. A future refactor should extract
+  it into a dedicated `ConditionManager` class.
+- **Full character state machine:** Conditions currently have no mechanical
+  impact on combat resolution (e.g., paralyzed targets still act normally).
+  Integrating condition effects into damage/action resolution is the next step.
+- **Effect `parameter` filtering:** When an effect like `restore_resource` (id 7)
+  or `cure` (id 20) has a `parameter`, the resolver should filter dispel by that
+  parameter (e.g., cure with `parameter: "bleeding"` should only dispel bleeding).
