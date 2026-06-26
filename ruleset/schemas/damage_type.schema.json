@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Damage Type",
+  "description": "A damage type in the combat system. Categories: physical (slashing/piercing/bludgeoning), elemental (fire/frost/shock/acid/poison), energy (necrotic/radiant/psychic/force/thunder). Each damage type may carry tags for resistance, phase interaction, and special properties.",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "damage_types": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/damage_type" }
+    }
+  },
+  "required": ["damage_types"],
+  "additionalProperties": false,
+  "definitions": {
+    "damage_type": {
+      "type": "object",
+      "properties": {
+        "id": { "$ref": "schema.json#/definitions/entryId" },
+        "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "Symbolic snake_case key." },
+        "label": { "type": "string", "description": "Human-readable display name." },
+        "description": { "type": "string" },
+        "category": {
+          "type": "string",
+          "enum": ["physical", "elemental", "energy"],
+          "description": "Broad classification. physical = bludgeoning/piercing/slashing. elemental = fire/frost/shock/acid/poison. energy = necrotic/radiant/psychic/force/thunder."
+        },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Tags for resistance matching, phase interaction, and special rules. Common tags: 'armor_dr_applies' (physical only), 'bypasses_armor' (energy/mental), 'phase_wood', 'phase_fire', etc."
+        }
+      },
+      "required": ["id", "key", "label", "description", "category"],
+      "additionalProperties": false
+    }
+  }
+}

@@ -65,7 +65,12 @@
             },
             "properties": { "type": "array", "items": { "type": "string" } },
             "rangeNormal": { "type": "integer", "minimum": 1 },
-            "rangeLong": { "type": "integer", "minimum": 1 }
+            "rangeLong": { "type": "integer", "minimum": 1 },
+            "on_hit_effects": {
+              "type": "array",
+              "description": "Effects from the shared registry that trigger when this weapon lands a hit. Each entry is an appliedEffect shape, exactly like spell effects. Examples: a flaming sword applies burn (id 57), a poisonous blade applies poison_health_drain (id 45). Duration and magnitude may be fixed or scale with weapon quality.",
+              "items": { "$ref": "schema.json#/definitions/appliedEffect" }
+            }
           },
           "required": ["category", "range", "damage"],
           "additionalProperties": false
@@ -91,6 +96,11 @@
               "items": { "type": "string", "enum": ["skin", "middle"] },
               "description": "Layer dependency. e.g. 'middle' layer requires a 'skin' layer in the same slot.",
               "minItems": 1
+            },
+            "resistances": {
+              "type": "object",
+              "description": "Per-damage-type resistance modifiers for this armor piece. Keys are damage type keys (e.g. 'fire', 'frost', 'slashing', 'piercing'). Values are flat DR added against that damage type, or percentage resistance when negative. Example: { \"fire\": 5, \"frost\": -3 } means +5 DR vs fire, -3 DR vs frost.",
+              "additionalProperties": { "type": "integer" }
             }
           },
           "required": ["slot", "drBase"],

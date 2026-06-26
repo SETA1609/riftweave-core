@@ -1,6 +1,6 @@
 # Combat Resolution
 
-**Branch Status (ft/combat):** Core combat resolution system complete (action economy, defense trees, conditions, DR armor with slots/layers, criticals, encumbrance, worked examples). Validation passes. New combat perks added. Legacy armor references cleaned from weapons.md. Deferred (intentionally stubbed): mounted combat, underwater combat, vehicle combat, mass combat.
+**Branch Status (feat/combat-resolution):** Core combat resolution system complete. Data layer added: `combat.schema.json`, `damage_type.schema.json`, `base_resolution.json`, and `damage_types.json`. Equipment schema extended with `on_hit_effects` (weapons) and `resistances` (armor). Combat-specific effects (ids 65–77) added to the shared effect registry. Reference resolver in `scripts/combat_reference.py`. Integration docs in `docs/combat/`. Deferred (intentionally stubbed): mounted combat, underwater combat, vehicle combat, mass combat.
 
 **Status:** Core (implemented as data + schema) · runtime resolution lives in the engine or GM adjudication.
 
@@ -9,6 +9,9 @@
 This document is the **single source of truth** for combat resolution in Riftweave. Consuming engines (Zig, Godot, custom TTRPG sheet, etc.) should treat each section as a contract:
 
 - **Data files**: `ruleset/data/equipment/weapons.json`, `ruleset/data/equipment/armor.json`, `ruleset/data/conditions/core.json`, `ruleset/data/effects/core.json` — these supply the building blocks (weapon stats, armor DR, conditions, effects). The schemas in `ruleset/schemas/` enforce shape; this doc explains how to use them at runtime.
+- **Combat data files** (new in `feat/combat-resolution`): `ruleset/data/combat/damage_types.json` and `ruleset/data/combat/base_resolution.json` supply the damage type registry and tunable resolution parameters (crit ranges, target numbers, action economy costs). The corresponding schemas are `ruleset/schemas/damage_type.schema.json` and `ruleset/schemas/combat.schema.json`.
+- **Weapon on-hit effects**: The `weapon` object now supports `on_hit_effects` — an array of `appliedEffect` shapes bridging weapons to the shared effect registry. See `docs/combat/integration.md` for details.
+- **Armor resistances**: Armor pieces now support a `resistances` object for per-damage-type flat DR. See `docs/combat/integration.md`.
 - **Skills & attributes**: See `progression.md` and `attributes.md` for seeding formulas. Combat-relevant skills are `blades`, `blunt`, `piercing`, `bows`, `crossbows`, `guns`, `throwing_weapons`, `block`, `evasion`, `light_armor`, `medium_armor`, `heavy_armor`, `unarmored`, plus all nine `<color>_magic` schools.
 - **Perks**: Many combat perks live in `ruleset/data/features/core.json`. See §16 (Combat Perks & Traits) below for integration guidance.
 - **GM (TTRPG)**: Roll d100, adjudicate reactions, track conditions manually. Use the TTRPG resolution blocks.

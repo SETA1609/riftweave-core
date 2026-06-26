@@ -1,0 +1,18 @@
+{
+  "$schema": "../../schemas/damage_type.schema.json",
+  "damage_types": [
+    { "id": 1, "key": "bludgeoning", "label": "Bludgeoning", "description": "Crushing impact from hammers, maces, staves, and falling.", "category": "physical", "tags": ["armor_dr_applies", "blunt_force"] },
+    { "id": 2, "key": "piercing", "label": "Piercing", "description": "Sharp penetration from daggers, spears, arrows, and bullets.", "category": "physical", "tags": ["armor_dr_applies", "armor_pierce_partial"] },
+    { "id": 3, "key": "slashing", "label": "Slashing", "description": "Cutting edges from swords, axes, and claws.", "category": "physical", "tags": ["armor_dr_applies", "bleed_chance"] },
+    { "id": 4, "key": "fire", "label": "Fire", "description": "Flame and heat damage. Governed by Red magic. Phase: Fire.", "category": "elemental", "tags": ["elemental", "phase_fire", "bypasses_physical_armor"] },
+    { "id": 5, "key": "frost", "label": "Frost", "description": "Cold and freezing damage. Governed by Red magic. Phase: Water.", "category": "elemental", "tags": ["elemental", "phase_water", "bypasses_physical_armor"] },
+    { "id": 6, "key": "shock", "label": "Shock", "description": "Lightning and electrical damage. Governed by Red magic. Phase: Wood.", "category": "elemental", "tags": ["elemental", "phase_wood", "bypasses_physical_armor"] },
+    { "id": 7, "key": "acid", "label": "Acid", "description": "Corrosive chemical damage. Eats through armor over time.", "category": "elemental", "tags": ["elemental", "bypasses_physical_armor", "corrosive"] },
+    { "id": 8, "key": "poison", "label": "Poison", "description": "Toxic venom and chemical damage. Targets END directly.", "category": "elemental", "tags": ["elemental", "bypasses_physical_armor", "end_resist"] },
+    { "id": 9, "key": "necrotic", "label": "Necrotic", "description": "Life-draining death magic. Governed by Black magic.", "category": "energy", "tags": ["bypasses_armor", "phase_water", "life_drain"] },
+    { "id": 10, "key": "radiant", "label": "Radiant", "description": "Holy purifying light. Governed by White magic.", "category": "energy", "tags": ["bypasses_armor", "phase_fire", "anti_undead"] },
+    { "id": 11, "key": "psychic", "label": "Psychic", "description": "Mental and soul damage. Bypasses physical protection.", "category": "energy", "tags": ["bypasses_armor", "mental", "wil_resist"] },
+    { "id": 12, "key": "force", "label": "Force", "description": "Raw magical energy. Governed by Indigo magic. Unerring.", "category": "energy", "tags": ["bypasses_armor", "unerring"] },
+    { "id": 13, "key": "thunder", "label": "Thunder", "description": "Sonic concussive damage. Governed by Indigo magic.", "category": "energy", "tags": ["bypasses_armor", "sonic", "aoe"] }
+  ]
+}

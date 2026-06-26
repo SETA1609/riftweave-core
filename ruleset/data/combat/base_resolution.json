@@ -1,0 +1,52 @@
+{
+  "$schema": "../../schemas/combat.schema.json",
+  "resolution": {
+    "critical": {
+      "naturalCritRange": 5,
+      "fumbleRange": 100,
+      "confirmationBonusPerLck": 0.5,
+      "critDamageMultiplier": 2.0,
+      "videoGameCritMultiplier": 1.5
+    },
+    "hitQuality": {
+      "solidMarginThreshold": 20,
+      "glancingMarginThreshold": 0
+    },
+    "defense": {
+      "baseEvasion": 10,
+      "evasionSkillFactor": 0.15,
+      "agiEvasionFactor": 2.0,
+      "shieldBlockFactor": 1.0
+    },
+    "calledShots": {
+      "headPenalty": -20,
+      "headDamageMultiplier": 1.5,
+      "armsPenalty": -15,
+      "armsDamageMultiplier": 0.75,
+      "legsPenalty": -15,
+      "legsDamageMultiplier": 0.75,
+      "groinEyesPenalty": -30,
+      "groinEyesDamageMultiplier": 2.0,
+      "rangedExtraPenalty": -10
+    },
+    "actionEconomy": {
+      "apBasePool": 2,
+      "apMaxPool": 10,
+      "standardAttackAp": 3,
+      "movePerUnitAp": 1,
+      "dodgeAp": 3,
+      "blockAp": 2,
+      "standFromProneAp": 2,
+      "reactionsPerRound": 1
+    },
+    "videoGame": {
+      "staminaBasePool": 15,
+      "staminaRegenDelay": 0.5,
+      "attackRecoveryLight": 0.3,
+      "attackRecoveryHeavy": 0.8,
+      "dodgeIFrameFraction": 0.6,
+      "blockWindowSkillFactor": 0.01,
+      "parryWindowSkillFactor": 0.005
+    }
+  }
+}
