@@ -90,10 +90,13 @@ class CombatResolver:
         ]
         self.wuxing = load_json("data/wuxing/core.json")
         self.cycles = self.wuxing["cycles"]
+        self.conditions_data = load_json("data/conditions/core.json")["conditions"]
 
         self.crit = self.resolution["critical"]
         self.quality = self.resolution["hitQuality"]
         self.defense_cfg = self.resolution["defense"]
+
+        self._build_condition_mappings()
 
     def get_skill(self, skill_key):
         s = find_by_key(self.skills_data, skill_key)
@@ -118,6 +121,80 @@ class CombatResolver:
             if e["id"] == effect_id:
                 return e
         return None
+
+    def get_condition(self, condition_key):
+        return find_by_key(self.conditions_data, condition_key)
+
+    def _build_condition_mappings(self):
+        self.effect_to_conditions = {}
+        self.effect_to_dispels = {}
+        for cond in self.conditions_data:
+            for eid in cond.get("appliedBy", []):
+                self.effect_to_conditions.setdefault(eid, []).append(
+                    (cond["key"], cond)
+                )
+            for eid in cond.get("removedBy", []):
+                self.effect_to_dispels.setdefault(eid, []).append((cond["key"], cond))
+
+    def _get_duration_type(self, effect_id, dur):
+        if dur and dur > 0:
+            return "timed"
+        if effect_id in (57, 58):  # burn, bleed — DoT effects are timed
+            return "timed"
+        if effect_id in (40, 41, 42):  # diseases — permanent until cured
+            return "permanent"
+        return "timed"
+
+    def apply_condition(self, condition_key, source_effect_id, duration=0):
+        cond = self.get_condition(condition_key)
+        if not cond:
+            self.log(f"  Unknown condition: {condition_key}")
+            return False
+        dtype = self._get_duration_type(source_effect_id, duration)
+        if dtype == "permanent":
+            duration_str = "permanent"
+        elif dtype == "timed":
+            if duration and duration > 0:
+                duration_str = f"{duration}s"
+            else:
+                dur = self.get_effect(source_effect_id)
+                default_dur = dur.get("defaultDuration", 0) if dur else 0
+                duration_str = f"{default_dur}s" if default_dur > 0 else "indefinite"
+        else:
+            duration_str = "until_dispelled"
+        self.log(f"  -> Condition [{cond['label']}] applied (duration: {duration_str})")
+        return True
+
+    def try_dispel_condition(self, condition_key, dispelling_effect_id):
+        cond = self.get_condition(condition_key)
+        if not cond:
+            return False
+        removed_by = cond.get("removedBy", [])
+        if dispelling_effect_id in removed_by:
+            self.log(
+                f"  -> Condition [{cond['label']}] dispelled"
+                f" by effect {dispelling_effect_id}"
+            )
+            return True
+        return False
+
+    def _process_effect_conditions(self, eff, label):
+        if not eff:
+            return
+        eid = eff["id"]
+        for ckey, cond in self.effect_to_conditions.get(eid, []):
+            self.log(f"  -> Condition [{cond['label']}] applied by {label}")
+            default_dur = eff.get("defaultDuration", 0)
+            dtype = self._get_duration_type(eid, default_dur)
+            if dtype == "permanent":
+                dur_str = "permanent"
+            elif default_dur > 0:
+                dur_str = f"{default_dur}s"
+            else:
+                dur_str = "timed"
+            self.log(f"    Duration: {dur_str}")
+        for ckey, cond in self.effect_to_dispels.get(eid, []):
+            self.log(f"  -> Condition [{cond['label']}] would be dispelled by {label}")
 
     def log(self, msg):
         if self.verbose:
@@ -257,6 +334,7 @@ class CombatResolver:
                     f"Weapon on-hit: {eff['label']} (mag {ae.get('magnitude', 0)}, "
                     f"dur {ae.get('duration', 0)})"
                 )
+                self._process_effect_conditions(eff, "base weapon on-hit")
 
         item_on_hit = item.get("on_hit_effects", [])
         for ae in item_on_hit:
@@ -274,6 +352,7 @@ class CombatResolver:
                     f"Crafted item on-hit: {eff['label']} (mag {ae.get('magnitude', 0)}, "
                     f"dur {ae.get('duration', 0)})"
                 )
+                self._process_effect_conditions(eff, "crafted item on-hit")
 
         enchantments = item.get("enchantments", [])
         for ae in enchantments:
@@ -336,6 +415,7 @@ class CombatResolver:
                 )
                 if wuxing_msg:
                     self.log(f"  Wuxing: {wuxing_msg} -> effective mag={final_mag}")
+                self._process_effect_conditions(eff, "enchantment")
 
         coatings_consumed = []
         coatings = item.get("coatings", [])
@@ -393,6 +473,7 @@ class CombatResolver:
                 if wuxing_msg:
                     self.log(f"  Wuxing: {wuxing_msg} -> effective mag={final_mag}")
                 self.log(f"  -> Coating consumed (uses left: {uses - 1})")
+                self._process_effect_conditions(eff, "coating")
 
         return {
             "hit": True,
@@ -411,6 +492,32 @@ class CombatResolver:
             "effects_applied": effects_applied,
             "coatings_consumed": coatings_consumed,
         }
+
+    def demo_condition_interactions(self):
+        self.log("")
+        print(f"\n{'=' * 60}")
+        print("  Condition Interaction Demo")
+        print(f"{'=' * 60}")
+        print("")
+        print("  1. Applying conditions via effect IDs:")
+        self.apply_condition("paralyzed", 43, duration=10)
+        self.apply_condition("burning", 57)
+        self.apply_condition("bleeding", 58)
+        print("")
+        print("  2. Opposite-effect dispels:")
+        self.log("  Scenario: Bleeding + RestoreResource (healing)")
+        self.try_dispel_condition("bleeding", 7)
+        self.log("  Scenario: Burning + DamageFrost (water quenches fire)")
+        self.try_dispel_condition("burning", 2)
+        self.log("  Scenario: Slowed + HasteAttack")
+        self.try_dispel_condition("slowed", 70)
+        print("")
+        print("  3. Cure effect dispels anything:")
+        self.log("  Scenario: Paralyzed + Cure")
+        self.try_dispel_condition("paralyzed", 20)
+        self.log("  Scenario: Poisoned + Cure")
+        self.try_dispel_condition("poisoned", 20)
+        print(f"{'=' * 60}")
 
     def simulate_example(self, label, **kwargs):
         print(f"\n{'=' * 60}")
@@ -479,6 +586,17 @@ def main():
         defender_armor_dr=6,
         attacker_lck=5,
     )
+
+    resolver.simulate_example(
+        "Example 5: Condition Application via Poisoned Dagger",
+        crafted_item_key="poisoned_obsidian_dagger",
+        attacker_skill_value=85,
+        defender_armor_dr=2,
+        attacker_lck=6,
+    )
+
+    if args.verbose:
+        resolver.demo_condition_interactions()
 
     print("\nDone. Run with --seed N for reproducible rolls, --verbose for details.\n")
 
