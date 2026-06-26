@@ -258,6 +258,23 @@ class CombatResolver:
                     f"dur {ae.get('duration', 0)})"
                 )
 
+        item_on_hit = item.get("on_hit_effects", [])
+        for ae in item_on_hit:
+            eff = self.get_effect(ae["effect"])
+            if eff:
+                applied = {
+                    "effect_id": ae["effect"],
+                    "effect_key": eff.get("key", "unknown"),
+                    "magnitude": ae.get("magnitude", 0),
+                    "duration": ae.get("duration", 0),
+                    "source": "crafted_item",
+                }
+                effects_applied.append(applied)
+                self.log(
+                    f"Crafted item on-hit: {eff['label']} (mag {ae.get('magnitude', 0)}, "
+                    f"dur {ae.get('duration', 0)})"
+                )
+
         enchantments = item.get("enchantments", [])
         for ae in enchantments:
             eff = self.get_effect(ae["effect"])
@@ -375,6 +392,7 @@ class CombatResolver:
                 self.log(f"Coating: {eff['label']} (mag {mag}, uses {uses})")
                 if wuxing_msg:
                     self.log(f"  Wuxing: {wuxing_msg} -> effective mag={final_mag}")
+                self.log(f"  -> Coating consumed (uses left: {uses - 1})")
 
         return {
             "hit": True,
