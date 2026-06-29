@@ -39,9 +39,8 @@
         },
         "removedBy": {
           "type": "array",
-          "description": "Effect IDs that can remove this condition (typically cure id 20 with appropriate parameter).",
-          "items": { "$ref": "schema.json#/definitions/entryId" },
-          "minItems": 1
+          "description": "Effect IDs that can remove this condition (typically cure id 20 with appropriate parameter). May be empty for conditions with only non-effect removal (e.g. prone is removed by the 'stand' action, not by any effect).",
+          "items": { "$ref": "schema.json#/definitions/entryId" }
         },
         "stacking": {
           "type": "boolean",

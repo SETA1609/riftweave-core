@@ -266,17 +266,18 @@ effect lands on target
 
 ### Integration Points
 
-Condition checks fire automatically after every effect in these processing loops:
+Condition checks fire automatically after every effect in four processing loops:
 
-- **Base weapon on-hit effects** (`source: "base weapon on-hit"`)
-- **Crafted item on-hit effects** (`source: "crafted item on-hit"`)
-- **Enchantments** (`source: "enchantment"`)
-- **Coatings** (`source: "coating"`)
+| Loop | Source | Description |
+|------|--------|-------------|
+| **Base weapon on-hit** | `wspec.get("on_hit_effects", [])` | Effects intrinsic to the weapon type (e.g., a flaming sword base). Currently unused in example data but available for future weapon bases. |
+| **Crafted item on-hit** | `item.get("on_hit_effects", [])` | Effects added or overridden during crafting (e.g., an enhancement applied to a base weapon). Overrides/extends the base weapon's on-hit. |
+| **Enchantments** | `item.get("enchantments", [])` | Permanent magical effects on a crafted item (burn, frost, resist, etc.). Each has magnitude, duration, and Wuxing interaction. |
+| **Coatings** | `item.get("coatings", [])` | Temporary consumable effects applied before combat (poisons, oils). Consumed on use (decrement `uses_left`). |
 
-For each effect, the resolver first checks if it dispels any existing condition
-(via `removedBy`), then checks if it applies any new condition (via `appliedBy`).
-This means applying frost damage on a burning target both deals damage and
-extinguishes the fire — in a single hit.
+**Why two on-hit sources?** The base weapon defines its intrinsic behavior (e.g., every "flaming sword" base always burns). The crafted item's `on_hit_effects` represents modifications made during crafting — the item can add new effects or override base ones without modifying the base weapon template. This separation mirrors the crafting system: a base weapon is a template, a crafted item is the specific instance.
+
+For each effect in any of these loops, the resolver first checks if it dispels any existing condition (via `removedBy`), then checks if it applies any new condition (via `appliedBy`). This means applying frost damage on a burning target both deals damage and extinguishes the fire — in a single hit.
 
 ### Example Output
 
@@ -308,21 +309,135 @@ Coating: Paralytic Poison (mag 4, uses 3)
 
 ---
 
+## 9. Condition Mechanical Impact (Reference Implementation)
+
+As of the `feat/conditions-integration` branch, conditions in `combat_reference.py`
+have **active mechanical impact** on combat resolution. The following methods are
+implemented and wired into `resolve_attack()`:
+
+### Attack Modifier
+
+`_get_condition_attack_modifier()` sums attack penalties from active conditions:
+
+| Condition | Attack Penalty |
+|-----------|---------------|
+| `frightened` | −10 (while source in LoS) |
+| `prone` | −20 (melee) |
+| `restrained` | −20 |
+| `staggered` | −10 (next action only) |
+| `taunted` | −20 (vs non-taunter) |
+| `exhaustion` | −10 per stack level (e.g., exhaustion 3/6 = −30) |
+
+These are subtracted from the attacker's target number (`attacker_skill_value + modifiers + condition_attack_mod`).
+
+### Defense Bonus
+
+`_get_condition_defense_bonus()` returns the bonus TO attackers when the subject
+has certain conditions:
+
+| Condition | Bonus to Attackers |
+|-----------|-------------------|
+| `blinded` | +10 |
+| `stunned` | +10 |
+| `restrained` | +10 |
+| `prone` | +10 (ranged) |
+
+This is logged but not yet subtracted from the defender's effective evasion — that
+requires full character stat integration (deferred).
+
+### Action Blocking
+
+`_can_take_action()` returns `False` if any of these conditions are present:
+`incapacitated`, `paralyzed`, `petrified`, `stunned`, `unconscious`.
+
+### Auto-Crit
+
+After all effects are processed in `resolve_attack()`, `_is_auto_crit_target()`
+checks whether the target has `paralyzed` or `unconscious`. If so, the hit is
+**upgraded to a critical** automatically — damage dice are doubled and the
+`hit_quality` is set to `"critical"`.
+
+### Stacking Intensity
+
+`_get_condition_intensity(key)` returns:
+- The current stack count for stacking conditions (e.g., exhaustion at 3/6)
+- `1` for non-stacking active conditions
+- `0` if the condition is not active
+
+### Immunity / Resistance (Stub)
+
+`_check_immunity()` is a placeholder that logs but always returns `False`.
+A future implementation will check:
+- Active `resist` effect (id 19) with `parameter` matching the condition key
+- Racial traits that grant condition immunity
+- Phase-based resistance (via Wuxing cycles)
+
+### Parameter Filtering for Dispel
+
+When a `cure` effect (id 20) has a `parameter` in its `appliedEffect` shape, the
+dispel is filtered to only remove conditions whose key matches the parameter
+(e.g., `cure { parameter: "poisoned" }` only dispels `poisoned`, not all conditions).
+`restore_resource` (id 7) does not filter by parameter for its secondary dispel
+effect (healing always stops bleeding regardless of which resource is restored).
+
+### Duration Type (Data-Driven)
+
+`_get_duration_type()` now uses effect tags and fields instead of hardcoded IDs:
+
+| Condition | Determined By |
+|-----------|--------------|
+| `permanent` | Effect has tag `"disease"` or `defaultDurationType: "unlimited"` |
+| `timed` | Effect has `duration > 0` or `defaultDuration > 0` |
+| `until_dispelled` | No duration and no disease tag (fallback) |
+
+---
+
 ## Open Items
 
-- **Cure parameter convention:** The `cure` effect (id 20) cures by `parameter`.
-  The convention is for `parameter` to match the condition's `key` string
-  (e.g. `cure { parameter: "poisoned" }`). This should be standardized into a
-  formal rule.
-- **Prone as special case:** Prone is the only condition not removed by a `cure`
-  effect — it requires the "stand" action. This is intentional but worth
-  documenting as an exception in any engine implementation.
-- **ConditionManager class:** The active tracking logic currently lives inside
-  `CombatResolver` in `combat_reference.py`. A future refactor should extract
-  it into a dedicated `ConditionManager` class.
-- **Full character state machine:** Conditions currently have no mechanical
-  impact on combat resolution (e.g., paralyzed targets still act normally).
-  Integrating condition effects into damage/action resolution is the next step.
-- **Effect `parameter` filtering:** When an effect like `restore_resource` (id 7)
-  or `cure` (id 20) has a `parameter`, the resolver should filter dispel by that
-  parameter (e.g., cure with `parameter: "bleeding"` should only dispel bleeding).
+The following items were addressed in the `feat/conditions-integration` branch:
+
+- ✅ **Cure parameter filtering:** Implemented. `cure` (id 20) with `parameter` now
+  only dispels conditions whose `key` matches the parameter (e.g.,
+  `cure { parameter: "poisoned" }` only dispels `poisoned`). Use
+  `parameter: "all"` to cure all removable conditions.
+- ✅ **Prone special case:** Prone no longer includes `cure` (id 20) in its
+  `removedBy` array. It can only be removed by the "stand" action (engine/GM
+  responsibility). The schema was updated to allow empty `removedBy` arrays.
+- ✅ **Duration type refactored:** `_get_duration_type()` now checks effect tags
+  (`"disease"` → permanent), `defaultDurationType` (`"unlimited"` → permanent),
+  and `defaultDuration` (timed), instead of hardcoded effect ID lists.
+- ✅ **Condition mechanical impact:** Conditions now affect combat resolution:
+  attack modifiers, defense bonuses, action blocking (incapacitating conditions),
+  auto-crit on paralyzed/unconscious targets, and exhaustion stacking with
+  per-level penalties. See §9 above.
+- ✅ **Immunity/resistance stub:** `_check_immunity()` placeholder added — logs
+  but always passes. Ready for wiring into the `resist` effect system.
+- ✅ **Exhaustion stacking demo:** Enhanced to show progressive stack accumulation
+  (1→5/6) with per-level attack penalty display.
+- ✅ **Condition cross-reference validation:** `validate.py` now validates
+  `appliedBy` and `removedBy` IDs against the effects registry, checks stacking
+  consistency (stacking + maxStacks), detects duplicate effect IDs, and
+  enforces the prone-no-cure rule.
+- ✅ **Documentation updated:** Both on-hit paths (base weapon vs. crafted item)
+  are clearly documented with their purpose and relationship.
+
+### Remaining for future work:
+
+- **ConditionManager class extraction:** A dedicated `ConditionManager` class
+  (owning `_build_condition_mappings`, reset/apply/dispel/advance, modifier
+  maps, and all `_get_condition_*` / `_can_take_action` / `_is_auto_crit_target`
+  methods) is noted via a `# TODO` in the source. Extraction is ~50 lines of
+  boilerplate and deferred as it doesn't change behavior.
+- **Full character state machine:** The reference resolver tracks conditions
+  on a single subject per attack. A full combat loop would need per-character
+  condition trackers, so that the attacker's own conditions (e.g., the
+  attacker being blinded) affect the roll, and the defender's conditions
+  (e.g., paralysis) enable auto-crits.
+- **Immunity/resist wiring:** The `_check_immunity()` stub needs to be wired
+  into the `resist` effect (id 19) and racial trait system. This requires
+  an active effects tracker that the resolver doesn't yet have.
+- **Phase-based condition resistance:** Applying a fire-phased effect to a
+  water-phased target should be weakened per the overcoming cycle. This
+  requires phase logic in the immunity/resist check.
+- **Rest action:** A full rest (removing 1 exhaustion level, curing most
+  temporary conditions) needs an explicit method.

@@ -131,7 +131,7 @@
         "video_game": "Knockdown state. −20% melee damage. Ranged attacks against you have +15% accuracy. Spend 1s to stand."
       },
       "appliedBy": [53],
-      "removedBy": [20]
+      "removedBy": []
     },
     {
       "id": 12,

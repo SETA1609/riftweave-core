@@ -191,12 +191,47 @@ def check_references(data, coll_name, id_index):
         for c in data.get("conditions", []):
             if not isinstance(c, dict):
                 continue
+            ckey = c.get("key", "?")
             for eid in c.get("appliedBy", []) or []:
                 if isinstance(eid, int) and eid not in id_index.get("effects", set()):
-                    errors.append(f"appliedBy effect {eid} does not exist in effects")
+                    errors.append(
+                        f"condition '{ckey}' appliedBy effect {eid} does not exist in effects"
+                    )
             for eid in c.get("removedBy", []) or []:
                 if isinstance(eid, int) and eid not in id_index.get("effects", set()):
-                    errors.append(f"removedBy effect {eid} does not exist in effects")
+                    errors.append(
+                        f"condition '{ckey}' removedBy effect {eid} does not exist in effects"
+                    )
+            # Validate stacking consistency
+            stacking = c.get("stacking", False)
+            max_stacks = c.get("maxStacks")
+            if stacking and max_stacks is None:
+                errors.append(f"condition '{ckey}' has stacking:true but no maxStacks")
+            if not stacking and max_stacks is not None:
+                errors.append(
+                    f"condition '{ckey}' has maxStacks but stacking is not true"
+                )
+            # Validate that prone has empty removedBy (special case)
+            if ckey == "prone" and c.get("removedBy"):
+                errors.append(
+                    f"condition 'prone' should have empty removedBy (stand action, not effect)"
+                )
+            # Validate that cure (id 20) is not in prone's removedBy
+            if ckey == "prone" and 20 in c.get("removedBy", []):
+                errors.append(
+                    f"condition 'prone' must not have cure (id 20) in removedBy"
+                )
+            # Check for duplicate effect IDs in appliedBy and removedBy
+            ab = c.get("appliedBy", [])
+            if len(ab) != len(set(ab)):
+                errors.append(
+                    f"condition '{ckey}' has duplicate effect IDs in appliedBy"
+                )
+            rb = c.get("removedBy", [])
+            if len(rb) != len(set(rb)):
+                errors.append(
+                    f"condition '{ckey}' has duplicate effect IDs in removedBy"
+                )
 
     elif coll_name == "equipment":
         for e in data.get("equipment", []) or []:

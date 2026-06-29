@@ -96,6 +96,49 @@ class CombatResolver:
         self.quality = self.resolution["hitQuality"]
         self.defense_cfg = self.resolution["defense"]
 
+        # Condition mechanical modifier maps (data-driven for quick reference)
+        # Keyed by condition key; applied when that condition is active on the subject.
+        # Attack penalty: applied to the subject's attack rolls
+        self.CONDITION_ATTACK_PENALTY = {
+            "frightened": -10,
+            "prone": -20,
+            "restrained": -20,
+            "staggered": -10,
+            "taunted": -20,
+        }
+        # Defense bonus: bonus TO attack rolls made AGAINST the subject
+        self.CONDITION_DEFENSE_BONUS = {
+            "blinded": 10,
+            "stunned": 10,
+            "restrained": 10,
+            "prone": 10,
+        }
+        # Conditions that fully prevent the subject from taking any action
+        self.CONDITION_CANNOT_ACT = {
+            "incapacitated",
+            "paralyzed",
+            "petrified",
+            "stunned",
+            "unconscious",
+        }
+        # Conditions on the TARGET that make them auto-crit by melee attackers
+        self.CONDITION_AUTO_CRIT_TARGET = {
+            "paralyzed",
+            "unconscious",
+        }
+        # Per-stack attack penalty for exhaustion
+        self.EXHAUSTION_ATTACK_PENALTY_PER_STACK = -10
+
+        # TODO: Extract ConditionManager class
+        # The condition tracking + mechanical impact methods below are a
+        # natural seam for extraction. A dedicated ConditionManager would
+        # own _build_condition_mappings, reset/apply/dispel/advance, the
+        # modifier maps, and all _get_condition_* / _can_take_action /
+        # _is_auto_crit_target methods. CombatResolver would delegate
+        # to it via self.conditions.apply(...) etc.
+        # For now, inline is fine — extraction is ~50 lines of boilerplate
+        # and doesn't change behavior.
+
         self._build_condition_mappings()
         self.reset_conditions()
 
@@ -150,13 +193,21 @@ class CombatResolver:
         return 0
 
     def _get_duration_type(self, effect_id, dur):
-        if effect_id in (40, 41, 42):
-            return "permanent"
+        eff = self.get_effect(effect_id)
+        if eff:
+            tags = eff.get("tags", [])
+            if "disease" in tags:
+                return "permanent"
+            e_dtype = eff.get("defaultDurationType")
+            if e_dtype == "unlimited":
+                return "permanent"
+            if dur and dur > 0:
+                return "timed"
+            if eff.get("defaultDuration", 0) > 0:
+                return "timed"
         if dur and dur > 0:
             return "timed"
-        if effect_id in (57, 58):
-            return "timed"
-        return "timed"
+        return "until_dispelled"
 
     def _list_active_conditions(self):
         if not self.active_conditions:
@@ -176,20 +227,60 @@ class CombatResolver:
                 f"    [{entry['label']}] ({dstr}, source: {entry['source_label']})"
             )
 
+    def _check_immunity(self, condition_key, source_effect_id):
+        """Stub: check if the subject is immune or resistant to this condition.
+        TODO: wire into resist effect (id 19) with parameter matching condition_key.
+        A future full implementation should check:
+          - self.active_effects (resist id 19 with parameter=condition_key at 100%)
+          - Racial traits granting immunity via appliedBy on resist effect
+        """
+        if self.verbose:
+            self.log(
+                f"  [IMMUNITY CHECK] {condition_key} — no immunity system wired yet"
+            )
+        return False
+
     def apply_condition(
-        self, condition_key, source_effect_id, duration=0, source_label="effect"
+        self,
+        condition_key,
+        source_effect_id,
+        duration=0,
+        source_label="effect",
+        parameter=None,
     ):
         cond = self.get_condition(condition_key)
         if not cond:
             self.log(f"  Unknown condition: {condition_key}")
             return False
 
+        # Immunity check (stub — always passes for now)
+        if self._check_immunity(condition_key, source_effect_id):
+            self.log(f"  -> Condition [{cond['label']}] resisted (immune)")
+            return False
+
+        stacking = cond.get("stacking", False)
+        max_stacks = cond.get("maxStacks", 1)
+
         if condition_key in self.active_conditions:
-            self.log(f"  -> Condition [{cond['label']}] already active, refreshing")
-            self.active_conditions[condition_key]["remaining_duration"] = (
-                self._get_duration(source_effect_id, duration)
-            )
-            return True
+            if stacking:
+                current_stacks = self.active_conditions[condition_key].get("stacks", 1)
+                new_stacks = min(current_stacks + 1, max_stacks)
+                self.active_conditions[condition_key]["stacks"] = new_stacks
+                if new_stacks > current_stacks:
+                    self.active_conditions[condition_key]["remaining_duration"] = (
+                        self._get_duration(source_effect_id, duration)
+                    )
+                self.log(
+                    f"  -> Condition [{cond['label']}] stacked"
+                    f" {current_stacks} -> {new_stacks}/{max_stacks}"
+                )
+                return True
+            else:
+                self.log(f"  -> Condition [{cond['label']}] already active, refreshing")
+                self.active_conditions[condition_key]["remaining_duration"] = (
+                    self._get_duration(source_effect_id, duration)
+                )
+                return True
 
         dur = self._get_duration(source_effect_id, duration)
         dtype = self._get_duration_type(source_effect_id, dur)
@@ -203,6 +294,8 @@ class CombatResolver:
             "remaining_duration": remaining,
             "applied_at": self.simulation_time,
             "source_label": source_label,
+            "stacking": stacking,
+            "stacks": 1 if stacking else None,
         }
         self.active_conditions[condition_key] = entry
 
@@ -245,15 +338,92 @@ class CombatResolver:
             del self.active_conditions[ck]
             self.log(f"  -> Condition [{label}] expired (duration elapsed)")
 
-    def _process_effect_conditions(self, eff, source_label):
+    def _process_effect_conditions(self, eff, source_label, parameter=None):
+        """Dispatch condition dispels then applies for an effect.
+        Args:
+            eff: effect dict from the registry
+            source_label: human-readable source tag for logging
+            parameter: optional string from the appliedEffect shape; used for
+                       targeted dispel (cure with parameter='poisoned' only
+                       dispels poisoned, not all conditions in removedBy)
+        """
         if not eff:
             return
         eid = eff["id"]
         for ckey, cond in self.effect_to_dispels.get(eid, []):
+            # Parameter filtering: cure (id 20) with parameter only dispels
+            # matching conditions or "all"
+            if parameter is not None and eid == 20:
+                if parameter != "all" and parameter != ckey:
+                    continue
+            # restore_resource (id 7) dispels bleeding/poisoned as a side
+            # effect; parameter about resource type, not condition key,
+            # so no filtering needed for it
             self.try_dispel_condition(ckey, eid, source_label)
         for ckey, cond in self.effect_to_conditions.get(eid, []):
             default_dur = eff.get("defaultDuration", 0)
-            self.apply_condition(ckey, eid, default_dur, source_label)
+            self.apply_condition(ckey, eid, default_dur, source_label, parameter)
+
+    # --- Condition Mechanical Impact Methods ---
+
+    def _get_condition_attack_modifier(self):
+        """Return total attack roll penalty/bonus from active conditions."""
+        modifier = 0
+        detail = []
+        for ck, entry in self.active_conditions.items():
+            penalty = self.CONDITION_ATTACK_PENALTY.get(ck, 0)
+            if penalty:
+                detail.append(f"{ck}: {penalty}")
+                modifier += penalty
+            if ck == "exhaustion":
+                stacks = min(entry.get("stacks", 0), 6)
+                ex_penalty = stacks * self.EXHAUSTION_ATTACK_PENALTY_PER_STACK
+                if ex_penalty:
+                    detail.append(f"exhaustion x{stacks}: {ex_penalty}")
+                    modifier += ex_penalty
+        if detail:
+            self.log(f"  Condition attack modifier: {' + '.join(detail)} = {modifier}")
+        return modifier
+
+    def _get_condition_defense_bonus(self):
+        """Return bonus TO attack rolls made AGAINST the subject."""
+        bonus = 0
+        detail = []
+        for ck, entry in self.active_conditions.items():
+            b = self.CONDITION_DEFENSE_BONUS.get(ck, 0)
+            if b:
+                detail.append(f"{ck}: +{b} to attackers")
+                bonus += b
+        if detail:
+            self.log(f"  Condition defense bonus: {', '.join(detail)}")
+        return bonus
+
+    def _can_take_action(self):
+        """Return False if any active condition prevents the subject from acting."""
+        for ck in self.active_conditions:
+            if ck in self.CONDITION_CANNOT_ACT:
+                label = self.active_conditions[ck]["label"]
+                self.log(f"  -> Cannot act: [{label}] prevents all actions")
+                return False
+        return True
+
+    def _is_auto_crit_target(self):
+        """Return True if active conditions make the subject auto-crit by melee."""
+        for ck in self.active_conditions:
+            if ck in self.CONDITION_AUTO_CRIT_TARGET:
+                return True
+        return False
+
+    def _get_condition_intensity(self, key):
+        """Return stack count for a condition (0 if not active)."""
+        entry = self.active_conditions.get(key)
+        if not entry:
+            return 0
+        if entry.get("stacking"):
+            return entry.get("stacks", 1)
+        return 1
+
+    # --- End Condition Methods ---
 
     def log(self, msg):
         if self.verbose:
@@ -291,13 +461,22 @@ class CombatResolver:
         self.log(f"Effect magnitude mult: {eff_mag_mult}")
         self.log(f"Governing skill: {governing_skill_key} = {attacker_skill_value}")
 
-        base_target = attacker_skill_value + attack_modifier + effective_attack_bonus
+        condition_attack_mod = self._get_condition_attack_modifier()
+        base_target = (
+            attacker_skill_value
+            + attack_modifier
+            + effective_attack_bonus
+            + condition_attack_mod
+        )
         luck_bonus = attacker_lck // 2
         target = base_target + luck_bonus
 
+        cond_mod_str = f"{condition_attack_mod:+d}" if condition_attack_mod else "0"
         self.log(
             f"Target number: {attacker_skill_value} + {attack_modifier} (mod) "
-            f"+ {effective_attack_bonus} (atk bonus) + {luck_bonus} (LCK/2) = {target}"
+            f"+ {effective_attack_bonus} (atk bonus)"
+            f" + {cond_mod_str} (conditions)"
+            f" + {luck_bonus} (LCK/2) = {target}"
         )
         self.log(f"Defender armor DR: {defender_armor_dr}")
 
@@ -317,6 +496,10 @@ class CombatResolver:
                 "damage_dealt": 0,
                 "effects_applied": [],
                 "coatings_consumed": [],
+                "conditions_active": {},
+                "condition_attack_modifier": condition_attack_mod,
+                "condition_defense_bonus": self._get_condition_defense_bonus(),
+                "can_act": self._can_take_action(),
             }
 
         natural_crit_range = self.crit["naturalCritRange"]
@@ -394,7 +577,9 @@ class CombatResolver:
                     f"Weapon on-hit: {eff['label']} (mag {ae.get('magnitude', 0)}, "
                     f"dur {ae.get('duration', 0)})"
                 )
-                self._process_effect_conditions(eff, "base weapon on-hit")
+                self._process_effect_conditions(
+                    eff, "base weapon on-hit", ae.get("parameter")
+                )
 
         item_on_hit = item.get("on_hit_effects", [])
         for ae in item_on_hit:
@@ -412,7 +597,9 @@ class CombatResolver:
                     f"Crafted item on-hit: {eff['label']} (mag {ae.get('magnitude', 0)}, "
                     f"dur {ae.get('duration', 0)})"
                 )
-                self._process_effect_conditions(eff, "crafted item on-hit")
+                self._process_effect_conditions(
+                    eff, "crafted item on-hit", ae.get("parameter")
+                )
 
         enchantments = item.get("enchantments", [])
         for ae in enchantments:
@@ -475,7 +662,7 @@ class CombatResolver:
                 )
                 if wuxing_msg:
                     self.log(f"  Wuxing: {wuxing_msg} -> effective mag={final_mag}")
-                self._process_effect_conditions(eff, "enchantment")
+                self._process_effect_conditions(eff, "enchantment", ae.get("parameter"))
 
         coatings_consumed = []
         coatings = item.get("coatings", [])
@@ -533,7 +720,34 @@ class CombatResolver:
                 if wuxing_msg:
                     self.log(f"  Wuxing: {wuxing_msg} -> effective mag={final_mag}")
                 self.log(f"  -> Coating consumed (uses left: {uses - 1})")
-                self._process_effect_conditions(eff, "coating")
+                self._process_effect_conditions(eff, "coating", c.get("parameter"))
+
+        # --- Condition mechanical impact post-resolution ---
+        # If this attack applied a target-auto-crit condition (paralyzed,
+        # unconscious) and the hit wasn't already critical, upgrade it.
+        if self._is_auto_crit_target() and not is_critical:
+            is_critical = True
+            hit_quality = "critical"
+            self.log(
+                "  -> AUTO-CRIT: target is paralyzed/unconscious,"
+                " attack upgraded to critical!"
+            )
+            raw_damage = (
+                sum(random.randint(1, die_size) for _ in range(num_dice * 2)) + flat_mod
+            )
+            self.log(
+                f"  Re-rolled as critical: {num_dice * 2}d{die_size}+{flat_mod}"
+                f" = {raw_damage}"
+            )
+            net_damage = max(0, raw_damage - effective_dr)
+            self.log(f"  Net damage after auto-crit upgrade: {net_damage}")
+
+        can_act = self._can_take_action()
+        cond_def_bonus = self._get_condition_defense_bonus()
+        if not can_act:
+            self.log(
+                "  [CONDITION] Subject cannot act (incapacitating condition active)"
+            )
 
         return {
             "hit": True,
@@ -552,12 +766,15 @@ class CombatResolver:
             "effects_applied": effects_applied,
             "coatings_consumed": coatings_consumed,
             "conditions_active": dict(self.active_conditions),
+            "condition_attack_modifier": condition_attack_mod,
+            "condition_defense_bonus": cond_def_bonus,
+            "can_act": can_act,
         }
 
     def demo_condition_interactions(self):
         self.reset_conditions()
         print(f"\n{'=' * 60}")
-        print("  Condition Interaction Demo (Active Tracking)")
+        print("  Condition Interaction Demo (Active Tracking + Mechanics)")
         print(f"{'=' * 60}")
         print("")
         print("  --- Phase 1: Apply multiple conditions ---")
@@ -566,28 +783,64 @@ class CombatResolver:
         self.apply_condition("slowed", 59, source_label="frost trap")
         self._list_active_conditions()
         print("")
-        print("  --- Phase 2: Opposite-effect dispels ---")
+        print("  --- Phase 2: Exhaustion stacking ---")
+        self.apply_condition("exhaustion", 40, source_label="blight")
+        self.apply_condition("exhaustion", 40, source_label="blight")
+        self.apply_condition("exhaustion", 40, source_label="blight")
+        self._list_active_conditions()
+        intensity = self._get_condition_intensity("exhaustion")
+        atk_mod = self._get_condition_attack_modifier()
+        print(f"  Exhaustion intensity: {intensity}/6 | Attack modifier: {atk_mod}")
+        self.log("  Adding 2 more exhaustion stacks...")
+        self.apply_condition("exhaustion", 40, source_label="blight")
+        self.apply_condition("exhaustion", 40, source_label="blight")
+        self._list_active_conditions()
+        intensity = self._get_condition_intensity("exhaustion")
+        atk_mod = self._get_condition_attack_modifier()
+        print(f"  Exhaustion intensity: {intensity}/6 | Attack modifier: {atk_mod}")
+        print("")
+        print("  --- Phase 3: Opposite-effect dispels ---")
         self.log("  Healing (restore_resource) dispels bleeding:")
         self.try_dispel_condition("bleeding", 7, "restore_resource")
         self.log("  Haste (haste_attack) dispels slowed:")
         self.try_dispel_condition("slowed", 70, "haste_attack")
         self._list_active_conditions()
         print("")
-        print("  --- Phase 3: Cure dispel ---")
+        print("  --- Phase 4: Cure dispel ---")
         self.log("  Cure effect dispels burning:")
         self.try_dispel_condition("burning", 20, "cure")
         self._list_active_conditions()
         print("")
-        print("  --- Phase 4: Apply timed condition + advance time ---")
+        print("  --- Phase 5: Apply timed condition + advance time ---")
         self.apply_condition(
             "paralyzed", 43, duration=8, source_label="paralytic poison"
         )
         self._list_active_conditions()
+        print("  Mechanical impact check:")
+        print(f"    Can act: {self._can_take_action()}")
+        print(f"    Auto-crit target: {self._is_auto_crit_target()}")
         self.log("  Advancing time by 6 seconds...")
         self._advance_time(6)
         self._list_active_conditions()
         self.log("  Advancing time by 3 seconds...")
         self._advance_time(3)
+        self._list_active_conditions()
+        print("")
+        print("  --- Phase 6: Condition attack/defense modifiers ---")
+        self.reset_conditions()
+        self.apply_condition("prone", 53, duration=5, source_label="knockdown")
+        self.apply_condition("restrained", 54, duration=10, source_label="net")
+        self._list_active_conditions()
+        atk_mod = self._get_condition_attack_modifier()
+        def_bonus = self._get_condition_defense_bonus()
+        print(f"    Attack modifier: {atk_mod} (prone -20, restrained -20)")
+        print(f"    Defense bonus vs subject: +{def_bonus} (restrained +10)")
+        print()
+        print("  --- Phase 7: Prone not removed by generic cure ---")
+        self.log("  Cure (id 20) tries to dispel prone:")
+        result = self.try_dispel_condition("prone", 20, "cure")
+        self.log(f"  Result: {'dispelled' if result else 'not removed'}")
+        self.log("  Prone requires the 'stand' action, not cure.")
         self._list_active_conditions()
         print(f"{'=' * 60}")
 
