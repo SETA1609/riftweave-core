@@ -1,0 +1,11 @@
+{
+  "key": "elemental",
+  "label": "Elemental Base",
+  "description": "Base template for elemental beings. Elementals have extreme stats in their domain, moderate elsewhere, and their phase matches their element. They can drop spirit cores.",
+  "phase": "fire",
+  "size": "medium",
+  "level": 4,
+  "attributes": { "str": 5, "end": 5, "agi": 5, "per": 5, "wil": 5 },
+  "hitPoints": 50,
+  "tags": ["elemental"]
+}

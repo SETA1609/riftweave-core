@@ -1,0 +1,11 @@
+{
+  "key": "humanoid",
+  "label": "Humanoid Base",
+  "description": "Base template for humanoids. Humanoids have balanced attributes and use tactics rather than raw power. They never drop spirit cores.",
+  "phase": "wood",
+  "size": "medium",
+  "level": 3,
+  "attributes": { "str": 4, "end": 4, "agi": 4, "per": 4, "wil": 4 },
+  "hitPoints": 35,
+  "tags": ["humanoid"]
+}

@@ -1,0 +1,11 @@
+{
+  "key": "plant",
+  "label": "Plant Base",
+  "description": "Base template for plant creatures. Plants have high endurance, very low agility, and are rooted in the wood phase. They are vulnerable to fire.",
+  "phase": "wood",
+  "size": "medium",
+  "level": 2,
+  "attributes": { "str": 4, "end": 6, "agi": 1, "per": 3, "wil": 3 },
+  "hitPoints": 35,
+  "tags": ["plant"]
+}

@@ -1,0 +1,11 @@
+{
+  "key": "beast",
+  "label": "Beast Base",
+  "description": "Base template for natural beasts. Beasts have strong physical attributes but poor mental ones. They are typically wood-phase. Most beasts do not drop spirit cores.",
+  "phase": "wood",
+  "size": "medium",
+  "level": 2,
+  "attributes": { "str": 4, "end": 4, "agi": 5, "per": 4, "wil": 2 },
+  "hitPoints": 28,
+  "tags": ["beast"]
+}

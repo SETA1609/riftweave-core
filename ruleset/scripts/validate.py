@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "data"
 SCHEMA_DIR = ROOT / "schemas"
 MODULES_DIR = ROOT / "modules"
+MONSTERS_BASES_DIR = DATA_DIR / "monsters" / "bases"
 
 
 def load_store():
@@ -27,7 +28,10 @@ def load_store():
 
 
 def collect_data_files():
-    for dirpath, _, filenames in os.walk(DATA_DIR):
+    for dirpath, dirnames, filenames in os.walk(DATA_DIR):
+        # Skip bases/ directories (they are resolved via base+override merging,
+        # not validated as standalone data files)
+        dirnames[:] = [d for d in dirnames if d != "bases"]
         for f in filenames:
             if f.endswith(".json"):
                 yield Path(dirpath) / f
@@ -249,6 +253,65 @@ def check_references(data, coll_name, id_index):
     return errors
 
 
+def _base_cache():
+    """Lazy-load and cache monster base templates.
+    Returns dict mapping base key -> merged base data dict.
+    """
+    cache = {}
+    if not MONSTERS_BASES_DIR.exists():
+        return cache
+    for f in sorted(MONSTERS_BASES_DIR.glob("*.json")):
+        try:
+            base_key = f.stem
+            cache[base_key] = json.loads(f.read_text())
+        except (json.JSONDecodeError, OSError):
+            pass
+    return cache
+
+
+_BASE_CACHE = None
+
+
+def _resolve_monster_bases(data, errors):
+    """Mutate data in-place: replace base+override entries with merged flat entries.
+    For entries with a 'base' field, load the base template and shallow-merge
+    overrides on top. Appends error strings for missing/invalid bases.
+    """
+    global _BASE_CACHE
+    if _BASE_CACHE is None:
+        _BASE_CACHE = _base_cache()
+
+    monsters = data.get("monsters")
+    if not isinstance(monsters, list):
+        return
+
+    for i, entry in enumerate(monsters):
+        if not isinstance(entry, dict):
+            continue
+        base_key = entry.get("base")
+        if not base_key:
+            continue
+        overrides = entry.get("overrides")
+        if not isinstance(overrides, dict):
+            errors.append(f"monsters[{i}]: base '{base_key}' has no overrides object")
+            continue
+        if base_key not in _BASE_CACHE:
+            errors.append(f"monsters[{i}]: base '{base_key}' not found in bases/")
+            continue
+        # Shallow merge: base fields + override fields (override wins).
+        # Arrays (abilities, tags) are replaced entirely by override, not concatenated.
+        merged = dict(_BASE_CACHE[base_key])
+        for k, v in overrides.items():
+            merged[k] = v
+        # Carry over id and key from the entry wrapper
+        merged["id"] = entry.get("id")
+        merged["key"] = entry.get("key")
+        if entry.get("source"):
+            merged["source"] = entry["source"]
+        # Replace the entry in-place for validation
+        monsters[i] = merged
+
+
 def _validate_single_data_file(fp, store, id_index, rel_base):
     """Validate one data file against its $schema and check cross-references.
 
@@ -263,6 +326,14 @@ def _validate_single_data_file(fp, store, id_index, rel_base):
         data = json.loads(fp.read_text())
     except json.JSONDecodeError as e:
         return False, [f"JSON {e}"], rel
+
+    # Resolve monster base+override entries before validation.
+    # This merges base templates with override data and replaces
+    # base+override entries with flat monster entries in-place.
+    errors = []
+    _resolve_monster_bases(data, errors)
+    if errors:
+        return False, errors, rel
 
     schema_ref = data.get("$schema")
     if not schema_ref:
@@ -281,7 +352,6 @@ def _validate_single_data_file(fp, store, id_index, rel_base):
         store=store,
     )
 
-    errors = []
     try:
         validate(data, schema, resolver=resolver)
     except ValidationError as e:

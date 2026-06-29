@@ -1,0 +1,11 @@
+{
+  "key": "undead",
+  "label": "Undead Base",
+  "description": "Base template for undead creatures. Undead have high willpower from necromantic binding, low agility from decayed tissue, and are immune to poison and disease. They never drop spirit cores.",
+  "phase": "water",
+  "size": "medium",
+  "level": 3,
+  "attributes": { "str": 4, "end": 5, "agi": 3, "per": 3, "wil": 6 },
+  "hitPoints": 40,
+  "tags": ["undead"]
+}
