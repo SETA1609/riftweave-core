@@ -4,98 +4,241 @@
     {
       "id": 1,
       "key": "ember_drake",
-      "label": "Ember Drake",
-      "description": "A lesser dragon wreathed in living flame. Its breath sets the air alight.",
-      "phase": "fire",
-      "size": "large",
-      "level": 6,
-      "attributes": { "str": 7, "end": 6, "agi": 6, "per": 5, "wil": 4 },
-      "hitPoints": 78,
-      "abilities": [
-        { "effect": 1, "magnitude": 18, "target": "area", "radius": 5 }
-      ],
-      "tags": ["dragon", "elemental"],
-      "coreDrop": {
-        "baseChance": 0.09,
-        "minGrade": "lesser",
-        "maxGrade": "common"
+      "base": "elemental",
+      "overrides": {
+        "label": "Ember Drake",
+        "description": "A lesser dragon wreathed in living flame. Its breath sets the air alight and its touch leaves lingering burns.",
+        "phase": "fire",
+        "size": "large",
+        "level": 6,
+        "attributes": { "str": 7, "agi": 6, "per": 5 },
+        "hitPoints": 78,
+        "abilities": [
+          { "effect": 1, "magnitude": 18, "target": "area", "radius": 5 },
+          { "effect": 57, "magnitude": 4, "duration": 10, "target": "area", "radius": 5 }
+        ],
+        "tags": ["dragon", "elemental"],
+        "coreDrop": {
+          "baseChance": 0.09,
+          "minGrade": "lesser",
+          "maxGrade": "common"
+        }
       }
     },
     {
       "id": 2,
       "key": "stone_golem",
-      "label": "Stone Golem",
-      "description": "A lumbering construct hewn from bedrock, slow but nearly unstoppable.",
-      "phase": "earth",
-      "size": "large",
-      "level": 5,
-      "attributes": { "str": 8, "end": 9, "agi": 2, "wil": 3 },
-      "hitPoints": 110,
-      "abilities": [
-        { "effect": 11, "magnitude": 3, "target": "touch" },
-        { "effect": 6, "magnitude": 12, "target": "touch" }
-      ],
-      "tags": ["construct", "elemental"],
-      "coreDrop": {
-        "baseChance": 0.08,
-        "minGrade": "lesser",
-        "maxGrade": "common"
+      "base": "construct",
+      "overrides": {
+        "label": "Stone Golem",
+        "description": "A lumbering construct hewn from bedrock, slow but nearly unstoppable. Its fists shatter bone and leave victims stunned.",
+        "phase": "earth",
+        "size": "large",
+        "level": 5,
+        "attributes": { "str": 8, "end": 9, "agi": 2 },
+        "hitPoints": 110,
+        "abilities": [
+          { "effect": 11, "magnitude": 3, "target": "touch" },
+          { "effect": 6, "magnitude": 12, "target": "touch" },
+          { "effect": 55, "magnitude": 2, "duration": 4, "target": "touch" }
+        ],
+        "tags": ["construct", "elemental"],
+        "coreDrop": {
+          "baseChance": 0.08,
+          "minGrade": "lesser",
+          "maxGrade": "common"
+        }
       }
     },
     {
       "id": 3,
       "key": "grove_stalker",
-      "label": "Grove Stalker",
-      "description": "A thorn-skinned predator of the deep wood, its claws weep venomous sap.",
-      "phase": "wood",
-      "size": "medium",
-      "level": 3,
-      "attributes": { "str": 5, "end": 4, "agi": 7, "per": 6 },
-      "hitPoints": 38,
-      "abilities": [
-        { "effect": 5, "magnitude": 9, "target": "touch" }
-      ],
-      "tags": ["beast", "fey"],
-      "coreDrop": {
-        "baseChance": 0.07,
-        "minGrade": "minor",
-        "maxGrade": "lesser"
+      "base": "beast",
+      "overrides": {
+        "label": "Grove Stalker",
+        "description": "A thorn-skinned predator of the deep wood, its claws weep venomous sap that poisons its prey.",
+        "phase": "wood",
+        "size": "medium",
+        "level": 3,
+        "attributes": { "str": 5, "agi": 7, "per": 6 },
+        "hitPoints": 38,
+        "abilities": [
+          { "effect": 58, "magnitude": 2, "duration": 12, "target": "touch" },
+          { "effect": 46, "magnitude": 1, "duration": 20, "target": "touch" }
+        ],
+        "tags": ["beast", "fey"],
+        "coreDrop": {
+          "baseChance": 0.07,
+          "minGrade": "minor",
+          "maxGrade": "lesser"
+        }
       }
     },
     {
       "id": 4,
       "key": "frost_revenant",
-      "label": "Frost Revenant",
-      "description": "The risen dead of those who froze in the high passes, exhaling killing cold.",
-      "phase": "water",
-      "size": "medium",
-      "level": 4,
-      "attributes": { "str": 5, "end": 6, "agi": 4, "wil": 6 },
-      "hitPoints": 52,
-      "abilities": [
-        { "effect": 2, "magnitude": 14, "target": "ranged" }
-      ],
-      "tags": ["undead"]
+      "base": "undead",
+      "overrides": {
+        "label": "Frost Revenant",
+        "description": "The risen dead of those who froze in the high passes, exhaling killing cold that numbs the living.",
+        "phase": "water",
+        "size": "medium",
+        "level": 4,
+        "attributes": { "str": 5, "end": 6, "wil": 6 },
+        "abilities": [
+          { "effect": 2, "magnitude": 14, "target": "ranged" },
+          { "effect": 59, "magnitude": 5, "duration": 12, "target": "ranged" }
+        ],
+        "tags": ["undead"]
+      }
     },
     {
       "id": 5,
       "key": "iron_sentinel",
-      "label": "Iron Sentinel",
-      "description": "An animated suit of war-plate that guards forgotten vaults, striking with crushing force.",
-      "phase": "metal",
-      "size": "large",
-      "level": 7,
-      "attributes": { "str": 9, "end": 8, "agi": 4, "wil": 4 },
-      "hitPoints": 95,
-      "abilities": [
-        { "effect": 4, "magnitude": 16, "target": "touch" },
-        { "effect": 32, "parameter": "end", "magnitude": 2, "duration": 20, "target": "self", "durationType": "temporal" }
-      ],
-      "tags": ["construct"],
-      "coreDrop": {
-        "baseChance": 0.10,
-        "minGrade": "common",
-        "maxGrade": "major"
+      "base": "construct",
+      "overrides": {
+        "label": "Iron Sentinel",
+        "description": "An animated suit of war-plate that guards forgotten vaults, striking with crushing force that staggers its foes.",
+        "phase": "metal",
+        "size": "large",
+        "level": 7,
+        "attributes": { "str": 9, "end": 8, "agi": 4 },
+        "hitPoints": 95,
+        "abilities": [
+          { "effect": 4, "magnitude": 16, "target": "touch" },
+          { "effect": 32, "parameter": "end", "magnitude": 2, "duration": 20, "target": "self", "durationType": "temporal" },
+          { "effect": 64, "magnitude": 1, "duration": 3, "target": "touch" }
+        ],
+        "tags": ["construct"],
+        "coreDrop": {
+          "baseChance": 0.10,
+          "minGrade": "common",
+          "maxGrade": "major"
+        }
+      }
+    },
+    {
+      "id": 6,
+      "key": "skeleton",
+      "base": "undead",
+      "overrides": {
+        "label": "Skeleton",
+        "description": "The animated bones of a long-dead warrior, raised by dark magic. Its attacks chip away at armor and expose weaknesses.",
+        "phase": "water",
+        "size": "medium",
+        "level": 1,
+        "attributes": { "str": 3, "agi": 4, "per": 2 },
+        "hitPoints": 18,
+        "abilities": [
+          { "effect": 4, "magnitude": 6, "target": "touch" },
+          { "effect": 62, "magnitude": 1, "duration": 10, "target": "touch" }
+        ],
+        "tags": ["undead", "skeletal"]
+      }
+    },
+    {
+      "id": 7,
+      "key": "zombie",
+      "base": "undead",
+      "overrides": {
+        "label": "Zombie",
+        "description": "A shambling corpse animated by necromantic will. Its rotting touch spreads poison through the victim's veins.",
+        "phase": "water",
+        "size": "medium",
+        "level": 1,
+        "attributes": { "str": 4, "end": 4, "agi": 1, "per": 1 },
+        "hitPoints": 30,
+        "abilities": [
+          { "effect": 46, "magnitude": 1, "duration": 25, "target": "touch" },
+          { "effect": 5, "magnitude": 4, "target": "touch" }
+        ],
+        "tags": ["undead"]
+      }
+    },
+    {
+      "id": 8,
+      "key": "dire_wolf",
+      "base": "beast",
+      "overrides": {
+        "label": "Dire Wolf",
+        "description": "A massive wolf the size of a horse, alpha of its pack. Its bite causes deep bleeding and its bulk knocks prey prone.",
+        "phase": "wood",
+        "size": "large",
+        "level": 3,
+        "attributes": { "str": 6, "agi": 6, "per": 6 },
+        "hitPoints": 35,
+        "abilities": [
+          { "effect": 58, "magnitude": 3, "duration": 15, "target": "touch" },
+          { "effect": 53, "magnitude": 2, "duration": 3, "target": "touch" }
+        ],
+        "tags": ["beast"]
+      }
+    },
+    {
+      "id": 9,
+      "key": "fire_elemental",
+      "base": "elemental",
+      "overrides": {
+        "label": "Fire Elemental",
+        "description": "A roiling mass of living flame that scorches everything in its path and leaves its victims burning.",
+        "phase": "fire",
+        "size": "medium",
+        "level": 5,
+        "attributes": { "str": 7, "agi": 6, "per": 4 },
+        "hitPoints": 55,
+        "abilities": [
+          { "effect": 1, "magnitude": 14, "target": "touch" },
+          { "effect": 57, "magnitude": 3, "duration": 8, "target": "touch" }
+        ],
+        "tags": ["elemental", "fire"],
+        "coreDrop": {
+          "baseChance": 0.10,
+          "minGrade": "lesser",
+          "maxGrade": "greater"
+        }
+      }
+    },
+    {
+      "id": 10,
+      "key": "ice_elemental",
+      "base": "elemental",
+      "overrides": {
+        "label": "Ice Elemental",
+        "description": "A frigid being of living ice that freezes the air around it and slows those who draw near.",
+        "phase": "water",
+        "size": "medium",
+        "level": 4,
+        "attributes": { "str": 6, "agi": 4, "per": 5 },
+        "hitPoints": 48,
+        "abilities": [
+          { "effect": 2, "magnitude": 12, "target": "ranged" },
+          { "effect": 59, "magnitude": 4, "duration": 10, "target": "ranged" }
+        ],
+        "tags": ["elemental", "ice"],
+        "coreDrop": {
+          "baseChance": 0.09,
+          "minGrade": "lesser",
+          "maxGrade": "greater"
+        }
+      }
+    },
+    {
+      "id": 11,
+      "key": "bandit",
+      "base": "humanoid",
+      "overrides": {
+        "label": "Bandit",
+        "description": "A desperate outlaw who preys on travellers. Uses dirty tricks like leg sweeps to knock foes off balance.",
+        "phase": "wood",
+        "size": "medium",
+        "level": 1,
+        "attributes": { "agi": 4, "per": 3 },
+        "hitPoints": 20,
+        "abilities": [
+          { "effect": 4, "magnitude": 6, "target": "touch" },
+          { "effect": 53, "magnitude": 1, "duration": 2, "target": "touch" }
+        ],
+        "tags": ["humanoid", "bandit"]
       }
     }
   ]

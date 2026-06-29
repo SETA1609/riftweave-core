@@ -1,0 +1,20 @@
+{
+  "key": "construct",
+  "label": "Construct Base",
+  "description": "Base template for constructs. Constructs have exceptional endurance, poor agility, and no willpower (immune to mind-affecting effects). They are typically earth- or metal-phase. Some constructs can drop spirit cores.",
+  "phase": "earth",
+  "size": "large",
+  "level": 5,
+  "attributes": { "str": 7, "end": 8, "agi": 2, "wil": 3 },
+  "hitPoints": 80,
+  "tags": ["construct"],
+  "growth": {
+    "attributes": {
+      "str": { "perLevel": 0.5 },
+      "end": { "perLevel": 0.6 },
+      "agi": { "perLevel": 0.2 },
+      "wil": { "perLevel": 0.1 }
+    },
+    "hitPointsPerLevel": 12
+  }
+}

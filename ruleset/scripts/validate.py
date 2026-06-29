@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "data"
 SCHEMA_DIR = ROOT / "schemas"
 MODULES_DIR = ROOT / "modules"
+MONSTERS_BASES_DIR = DATA_DIR / "monsters" / "bases"
 
 
 def load_store():
@@ -27,7 +28,10 @@ def load_store():
 
 
 def collect_data_files():
-    for dirpath, _, filenames in os.walk(DATA_DIR):
+    for dirpath, dirnames, filenames in os.walk(DATA_DIR):
+        # Skip bases/ directories (they are resolved via base+override merging,
+        # not validated as standalone data files)
+        dirnames[:] = [d for d in dirnames if d != "bases"]
         for f in filenames:
             if f.endswith(".json"):
                 yield Path(dirpath) / f
@@ -249,6 +253,150 @@ def check_references(data, coll_name, id_index):
     return errors
 
 
+def _base_cache():
+    """Lazy-load and cache monster base templates.
+    Returns dict mapping base key -> merged base data dict.
+    """
+    cache = {}
+    if not MONSTERS_BASES_DIR.exists():
+        return cache
+    for f in sorted(MONSTERS_BASES_DIR.glob("*.json")):
+        try:
+            base_key = f.stem
+            cache[base_key] = json.loads(f.read_text())
+        except (json.JSONDecodeError, OSError):
+            pass
+    return cache
+
+
+_BASE_CACHE = None
+
+
+def _apply_growth(base, level):
+    """Compute expected attribute values for a monster at a given level using
+    the base template's growth rules.
+
+    Growth is defined per ability as a perLevel rate. The formula:
+      attr = round(base_attr + perLevel * (level - base_level))
+
+    Returns a dict of ability -> int, or None if base has no growth section.
+    """
+    growth = base.get("growth")
+    if not growth:
+        return None
+    attr_growth = growth.get("attributes", {})
+    if not attr_growth:
+        return None
+    base_level = base.get("level", 1)
+    base_attrs = base.get("attributes", {})
+    delta = level - base_level
+    computed = {}
+    for ability in attr_growth:
+        base_val = base_attrs.get(ability, 1)
+        per = attr_growth[ability].get("perLevel", 0)
+        computed[ability] = max(1, round(base_val + per * delta))
+    return computed
+
+
+def _apply_growth_hp(base, level):
+    """Compute expected hit points using hitPointsPerLevel growth."""
+    growth = base.get("growth")
+    if not growth:
+        return None
+    hp_per_level = growth.get("hitPointsPerLevel")
+    if hp_per_level is None:
+        return None
+    base_level = base.get("level", 1)
+    base_hp = base.get("hitPoints", 10)
+    delta = level - base_level
+    return max(1, round(base_hp + hp_per_level * delta))
+
+
+def _merge_field(base_val, override_val):
+    """Merge a single field from override into base.
+
+    Supports $extend convention: if override_val is a dict with an
+    $extend key, the $extend array is appended to the base array.
+    Otherwise override replaces base (or is added if base lacks the field).
+    """
+    if isinstance(override_val, dict) and "$extend" in override_val:
+        items = override_val["$extend"]
+        if isinstance(base_val, list) and isinstance(items, list):
+            return base_val + items
+        if isinstance(items, list):
+            return list(items)
+        return base_val
+    return override_val
+
+
+def _resolve_monster_bases(data, errors):
+    """Mutate data in-place: replace base+override entries with merged flat entries.
+
+    Supports:
+      - $extend convention for array fields (abilities, tags)
+      - Growth-based attribute and HP scaling from base templates
+      - Full override of any field (replaces base)
+    """
+    global _BASE_CACHE
+    if _BASE_CACHE is None:
+        _BASE_CACHE = _base_cache()
+
+    monsters = data.get("monsters")
+    if not isinstance(monsters, list):
+        return
+
+    for i, entry in enumerate(monsters):
+        if not isinstance(entry, dict):
+            continue
+        base_key = entry.get("base")
+        if not base_key:
+            continue
+        overrides = entry.get("overrides")
+        if not isinstance(overrides, dict):
+            errors.append(f"monsters[{i}]: base '{base_key}' has no overrides object")
+            continue
+        if base_key not in _BASE_CACHE:
+            errors.append(f"monsters[{i}]: base '{base_key}' not found in bases/")
+            continue
+
+        base_data = _BASE_CACHE[base_key]
+        merged = dict(base_data)
+
+        # Remove growth blueprint from merged entry (it's not a valid monster field)
+        merged.pop("growth", None)
+
+        # Apply growth-based attribute scaling
+        level = overrides.get("level") or base_data.get("level", 1)
+        computed_attrs = _apply_growth(base_data, level)
+        if computed_attrs is not None:
+            merged["attributes"] = computed_attrs
+
+        # Apply growth-based HP scaling
+        computed_hp = _apply_growth_hp(base_data, level)
+        if computed_hp is not None:
+            merged["hitPoints"] = computed_hp
+
+        # Merge override fields on top (individual attribute overrides merge
+        # into the computed set rather than replacing the whole object)
+        for k, v in overrides.items():
+            if (
+                k == "attributes"
+                and isinstance(v, dict)
+                and isinstance(merged.get("attributes"), dict)
+            ):
+                merged["attributes"].update(v)
+            else:
+                merged[k] = _merge_field(merged.get(k), v)
+
+        # Carry over id and key from the entry wrapper
+        merged["id"] = entry.get("id")
+        merged["key"] = entry.get("key")
+        if entry.get("source"):
+            merged["source"] = entry["source"]
+        # Replace the entry in-place for validation
+        monsters[i] = merged
+
+
 def _validate_single_data_file(fp, store, id_index, rel_base):
     """Validate one data file against its $schema and check cross-references.
 
@@ -263,6 +411,14 @@ def _validate_single_data_file(fp, store, id_index, rel_base):
         data = json.loads(fp.read_text())
     except json.JSONDecodeError as e:
         return False, [f"JSON {e}"], rel
+
+    # Resolve monster base+override entries before validation.
+    # This merges base templates with override data and replaces
+    # base+override entries with flat monster entries in-place.
+    errors = []
+    _resolve_monster_bases(data, errors)
+    if errors:
+        return False, errors, rel
 
     schema_ref = data.get("$schema")
     if not schema_ref:
@@ -281,7 +437,6 @@ def _validate_single_data_file(fp, store, id_index, rel_base):
         store=store,
     )
 
-    errors = []
     try:
         validate(data, schema, resolver=resolver)
     except ValidationError as e:
