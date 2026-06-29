@@ -100,6 +100,17 @@ Data in `conditions/core.json` (24 entries). Each entry:
 | `removedBy` | Effect IDs that can remove this condition |
 | `stacking` | Whether multiple instances stack |
 | `maxStacks` | Maximum stack count |
+| `combat` | Optional object describing mechanical combat impact (attack penalty, defense bonus, action blocking, auto-crit). See §9 for details. All fields are optional; omit for conditions with no direct combat modifiers. |
+
+The `combat` object (if present) contains:
+
+| Sub-field | Type | Meaning |
+|-----------|------|---------|
+| `attack_penalty` | integer | Flat penalty to the bearer's attack rolls. |
+| `defense_bonus` | integer | Bonus to attackers' rolls against the bearer. |
+| `prevents_action` | boolean | Bearer cannot act while this condition is active. |
+| `auto_crit_when_target` | boolean | Melee attacks against the bearer auto-crit. |
+| `attack_penalty_per_stack` | integer | Per-stack attack penalty (multiplied by current stack count for stacking conditions like exhaustion). |
 
 | # | Key | TTRPG Effect | Video Game Effect | appliedBy (effect ids) |
 |---|-----|-------------|-------------------|----------------------|
@@ -309,15 +320,19 @@ Coating: Paralytic Poison (mag 4, uses 3)
 
 ---
 
-## 9. Condition Mechanical Impact (Reference Implementation)
+## 9. Condition Mechanical Impact (Data-Driven)
 
-As of the `feat/conditions-integration` branch, conditions in `combat_reference.py`
-have **active mechanical impact** on combat resolution. The following methods are
-implemented and wired into `resolve_attack()`:
+Condition combat mechanics are **fully data-driven**. Each condition in
+`conditions/core.json` that has a `combat` object contributes its modifiers.
+The resolver (`combat_reference.py`) reads these at startup via
+`_build_combat_modifiers()` and never hardcodes a condition key or value.
+
+The following methods are implemented and wired into `resolve_attack()`:
 
 ### Attack Modifier
 
-`_get_condition_attack_modifier()` sums attack penalties from active conditions:
+`_get_condition_attack_modifier()` sums `attack_penalty` and
+`attack_penalty_per_stack` from active conditions' `combat` objects:
 
 | Condition | Attack Penalty |
 |-----------|---------------|
@@ -332,30 +347,33 @@ These are subtracted from the attacker's target number (`attacker_skill_value + 
 
 ### Defense Bonus
 
-`_get_condition_defense_bonus()` returns the bonus TO attackers when the subject
-has certain conditions:
+`_get_condition_defense_bonus()` returns the sum of `defense_bonus` values from
+active conditions' `combat` objects. This bonus is added to attackers' rolls
+against the subject. Conditions with `defense_bonus` include:
 
 | Condition | Bonus to Attackers |
 |-----------|-------------------|
 | `blinded` | +10 |
-| `stunned` | +10 |
-| `restrained` | +10 |
 | `prone` | +10 (ranged) |
+| `restrained` | +10 |
+| `stunned` | +10 |
 
 This is logged but not yet subtracted from the defender's effective evasion — that
 requires full character stat integration (deferred).
 
 ### Action Blocking
 
-`_can_take_action()` returns `False` if any of these conditions are present:
+`_can_take_action()` returns `False` if any active condition has
+`combat.prevents_action: true`. Currently, these conditions block all actions:
 `incapacitated`, `paralyzed`, `petrified`, `stunned`, `unconscious`.
 
 ### Auto-Crit
 
 After all effects are processed in `resolve_attack()`, `_is_auto_crit_target()`
-checks whether the target has `paralyzed` or `unconscious`. If so, the hit is
-**upgraded to a critical** automatically — damage dice are doubled and the
-`hit_quality` is set to `"critical"`.
+checks whether any active condition has `combat.auto_crit_when_target: true`.
+If so, the hit is **upgraded to a critical** automatically — damage dice are
+doubled and the `hit_quality` is set to `"critical"`. Currently applies to
+`paralyzed` and `unconscious`.
 
 ### Stacking Intensity
 
@@ -410,6 +428,11 @@ The following items were addressed in the `feat/conditions-integration` branch:
   attack modifiers, defense bonuses, action blocking (incapacitating conditions),
   auto-crit on paralyzed/unconscious targets, and exhaustion stacking with
   per-level penalties. See §9 above.
+- ✅ **Combat mechanics moved to data:** The `combat` object in each condition
+  entry now drives all modifier lookups (`attack_penalty`, `defense_bonus`,
+  `prevents_action`, `auto_crit_when_target`, `attack_penalty_per_stack`).
+  The resolver builds its maps dynamically at startup and has no hardcoded
+  condition-specific values.
 - ✅ **Immunity/resistance stub:** `_check_immunity()` placeholder added — logs
   but always passes. Ready for wiring into the `resist` effect system.
 - ✅ **Exhaustion stacking demo:** Enhanced to show progressive stack accumulation

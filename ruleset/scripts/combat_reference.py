@@ -96,50 +96,22 @@ class CombatResolver:
         self.quality = self.resolution["hitQuality"]
         self.defense_cfg = self.resolution["defense"]
 
-        # Condition mechanical modifier maps (data-driven for quick reference)
-        # Keyed by condition key; applied when that condition is active on the subject.
-        # Attack penalty: applied to the subject's attack rolls
-        self.CONDITION_ATTACK_PENALTY = {
-            "frightened": -10,
-            "prone": -20,
-            "restrained": -20,
-            "staggered": -10,
-            "taunted": -20,
-        }
-        # Defense bonus: bonus TO attack rolls made AGAINST the subject
-        self.CONDITION_DEFENSE_BONUS = {
-            "blinded": 10,
-            "stunned": 10,
-            "restrained": 10,
-            "prone": 10,
-        }
-        # Conditions that fully prevent the subject from taking any action
-        self.CONDITION_CANNOT_ACT = {
-            "incapacitated",
-            "paralyzed",
-            "petrified",
-            "stunned",
-            "unconscious",
-        }
-        # Conditions on the TARGET that make them auto-crit by melee attackers
-        self.CONDITION_AUTO_CRIT_TARGET = {
-            "paralyzed",
-            "unconscious",
-        }
-        # Per-stack attack penalty for exhaustion
-        self.EXHAUSTION_ATTACK_PENALTY_PER_STACK = -10
+        # Condition combat modifiers are built dynamically from
+        # conditions/core.json → combat object in each entry.
+        # See _build_combat_modifiers() below.
+        self._build_condition_mappings()
+        self._build_combat_modifiers()
 
         # TODO: Extract ConditionManager class
         # The condition tracking + mechanical impact methods below are a
         # natural seam for extraction. A dedicated ConditionManager would
-        # own _build_condition_mappings, reset/apply/dispel/advance, the
-        # modifier maps, and all _get_condition_* / _can_take_action /
-        # _is_auto_crit_target methods. CombatResolver would delegate
-        # to it via self.conditions.apply(...) etc.
-        # For now, inline is fine — extraction is ~50 lines of boilerplate
-        # and doesn't change behavior.
+        # own _build_condition_mappings, _build_combat_modifiers,
+        # reset/apply/dispel/advance, and all _get_condition_* /
+        # _can_take_action / _is_auto_crit_target methods.
+        # CombatResolver would delegate to it via self.conditions.apply(...)
+        # etc.  For now, inline is fine — extraction is ~50 lines of
+        # boilerplate and doesn't change behavior.
 
-        self._build_condition_mappings()
         self.reset_conditions()
 
     def reset_conditions(self):
@@ -183,6 +155,35 @@ class CombatResolver:
                 )
             for eid in cond.get("removedBy", []):
                 self.effect_to_dispels.setdefault(eid, []).append((cond["key"], cond))
+
+    def _build_combat_modifiers(self):
+        """Build combat modifier maps from conditions/core.json → combat object.
+        Replaces previously hardcoded dictionaries with data-driven lookups.
+        """
+        self.attack_penalties = {}
+        self.defense_bonuses = {}
+        self.cannot_act = set()
+        self.auto_crit_targets = set()
+        self.attack_penalty_per_stack = 0
+
+        for cond in self.conditions_data:
+            cmb = cond.get("combat")
+            if not cmb:
+                continue
+            key = cond["key"]
+            ap = cmb.get("attack_penalty")
+            if ap:
+                self.attack_penalties[key] = ap
+            db = cmb.get("defense_bonus")
+            if db:
+                self.defense_bonuses[key] = db
+            if cmb.get("prevents_action"):
+                self.cannot_act.add(key)
+            if cmb.get("auto_crit_when_target"):
+                self.auto_crit_targets.add(key)
+            aps = cmb.get("attack_penalty_per_stack")
+            if aps:
+                self.attack_penalty_per_stack = aps
 
     def _get_duration(self, effect_id, dur):
         if dur and dur > 0:
@@ -367,30 +368,35 @@ class CombatResolver:
     # --- Condition Mechanical Impact Methods ---
 
     def _get_condition_attack_modifier(self):
-        """Return total attack roll penalty/bonus from active conditions."""
+        """Return total attack roll penalty/bonus from active conditions.
+        Data source: conditions/core.json → combat.attack_penalty / attack_penalty_per_stack
+        """
         modifier = 0
         detail = []
         for ck, entry in self.active_conditions.items():
-            penalty = self.CONDITION_ATTACK_PENALTY.get(ck, 0)
+            penalty = self.attack_penalties.get(ck, 0)
             if penalty:
                 detail.append(f"{ck}: {penalty}")
                 modifier += penalty
-            if ck == "exhaustion":
+            # Per-stack penalty (exhaustion): attack_penalty_per_stack * current stacks
+            if self.attack_penalty_per_stack and entry.get("stacking"):
                 stacks = min(entry.get("stacks", 0), 6)
-                ex_penalty = stacks * self.EXHAUSTION_ATTACK_PENALTY_PER_STACK
-                if ex_penalty:
-                    detail.append(f"exhaustion x{stacks}: {ex_penalty}")
-                    modifier += ex_penalty
+                sp = stacks * self.attack_penalty_per_stack
+                if sp:
+                    detail.append(f"{ck} x{stacks}: {sp}")
+                    modifier += sp
         if detail:
             self.log(f"  Condition attack modifier: {' + '.join(detail)} = {modifier}")
         return modifier
 
     def _get_condition_defense_bonus(self):
-        """Return bonus TO attack rolls made AGAINST the subject."""
+        """Return bonus TO attack rolls made AGAINST the subject.
+        Data source: conditions/core.json → combat.defense_bonus
+        """
         bonus = 0
         detail = []
         for ck, entry in self.active_conditions.items():
-            b = self.CONDITION_DEFENSE_BONUS.get(ck, 0)
+            b = self.defense_bonuses.get(ck, 0)
             if b:
                 detail.append(f"{ck}: +{b} to attackers")
                 bonus += b
@@ -399,18 +405,22 @@ class CombatResolver:
         return bonus
 
     def _can_take_action(self):
-        """Return False if any active condition prevents the subject from acting."""
+        """Return False if any active condition prevents the subject from acting.
+        Data source: conditions/core.json → combat.prevents_action
+        """
         for ck in self.active_conditions:
-            if ck in self.CONDITION_CANNOT_ACT:
+            if ck in self.cannot_act:
                 label = self.active_conditions[ck]["label"]
                 self.log(f"  -> Cannot act: [{label}] prevents all actions")
                 return False
         return True
 
     def _is_auto_crit_target(self):
-        """Return True if active conditions make the subject auto-crit by melee."""
+        """Return True if active conditions make the subject auto-crit by melee.
+        Data source: conditions/core.json → combat.auto_crit_when_target
+        """
         for ck in self.active_conditions:
-            if ck in self.CONDITION_AUTO_CRIT_TARGET:
+            if ck in self.auto_crit_targets:
                 return True
         return False
 
