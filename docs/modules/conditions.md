@@ -110,7 +110,7 @@ The `combat` object (if present) contains:
 | `defense_bonus` | integer | Bonus to attackers' rolls against the bearer. |
 | `prevents_action` | boolean | Bearer cannot act while this condition is active. |
 | `auto_crit_when_target` | boolean | Melee attacks against the bearer auto-crit. |
-| `attack_penalty_per_stack` | integer | Per-stack attack penalty (multiplied by current stack count for stacking conditions like exhaustion). |
+| `attack_penalty_per_stack` | integer | Per-stack attack penalty, defined per-condition. The resolver multiplies this by the current stack count. Example: exhaustion at 3/6 stacks produces a 3 × −10 = −30 penalty. Future stacking conditions can define their own rate. |
 
 | # | Key | TTRPG Effect | Video Game Effect | appliedBy (effect ids) |
 |---|-----|-------------|-------------------|----------------------|

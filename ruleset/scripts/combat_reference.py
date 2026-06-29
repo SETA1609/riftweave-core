@@ -164,7 +164,7 @@ class CombatResolver:
         self.defense_bonuses = {}
         self.cannot_act = set()
         self.auto_crit_targets = set()
-        self.attack_penalty_per_stack = 0
+        self.attack_penalty_per_stack = {}
 
         for cond in self.conditions_data:
             cmb = cond.get("combat")
@@ -183,7 +183,7 @@ class CombatResolver:
                 self.auto_crit_targets.add(key)
             aps = cmb.get("attack_penalty_per_stack")
             if aps:
-                self.attack_penalty_per_stack = aps
+                self.attack_penalty_per_stack[key] = aps
 
     def _get_duration(self, effect_id, dur):
         if dur and dur > 0:
@@ -374,14 +374,14 @@ class CombatResolver:
         modifier = 0
         detail = []
         for ck, entry in self.active_conditions.items():
-            penalty = self.attack_penalties.get(ck, 0)
-            if penalty:
-                detail.append(f"{ck}: {penalty}")
-                modifier += penalty
-            # Per-stack penalty (exhaustion): attack_penalty_per_stack * current stacks
-            if self.attack_penalty_per_stack and entry.get("stacking"):
+            flat_penalty = self.attack_penalties.get(ck, 0)
+            if flat_penalty:
+                detail.append(f"{ck}: {flat_penalty}")
+                modifier += flat_penalty
+            per_stack = self.attack_penalty_per_stack.get(ck, 0)
+            if per_stack and entry.get("stacking"):
                 stacks = min(entry.get("stacks", 0), 6)
-                sp = stacks * self.attack_penalty_per_stack
+                sp = stacks * per_stack
                 if sp:
                     detail.append(f"{ck} x{stacks}: {sp}")
                     modifier += sp
