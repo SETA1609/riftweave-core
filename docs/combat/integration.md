@@ -129,6 +129,29 @@ Material phase on armor (e.g. steel = `metal`) interacts with incoming phased ef
 
 Conditions (`data/conditions/core.json`) are the "envelope" for combat status effects. Each condition has an `appliedBy` array of effect IDs and an `effects` object describing its impact in both TTRPG and video game modes.
 
+### Combat Impact of Conditions
+
+In the reference resolver (`combat_reference.py`), conditions now directly affect
+combat resolution:
+
+| Condition | Attack Penalty | Defense Bonus to Foe | Blocks Action? | Auto-Crit Target? |
+|-----------|---------------|---------------------|----------------|-------------------|
+| blinded | 0 | +10 to attackers | No | No |
+| frightened | −10 | 0 | No | No |
+| incapacitated | n/a | n/a | **Yes** | No |
+| paralyzed | n/a | n/a | **Yes** | **Yes** (melee auto-crit) |
+| petrified | n/a | n/a | **Yes** | No |
+| prone | −20 (melee) | +10 to ranged attackers | No | No |
+| restrained | −20 | +10 to attackers | No | No |
+| stunned | n/a | +10 to attackers | **Yes** | No |
+| staggered | −10 (next) | 0 | No | No |
+| taunted | −20 (non-taunter) | 0 | No | No |
+| unconscious | n/a | n/a | **Yes** | **Yes** (melee auto-crit) |
+| exhaustion | −10 per stack | 0 | No | No |
+
+"n/a" means the condition blocks action entirely, so attack/defense modifiers
+are moot — the subject cannot act at all.
+
 Combat-relevant conditions include:
 
 | Condition | Effect ID(s) | Combat Impact |
@@ -145,20 +168,31 @@ Combat-relevant conditions include:
 
 ## 6. Resolution Flow (End to End)
 
+### With Condition Mechanical Impact
+
 ```
 Attacker declares attack with weapon
-  → Resolve attack roll (skill + modifiers - defense vs d100)
+  → Check attacker conditions (can_take_action? stunned/paralyzed → auto-fail)
+  → Resolve attack roll (skill + modifiers + condition_attack_mod - defense vs d100)
     → On hit, determine hit quality (critical/solid/glancing)
+      → Check target auto-crit (paralyzed/unconscious → force crit, double dice)
       → Roll weapon damage dice
         → Check damage type vs armor (physical? → apply DR)
-          → Apply on_hit_effects from weapon
-            → Apply perk effects that trigger on hit
-              → Defender's defense layers (evasion → block → DR → effects)
-                → Final damage applied to defender's HP
-                  → Conditions applied (if any)
+          → Apply on_hit_effects from weapon (with parameter, if any)
+            → For each effect: check REMOVEDBY (dispel existing conditions)
+            → For each effect: check APPLIEDBY (apply new conditions)
+              → Check immunity/resistance before application
+              → For stacking conditions: increment stack counter (up to maxStacks)
+          → Apply crafted item on_hit_effects (same condition flow)
+          → Apply enchantments (same condition flow)
+          → Apply coatings (same condition flow)
+            → After all effects: check auto-crit upgrade from applied conditions
+      → Defender's defense layers (evasion → block → DR → effects)
+        → Final damage applied to defender's HP
+          → Conditions active on target affect future actions
 ```
 
-Each step is data-driven — the weapon, damage type, armor, effects, and perks all come from JSON files and schemas.
+Each step is data-driven — the weapon, damage type, armor, effects, conditions, and perks all come from JSON files and schemas.
 
 ---
 

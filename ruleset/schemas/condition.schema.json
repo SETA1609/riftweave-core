@@ -39,9 +39,8 @@
         },
         "removedBy": {
           "type": "array",
-          "description": "Effect IDs that can remove this condition (typically cure id 20 with appropriate parameter).",
-          "items": { "$ref": "schema.json#/definitions/entryId" },
-          "minItems": 1
+          "description": "Effect IDs that can remove this condition (typically cure id 20 with appropriate parameter). May be empty for conditions with only non-effect removal (e.g. prone is removed by the 'stand' action, not by any effect).",
+          "items": { "$ref": "schema.json#/definitions/entryId" }
         },
         "stacking": {
           "type": "boolean",
@@ -52,6 +51,33 @@
           "type": "integer",
           "minimum": 1,
           "description": "Maximum stack count if stacking is true."
+        },
+        "combat": {
+          "type": "object",
+          "description": "Combat mechanics this condition applies to its bearer. All fields are optional; omit for conditions with no direct combat impact (e.g. charmed, deafened, silenced).",
+          "properties": {
+            "attack_penalty": {
+              "type": "integer",
+              "description": "Flat penalty applied to the bearer's attack rolls while this condition is active. Example: prone → −20."
+            },
+            "defense_bonus": {
+              "type": "integer",
+              "description": "Flat bonus TO attackers' rolls against the bearer while this condition is active. Example: blinded → +10 to attackers."
+            },
+            "prevents_action": {
+              "type": "boolean",
+              "description": "If true, the bearer cannot take any actions, bonus actions, or reactions. Example: paralyzed, stunned."
+            },
+            "auto_crit_when_target": {
+              "type": "boolean",
+              "description": "If true, melee attacks against the bearer automatically become critical hits. Example: paralyzed, unconscious."
+            },
+            "attack_penalty_per_stack": {
+              "type": "integer",
+              "description": "Per-stack penalty applied to attack rolls. Only meaningful for stacking conditions like exhaustion (e.g. −10 per stack = −30 at 3/6). The resolver multiplies this by the current stack count."
+            }
+          },
+          "additionalProperties": false
         }
       },
       "required": ["id", "key", "label", "description", "effects", "appliedBy", "removedBy"],
