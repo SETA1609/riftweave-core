@@ -7,5 +7,15 @@
   "level": 4,
   "attributes": { "str": 5, "end": 5, "agi": 5, "per": 5, "wil": 5 },
   "hitPoints": 50,
-  "tags": ["elemental"]
+  "tags": ["elemental"],
+  "growth": {
+    "attributes": {
+      "str": { "perLevel": 0.4 },
+      "end": { "perLevel": 0.4 },
+      "agi": { "perLevel": 0.4 },
+      "per": { "perLevel": 0.4 },
+      "wil": { "perLevel": 0.4 }
+    },
+    "hitPointsPerLevel": 9
+  }
 }

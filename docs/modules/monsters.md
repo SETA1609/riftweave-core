@@ -67,9 +67,79 @@ References a base template and provides only the fields that differ:
 
 1. The base template is loaded from `bases/<base>.json`.
 2. Fields from `overrides` are shallow-merged onto the base (override wins).
-3. Arrays (`abilities`, `tags`) are **replaced entirely**, not concatenated.
-4. `id` and `key` come from the entry wrapper, never from the base or overrides.
-5. After merge, the entry is validated against the flat monster schema.
+3. `id` and `key` come from the entry wrapper, never from the base or overrides.
+4. After merge, the entry is validated against the flat monster schema.
+
+### Array Merging: `$extend` Convention
+
+By default, override array fields (`abilities`, `tags`) **replace** the base array entirely.
+To **append** to the base array instead, use the `$extend` wrapper:
+
+```json
+{
+  "base": "elemental",
+  "overrides": {
+    "abilities": {
+      "$extend": [
+        { "effect": 57, "magnitude": 4, "duration": 10, "target": "touch" }
+      ]
+    }
+  }
+}
+```
+
+This adds the burn ability to whatever abilities the base template defines.
+`$extend` is useful when base templates define shared abilities and individual
+monsters add their own on top.
+
+### Attribute Growth / Level Scaling
+
+Base templates can define a `growth` section that describes how attributes
+scale with level:
+
+```json
+{
+  "key": "beast",
+  "level": 2,
+  "attributes": { "str": 4, "end": 4, "agi": 5, "per": 4, "wil": 2 },
+  "hitPoints": 28,
+  "growth": {
+    "attributes": {
+      "str": { "perLevel": 0.5 },
+      "end": { "perLevel": 0.4 },
+      "agi": { "perLevel": 0.5 },
+      "per": { "perLevel": 0.3 },
+      "wil": { "perLevel": 0.2 }
+    },
+    "hitPointsPerLevel": 6
+  }
+}
+```
+
+The growth formula is:
+```
+computed = round(base_attr + perLevel * (level - base_level))
+```
+
+Individual monster overrides only need to specify attributes that **differ**
+from the growth curve. Missing attributes are filled in automatically:
+
+```json
+{
+  "key": "dire_wolf",
+  "base": "beast",
+  "overrides": {
+    "level": 3,
+    "attributes": { "str": 6, "per": 6 }
+  }
+}
+```
+
+This produces: `{str:6, end:4, agi:6, per:6, wil:2}` — str and per overridden,
+end/agi/wil computed from growth.
+
+HP follows the same pattern with `hitPointsPerLevel`. If an override specifies
+`hitPoints`, that always takes precedence.
 
 ## Why Base + Override (Not Full Inheritance)
 

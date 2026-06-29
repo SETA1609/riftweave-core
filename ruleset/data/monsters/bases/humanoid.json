@@ -7,5 +7,15 @@
   "level": 3,
   "attributes": { "str": 4, "end": 4, "agi": 4, "per": 4, "wil": 4 },
   "hitPoints": 35,
-  "tags": ["humanoid"]
+  "tags": ["humanoid"],
+  "growth": {
+    "attributes": {
+      "str": { "perLevel": 0.35 },
+      "end": { "perLevel": 0.35 },
+      "agi": { "perLevel": 0.35 },
+      "per": { "perLevel": 0.35 },
+      "wil": { "perLevel": 0.35 }
+    },
+    "hitPointsPerLevel": 7
+  }
 }

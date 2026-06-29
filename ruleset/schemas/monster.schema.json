@@ -19,7 +19,7 @@
   "additionalProperties": false,
   "definitions": {
     "monsterData": {
-      "description": "Shared data shape used by both flat monster entries and overrides. All fields are optional here; requiredness is enforced at the entry level.",
+      "description": "Shared data shape used by both flat monster entries and overrides. All fields are optional here; requiredness is enforced at the entry level. Overrides may use the $extend merge convention on array fields (abilities, tags) to append to the base instead of replacing.",
       "type": "object",
       "properties": {
         "label": { "type": "string", "description": "Human-readable display name with spaces and capitalization." },
@@ -48,6 +48,29 @@
         },
         "tags": { "type": "array", "items": { "type": "string" } },
         "coreDrop": { "$ref": "#/definitions/coreDropShape" }
+      }
+    },
+    "growthDef": {
+      "type": "object",
+      "description": "Optional level-scaling rules for base templates. Defines per-level attribute and HP growth. Only meaningful in base template files (bases/*.json); not used in core.json entries.",
+      "properties": {
+        "attributes": {
+          "type": "object",
+          "description": "Per-level attribute growth rates. Keys are ability ids, values define growth per level beyond the template's base level.",
+          "propertyNames": { "$ref": "schema.json#/definitions/ability" },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "perLevel": { "type": "number", "description": "Increase per level beyond the template's base level." }
+            },
+            "required": ["perLevel"],
+            "additionalProperties": false
+          }
+        },
+        "hitPointsPerLevel": {
+          "type": "number",
+          "description": "HP increase per level beyond the template's base level."
+        }
       },
       "additionalProperties": false
     },

@@ -272,10 +272,70 @@ def _base_cache():
 _BASE_CACHE = None
 
 
+def _apply_growth(base, level):
+    """Compute expected attribute values for a monster at a given level using
+    the base template's growth rules.
+
+    Growth is defined per ability as a perLevel rate. The formula:
+      attr = round(base_attr + perLevel * (level - base_level))
+
+    Returns a dict of ability -> int, or None if base has no growth section.
+    """
+    growth = base.get("growth")
+    if not growth:
+        return None
+    attr_growth = growth.get("attributes", {})
+    if not attr_growth:
+        return None
+    base_level = base.get("level", 1)
+    base_attrs = base.get("attributes", {})
+    delta = level - base_level
+    computed = {}
+    for ability in attr_growth:
+        base_val = base_attrs.get(ability, 1)
+        per = attr_growth[ability].get("perLevel", 0)
+        computed[ability] = max(1, round(base_val + per * delta))
+    return computed
+
+
+def _apply_growth_hp(base, level):
+    """Compute expected hit points using hitPointsPerLevel growth."""
+    growth = base.get("growth")
+    if not growth:
+        return None
+    hp_per_level = growth.get("hitPointsPerLevel")
+    if hp_per_level is None:
+        return None
+    base_level = base.get("level", 1)
+    base_hp = base.get("hitPoints", 10)
+    delta = level - base_level
+    return max(1, round(base_hp + hp_per_level * delta))
+
+
+def _merge_field(base_val, override_val):
+    """Merge a single field from override into base.
+
+    Supports $extend convention: if override_val is a dict with an
+    $extend key, the $extend array is appended to the base array.
+    Otherwise override replaces base (or is added if base lacks the field).
+    """
+    if isinstance(override_val, dict) and "$extend" in override_val:
+        items = override_val["$extend"]
+        if isinstance(base_val, list) and isinstance(items, list):
+            return base_val + items
+        if isinstance(items, list):
+            return list(items)
+        return base_val
+    return override_val
+
+
 def _resolve_monster_bases(data, errors):
     """Mutate data in-place: replace base+override entries with merged flat entries.
-    For entries with a 'base' field, load the base template and shallow-merge
-    overrides on top. Appends error strings for missing/invalid bases.
+
+    Supports:
+      - $extend convention for array fields (abilities, tags)
+      - Growth-based attribute and HP scaling from base templates
+      - Full override of any field (replaces base)
     """
     global _BASE_CACHE
     if _BASE_CACHE is None:
@@ -298,11 +358,36 @@ def _resolve_monster_bases(data, errors):
         if base_key not in _BASE_CACHE:
             errors.append(f"monsters[{i}]: base '{base_key}' not found in bases/")
             continue
-        # Shallow merge: base fields + override fields (override wins).
-        # Arrays (abilities, tags) are replaced entirely by override, not concatenated.
-        merged = dict(_BASE_CACHE[base_key])
+
+        base_data = _BASE_CACHE[base_key]
+        merged = dict(base_data)
+
+        # Remove growth blueprint from merged entry (it's not a valid monster field)
+        merged.pop("growth", None)
+
+        # Apply growth-based attribute scaling
+        level = overrides.get("level") or base_data.get("level", 1)
+        computed_attrs = _apply_growth(base_data, level)
+        if computed_attrs is not None:
+            merged["attributes"] = computed_attrs
+
+        # Apply growth-based HP scaling
+        computed_hp = _apply_growth_hp(base_data, level)
+        if computed_hp is not None:
+            merged["hitPoints"] = computed_hp
+
+        # Merge override fields on top (individual attribute overrides merge
+        # into the computed set rather than replacing the whole object)
         for k, v in overrides.items():
-            merged[k] = v
+            if (
+                k == "attributes"
+                and isinstance(v, dict)
+                and isinstance(merged.get("attributes"), dict)
+            ):
+                merged["attributes"].update(v)
+            else:
+                merged[k] = _merge_field(merged.get(k), v)
+
         # Carry over id and key from the entry wrapper
         merged["id"] = entry.get("id")
         merged["key"] = entry.get("key")
