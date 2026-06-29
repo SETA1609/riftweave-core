@@ -100,17 +100,7 @@ Data in `conditions/core.json` (24 entries). Each entry:
 | `removedBy` | Effect IDs that can remove this condition |
 | `stacking` | Whether multiple instances stack |
 | `maxStacks` | Maximum stack count |
-| `combat` | Optional object describing mechanical combat impact (attack penalty, defense bonus, action blocking, auto-crit). See §9 for details. All fields are optional; omit for conditions with no direct combat modifiers. |
-
-The `combat` object (if present) contains:
-
-| Sub-field | Type | Meaning |
-|-----------|------|---------|
-| `attack_penalty` | integer | Flat penalty to the bearer's attack rolls. |
-| `defense_bonus` | integer | Bonus to attackers' rolls against the bearer. |
-| `prevents_action` | boolean | Bearer cannot act while this condition is active. |
-| `auto_crit_when_target` | boolean | Melee attacks against the bearer auto-crit. |
-| `attack_penalty_per_stack` | integer | Per-stack attack penalty, defined per-condition. The resolver multiplies this by the current stack count. Example: exhaustion at 3/6 stacks produces a 3 × −10 = −30 penalty. Future stacking conditions can define their own rate. |
+| `combat` | Optional object describing mechanical combat impact. See §9.1 (Combat Object Reference) for all fields, defaults, and examples. Omit for conditions with no direct combat modifiers. |
 
 | # | Key | TTRPG Effect | Video Game Effect | appliedBy (effect ids) |
 |---|-----|-------------|-------------------|----------------------|
@@ -327,7 +317,33 @@ Condition combat mechanics are **fully data-driven**. Each condition in
 The resolver (`combat_reference.py`) reads these at startup via
 `_build_combat_modifiers()` and never hardcodes a condition key or value.
 
-The following methods are implemented and wired into `resolve_attack()`:
+### Combat Object Reference
+
+Every condition entry may carry an optional `combat` object describing its
+direct effect on combat resolution. All five fields are optional — omit the
+entire object for conditions with no combat impact (e.g. `charmed`,
+`deafened`, `silenced`).
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `attack_penalty` | integer | 0 | Flat penalty applied to the bearer's attack rolls while active. The resolver adds all active conditions' penalties together. Example: `prone` → `-20` (melee disadvantage). |
+| `defense_bonus` | integer | 0 | Flat bonus added to **attackers'** rolls against the bearer. Represents the condition making the bearer an easier target. Example: `blinded` → `+10`. |
+| `prevents_action` | boolean | false | If true, the bearer cannot take any actions, bonus actions, or reactions. Used for full-incapacitation conditions. Example: `paralyzed`, `stunned`, `unconscious`. |
+| `auto_crit_when_target` | boolean | false | If true, melee attacks against the bearer automatically become critical hits (damage dice doubled). Typically paired with `prevents_action`. Example: `paralyzed` (helpless target), `unconscious`. |
+| `attack_penalty_per_stack` | integer | 0 | Per-stack attack penalty for **stacking** conditions. The resolver multiplies this by the current stack count (clamped to `maxStacks`). Each stacking condition defines its own rate, allowing different severities (e.g. exhaustion at `-10`/stack, hypothetical poison at `-5`/stack). |
+
+```json
+// Example: a condition with both flat and per-stack penalties
+{ "combat": { "attack_penalty": -20, "defense_bonus": 10 } }
+// Example: a stacking condition with per-stack penalty only
+{ "combat": { "attack_penalty_per_stack": -10 } }
+```
+
+Conditions without a `combat` field produce no modifiers. Adding or changing
+combat behavior for a condition never requires touching Python code — only
+`conditions/core.json` and (if adding a new field) the schema.
+
+The following methods wire these fields into combat resolution:
 
 ### Attack Modifier
 

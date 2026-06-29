@@ -371,23 +371,23 @@ class CombatResolver:
         """Return total attack roll penalty/bonus from active conditions.
         Data source: conditions/core.json → combat.attack_penalty / attack_penalty_per_stack
         """
-        modifier = 0
-        detail = []
+        contributions = []
         for ck, entry in self.active_conditions.items():
-            flat_penalty = self.attack_penalties.get(ck, 0)
-            if flat_penalty:
-                detail.append(f"{ck}: {flat_penalty}")
-                modifier += flat_penalty
-            per_stack = self.attack_penalty_per_stack.get(ck, 0)
-            if per_stack and entry.get("stacking"):
+            fp = self.attack_penalties.get(ck, 0)
+            if fp:
+                contributions.append((f"{ck}: {fp}", fp))
+            ps = self.attack_penalty_per_stack.get(ck, 0)
+            if ps and entry.get("stacking"):
                 stacks = min(entry.get("stacks", 0), 6)
-                sp = stacks * per_stack
+                sp = stacks * ps
                 if sp:
-                    detail.append(f"{ck} x{stacks}: {sp}")
-                    modifier += sp
-        if detail:
+                    contributions.append((f"{ck} x{stacks}: {sp}", sp))
+        if contributions:
+            detail = [d for d, _ in contributions]
+            modifier = sum(v for _, v in contributions)
             self.log(f"  Condition attack modifier: {' + '.join(detail)} = {modifier}")
-        return modifier
+            return modifier
+        return 0
 
     def _get_condition_defense_bonus(self):
         """Return bonus TO attack rolls made AGAINST the subject.
