@@ -51,7 +51,7 @@ The following was added in this branch:
 
 ```
 Base Template  +  Material  +  [Jewel]  +  [Enchantments]  +  [Coatings]
-(longsword)       (steel)      (ruby)       (burn id 57)      (paralytic)
+(longsword)       (steel)      (ruby)       (core:effect/burn)  (paralytic)
      │               │            │               │                │
      ▼               ▼            ▼               ▼                ▼
      └───────────────┴────────────┴───────────────┴────────────────┘
