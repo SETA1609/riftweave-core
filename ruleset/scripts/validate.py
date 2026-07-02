@@ -552,9 +552,6 @@ def check_references(
                         errors.append(f"effect {eid!r} does not resolve")
 
     elif coll_name == "crafted_items":
-        eq_bare = (equipment_index or {}).get("bare_keys", set())
-        mat_keys = (bare_key_index or {}).get("materials", set())
-        gem_keys = (bare_key_index or {}).get("gems", set())
         bases_cache = _load_equipment_bases_cache()
         for ci in data.get("crafted_items", []) or []:
             if not isinstance(ci, dict):
@@ -563,17 +560,26 @@ def check_references(
             bk = ci.get("base_key")
             mk = ci.get("material_key")
 
-            # Resolve potentially namespaced refs to bare keys for lookups
+            # Resolve namespaced refs to bare keys for valid_materials lookup
             bare_bk = bk.split("/")[-1] if isinstance(bk, str) and "/" in bk else bk
             bare_mk = mk.split("/")[-1] if isinstance(mk, str) and "/" in mk else mk
 
-            if isinstance(bare_bk, str) and bare_bk not in eq_bare:
+            # Check base_key resolves as namespaced equipment ref
+            if isinstance(bk, str) and not equipment_ref_valid(
+                bk,
+                {},
+                equipment_index or {"namespaced_keys": set(), "bare_keys": set()},
+            ):
                 errors.append(
-                    f"crafted item '{ckey}': base_key '{bk}' does not exist in equipment"
+                    f"crafted item '{ckey}': base_key '{bk}' does not resolve to any equipment"
                 )
-            if isinstance(bare_mk, str) and bare_mk not in mat_keys:
+
+            # Check material_key resolves as namespaced material ref
+            if isinstance(mk, str) and not resolve_namespaced_ref(
+                mk, namespaced_ref_index
+            ):
                 errors.append(
-                    f"crafted item '{ckey}': material_key '{mk}' does not exist in materials"
+                    f"crafted item '{ckey}': material_key '{mk}' does not resolve to any material"
                 )
 
             # Validate material_key is in base template's valid_materials
@@ -588,9 +594,11 @@ def check_references(
             gj = ci.get("engraving_jewel")
             if isinstance(gj, dict):
                 gk = gj.get("gem_key")
-                if isinstance(gk, str) and gk not in gem_keys:
+                if isinstance(gk, str) and not resolve_namespaced_ref(
+                    gk, namespaced_ref_index
+                ):
                     errors.append(
-                        f"crafted item '{ckey}': engraving gem_key '{gk}' does not exist in gems"
+                        f"crafted item '{ckey}': engraving gem_key '{gk}' does not resolve to any gem"
                     )
             for ench in ci.get("enchantments", []) or []:
                 if isinstance(ench, dict):
@@ -620,11 +628,7 @@ def check_references(
                         )
 
     elif coll_name == "recipes":
-        eq_bare = (equipment_index or {}).get("bare_keys", set())
-        mat_keys = (bare_key_index or {}).get("materials", set())
-        gem_keys = (bare_key_index or {}).get("gems", set())
-        ing_keys = (bare_key_index or {}).get("ingredients", set())
-        ci_keys = (bare_key_index or {}).get("crafted_items", set())
+        eq = equipment_index or {"namespaced_keys": set(), "bare_keys": set()}
         for r in data.get("recipes", []) or []:
             if not isinstance(r, dict):
                 continue
@@ -636,28 +640,39 @@ def check_references(
                 ikey = inp.get("key")
                 if not isinstance(ikey, str):
                     continue
-                if itype == "base_item" and ikey not in eq_bare:
-                    errors.append(
-                        f"recipe '{rkey}': input base_item '{ikey}' does not exist in equipment"
-                    )
-                elif itype == "material" and ikey not in mat_keys:
-                    errors.append(
-                        f"recipe '{rkey}': input material '{ikey}' does not exist in materials"
-                    )
-                elif itype == "gem" and ikey not in gem_keys:
-                    errors.append(
-                        f"recipe '{rkey}': input gem '{ikey}' does not exist in gems"
-                    )
-                elif itype == "ingredient" and ikey not in ing_keys:
-                    errors.append(
-                        f"recipe '{rkey}': input ingredient '{ikey}' does not exist in ingredients"
-                    )
+                if itype == "base_item":
+                    if not equipment_ref_valid(ikey, {}, eq):
+                        errors.append(
+                            f"recipe '{rkey}': input base_item '{ikey}' does not resolve to any equipment"
+                        )
+                elif itype == "material":
+                    if not resolve_namespaced_ref(ikey, namespaced_ref_index):
+                        errors.append(
+                            f"recipe '{rkey}': input material '{ikey}' does not resolve to any material"
+                        )
+                elif itype == "gem":
+                    if not resolve_namespaced_ref(ikey, namespaced_ref_index):
+                        errors.append(
+                            f"recipe '{rkey}': input gem '{ikey}' does not resolve to any gem"
+                        )
+                elif itype == "ingredient":
+                    if not resolve_namespaced_ref(ikey, namespaced_ref_index):
+                        errors.append(
+                            f"recipe '{rkey}': input ingredient '{ikey}' does not resolve to any ingredient"
+                        )
+                elif itype == "reagent":
+                    if not resolve_namespaced_ref(ikey, namespaced_ref_index):
+                        errors.append(
+                            f"recipe '{rkey}': input reagent '{ikey}' does not resolve to any crafted item"
+                        )
             output = r.get("output", {})
             if isinstance(output, dict):
                 okey = output.get("crafted_item_key")
-                if isinstance(okey, str) and okey not in ci_keys:
+                if isinstance(okey, str) and not resolve_namespaced_ref(
+                    okey, namespaced_ref_index
+                ):
                     errors.append(
-                        f"recipe '{rkey}': output crafted_item_key '{okey}' does not exist in crafted_items"
+                        f"recipe '{rkey}': output crafted_item_key '{okey}' does not resolve to any crafted item"
                     )
 
     return errors

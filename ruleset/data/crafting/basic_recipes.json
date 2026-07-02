@@ -13,17 +13,17 @@
       "inputs": [
         {
           "type": "base_item",
-          "key": "longsword",
+          "key": "core:weapon/longsword",
           "quantity": 1
         },
         {
           "type": "material",
-          "key": "steel",
+          "key": "core:material/steel",
           "quantity": 2
         }
       ],
       "output": {
-        "crafted_item_key": "steel_longsword",
+        "crafted_item_key": "core:crafted_item/steel_longsword",
         "quantity": 1
       }
     },
@@ -39,17 +39,17 @@
       "inputs": [
         {
           "type": "base_item",
-          "key": "plate_cuirass",
+          "key": "core:armor/plate_cuirass",
           "quantity": 1
         },
         {
           "type": "material",
-          "key": "iron",
+          "key": "core:material/iron",
           "quantity": 3
         }
       ],
       "output": {
-        "crafted_item_key": "iron_plate_cuirass",
+        "crafted_item_key": "core:crafted_item/iron_plate_cuirass",
         "quantity": 1
       }
     },
@@ -65,17 +65,17 @@
       "inputs": [
         {
           "type": "reagent",
-          "key": "steel_longsword",
+          "key": "core:crafted_item/steel_longsword",
           "quantity": 1
         },
         {
           "type": "gem",
-          "key": "ruby",
+          "key": "core:gem/ruby",
           "quantity": 1
         }
       ],
       "output": {
-        "crafted_item_key": "ruby_engraved_steel_longsword",
+        "crafted_item_key": "core:crafted_item/ruby_engraved_steel_longsword",
         "quantity": 1
       }
     }
