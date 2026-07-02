@@ -1,6 +1,8 @@
 {
   "$schema": "../../schemas/equipment.schema.json",
   "equipment": [
-    { "id": 50, "key": "gold_necklace", "base": "necklace_base", "overrides": {} }
+    { "id": 50, "key": "gold_necklace",          "base": "necklace_base", "overrides": {} },
+    { "id": 51, "key": "silver_ring",            "base": "ring_base",    "overrides": { "enchantment_slots": 3, "phase": "metal", "effect_magnitude_mult": 1.15, "cost": { "quantity": 50, "unit": "gp" } } },
+    { "id": 52, "key": "cursed_iron_necklace",   "base": "necklace_base","overrides": { "enchantment_slots": -1, "phase": "earth", "cost": { "quantity": 3, "unit": "gp" } } }
   ]
 }
