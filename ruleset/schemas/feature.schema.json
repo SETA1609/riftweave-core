@@ -48,12 +48,12 @@
                 "properties": {
                   "id": {
                     "oneOf": [
-                      { "$ref": "schema.json#/definitions/entryId" },
+                      { "type": "string" },
                       {
                         "type": "array",
-                        "items": { "$ref": "schema.json#/definitions/entryId" },
+                        "items": { "type": "string" },
                         "minItems": 1,
-                        "description": "Array of acceptable skill ids. The prerequisite is met if the character has the required min in any one of them."
+                        "description": "Array of acceptable skill refs. The prerequisite is met if the character has the required min in any one of them."
                       }
                     ]
                   },
@@ -76,8 +76,8 @@
             },
             "perks": {
               "type": "array",
-              "description": "Prerequisite perk ids (numeric entryId) that must already be owned",
-              "items": { "$ref": "schema.json#/definitions/entryId" }
+              "description": "Prerequisite perk refs (namespaced core:feature/<key> or bare key) that must already be owned",
+              "items": { "type": "string" }
             },
             "other": { "type": "string" }
           },

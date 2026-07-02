@@ -205,49 +205,9 @@ def _collect_equipment_bare_keys(data_files, module_data_files=None, rel_base=RO
 
 
 def equipment_ref_valid(ref, id_index, equipment_index):
-    """Return True if an equipment reference resolves (numeric or string)."""
-    if isinstance(ref, int):
-        return ref in id_index.get("equipment", set())
-    if isinstance(ref, str):
-        if ref.startswith("core:"):
-            return ref in equipment_index["namespaced_keys"]
-        return ref in equipment_index["bare_keys"]
-    return False
-
-
-def effect_ref_valid(ref, id_index, namespaced_ref_index):
-    """Return True if an effect reference resolves (numeric or namespaced string)."""
-    if isinstance(ref, int):
-        return ref in id_index.get("effects", set())
-    if isinstance(ref, str):
-        return resolve_namespaced_ref(ref, namespaced_ref_index)
-    return False
-
-
-def ingredient_ref_valid(ref, id_index, namespaced_ref_index):
-    """Return True if an ingredient reference resolves (numeric or namespaced string)."""
-    if isinstance(ref, int):
-        return ref in id_index.get("ingredients", set())
-    if isinstance(ref, str):
-        return resolve_namespaced_ref(ref, namespaced_ref_index)
-    return False
-
-
-def spell_ref_valid(ref, id_index, namespaced_ref_index):
-    """Return True if a spell reference resolves (numeric or namespaced string)."""
-    if isinstance(ref, int):
-        return ref in id_index.get("spells", set())
-    if isinstance(ref, str):
-        return resolve_namespaced_ref(ref, namespaced_ref_index)
-    return False
-
-
-def skill_ref_valid(ref, id_index, namespaced_ref_index):
-    """Return True if a skill reference resolves (numeric or namespaced string)."""
-    if isinstance(ref, int):
-        return ref in id_index.get("skills", set())
-    if isinstance(ref, str):
-        return resolve_namespaced_ref(ref, namespaced_ref_index)
+    """Return True if an equipment reference resolves (string namespaced ref only)."""
+    if isinstance(ref, str) and ref.startswith("core:"):
+        return ref in equipment_index["namespaced_keys"]
     return False
 
 
@@ -341,13 +301,15 @@ def check_references(
             lineage = r.get("lineage", {})
             if "parentRace" in lineage:
                 pid = lineage["parentRace"]
-                if not isinstance(pid, int) or pid not in id_index.get("races", set()):
+                if isinstance(pid, str) and not resolve_namespaced_ref(
+                    pid, namespaced_ref_index
+                ):
                     errors.append(f"parentRace {pid} does not exist in races")
             for t in r.get("traits", []):
                 if isinstance(t, dict):
                     tid = t.get("id")
-                    if isinstance(tid, int) and tid not in id_index.get(
-                        "traits", set()
+                    if isinstance(tid, str) and not resolve_namespaced_ref(
+                        tid, namespaced_ref_index
                     ):
                         errors.append(f"trait {tid} does not exist in traits")
 
@@ -357,15 +319,23 @@ def check_references(
                 continue
             pr = f.get("prerequisite", {})
             for pid in pr.get("perks", []):
-                if isinstance(pid, int) and pid not in id_index.get("features", set()):
+                if isinstance(pid, str) and not resolve_namespaced_ref(
+                    pid, namespaced_ref_index
+                ):
                     errors.append(f"prereq perk {pid} does not exist")
             for s in pr.get("skills", []):
                 if isinstance(s, dict):
                     sid = s.get("id")
-                    if isinstance(sid, int) and sid not in id_index.get(
-                        "skills", set()
+                    if isinstance(sid, str) and not resolve_namespaced_ref(
+                        sid, namespaced_ref_index
                     ):
                         errors.append(f"prereq skill {sid} does not exist")
+                    elif isinstance(sid, list):
+                        for sss in sid:
+                            if isinstance(sss, str) and not resolve_namespaced_ref(
+                                sss, namespaced_ref_index
+                            ):
+                                errors.append(f"prereq skill {sss} does not exist")
 
     elif coll_name == "spells":
         for s in data.get("spells", []):
@@ -374,19 +344,19 @@ def check_references(
             for e in s.get("effects", []):
                 if isinstance(e, dict):
                     eid = e.get("effect")
-                    if isinstance(eid, int) and eid not in id_index.get(
-                        "effects", set()
-                    ):
-                        errors.append(f"effect {eid} does not exist")
+                    if isinstance(eid, int):
+                        errors.append(
+                            f"effect {eid}: numeric refs not allowed (use core:effect/<key>)"
+                        )
                     elif isinstance(eid, str) and not resolve_namespaced_ref(
                         eid, namespaced_ref_index
                     ):
                         errors.append(f"effect {eid!r} does not resolve")
             for rid in (s.get("cost", {}) or {}).get("reagents", []) or []:
-                if isinstance(rid, int) and rid not in id_index.get(
-                    "ingredients", set()
-                ):
-                    errors.append(f"reagent {rid} does not exist")
+                if isinstance(rid, int):
+                    errors.append(
+                        f"reagent {rid}: numeric refs not allowed (use core:ingredient/<key>)"
+                    )
                 elif isinstance(rid, str) and not resolve_namespaced_ref(
                     rid, namespaced_ref_index
                 ):
@@ -399,18 +369,20 @@ def check_references(
             for sb in b.get("skill_bonuses", []) or []:
                 if isinstance(sb, dict):
                     sid = sb.get("skill")
-                    if isinstance(sid, int) and sid not in id_index.get(
-                        "skills", set()
-                    ):
-                        errors.append(f"skill bonus {sid} does not exist")
+                    if isinstance(sid, int):
+                        errors.append(
+                            f"skill bonus {sid}: numeric refs not allowed (use core:skill/<key>)"
+                        )
                     elif isinstance(sid, str) and (
                         namespaced_ref_index is None
                         or not resolve_namespaced_ref(sid, namespaced_ref_index)
                     ):
                         errors.append(f"skill bonus {sid!r} does not resolve")
             for ts in b.get("suggested_tag_skills", []) or []:
-                if isinstance(ts, int) and ts not in id_index.get("skills", set()):
-                    errors.append(f"suggested tag skill {ts} does not exist")
+                if isinstance(ts, int):
+                    errors.append(
+                        f"suggested tag skill {ts}: numeric refs not allowed (use core:skill/<key>)"
+                    )
                 elif (
                     isinstance(ts, str)
                     and namespaced_ref_index
@@ -418,8 +390,10 @@ def check_references(
                 ):
                     errors.append(f"suggested tag skill {ts!r} does not resolve")
             for ss in b.get("starting_spells", []) or []:
-                if isinstance(ss, int) and ss not in id_index.get("spells", set()):
-                    errors.append(f"starting spell {ss} does not exist")
+                if isinstance(ss, int):
+                    errors.append(
+                        f"starting spell {ss}: numeric refs not allowed (use core:spell/<key>)"
+                    )
                 elif (
                     isinstance(ss, str)
                     and namespaced_ref_index
@@ -444,10 +418,10 @@ def check_references(
             for a in m.get("abilities", []) or []:
                 if isinstance(a, dict):
                     eid = a.get("effect")
-                    if isinstance(eid, int) and eid not in id_index.get(
-                        "effects", set()
-                    ):
-                        errors.append(f"ability effect {eid} does not exist")
+                    if isinstance(eid, int):
+                        errors.append(
+                            f"ability effect {eid}: numeric refs not allowed (use core:effect/<key>)"
+                        )
                     elif isinstance(eid, str) and not resolve_namespaced_ref(
                         eid, namespaced_ref_index
                     ):
@@ -458,8 +432,10 @@ def check_references(
             if not isinstance(i, dict):
                 continue
             for eid in i.get("effects", []) or []:
-                if isinstance(eid, int) and eid not in id_index.get("effects", set()):
-                    errors.append(f"effect {eid} does not exist")
+                if isinstance(eid, int):
+                    errors.append(
+                        f"effect {eid}: numeric refs not allowed (use core:effect/<key>)"
+                    )
                 elif isinstance(eid, str) and not resolve_namespaced_ref(
                     eid, namespaced_ref_index
                 ):
@@ -471,9 +447,9 @@ def check_references(
                 continue
             ckey = c.get("key", "?")
             for eid in c.get("appliedBy", []) or []:
-                if isinstance(eid, int) and eid not in id_index.get("effects", set()):
+                if isinstance(eid, int):
                     errors.append(
-                        f"condition '{ckey}' appliedBy effect {eid} does not exist in effects"
+                        f"condition '{ckey}' appliedBy effect {eid}: numeric refs not allowed (use core:effect/<key>)"
                     )
                 elif isinstance(eid, str) and not resolve_namespaced_ref(
                     eid, namespaced_ref_index
@@ -482,9 +458,9 @@ def check_references(
                         f"condition '{ckey}' appliedBy effect {eid!r} does not resolve"
                     )
             for eid in c.get("removedBy", []) or []:
-                if isinstance(eid, int) and eid not in id_index.get("effects", set()):
+                if isinstance(eid, int):
                     errors.append(
-                        f"condition '{ckey}' removedBy effect {eid} does not exist in effects"
+                        f"condition '{ckey}' removedBy effect {eid}: numeric refs not allowed (use core:effect/<key>)"
                     )
                 elif isinstance(eid, str) and not resolve_namespaced_ref(
                     eid, namespaced_ref_index
@@ -506,21 +482,21 @@ def check_references(
                 errors.append(
                     f"condition 'prone' should have empty removedBy (stand action, not effect)"
                 )
-            # Validate that cure (id 20) is not in prone's removedBy
-            if ckey == "prone" and 20 in c.get("removedBy", []):
+            # Validate that cure is not in prone's removedBy
+            if ckey == "prone" and "core:effect/cure" in c.get("removedBy", []):
                 errors.append(
-                    f"condition 'prone' must not have cure (id 20) in removedBy"
+                    f"condition 'prone' must not have cure (core:effect/cure) in removedBy"
                 )
-            # Check for duplicate effect IDs in appliedBy and removedBy
+            # Check for duplicate effect refs in appliedBy and removedBy
             ab = c.get("appliedBy", [])
             if len(ab) != len(set(ab)):
                 errors.append(
-                    f"condition '{ckey}' has duplicate effect IDs in appliedBy"
+                    f"condition '{ckey}' has duplicate effect refs in appliedBy"
                 )
             rb = c.get("removedBy", [])
             if len(rb) != len(set(rb)):
                 errors.append(
-                    f"condition '{ckey}' has duplicate effect IDs in removedBy"
+                    f"condition '{ckey}' has duplicate effect refs in removedBy"
                 )
 
     elif coll_name == "equipment":
@@ -531,10 +507,10 @@ def check_references(
             for eff in cons.get("effects", []) or []:
                 if isinstance(eff, dict):
                     eid = eff.get("effect")
-                    if isinstance(eid, int) and eid not in id_index.get(
-                        "effects", set()
-                    ):
-                        errors.append(f"effect {eid} does not exist")
+                    if isinstance(eid, int):
+                        errors.append(
+                            f"effect {eid}: numeric refs not allowed (use core:effect/<key>)"
+                        )
                     elif isinstance(eid, str) and not resolve_namespaced_ref(
                         eid, namespaced_ref_index
                     ):
@@ -548,11 +524,9 @@ def check_references(
             for ench in ci.get("enchantments", []) or []:
                 if isinstance(ench, dict):
                     eid = ench.get("effect")
-                    if isinstance(eid, int) and eid not in id_index.get(
-                        "effects", set()
-                    ):
+                    if isinstance(eid, int):
                         errors.append(
-                            f"crafted item '{ckey}' enchantment effect {eid} does not exist"
+                            f"crafted item '{ckey}' enchantment effect {eid}: numeric refs not allowed (use core:effect/<key>)"
                         )
                     elif isinstance(eid, str) and not resolve_namespaced_ref(
                         eid, namespaced_ref_index
@@ -563,11 +537,9 @@ def check_references(
             for coat in ci.get("coatings", []) or []:
                 if isinstance(coat, dict):
                     eid = coat.get("effect")
-                    if isinstance(eid, int) and eid not in id_index.get(
-                        "effects", set()
-                    ):
+                    if isinstance(eid, int):
                         errors.append(
-                            f"crafted item '{ckey}' coating effect {eid} does not exist"
+                            f"crafted item '{ckey}' coating effect {eid}: numeric refs not allowed (use core:effect/<key>)"
                         )
                     elif isinstance(eid, str) and not resolve_namespaced_ref(
                         eid, namespaced_ref_index

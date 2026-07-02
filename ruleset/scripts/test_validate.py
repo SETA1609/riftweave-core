@@ -121,11 +121,11 @@ class TestEquipmentRefResolution(unittest.TestCase):
             )
         )
 
-    def test_legacy_numeric_reference(self):
-        self.assertTrue(equipment_ref_valid(45, self.id_index, self.equipment_index))
+    def test_rejects_numeric_reference(self):
+        self.assertFalse(equipment_ref_valid(45, self.id_index, self.equipment_index))
 
-    def test_legacy_bare_key_reference(self):
-        self.assertTrue(
+    def test_rejects_bare_key_reference(self):
+        self.assertFalse(
             equipment_ref_valid("shortsword", self.id_index, self.equipment_index)
         )
 
@@ -192,7 +192,7 @@ class TestNamespacedRefIndex(unittest.TestCase):
 
 
 class TestCraftedItemsRefValidation(unittest.TestCase):
-    def test_detects_missing_effect_in_enchantment(self):
+    def test_rejects_numeric_effect_in_enchantment(self):
         result = check_references(
             {
                 "crafted_items": [
@@ -208,24 +208,7 @@ class TestCraftedItemsRefValidation(unittest.TestCase):
             {"effects": {1, 2, 3}},
         )
         self.assertEqual(len(result), 1)
-        self.assertIn("effect 999 does not exist", result[0])
-
-    def test_accepts_valid_effect_in_enchantment(self):
-        result = check_references(
-            {
-                "crafted_items": [
-                    {
-                        "id": 1,
-                        "key": "test_item",
-                        "enchantments": [{"effect": 1, "magnitude": 5}],
-                        "coatings": [],
-                    }
-                ]
-            },
-            "crafted_items",
-            {"effects": {1, 2, 3}},
-        )
-        self.assertEqual(result, [])
+        self.assertIn("numeric refs not allowed", result[0])
 
     def test_detects_missing_effect_in_coating(self):
         result = check_references(
@@ -235,15 +218,22 @@ class TestCraftedItemsRefValidation(unittest.TestCase):
                         "id": 1,
                         "key": "test_item",
                         "enchantments": [],
-                        "coatings": [{"effect": 999, "magnitude": 3, "uses_left": 2}],
+                        "coatings": [
+                            {
+                                "effect": "core:effect/missing",
+                                "magnitude": 3,
+                                "uses_left": 2,
+                            }
+                        ],
                     }
                 ]
             },
             "crafted_items",
             {"effects": {1, 2, 3}},
+            namespaced_ref_index={"core:effect/damage_fire"},
         )
         self.assertEqual(len(result), 1)
-        self.assertIn("effect 999 does not exist", result[0])
+        self.assertIn("does not resolve", result[0])
 
     def test_accepts_valid_namespaced_effect_ref(self):
         result = check_references(

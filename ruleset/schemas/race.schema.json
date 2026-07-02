@@ -23,8 +23,8 @@
           "description": "standalone: a complete, unrelated race (human). parent: an abstract ancestor that subraces inherit from (elf, dwarf). subrace: descends from and extends a parent via `parentRace` (inherits its defaults, overrides freely). template: an abstract shape for sister races (beastman) — provides structure, not values. kin: a sister race conforming to a template via `parentRace`, sharing nothing mechanical with its siblings."
         },
         "parentRace": {
-          "$ref": "schema.json#/definitions/entryId",
-          "description": "The id (numeric) of the parent race (when role=subrace) or the template (when role=kin)."
+          "type": "string",
+          "description": "Reference to the parent race when role=subrace, or the template when role=kin. Use namespaced format core:race/<key> or bare key."
         }
       },
       "required": ["role"],
@@ -71,7 +71,7 @@
           "items": {
             "type": "object",
             "properties": {
-              "id": { "$ref": "schema.json#/definitions/entryId" },
+              "id": { "type": "string", "description": "Reference to the trait. Use namespaced format core:trait/<key> or bare key." },
               "label": { "type": "string", "description": "Human-readable label of the trait (duplicated from the traits registry for convenience)." }
             },
             "required": ["id", "label"],

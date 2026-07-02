@@ -1,103 +1,1478 @@
 {
   "$schema": "../../schemas/effect.schema.json",
   "effects": [
-    { "id": 1, "key": "damage_fire", "label": "Damage Fire", "description": "Deals fire damage to the target.", "category": "damage", "polarity": "harmful", "color": "red", "phase": "fire", "magnitudeUnit": "points", "channels": ["spell", "coating", "ingredient"], "tags": ["elemental", "fire"] },
-    { "id": 2, "key": "damage_frost", "label": "Damage Frost", "description": "Deals frost damage and saps stamina.", "category": "damage", "polarity": "harmful", "color": "red", "phase": "water", "magnitudeUnit": "points", "channels": ["spell", "coating", "ingredient"], "tags": ["elemental", "frost"] },
-    { "id": 3, "key": "damage_shock", "label": "Damage Shock", "description": "Deals shock damage and drains mana.", "category": "damage", "polarity": "harmful", "color": "red", "phase": "wood", "magnitudeUnit": "points", "channels": ["spell", "coating", "ingredient"], "tags": ["elemental", "shock"] },
-    { "id": 4, "key": "damage_force", "label": "Damage Force", "description": "Deals raw, unerring force damage.", "category": "damage", "polarity": "harmful", "color": "red", "phase": "metal", "magnitudeUnit": "points", "channels": ["spell"], "tags": ["force"] },
-    { "id": 5, "key": "damage_health", "label": "Damage Health", "description": "Drains the target's health directly.", "category": "damage", "polarity": "harmful", "color": "red", "phase": "wood", "magnitudeUnit": "points", "channels": ["spell", "poison", "coating", "ingredient"], "tags": ["harmful"] },
-    { "id": 6, "key": "damage_stamina", "label": "Damage Stamina", "description": "Saps the target's stamina.", "category": "drain", "polarity": "harmful", "color": "red", "phase": "earth", "magnitudeUnit": "points", "channels": ["spell", "poison", "ingredient"] },
-
-    { "id": 7, "key": "restore_resource", "label": "Restore Resource", "description": "Restores points to a resource pool (e.g. healing, stamina recovery, mana). Use 'parameter' to specify the resource ('health', 'stamina', 'mana', 'action_points'). Magnitude is the amount restored. This generalizes the former specific restore_* effects.", "category": "restore", "polarity": "beneficial", "magnitudeUnit": "points", "channels": ["spell", "potion", "ingredient", "food"], "tags": ["healing", "restoration", "resource"] },
-
-    { "id": 8, "key": "invisibility", "label": "Invisibility", "description": "Renders the subject unseen for a time.", "category": "control", "polarity": "beneficial", "color": "yellow", "magnitudeUnit": "seconds", "defaultDuration": 30, "channels": ["spell", "potion"], "tags": ["illusion", "stealth"] },
-    { "id": 9, "key": "light", "label": "Light", "description": "Conjures light around the subject or a point.", "category": "utility", "polarity": "neutral", "color": "yellow", "magnitudeUnit": "seconds", "defaultDuration": 120, "channels": ["spell"], "tags": ["illusion"] },
-    { "id": 10, "key": "feather", "label": "Feather", "description": "Lightens the subject's burden, raising carry capacity.", "category": "utility", "polarity": "beneficial", "color": "blue", "magnitudeUnit": "points", "defaultDuration": 120, "channels": ["spell", "potion", "ingredient"], "tags": ["alteration"] },
-    { "id": 11, "key": "paralyze", "label": "Paralyze", "description": "Freezes the target in place.", "category": "control", "polarity": "harmful", "color": "blue", "phase": "earth", "magnitudeUnit": "seconds", "defaultDuration": 4, "channels": ["spell", "poison", "coating"], "tags": ["control"] },
-    { "id": 12, "key": "telekinesis", "label": "Telekinesis", "description": "Manipulate distant objects at range.", "category": "control", "polarity": "neutral", "color": "violet", "magnitudeUnit": "seconds", "defaultDuration": 20, "channels": ["spell"], "tags": ["mysticism"] },
-
-    { "id": 13, "key": "summon", "label": "Summon", "description": "Conjures or animates a creature/servant to fight for or assist the caster. Use 'parameter' to specify the type or category (e.g. 'undead'). Magnitude is typically a count or power rating; duration controls persistence. Generalizes former summon_* effects.", "category": "conjure", "polarity": "harmful", "color": "black", "magnitudeUnit": "count", "defaultDuration": 120, "channels": ["spell"], "tags": ["necromancy", "summon", "conjure"] },
-
-    { "id": 14, "key": "essence_fire", "label": "Essence of Fire", "description": "Condensed flame-aspected spiritual power. Imparts transformative, vigorous energy when used in a breakthrough or as a refining component.", "category": "utility", "polarity": "neutral", "phase": "fire", "channels": ["ingredient", "essence"], "tags": ["essence", "advancement", "core"] },
-    { "id": 15, "key": "essence_wood", "label": "Essence of Wood", "description": "Condensed growth-aspected spiritual power. Imparts vital, regenerative energy when used in a breakthrough or as a refining component.", "category": "utility", "polarity": "neutral", "phase": "wood", "channels": ["ingredient", "essence"], "tags": ["essence", "advancement", "core"] },
-    { "id": 16, "key": "essence_earth", "label": "Essence of Earth", "description": "Condensed stability-aspected spiritual power. Imparts enduring, grounding energy when used in a breakthrough or as a refining component.", "category": "utility", "polarity": "neutral", "phase": "earth", "channels": ["ingredient", "essence"], "tags": ["essence", "advancement", "core"] },
-    { "id": 17, "key": "essence_metal", "label": "Essence of Metal", "description": "Condensed edge-aspected spiritual power. Imparts sharp, conductive, disciplined energy when used in a breakthrough or as a refining component.", "category": "utility", "polarity": "neutral", "phase": "metal", "channels": ["ingredient", "essence"], "tags": ["essence", "advancement", "core"] },
-    { "id": 18, "key": "essence_water", "label": "Essence of Water", "description": "Condensed flow-aspected spiritual power. Imparts adaptive, restorative, and perceptive energy when used in a breakthrough or as a refining component.", "category": "utility", "polarity": "neutral", "phase": "water", "channels": ["ingredient", "essence"], "tags": ["essence", "advancement", "core"] },
-
-    { "id": 19, "key": "resist", "label": "Resist", "description": "Reduces damage and/or negative effects from a specific type or source. Use 'parameter' to specify (e.g. 'fire', 'frost', 'poison', 'physical', 'undead', 'magic', or a wuxing phase name). Magnitude is typically percent reduction. Generalizes resist_*, elemental_resist, physical_damage_resist, magic_resistance, etc. Color/phase on the effect are optional and context-specific.", "category": "resist", "polarity": "beneficial", "magnitudeUnit": "percent", "defaultDuration": 60, "channels": ["innate", "spell", "potion", "ingredient", "enchantment"], "tags": ["resist"] },
-    { "id": 20, "key": "cure", "label": "Cure", "description": "Removes active conditions, poisons, or afflictions. Use 'parameter' to specify the condition (e.g. 'poison'). Generalizes specific cure_* effects.", "category": "cure", "polarity": "beneficial", "channels": ["spell", "potion", "ingredient"], "tags": ["cure"] },
-
-    { "id": 21, "key": "spell_absorption", "label": "Spell Absorption", "description": "Grants a chance to absorb incoming hostile magic, converting a portion of the energy into mana.", "category": "utility", "polarity": "beneficial", "magnitudeUnit": "percent", "channels": ["innate", "spell"], "tags": ["magic", "absorption"] },
-
-    { "id": 22, "key": "phobia", "label": "Phobia", "description": "Psychological aversion to a specific category of creatures (e.g. 'undead', 'beast', 'construct'). Imposes combat, skill, or morale penalties when interacting with or fighting creatures of that type. The 'parameter' field on the applying trait specifies the category.", "category": "control", "polarity": "harmful", "channels": ["innate"], "tags": ["phobia", "fear"] },
-    { "id": 23, "key": "allergy", "label": "Allergy", "description": "Severe adverse reaction to a specific material (referenced by its id from materials/core.json, e.g. 'leather', 'iron', 'silver'). Prevents proper use or equipping of items primarily made from that material, or imposes significant penalties. The 'parameter' field on the applying trait specifies the material id.", "category": "utility", "polarity": "harmful", "channels": ["innate"], "tags": ["allergy", "material", "restriction"] },
-
-    { "id": 24, "key": "exotic_material_affinity", "label": "Exotic Material Affinity", "description": "Better results and comfort when using or wearing items made from silver, elven wood, and other rare materials.", "category": "utility", "polarity": "beneficial", "channels": ["innate"], "tags": ["material", "exotic"] },
-
-    { "id": 25, "key": "skill_points_modifier", "label": "Skill Points Modifier", "description": "Modifies skill points gained per level (when parameter is 'per_level') or at character creation (when parameter is 'starting'). Negative values are penalties.", "category": "utility", "polarity": "beneficial", "channels": ["innate"], "tags": ["skill", "permanent"] },
-
-    { "id": 26, "key": "aimed_shots_restriction", "label": "Aimed Shots Restriction", "description": "Prevents the character from making aimed or targeted shots.", "category": "control", "polarity": "harmful", "channels": ["innate"], "tags": ["restriction", "combat"] },
-    { "id": 27, "key": "carry_capacity_modifier", "label": "Carry Capacity Modifier", "description": "Modifies the character's carrying capacity. Negative values reduce it.", "category": "utility", "polarity": "beneficial", "magnitudeUnit": "percent", "channels": ["innate"], "tags": ["carry", "permanent"] },
-    { "id": 28, "key": "tag_skills_increase", "label": "Tag Skills Increase", "description": "Grants additional tag skills at character creation.", "category": "utility", "polarity": "beneficial", "channels": ["innate"], "tags": ["skill", "tag", "creation"] },
-
-    { "id": 29, "key": "movement_speed", "label": "Movement Speed", "description": "Modifies base movement speed (exploration feet/round or combat units/speed rating). Parameter can specify mode ('exploration', 'combat_turnbased', 'action') or be general. Negative values slow the character.", "category": "utility", "polarity": "beneficial", "magnitudeUnit": "percent", "channels": ["innate", "spell", "potion"], "tags": ["movement", "speed"] },
-    { "id": 30, "key": "attack_speed", "label": "Attack Speed", "description": "Increases or decreases attack frequency/recovery (ranged or melee). Higher values allow more attacks or faster action resolution. Affects action combat directly and turn-based recovery.", "category": "fortify", "polarity": "beneficial", "magnitudeUnit": "percent", "channels": ["innate", "spell", "potion"], "tags": ["combat", "attack", "speed"] },
-
-    { "id": 31, "key": "fortify_skill", "label": "Fortify Skill", "description": "Temporarily or permanently increases a specific skill rating (0-100 scale). Use 'parameter' to specify the skill id (e.g. 'blades', 'red_magic'). Magnitude is the bonus in skill points. When applied, use 'durationType': 'unlimited' (stackable, magnitudes add) or 'temporal' (same effect+parameter override each other; highest magnitude wins as the persistent value, typically with longest duration).", "category": "fortify", "polarity": "beneficial", "magnitudeUnit": "points", "defaultDurationType": "unlimited", "channels": ["innate", "spell", "potion", "enchantment"], "tags": ["skill", "fortify"] },
-    { "id": 32, "key": "fortify_attribute", "label": "Fortify Attribute", "description": "Temporarily or permanently increases an attribute (1-10 scale). Use 'parameter' to specify the ability id (e.g. 'str', 'wil') or 'all' for every attribute. Magnitude is the bonus.", "category": "fortify", "polarity": "beneficial", "magnitudeUnit": "points", "defaultDurationType": "unlimited", "channels": ["innate", "spell", "potion", "enchantment"], "tags": ["attribute", "fortify"] },
-    { "id": 33, "key": "fortify_resource", "label": "Fortify Resource", "description": "Increases the maximum of a resource pool (e.g. hit points, mana, stamina). Use 'parameter' to specify the resource ('health', 'stamina', 'mana', 'action_points'). Magnitude is the increase in points. Supports durationType for temporal vs unlimited behavior.", "category": "fortify", "polarity": "beneficial", "magnitudeUnit": "points", "defaultDurationType": "unlimited", "channels": ["innate", "spell", "potion", "enchantment"], "tags": ["resource", "fortify"] },
-
-    { "id": 34, "key": "drain_skill", "label": "Drain Skill", "description": "Reduces a specific skill (temporary or with duration). Parameter specifies the skill id. Magnitude is the amount drained.", "category": "drain", "polarity": "harmful", "magnitudeUnit": "points", "channels": ["innate", "spell", "potion", "poison", "coating"], "tags": ["skill", "drain"] },
-    { "id": 35, "key": "drain_attribute", "label": "Drain Attribute", "description": "Reduces a specific attribute (temporary drain). Parameter specifies the ability id. Magnitude is the amount drained (can go below normal min temporarily).", "category": "drain", "polarity": "harmful", "magnitudeUnit": "points", "channels": ["innate", "spell", "potion", "poison"], "tags": ["attribute", "drain"] },
-
-    { "id": 36, "key": "damage_attribute", "label": "Damage Attribute", "description": "Directly damages/reduces an attribute (like a wound or curse). Parameter for the ability. Can be temporary (with duration) or longer-lasting. Magnitude is the reduction.", "category": "damage", "polarity": "harmful", "magnitudeUnit": "points", "channels": ["innate", "spell", "potion", "poison"], "tags": ["attribute", "damage"] },
-    { "id": 37, "key": "damage_skill", "label": "Damage Skill", "description": "Directly damages a skill rating (e.g. crippling a skill). Parameter for the skill id. Magnitude is the reduction in points.", "category": "damage", "polarity": "harmful", "magnitudeUnit": "points", "channels": ["innate", "spell", "potion", "poison", "coating"], "tags": ["skill", "damage"] },
-
-    { "id": 38, "key": "drain_resource", "label": "Drain Resource", "description": "Drains a resource pool (temporary reduction to current or max). Parameter: 'health', 'stamina', 'mana', etc. Magnitude is the amount drained.", "category": "drain", "polarity": "harmful", "magnitudeUnit": "points", "channels": ["innate", "spell", "potion", "poison"], "tags": ["resource", "drain"] },
-    { "id": 39, "key": "damage_resource", "label": "Damage Resource", "description": "Directly damages a resource pool (like a wound reducing max HP). Parameter for the resource. Magnitude is the reduction.", "category": "damage", "polarity": "harmful", "magnitudeUnit": "points", "channels": ["innate", "spell", "potion", "poison"], "tags": ["resource", "damage"] },
-
-    { "id": 40, "key": "blight", "label": "Blight", "description": "A withering disease that drains vitality over time. Common in blighted lands or from certain monsters/plants. Symptoms include progressive health loss and weakness.", "category": "control", "polarity": "harmful", "phase": "wood", "magnitudeUnit": "points", "defaultDuration": 86400, "channels": ["innate", "poison", "spell"], "tags": ["disease", "blight"] },
-    { "id": 41, "key": "fever", "label": "Fever", "description": "A common disease causing stamina drain, fatigue, and occasional attribute damage (especially END). Spreads via contact or poor conditions.", "category": "control", "polarity": "harmful", "phase": "wood", "magnitudeUnit": "points", "defaultDuration": 43200, "channels": ["innate", "poison"], "tags": ["disease", "fever"] },
-    { "id": 42, "key": "plague", "label": "Plague", "description": "Highly contagious and severe disease. Causes rapid health and attribute damage. High risk in crowded or unsanitary areas.", "category": "control", "polarity": "harmful", "phase": "wood", "magnitudeUnit": "points", "defaultDuration": 172800, "channels": ["innate", "poison"], "tags": ["disease", "plague", "contagious"] },
-
-    { "id": 43, "key": "poison_paralytic", "label": "Paralytic Poison", "description": "A fast-acting poison that can freeze the target in place. Often used on weapons or in traps. Applies its sub_effects (e.g. paralyze) as symptoms. Resistance (via resist effect with parameter 'poison') can reduce duration or prevent full effect. A poison must not apply other poison effects to avoid recursion.", "category": "control", "polarity": "harmful", "magnitudeUnit": "seconds", "channels": ["poison", "coating"], "tags": ["poison", "paralysis"], "sub_effects": [11] },
-    { "id": 44, "key": "poison_weakness", "label": "Weakness Poison", "description": "Saps the target's stamina and strength over a short period. Common in coatings or toxic weapons. Applies its sub_effects (e.g. damage_stamina) as symptoms. Resistance (via resist effect with parameter 'poison') can reduce magnitude or duration. A poison must not apply other poison effects to avoid recursion.", "category": "drain", "polarity": "harmful", "magnitudeUnit": "points", "defaultDuration": 60, "channels": ["poison", "coating"], "tags": ["poison", "weakness"], "sub_effects": [6] },
-    { "id": 45, "key": "poison_health_drain", "label": "Health Drain Poison", "description": "Directly damages the target's health over time. Potent versions used by assassins or in deadly traps. Applies its sub_effects (e.g. damage_health) as symptoms. Resistance (via resist effect with parameter 'poison') can reduce magnitude or duration. A poison must not apply other poison effects to avoid recursion.", "category": "damage", "polarity": "harmful", "magnitudeUnit": "points", "defaultDuration": 30, "channels": ["poison", "coating"], "tags": ["poison"], "sub_effects": [5] },
-
-    { "id": 46, "key": "poison", "label": "Poison", "description": "Generic poison delivery mechanism. When applied (via 'poison' or 'coating' channels), applies the effects listed in sub_effects as the symptoms/payload to the target. Supports generic poisons by allowing any poison effect to call other (non-poison) effects recursively as symptoms (damage, drain, control, etc.). A poison effect (any with 'poison' tag or poison/coating channel) must not list other poison effects in sub_effects to prevent recursion or self-poisoning.", "category": "control", "polarity": "harmful", "magnitudeUnit": "level", "channels": ["poison", "coating"], "tags": ["poison"], "sub_effects": [] },
-
-    { "id": 47, "key": "blind", "label": "Blind", "description": "Renders the target unable to see. Vision-dependent checks and skills are crippled.", "category": "control", "polarity": "harmful", "color": "yellow", "magnitudeUnit": "seconds", "defaultDuration": 30, "channels": ["spell", "potion", "coating", "trap"], "tags": ["control", "debuff"] },
-    { "id": 48, "key": "charm", "label": "Charm", "description": "Clouds the target's mind, making them view the caster as a friend. Hostile action from the caster breaks the effect.", "category": "control", "polarity": "harmful", "color": "yellow", "magnitudeUnit": "seconds", "defaultDuration": 60, "channels": ["spell", "potion"], "tags": ["control", "mind"] },
-    { "id": 49, "key": "deafen", "label": "Deafen", "description": "Renders the target unable to hear. Audio-dependent checks fail.", "category": "control", "polarity": "harmful", "color": "yellow", "magnitudeUnit": "seconds", "defaultDuration": 30, "channels": ["spell", "trap"], "tags": ["control", "debuff"] },
-    { "id": 50, "key": "grapple", "label": "Grapple", "description": "Holds the target in place, restricting movement and attacks. Escape via contested athletics check.", "category": "control", "polarity": "harmful", "magnitudeUnit": "seconds", "defaultDuration": 10, "channels": ["spell", "innate"], "tags": ["control", "movement"] },
-    { "id": 51, "key": "incapacitate", "label": "Incapacitate", "description": "Renders the target unable to take any actions, bonus actions, or reactions.", "category": "control", "polarity": "harmful", "color": "blue", "magnitudeUnit": "seconds", "defaultDuration": 10, "channels": ["spell", "trap", "coating"], "tags": ["control", "stun"] },
-    { "id": 52, "key": "petrify", "label": "Petrify", "description": "Transforms the target into stone. Fully immobilised and highly damage resistant.", "category": "control", "polarity": "harmful", "color": "blue", "phase": "earth", "magnitudeUnit": "seconds", "defaultDuration": 120, "channels": ["spell", "trap"], "tags": ["control", "transformation"] },
-    { "id": 53, "key": "knockdown", "label": "Knockdown", "description": "Knocks the target to the ground, rendering them prone.", "category": "control", "polarity": "harmful", "magnitudeUnit": "seconds", "defaultDuration": 5, "channels": ["spell", "innate", "coating"], "tags": ["control", "movement"] },
-    { "id": 54, "key": "restrain", "label": "Restrain", "description": "Binds or entangles the target. Movement is impossible and attacks are hampered.", "category": "control", "polarity": "harmful", "color": "blue", "phase": "wood", "magnitudeUnit": "seconds", "defaultDuration": 20, "channels": ["spell", "trap", "coating"], "tags": ["control", "movement"] },
-    { "id": 55, "key": "stun", "label": "Stun", "description": "Staggers the target, leaving them unable to act and vulnerable to further attacks.", "category": "control", "polarity": "harmful", "color": "blue", "magnitudeUnit": "seconds", "defaultDuration": 4, "channels": ["spell", "coating", "innate"], "tags": ["control", "stun"] },
-    { "id": 56, "key": "unconsciousness", "label": "Unconsciousness", "description": "Knocks the target unconscious. They are helpless and unaware until revived.", "category": "control", "polarity": "harmful", "color": "blue", "magnitudeUnit": "seconds", "defaultDuration": 60, "channels": ["spell", "coating", "innate"], "tags": ["control", "sleep"] },
-
-    { "id": 57, "key": "burn", "label": "Burn", "description": "Sets the target ablaze, dealing fire damage over time.", "category": "damage", "polarity": "harmful", "color": "red", "phase": "fire", "magnitudeUnit": "points", "defaultDuration": 10, "channels": ["spell", "coating", "ingredient", "trap"], "tags": ["elemental", "fire", "damage_over_time"] },
-    { "id": 58, "key": "bleed", "label": "Bleed", "description": "Opens a bleeding wound, dealing health damage over time.", "category": "damage", "polarity": "harmful", "phase": "wood", "magnitudeUnit": "points", "defaultDuration": 15, "channels": ["spell", "coating", "poison", "trap"], "tags": ["physical", "damage_over_time"] },
-    { "id": 59, "key": "slow", "label": "Slow", "description": "Reduces the target's movement speed and action economy.", "category": "control", "polarity": "harmful", "color": "blue", "phase": "water", "magnitudeUnit": "seconds", "defaultDuration": 15, "channels": ["spell", "coating", "trap", "ingredient"], "tags": ["control", "movement"] },
-    { "id": 60, "key": "silence", "label": "Silence", "description": "Prevents the target from casting spells with verbal components.", "category": "control", "polarity": "harmful", "color": "yellow", "magnitudeUnit": "seconds", "defaultDuration": 10, "channels": ["spell", "trap", "coating"], "tags": ["control", "magic"] },
-    { "id": 61, "key": "curse", "label": "Curse", "description": "Places a hex on the target, reducing effective attributes.", "category": "control", "polarity": "harmful", "color": "black", "magnitudeUnit": "seconds", "defaultDuration": 60, "channels": ["spell", "trap"], "tags": ["necromancy", "curse"] },
-    { "id": 62, "key": "expose", "label": "Expose", "description": "Renders the target vulnerable, reducing their defenses.", "category": "control", "polarity": "harmful", "color": "indigo", "magnitudeUnit": "seconds", "defaultDuration": 10, "channels": ["spell", "coating", "trap"], "tags": ["control", "debuff"] },
-    { "id": 63, "key": "taunt", "label": "Taunt", "description": "Forces the target to focus attacks on the taunter.", "category": "control", "polarity": "harmful", "color": "yellow", "magnitudeUnit": "seconds", "defaultDuration": 8, "channels": ["spell", "innate"], "tags": ["control", "mind"] },
-    { "id": 64, "key": "stagger", "label": "Stagger", "description": "Knocks the target off-balance, costing them their reaction and imposing a penalty.", "category": "control", "polarity": "harmful", "color": "blue", "magnitudeUnit": "seconds", "defaultDuration": 4, "channels": ["spell", "coating", "innate"], "tags": ["control", "movement"] },
-
-    { "id": 65, "key": "armor_pierce", "label": "Armor Pierce", "description": "Partially ignores the target's armor DR. Magnitude is the percentage of armor DR ignored (e.g. magnitude 50 = 50% armor ignored). Common on piercing weapons and dedicated armor-piercing ammunition.", "category": "control", "polarity": "harmful", "magnitudeUnit": "percent", "defaultDuration": 0, "channels": ["enchantment", "coating", "innate", "spell"], "tags": ["combat", "armor", "debuff"] },
-    { "id": 66, "key": "sunder_armor", "label": "Sunder Armor", "description": "Reduces the target's armor DR for a duration. Magnitude is the flat DR reduction. Stacks across multiple applications up to a cap.", "category": "control", "polarity": "harmful", "magnitudeUnit": "points", "defaultDuration": 10, "channels": ["enchantment", "coating", "innate", "spell"], "tags": ["combat", "armor", "debuff"] },
-    { "id": 67, "key": "rend", "label": "Rend", "description": "Causes a deep wound that deals damage over time. More severe than a standard bleed. Magnitude is damage per tick, duration controls total ticks. Common on serrated blades and beast claws.", "category": "damage", "polarity": "harmful", "magnitudeUnit": "points", "defaultDuration": 12, "channels": ["enchantment", "coating", "innate", "spell"], "tags": ["combat", "damage_over_time", "physical"] },
-    { "id": 68, "key": "cripple", "label": "Cripple", "description": "Reduces the target's movement speed and Agility. Magnitude is the penalty to effective AGI and speed percentage.", "category": "control", "polarity": "harmful", "magnitudeUnit": "points", "defaultDuration": 8, "channels": ["enchantment", "coating", "innate", "spell", "trap"], "tags": ["combat", "movement", "debuff"] },
-    { "id": 69, "key": "weapon_damage_buff", "label": "Weapon Damage Buff", "description": "Temporarily increases the damage dealt by a weapon. Magnitude is added to the weapon's damage roll (flat bonus, not dice). Common from magical enchantments or temporary coatings.", "category": "fortify", "polarity": "beneficial", "magnitudeUnit": "points", "defaultDuration": 60, "channels": ["enchantment", "coating", "spell"], "tags": ["combat", "fortify", "weapon"] },
-    { "id": 70, "key": "haste_attack", "label": "Haste Attack", "description": "Increases attack speed and reduces recovery time. Magnitude is the percentage reduction in recovery. Stacks with attack_speed (id 30).", "category": "fortify", "polarity": "beneficial", "magnitudeUnit": "percent", "defaultDuration": 15, "channels": ["enchantment", "spell", "potion"], "tags": ["combat", "speed", "fortify"] },
-    { "id": 71, "key": "fortify_critical", "label": "Fortify Critical", "description": "Expands the critical hit window or increases critical damage multiplier. Magnitude is the bonus to the crit range (e.g. +1 = 01-06 instead of 01-05).", "category": "fortify", "polarity": "beneficial", "magnitudeUnit": "points", "defaultDuration": 60, "channels": ["enchantment", "spell", "potion", "innate"], "tags": ["combat", "critical", "fortify"] },
-    { "id": 72, "key": "fortify_defense", "label": "Fortify Defense", "description": "Increases the target's effective armor DR or evasion. Magnitude is the bonus to DR (if parameter is 'armor') or evasion (if parameter is 'evasion').", "category": "fortify", "polarity": "beneficial", "magnitudeUnit": "points", "defaultDuration": 30, "channels": ["enchantment", "spell", "potion", "innate"], "tags": ["combat", "defense", "fortify"] },
-    { "id": 73, "key": "life_steal", "label": "Life Steal", "description": "Converts a percentage of dealt damage into health for the attacker. Magnitude is the percentage converted. Common on necrotic weapons and vampiric enchantments.", "category": "restore", "polarity": "beneficial", "magnitudeUnit": "percent", "defaultDuration": 0, "channels": ["enchantment", "innate", "spell"], "tags": ["combat", "healing", "vampiric"] },
-    { "id": 74, "key": "mana_leech", "label": "Mana Leech", "description": "Converts a percentage of dealt damage into mana for the attacker. Magnitude is the percentage converted.", "category": "restore", "polarity": "beneficial", "magnitudeUnit": "percent", "defaultDuration": 0, "channels": ["enchantment", "spell"], "tags": ["combat", "mana", "leech"] },
-    { "id": 75, "key": "expose_weakness", "label": "Expose Weakness", "description": "Marks the target, making them more vulnerable to all damage. Magnitude is the percentage increase in damage taken. Stacks with expose (id 62).", "category": "control", "polarity": "harmful", "magnitudeUnit": "percent", "defaultDuration": 8, "channels": ["enchantment", "coating", "spell", "innate"], "tags": ["combat", "debuff", "vulnerability"] },
-    { "id": 76, "key": "cleave", "label": "Cleave", "description": "On a successful melee hit, the attack also strikes a second adjacent target. Magnitude is the percentage of the original damage dealt to the secondary target.", "category": "damage", "polarity": "harmful", "magnitudeUnit": "percent", "defaultDuration": 0, "channels": ["enchantment", "innate"], "tags": ["combat", "melee", "aoe"] },
-    { "id": 77, "key": "interrupt", "label": "Interrupt", "description": "On hit, disrupts the target's current action. Magnitude is a bonus to the interrupt check. Targets with higher END resist more effectively.", "category": "control", "polarity": "harmful", "magnitudeUnit": "points", "defaultDuration": 0, "channels": ["enchantment", "coating", "innate", "spell"], "tags": ["combat", "control", "interrupt"] }
+    {
+      "id": 1,
+      "key": "damage_fire",
+      "label": "Damage Fire",
+      "description": "Deals fire damage to the target.",
+      "category": "damage",
+      "polarity": "harmful",
+      "color": "red",
+      "phase": "fire",
+      "magnitudeUnit": "points",
+      "channels": [
+        "spell",
+        "coating",
+        "ingredient"
+      ],
+      "tags": [
+        "elemental",
+        "fire"
+      ]
+    },
+    {
+      "id": 2,
+      "key": "damage_frost",
+      "label": "Damage Frost",
+      "description": "Deals frost damage and saps stamina.",
+      "category": "damage",
+      "polarity": "harmful",
+      "color": "red",
+      "phase": "water",
+      "magnitudeUnit": "points",
+      "channels": [
+        "spell",
+        "coating",
+        "ingredient"
+      ],
+      "tags": [
+        "elemental",
+        "frost"
+      ]
+    },
+    {
+      "id": 3,
+      "key": "damage_shock",
+      "label": "Damage Shock",
+      "description": "Deals shock damage and drains mana.",
+      "category": "damage",
+      "polarity": "harmful",
+      "color": "red",
+      "phase": "wood",
+      "magnitudeUnit": "points",
+      "channels": [
+        "spell",
+        "coating",
+        "ingredient"
+      ],
+      "tags": [
+        "elemental",
+        "shock"
+      ]
+    },
+    {
+      "id": 4,
+      "key": "damage_force",
+      "label": "Damage Force",
+      "description": "Deals raw, unerring force damage.",
+      "category": "damage",
+      "polarity": "harmful",
+      "color": "red",
+      "phase": "metal",
+      "magnitudeUnit": "points",
+      "channels": [
+        "spell"
+      ],
+      "tags": [
+        "force"
+      ]
+    },
+    {
+      "id": 5,
+      "key": "damage_health",
+      "label": "Damage Health",
+      "description": "Drains the target's health directly.",
+      "category": "damage",
+      "polarity": "harmful",
+      "color": "red",
+      "phase": "wood",
+      "magnitudeUnit": "points",
+      "channels": [
+        "spell",
+        "poison",
+        "coating",
+        "ingredient"
+      ],
+      "tags": [
+        "harmful"
+      ]
+    },
+    {
+      "id": 6,
+      "key": "damage_stamina",
+      "label": "Damage Stamina",
+      "description": "Saps the target's stamina.",
+      "category": "drain",
+      "polarity": "harmful",
+      "color": "red",
+      "phase": "earth",
+      "magnitudeUnit": "points",
+      "channels": [
+        "spell",
+        "poison",
+        "ingredient"
+      ]
+    },
+    {
+      "id": 7,
+      "key": "restore_resource",
+      "label": "Restore Resource",
+      "description": "Restores points to a resource pool (e.g. healing, stamina recovery, mana). Use 'parameter' to specify the resource ('health', 'stamina', 'mana', 'action_points'). Magnitude is the amount restored. This generalizes the former specific restore_* effects.",
+      "category": "restore",
+      "polarity": "beneficial",
+      "magnitudeUnit": "points",
+      "channels": [
+        "spell",
+        "potion",
+        "ingredient",
+        "food"
+      ],
+      "tags": [
+        "healing",
+        "restoration",
+        "resource"
+      ]
+    },
+    {
+      "id": 8,
+      "key": "invisibility",
+      "label": "Invisibility",
+      "description": "Renders the subject unseen for a time.",
+      "category": "control",
+      "polarity": "beneficial",
+      "color": "yellow",
+      "magnitudeUnit": "seconds",
+      "defaultDuration": 30,
+      "channels": [
+        "spell",
+        "potion"
+      ],
+      "tags": [
+        "illusion",
+        "stealth"
+      ]
+    },
+    {
+      "id": 9,
+      "key": "light",
+      "label": "Light",
+      "description": "Conjures light around the subject or a point.",
+      "category": "utility",
+      "polarity": "neutral",
+      "color": "yellow",
+      "magnitudeUnit": "seconds",
+      "defaultDuration": 120,
+      "channels": [
+        "spell"
+      ],
+      "tags": [
+        "illusion"
+      ]
+    },
+    {
+      "id": 10,
+      "key": "feather",
+      "label": "Feather",
+      "description": "Lightens the subject's burden, raising carry capacity.",
+      "category": "utility",
+      "polarity": "beneficial",
+      "color": "blue",
+      "magnitudeUnit": "points",
+      "defaultDuration": 120,
+      "channels": [
+        "spell",
+        "potion",
+        "ingredient"
+      ],
+      "tags": [
+        "alteration"
+      ]
+    },
+    {
+      "id": 11,
+      "key": "paralyze",
+      "label": "Paralyze",
+      "description": "Freezes the target in place.",
+      "category": "control",
+      "polarity": "harmful",
+      "color": "blue",
+      "phase": "earth",
+      "magnitudeUnit": "seconds",
+      "defaultDuration": 4,
+      "channels": [
+        "spell",
+        "poison",
+        "coating"
+      ],
+      "tags": [
+        "control"
+      ]
+    },
+    {
+      "id": 12,
+      "key": "telekinesis",
+      "label": "Telekinesis",
+      "description": "Manipulate distant objects at range.",
+      "category": "control",
+      "polarity": "neutral",
+      "color": "violet",
+      "magnitudeUnit": "seconds",
+      "defaultDuration": 20,
+      "channels": [
+        "spell"
+      ],
+      "tags": [
+        "mysticism"
+      ]
+    },
+    {
+      "id": 13,
+      "key": "summon",
+      "label": "Summon",
+      "description": "Conjures or animates a creature/servant to fight for or assist the caster. Use 'parameter' to specify the type or category (e.g. 'undead'). Magnitude is typically a count or power rating; duration controls persistence. Generalizes former summon_* effects.",
+      "category": "conjure",
+      "polarity": "harmful",
+      "color": "black",
+      "magnitudeUnit": "count",
+      "defaultDuration": 120,
+      "channels": [
+        "spell"
+      ],
+      "tags": [
+        "necromancy",
+        "summon",
+        "conjure"
+      ]
+    },
+    {
+      "id": 14,
+      "key": "essence_fire",
+      "label": "Essence of Fire",
+      "description": "Condensed flame-aspected spiritual power. Imparts transformative, vigorous energy when used in a breakthrough or as a refining component.",
+      "category": "utility",
+      "polarity": "neutral",
+      "phase": "fire",
+      "channels": [
+        "ingredient",
+        "essence"
+      ],
+      "tags": [
+        "essence",
+        "advancement",
+        "core"
+      ]
+    },
+    {
+      "id": 15,
+      "key": "essence_wood",
+      "label": "Essence of Wood",
+      "description": "Condensed growth-aspected spiritual power. Imparts vital, regenerative energy when used in a breakthrough or as a refining component.",
+      "category": "utility",
+      "polarity": "neutral",
+      "phase": "wood",
+      "channels": [
+        "ingredient",
+        "essence"
+      ],
+      "tags": [
+        "essence",
+        "advancement",
+        "core"
+      ]
+    },
+    {
+      "id": 16,
+      "key": "essence_earth",
+      "label": "Essence of Earth",
+      "description": "Condensed stability-aspected spiritual power. Imparts enduring, grounding energy when used in a breakthrough or as a refining component.",
+      "category": "utility",
+      "polarity": "neutral",
+      "phase": "earth",
+      "channels": [
+        "ingredient",
+        "essence"
+      ],
+      "tags": [
+        "essence",
+        "advancement",
+        "core"
+      ]
+    },
+    {
+      "id": 17,
+      "key": "essence_metal",
+      "label": "Essence of Metal",
+      "description": "Condensed edge-aspected spiritual power. Imparts sharp, conductive, disciplined energy when used in a breakthrough or as a refining component.",
+      "category": "utility",
+      "polarity": "neutral",
+      "phase": "metal",
+      "channels": [
+        "ingredient",
+        "essence"
+      ],
+      "tags": [
+        "essence",
+        "advancement",
+        "core"
+      ]
+    },
+    {
+      "id": 18,
+      "key": "essence_water",
+      "label": "Essence of Water",
+      "description": "Condensed flow-aspected spiritual power. Imparts adaptive, restorative, and perceptive energy when used in a breakthrough or as a refining component.",
+      "category": "utility",
+      "polarity": "neutral",
+      "phase": "water",
+      "channels": [
+        "ingredient",
+        "essence"
+      ],
+      "tags": [
+        "essence",
+        "advancement",
+        "core"
+      ]
+    },
+    {
+      "id": 19,
+      "key": "resist",
+      "label": "Resist",
+      "description": "Reduces damage and/or negative effects from a specific type or source. Use 'parameter' to specify (e.g. 'fire', 'frost', 'poison', 'physical', 'undead', 'magic', or a wuxing phase name). Magnitude is typically percent reduction. Generalizes resist_*, elemental_resist, physical_damage_resist, magic_resistance, etc. Color/phase on the effect are optional and context-specific.",
+      "category": "resist",
+      "polarity": "beneficial",
+      "magnitudeUnit": "percent",
+      "defaultDuration": 60,
+      "channels": [
+        "innate",
+        "spell",
+        "potion",
+        "ingredient",
+        "enchantment"
+      ],
+      "tags": [
+        "resist"
+      ]
+    },
+    {
+      "id": 20,
+      "key": "cure",
+      "label": "Cure",
+      "description": "Removes active conditions, poisons, or afflictions. Use 'parameter' to specify the condition (e.g. 'poison'). Generalizes specific cure_* effects.",
+      "category": "cure",
+      "polarity": "beneficial",
+      "channels": [
+        "spell",
+        "potion",
+        "ingredient"
+      ],
+      "tags": [
+        "cure"
+      ]
+    },
+    {
+      "id": 21,
+      "key": "spell_absorption",
+      "label": "Spell Absorption",
+      "description": "Grants a chance to absorb incoming hostile magic, converting a portion of the energy into mana.",
+      "category": "utility",
+      "polarity": "beneficial",
+      "magnitudeUnit": "percent",
+      "channels": [
+        "innate",
+        "spell"
+      ],
+      "tags": [
+        "magic",
+        "absorption"
+      ]
+    },
+    {
+      "id": 22,
+      "key": "phobia",
+      "label": "Phobia",
+      "description": "Psychological aversion to a specific category of creatures (e.g. 'undead', 'beast', 'construct'). Imposes combat, skill, or morale penalties when interacting with or fighting creatures of that type. The 'parameter' field on the applying trait specifies the category.",
+      "category": "control",
+      "polarity": "harmful",
+      "channels": [
+        "innate"
+      ],
+      "tags": [
+        "phobia",
+        "fear"
+      ]
+    },
+    {
+      "id": 23,
+      "key": "allergy",
+      "label": "Allergy",
+      "description": "Severe adverse reaction to a specific material (referenced by its id from materials/core.json, e.g. 'leather', 'iron', 'silver'). Prevents proper use or equipping of items primarily made from that material, or imposes significant penalties. The 'parameter' field on the applying trait specifies the material id.",
+      "category": "utility",
+      "polarity": "harmful",
+      "channels": [
+        "innate"
+      ],
+      "tags": [
+        "allergy",
+        "material",
+        "restriction"
+      ]
+    },
+    {
+      "id": 24,
+      "key": "exotic_material_affinity",
+      "label": "Exotic Material Affinity",
+      "description": "Better results and comfort when using or wearing items made from silver, elven wood, and other rare materials.",
+      "category": "utility",
+      "polarity": "beneficial",
+      "channels": [
+        "innate"
+      ],
+      "tags": [
+        "material",
+        "exotic"
+      ]
+    },
+    {
+      "id": 25,
+      "key": "skill_points_modifier",
+      "label": "Skill Points Modifier",
+      "description": "Modifies skill points gained per level (when parameter is 'per_level') or at character creation (when parameter is 'starting'). Negative values are penalties.",
+      "category": "utility",
+      "polarity": "beneficial",
+      "channels": [
+        "innate"
+      ],
+      "tags": [
+        "skill",
+        "permanent"
+      ]
+    },
+    {
+      "id": 26,
+      "key": "aimed_shots_restriction",
+      "label": "Aimed Shots Restriction",
+      "description": "Prevents the character from making aimed or targeted shots.",
+      "category": "control",
+      "polarity": "harmful",
+      "channels": [
+        "innate"
+      ],
+      "tags": [
+        "restriction",
+        "combat"
+      ]
+    },
+    {
+      "id": 27,
+      "key": "carry_capacity_modifier",
+      "label": "Carry Capacity Modifier",
+      "description": "Modifies the character's carrying capacity. Negative values reduce it.",
+      "category": "utility",
+      "polarity": "beneficial",
+      "magnitudeUnit": "percent",
+      "channels": [
+        "innate"
+      ],
+      "tags": [
+        "carry",
+        "permanent"
+      ]
+    },
+    {
+      "id": 28,
+      "key": "tag_skills_increase",
+      "label": "Tag Skills Increase",
+      "description": "Grants additional tag skills at character creation.",
+      "category": "utility",
+      "polarity": "beneficial",
+      "channels": [
+        "innate"
+      ],
+      "tags": [
+        "skill",
+        "tag",
+        "creation"
+      ]
+    },
+    {
+      "id": 29,
+      "key": "movement_speed",
+      "label": "Movement Speed",
+      "description": "Modifies base movement speed (exploration feet/round or combat units/speed rating). Parameter can specify mode ('exploration', 'combat_turnbased', 'action') or be general. Negative values slow the character.",
+      "category": "utility",
+      "polarity": "beneficial",
+      "magnitudeUnit": "percent",
+      "channels": [
+        "innate",
+        "spell",
+        "potion"
+      ],
+      "tags": [
+        "movement",
+        "speed"
+      ]
+    },
+    {
+      "id": 30,
+      "key": "attack_speed",
+      "label": "Attack Speed",
+      "description": "Increases or decreases attack frequency/recovery (ranged or melee). Higher values allow more attacks or faster action resolution. Affects action combat directly and turn-based recovery.",
+      "category": "fortify",
+      "polarity": "beneficial",
+      "magnitudeUnit": "percent",
+      "channels": [
+        "innate",
+        "spell",
+        "potion"
+      ],
+      "tags": [
+        "combat",
+        "attack",
+        "speed"
+      ]
+    },
+    {
+      "id": 31,
+      "key": "fortify_skill",
+      "label": "Fortify Skill",
+      "description": "Temporarily or permanently increases a specific skill rating (0-100 scale). Use 'parameter' to specify the skill id (e.g. 'blades', 'red_magic'). Magnitude is the bonus in skill points. When applied, use 'durationType': 'unlimited' (stackable, magnitudes add) or 'temporal' (same effect+parameter override each other; highest magnitude wins as the persistent value, typically with longest duration).",
+      "category": "fortify",
+      "polarity": "beneficial",
+      "magnitudeUnit": "points",
+      "defaultDurationType": "unlimited",
+      "channels": [
+        "innate",
+        "spell",
+        "potion",
+        "enchantment"
+      ],
+      "tags": [
+        "skill",
+        "fortify"
+      ]
+    },
+    {
+      "id": 32,
+      "key": "fortify_attribute",
+      "label": "Fortify Attribute",
+      "description": "Temporarily or permanently increases an attribute (1-10 scale). Use 'parameter' to specify the ability id (e.g. 'str', 'wil') or 'all' for every attribute. Magnitude is the bonus.",
+      "category": "fortify",
+      "polarity": "beneficial",
+      "magnitudeUnit": "points",
+      "defaultDurationType": "unlimited",
+      "channels": [
+        "innate",
+        "spell",
+        "potion",
+        "enchantment"
+      ],
+      "tags": [
+        "attribute",
+        "fortify"
+      ]
+    },
+    {
+      "id": 33,
+      "key": "fortify_resource",
+      "label": "Fortify Resource",
+      "description": "Increases the maximum of a resource pool (e.g. hit points, mana, stamina). Use 'parameter' to specify the resource ('health', 'stamina', 'mana', 'action_points'). Magnitude is the increase in points. Supports durationType for temporal vs unlimited behavior.",
+      "category": "fortify",
+      "polarity": "beneficial",
+      "magnitudeUnit": "points",
+      "defaultDurationType": "unlimited",
+      "channels": [
+        "innate",
+        "spell",
+        "potion",
+        "enchantment"
+      ],
+      "tags": [
+        "resource",
+        "fortify"
+      ]
+    },
+    {
+      "id": 34,
+      "key": "drain_skill",
+      "label": "Drain Skill",
+      "description": "Reduces a specific skill (temporary or with duration). Parameter specifies the skill id. Magnitude is the amount drained.",
+      "category": "drain",
+      "polarity": "harmful",
+      "magnitudeUnit": "points",
+      "channels": [
+        "innate",
+        "spell",
+        "potion",
+        "poison",
+        "coating"
+      ],
+      "tags": [
+        "skill",
+        "drain"
+      ]
+    },
+    {
+      "id": 35,
+      "key": "drain_attribute",
+      "label": "Drain Attribute",
+      "description": "Reduces a specific attribute (temporary drain). Parameter specifies the ability id. Magnitude is the amount drained (can go below normal min temporarily).",
+      "category": "drain",
+      "polarity": "harmful",
+      "magnitudeUnit": "points",
+      "channels": [
+        "innate",
+        "spell",
+        "potion",
+        "poison"
+      ],
+      "tags": [
+        "attribute",
+        "drain"
+      ]
+    },
+    {
+      "id": 36,
+      "key": "damage_attribute",
+      "label": "Damage Attribute",
+      "description": "Directly damages/reduces an attribute (like a wound or curse). Parameter for the ability. Can be temporary (with duration) or longer-lasting. Magnitude is the reduction.",
+      "category": "damage",
+      "polarity": "harmful",
+      "magnitudeUnit": "points",
+      "channels": [
+        "innate",
+        "spell",
+        "potion",
+        "poison"
+      ],
+      "tags": [
+        "attribute",
+        "damage"
+      ]
+    },
+    {
+      "id": 37,
+      "key": "damage_skill",
+      "label": "Damage Skill",
+      "description": "Directly damages a skill rating (e.g. crippling a skill). Parameter for the skill id. Magnitude is the reduction in points.",
+      "category": "damage",
+      "polarity": "harmful",
+      "magnitudeUnit": "points",
+      "channels": [
+        "innate",
+        "spell",
+        "potion",
+        "poison",
+        "coating"
+      ],
+      "tags": [
+        "skill",
+        "damage"
+      ]
+    },
+    {
+      "id": 38,
+      "key": "drain_resource",
+      "label": "Drain Resource",
+      "description": "Drains a resource pool (temporary reduction to current or max). Parameter: 'health', 'stamina', 'mana', etc. Magnitude is the amount drained.",
+      "category": "drain",
+      "polarity": "harmful",
+      "magnitudeUnit": "points",
+      "channels": [
+        "innate",
+        "spell",
+        "potion",
+        "poison"
+      ],
+      "tags": [
+        "resource",
+        "drain"
+      ]
+    },
+    {
+      "id": 39,
+      "key": "damage_resource",
+      "label": "Damage Resource",
+      "description": "Directly damages a resource pool (like a wound reducing max HP). Parameter for the resource. Magnitude is the reduction.",
+      "category": "damage",
+      "polarity": "harmful",
+      "magnitudeUnit": "points",
+      "channels": [
+        "innate",
+        "spell",
+        "potion",
+        "poison"
+      ],
+      "tags": [
+        "resource",
+        "damage"
+      ]
+    },
+    {
+      "id": 40,
+      "key": "blight",
+      "label": "Blight",
+      "description": "A withering disease that drains vitality over time. Common in blighted lands or from certain monsters/plants. Symptoms include progressive health loss and weakness.",
+      "category": "control",
+      "polarity": "harmful",
+      "phase": "wood",
+      "magnitudeUnit": "points",
+      "defaultDuration": 86400,
+      "channels": [
+        "innate",
+        "poison",
+        "spell"
+      ],
+      "tags": [
+        "disease",
+        "blight"
+      ]
+    },
+    {
+      "id": 41,
+      "key": "fever",
+      "label": "Fever",
+      "description": "A common disease causing stamina drain, fatigue, and occasional attribute damage (especially END). Spreads via contact or poor conditions.",
+      "category": "control",
+      "polarity": "harmful",
+      "phase": "wood",
+      "magnitudeUnit": "points",
+      "defaultDuration": 43200,
+      "channels": [
+        "innate",
+        "poison"
+      ],
+      "tags": [
+        "disease",
+        "fever"
+      ]
+    },
+    {
+      "id": 42,
+      "key": "plague",
+      "label": "Plague",
+      "description": "Highly contagious and severe disease. Causes rapid health and attribute damage. High risk in crowded or unsanitary areas.",
+      "category": "control",
+      "polarity": "harmful",
+      "phase": "wood",
+      "magnitudeUnit": "points",
+      "defaultDuration": 172800,
+      "channels": [
+        "innate",
+        "poison"
+      ],
+      "tags": [
+        "disease",
+        "plague",
+        "contagious"
+      ]
+    },
+    {
+      "id": 43,
+      "key": "poison_paralytic",
+      "label": "Paralytic Poison",
+      "description": "A fast-acting poison that can freeze the target in place. Often used on weapons or in traps. Applies its sub_effects (e.g. paralyze) as symptoms. Resistance (via resist effect with parameter 'poison') can reduce duration or prevent full effect. A poison must not apply other poison effects to avoid recursion.",
+      "category": "control",
+      "polarity": "harmful",
+      "magnitudeUnit": "seconds",
+      "channels": [
+        "poison",
+        "coating"
+      ],
+      "tags": [
+        "poison",
+        "paralysis"
+      ],
+      "sub_effects": [
+        "core:effect/paralyze"
+      ]
+    },
+    {
+      "id": 44,
+      "key": "poison_weakness",
+      "label": "Weakness Poison",
+      "description": "Saps the target's stamina and strength over a short period. Common in coatings or toxic weapons. Applies its sub_effects (e.g. damage_stamina) as symptoms. Resistance (via resist effect with parameter 'poison') can reduce magnitude or duration. A poison must not apply other poison effects to avoid recursion.",
+      "category": "drain",
+      "polarity": "harmful",
+      "magnitudeUnit": "points",
+      "defaultDuration": 60,
+      "channels": [
+        "poison",
+        "coating"
+      ],
+      "tags": [
+        "poison",
+        "weakness"
+      ],
+      "sub_effects": [
+        "core:effect/damage_stamina"
+      ]
+    },
+    {
+      "id": 45,
+      "key": "poison_health_drain",
+      "label": "Health Drain Poison",
+      "description": "Directly damages the target's health over time. Potent versions used by assassins or in deadly traps. Applies its sub_effects (e.g. damage_health) as symptoms. Resistance (via resist effect with parameter 'poison') can reduce magnitude or duration. A poison must not apply other poison effects to avoid recursion.",
+      "category": "damage",
+      "polarity": "harmful",
+      "magnitudeUnit": "points",
+      "defaultDuration": 30,
+      "channels": [
+        "poison",
+        "coating"
+      ],
+      "tags": [
+        "poison"
+      ],
+      "sub_effects": [
+        "core:effect/damage_health"
+      ]
+    },
+    {
+      "id": 46,
+      "key": "poison",
+      "label": "Poison",
+      "description": "Generic poison delivery mechanism. When applied (via 'poison' or 'coating' channels), applies the effects listed in sub_effects as the symptoms/payload to the target. Supports generic poisons by allowing any poison effect to call other (non-poison) effects recursively as symptoms (damage, drain, control, etc.). A poison effect (any with 'poison' tag or poison/coating channel) must not list other poison effects in sub_effects to prevent recursion or self-poisoning.",
+      "category": "control",
+      "polarity": "harmful",
+      "magnitudeUnit": "level",
+      "channels": [
+        "poison",
+        "coating"
+      ],
+      "tags": [
+        "poison"
+      ],
+      "sub_effects": []
+    },
+    {
+      "id": 47,
+      "key": "blind",
+      "label": "Blind",
+      "description": "Renders the target unable to see. Vision-dependent checks and skills are crippled.",
+      "category": "control",
+      "polarity": "harmful",
+      "color": "yellow",
+      "magnitudeUnit": "seconds",
+      "defaultDuration": 30,
+      "channels": [
+        "spell",
+        "potion",
+        "coating",
+        "trap"
+      ],
+      "tags": [
+        "control",
+        "debuff"
+      ]
+    },
+    {
+      "id": 48,
+      "key": "charm",
+      "label": "Charm",
+      "description": "Clouds the target's mind, making them view the caster as a friend. Hostile action from the caster breaks the effect.",
+      "category": "control",
+      "polarity": "harmful",
+      "color": "yellow",
+      "magnitudeUnit": "seconds",
+      "defaultDuration": 60,
+      "channels": [
+        "spell",
+        "potion"
+      ],
+      "tags": [
+        "control",
+        "mind"
+      ]
+    },
+    {
+      "id": 49,
+      "key": "deafen",
+      "label": "Deafen",
+      "description": "Renders the target unable to hear. Audio-dependent checks fail.",
+      "category": "control",
+      "polarity": "harmful",
+      "color": "yellow",
+      "magnitudeUnit": "seconds",
+      "defaultDuration": 30,
+      "channels": [
+        "spell",
+        "trap"
+      ],
+      "tags": [
+        "control",
+        "debuff"
+      ]
+    },
+    {
+      "id": 50,
+      "key": "grapple",
+      "label": "Grapple",
+      "description": "Holds the target in place, restricting movement and attacks. Escape via contested athletics check.",
+      "category": "control",
+      "polarity": "harmful",
+      "magnitudeUnit": "seconds",
+      "defaultDuration": 10,
+      "channels": [
+        "spell",
+        "innate"
+      ],
+      "tags": [
+        "control",
+        "movement"
+      ]
+    },
+    {
+      "id": 51,
+      "key": "incapacitate",
+      "label": "Incapacitate",
+      "description": "Renders the target unable to take any actions, bonus actions, or reactions.",
+      "category": "control",
+      "polarity": "harmful",
+      "color": "blue",
+      "magnitudeUnit": "seconds",
+      "defaultDuration": 10,
+      "channels": [
+        "spell",
+        "trap",
+        "coating"
+      ],
+      "tags": [
+        "control",
+        "stun"
+      ]
+    },
+    {
+      "id": 52,
+      "key": "petrify",
+      "label": "Petrify",
+      "description": "Transforms the target into stone. Fully immobilised and highly damage resistant.",
+      "category": "control",
+      "polarity": "harmful",
+      "color": "blue",
+      "phase": "earth",
+      "magnitudeUnit": "seconds",
+      "defaultDuration": 120,
+      "channels": [
+        "spell",
+        "trap"
+      ],
+      "tags": [
+        "control",
+        "transformation"
+      ]
+    },
+    {
+      "id": 53,
+      "key": "knockdown",
+      "label": "Knockdown",
+      "description": "Knocks the target to the ground, rendering them prone.",
+      "category": "control",
+      "polarity": "harmful",
+      "magnitudeUnit": "seconds",
+      "defaultDuration": 5,
+      "channels": [
+        "spell",
+        "innate",
+        "coating"
+      ],
+      "tags": [
+        "control",
+        "movement"
+      ]
+    },
+    {
+      "id": 54,
+      "key": "restrain",
+      "label": "Restrain",
+      "description": "Binds or entangles the target. Movement is impossible and attacks are hampered.",
+      "category": "control",
+      "polarity": "harmful",
+      "color": "blue",
+      "phase": "wood",
+      "magnitudeUnit": "seconds",
+      "defaultDuration": 20,
+      "channels": [
+        "spell",
+        "trap",
+        "coating"
+      ],
+      "tags": [
+        "control",
+        "movement"
+      ]
+    },
+    {
+      "id": 55,
+      "key": "stun",
+      "label": "Stun",
+      "description": "Staggers the target, leaving them unable to act and vulnerable to further attacks.",
+      "category": "control",
+      "polarity": "harmful",
+      "color": "blue",
+      "magnitudeUnit": "seconds",
+      "defaultDuration": 4,
+      "channels": [
+        "spell",
+        "coating",
+        "innate"
+      ],
+      "tags": [
+        "control",
+        "stun"
+      ]
+    },
+    {
+      "id": 56,
+      "key": "unconsciousness",
+      "label": "Unconsciousness",
+      "description": "Knocks the target unconscious. They are helpless and unaware until revived.",
+      "category": "control",
+      "polarity": "harmful",
+      "color": "blue",
+      "magnitudeUnit": "seconds",
+      "defaultDuration": 60,
+      "channels": [
+        "spell",
+        "coating",
+        "innate"
+      ],
+      "tags": [
+        "control",
+        "sleep"
+      ]
+    },
+    {
+      "id": 57,
+      "key": "burn",
+      "label": "Burn",
+      "description": "Sets the target ablaze, dealing fire damage over time.",
+      "category": "damage",
+      "polarity": "harmful",
+      "color": "red",
+      "phase": "fire",
+      "magnitudeUnit": "points",
+      "defaultDuration": 10,
+      "channels": [
+        "spell",
+        "coating",
+        "ingredient",
+        "trap"
+      ],
+      "tags": [
+        "elemental",
+        "fire",
+        "damage_over_time"
+      ]
+    },
+    {
+      "id": 58,
+      "key": "bleed",
+      "label": "Bleed",
+      "description": "Opens a bleeding wound, dealing health damage over time.",
+      "category": "damage",
+      "polarity": "harmful",
+      "phase": "wood",
+      "magnitudeUnit": "points",
+      "defaultDuration": 15,
+      "channels": [
+        "spell",
+        "coating",
+        "poison",
+        "trap"
+      ],
+      "tags": [
+        "physical",
+        "damage_over_time"
+      ]
+    },
+    {
+      "id": 59,
+      "key": "slow",
+      "label": "Slow",
+      "description": "Reduces the target's movement speed and action economy.",
+      "category": "control",
+      "polarity": "harmful",
+      "color": "blue",
+      "phase": "water",
+      "magnitudeUnit": "seconds",
+      "defaultDuration": 15,
+      "channels": [
+        "spell",
+        "coating",
+        "trap",
+        "ingredient"
+      ],
+      "tags": [
+        "control",
+        "movement"
+      ]
+    },
+    {
+      "id": 60,
+      "key": "silence",
+      "label": "Silence",
+      "description": "Prevents the target from casting spells with verbal components.",
+      "category": "control",
+      "polarity": "harmful",
+      "color": "yellow",
+      "magnitudeUnit": "seconds",
+      "defaultDuration": 10,
+      "channels": [
+        "spell",
+        "trap",
+        "coating"
+      ],
+      "tags": [
+        "control",
+        "magic"
+      ]
+    },
+    {
+      "id": 61,
+      "key": "curse",
+      "label": "Curse",
+      "description": "Places a hex on the target, reducing effective attributes.",
+      "category": "control",
+      "polarity": "harmful",
+      "color": "black",
+      "magnitudeUnit": "seconds",
+      "defaultDuration": 60,
+      "channels": [
+        "spell",
+        "trap"
+      ],
+      "tags": [
+        "necromancy",
+        "curse"
+      ]
+    },
+    {
+      "id": 62,
+      "key": "expose",
+      "label": "Expose",
+      "description": "Renders the target vulnerable, reducing their defenses.",
+      "category": "control",
+      "polarity": "harmful",
+      "color": "indigo",
+      "magnitudeUnit": "seconds",
+      "defaultDuration": 10,
+      "channels": [
+        "spell",
+        "coating",
+        "trap"
+      ],
+      "tags": [
+        "control",
+        "debuff"
+      ]
+    },
+    {
+      "id": 63,
+      "key": "taunt",
+      "label": "Taunt",
+      "description": "Forces the target to focus attacks on the taunter.",
+      "category": "control",
+      "polarity": "harmful",
+      "color": "yellow",
+      "magnitudeUnit": "seconds",
+      "defaultDuration": 8,
+      "channels": [
+        "spell",
+        "innate"
+      ],
+      "tags": [
+        "control",
+        "mind"
+      ]
+    },
+    {
+      "id": 64,
+      "key": "stagger",
+      "label": "Stagger",
+      "description": "Knocks the target off-balance, costing them their reaction and imposing a penalty.",
+      "category": "control",
+      "polarity": "harmful",
+      "color": "blue",
+      "magnitudeUnit": "seconds",
+      "defaultDuration": 4,
+      "channels": [
+        "spell",
+        "coating",
+        "innate"
+      ],
+      "tags": [
+        "control",
+        "movement"
+      ]
+    },
+    {
+      "id": 65,
+      "key": "armor_pierce",
+      "label": "Armor Pierce",
+      "description": "Partially ignores the target's armor DR. Magnitude is the percentage of armor DR ignored (e.g. magnitude 50 = 50% armor ignored). Common on piercing weapons and dedicated armor-piercing ammunition.",
+      "category": "control",
+      "polarity": "harmful",
+      "magnitudeUnit": "percent",
+      "defaultDuration": 0,
+      "channels": [
+        "enchantment",
+        "coating",
+        "innate",
+        "spell"
+      ],
+      "tags": [
+        "combat",
+        "armor",
+        "debuff"
+      ]
+    },
+    {
+      "id": 66,
+      "key": "sunder_armor",
+      "label": "Sunder Armor",
+      "description": "Reduces the target's armor DR for a duration. Magnitude is the flat DR reduction. Stacks across multiple applications up to a cap.",
+      "category": "control",
+      "polarity": "harmful",
+      "magnitudeUnit": "points",
+      "defaultDuration": 10,
+      "channels": [
+        "enchantment",
+        "coating",
+        "innate",
+        "spell"
+      ],
+      "tags": [
+        "combat",
+        "armor",
+        "debuff"
+      ]
+    },
+    {
+      "id": 67,
+      "key": "rend",
+      "label": "Rend",
+      "description": "Causes a deep wound that deals damage over time. More severe than a standard bleed. Magnitude is damage per tick, duration controls total ticks. Common on serrated blades and beast claws.",
+      "category": "damage",
+      "polarity": "harmful",
+      "magnitudeUnit": "points",
+      "defaultDuration": 12,
+      "channels": [
+        "enchantment",
+        "coating",
+        "innate",
+        "spell"
+      ],
+      "tags": [
+        "combat",
+        "damage_over_time",
+        "physical"
+      ]
+    },
+    {
+      "id": 68,
+      "key": "cripple",
+      "label": "Cripple",
+      "description": "Reduces the target's movement speed and Agility. Magnitude is the penalty to effective AGI and speed percentage.",
+      "category": "control",
+      "polarity": "harmful",
+      "magnitudeUnit": "points",
+      "defaultDuration": 8,
+      "channels": [
+        "enchantment",
+        "coating",
+        "innate",
+        "spell",
+        "trap"
+      ],
+      "tags": [
+        "combat",
+        "movement",
+        "debuff"
+      ]
+    },
+    {
+      "id": 69,
+      "key": "weapon_damage_buff",
+      "label": "Weapon Damage Buff",
+      "description": "Temporarily increases the damage dealt by a weapon. Magnitude is added to the weapon's damage roll (flat bonus, not dice). Common from magical enchantments or temporary coatings.",
+      "category": "fortify",
+      "polarity": "beneficial",
+      "magnitudeUnit": "points",
+      "defaultDuration": 60,
+      "channels": [
+        "enchantment",
+        "coating",
+        "spell"
+      ],
+      "tags": [
+        "combat",
+        "fortify",
+        "weapon"
+      ]
+    },
+    {
+      "id": 70,
+      "key": "haste_attack",
+      "label": "Haste Attack",
+      "description": "Increases attack speed and reduces recovery time. Magnitude is the percentage reduction in recovery. Stacks with attack_speed (id 30).",
+      "category": "fortify",
+      "polarity": "beneficial",
+      "magnitudeUnit": "percent",
+      "defaultDuration": 15,
+      "channels": [
+        "enchantment",
+        "spell",
+        "potion"
+      ],
+      "tags": [
+        "combat",
+        "speed",
+        "fortify"
+      ]
+    },
+    {
+      "id": 71,
+      "key": "fortify_critical",
+      "label": "Fortify Critical",
+      "description": "Expands the critical hit window or increases critical damage multiplier. Magnitude is the bonus to the crit range (e.g. +1 = 01-06 instead of 01-05).",
+      "category": "fortify",
+      "polarity": "beneficial",
+      "magnitudeUnit": "points",
+      "defaultDuration": 60,
+      "channels": [
+        "enchantment",
+        "spell",
+        "potion",
+        "innate"
+      ],
+      "tags": [
+        "combat",
+        "critical",
+        "fortify"
+      ]
+    },
+    {
+      "id": 72,
+      "key": "fortify_defense",
+      "label": "Fortify Defense",
+      "description": "Increases the target's effective armor DR or evasion. Magnitude is the bonus to DR (if parameter is 'armor') or evasion (if parameter is 'evasion').",
+      "category": "fortify",
+      "polarity": "beneficial",
+      "magnitudeUnit": "points",
+      "defaultDuration": 30,
+      "channels": [
+        "enchantment",
+        "spell",
+        "potion",
+        "innate"
+      ],
+      "tags": [
+        "combat",
+        "defense",
+        "fortify"
+      ]
+    },
+    {
+      "id": 73,
+      "key": "life_steal",
+      "label": "Life Steal",
+      "description": "Converts a percentage of dealt damage into health for the attacker. Magnitude is the percentage converted. Common on necrotic weapons and vampiric enchantments.",
+      "category": "restore",
+      "polarity": "beneficial",
+      "magnitudeUnit": "percent",
+      "defaultDuration": 0,
+      "channels": [
+        "enchantment",
+        "innate",
+        "spell"
+      ],
+      "tags": [
+        "combat",
+        "healing",
+        "vampiric"
+      ]
+    },
+    {
+      "id": 74,
+      "key": "mana_leech",
+      "label": "Mana Leech",
+      "description": "Converts a percentage of dealt damage into mana for the attacker. Magnitude is the percentage converted.",
+      "category": "restore",
+      "polarity": "beneficial",
+      "magnitudeUnit": "percent",
+      "defaultDuration": 0,
+      "channels": [
+        "enchantment",
+        "spell"
+      ],
+      "tags": [
+        "combat",
+        "mana",
+        "leech"
+      ]
+    },
+    {
+      "id": 75,
+      "key": "expose_weakness",
+      "label": "Expose Weakness",
+      "description": "Marks the target, making them more vulnerable to all damage. Magnitude is the percentage increase in damage taken. Stacks with expose (id 62).",
+      "category": "control",
+      "polarity": "harmful",
+      "magnitudeUnit": "percent",
+      "defaultDuration": 8,
+      "channels": [
+        "enchantment",
+        "coating",
+        "spell",
+        "innate"
+      ],
+      "tags": [
+        "combat",
+        "debuff",
+        "vulnerability"
+      ]
+    },
+    {
+      "id": 76,
+      "key": "cleave",
+      "label": "Cleave",
+      "description": "On a successful melee hit, the attack also strikes a second adjacent target. Magnitude is the percentage of the original damage dealt to the secondary target.",
+      "category": "damage",
+      "polarity": "harmful",
+      "magnitudeUnit": "percent",
+      "defaultDuration": 0,
+      "channels": [
+        "enchantment",
+        "innate"
+      ],
+      "tags": [
+        "combat",
+        "melee",
+        "aoe"
+      ]
+    },
+    {
+      "id": 77,
+      "key": "interrupt",
+      "label": "Interrupt",
+      "description": "On hit, disrupts the target's current action. Magnitude is a bonus to the interrupt check. Targets with higher END resist more effectively.",
+      "category": "control",
+      "polarity": "harmful",
+      "magnitudeUnit": "points",
+      "defaultDuration": 0,
+      "channels": [
+        "enchantment",
+        "coating",
+        "innate",
+        "spell"
+      ],
+      "tags": [
+        "combat",
+        "control",
+        "interrupt"
+      ]
+    }
   ]
 }

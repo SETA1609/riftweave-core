@@ -11,13 +11,31 @@
         "phase": "fire",
         "size": "large",
         "level": 6,
-        "attributes": { "str": 7, "agi": 6, "per": 5 },
+        "attributes": {
+          "str": 7,
+          "agi": 6,
+          "per": 5
+        },
         "hitPoints": 78,
         "abilities": [
-          { "effect": 1, "magnitude": 18, "target": "area", "radius": 5 },
-          { "effect": 57, "magnitude": 4, "duration": 10, "target": "area", "radius": 5 }
+          {
+            "effect": "core:effect/damage_fire",
+            "magnitude": 18,
+            "target": "area",
+            "radius": 5
+          },
+          {
+            "effect": "core:effect/burn",
+            "magnitude": 4,
+            "duration": 10,
+            "target": "area",
+            "radius": 5
+          }
         ],
-        "tags": ["dragon", "elemental"],
+        "tags": [
+          "dragon",
+          "elemental"
+        ],
         "coreDrop": {
           "baseChance": 0.09,
           "minGrade": "lesser",
@@ -35,14 +53,34 @@
         "phase": "earth",
         "size": "large",
         "level": 5,
-        "attributes": { "str": 8, "end": 9, "agi": 2 },
+        "attributes": {
+          "str": 8,
+          "end": 9,
+          "agi": 2
+        },
         "hitPoints": 110,
         "abilities": [
-          { "effect": 11, "magnitude": 3, "target": "touch" },
-          { "effect": 6, "magnitude": 12, "target": "touch" },
-          { "effect": 55, "magnitude": 2, "duration": 4, "target": "touch" }
+          {
+            "effect": "core:effect/paralyze",
+            "magnitude": 3,
+            "target": "touch"
+          },
+          {
+            "effect": "core:effect/damage_stamina",
+            "magnitude": 12,
+            "target": "touch"
+          },
+          {
+            "effect": "core:effect/stun",
+            "magnitude": 2,
+            "duration": 4,
+            "target": "touch"
+          }
         ],
-        "tags": ["construct", "elemental"],
+        "tags": [
+          "construct",
+          "elemental"
+        ],
         "coreDrop": {
           "baseChance": 0.08,
           "minGrade": "lesser",
@@ -60,13 +98,30 @@
         "phase": "wood",
         "size": "medium",
         "level": 3,
-        "attributes": { "str": 5, "agi": 7, "per": 6 },
+        "attributes": {
+          "str": 5,
+          "agi": 7,
+          "per": 6
+        },
         "hitPoints": 38,
         "abilities": [
-          { "effect": 58, "magnitude": 2, "duration": 12, "target": "touch" },
-          { "effect": 46, "magnitude": 1, "duration": 20, "target": "touch" }
+          {
+            "effect": "core:effect/bleed",
+            "magnitude": 2,
+            "duration": 12,
+            "target": "touch"
+          },
+          {
+            "effect": "core:effect/poison",
+            "magnitude": 1,
+            "duration": 20,
+            "target": "touch"
+          }
         ],
-        "tags": ["beast", "fey"],
+        "tags": [
+          "beast",
+          "fey"
+        ],
         "coreDrop": {
           "baseChance": 0.07,
           "minGrade": "minor",
@@ -84,12 +139,27 @@
         "phase": "water",
         "size": "medium",
         "level": 4,
-        "attributes": { "str": 5, "end": 6, "wil": 6 },
+        "attributes": {
+          "str": 5,
+          "end": 6,
+          "wil": 6
+        },
         "abilities": [
-          { "effect": 2, "magnitude": 14, "target": "ranged" },
-          { "effect": 59, "magnitude": 5, "duration": 12, "target": "ranged" }
+          {
+            "effect": "core:effect/damage_frost",
+            "magnitude": 14,
+            "target": "ranged"
+          },
+          {
+            "effect": "core:effect/slow",
+            "magnitude": 5,
+            "duration": 12,
+            "target": "ranged"
+          }
         ],
-        "tags": ["undead"]
+        "tags": [
+          "undead"
+        ]
       }
     },
     {
@@ -102,16 +172,38 @@
         "phase": "metal",
         "size": "large",
         "level": 7,
-        "attributes": { "str": 9, "end": 8, "agi": 4 },
+        "attributes": {
+          "str": 9,
+          "end": 8,
+          "agi": 4
+        },
         "hitPoints": 95,
         "abilities": [
-          { "effect": 4, "magnitude": 16, "target": "touch" },
-          { "effect": 32, "parameter": "end", "magnitude": 2, "duration": 20, "target": "self", "durationType": "temporal" },
-          { "effect": 64, "magnitude": 1, "duration": 3, "target": "touch" }
+          {
+            "effect": "core:effect/damage_force",
+            "magnitude": 16,
+            "target": "touch"
+          },
+          {
+            "effect": "core:effect/fortify_attribute",
+            "parameter": "end",
+            "magnitude": 2,
+            "duration": 20,
+            "target": "self",
+            "durationType": "temporal"
+          },
+          {
+            "effect": "core:effect/stagger",
+            "magnitude": 1,
+            "duration": 3,
+            "target": "touch"
+          }
         ],
-        "tags": ["construct"],
+        "tags": [
+          "construct"
+        ],
         "coreDrop": {
-          "baseChance": 0.10,
+          "baseChance": 0.1,
           "minGrade": "common",
           "maxGrade": "major"
         }
@@ -127,13 +219,29 @@
         "phase": "water",
         "size": "medium",
         "level": 1,
-        "attributes": { "str": 3, "agi": 4, "per": 2 },
+        "attributes": {
+          "str": 3,
+          "agi": 4,
+          "per": 2
+        },
         "hitPoints": 18,
         "abilities": [
-          { "effect": 4, "magnitude": 6, "target": "touch" },
-          { "effect": 62, "magnitude": 1, "duration": 10, "target": "touch" }
+          {
+            "effect": "core:effect/damage_force",
+            "magnitude": 6,
+            "target": "touch"
+          },
+          {
+            "effect": "core:effect/expose",
+            "magnitude": 1,
+            "duration": 10,
+            "target": "touch"
+          }
         ],
-        "tags": ["undead", "skeletal"]
+        "tags": [
+          "undead",
+          "skeletal"
+        ]
       }
     },
     {
@@ -146,13 +254,29 @@
         "phase": "water",
         "size": "medium",
         "level": 1,
-        "attributes": { "str": 4, "end": 4, "agi": 1, "per": 1 },
+        "attributes": {
+          "str": 4,
+          "end": 4,
+          "agi": 1,
+          "per": 1
+        },
         "hitPoints": 30,
         "abilities": [
-          { "effect": 46, "magnitude": 1, "duration": 25, "target": "touch" },
-          { "effect": 5, "magnitude": 4, "target": "touch" }
+          {
+            "effect": "core:effect/poison",
+            "magnitude": 1,
+            "duration": 25,
+            "target": "touch"
+          },
+          {
+            "effect": "core:effect/damage_health",
+            "magnitude": 4,
+            "target": "touch"
+          }
         ],
-        "tags": ["undead"]
+        "tags": [
+          "undead"
+        ]
       }
     },
     {
@@ -165,13 +289,29 @@
         "phase": "wood",
         "size": "large",
         "level": 3,
-        "attributes": { "str": 6, "agi": 6, "per": 6 },
+        "attributes": {
+          "str": 6,
+          "agi": 6,
+          "per": 6
+        },
         "hitPoints": 35,
         "abilities": [
-          { "effect": 58, "magnitude": 3, "duration": 15, "target": "touch" },
-          { "effect": 53, "magnitude": 2, "duration": 3, "target": "touch" }
+          {
+            "effect": "core:effect/bleed",
+            "magnitude": 3,
+            "duration": 15,
+            "target": "touch"
+          },
+          {
+            "effect": "core:effect/knockdown",
+            "magnitude": 2,
+            "duration": 3,
+            "target": "touch"
+          }
         ],
-        "tags": ["beast"]
+        "tags": [
+          "beast"
+        ]
       }
     },
     {
@@ -184,15 +324,31 @@
         "phase": "fire",
         "size": "medium",
         "level": 5,
-        "attributes": { "str": 7, "agi": 6, "per": 4 },
+        "attributes": {
+          "str": 7,
+          "agi": 6,
+          "per": 4
+        },
         "hitPoints": 55,
         "abilities": [
-          { "effect": 1, "magnitude": 14, "target": "touch" },
-          { "effect": 57, "magnitude": 3, "duration": 8, "target": "touch" }
+          {
+            "effect": "core:effect/damage_fire",
+            "magnitude": 14,
+            "target": "touch"
+          },
+          {
+            "effect": "core:effect/burn",
+            "magnitude": 3,
+            "duration": 8,
+            "target": "touch"
+          }
         ],
-        "tags": ["elemental", "fire"],
+        "tags": [
+          "elemental",
+          "fire"
+        ],
         "coreDrop": {
-          "baseChance": 0.10,
+          "baseChance": 0.1,
           "minGrade": "lesser",
           "maxGrade": "greater"
         }
@@ -208,13 +364,29 @@
         "phase": "water",
         "size": "medium",
         "level": 4,
-        "attributes": { "str": 6, "agi": 4, "per": 5 },
+        "attributes": {
+          "str": 6,
+          "agi": 4,
+          "per": 5
+        },
         "hitPoints": 48,
         "abilities": [
-          { "effect": 2, "magnitude": 12, "target": "ranged" },
-          { "effect": 59, "magnitude": 4, "duration": 10, "target": "ranged" }
+          {
+            "effect": "core:effect/damage_frost",
+            "magnitude": 12,
+            "target": "ranged"
+          },
+          {
+            "effect": "core:effect/slow",
+            "magnitude": 4,
+            "duration": 10,
+            "target": "ranged"
+          }
         ],
-        "tags": ["elemental", "ice"],
+        "tags": [
+          "elemental",
+          "ice"
+        ],
         "coreDrop": {
           "baseChance": 0.09,
           "minGrade": "lesser",
@@ -232,13 +404,28 @@
         "phase": "wood",
         "size": "medium",
         "level": 1,
-        "attributes": { "agi": 4, "per": 3 },
+        "attributes": {
+          "agi": 4,
+          "per": 3
+        },
         "hitPoints": 20,
         "abilities": [
-          { "effect": 4, "magnitude": 6, "target": "touch" },
-          { "effect": 53, "magnitude": 1, "duration": 2, "target": "touch" }
+          {
+            "effect": "core:effect/damage_force",
+            "magnitude": 6,
+            "target": "touch"
+          },
+          {
+            "effect": "core:effect/knockdown",
+            "magnitude": 1,
+            "duration": 2,
+            "target": "touch"
+          }
         ],
-        "tags": ["humanoid", "bandit"]
+        "tags": [
+          "humanoid",
+          "bandit"
+        ]
       }
     }
   ]

@@ -59,9 +59,8 @@ This is the most important thing to understand before editing schemas or data:
 
 - **All schemas set `additionalProperties: false`**. To add any new field to a data entry, you **must** first add it to the corresponding schema, or validation will fail.
 
-- Entries use a numeric `id` (positive integer, unique within the collection). This is the stable primary identifier.
-- Each entry also carries a `key` (the familiar lowercase snake_case string, often with prefixes like `damage_`, `fortify_`, for human readability when editing the JSON source) and a `label` (the human-readable display title with spaces and capitalization, e.g. "Restore Resource").
-- **Namespaced string refs** are the preferred cross-reference format: `core:<singular-category>/<key>` (e.g. `core:weapon/shortsword`, `core:armor/leather_jerkin`, `core:consumable/potion_minor_healing`, `core:effect/damage_fire`, `core:spell/fire_bolt`). Background `starting_equipment` already uses this format. Other collections are migrating; legacy numeric ids still validate during transition.
+- Entries use a numeric `id` (positive integer, unique within the collection) for internal tracking, and a `key` (the familiar lowercase snake_case string, often with prefixes like `damage_`, `fortify_`, for human readability when editing the JSON source) and a `label` (the human-readable display title with spaces and capitalization, e.g. "Restore Resource").
+- **Namespaced string refs** are the only cross-reference format: `core:<singular-category>/<key>` (e.g. `core:weapon/shortsword`, `core:armor/leather_jerkin`, `core:consumable/potion_minor_healing`, `core:effect/damage_fire`, `core:spell/fire_bolt`). Numeric ids are **not** accepted as cross-references — validation will reject them.
 - **Namespace rules:**
   - `core:` = Base / official content that ships with the ruleset.
   - Modules can use their own namespace (e.g. `module:examplemod/weapon/frost_sword`).

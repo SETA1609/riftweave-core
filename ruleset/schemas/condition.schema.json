@@ -33,14 +33,14 @@
         },
         "appliedBy": {
           "type": "array",
-          "description": "Effect IDs from the effects registry that can apply this condition.",
-          "items": { "$ref": "schema.json#/definitions/entryId" },
+          "description": "Effect refs that can apply this condition. Use namespaced format core:effect/<key> or bare key.",
+          "items": { "type": "string" },
           "minItems": 1
         },
         "removedBy": {
           "type": "array",
-          "description": "Effect IDs that can remove this condition (typically cure id 20 with appropriate parameter). May be empty for conditions with only non-effect removal (e.g. prone is removed by the 'stand' action, not by any effect).",
-          "items": { "$ref": "schema.json#/definitions/entryId" }
+          "description": "Effect refs that can remove this condition (typically core:effect/cure). May be empty for conditions with only non-effect removal (e.g. prone is removed by the 'stand' action, not by any effect).",
+          "items": { "type": "string" }
         },
         "stacking": {
           "type": "boolean",

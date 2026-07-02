@@ -52,11 +52,8 @@
             "type": "object",
             "properties": {
               "effect": {
-                "oneOf": [
-                  { "$ref": "schema.json#/definitions/entryId" },
-                  { "type": "string" }
-                ],
-                "description": "Effect reference: preferred format core:effect/<key>; legacy numeric id also accepted."
+                "type": "string",
+                "description": "Effect reference: namespaced format core:effect/<key> or bare key."
               },
               "magnitude": { "type": "number", "description": "Effect strength." },
               "duration": { "type": "number", "minimum": 0, "description": "Duration in seconds; 0 = instantaneous." },

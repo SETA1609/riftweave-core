@@ -2,32 +2,164 @@
   "$schema": "../../schemas/equipment.schema.json",
   "equipment": [
     {
-      "id": 1, "key": "potion_minor_healing", "label": "Potion of Minor Healing", "description": "A red draught that knits flesh and closes wounds.", "type": "potion", "cost": { "quantity": 25, "unit": "gp" }, "weight": 0.5,
-      "consumable": { "delivery": "drink", "effects": [ { "effect": 7, "parameter": "health", "magnitude": 50 } ] }
+      "id": 1,
+      "key": "potion_minor_healing",
+      "label": "Potion of Minor Healing",
+      "description": "A red draught that knits flesh and closes wounds.",
+      "type": "potion",
+      "cost": {
+        "quantity": 25,
+        "unit": "gp"
+      },
+      "weight": 0.5,
+      "consumable": {
+        "delivery": "drink",
+        "effects": [
+          {
+            "effect": "core:effect/restore_resource",
+            "parameter": "health",
+            "magnitude": 50
+          }
+        ]
+      }
     },
     {
-      "id": 2, "key": "potion_invisibility", "label": "Potion of Invisibility", "description": "A shimmering vial that bends light around the drinker.", "type": "potion", "cost": { "quantity": 120, "unit": "gp" }, "weight": 0.5,
-      "consumable": { "delivery": "drink", "effects": [ { "effect": 8, "duration": 20 } ] }
+      "id": 2,
+      "key": "potion_invisibility",
+      "label": "Potion of Invisibility",
+      "description": "A shimmering vial that bends light around the drinker.",
+      "type": "potion",
+      "cost": {
+        "quantity": 120,
+        "unit": "gp"
+      },
+      "weight": 0.5,
+      "consumable": {
+        "delivery": "drink",
+        "effects": [
+          {
+            "effect": "core:effect/invisibility",
+            "duration": 20
+          }
+        ]
+      }
     },
     {
-      "id": 3, "key": "potion_fire_resistance", "label": "Potion of Fire Resistance", "description": "Tastes of ash; wards the body against flame.", "type": "potion", "cost": { "quantity": 60, "unit": "gp" }, "weight": 0.5,
-      "consumable": { "delivery": "drink", "effects": [ { "effect": 19, "parameter": "fire", "magnitude": 50, "duration": 120 } ] }
+      "id": 3,
+      "key": "potion_fire_resistance",
+      "label": "Potion of Fire Resistance",
+      "description": "Tastes of ash; wards the body against flame.",
+      "type": "potion",
+      "cost": {
+        "quantity": 60,
+        "unit": "gp"
+      },
+      "weight": 0.5,
+      "consumable": {
+        "delivery": "drink",
+        "effects": [
+          {
+            "effect": "core:effect/resist",
+            "parameter": "fire",
+            "magnitude": 50,
+            "duration": 120
+          }
+        ]
+      }
     },
     {
-      "id": 4, "key": "poison_weakness", "label": "Poison of Weakness", "description": "A foul tincture that saps health and vigor when struck.", "type": "poison", "cost": { "quantity": 40, "unit": "gp" }, "weight": 0.1,
-      "consumable": { "delivery": "apply_weapon", "uses": 3, "effects": [ { "effect": 5, "magnitude": 10, "duration": 6 }, { "effect": 6, "magnitude": 5 } ] }
+      "id": 4,
+      "key": "poison_weakness",
+      "label": "Poison of Weakness",
+      "description": "A foul tincture that saps health and vigor when struck.",
+      "type": "poison",
+      "cost": {
+        "quantity": 40,
+        "unit": "gp"
+      },
+      "weight": 0.1,
+      "consumable": {
+        "delivery": "apply_weapon",
+        "uses": 3,
+        "effects": [
+          {
+            "effect": "core:effect/damage_health",
+            "magnitude": 10,
+            "duration": 6
+          },
+          {
+            "effect": "core:effect/damage_stamina",
+            "magnitude": 5
+          }
+        ]
+      }
     },
     {
-      "id": 5, "key": "coating_frost", "label": "Frost Coating", "description": "A rime-blue paste that chills any blade it touches.", "type": "coating", "cost": { "quantity": 35, "unit": "gp" }, "weight": 0.1,
-      "consumable": { "delivery": "apply_weapon", "uses": 5, "effects": [ { "effect": 2, "magnitude": 8 } ] }
+      "id": 5,
+      "key": "coating_frost",
+      "label": "Frost Coating",
+      "description": "A rime-blue paste that chills any blade it touches.",
+      "type": "coating",
+      "cost": {
+        "quantity": 35,
+        "unit": "gp"
+      },
+      "weight": 0.1,
+      "consumable": {
+        "delivery": "apply_weapon",
+        "uses": 5,
+        "effects": [
+          {
+            "effect": "core:effect/damage_frost",
+            "magnitude": 8
+          }
+        ]
+      }
     },
     {
-      "id": 6, "key": "oil_paralysis", "label": "Paralytic Oil", "description": "A weapon oil distilled from spider venom.", "type": "oil", "cost": { "quantity": 90, "unit": "gp" }, "weight": 0.1,
-      "consumable": { "delivery": "apply_weapon", "uses": 2, "effects": [ { "effect": 11, "duration": 4 } ] }
+      "id": 6,
+      "key": "oil_paralysis",
+      "label": "Paralytic Oil",
+      "description": "A weapon oil distilled from spider venom.",
+      "type": "oil",
+      "cost": {
+        "quantity": 90,
+        "unit": "gp"
+      },
+      "weight": 0.1,
+      "consumable": {
+        "delivery": "apply_weapon",
+        "uses": 2,
+        "effects": [
+          {
+            "effect": "core:effect/paralyze",
+            "duration": 4
+          }
+        ]
+      }
     },
     {
-      "id": 7, "key": "ration_hearty_stew", "label": "Hearty Stew", "description": "A warm meal that restores stamina over time.", "type": "food", "cost": { "quantity": 5, "unit": "gp" }, "weight": 1,
-      "consumable": { "delivery": "eat", "effects": [ { "effect": 7, "parameter": "stamina", "magnitude": 30, "duration": 30 } ] }
+      "id": 7,
+      "key": "ration_hearty_stew",
+      "label": "Hearty Stew",
+      "description": "A warm meal that restores stamina over time.",
+      "type": "food",
+      "cost": {
+        "quantity": 5,
+        "unit": "gp"
+      },
+      "weight": 1,
+      "consumable": {
+        "delivery": "eat",
+        "effects": [
+          {
+            "effect": "core:effect/restore_resource",
+            "parameter": "stamina",
+            "magnitude": 30,
+            "duration": 30
+          }
+        ]
+      }
     }
   ]
 }
