@@ -1,9 +1,1 @@
-{
-  "key": "brigandine",
-  "label": "Brigandine",
-  "description": "Small metal plates riveted between layers of leather or cloth. Flexible and protective.",
-  "type": "armor",
-  "cost": { "quantity": 90, "unit": "gp" },
-  "weight": 22,
-  "armor": { "slot": "torso", "layer": "middle", "category": "medium", "drBase": 3, "evasionPenalty": -5, "speedPenalty": -1, "requiresLayer": ["skin"] }
-}
+{"key":"brigandine","label":"Brigandine","description":"Small metal plates riveted between layers of leather or cloth. Flexible and protective.","type":"armor","cost":{"quantity":90,"unit":"gp"},"weight":22,"armor":{"slot":"torso","layer":"middle","category":"medium","drBase":3,"evasionPenalty":-5,"speedPenalty":-1,"requiresLayer":["skin"]},"enchantment_slots":1,"phase":"metal"}

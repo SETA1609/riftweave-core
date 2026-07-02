@@ -1,9 +1,1 @@
-{
-  "key": "cloak",
-  "label": "Cloak",
-  "description": "A heavy wool or leather cloak. Offers warmth and can carry enchantments but negligible DR.",
-  "type": "armor",
-  "cost": { "quantity": 5, "unit": "gp" },
-  "weight": 3,
-  "armor": { "slot": "back", "layer": "on_top", "drBase": 0 }
-}
+{"key":"cloak","label":"Cloak","description":"A heavy wool or leather cloak. Offers warmth and can carry enchantments but negligible DR.","type":"armor","cost":{"quantity":5,"unit":"gp"},"weight":3,"armor":{"slot":"back","layer":"on_top","drBase":0},"enchantment_slots":1,"phase":"earth"}

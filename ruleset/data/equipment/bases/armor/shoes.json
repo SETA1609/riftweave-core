@@ -1,9 +1,1 @@
-{
-  "key": "shoes",
-  "label": "Shoes",
-  "description": "Simple leather or cloth footwear. No combat protection.",
-  "type": "armor",
-  "cost": { "quantity": 2, "unit": "gp" },
-  "weight": 1,
-  "armor": { "slot": "feet", "layer": "skin", "category": "light", "drBase": 0 }
-}
+{"key":"shoes","label":"Shoes","description":"Simple leather or cloth footwear. No combat protection.","type":"armor","cost":{"quantity":2,"unit":"gp"},"weight":1,"armor":{"slot":"feet","layer":"skin","category":"light","drBase":0},"enchantment_slots":0,"phase":"earth"}

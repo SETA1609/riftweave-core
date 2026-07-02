@@ -1,9 +1,1 @@
-{
-  "key": "cap_hood",
-  "label": "Cap/Hood",
-  "description": "A simple cloth cap or hood. Offers minimal protection but keeps the elements at bay.",
-  "type": "armor",
-  "cost": { "quantity": 1, "unit": "gp" },
-  "weight": 1,
-  "armor": { "slot": "head", "layer": "skin", "category": "light", "drBase": 0 }
-}
+{"key":"cap_hood","label":"Cap/Hood","description":"A simple cloth cap or hood. Offers minimal protection but keeps the elements at bay.","type":"armor","cost":{"quantity":1,"unit":"gp"},"weight":1,"armor":{"slot":"head","layer":"skin","category":"light","drBase":0},"enchantment_slots":0,"phase":"earth"}

@@ -1,9 +1,1 @@
-{
-  "key": "scale_shirt",
-  "label": "Scale Shirt",
-  "description": "Overlapping metal scales riveted to a leather backing. Good protection for its weight.",
-  "type": "armor",
-  "cost": { "quantity": 70, "unit": "gp" },
-  "weight": 25,
-  "armor": { "slot": "torso", "layer": "middle", "category": "medium", "drBase": 3, "evasionPenalty": -5, "speedPenalty": -1, "requiresLayer": ["skin"] }
-}
+{"key":"scale_shirt","label":"Scale Shirt","description":"Overlapping metal scales riveted to a leather backing. Good protection for its weight.","type":"armor","cost":{"quantity":70,"unit":"gp"},"weight":25,"armor":{"slot":"torso","layer":"middle","category":"medium","drBase":3,"evasionPenalty":-5,"speedPenalty":-1,"requiresLayer":["skin"]},"enchantment_slots":1,"phase":"metal"}

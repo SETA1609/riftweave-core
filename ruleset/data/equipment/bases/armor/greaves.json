@@ -1,9 +1,1 @@
-{
-  "key": "greaves",
-  "label": "Greaves",
-  "description": "Metal leg guards protecting the shins and knees. Part of heavy armor sets.",
-  "type": "armor",
-  "cost": { "quantity": 50, "unit": "gp" },
-  "weight": 8,
-  "armor": { "slot": "feet", "layer": "upper", "category": "heavy", "drBase": 2, "evasionPenalty": -15, "speedPenalty": -2 }
-}
+{"key":"greaves","label":"Greaves","description":"Metal leg guards protecting the shins and knees. Part of heavy armor sets.","type":"armor","cost":{"quantity":50,"unit":"gp"},"weight":8,"armor":{"slot":"feet","layer":"upper","category":"heavy","drBase":2,"evasionPenalty":-15,"speedPenalty":-2},"enchantment_slots":1,"phase":"metal"}
