@@ -818,6 +818,13 @@ def _resolve_equipment_bases(data, errors, fp):
         for k, v in overrides.items():
             merged[k] = _merge_field(merged.get(k), v)
 
+        # Validate merged enchantment_slots is an integer
+        es = merged.get("enchantment_slots")
+        if es is not None and not isinstance(es, int):
+            errors.append(
+                f"equipment[{i}]: enchantment_slots must be an integer, got {type(es).__name__}"
+            )
+
         # Carry over id and key from the entry wrapper
         merged["id"] = entry.get("id")
         merged["key"] = entry.get("key")
