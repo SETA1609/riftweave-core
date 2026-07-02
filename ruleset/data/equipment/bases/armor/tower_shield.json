@@ -1,0 +1,9 @@
+{
+  "key": "tower_shield",
+  "label": "Tower Shield",
+  "description": "A massive shield covering most of the body. Grants half cover to adjacent allies. Requires considerable strength.",
+  "type": "shield",
+  "cost": { "quantity": 30, "unit": "gp" },
+  "weight": 14,
+  "armor": { "slot": "offhand", "layer": null, "category": "heavy", "drBase": 4, "evasionPenalty": -20, "speedPenalty": -1, "strengthRequirement": 8 }
+}

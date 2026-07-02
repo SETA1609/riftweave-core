@@ -1,0 +1,9 @@
+{
+  "key": "breastplate",
+  "label": "Breastplate",
+  "description": "A formed metal plate covering the chest and abdomen. Often worn over chain or padding.",
+  "type": "armor",
+  "cost": { "quantity": 200, "unit": "gp" },
+  "weight": 15,
+  "armor": { "slot": "torso", "layer": "upper", "category": "heavy", "drBase": 4, "evasionPenalty": -15, "speedPenalty": -2 }
+}

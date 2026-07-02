@@ -1,0 +1,9 @@
+{
+  "key": "studded_leather_jerkin",
+  "label": "Studded Leather Jerkin",
+  "description": "A leather jerkin reinforced with metal studs and small plates.",
+  "type": "armor",
+  "cost": { "quantity": 30, "unit": "gp" },
+  "weight": 10,
+  "armor": { "slot": "torso", "layer": "upper", "category": "light", "drBase": 2 }
+}

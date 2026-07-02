@@ -1,0 +1,9 @@
+{
+  "key": "backpack",
+  "label": "Backpack",
+  "description": "A sturdy backpack for carrying gear. No protective value.",
+  "type": "armor",
+  "cost": { "quantity": 2, "unit": "gp" },
+  "weight": 2,
+  "armor": { "slot": "back", "layer": "on_top", "drBase": 0 }
+}

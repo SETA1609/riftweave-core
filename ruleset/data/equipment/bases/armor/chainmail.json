@@ -1,0 +1,9 @@
+{
+  "key": "chainmail",
+  "label": "Chainmail",
+  "description": "A shirt of interlocking metal rings. Requires a padded layer underneath.",
+  "type": "armor",
+  "cost": { "quantity": 50, "unit": "gp" },
+  "weight": 20,
+  "armor": { "slot": "torso", "layer": "middle", "category": "medium", "drBase": 2, "evasionPenalty": -5, "speedPenalty": -1, "requiresLayer": ["skin"] }
+}

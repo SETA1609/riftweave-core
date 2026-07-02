@@ -1,0 +1,9 @@
+{
+  "key": "coif",
+  "label": "Coif",
+  "description": "A chainmail hood covering the head and neck. Requires a padded cap underneath.",
+  "type": "armor",
+  "cost": { "quantity": 20, "unit": "gp" },
+  "weight": 5,
+  "armor": { "slot": "head", "layer": "middle", "category": "medium", "drBase": 1, "evasionPenalty": -5, "requiresLayer": ["skin"] }
+}

@@ -1,0 +1,9 @@
+{
+  "key": "full_plate",
+  "label": "Full Plate",
+  "description": "Complete plate armor with integrated greaves and pauldrons. The pinnacle of protection.",
+  "type": "armor",
+  "cost": { "quantity": 1200, "unit": "gp" },
+  "weight": 50,
+  "armor": { "slot": "torso", "layer": "upper", "category": "heavy", "drBase": 6, "evasionPenalty": -15, "speedPenalty": -2, "strengthRequirement": 10, "stealthPenalty": true }
+}

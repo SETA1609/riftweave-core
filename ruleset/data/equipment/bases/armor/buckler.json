@@ -1,0 +1,9 @@
+{
+  "key": "buckler",
+  "label": "Buckler",
+  "description": "A small center-grip shield. Lightweight and allows a weapon or item in the same hand.",
+  "type": "shield",
+  "cost": { "quantity": 5, "unit": "gp" },
+  "weight": 3,
+  "armor": { "slot": "offhand", "layer": null, "category": "light", "drBase": 1, "evasionPenalty": -5 }
+}
