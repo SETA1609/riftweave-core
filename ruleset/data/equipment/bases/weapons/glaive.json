@@ -1,17 +1,1 @@
-{
-  "key": "glaive",
-  "label": "Glaive",
-  "description": "A long polearm with a slashing blade, effective at extended reach.",
-  "type": "weapon",
-  "cost": { "quantity": 20, "unit": "gp" },
-  "weight": 6,
-  "weapon": {
-    "category": "martial",
-    "range": "melee",
-    "length": "reach",
-    "attackReach": 2,
-    "skill": "core:skill/blades",
-    "damage": { "dice": "1d10", "type": "slashing" },
-    "properties": ["heavy", "two_handed"]
-  }
-}
+{"key":"glaive","label":"Glaive","description":"A long polearm with a slashing blade, effective at extended reach.","type":"weapon","cost":{"quantity":20,"unit":"gp"},"weight":6,"weapon":{"category":"martial","range":"melee","length":"reach","attackReach":2,"skill":"core:skill/blades","damage":{"dice":"1d10","type":"slashing"},"properties":["heavy","two_handed"]},"enchantment_slots":2,"phase":"wood"}

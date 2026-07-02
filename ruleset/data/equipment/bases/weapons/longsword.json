@@ -1,17 +1,1 @@
-{
-  "key": "longsword",
-  "label": "Longsword",
-  "description": "A versatile blade wielded in one or two hands. Can be made of wood for training wasters.",
-  "type": "weapon",
-  "cost": { "quantity": 15, "unit": "gp" },
-  "weight": 3,
-  "weapon": {
-    "category": "martial",
-    "range": "melee",
-    "length": "normal",
-    "attackReach": 1,
-    "skill": "core:skill/blades",
-    "damage": { "dice": "1d8", "type": "slashing" },
-    "properties": ["versatile"]
-  }
-}
+{"key":"longsword","label":"Longsword","description":"A versatile blade wielded in one or two hands. Can be made of wood for training wasters.","type":"weapon","cost":{"quantity":15,"unit":"gp"},"weight":3,"weapon":{"category":"martial","range":"melee","length":"normal","attackReach":1,"skill":"core:skill/blades","damage":{"dice":"1d8","type":"slashing"},"properties":["versatile"]},"enchantment_slots":2,"phase":"metal"}
