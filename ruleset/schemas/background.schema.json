@@ -32,11 +32,8 @@
             "type": "object",
             "properties": {
               "skill": {
-                "oneOf": [
-                  { "$ref": "schema.json#/definitions/entryId" },
-                  { "type": "string" }
-                ],
-                "description": "Skill id (numeric) or key from skills/core.json"
+                "type": "string",
+                "description": "Skill reference: namespaced format core:skill/<key> or bare key"
               },
               "bonus": {
                 "type": "integer",
@@ -51,16 +48,13 @@
         },
         "starting_equipment": {
           "type": "array",
-          "description": "Items granted at creation. Prefer namespaced equipment refs (core:weapons/shortsword, core:armors/leather_jerkin, core:consumables/potion_minor_healing). Legacy numeric ids are still accepted during transition. Quantities default to 1 if omitted.",
+          "description": "Items granted at creation. Prefer namespaced equipment refs (core:weapon/shortsword, core:armor/leather_jerkin, core:consumable/potion_minor_healing). Legacy numeric ids are still accepted during transition. Quantities default to 1 if omitted.",
           "items": {
             "type": "object",
             "properties": {
               "item": {
-                "oneOf": [
-                  { "$ref": "schema.json#/definitions/entryId" },
-                  { "type": "string" }
-                ],
-                "description": "Equipment reference: preferred format core:<category>/<key> (e.g. core:weapons/shortsword); legacy numeric id or bare key also accepted"
+                "type": "string",
+                "description": "Equipment reference: namespaced format core:<category>/<key> (e.g. core:weapon/shortsword) or bare key"
               },
               "quantity": {
                 "type": "integer",
@@ -74,13 +68,8 @@
         },
         "starting_spells": {
           "type": "array",
-          "description": "Spells the character begins knowing. These are granted regardless of current skill level (though casting them effectively still requires investment in the governing <color>_magic skill). References spells/core.json by id.",
-          "items": {
-            "oneOf": [
-              { "$ref": "schema.json#/definitions/entryId" },
-              { "type": "string" }
-            ]
-          }
+          "description": "Spells the character begins knowing. These are granted regardless of current skill level (though casting them effectively still requires investment in the governing <color>_magic skill). Use namespaced format core:spell/<key> or bare key.",
+          "items": { "type": "string" }
         },
         "granted_features": {
           "type": "array",
@@ -98,13 +87,8 @@
         },
         "suggested_tag_skills": {
           "type": "array",
-          "description": "Skills this background naturally pairs well with for tag skill selection. Purely advisory; does not mechanically force or grant tags.",
-          "items": {
-            "oneOf": [
-              { "$ref": "schema.json#/definitions/entryId" },
-              { "type": "string" }
-            ]
-          }
+          "description": "Skills this background naturally pairs well with for tag skill selection. Purely advisory; does not mechanically force or grant tags. Use namespaced format core:skill/<key> or bare key.",
+          "items": { "type": "string" }
         }
       },
       "required": ["id", "key", "label", "description"],

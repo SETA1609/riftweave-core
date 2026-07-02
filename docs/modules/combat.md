@@ -137,7 +137,7 @@ with optional auto-pause on OA trigger.
 ## 3. Defense Model — Two Trees
 
 Both trees consider **active effects** on the player (from the effects registry,
-e.g. `resist` id 19, `spell_absorption` id 21) as modifiers at their respective
+e.g. `resist` core:effect/resist, `spell_absorption` core:effect/spell_absorption) as modifiers at their respective
 layers. See [`conditions.md`](./conditions.md) and [`armor.md`](./armor.md) for details
 on conditions and armor DR.
 
@@ -157,9 +157,9 @@ Attack hits (d100 ≤ weapon skill)
 ```
 Spell lands (d100 ≤ cast check)
   → Layer 1: Evasion* — evasion can apply to magic only with a perk (not baseline)
-  → Layer 2: Spell Absorption (spell_absorption id 21, WIL-based %) — % chance to absorb into mana
-    → Layer 3: Magic Resistance (resist id 19 with parameter "magic" + WIL) — % reduction or resist roll
-      → Layer 4: Elemental/Phase Resistance (resist id 19 with parameter = phase/type) — per-element DR
+  → Layer 2: Spell Absorption (spell_absorption core:effect/spell_absorption, WIL-based %) — % chance to absorb into mana
+    → Layer 3: Magic Resistance (resist core:effect/resist with parameter "magic" + WIL) — % reduction or resist roll
+      → Layer 4: Elemental/Phase Resistance (resist core:effect/resist with parameter = phase/type) — per-element DR
         → Layer 5: Active effects (ward spells, aura effects, fortify_wil)
           → Final magical damage
 ```
@@ -275,7 +275,7 @@ dice (video game), the confirmation is a single flat roll against the modified T
 | d100 | Effect | Description |
 |------|--------|-------------|
 | 1–15 | Bludgeoning Blow | Extra damage only (max damage dice + roll again) |
-| 16–30 | Deep Wound | Target bleeds: takes `damage_health` (effect id 5, magnitude 2) at start of each turn until healed or a Medicine check (difficulty 10) |
+| 16–30 | Deep Wound | Target bleeds: takes `damage_health` (effect core:effect/damage_health, magnitude 2) at start of each turn until healed or a Medicine check (difficulty 10) |
 | 31–40 | Stagger | Target loses next reaction and takes −10 on next action for 1 round. See `staggered` condition |
 | 41–50 | Disarm | Weapon knocked from grip. STR check (difficulty 12) or weapon lands 1d4 units away |
 | 51–60 | Crippled Arm | Dominant arm crippled: −20 to attack rolls, −50% damage. Two-handed weapons unusable. Heals after combat or via `cure` effect |
@@ -817,11 +817,11 @@ Goblins bottled up by Dorn's position.
    - **Input:** Dodges backward (dodge roll, drains 10 Stamina, 28 remaining).
      Invincibility frames active for 0.3s.
    - **Draws and applies** a paralytic poison coating (consumable, uses 1 charge).
-     Next successful hit will apply `paralyze` effect (id 11) → `paralyzed` condition.
+     Next successful hit will apply `paralyze` effect (core:effect/paralyze) → `paralyzed` condition.
    - **Input:** Lunging attack (heavy, drains 15 Stamina, 13 remaining).
    - **Auto-hit check:** Voss's dodge rolls **87** (miss). Hit confirmed.
    - **Damage:** Rapier 1d6 = **6** − DR 8 = 0 (armor still holds).
-   - **Poison triggers:** Paralyze effect (id 11) bypasses armor. Voss must resist:
+   - **Poison triggers:** Paralyze effect (core:effect/paralyze) bypasses armor. Voss must resist:
       END check (difficulty 12). Roll d100 = **34** (fail). Voss is **paralyzed** for 4 seconds.
    - Condition icon appears on Voss's HUD. He is immobilized and defenseless.
 
@@ -847,9 +847,9 @@ stagger → apply poison → capitalized damage during paralysis.
 - **Lyra** (human mage, from Example 3): Red_magic 65, Evasion 20, WIL 8, INT 9.
   Cloth robe (DR 0). Mana pool: `9×8 + 10×2 = 92`. No armor evasion penalty.
 - **Cinder** (fire salamander, caster enemy): Red_magic 55, Evasion 30, WIL 6.
-  Natural scales provide DR 3. Has `spell_absorption` (effect id 21, 15% chance).
+  Natural scales provide DR 3. Has `spell_absorption` (effect core:effect/spell_absorption, 15% chance).
   Knows *Fire Bolt* (damage_fire, magnitude 6) and *Blinding Flash* (blind effect
-  id 47, 4s duration).
+  core:effect/blind, 4s duration).
 - **Terrain:** Open field, no cover. Distance 8 units.
 
 **Round 1:**
@@ -865,7 +865,7 @@ stagger → apply poison → capitalized damage during paralysis.
      - **Layer 3 (Magic Resistance):** Cinder's WIL-based resistance. WIL 6 gives
        base 24%. Roll d100 = **61** (no resist).
      - **Layer 4 (Elemental/Phase Resistance):** Fire vs. fire. Cinder is a fire
-       salamander — innate fire resistance (resist effect id 19, parameter "fire",
+       salamander — innate fire resistance (resist effect core:effect/resist, parameter "fire",
        magnitude 50%). **50% reduction**.
      - **Layer 5 (Active Effects):** None active.
    - **Final damage:** Fire Bolt magnitude 6 × 50% (fire resistance) = **3 fire damage**.
@@ -874,23 +874,23 @@ stagger → apply poison → capitalized damage during paralysis.
 
 3. **Cinder's action:**
    - **Cast check:** Roll red_magic 55 → d100 = **29** (success, margin 26).
-   - **Chooses *Blinding Flash* (blind effect id 47) instead of direct damage.**
+   - **Chooses *Blinding Flash* (blind effect core:effect/blind) instead of direct damage.**
    - **Magic Defense Tree Resolution:**
      - **Layer 1:** No perk — evasion does not apply.
      - **Layer 2:** Lyra has no spell absorption.
      - **Layer 3:** Lyra's WIL 8 → base MR 32%. Roll d100 = **44** (fail, no resist).
      - **Layer 4:** Blind has no phase (non-elemental). No elemental resistance.
      - **Layer 5:** No active effects.
-   - **Blind lands.** Lyra is now **blinded** (condition id 1, applied by effect id 47).
+   - **Blind lands.** Lyra is now **blinded** (condition ref `core:condition/blinded`, applied by effect `core:effect/blind`).
      - **TTRPG effect:** −20 on PER-based checks, auto-fail sight-dependent rolls.
        Attacks against Lyra have +10.
      - Duration: 4 rounds (Cinder's base duration modified by margin of success).
 
 4. **Lyra's recovery (Round 2):**
-   - **Blinded penalty active.** Lyra attempts to cast *Cure* (effect id 20,
+   - **Blinded penalty active.** Lyra attempts to cast *Cure* (effect core:effect/cure,
      parameter "blinded") on herself — but sight-dependent targeting is required.
      **Auto-fail.** Lyra cannot target herself with a visual spell.
-   - **Alternative:** Lyra uses a pre-prepared potion (consumable, cure effect id 20
+   - **Alternative:** Lyra uses a pre-prepared potion (consumable, cure effect core:effect/cure
      with parameter "blinded").
    - **Drink potion** (use object, 1 AP or input action). Blind removed.
    - **Back to full effectiveness.** Lyra re-engages.
@@ -1134,7 +1134,7 @@ Dodge% = baseEvasion% + (evasionSkill × 0.15) + (AGI × 2)
 | Action | Threat Generated | Notes |
 |--------|-----------------|-------|
 | Deal damage | Damage × 1.0 | Maintains aggro on current target |
-| Taunt (effect id 63) | Fixed high value | Overrides current aggro for duration |
+| Taunt (effect core:effect/taunt) | Fixed high value | Overrides current aggro for duration |
 | Heal ally | Heal amount × 0.5 | Causes healer to gain threat from healed target's enemies |
 | Block / Parry | Low constant | Does not significantly pull aggro |
 | Stay in melee range | Passive decay | Being near the enemy slowly builds "presence" aggro |
@@ -1228,7 +1228,7 @@ When adding new combat perks, follow these guidelines:
 2. **Prerequisites:** Gate combat perks behind the relevant attribute (STR for melee damage, PER for ranged, END for defense/block) and a skill threshold of 30–50.
 3. **Dual resolution:** Every perk's effect must be expressible in both TTRPG and video game terms. See examples above.
 4. **Stacking:** Two perks that modify the same dimension should stack additively, not multiplicatively, to avoid runaway scaling.
-5. **Effects integration:** Perks that apply ongoing modifiers should reference the shared effects registry by effect ID where possible (e.g., a "Spell Dodger" perk grants resist effect id 19 with parameter "magic" at magnitude 25).
+5. **Effects integration:** Perks that apply ongoing modifiers should reference the shared effects registry by string key (namespaced `core:effect/<key>` or bare key) where possible (e.g., a "Spell Dodger" perk grants effect `core:effect/resist` with parameter `"magic"` at magnitude 25).
 
 ### Racial Traits Affecting Combat
 
@@ -1282,27 +1282,27 @@ This section addresses the open questions raised during the combat system design
 
 ### Condition → Effect Linking
 
-**Question:** Some conditions (blinded, charmed, etc.) use placeholder effect IDs (47–64). Are these real effects in the registry?
+**Question:** Some conditions (blinded, charmed, etc.) use placeholder effect refs (47–64). Are these real effects in the registry?
 
 **Resolution:** Yes. Effects 47–64 were added alongside the conditions system (see `data/effects/core.json`):
-- id 47 `blind` → condition `blinded` (id 1)
-- id 48 `charm` → condition `charmed` (id 2)
-- id 49 `deafen` → condition `deafened` (id 3)
-- id 50 `grapple` → condition `grappled` (id 5)
-- id 51 `incapacitate` → condition `incapacitated` (id 6)
-- id 52 `petrify` → condition `petrified` (id 9)
-- id 53 `knockdown` → condition `prone` (id 11)
-- id 54 `restrain` → condition `restrained` (id 12)
-- id 55 `stun` → condition `stunned` (id 13)
-- id 56 `unconsciousness` → condition `unconscious` (id 14)
-- id 57 `burn` → condition `burning` (id 16)
-- id 58 `bleed` → condition `bleeding` (id 17)
-- id 59 `slow` → condition `slowed` (id 18)
-- id 60 `silence` → condition `silenced` (id 19)
-- id 61 `curse` → condition `cursed` (id 21)
-- id 62 `expose` → condition `exposed` (id 22)
-- id 63 `taunt` → condition `taunted` (id 23)
-- id 64 `stagger` → condition `staggered` (id 24)
+- core:effect/blind `blind` → condition `blinded` (core:effect/damage_fire)
+- core:effect/charm `charm` → condition `charmed` (core:effect/damage_frost)
+- core:effect/deafen `deafen` → condition `deafened` (core:effect/damage_shock)
+- core:effect/grapple `grapple` → condition `grappled` (core:effect/damage_health)
+- core:effect/incapacitate `incapacitate` → condition `incapacitated` (core:effect/damage_stamina)
+- core:effect/petrify `petrify` → condition `petrified` (core:effect/light)
+- core:effect/knockdown `knockdown` → condition `prone` (core:effect/paralyze)
+- core:effect/restrain `restrain` → condition `restrained` (core:effect/telekinesis)
+- core:effect/stun `stun` → condition `stunned` (core:effect/summon)
+- core:effect/unconsciousness `unconsciousness` → condition `unconscious` (core:effect/essence_fire)
+- core:effect/burn `burn` → condition `burning` (core:effect/essence_earth)
+- core:effect/bleed `bleed` → condition `bleeding` (core:effect/essence_metal)
+- core:effect/slow `slow` → condition `slowed` (core:effect/essence_water)
+- core:effect/silence `silence` → condition `silenced` (core:effect/resist)
+- core:effect/curse `curse` → condition `cursed` (core:effect/spell_absorption)
+- core:effect/expose `expose` → condition `exposed` (core:effect/phobia)
+- core:effect/taunt `taunt` → condition `taunted` (core:effect/allergy)
+- core:effect/stagger `stagger` → condition `staggered` (core:effect/exotic_material_affinity)
 
 Every condition's `appliedBy` array references a real effect that exists in the shared registry. No placeholder effects remain.
 

@@ -8,9 +8,15 @@
       "description": "Hurl a mote of fire at a target.",
       "color": "red",
       "effects": [
-        { "effect": 1, "magnitude": 8, "target": "ranged" }
+        {
+          "effect": "core:effect/damage_fire",
+          "magnitude": 8,
+          "target": "ranged"
+        }
       ],
-      "cost": { "mana": 5 }
+      "cost": {
+        "mana": 5
+      }
     },
     {
       "id": 2,
@@ -19,9 +25,15 @@
       "description": "Loose glowing darts of force that strike unerringly.",
       "color": "red",
       "effects": [
-        { "effect": 4, "magnitude": 10, "target": "ranged" }
+        {
+          "effect": "core:effect/damage_force",
+          "magnitude": 10,
+          "target": "ranged"
+        }
       ],
-      "cost": { "mana": 8 }
+      "cost": {
+        "mana": 8
+      }
     },
     {
       "id": 3,
@@ -30,9 +42,16 @@
       "description": "Restore health to a creature you touch.",
       "color": "green",
       "effects": [
-        { "effect": 7, "parameter": "health", "magnitude": 12, "target": "touch" }
+        {
+          "effect": "core:effect/restore_resource",
+          "parameter": "health",
+          "magnitude": 12,
+          "target": "touch"
+        }
       ],
-      "cost": { "mana": 10 }
+      "cost": {
+        "mana": 10
+      }
     },
     {
       "id": 4,
@@ -41,9 +60,18 @@
       "description": "Bolster an ally's prowess in battle for a short time.",
       "color": "white",
       "effects": [
-        { "effect": 31, "parameter": 1, "magnitude": 10, "duration": 60, "target": "touch", "durationType": "temporal" }
+        {
+          "effect": "core:effect/fortify_skill",
+          "parameter": "core:skill/blades",
+          "magnitude": 10,
+          "duration": 60,
+          "target": "touch",
+          "durationType": "temporal"
+        }
       ],
-      "cost": { "mana": 12 }
+      "cost": {
+        "mana": 12
+      }
     },
     {
       "id": 5,
@@ -52,9 +80,18 @@
       "description": "Raise a barrier that hardens your defenses for a moment.",
       "color": "blue",
       "effects": [
-        { "effect": 32, "parameter": "end", "magnitude": 2, "duration": 12, "target": "self", "durationType": "temporal" }
+        {
+          "effect": "core:effect/fortify_attribute",
+          "parameter": "end",
+          "magnitude": 2,
+          "duration": 12,
+          "target": "self",
+          "durationType": "temporal"
+        }
       ],
-      "cost": { "mana": 8 },
+      "cost": {
+        "mana": 8
+      },
       "cooldown": 6
     },
     {
@@ -64,9 +101,16 @@
       "description": "A streak of flame erupts into a fiery sphere at a chosen point.",
       "color": "red",
       "effects": [
-        { "effect": 1, "magnitude": 28, "target": "area", "radius": 6 }
+        {
+          "effect": "core:effect/damage_fire",
+          "magnitude": 28,
+          "target": "area",
+          "radius": 6
+        }
       ],
-      "cost": { "mana": 25 },
+      "cost": {
+        "mana": 25
+      },
       "cooldown": 4
     },
     {
@@ -76,9 +120,20 @@
       "description": "Animate a fallen corpse to fight at your side for a time.",
       "color": "black",
       "effects": [
-        { "effect": 13, "parameter": "undead", "magnitude": 1, "duration": 120, "target": "ranged" }
+        {
+          "effect": "core:effect/summon",
+          "parameter": "undead",
+          "magnitude": 1,
+          "duration": 120,
+          "target": "ranged"
+        }
       ],
-      "cost": { "mana": 30, "reagents": [3] },
+      "cost": {
+        "mana": 30,
+        "reagents": [
+          "core:ingredient/nightshade"
+        ]
+      },
       "cooldown": 30
     }
   ]

@@ -59,11 +59,14 @@ This is the most important thing to understand before editing schemas or data:
 
 - **All schemas set `additionalProperties: false`**. To add any new field to a data entry, you **must** first add it to the corresponding schema, or validation will fail.
 
-- Entries use a numeric `id` (positive integer, unique within the collection). This is the stable primary identifier. All data cross-references (effects, perks/features, skills, races via `parentRace`, materials for allergies, ingredients, equipment, spells, etc.) use this integer `id`.
-- Each entry also carries a `key` (the familiar lowercase snake_case string, often with prefixes like `damage_`, `fortify_`, for human readability when editing the JSON source) and a `label` (the human-readable display title with spaces and capitalization, e.g. "Restore Resource").
-- Schemas define `id` (and cross-ref fields like `appliedEffect.effect`) as integer. String cross-refs are no longer used for primary entry identification. (A future referential integrity check will validate that integer ids resolve.)
-- **Namespaced string refs:** equipment cross-references use `core:<category>/<key>` (e.g. `core:weapons/shortsword`, `core:armors/leather_jerkin`, `core:consumables/potion_minor_healing`). Background `starting_equipment` uses this format. Other collections will migrate over time; legacy numeric ids still validate during transition.
-
+- Entries use a numeric `id` (positive integer, unique within the collection) for internal tracking, and a `key` (the familiar lowercase snake_case string, often with prefixes like `damage_`, `fortify_`, for human readability when editing the JSON source) and a `label` (the human-readable display title with spaces and capitalization, e.g. "Restore Resource"). Note: the `effects` collection has removed the numeric `id` field — effects are identified solely by `key`.
+- **Namespaced string refs** are the only cross-reference format: `core:<singular-category>/<key>` (e.g. `core:weapon/shortsword`, `core:armor/leather_jerkin`, `core:consumable/potion_minor_healing`, `core:effect/damage_fire`, `core:spell/fire_bolt`). Numeric ids are **not** accepted as cross-references — validation will reject them.
+- **Bare keys** (e.g. `shortsword`, `damage_fire`) are also accepted as cross-references, making the data less verbose when the category is unambiguous. Both formats resolve to the same entries.
+- **Namespace rules:**
+  - `core:` = Base / official content that ships with the ruleset.
+  - Modules can use their own namespace (e.g. `module:examplemod/weapon/frost_sword`).
+  - Modules **can override** core entries by using the same `core:category/key` (this is intentional for module flexibility).
+  - We use **singular** category names: `weapon`, `armor`, `effect`, `spell`, `background`, `trait`, `condition`, `consumable`, `recipe`, `ingredient`, `material`, `gem`, `skill`, `feature`.
 - Use the optional `source: { source, page }` field (defined in `schema.json`) for provenance instead of inventing per-file metadata.
 
 ## Game System Highlights (Affects Data Modeling)
@@ -80,7 +83,7 @@ This is the most important thing to understand before editing schemas or data:
   - Defined in `data/wuxing/core.json` (4 cycles: generating, overcoming, weakening, insulting with multipliers).
   - Races, materials, and (optionally) effects carry a `phase`.
   - Phase drives **interaction** between effects via the cycles; color drives which skill governs the effect.
-- **Shared effect registry**: `data/effects/core.json` is the single pool. Spells, consumables, and ingredients reference effects by ID via the `appliedEffect` shape. Respect each effect's `channels`.
+- **Shared effect registry**: `data/effects/core.json` is the single pool. Spells, consumables, and ingredients reference effects by string key via the `appliedEffect` shape. Respect each effect's `channels`.
 - **Races & lineage** (see `docs/modules/race.md` and `race.schema.json`):
   - `lineage.role`: `standalone`, `parent`, `subrace`, `template`, or `kin`.
   - Parent → subrace = inheritance (subrace can override some fields, e.g. phase).

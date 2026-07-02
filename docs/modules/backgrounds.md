@@ -26,13 +26,13 @@ A background lives in `data/backgrounds/core.json` and is validated by `backgrou
 - `id` (integer), `key`, `label`, `description`, optional `source` — standard (new ID convention).
 - `category` — loose string for grouping (wilderness, military, arcane, criminal, noble, religious, scholarly, merchant, etc.). Not mechanically enforced.
 - `skill_bonuses` — array of `{ skill, bonus }`. The `bonus` (typically 6–12) is added once at creation after the normal attribute-seeded base is calculated. These are permanent starting ranks.
-- `starting_equipment` — array of `{ item, quantity? }`. Item references use the namespaced format `core:<category>/<key>` (e.g. `core:weapons/shortsword`, `core:armors/leather_jerkin`, `core:consumables/potion_minor_healing`). Legacy numeric ids are still accepted during transition. The engine is responsible for actually adding the items to the character's inventory.
-- `starting_spells` — array of spell ids the character knows from day one. Useful for low-magic or tradition-based casters. The character still needs the governing `<color>_magic` skill to cast them reliably.
-- `granted_features` — array of feature/perk ids granted automatically (in addition to any chosen creation perks or racial traits). Use sparingly; most backgrounds express their benefit through skills + gear rather than full perks.
+- `starting_equipment` — array of `{ item, quantity? }`. Item references use the namespaced format `core:<category>/<key>` (e.g. `core:weapon/shortsword`, `core:armor/leather_jerkin`, `core:consumable/potion_minor_healing`). Bare keys are also accepted. The engine is responsible for actually adding the items to the character's inventory.
+- `starting_spells` — array of spell refs (namespaced `core:spell/<key>` or bare key) the character knows from day one. Useful for low-magic or tradition-based casters. The character still needs the governing `<color>_magic` skill to cast them reliably.
+- `granted_features` — array of feature/perk refs (namespaced `core:feature/<key>` or bare key) granted automatically (in addition to any chosen creation perks or racial traits). Use sparingly; most backgrounds express their benefit through skills + gear rather than full perks.
 - `wealth_bonus` — extra gp added to whatever the campaign's normal starting wealth is (the reference baseline is 100 gp + kit).
-- `suggested_tag_skills` — purely advisory list. Helps players make coherent tag choices that reinforce the background.
+- `suggested_tag_skills` — array of skill refs (namespaced `core:skill/<key>` or bare key). Purely advisory list. Helps players make coherent tag choices that reinforce the background.
 
-Equipment cross-references prefer namespaced string keys (`core:category/key`). Skills and spells still use numeric `id` for now. These refs are validated by `validate.py` but not fully enforced by JSON Schema alone.
+All cross-references use string keys (namespaced `core:category/key` or bare key). Numeric ids are rejected by validation.
 
 ### Interaction with the rest of creation
 
@@ -129,11 +129,11 @@ Here are concrete, ready-to-use backgrounds plus additional ideas for expansion.
 
 | Concern              | File                              | Schema                        |
 |----------------------|-----------------------------------|-------------------------------|
-| Background definitions | `data/backgrounds/core.json`     | `background.schema.json` (new) |
-| Skill references     | `data/skills/core.json`           | — (numeric id)                |
-| Spell references     | `data/spells/core.json`           | — (numeric id)                |
-| Equipment references | `data/equipment/*.json`           | — (numeric id)                |
-| Feature references   | `data/features/core.json`         | — (numeric id)                |
+| Background definitions | `data/backgrounds/core.json`     | `background.schema.json`      |
+| Skill references     | `data/skills/core.json`           | — (string key ref)             |
+| Spell references     | `data/spells/core.json`           | — (string key ref)             |
+| Equipment references | `data/equipment/*.json`           | — (string key ref)             |
+| Feature references   | `data/features/core.json`         | — (string key ref)             |
 | Shared vocabulary    | `schemas/schema.json`             | (sourceRef, etc.)             |
 
 See also:

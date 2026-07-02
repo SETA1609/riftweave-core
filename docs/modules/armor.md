@@ -317,7 +317,7 @@ middle, or heavy pieces are worn.
 ```json
 {
   "accessoryType": "ring" | "amulet" | "trinket" | "belt" | "misc",
-  "effects": [ { "effect": <entryId>, "magnitude": number, "parameter": ... } ]
+  "effects": [ { "effect": "core:effect/<key>", "magnitude": number, "parameter": "..." } ]
 }
 ```
 

@@ -33,7 +33,7 @@
           "properties": {
             "mana": { "type": "integer", "minimum": 0 },
             "stamina": { "type": "integer", "minimum": 0 },
-            "reagents": { "type": "array", "items": { "$ref": "schema.json#/definitions/entryId" }, "description": "Ingredient ids (numeric) used as reagents for this spell" }
+            "reagents": { "type": "array", "items": { "type": "string" }, "description": "Ingredient refs (namespaced core:ingredient/<key> or bare key) used as reagents for this spell" }
           },
           "additionalProperties": false
         },

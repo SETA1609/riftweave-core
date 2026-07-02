@@ -8,10 +8,20 @@
       "description": "Hard living has thickened your hide. Your maximum hit points increase each time you take this perk.",
       "type": "perk",
       "category": "general",
-      "prerequisite": { "abilities": { "end": 5 } },
+      "prerequisite": {
+        "abilities": {
+          "end": 5
+        },
+        "perks": []
+      },
       "ranks": 3,
       "effects": [
-        { "type": "bonus", "description": "+15 maximum hit points per rank", "target": "hp_max", "value": 15 }
+        {
+          "type": "bonus",
+          "description": "+15 maximum hit points per rank",
+          "target": "hp_max",
+          "value": 15
+        }
       ]
     },
     {
@@ -21,11 +31,25 @@
       "description": "You are hard to catch off guard, gaining a sizeable edge on initiative and immunity to being surprised.",
       "type": "perk",
       "category": "general",
-      "prerequisite": { "abilities": { "per": 6 } },
+      "prerequisite": {
+        "abilities": {
+          "per": 6
+        },
+        "perks": []
+      },
       "ranks": 1,
       "effects": [
-        { "type": "bonus", "description": "+10 to initiative", "target": "initiative", "value": 10 },
-        { "type": "immunity", "description": "Cannot be surprised while conscious", "target": "surprise" }
+        {
+          "type": "bonus",
+          "description": "+10 to initiative",
+          "target": "initiative",
+          "value": 10
+        },
+        {
+          "type": "immunity",
+          "description": "Cannot be surprised while conscious",
+          "target": "surprise"
+        }
       ]
     },
     {
@@ -35,10 +59,27 @@
       "description": "You put your whole body behind each swing, dealing extra melee damage.",
       "type": "perk",
       "category": "combat",
-      "prerequisite": { "abilities": { "str": 6 }, "skills": [ { "id": 1, "label": "Blades", "min": 40 } ] },
+      "prerequisite": {
+        "abilities": {
+          "str": 6
+        },
+        "skills": [
+          {
+            "id": "core:skill/blades",
+            "label": "Blades",
+            "min": 40
+          }
+        ],
+        "perks": []
+      },
       "ranks": 1,
       "effects": [
-        { "type": "bonus", "description": "+25% melee weapon damage", "target": "melee_damage", "value": 0.25 }
+        {
+          "type": "bonus",
+          "description": "+25% melee weapon damage",
+          "target": "melee_damage",
+          "value": 0.25
+        }
       ]
     },
     {
@@ -48,10 +89,37 @@
       "description": "Your aim finds the gaps. Ranged attacks (with bows, crossbows, guns, or throwing weapons) land critical hits more often.",
       "type": "perk",
       "category": "combat",
-      "prerequisite": { "abilities": { "per": 6 }, "skills": [ { "id": [37, 38, 39, 40], "label": ["Bows", "Crossbows", "Guns", "Throwing Weapons"], "min": 40 } ] },
+      "prerequisite": {
+        "abilities": {
+          "per": 6
+        },
+        "skills": [
+          {
+            "id": [
+              "core:skill/bows",
+              "core:skill/crossbows",
+              "core:skill/guns",
+              "core:skill/throwing_weapons"
+            ],
+            "label": [
+              "Bows",
+              "Crossbows",
+              "Guns",
+              "Throwing Weapons"
+            ],
+            "min": 40
+          }
+        ],
+        "perks": []
+      },
       "ranks": 1,
       "effects": [
-        { "type": "bonus", "description": "+10% ranged critical chance", "target": "ranged_crit_chance", "value": 10 }
+        {
+          "type": "bonus",
+          "description": "+10% ranged critical chance",
+          "target": "ranged_crit_chance",
+          "value": 10
+        }
       ]
     },
     {
@@ -61,10 +129,27 @@
       "description": "You turn a shield into a fortress, blocking a greater share of incoming damage.",
       "type": "perk",
       "category": "combat",
-      "prerequisite": { "abilities": { "end": 6 }, "skills": [ { "id": 6, "label": "Block", "min": 40 } ] },
+      "prerequisite": {
+        "abilities": {
+          "end": 6
+        },
+        "skills": [
+          {
+            "id": "core:skill/block",
+            "label": "Block",
+            "min": 40
+          }
+        ],
+        "perks": []
+      },
       "ranks": 1,
       "effects": [
-        { "type": "bonus", "description": "+15% damage blocked", "target": "block_amount", "value": 0.15 }
+        {
+          "type": "bonus",
+          "description": "+15% damage blocked",
+          "target": "block_amount",
+          "value": 0.15
+        }
       ]
     },
     {
@@ -74,10 +159,24 @@
       "description": "Flame answers your call more fiercely, increasing the damage of Red Magic.",
       "type": "perk",
       "category": "magic",
-      "prerequisite": { "skills": [ { "id": 7, "label": "Red Magic", "min": 50 } ] },
+      "prerequisite": {
+        "skills": [
+          {
+            "id": "core:skill/red_magic",
+            "label": "Red Magic",
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
       "ranks": 2,
       "effects": [
-        { "type": "bonus", "description": "+15% Red Magic effect magnitude per rank", "target": "red_magic_magnitude", "value": 0.15 }
+        {
+          "type": "bonus",
+          "description": "+15% Red Magic effect magnitude per rank",
+          "target": "red_magic_magnitude",
+          "value": 0.15
+        }
       ]
     },
     {
@@ -87,10 +186,27 @@
       "description": "You move like a shadow, far harder to detect while sneaking.",
       "type": "perk",
       "category": "stealth",
-      "prerequisite": { "abilities": { "agi": 6 }, "skills": [ { "id": 16, "label": "Stealth", "min": 50 } ] },
+      "prerequisite": {
+        "abilities": {
+          "agi": 6
+        },
+        "skills": [
+          {
+            "id": "core:skill/stealth",
+            "label": "Stealth",
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
       "ranks": 1,
       "effects": [
-        { "type": "bonus", "description": "-25% chance to be detected while sneaking", "target": "detection_chance", "value": -0.25 }
+        {
+          "type": "bonus",
+          "description": "-25% chance to be detected while sneaking",
+          "target": "detection_chance",
+          "value": -0.25
+        }
       ]
     },
     {
@@ -100,11 +216,33 @@
       "description": "Your words open doors and purses alike, improving persuasion and barter prices.",
       "type": "perk",
       "category": "social",
-      "prerequisite": { "abilities": { "cha": 6 }, "skills": [ { "id": 19, "label": "Persuasion", "min": 50 } ] },
+      "prerequisite": {
+        "abilities": {
+          "cha": 6
+        },
+        "skills": [
+          {
+            "id": "core:skill/persuasion",
+            "label": "Persuasion",
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
       "ranks": 1,
       "effects": [
-        { "type": "bonus", "description": "+10 to persuasion checks", "target": "persuasion", "value": 10 },
-        { "type": "bonus", "description": "10% better barter prices", "target": "barter_prices", "value": 0.1 }
+        {
+          "type": "bonus",
+          "description": "+10 to persuasion checks",
+          "target": "persuasion",
+          "value": 10
+        },
+        {
+          "type": "bonus",
+          "description": "10% better barter prices",
+          "target": "barter_prices",
+          "value": 0.1
+        }
       ]
     },
     {
@@ -114,10 +252,24 @@
       "description": "Your mundane healing is markedly more effective.",
       "type": "perk",
       "category": "survival",
-      "prerequisite": { "skills": [ { "id": 27, "label": "Medicine", "min": 40 } ] },
+      "prerequisite": {
+        "skills": [
+          {
+            "id": "core:skill/medicine",
+            "label": "Medicine",
+            "min": 40
+          }
+        ],
+        "perks": []
+      },
       "ranks": 1,
       "effects": [
-        { "type": "bonus", "description": "+50% healing from Medicine", "target": "medicine_healing", "value": 0.5 }
+        {
+          "type": "bonus",
+          "description": "+50% healing from Medicine",
+          "target": "medicine_healing",
+          "value": 0.5
+        }
       ]
     },
     {
@@ -128,8 +280,21 @@
       "type": "creation",
       "category": "general",
       "effects": [
-        { "type": "bonus", "description": "+1 to every attribute", "target": 32, "parameter": "all", "value": 1, "durationType": "unlimited" },
-        { "type": "penalty", "description": "-10% skill points per level", "target": 25, "parameter": "per_level", "value": -0.1 }
+        {
+          "type": "bonus",
+          "description": "+1 to every attribute",
+          "target": "core:effect/fortify_attribute",
+          "parameter": "all",
+          "value": 1,
+          "durationType": "unlimited"
+        },
+        {
+          "type": "penalty",
+          "description": "-10% skill points per level",
+          "target": "core:effect/skill_points_modifier",
+          "parameter": "per_level",
+          "value": -0.1
+        }
       ]
     },
     {
@@ -140,8 +305,18 @@
       "type": "creation",
       "category": "combat",
       "effects": [
-        { "type": "bonus", "description": "Ranged attacks are 20% faster", "target": 30, "value": 0.2 },
-        { "type": "penalty", "description": "You cannot make aimed (targeted) shots", "target": 26, "value": 1 }
+        {
+          "type": "bonus",
+          "description": "Ranged attacks are 20% faster",
+          "target": "core:effect/attack_speed",
+          "value": 0.2
+        },
+        {
+          "type": "penalty",
+          "description": "You cannot make aimed (targeted) shots",
+          "target": "core:effect/aimed_shots_restriction",
+          "value": 1
+        }
       ]
     },
     {
@@ -152,8 +327,20 @@
       "type": "creation",
       "category": "general",
       "effects": [
-        { "type": "bonus", "description": "+1 Agility", "target": 32, "parameter": "agi", "value": 1, "durationType": "unlimited" },
-        { "type": "penalty", "description": "-25% carrying capacity", "target": 27, "value": -0.25 }
+        {
+          "type": "bonus",
+          "description": "+1 Agility",
+          "target": "core:effect/fortify_attribute",
+          "parameter": "agi",
+          "value": 1,
+          "durationType": "unlimited"
+        },
+        {
+          "type": "penalty",
+          "description": "-25% carrying capacity",
+          "target": "core:effect/carry_capacity_modifier",
+          "value": -0.25
+        }
       ]
     },
     {
@@ -164,8 +351,19 @@
       "type": "creation",
       "category": "knowledge",
       "effects": [
-        { "type": "bonus", "description": "+1 tag skill", "target": 28, "value": 1 },
-        { "type": "penalty", "description": "-15 starting skill points", "target": 25, "parameter": "starting", "value": -15 }
+        {
+          "type": "bonus",
+          "description": "+1 tag skill",
+          "target": "core:effect/tag_skills_increase",
+          "value": 1
+        },
+        {
+          "type": "penalty",
+          "description": "-15 starting skill points",
+          "target": "core:effect/skill_points_modifier",
+          "parameter": "starting",
+          "value": -15
+        }
       ]
     },
     {
@@ -176,11 +374,44 @@
       "type": "creation",
       "category": "general",
       "effects": [
-        { "type": "penalty", "description": "Significant combat penalties against the undead", "target": 22, "parameter": "undead", "value": 1 },
-        { "type": "bonus", "description": "+2 Willpower", "target": 32, "parameter": "wil", "value": 2, "durationType": "unlimited" },
-        { "type": "bonus", "description": "Reduces damage and effects from undead", "target": 19, "parameter": "undead", "value": 0.25 },
-        { "type": "bonus", "description": "25% resistance to poison and disease", "target": 19, "parameter": "poison", "value": 0.25, "durationType": "unlimited" },
-        { "type": "bonus", "description": "25% resistance to poison and disease", "target": 19, "parameter": "disease", "value": 0.25, "durationType": "unlimited" }
+        {
+          "type": "penalty",
+          "description": "Significant combat penalties against the undead",
+          "target": "core:effect/phobia",
+          "parameter": "undead",
+          "value": 1
+        },
+        {
+          "type": "bonus",
+          "description": "+2 Willpower",
+          "target": "core:effect/fortify_attribute",
+          "parameter": "wil",
+          "value": 2,
+          "durationType": "unlimited"
+        },
+        {
+          "type": "bonus",
+          "description": "Reduces damage and effects from undead",
+          "target": "core:effect/resist",
+          "parameter": "undead",
+          "value": 0.25
+        },
+        {
+          "type": "bonus",
+          "description": "25% resistance to poison and disease",
+          "target": "core:effect/resist",
+          "parameter": "poison",
+          "value": 0.25,
+          "durationType": "unlimited"
+        },
+        {
+          "type": "bonus",
+          "description": "25% resistance to poison and disease",
+          "target": "core:effect/resist",
+          "parameter": "disease",
+          "value": 0.25,
+          "durationType": "unlimited"
+        }
       ]
     },
     {
@@ -191,9 +422,29 @@
       "type": "creation",
       "category": "general",
       "effects": [
-        { "type": "penalty", "description": "Combat and survival penalties when fighting beasts", "target": 22, "parameter": "beast", "value": 1 },
-        { "type": "bonus", "description": "+1 Strength", "target": 32, "parameter": "str", "value": 1, "durationType": "unlimited" },
-        { "type": "bonus", "description": "+10 starting ranks in Animal Handling", "target": 31, "parameter": 26, "value": 10, "durationType": "unlimited" }
+        {
+          "type": "penalty",
+          "description": "Combat and survival penalties when fighting beasts",
+          "target": "core:effect/phobia",
+          "parameter": "beast",
+          "value": 1
+        },
+        {
+          "type": "bonus",
+          "description": "+1 Strength",
+          "target": "core:effect/fortify_attribute",
+          "parameter": "str",
+          "value": 1,
+          "durationType": "unlimited"
+        },
+        {
+          "type": "bonus",
+          "description": "+10 starting ranks in Animal Handling",
+          "target": "core:effect/fortify_skill",
+          "parameter": "animal_handling",
+          "value": 10,
+          "durationType": "unlimited"
+        }
       ]
     },
     {
@@ -204,9 +455,29 @@
       "type": "creation",
       "category": "general",
       "effects": [
-        { "type": "penalty", "description": "Cannot equip or benefit from leather/hide items", "target": 23, "parameter": 10, "value": 1 },
-        { "type": "bonus", "description": "+1 Endurance", "target": 32, "parameter": "end", "value": 1, "durationType": "unlimited" },
-        { "type": "bonus", "description": "Improved defense and comfort in metal armor", "target": 32, "parameter": "end", "value": 1, "durationType": "unlimited" }
+        {
+          "type": "penalty",
+          "description": "Cannot equip or benefit from leather/hide items",
+          "target": "core:effect/allergy",
+          "parameter": "leather",
+          "value": 1
+        },
+        {
+          "type": "bonus",
+          "description": "+1 Endurance",
+          "target": "core:effect/fortify_attribute",
+          "parameter": "end",
+          "value": 1,
+          "durationType": "unlimited"
+        },
+        {
+          "type": "bonus",
+          "description": "Improved defense and comfort in metal armor",
+          "target": "core:effect/fortify_attribute",
+          "parameter": "end",
+          "value": 1,
+          "durationType": "unlimited"
+        }
       ]
     },
     {
@@ -217,9 +488,27 @@
       "type": "creation",
       "category": "general",
       "effects": [
-        { "type": "penalty", "description": "Reduced effectiveness with iron or steel weapons and armor", "target": 23, "parameter": 3, "value": 1 },
-        { "type": "bonus", "description": "+10% magnitude on magical effects", "target": 32, "parameter": "int", "value": 1, "durationType": "unlimited" },
-        { "type": "bonus", "description": "Affinity with exotic materials (silver, elven wood, etc.)", "target": 24, "value": 1 }
+        {
+          "type": "penalty",
+          "description": "Reduced effectiveness with iron or steel weapons and armor",
+          "target": "core:effect/allergy",
+          "parameter": "iron",
+          "value": 1
+        },
+        {
+          "type": "bonus",
+          "description": "+10% magnitude on magical effects",
+          "target": "core:effect/fortify_attribute",
+          "parameter": "int",
+          "value": 1,
+          "durationType": "unlimited"
+        },
+        {
+          "type": "bonus",
+          "description": "Affinity with exotic materials (silver, elven wood, etc.)",
+          "target": "core:effect/exotic_material_affinity",
+          "value": 1
+        }
       ]
     },
     {
@@ -230,9 +519,26 @@
       "type": "creation",
       "category": "general",
       "effects": [
-        { "type": "penalty", "description": "Extra damage from silver; cannot benefit from silver equipment", "target": 23, "parameter": 5, "value": 1 },
-        { "type": "bonus", "description": "Strong resistance to undead and unholy effects", "target": 19, "parameter": "undead", "value": 0.3 },
-        { "type": "bonus", "description": "Chance to absorb incoming hostile magic as mana", "target": 21, "value": 0.1 }
+        {
+          "type": "penalty",
+          "description": "Extra damage from silver; cannot benefit from silver equipment",
+          "target": "core:effect/allergy",
+          "parameter": "silver",
+          "value": 1
+        },
+        {
+          "type": "bonus",
+          "description": "Strong resistance to undead and unholy effects",
+          "target": "core:effect/resist",
+          "parameter": "undead",
+          "value": 0.3
+        },
+        {
+          "type": "bonus",
+          "description": "Chance to absorb incoming hostile magic as mana",
+          "target": "core:effect/spell_absorption",
+          "value": 0.1
+        }
       ]
     },
     {
@@ -243,22 +549,56 @@
       "type": "creation",
       "category": "general",
       "effects": [
-        { "type": "penalty", "description": "Reduced effectiveness against constructs and magically animated beings", "target": 22, "parameter": "construct", "value": 1 },
-        { "type": "bonus", "description": "Resistance to hostile magic", "target": 19, "parameter": "magic", "value": 0.2 },
-        { "type": "bonus", "description": "Chance to absorb a portion of incoming spell damage as mana", "target": 21, "value": 0.15 }
+        {
+          "type": "penalty",
+          "description": "Reduced effectiveness against constructs and magically animated beings",
+          "target": "core:effect/phobia",
+          "parameter": "construct",
+          "value": 1
+        },
+        {
+          "type": "bonus",
+          "description": "Resistance to hostile magic",
+          "target": "core:effect/resist",
+          "parameter": "magic",
+          "value": 0.2
+        },
+        {
+          "type": "bonus",
+          "description": "Chance to absorb a portion of incoming spell damage as mana",
+          "target": "core:effect/spell_absorption",
+          "value": 0.15
+        }
       ]
     },
     {
       "id": 20,
       "key": "heavy_armor_expert",
       "label": "Heavy Armor Expert",
-      "description": "You have trained extensively in heavy plate. The stamina and AP surcharges for demanding actions are halved (×1.5 instead of ×2.0 for dodge, etc.).",
+      "description": "You have trained extensively in heavy plate. The stamina and AP surcharges for demanding actions are halved (\u00d71.5 instead of \u00d72.0 for dodge, etc.).",
       "type": "perk",
       "category": "combat",
-      "prerequisite": { "abilities": { "str": 8 }, "skills": [ { "id": 43, "label": "Heavy Armor", "min": 60 } ] },
+      "prerequisite": {
+        "abilities": {
+          "str": 8
+        },
+        "skills": [
+          {
+            "id": "core:skill/heavy_armor",
+            "label": "Heavy Armor",
+            "min": 60
+          }
+        ],
+        "perks": []
+      },
       "ranks": 1,
       "effects": [
-        { "type": "bonus", "description": "Halve heavy armor action cost surcharges", "target": "heavy_armor_surcharge", "value": 0.5 }
+        {
+          "type": "bonus",
+          "description": "Halve heavy armor action cost surcharges",
+          "target": "heavy_armor_surcharge",
+          "value": 0.5
+        }
       ]
     },
     {
@@ -268,23 +608,52 @@
       "description": "You move with grace even in medium armor. All medium armor stamina and AP surcharges on movement and dodging are eliminated.",
       "type": "perk",
       "category": "combat",
-      "prerequisite": { "abilities": { "agi": 7 }, "skills": [ { "id": 41, "label": "Light Armor", "min": 50 } ] },
+      "prerequisite": {
+        "abilities": {
+          "agi": 7
+        },
+        "skills": [
+          {
+            "id": "core:skill/light_armor",
+            "label": "Light Armor",
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
       "ranks": 1,
       "effects": [
-        { "type": "bonus", "description": "Ignore medium armor action cost surcharges", "target": "medium_armor_surcharge", "value": 1.0 }
+        {
+          "type": "bonus",
+          "description": "Ignore medium armor action cost surcharges",
+          "target": "medium_armor_surcharge",
+          "value": 1.0
+        }
       ]
     },
     {
       "id": 22,
       "key": "brutal_charge",
       "label": "Brutal Charge",
-      "description": "You barrel through enemies in heavy armor. Power attacks and charges cost stamina equal to a light attack — the heavy surcharge is negated.",
+      "description": "You barrel through enemies in heavy armor. Power attacks and charges cost stamina equal to a light attack \u2014 the heavy surcharge is negated.",
       "type": "perk",
       "category": "combat",
-      "prerequisite": { "abilities": { "str": 9 }, "perks": [3] },
+      "prerequisite": {
+        "abilities": {
+          "str": 9
+        },
+        "perks": [
+          "core:feature/toughness"
+        ]
+      },
       "ranks": 1,
       "effects": [
-        { "type": "bonus", "description": "Power attacks in heavy armor cost light attack stamina (no heavy surcharge)", "target": "brutal_charge_surcharge", "value": 1 }
+        {
+          "type": "bonus",
+          "description": "Power attacks in heavy armor cost light attack stamina (no heavy surcharge)",
+          "target": "brutal_charge_surcharge",
+          "value": 1
+        }
       ]
     },
     {
@@ -294,10 +663,27 @@
       "description": "You are exceptionally nimble and coordinated. Dodge rolls cost 25% less stamina, and you recover from knockdowns faster.",
       "type": "perk",
       "category": "combat",
-      "prerequisite": { "abilities": { "agi": 7 }, "skills": [ { "id": 45, "label": "Evasion", "min": 40 } ] },
+      "prerequisite": {
+        "abilities": {
+          "agi": 7
+        },
+        "skills": [
+          {
+            "id": "core:skill/evasion",
+            "label": "Evasion",
+            "min": 40
+          }
+        ],
+        "perks": []
+      },
       "ranks": 1,
       "effects": [
-        { "type": "bonus", "description": "-25% dodge roll stamina cost", "target": "dodge_stamina_cost", "value": -0.25 }
+        {
+          "type": "bonus",
+          "description": "-25% dodge roll stamina cost",
+          "target": "dodge_stamina_cost",
+          "value": -0.25
+        }
       ]
     }
   ]

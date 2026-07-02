@@ -20,11 +20,30 @@ MODULES_DIR = ROOT / "modules"
 MONSTERS_BASES_DIR = DATA_DIR / "monsters" / "bases"
 
 # Maps equipment source filenames to namespaced reference categories.
-# Cross-references use core:<category>/<key> (e.g. core:weapons/shortsword).
+# Cross-references use core:<category>/<key> with singular category names
+# (e.g. core:weapon/shortsword, core:armor/leather_jerkin, core:consumable/potion_minor_healing).
 EQUIPMENT_FILE_CATEGORIES = {
-    "weapons.json": "weapons",
-    "armor.json": "armors",
-    "consumables.json": "consumables",
+    "weapons.json": "weapon",
+    "armor.json": "armor",
+    "consumables.json": "consumable",
+}
+
+# Maps collection names to their singular category for namespaced refs.
+COLLECTION_CATEGORIES = {
+    "effects": "effect",
+    "spells": "spell",
+    "ingredients": "ingredient",
+    "skills": "skill",
+    "features": "feature",
+    "races": "race",
+    "traits": "trait",
+    "conditions": "condition",
+    "materials": "material",
+    "gems": "gem",
+    "monsters": "monster",
+    "backgrounds": "background",
+    "recipes": "recipe",
+    "crafted_items": "crafted_item",
 }
 
 
@@ -103,7 +122,69 @@ def build_equipment_index(data_files, module_data_files=None, rel_base=ROOT):
     }
 
 
-def _collect_equipment_namespaced_keys(data_files, module_data_files=None, rel_base=ROOT):
+def build_namespaced_ref_index(data_files, module_data_files=None):
+    """Build a set of valid cross-references (namespaced + bare keys) across all data files.
+
+    Both core:category/key and bare key formats are added so that either can be
+    validated by resolve_namespaced_ref. Module-style refs are accepted at
+    validation time without being pre-indexed.
+    """
+    refs = set()
+    for fp in data_files:
+        try:
+            data = json.loads(fp.read_text())
+        except (json.JSONDecodeError, OSError):
+            continue
+        for k, v in data.items():
+            if k.startswith("$") or not isinstance(v, list):
+                continue
+            cat = COLLECTION_CATEGORIES.get(k)
+            if not cat:
+                continue
+            for item in v:
+                if isinstance(item, dict):
+                    key = item.get("key")
+                    if isinstance(key, str):
+                        refs.add(f"core:{cat}/{key}")
+                        refs.add(key)
+    if module_data_files:
+        for fp, _ in module_data_files:
+            try:
+                data = json.loads(fp.read_text())
+            except (json.JSONDecodeError, OSError):
+                continue
+            for k, v in data.items():
+                if k.startswith("$") or not isinstance(v, list):
+                    continue
+                cat = COLLECTION_CATEGORIES.get(k)
+                if not cat:
+                    continue
+                for item in v:
+                    if isinstance(item, dict):
+                        key = item.get("key")
+                        if isinstance(key, str):
+                            refs.add(f"core:{cat}/{key}")
+                            refs.add(key)
+    return refs
+
+
+def resolve_namespaced_ref(ref, namespaced_ref_index):
+    """Check if a string ref exists in the index.
+
+    Accepts both namespaced (core:category/key) and bare key formats.
+    Module-style refs (module:...) are accepted without pre-indexing.
+    Returns False for non-strings and unresolvable refs.
+    """
+    if not isinstance(ref, str):
+        return False
+    if ref.startswith("module:"):
+        return True
+    return ref in namespaced_ref_index
+
+
+def _collect_equipment_namespaced_keys(
+    data_files, module_data_files=None, rel_base=ROOT
+):
     keys = set()
     for _rel, category, item in _iter_equipment_entries(
         data_files, module_data_files, rel_base
@@ -126,9 +207,7 @@ def _collect_equipment_bare_keys(data_files, module_data_files=None, rel_base=RO
 
 
 def equipment_ref_valid(ref, id_index, equipment_index):
-    """Return True if an equipment reference resolves (numeric or string)."""
-    if isinstance(ref, int):
-        return ref in id_index.get("equipment", set())
+    """Return True if an equipment reference resolves (namespaced or bare key)."""
     if isinstance(ref, str):
         if ref.startswith("core:"):
             return ref in equipment_index["namespaced_keys"]
@@ -168,56 +247,10 @@ def check_equipment_uniqueness(data_files, module_data_files=None, rel_base=ROOT
     return errors
 
 
-def check_equipment_id_uniqueness(data_files, module_data_files=None, rel_base=ROOT):
-    """Backward-compatible alias: return only duplicate-id errors."""
-    return [
-        e
-        for e in check_equipment_uniqueness(
-            data_files, module_data_files, rel_base
-        )
-        if e.startswith("DUPLICATE equipment id ")
-    ]
-
-
-def build_id_index(data_files, module_data_files=None):
-    """Build a map of collection name -> set of integer ids for referential integrity."""
-    id_index = {}
-    for fp in data_files:
-        try:
-            data = json.loads(fp.read_text())
-            for k, v in data.items():
-                if k.startswith("$") or not isinstance(v, list):
-                    continue
-                id_index.setdefault(k, set())
-                for item in v:
-                    if isinstance(item, dict):
-                        iid = item.get("id")
-                        if isinstance(iid, int):
-                            id_index[k].add(iid)
-        except Exception:
-            pass  # ignore malformed for index
-    # Also index module data files
-    if module_data_files:
-        for fp, _ in module_data_files:
-            try:
-                data = json.loads(fp.read_text())
-                for k, v in data.items():
-                    if k.startswith("$") or not isinstance(v, list):
-                        continue
-                    id_index.setdefault(k, set())
-                    for item in v:
-                        if isinstance(item, dict):
-                            iid = item.get("id")
-                            if isinstance(iid, int):
-                                id_index[k].add(iid)
-            except Exception:
-                pass
-    return id_index
-
-
-def check_references(data, coll_name, id_index, equipment_index=None):
+def check_references(data, coll_name, equipment_index=None, namespaced_ref_index=None):
     """Return list of referential integrity error messages."""
     errors = []
+
     if coll_name == "races":
         for r in data.get("races", []):
             if not isinstance(r, dict):
@@ -225,13 +258,15 @@ def check_references(data, coll_name, id_index, equipment_index=None):
             lineage = r.get("lineage", {})
             if "parentRace" in lineage:
                 pid = lineage["parentRace"]
-                if not isinstance(pid, int) or pid not in id_index.get("races", set()):
+                if isinstance(pid, str) and not resolve_namespaced_ref(
+                    pid, namespaced_ref_index
+                ):
                     errors.append(f"parentRace {pid} does not exist in races")
             for t in r.get("traits", []):
                 if isinstance(t, dict):
                     tid = t.get("id")
-                    if isinstance(tid, int) and tid not in id_index.get(
-                        "traits", set()
+                    if isinstance(tid, str) and not resolve_namespaced_ref(
+                        tid, namespaced_ref_index
                     ):
                         errors.append(f"trait {tid} does not exist in traits")
 
@@ -241,15 +276,23 @@ def check_references(data, coll_name, id_index, equipment_index=None):
                 continue
             pr = f.get("prerequisite", {})
             for pid in pr.get("perks", []):
-                if isinstance(pid, int) and pid not in id_index.get("features", set()):
+                if isinstance(pid, str) and not resolve_namespaced_ref(
+                    pid, namespaced_ref_index
+                ):
                     errors.append(f"prereq perk {pid} does not exist")
             for s in pr.get("skills", []):
                 if isinstance(s, dict):
                     sid = s.get("id")
-                    if isinstance(sid, int) and sid not in id_index.get(
-                        "skills", set()
+                    if isinstance(sid, str) and not resolve_namespaced_ref(
+                        sid, namespaced_ref_index
                     ):
                         errors.append(f"prereq skill {sid} does not exist")
+                    elif isinstance(sid, list):
+                        for sss in sid:
+                            if isinstance(sss, str) and not resolve_namespaced_ref(
+                                sss, namespaced_ref_index
+                            ):
+                                errors.append(f"prereq skill {sss} does not exist")
 
     elif coll_name == "spells":
         for s in data.get("spells", []):
@@ -258,15 +301,23 @@ def check_references(data, coll_name, id_index, equipment_index=None):
             for e in s.get("effects", []):
                 if isinstance(e, dict):
                     eid = e.get("effect")
-                    if isinstance(eid, int) and eid not in id_index.get(
-                        "effects", set()
+                    if isinstance(eid, int):
+                        errors.append(
+                            f"effect {eid}: numeric refs not allowed (use core:effect/<key>)"
+                        )
+                    elif isinstance(eid, str) and not resolve_namespaced_ref(
+                        eid, namespaced_ref_index
                     ):
-                        errors.append(f"effect {eid} does not exist")
+                        errors.append(f"effect {eid!r} does not resolve")
             for rid in (s.get("cost", {}) or {}).get("reagents", []) or []:
-                if isinstance(rid, int) and rid not in id_index.get(
-                    "ingredients", set()
+                if isinstance(rid, int):
+                    errors.append(
+                        f"reagent {rid}: numeric refs not allowed (use core:ingredient/<key>)"
+                    )
+                elif isinstance(rid, str) and not resolve_namespaced_ref(
+                    rid, namespaced_ref_index
                 ):
-                    errors.append(f"reagent {rid} does not exist")
+                    errors.append(f"reagent {rid!r} does not resolve")
 
     elif coll_name == "backgrounds":
         for b in data.get("backgrounds", []):
@@ -275,28 +326,46 @@ def check_references(data, coll_name, id_index, equipment_index=None):
             for sb in b.get("skill_bonuses", []) or []:
                 if isinstance(sb, dict):
                     sid = sb.get("skill")
-                    if isinstance(sid, int) and sid not in id_index.get(
-                        "skills", set()
+                    if isinstance(sid, int):
+                        errors.append(
+                            f"skill bonus {sid}: numeric refs not allowed (use core:skill/<key>)"
+                        )
+                    elif isinstance(sid, str) and (
+                        namespaced_ref_index is None
+                        or not resolve_namespaced_ref(sid, namespaced_ref_index)
                     ):
-                        errors.append(f"skill bonus {sid} does not exist")
+                        errors.append(f"skill bonus {sid!r} does not resolve")
             for ts in b.get("suggested_tag_skills", []) or []:
-                if isinstance(ts, int) and ts not in id_index.get("skills", set()):
-                    errors.append(f"suggested tag skill {ts} does not exist")
+                if isinstance(ts, int):
+                    errors.append(
+                        f"suggested tag skill {ts}: numeric refs not allowed (use core:skill/<key>)"
+                    )
+                elif (
+                    isinstance(ts, str)
+                    and namespaced_ref_index
+                    and not resolve_namespaced_ref(ts, namespaced_ref_index)
+                ):
+                    errors.append(f"suggested tag skill {ts!r} does not resolve")
             for ss in b.get("starting_spells", []) or []:
-                if isinstance(ss, int) and ss not in id_index.get("spells", set()):
-                    errors.append(f"starting spell {ss} does not exist")
+                if isinstance(ss, int):
+                    errors.append(
+                        f"starting spell {ss}: numeric refs not allowed (use core:spell/<key>)"
+                    )
+                elif (
+                    isinstance(ss, str)
+                    and namespaced_ref_index
+                    and not resolve_namespaced_ref(ss, namespaced_ref_index)
+                ):
+                    errors.append(f"starting spell {ss!r} does not resolve")
             for se in b.get("starting_equipment", []) or []:
                 if isinstance(se, dict):
                     item_ref = se.get("item")
-                    if equipment_index is None:
-                        equipment_index = {
-                            "namespaced_keys": set(),
-                            "bare_keys": set(),
-                        }
-                    if not equipment_ref_valid(item_ref, id_index, equipment_index):
-                        errors.append(
-                            f"starting equipment {item_ref!r} does not exist"
-                        )
+                    eq_idx = equipment_index or {
+                        "namespaced_keys": set(),
+                        "bare_keys": set(),
+                    }
+                    if not equipment_ref_valid(item_ref, {}, eq_idx):
+                        errors.append(f"starting equipment {item_ref!r} does not exist")
 
     elif coll_name == "monsters":
         for m in data.get("monsters", []):
@@ -305,18 +374,28 @@ def check_references(data, coll_name, id_index, equipment_index=None):
             for a in m.get("abilities", []) or []:
                 if isinstance(a, dict):
                     eid = a.get("effect")
-                    if isinstance(eid, int) and eid not in id_index.get(
-                        "effects", set()
+                    if isinstance(eid, int):
+                        errors.append(
+                            f"ability effect {eid}: numeric refs not allowed (use core:effect/<key>)"
+                        )
+                    elif isinstance(eid, str) and not resolve_namespaced_ref(
+                        eid, namespaced_ref_index
                     ):
-                        errors.append(f"ability effect {eid} does not exist")
+                        errors.append(f"ability effect {eid!r} does not resolve")
 
     elif coll_name == "ingredients":
         for i in data.get("ingredients", []):
             if not isinstance(i, dict):
                 continue
             for eid in i.get("effects", []) or []:
-                if isinstance(eid, int) and eid not in id_index.get("effects", set()):
-                    errors.append(f"effect {eid} does not exist")
+                if isinstance(eid, int):
+                    errors.append(
+                        f"effect {eid}: numeric refs not allowed (use core:effect/<key>)"
+                    )
+                elif isinstance(eid, str) and not resolve_namespaced_ref(
+                    eid, namespaced_ref_index
+                ):
+                    errors.append(f"effect {eid!r} does not resolve")
 
     elif coll_name == "conditions":
         for c in data.get("conditions", []):
@@ -324,14 +403,26 @@ def check_references(data, coll_name, id_index, equipment_index=None):
                 continue
             ckey = c.get("key", "?")
             for eid in c.get("appliedBy", []) or []:
-                if isinstance(eid, int) and eid not in id_index.get("effects", set()):
+                if isinstance(eid, int):
                     errors.append(
-                        f"condition '{ckey}' appliedBy effect {eid} does not exist in effects"
+                        f"condition '{ckey}' appliedBy effect {eid}: numeric refs not allowed (use core:effect/<key>)"
+                    )
+                elif isinstance(eid, str) and not resolve_namespaced_ref(
+                    eid, namespaced_ref_index
+                ):
+                    errors.append(
+                        f"condition '{ckey}' appliedBy effect {eid!r} does not resolve"
                     )
             for eid in c.get("removedBy", []) or []:
-                if isinstance(eid, int) and eid not in id_index.get("effects", set()):
+                if isinstance(eid, int):
                     errors.append(
-                        f"condition '{ckey}' removedBy effect {eid} does not exist in effects"
+                        f"condition '{ckey}' removedBy effect {eid}: numeric refs not allowed (use core:effect/<key>)"
+                    )
+                elif isinstance(eid, str) and not resolve_namespaced_ref(
+                    eid, namespaced_ref_index
+                ):
+                    errors.append(
+                        f"condition '{ckey}' removedBy effect {eid!r} does not resolve"
                     )
             # Validate stacking consistency
             stacking = c.get("stacking", False)
@@ -347,21 +438,21 @@ def check_references(data, coll_name, id_index, equipment_index=None):
                 errors.append(
                     f"condition 'prone' should have empty removedBy (stand action, not effect)"
                 )
-            # Validate that cure (id 20) is not in prone's removedBy
-            if ckey == "prone" and 20 in c.get("removedBy", []):
+            # Validate that cure is not in prone's removedBy
+            if ckey == "prone" and "core:effect/cure" in c.get("removedBy", []):
                 errors.append(
-                    f"condition 'prone' must not have cure (id 20) in removedBy"
+                    f"condition 'prone' must not have cure (core:effect/cure) in removedBy"
                 )
-            # Check for duplicate effect IDs in appliedBy and removedBy
+            # Check for duplicate effect refs in appliedBy and removedBy
             ab = c.get("appliedBy", [])
             if len(ab) != len(set(ab)):
                 errors.append(
-                    f"condition '{ckey}' has duplicate effect IDs in appliedBy"
+                    f"condition '{ckey}' has duplicate effect refs in appliedBy"
                 )
             rb = c.get("removedBy", [])
             if len(rb) != len(set(rb)):
                 errors.append(
-                    f"condition '{ckey}' has duplicate effect IDs in removedBy"
+                    f"condition '{ckey}' has duplicate effect refs in removedBy"
                 )
 
     elif coll_name == "equipment":
@@ -372,10 +463,46 @@ def check_references(data, coll_name, id_index, equipment_index=None):
             for eff in cons.get("effects", []) or []:
                 if isinstance(eff, dict):
                     eid = eff.get("effect")
-                    if isinstance(eid, int) and eid not in id_index.get(
-                        "effects", set()
+                    if isinstance(eid, int):
+                        errors.append(
+                            f"effect {eid}: numeric refs not allowed (use core:effect/<key>)"
+                        )
+                    elif isinstance(eid, str) and not resolve_namespaced_ref(
+                        eid, namespaced_ref_index
                     ):
-                        errors.append(f"effect {eid} does not exist")
+                        errors.append(f"effect {eid!r} does not resolve")
+
+    elif coll_name == "crafted_items":
+        for ci in data.get("crafted_items", []) or []:
+            if not isinstance(ci, dict):
+                continue
+            ckey = ci.get("key", "?")
+            for ench in ci.get("enchantments", []) or []:
+                if isinstance(ench, dict):
+                    eid = ench.get("effect")
+                    if isinstance(eid, int):
+                        errors.append(
+                            f"crafted item '{ckey}' enchantment effect {eid}: numeric refs not allowed (use core:effect/<key>)"
+                        )
+                    elif isinstance(eid, str) and not resolve_namespaced_ref(
+                        eid, namespaced_ref_index
+                    ):
+                        errors.append(
+                            f"crafted item '{ckey}' enchantment effect {eid!r} does not resolve"
+                        )
+            for coat in ci.get("coatings", []) or []:
+                if isinstance(coat, dict):
+                    eid = coat.get("effect")
+                    if isinstance(eid, int):
+                        errors.append(
+                            f"crafted item '{ckey}' coating effect {eid}: numeric refs not allowed (use core:effect/<key>)"
+                        )
+                    elif isinstance(eid, str) and not resolve_namespaced_ref(
+                        eid, namespaced_ref_index
+                    ):
+                        errors.append(
+                            f"crafted item '{ckey}' coating effect {eid!r} does not resolve"
+                        )
 
     return errors
 
@@ -524,7 +651,9 @@ def _resolve_monster_bases(data, errors):
         monsters[i] = merged
 
 
-def _validate_single_data_file(fp, store, id_index, rel_base, equipment_index=None):
+def _validate_single_data_file(
+    fp, store, rel_base, equipment_index=None, namespaced_ref_index=None
+):
     """Validate one data file against its $schema and check cross-references.
 
     Returns (passed, errors, rel_path) where:
@@ -580,7 +709,10 @@ def _validate_single_data_file(fp, store, id_index, rel_base, equipment_index=No
 
     if coll_name:
         ref_errors = check_references(
-            data, coll_name, id_index, equipment_index=equipment_index
+            data,
+            coll_name,
+            equipment_index=equipment_index,
+            namespaced_ref_index=namespaced_ref_index,
         )
         errors.extend(f"REF: {e}" for e in ref_errors)
 
@@ -589,7 +721,7 @@ def _validate_single_data_file(fp, store, id_index, rel_base, equipment_index=No
     return True, [], rel
 
 
-def validate_modules(store, id_index, equipment_index=None):
+def validate_modules(store, equipment_index=None):
     """Discover and validate modules.
     Returns (module_passed, module_failed, module_total, module_conflicts).
     """
@@ -644,7 +776,7 @@ def validate_modules(store, id_index, equipment_index=None):
                 continue
 
             p, errs, rel = _validate_single_data_file(
-                fp, store, id_index, ROOT.parent, equipment_index=equipment_index
+                fp, store, ROOT.parent, equipment_index=equipment_index
             )
             if p is None:
                 print(f"  \u26a0  {rel}: no $schema field, skipping")
@@ -666,14 +798,13 @@ def main():
     store = load_store()
     data_files = list(collect_data_files())
 
-    # Collect module data files for ID index build
+    # Collect module data files for index builds
     module_data_files = list(collect_module_data_files())
 
-    # Build ID index from core + module data for referential integrity
-    id_index = build_id_index(data_files, module_data_files)
     equipment_index = build_equipment_index(
         data_files, module_data_files, rel_base=ROOT
     )
+    namespaced_ref_index = build_namespaced_ref_index(data_files, module_data_files)
 
     total = passed = failed = 0
 
@@ -688,7 +819,11 @@ def main():
 
     for fp in data_files:
         p, errs, rel = _validate_single_data_file(
-            fp, store, id_index, ROOT, equipment_index=equipment_index
+            fp,
+            store,
+            ROOT,
+            equipment_index=equipment_index,
+            namespaced_ref_index=namespaced_ref_index,
         )
         if p is None:
             print(f"  \u26a0  {rel}: no $schema field, skipping")
@@ -710,7 +845,7 @@ def main():
 
     # Module validation pass
     mod_passed, mod_failed, mod_total, mod_conflicts = validate_modules(
-        store, id_index, equipment_index=equipment_index
+        store, equipment_index=equipment_index
     )
 
     combined_passed = passed + mod_passed

@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Effect",
-  "description": "An atomic, reusable effect in the shared effect registry. Spells, consumables (potions/poisons/coatings), ingredients, and enchantments all reference these by id via schema.json#/definitions/appliedEffect. Some effects (especially poisons) support composition via sub_effects (other effects applied as payload/symptoms when this one takes hold).",
+  "description": "An atomic, reusable effect in the shared effect registry. Spells, consumables (potions/poisons/coatings), ingredients, and enchantments all reference these by string key via schema.json#/definitions/appliedEffect. Some effects (especially poisons) support composition via sub_effects (other effects applied as payload/symptoms when this one takes hold). Effects are identified solely by their 'key' field; numeric 'id' has been removed.",
   "type": "object",
   "properties": {
     "$schema": { "type": "string" },
@@ -61,11 +61,11 @@
         "tags": { "type": "array", "items": { "type": "string" } },
         "sub_effects": {
           "type": "array",
-          "items": { "type": "integer" },
-          "description": "Other effect IDs that this effect applies (recursively) when it takes hold on a target. Used by poison effects to deliver symptoms (e.g. damage, drain, control effects). A poison effect (any effect with 'poison' in its tags or delivered via poison/coating channel) MUST NOT list any other effect that has 'poison' in its tags, to prevent infinite recursion or self-poisoning."
+          "items": { "type": "string" },
+          "description": "Other effect refs that this effect applies (recursively) when it takes hold on a target. Use namespaced format core:effect/<key> or bare key. Used by poison effects to deliver symptoms (e.g. damage, drain, control effects). A poison effect (any effect with 'poison' in its tags or delivered via poison/coating channel) MUST NOT list any other effect that has 'poison' in its tags, to prevent infinite recursion or self-poisoning."
         }
       },
-      "required": ["id", "key", "label", "description", "category", "polarity", "channels"],
+      "required": ["key", "label", "description", "category", "polarity", "channels"],
       "additionalProperties": false
     }
   }

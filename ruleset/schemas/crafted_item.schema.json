@@ -51,7 +51,10 @@
           "items": {
             "type": "object",
             "properties": {
-              "effect": { "$ref": "schema.json#/definitions/entryId", "description": "Effect id from the effect registry." },
+              "effect": {
+                "type": "string",
+                "description": "Effect reference: namespaced format core:effect/<key> or bare key."
+              },
               "magnitude": { "type": "number", "description": "Effect strength." },
               "duration": { "type": "number", "minimum": 0, "description": "Duration in seconds; 0 = instantaneous." },
               "uses_left": { "type": "integer", "minimum": 1, "description": "Number of hits or applications remaining before the coating is consumed." }

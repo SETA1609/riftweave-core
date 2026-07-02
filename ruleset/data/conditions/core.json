@@ -10,9 +10,15 @@
         "ttrpg": "−20 on PER-based checks, auto-fail sight-dependent rolls. Attacks against you have +10.",
         "video_game": "−20% accuracy, enemy attacks +10% crit chance against you."
       },
-      "appliedBy": [47],
-      "removedBy": [20],
-      "combat": { "defense_bonus": 10 }
+      "appliedBy": [
+        "core:effect/blind"
+      ],
+      "removedBy": [
+        "core:effect/cure"
+      ],
+      "combat": {
+        "defense_bonus": 10
+      }
     },
     {
       "id": 2,
@@ -23,8 +29,12 @@
         "ttrpg": "Cannot attack the charmer. The charmer has +20 on social checks against you. Damage from the charmer breaks the effect.",
         "video_game": "Cannot target the charmer. Taking damage from the charmer removes the condition."
       },
-      "appliedBy": [48],
-      "removedBy": [20]
+      "appliedBy": [
+        "core:effect/charm"
+      ],
+      "removedBy": [
+        "core:effect/cure"
+      ]
     },
     {
       "id": 3,
@@ -35,8 +45,12 @@
         "ttrpg": "−10 on initiative. Auto-fail PER checks reliant on hearing.",
         "video_game": "−10% detect range. No audio cues from the environment."
       },
-      "appliedBy": [49],
-      "removedBy": [20]
+      "appliedBy": [
+        "core:effect/deafen"
+      ],
+      "removedBy": [
+        "core:effect/cure"
+      ]
     },
     {
       "id": 4,
@@ -47,9 +61,15 @@
         "ttrpg": "−10 on attack rolls and skill checks while the source is in line of sight. Cannot move closer to the source.",
         "video_game": "−10% damage dealt. Forced to retreat if source closes within melee range. Breaks on line-of-sight loss."
       },
-      "appliedBy": [22],
-      "removedBy": [20],
-      "combat": { "attack_penalty": -10 }
+      "appliedBy": [
+        "core:effect/phobia"
+      ],
+      "removedBy": [
+        "core:effect/cure"
+      ],
+      "combat": {
+        "attack_penalty": -10
+      }
     },
     {
       "id": 5,
@@ -60,8 +80,12 @@
         "ttrpg": "Speed becomes 0. −10 on all attack rolls and AGI-based skills. Escapable via contested athletics check.",
         "video_game": "Immobilized. −10% attack rating. Mash or use escape skill to break free."
       },
-      "appliedBy": [50],
-      "removedBy": [20]
+      "appliedBy": [
+        "core:effect/grapple"
+      ],
+      "removedBy": [
+        "core:effect/cure"
+      ]
     },
     {
       "id": 6,
@@ -72,9 +96,15 @@
         "ttrpg": "Cannot take actions, bonus actions, or reactions. No concentration possible.",
         "video_game": "Cannot act, use abilities, or move. Duration varies by source."
       },
-      "appliedBy": [51],
-      "removedBy": [20],
-      "combat": { "prevents_action": true }
+      "appliedBy": [
+        "core:effect/incapacitate"
+      ],
+      "removedBy": [
+        "core:effect/cure"
+      ],
+      "combat": {
+        "prevents_action": true
+      }
     },
     {
       "id": 7,
@@ -85,8 +115,12 @@
         "ttrpg": "Cannot be seen. Attacks against you have −20. You have +10 on attack rolls. Advantage on stealth.",
         "video_game": "Fully stealthed. Cannot be targeted directly. Attacking or taking damage breaks invisibility."
       },
-      "appliedBy": [8],
-      "removedBy": [20]
+      "appliedBy": [
+        "core:effect/invisibility"
+      ],
+      "removedBy": [
+        "core:effect/cure"
+      ]
     },
     {
       "id": 8,
@@ -97,9 +131,17 @@
         "ttrpg": "Incapacitated + cannot move. STR and AGI checks auto-fail. Melee attacks from within 1 unit auto-crit.",
         "video_game": "Fully immobilized and defenseless. Melee attacks against you are guaranteed hits. Duration in seconds."
       },
-      "appliedBy": [11, 43],
-      "removedBy": [20],
-      "combat": { "prevents_action": true, "auto_crit_when_target": true }
+      "appliedBy": [
+        "core:effect/paralyze",
+        "core:effect/poison_paralytic"
+      ],
+      "removedBy": [
+        "core:effect/cure"
+      ],
+      "combat": {
+        "prevents_action": true,
+        "auto_crit_when_target": true
+      }
     },
     {
       "id": 9,
@@ -110,9 +152,15 @@
         "ttrpg": "Incapacitated. DR 20 vs all damage. Immune to poison and disease. Cannot be targeted by beneficial effects.",
         "video_game": "Incapacitated. Damage reduction +90%. Cannot be healed or buffed. Requires greater magic to reverse."
       },
-      "appliedBy": [52],
-      "removedBy": [20],
-      "combat": { "prevents_action": true }
+      "appliedBy": [
+        "core:effect/petrify"
+      ],
+      "removedBy": [
+        "core:effect/cure"
+      ],
+      "combat": {
+        "prevents_action": true
+      }
     },
     {
       "id": 10,
@@ -123,8 +171,13 @@
         "ttrpg": "The poison applies its sub_effects (damage, drain, control) as symptoms. Resistance (via resist effect with parameter 'poison') may reduce magnitude or duration. The poisoned condition itself is the delivery envelope.",
         "video_game": "The poison effect delivers its sub_effects automatically (DoT, debuffs, control). The poisoned condition tracks the overall state; the sub_effects handle the mechanics."
       },
-      "appliedBy": [46],
-      "removedBy": [20, 7]
+      "appliedBy": [
+        "core:effect/poison"
+      ],
+      "removedBy": [
+        "core:effect/cure",
+        "core:effect/restore_resource"
+      ]
     },
     {
       "id": 11,
@@ -135,9 +188,14 @@
         "ttrpg": "−20 on melee attack rolls. Ranged attacks against you have +10. Spend half your movement to stand up.",
         "video_game": "Knockdown state. −20% melee damage. Ranged attacks against you have +15% accuracy. Spend 1s to stand."
       },
-      "appliedBy": [53],
+      "appliedBy": [
+        "core:effect/knockdown"
+      ],
       "removedBy": [],
-      "combat": { "attack_penalty": -20, "defense_bonus": 10 }
+      "combat": {
+        "attack_penalty": -20,
+        "defense_bonus": 10
+      }
     },
     {
       "id": 12,
@@ -148,9 +206,16 @@
         "ttrpg": "Speed 0. −20 on attack rolls and AGI-based skills. Attacks against you have +10. Escape via STR check or teleport.",
         "video_game": "Immobilized. −20% attack rating. Incoming attacks have +15% damage. Break via STR check or escape skill."
       },
-      "appliedBy": [54],
-      "removedBy": [20],
-      "combat": { "attack_penalty": -20, "defense_bonus": 10 }
+      "appliedBy": [
+        "core:effect/restrain"
+      ],
+      "removedBy": [
+        "core:effect/cure"
+      ],
+      "combat": {
+        "attack_penalty": -20,
+        "defense_bonus": 10
+      }
     },
     {
       "id": 13,
@@ -161,9 +226,16 @@
         "ttrpg": "Incapacitated + cannot move. −20 on all checks. Attacks against you have +10.",
         "video_game": "Staggered for 1–3 seconds. Cannot act. Incoming damage increased by +25%."
       },
-      "appliedBy": [55],
-      "removedBy": [20],
-      "combat": { "prevents_action": true, "defense_bonus": 10 }
+      "appliedBy": [
+        "core:effect/stun"
+      ],
+      "removedBy": [
+        "core:effect/cure"
+      ],
+      "combat": {
+        "prevents_action": true,
+        "defense_bonus": 10
+      }
     },
     {
       "id": 14,
@@ -174,9 +246,16 @@
         "ttrpg": "Incapacitated + prone. Cannot maintain concentration. Auto-fail STR and AGI checks. Melee attacks from within 1 unit auto-crit. Restored by healing or time.",
         "video_game": "Knocked out (0 HP). Cannot act. Revived when healed above 0 HP or after a timer."
       },
-      "appliedBy": [56],
-      "removedBy": [20],
-      "combat": { "prevents_action": true, "auto_crit_when_target": true }
+      "appliedBy": [
+        "core:effect/unconsciousness"
+      ],
+      "removedBy": [
+        "core:effect/cure"
+      ],
+      "combat": {
+        "prevents_action": true,
+        "auto_crit_when_target": true
+      }
     },
     {
       "id": 15,
@@ -187,11 +266,19 @@
         "ttrpg": "Stacking condition (6 levels). Level 1: −10 on skill checks. Level 3: −20, speed halved. Level 5: speed 0. Level 6: death. One level removed per full rest.",
         "video_game": "Stacking debuff (6 levels). Level 1: −10% skill effectiveness. Level 3: −20%, speed −50%. Level 5: immobile. Level 6: death. Cured by rest or cure effect."
       },
-      "appliedBy": [40, 41, 42],
-      "removedBy": [20],
+      "appliedBy": [
+        "core:effect/blight",
+        "core:effect/fever",
+        "core:effect/plague"
+      ],
+      "removedBy": [
+        "core:effect/cure"
+      ],
       "stacking": true,
       "maxStacks": 6,
-      "combat": { "attack_penalty_per_stack": -10 }
+      "combat": {
+        "attack_penalty_per_stack": -10
+      }
     },
     {
       "id": 16,
@@ -202,8 +289,13 @@
         "ttrpg": "Takes 1d4 fire damage per round at start of turn. Can use an action to extinguish (AGI check DC 10 or drop-and-roll). Water or cure effect ends it immediately.",
         "video_game": "Fire DoT tick every 2 seconds. Duration refreshed on reapplication. Extinguished by water, rolling, or cure effect."
       },
-      "appliedBy": [57],
-      "removedBy": [20, 2]
+      "appliedBy": [
+        "core:effect/burn"
+      ],
+      "removedBy": [
+        "core:effect/cure",
+        "core:effect/damage_frost"
+      ]
     },
     {
       "id": 17,
@@ -214,8 +306,13 @@
         "ttrpg": "Takes 1 HP damage per round at start of turn. DC 10 Medicine check or bandage (use object) stops the bleed. Some attacks cause severe bleeding (2 HP/round).",
         "video_game": "Health DoT tick every 2 seconds. Severity stacks (1–3). Stopped by bandage, healing spell, or out-of-combat rest."
       },
-      "appliedBy": [58],
-      "removedBy": [20, 7]
+      "appliedBy": [
+        "core:effect/bleed"
+      ],
+      "removedBy": [
+        "core:effect/cure",
+        "core:effect/restore_resource"
+      ]
     },
     {
       "id": 18,
@@ -226,8 +323,13 @@
         "ttrpg": "Speed halved (rounded down). −10 on AGI-based skills. Cannot take the Dash action. One fewer bonus action per turn if using AP pool: +1 AP cost on all actions.",
         "video_game": "Movement speed −30%. Attack speed −20%. Dodge chance −10%. Duration in seconds."
       },
-      "appliedBy": [59],
-      "removedBy": [20, 70]
+      "appliedBy": [
+        "core:effect/slow"
+      ],
+      "removedBy": [
+        "core:effect/cure",
+        "core:effect/haste_attack"
+      ]
     },
     {
       "id": 19,
@@ -238,8 +340,12 @@
         "ttrpg": "Cannot cast spells that require verbal components (GM determines which schools or specific spells require speech). −20 on social checks that rely on speaking.",
         "video_game": "Spellcasting disabled for skills that use verbal components. Subtle/innate casting (if perk-gated) still works. Duration in seconds."
       },
-      "appliedBy": [60],
-      "removedBy": [20]
+      "appliedBy": [
+        "core:effect/silence"
+      ],
+      "removedBy": [
+        "core:effect/cure"
+      ]
     },
     {
       "id": 20,
@@ -250,8 +356,14 @@
         "ttrpg": "The disease effect (blight, fever, plague) applies its symptoms. Resistance via END reduces severity. Cured via cure effect with parameter 'disease' or specific antidote.",
         "video_game": "Disease debuff with periodic stat drains and health damage. Persistent until cured. May worsen over time if untreated."
       },
-      "appliedBy": [40, 41, 42],
-      "removedBy": [20]
+      "appliedBy": [
+        "core:effect/blight",
+        "core:effect/fever",
+        "core:effect/plague"
+      ],
+      "removedBy": [
+        "core:effect/cure"
+      ]
     },
     {
       "id": 21,
@@ -262,8 +374,12 @@
         "ttrpg": "−2 to all attributes (or specific ones per source). Removed by remove curse spell, cure effect with parameter 'curse', or special ritual. Cannot be removed by rest.",
         "video_game": "−X to all relevant stats. Displayed as a red debuff icon. Requires specialized cure item or quest reward to remove."
       },
-      "appliedBy": [61],
-      "removedBy": [20]
+      "appliedBy": [
+        "core:effect/curse"
+      ],
+      "removedBy": [
+        "core:effect/cure"
+      ]
     },
     {
       "id": 22,
@@ -274,8 +390,12 @@
         "ttrpg": "−10 on evasion and block checks. Armor DR halved. Incoming damage multiplied by ×1.25.",
         "video_game": "Evasion −15%. Damage resistance −20%. Incoming damage +X%. Duration in seconds."
       },
-      "appliedBy": [62],
-      "removedBy": [20]
+      "appliedBy": [
+        "core:effect/expose"
+      ],
+      "removedBy": [
+        "core:effect/cure"
+      ]
     },
     {
       "id": 23,
@@ -286,9 +406,15 @@
         "ttrpg": "−20 on attack rolls against anyone other than the taunter. Cannot willingly move away from the taunter. Effects break if the taunter attacks an ally or moves out of line of sight.",
         "video_game": "Forced aggro on the taunter. −20% damage against non-taunter targets. Taunt immunity after 3 applications (diminishing returns)."
       },
-      "appliedBy": [63],
-      "removedBy": [20],
-      "combat": { "attack_penalty": -20 }
+      "appliedBy": [
+        "core:effect/taunt"
+      ],
+      "removedBy": [
+        "core:effect/cure"
+      ],
+      "combat": {
+        "attack_penalty": -20
+      }
     },
     {
       "id": 24,
@@ -299,9 +425,15 @@
         "ttrpg": "Loses next reaction. −10 on the next action taken. Removed at end of next turn or when taking damage.",
         "video_game": "Stagger animation plays. Cannot block or dodge for 1–2 seconds. Recovery roll animation plays on exit."
       },
-      "appliedBy": [64],
-      "removedBy": [20],
-      "combat": { "attack_penalty": -10 }
+      "appliedBy": [
+        "core:effect/stagger"
+      ],
+      "removedBy": [
+        "core:effect/cure"
+      ],
+      "combat": {
+        "attack_penalty": -10
+      }
     }
   ]
 }
