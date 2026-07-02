@@ -18,6 +18,8 @@
     { "id": 45, "key": "shortsword",     "base": "shortsword",     "overrides": {} },
     { "id": 46, "key": "war_pick",       "base": "war_pick",       "overrides": {} },
     { "id": 47, "key": "light_crossbow", "base": "light_crossbow", "overrides": {} },
-    { "id": 48, "key": "sling",          "base": "sling",          "overrides": {} }
+    { "id": 48, "key": "sling",          "base": "sling",          "overrides": {} },
+    { "id": 100, "key": "cursed_iron_longsword", "base": "longsword", "overrides": { "enchantment_slots": -1, "phase": "earth", "cost": { "quantity": 8, "unit": "gp" } } },
+    { "id": 101, "key": "elven_wood_longbow",    "base": "longbow",  "overrides": { "enchantment_slots": 2, "phase": "wood", "effect_magnitude_mult": 1.2, "cost": { "quantity": 200, "unit": "gp" } } }
   ]
 }
