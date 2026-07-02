@@ -39,6 +39,16 @@
           "additionalProperties": false
         },
         "weight": { "type": "number", "minimum": 0, "description": "Weight in pounds" },
+        "enchantment_slots": {
+          "type": "integer",
+          "description": "Maximum number of enchantments this item can hold. Negative values mean the item cannot receive enchantments. Set on base templates; material overrides may modify (including negative)."
+        },
+        "phase": { "$ref": "schema.json#/definitions/phase" },
+        "effect_magnitude_mult": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Fractional multiplier applied to enchantment effect magnitudes. e.g. 1.25 = +25%. Provided by material overrides."
+        },
         "weapon": {
           "type": "object",
           "description": "Melee and ranged weapons. Weapons have two primary classification axes: (1) damage.type (slashing/bludgeoning/piercing maps to the blades/blunt/piercing combat skills), and (2) length (short/normal/reach) which also controls attackReach in 'units of length' (reach = 2 units). short + normal are typically one-handed; reach weapons are two-handed. Each weapon declares its governing 'skill' and 'attackReach'. Base damage uses classic D&D 3.5-style dice. Material-based variations and crafting restrictions are documented in docs/modules/weapons.md rather than enforced in the base schema.",
@@ -172,6 +182,9 @@
               "additionalProperties": false
             },
             "weight": { "type": "number", "minimum": 0 },
+            "enchantment_slots": { "type": "integer" },
+            "phase": { "$ref": "schema.json#/definitions/phase" },
+            "effect_magnitude_mult": { "type": "number", "minimum": 0 },
             "weapon": { "type": "object" },
             "armor": { "type": "object" },
             "consumable": { "type": "object" },
