@@ -881,7 +881,7 @@ stagger → apply poison → capitalized damage during paralysis.
      - **Layer 3:** Lyra's WIL 8 → base MR 32%. Roll d100 = **44** (fail, no resist).
      - **Layer 4:** Blind has no phase (non-elemental). No elemental resistance.
      - **Layer 5:** No active effects.
-   - **Blind lands.** Lyra is now **blinded** (condition id 1, applied by effect id 47).
+   - **Blind lands.** Lyra is now **blinded** (condition ref `core:condition/blinded`, applied by effect `core:effect/blind`).
      - **TTRPG effect:** −20 on PER-based checks, auto-fail sight-dependent rolls.
        Attacks against Lyra have +10.
      - Duration: 4 rounds (Cinder's base duration modified by margin of success).
@@ -1228,7 +1228,7 @@ When adding new combat perks, follow these guidelines:
 2. **Prerequisites:** Gate combat perks behind the relevant attribute (STR for melee damage, PER for ranged, END for defense/block) and a skill threshold of 30–50.
 3. **Dual resolution:** Every perk's effect must be expressible in both TTRPG and video game terms. See examples above.
 4. **Stacking:** Two perks that modify the same dimension should stack additively, not multiplicatively, to avoid runaway scaling.
-5. **Effects integration:** Perks that apply ongoing modifiers should reference the shared effects registry by effect ID where possible (e.g., a "Spell Dodger" perk grants resist effect id 19 with parameter "magic" at magnitude 25).
+5. **Effects integration:** Perks that apply ongoing modifiers should reference the shared effects registry by string key (namespaced `core:effect/<key>` or bare key) where possible (e.g., a "Spell Dodger" perk grants effect `core:effect/resist` with parameter `"magic"` at magnitude 25).
 
 ### Racial Traits Affecting Combat
 

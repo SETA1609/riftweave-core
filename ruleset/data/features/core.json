@@ -283,7 +283,7 @@
         {
           "type": "bonus",
           "description": "+1 to every attribute",
-          "target": 32,
+          "target": "core:effect/fortify_attribute",
           "parameter": "all",
           "value": 1,
           "durationType": "unlimited"
@@ -291,7 +291,7 @@
         {
           "type": "penalty",
           "description": "-10% skill points per level",
-          "target": 25,
+          "target": "core:effect/skill_points_modifier",
           "parameter": "per_level",
           "value": -0.1
         }
@@ -308,13 +308,13 @@
         {
           "type": "bonus",
           "description": "Ranged attacks are 20% faster",
-          "target": 30,
+          "target": "core:effect/attack_speed",
           "value": 0.2
         },
         {
           "type": "penalty",
           "description": "You cannot make aimed (targeted) shots",
-          "target": 26,
+          "target": "core:effect/aimed_shots_restriction",
           "value": 1
         }
       ]
@@ -330,7 +330,7 @@
         {
           "type": "bonus",
           "description": "+1 Agility",
-          "target": 32,
+          "target": "core:effect/fortify_attribute",
           "parameter": "agi",
           "value": 1,
           "durationType": "unlimited"
@@ -338,7 +338,7 @@
         {
           "type": "penalty",
           "description": "-25% carrying capacity",
-          "target": 27,
+          "target": "core:effect/carry_capacity_modifier",
           "value": -0.25
         }
       ]
@@ -354,13 +354,13 @@
         {
           "type": "bonus",
           "description": "+1 tag skill",
-          "target": 28,
+          "target": "core:effect/tag_skills_increase",
           "value": 1
         },
         {
           "type": "penalty",
           "description": "-15 starting skill points",
-          "target": 25,
+          "target": "core:effect/skill_points_modifier",
           "parameter": "starting",
           "value": -15
         }
@@ -377,14 +377,14 @@
         {
           "type": "penalty",
           "description": "Significant combat penalties against the undead",
-          "target": 22,
+          "target": "core:effect/phobia",
           "parameter": "undead",
           "value": 1
         },
         {
           "type": "bonus",
           "description": "+2 Willpower",
-          "target": 32,
+          "target": "core:effect/fortify_attribute",
           "parameter": "wil",
           "value": 2,
           "durationType": "unlimited"
@@ -392,14 +392,14 @@
         {
           "type": "bonus",
           "description": "Reduces damage and effects from undead",
-          "target": 19,
+          "target": "core:effect/resist",
           "parameter": "undead",
           "value": 0.25
         },
         {
           "type": "bonus",
           "description": "25% resistance to poison and disease",
-          "target": 19,
+          "target": "core:effect/resist",
           "parameter": "poison",
           "value": 0.25,
           "durationType": "unlimited"
@@ -407,7 +407,7 @@
         {
           "type": "bonus",
           "description": "25% resistance to poison and disease",
-          "target": 19,
+          "target": "core:effect/resist",
           "parameter": "disease",
           "value": 0.25,
           "durationType": "unlimited"
@@ -425,14 +425,14 @@
         {
           "type": "penalty",
           "description": "Combat and survival penalties when fighting beasts",
-          "target": 22,
+          "target": "core:effect/phobia",
           "parameter": "beast",
           "value": 1
         },
         {
           "type": "bonus",
           "description": "+1 Strength",
-          "target": 32,
+          "target": "core:effect/fortify_attribute",
           "parameter": "str",
           "value": 1,
           "durationType": "unlimited"
@@ -440,8 +440,8 @@
         {
           "type": "bonus",
           "description": "+10 starting ranks in Animal Handling",
-          "target": 31,
-          "parameter": 26,
+          "target": "core:effect/fortify_skill",
+          "parameter": "animal_handling",
           "value": 10,
           "durationType": "unlimited"
         }
@@ -458,14 +458,14 @@
         {
           "type": "penalty",
           "description": "Cannot equip or benefit from leather/hide items",
-          "target": 23,
-          "parameter": 10,
+          "target": "core:effect/allergy",
+          "parameter": "leather",
           "value": 1
         },
         {
           "type": "bonus",
           "description": "+1 Endurance",
-          "target": 32,
+          "target": "core:effect/fortify_attribute",
           "parameter": "end",
           "value": 1,
           "durationType": "unlimited"
@@ -473,7 +473,7 @@
         {
           "type": "bonus",
           "description": "Improved defense and comfort in metal armor",
-          "target": 32,
+          "target": "core:effect/fortify_attribute",
           "parameter": "end",
           "value": 1,
           "durationType": "unlimited"
@@ -491,14 +491,14 @@
         {
           "type": "penalty",
           "description": "Reduced effectiveness with iron or steel weapons and armor",
-          "target": 23,
-          "parameter": 3,
+          "target": "core:effect/allergy",
+          "parameter": "iron",
           "value": 1
         },
         {
           "type": "bonus",
           "description": "+10% magnitude on magical effects",
-          "target": 32,
+          "target": "core:effect/fortify_attribute",
           "parameter": "int",
           "value": 1,
           "durationType": "unlimited"
@@ -506,7 +506,7 @@
         {
           "type": "bonus",
           "description": "Affinity with exotic materials (silver, elven wood, etc.)",
-          "target": 24,
+          "target": "core:effect/exotic_material_affinity",
           "value": 1
         }
       ]
@@ -522,21 +522,21 @@
         {
           "type": "penalty",
           "description": "Extra damage from silver; cannot benefit from silver equipment",
-          "target": 23,
-          "parameter": 5,
+          "target": "core:effect/allergy",
+          "parameter": "silver",
           "value": 1
         },
         {
           "type": "bonus",
           "description": "Strong resistance to undead and unholy effects",
-          "target": 19,
+          "target": "core:effect/resist",
           "parameter": "undead",
           "value": 0.3
         },
         {
           "type": "bonus",
           "description": "Chance to absorb incoming hostile magic as mana",
-          "target": 21,
+          "target": "core:effect/spell_absorption",
           "value": 0.1
         }
       ]
@@ -552,21 +552,21 @@
         {
           "type": "penalty",
           "description": "Reduced effectiveness against constructs and magically animated beings",
-          "target": 22,
+          "target": "core:effect/phobia",
           "parameter": "construct",
           "value": 1
         },
         {
           "type": "bonus",
           "description": "Resistance to hostile magic",
-          "target": 19,
+          "target": "core:effect/resist",
           "parameter": "magic",
           "value": 0.2
         },
         {
           "type": "bonus",
           "description": "Chance to absorb a portion of incoming spell damage as mana",
-          "target": 21,
+          "target": "core:effect/spell_absorption",
           "value": 0.15
         }
       ]
@@ -575,7 +575,7 @@
       "id": 20,
       "key": "heavy_armor_expert",
       "label": "Heavy Armor Expert",
-      "description": "You have trained extensively in heavy plate. The stamina and AP surcharges for demanding actions are halved (×1.5 instead of ×2.0 for dodge, etc.).",
+      "description": "You have trained extensively in heavy plate. The stamina and AP surcharges for demanding actions are halved (\u00d71.5 instead of \u00d72.0 for dodge, etc.).",
       "type": "perk",
       "category": "combat",
       "prerequisite": {
@@ -635,7 +635,7 @@
       "id": 22,
       "key": "brutal_charge",
       "label": "Brutal Charge",
-      "description": "You barrel through enemies in heavy armor. Power attacks and charges cost stamina equal to a light attack — the heavy surcharge is negated.",
+      "description": "You barrel through enemies in heavy armor. Power attacks and charges cost stamina equal to a light attack \u2014 the heavy surcharge is negated.",
       "type": "perk",
       "category": "combat",
       "prerequisite": {

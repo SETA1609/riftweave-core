@@ -123,10 +123,11 @@ def build_equipment_index(data_files, module_data_files=None, rel_base=ROOT):
 
 
 def build_namespaced_ref_index(data_files, module_data_files=None):
-    """Build a set of all valid namespaced refs (core:<category>/<key>) across all data files.
+    """Build a set of valid cross-references (namespaced + bare keys) across all data files.
 
-    This enables validation of cross-references like core:effect/damage_fire,
-    core:spell/fire_bolt, core:ingredient/red_mushroom, etc.
+    Both core:category/key and bare key formats are added so that either can be
+    validated by resolve_namespaced_ref. Module-style refs are accepted at
+    validation time without being pre-indexed.
     """
     refs = set()
     for fp in data_files:
@@ -145,6 +146,7 @@ def build_namespaced_ref_index(data_files, module_data_files=None):
                     key = item.get("key")
                     if isinstance(key, str):
                         refs.add(f"core:{cat}/{key}")
+                        refs.add(key)
     if module_data_files:
         for fp, _ in module_data_files:
             try:
@@ -162,22 +164,22 @@ def build_namespaced_ref_index(data_files, module_data_files=None):
                         key = item.get("key")
                         if isinstance(key, str):
                             refs.add(f"core:{cat}/{key}")
+                            refs.add(key)
     return refs
 
 
 def resolve_namespaced_ref(ref, namespaced_ref_index):
-    """Check if a string ref like 'core:effect/damage_fire' exists in the index.
+    """Check if a string ref exists in the index.
 
-    Returns True if valid, False otherwise. Handles both namespaced and bare-key refs.
-    Module-style refs (module:...) are accepted without validation (too open-ended).
+    Accepts both namespaced (core:category/key) and bare key formats.
+    Module-style refs (module:...) are accepted without pre-indexing.
+    Returns False for non-strings and unresolvable refs.
     """
     if not isinstance(ref, str):
         return False
     if ref.startswith("module:"):
         return True
-    if ref.startswith("core:"):
-        return ref in namespaced_ref_index
-    return False
+    return ref in namespaced_ref_index
 
 
 def _collect_equipment_namespaced_keys(
@@ -205,9 +207,11 @@ def _collect_equipment_bare_keys(data_files, module_data_files=None, rel_base=RO
 
 
 def equipment_ref_valid(ref, id_index, equipment_index):
-    """Return True if an equipment reference resolves (string namespaced ref only)."""
-    if isinstance(ref, str) and ref.startswith("core:"):
-        return ref in equipment_index["namespaced_keys"]
+    """Return True if an equipment reference resolves (namespaced or bare key)."""
+    if isinstance(ref, str):
+        if ref.startswith("core:"):
+            return ref in equipment_index["namespaced_keys"]
+        return ref in equipment_index["bare_keys"]
     return False
 
 
@@ -243,54 +247,7 @@ def check_equipment_uniqueness(data_files, module_data_files=None, rel_base=ROOT
     return errors
 
 
-def check_equipment_id_uniqueness(data_files, module_data_files=None, rel_base=ROOT):
-    """Backward-compatible alias: return only duplicate-id errors."""
-    return [
-        e
-        for e in check_equipment_uniqueness(data_files, module_data_files, rel_base)
-        if e.startswith("DUPLICATE equipment id ")
-    ]
-
-
-def build_id_index(data_files, module_data_files=None):
-    """Build a map of collection name -> set of integer ids for referential integrity."""
-    id_index = {}
-    for fp in data_files:
-        try:
-            data = json.loads(fp.read_text())
-            for k, v in data.items():
-                if k.startswith("$") or not isinstance(v, list):
-                    continue
-                id_index.setdefault(k, set())
-                for item in v:
-                    if isinstance(item, dict):
-                        iid = item.get("id")
-                        if isinstance(iid, int):
-                            id_index[k].add(iid)
-        except Exception:
-            pass  # ignore malformed for index
-    # Also index module data files
-    if module_data_files:
-        for fp, _ in module_data_files:
-            try:
-                data = json.loads(fp.read_text())
-                for k, v in data.items():
-                    if k.startswith("$") or not isinstance(v, list):
-                        continue
-                    id_index.setdefault(k, set())
-                    for item in v:
-                        if isinstance(item, dict):
-                            iid = item.get("id")
-                            if isinstance(iid, int):
-                                id_index[k].add(iid)
-            except Exception:
-                pass
-    return id_index
-
-
-def check_references(
-    data, coll_name, id_index, equipment_index=None, namespaced_ref_index=None
-):
+def check_references(data, coll_name, equipment_index=None, namespaced_ref_index=None):
     """Return list of referential integrity error messages."""
     errors = []
 
@@ -403,12 +360,11 @@ def check_references(
             for se in b.get("starting_equipment", []) or []:
                 if isinstance(se, dict):
                     item_ref = se.get("item")
-                    if equipment_index is None:
-                        equipment_index = {
-                            "namespaced_keys": set(),
-                            "bare_keys": set(),
-                        }
-                    if not equipment_ref_valid(item_ref, id_index, equipment_index):
+                    eq_idx = equipment_index or {
+                        "namespaced_keys": set(),
+                        "bare_keys": set(),
+                    }
+                    if not equipment_ref_valid(item_ref, {}, eq_idx):
                         errors.append(f"starting equipment {item_ref!r} does not exist")
 
     elif coll_name == "monsters":
@@ -696,7 +652,7 @@ def _resolve_monster_bases(data, errors):
 
 
 def _validate_single_data_file(
-    fp, store, id_index, rel_base, equipment_index=None, namespaced_ref_index=None
+    fp, store, rel_base, equipment_index=None, namespaced_ref_index=None
 ):
     """Validate one data file against its $schema and check cross-references.
 
@@ -755,7 +711,6 @@ def _validate_single_data_file(
         ref_errors = check_references(
             data,
             coll_name,
-            id_index,
             equipment_index=equipment_index,
             namespaced_ref_index=namespaced_ref_index,
         )
@@ -766,7 +721,7 @@ def _validate_single_data_file(
     return True, [], rel
 
 
-def validate_modules(store, id_index, equipment_index=None):
+def validate_modules(store, equipment_index=None):
     """Discover and validate modules.
     Returns (module_passed, module_failed, module_total, module_conflicts).
     """
@@ -821,7 +776,7 @@ def validate_modules(store, id_index, equipment_index=None):
                 continue
 
             p, errs, rel = _validate_single_data_file(
-                fp, store, id_index, ROOT.parent, equipment_index=equipment_index
+                fp, store, ROOT.parent, equipment_index=equipment_index
             )
             if p is None:
                 print(f"  \u26a0  {rel}: no $schema field, skipping")
@@ -843,11 +798,9 @@ def main():
     store = load_store()
     data_files = list(collect_data_files())
 
-    # Collect module data files for ID index build
+    # Collect module data files for index builds
     module_data_files = list(collect_module_data_files())
 
-    # Build ID index from core + module data for referential integrity
-    id_index = build_id_index(data_files, module_data_files)
     equipment_index = build_equipment_index(
         data_files, module_data_files, rel_base=ROOT
     )
@@ -868,7 +821,6 @@ def main():
         p, errs, rel = _validate_single_data_file(
             fp,
             store,
-            id_index,
             ROOT,
             equipment_index=equipment_index,
             namespaced_ref_index=namespaced_ref_index,
@@ -893,7 +845,7 @@ def main():
 
     # Module validation pass
     mod_passed, mod_failed, mod_total, mod_conflicts = validate_modules(
-        store, id_index, equipment_index=equipment_index
+        store, equipment_index=equipment_index
     )
 
     combined_passed = passed + mod_passed

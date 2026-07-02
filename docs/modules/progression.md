@@ -356,7 +356,7 @@ shared effect table for the whole game.
   sorts beneficial → potions, harmful → poisons), an optional default `color`
   school, a `magnitudeUnit`, and a `channels` list naming which delivery vectors
   may use it (`spell`, `potion`, `poison`, `coating`, `ingredient`, …).
-- Consumers reference an effect by id through the shared
+- Consumers reference an effect by string key (namespaced `core:effect/<key>` or bare key) through the shared
   `schema.json#/definitions/appliedEffect` shape (`effect` + `magnitude` +
   `duration`, plus `target`/`radius` for spells):
   - **Spells** (`spells/core.json`) — `effects[]`.

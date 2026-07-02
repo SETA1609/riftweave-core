@@ -96,19 +96,13 @@
               "type": { "type": "string" },
               "description": { "type": "string" },
               "target": {
-                "description": "When the bonus/penalty is delivered via a registered effect (e.g. fortify_skill, resist, phobia), this is the numeric effect id. For ad-hoc bonus targets (hp_max, melee_damage, persuasion, etc.) it is a string key.",
-                "oneOf": [
-                  { "$ref": "schema.json#/definitions/entryId" },
-                  { "type": "string" }
-                ]
+                "description": "Reference to the target of this effect. Use namespaced ref (core:effect/<key>), bare key, or ad-hoc string key (hp_max, melee_damage, etc.).",
+                "type": "string"
               },
               "value": {},
               "parameter": {
-                "oneOf": [
-                  { "$ref": "schema.json#/definitions/entryId" },
-                  { "type": "string" }
-                ],
-                "description": "For generic parameterized effects (e.g. 'resist', 'restore_resource', 'fortify_attribute', 'phobia', 'allergy', 'cure'), specifies the subject. Use numeric entryId when referencing another collection's id (skill, material, etc.); string for vocabulary values."
+                "type": "string",
+                "description": "For generic parameterized effects (e.g. 'resist', 'restore_resource', 'fortify_attribute', 'phobia', 'allergy', 'cure'), specifies the subject. Use string key (bare or namespaced) when referencing another collection's key (skill, material, etc.); vocabulary for built-in values."
               },
               "durationType": {
                 "type": "string",

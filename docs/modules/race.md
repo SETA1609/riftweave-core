@@ -40,16 +40,16 @@ Every race declares a `lineage` object: a `role` and, when relevant, a `parentRa
 There are **two distinct relationships**, and keeping them separate is the point.
 
 ```json
-"lineage": { "role": "subrace", "parentRace": 2 }
+"lineage": { "role": "subrace", "parentRace": "core:race/elf" }
 ```
 
 | Role | Playable? | `parentRace` | Relationship |
 | --- | --- | --- | --- |
 | `standalone` | yes | — | A complete, unrelated race (e.g. `human`). |
 | `parent` | no (abstract) | — | An ancestor that subraces inherit from (e.g. the elf parent). |
-| `subrace` | yes | required (numeric id) | **Inherits** from its parent; overrides freely. |
+| `subrace` | yes | required (string key ref) | **Inherits** from its parent; overrides freely. |
 | `template` | no (abstract) | — | A **shape** for sister races (`beastman`); provides structure, not values. |
-| `kin` | yes | required (numeric id) | A sister conforming to a template; shares nothing mechanical with siblings. |
+| `kin` | yes | required (string key ref) | A sister conforming to a template; shares nothing mechanical with siblings. |
 
 ### 2a. Parent → subrace = inheritance
 
@@ -106,9 +106,9 @@ missing `parentRace`, or a standalone missing `phase`, fails validation.)
 
 References across files are **not** schema-validated — resolution is the consuming
 engine's job. The reference rule for a `subrace` whose `parentRace` is `P` (where `P`
-is now a numeric id):
+is a string key, e.g. `"core:race/elf"` or `"elf"`):
 
-1. Start from the parent race's fields (looked up by the numeric `parentRace` id).
+1. Start from the parent race's fields (looked up by the string key `parentRace`).
 2. `phase`, `speed`, `size`: the subrace's value **replaces** the parent's if present,
    otherwise the parent's carries over.
 3. `abilityModifiers`: **sum** per attribute (parent `{end:2}` + subrace `{wil:1}`
@@ -153,12 +153,12 @@ In a race, `traits` is an array of lightweight references:
 
 ```json
 "traits": [
-  { "id": 3, "label": "Darkvision" },
-  { "id": 4, "label": "Fey Ancestry" }
+  { "id": "core:trait/darkvision", "label": "Darkvision" },
+  { "id": "core:trait/fey_ancestry", "label": "Fey Ancestry" }
 ]
 ```
 
-The `id` is the stable numeric reference into the global traits table. The `label` is
+The `id` is a string key reference (namespaced `core:trait/<key>` or bare key) into the global traits table. The `label` is
 duplicated for readability when looking at race data. Full details (including the
 stable `key` and long description) live in the traits registry.
 

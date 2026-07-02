@@ -39,7 +39,7 @@
     "entryId": {
       "type": "integer",
       "minimum": 1,
-      "description": "Stable numeric primary identifier for an entry within a collection (effects, skills, features/perks, races, materials, ingredients, equipment, spells, monsters, backgrounds, etc.). Cross-references between collections must use string keys (bare or namespaced) instead."
+      "description": "Numeric primary identifier for an entry within a collection (effects, skills, features, races, materials, ingredients, equipment, spells, monsters, backgrounds, etc.). Used only for the entry's own 'id' field — cross-references between collections must use string keys (bare or namespaced) instead."
     },
     "appliedEffect": {
       "type": "object",

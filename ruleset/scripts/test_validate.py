@@ -124,8 +124,8 @@ class TestEquipmentRefResolution(unittest.TestCase):
     def test_rejects_numeric_reference(self):
         self.assertFalse(equipment_ref_valid(45, self.id_index, self.equipment_index))
 
-    def test_rejects_bare_key_reference(self):
-        self.assertFalse(
+    def test_accepts_bare_key_reference(self):
+        self.assertTrue(
             equipment_ref_valid("shortsword", self.id_index, self.equipment_index)
         )
 
@@ -166,12 +166,22 @@ class TestNamespacedRefIndex(unittest.TestCase):
             self.assertIn("core:effect/damage_fire", index)
             self.assertIn("core:effect/damage_frost", index)
             self.assertIn("core:spell/fire_bolt", index)
-            self.assertEqual(len(index), 3)
+            self.assertIn("damage_fire", index)
+            self.assertIn("damage_frost", index)
+            self.assertIn("fire_bolt", index)
+            self.assertEqual(len(index), 6)
 
     def test_resolve_namespaced_ref_valid(self):
-        index = {"core:effect/damage_fire", "core:spell/fire_bolt"}
+        index = {
+            "core:effect/damage_fire",
+            "core:spell/fire_bolt",
+            "damage_fire",
+            "fire_bolt",
+        }
         self.assertTrue(resolve_namespaced_ref("core:effect/damage_fire", index))
         self.assertTrue(resolve_namespaced_ref("core:spell/fire_bolt", index))
+        self.assertTrue(resolve_namespaced_ref("damage_fire", index))
+        self.assertTrue(resolve_namespaced_ref("fire_bolt", index))
 
     def test_resolve_namespaced_ref_invalid(self):
         index = {"core:effect/damage_fire"}
@@ -205,7 +215,6 @@ class TestCraftedItemsRefValidation(unittest.TestCase):
                 ]
             },
             "crafted_items",
-            {"effects": {1, 2, 3}},
         )
         self.assertEqual(len(result), 1)
         self.assertIn("numeric refs not allowed", result[0])
@@ -229,7 +238,6 @@ class TestCraftedItemsRefValidation(unittest.TestCase):
                 ]
             },
             "crafted_items",
-            {"effects": {1, 2, 3}},
             namespaced_ref_index={"core:effect/damage_fire"},
         )
         self.assertEqual(len(result), 1)
@@ -250,7 +258,6 @@ class TestCraftedItemsRefValidation(unittest.TestCase):
                 ]
             },
             "crafted_items",
-            {"effects": {1}},
             namespaced_ref_index={"core:effect/damage_fire"},
         )
         self.assertEqual(result, [])
@@ -270,7 +277,6 @@ class TestCraftedItemsRefValidation(unittest.TestCase):
                 ]
             },
             "crafted_items",
-            {"effects": {1}},
             namespaced_ref_index={"core:effect/damage_fire"},
         )
         self.assertEqual(len(result), 1)
