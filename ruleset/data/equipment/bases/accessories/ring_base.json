@@ -1,0 +1,9 @@
+{
+  "key": "ring_base",
+  "label": "Ring",
+  "description": "A simple band worn on the finger. Can bear engravings and enchantments.",
+  "type": "accessory",
+  "cost": { "quantity": 10, "unit": "gp" },
+  "weight": 0.1,
+  "accessory": { "accessoryType": "ring" }
+}
