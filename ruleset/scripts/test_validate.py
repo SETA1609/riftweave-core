@@ -124,8 +124,8 @@ class TestEquipmentRefResolution(unittest.TestCase):
     def test_rejects_numeric_reference(self):
         self.assertFalse(equipment_ref_valid(45, self.id_index, self.equipment_index))
 
-    def test_accepts_bare_key_reference(self):
-        self.assertTrue(
+    def test_rejects_bare_key_reference(self):
+        self.assertFalse(
             equipment_ref_valid("shortsword", self.id_index, self.equipment_index)
         )
 
@@ -166,27 +166,23 @@ class TestNamespacedRefIndex(unittest.TestCase):
             self.assertIn("core:effect/damage_fire", index)
             self.assertIn("core:effect/damage_frost", index)
             self.assertIn("core:spell/fire_bolt", index)
-            self.assertIn("damage_fire", index)
-            self.assertIn("damage_frost", index)
-            self.assertIn("fire_bolt", index)
-            self.assertEqual(len(index), 6)
+            self.assertNotIn("damage_fire", index)
+            self.assertNotIn("damage_frost", index)
+            self.assertNotIn("fire_bolt", index)
+            self.assertEqual(len(index), 3)
 
     def test_resolve_namespaced_ref_valid(self):
-        index = {
-            "core:effect/damage_fire",
-            "core:spell/fire_bolt",
-            "damage_fire",
-            "fire_bolt",
-        }
+        index = {"core:effect/damage_fire", "core:spell/fire_bolt"}
         self.assertTrue(resolve_namespaced_ref("core:effect/damage_fire", index))
         self.assertTrue(resolve_namespaced_ref("core:spell/fire_bolt", index))
-        self.assertTrue(resolve_namespaced_ref("damage_fire", index))
-        self.assertTrue(resolve_namespaced_ref("fire_bolt", index))
+        self.assertFalse(resolve_namespaced_ref("damage_fire", index))
+        self.assertFalse(resolve_namespaced_ref("fire_bolt", index))
 
     def test_resolve_namespaced_ref_invalid(self):
         index = {"core:effect/damage_fire"}
         self.assertFalse(resolve_namespaced_ref("core:effect/missing", index))
         self.assertFalse(resolve_namespaced_ref("core:weapon/shortsword", index))
+        self.assertFalse(resolve_namespaced_ref("damage_fire", index))
 
     def test_resolve_unknown_module_ref(self):
         index = set()
