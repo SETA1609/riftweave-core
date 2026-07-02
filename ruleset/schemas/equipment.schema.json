@@ -7,17 +7,21 @@
     "$schema": { "type": "string" },
     "equipment": {
       "type": "array",
-      "items": { "$ref": "#/definitions/equipment" }
+      "items": {
+        "oneOf": [
+          { "$ref": "#/definitions/equipment" },
+          { "$ref": "#/definitions/equipmentWithBase" }
+        ]
+      }
     }
   },
   "required": ["equipment"],
   "additionalProperties": false,
   "definitions": {
-    "equipment": {
+    "equipmentData": {
+      "description": "Shared equipment data fields for override objects. All fields optional; base template provides defaults.",
       "type": "object",
       "properties": {
-        "id": { "$ref": "schema.json#/definitions/entryId" },
-        "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "Symbolic snake_case key (the old string id) for human readability when editing JSON." },
         "label": { "type": "string", "description": "Human-readable display name with spaces and capitalization." },
         "description": { "type": "string" },
         "source": { "$ref": "schema.json#/definitions/sourceRef" },
@@ -143,15 +147,62 @@
           "required": ["accessoryType"],
           "additionalProperties": false
         }
-      },
-      "required": ["id", "key", "label", "description", "type", "cost", "weight"],
-      "additionalProperties": false,
-      "oneOf": [
-        { "required": ["weapon"] },
-        { "required": ["armor"] },
-        { "required": ["consumable"] },
-        { "required": ["accessory"] }
+      }
+    },
+    "equipment": {
+      "type": "object",
+      "allOf": [
+        { "$ref": "#/definitions/equipmentData" },
+        {
+          "type": "object",
+          "properties": {
+            "id": { "$ref": "schema.json#/definitions/entryId" },
+            "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "Symbolic snake_case key (the old string id) for human readability when editing JSON." },
+            "label": { "type": "string" },
+            "description": { "type": "string" },
+            "source": { "$ref": "schema.json#/definitions/sourceRef" },
+            "type": { "type": "string", "enum": ["weapon", "armor", "shield", "accessory", "potion", "poison", "coating", "oil", "food", "wand", "tool", "adventuring_gear", "ammunition"] },
+            "cost": {
+              "type": "object",
+              "properties": {
+                "quantity": { "type": "integer", "minimum": 0 },
+                "unit": { "type": "string", "enum": ["cp", "sp", "gp", "pp"] }
+              },
+              "required": ["quantity", "unit"],
+              "additionalProperties": false
+            },
+            "weight": { "type": "number", "minimum": 0 },
+            "weapon": { "type": "object" },
+            "armor": { "type": "object" },
+            "consumable": { "type": "object" },
+            "accessory": { "type": "object" }
+          },
+          "required": ["id", "key", "label", "description", "type", "cost", "weight"],
+          "additionalProperties": false,
+          "oneOf": [
+            { "required": ["weapon"] },
+            { "required": ["armor"] },
+            { "required": ["consumable"] },
+            { "required": ["accessory"] }
+          ]
+        }
       ]
+    },
+    "equipmentWithBase": {
+      "description": "An equipment entry that references a base template and provides only overrides. The base is resolved at load time from bases/<file>/<base>.json and merged with overrides (override wins). This keeps equipment files lean and enables easy variant creation.",
+      "type": "object",
+      "properties": {
+        "id": { "$ref": "schema.json#/definitions/entryId" },
+        "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "Symbolic snake_case key." },
+        "source": { "$ref": "schema.json#/definitions/sourceRef" },
+        "base": {
+          "type": "string",
+          "description": "Name of the base template in bases/<category>/<base>.json (without .json suffix). Base templates provide default values; overrides replace them."
+        },
+        "overrides": { "$ref": "#/definitions/equipmentData" }
+      },
+      "required": ["id", "key", "base", "overrides"],
+      "additionalProperties": false
     }
   }
 }

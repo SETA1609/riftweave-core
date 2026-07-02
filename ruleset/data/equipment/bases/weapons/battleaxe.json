@@ -1,0 +1,17 @@
+{
+  "key": "battleaxe",
+  "label": "Battleaxe",
+  "description": "A heavy axe with a broad head, wielded in one or two hands for devastating slashing blows.",
+  "type": "weapon",
+  "cost": { "quantity": 10, "unit": "gp" },
+  "weight": 4,
+  "weapon": {
+    "category": "martial",
+    "range": "melee",
+    "length": "normal",
+    "attackReach": 1,
+    "skill": "core:skill/blades",
+    "damage": { "dice": "1d8", "type": "slashing" },
+    "properties": ["versatile"]
+  }
+}

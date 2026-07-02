@@ -1,0 +1,17 @@
+{
+  "key": "rapier",
+  "label": "Rapier",
+  "description": "A slender, piercing sword favored by duelists.",
+  "type": "weapon",
+  "cost": { "quantity": 25, "unit": "gp" },
+  "weight": 2,
+  "weapon": {
+    "category": "martial",
+    "range": "melee",
+    "length": "normal",
+    "attackReach": 1,
+    "skill": "core:skill/piercing",
+    "damage": { "dice": "1d6", "type": "piercing" },
+    "properties": ["finesse", "light"]
+  }
+}
