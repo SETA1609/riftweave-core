@@ -1,17 +1,1 @@
-{
-  "key": "war_pick",
-  "label": "War Pick",
-  "description": "A pointed pick head on a haft, designed to pierce armor.",
-  "type": "weapon",
-  "cost": { "quantity": 12, "unit": "gp" },
-  "weight": 3,
-  "weapon": {
-    "category": "martial",
-    "range": "melee",
-    "length": "normal",
-    "attackReach": 1,
-    "skill": "core:skill/piercing",
-    "damage": { "dice": "1d6", "type": "piercing" },
-    "properties": ["versatile"]
-  }
-}
+{"key":"war_pick","label":"War Pick","description":"A pointed pick head on a haft, designed to pierce armor.","type":"weapon","cost":{"quantity":12,"unit":"gp"},"weight":3,"weapon":{"category":"martial","range":"melee","length":"normal","attackReach":1,"skill":"core:skill/piercing","damage":{"dice":"1d6","type":"piercing"},"properties":["versatile"]},"enchantment_slots":1,"phase":"metal"}

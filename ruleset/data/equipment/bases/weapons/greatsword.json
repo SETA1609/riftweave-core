@@ -1,17 +1,1 @@
-{
-  "key": "greatsword",
-  "label": "Greatsword",
-  "description": "A massive two-handed blade for devastating strikes. Wooden versions exist for training.",
-  "type": "weapon",
-  "cost": { "quantity": 50, "unit": "gp" },
-  "weight": 6,
-  "weapon": {
-    "category": "martial",
-    "range": "melee",
-    "length": "normal",
-    "attackReach": 1,
-    "skill": "core:skill/blades",
-    "damage": { "dice": "2d6", "type": "slashing" },
-    "properties": ["heavy", "two_handed"]
-  }
-}
+{"key":"greatsword","label":"Greatsword","description":"A massive two-handed blade for devastating strikes. Wooden versions exist for training.","type":"weapon","cost":{"quantity":50,"unit":"gp"},"weight":6,"weapon":{"category":"martial","range":"melee","length":"normal","attackReach":1,"skill":"core:skill/blades","damage":{"dice":"2d6","type":"slashing"},"properties":["heavy","two_handed"]},"enchantment_slots":2,"phase":"metal"}

@@ -1,17 +1,1 @@
-{
-  "key": "shortbow",
-  "label": "Shortbow",
-  "description": "A small, versatile bow.",
-  "type": "weapon",
-  "cost": { "quantity": 25, "unit": "gp" },
-  "weight": 2,
-  "weapon": {
-    "category": "simple",
-    "range": "ranged",
-    "skill": "core:skill/bows",
-    "damage": { "dice": "1d6", "type": "piercing" },
-    "properties": ["ammunition", "two_handed"],
-    "rangeNormal": 80,
-    "rangeLong": 320
-  }
-}
+{"key":"shortbow","label":"Shortbow","description":"A small, versatile bow.","type":"weapon","cost":{"quantity":25,"unit":"gp"},"weight":2,"weapon":{"category":"simple","range":"ranged","skill":"core:skill/bows","damage":{"dice":"1d6","type":"piercing"},"properties":["ammunition","two_handed"],"rangeNormal":80,"rangeLong":320},"enchantment_slots":1,"phase":"wood"}
