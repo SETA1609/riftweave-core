@@ -59,11 +59,14 @@ This is the most important thing to understand before editing schemas or data:
 
 - **All schemas set `additionalProperties: false`**. To add any new field to a data entry, you **must** first add it to the corresponding schema, or validation will fail.
 
-- Entries use a numeric `id` (positive integer, unique within the collection). This is the stable primary identifier. All data cross-references (effects, perks/features, skills, races via `parentRace`, materials for allergies, ingredients, equipment, spells, etc.) use this integer `id`.
+- Entries use a numeric `id` (positive integer, unique within the collection). This is the stable primary identifier.
 - Each entry also carries a `key` (the familiar lowercase snake_case string, often with prefixes like `damage_`, `fortify_`, for human readability when editing the JSON source) and a `label` (the human-readable display title with spaces and capitalization, e.g. "Restore Resource").
-- Schemas define `id` (and cross-ref fields like `appliedEffect.effect`) as integer. String cross-refs are no longer used for primary entry identification. (A future referential integrity check will validate that integer ids resolve.)
-- **Namespaced string refs:** equipment cross-references use `core:<category>/<key>` (e.g. `core:weapons/shortsword`, `core:armors/leather_jerkin`, `core:consumables/potion_minor_healing`). Background `starting_equipment` uses this format. Other collections will migrate over time; legacy numeric ids still validate during transition.
-
+- **Namespaced string refs** are the preferred cross-reference format: `core:<singular-category>/<key>` (e.g. `core:weapon/shortsword`, `core:armor/leather_jerkin`, `core:consumable/potion_minor_healing`, `core:effect/damage_fire`, `core:spell/fire_bolt`). Background `starting_equipment` already uses this format. Other collections are migrating; legacy numeric ids still validate during transition.
+- **Namespace rules:**
+  - `core:` = Base / official content that ships with the ruleset.
+  - Modules can use their own namespace (e.g. `module:examplemod/weapon/frost_sword`).
+  - Modules **can override** core entries by using the same `core:category/key` (this is intentional for module flexibility).
+  - We use **singular** category names: `weapon`, `armor`, `effect`, `spell`, `background`, `trait`, `condition`, `consumable`, `recipe`, `ingredient`, `material`, `gem`, `skill`, `feature`.
 - Use the optional `source: { source, page }` field (defined in `schema.json`) for provenance instead of inventing per-file metadata.
 
 ## Game System Highlights (Affects Data Modeling)

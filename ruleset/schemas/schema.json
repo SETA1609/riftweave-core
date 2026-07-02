@@ -39,13 +39,19 @@
     "entryId": {
       "type": "integer",
       "minimum": 1,
-      "description": "Stable numeric primary identifier for an entry within a collection (effects, skills, features/perks, races, materials, ingredients, equipment, spells, monsters, backgrounds, etc.). Used for all cross-references in the data."
+      "description": "Stable numeric primary identifier for an entry within a collection. The preferred cross-reference format is now namespaced strings (core:category/key), but numeric ids remain valid during transition. Collections: effects, skills, features/perks, races, materials, ingredients, equipment, spells, monsters, backgrounds, etc."
     },
     "appliedEffect": {
       "type": "object",
       "description": "An instance of an effect drawn from the effect registry (data/effects), with its applied magnitude and duration. Shared by spells, consumables, ingredients, and enchantments. Use 'parameter' for generic effects (e.g. fortify_skill with a specific skill id, fortify_attribute with an ability, restore_resource with 'health'/'stamina'/'mana', resist with 'fire'/'poison'/'undead'/'magic'/'physical', cure with a condition, summon with a type, allergy with a material id).",
       "properties": {
-        "effect": { "$ref": "#/definitions/entryId", "description": "Effect id (numeric) from the effect registry (data/effects)" },
+        "effect": {
+          "oneOf": [
+            { "$ref": "#/definitions/entryId" },
+            { "type": "string" }
+          ],
+          "description": "Effect reference: preferred format core:effect/<key> (e.g. core:effect/damage_fire); legacy numeric id also accepted"
+        },
         "magnitude": { "type": "number", "description": "Effect strength; interpreted per the effect's magnitudeUnit" },
         "duration": { "type": "number", "minimum": 0, "description": "Duration in seconds; 0 or omitted means instantaneous" },
         "target": { "type": "string", "enum": ["self", "touch", "ranged", "area", "world"], "description": "Delivery shape (used by spells); omit for consumables/ingredients, which apply to the user" },
