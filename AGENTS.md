@@ -99,9 +99,15 @@ Cross-file references (effect IDs, skill IDs, perk prerequisites, `parentRace`, 
 Each collection has a matching `*.schema.json`:
 
 - `abilities`, `skills`, `effects`, `features`, `spells`, `races`, `monsters`
-- `equipment` (split: `weapons.json`, `armor.json`, `consumables.json`)
+- `equipment` (split: `weapons.json`, `armor.json`, `consumables.json`, `accessories.json`)
 - `ingredients`, `materials`, `gems`, `tiers`
 - `wuxing` (the interaction matrix — single source of truth for cycles)
+
+Equipment (weapons, armors, accessories) and monsters use a **Base + Override** pattern:
+- Base templates live in `bases/<category>/` subdirectories (e.g., `equipment/bases/weapons/`, `monsters/bases/`).
+- These directories are automatically skipped during file collection; base files are **not** validated standalone.
+- Override entries reference a `base` key and provide an `overrides` object with only the differing fields.
+- Resolution happens at validation time in `_resolve_equipment_bases()` and `_resolve_monster_bases()`.
 
 `features` is the **single** perk table. Do not create separate trait/class/race tables.
 
@@ -121,6 +127,7 @@ See `docs/modules/README.md` for the philosophy and current state.
 4. Match surrounding style: compact one-line entries where the file already uses them; keep description quality high (human + machine readable).
 5. Update or add documentation in `docs/modules/` when introducing new concepts or collections.
 6. The `source` field is the preferred way to attribute content.
+7. **Base + Override pattern**: Weapons, armors, accessories (and monsters) use a base+override data pattern. Base templates live in `ruleset/data/<collection>/bases/<category>/` and define the default stats. Override entries in the main data file reference a `base` and provide only the fields that differ. The files in `bases/` directories are automatically skipped during validation — the `_resolve_equipment_bases()` and `_resolve_monster_bases()` functions merge them at validation time.
 
 ## Licensing
 

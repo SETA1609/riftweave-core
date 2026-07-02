@@ -46,8 +46,18 @@ The following was added in this branch:
 | `data/crafting/crafted_items.json` | 6 example items demonstrating phase inheritance, jewel overwrite, enchantments, and coatings |
 | `data/crafting/basic_recipes.json` | 3 recipe stubs showing the input/output structure for future resolution |
 | `scripts/crafting_reference.py` | Reference resolver demonstrating phase propagation, Wuxing interaction, and permanent vs temporary tracking |
+| `scripts/validate.py` | Crafting key-reference validation: recipe inputs/outputs and crafted_item base_key/material_key/gem_key are checked against their respective collections |
 
 ### Composition Model
+
+Base templates live in `equipment/bases/<category>/` (e.g., `equipment/bases/weapons/longsword.json`)
+and use a base+override pattern. The equipment data files (`weapons.json`, `armor.json`,
+`accessories.json`) reference these bases and may provide overrides for material/quality variants.
+The crafted item's `base_key` must resolve to a valid equipment base template key.
+
+The `validate.py` script resolves base+override entries before schema validation, so the
+resulting flat entries are what the schemas and cross-reference checks see. Accessories
+(rings, necklaces, circlets, earrings) follow the same base+override pattern.
 
 ```
 Base Template  +  Material  +  [Jewel]  +  [Enchantments]  +  [Coatings]
