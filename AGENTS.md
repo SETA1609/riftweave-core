@@ -80,8 +80,9 @@ This is the most important thing to understand before editing schemas or data:
 - **Magic**: 9 color schools. Spells are compositions of effects from the shared pool, tagged with a `color`. The governing skill is `<color>_magic`.
 - **Five-phase (Wuxing) system** (orthogonal to color): `wood` / `fire` / `earth` / `metal` / `water`.
   - Defined in `data/wuxing/core.json` (4 cycles: generating, overcoming, weakening, insulting with multipliers).
-  - Races, materials, and (optionally) effects carry a `phase`.
+  - Races, materials, equipment base templates, and (optionally) effects carry a `phase`.
   - Phase drives **interaction** between effects via the cycles; color drives which skill governs the effect.
+  - Equipment base templates assign a default phase per weapon/armor type. Material overrides in the overrides object can change the phase on a per-item basis.
 - **Shared effect registry**: `data/effects/core.json` is the single pool. Spells, consumables, and ingredients reference effects by string key via the `appliedEffect` shape. Respect each effect's `channels`.
 - **Races & lineage** (see `docs/modules/race.md` and `race.schema.json`):
   - `lineage.role`: `standalone`, `parent`, `subrace`, `template`, or `kin`.
@@ -128,6 +129,9 @@ See `docs/modules/README.md` for the philosophy and current state.
 5. Update or add documentation in `docs/modules/` when introducing new concepts or collections.
 6. The `source` field is the preferred way to attribute content.
 7. **Base + Override pattern**: Weapons, armors, accessories (and monsters) use a base+override data pattern. Base templates live in `ruleset/data/<collection>/bases/<category>/` and define the default stats. Override entries in the main data file reference a `base` and provide only the fields that differ. The files in `bases/` directories are automatically skipped during validation — the `_resolve_equipment_bases()` and `_resolve_monster_bases()` functions merge them at validation time.
+   - **Equipment base templates** now include `enchantment_slots` (maximum enchantments, negative = cannot enchant) and `phase` (Wuxing element) as default fields.
+   - **Material overrides** in override entries can modify `enchantment_slots` (including negative values), change the Wuxing `phase`, and set `effect_magnitude_mult` (fractional multiplier on enchantment magnitudes).
+   - A negative `enchantment_slots` value means the item cannot receive enchantments (e.g. cursed materials, base items with no magic affinity).
 
 ## Licensing
 
