@@ -13,10 +13,10 @@
         { "skill": 37, "bonus": 8 }
       ],
       "starting_equipment": [
-        { "item": 11, "quantity": 1 },
-        { "item": 22, "quantity": 1 },
-        { "item": 8, "quantity": 1 },
-        { "item": 7, "quantity": 5 }
+        { "item": "core:weapons/shortbow", "quantity": 1 },
+        { "item": "core:weapons/shortsword", "quantity": 1 },
+        { "item": "core:weapons/dagger", "quantity": 1 },
+        { "item": "core:consumables/ration_hearty_stew", "quantity": 5 }
       ],
       "suggested_tag_skills": [25, 16, 37],
       "source": { "source": "Core", "page": 1 }
@@ -32,10 +32,10 @@
         { "skill": 1, "bonus": 10 }
       ],
       "starting_equipment": [
-        { "item": 24, "quantity": 1 },
-        { "item": 28, "quantity": 1 },
-        { "item": 9, "quantity": 1 },
-        { "item": 16, "quantity": 1 }
+        { "item": "core:weapons/light_crossbow", "quantity": 1 },
+        { "item": "core:armors/standard_shield", "quantity": 1 },
+        { "item": "core:weapons/longsword", "quantity": 1 },
+        { "item": "core:weapons/mace", "quantity": 1 }
       ],
       "wealth_bonus": 25,
       "suggested_tag_skills": [6, 1, 28],
@@ -53,9 +53,9 @@
         { "skill": 22, "bonus": 8 }
       ],
       "starting_equipment": [
-        { "item": 13, "quantity": 1 },
-        { "item": 22, "quantity": 1 },
-        { "item": 1, "quantity": 3 }
+        { "item": "core:weapons/quarterstaff", "quantity": 1 },
+        { "item": "core:weapons/shortsword", "quantity": 1 },
+        { "item": "core:consumables/potion_minor_healing", "quantity": 3 }
       ],
       "starting_spells": [3],
       "suggested_tag_skills": [10, 27, 25],
@@ -74,8 +74,8 @@
         { "skill": 20, "bonus": 6 }
       ],
       "starting_equipment": [
-        { "item": 8, "quantity": 2 },
-        { "item": 22, "quantity": 1 }
+        { "item": "core:weapons/dagger", "quantity": 2 },
+        { "item": "core:weapons/shortsword", "quantity": 1 }
       ],
       "wealth_bonus": 15,
       "suggested_tag_skills": [16, 17, 20],
@@ -108,7 +108,7 @@
         { "skill": 23, "bonus": 6 }
       ],
       "starting_equipment": [
-        { "item": 13, "quantity": 1 }
+        { "item": "core:weapons/quarterstaff", "quantity": 1 }
       ],
       "starting_spells": [1, 5],
       "suggested_tag_skills": [7, 22, 23],
@@ -126,10 +126,10 @@
         { "skill": 16, "bonus": 8 }
       ],
       "starting_equipment": [
-        { "item": 12, "quantity": 1 },
-        { "item": 22, "quantity": 1 },
-        { "item": 14, "quantity": 1 },
-        { "item": 7, "quantity": 3 }
+        { "item": "core:weapons/longbow", "quantity": 1 },
+        { "item": "core:weapons/shortsword", "quantity": 1 },
+        { "item": "core:weapons/handaxe", "quantity": 1 },
+        { "item": "core:consumables/ration_hearty_stew", "quantity": 3 }
       ],
       "suggested_tag_skills": [37, 25, 16],
       "source": { "source": "Core", "page": 1 }
@@ -146,8 +146,8 @@
         { "skill": 22, "bonus": 8 }
       ],
       "starting_equipment": [
-        { "item": 13, "quantity": 1 },
-        { "item": 1, "quantity": 2 }
+        { "item": "core:weapons/quarterstaff", "quantity": 1 },
+        { "item": "core:consumables/potion_minor_healing", "quantity": 2 }
       ],
       "starting_spells": [3, 4],
       "suggested_tag_skills": [14, 19, 24],

@@ -19,6 +19,14 @@ SCHEMA_DIR = ROOT / "schemas"
 MODULES_DIR = ROOT / "modules"
 MONSTERS_BASES_DIR = DATA_DIR / "monsters" / "bases"
 
+# Maps equipment source filenames to namespaced reference categories.
+# Cross-references use core:<category>/<key> (e.g. core:weapons/shortsword).
+EQUIPMENT_FILE_CATEGORIES = {
+    "weapons.json": "weapons",
+    "armor.json": "armors",
+    "consumables.json": "consumables",
+}
+
 
 def load_store():
     store = {}
@@ -57,6 +65,120 @@ def collect_module_data_files():
                 yield fp, entry
 
 
+def _equipment_category_for_file(fp):
+    """Return the core:<category> prefix for an equipment data file, if known."""
+    return EQUIPMENT_FILE_CATEGORIES.get(fp.name)
+
+
+def _iter_equipment_entries(data_files, module_data_files=None, rel_base=ROOT):
+    """Yield (rel_path, category, item) for each equipment entry."""
+    file_paths = list(data_files)
+    if module_data_files:
+        file_paths.extend(fp for fp, _ in module_data_files)
+
+    for fp in file_paths:
+        try:
+            data = json.loads(fp.read_text())
+        except (json.JSONDecodeError, OSError):
+            continue
+        equipment = data.get("equipment")
+        if not isinstance(equipment, list):
+            continue
+        rel = fp.relative_to(rel_base)
+        category = _equipment_category_for_file(fp)
+        for item in equipment:
+            if isinstance(item, dict):
+                yield rel, category, item
+
+
+def build_equipment_index(data_files, module_data_files=None, rel_base=ROOT):
+    """Build lookup sets for equipment referential integrity checks."""
+    return {
+        "namespaced_keys": _collect_equipment_namespaced_keys(
+            data_files, module_data_files, rel_base
+        ),
+        "bare_keys": _collect_equipment_bare_keys(
+            data_files, module_data_files, rel_base
+        ),
+    }
+
+
+def _collect_equipment_namespaced_keys(data_files, module_data_files=None, rel_base=ROOT):
+    keys = set()
+    for _rel, category, item in _iter_equipment_entries(
+        data_files, module_data_files, rel_base
+    ):
+        key = item.get("key")
+        if category and isinstance(key, str):
+            keys.add(f"core:{category}/{key}")
+    return keys
+
+
+def _collect_equipment_bare_keys(data_files, module_data_files=None, rel_base=ROOT):
+    keys = set()
+    for _rel, _category, item in _iter_equipment_entries(
+        data_files, module_data_files, rel_base
+    ):
+        key = item.get("key")
+        if isinstance(key, str):
+            keys.add(key)
+    return keys
+
+
+def equipment_ref_valid(ref, id_index, equipment_index):
+    """Return True if an equipment reference resolves (numeric or string)."""
+    if isinstance(ref, int):
+        return ref in id_index.get("equipment", set())
+    if isinstance(ref, str):
+        if ref.startswith("core:"):
+            return ref in equipment_index["namespaced_keys"]
+        return ref in equipment_index["bare_keys"]
+    return False
+
+
+def check_equipment_uniqueness(data_files, module_data_files=None, rel_base=ROOT):
+    """Ensure equipment ids and keys are unique across split equipment files."""
+    seen_ids = {}  # id -> source
+    seen_keys = {}  # key -> source
+    errors = []
+
+    for rel, _category, item in _iter_equipment_entries(
+        data_files, module_data_files, rel_base
+    ):
+        key = item.get("key", "?")
+        source = f"{rel}:{key}"
+
+        eid = item.get("id")
+        if isinstance(eid, int):
+            if eid in seen_ids:
+                errors.append(
+                    f"DUPLICATE equipment id {eid}: {seen_ids[eid]} vs {source}"
+                )
+            else:
+                seen_ids[eid] = source
+
+        if isinstance(key, str):
+            if key in seen_keys:
+                errors.append(
+                    f"DUPLICATE equipment key '{key}': {seen_keys[key]} vs {source}"
+                )
+            else:
+                seen_keys[key] = source
+
+    return errors
+
+
+def check_equipment_id_uniqueness(data_files, module_data_files=None, rel_base=ROOT):
+    """Backward-compatible alias: return only duplicate-id errors."""
+    return [
+        e
+        for e in check_equipment_uniqueness(
+            data_files, module_data_files, rel_base
+        )
+        if e.startswith("DUPLICATE equipment id ")
+    ]
+
+
 def build_id_index(data_files, module_data_files=None):
     """Build a map of collection name -> set of integer ids for referential integrity."""
     id_index = {}
@@ -93,7 +215,7 @@ def build_id_index(data_files, module_data_files=None):
     return id_index
 
 
-def check_references(data, coll_name, id_index):
+def check_references(data, coll_name, id_index, equipment_index=None):
     """Return list of referential integrity error messages."""
     errors = []
     if coll_name == "races":
@@ -165,11 +287,16 @@ def check_references(data, coll_name, id_index):
                     errors.append(f"starting spell {ss} does not exist")
             for se in b.get("starting_equipment", []) or []:
                 if isinstance(se, dict):
-                    iid = se.get("item")
-                    if isinstance(iid, int) and iid not in id_index.get(
-                        "equipment", set()
-                    ):
-                        errors.append(f"starting equipment {iid} does not exist")
+                    item_ref = se.get("item")
+                    if equipment_index is None:
+                        equipment_index = {
+                            "namespaced_keys": set(),
+                            "bare_keys": set(),
+                        }
+                    if not equipment_ref_valid(item_ref, id_index, equipment_index):
+                        errors.append(
+                            f"starting equipment {item_ref!r} does not exist"
+                        )
 
     elif coll_name == "monsters":
         for m in data.get("monsters", []):
@@ -397,7 +524,7 @@ def _resolve_monster_bases(data, errors):
         monsters[i] = merged
 
 
-def _validate_single_data_file(fp, store, id_index, rel_base):
+def _validate_single_data_file(fp, store, id_index, rel_base, equipment_index=None):
     """Validate one data file against its $schema and check cross-references.
 
     Returns (passed, errors, rel_path) where:
@@ -452,7 +579,9 @@ def _validate_single_data_file(fp, store, id_index, rel_base):
             break
 
     if coll_name:
-        ref_errors = check_references(data, coll_name, id_index)
+        ref_errors = check_references(
+            data, coll_name, id_index, equipment_index=equipment_index
+        )
         errors.extend(f"REF: {e}" for e in ref_errors)
 
     if errors:
@@ -460,7 +589,7 @@ def _validate_single_data_file(fp, store, id_index, rel_base):
     return True, [], rel
 
 
-def validate_modules(store, id_index):
+def validate_modules(store, id_index, equipment_index=None):
     """Discover and validate modules.
     Returns (module_passed, module_failed, module_total, module_conflicts).
     """
@@ -514,7 +643,9 @@ def validate_modules(store, id_index):
                 failed += 1
                 continue
 
-            p, errs, rel = _validate_single_data_file(fp, store, id_index, ROOT.parent)
+            p, errs, rel = _validate_single_data_file(
+                fp, store, id_index, ROOT.parent, equipment_index=equipment_index
+            )
             if p is None:
                 print(f"  \u26a0  {rel}: no $schema field, skipping")
                 total -= 1
@@ -540,11 +671,25 @@ def main():
 
     # Build ID index from core + module data for referential integrity
     id_index = build_id_index(data_files, module_data_files)
+    equipment_index = build_equipment_index(
+        data_files, module_data_files, rel_base=ROOT
+    )
 
     total = passed = failed = 0
 
+    equip_errors = check_equipment_uniqueness(
+        data_files, module_data_files, rel_base=ROOT
+    )
+    if equip_errors:
+        print("  \u2717  equipment (cross-file id/key uniqueness)")
+        for e in equip_errors:
+            print(f"       {e}")
+        failed += 1
+
     for fp in data_files:
-        p, errs, rel = _validate_single_data_file(fp, store, id_index, ROOT)
+        p, errs, rel = _validate_single_data_file(
+            fp, store, id_index, ROOT, equipment_index=equipment_index
+        )
         if p is None:
             print(f"  \u26a0  {rel}: no $schema field, skipping")
             continue
@@ -564,7 +709,9 @@ def main():
             failed += 1
 
     # Module validation pass
-    mod_passed, mod_failed, mod_total, mod_conflicts = validate_modules(store, id_index)
+    mod_passed, mod_failed, mod_total, mod_conflicts = validate_modules(
+        store, id_index, equipment_index=equipment_index
+    )
 
     combined_passed = passed + mod_passed
     combined_failed = failed + mod_failed

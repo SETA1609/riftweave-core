@@ -81,7 +81,7 @@ The bonuses are flat additions at creation only — they do **not** consume your
 
 Record what the background grants:
 - **Skill bonuses** — add these directly to the affected skills after calculating their normal starting value (`5 + associatedAbility × 2`).
-- **Starting equipment** — add the listed items (and quantities) to your inventory.
+- **Starting equipment** — add the listed items (and quantities) to your inventory. Equipment refs use `core:<category>/<key>` (e.g. `core:weapons/shortsword`, `core:armors/standard_shield`).
 - **Starting spells** — add these to your known spells (you still need the governing magic skill to cast them well).
 - **Wealth bonus** — add to your starting gold (the reference baseline is 100 gp + basic kit).
 - **Suggested tags** — purely advisory; helps you pick coherent tag skills in the next step.

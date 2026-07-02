@@ -26,13 +26,13 @@ A background lives in `data/backgrounds/core.json` and is validated by `backgrou
 - `id` (integer), `key`, `label`, `description`, optional `source` — standard (new ID convention).
 - `category` — loose string for grouping (wilderness, military, arcane, criminal, noble, religious, scholarly, merchant, etc.). Not mechanically enforced.
 - `skill_bonuses` — array of `{ skill, bonus }`. The `bonus` (typically 6–12) is added once at creation after the normal attribute-seeded base is calculated. These are permanent starting ranks.
-- `starting_equipment` — array of `{ item, quantity? }`. Item ids reference any equipment collection (weapons, armor, consumables). The engine is responsible for actually adding the items to the character's inventory.
+- `starting_equipment` — array of `{ item, quantity? }`. Item references use the namespaced format `core:<category>/<key>` (e.g. `core:weapons/shortsword`, `core:armors/leather_jerkin`, `core:consumables/potion_minor_healing`). Legacy numeric ids are still accepted during transition. The engine is responsible for actually adding the items to the character's inventory.
 - `starting_spells` — array of spell ids the character knows from day one. Useful for low-magic or tradition-based casters. The character still needs the governing `<color>_magic` skill to cast them reliably.
 - `granted_features` — array of feature/perk ids granted automatically (in addition to any chosen creation perks or racial traits). Use sparingly; most backgrounds express their benefit through skills + gear rather than full perks.
 - `wealth_bonus` — extra gp added to whatever the campaign's normal starting wealth is (the reference baseline is 100 gp + kit).
 - `suggested_tag_skills` — purely advisory list. Helps players make coherent tag choices that reinforce the background.
 
-All cross-references (skills, spells, equipment, features) are by the target's stable numeric `id` (from its collection) and are **not** enforced by JSON Schema. The `key` of the target collection is still useful for human readability.
+Equipment cross-references prefer namespaced string keys (`core:category/key`). Skills and spells still use numeric `id` for now. These refs are validated by `validate.py` but not fully enforced by JSON Schema alone.
 
 ### Interaction with the rest of creation
 
