@@ -1,9 +1,1 @@
-{
-  "key": "necklace_base",
-  "label": "Necklace",
-  "description": "A chain worn around the neck, ready to hold a pendant or charm.",
-  "type": "accessory",
-  "cost": { "quantity": 15, "unit": "gp" },
-  "weight": 0.3,
-  "accessory": { "accessoryType": "amulet" }
-}
+{"key":"necklace_base","label":"Necklace","description":"A chain worn around the neck, ready to hold a pendant or charm.","type":"accessory","cost":{"quantity":15,"unit":"gp"},"weight":0.3,"accessory":{"accessoryType":"amulet"},"enchantment_slots":3,"phase":"metal"}
