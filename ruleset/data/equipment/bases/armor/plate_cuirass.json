@@ -1,9 +1,1 @@
-{
-  "key": "plate_cuirass",
-  "label": "Plate Cuirass",
-  "description": "A full steel cuirass covering the torso. Requires considerable strength to wear effectively.",
-  "type": "armor",
-  "cost": { "quantity": 500, "unit": "gp" },
-  "weight": 30,
-  "armor": { "slot": "torso", "layer": "upper", "category": "heavy", "drBase": 5, "evasionPenalty": -15, "speedPenalty": -2, "strengthRequirement": 8 }
-}
+{"key":"plate_cuirass","label":"Plate Cuirass","description":"A full steel cuirass covering the torso. Requires considerable strength to wear effectively.","type":"armor","cost":{"quantity":500,"unit":"gp"},"weight":30,"armor":{"slot":"torso","layer":"upper","category":"heavy","drBase":5,"evasionPenalty":-15,"speedPenalty":-2,"strengthRequirement":8},"enchantment_slots":2,"phase":"metal"}

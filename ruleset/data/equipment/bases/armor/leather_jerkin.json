@@ -1,9 +1,1 @@
-{
-  "key": "leather_jerkin",
-  "label": "Leather Jerkin",
-  "description": "A tough leather vest worn over the torso. Stiffened by boiling or waxing.",
-  "type": "armor",
-  "cost": { "quantity": 10, "unit": "gp" },
-  "weight": 8,
-  "armor": { "slot": "torso", "layer": "upper", "category": "light", "drBase": 1 }
-}
+{"key":"leather_jerkin","label":"Leather Jerkin","description":"A tough leather vest worn over the torso. Stiffened by boiling or waxing.","type":"armor","cost":{"quantity":10,"unit":"gp"},"weight":8,"armor":{"slot":"torso","layer":"upper","category":"light","drBase":1},"enchantment_slots":1,"phase":"wood"}

@@ -1,9 +1,1 @@
-{
-  "key": "gauntlets",
-  "label": "Gauntlets",
-  "description": "Armored metal gloves protecting the hands in combat.",
-  "type": "armor",
-  "cost": { "quantity": 40, "unit": "gp" },
-  "weight": 4,
-  "armor": { "slot": "hands", "layer": "upper", "category": "heavy", "drBase": 1, "evasionPenalty": -15 }
-}
+{"key":"gauntlets","label":"Gauntlets","description":"Armored metal gloves protecting the hands in combat.","type":"armor","cost":{"quantity":40,"unit":"gp"},"weight":4,"armor":{"slot":"hands","layer":"upper","category":"heavy","drBase":1,"evasionPenalty":-15},"enchantment_slots":1,"phase":"metal"}
