@@ -1,1 +1,1 @@
-{"key":"backpack","label":"Backpack","description":"A sturdy backpack for carrying gear. No protective value.","type":"armor","cost":{"quantity":2,"unit":"gp"},"weight":2,"armor":{"slot":"back","layer":"on_top","drBase":0},"enchantment_slots":0,"phase":"earth"}
+{"key":"backpack","label":"Backpack","description":"A sturdy backpack for carrying gear. No protective value.","type":"armor","cost":{"quantity":2,"unit":"gp"},"weight":2,"armor":{"slot":"back","layer":"on_top","drBase":0},"enchantment_slots":0,"phase":"earth","valid_materials":["leather","wood","elven_wood"]}
