@@ -168,18 +168,36 @@ def build_namespaced_ref_index(data_files, module_data_files=None):
     return refs
 
 
+# Track bare key deprecation warnings (set of unique bare keys seen).
+_bare_key_warnings = set()
+
+
 def resolve_namespaced_ref(ref, namespaced_ref_index):
     """Check if a string ref exists in the index.
 
     Accepts both namespaced (core:category/key) and bare key formats.
     Module-style refs (module:...) are accepted without pre-indexing.
     Returns False for non-strings and unresolvable refs.
+
+    Emits deprecation warnings for bare keys via the _bare_key_warnings set;
+    callers should check and report these.
     """
     if not isinstance(ref, str):
         return False
     if ref.startswith("module:"):
         return True
-    return ref in namespaced_ref_index
+    result = ref in namespaced_ref_index
+    if result and not ref.startswith("core:") and not ref.startswith("module:"):
+        _bare_key_warnings.add(ref)
+    return result
+
+
+def get_bare_key_warnings():
+    """Return the accumulated set of bare key deprecation warnings and reset."""
+    global _bare_key_warnings
+    result = list(sorted(_bare_key_warnings))
+    _bare_key_warnings = set()
+    return result
 
 
 def _collect_equipment_namespaced_keys(
@@ -211,7 +229,11 @@ def equipment_ref_valid(ref, id_index, equipment_index):
     if isinstance(ref, str):
         if ref.startswith("core:"):
             return ref in equipment_index["namespaced_keys"]
-        return ref in equipment_index["bare_keys"]
+        if ref.startswith("module:"):
+            return True
+        if ref in equipment_index["bare_keys"]:
+            _bare_key_warnings.add(ref)
+            return True
     return False
 
 
@@ -860,6 +882,16 @@ def main():
     print(
         f"{combined_total} file(s): {combined_passed} passed, {combined_failed} failed"
     )
+
+    bare_keys = get_bare_key_warnings()
+    if bare_keys:
+        print()
+        print(
+            f"  DEPRECATED bare keys ({len(bare_keys)} found, use core:category/<key> instead):"
+        )
+        for bk in bare_keys:
+            print(f"    {bk}")
+
     return 1 if combined_failed else 0
 
 
