@@ -1,0 +1,9 @@
+{
+  "key": "circlet_base",
+  "label": "Circlet",
+  "description": "A headband or tiara worn across the brow. Favoured by nobles and mages for enchantment.",
+  "type": "accessory",
+  "cost": { "quantity": 25, "unit": "gp" },
+  "weight": 0.2,
+  "accessory": { "accessoryType": "trinket" }
+}
