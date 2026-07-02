@@ -5,7 +5,7 @@
 Conditions are **binary state containers** that are applied and removed by effects from
 the shared effect registry ([`data/effects/core.json`](../../ruleset/data/effects/core.json)).
 Each condition is an envelope — it does not define its own mechanics inline; instead it
-references the effect IDs that apply or remove it. The actual penalties and gameplay
+references the effect refs that apply or remove it. The actual penalties and gameplay
 consequences are described in the condition entry's `effects` fields (one for TTRPG,
 one for video game) and implemented by the consuming engine or GM.
 
@@ -17,25 +17,25 @@ governed by `condition.schema.json`.
 ## 1. Design: Effects-Driven Conditions
 
 ```
-effect (e.g. paralyze id 11)
+effect (e.g. paralyze core:effect/paralyze)
   → lands on target
     → applies condition (e.g. "paralyzed")
       → condition's mechanical effects take hold (per TTRPG or video_game mode)
-        → removed when the applying effect expires, or when a cure effect (id 20) fires
+        → removed when the applying effect expires, or when a cure effect (core:effect/cure) fires
 ```
 
 **Rules:**
-- A condition entry declares which **effect(s)** apply it via `appliedBy` (array of effect IDs).
-- The `cure` effect (id 20) is the primary remover. Its `parameter` specifies which condition to cure.
+- A condition entry declares which **effect(s)** apply it via `appliedBy` (array of effect refs).
+- The `cure` effect (core:effect/cure) is the primary remover. Its `parameter` specifies which condition to cure.
 - Conditions can also be removed by rest, taking damage (charm breaks), or special actions (stand from prone).
 - A condition's mechanical effects are described in `effects.ttrpg` and `effects.video_game` — these are narrative/descriptive; the actual implementation is the engine's or GM's responsibility.
 - Stacking conditions (like `exhaustion`) have `stacking: true` and `maxStacks`; each additional application increments the stack up to the max.
 
 **Why effects-driven?**
 Conditions do not exist in isolation. They are always the *result* of an effect
-landing. By tying each condition to specific effect IDs, the data stays consistent:
-- A spell that applies `paralyze` effect (id 11) automatically puts the target in the `paralyzed` condition.
-- A `cure` spell (id 20) with parameter `"paralyzed"` removes it.
+landing. By tying each condition to specific effect refs, the data stays consistent:
+- A spell that applies `paralyze` effect (core:effect/paralyze) automatically puts the target in the `paralyzed` condition.
+- A `cure` spell (core:effect/cure) with parameter `"paralyzed"` removes it.
 - New conditions can be added without schema changes — just add a new entry and point existing or new effects at it.
 
 ---
@@ -52,15 +52,15 @@ Conditions follow one of three duration behaviors:
 
 ### Opposite-Effect Dispel Pairs
 
-Certain conditions can be removed by effects that are mechanically opposite, even if those effects are not classified as `cure`. This is data-driven — each condition's `removedBy` array in `conditions/core.json` lists the effect IDs that can remove it.
+Certain conditions can be removed by effects that are mechanically opposite, even if those effects are not classified as `cure`. This is data-driven — each condition's `removedBy` array in `conditions/core.json` lists the effect refs that can remove it.
 
 | Condition | Applying Effect | Dispelling Effect | Rationale |
 |-----------|---------------|-------------------|-----------|
-| Burning (id 16) | Burn (id 57) | Damage Frost (id 2) | Water (frost) overcomes Fire (burn) |
-| Bleeding (id 17) | Bleed (id 58) | Restore Resource (id 7) | Healing stops bleeding |
-| Slowed (id 18) | Slow (id 59) | Haste Attack (id 70) | Haste dispels Slow |
-| Poisoned (id 10) | Poison (id 46) | Restore Resource (id 7) | Healing flushes poison |
-| Any | Any | Cure (id 20) | Generic cure, the primary remover |
+| Burning (core:effect/essence_earth) | Burn (core:effect/burn) | Damage Frost (core:effect/damage_frost) | Water (frost) overcomes Fire (burn) |
+| Bleeding (core:effect/essence_metal) | Bleed (core:effect/bleed) | Restore Resource (core:effect/restore_resource) | Healing stops bleeding |
+| Slowed (core:effect/essence_water) | Slow (core:effect/slow) | Haste Attack (core:effect/haste_attack) | Haste dispels Slow |
+| Poisoned (core:effect/feather) | Poison (core:effect/poison) | Restore Resource (core:effect/restore_resource) | Healing flushes poison |
+| Any | Any | Cure (core:effect/cure) | Generic cure, the primary remover |
 
 This allows conditions to interact naturally — applying a frost enchantment doesn't just deal damage, it also extinguishes any existing burn on the target.
 
@@ -71,7 +71,7 @@ This allows conditions to interact naturally — applying a frost enchantment do
 ### TTRPG (turn-based)
 - Conditions are binary states with explicit duration tracked by the GM (in rounds or real time).
 - Applied when the corresponding effect successfully lands on a target (the caster/attacker makes their skill check, the defender fails their resist check).
-- Cured via rest, specific spells, or `cure` effects (id 20).
+- Cured via rest, specific spells, or `cure` effects (core:effect/cure).
 - The GM adjudicates edge cases (e.g. "can a blinded character still sense the invisible enemy?").
 - Stacking conditions are tracked as counters (e.g. exhaustion at level 3/6).
 
@@ -102,7 +102,7 @@ Data in `conditions/core.json` (24 entries). Each entry:
 | `maxStacks` | Maximum stack count |
 | `combat` | Optional object describing mechanical combat impact. See §9.1 (Combat Object Reference) for all fields, defaults, and examples. Omit for conditions with no direct combat modifiers. |
 
-| # | Key | TTRPG Effect | Video Game Effect | appliedBy (effect ids) |
+| # | Key | TTRPG Effect | Video Game Effect | appliedBy (effect keys) |
 |---|-----|-------------|-------------------|----------------------|
 | 1 | blinded | −20 PER checks, auto-fail sight- dependent rolls, +10 to attackers | −20% accuracy, +10% enemy crit chance | 47* |
 | 2 | charmed | Cannot attack charmer; charmer +20 social; damage breaks | Cannot target charmer; damage from charmer breaks | 48* |
@@ -136,7 +136,7 @@ Data in `conditions/core.json` (24 entries). Each entry:
 ### Application
 1. An effect lands on a target (attack roll, spell check, poison injection, etc.).
 2. The engine or GM checks the target's **resistance** or **immunity** to the condition
-   (via `resist` effect id 19 with appropriate parameter, racial traits, or active buffs).
+   (via `resist` effect core:effect/resist with appropriate parameter, racial traits, or active buffs).
 3. If not resisted/immune, the condition is added to the target's `active_conditions` tracker
    (or its stack counter incremented for stacking conditions).
 4. Duration is derived from the applying effect's `defaultDuration` field. If the effect has
@@ -163,10 +163,10 @@ The `apply_condition()` method adds conditions; `try_dispel_condition()` removes
 `reset_conditions()` clears the tracker between combat simulations.
 
 ### Removal
-- **`cure` effect (id 20):** The primary remover. The spell or item declares which
+- **`cure` effect (core:effect/cure):** The primary remover. The spell or item declares which
   condition it cures via `parameter` (e.g. `"poisoned"`, `"paralyzed"`, `"all"`).
   In the reference resolver, any effect in a condition's `removedBy` array can dispel
-  it — `cure` (id 20) is in every condition's `removedBy`.
+  it — `cure` (core:effect/cure) is in every condition's `removedBy`.
 - **Opposite-effect dispel:** Certain conditions can be removed by their mechanical
   opposite (frost dispels burn, healing dispels bleeding, haste dispels slow).
   This is data-driven: the dispelling effect ID is listed in the condition's `removedBy`.
@@ -179,7 +179,7 @@ The `apply_condition()` method adds conditions; `try_dispel_condition()` removes
 
 ### Immunity & Resistance
 - Racial traits can grant immunity to specific conditions via the `resist` effect
-  (id 19) with `parameter` matching the condition key, at 100% magnitude.
+  (core:effect/resist) with `parameter` matching the condition key, at 100% magnitude.
 - Temporary immunity comes from spells or potions that apply `resist` with the
   condition as parameter.
 - Resistance reduces the duration or effectiveness but does not prevent application.
@@ -210,7 +210,7 @@ Conditions themselves are **not phased** — they are binary states. However, th
 - A `fire`-phased spell that applies `blinded` (via a flash effect) interacts with
   the five-phase cycles. A target with a `water`-phased racial trait would resist
   the fire-phased effect via the overcoming cycle (water overcomes fire).
-- The `resist` effect (id 19) can be parameterized by phase name (e.g. `"fire"`,
+- The `resist` effect (core:effect/resist) can be parameterized by phase name (e.g. `"fire"`,
   `"wood"`) for conditional resistance to elemental conditions.
 
 In practice: check the applying effect's `phase` against the target's race, armor
@@ -226,7 +226,7 @@ To add a new condition:
 1. Create a new entry in `conditions/core.json` with the next available `id`.
 2. Assign an `appliedBy` effect — either an existing one from `effects/core.json`
    or a new one (if new, add the effect entry first).
-3. Assign a `removedBy` — typically `cure` (id 20) with the appropriate `parameter`.
+3. Assign a `removedBy` — typically `cure` (core:effect/cure) with the appropriate `parameter`.
    Optionally add opposite-effect dispels (e.g., healing for bleeding, frost for burn).
 4. Write the `effects.ttrpg` and `effects.video_game` strings.
 5. Set `stacking` and `maxStacks` as appropriate.
@@ -402,16 +402,16 @@ doubled and the `hit_quality` is set to `"critical"`. Currently applies to
 
 `_check_immunity()` is a placeholder that logs but always returns `False`.
 A future implementation will check:
-- Active `resist` effect (id 19) with `parameter` matching the condition key
+- Active `resist` effect (core:effect/resist) with `parameter` matching the condition key
 - Racial traits that grant condition immunity
 - Phase-based resistance (via Wuxing cycles)
 
 ### Parameter Filtering for Dispel
 
-When a `cure` effect (id 20) has a `parameter` in its `appliedEffect` shape, the
+When a `cure` effect (core:effect/cure) has a `parameter` in its `appliedEffect` shape, the
 dispel is filtered to only remove conditions whose key matches the parameter
 (e.g., `cure { parameter: "poisoned" }` only dispels `poisoned`, not all conditions).
-`restore_resource` (id 7) does not filter by parameter for its secondary dispel
+`restore_resource` (core:effect/restore_resource) does not filter by parameter for its secondary dispel
 effect (healing always stops bleeding regardless of which resource is restored).
 
 ### Duration Type (Data-Driven)
@@ -430,11 +430,11 @@ effect (healing always stops bleeding regardless of which resource is restored).
 
 The following items were addressed in the `feat/conditions-integration` branch:
 
-- ✅ **Cure parameter filtering:** Implemented. `cure` (id 20) with `parameter` now
+- ✅ **Cure parameter filtering:** Implemented. `cure` (core:effect/cure) with `parameter` now
   only dispels conditions whose `key` matches the parameter (e.g.,
   `cure { parameter: "poisoned" }` only dispels `poisoned`). Use
   `parameter: "all"` to cure all removable conditions.
-- ✅ **Prone special case:** Prone no longer includes `cure` (id 20) in its
+- ✅ **Prone special case:** Prone no longer includes `cure` (core:effect/cure) in its
   `removedBy` array. It can only be removed by the "stand" action (engine/GM
   responsibility). The schema was updated to allow empty `removedBy` arrays.
 - ✅ **Duration type refactored:** `_get_duration_type()` now checks effect tags
@@ -455,7 +455,7 @@ The following items were addressed in the `feat/conditions-integration` branch:
   (1→5/6) with per-level attack penalty display.
 - ✅ **Condition cross-reference validation:** `validate.py` now validates
   `appliedBy` and `removedBy` IDs against the effects registry, checks stacking
-  consistency (stacking + maxStacks), detects duplicate effect IDs, and
+  consistency (stacking + maxStacks), detects duplicate effect refs, and
   enforces the prone-no-cure rule.
 - ✅ **Documentation updated:** Both on-hit paths (base weapon vs. crafted item)
   are clearly documented with their purpose and relationship.
@@ -473,7 +473,7 @@ The following items were addressed in the `feat/conditions-integration` branch:
   attacker being blinded) affect the roll, and the defender's conditions
   (e.g., paralysis) enable auto-crits.
 - **Immunity/resist wiring:** The `_check_immunity()` stub needs to be wired
-  into the `resist` effect (id 19) and racial trait system. This requires
+  into the `resist` effect (core:effect/resist) and racial trait system. This requires
   an active effects tracker that the resolver doesn't yet have.
 - **Phase-based condition resistance:** Applying a fire-phased effect to a
   water-phased target should be weakened per the overcoming cycle. This
