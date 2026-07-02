@@ -51,13 +51,7 @@
           "items": {
             "type": "object",
             "properties": {
-              "effect": {
-                "oneOf": [
-                  { "$ref": "schema.json#/definitions/entryId" },
-                  { "type": "string" }
-                ],
-                "description": "Effect reference: preferred format core:effect/<key>; legacy numeric id also accepted."
-              },
+              "effect": { "$ref": "schema.json#/definitions/entryId", "description": "Effect id from the effect registry." },
               "magnitude": { "type": "number", "description": "Effect strength." },
               "duration": { "type": "number", "minimum": 0, "description": "Duration in seconds; 0 = instantaneous." },
               "uses_left": { "type": "integer", "minimum": 1, "description": "Number of hits or applications remaining before the coating is consumed." }

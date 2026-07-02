@@ -18,11 +18,8 @@ sys.path.insert(0, str(_SCRIPTS))
 
 from validate import (
     build_equipment_index,
-    build_namespaced_ref_index,
     check_equipment_uniqueness,
-    check_references,
     equipment_ref_valid,
-    resolve_namespaced_ref,
 )
 
 
@@ -36,12 +33,20 @@ class TestEquipmentIdUniqueness(unittest.TestCase):
 
             weapons.write_text(
                 json.dumps(
-                    {"equipment": [{"id": 22, "key": "shortsword", "type": "weapon"}]}
+                    {
+                        "equipment": [
+                            {"id": 22, "key": "shortsword", "type": "weapon"}
+                        ]
+                    }
                 )
             )
             armor.write_text(
                 json.dumps(
-                    {"equipment": [{"id": 22, "key": "padded_tunic", "type": "armor"}]}
+                    {
+                        "equipment": [
+                            {"id": 22, "key": "padded_tunic", "type": "armor"}
+                        ]
+                    }
                 )
             )
 
@@ -61,12 +66,20 @@ class TestEquipmentIdUniqueness(unittest.TestCase):
 
             weapons.write_text(
                 json.dumps(
-                    {"equipment": [{"id": 45, "key": "shortsword", "type": "weapon"}]}
+                    {
+                        "equipment": [
+                            {"id": 45, "key": "shortsword", "type": "weapon"}
+                        ]
+                    }
                 )
             )
             armor.write_text(
                 json.dumps(
-                    {"equipment": [{"id": 22, "key": "padded_tunic", "type": "armor"}]}
+                    {
+                        "equipment": [
+                            {"id": 22, "key": "padded_tunic", "type": "armor"}
+                        ]
+                    }
                 )
             )
 
@@ -108,7 +121,11 @@ class TestEquipmentRefResolution(unittest.TestCase):
         weapons.parent.mkdir(parents=True, exist_ok=True)
         weapons.write_text(
             json.dumps(
-                {"equipment": [{"id": 45, "key": "shortsword", "type": "weapon"}]}
+                {
+                    "equipment": [
+                        {"id": 45, "key": "shortsword", "type": "weapon"}
+                    ]
+                }
             )
         )
         self.id_index = {"equipment": {45}}
@@ -117,7 +134,7 @@ class TestEquipmentRefResolution(unittest.TestCase):
     def test_namespaced_key_reference(self):
         self.assertTrue(
             equipment_ref_valid(
-                "core:weapon/shortsword", self.id_index, self.equipment_index
+                "core:weapons/shortsword", self.id_index, self.equipment_index
             )
         )
 
@@ -132,159 +149,9 @@ class TestEquipmentRefResolution(unittest.TestCase):
     def test_invalid_reference(self):
         self.assertFalse(
             equipment_ref_valid(
-                "core:weapon/missing", self.id_index, self.equipment_index
+                "core:weapons/missing", self.id_index, self.equipment_index
             )
         )
-
-
-class TestNamespacedRefIndex(unittest.TestCase):
-    def test_build_namespaced_ref_index(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            effects = root / "effects.json"
-            effects.write_text(
-                json.dumps(
-                    {
-                        "effects": [
-                            {"id": 1, "key": "damage_fire"},
-                            {"id": 2, "key": "damage_frost"},
-                        ]
-                    }
-                )
-            )
-            spells = root / "spells.json"
-            spells.write_text(
-                json.dumps(
-                    {
-                        "spells": [
-                            {"id": 1, "key": "fire_bolt"},
-                        ]
-                    }
-                )
-            )
-            index = build_namespaced_ref_index([effects, spells])
-            self.assertIn("core:effect/damage_fire", index)
-            self.assertIn("core:effect/damage_frost", index)
-            self.assertIn("core:spell/fire_bolt", index)
-            self.assertEqual(len(index), 3)
-
-    def test_resolve_namespaced_ref_valid(self):
-        index = {"core:effect/damage_fire", "core:spell/fire_bolt"}
-        self.assertTrue(resolve_namespaced_ref("core:effect/damage_fire", index))
-        self.assertTrue(resolve_namespaced_ref("core:spell/fire_bolt", index))
-
-    def test_resolve_namespaced_ref_invalid(self):
-        index = {"core:effect/damage_fire"}
-        self.assertFalse(resolve_namespaced_ref("core:effect/missing", index))
-        self.assertFalse(resolve_namespaced_ref("core:weapon/shortsword", index))
-
-    def test_resolve_unknown_module_ref(self):
-        index = set()
-        self.assertTrue(
-            resolve_namespaced_ref("module:my-mod/weapon/frost_sword", index)
-        )
-        self.assertTrue(resolve_namespaced_ref("module:example/effect/custom", index))
-
-    def test_resolve_non_string(self):
-        index = set()
-        self.assertFalse(resolve_namespaced_ref(42, index))
-        self.assertFalse(resolve_namespaced_ref(None, index))
-
-
-class TestCraftedItemsRefValidation(unittest.TestCase):
-    def test_detects_missing_effect_in_enchantment(self):
-        result = check_references(
-            {
-                "crafted_items": [
-                    {
-                        "id": 1,
-                        "key": "test_item",
-                        "enchantments": [{"effect": 999, "magnitude": 5}],
-                        "coatings": [],
-                    }
-                ]
-            },
-            "crafted_items",
-            {"effects": {1, 2, 3}},
-        )
-        self.assertEqual(len(result), 1)
-        self.assertIn("effect 999 does not exist", result[0])
-
-    def test_accepts_valid_effect_in_enchantment(self):
-        result = check_references(
-            {
-                "crafted_items": [
-                    {
-                        "id": 1,
-                        "key": "test_item",
-                        "enchantments": [{"effect": 1, "magnitude": 5}],
-                        "coatings": [],
-                    }
-                ]
-            },
-            "crafted_items",
-            {"effects": {1, 2, 3}},
-        )
-        self.assertEqual(result, [])
-
-    def test_detects_missing_effect_in_coating(self):
-        result = check_references(
-            {
-                "crafted_items": [
-                    {
-                        "id": 1,
-                        "key": "test_item",
-                        "enchantments": [],
-                        "coatings": [{"effect": 999, "magnitude": 3, "uses_left": 2}],
-                    }
-                ]
-            },
-            "crafted_items",
-            {"effects": {1, 2, 3}},
-        )
-        self.assertEqual(len(result), 1)
-        self.assertIn("effect 999 does not exist", result[0])
-
-    def test_accepts_valid_namespaced_effect_ref(self):
-        result = check_references(
-            {
-                "crafted_items": [
-                    {
-                        "id": 1,
-                        "key": "test_item",
-                        "enchantments": [
-                            {"effect": "core:effect/damage_fire", "magnitude": 5}
-                        ],
-                        "coatings": [],
-                    }
-                ]
-            },
-            "crafted_items",
-            {"effects": {1}},
-            namespaced_ref_index={"core:effect/damage_fire"},
-        )
-        self.assertEqual(result, [])
-
-    def test_rejects_invalid_namespaced_effect_ref(self):
-        result = check_references(
-            {
-                "crafted_items": [
-                    {
-                        "id": 1,
-                        "key": "test_item",
-                        "enchantments": [
-                            {"effect": "core:effect/missing", "magnitude": 5}
-                        ],
-                        "coatings": [],
-                    }
-                ]
-            },
-            "crafted_items",
-            {"effects": {1}},
-            namespaced_ref_index={"core:effect/damage_fire"},
-        )
-        self.assertEqual(len(result), 1)
-        self.assertIn("does not resolve", result[0])
 
 
 if __name__ == "__main__":

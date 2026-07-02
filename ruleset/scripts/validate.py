@@ -20,30 +20,11 @@ MODULES_DIR = ROOT / "modules"
 MONSTERS_BASES_DIR = DATA_DIR / "monsters" / "bases"
 
 # Maps equipment source filenames to namespaced reference categories.
-# Cross-references use core:<category>/<key> with singular category names
-# (e.g. core:weapon/shortsword, core:armor/leather_jerkin, core:consumable/potion_minor_healing).
+# Cross-references use core:<category>/<key> (e.g. core:weapons/shortsword).
 EQUIPMENT_FILE_CATEGORIES = {
-    "weapons.json": "weapon",
-    "armor.json": "armor",
-    "consumables.json": "consumable",
-}
-
-# Maps collection names to their singular category for namespaced refs.
-COLLECTION_CATEGORIES = {
-    "effects": "effect",
-    "spells": "spell",
-    "ingredients": "ingredient",
-    "skills": "skill",
-    "features": "feature",
-    "races": "race",
-    "traits": "trait",
-    "conditions": "condition",
-    "materials": "material",
-    "gems": "gem",
-    "monsters": "monster",
-    "backgrounds": "background",
-    "recipes": "recipe",
-    "crafted_items": "crafted_item",
+    "weapons.json": "weapons",
+    "armor.json": "armors",
+    "consumables.json": "consumables",
 }
 
 
@@ -122,67 +103,7 @@ def build_equipment_index(data_files, module_data_files=None, rel_base=ROOT):
     }
 
 
-def build_namespaced_ref_index(data_files, module_data_files=None):
-    """Build a set of all valid namespaced refs (core:<category>/<key>) across all data files.
-
-    This enables validation of cross-references like core:effect/damage_fire,
-    core:spell/fire_bolt, core:ingredient/red_mushroom, etc.
-    """
-    refs = set()
-    for fp in data_files:
-        try:
-            data = json.loads(fp.read_text())
-        except (json.JSONDecodeError, OSError):
-            continue
-        for k, v in data.items():
-            if k.startswith("$") or not isinstance(v, list):
-                continue
-            cat = COLLECTION_CATEGORIES.get(k)
-            if not cat:
-                continue
-            for item in v:
-                if isinstance(item, dict):
-                    key = item.get("key")
-                    if isinstance(key, str):
-                        refs.add(f"core:{cat}/{key}")
-    if module_data_files:
-        for fp, _ in module_data_files:
-            try:
-                data = json.loads(fp.read_text())
-            except (json.JSONDecodeError, OSError):
-                continue
-            for k, v in data.items():
-                if k.startswith("$") or not isinstance(v, list):
-                    continue
-                cat = COLLECTION_CATEGORIES.get(k)
-                if not cat:
-                    continue
-                for item in v:
-                    if isinstance(item, dict):
-                        key = item.get("key")
-                        if isinstance(key, str):
-                            refs.add(f"core:{cat}/{key}")
-    return refs
-
-
-def resolve_namespaced_ref(ref, namespaced_ref_index):
-    """Check if a string ref like 'core:effect/damage_fire' exists in the index.
-
-    Returns True if valid, False otherwise. Handles both namespaced and bare-key refs.
-    Module-style refs (module:...) are accepted without validation (too open-ended).
-    """
-    if not isinstance(ref, str):
-        return False
-    if ref.startswith("module:"):
-        return True
-    if ref.startswith("core:"):
-        return ref in namespaced_ref_index
-    return False
-
-
-def _collect_equipment_namespaced_keys(
-    data_files, module_data_files=None, rel_base=ROOT
-):
+def _collect_equipment_namespaced_keys(data_files, module_data_files=None, rel_base=ROOT):
     keys = set()
     for _rel, category, item in _iter_equipment_entries(
         data_files, module_data_files, rel_base
@@ -212,42 +133,6 @@ def equipment_ref_valid(ref, id_index, equipment_index):
         if ref.startswith("core:"):
             return ref in equipment_index["namespaced_keys"]
         return ref in equipment_index["bare_keys"]
-    return False
-
-
-def effect_ref_valid(ref, id_index, namespaced_ref_index):
-    """Return True if an effect reference resolves (numeric or namespaced string)."""
-    if isinstance(ref, int):
-        return ref in id_index.get("effects", set())
-    if isinstance(ref, str):
-        return resolve_namespaced_ref(ref, namespaced_ref_index)
-    return False
-
-
-def ingredient_ref_valid(ref, id_index, namespaced_ref_index):
-    """Return True if an ingredient reference resolves (numeric or namespaced string)."""
-    if isinstance(ref, int):
-        return ref in id_index.get("ingredients", set())
-    if isinstance(ref, str):
-        return resolve_namespaced_ref(ref, namespaced_ref_index)
-    return False
-
-
-def spell_ref_valid(ref, id_index, namespaced_ref_index):
-    """Return True if a spell reference resolves (numeric or namespaced string)."""
-    if isinstance(ref, int):
-        return ref in id_index.get("spells", set())
-    if isinstance(ref, str):
-        return resolve_namespaced_ref(ref, namespaced_ref_index)
-    return False
-
-
-def skill_ref_valid(ref, id_index, namespaced_ref_index):
-    """Return True if a skill reference resolves (numeric or namespaced string)."""
-    if isinstance(ref, int):
-        return ref in id_index.get("skills", set())
-    if isinstance(ref, str):
-        return resolve_namespaced_ref(ref, namespaced_ref_index)
     return False
 
 
@@ -287,7 +172,9 @@ def check_equipment_id_uniqueness(data_files, module_data_files=None, rel_base=R
     """Backward-compatible alias: return only duplicate-id errors."""
     return [
         e
-        for e in check_equipment_uniqueness(data_files, module_data_files, rel_base)
+        for e in check_equipment_uniqueness(
+            data_files, module_data_files, rel_base
+        )
         if e.startswith("DUPLICATE equipment id ")
     ]
 
@@ -328,12 +215,9 @@ def build_id_index(data_files, module_data_files=None):
     return id_index
 
 
-def check_references(
-    data, coll_name, id_index, equipment_index=None, namespaced_ref_index=None
-):
+def check_references(data, coll_name, id_index, equipment_index=None):
     """Return list of referential integrity error messages."""
     errors = []
-
     if coll_name == "races":
         for r in data.get("races", []):
             if not isinstance(r, dict):
@@ -378,19 +262,11 @@ def check_references(
                         "effects", set()
                     ):
                         errors.append(f"effect {eid} does not exist")
-                    elif isinstance(eid, str) and not resolve_namespaced_ref(
-                        eid, namespaced_ref_index
-                    ):
-                        errors.append(f"effect {eid!r} does not resolve")
             for rid in (s.get("cost", {}) or {}).get("reagents", []) or []:
                 if isinstance(rid, int) and rid not in id_index.get(
                     "ingredients", set()
                 ):
                     errors.append(f"reagent {rid} does not exist")
-                elif isinstance(rid, str) and not resolve_namespaced_ref(
-                    rid, namespaced_ref_index
-                ):
-                    errors.append(f"reagent {rid!r} does not resolve")
 
     elif coll_name == "backgrounds":
         for b in data.get("backgrounds", []):
@@ -403,29 +279,12 @@ def check_references(
                         "skills", set()
                     ):
                         errors.append(f"skill bonus {sid} does not exist")
-                    elif isinstance(sid, str) and (
-                        namespaced_ref_index is None
-                        or not resolve_namespaced_ref(sid, namespaced_ref_index)
-                    ):
-                        errors.append(f"skill bonus {sid!r} does not resolve")
             for ts in b.get("suggested_tag_skills", []) or []:
                 if isinstance(ts, int) and ts not in id_index.get("skills", set()):
                     errors.append(f"suggested tag skill {ts} does not exist")
-                elif (
-                    isinstance(ts, str)
-                    and namespaced_ref_index
-                    and not resolve_namespaced_ref(ts, namespaced_ref_index)
-                ):
-                    errors.append(f"suggested tag skill {ts!r} does not resolve")
             for ss in b.get("starting_spells", []) or []:
                 if isinstance(ss, int) and ss not in id_index.get("spells", set()):
                     errors.append(f"starting spell {ss} does not exist")
-                elif (
-                    isinstance(ss, str)
-                    and namespaced_ref_index
-                    and not resolve_namespaced_ref(ss, namespaced_ref_index)
-                ):
-                    errors.append(f"starting spell {ss!r} does not resolve")
             for se in b.get("starting_equipment", []) or []:
                 if isinstance(se, dict):
                     item_ref = se.get("item")
@@ -435,7 +294,9 @@ def check_references(
                             "bare_keys": set(),
                         }
                     if not equipment_ref_valid(item_ref, id_index, equipment_index):
-                        errors.append(f"starting equipment {item_ref!r} does not exist")
+                        errors.append(
+                            f"starting equipment {item_ref!r} does not exist"
+                        )
 
     elif coll_name == "monsters":
         for m in data.get("monsters", []):
@@ -448,10 +309,6 @@ def check_references(
                         "effects", set()
                     ):
                         errors.append(f"ability effect {eid} does not exist")
-                    elif isinstance(eid, str) and not resolve_namespaced_ref(
-                        eid, namespaced_ref_index
-                    ):
-                        errors.append(f"ability effect {eid!r} does not resolve")
 
     elif coll_name == "ingredients":
         for i in data.get("ingredients", []):
@@ -460,10 +317,6 @@ def check_references(
             for eid in i.get("effects", []) or []:
                 if isinstance(eid, int) and eid not in id_index.get("effects", set()):
                     errors.append(f"effect {eid} does not exist")
-                elif isinstance(eid, str) and not resolve_namespaced_ref(
-                    eid, namespaced_ref_index
-                ):
-                    errors.append(f"effect {eid!r} does not resolve")
 
     elif coll_name == "conditions":
         for c in data.get("conditions", []):
@@ -475,22 +328,10 @@ def check_references(
                     errors.append(
                         f"condition '{ckey}' appliedBy effect {eid} does not exist in effects"
                     )
-                elif isinstance(eid, str) and not resolve_namespaced_ref(
-                    eid, namespaced_ref_index
-                ):
-                    errors.append(
-                        f"condition '{ckey}' appliedBy effect {eid!r} does not resolve"
-                    )
             for eid in c.get("removedBy", []) or []:
                 if isinstance(eid, int) and eid not in id_index.get("effects", set()):
                     errors.append(
                         f"condition '{ckey}' removedBy effect {eid} does not exist in effects"
-                    )
-                elif isinstance(eid, str) and not resolve_namespaced_ref(
-                    eid, namespaced_ref_index
-                ):
-                    errors.append(
-                        f"condition '{ckey}' removedBy effect {eid!r} does not resolve"
                     )
             # Validate stacking consistency
             stacking = c.get("stacking", False)
@@ -535,46 +376,6 @@ def check_references(
                         "effects", set()
                     ):
                         errors.append(f"effect {eid} does not exist")
-                    elif isinstance(eid, str) and not resolve_namespaced_ref(
-                        eid, namespaced_ref_index
-                    ):
-                        errors.append(f"effect {eid!r} does not resolve")
-
-    elif coll_name == "crafted_items":
-        for ci in data.get("crafted_items", []) or []:
-            if not isinstance(ci, dict):
-                continue
-            ckey = ci.get("key", "?")
-            for ench in ci.get("enchantments", []) or []:
-                if isinstance(ench, dict):
-                    eid = ench.get("effect")
-                    if isinstance(eid, int) and eid not in id_index.get(
-                        "effects", set()
-                    ):
-                        errors.append(
-                            f"crafted item '{ckey}' enchantment effect {eid} does not exist"
-                        )
-                    elif isinstance(eid, str) and not resolve_namespaced_ref(
-                        eid, namespaced_ref_index
-                    ):
-                        errors.append(
-                            f"crafted item '{ckey}' enchantment effect {eid!r} does not resolve"
-                        )
-            for coat in ci.get("coatings", []) or []:
-                if isinstance(coat, dict):
-                    eid = coat.get("effect")
-                    if isinstance(eid, int) and eid not in id_index.get(
-                        "effects", set()
-                    ):
-                        errors.append(
-                            f"crafted item '{ckey}' coating effect {eid} does not exist"
-                        )
-                    elif isinstance(eid, str) and not resolve_namespaced_ref(
-                        eid, namespaced_ref_index
-                    ):
-                        errors.append(
-                            f"crafted item '{ckey}' coating effect {eid!r} does not resolve"
-                        )
 
     return errors
 
@@ -723,9 +524,7 @@ def _resolve_monster_bases(data, errors):
         monsters[i] = merged
 
 
-def _validate_single_data_file(
-    fp, store, id_index, rel_base, equipment_index=None, namespaced_ref_index=None
-):
+def _validate_single_data_file(fp, store, id_index, rel_base, equipment_index=None):
     """Validate one data file against its $schema and check cross-references.
 
     Returns (passed, errors, rel_path) where:
@@ -781,11 +580,7 @@ def _validate_single_data_file(
 
     if coll_name:
         ref_errors = check_references(
-            data,
-            coll_name,
-            id_index,
-            equipment_index=equipment_index,
-            namespaced_ref_index=namespaced_ref_index,
+            data, coll_name, id_index, equipment_index=equipment_index
         )
         errors.extend(f"REF: {e}" for e in ref_errors)
 
@@ -879,7 +674,6 @@ def main():
     equipment_index = build_equipment_index(
         data_files, module_data_files, rel_base=ROOT
     )
-    namespaced_ref_index = build_namespaced_ref_index(data_files, module_data_files)
 
     total = passed = failed = 0
 
@@ -894,12 +688,7 @@ def main():
 
     for fp in data_files:
         p, errs, rel = _validate_single_data_file(
-            fp,
-            store,
-            id_index,
-            ROOT,
-            equipment_index=equipment_index,
-            namespaced_ref_index=namespaced_ref_index,
+            fp, store, id_index, ROOT, equipment_index=equipment_index
         )
         if p is None:
             print(f"  \u26a0  {rel}: no $schema field, skipping")

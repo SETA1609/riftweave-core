@@ -51,7 +51,7 @@
         },
         "starting_equipment": {
           "type": "array",
-          "description": "Items granted at creation. Prefer namespaced equipment refs (core:weapon/shortsword, core:armor/leather_jerkin, core:consumable/potion_minor_healing). Legacy numeric ids are still accepted during transition. Quantities default to 1 if omitted.",
+          "description": "Items granted at creation. Prefer namespaced equipment refs (core:weapons/shortsword, core:armors/leather_jerkin, core:consumables/potion_minor_healing). Legacy numeric ids are still accepted during transition. Quantities default to 1 if omitted.",
           "items": {
             "type": "object",
             "properties": {
@@ -60,7 +60,7 @@
                   { "$ref": "schema.json#/definitions/entryId" },
                   { "type": "string" }
                 ],
-                "description": "Equipment reference: preferred format core:<category>/<key> (e.g. core:weapon/shortsword); legacy numeric id or bare key also accepted"
+                "description": "Equipment reference: preferred format core:<category>/<key> (e.g. core:weapons/shortsword); legacy numeric id or bare key also accepted"
               },
               "quantity": {
                 "type": "integer",
