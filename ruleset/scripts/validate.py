@@ -123,10 +123,9 @@ def build_equipment_index(data_files, module_data_files=None, rel_base=ROOT):
 
 
 def build_namespaced_ref_index(data_files, module_data_files=None):
-    """Build a set of valid cross-references (namespaced + bare keys) across all data files.
+    """Build a set of valid namespaced cross-references across all data files.
 
-    Both core:category/key and bare key formats are added so that either can be
-    validated by resolve_namespaced_ref. Module-style refs are accepted at
+    Indexes core:category/key refs only. Module-style refs are accepted at
     validation time without being pre-indexed.
     """
     refs = set()
@@ -146,7 +145,6 @@ def build_namespaced_ref_index(data_files, module_data_files=None):
                     key = item.get("key")
                     if isinstance(key, str):
                         refs.add(f"core:{cat}/{key}")
-                        refs.add(key)
     if module_data_files:
         for fp, _ in module_data_files:
             try:
@@ -164,40 +162,22 @@ def build_namespaced_ref_index(data_files, module_data_files=None):
                         key = item.get("key")
                         if isinstance(key, str):
                             refs.add(f"core:{cat}/{key}")
-                            refs.add(key)
     return refs
 
 
-# Track bare key deprecation warnings (set of unique bare keys seen).
-_bare_key_warnings = set()
-
-
 def resolve_namespaced_ref(ref, namespaced_ref_index):
-    """Check if a string ref exists in the index.
+    """Check if a namespaced string ref exists in the index.
 
-    Accepts both namespaced (core:category/key) and bare key formats.
-    Module-style refs (module:...) are accepted without pre-indexing.
-    Returns False for non-strings and unresolvable refs.
-
-    Emits deprecation warnings for bare keys via the _bare_key_warnings set;
-    callers should check and report these.
+    Only accepts core:category/key and module: prefixed refs.
+    Bare keys are rejected. Returns False for non-strings and unresolvable refs.
     """
     if not isinstance(ref, str):
         return False
     if ref.startswith("module:"):
         return True
-    result = ref in namespaced_ref_index
-    if result and not ref.startswith("core:") and not ref.startswith("module:"):
-        _bare_key_warnings.add(ref)
-    return result
-
-
-def get_bare_key_warnings():
-    """Return the accumulated set of bare key deprecation warnings and reset."""
-    global _bare_key_warnings
-    result = list(sorted(_bare_key_warnings))
-    _bare_key_warnings = set()
-    return result
+    if not ref.startswith("core:"):
+        return False
+    return ref in namespaced_ref_index
 
 
 def _collect_equipment_namespaced_keys(
@@ -225,14 +205,13 @@ def _collect_equipment_bare_keys(data_files, module_data_files=None, rel_base=RO
 
 
 def equipment_ref_valid(ref, id_index, equipment_index):
-    """Return True if an equipment reference resolves (namespaced or bare key)."""
+    """Return True if a namespaced equipment reference resolves.
+    Only accepts core:category/key and module: prefixed refs. Bare keys rejected.
+    """
     if isinstance(ref, str):
         if ref.startswith("core:"):
             return ref in equipment_index["namespaced_keys"]
         if ref.startswith("module:"):
-            return True
-        if ref in equipment_index["bare_keys"]:
-            _bare_key_warnings.add(ref)
             return True
     return False
 
@@ -882,15 +861,6 @@ def main():
     print(
         f"{combined_total} file(s): {combined_passed} passed, {combined_failed} failed"
     )
-
-    bare_keys = get_bare_key_warnings()
-    if bare_keys:
-        print()
-        print(
-            f"  DEPRECATED bare keys ({len(bare_keys)} found, use core:category/<key> instead):"
-        )
-        for bk in bare_keys:
-            print(f"    {bk}")
 
     return 1 if combined_failed else 0
 
