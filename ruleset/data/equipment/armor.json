@@ -23,6 +23,7 @@
     { "id": 39, "key": "boots",                   "base": "boots",                   "overrides": {} },
     { "id": 40, "key": "greaves",                 "base": "greaves",                 "overrides": {} },
     { "id": 41, "key": "cloak",                   "base": "cloak",                   "overrides": {} },
-    { "id": 42, "key": "backpack",                "base": "backpack",                "overrides": {} }
+    { "id": 42, "key": "backpack",                "base": "backpack",                "overrides": {} },
+    { "id": 200, "key": "steel_chainmail",        "base": "chainmail",               "overrides": { "enchantment_slots": 2, "phase": "metal", "effect_magnitude_mult": 1.0, "cost": { "quantity": 100, "unit": "gp" } } }
   ]
 }
