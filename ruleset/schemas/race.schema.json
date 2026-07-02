@@ -24,7 +24,7 @@
         },
         "parentRace": {
           "type": "string",
-          "description": "Reference to the parent race when role=subrace, or the template when role=kin. Use namespaced format core:race/<key> or bare key."
+          "description": "Reference to the parent race when role=subrace, or the template when role=kin. Use namespaced format core:race/<key>."
         }
       },
       "required": ["role"],
@@ -71,7 +71,7 @@
           "items": {
             "type": "object",
             "properties": {
-              "id": { "type": "string", "description": "Reference to the trait. Use namespaced format core:trait/<key> or bare key." },
+              "id": { "type": "string", "description": "Reference to the trait. Use namespaced format core:trait/<key>." },
               "label": { "type": "string", "description": "Human-readable label of the trait (duplicated from the traits registry for convenience)." }
             },
             "required": ["id", "label"],

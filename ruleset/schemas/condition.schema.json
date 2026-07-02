@@ -33,7 +33,7 @@
         },
         "appliedBy": {
           "type": "array",
-          "description": "Effect refs that can apply this condition. Use namespaced format core:effect/<key> or bare key.",
+          "description": "Effect refs that can apply this condition. Use namespaced format core:effect/<key>.",
           "items": { "type": "string" },
           "minItems": 1
         },

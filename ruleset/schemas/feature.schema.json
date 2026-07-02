@@ -76,7 +76,7 @@
             },
             "perks": {
               "type": "array",
-              "description": "Prerequisite perk refs (namespaced core:feature/<key> or bare key) that must already be owned",
+              "description": "Prerequisite perk refs (namespaced core:feature/<key>) that must already be owned",
               "items": { "type": "string" }
             },
             "other": { "type": "string" }
@@ -96,7 +96,7 @@
               "type": { "type": "string" },
               "description": { "type": "string" },
               "target": {
-                "description": "Reference to the target of this effect. Use namespaced ref (core:effect/<key>), bare key, or ad-hoc string key (hp_max, melee_damage, etc.).",
+                "description": "Reference to the target of this effect. Use namespaced ref (core:effect/<key>) or ad-hoc string key (hp_max, melee_damage, etc.).",
                 "type": "string"
               },
               "value": {},

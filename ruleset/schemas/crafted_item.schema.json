@@ -53,7 +53,7 @@
             "properties": {
               "effect": {
                 "type": "string",
-                "description": "Effect reference: namespaced format core:effect/<key> or bare key."
+                "description": "Effect reference: namespaced format core:effect/<key>."
               },
               "magnitude": { "type": "number", "description": "Effect strength." },
               "duration": { "type": "number", "minimum": 0, "description": "Duration in seconds; 0 = instantaneous." },
