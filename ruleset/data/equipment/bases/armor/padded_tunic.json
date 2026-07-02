@@ -1,0 +1,9 @@
+{
+  "key": "padded_tunic",
+  "label": "Padded Tunic",
+  "description": "A quilted cloth tunic worn as a base layer under armor or alone.",
+  "type": "armor",
+  "cost": { "quantity": 5, "unit": "gp" },
+  "weight": 4,
+  "armor": { "slot": "torso", "layer": "skin", "category": "light", "drBase": 0 }
+}

@@ -1,0 +1,9 @@
+{
+  "key": "gloves",
+  "label": "Gloves",
+  "description": "Simple cloth or leather hand coverings. Minimal protection.",
+  "type": "armor",
+  "cost": { "quantity": 1, "unit": "gp" },
+  "weight": 0.5,
+  "armor": { "slot": "hands", "layer": "skin", "category": "light", "drBase": 0 }
+}
