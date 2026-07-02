@@ -1,9 +1,1 @@
-{
-  "key": "earring_base",
-  "label": "Earring",
-  "description": "A small ornament worn on the ear. Light and easy to enchant.",
-  "type": "accessory",
-  "cost": { "quantity": 5, "unit": "gp" },
-  "weight": 0.05,
-  "accessory": { "accessoryType": "trinket" }
-}
+{"key":"earring_base","label":"Earring","description":"A small ornament worn on the ear. Light and easy to enchant.","type":"accessory","cost":{"quantity":5,"unit":"gp"},"weight":0.05,"accessory":{"accessoryType":"trinket"},"enchantment_slots":1,"phase":"metal"}
