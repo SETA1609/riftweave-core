@@ -325,7 +325,6 @@ def check_references(
     coll_name,
     equipment_index=None,
     namespaced_ref_index=None,
-    bare_key_index=None,
 ):
     """Return list of referential integrity error messages."""
     errors = []
@@ -899,7 +898,6 @@ def _validate_single_data_file(
     rel_base,
     equipment_index=None,
     namespaced_ref_index=None,
-    bare_key_index=None,
 ):
     """Validate one data file against its $schema and check cross-references.
 
@@ -961,7 +959,6 @@ def _validate_single_data_file(
             coll_name,
             equipment_index=equipment_index,
             namespaced_ref_index=namespaced_ref_index,
-            bare_key_index=bare_key_index,
         )
         errors.extend(f"REF: {e}" for e in ref_errors)
 
@@ -1054,8 +1051,6 @@ def main():
         data_files, module_data_files, rel_base=ROOT
     )
     namespaced_ref_index = build_namespaced_ref_index(data_files, module_data_files)
-    bare_key_index = build_bare_key_index(data_files, module_data_files)
-
     total = passed = failed = 0
 
     equip_errors = check_equipment_uniqueness(
@@ -1074,7 +1069,6 @@ def main():
             ROOT,
             equipment_index=equipment_index,
             namespaced_ref_index=namespaced_ref_index,
-            bare_key_index=bare_key_index,
         )
         if p is None:
             print(f"  \u26a0  {rel}: no $schema field, skipping")
