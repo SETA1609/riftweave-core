@@ -65,7 +65,7 @@ This is the most important thing to understand before editing schemas or data:
   - `core:` = Base / official content that ships with the ruleset.
   - Modules can use their own namespace (e.g. `module:examplemod/weapon/frost_sword`).
   - Modules **can override** core entries by using the same `core:category/key` (this is intentional for module flexibility).
-  - We use **singular** category names: `weapon`, `armor`, `effect`, `spell`, `background`, `trait`, `condition`, `consumable`, `recipe`, `ingredient`, `material`, `gem`, `skill`, `feature`.
+  - We use **singular** category names: `weapon`, `armor`, `effect`, `spell`, `background`, `trait`, `condition`, `consumable`, `recipe`, `ingredient`, `material`, `gem`, `skill`, `feature`, `crafted_item`.
 - Use the optional `source: { source, page }` field (defined in `schema.json`) for provenance instead of inventing per-file metadata.
 
 ## Game System Highlights (Affects Data Modeling)
@@ -129,9 +129,10 @@ See `docs/modules/README.md` for the philosophy and current state.
 5. Update or add documentation in `docs/modules/` when introducing new concepts or collections.
 6. The `source` field is the preferred way to attribute content.
 7. **Base + Override pattern**: Weapons, armors, accessories (and monsters) use a base+override data pattern. Base templates live in `ruleset/data/<collection>/bases/<category>/` and define the default stats. Override entries in the main data file reference a `base` and provide only the fields that differ. The files in `bases/` directories are automatically skipped during validation — the `_resolve_equipment_bases()` and `_resolve_monster_bases()` functions merge them at validation time.
-   - **Equipment base templates** now include `enchantment_slots` (maximum enchantments, negative = cannot enchant) and `phase` (Wuxing element) as default fields.
+   - **Equipment base templates** include `enchantment_slots` (maximum enchantments, negative = cannot enchant), `phase` (Wuxing element), and `valid_materials` (list of material keys allowed for this base).
    - **Material overrides** in override entries can modify `enchantment_slots` (including negative values), change the Wuxing `phase`, and set `effect_magnitude_mult` (fractional multiplier on enchantment magnitudes).
    - A negative `enchantment_slots` value means the item cannot receive enchantments (e.g. cursed materials, base items with no magic affinity).
+   - Validation rejects `crafted_items` whose `material_key` is not in the base template's `valid_materials` list.
 
 ## Licensing
 
