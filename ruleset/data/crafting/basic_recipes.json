@@ -6,45 +6,78 @@
       "key": "forge_steel_longsword",
       "label": "Forge Steel Longsword",
       "description": "Heat, fold, and quench a steel billet into a serviceable longsword at the anvil.",
-      "skill": "blacksmithing",
+      "skill": "core:skill/blacksmithing",
       "category": "weapon",
       "difficulty": 14,
       "time": 4,
       "inputs": [
-        { "type": "base_item", "key": "longsword", "quantity": 1 },
-        { "type": "material", "key": "steel", "quantity": 2 }
+        {
+          "type": "base_item",
+          "key": "longsword",
+          "quantity": 1
+        },
+        {
+          "type": "material",
+          "key": "steel",
+          "quantity": 2
+        }
       ],
-      "output": { "crafted_item_key": "steel_longsword", "quantity": 1 }
+      "output": {
+        "crafted_item_key": "steel_longsword",
+        "quantity": 1
+      }
     },
     {
       "id": 2,
       "key": "forge_iron_plate_cuirass",
       "label": "Forge Iron Plate Cuirass",
       "description": "Shape iron plates over a form and rivet them into a protective cuirass.",
-      "skill": "blacksmithing",
+      "skill": "core:skill/blacksmithing",
       "category": "armor",
       "difficulty": 16,
       "time": 6,
       "inputs": [
-        { "type": "base_item", "key": "plate_cuirass", "quantity": 1 },
-        { "type": "material", "key": "iron", "quantity": 3 }
+        {
+          "type": "base_item",
+          "key": "plate_cuirass",
+          "quantity": 1
+        },
+        {
+          "type": "material",
+          "key": "iron",
+          "quantity": 3
+        }
       ],
-      "output": { "crafted_item_key": "iron_plate_cuirass", "quantity": 1 }
+      "output": {
+        "crafted_item_key": "iron_plate_cuirass",
+        "quantity": 1
+      }
     },
     {
       "id": 3,
       "key": "engrave_ruby_longsword",
       "label": "Engrave Ruby Into Longsword",
       "description": "Set a ruby into the crossguard of a steel longsword. The gem's fire phase overwrites the blade's element.",
-      "skill": "crafting",
+      "skill": "core:skill/crafting",
       "category": "weapon",
       "difficulty": 12,
       "time": 1,
       "inputs": [
-        { "type": "base_item", "key": "steel_longsword", "quantity": 1 },
-        { "type": "gem", "key": "ruby", "quantity": 1 }
+        {
+          "type": "base_item",
+          "key": "steel_longsword",
+          "quantity": 1
+        },
+        {
+          "type": "gem",
+          "key": "ruby",
+          "quantity": 1
+        }
       ],
-      "output": { "crafted_item_key": "ruby_engraved_steel_longsword", "quantity": 1 }
+      "output": {
+        "crafted_item_key": "ruby_engraved_steel_longsword",
+        "quantity": 1
+      }
     }
   ]
 }
