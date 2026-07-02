@@ -43,11 +43,11 @@
     },
     "appliedEffect": {
       "type": "object",
-      "description": "An instance of an effect drawn from the effect registry (data/effects), with its applied magnitude and duration. Shared by spells, consumables, ingredients, and enchantments. Use 'parameter' for generic effects (e.g. fortify_skill with a specific skill id, fortify_attribute with an ability, restore_resource with 'health'/'stamina'/'mana', resist with 'fire'/'poison'/'undead'/'magic'/'physical', cure with a condition, summon with a type, allergy with a material id).",
+      "description": "An instance of an effect drawn from the effect registry (data/effects), with its applied magnitude and duration. Shared by spells, consumables, ingredients, and enchantments. Use 'parameter' for generic effects (e.g. fortify_skill with a specific skill key, fortify_attribute with an ability, restore_resource with 'health'/'stamina'/'mana', resist with 'fire'/'poison'/'undead'/'magic'/'physical', cure with a condition, summon with a type, allergy with a material key).",
       "properties": {
         "effect": {
           "type": "string",
-          "description": "Effect reference: namespaced format core:effect/<key> (e.g. core:effect/damage_fire) or bare key"
+          "description": "Effect reference: namespaced format core:effect/<key> (e.g. core:effect/damage_fire)"
         },
         "magnitude": { "type": "number", "description": "Effect strength; interpreted per the effect's magnitudeUnit" },
         "duration": { "type": "number", "minimum": 0, "description": "Duration in seconds; 0 or omitted means instantaneous" },
@@ -55,7 +55,7 @@
         "radius": { "type": "number", "minimum": 0, "description": "Area radius in meters when target is 'area'" },
         "parameter": {
           "type": "string",
-          "description": "For generic parameterized effects (fortify_skill, fortify_attribute, restore_resource, resist, cure, summon, phobia, allergy, etc.), specifies the subject. Use string key (bare or namespaced) when referencing another collection (e.g. skill key for fortify_skill), or vocabulary (e.g. 'health', 'fire', 'all', ability codes, creature categories)."
+          "description": "For generic parameterized effects (fortify_skill, fortify_attribute, restore_resource, resist, cure, summon, phobia, allergy, etc.), specifies the subject. Use namespaced key (core:category/<key>) when referencing another collection (e.g. core:skill/<key> for fortify_skill), or vocabulary (e.g. 'health', 'fire', 'all', ability codes, creature categories)."
         },
         "durationType": {
           "type": "string",
