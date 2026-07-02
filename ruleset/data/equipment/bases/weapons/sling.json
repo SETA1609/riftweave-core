@@ -1,0 +1,17 @@
+{
+  "key": "sling",
+  "label": "Sling",
+  "description": "A leather strap used to hurl stones or lead bullets. Simple but effective.",
+  "type": "weapon",
+  "cost": { "quantity": 1, "unit": "sp" },
+  "weight": 0,
+  "weapon": {
+    "category": "simple",
+    "range": "ranged",
+    "skill": "core:skill/throwing_weapons",
+    "damage": { "dice": "1d4", "type": "bludgeoning" },
+    "properties": ["ammunition"],
+    "rangeNormal": 50,
+    "rangeLong": 200
+  }
+}

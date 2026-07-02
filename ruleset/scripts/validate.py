@@ -767,6 +767,66 @@ def _resolve_monster_bases(data, errors):
         monsters[i] = merged
 
 
+# Maps equipment data files to their bases/ subdirectories.
+EQUIPMENT_BASES_DIRS = {
+    "weapons.json": DATA_DIR / "equipment" / "bases" / "weapons",
+    "armor.json": DATA_DIR / "equipment" / "bases" / "armor",
+    "accessories.json": DATA_DIR / "equipment" / "bases" / "accessories",
+}
+
+
+def _resolve_equipment_bases(data, errors, fp):
+    """Mutate data in-place: replace base+override equipment entries with merged flat entries.
+
+    Supports $extend convention for array fields, similar to monster bases.
+    Base templates live in equipment/bases/<category>/<key>.json.
+    """
+    equipment = data.get("equipment")
+    if not isinstance(equipment, list):
+        return
+
+    base_dir = EQUIPMENT_BASES_DIRS.get(fp.name)
+    if not base_dir or not base_dir.exists():
+        return
+
+    bases = {}
+    for f in sorted(base_dir.glob("*.json")):
+        try:
+            bases[f.stem] = json.loads(f.read_text())
+        except (json.JSONDecodeError, OSError):
+            pass
+
+    for i, entry in enumerate(equipment):
+        if not isinstance(entry, dict):
+            continue
+        base_key = entry.get("base")
+        if not base_key:
+            continue
+        overrides = entry.get("overrides")
+        if not isinstance(overrides, dict):
+            errors.append(f"equipment[{i}]: base '{base_key}' has no overrides object")
+            continue
+        if base_key not in bases:
+            cat = fp.name.replace(".json", "")
+            errors.append(
+                f"equipment[{i}]: base '{base_key}' not found in bases/{cat}/"
+            )
+            continue
+
+        base_data = bases[base_key]
+        merged = dict(base_data)
+        for k, v in overrides.items():
+            merged[k] = _merge_field(merged.get(k), v)
+
+        # Carry over id and key from the entry wrapper
+        merged["id"] = entry.get("id")
+        merged["key"] = entry.get("key")
+        if entry.get("source"):
+            merged["source"] = entry["source"]
+        # Replace the entry in-place for validation
+        equipment[i] = merged
+
+
 def _validate_single_data_file(
     fp,
     store,
@@ -789,11 +849,12 @@ def _validate_single_data_file(
     except json.JSONDecodeError as e:
         return False, [f"JSON {e}"], rel
 
-    # Resolve monster base+override entries before validation.
+    # Resolve monster and equipment base+override entries before validation.
     # This merges base templates with override data and replaces
-    # base+override entries with flat monster entries in-place.
+    # base+override entries with flat entries in-place.
     errors = []
     _resolve_monster_bases(data, errors)
+    _resolve_equipment_bases(data, errors, fp)
     if errors:
         return False, errors, rel
 

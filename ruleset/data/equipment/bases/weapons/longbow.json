@@ -1,0 +1,17 @@
+{
+  "key": "longbow",
+  "label": "Longbow",
+  "description": "A large bow requiring strength and skill.",
+  "type": "weapon",
+  "cost": { "quantity": 50, "unit": "gp" },
+  "weight": 2,
+  "weapon": {
+    "category": "martial",
+    "range": "ranged",
+    "skill": "core:skill/bows",
+    "damage": { "dice": "1d8", "type": "piercing" },
+    "properties": ["ammunition", "heavy", "two_handed"],
+    "rangeNormal": 150,
+    "rangeLong": 600
+  }
+}

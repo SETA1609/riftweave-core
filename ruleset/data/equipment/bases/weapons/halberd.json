@@ -1,0 +1,17 @@
+{
+  "key": "halberd",
+  "label": "Halberd",
+  "description": "A versatile polearm combining axe, spike, and hook for reach combat.",
+  "type": "weapon",
+  "cost": { "quantity": 25, "unit": "gp" },
+  "weight": 7,
+  "weapon": {
+    "category": "martial",
+    "range": "melee",
+    "length": "reach",
+    "attackReach": 2,
+    "skill": "core:skill/blades",
+    "damage": { "dice": "1d10", "type": "slashing" },
+    "properties": ["heavy", "two_handed"]
+  }
+}

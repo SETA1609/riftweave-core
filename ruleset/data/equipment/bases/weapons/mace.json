@@ -1,0 +1,17 @@
+{
+  "key": "mace",
+  "label": "Mace",
+  "description": "A heavy one-handed blunt weapon for crushing blows.",
+  "type": "weapon",
+  "cost": { "quantity": 10, "unit": "gp" },
+  "weight": 3,
+  "weapon": {
+    "category": "simple",
+    "range": "melee",
+    "length": "normal",
+    "attackReach": 1,
+    "skill": "core:skill/blunt",
+    "damage": { "dice": "1d6", "type": "bludgeoning" },
+    "properties": []
+  }
+}

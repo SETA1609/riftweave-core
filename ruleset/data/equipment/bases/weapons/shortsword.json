@@ -1,0 +1,17 @@
+{
+  "key": "shortsword",
+  "label": "Shortsword",
+  "description": "A short, double-edged blade for close-quarters combat.",
+  "type": "weapon",
+  "cost": { "quantity": 10, "unit": "gp" },
+  "weight": 2,
+  "weapon": {
+    "category": "simple",
+    "range": "melee",
+    "length": "short",
+    "attackReach": 1,
+    "skill": "core:skill/blades",
+    "damage": { "dice": "1d6", "type": "slashing" },
+    "properties": ["light", "finesse"]
+  }
+}
