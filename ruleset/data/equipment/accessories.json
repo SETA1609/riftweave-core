@@ -1,0 +1,15 @@
+{
+  "$schema": "../../schemas/equipment.schema.json",
+  "equipment": [
+    {
+      "id": 50,
+      "key": "gold_necklace",
+      "label": "Gold Necklace",
+      "description": "A simple gold necklace. Fine craftsmanship but no inherent magical properties — a blank canvas for enchantment.",
+      "type": "accessory",
+      "cost": { "quantity": 50, "unit": "gp" },
+      "weight": 0.5,
+      "accessory": { "accessoryType": "amulet" }
+    }
+  ]
+}

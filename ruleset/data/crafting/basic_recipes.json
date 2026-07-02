@@ -64,7 +64,7 @@
       "time": 1,
       "inputs": [
         {
-          "type": "base_item",
+          "type": "reagent",
           "key": "steel_longsword",
           "quantity": 1
         },
