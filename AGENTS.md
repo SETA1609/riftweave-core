@@ -60,9 +60,7 @@ This is the most important thing to understand before editing schemas or data:
 - **All schemas set `additionalProperties: false`**. To add any new field to a data entry, you **must** first add it to the corresponding schema, or validation will fail.
 
 - Entries use a numeric `id` (positive integer, unique within the collection) for internal tracking, and a `key` (the familiar lowercase snake_case string, often with prefixes like `damage_`, `fortify_`, for human readability when editing the JSON source) and a `label` (the human-readable display title with spaces and capitalization, e.g. "Restore Resource"). Note: the `effects` collection has removed the numeric `id` field — effects are identified solely by `key`.
-- **Namespaced string refs** are the only cross-reference format: `core:<singular-category>/<key>` (e.g. `core:weapon/shortsword`, `core:armor/leather_jerkin`, `core:consumable/potion_minor_healing`, `core:effect/damage_fire`, `core:spell/fire_bolt`). Numeric ids are **not** accepted as cross-references — validation will reject them.
-- **Bare keys** (e.g. `shortsword`, `damage_fire`) are also accepted as cross-references, making the data less verbose when the category is unambiguous. Both formats resolve to the same entries.
-  - **Deprecation notice**: Bare keys will be removed in a future update. Use namespaced keys (`core:category/key`) for all new content.
+- **Namespaced string refs** are the only cross-reference format: `core:<singular-category>/<key>` (e.g. `core:weapon/shortsword`, `core:armor/leather_jerkin`, `core:consumable/potion_minor_healing`, `core:effect/damage_fire`, `core:spell/fire_bolt`). Numeric ids are **not** accepted as cross-references — validation will reject them. Bare keys are also rejected — always use `core:category/key`.
 - **Namespace rules:**
   - `core:` = Base / official content that ships with the ruleset.
   - Modules can use their own namespace (e.g. `module:examplemod/weapon/frost_sword`).
