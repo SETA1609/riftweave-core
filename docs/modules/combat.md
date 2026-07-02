@@ -1228,7 +1228,7 @@ When adding new combat perks, follow these guidelines:
 2. **Prerequisites:** Gate combat perks behind the relevant attribute (STR for melee damage, PER for ranged, END for defense/block) and a skill threshold of 30–50.
 3. **Dual resolution:** Every perk's effect must be expressible in both TTRPG and video game terms. See examples above.
 4. **Stacking:** Two perks that modify the same dimension should stack additively, not multiplicatively, to avoid runaway scaling.
-5. **Effects integration:** Perks that apply ongoing modifiers should reference the shared effects registry by string key (namespaced `core:effect/<key>` or bare key) where possible (e.g., a "Spell Dodger" perk grants effect `core:effect/resist` with parameter `"magic"` at magnitude 25).
+5. **Effects integration:** Perks that apply ongoing modifiers should reference the shared effects registry by string key (namespaced `core:effect/<key>`) where possible (e.g., a "Spell Dodger" perk grants effect `core:effect/resist` with parameter `"magic"` at magnitude 25).
 
 ### Racial Traits Affecting Combat
 

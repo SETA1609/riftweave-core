@@ -158,7 +158,7 @@ In a race, `traits` is an array of lightweight references:
 ]
 ```
 
-The `id` is a string key reference (namespaced `core:trait/<key>` or bare key) into the global traits table. The `label` is
+The `id` is a string key reference (namespaced `core:trait/<key>`) into the global traits table. The `label` is
 duplicated for readability when looking at race data. Full details (including the
 stable `key` and long description) live in the traits registry.
 

@@ -27,12 +27,12 @@ A background lives in `data/backgrounds/core.json` and is validated by `backgrou
 - `category` — loose string for grouping (wilderness, military, arcane, criminal, noble, religious, scholarly, merchant, etc.). Not mechanically enforced.
 - `skill_bonuses` — array of `{ skill, bonus }`. The `bonus` (typically 6–12) is added once at creation after the normal attribute-seeded base is calculated. These are permanent starting ranks.
 - `starting_equipment` — array of `{ item, quantity? }`. Item references use the namespaced format `core:<category>/<key>` (e.g. `core:weapon/shortsword`, `core:armor/leather_jerkin`, `core:consumable/potion_minor_healing`). Bare keys are also accepted. The engine is responsible for actually adding the items to the character's inventory.
-- `starting_spells` — array of spell refs (namespaced `core:spell/<key>` or bare key) the character knows from day one. Useful for low-magic or tradition-based casters. The character still needs the governing `<color>_magic` skill to cast them reliably.
-- `granted_features` — array of feature/perk refs (namespaced `core:feature/<key>` or bare key) granted automatically (in addition to any chosen creation perks or racial traits). Use sparingly; most backgrounds express their benefit through skills + gear rather than full perks.
+- `starting_spells` — array of spell refs (namespaced `core:spell/<key>`) the character knows from day one. Useful for low-magic or tradition-based casters. The character still needs the governing `<color>_magic` skill to cast them reliably.
+- `granted_features` — array of feature/perk refs (namespaced `core:feature/<key>`) granted automatically (in addition to any chosen creation perks or racial traits). Use sparingly; most backgrounds express their benefit through skills + gear rather than full perks.
 - `wealth_bonus` — extra gp added to whatever the campaign's normal starting wealth is (the reference baseline is 100 gp + kit).
-- `suggested_tag_skills` — array of skill refs (namespaced `core:skill/<key>` or bare key). Purely advisory list. Helps players make coherent tag choices that reinforce the background.
+- `suggested_tag_skills` — array of skill refs (namespaced `core:skill/<key>`). Purely advisory list. Helps players make coherent tag choices that reinforce the background.
 
-All cross-references use string keys (namespaced `core:category/key` or bare key). Numeric ids are rejected by validation.
+All cross-references use string keys (namespaced `core:category/key`). Numeric ids are rejected by validation.
 
 ### Interaction with the rest of creation
 
