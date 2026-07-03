@@ -126,6 +126,19 @@
       "weightFactor": 0.7,
       "valueFactor": 0.6,
       "tags": ["organic", "flexible"]
+    },
+    {
+      "id": 11,
+      "key": "studded_leather",
+      "label": "Studded Leather",
+      "description": "Leather reinforced with brass or iron studs. More protective than raw hide while retaining flexibility.",
+      "phase": "wood",
+      "tier": 1,
+      "appliesTo": ["armor", "accessory"],
+      "modifiers": { "defense": 2 },
+      "weightFactor": 0.9,
+      "valueFactor": 1.2,
+      "tags": ["organic"]
     }
   ]
 }

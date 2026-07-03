@@ -19,6 +19,30 @@ SCHEMA_DIR = ROOT / "schemas"
 MODULES_DIR = ROOT / "modules"
 MONSTERS_BASES_DIR = DATA_DIR / "monsters" / "bases"
 
+# Cache for equipment base templates (loaded lazily for valid_materials checks).
+_EQUIPMENT_BASES_CACHE = None
+
+
+def _load_equipment_bases_cache():
+    """Load all equipment base templates and cache them.
+    Returns dict mapping base_key -> full base data dict.
+    """
+    global _EQUIPMENT_BASES_CACHE
+    if _EQUIPMENT_BASES_CACHE is not None:
+        return _EQUIPMENT_BASES_CACHE
+    cache = {}
+    for base_dir in EQUIPMENT_BASES_DIRS.values():
+        if not base_dir.exists():
+            continue
+        for f in sorted(base_dir.glob("*.json")):
+            try:
+                cache[f.stem] = json.loads(f.read_text())
+            except (json.JSONDecodeError, OSError):
+                pass
+    _EQUIPMENT_BASES_CACHE = cache
+    return cache
+
+
 # Maps equipment source filenames to namespaced reference categories.
 # Cross-references use core:<category>/<key> with singular category names
 # (e.g. core:weapon/shortsword, core:armor/leather_jerkin, core:consumable/potion_minor_healing).
@@ -301,7 +325,6 @@ def check_references(
     coll_name,
     equipment_index=None,
     namespaced_ref_index=None,
-    bare_key_index=None,
 ):
     """Return list of referential integrity error messages."""
     errors = []
@@ -528,29 +551,53 @@ def check_references(
                         errors.append(f"effect {eid!r} does not resolve")
 
     elif coll_name == "crafted_items":
-        eq_bare = (equipment_index or {}).get("bare_keys", set())
-        mat_keys = (bare_key_index or {}).get("materials", set())
-        gem_keys = (bare_key_index or {}).get("gems", set())
+        bases_cache = _load_equipment_bases_cache()
         for ci in data.get("crafted_items", []) or []:
             if not isinstance(ci, dict):
                 continue
             ckey = ci.get("key", "?")
             bk = ci.get("base_key")
-            if isinstance(bk, str) and bk not in eq_bare:
-                errors.append(
-                    f"crafted item '{ckey}': base_key '{bk}' does not exist in equipment"
-                )
             mk = ci.get("material_key")
-            if isinstance(mk, str) and mk not in mat_keys:
+
+            # Resolve namespaced refs to bare keys for valid_materials lookup
+            bare_bk = bk.split("/")[-1] if isinstance(bk, str) and "/" in bk else bk
+            bare_mk = mk.split("/")[-1] if isinstance(mk, str) and "/" in mk else mk
+
+            # Check base_key resolves as namespaced equipment ref
+            if isinstance(bk, str) and not equipment_ref_valid(
+                bk,
+                {},
+                equipment_index or {"namespaced_keys": set(), "bare_keys": set()},
+            ):
                 errors.append(
-                    f"crafted item '{ckey}': material_key '{mk}' does not exist in materials"
+                    f"crafted item '{ckey}': base_key '{bk}' does not resolve to any equipment"
                 )
+
+            # Check material_key resolves as namespaced material ref
+            if isinstance(mk, str) and not resolve_namespaced_ref(
+                mk, namespaced_ref_index
+            ):
+                errors.append(
+                    f"crafted item '{ckey}': material_key '{mk}' does not resolve to any material"
+                )
+
+            # Validate material_key is in base template's valid_materials
+            if isinstance(bare_bk, str) and isinstance(bare_mk, str):
+                base_data = bases_cache.get(bare_bk)
+                if base_data:
+                    valid_mats = base_data.get("valid_materials", [])
+                    if valid_mats and bare_mk not in valid_mats:
+                        errors.append(
+                            f"crafted item '{ckey}': material '{bare_mk}' is not valid for base '{bare_bk}' (valid: {valid_mats})"
+                        )
             gj = ci.get("engraving_jewel")
             if isinstance(gj, dict):
                 gk = gj.get("gem_key")
-                if isinstance(gk, str) and gk not in gem_keys:
+                if isinstance(gk, str) and not resolve_namespaced_ref(
+                    gk, namespaced_ref_index
+                ):
                     errors.append(
-                        f"crafted item '{ckey}': engraving gem_key '{gk}' does not exist in gems"
+                        f"crafted item '{ckey}': engraving gem_key '{gk}' does not resolve to any gem"
                     )
             for ench in ci.get("enchantments", []) or []:
                 if isinstance(ench, dict):
@@ -580,11 +627,7 @@ def check_references(
                         )
 
     elif coll_name == "recipes":
-        eq_bare = (equipment_index or {}).get("bare_keys", set())
-        mat_keys = (bare_key_index or {}).get("materials", set())
-        gem_keys = (bare_key_index or {}).get("gems", set())
-        ing_keys = (bare_key_index or {}).get("ingredients", set())
-        ci_keys = (bare_key_index or {}).get("crafted_items", set())
+        eq = equipment_index or {"namespaced_keys": set(), "bare_keys": set()}
         for r in data.get("recipes", []) or []:
             if not isinstance(r, dict):
                 continue
@@ -596,28 +639,39 @@ def check_references(
                 ikey = inp.get("key")
                 if not isinstance(ikey, str):
                     continue
-                if itype == "base_item" and ikey not in eq_bare:
-                    errors.append(
-                        f"recipe '{rkey}': input base_item '{ikey}' does not exist in equipment"
-                    )
-                elif itype == "material" and ikey not in mat_keys:
-                    errors.append(
-                        f"recipe '{rkey}': input material '{ikey}' does not exist in materials"
-                    )
-                elif itype == "gem" and ikey not in gem_keys:
-                    errors.append(
-                        f"recipe '{rkey}': input gem '{ikey}' does not exist in gems"
-                    )
-                elif itype == "ingredient" and ikey not in ing_keys:
-                    errors.append(
-                        f"recipe '{rkey}': input ingredient '{ikey}' does not exist in ingredients"
-                    )
+                if itype == "base_item":
+                    if not equipment_ref_valid(ikey, {}, eq):
+                        errors.append(
+                            f"recipe '{rkey}': input base_item '{ikey}' does not resolve to any equipment"
+                        )
+                elif itype == "material":
+                    if not resolve_namespaced_ref(ikey, namespaced_ref_index):
+                        errors.append(
+                            f"recipe '{rkey}': input material '{ikey}' does not resolve to any material"
+                        )
+                elif itype == "gem":
+                    if not resolve_namespaced_ref(ikey, namespaced_ref_index):
+                        errors.append(
+                            f"recipe '{rkey}': input gem '{ikey}' does not resolve to any gem"
+                        )
+                elif itype == "ingredient":
+                    if not resolve_namespaced_ref(ikey, namespaced_ref_index):
+                        errors.append(
+                            f"recipe '{rkey}': input ingredient '{ikey}' does not resolve to any ingredient"
+                        )
+                elif itype == "reagent":
+                    if not resolve_namespaced_ref(ikey, namespaced_ref_index):
+                        errors.append(
+                            f"recipe '{rkey}': input reagent '{ikey}' does not resolve to any crafted item"
+                        )
             output = r.get("output", {})
             if isinstance(output, dict):
                 okey = output.get("crafted_item_key")
-                if isinstance(okey, str) and okey not in ci_keys:
+                if isinstance(okey, str) and not resolve_namespaced_ref(
+                    okey, namespaced_ref_index
+                ):
                     errors.append(
-                        f"recipe '{rkey}': output crafted_item_key '{okey}' does not exist in crafted_items"
+                        f"recipe '{rkey}': output crafted_item_key '{okey}' does not resolve to any crafted item"
                     )
 
     return errors
@@ -815,6 +869,10 @@ def _resolve_equipment_bases(data, errors, fp):
 
         base_data = bases[base_key]
         merged = dict(base_data)
+
+        # Strip base-only fields that should not appear in merged output
+        merged.pop("valid_materials", None)
+
         for k, v in overrides.items():
             merged[k] = _merge_field(merged.get(k), v)
 
@@ -840,7 +898,6 @@ def _validate_single_data_file(
     rel_base,
     equipment_index=None,
     namespaced_ref_index=None,
-    bare_key_index=None,
 ):
     """Validate one data file against its $schema and check cross-references.
 
@@ -902,7 +959,6 @@ def _validate_single_data_file(
             coll_name,
             equipment_index=equipment_index,
             namespaced_ref_index=namespaced_ref_index,
-            bare_key_index=bare_key_index,
         )
         errors.extend(f"REF: {e}" for e in ref_errors)
 
@@ -995,8 +1051,6 @@ def main():
         data_files, module_data_files, rel_base=ROOT
     )
     namespaced_ref_index = build_namespaced_ref_index(data_files, module_data_files)
-    bare_key_index = build_bare_key_index(data_files, module_data_files)
-
     total = passed = failed = 0
 
     equip_errors = check_equipment_uniqueness(
@@ -1015,7 +1069,6 @@ def main():
             ROOT,
             equipment_index=equipment_index,
             namespaced_ref_index=namespaced_ref_index,
-            bare_key_index=bare_key_index,
         )
         if p is None:
             print(f"  \u26a0  {rel}: no $schema field, skipping")
