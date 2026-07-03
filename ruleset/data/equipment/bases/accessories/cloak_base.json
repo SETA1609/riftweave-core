@@ -1,0 +1,1 @@
+{"key":"cloak_base","label":"Cloak","description":"A flowing cloak worn over the shoulders. Favoured by mages and nobles for enchantment.","type":"accessory","cost":{"quantity":30,"unit":"gp"},"weight":1,"accessory":{"accessoryType":"misc"},"enchantment_slots":2,"phase":"water","valid_materials":["leather","wood","elven_wood"]}
