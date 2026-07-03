@@ -93,7 +93,20 @@ This is the most important thing to understand before editing schemas or data:
 
 There is **no** class schema or data — the system is deliberately classless.
 
-Cross-file references (effect IDs, skill IDs, perk prerequisites, `parentRace`, `color` → `<color>_magic` skill, etc.) are **by string ID only** and are not validated by JSON Schema. Renaming an ID can silently break consumers. (A future referential integrity pass after schema validation is planned.)
+Cross-file references (effect IDs, skill IDs, perk prerequisites, `parentRace`, `color` → `<color>_magic` skill, etc.) are **by string ID only** and are not validated by JSON Schema. However, `validate.py` now validates most namespaced key references (`core:category/key`) at runtime, including:
+
+- Crafted item `base_key`, `material_key`, `engraving_jewel.gem_key`
+- Recipe skill, inputs, and output `crafted_item_key`
+- Equipment `weapon.skill` (after base resolution)
+- Spell effect `parameter` refs (when namespaced)
+- Feature effect `target` refs (when namespaced)
+- Effect `sub_effects`
+- All effect refs in spells, consumables, features, ingredients, monsters, conditions
+- Perk and skill prerequisites in features
+- Race `parentRace` and trait refs
+- Background skill bonuses, suggested tag skills, starting spells, and starting equipment
+
+Renaming an ID in a data file may cause the validator to report broken references. See `ruleset/scripts/validate.py::check_references()` for the full list of checked fields.
 
 ## Current Data Collections & Schemas
 

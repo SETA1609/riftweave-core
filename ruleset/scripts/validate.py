@@ -371,6 +371,30 @@ def check_references(
                                 sss, namespaced_ref_index
                             ):
                                 errors.append(f"prereq skill {sss} does not exist")
+            # Validate feature effect target refs (when they are namespaced)
+            for eff in f.get("effects", []):
+                if isinstance(eff, dict):
+                    target = eff.get("target")
+                    if isinstance(target, str) and (
+                        target.startswith("core:") or target.startswith("module:")
+                    ):
+                        if not resolve_namespaced_ref(target, namespaced_ref_index):
+                            errors.append(
+                                f"feature '{f.get('key', '?')}': effect target '{target}' does not resolve"
+                            )
+
+    elif coll_name == "effects":
+        for e in data.get("effects", []):
+            if not isinstance(e, dict):
+                continue
+            ekey = e.get("key", "?")
+            for sub in e.get("sub_effects", []) or []:
+                if isinstance(sub, str) and not resolve_namespaced_ref(
+                    sub, namespaced_ref_index
+                ):
+                    errors.append(
+                        f"effect '{ekey}': sub_effect '{sub}' does not resolve"
+                    )
 
     elif coll_name == "spells":
         for s in data.get("spells", []):
@@ -396,6 +420,17 @@ def check_references(
                     rid, namespaced_ref_index
                 ):
                     errors.append(f"reagent {rid!r} does not resolve")
+            # Validate spell effect parameter refs (when they are namespaced)
+            for eff in s.get("effects", []):
+                if isinstance(eff, dict):
+                    param = eff.get("parameter")
+                    if isinstance(param, str) and (
+                        param.startswith("core:") or param.startswith("module:")
+                    ):
+                        if not resolve_namespaced_ref(param, namespaced_ref_index):
+                            errors.append(
+                                f"spell '{s.get('key', '?')}': effect parameter '{param}' does not resolve"
+                            )
 
     elif coll_name == "backgrounds":
         for b in data.get("backgrounds", []):
@@ -537,6 +572,7 @@ def check_references(
         for e in data.get("equipment", []) or []:
             if not isinstance(e, dict):
                 continue
+            ekey = e.get("key", "?")
             cons = e.get("consumable") or {}
             for eff in cons.get("effects", []) or []:
                 if isinstance(eff, dict):
@@ -549,6 +585,15 @@ def check_references(
                         eid, namespaced_ref_index
                     ):
                         errors.append(f"effect {eid!r} does not resolve")
+            # Validate weapon skill reference (after base resolution)
+            weapon = e.get("weapon") or {}
+            skill = weapon.get("skill")
+            if isinstance(skill, str) and not resolve_namespaced_ref(
+                skill, namespaced_ref_index
+            ):
+                errors.append(
+                    f"equipment '{ekey}': weapon skill '{skill}' does not resolve"
+                )
 
     elif coll_name == "crafted_items":
         bases_cache = _load_equipment_bases_cache()
@@ -673,6 +718,12 @@ def check_references(
                     errors.append(
                         f"recipe '{rkey}': output crafted_item_key '{okey}' does not resolve to any crafted item"
                     )
+            # Validate recipe skill reference
+            skill = r.get("skill")
+            if isinstance(skill, str) and not resolve_namespaced_ref(
+                skill, namespaced_ref_index
+            ):
+                errors.append(f"recipe '{rkey}': skill '{skill}' does not resolve")
 
     return errors
 
