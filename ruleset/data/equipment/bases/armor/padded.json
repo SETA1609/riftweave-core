@@ -1,0 +1,1 @@
+{"key":"padded","label":"Padded Armor","description":"Quilted cloth armor worn as a base layer or light standalone protection.","type":"armor","cost":{"quantity":5,"unit":"gp"},"weight":4,"armor":{"slot":"torso","layer":"skin","category":"light","drBase":0},"enchantment_slots":0,"phase":"earth","valid_materials":["leather","wood","elven_wood"]}
