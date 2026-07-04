@@ -252,6 +252,53 @@ def resolve_namespaced_ref(ref, namespaced_ref_index):
     return ref in namespaced_ref_index
 
 
+def check_effect_channel(effect_ref, required_channel, effect_channels):
+    """Return True if the effect is permitted for the given delivery channel.
+
+    - module: refs are accepted (we do not have full channel data for arbitrary modules).
+    - core:effect/<key> refs are checked against the effect's declared channels.
+    - Missing map or non-string is treated as pass (ref existence errors handle bad refs).
+    - Error messages include the declared list to help data authors fix violations.
+    """
+    if not isinstance(effect_ref, str) or effect_channels is None:
+        return True
+    if effect_ref.startswith("module:"):
+        return True
+    if not effect_ref.startswith("core:"):
+        return True
+    declared = effect_channels.get(effect_ref, set())
+    return required_channel in declared
+
+
+def build_effect_channels(data_files, module_data_files=None):
+    """Build 'core:effect/<key>' -> set(channels) map for enforcement.
+
+    Collects from core data files and module data files (later entries override,
+    supporting module overrides of core effects). Uses same scan pattern as
+    build_namespaced_ref_index. Only 'enchantment' and 'ingredient' channels
+    are enforced in this change; other channels remain for future work.
+    """
+    channels = {}
+    fps = list(data_files or [])
+    if module_data_files:
+        fps.extend(fp for fp, _ in module_data_files)
+    for fp in fps:
+        try:
+            data = json.loads(fp.read_text())
+        except (json.JSONDecodeError, OSError):
+            continue
+        effs = data.get("effects")
+        if not isinstance(effs, list):
+            continue
+        for item in effs:
+            if isinstance(item, dict):
+                key = item.get("key")
+                chlist = item.get("channels")
+                if isinstance(key, str) and isinstance(chlist, list):
+                    channels[f"core:effect/{key}"] = set(chlist)
+    return channels
+
+
 def _collect_equipment_namespaced_keys(
     data_files, module_data_files=None, rel_base=ROOT
 ):
@@ -325,6 +372,7 @@ def check_references(
     coll_name,
     equipment_index=None,
     namespaced_ref_index=None,
+    effect_channels=None,
 ):
     """Return list of referential integrity error messages."""
     errors = []
@@ -509,6 +557,17 @@ def check_references(
                     eid, namespaced_ref_index
                 ):
                     errors.append(f"effect {eid!r} does not resolve")
+                if isinstance(eid, str) and not check_effect_channel(
+                    eid, "ingredient", effect_channels
+                ):
+                    declared = (
+                        sorted(effect_channels.get(eid, set()))
+                        if effect_channels
+                        else []
+                    )
+                    errors.append(
+                        f"effect {eid!r} used as ingredient but does not declare 'ingredient' channel (declares: {declared})"
+                    )
 
     elif coll_name == "conditions":
         for c in data.get("conditions", []):
@@ -656,6 +715,17 @@ def check_references(
                     ):
                         errors.append(
                             f"crafted item '{ckey}' enchantment effect {eid!r} does not resolve"
+                        )
+                    if isinstance(eid, str) and not check_effect_channel(
+                        eid, "enchantment", effect_channels
+                    ):
+                        declared = (
+                            sorted(effect_channels.get(eid, set()))
+                            if effect_channels
+                            else []
+                        )
+                        errors.append(
+                            f"crafted item '{ckey}' enchantment effect {eid!r} does not declare 'enchantment' channel (declares: {declared})"
                         )
             for coat in ci.get("coatings", []) or []:
                 if isinstance(coat, dict):
@@ -949,6 +1019,7 @@ def _validate_single_data_file(
     rel_base,
     equipment_index=None,
     namespaced_ref_index=None,
+    effect_channels=None,
 ):
     """Validate one data file against its $schema and check cross-references.
 
@@ -1010,6 +1081,7 @@ def _validate_single_data_file(
             coll_name,
             equipment_index=equipment_index,
             namespaced_ref_index=namespaced_ref_index,
+            effect_channels=effect_channels,
         )
         errors.extend(f"REF: {e}" for e in ref_errors)
 
@@ -1018,7 +1090,7 @@ def _validate_single_data_file(
     return True, [], rel
 
 
-def validate_modules(store, equipment_index=None):
+def validate_modules(store, equipment_index=None, effect_channels=None):
     """Discover and validate modules.
     Returns (module_passed, module_failed, module_total, module_conflicts).
     """
@@ -1073,7 +1145,11 @@ def validate_modules(store, equipment_index=None):
                 continue
 
             p, errs, rel = _validate_single_data_file(
-                fp, store, ROOT.parent, equipment_index=equipment_index
+                fp,
+                store,
+                ROOT.parent,
+                equipment_index=equipment_index,
+                effect_channels=effect_channels,
             )
             if p is None:
                 print(f"  \u26a0  {rel}: no $schema field, skipping")
@@ -1102,6 +1178,7 @@ def main():
         data_files, module_data_files, rel_base=ROOT
     )
     namespaced_ref_index = build_namespaced_ref_index(data_files, module_data_files)
+    effect_channels = build_effect_channels(data_files, module_data_files)
     total = passed = failed = 0
 
     equip_errors = check_equipment_uniqueness(
@@ -1120,6 +1197,7 @@ def main():
             ROOT,
             equipment_index=equipment_index,
             namespaced_ref_index=namespaced_ref_index,
+            effect_channels=effect_channels,
         )
         if p is None:
             print(f"  \u26a0  {rel}: no $schema field, skipping")
@@ -1141,7 +1219,7 @@ def main():
 
     # Module validation pass
     mod_passed, mod_failed, mod_total, mod_conflicts = validate_modules(
-        store, equipment_index=equipment_index
+        store, equipment_index=equipment_index, effect_channels=effect_channels
     )
 
     combined_passed = passed + mod_passed
