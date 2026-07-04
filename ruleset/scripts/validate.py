@@ -22,50 +22,41 @@ MONSTERS_BASES_DIR = DATA_DIR / "monsters" / "bases"
 # Cache for equipment base templates (loaded lazily for valid_materials checks).
 _EQUIPMENT_BASES_CACHE = None
 
-# Channel requirement definitions.
-# Each entry maps a (collection_name, context_label) to the channel that
-# must be declared when an effect is used in that context.
-# Extend this dict to add support for new delivery channels.
+# Mapping: delivery context name -> required channel name.
+# Extend this dict to add enforcement for new delivery channels.
 CHANNEL_REQUIREMENTS = {
-    ("ingredients", "ingredient"): {
-        "channel": "ingredient",
-        "label": "used as ingredient",
-    },
-    ("crafted_items", "enchantment"): {
-        "channel": "enchantment",
-        "label": "used as enchantment",
-    },
+    "ingredient": "ingredient",
+    "enchantment": "enchantment",
 }
 
 
-def _build_channel_violation(
-    effect_ref,
-    required_channel,
-    declared_channels,
-    parent_key,
-    file_path,
-    context_label,
+def _format_channel_violation(
+    effect_ref, required_channel, declared_channels, location
 ):
     declared = sorted(declared_channels) if declared_channels else []
+    effect_key = effect_ref.split("/")[-1] if "/" in effect_ref else effect_ref
     return (
-        f"effect {effect_ref} in '{parent_key}' ({file_path}) "
-        f"{context_label} but does not declare '{required_channel}' channel "
-        f"(declares: {declared})"
+        f"Validation Error:\n"
+        f"  Effect '{effect_key}' is used as '{required_channel}' in {location},\n"
+        f"  but only declares these channels: {declared}"
     )
 
 
-def check_effect_channel(effect_ref, required_channel, effect_channels):
-    """Return True if the effect is permitted for the given delivery channel.
+def validate_effect_channel(effect_ref, used_in, effect_channels):
+    """Return True if the effect is permitted for the given delivery context.
 
-    - module: refs are accepted (no channel data for arbitrary modules).
-    - core:effect/<key> refs are checked against the effect's declared channels.
-    - Returns True for unresolvable refs (existence errors are caught elsewhere).
+    The required channel is looked up from CHANNEL_REQUIREMENTS using `used_in`.
+    Module refs (module:) are accepted without channel data.
+    Non-core refs pass silently (existence errors are caught elsewhere).
     """
     if not isinstance(effect_ref, str) or effect_channels is None:
         return True
     if effect_ref.startswith("module:"):
         return True
     if not effect_ref.startswith("core:"):
+        return True
+    required_channel = CHANNEL_REQUIREMENTS.get(used_in)
+    if required_channel is None:
         return True
     declared = effect_channels.get(effect_ref, set())
     return required_channel in declared
@@ -574,7 +565,6 @@ def check_references(
                         errors.append(f"ability effect {eid!r} does not resolve")
 
     elif coll_name == "ingredients":
-        entry = CHANNEL_REQUIREMENTS.get(("ingredients", "ingredient"))
         for i in data.get("ingredients", []):
             if not isinstance(i, dict):
                 continue
@@ -588,22 +578,18 @@ def check_references(
                     eid, namespaced_ref_index
                 ):
                     errors.append(f"effect {eid!r} does not resolve")
-                if (
-                    entry
-                    and isinstance(eid, str)
-                    and not check_effect_channel(eid, entry["channel"], effect_channels)
+                if isinstance(eid, str) and not validate_effect_channel(
+                    eid, "ingredient", effect_channels
                 ):
                     declared = (
                         effect_channels.get(eid, set()) if effect_channels else set()
                     )
                     errors.append(
-                        _build_channel_violation(
+                        _format_channel_violation(
                             eid,
-                            entry["channel"],
+                            CHANNEL_REQUIREMENTS["ingredient"],
                             declared,
-                            ikey,
-                            rel_path,
-                            entry["label"],
+                            f"ingredient '{ikey}' ({rel_path})",
                         )
                     )
 
@@ -741,7 +727,6 @@ def check_references(
                     errors.append(
                         f"crafted item '{ckey}': engraving gem_key '{gk}' does not resolve to any gem"
                     )
-            entry = CHANNEL_REQUIREMENTS.get(("crafted_items", "enchantment"))
             for ench in ci.get("enchantments", []) or []:
                 if isinstance(ench, dict):
                     eid = ench.get("effect")
@@ -755,12 +740,8 @@ def check_references(
                         errors.append(
                             f"crafted item '{ckey}' enchantment effect {eid!r} does not resolve"
                         )
-                    if (
-                        entry
-                        and isinstance(eid, str)
-                        and not check_effect_channel(
-                            eid, entry["channel"], effect_channels
-                        )
+                    if isinstance(eid, str) and not validate_effect_channel(
+                        eid, "enchantment", effect_channels
                     ):
                         declared = (
                             effect_channels.get(eid, set())
@@ -768,13 +749,11 @@ def check_references(
                             else set()
                         )
                         errors.append(
-                            _build_channel_violation(
+                            _format_channel_violation(
                                 eid,
-                                entry["channel"],
+                                CHANNEL_REQUIREMENTS["enchantment"],
                                 declared,
-                                ckey,
-                                rel_path,
-                                entry["label"],
+                                f"enchantment on crafted item '{ckey}' ({rel_path})",
                             )
                         )
             for coat in ci.get("coatings", []) or []:
