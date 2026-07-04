@@ -84,7 +84,7 @@ This is the most important thing to understand before editing schemas or data:
   - Phase drives **interaction** between effects via the cycles; color drives which skill governs the effect.
   - Equipment base templates assign a default phase per weapon/armor type. Material overrides in the overrides object can change the phase on a per-item basis.
 - **Shared effect registry**: `data/effects/core.json` is the single pool. Spells, consumables, and ingredients reference effects by string key via the `appliedEffect` shape. Respect each effect's `channels`.
-- **Effect channel enforcement** is active in `validate.py`. The validator checks that effects used as `ingredient` declare the `"ingredient"` channel, and effects used as `enchantment` (in `crafted_items`) declare the `"enchantment"` channel. Module refs (`module:`) are accepted without channel checks.
+- **Effect channel enforcement** is active in `validate.py` via `CHANNEL_REQUIREMENTS` — a lookup table mapping `(collection, context)` to a required channel. Currently enforced: `ingredient` → `"ingredient"` channel, `enchantment` → `"enchantment"` channel. Module refs (`module:`) are accepted without channel checks. Add a new entry to the table to extend enforcement to future channels.
 - **Races & lineage** (see `docs/modules/race.md` and `race.schema.json`):
   - `lineage.role`: `standalone`, `parent`, `subrace`, `template`, or `kin`.
   - Parent → subrace = inheritance (subrace can override some fields, e.g. phase).

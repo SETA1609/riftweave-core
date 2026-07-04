@@ -22,6 +22,81 @@ MONSTERS_BASES_DIR = DATA_DIR / "monsters" / "bases"
 # Cache for equipment base templates (loaded lazily for valid_materials checks).
 _EQUIPMENT_BASES_CACHE = None
 
+# Channel requirement definitions.
+# Each entry maps a (collection_name, context_label) to the channel that
+# must be declared when an effect is used in that context.
+# Extend this dict to add support for new delivery channels.
+CHANNEL_REQUIREMENTS = {
+    ("ingredients", "ingredient"): {
+        "channel": "ingredient",
+        "label": "used as ingredient",
+    },
+    ("crafted_items", "enchantment"): {
+        "channel": "enchantment",
+        "label": "used as enchantment",
+    },
+}
+
+
+def _build_channel_violation(
+    effect_ref,
+    required_channel,
+    declared_channels,
+    parent_key,
+    file_path,
+    context_label,
+):
+    declared = sorted(declared_channels) if declared_channels else []
+    return (
+        f"effect {effect_ref} in '{parent_key}' ({file_path}) "
+        f"{context_label} but does not declare '{required_channel}' channel "
+        f"(declares: {declared})"
+    )
+
+
+def check_effect_channel(effect_ref, required_channel, effect_channels):
+    """Return True if the effect is permitted for the given delivery channel.
+
+    - module: refs are accepted (no channel data for arbitrary modules).
+    - core:effect/<key> refs are checked against the effect's declared channels.
+    - Returns True for unresolvable refs (existence errors are caught elsewhere).
+    """
+    if not isinstance(effect_ref, str) or effect_channels is None:
+        return True
+    if effect_ref.startswith("module:"):
+        return True
+    if not effect_ref.startswith("core:"):
+        return True
+    declared = effect_channels.get(effect_ref, set())
+    return required_channel in declared
+
+
+def build_effect_channels(data_files, module_data_files=None):
+    """Build 'core:effect/<key>' -> set(channels) map for enforcement.
+
+    Collects from core and module data files (later entries override,
+    supporting module overrides of core effects).
+    """
+    channels = {}
+    fps = list(data_files or [])
+    if module_data_files:
+        fps.extend(fp for fp, _ in module_data_files)
+    for fp in fps:
+        try:
+            data = json.loads(fp.read_text())
+        except (json.JSONDecodeError, OSError):
+            continue
+        effs = data.get("effects")
+        if not isinstance(effs, list):
+            continue
+        for item in effs:
+            if isinstance(item, dict):
+                key = item.get("key")
+                chlist = item.get("channels")
+                if isinstance(key, str) and isinstance(chlist, list):
+                    channels[f"core:effect/{key}"] = set(chlist)
+    return channels
+
 
 def _load_equipment_bases_cache():
     """Load all equipment base templates and cache them.
@@ -252,53 +327,6 @@ def resolve_namespaced_ref(ref, namespaced_ref_index):
     return ref in namespaced_ref_index
 
 
-def check_effect_channel(effect_ref, required_channel, effect_channels):
-    """Return True if the effect is permitted for the given delivery channel.
-
-    - module: refs are accepted (we do not have full channel data for arbitrary modules).
-    - core:effect/<key> refs are checked against the effect's declared channels.
-    - Missing map or non-string is treated as pass (ref existence errors handle bad refs).
-    - Error messages include the declared list to help data authors fix violations.
-    """
-    if not isinstance(effect_ref, str) or effect_channels is None:
-        return True
-    if effect_ref.startswith("module:"):
-        return True
-    if not effect_ref.startswith("core:"):
-        return True
-    declared = effect_channels.get(effect_ref, set())
-    return required_channel in declared
-
-
-def build_effect_channels(data_files, module_data_files=None):
-    """Build 'core:effect/<key>' -> set(channels) map for enforcement.
-
-    Collects from core data files and module data files (later entries override,
-    supporting module overrides of core effects). Uses same scan pattern as
-    build_namespaced_ref_index. Only 'enchantment' and 'ingredient' channels
-    are enforced in this change; other channels remain for future work.
-    """
-    channels = {}
-    fps = list(data_files or [])
-    if module_data_files:
-        fps.extend(fp for fp, _ in module_data_files)
-    for fp in fps:
-        try:
-            data = json.loads(fp.read_text())
-        except (json.JSONDecodeError, OSError):
-            continue
-        effs = data.get("effects")
-        if not isinstance(effs, list):
-            continue
-        for item in effs:
-            if isinstance(item, dict):
-                key = item.get("key")
-                chlist = item.get("channels")
-                if isinstance(key, str) and isinstance(chlist, list):
-                    channels[f"core:effect/{key}"] = set(chlist)
-    return channels
-
-
 def _collect_equipment_namespaced_keys(
     data_files, module_data_files=None, rel_base=ROOT
 ):
@@ -370,6 +398,7 @@ def check_equipment_uniqueness(data_files, module_data_files=None, rel_base=ROOT
 def check_references(
     data,
     coll_name,
+    rel_path="",
     equipment_index=None,
     namespaced_ref_index=None,
     effect_channels=None,
@@ -545,9 +574,11 @@ def check_references(
                         errors.append(f"ability effect {eid!r} does not resolve")
 
     elif coll_name == "ingredients":
+        entry = CHANNEL_REQUIREMENTS.get(("ingredients", "ingredient"))
         for i in data.get("ingredients", []):
             if not isinstance(i, dict):
                 continue
+            ikey = i.get("key", "?")
             for eid in i.get("effects", []) or []:
                 if isinstance(eid, int):
                     errors.append(
@@ -557,16 +588,23 @@ def check_references(
                     eid, namespaced_ref_index
                 ):
                     errors.append(f"effect {eid!r} does not resolve")
-                if isinstance(eid, str) and not check_effect_channel(
-                    eid, "ingredient", effect_channels
+                if (
+                    entry
+                    and isinstance(eid, str)
+                    and not check_effect_channel(eid, entry["channel"], effect_channels)
                 ):
                     declared = (
-                        sorted(effect_channels.get(eid, set()))
-                        if effect_channels
-                        else []
+                        effect_channels.get(eid, set()) if effect_channels else set()
                     )
                     errors.append(
-                        f"effect {eid!r} used as ingredient but does not declare 'ingredient' channel (declares: {declared})"
+                        _build_channel_violation(
+                            eid,
+                            entry["channel"],
+                            declared,
+                            ikey,
+                            rel_path,
+                            entry["label"],
+                        )
                     )
 
     elif coll_name == "conditions":
@@ -703,6 +741,7 @@ def check_references(
                     errors.append(
                         f"crafted item '{ckey}': engraving gem_key '{gk}' does not resolve to any gem"
                     )
+            entry = CHANNEL_REQUIREMENTS.get(("crafted_items", "enchantment"))
             for ench in ci.get("enchantments", []) or []:
                 if isinstance(ench, dict):
                     eid = ench.get("effect")
@@ -716,16 +755,27 @@ def check_references(
                         errors.append(
                             f"crafted item '{ckey}' enchantment effect {eid!r} does not resolve"
                         )
-                    if isinstance(eid, str) and not check_effect_channel(
-                        eid, "enchantment", effect_channels
+                    if (
+                        entry
+                        and isinstance(eid, str)
+                        and not check_effect_channel(
+                            eid, entry["channel"], effect_channels
+                        )
                     ):
                         declared = (
-                            sorted(effect_channels.get(eid, set()))
+                            effect_channels.get(eid, set())
                             if effect_channels
-                            else []
+                            else set()
                         )
                         errors.append(
-                            f"crafted item '{ckey}' enchantment effect {eid!r} does not declare 'enchantment' channel (declares: {declared})"
+                            _build_channel_violation(
+                                eid,
+                                entry["channel"],
+                                declared,
+                                ckey,
+                                rel_path,
+                                entry["label"],
+                            )
                         )
             for coat in ci.get("coatings", []) or []:
                 if isinstance(coat, dict):
@@ -1079,6 +1129,7 @@ def _validate_single_data_file(
         ref_errors = check_references(
             data,
             coll_name,
+            rel_path=str(rel),
             equipment_index=equipment_index,
             namespaced_ref_index=namespaced_ref_index,
             effect_channels=effect_channels,
