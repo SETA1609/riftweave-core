@@ -22,6 +22,72 @@ MONSTERS_BASES_DIR = DATA_DIR / "monsters" / "bases"
 # Cache for equipment base templates (loaded lazily for valid_materials checks).
 _EQUIPMENT_BASES_CACHE = None
 
+# Mapping: delivery context name -> required channel name.
+# Extend this dict to add enforcement for new delivery channels.
+CHANNEL_REQUIREMENTS = {
+    "ingredient": "ingredient",
+    "enchantment": "enchantment",
+}
+
+
+def _format_channel_violation(
+    effect_ref, required_channel, declared_channels, location
+):
+    declared = sorted(declared_channels) if declared_channels else []
+    effect_key = effect_ref.split("/")[-1] if "/" in effect_ref else effect_ref
+    return (
+        f"Validation Error:\n"
+        f"  Effect '{effect_key}' is used as '{required_channel}' in {location},\n"
+        f"  but only declares these channels: {declared}"
+    )
+
+
+def validate_effect_channel(effect_ref, used_in, effect_channels):
+    """Return True if the effect is permitted for the given delivery context.
+
+    The required channel is looked up from CHANNEL_REQUIREMENTS using `used_in`.
+    Module refs (module:) are accepted without channel data.
+    Non-core refs pass silently (existence errors are caught elsewhere).
+    """
+    if not isinstance(effect_ref, str) or effect_channels is None:
+        return True
+    if effect_ref.startswith("module:"):
+        return True
+    if not effect_ref.startswith("core:"):
+        return True
+    required_channel = CHANNEL_REQUIREMENTS.get(used_in)
+    if required_channel is None:
+        return True
+    declared = effect_channels.get(effect_ref, set())
+    return required_channel in declared
+
+
+def build_effect_channels(data_files, module_data_files=None):
+    """Build 'core:effect/<key>' -> set(channels) map for enforcement.
+
+    Collects from core and module data files (later entries override,
+    supporting module overrides of core effects).
+    """
+    channels = {}
+    fps = list(data_files or [])
+    if module_data_files:
+        fps.extend(fp for fp, _ in module_data_files)
+    for fp in fps:
+        try:
+            data = json.loads(fp.read_text())
+        except (json.JSONDecodeError, OSError):
+            continue
+        effs = data.get("effects")
+        if not isinstance(effs, list):
+            continue
+        for item in effs:
+            if isinstance(item, dict):
+                key = item.get("key")
+                chlist = item.get("channels")
+                if isinstance(key, str) and isinstance(chlist, list):
+                    channels[f"core:effect/{key}"] = set(chlist)
+    return channels
+
 
 def _load_equipment_bases_cache():
     """Load all equipment base templates and cache them.
@@ -323,8 +389,10 @@ def check_equipment_uniqueness(data_files, module_data_files=None, rel_base=ROOT
 def check_references(
     data,
     coll_name,
+    rel_path="",
     equipment_index=None,
     namespaced_ref_index=None,
+    effect_channels=None,
 ):
     """Return list of referential integrity error messages."""
     errors = []
@@ -500,6 +568,7 @@ def check_references(
         for i in data.get("ingredients", []):
             if not isinstance(i, dict):
                 continue
+            ikey = i.get("key", "?")
             for eid in i.get("effects", []) or []:
                 if isinstance(eid, int):
                     errors.append(
@@ -509,6 +578,20 @@ def check_references(
                     eid, namespaced_ref_index
                 ):
                     errors.append(f"effect {eid!r} does not resolve")
+                if isinstance(eid, str) and not validate_effect_channel(
+                    eid, "ingredient", effect_channels
+                ):
+                    declared = (
+                        effect_channels.get(eid, set()) if effect_channels else set()
+                    )
+                    errors.append(
+                        _format_channel_violation(
+                            eid,
+                            CHANNEL_REQUIREMENTS["ingredient"],
+                            declared,
+                            f"ingredient '{ikey}' ({rel_path})",
+                        )
+                    )
 
     elif coll_name == "conditions":
         for c in data.get("conditions", []):
@@ -656,6 +739,22 @@ def check_references(
                     ):
                         errors.append(
                             f"crafted item '{ckey}' enchantment effect {eid!r} does not resolve"
+                        )
+                    if isinstance(eid, str) and not validate_effect_channel(
+                        eid, "enchantment", effect_channels
+                    ):
+                        declared = (
+                            effect_channels.get(eid, set())
+                            if effect_channels
+                            else set()
+                        )
+                        errors.append(
+                            _format_channel_violation(
+                                eid,
+                                CHANNEL_REQUIREMENTS["enchantment"],
+                                declared,
+                                f"enchantment on crafted item '{ckey}' ({rel_path})",
+                            )
                         )
             for coat in ci.get("coatings", []) or []:
                 if isinstance(coat, dict):
@@ -949,6 +1048,7 @@ def _validate_single_data_file(
     rel_base,
     equipment_index=None,
     namespaced_ref_index=None,
+    effect_channels=None,
 ):
     """Validate one data file against its $schema and check cross-references.
 
@@ -1008,8 +1108,10 @@ def _validate_single_data_file(
         ref_errors = check_references(
             data,
             coll_name,
+            rel_path=str(rel),
             equipment_index=equipment_index,
             namespaced_ref_index=namespaced_ref_index,
+            effect_channels=effect_channels,
         )
         errors.extend(f"REF: {e}" for e in ref_errors)
 
@@ -1018,7 +1120,7 @@ def _validate_single_data_file(
     return True, [], rel
 
 
-def validate_modules(store, equipment_index=None):
+def validate_modules(store, equipment_index=None, effect_channels=None):
     """Discover and validate modules.
     Returns (module_passed, module_failed, module_total, module_conflicts).
     """
@@ -1073,7 +1175,11 @@ def validate_modules(store, equipment_index=None):
                 continue
 
             p, errs, rel = _validate_single_data_file(
-                fp, store, ROOT.parent, equipment_index=equipment_index
+                fp,
+                store,
+                ROOT.parent,
+                equipment_index=equipment_index,
+                effect_channels=effect_channels,
             )
             if p is None:
                 print(f"  \u26a0  {rel}: no $schema field, skipping")
@@ -1102,6 +1208,7 @@ def main():
         data_files, module_data_files, rel_base=ROOT
     )
     namespaced_ref_index = build_namespaced_ref_index(data_files, module_data_files)
+    effect_channels = build_effect_channels(data_files, module_data_files)
     total = passed = failed = 0
 
     equip_errors = check_equipment_uniqueness(
@@ -1120,6 +1227,7 @@ def main():
             ROOT,
             equipment_index=equipment_index,
             namespaced_ref_index=namespaced_ref_index,
+            effect_channels=effect_channels,
         )
         if p is None:
             print(f"  \u26a0  {rel}: no $schema field, skipping")
@@ -1141,7 +1249,7 @@ def main():
 
     # Module validation pass
     mod_passed, mod_failed, mod_total, mod_conflicts = validate_modules(
-        store, equipment_index=equipment_index
+        store, equipment_index=equipment_index, effect_channels=effect_channels
     )
 
     combined_passed = passed + mod_passed

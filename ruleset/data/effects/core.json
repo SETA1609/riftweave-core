@@ -32,7 +32,8 @@
       "channels": [
         "spell",
         "coating",
-        "ingredient"
+        "ingredient",
+        "enchantment"
       ],
       "tags": [
         "elemental",
@@ -534,7 +535,8 @@
         "innate",
         "spell",
         "potion",
-        "enchantment"
+        "enchantment",
+        "ingredient"
       ],
       "tags": [
         "attribute",
@@ -1001,7 +1003,8 @@
         "spell",
         "coating",
         "ingredient",
-        "trap"
+        "trap",
+        "enchantment"
       ],
       "tags": [
         "elemental",
