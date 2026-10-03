@@ -2,6 +2,8 @@
 
 Riftweave is designed to be extended through optional **modules**. Modules allow you to add new mechanics, content, and data without bloating or modifying the core ruleset.
 
+The sentence a module is allowed to say is the kernel contract: [../core/contract.md](../core/contract.md). A module may read an actor snapshot and emit modifiers, packets, or items. It may not call another system's procedure, require another module for a core action to resolve, or invent a second stacking rule.
+
 ## Goals
 
 - Keep the **core** minimal, stable, and focused on foundational rules (abilities, classes, races, basic equipment, spells, features).
@@ -30,6 +32,7 @@ Modules should follow the same data-oriented principles as the core:
 - **Self-describing** — module data should declare its schemas.
 - **Source traceability** — use the `source` field so tools can attribute content to specific modules/books.
 - **Composable** — a module should be possible to include or exclude without breaking core validation (future goal).
+- **Contract-bound** — a module emits modifiers and events from [the kernel contract](../core/contract.md). It does not call combat, advancement, or alchemy by name.
 
 ## Module Structure
 
@@ -55,6 +58,11 @@ Modules may:
 - Add entirely new top-level collections (e.g. `recipes`).
 - Contribute new entries to existing collections (e.g. new `features`, new `equipment` items).
 - Define new effect types or prerequisite kinds (documented in the module's schema/docs).
+
+Modules may not:
+- Call another system's procedure.
+- Override a core row. Duplicate ids are conflicts.
+- Make level-up, attack resolution, or inventory require this module to be loaded.
 
 ## Using This Directory
 
