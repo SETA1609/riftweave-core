@@ -210,7 +210,7 @@ character receives the following base package:
 - A pool of **skill points**: `5 + INT × 2 + random(0…LCK)`. Normal skills are
   bought at a 2:1 ratio (2 points for +1 rating). Tagged skills are bought at a 1:1
   ratio (1 point for +1 rating). Same pool, double efficiency on focus skills.
-- **Resource growth** (added to maximums):
+- **Resource growth** (added to maximums). Closed form is [`ruleset/data/derived/core.json`](../../ruleset/data/derived/core.json). These bullets are the grant, not a second formula.
   - Hit Points: `END × 8 + 4`
   - Mana (MP): `INT × 8 + 2`
   - Stamina (SP, action-combat mode): `END × 5 + 2`
@@ -405,10 +405,16 @@ potency, overcoming → cures/antidotes).
 
 ## Derived statistics (reference formulas)
 
+Coefficients for HP, MP, AP, carry, and initiative are owned by
+[`ruleset/data/derived/core.json`](../../ruleset/data/derived/core.json).
+The function and one numeric example are in
+[`docs/core/derived.md`](../core/derived.md). The table below is a copy.
+A module emits a modifier on the result. It does not write a second max.
+
 A character runs on **three resources**. The third changes shape with the combat
 mode: a turn-based (TTRPG) game uses **Action Points** (a shared pool), while an
 action-combat game drains a **Stamina** pool. See `attributes.md` § The three
-resources.
+resources. Stamina is not in the derived data file.
 
 | Stat | Formula / Rule |
 | --- | --- |

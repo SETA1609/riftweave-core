@@ -1,0 +1,56 @@
+{
+  "$schema": "../../schemas/derived.schema.json",
+  "derived": [
+    {
+      "key": "hp",
+      "label": "Hit points",
+      "attr": "end",
+      "base": 15,
+      "per_point": 8,
+      "per_level_attr": 0,
+      "per_level_flat": 4,
+      "unit": "points"
+    },
+    {
+      "key": "mp",
+      "label": "Mana",
+      "attr": "int",
+      "base": 0,
+      "per_point": 8,
+      "per_level_attr": 0,
+      "per_level_flat": 2,
+      "unit": "points"
+    },
+    {
+      "key": "ap",
+      "label": "Action points",
+      "attr": "agi",
+      "base": 2,
+      "per_point": 1,
+      "per_point_divisor": 3,
+      "per_level_attr": 0,
+      "per_level_flat": 0,
+      "unit": "points"
+    },
+    {
+      "key": "carry",
+      "label": "Carry weight",
+      "attr": "str",
+      "base": 25,
+      "per_point": 10,
+      "per_level_attr": 0,
+      "per_level_flat": 0,
+      "unit": "lb"
+    },
+    {
+      "key": "initiative",
+      "label": "Initiative",
+      "attr": "per",
+      "base": 0,
+      "per_point": 1,
+      "per_level_attr": 0,
+      "per_level_flat": 0,
+      "unit": "points"
+    }
+  ]
+}
