@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Resolution",
-  "description": "The one d100 roll-under function. Crit and fumble are tags. A module may shift the window with a modifier. It may not add a second roll.",
+  "description": "The one d100 roll-under function. Crit and fumble are tags. A target over 100 is legal. A fumble face still fails.",
   "type": "object",
   "properties": {
     "$schema": { "type": "string" },
@@ -16,7 +16,7 @@
         "die": { "type": "integer", "const": 100 },
         "success": {
           "type": "string",
-          "const": "roll <= target"
+          "const": "roll <= target and roll < fumble_at"
         },
         "margin": {
           "type": "string",
@@ -37,13 +37,22 @@
           "minimum": 96,
           "maximum": 100
         },
+        "fumble_fails": {
+          "type": "boolean",
+          "const": true,
+          "description": "A roll at or over fumble_at fails even when target is over 100."
+        },
+        "target_cap": {
+          "type": "null",
+          "description": "No cap. Bonuses may push the check target past 100. The spare eats penalties."
+        },
         "tags": {
           "type": "array",
           "items": { "type": "string", "enum": ["crit", "fumble"] },
           "minItems": 2
         }
       },
-      "required": ["die", "success", "margin", "crit_window", "crit_window_per_two_luck", "fumble_at", "tags"],
+      "required": ["die", "success", "margin", "crit_window", "crit_window_per_two_luck", "fumble_at", "fumble_fails", "target_cap", "tags"],
       "additionalProperties": false
     }
   }
