@@ -4,9 +4,7 @@
     "critical": {
       "naturalCritRange": 5,
       "fumbleRange": 100,
-      "confirmationBonusPerLck": 0.5,
-      "critDamageMultiplier": 2.0,
-      "videoGameCritMultiplier": 1.5
+      "critDamageMultiplier": 2.0
     },
     "hitQuality": {
       "solidMarginThreshold": 20,

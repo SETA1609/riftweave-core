@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Resolution",
+  "description": "The one d100 roll-under function. Crit and fumble are tags. A module may shift the window with a modifier. It may not add a second roll.",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "resolution": { "$ref": "#/definitions/resolution" }
+  },
+  "required": ["resolution"],
+  "additionalProperties": false,
+  "definitions": {
+    "resolution": {
+      "type": "object",
+      "properties": {
+        "die": { "type": "integer", "const": 100 },
+        "success": {
+          "type": "string",
+          "const": "roll <= target"
+        },
+        "margin": {
+          "type": "string",
+          "const": "target - roll"
+        },
+        "crit_window": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 20
+        },
+        "crit_window_per_two_luck": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Luck emits add crit_window floor(LCK / this divisor). 2 means +1 per 2 LCK."
+        },
+        "fumble_at": {
+          "type": "integer",
+          "minimum": 96,
+          "maximum": 100
+        },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["crit", "fumble"] },
+          "minItems": 2
+        }
+      },
+      "required": ["die", "success", "margin", "crit_window", "crit_window_per_two_luck", "fumble_at", "tags"],
+      "additionalProperties": false
+    }
+  }
+}

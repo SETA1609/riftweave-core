@@ -1,0 +1,12 @@
+{
+  "$schema": "../../schemas/resolution.schema.json",
+  "resolution": {
+    "die": 100,
+    "success": "roll <= target",
+    "margin": "target - roll",
+    "crit_window": 5,
+    "crit_window_per_two_luck": 2,
+    "fumble_at": 100,
+    "tags": ["crit", "fumble"]
+  }
+}
