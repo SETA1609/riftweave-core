@@ -9,10 +9,16 @@ It is a **classless**, **d100 roll-under** system: characters are defined by eig
 attributes, point-buy skills with tagging, and perks. See
 [docs/modules/progression.md](docs/modules/progression.md) for the system overview.
 
+The shared sentence between systems is the kernel contract:
+[docs/core/contract.md](docs/core/contract.md). A system may read an actor snapshot
+and emit modifiers or events. It may not call another system's procedure.
+
 ## Project structure
 
 ```
 docs/
+  core/
+    contract.md       Actor snapshot, modifier, event. The only shared sentence.
   modules/            Documentation for optional, composable extensions
     README.md
     progression.md    Core system: attributes, skills, perks, dice, magic
@@ -48,6 +54,7 @@ ruleset/
 
 See [docs/modules/README.md](docs/modules/README.md) for the current thinking on
 extensibility and planned optional modules (crafting, alchemy, magic crafting, etc.).
+Modules must speak the kernel contract. They must not call another system's procedure.
 
 ## Validation
 
