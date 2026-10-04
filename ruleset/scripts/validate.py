@@ -386,6 +386,81 @@ def check_equipment_uniqueness(data_files, module_data_files=None, rel_base=ROOT
     return errors
 
 
+DAMAGE_TYPE_ALIASES = {
+    "cold": "frost",
+    "lightning": "shock",
+}
+
+
+def load_canonical_damage_types(data_dir=DATA_DIR):
+    """Return the damage-type keys from the combat registry. One vocabulary."""
+    path = data_dir / "combat" / "damage_types.json"
+    data = json.loads(path.read_text())
+    keys = set()
+    for item in data.get("damage_types", []):
+        if isinstance(item, dict) and isinstance(item.get("key"), str):
+            keys.add(item["key"])
+    return keys
+
+
+def _damage_type_error(found, source, canonical):
+    alias = DAMAGE_TYPE_ALIASES.get(found)
+    if alias:
+        return (
+            f"damage type '{found}' in {source} is not canonical; use '{alias}'"
+        )
+    return (
+        f"damage type '{found}' in {source} is not in damage_types.json "
+        f"(known: {', '.join(sorted(canonical))})"
+    )
+
+
+def check_damage_type_vocabulary(data_files, canonical, rel_base=ROOT):
+    """Reject weapon damage types and armor resistance keys outside the registry.
+
+    cold/lightning are aliases, not keys. Bases are included because validate.py
+    does not schema-check bases/ on its own.
+    """
+    errors = []
+    if not canonical:
+        return ["damage_types.json has no keys; cannot check vocabulary"]
+
+    def consider(found, source):
+        if not isinstance(found, str) or found in canonical:
+            return
+        errors.append(_damage_type_error(found, source, canonical))
+
+    for rel, _category, item in _iter_equipment_entries(data_files, rel_base=rel_base):
+        key = item.get("key", "?")
+        weapon = (item.get("overrides") or {}).get("weapon") or item.get("weapon") or {}
+        damage = weapon.get("damage") or {}
+        consider(damage.get("type"), f"{rel}:{key}")
+        armor = (item.get("overrides") or {}).get("armor") or item.get("armor") or {}
+        resistances = armor.get("resistances") or {}
+        if isinstance(resistances, dict):
+            for tag in resistances:
+                consider(tag, f"{rel}:{key} resistances")
+
+    bases = rel_base / "data" / "equipment" / "bases"
+    if bases.exists():
+        for fp in sorted(bases.rglob("*.json")):
+            try:
+                item = json.loads(fp.read_text())
+            except (json.JSONDecodeError, OSError):
+                continue
+            if not isinstance(item, dict):
+                continue
+            rel = fp.relative_to(rel_base)
+            key = item.get("key", fp.stem)
+            weapon = item.get("weapon") or {}
+            consider((weapon.get("damage") or {}).get("type"), f"{rel}:{key}")
+            resistances = (item.get("armor") or {}).get("resistances") or {}
+            if isinstance(resistances, dict):
+                for tag in resistances:
+                    consider(tag, f"{rel}:{key} resistances")
+    return errors
+
+
 def check_references(
     data,
     coll_name,
@@ -1217,6 +1292,15 @@ def main():
     if equip_errors:
         print("  \u2717  equipment (cross-file id/key uniqueness)")
         for e in equip_errors:
+            print(f"       {e}")
+        failed += 1
+
+    damage_errors = check_damage_type_vocabulary(
+        data_files, load_canonical_damage_types(), rel_base=ROOT
+    )
+    if damage_errors:
+        print("  ✗  damage type vocabulary")
+        for e in damage_errors:
             print(f"       {e}")
         failed += 1
 

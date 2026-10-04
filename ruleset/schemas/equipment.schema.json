@@ -72,7 +72,7 @@
               "type": "object",
               "properties": {
                 "dice": { "$ref": "schema.json#/definitions/diceExpression" },
-                "type": { "type": "string", "enum": ["bludgeoning", "piercing", "slashing", "fire", "cold", "lightning", "acid", "poison", "necrotic", "radiant", "psychic", "force", "thunder"] }
+                "type": { "$ref": "schema.json#/definitions/damageType" }
               },
               "required": ["dice", "type"],
               "additionalProperties": false
@@ -113,7 +113,8 @@
             },
             "resistances": {
               "type": "object",
-              "description": "Per-damage-type resistance modifiers for this armor piece. Keys are damage type keys (e.g. 'fire', 'frost', 'slashing', 'piercing'). Values are flat DR added against that damage type, or percentage resistance when negative. Example: { \"fire\": 5, \"frost\": -3 } means +5 DR vs fire, -3 DR vs frost.",
+              "description": "Per-damage-type resistance modifiers for this armor piece. Keys are damageType (e.g. fire, frost, slashing). cold and lightning are rejected; use frost and shock. Values are flat DR added against that damage type. Example: { \"fire\": 5, \"frost\": -3 } means +5 DR vs fire, -3 DR vs frost.",
+              "propertyNames": { "$ref": "schema.json#/definitions/damageType" },
               "additionalProperties": { "type": "integer" }
             }
           },

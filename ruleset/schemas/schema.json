@@ -31,6 +31,11 @@
       "enum": ["wood", "fire", "earth", "metal", "water"],
       "description": "Wuxing (五行) five-phase tag. Governs how an effect INTERACTS with other effects via the generating/overcoming/insulting/weakening cycles (see data/wuxing). Orthogonal to color: color picks the governing <color>_magic skill, phase picks the elemental relationship. Omit for non-elemental effects, which do not participate in the cycles."
     },
+    "damageType": {
+      "type": "string",
+      "enum": ["bludgeoning", "piercing", "slashing", "fire", "frost", "shock", "acid", "poison", "necrotic", "radiant", "psychic", "force", "thunder"],
+      "description": "Canonical damage tag. Keys match ruleset/data/combat/damage_types.json. cold is not a key: use frost. lightning is not a key: use shock. Do not add a second vocabulary."
+    },
     "qualityGrade": {
       "type": "string",
       "enum": ["petty", "minor", "lesser", "common", "major", "greater", "grand", "legendary"],

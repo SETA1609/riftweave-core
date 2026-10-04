@@ -19,7 +19,9 @@ sys.path.insert(0, str(_SCRIPTS))
 from validate import (
     build_equipment_index,
     build_namespaced_ref_index,
+    check_damage_type_vocabulary,
     check_equipment_uniqueness,
+    load_canonical_damage_types,
     check_references,
     equipment_ref_valid,
     resolve_namespaced_ref,
@@ -281,3 +283,55 @@ class TestCraftedItemsRefValidation(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestDamageTypeVocabulary(unittest.TestCase):
+    def test_rejects_cold_alias_and_accepts_frost(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            weapons = root / "data" / "equipment" / "weapons.json"
+            weapons.parent.mkdir(parents=True, exist_ok=True)
+            weapons.write_text(
+                json.dumps(
+                    {
+                        "equipment": [
+                            {
+                                "id": 45,
+                                "key": "frost_blade",
+                                "overrides": {"weapon": {"damage": {"type": "cold"}}},
+                            }
+                        ]
+                    }
+                )
+            )
+            errors = check_damage_type_vocabulary(
+                [weapons], {"frost", "slashing"}, rel_base=root
+            )
+            self.assertEqual(len(errors), 1)
+            self.assertIn("use 'frost'", errors[0])
+
+    def test_live_registry_matches_schema_and_backgrounds_resolve(self):
+        root = Path(__file__).resolve().parent.parent
+        canonical = load_canonical_damage_types(root / "data")
+        self.assertIn("frost", canonical)
+        self.assertNotIn("cold", canonical)
+        self.assertNotIn("lightning", canonical)
+        data_files = list((root / "data").rglob("*.json"))
+        # bases are skipped by collect; this check includes them via the helper
+        equipment_files = [
+            fp for fp in data_files if fp.parent.name == "equipment" and fp.name.endswith(".json")
+        ]
+        errors = check_damage_type_vocabulary(equipment_files, canonical, rel_base=root)
+        self.assertEqual(errors, [])
+        from validate import build_equipment_index, equipment_ref_valid
+        index = build_equipment_index(equipment_files, rel_base=root)
+        backgrounds = json.loads((root / "data" / "backgrounds" / "core.json").read_text())
+        for bg in backgrounds["backgrounds"]:
+            for entry in bg.get("starting_equipment") or []:
+                ref = entry.get("item")
+                self.assertTrue(
+                    equipment_ref_valid(ref, {}, index),
+                    f"{bg.get('key')} item {ref} does not resolve",
+                )
+
+
