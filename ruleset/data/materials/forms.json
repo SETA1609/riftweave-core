@@ -1,0 +1,48 @@
+{
+  "$schema": "../../schemas/material_form.schema.json",
+  "forms": [
+    {
+      "key": "ore"
+    },
+    {
+      "key": "ingot"
+    },
+    {
+      "key": "fiber"
+    },
+    {
+      "key": "textile"
+    },
+    {
+      "key": "stamp"
+    }
+  ],
+  "recipes": [
+    {
+      "key": "smelt",
+      "from": "ore",
+      "to": "ingot",
+      "accepts": [
+        "metal"
+      ]
+    },
+    {
+      "key": "draw_fiber",
+      "from": "ingot",
+      "to": "fiber",
+      "accepts": [
+        "metal",
+        "plant"
+      ]
+    },
+    {
+      "key": "weave",
+      "from": "fiber",
+      "to": "textile",
+      "accepts": [
+        "metal",
+        "plant"
+      ]
+    }
+  ]
+}
