@@ -1,4 +1,4 @@
-Authority is the `modifiers` bundle in `ruleset/data/conditions/core.json`. A condition is a named bundle of contract modifiers plus a flag. `paralyzed` is `set ap 0` plus a flag. The TTRPG and video-game strings below are not the authority.
+Authority is the `modifiers` bundle in `ruleset/data/conditions/core.json`. A condition is a named bundle of contract modifiers plus a flag. `paralyzed` is `set ap 0` plus a flag. A point on the d100 is the unit. Write `-20`, not `-20%`. The percent sign is a second scale, and this ruleset does not have one.
 
 # Conditions & Status Effects
 
@@ -106,29 +106,29 @@ Data in `conditions/core.json` (24 entries). Each entry:
 
 | # | Key | TTRPG Effect | Video Game Effect | appliedBy (effect keys) |
 |---|-----|-------------|-------------------|----------------------|
-| 1 | blinded | −20 PER checks, auto-fail sight- dependent rolls, +10 to attackers | −20% accuracy, +10% enemy crit chance | 47* |
+| 1 | blinded | −20 PER checks, auto-fail sight- dependent rolls, +10 to attackers | -20 accuracy, +10 enemy crit | 47* |
 | 2 | charmed | Cannot attack charmer; charmer +20 social; damage breaks | Cannot target charmer; damage from charmer breaks | 48* |
-| 3 | deafened | −10 initiative, auto-fail hearing PER | −10% detect range, no audio cues | 49* |
-| 4 | frightened | −10 attack/checks while source in LoS, cannot approach | −10% damage, forced retreat if source closes | 22 (phobia) |
-| 5 | grappled | Speed 0, −10 attacks/AGI, contested athletics to escape | Immobilized, −10% attack, escape via skill | 50* |
+| 3 | deafened | −10 initiative, auto-fail hearing PER | -10 detect range, no audio cues | 49* |
+| 4 | frightened | −10 attack/checks while source in LoS, cannot approach | -10 damage, forced retreat if source closes | 22 (phobia) |
+| 5 | grappled | Speed 0, −10 attacks/AGI, contested athletics to escape | Immobilized, -10 attack, escape via skill | 50* |
 | 6 | incapacitated | No actions, bonus, or reactions | Cannot act or use abilities | 51* |
 | 7 | invisible | Cannot be seen; −20 enemy attacks, +10 your attacks | Stealthed; attacks break stealth | 8 (invisibility) |
 | 8 | paralyzed | Incapacitated + immobile; auto-fail STR/AGI; melee auto-crit | Immobilized + defenseless; melee hits guaranteed | 11, 43 |
-| 9 | petrified | Incapacitated; DR 20 vs all; immune poison/disease | DR +90%, cannot act, no HP regen | 52* |
+| 9 | petrified | Incapacitated; DR 20 vs all; immune poison/disease | DR +90, cannot act, no HP regen | 52* |
 | 10 | poisoned | Sub_effects of the source poison apply as symptoms; resist reduces | DoT/debuff from poison's sub_effects; automated | 46 (poison) |
-| 11 | prone | −20 melee attack, +10 vs ranged, half speed to stand | Knockdown; 1s to stand, ranged +15% vs you | 53* |
-| 12 | restrained | Speed 0, −20 attacks/AGI, +10 attacker | Immobilized, −20% attack, incoming +15% damage | 54* |
-| 13 | stunned | Incapacitated + immobile, −20 all, +10 attacker | Staggered (1–3s), cannot act, incoming +25% | 55* |
+| 11 | prone | −20 melee attack, +10 vs ranged, half speed to stand | Knockdown; 1s to stand, ranged +15 vs you | 53* |
+| 12 | restrained | Speed 0, −20 attacks/AGI, +10 attacker | Immobilized, -20 attack, incoming +15 damage | 54* |
+| 13 | stunned | Incapacitated + immobile, −20 all, +10 attacker | Staggered (1-3s), cannot act, incoming +25 | 55* |
 | 14 | unconscious | Incapacitated + prone; auto-fail STR/AGI; melee auto-crit | KO state; 0 HP, revive with healing | 56* |
 | 15 | exhaustion | Stacking (6 levels). L1: −10 checks. L3: −20, speed halved. L5: speed 0. L6: death | Stacking debuff with diminishing stats. L6: death | 40, 41, 42 |
 | 16 | burning | 1d4 fire/round; action to extinguish (AGI check, difficulty 10) | Fire DoT every 2s; extinguished by water/cure | 57 |
 | 17 | bleeding | 1 HP/round; Medicine check (difficulty 10) or bandage stops | Health DoT every 2s; severity 1–3 | 58 |
-| 18 | slowed | Speed halved; −10 AGI; no Dash; +1 AP cost | Speed −30%; attack speed −20%; dodge −10% | 59 |
+| 18 | slowed | Speed halved; −10 AGI; no Dash; +1 AP cost | Speed -30; attack speed -20; dodge -10 | 59 |
 | 19 | silenced | Verbal spells blocked; −20 social speech | Spellcasting disabled for verbal skills | 60 |
 | 20 | diseased | Symptoms from disease effect (blight/fever/plague) | Periodic stat drain; worsens if untreated | 40, 41, 42 |
 | 21 | cursed | −2 all stats; needs remove curse or ritual | −X stats; requires specialized cure | 61 |
-| 22 | exposed | −10 evasion/block; DR halved; ×1.25 damage | Evasion −15%; resist −20%; incoming +X% | 62 |
-| 23 | taunted | −20 attacks vs non-taunter; cannot flee | Forced aggro; −20% damage to others | 63 |
+| 22 | exposed | −10 evasion/block; DR halved; ×1.25 damage | Evasion -15; resist -20; incoming +X | 62 |
+| 23 | taunted | −20 attacks vs non-taunter; cannot flee | Forced aggro; -20 damage to others | 63 |
 | 24 | staggered | Loses reaction; −10 next action; ends next turn | Cannot block/dodge 1–2s | 64 |
 
 ---
