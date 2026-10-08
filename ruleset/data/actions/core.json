@@ -1,0 +1,29 @@
+{
+  "$schema": "../../schemas/action.schema.json",
+  "actions": [
+    {
+      "key": "attack",
+      "cost": 3
+    },
+    {
+      "key": "cast",
+      "cost": 3
+    },
+    {
+      "key": "move",
+      "cost": 1
+    },
+    {
+      "key": "disengage",
+      "cost": 1
+    },
+    {
+      "key": "dodge",
+      "cost": 3
+    },
+    {
+      "key": "item",
+      "cost": 2
+    }
+  ]
+}
