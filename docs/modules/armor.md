@@ -1,5 +1,10 @@
 # Armor System
 
+Core armor is a slot, a base DR, a weight, a skill, and an evasion penalty. Layering is content, not a requirement. The pipeline is one line: DV roll, then DR, then a resist tag. A skin layer is not required to wear chain.
+
+Layering rules live in [armor-layering.md](armor-layering.md).
+
+
 **Status:** Core (implemented as data + schema) · runtime resolution lives in the engine or GM adjudication.
 
 The armor system replaces the legacy D&D-style AC model with a **damage reduction (DR)**
