@@ -1,0 +1,22 @@
+{
+  "$schema": "../../schemas/action.schema.json",
+  "pool": {
+    "base": 2,
+    "per_point": 1,
+    "per_point_divisor": 3,
+    "attr": "agi",
+    "cap": 10,
+    "carry": "min(unspent, cap)",
+    "rest": "refill"
+  },
+  "actions": [
+    { "key": "attack", "cost": 3 },
+    { "key": "cast", "cost": 3 },
+    { "key": "move", "cost": 1 },
+    { "key": "disengage", "cost": 1 },
+    { "key": "dodge", "cost": 3 },
+    { "key": "item", "cost": 2 },
+    { "key": "block", "cost": 2, "reserved": true, "refund_if_unused": true },
+    { "key": "aimed", "cost": 2, "adds_to": "attack" }
+  ]
+}

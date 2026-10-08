@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Actions",
+  "description": "One AP budget. Cast AP is static. A spell also spends its mana cost.",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "pool": { "$ref": "#/definitions/pool" },
+    "actions": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/action" }
+    }
+  },
+  "required": ["pool", "actions"],
+  "additionalProperties": false,
+  "definitions": {
+    "pool": {
+      "type": "object",
+      "properties": {
+        "base": { "type": "integer" },
+        "per_point": { "type": "integer" },
+        "per_point_divisor": { "type": "integer", "minimum": 1 },
+        "attr": { "type": "string" },
+        "cap": { "type": "integer", "minimum": 1 },
+        "carry": { "type": "string" },
+        "rest": { "type": "string" }
+      },
+      "required": ["base", "per_point", "per_point_divisor", "attr", "cap", "carry", "rest"],
+      "additionalProperties": false
+    },
+    "action": {
+      "type": "object",
+      "properties": {
+        "key": { "type": "string" },
+        "cost": { "type": "integer", "minimum": 0 },
+        "reserved": { "type": "boolean" },
+        "refund_if_unused": { "type": "boolean" },
+        "adds_to": { "type": "string" }
+      },
+      "required": ["key", "cost"],
+      "additionalProperties": false
+    }
+  }
+}
