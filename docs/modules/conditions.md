@@ -1,3 +1,5 @@
+Authority is the `modifiers` bundle in `ruleset/data/conditions/core.json`. A condition is a named bundle of contract modifiers plus a flag. `paralyzed` is `set ap 0` plus a flag. The TTRPG and video-game strings below are not the authority.
+
 # Conditions & Status Effects
 
 **Status:** Core (implemented as data + schema) · runtime resolution lives in the engine or GM adjudication.
