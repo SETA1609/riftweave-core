@@ -145,8 +145,8 @@ Modules may extend the following core collections. These represent the stable, i
 | `monsters` | **Yes** | New creature entries |
 | `backgrounds` | **Yes** | New character backgrounds |
 | `traits` | **Yes** | New racial traits (should pair with race entries) |
-| `effects` | **No** | Core registry — tightly coupled to condition/engine |
-| `conditions` | **No** | Core registry — tightly coupled to effects |
+| `effects` | **Yes** | Modules add rows. Unknown opcodes are ignored. Core key conflicts fail. |
+| `conditions` | **Yes** | Modules add bundles. Core key conflicts fail. |
 | `abilities` | **No** | Fixed attribute set (str/per/end/int/wil/agi/cha/lck) |
 | `wuxing` | **No** | Fixed five-phase system |
 | `tiers` | **No** | Fixed crafting quality ladder |

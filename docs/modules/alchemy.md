@@ -1,3 +1,13 @@
+# Alchemy
+
+Author: SETA1609
+
+A crafting profile. Inputs, a skill roll, an output item that emits effects from the shared pool. No private effect language.
+
+Forms come from [docs/core/materials.md](../core/materials.md). A brew does not invent copper_fiber. Ingredients point at the effect pool only.
+
+Discovery and station rules are stubs. Quality is a placeholder field, not a formula. Progression does not require this module to level.
+
 # Alchemy Module
 
 **Status:** Core data shapes in place; brewing/quality rules still in design.
