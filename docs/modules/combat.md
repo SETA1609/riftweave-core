@@ -213,101 +213,13 @@ targeted spells.
 
 ## 4. Critical Hits & Fumbles
 
-### Universal Base
+One function. Crit and fumble are tags, not a second roll and not a mode.
+The record is [`ruleset/data/resolution/core.json`](../../ruleset/data/resolution/core.json).
+The function and one example are in [`docs/core/resolution.md`](../core/resolution.md).
 
-A natural **01–05** on the d100 attack roll is a **critical window**. A critical
-**confirmation roll** is then required.
+A natural roll at or under the crit window tags `crit`. A natural roll at or over `fumble_at` tags `fumble`. Luck emits `add crit_window floor(LCK / 2)`. There is no confirmation roll. A client may ignore the fumble tag. It may not define a mode that deletes it.
 
-### Confirmation System
-
-1. On a natural 01–05, roll again.
-2. If the confirmation roll also succeeds (≤ modified target number), the hit is a
-   **confirmed critical**.
-3. If the confirmation roll fails, the hit is a normal hit (no special effect).
-4. **Luck** helps:
-   - `+floor(LCK / 2)` bonus to the confirmation roll.
-   - Every 2 points of LCK expands the critical window by +1.
-     - e.g. LCK 4 → window is 01–07. LCK 10 → window is 01–10.
-
-### Luck & Critical Hit Examples
-
-#### Critical Window by Luck
-
-| LCK | Natural Crit Range | Effective Crit Chance | Confirmation Bonus |
-|-----|-------------------|----------------------|-------------------|
-| 1   | 01–05             | 5%                   | `+0`              |
-| 2   | 01–06             | 6%                   | `+1`              |
-| 4   | 01–07             | 7%                   | `+2`              |
-| 6   | 01–08             | 8%                   | `+3`              |
-| 8   | 01–09             | 9%                   | `+4`              |
-| 10  | 01–10             | 10%                  | `+5`              |
-
-The confirmation roll uses the **same modified target number** as the original
-attack — the attacker's effective skill after all modifiers. If the original
-attack roll benefited from a situational bonus (e.g. flanking +10), the
-confirmation roll uses the same total. If the roll has advantage or multiple
-dice (video game), the confirmation is a single flat roll against the modified TN.
-
-#### Example: Confirmation with LCK
-
-> A character with Blades **65**, LCK **6** attacks a bandit. They roll a natural
-> **04** — inside the crit window (01–08 at LCK 6). The confirmation roll target
-> is their effective skill of 65, plus `+floor(LCK/2) = +3`, giving an effective
-> target of **68**. They roll a **57** — success! The crit is confirmed. Had they
-> rolled **72**, it would have been a normal hit (no doubled damage).
-
-#### Example: LCK Expanding the Window
-
-> With LCK **10** (window 01–10), a character rolls **09** on their attack. Without
-> LCK this would be a normal hit. With LCK, it falls inside the expanded crit
-> window. The confirmation roll gets `+floor(10/2) = +5`, making the confirmation
-> much more likely. A character with LCK 10 and high skill can reliably convert
-> the top 10% of their rolls into critical hits.
-
-### TTRPG
-
-- **Confirmed crit:** Roll damage dice twice and sum both (alternatively: max dice + roll).
-- **Roll on the Critical Effects Table** to determine bonus effects. Apply the result
-  immediately.
-
-#### Critical Effects Table (d100)
-
-| d100 | Effect | Description |
-|------|--------|-------------|
-| 1–15 | Bludgeoning Blow | Extra damage only (max damage dice + roll again) |
-| 16–30 | Deep Wound | Target bleeds: takes `damage_health` (effect core:effect/damage_health, magnitude 2) at start of each turn until healed or a Medicine check (difficulty 10) |
-| 31–40 | Stagger | Target loses next reaction and takes −10 on next action for 1 round. See `staggered` condition |
-| 41–50 | Disarm | Weapon knocked from grip. STR check (difficulty 12) or weapon lands 1d4 units away |
-| 51–60 | Crippled Arm | Dominant arm crippled: −20 to attack rolls, −50% damage. Two-handed weapons unusable. Heals after combat or via `cure` effect |
-| 61–70 | Crippled Leg | Leg crippled: speed −50%, cannot dodge/evade. Heals after combat or via `cure` effect |
-| 71–80 | Knockdown | Target knocked prone (see `prone` condition). Loses next action standing. OA provoked |
-| 81–85 | Armor Pierce | Ignore all armor DR on this hit + extra damage (max dice) |
-| 86–92 | Stun | Target stunned for 1 full turn (no actions, reactions, movement). See `stunned` condition |
-| 93–97 | Grievous Wound | Max ×2 damage + Deep Wound (permanent until long rest) + crippled limb (random) |
-| 98–100 | Overkill | Damage ×3 + Deep Wound + Stun 2 turns + permanent injury (GM discretion) |
-
-- **Luck modifier:** The player adds `+floor(LCK / 2)` to the d100 roll (shifts toward
-  better effects). If LCK ≥ 8, they may re-roll once and keep the better result.
-- **Interaction with Called Shots:** When a called shot (see §6) scores a confirmed crit,
-  the called-shot location effect is **guaranteed** (no save). Roll on this table for an
-  additional effect.
-- **Interaction with Conditions:** Effects on this table (bleed, stagger, knockdown, stun)
-  correspond to entries in `conditions/core.json` and the effects they reference. Engines
-  apply them via the shared effect system.
-- **Fumble:** Only on a natural **100** (not 96–00). Flavor-only for TTRPG:
-  drop weapon, stumble, hit an ally by accident. No mechanical penalty enforced.
-  High Luck does not affect fumble range.
-
-### Video Game
-
-- **Confirmed crit:** Fixed multiplier (×1.5 or ×2) applied after DR.
-  `Final damage = (base damage × crit multiplier) - armor DR`
-- **Automatic effects:** Critical hits automatically apply a minor status effect based on
-  weapon type (blade → bleed, blunt → stagger, piercing → armor impair). Drawn from the
-  effects registry, lasting 1–2 ticks.
-- **No fumble mechanic.** A roll of 100 is simply a miss (or a glancing blow
-  that deals 0 damage).
-- Luck feeds into crit chance via expanded window and confirmation bonus.
+Defense, cover, and called shots below are unchanged.
 
 ---
 

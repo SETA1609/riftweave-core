@@ -11,7 +11,7 @@ tabletop group may override them via its own data.
   number**. The target is your skill rating plus situational modifiers plus Luck.
 - **Margin** = `target − roll` gives degrees of success (e.g. for crafting quality,
   spell potency, persuasion strength).
-- **Critical success** on `01–05`, **fumble (critical failure)** on `96–00`.
+- **Critical success** and **fumble** are tags on the one resolution function. See [`docs/core/resolution.md`](../core/resolution.md). Do not use a 96–00 fumble window.
 - **Polyhedral dice are used for damage**, not resolution. A weapon hits via a d100
   weapon-skill roll, then rolls its damage dice (`1d8`, `2d6`, …).
 

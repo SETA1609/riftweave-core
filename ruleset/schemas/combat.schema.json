@@ -27,21 +27,11 @@
               "default": 100,
               "description": "Natural d100 roll for fumble. Default 100 only (single value)."
             },
-            "confirmationBonusPerLck": {
-              "type": "number",
-              "default": 0.5,
-              "description": "Bonus to confirmation roll per point of Luck. Default floor(LCK/2)."
-            },
             "critDamageMultiplier": {
               "type": "number",
               "minimum": 1,
               "default": 2.0,
-              "description": "Damage multiplier on confirmed critical hits. Default 2.0 (double damage dice)."
-            },
-            "videoGameCritMultiplier": {
-              "type": "number",
-              "default": 1.5,
-              "description": "Video game crit multiplier (applied after DR by default). Default 1.5."
+              "description": "Consumer of the crit tag. Not a second roll. Default 2.0."
             }
           },
           "additionalProperties": false
