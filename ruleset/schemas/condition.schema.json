@@ -21,6 +21,22 @@
         "label": { "type": "string", "description": "Human-readable name with spaces and capitalization." },
         "description": { "type": "string", "description": "What the condition is and what it does at a glance." },
         "source": { "$ref": "schema.json#/definitions/sourceRef" },
+        "modifiers": {
+          "type": "array",
+          "description": "Authority for this condition. A named bundle of contract modifiers plus flags. Prose in effects is not the authority.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "target": { "type": "string" },
+              "op": { "type": "string", "enum": ["add", "mul", "set", "grant", "resist"] },
+              "value": { "type": "number" },
+              "duration": { "type": "string" },
+              "source": { "type": "string" }
+            },
+            "required": ["target", "op", "source"],
+            "additionalProperties": false
+          }
+        },
         "effects": {
           "type": "object",
           "description": "Narrative/descriptive effects of this condition in each resolution mode.",
