@@ -1,0 +1,20 @@
+{
+  "$schema": "../../../schemas/effect.schema.json",
+  "effects": [
+    {
+      "id": 1001,
+      "key": "module_test_spark",
+      "label": "Module Test Spark",
+      "description": "Test row. A consumer that does not know this opcode ignores it.",
+      "category": "damage",
+      "polarity": "harmful",
+      "magnitudeUnit": "points",
+      "channels": [
+        "spell"
+      ],
+      "tags": [
+        "test"
+      ]
+    }
+  ]
+}

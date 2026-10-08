@@ -6,8 +6,14 @@
   "author": "Riftweave Core Team",
   "requires": [],
   "extends": {
-    "collections": ["features"]
+    "collections": [
+      "effects",
+      "features"
+    ]
   },
-  "data": ["data/example_features.json"],
+  "data": [
+    "data/example_features.json",
+    "data/example_effects.json"
+  ],
   "schemas": []
 }
