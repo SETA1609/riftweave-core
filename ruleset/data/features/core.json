@@ -575,7 +575,7 @@
       "id": 20,
       "key": "heavy_armor_expert",
       "label": "Heavy Armor Expert",
-      "description": "You have trained extensively in heavy plate. The stamina and AP surcharges for demanding actions are halved (\u00d71.5 instead of \u00d72.0 for dodge, etc.).",
+      "description": "You have trained extensively in heavy plate. The stamina and AP surcharges for demanding actions are halved (x1.5 instead of x2.0 for dodge, etc.).",
       "type": "perk",
       "category": "combat",
       "prerequisite": {
@@ -635,7 +635,7 @@
       "id": 22,
       "key": "brutal_charge",
       "label": "Brutal Charge",
-      "description": "You barrel through enemies in heavy armor. Power attacks and charges cost stamina equal to a light attack \u2014 the heavy surcharge is negated.",
+      "description": "You barrel through enemies in heavy armor. Power attacks and charges cost stamina equal to a light attack - the heavy surcharge is negated.",
       "type": "perk",
       "category": "combat",
       "prerequisite": {
