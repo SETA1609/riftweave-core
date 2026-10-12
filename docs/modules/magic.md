@@ -98,9 +98,7 @@ Casting uses the standard resolution from [`progression.md`](./progression.md):
 
 1. **Cost** is paid from the mana pool (`INT × 8 + level × 2`; regenerates with WIL).
    Insufficient mana → no cast.
-2. **Success** — roll `1d100`, succeed if `≤ target`, where
-   `target = <color>_magic + floor(LCK/2) + situational`. Crit on `01–05`, fumble on
-   `96–00`.
+2. **Success** — spend the resource, then one resolution request on the spell skill. Crit and fumble are tags from [docs/core/resolution.md](../core/resolution.md). A phase is a tag. It is not required to cast.
 3. **Potency** — `margin = target − roll` scales the realized magnitude (a wide
    margin overcharges the effect; a narrow one underdelivers).
 4. **Elemental interaction** (§6) then adjusts the realized magnitude/duration based
