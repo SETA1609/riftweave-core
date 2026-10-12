@@ -225,6 +225,17 @@ elixirs.
 
 ## Full Level-Up Procedure
 
+### Level 1 to 2 with no alchemy
+
+XP to reach level 2 is 900. No ingredient, core, or phase is required.
+
+1. Add 1 to level.
+2. Choose 1 perk whose prerequisites are met.
+3. Gain skill points `5 + INT * 2`.
+4. Add HP `END * 8 + 4` and MP `INT * 8 + 2` to the maximums.
+5. Stop. A breakthrough is optional and lives in `advancement.md`.
+
+
 When a character’s cumulative experience reaches the threshold for the next level
 (`450 × N × (N − 1)` for level N under normal difficulty), they gain a level.
 This process can be performed immediately upon reaching the threshold or as a
@@ -251,7 +262,10 @@ narrative downtime activity tied to the level-up.
    - Tagged skills (up to 3 chosen at creation) are bought at a **1:1** ratio (1 point for +1 rating).
    - Skills cannot exceed 100 in the base ruleset.
 
-4. **Optional: Perform a Breakthrough**
+4. **Optional, not required: Perform a Breakthrough**
+
+   Skip this step if alchemy is unloaded. The level has already resolved.
+
    - If the character has spirit cores or refined elixirs and chooses to use them (this can be done immediately or as a short downtime activity tied to the level-up), they may attempt a breakthrough.
    - Select up to a maximum of **3** eligible items (cores and/or elixirs) to offer. These items are consumed.
    - For each offered item:
