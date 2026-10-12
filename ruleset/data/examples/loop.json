@@ -1,0 +1,20 @@
+{
+  "$schema": "../../schemas/loop.schema.json",
+  "loop": {
+    "background": "core:background/scout",
+    "weapon": "core:weapon/shortsword",
+    "material": "iron",
+    "perk_modifier": {
+      "target": "blades",
+      "op": "add",
+      "value": 5,
+      "source": "perk:example"
+    },
+    "unloaded": [
+      "magic",
+      "alchemy",
+      "wuxing",
+      "armor-layering"
+    ]
+  }
+}
