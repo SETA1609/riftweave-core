@@ -1,0 +1,11 @@
+{
+  "key": "ap",
+  "round": "floor",
+  "expr": {
+    "op": "add",
+    "args": [
+      { "lit": 2 },
+      { "op": "div", "args": [{ "attr": "agi" }, { "lit": 3 }] }
+    ]
+  }
+}
