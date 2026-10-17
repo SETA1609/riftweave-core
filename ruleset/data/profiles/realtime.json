@@ -1,0 +1,7 @@
+{
+  "key": "realtime",
+  "tick": "fixed",
+  "duration": "ms",
+  "rng": "seeded",
+  "streams": ["roll", "loot"]
+}

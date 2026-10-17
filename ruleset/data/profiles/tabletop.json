@@ -1,0 +1,7 @@
+{
+  "key": "tabletop",
+  "tick": "turn",
+  "duration": "round",
+  "rng": "seeded",
+  "streams": ["roll", "loot"]
+}
