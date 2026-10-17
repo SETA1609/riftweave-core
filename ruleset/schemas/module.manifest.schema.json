@@ -29,7 +29,7 @@
         "type": "string",
         "pattern": "^[a-z][a-z0-9_]*$"
       },
-      "description": "List of module IDs this module depends on. Future use \u2014 not enforced in the initial loader."
+      "description": "List of module IDs this module depends on. Future use - not enforced in the initial loader."
     },
     "extends": {
       "type": "object",
