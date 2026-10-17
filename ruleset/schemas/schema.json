@@ -54,7 +54,7 @@
         "metal",
         "water"
       ],
-      "description": "Wuxing (\u4e94\u884c) five-phase tag. Governs how an effect INTERACTS with other effects via the generating/overcoming/insulting/weakening cycles (see data/wuxing). Orthogonal to color: color picks the governing <color>_magic skill, phase picks the elemental relationship. Omit for non-elemental effects, which do not participate in the cycles."
+      "description": "Wuxing (five-phase) five-phase tag. Governs how an effect INTERACTS with other effects via the generating/overcoming/insulting/weakening cycles (see data/wuxing). Orthogonal to color: color picks the governing <color>_magic skill, phase picks the elemental relationship. Omit for non-elemental effects, which do not participate in the cycles."
     },
     "damageType": {
       "type": "string",
@@ -92,7 +92,7 @@
     "entryId": {
       "type": "integer",
       "minimum": 1,
-      "description": "Numeric primary identifier for an entry within a collection (effects, skills, features, races, materials, ingredients, equipment, spells, monsters, backgrounds, etc.). Used only for the entry's own 'id' field \u2014 cross-references between collections must use string keys (bare or namespaced) instead."
+      "description": "Numeric primary identifier for an entry within a collection (effects, skills, features, races, materials, ingredients, equipment, spells, monsters, backgrounds, etc.). Used only for the entry's own 'id' field - cross-references between collections must use string keys (bare or namespaced) instead."
     },
     "appliedEffect": {
       "type": "object",
