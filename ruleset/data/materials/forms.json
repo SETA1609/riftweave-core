@@ -1,0 +1,15 @@
+{
+  "$schema": "../../schemas/material_form.schema.json",
+  "forms": [
+    { "key": "ore" },
+    { "key": "ingot" },
+    { "key": "fiber" },
+    { "key": "textile" },
+    { "key": "stamp" }
+  ],
+  "recipes": [
+    { "key": "smelt", "from": "ore", "to": "ingot" },
+    { "key": "draw_fiber", "from": "ingot", "to": "fiber" },
+    { "key": "weave", "from": "fiber", "to": "textile" }
+  ]
+}

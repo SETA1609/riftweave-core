@@ -5,14 +5,34 @@
       "id": 1,
       "key": "copper",
       "label": "Copper",
-      "description": "A soft, conductive metal — prized for enchanted trinkets, poor as a blade.",
+      "description": "A soft, conductive metal \u2014 prized for enchanted trinkets, poor as a blade.",
       "phase": "metal",
       "tier": 1,
-      "appliesTo": ["weapon", "armor", "accessory"],
-      "modifiers": { "attack": 1, "defense": 1, "effectMagnitude": 0.10 },
+      "appliesTo": [
+        "weapon",
+        "armor",
+        "accessory"
+      ],
+      "modifiers": {
+        "attack": 1,
+        "defense": 1,
+        "effectMagnitude": 0.1
+      },
       "weightFactor": 1.1,
       "valueFactor": 1.0,
-      "tags": ["conductive"]
+      "tags": [
+        "conductive"
+      ],
+      "foundAs": "ore",
+      "weapon": {
+        "attack": 1
+      },
+      "armor": {
+        "defense": 1
+      },
+      "ingredient": {
+        "effectMagnitude": 0.1
+      }
     },
     {
       "id": 2,
@@ -21,10 +41,24 @@
       "description": "A workmanlike alloy of the early forges, holding an edge better than copper.",
       "phase": "metal",
       "tier": 1,
-      "appliesTo": ["weapon", "armor"],
-      "modifiers": { "attack": 2, "defense": 2 },
+      "appliesTo": [
+        "weapon",
+        "armor"
+      ],
+      "modifiers": {
+        "attack": 2,
+        "defense": 2
+      },
       "weightFactor": 1.05,
-      "valueFactor": 0.8
+      "valueFactor": 0.8,
+      "foundAs": "ore",
+      "weapon": {
+        "attack": 2
+      },
+      "armor": {
+        "defense": 2
+      },
+      "ingredient": {}
     },
     {
       "id": 3,
@@ -33,22 +67,50 @@
       "description": "The reliable standard of arms and armor.",
       "phase": "metal",
       "tier": 2,
-      "appliesTo": ["weapon", "armor"],
-      "modifiers": { "attack": 3, "defense": 3 },
+      "appliesTo": [
+        "weapon",
+        "armor"
+      ],
+      "modifiers": {
+        "attack": 3,
+        "defense": 3
+      },
       "weightFactor": 1.0,
-      "valueFactor": 1.0
+      "valueFactor": 1.0,
+      "foundAs": "ore",
+      "weapon": {
+        "attack": 3
+      },
+      "armor": {
+        "defense": 3
+      },
+      "ingredient": {}
     },
     {
       "id": 4,
       "key": "steel",
       "label": "Steel",
-      "description": "Refined iron — sharper, tougher, and the smith's preferred metal.",
+      "description": "Refined iron \u2014 sharper, tougher, and the smith's preferred metal.",
       "phase": "metal",
       "tier": 3,
-      "appliesTo": ["weapon", "armor"],
-      "modifiers": { "attack": 5, "defense": 5 },
+      "appliesTo": [
+        "weapon",
+        "armor"
+      ],
+      "modifiers": {
+        "attack": 5,
+        "defense": 5
+      },
       "weightFactor": 0.95,
-      "valueFactor": 2.0
+      "valueFactor": 2.0,
+      "foundAs": "ingot",
+      "weapon": {
+        "attack": 5
+      },
+      "armor": {
+        "defense": 5
+      },
+      "ingredient": {}
     },
     {
       "id": 5,
@@ -57,62 +119,141 @@
       "description": "Conducts magic well and bites the undead and unholy.",
       "phase": "metal",
       "tier": 2,
-      "appliesTo": ["weapon", "accessory"],
-      "modifiers": { "attack": 2, "effectMagnitude": 0.15 },
+      "appliesTo": [
+        "weapon",
+        "accessory"
+      ],
+      "modifiers": {
+        "attack": 2,
+        "effectMagnitude": 0.15
+      },
       "weightFactor": 1.1,
       "valueFactor": 3.0,
-      "tags": ["anti_undead", "conductive"]
+      "tags": [
+        "anti_undead",
+        "conductive"
+      ],
+      "foundAs": "ore",
+      "weapon": {
+        "attack": 2
+      },
+      "armor": {},
+      "ingredient": {
+        "effectMagnitude": 0.15
+      }
     },
     {
       "id": 6,
       "key": "gold",
       "label": "Gold",
-      "description": "Too soft for arms, but the finest conductor of magic — the enchanter's metal.",
+      "description": "Too soft for arms, but the finest conductor of magic \u2014 the enchanter's metal.",
       "phase": "metal",
       "tier": 2,
-      "appliesTo": ["accessory"],
-      "modifiers": { "attack": 0, "effectMagnitude": 0.30 },
+      "appliesTo": [
+        "accessory"
+      ],
+      "modifiers": {
+        "attack": 0,
+        "effectMagnitude": 0.3
+      },
       "weightFactor": 1.3,
       "valueFactor": 8.0,
-      "tags": ["conductive"]
+      "tags": [
+        "conductive"
+      ],
+      "foundAs": "ore",
+      "weapon": {
+        "attack": 0
+      },
+      "armor": {},
+      "ingredient": {
+        "effectMagnitude": 0.3
+      }
     },
     {
       "id": 7,
       "key": "wood",
       "label": "Wood",
-      "description": "Common timber for hafts, bows, and shields — light and cheap.",
+      "description": "Common timber for hafts, bows, and shields \u2014 light and cheap.",
       "phase": "wood",
       "tier": 1,
-      "appliesTo": ["weapon", "armor", "accessory"],
-      "modifiers": { "attack": 0, "defense": 0 },
+      "appliesTo": [
+        "weapon",
+        "armor",
+        "accessory"
+      ],
+      "modifiers": {
+        "attack": 0,
+        "defense": 0
+      },
       "weightFactor": 0.5,
-      "valueFactor": 0.5
+      "valueFactor": 0.5,
+      "foundAs": "fiber",
+      "weapon": {
+        "attack": 0
+      },
+      "armor": {
+        "defense": 0
+      },
+      "ingredient": {}
     },
     {
       "id": 8,
       "key": "elven_wood",
       "label": "Elven Wood",
-      "description": "Living wood coaxed into shape by elven craft — light, resilient, and magically attuned.",
+      "description": "Living wood coaxed into shape by elven craft \u2014 light, resilient, and magically attuned.",
       "phase": "wood",
       "tier": 3,
-      "appliesTo": ["weapon", "armor", "accessory"],
-      "modifiers": { "attack": 3, "defense": 3, "effectMagnitude": 0.20 },
+      "appliesTo": [
+        "weapon",
+        "armor",
+        "accessory"
+      ],
+      "modifiers": {
+        "attack": 3,
+        "defense": 3,
+        "effectMagnitude": 0.2
+      },
       "weightFactor": 0.4,
       "valueFactor": 4.0,
-      "tags": ["conductive"]
+      "tags": [
+        "conductive"
+      ],
+      "foundAs": "fiber",
+      "weapon": {
+        "attack": 3
+      },
+      "armor": {
+        "defense": 3
+      },
+      "ingredient": {
+        "effectMagnitude": 0.2
+      }
     },
     {
       "id": 9,
       "key": "obsidian",
       "label": "Obsidian",
-      "description": "Volcanic glass — wickedly sharp, but brittle and unfit for armor.",
+      "description": "Volcanic glass \u2014 wickedly sharp, but brittle and unfit for armor.",
       "phase": "fire",
       "tier": 2,
-      "appliesTo": ["weapon"],
-      "modifiers": { "attack": 6 },
+      "appliesTo": [
+        "weapon"
+      ],
+      "modifiers": {
+        "attack": 6
+      },
       "weightFactor": 0.8,
       "valueFactor": 2.5,
-      "tags": ["brittle"]
+      "tags": [
+        "brittle"
+      ],
+      "foundAs": "ore",
+      "weapon": {
+        "attack": 6
+      },
+      "armor": {},
+      "ingredient": {}
     },
     {
       "id": 10,
@@ -121,11 +262,25 @@
       "description": "Cured animal hide. Common for light armor, straps, and flexible gear.",
       "phase": "wood",
       "tier": 1,
-      "appliesTo": ["armor", "accessory"],
-      "modifiers": { "defense": 1 },
+      "appliesTo": [
+        "armor",
+        "accessory"
+      ],
+      "modifiers": {
+        "defense": 1
+      },
       "weightFactor": 0.7,
       "valueFactor": 0.6,
-      "tags": ["organic", "flexible"]
+      "tags": [
+        "organic",
+        "flexible"
+      ],
+      "foundAs": "fiber",
+      "weapon": {},
+      "armor": {
+        "defense": 1
+      },
+      "ingredient": {}
     },
     {
       "id": 11,
@@ -134,11 +289,45 @@
       "description": "Leather reinforced with brass or iron studs. More protective than raw hide while retaining flexibility.",
       "phase": "wood",
       "tier": 1,
-      "appliesTo": ["armor", "accessory"],
-      "modifiers": { "defense": 2 },
+      "appliesTo": [
+        "armor",
+        "accessory"
+      ],
+      "modifiers": {
+        "defense": 2
+      },
       "weightFactor": 0.9,
       "valueFactor": 1.2,
-      "tags": ["organic"]
+      "tags": [
+        "organic"
+      ],
+      "foundAs": "fiber",
+      "weapon": {},
+      "armor": {
+        "defense": 2
+      },
+      "ingredient": {}
+    },
+    {
+      "id": 12,
+      "key": "granite",
+      "label": "Granite",
+      "description": "Found as ore. A recipe may still draw fiber from it. The fiber carries this weight and no ingredient effect.",
+      "foundAs": "ore",
+      "phase": "earth",
+      "tier": 1,
+      "weapon": {
+        "attack": 1
+      },
+      "armor": {
+        "defense": 2
+      },
+      "ingredient": {},
+      "weightFactor": 1.8,
+      "valueFactor": 0.4,
+      "tags": [
+        "stone"
+      ]
     }
   ]
 }
