@@ -1,0 +1,9 @@
+{
+  "key": "ruleset.bundle",
+  "includes": [
+    "resolution/core.json",
+    "derived/core.json",
+    "actions/core.json"
+  ],
+  "hash": "sha256"
+}
