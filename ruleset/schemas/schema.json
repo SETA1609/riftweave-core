@@ -7,7 +7,16 @@
   "definitions": {
     "ability": {
       "type": "string",
-      "enum": ["str", "per", "end", "int", "wil", "agi", "cha", "lck"],
+      "enum": [
+        "str",
+        "per",
+        "end",
+        "int",
+        "wil",
+        "agi",
+        "cha",
+        "lck"
+      ],
       "description": "Core attributes (1-10 scale): Strength, Perception, Endurance, Intelligence, Willpower, Agility, Charisma, Luck"
     },
     "diceExpression": {
@@ -23,28 +32,67 @@
     },
     "color": {
       "type": "string",
-      "enum": ["red", "orange", "yellow", "green", "blue", "indigo", "violet", "white", "black"],
+      "enum": [
+        "red",
+        "orange",
+        "yellow",
+        "green",
+        "blue",
+        "indigo",
+        "violet",
+        "white",
+        "black"
+      ],
       "description": "Color magic school. The governing skill is <color>_magic."
     },
     "phase": {
       "type": "string",
-      "enum": ["wood", "fire", "earth", "metal", "water"],
-      "description": "Wuxing (五行) five-phase tag. Governs how an effect INTERACTS with other effects via the generating/overcoming/insulting/weakening cycles (see data/wuxing). Orthogonal to color: color picks the governing <color>_magic skill, phase picks the elemental relationship. Omit for non-elemental effects, which do not participate in the cycles."
+      "enum": [
+        "wood",
+        "fire",
+        "earth",
+        "metal",
+        "water"
+      ],
+      "description": "Wuxing (\u4e94\u884c) five-phase tag. Governs how an effect INTERACTS with other effects via the generating/overcoming/insulting/weakening cycles (see data/wuxing). Orthogonal to color: color picks the governing <color>_magic skill, phase picks the elemental relationship. Omit for non-elemental effects, which do not participate in the cycles."
     },
     "damageType": {
       "type": "string",
-      "enum": ["bludgeoning", "piercing", "slashing", "fire", "frost", "shock", "acid", "poison", "necrotic", "radiant", "psychic", "force", "thunder"],
+      "enum": [
+        "bludgeoning",
+        "piercing",
+        "slashing",
+        "fire",
+        "frost",
+        "shock",
+        "acid",
+        "poison",
+        "necrotic",
+        "radiant",
+        "psychic",
+        "force",
+        "thunder"
+      ],
       "description": "Canonical damage tag. Keys match ruleset/data/combat/damage_types.json. cold is not a key: use frost. lightning is not a key: use shock. Do not add a second vocabulary."
     },
     "qualityGrade": {
       "type": "string",
-      "enum": ["petty", "minor", "lesser", "common", "major", "greater", "grand", "legendary"],
+      "enum": [
+        "petty",
+        "minor",
+        "lesser",
+        "common",
+        "major",
+        "greater",
+        "grand",
+        "legendary"
+      ],
       "description": "Crafting quality ladder, listed lowest to highest (common is the baseline). Shared vocabulary reused across crafting conventions (gems, and future components)."
     },
     "entryId": {
       "type": "integer",
       "minimum": 1,
-      "description": "Numeric primary identifier for an entry within a collection (effects, skills, features, races, materials, ingredients, equipment, spells, monsters, backgrounds, etc.). Used only for the entry's own 'id' field — cross-references between collections must use string keys (bare or namespaced) instead."
+      "description": "Numeric primary identifier for an entry within a collection (effects, skills, features, races, materials, ingredients, equipment, spells, monsters, backgrounds, etc.). Used only for the entry's own 'id' field \u2014 cross-references between collections must use string keys (bare or namespaced) instead."
     },
     "appliedEffect": {
       "type": "object",
@@ -54,35 +102,112 @@
           "type": "string",
           "description": "Effect reference: namespaced format core:effect/<key> (e.g. core:effect/damage_fire)"
         },
-        "magnitude": { "type": "number", "description": "Effect strength; interpreted per the effect's magnitudeUnit" },
-        "duration": { "type": "number", "minimum": 0, "description": "Duration in seconds; 0 or omitted means instantaneous" },
-        "target": { "type": "string", "enum": ["self", "touch", "ranged", "area", "world"], "description": "Delivery shape (used by spells); omit for consumables/ingredients, which apply to the user" },
-        "radius": { "type": "number", "minimum": 0, "description": "Area radius in meters when target is 'area'" },
+        "magnitude": {
+          "type": "number",
+          "description": "Effect strength; interpreted per the effect's magnitudeUnit"
+        },
+        "duration": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Duration in seconds; 0 or omitted means instantaneous"
+        },
+        "target": {
+          "type": "string",
+          "enum": [
+            "self",
+            "touch",
+            "ranged",
+            "area",
+            "world"
+          ],
+          "description": "Delivery shape (used by spells); omit for consumables/ingredients, which apply to the user"
+        },
+        "radius": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Area radius in meters when target is 'area'"
+        },
         "parameter": {
           "type": "string",
           "description": "For generic parameterized effects (fortify_skill, fortify_attribute, restore_resource, resist, cure, summon, phobia, allergy, etc.), specifies the subject. Use namespaced key (core:category/<key>) when referencing another collection (e.g. core:skill/<key> for fortify_skill), or vocabulary (e.g. 'health', 'fire', 'all', ability codes, creature categories)."
         },
         "durationType": {
           "type": "string",
-          "enum": ["temporal", "unlimited"],
+          "enum": [
+            "temporal",
+            "unlimited"
+          ],
           "description": "For fortify effects (especially on skills/attributes): 'unlimited' effects are normally stackable (magnitudes add). 'temporal' effects of the same type (same effect id + parameter) override each other, taking the highest magnitude as the effective value (and usually the longest duration)."
         }
       },
-      "required": ["effect"],
+      "required": [
+        "effect"
+      ],
       "additionalProperties": false
     },
     "sourceRef": {
       "type": "object",
       "properties": {
-        "source": { "type": "string", "description": "Source book or document" },
-        "page": { "type": "integer", "minimum": 1 }
+        "source": {
+          "type": "string",
+          "description": "Source book or document"
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 1
+        }
       },
-      "required": ["source"],
+      "required": [
+        "source"
+      ],
       "additionalProperties": false
     },
     "creatureCategory": {
       "type": "string",
       "description": "Standard categories used for phobias, creature-specific effects, and interactions (e.g. in generic 'phobia' effects). Common values: undead, beast, construct, humanoid, dragon, spirit, aberration, plant, ooze. Material ids for 'allergy' effects come from materials/core.json. These are string cross-references and not strictly schema-enforced."
+    },
+    "modifier": {
+      "type": "object",
+      "description": "One opcode on one target. Same source does not stack. Different sources add. mul after add. Two set on one target: last in load order wins.",
+      "properties": {
+        "target": {
+          "type": "string"
+        },
+        "op": {
+          "type": "string",
+          "enum": [
+            "add",
+            "mul",
+            "set",
+            "grant",
+            "resist"
+          ]
+        },
+        "value": {
+          "type": "number"
+        },
+        "duration": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "stack": {
+          "type": "string",
+          "enum": [
+            "none",
+            "add"
+          ],
+          "description": "none: same source does not stack. add: different sources add."
+        }
+      },
+      "required": [
+        "target",
+        "op",
+        "value",
+        "source"
+      ],
+      "additionalProperties": false
     }
   }
 }
