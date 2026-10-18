@@ -1,0 +1,5 @@
+{
+  "name": "end 6, level 1",
+  "actor": { "attributes": { "end": 6 }, "level": 1 },
+  "expect": { "hp": 67 }
+}

@@ -1,0 +1,7 @@
+{
+  "name": "skill 60, roll 40, no modifiers",
+  "actor": { "skills": { "blades": 60 }, "attributes": { "lck": 4 } },
+  "modifiers": [],
+  "roll": 40,
+  "expect": { "target": 60, "margin": 20, "success": true, "tags": [] }
+}
