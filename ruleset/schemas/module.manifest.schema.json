@@ -4,7 +4,9 @@
   "description": "Schema for Riftweave module manifests. Each module is a self-describing directory under ruleset/modules/ containing a manifest.json, optional data files, and optional schemas.",
   "type": "object",
   "properties": {
-    "$schema": { "type": "string" },
+    "$schema": {
+      "type": "string"
+    },
     "id": {
       "type": "string",
       "pattern": "^[a-z][a-z0-9_]*$",
@@ -15,12 +17,19 @@
       "pattern": "^\\d+\\.\\d+\\.\\d+$",
       "description": "Semantic version string (MAJOR.MINOR.PATCH)."
     },
-    "description": { "type": "string" },
-    "author": { "type": "string" },
+    "description": {
+      "type": "string"
+    },
+    "author": {
+      "type": "string"
+    },
     "requires": {
       "type": "array",
-      "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
-      "description": "List of module IDs this module depends on. Future use — not enforced in the initial loader."
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]*$"
+      },
+      "description": "List of module IDs this module depends on. Future use - not enforced in the initial loader."
     },
     "extends": {
       "type": "object",
@@ -28,7 +37,9 @@
       "properties": {
         "collections": {
           "type": "array",
-          "items": { "type": "string" },
+          "items": {
+            "type": "string"
+          },
           "description": "Names of top-level collections (e.g. 'features', 'equipment', 'skills') that this module adds entries to."
         },
         "types": {
@@ -37,27 +48,37 @@
           "properties": {
             "equipment": {
               "type": "array",
-              "items": { "type": "string" },
+              "items": {
+                "type": "string"
+              },
               "description": "New equipment.type values (e.g. 'ammunition', 'tool') that this module introduces."
             },
             "feature": {
               "type": "array",
-              "items": { "type": "string" },
+              "items": {
+                "type": "string"
+              },
               "description": "New feature.type enum values this module introduces."
             },
             "condition": {
               "type": "array",
-              "items": { "type": "string" },
+              "items": {
+                "type": "string"
+              },
               "description": "New condition keys this module introduces."
             },
             "effect": {
               "type": "array",
-              "items": { "type": "string" },
+              "items": {
+                "type": "string"
+              },
               "description": "New effect categories or tags this module introduces."
             },
             "ability": {
               "type": "array",
-              "items": { "type": "string" },
+              "items": {
+                "type": "string"
+              },
               "description": "New ability attribute codes this module introduces."
             }
           },
@@ -68,15 +89,37 @@
     },
     "data": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "description": "Relative paths (from the module directory) to JSON data files. Loaded and merged into the appropriate core collections."
     },
     "schemas": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "description": "Relative paths (from the module directory) to JSON Schema files. These are loaded into the schema store and available for $ref resolution."
+    },
+    "overrides": {
+      "type": "array",
+      "description": "Keys this module replaces. A duplicate without this flag still fails.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "loadAfter": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Module ids that must load before this one."
     }
   },
-  "required": ["id", "version", "description"],
+  "required": [
+    "id",
+    "version",
+    "description"
+  ],
   "additionalProperties": false
 }
