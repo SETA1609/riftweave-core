@@ -76,6 +76,7 @@ overview (classless, d100 roll-under, 8 attributes, point-buy + tagged skills, p
 
 ## Submitting
 
+- Track work in [`issues/`](issues/README.md) (scope lives in [`ROADMAP.md`](ROADMAP.md)) and add one [`CHANGELOG.md`](CHANGELOG.md) line per closed issue.
 - Work on a branch and open a pull request against `main`.
 - Make sure `python ruleset/scripts/validate.py` passes and that any new
   cross-references (effect ids, skill ids) resolve.
