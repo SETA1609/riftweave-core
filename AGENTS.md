@@ -22,14 +22,24 @@ pip install -r ruleset/requirements.txt
 # Validate the entire ruleset (the primary "build" / test command)
 python ruleset/scripts/validate.py
 
-# Docker equivalent (matches CI)
+# Docker equivalent (matches CI). This image copies the ruleset in; it does not see
+# uncommitted edits until you rebuild.
 docker build -t riftweave-validate .
 docker run --rm riftweave-validate
+
+# Dev toolchain: the checkout is mounted at /src. Host needs uv plus docker or podman.
+./scripts/container-image.sh   # image riftweave:python-<version from .toolchain-python-version>
+./scripts/validate.sh          # python ruleset/scripts/validate.py
+./scripts/test.sh              # unittest discover ruleset/scripts/test_*.py
+./scripts/shell.sh             # bash in the toolchain container
+./scripts/agent.sh             # agent image (Claude Code, uv); see tools/devops/README.md
 ```
 
 - `validate.py` walks **all** files under `ruleset/data/`, requires a `$schema` field on each, and validates against the referenced schema.
 - It exits non-zero on any failure. CI (`.github/workflows/validate-ruleset.yml`) runs this on every push/PR touching `ruleset/**`.
 - A change is not ready until validation is green.
+- The dev toolchain, agent image, and host CLI are `container/`, `.devcontainer/`, and `tools/devops/`. Shims live in `scripts/`. Details: `tools/devops/README.md`.
+- `./scripts/clean.sh` is end-of-work only. Run it when the user asks. It deletes Python caches and the `riftweave-pip-cache` volume. It does not touch `cache/logs/`.
 
 ## Critical: How Validation Works (Major Footgun)
 
@@ -154,7 +164,7 @@ See `docs/modules/README.md` for the philosophy and current state.
 ## Licensing
 
 Dual-licensed (see `LICENSING.md`):
-- Tooling / schemas / scripts / CI / Dockerfile → Apache-2.0
+- Tooling / schemas / scripts / CI / Dockerfiles / `tools/devops/` → Apache-2.0
 - Game content (`ruleset/data/`), documentation, prose → CC BY 4.0
 
 Contributions are accepted under the same terms (inbound = outbound).
@@ -170,3 +180,4 @@ Contributions are accepted under the same terms (inbound = outbound).
 - `docs/modules/` — detailed design for core systems and planned modules (start here before adding new mechanics)
 - `ruleset/schemas/schema.json` — shared definitions
 - `ruleset/scripts/validate.py` — the validator implementation (read if debugging resolution issues)
+- `tools/devops/README.md` — dev container, agent container, and the host devops CLI

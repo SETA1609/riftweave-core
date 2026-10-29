@@ -1,3 +1,4 @@
+# Immutable validation image. The dev toolchain and agent image live in container/.
 FROM python:3.12-slim
 
 WORKDIR /app

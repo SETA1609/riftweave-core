@@ -28,6 +28,16 @@ The validator checks **all** data files and exits non-zero on any failure. CI
 
 You can also run it via Docker: `docker build -t riftweave-validate . && docker run --rm riftweave-validate`.
 
+For day-to-day work, the dev toolchain mounts your checkout (uv, plus docker or podman):
+
+```bash
+./scripts/container-image.sh
+./scripts/validate.sh
+./scripts/test.sh
+```
+
+See [tools/devops/README.md](tools/devops/README.md) for the shell, the agent container, and logs.
+
 ## How the data is organized
 
 - `ruleset/schemas/*.schema.json` — JSON Schema (draft-07) definitions.
