@@ -38,3 +38,9 @@ wheels/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Dev toolchain caches. The dev image build context is the repo root.
+cache/
+**/.venv
+**/.pytest_cache
+**/.ruff_cache

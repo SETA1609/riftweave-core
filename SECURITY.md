@@ -2,17 +2,19 @@
 
 ## Scope
 
-`riftweave-core` is a **data-only** project: JSON game data validated against JSON
-Schemas. The only executable code in the repository is:
+`riftweave-core` is a **data-first** project: JSON game data validated against JSON
+Schemas. The executable code in the repository is tooling around that data:
 
-- `ruleset/scripts/validate.py` — the schema validation script,
-- the `Dockerfile` used to run it, and
+- `ruleset/scripts/` — schema validation, reference checks, and their unit tests,
+- `Dockerfile` — the immutable validation image,
+- `container/`, `.devcontainer/`, `scripts/`, and `tools/devops/` — the dev toolchain,
+  the agent image, and the host CLI that runs them,
 - the GitHub Actions workflow under `.github/workflows/`.
 
-There is no network service, no runtime engine, and no handling of untrusted user
-input shipped from this repository. The realistic security surface is therefore the
-**supply chain and tooling**: the validation script, its Python dependency
-(`jsonschema`), the Docker image, and the CI workflow configuration.
+There is no network service and no runtime engine shipped from this repository. The
+realistic security surface is the **supply chain and tooling**: the validation
+script, its Python dependency (`jsonschema`), the container images (Python, Node,
+Claude Code, uv), and the CI workflow configuration.
 
 ## Supported versions
 

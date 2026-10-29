@@ -1,0 +1,19 @@
+{
+  "name": "riftweave agent",
+  "build": {
+    "dockerfile": "../container/agent.Dockerfile",
+    "context": "..",
+    "args": {
+      "BASE_IMAGE": "riftweave:python-3.13.18"
+    }
+  },
+  "initializeCommand": "docker image inspect riftweave:python-3.13.18 >/dev/null 2>&1 || podman image inspect riftweave:python-3.13.18 >/dev/null 2>&1 || ./scripts/container-image.sh",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/src,type=bind",
+  "workspaceFolder": "/src",
+  "mounts": [
+    "source=personal-agent-home,target=/home/agent,type=volume"
+  ],
+  "remoteUser": "agent",
+  "updateRemoteUserUID": true,
+  "overrideCommand": true
+}

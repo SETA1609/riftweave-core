@@ -17,7 +17,8 @@ same content license, CC BY 4.0, that the D&D 5.1 SRD uses).
 
 - `ruleset/scripts/` — the validation script and any tooling
 - `ruleset/schemas/` — the JSON Schema definitions (functional structures)
-- `Dockerfile`, `.dockerignore`
+- `Dockerfile`, `container/`, `.devcontainer/`, `.dockerignore` — images and the dev container
+- `scripts/`, `tools/devops/` — host devops CLI and its shims
 - `.github/` — CI workflows and configuration
 
 **CC BY 4.0 (content & documentation):**

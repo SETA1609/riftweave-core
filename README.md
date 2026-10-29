@@ -63,12 +63,22 @@ pip install -r ruleset/requirements.txt
 python ruleset/scripts/validate.py
 ```
 
-Or with Docker:
+Or with Docker. This image copies the ruleset in, so rebuild it after edits:
 
 ```bash
 docker build -t riftweave-validate .
 docker run --rm riftweave-validate
 ```
+
+The dev toolchain mounts this checkout instead. It needs [uv](https://docs.astral.sh/uv/) and docker or podman on the host:
+
+```bash
+./scripts/container-image.sh   # build riftweave:python-<version>
+./scripts/validate.sh
+./scripts/test.sh
+```
+
+`./scripts/shell.sh` opens a shell in that image. `./scripts/agent.sh` runs the agent image (Claude Code and uv, with its own login). See [tools/devops/README.md](tools/devops/README.md).
 
 CI runs automatically via `.github/workflows/validate-ruleset.yml` on every push
 or PR that touches the `ruleset/` directory.
@@ -78,7 +88,7 @@ or PR that touches the `ruleset/` directory.
 Riftweave is dual-licensed so it can be used freely in both software and
 games/tabletop:
 
-- **Software & tooling** (`ruleset/scripts/`, `ruleset/schemas/`, `Dockerfile`, CI)
+- **Software & tooling** (`ruleset/scripts/`, `ruleset/schemas/`, Dockerfiles, `tools/devops/`, CI)
   — [Apache License 2.0](LICENSE).
 - **Game content & documentation** (`ruleset/data/`, `docs/`, prose) —
   [Creative Commons Attribution 4.0](LICENSE-CONTENT).
