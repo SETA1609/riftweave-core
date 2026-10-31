@@ -113,3 +113,12 @@ Tracked in Linear before this repo had a tracker, recovered from git history. Th
 - Merged: #39, 2026-10-18
 - Needs: —
 - Do: A module may override a vanilla row by key. Manifest dash written as ASCII. Landed in #39. See `docs/core/overrides.md`.
+
+## M5 Release 1.0
+
+#### RW-1 Dev toolchain container and host devops CLI
+- Status: done
+- Merged: #43, 2026-10-29
+- Needs: —
+- Do: Containerised Python toolchain and a host-side CLI that logs every run (`scripts/*.sh`, `tools/devops/`, `container/`, `.devcontainer/`).
+- See: tools/devops/README.md

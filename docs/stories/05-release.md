@@ -10,13 +10,7 @@ Roadmap: [M5](../../ROADMAP.md#where-we-are). Format and rules: [README.md](READ
 
 **Done when:** items 3, 5, 6, 7, and 8 of the [definition of finished](../../ROADMAP.md#definition-of-finished) hold, and `v1.0.0` is tagged.
 
-Done: —
-
-#### RW-1 Dev toolchain container and host devops CLI
-- Status: review
-- Needs: —
-- Do: Containerised Python toolchain and a host-side CLI that logs every run (`scripts/*.sh`, `tools/devops/`, `container/`, `.devcontainer/`).
-- See: tools/devops/README.md
+Done: RW-1 ([done.md](done.md#m5-release-10))
 
 #### RW-2 In-repo changelog, issue tracker, archive, and roadmap
 - Status: review

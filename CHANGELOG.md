@@ -16,7 +16,7 @@ There are no tagged releases yet. `[Unreleased]` becomes `[1.0.0]` when the road
 ## [Unreleased]
 
 ### Added
-- **RW-1** Dev toolchain container and host devops CLI.
+- **RW-1** Dev toolchain container and host devops CLI. (#43)
 - **RW-2** In-repo changelog, issue tracker, archive, and roadmap.
 - **RW-40** Issues live in one story file per milestone (`docs/stories/`), with a `done.md` archive, as in project-new-world.
 - **RW-39** Five-step workflow, PR size rule, verification tags, naming rules, decision log, open-PR rebasing, and `fetch-docs`; Actions pinned to SHAs.
