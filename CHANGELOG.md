@@ -2,7 +2,7 @@
 
 One entry per **closed issue**, not per commit. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Each line is
-`**ID** Title (#PR)`, written in the PR that moves the issue to `issues/done/`. Work with no
+`**ID** Title (#PR)`, written in the issue's own PR. Work with no
 issue does not get an entry: open the issue first.
 
 Categories: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**, **Security**.
@@ -11,13 +11,14 @@ A renamed or removed key breaks consumers, so mark it **(breaking)**.
 There are no tagged releases yet. `[Unreleased]` becomes `[1.0.0]` when the roadmap's
 [definition of finished](ROADMAP.md#definition-of-finished) holds; see
 [ROADMAP.md](ROADMAP.md) for what remains. Ids: `SET-NN` were tracked in Linear,
-`RW-NN` are tracked in this repo ([issues/README.md](issues/README.md)).
+`RW-NN` are tracked in this repo ([docs/stories/](docs/stories/README.md)).
 
 ## [Unreleased]
 
 ### Added
 - **RW-1** Dev toolchain container and host devops CLI.
 - **RW-2** In-repo changelog, issue tracker, archive, and roadmap.
+- **RW-40** Issues live in one story file per milestone (`docs/stories/`), with a `done.md` archive, as in project-new-world.
 - **RW-39** Five-step workflow, PR size rule, verification tags, naming rules, decision log, open-PR rebasing, and `fetch-docs`; Actions pinned to SHAs.
 - **SET-6** Kernel contract: actor, modifier, event. (#18)
 - **SET-20** Formula AST; the AP formula is a JSON tree. (#37)
