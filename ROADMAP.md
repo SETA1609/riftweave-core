@@ -2,8 +2,8 @@
 
 The core SRD is **finished** when it is tagged `v1.0.0` and every item under
 [Definition of finished](#definition-of-finished) is true. This file is the source of truth for
-scope; the issues it links to are the source of truth for work. Linear mirrors both and links
-back here (see [issues/README.md](issues/README.md)).
+scope; the story files it links to are the source of truth for work. Linear mirrors both and links
+back here (see [docs/stories/README.md](docs/stories/README.md)).
 
 ## What "core SRD" means
 
@@ -49,7 +49,7 @@ All of these are checked by a person or by CI. None is a feeling.
 ## Where we are
 
 Foundations are done. Milestone M0 below is complete and archived in
-[issues/done/](issues/done/); what remains is closing the kernel, then filling content.
+[docs/stories/done.md](docs/stories/done.md); what remains is closing the kernel, then filling content.
 
 | Milestone | State |
 | --- | --- |
@@ -69,16 +69,7 @@ Content today, for scale: 23 features, 7 spells, 11 monsters, 3 recipes, 3 acces
 progression are data, and CI enforces it. This is the highest-leverage milestone: content
 written before it must be rechecked after.
 
-| Issue | Title | Priority | Status |
-| --- | --- | --- | --- |
-| [RW-3](issues/open/RW-3-reconcile-docs-modules-combat-md-with-the-kernel.md) | Reconcile docs/modules/combat.md with the kernel | high | open |
-| [RW-4](issues/open/RW-4-combat-pipeline-as-data-formulas-and-vectors.md) | Combat pipeline as data, formulas, and vectors | high | open |
-| [RW-5](issues/open/RW-5-progression-as-data-xp-skill-points-perk-cadence.md) | Progression as data: XP, skill points, perk cadence | high | open |
-| [RW-6](issues/open/RW-6-rest-and-recovery-rules-as-data.md) | Rest and recovery rules as data | medium | open |
-| [RW-7](issues/open/RW-7-modifier-stacking-and-condition-vectors.md) | Modifier stacking and condition vectors | medium | open |
-| [RW-8](issues/open/RW-8-resolve-the-traits-vs-features-fork.md) | Resolve the traits vs features fork | medium | open |
-| [RW-9](issues/open/RW-9-one-test-runs-every-vector-file.md) | One test runs every vector file | high | open |
-| [RW-10](issues/open/RW-10-ci-runs-unit-tests-and-vectors.md) | CI runs unit tests and vectors | high | open |
+Issues, in order: [docs/stories/01-kernel.md](docs/stories/01-kernel.md).
 
 ## M2 Characters
 
@@ -86,13 +77,7 @@ written before it must be rechecked after.
 skill, race, background, and equipment floors are met, and two multi-level characters are
 vectors.
 
-| Issue | Title | Priority | Status |
-| --- | --- | --- | --- |
-| [RW-11](issues/open/RW-11-perk-catalogue-to-the-content-floor.md) | Perk catalogue to the content floor | high | open |
-| [RW-12](issues/open/RW-12-skill-audit-no-orphan-skills.md) | Skill audit: no orphan skills | medium | open |
-| [RW-13](issues/open/RW-13-multi-level-example-characters-as-vectors.md) | Multi-level example characters as vectors | high | open |
-| [RW-14](issues/open/RW-14-races-and-backgrounds-emit-modifiers-only.md) | Races and backgrounds emit modifiers only | medium | open |
-| [RW-15](issues/open/RW-15-equipment-to-the-content-floor.md) | Equipment to the content floor | medium | open |
+Issues, in order: [docs/stories/02-characters.md](docs/stories/02-characters.md).
 
 ## M3 Combat and magic playable
 
@@ -100,54 +85,27 @@ vectors.
 Optional mechanics (cover, called shots, counterspell, and the like) are each either core with
 vectors or a named module.
 
-| Issue | Title | Priority | Status |
-| --- | --- | --- | --- |
-| [RW-16](issues/open/RW-16-casting-procedure-decide-scope-then-specify.md) | Casting procedure: decide scope, then specify | high | open |
-| [RW-17](issues/open/RW-17-spell-list-to-the-content-floor.md) | Spell list to the content floor | high | open |
-| [RW-18](issues/open/RW-18-cover-flanking-terrain-and-called-shots-as-modifiers.md) | Cover, flanking, terrain, and called shots as modifiers | medium | open |
-| [RW-19](issues/open/RW-19-wuxing-interaction-vectors.md) | Wuxing interaction vectors | medium | open |
+Issues, in order: [docs/stories/03-combat-magic.md](docs/stories/03-combat-magic.md).
 
 ## M4 World
 
 **Exit:** buy, sell, loot, and fight monsters across levels 1 to 30, with hazards. Prices,
 treasure, and monster stats are consistent under checkable balance bands.
 
-| Issue | Title | Priority | Status |
-| --- | --- | --- | --- |
-| [RW-20](issues/open/RW-20-economy-currency-price-formula-merchants.md) | Economy: currency, price formula, merchants | high | open |
-| [RW-21](issues/open/RW-21-loot-and-treasure-tables.md) | Loot and treasure tables | high | open |
-| [RW-22](issues/open/RW-22-bestiary-to-the-content-floor.md) | Bestiary to the content floor | high | open |
-| [RW-23](issues/open/RW-23-traps-and-environmental-hazards.md) | Traps and environmental hazards | medium | open |
-| [RW-24](issues/open/RW-24-encounter-and-balance-validation.md) | Encounter and balance validation | medium | open |
+Issues, in order: [docs/stories/04-world.md](docs/stories/04-world.md).
 
 ## M5 Release 1.0
 
 **Exit:** items 3, 5, 6, 7, and 8 of the definition hold, and `v1.0.0` is tagged.
 
-| Issue | Title | Priority | Status |
-| --- | --- | --- | --- |
-| [RW-25](issues/open/RW-25-reference-playthrough-vector-chain.md) | Reference playthrough vector chain | high | open |
-| [RW-26](issues/open/RW-26-player-and-gm-guide.md) | Player and GM guide | medium | open |
-| [RW-27](issues/open/RW-27-entry-docs-and-review-archive-sync.md) | Entry docs and review archive sync | medium | open |
-| [RW-28](issues/open/RW-28-key-stability-and-versioning-policy.md) | Key stability and versioning policy | high | open |
-| [RW-29](issues/open/RW-29-integrity-gates.md) | Integrity gates | high | open |
-| [RW-30](issues/open/RW-30-licensing-and-attribution-audit-tag-v1-0-0.md) | Licensing and attribution audit, tag v1.0.0 | high | open |
+Issues, in order: [docs/stories/05-release.md](docs/stories/05-release.md).
 
 ## Post-1.0 modules
 
 Each ships as an optional module with a manifest, is written against the kernel contract, and
 does not change core. Order is by demand, not commitment.
 
-| Issue | Title | Priority | Status |
-| --- | --- | --- | --- |
-| [RW-31](issues/open/RW-31-crafting-module-recipes-quality-stations.md) | Crafting module: recipes, quality, stations | medium | open |
-| [RW-32](issues/open/RW-32-alchemy-module-quality-formula-and-discovery.md) | Alchemy module: quality formula and discovery | medium | open |
-| [RW-33](issues/open/RW-33-magic-crafting-module-enchanting.md) | Magic crafting module: enchanting | low | open |
-| [RW-34](issues/open/RW-34-breakthrough-advancement-module.md) | Breakthrough advancement module | medium | open |
-| [RW-35](issues/open/RW-35-factions-and-reputation-module.md) | Factions and reputation module | medium | open |
-| [RW-36](issues/open/RW-36-companions-and-followers-module.md) | Companions and followers module | medium | open |
-| [RW-37](issues/open/RW-37-mounts-vehicles-and-ship-combat-module.md) | Mounts, vehicles, and ship combat module | low | open |
-| [RW-38](issues/open/RW-38-survival-needs-module.md) | Survival needs module | low | open |
+Issues, in order: [docs/stories/06-modules.md](docs/stories/06-modules.md).
 
 Also parked with no issue yet: psionics, alignment and morality, birthsigns. Open one when it
 is picked up.
@@ -166,6 +124,7 @@ is picked up.
 
 ## Updating this file
 
-Move work between milestones only with a note in the issue (the `milestone:` field). When an
-issue closes, move its file to `done/` and delete its row from the table above. Change the
-definition of finished only in a PR that says why.
+Move work between milestones only by moving the issue between story files, with a note in
+the issue. Issues close in their story file ([docs/stories/README.md](docs/stories/README.md#workflow)),
+so this file does not change when an issue closes. Change the definition of finished only in
+a PR that says why.

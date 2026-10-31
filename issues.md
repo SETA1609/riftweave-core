@@ -1,6 +1,6 @@
 # Riftweave Issues & Missing Components
 
-> Open work is now tracked one issue per file in [issues/](issues/README.md); this file is the older narrative backlog, kept for context.
+> Open work is now tracked in story files in [docs/stories/](docs/stories/README.md); this file is the older narrative backlog, kept for context.
 
 This file tracks gaps, stubs, planned features, and incomplete areas in the Riftweave ruleset.
 

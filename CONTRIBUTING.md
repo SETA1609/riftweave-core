@@ -102,7 +102,7 @@ vectors.
 ### Pull request rules
 
 1. **One issue, one PR.** The PR does what the issue says and nothing else. No branch
-   without an issue; if work has none, file it first ([issues/](issues/README.md)).
+   without an issue; if work has none, add it to its story file first ([docs/stories/](docs/stories/README.md)).
 2. **At most 20 changed files** per PR, as `git diff --stat` counts them. A file with 5 or
    fewer changed lines does not count. If the counted files grow past 20, split the issue.
    Content-floor issues (perks, spells, monsters) split by color, level band, or skill.
@@ -110,8 +110,10 @@ vectors.
    last commit.
 4. **Docs in the same PR.** A change to a rule, a decision, or a tag updates the matching
    doc. Record decisions in [docs/decisions.md](docs/decisions.md).
-5. **Changelog and roadmap.** Closing an issue adds its [CHANGELOG.md](CHANGELOG.md) line
-   and deletes its [ROADMAP.md](ROADMAP.md) row in the same PR.
+5. **Status and changelog.** Set the issue's `Status` in its story file in the PR that
+   changes it, and add its [CHANGELOG.md](CHANGELOG.md) line in the issue's PR. After merge,
+   the next PR that touches the story file moves the issue to
+   [done.md](docs/stories/done.md) ([how](docs/stories/README.md#workflow)).
 6. **Names.** Branch `RW-NN-<slug>` (the issue title in lowercase kebab-case, shortened if
    long), PR title `RW-NN <title>`. Agents prefix the branch with `agent/<name>/`.
 7. **Describe it for both audiences.** Say *what rule or content* changed and why, so
