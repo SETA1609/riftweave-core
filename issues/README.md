@@ -29,8 +29,9 @@ The two prefixes never collide, so Linear's own numbering is free to continue.
    roadmap.
 2. **Mirror (optional):** create the Linear issue, put the repo file link in its description,
    and set `linear:` in the front matter.
-3. **Work:** `status: in-progress`. Put the id in the branch, commits, and PR title
-   (`RW-12 combat pipeline vectors (#41)`).
+3. **Work:** `status: in-progress`. Put the id in the branch (`RW-12-combat-pipeline-vectors`),
+   commits, and PR title (`RW-12 combat pipeline vectors (#41)`). Follow the five-step
+   [workflow](../CONTRIBUTING.md#workflow) and the [PR rules](../CONTRIBUTING.md#pull-request-rules).
 4. **Close:** in the same PR, `git mv` the file to `done/`, set `status: done`,
    `closed: YYYY-MM-DD`, `pr: "#NN"`, add one line to [CHANGELOG.md](../CHANGELOG.md), and delete its
    row from the roadmap table. Use `status: wontfix` with a one-line reason to drop an issue.
