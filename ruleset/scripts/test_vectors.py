@@ -116,7 +116,7 @@ class TestKernelChecklist(unittest.TestCase):
     def test_checklist_statuses_are_covered_or_pending(self):
         for function, status in self.checklist.items():
             with self.subTest(function=function):
-                self.assertRegex(status, r"^(covered|pending [A-Z]+-\d{2})$")
+                self.assertRegex(status, r"^(covered|pending [A-Z][A-Z0-9]*-\d{2})$")
 
     def test_every_covered_function_has_a_vector_and_a_runner(self):
         for function, status in self.checklist.items():
