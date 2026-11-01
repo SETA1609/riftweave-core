@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Check",
+  "description": "A named use of a skill: one call of the resolution function against the skill it names (docs/core/checks.md). Difficulty is a modifier on the target, not a field here.",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "checks": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/check" }
+    }
+  },
+  "required": ["checks"],
+  "additionalProperties": false,
+  "definitions": {
+    "skillRef": {
+      "type": "string",
+      "pattern": "^(core:skill/[a-z_][a-z0-9_]*|module:[a-z0-9_]+/skill/[a-z_][a-z0-9_]*)$",
+      "description": "Namespaced skill reference: core:skill/<key> or module:<name>/skill/<key>."
+    },
+    "check": {
+      "type": "object",
+      "properties": {
+        "id": { "$ref": "schema.json#/definitions/entryId" },
+        "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "Symbolic snake_case key, unique within the collection." },
+        "label": { "type": "string", "description": "Human-readable display name." },
+        "description": { "type": "string", "description": "What the check does, in one sentence." },
+        "source": { "$ref": "schema.json#/definitions/sourceRef" },
+        "skill": { "$ref": "#/definitions/skillRef", "description": "The skill that rolls." },
+        "opposed_by": { "$ref": "#/definitions/skillRef", "description": "Optional: the skill the other side rolls in a contest. How the two results compare is not specified yet (docs/core/checks.md)." }
+      },
+      "required": ["id", "key", "label", "description", "skill"],
+      "additionalProperties": false
+    }
+  }
+}
