@@ -122,3 +122,28 @@ Tracked in Linear before this repo had a tracker, recovered from git history. Th
 - Needs: —
 - Do: Containerised Python toolchain and a host-side CLI that logs every run (`scripts/*.sh`, `tools/devops/`, `container/`, `.devcontainer/`).
 - See: tools/devops/README.md
+
+#### RW-2 In-repo changelog, issue tracker, archive, and roadmap
+- Status: done
+- Merged: #45, 2026-11-01
+- Needs: —
+- Do: `CHANGELOG.md` (one entry per issue), `issues/` with a `done/` archive, and `ROADMAP.md` defining when the core SRD is finished. Linear points at these files.
+- See: issues/README.md, ROADMAP.md
+
+#### RW-39 Adopt the workflow, PR rules, verification tags, and branch rebasing
+- Status: done
+- Merged: #45, 2026-11-01
+- Needs: —
+- Do: Every PR now edits `CHANGELOG.md` and `ROADMAP.md`, so parallel PRs conflict, and nothing in `CONTRIBUTING.md` says how big a PR may be or how a rule moves from prose to a vector. Adopt the process that already works in a sibling project, adapted to a data repo.
+- See: CONTRIBUTING.md#workflow, docs/decisions.md, scripts/rebase_open_branches.py, tools/fetch-docs/
+- Done when: `CONTRIBUTING.md` has the five-step workflow (spec, schema, vector, data, review), PR rules (one issue, at most 20 counted files), verification tags, and naming rules; `.github/workflows/rebase-open-branches.yml` rebases open PRs onto `main`; add-only `CHANGELOG.md` conflicts keep both sides. Tests in `tools/devops/tests/test_rebase_open_branches.py`; every GitHub Action is pinned to a commit SHA; `tools/fetch-docs/` fetches cited sources pinned to a commit, with offline tests; `docs/decisions.md` logs decisions, open questions, and risks; `python ruleset/scripts/validate.py` is green; `CHANGELOG.md` entry added.
+
+#### RW-40 Track issues in story files like project-new-world
+- Status: done
+- Merged: #45, 2026-11-01
+- Priority: medium
+- Needs: RW-39
+- Do: Replace one file per issue (`issues/open/`, `issues/done/`) with one story file per milestone in `docs/stories/` and a `done.md` archive, so the story's goal and order sit next to its issues. Issues keep their `RW-` and `SET-` ids. ROADMAP.md links to story files instead of repeating issue tables.
+- Files: ~70 (most are the 57 deleted `issues/` files, a mechanical move; over the 20-file rule by owner request)
+- See: docs/stories/README.md
+- Done when: every issue from `issues/` is in exactly one story file or `done.md`; no link points into `issues/`; `validate.py` is green; `CHANGELOG.md` entry added.

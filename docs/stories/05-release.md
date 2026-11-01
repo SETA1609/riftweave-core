@@ -10,23 +10,10 @@ Roadmap: [M5](../../ROADMAP.md#where-we-are). Format and rules: [README.md](READ
 
 **Done when:** items 3, 5, 6, 7, and 8 of the [definition of finished](../../ROADMAP.md#definition-of-finished) hold, and `v1.0.0` is tagged.
 
-Done: RW-1 ([done.md](done.md#m5-release-10))
-
-#### RW-2 In-repo changelog, issue tracker, archive, and roadmap
-- Status: review
-- Needs: —
-- Do: `CHANGELOG.md` (one entry per issue), `issues/` with a `done/` archive, and `ROADMAP.md` defining when the core SRD is finished. Linear points at these files.
-- See: issues/README.md, ROADMAP.md
-
-#### RW-39 Adopt the workflow, PR rules, verification tags, and branch rebasing
-- Status: review
-- Needs: —
-- Do: Every PR now edits `CHANGELOG.md` and `ROADMAP.md`, so parallel PRs conflict, and nothing in `CONTRIBUTING.md` says how big a PR may be or how a rule moves from prose to a vector. Adopt the process that already works in a sibling project, adapted to a data repo.
-- See: CONTRIBUTING.md#workflow, docs/decisions.md, scripts/rebase_open_branches.py, tools/fetch-docs/
-- Done when: `CONTRIBUTING.md` has the five-step workflow (spec, schema, vector, data, review), PR rules (one issue, at most 20 counted files), verification tags, and naming rules; `.github/workflows/rebase-open-branches.yml` rebases open PRs onto `main`; add-only `CHANGELOG.md` conflicts keep both sides. Tests in `tools/devops/tests/test_rebase_open_branches.py`; every GitHub Action is pinned to a commit SHA; `tools/fetch-docs/` fetches cited sources pinned to a commit, with offline tests; `docs/decisions.md` logs decisions, open questions, and risks; `python ruleset/scripts/validate.py` is green; `CHANGELOG.md` entry added.
+Done: RW-1, RW-2, RW-39, RW-40 ([done.md](done.md#m5-release-10))
 
 #### RW-41 Use the shared devops-tools instead of local copies
-- Status: doing
+- Status: review
 - Priority: medium
 - Needs: RW-1, RW-39
 - Do: The run log (`tools/devops/src/devops/run_log.py`) and the open-PR rebase (`scripts/rebase_open_branches.py`) are copies of what [SETA1609/devops_tools](https://github.com/SETA1609/devops_tools) now ships and tests for several repos. Depend on it, pinned to a commit, and delete the copies. The container runner stays local until devops-tools has one.
@@ -82,11 +69,3 @@ Done: RW-1 ([done.md](done.md#m5-release-10))
 - See: LICENSING.md, ROADMAP.md
 - Done when: all checklist items in `ROADMAP.md` 'Definition of finished' are ticked; `v1.0.0` tagged and `[Unreleased]` in the changelog becomes `[1.0.0]`.
 
-#### RW-40 Track issues in story files like project-new-world
-- Status: review
-- Priority: medium
-- Needs: RW-39
-- Do: Replace one file per issue (`issues/open/`, `issues/done/`) with one story file per milestone in `docs/stories/` and a `done.md` archive, so the story's goal and order sit next to its issues. Issues keep their `RW-` and `SET-` ids. ROADMAP.md links to story files instead of repeating issue tables.
-- Files: ~70 (most are the 57 deleted `issues/` files, a mechanical move; over the 20-file rule by owner request)
-- See: docs/stories/README.md
-- Done when: every issue from `issues/` is in exactly one story file or `done.md`; no link points into `issues/`; `validate.py` is green; `CHANGELOG.md` entry added.

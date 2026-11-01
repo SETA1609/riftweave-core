@@ -17,9 +17,9 @@ There are no tagged releases yet. `[Unreleased]` becomes `[1.0.0]` when the road
 
 ### Added
 - **RW-1** Dev toolchain container and host devops CLI. (#43)
-- **RW-2** In-repo changelog, issue tracker, archive, and roadmap.
-- **RW-40** Issues live in one story file per milestone (`docs/stories/`), with a `done.md` archive, as in project-new-world.
-- **RW-39** Five-step workflow, PR size rule, verification tags, naming rules, decision log, open-PR rebasing, and `fetch-docs`; Actions pinned to SHAs.
+- **RW-2** In-repo changelog, issue tracker, archive, and roadmap. (#45)
+- **RW-40** Issues live in one story file per milestone (`docs/stories/`), with a `done.md` archive, as in project-new-world. (#45)
+- **RW-39** Five-step workflow, PR size rule, verification tags, naming rules, decision log, open-PR rebasing, and `fetch-docs`; Actions pinned to SHAs. (#45)
 - **SET-6** Kernel contract: actor, modifier, event. (#18)
 - **SET-20** Formula AST; the AP formula is a JSON tree. (#37)
 - **SET-22** Golden vectors for resolution and derived HP. (#36)
