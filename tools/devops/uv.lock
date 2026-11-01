@@ -26,7 +26,7 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "devops-tools", git = "https://github.com/SETA1609/devops_tools?rev=52c33bf85c986e181c2a9088da1043b114c65834" }]
+requires-dist = [{ name = "devops-tools", git = "https://github.com/SETA1609/devops_tools?rev=fde087b7f18a8b0c10913dd322350f08562eea46" }]
 
 [package.metadata.requires-dev]
 dev = [
@@ -37,7 +37,7 @@ dev = [
 [[package]]
 name = "devops-tools"
 version = "0.1.0"
-source = { git = "https://github.com/SETA1609/devops_tools?rev=52c33bf85c986e181c2a9088da1043b114c65834#52c33bf85c986e181c2a9088da1043b114c65834" }
+source = { git = "https://github.com/SETA1609/devops_tools?rev=fde087b7f18a8b0c10913dd322350f08562eea46#fde087b7f18a8b0c10913dd322350f08562eea46" }
 
 [[package]]
 name = "iniconfig"
