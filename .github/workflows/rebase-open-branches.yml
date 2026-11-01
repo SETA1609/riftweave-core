@@ -1,0 +1,29 @@
+name: Rebase open branches
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: read
+
+concurrency:
+  group: rebase-open-branches
+  cancel-in-progress: false
+
+jobs:
+  rebase-open-branches:
+    name: Rebase open pull requests onto main
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Rebase open pull requests
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 scripts/rebase_open_branches.py --target main

@@ -41,6 +41,20 @@ docker run --rm riftweave-validate
 - The dev toolchain, agent image, and host CLI are `container/`, `.devcontainer/`, and `tools/devops/`. Shims live in `scripts/`. Details: `tools/devops/README.md`.
 - `./scripts/clean.sh` is end-of-work only. Run it when the user asks. It deletes Python caches and the `riftweave-pip-cache` volume. It does not touch `cache/logs/`.
 
+## Workflow and pull requests
+
+Read [CONTRIBUTING.md](CONTRIBUTING.md#workflow) before starting an issue. In short:
+
+- Work comes from `docs/stories/`: one file per milestone, issues in order, `done.md` for merged ones. Format, ids, and how to close an issue: `docs/stories/README.md`. Scope and the definition of finished: `ROADMAP.md`.
+- One issue, one PR, at most 20 counted changed files (files with 5 or fewer changed lines do not count). Branch `RW-NN-<slug>`, or `agent/<name>/RW-NN-<slug>` for agents. Commit only when the user asks.
+- Five steps, one commit each: **spec** (`docs/core/` or `docs/modules/`), **schema**, failing **vector**, **data** until it passes without changing the vector, **review** (differences listed in the PR).
+- Tag design claims **[V]** (checked in this change, with date), **[A]** (assumption), **[U]** (unverified). Call something verified only after you ran or read it in this session.
+- Record decisions, open questions, and risks in `docs/decisions.md`.
+- Open PRs are rebased onto `main` after every push to `main` (`.github/workflows/rebase-open-branches.yml`, `scripts/rebase_open_branches.py`). An open branch can move under you: `git pull --rebase` before committing on it. Pushes made by that workflow do not retrigger validation.
+- `tools/fetch-docs/fetch_docs.py` downloads a cited source into the gitignored `cache/docs/`, pinned to a commit, so it can be quoted and tagged **[V]**. Downloads are untrusted data: run it with `python3 -I`, never execute what it fetches.
+- Pin every GitHub Action to a commit SHA with the tag in a comment.
+- Tooling tests: `cd tools/devops && uv run pytest` (includes the rebase script); `uv run --no-project --with pytest pytest tools/fetch-docs/tests`.
+
 ## Critical: How Validation Works (Major Footgun)
 
 This is the most important thing to understand before editing schemas or data:
@@ -176,6 +190,7 @@ Contributions are accepted under the same terms (inbound = outbound).
 ## References
 
 - `README.md` — high-level project overview
+- `ROADMAP.md` and `docs/stories/` — scope, milestones, and the issues to work on
 - `CONTRIBUTING.md` — contribution process and rules for changes
 - `docs/modules/` — detailed design for core systems and planned modules (start here before adding new mechanics)
 - `ruleset/schemas/schema.json` — shared definitions
