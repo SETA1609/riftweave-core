@@ -234,6 +234,23 @@
       ]
     },
     {
+      "key": "bound_weapon",
+      "label": "Bound Weapon",
+      "description": "Conjures a weapon of shaped energy in the caster's hand. Use 'parameter' for the weapon it copies (e.g. 'core:weapon/longsword'); the caster attacks with that weapon's skill. Magnitude is the number of weapons conjured (normally 1). The weapon vanishes when the duration ends or it leaves the caster's hand.",
+      "category": "conjure",
+      "polarity": "beneficial",
+      "color": "orange",
+      "magnitudeUnit": "count",
+      "defaultDuration": 60,
+      "channels": [
+        "spell"
+      ],
+      "tags": [
+        "conjure",
+        "bound"
+      ]
+    },
+    {
       "key": "essence_fire",
       "label": "Essence of Fire",
       "description": "Condensed flame-aspected spiritual power. Imparts transformative, vigorous energy when used in a breakthrough or as a refining component.",
