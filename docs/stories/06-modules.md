@@ -53,7 +53,7 @@ Done: —
 - Done when: manifest, data, and vectors; core unchanged.
 
 #### POST-05 Factions and reputation module
-- Status: todo
+- Status: doing
 - Priority: medium
 - Needs: —
 - Was: RW-35
