@@ -23,7 +23,8 @@ modifiers it emits ([kernel contract](../core/contract.md)).
 
 ## Data
 
-One new collection, `factions`, validated by `ruleset/schemas/faction.schema.json` **[A]**.
+One new collection, `factions`, validated by `ruleset/schemas/faction.schema.json` **[V 2026-11-02]** (`validate.py`
+passes the module's `data/factions.json`).
 A faction is referenced as `module:factions/faction/<key>`.
 
 ```
@@ -45,7 +46,9 @@ Faction
 `modifiers[]` is `schema.json#/definitions/modifier`, the only shared shape. A standing's
 modifiers all use `source: faction_standing:<faction key>`; a rank's use
 `source: faction_rank:<faction key>`. The schema checks the prefix; the reference code checks
-the key **[A]**.
+the key, the band order, and that each relation names another faction
+(`check_factions` in `faction_reference.py`) **[V 2026-11-02]**. `validate.py` does not run
+those checks yet.
 
 ## Actor state
 
@@ -58,7 +61,8 @@ faction_ranks[faction ref]  rank key held; missing = not a member
 ```
 
 Standing, rank eligibility, and the emitted modifiers are functions of this state. They are
-never stored **[A]**.
+never stored: the
+reference recomputes them from the snapshot on every call **[V 2026-11-02]**.
 
 ## Rules
 
@@ -86,6 +90,9 @@ never stored **[A]**.
    bundle because every standing of one faction shares one source. Two factions are two
    sources and add. Standing and rank of one faction are two sources and add.
 
+Every shipped modifier uses `duration: while_applied`, the value conditions already use: it
+lasts while the standing or rank holds **[V 2026-11-02]**.
+
 Hostility is a `grant` of a flag such as `lantern_wardens_hostile`. What a hostile guard
 does is the consumer's rule; the module only says the flag is set.
 
@@ -95,8 +102,11 @@ Lantern Wardens, reputation 0, persuasion 40. A completed contract (`delta` 15) 
 Wardens to 15, which is `friendly` (+5 persuasion). The Ashen Circle relation has
 `share_percent` -50, so the Circle changes by `trunc(15 * -50 / 100) = -7`. Persuasion
 against a resolution roll is now 45. The cases are pinned in
-`ruleset/tests/vectors/factions.json`, and `ruleset/scripts/faction_reference.py` reproduces
-them.
+`ruleset/tests/vectors/factions.json` (18 cases), and `ruleset/scripts/faction_reference.py`
+reproduces them, run by `ruleset/scripts/test_faction_reference.py` **[V 2026-11-02]**.
+
+A faction the actor has no entry for emits nothing, even if its `reputation_start` band has
+modifiers. Every shipped faction starts in `neutral`, which has none **[V 2026-11-02]**.
 
 ## Out of scope
 
