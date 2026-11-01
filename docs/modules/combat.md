@@ -1081,7 +1081,7 @@ When adding new combat perks, follow these guidelines:
 
 ### Racial Traits Affecting Combat
 
-Racial traits from `data/traits/core.json` also modify combat:
+Racial traits (`racial_trait` rows in `data/features/core.json`) also modify combat:
 
 - **Elf — Fey Ancestry:** Resistance to charm and mind-affecting magic (relevant in the magic defense tree, Layer 3–4).
 - **Elf — Keen Senses:** +PER-based bonus; helps initiative and perception in combat.

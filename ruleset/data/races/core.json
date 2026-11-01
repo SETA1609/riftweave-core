@@ -18,11 +18,11 @@
       },
       "traits": [
         {
-          "id": "core:trait/human_versatility",
+          "id": "core:feature/human_versatility",
           "label": "Versatility"
         },
         {
-          "id": "core:trait/human_ambition",
+          "id": "core:feature/human_ambition",
           "label": "Ambition"
         }
       ]
@@ -45,15 +45,15 @@
       },
       "traits": [
         {
-          "id": "core:trait/elf_darkvision",
+          "id": "core:feature/elf_darkvision",
           "label": "Darkvision"
         },
         {
-          "id": "core:trait/elf_fey_ancestry",
+          "id": "core:feature/elf_fey_ancestry",
           "label": "Fey Ancestry"
         },
         {
-          "id": "core:trait/elf_keen_senses",
+          "id": "core:feature/elf_keen_senses",
           "label": "Keen Senses"
         }
       ]
@@ -84,7 +84,7 @@
       },
       "traits": [
         {
-          "id": "core:trait/green_elf_woodland_stride",
+          "id": "core:feature/green_elf_woodland_stride",
           "label": "Woodland Stride"
         }
       ]
@@ -105,11 +105,11 @@
       },
       "traits": [
         {
-          "id": "core:trait/black_elf_sunless_sight",
+          "id": "core:feature/black_elf_sunless_sight",
           "label": "Sunless Sight"
         },
         {
-          "id": "core:trait/black_elf_shadowmeld",
+          "id": "core:feature/black_elf_shadowmeld",
           "label": "Shadowmeld"
         }
       ]
@@ -132,15 +132,15 @@
       },
       "traits": [
         {
-          "id": "core:trait/dwarf_darkvision",
+          "id": "core:feature/dwarf_darkvision",
           "label": "Darkvision"
         },
         {
-          "id": "core:trait/dwarf_resilience",
+          "id": "core:feature/dwarf_resilience",
           "label": "Dwarven Resilience"
         },
         {
-          "id": "core:trait/dwarf_stoneworker",
+          "id": "core:feature/dwarf_stoneworker",
           "label": "Stoneworker"
         }
       ]
@@ -171,7 +171,7 @@
       },
       "traits": [
         {
-          "id": "core:trait/hill_dwarf_toughness",
+          "id": "core:feature/hill_dwarf_toughness",
           "label": "Dwarven Toughness"
         }
       ]
@@ -191,7 +191,7 @@
       },
       "traits": [
         {
-          "id": "core:trait/mountain_dwarf_armor_training",
+          "id": "core:feature/mountain_dwarf_armor_training",
           "label": "Mountain Armor Training"
         }
       ]
@@ -206,7 +206,7 @@
       },
       "traits": [
         {
-          "id": "core:trait/beastfolk_kinship",
+          "id": "core:feature/beastfolk_kinship",
           "label": "Beastfolk"
         }
       ]
@@ -230,11 +230,11 @@
       },
       "traits": [
         {
-          "id": "core:trait/catman_claws",
+          "id": "core:feature/catman_claws",
           "label": "Retractable Claws"
         },
         {
-          "id": "core:trait/catman_landing",
+          "id": "core:feature/catman_landing",
           "label": "Cat's Landing"
         }
       ]
@@ -258,11 +258,11 @@
       },
       "traits": [
         {
-          "id": "core:trait/wolfman_pack_tactics",
+          "id": "core:feature/wolfman_pack_tactics",
           "label": "Pack Tactics"
         },
         {
-          "id": "core:trait/wolfman_keen_smell",
+          "id": "core:feature/wolfman_keen_smell",
           "label": "Keen Smell"
         }
       ]

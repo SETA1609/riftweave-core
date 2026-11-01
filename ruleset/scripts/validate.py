@@ -127,7 +127,6 @@ COLLECTION_CATEGORIES = {
     "skills": "skill",
     "features": "feature",
     "races": "race",
-    "traits": "trait",
     "conditions": "condition",
     "materials": "material",
     "gems": "gem",
@@ -489,7 +488,7 @@ def check_references(
                     if isinstance(tid, str) and not resolve_namespaced_ref(
                         tid, namespaced_ref_index
                     ):
-                        errors.append(f"trait {tid} does not exist in traits")
+                        errors.append(f"trait {tid} does not exist in features")
 
     elif coll_name == "features":
         for f in data.get("features", []):
