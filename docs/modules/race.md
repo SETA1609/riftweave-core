@@ -170,15 +170,15 @@ the feature row.
 Rules, checked by `validate.py`:
 
 - A race's `traits[].id` must be a `core:feature/<key>` ref (or a `module:` ref), and
-  the `core:` feature must exist and have `type: racial_trait` **[A]**.
+  the `core:` feature must exist and have `type: racial_trait` **[V 2026-11-02]**.
 - Every core `racial_trait` row is listed by at least one core race, so the type
-  cannot hold orphan rows **[A]**.
+  cannot hold orphan rows **[V 2026-11-02]**.
 - Perks of type `perk`, `creation`, or `universal` are not listed in a race's
-  `traits`; a race grants only racial traits **[A]**.
+  `traits`; a race grants only racial traits **[V 2026-11-02]**.
 
 Most racial traits are still prose today. Because they are features, they can carry
 `effects[]` like any perk, so a trait can compose through the shared effect pool
-without a schema change **[A]**.
+without a schema change **[V 2026-11-02]** (`feature.schema.json` `effects`).
 
 **Why `features` and not a traits table.** The project rule is one perk table
 (`AGENTS.md`), and `feature.schema.json` already had the `racial_trait` type for this.
