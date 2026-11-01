@@ -27,7 +27,7 @@ the racial `abilityModifiers` — see [`progression.md`](./progression.md)
 | `phase` | The race's single **element** (Wuxing five-phase). Drives elemental affinity — see §4. |
 | `speed` | Walking speed in abstract units (e.g. 6 for a human). |
 | `size` | `tiny` · `small` · `medium` · `large`. |
-| `traits` | Array of `{ id, label }` references into the global traits registry (`data/traits/core.json`). |
+| `traits` | Array of `{ id, label }` references to `racial_trait` rows in the perk table (`data/features/core.json`). See §5. |
 | `lineage` | How this race relates to others — see §2. **The defining structural field.** |
 
 Every race also carries the standard `id` (integer primary key), `key` (stable symbolic identifier), `label` (human-readable name), `description`, and optional `source`.
@@ -113,9 +113,9 @@ is a string key, e.g. `"core:race/elf"` or `"elf"`):
    otherwise the parent's carries over.
 3. `abilityModifiers`: **sum** per attribute (parent `{end:2}` + subrace `{wil:1}`
    → `{end:2, wil:1}`).
-4. `traits`: the array of `{ id, label }` references is the list of trait ids this
-   race entry specifically contributes (in addition to any inherited from the parent
-   via engine logic). The actual trait definitions live in `data/traits/core.json`.
+4. `traits`: the array of `{ id, label }` references is the list of racial traits
+   this race entry specifically contributes, added to the parent's. The definitions
+   are `racial_trait` rows in `data/features/core.json` (§5).
 
 A `kin` performs **no** such merge — it is read exactly as written. A `parent`/
 `template` is never instantiated as a playable character on its own.
@@ -144,26 +144,48 @@ kin choose their own (catman `metal`, wolfman `wood`).
 
 ## 5. Traits
 
-Racial traits are now defined in their own top-level collection:
-[`data/traits/core.json`](../../ruleset/data/traits/core.json) (schema `trait.schema.json`).
+Racial traits are perks. They live in the single perk table,
+[`data/features/core.json`](../../ruleset/data/features/core.json) (schema
+`feature.schema.json`), as rows with `"type": "racial_trait"`. There is no separate
+traits table: it was folded into `features` in M1-06 (see
+[decisions](../decisions.md)).
 
-Each trait has the standard `id` (integer), `key`, `label`, and `description`.
+A `racial_trait` row has the same shape as any perk: `id`, `key`, `label`,
+`description`, `type`, and optionally `category`, `effects`, `source`. It is never chosen
+or bought; a character has it because its race (or the race's parent) lists it.
 
 In a race, `traits` is an array of lightweight references:
 
 ```json
 "traits": [
-  { "id": "core:trait/darkvision", "label": "Darkvision" },
-  { "id": "core:trait/fey_ancestry", "label": "Fey Ancestry" }
+  { "id": "core:feature/elf_darkvision", "label": "Darkvision" },
+  { "id": "core:feature/elf_fey_ancestry", "label": "Fey Ancestry" }
 ]
 ```
 
-The `id` is a string key reference (namespaced `core:trait/<key>`) into the global traits table. The `label` is
-duplicated for readability when looking at race data. Full details (including the
-stable `key` and long description) live in the traits registry.
+The `id` is a namespaced ref `core:feature/<key>` (or a `module:` ref). The `label` is
+duplicated for readability when looking at race data; the full description lives in
+the feature row.
 
-Traits are still descriptive text hooks for the engine. They are not mechanically
-encoded here — hard rules belong in effects, skills, or features.
+Rules, checked by `validate.py`:
+
+- A race's `traits[].id` must be a `core:feature/<key>` ref (or a `module:` ref), and
+  the `core:` feature must exist and have `type: racial_trait` **[A]**.
+- Every core `racial_trait` row is listed by at least one core race, so the type
+  cannot hold orphan rows **[A]**.
+- Perks of type `perk`, `creation`, or `universal` are not listed in a race's
+  `traits`; a race grants only racial traits **[A]**.
+
+Most racial traits are still prose today. Because they are features, they can carry
+`effects[]` like any perk, so a trait can compose through the shared effect pool
+without a schema change **[A]**.
+
+**Why `features` and not a traits table.** The project rule is one perk table
+(`AGENTS.md`), and `feature.schema.json` already had the `racial_trait` type for this.
+A separate table duplicated the row shape, had no `effects`, and would have added a
+second ref category (`core:trait/`) for the same concept. Keeping one table means one
+ref format, one prerequisite and effect shape, and one place an engine looks for
+"what does this character have" **[A]**.
 
 ---
 
@@ -177,12 +199,14 @@ encoded here — hard rules belong in effects, skills, or features.
   "key": "high_elf",
   "label": "High Elf",
   "description": "Cloister-trained elves steeped in the arcane.",
-  "lineage": { "role": "subrace", "parentRace": 2 },
+  "lineage": { "role": "subrace", "parentRace": "core:race/elf" },
   "phase": "wood",
   "abilityModifiers": { "int": 1 },
-  "traits": [ { "id": 19, "label": "Innate Cantrip" } ]
+  "traits": [ { "id": "core:feature/high_elf_innate_cantrip", "label": "Innate Cantrip" } ]
 }
 ```
+
+Add the trait itself as a `racial_trait` row in `data/features/core.json` first.
 
 Omit `speed`/`size` to inherit the elf's; set `phase` to keep `wood` or override it.
 `abilityModifiers` and `traits` here **stack** on the elf base.
@@ -195,12 +219,12 @@ Omit `speed`/`size` to inherit the elf's; set `phase` to keep `wood` or override
   "key": "ratman",
   "label": "Ratman",
   "description": "Quick, cunning rodent-folk of the under-city.",
-  "lineage": { "role": "kin", "parentRace": 10 },
+  "lineage": { "role": "kin", "parentRace": "core:race/beastman" },
   "phase": "water",
   "speed": 30,
   "size": "small",
   "abilityModifiers": { "agi": 2, "lck": 1, "str": -1 },
-  "traits": [ { "id": 19, "label": "Squeeze" } ]
+  "traits": [ { "id": "core:feature/ratman_squeeze", "label": "Squeeze" } ]
 }
 ```
 
@@ -222,7 +246,7 @@ in full. It owes nothing to catman or wolfman beyond also being beastfolk.
 | Concern | Schema | Data |
 | --- | --- | --- |
 | Race entries & lineage | `race.schema.json` | `data/races/core.json` |
-| Traits (global registry) | `trait.schema.json` | `data/traits/core.json` (new) |
+| Racial traits (`type: racial_trait`) | `feature.schema.json` | `data/features/core.json` |
 | Attribute ids (`abilityModifiers` keys) | `schema.json#/definitions/ability` | `data/abilities/core.json` |
 | Element vocabulary (`phase`) | `schema.json#/definitions/phase` | — |
 | Interaction cycles | `wuxing.schema.json` | `data/wuxing/core.json` |
@@ -234,11 +258,9 @@ in full. It owes nothing to catman or wolfman beyond also being beastfolk.
 - **Engine inheritance.** The subrace-merge rules in §3 are a reference contract; the
   consuming engine implements them. The ruleset stores relationships, not resolved
   characters.
-- **Trait mechanics.** Traits now live in their own top-level collection
-  (`data/traits/core.json`) and are referenced from races via `{ id, label }`.
-  They remain pure text today. A future pass could let traits carry `effects[]`
-  (like perks in `features/core.json`) so racial abilities compose through the
-  shared effect pool instead of prose.
+- **Trait mechanics.** Racial traits are `racial_trait` features (§5), so they
+  accept `effects[]`, but most are still prose. Encoding them as effects is
+  content work for a later issue.
 - **Prereq readability.** Feature prerequisites for skills now use numeric keys
   (e.g. `"skills": { "1": 40 }`). This works but is less readable than the old
   symbolic form. Consider using the stable `key` string in prereq maps or

@@ -63,7 +63,7 @@ Done: —
 - Done when: vectors for each operator, mixed operators, and same-source duplicates; vectors for each of the 24 conditions' apply and remove paths, or a documented subset with a reason; A contradiction between vector and docs fails CI.
 
 #### M1-06 Resolve the traits vs features fork
-- Status: todo
+- Status: doing
 - Priority: medium
 - Needs: —
 - Was: RW-8
