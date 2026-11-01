@@ -13,7 +13,7 @@ Roadmap: [M5](../../ROADMAP.md#where-we-are). Format and rules: [README.md](READ
 Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01 ([done.md](done.md#m5-release-10))
 
 #### M5-02 Changelog fragments instead of CHANGELOG edits
-- Status: doing
+- Status: review
 - Priority: medium
 - Needs: M5-01
 - Do: Every PR edits `CHANGELOG.md`, so parallel PRs conflict on it (the rebase workflow only merges pure additions). Each PR adds `changes/<issue-id>.md` instead; the owner releases the fragments into `CHANGELOG.md` with `devops-tools changelog-fragments release` in a PR of its own, as in new-world.
