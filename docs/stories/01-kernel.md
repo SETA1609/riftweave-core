@@ -73,7 +73,7 @@ Done: —
 - Done when: one table owns racial traits; the other is removed or documented as a view; all references migrated; `validate.py` is green; `docs/modules/race.md` and the schemas describe the decision.
 
 #### M1-07 One test runs every vector file
-- Status: todo
+- Status: doing
 - Priority: high
 - Needs: —
 - Was: RW-9
