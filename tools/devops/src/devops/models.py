@@ -8,7 +8,7 @@ from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from pathlib import Path
 
-from devops.run_log import RunLog
+from devops_tools.run_log import RunLog
 
 SubcommandFunction = Callable[[Path, Sequence[str], RunLog], int]
 

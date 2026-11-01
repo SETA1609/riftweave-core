@@ -27,6 +27,7 @@ There are no tagged releases yet. `[Unreleased]` becomes `[1.0.0]` when the road
 - **SET-15** Vertical loop example: create, equip, attack, DR, XP, perk. (#27)
 
 ### Changed
+- **RW-41** The run log and open-PR rebase come from the shared [devops-tools](https://github.com/SETA1609/devops_tools), pinned to a commit; the local copies are removed.
 - **SET-7** Derived stats are functions of the actor snapshot, not stored truth. (#20)
 - **SET-8** One d100 resolution function; crit and fumble are tags on the result. (#21)
 - **SET-9** Action budget replaces Action, Bonus, and Reaction. (#34)

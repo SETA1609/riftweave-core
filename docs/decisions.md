@@ -7,6 +7,17 @@ issue settles them.
 
 ## Decided
 
+### 2026-11-01: Shared devops-tools (RW-41)
+
+- Generic devops code (run logs, log pruning, open-PR rebasing, changelog fragments) lives in
+  [SETA1609/devops_tools](https://github.com/SETA1609/devops_tools) and is shared by several
+  repos. This repo depends on it through `tools/devops/pyproject.toml`, pinned to a full commit
+  SHA, and keeps only Riftweave-specific code (the containers, cache cleanup).
+- The pin moves only in its own PR, after its tests pass here. The rebase workflow calls the
+  shared reusable workflow at the same SHA as `tools/devops/pyproject.toml`; the two move together.
+- Not adopted yet: changelog fragments (`changes/<id>.md`) and `keep-both-added-lines` for
+  `docs/stories/*.md`. Either changes the RW-39 and RW-40 process, so each needs its own issue.
+
 ### 2026-10-31: Story files (RW-40)
 
 - Issues live in one story file per milestone in `docs/stories/`, with a `done.md`

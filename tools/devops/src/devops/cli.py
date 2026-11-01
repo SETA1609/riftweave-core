@@ -6,13 +6,15 @@ exit code of the last container command it ran.
 
 from __future__ import annotations
 
+import functools
 import os
 import shlex
 import subprocess
 import sys
-import time
 from collections.abc import Sequence
 from pathlib import Path
+
+from devops_tools.run_log import RunLog, run_command_with_timestamped_output, run_with_run_log
 
 from devops.cache_cleanup import (
     list_default_cache_paths,
@@ -54,12 +56,6 @@ from devops.container import (
 )
 from devops.exceptions import CacheCleanupRefusedError, ContainerSetupError
 from devops.models import AgentContainerRunSettings, ContainerRunSettings, SubcommandFunction
-from devops.run_log import (
-    RunLog,
-    get_current_utc_time,
-    open_run_log_file,
-    run_command_with_timestamped_output,
-)
 
 DEFAULT_UNITTEST_ARGUMENTS = (
     "-m",
@@ -411,6 +407,19 @@ def format_usage_text() -> str:
     )
 
 
+def run_subcommand_with_setup_errors_logged(
+    subcommand_function: SubcommandFunction,
+    repository_root: Path,
+    extra_arguments: Sequence[str],
+    run_log: RunLog,
+) -> int:
+    try:
+        return subcommand_function(repository_root, extra_arguments, run_log)
+    except ContainerSetupError as setup_error:
+        run_log.write_line("err", str(setup_error))
+        return EXIT_CODE_SETUP_ERROR
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     arguments = list(sys.argv[1:] if argv is None else argv)
     if not arguments or arguments[0] in ("-h", "--help"):
@@ -428,20 +437,17 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"devops: {setup_error}", file=sys.stderr)
         return EXIT_CODE_SETUP_ERROR
 
-    log_directory = repository_root / "cache" / "logs"
-    start_seconds = time.monotonic()
-    with open_run_log_file(log_directory, subcommand, get_current_utc_time()) as log_file:
-        run_log = RunLog(log_file, sys.stdout, sys.stderr)
-        run_log.write_line("run", f"log: {Path(log_file.name).relative_to(repository_root)}")
-        try:
-            exit_code = subcommand_function(repository_root, extra_arguments, run_log)
-        except ContainerSetupError as setup_error:
-            run_log.write_line("err", str(setup_error))
-            exit_code = EXIT_CODE_SETUP_ERROR
-        duration_seconds = time.monotonic() - start_seconds
-        run_log.write_line("run", f"finished: devops {shlex.join(arguments)}")
-        run_log.write_line("run", f"exit code: {exit_code}, duration: {duration_seconds:.3f} s")
-    return exit_code
+    return run_with_run_log(
+        repository_root / "cache" / "logs",
+        subcommand,
+        ["devops", *arguments],
+        functools.partial(
+            run_subcommand_with_setup_errors_logged,
+            subcommand_function,
+            repository_root,
+            extra_arguments,
+        ),
+    )
 
 
 if __name__ == "__main__":

@@ -15,6 +15,9 @@ wheels = [
 name = "devops"
 version = "0.1.0"
 source = { editable = "." }
+dependencies = [
+    { name = "devops-tools" },
+]
 
 [package.dev-dependencies]
 dev = [
@@ -23,12 +26,18 @@ dev = [
 ]
 
 [package.metadata]
+requires-dist = [{ name = "devops-tools", git = "https://github.com/SETA1609/devops_tools?rev=52c33bf85c986e181c2a9088da1043b114c65834" }]
 
 [package.metadata.requires-dev]
 dev = [
     { name = "pytest", specifier = ">=8.3" },
     { name = "ruff", specifier = ">=0.8" },
 ]
+
+[[package]]
+name = "devops-tools"
+version = "0.1.0"
+source = { git = "https://github.com/SETA1609/devops_tools?rev=52c33bf85c986e181c2a9088da1043b114c65834#52c33bf85c986e181c2a9088da1043b114c65834" }
 
 [[package]]
 name = "iniconfig"
