@@ -3,8 +3,11 @@ name = "devops"
 version = "0.1.0"
 description = "Host-side devops CLI: runs the Riftweave Python toolchain container with timestamped, logged output."
 requires-python = ">=3.13"
-# Runtime uses the standard library only. The host needs nothing but uv.
-dependencies = []
+# Runtime uses the standard library and devops-tools (run logs, the rebase workflow).
+# The host needs nothing but uv. Pin devops-tools to a full commit SHA; bump it in its own PR.
+dependencies = [
+    "devops-tools @ git+https://github.com/SETA1609/devops_tools@52c33bf85c986e181c2a9088da1043b114c65834",
+]
 
 [project.scripts]
 devops = "devops.cli:main"

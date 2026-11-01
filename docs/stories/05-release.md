@@ -25,6 +25,15 @@ Done: RW-1 ([done.md](done.md#m5-release-10))
 - See: CONTRIBUTING.md#workflow, docs/decisions.md, scripts/rebase_open_branches.py, tools/fetch-docs/
 - Done when: `CONTRIBUTING.md` has the five-step workflow (spec, schema, vector, data, review), PR rules (one issue, at most 20 counted files), verification tags, and naming rules; `.github/workflows/rebase-open-branches.yml` rebases open PRs onto `main`; add-only `CHANGELOG.md` conflicts keep both sides. Tests in `tools/devops/tests/test_rebase_open_branches.py`; every GitHub Action is pinned to a commit SHA; `tools/fetch-docs/` fetches cited sources pinned to a commit, with offline tests; `docs/decisions.md` logs decisions, open questions, and risks; `python ruleset/scripts/validate.py` is green; `CHANGELOG.md` entry added.
 
+#### RW-41 Use the shared devops-tools instead of local copies
+- Status: doing
+- Priority: medium
+- Needs: RW-1, RW-39
+- Do: The run log (`tools/devops/src/devops/run_log.py`) and the open-PR rebase (`scripts/rebase_open_branches.py`) are copies of what [SETA1609/devops_tools](https://github.com/SETA1609/devops_tools) now ships and tests for several repos. Depend on it, pinned to a commit, and delete the copies. The container runner stays local until devops-tools has one.
+- Files: ~17 (tools/devops/, scripts/, .github/workflows/rebase-open-branches.yml, AGENTS.md)
+- See: tools/devops/README.md#shared-devops-tools, https://github.com/SETA1609/devops_tools
+- Done when: `devops-tools` is a dependency of `tools/devops` pinned to a full SHA in `pyproject.toml` and `uv.lock`; no local run log or rebase script remains; the rebase workflow calls the reusable `rebase-open-branches.yml` from devops-tools at the same SHA; `cd tools/devops && uv run pytest`, `ruff check`, and `ruff format --check` pass; `CHANGELOG.md` entry added.
+
 #### RW-25 Reference playthrough vector chain
 - Status: todo
 - Priority: high

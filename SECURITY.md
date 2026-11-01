@@ -13,7 +13,8 @@ Schemas. The executable code in the repository is tooling around that data:
 
 There is no network service and no runtime engine shipped from this repository. The
 realistic security surface is the **supply chain and tooling**: the validation
-script, its Python dependency (`jsonschema`), the container images (Python, Node,
+script, its Python dependency (`jsonschema`), the host CLI's dependency
+`devops-tools` (pinned to a commit SHA, also run by the rebase workflow), the container images (Python, Node,
 Claude Code, uv), and the CI workflow configuration.
 
 ## Supported versions
