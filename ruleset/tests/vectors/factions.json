@@ -135,7 +135,7 @@
     "actor": {
       "reputation": {
         "module:factions/faction/lantern_wardens": 15,
-        "module:factions/faction/ashen_circle": -60
+        "module:factions/faction/ashen_circle": -30
       },
       "faction_ranks": { "module:factions/faction/lantern_wardens": "recruit" }
     },
