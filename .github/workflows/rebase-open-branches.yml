@@ -15,7 +15,8 @@ concurrency:
 
 jobs:
   # The shared workflow from devops-tools. Keep the ref and devops-tools-version equal to the
-  # devops-tools pin in tools/devops/pyproject.toml, and move all three in one PR.
+  # devops-tools pin in tools/devops/pyproject.toml, and move them in one PR together with
+  # changelog-fragments.yml.
   rebase-open-branches:
     uses: SETA1609/devops_tools/.github/workflows/rebase-open-branches.yml@fde087b7f18a8b0c10913dd322350f08562eea46 # main, 2026-11-01 (after v0.1.0)
     with:

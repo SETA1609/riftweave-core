@@ -70,8 +70,9 @@ The five steps (spec, schema, vector, data, review) and the pull request rules a
 1. **File:** add the issue to its story file, `Status: todo`. Optionally create the Linear
    issue with a link to the story anchor and add `Linear:` to the issue.
 2. **Work:** set `Status: doing` in the issue's first PR commit.
-3. **Review:** set `Status: review` when the PR is opened. Add the issue's line to
-   [CHANGELOG.md](../../CHANGELOG.md) in the same PR.
+3. **Review:** set `Status: review` when the PR is opened. Add the issue's changelog
+   fragment, `changes/<issue-id>.md` ([rules](../../changes/README.md)), in the same PR. Do
+   not edit [CHANGELOG.md](../../CHANGELOG.md); the owner releases the fragments into it.
 4. **Move done issues:** after the PR is merged, the next PR that touches that story file
    moves the issue to [done.md](done.md) with its full text, `Status: done`, and
    `Merged: #<PR>, <date>`, and adds its id to the `Done:` line under the story heading.

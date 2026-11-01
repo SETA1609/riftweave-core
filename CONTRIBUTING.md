@@ -111,8 +111,10 @@ vectors.
 4. **Docs in the same PR.** A change to a rule, a decision, or a tag updates the matching
    doc. Record decisions in [docs/decisions.md](docs/decisions.md).
 5. **Status and changelog.** Set the issue's `Status` in its story file in the PR that
-   changes it, and add its [CHANGELOG.md](CHANGELOG.md) line in the issue's PR. After merge,
-   the next PR that touches the story file moves the issue to
+   changes it. The issue's PR adds a changelog fragment, `changes/<issue-id>.md`
+   ([rules](changes/README.md)), and does not edit [CHANGELOG.md](CHANGELOG.md); CI checks
+   that the branch's issue has one. The owner moves the fragments into the changelog at a
+   release. After merge, the next PR that touches the story file moves the issue to
    [done.md](docs/stories/done.md) ([how](docs/stories/README.md#workflow)).
 6. **Names.** Branch `<issue-id>-<slug>`, e.g. `M1-07-<slug>` (the issue title in lowercase
    kebab-case, shortened if long), PR title `<issue-id> <title>`. Agents prefix the branch
@@ -123,7 +125,7 @@ vectors.
 
 Open pull requests are rebased onto `main` after every push to `main`
 (`.github/workflows/rebase-open-branches.yml`). Conflicts where both sides only added
-lines to `CHANGELOG.md` or a story file keep both; any other conflict leaves the branch for a person. Because
+lines to a story file (or `CHANGELOG.md`) keep both; any other conflict leaves the branch for a person. Because
 of it, an open branch can move under you: run `git pull --rebase` before committing on it.
 
 ### Verification tags
