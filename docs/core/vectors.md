@@ -43,7 +43,8 @@ Coefficients come from `ruleset/data/`, not from the vector, so a data change th
 Notes on the reference, for a second implementation to check against:
 
 - `resolution` adds every `add` modifier's value to the target. Resolution sees bonuses and penalties as one signed list. [V 2026-11-02, matches `resolution.md`]
-- `modifiers` applies the contract stacking rule for `add` and `mul` only: same source, the latest wins; different sources add; `mul` after `add`. Two `mul` from different sources multiply. [A] `set`, `grant`, and `resist` raise an error in the reference until M1-05 fixes their order with vectors.
+- `modifiers` applies the contract stacking rule for `add` and `mul` only: same source and op, the latest wins; different sources add; `mul` after `add`. Two `mul` from different sources multiply. [A] `set`, `grant`, and `resist` raise an error in the reference until M1-05 fixes their order with vectors.
+- `derived` and `resolution` read a missing attribute as 0, and `derived` a missing level as 1. [A] Each vector names every value its `expect` fields depend on.
 - `formula` evaluates `lit`, `attr`, and the ops `add`, `sub`, `mul`, `div`. `div` is integer floor division, the `floor` rounding named in `ap.json`. [A] Other ops raise an error.
 - `actions` pool is `base + attr * per_point / per_point_divisor` from `ruleset/data/actions/core.json`; cost is the sum of the named actions' costs, so `attack` plus `aimed` is 5. The turn cap and carry are not checked yet. [A]
 
