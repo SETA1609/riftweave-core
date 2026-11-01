@@ -27,8 +27,8 @@ There are no tagged releases yet. `[Unreleased]` becomes `[1.0.0]` when the road
 - **SET-15** Vertical loop example: create, equip, attack, DR, XP, perk. (#27)
 
 ### Changed
-- **M5-01** Open issues get story-scoped ids (`M1-01`, old id in `Was:`), real `Needs` and `Files`, and a computed order (`devops-tools roadmap-order`); the story table in `ROADMAP.md` is generated and checked in CI.
-- **RW-41** The run log and open-PR rebase come from the shared [devops-tools](https://github.com/SETA1609/devops_tools), pinned to a commit; the local copies are removed.
+- **M5-01** Open issues get story-scoped ids (`M1-01`, old id in `Was:`), real `Needs` and `Files`, and a computed order (`devops-tools roadmap-order`); the story table in `ROADMAP.md` is generated and checked in CI. (#46)
+- **RW-41** The run log and open-PR rebase come from the shared [devops-tools](https://github.com/SETA1609/devops_tools), pinned to a commit; the local copies are removed. (#46)
 - **SET-7** Derived stats are functions of the actor snapshot, not stored truth. (#20)
 - **SET-8** One d100 resolution function; crit and fumble are tags on the result. (#21)
 - **SET-9** Action budget replaces Action, Bonus, and Reaction. (#34)

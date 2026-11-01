@@ -147,3 +147,24 @@ Tracked in Linear before this repo had a tracker, recovered from git history. Th
 - Files: ~70 (most are the 57 deleted `issues/` files, a mechanical move; over the 20-file rule by owner request)
 - See: docs/stories/README.md
 - Done when: every issue from `issues/` is in exactly one story file or `done.md`; no link points into `issues/`; `validate.py` is green; `CHANGELOG.md` entry added.
+
+#### RW-41 Use the shared devops-tools instead of local copies
+- Status: done
+- Merged: #46, 2026-11-02
+- Priority: medium
+- Needs: RW-1, RW-39
+- Do: The run log (`tools/devops/src/devops/run_log.py`) and the open-PR rebase (`scripts/rebase_open_branches.py`) are copies of what [SETA1609/devops_tools](https://github.com/SETA1609/devops_tools) now ships and tests for several repos. Depend on it, pinned to a commit, and delete the copies. The container runner stays local until devops-tools has one.
+- Files: ~17 (tools/devops/, scripts/, .github/workflows/rebase-open-branches.yml, AGENTS.md)
+- See: tools/devops/README.md#shared-devops-tools, https://github.com/SETA1609/devops_tools
+- Done when: `devops-tools` is a dependency of `tools/devops` pinned to a full SHA in `pyproject.toml` and `uv.lock`; no local run log or rebase script remains; the rebase workflow calls the reusable `rebase-open-branches.yml` from devops-tools at the same SHA; `cd tools/devops && uv run pytest`, `ruff check`, and `ruff format --check` pass; `CHANGELOG.md` entry added.
+
+#### M5-01 Story-scoped issue IDs and a computed order
+- Status: done
+- Merged: #46, 2026-11-02
+- Priority: high
+- Needs: RW-41
+- Do: Every open issue said `Needs: —`, so `devops-tools roadmap-order` showed all 36 as ready, and nothing told two agents which issues collide. Use story-scoped IDs as in new-world (`M1-01`; the old id stays as `Was:`), write real `Needs` edges and `Files:` on every open issue, add the owner's `Focus:` line, generate the story table in `ROADMAP.md`, and fail CI when it is stale. Story files merge like the changelog in the rebase workflow when both sides only add lines.
+- Keys: `[tool.devops-tools]` in `tools/devops/pyproject.toml` (`roadmap-file`, `keep-both-added-lines`)
+- Files: ~14 (docs/stories/, ROADMAP.md, docs/decisions.md, CONTRIBUTING.md, AGENTS.md, tools/devops/pyproject.toml, .github/workflows/)
+- See: docs/stories/README.md#order, https://github.com/SETA1609/devops_tools
+- Done when: every open issue has a story-scoped id, a `Was:` line, `Needs`, and `Files`; `devops-tools roadmap-order show` lists a critical path and more than one wave; `roadmap-order check` passes and runs in CI on story changes; no link points at an old `rw-NN` anchor; `CHANGELOG.md` entry added.
