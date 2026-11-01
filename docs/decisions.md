@@ -160,9 +160,10 @@ issue settles them.
 - **Two stacking implementations.** `faction_reference.py` carries a small
   `apply_modifiers` for its stacking vectors. When M1-05 lands the shared stacking
   reference, the factions reference should call it instead (POST-05).
-- **Vector file shape.** `factions.json` is an array of cases, each naming a `function`;
-  the older vector files are one object each. The single vector runner (M1-07) needs to
-  accept both or settle one shape (POST-05).
+- **Module vectors live in the module.** The factions vectors are in
+  `ruleset/modules/factions/tests/vectors.json`, run by `test_faction_reference.py`, not in
+  `ruleset/tests/vectors/`: the core runner (M1-07) checks only kernel functions against the
+  checklist in `docs/core/vectors.md`. [V 2026-11-02] (POST-05)
 - **Silent cross-reference breaks.** Refs are strings. `validate.py` checks most namespaced
   refs, but not every category yet
   ([M5-08](stories/05-release.md#m5-08-integrity-gates)).

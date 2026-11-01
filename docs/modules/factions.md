@@ -102,7 +102,7 @@ Lantern Wardens, reputation 0, persuasion 40. A completed contract (`delta` 15) 
 Wardens to 15, which is `friendly` (+5 persuasion). The Ashen Circle relation has
 `share_percent` -50, so the Circle changes by `trunc(15 * -50 / 100) = -7`. Persuasion
 against a resolution roll is now 45. The cases are pinned in
-`ruleset/tests/vectors/factions.json` (18 cases), and `ruleset/scripts/faction_reference.py`
+`ruleset/modules/factions/tests/vectors.json` (18 cases), and `ruleset/scripts/faction_reference.py`
 reproduces them, run by `ruleset/scripts/test_faction_reference.py` **[V 2026-11-02]**.
 
 A faction the actor has no entry for emits nothing, even if its `reputation_start` band has

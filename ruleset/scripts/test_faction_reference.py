@@ -1,4 +1,4 @@
-"""Run ruleset/tests/vectors/factions.json against the factions reference."""
+"""Run ruleset/modules/factions/tests/vectors.json against the factions reference."""
 
 import json
 import sys
@@ -9,7 +9,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import faction_reference  # noqa: E402
 
-VECTORS = Path(__file__).resolve().parent.parent / "tests" / "vectors" / "factions.json"
+VECTORS = Path(__file__).resolve().parent.parent / "modules" / "factions" / "tests" / "vectors.json"
 
 
 class FactionVectorTest(unittest.TestCase):

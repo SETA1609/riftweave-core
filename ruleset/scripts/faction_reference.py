@@ -6,7 +6,7 @@ promotion eligibility, and the contract modifiers the module emits. It stores
 nothing: standing, eligibility, and modifiers are recomputed from the snapshot.
 
 Usage:
-    python ruleset/scripts/faction_reference.py   # runs every vector in factions.json
+    python ruleset/scripts/faction_reference.py   # runs every vector in modules/factions/tests/vectors.json
 """
 
 import json
@@ -15,7 +15,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_FILE = ROOT / "modules" / "factions" / "data" / "factions.json"
-VECTORS = ROOT / "tests" / "vectors" / "factions.json"
+VECTORS = ROOT / "modules" / "factions" / "tests" / "vectors.json"
 REF_PREFIX = "module:factions/faction/"
 
 
