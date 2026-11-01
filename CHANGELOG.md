@@ -30,6 +30,7 @@ There are no tagged releases yet. `[Unreleased]` becomes `[1.0.0]` when the road
 - **SET-22** Golden vectors for resolution and derived HP. (#36)
 - **SET-25** Module overrides: a module may override a vanilla row by key. (#39)
 - **SET-15** Vertical loop example: create, equip, attack, DR, XP, perk. (#27)
+- **M2-02** Skill audit: every skill has a governing attribute and a consumer; `checks` collection (35 rows), `bound_weapon` effect, `skill_audit.py`; `attributes.md` seeds match the data.
 
 ### Changed
 - **M5-01** Open issues get story-scoped ids (`M1-01`, old id in `Was:`), real `Needs` and `Files`, and a computed order (`devops-tools roadmap-order`); the story table in `ROADMAP.md` is generated and checked in CI. (#46)

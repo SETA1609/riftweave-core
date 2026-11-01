@@ -23,7 +23,7 @@ Done: —
 - Done when: at least 60 perks, spread across all 8 attributes and the combat, magic, and social skill groups; every perk emits modifiers; prerequisites are keys; no perk is dominated by another at the same level.
 
 #### M2-02 Skill audit: no orphan skills
-- Status: doing
+- Status: review
 - Priority: medium
 - Needs: —
 - Was: RW-12
