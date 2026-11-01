@@ -31,3 +31,8 @@ target-version = "py313"
 
 [tool.ruff.lint]
 select = ["E", "W", "F", "I", "B", "UP", "SIM", "RUF"]
+
+# Read by devops-tools (roadmap-order, rebase-open-branches). Pass this file with --settings-file.
+[tool.devops-tools]
+roadmap-file = "ROADMAP.md"
+keep-both-added-lines = ["docs/stories/*.md"]

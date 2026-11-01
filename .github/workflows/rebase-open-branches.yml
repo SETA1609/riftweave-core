@@ -20,3 +20,4 @@ jobs:
     uses: SETA1609/devops_tools/.github/workflows/rebase-open-branches.yml@fde087b7f18a8b0c10913dd322350f08562eea46 # main, 2026-11-01 (after v0.1.0)
     with:
       devops-tools-version: fde087b7f18a8b0c10913dd322350f08562eea46
+      settings-file: tools/devops/pyproject.toml

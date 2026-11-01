@@ -12,34 +12,42 @@ Roadmap: [M3](../../ROADMAP.md#where-we-are). Format and rules: [README.md](READ
 
 Done: —
 
-#### RW-16 Casting procedure: decide scope, then specify
+#### M3-01 Casting procedure: decide scope, then specify
 - Status: todo
 - Priority: high
-- Needs: —
+- Needs: M1-02, M1-05
+- Was: RW-16
 - Do: Magic emits a roll request and an effect list (SET-16). Still undecided: components, concentration, counterspell and dispel, ritual casting, and spell failure from armor. Decide which are core and which are optional modules, and write the core ones as data.
+- Files: ~6 (docs/modules/magic.md, docs/core/, ruleset/data/spells/core.json, ruleset/schemas/spell.schema.json, ruleset/tests/vectors/casting.json)
 - See: issues.md section 4, docs/modules/magic.md
 - Done when: A decision record lists each mechanic as core, module, or cut; core mechanics have rows, formulas, and vectors; `magic.md` matches.
 
-#### RW-17 Spell list to the content floor
+#### M3-02 Spell list to the content floor
 - Status: todo
 - Priority: high
-- Needs: —
+- Needs: M3-01
+- Was: RW-17
 - Do: 7 spells exist. 9 colors need a usable list.
+- Files: ~2 (ruleset/data/spells/core.json, ruleset/data/effects/core.json)
 - See: ruleset/data/spells/core.json
 - Done when: at least 5 spells per color (45 total) across levels 1 to 30; each spell composes effects from the shared pool and respects `channels`; every color has a damage, utility, and defensive option or a documented reason it does not.
 
-#### RW-18 Cover, flanking, terrain, and called shots as modifiers
+#### M3-03 Cover, flanking, terrain, and called shots as modifiers
 - Status: todo
 - Priority: medium
-- Needs: —
+- Needs: M1-01, M1-05
+- Was: RW-18
 - Do: These are prose in `combat.md`. Decide core or optional, then express them as modifier rows so they stack under the one rule.
+- Files: ~5 (docs/modules/combat.md, ruleset/data/combat/, ruleset/tests/vectors/combat.json)
 - See: docs/modules/combat.md
 - Done when: each is a row set with vectors, or is moved to a named optional module; no special-case stacking rule.
 
-#### RW-19 Wuxing interaction vectors
+#### M3-04 Wuxing interaction vectors
 - Status: todo
 - Priority: medium
-- Needs: —
+- Needs: M1-07
+- Was: RW-19
 - Do: Wuxing is a tag reader (SET-18). Pin the four cycles and their multipliers with vectors, including the reverse-cycle math the review called fragile.
+- Files: ~3 (ruleset/data/wuxing/core.json, ruleset/tests/vectors/wuxing.json, docs/modules/wuxing.md)
 - See: docs/modules/wuxing.md, ruleset/data/wuxing/core.json
 - Done when: vectors for generating, overcoming, weakening, and insulting; reverse-cycle logic exists once.

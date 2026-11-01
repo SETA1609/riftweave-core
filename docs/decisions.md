@@ -7,6 +7,18 @@ issue settles them.
 
 ## Decided
 
+### 2026-11-01: Story-scoped issue IDs and a computed order (M5-01)
+
+- Open issues are renumbered per story (`M1-01`, `POST-03`), as in new-world. Owner decision;
+  it reverses the RW-40 line "Issue ids stay `RW-NN`". Done `RW-` and `SET-` ids stay in
+  `done.md`, and each renumbered issue keeps its old id in `Was:`.
+- Order is computed by `devops-tools roadmap-order` from `Status`, `Needs`, and the `Focus:`
+  line, so parallel waves and the critical path are never maintained by hand. CI fails when
+  the story table in `ROADMAP.md` is stale.
+- The rebase workflow keeps both sides of a story-file conflict where both only added lines.
+  Status edits are changes, not additions, and still go to a person.
+- Changelog fragments (M5-02) and the container runner move (M5-03) are their own issues.
+
 ### 2026-11-01: Shared devops-tools (RW-41)
 
 - Generic devops code (run logs, log pruning, open-PR rebasing, changelog fragments) lives in
@@ -16,7 +28,8 @@ issue settles them.
 - The pin moves only in its own PR, after its tests pass here. The rebase workflow calls the
   shared reusable workflow at the same SHA as `tools/devops/pyproject.toml`; the two move together.
 - Not adopted yet: changelog fragments (`changes/<id>.md`) and `keep-both-added-lines` for
-  `docs/stories/*.md`. Either changes the RW-39 and RW-40 process, so each needs its own issue.
+  `docs/stories/*.md`. Either changes the RW-39 and RW-40 process, so each needs its own issue
+  (adopted in M5-01 and M5-02).
 
 ### 2026-10-31: Story files (RW-40)
 
@@ -45,21 +58,21 @@ issue settles them.
 ## Open questions
 
 - **Traits versus features.** Whether creation traits stay a `features` type or become
-  their own table ([RW-8](stories/01-kernel.md#rw-8-resolve-the-traits-vs-features-fork)).
+  their own table ([M1-06](stories/01-kernel.md#m1-06-resolve-the-traits-vs-features-fork)).
 - **Casting scope.** What the core casting procedure includes and what is a module
-  ([RW-16](stories/03-combat-magic.md#rw-16-casting-procedure-decide-scope-then-specify)).
+  ([M3-01](stories/03-combat-magic.md#m3-01-casting-procedure-decide-scope-then-specify)).
 - **Content floors.** The targets in [ROADMAP.md](../ROADMAP.md#definition-of-finished) are
   proposals **[A]**, to be changed only by a decision recorded here.
 - **Schema property casing.** Older schemas use `camelCase`, newer ones `snake_case`.
   Unifying them is breaking; decide before 1.0, because after the key-stability policy
-  ([RW-28](stories/05-release.md#rw-28-key-stability-and-versioning-policy)) it costs a major
+  ([M5-07](stories/05-release.md#m5-07-key-stability-and-versioning-policy)) it costs a major
   version.
 
 ## Risks
 
 - **Silent cross-reference breaks.** Refs are strings. `validate.py` checks most namespaced
   refs, but not every category yet
-  ([RW-29](stories/05-release.md#rw-29-integrity-gates)).
+  ([M5-08](stories/05-release.md#m5-08-integrity-gates)).
 - **Rebased branches are not revalidated by CI.** Pushes made with the workflow's
   `GITHUB_TOKEN` do not trigger other workflows, so a rebased PR's new head has no
   validation run. Run validation (or push a commit) before merging a rebased PR.

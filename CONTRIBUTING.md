@@ -114,14 +114,16 @@ vectors.
    changes it, and add its [CHANGELOG.md](CHANGELOG.md) line in the issue's PR. After merge,
    the next PR that touches the story file moves the issue to
    [done.md](docs/stories/done.md) ([how](docs/stories/README.md#workflow)).
-6. **Names.** Branch `RW-NN-<slug>` (the issue title in lowercase kebab-case, shortened if
-   long), PR title `RW-NN <title>`. Agents prefix the branch with `agent/<name>/`.
+6. **Names.** Branch `<issue-id>-<slug>`, e.g. `M1-07-<slug>` (the issue title in lowercase
+   kebab-case, shortened if long), PR title `<issue-id> <title>`. Agents prefix the branch
+   with `agent/<name>/`. Pick work from `roadmap-order show`
+   ([order](docs/stories/README.md#order)).
 7. **Describe it for both audiences.** Say *what rule or content* changed and why, so
    programmers and game designers reviewing the PR can follow it.
 
 Open pull requests are rebased onto `main` after every push to `main`
 (`.github/workflows/rebase-open-branches.yml`). Conflicts where both sides only added
-`CHANGELOG.md` lines keep both; any other conflict leaves the branch for a person. Because
+lines to `CHANGELOG.md` or a story file keep both; any other conflict leaves the branch for a person. Because
 of it, an open branch can move under you: run `git pull --rebase` before committing on it.
 
 ### Verification tags
