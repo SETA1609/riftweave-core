@@ -1,0 +1,38 @@
+[
+  {
+    "name": "different sources add",
+    "value": 59,
+    "modifiers": [
+      { "target": "hp", "op": "add", "value": 8, "source": "perk:tough" },
+      { "target": "hp", "op": "add", "value": 2, "source": "item:ring" }
+    ],
+    "expect": { "value": 69 }
+  },
+  {
+    "name": "same source does not stack",
+    "value": 59,
+    "modifiers": [
+      { "target": "hp", "op": "add", "value": 8, "source": "perk:tough" },
+      { "target": "hp", "op": "add", "value": 8, "source": "perk:tough" }
+    ],
+    "expect": { "value": 67 }
+  },
+  {
+    "name": "same source, latest application wins",
+    "value": 59,
+    "modifiers": [
+      { "target": "hp", "op": "add", "value": 4, "source": "perk:tough" },
+      { "target": "hp", "op": "add", "value": 8, "source": "perk:tough" }
+    ],
+    "expect": { "value": 67 }
+  },
+  {
+    "name": "mul after add, whatever the list order",
+    "value": 10,
+    "modifiers": [
+      { "target": "hp", "op": "mul", "value": 2, "source": "effect:fortify" },
+      { "target": "hp", "op": "add", "value": 5, "source": "perk:tough" }
+    ],
+    "expect": { "value": 30 }
+  }
+]

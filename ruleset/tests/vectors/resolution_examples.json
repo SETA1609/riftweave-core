@@ -1,0 +1,41 @@
+[
+  {
+    "name": "resolution.md: blades 65, lck 6, roll 4 is a crit",
+    "function": "resolution",
+    "actor": { "skills": { "blades": 65 }, "attributes": { "lck": 6 } },
+    "modifiers": [],
+    "roll": 4,
+    "expect": { "target": 65, "margin": 61, "success": true, "tags": ["crit"] }
+  },
+  {
+    "name": "resolution.md: blades 80, +40, -30, roll 100 is a fumble",
+    "function": "resolution",
+    "actor": { "skills": { "blades": 80 }, "attributes": { "lck": 4 } },
+    "modifiers": [
+      { "target": "blades", "op": "add", "value": 40, "source": "effect:bonus" },
+      { "target": "blades", "op": "add", "value": -30, "source": "condition:penalty" }
+    ],
+    "roll": 100,
+    "expect": { "target": 90, "margin": null, "success": false, "tags": ["fumble"] }
+  },
+  {
+    "name": "resolution.md: blades 80, +40, roll 40, target past 100",
+    "function": "resolution",
+    "actor": { "skills": { "blades": 80 }, "attributes": { "lck": 4 } },
+    "modifiers": [
+      { "target": "blades", "op": "add", "value": 40, "source": "effect:bonus" }
+    ],
+    "roll": 40,
+    "expect": { "target": 120, "margin": 80, "success": true, "tags": [] }
+  },
+  {
+    "name": "resolution.md: roll 100 against 120 still fumbles and fails",
+    "function": "resolution",
+    "actor": { "skills": { "blades": 80 }, "attributes": { "lck": 4 } },
+    "modifiers": [
+      { "target": "blades", "op": "add", "value": 40, "source": "effect:bonus" }
+    ],
+    "roll": 100,
+    "expect": { "target": 120, "margin": null, "success": false, "tags": ["fumble"] }
+  }
+]
