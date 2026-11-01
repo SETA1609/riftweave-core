@@ -34,10 +34,6 @@ DEFAULT_AGENT_COMMAND = ("bash",)
 PYTHON_CACHE_DIRECTORY_NAMES = ("__pycache__", ".pytest_cache", ".ruff_cache", ".venv", "venv")
 PROTECTED_RELATIVE_DIRECTORIES = (Path("cache/logs"),)
 
-# Run log
-EXIT_CODE_PROGRAM_NOT_FOUND = 127
-EXIT_CODE_SIGNAL_BASE = 128
-
 # CLI exit codes
 EXIT_CODE_SETUP_ERROR = 1
 EXIT_CODE_USAGE_ERROR = 2

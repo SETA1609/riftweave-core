@@ -17,9 +17,9 @@ There are no tagged releases yet. `[Unreleased]` becomes `[1.0.0]` when the road
 
 ### Added
 - **RW-1** Dev toolchain container and host devops CLI. (#43)
-- **RW-2** In-repo changelog, issue tracker, archive, and roadmap.
-- **RW-40** Issues live in one story file per milestone (`docs/stories/`), with a `done.md` archive, as in project-new-world.
-- **RW-39** Five-step workflow, PR size rule, verification tags, naming rules, decision log, open-PR rebasing, and `fetch-docs`; Actions pinned to SHAs.
+- **RW-2** In-repo changelog, issue tracker, archive, and roadmap. (#45)
+- **RW-40** Issues live in one story file per milestone (`docs/stories/`), with a `done.md` archive, as in project-new-world. (#45)
+- **RW-39** Five-step workflow, PR size rule, verification tags, naming rules, decision log, open-PR rebasing, and `fetch-docs`; Actions pinned to SHAs. (#45)
 - **SET-6** Kernel contract: actor, modifier, event. (#18)
 - **SET-20** Formula AST; the AP formula is a JSON tree. (#37)
 - **SET-22** Golden vectors for resolution and derived HP. (#36)
@@ -27,6 +27,8 @@ There are no tagged releases yet. `[Unreleased]` becomes `[1.0.0]` when the road
 - **SET-15** Vertical loop example: create, equip, attack, DR, XP, perk. (#27)
 
 ### Changed
+- **M5-01** Open issues get story-scoped ids (`M1-01`, old id in `Was:`), real `Needs` and `Files`, and a computed order (`devops-tools roadmap-order`); the story table in `ROADMAP.md` is generated and checked in CI.
+- **RW-41** The run log and open-PR rebase come from the shared [devops-tools](https://github.com/SETA1609/devops_tools), pinned to a commit; the local copies are removed.
 - **SET-7** Derived stats are functions of the actor snapshot, not stored truth. (#20)
 - **SET-8** One d100 resolution function; crit and fumble are tags on the result. (#21)
 - **SET-9** Action budget replaces Action, Bonus, and Reaction. (#34)

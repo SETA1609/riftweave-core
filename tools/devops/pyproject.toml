@@ -3,8 +3,11 @@ name = "devops"
 version = "0.1.0"
 description = "Host-side devops CLI: runs the Riftweave Python toolchain container with timestamped, logged output."
 requires-python = ">=3.13"
-# Runtime uses the standard library only. The host needs nothing but uv.
-dependencies = []
+# Runtime uses the standard library and devops-tools (run logs, the rebase workflow).
+# The host needs nothing but uv. Pin devops-tools to a full commit SHA; bump it in its own PR.
+dependencies = [
+    "devops-tools @ git+https://github.com/SETA1609/devops_tools@fde087b7f18a8b0c10913dd322350f08562eea46",
+]
 
 [project.scripts]
 devops = "devops.cli:main"
@@ -28,3 +31,8 @@ target-version = "py313"
 
 [tool.ruff.lint]
 select = ["E", "W", "F", "I", "B", "UP", "SIM", "RUF"]
+
+# Read by devops-tools (roadmap-order, rebase-open-branches). Pass this file with --settings-file.
+[tool.devops-tools]
+roadmap-file = "ROADMAP.md"
+keep-both-added-lines = ["docs/stories/*.md"]

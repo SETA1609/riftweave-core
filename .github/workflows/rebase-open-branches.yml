@@ -14,16 +14,10 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # The shared workflow from devops-tools. Keep the ref and devops-tools-version equal to the
+  # devops-tools pin in tools/devops/pyproject.toml, and move all three in one PR.
   rebase-open-branches:
-    name: Rebase open pull requests onto main
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-        with:
-          fetch-depth: 0
-
-      - name: Rebase open pull requests
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: python3 scripts/rebase_open_branches.py --target main
+    uses: SETA1609/devops_tools/.github/workflows/rebase-open-branches.yml@fde087b7f18a8b0c10913dd322350f08562eea46 # main, 2026-11-01 (after v0.1.0)
+    with:
+      devops-tools-version: fde087b7f18a8b0c10913dd322350f08562eea46
+      settings-file: tools/devops/pyproject.toml

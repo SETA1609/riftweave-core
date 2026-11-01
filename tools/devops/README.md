@@ -1,6 +1,6 @@
 # devops
 
-Host-side CLI that runs the Python toolchain container (`riftweave:python-3.13.18`) and logs every run. It runs on the host, outside the container. The host needs only [uv](https://docs.astral.sh/uv/). At runtime the CLI uses only the Python standard library.
+Host-side CLI that runs the Python toolchain container (`riftweave:python-3.13.18`) and logs every run. It runs on the host, outside the container. The host needs only [uv](https://docs.astral.sh/uv/). At runtime the CLI uses the Python standard library and [devops-tools](https://github.com/SETA1609/devops_tools), the shared run log and repository workflow tools. See [Shared devops-tools](#shared-devops-tools).
 
 The container Python version is the repo-root [`.toolchain-python-version`](../../.toolchain-python-version). It must match `ARG PYTHON_VERSION` in [`container/Dockerfile`](../../container/Dockerfile) and `BASE_IMAGE` in [`.devcontainer/devcontainer.json`](../../.devcontainer/devcontainer.json). The file is not named `.python-version`, so pyenv and uv keep using the host interpreter. `tools/devops/.python-version` is only the host CLI (any 3.13).
 
@@ -64,6 +64,17 @@ The repo is bind-mounted, so a commit made in the container is a commit in the h
 
 `.devcontainer/devcontainer.json` builds the same image for editors that attach to dev containers. It mounts the same home volume. `initializeCommand` builds `riftweave:python-3.13.18` when that image is missing.
 
+## Shared devops-tools
+
+The run log, log pruning, and the open-PR rebase come from [SETA1609/devops_tools](https://github.com/SETA1609/devops_tools), not from code in this repo. It is a dependency in `pyproject.toml`, pinned to commit `fde087b` (after `v0.1.0`) (full SHA in `pyproject.toml` and `uv.lock`). This package keeps only what is specific to Riftweave: the toolchain and agent containers and the cache cleanup.
+
+```sh
+uv run --project tools/devops --locked --no-dev devops-tools prune-logs --older-than-days 7
+uv run --project tools/devops --locked --no-dev devops-tools rebase-open-branches --branches RW-41-x --no-push
+```
+
+`.github/workflows/rebase-open-branches.yml` calls the shared reusable workflow from devops-tools, which runs `rebase-open-branches`. The SHA appears in three places, and they must match: `pyproject.toml`, the workflow's `uses:` ref, and its `devops-tools-version` input (`uv.lock` follows from `uv lock`). To move the pin, change all three, run `uv lock` and the tests, in a PR of its own.
+
 ## Logs
 
 Every line from the container is prefixed with an ISO-8601 UTC timestamp in milliseconds and a stream tag, on the terminal and in `cache/logs/<utc-timestamp>-<subcommand>.log`:
@@ -81,11 +92,12 @@ The log ends with the command line, exit code, and duration. `shell` owns the te
 
 ## Layout
 
+Timestamping, log files, and running a child with logged output are `devops_tools.run_log`.
+
 ```text
 src/devops/
   cli.py           subcommands and main()
   container.py     repo root, docker/podman detection, container command lines
-  run_log.py       timestamping, log files, running a child with logged output
   cache_cleanup.py choosing and removing Python cache paths for `clean`
   constants.py     constants
   exceptions.py    exceptions

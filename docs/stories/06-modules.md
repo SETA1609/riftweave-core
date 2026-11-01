@@ -12,66 +12,82 @@ Roadmap: [POST](../../ROADMAP.md#where-we-are). Format and rules: [README.md](RE
 
 Done: —
 
-#### RW-31 Crafting module: recipes, quality, stations
+#### POST-01 Crafting module: recipes, quality, stations
 - Status: todo
 - Priority: medium
-- Needs: —
+- Needs: M1-07
+- Was: RW-31
 - Do: Design only today. Ship one vertical slice as a module: recipes, check, time, station, quality grade.
+- Files: ~6 (ruleset/modules/<module>/, docs/modules/<module>.md)
 - See: docs/modules/crafting.md, issues.md section 2
 - Done when: module manifest and at least 30 recipes; quality formula in the AST with vectors.
 
-#### RW-32 Alchemy module: quality formula and discovery
+#### POST-02 Alchemy module: quality formula and discovery
 - Status: todo
 - Priority: medium
-- Needs: —
+- Needs: POST-01
+- Was: RW-32
 - Do: Quality and magnitude formula is TBD. Define discovery, stations, and multi-effect brews.
+- Files: ~6 (ruleset/modules/<module>/, docs/modules/<module>.md)
 - See: docs/modules/alchemy.md
 - Done when: formula and vectors; discovery rules as data.
 
-#### RW-33 Magic crafting module: enchanting
+#### POST-03 Magic crafting module: enchanting
 - Status: todo
 - Priority: low
-- Needs: —
+- Needs: POST-01, M3-01
+- Was: RW-33
 - Do: Affix vs full item model, charges, attunement, rarity, runes.
+- Files: ~6 (ruleset/modules/<module>/, docs/modules/<module>.md)
 - See: docs/modules/magic-crafting.md
 - Done when: decision record, then data and vectors.
 
-#### RW-34 Breakthrough advancement module
+#### POST-04 Breakthrough advancement module
 - Status: todo
 - Priority: medium
-- Needs: —
+- Needs: M1-03
+- Was: RW-34
 - Do: Core level-up names no alchemy (SET-14). Breakthroughs ship as an optional module that emits modifiers.
+- Files: ~6 (ruleset/modules/<module>/, docs/modules/<module>.md)
 - See: docs/modules/advancement.md
 - Done when: manifest, data, and vectors; core unchanged.
 
-#### RW-35 Factions and reputation module
+#### POST-05 Factions and reputation module
 - Status: todo
 - Priority: medium
 - Needs: —
+- Was: RW-35
 - Do: No faction schema or data yet. Design doc first.
+- Files: ~6 (ruleset/modules/<module>/, docs/modules/<module>.md)
 - See: issues.md section 3
 - Done when: `docs/modules/factions.md`, schema, and data.
 
-#### RW-36 Companions and followers module
+#### POST-06 Companions and followers module
 - Status: todo
 - Priority: medium
-- Needs: —
+- Needs: M1-03
+- Was: RW-36
 - Do: No companion model. Design doc first.
+- Files: ~6 (ruleset/modules/<module>/, docs/modules/<module>.md)
 - See: issues.md section 3
 - Done when: `docs/modules/companions.md`, schema, and data.
 
-#### RW-37 Mounts, vehicles, and ship combat module
+#### POST-07 Mounts, vehicles, and ship combat module
 - Status: todo
 - Priority: low
-- Needs: —
+- Needs: M1-02
+- Was: RW-37
 - Do: Stubs only in combat edge cases.
+- Files: ~6 (ruleset/modules/<module>/, docs/modules/<module>.md)
 - See: issues.md section 8
 - Done when: design doc, then data.
 
-#### RW-38 Survival needs module
+#### POST-08 Survival needs module
 - Status: todo
 - Priority: low
-- Needs: —
+- Needs: M1-04, M1-05
+- Was: RW-38
 - Do: Hunger, thirst, sleep, disease, radiation, addiction beyond basic effects.
+- Files: ~6 (ruleset/modules/<module>/, docs/modules/<module>.md)
 - See: issues.md section 8
 - Done when: design doc, then conditions and recovery rows.
