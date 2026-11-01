@@ -67,12 +67,12 @@
         },
         "traits": {
           "type": "array",
-          "description": "List of traits granted or defined by this race entry. Each item references a trait from the global traits registry (data/traits) by its numeric id. The label is duplicated here for readability when viewing the race data. For parent races these are the base traits; for subraces and kin these are the traits they specifically provide or override.",
+          "description": "Racial traits granted by this race entry. Each item references a feature of type `racial_trait` in the perk table (data/features) by namespaced ref. The label is duplicated here for readability when viewing the race data. For parent races these are the base traits; for subraces they stack on the parent's; kin list all of their own.",
           "items": {
             "type": "object",
             "properties": {
-              "id": { "type": "string", "description": "Reference to the trait. Use namespaced format core:trait/<key>." },
-              "label": { "type": "string", "description": "Human-readable label of the trait (duplicated from the traits registry for convenience)." }
+              "id": { "type": "string", "description": "Reference to a racial_trait feature. Use namespaced format core:feature/<key> (or a module: ref)." },
+              "label": { "type": "string", "description": "Human-readable label of the trait (duplicated from the feature row for convenience)." }
             },
             "required": ["id", "label"],
             "additionalProperties": false
