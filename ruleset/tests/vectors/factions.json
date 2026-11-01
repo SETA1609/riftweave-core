@@ -1,0 +1,199 @@
+[
+  {
+    "name": "standing: reputation equal to a band's minimum is in that band",
+    "function": "standing",
+    "faction": "module:factions/faction/lantern_wardens",
+    "actor": { "reputation": { "module:factions/faction/lantern_wardens": 10 } },
+    "expect": { "standing": "friendly" }
+  },
+  {
+    "name": "standing: one below a band's minimum is in the band beneath",
+    "function": "standing",
+    "faction": "module:factions/faction/lantern_wardens",
+    "actor": { "reputation": { "module:factions/faction/lantern_wardens": 9 } },
+    "expect": { "standing": "neutral" }
+  },
+  {
+    "name": "standing: reputation_min is the first band",
+    "function": "standing",
+    "faction": "module:factions/faction/lantern_wardens",
+    "actor": { "reputation": { "module:factions/faction/lantern_wardens": -100 } },
+    "expect": { "standing": "hostile" }
+  },
+  {
+    "name": "standing: no entry reads reputation_start",
+    "function": "standing",
+    "faction": "module:factions/faction/lantern_wardens",
+    "actor": {},
+    "expect": { "standing": "neutral" }
+  },
+  {
+    "name": "event: delta 15 with a -50 percent relation spills -7, toward zero",
+    "function": "apply_reputation_event",
+    "actor": { "reputation": {} },
+    "event": { "faction": "module:factions/faction/lantern_wardens", "event": "contract_completed" },
+    "expect": {
+      "reputation": {
+        "module:factions/faction/lantern_wardens": 15,
+        "module:factions/faction/ashen_circle": -7
+      }
+    }
+  },
+  {
+    "name": "event: both factions clamp to their bounds; spillover uses the unclamped delta",
+    "function": "apply_reputation_event",
+    "actor": {
+      "reputation": {
+        "module:factions/faction/lantern_wardens": 95,
+        "module:factions/faction/ashen_circle": -98
+      }
+    },
+    "event": { "faction": "module:factions/faction/lantern_wardens", "event": "contract_completed" },
+    "expect": {
+      "reputation": {
+        "module:factions/faction/lantern_wardens": 100,
+        "module:factions/faction/ashen_circle": -100
+      }
+    }
+  },
+  {
+    "name": "event: a negative delta through a negative share raises the rival",
+    "function": "apply_reputation_event",
+    "actor": { "reputation": {} },
+    "event": { "faction": "module:factions/faction/lantern_wardens", "event": "member_killed" },
+    "expect": {
+      "reputation": {
+        "module:factions/faction/lantern_wardens": -40,
+        "module:factions/faction/ashen_circle": 20
+      }
+    }
+  },
+  {
+    "name": "event: spillover is one hop and does not cascade",
+    "function": "apply_reputation_event",
+    "actor": { "reputation": {} },
+    "event": { "faction": "module:factions/faction/gilded_ledger", "event": "debt_repaid" },
+    "expect": {
+      "reputation": {
+        "module:factions/faction/gilded_ledger": 10,
+        "module:factions/faction/lantern_wardens": 2
+      }
+    }
+  },
+  {
+    "name": "event: a consumer-supplied delta needs no event row",
+    "function": "apply_reputation_event",
+    "actor": { "reputation": { "module:factions/faction/gilded_ledger": 5 } },
+    "event": { "faction": "module:factions/faction/gilded_ledger", "delta": -3 },
+    "expect": {
+      "reputation": {
+        "module:factions/faction/gilded_ledger": 2,
+        "module:factions/faction/lantern_wardens": 0
+      }
+    }
+  },
+  {
+    "name": "promotion: a non-member with enough reputation may join the first rank",
+    "function": "can_promote",
+    "faction": "module:factions/faction/lantern_wardens",
+    "actor": { "reputation": { "module:factions/faction/lantern_wardens": 40 } },
+    "expect": { "next_rank": "recruit", "allowed": true }
+  },
+  {
+    "name": "promotion: the next rank needs its min_reputation",
+    "function": "can_promote",
+    "faction": "module:factions/faction/lantern_wardens",
+    "actor": {
+      "reputation": { "module:factions/faction/lantern_wardens": 30 },
+      "faction_ranks": { "module:factions/faction/lantern_wardens": "recruit" }
+    },
+    "expect": { "next_rank": "sergeant", "allowed": false }
+  },
+  {
+    "name": "promotion: met min_reputation allows the next rank",
+    "function": "can_promote",
+    "faction": "module:factions/faction/lantern_wardens",
+    "actor": {
+      "reputation": { "module:factions/faction/lantern_wardens": 35 },
+      "faction_ranks": { "module:factions/faction/lantern_wardens": "recruit" }
+    },
+    "expect": { "next_rank": "sergeant", "allowed": true }
+  },
+  {
+    "name": "promotion: the top rank has no next rank",
+    "function": "can_promote",
+    "faction": "module:factions/faction/lantern_wardens",
+    "actor": {
+      "reputation": { "module:factions/faction/lantern_wardens": 100 },
+      "faction_ranks": { "module:factions/faction/lantern_wardens": "captain" }
+    },
+    "expect": { "next_rank": null, "allowed": false }
+  },
+  {
+    "name": "emission: standing and held rank of one faction, standing of another",
+    "function": "emit_modifiers",
+    "actor": {
+      "reputation": {
+        "module:factions/faction/lantern_wardens": 15,
+        "module:factions/faction/ashen_circle": -60
+      },
+      "faction_ranks": { "module:factions/faction/lantern_wardens": "recruit" }
+    },
+    "expect": {
+      "modifiers": [
+        { "target": "persuasion", "op": "add", "value": 5, "duration": "while_applied", "source": "faction_standing:lantern_wardens" },
+        { "target": "lantern_wardens_member", "op": "grant", "value": 1, "duration": "while_applied", "source": "faction_rank:lantern_wardens" },
+        { "target": "deception", "op": "add", "value": -5, "duration": "while_applied", "source": "faction_standing:ashen_circle" }
+      ],
+      "suspended_ranks": []
+    }
+  },
+  {
+    "name": "emission: a held rank above the actor's reputation is suspended",
+    "function": "emit_modifiers",
+    "actor": {
+      "reputation": { "module:factions/faction/lantern_wardens": 20 },
+      "faction_ranks": { "module:factions/faction/lantern_wardens": "sergeant" }
+    },
+    "expect": {
+      "modifiers": [
+        { "target": "persuasion", "op": "add", "value": 5, "duration": "while_applied", "source": "faction_standing:lantern_wardens" }
+      ],
+      "suspended_ranks": ["module:factions/faction/lantern_wardens"]
+    }
+  },
+  {
+    "name": "stacking: two factions are two sources and add",
+    "function": "skill_target",
+    "skill": "persuasion",
+    "actor": {
+      "skills": { "persuasion": 40 },
+      "reputation": {
+        "module:factions/faction/lantern_wardens": 15,
+        "module:factions/faction/gilded_ledger": 12
+      }
+    },
+    "expect": { "target": 50 }
+  },
+  {
+    "name": "stacking: a higher standing replaces the lower one, it does not add to it",
+    "function": "skill_target",
+    "skill": "persuasion",
+    "actor": {
+      "skills": { "persuasion": 40 },
+      "reputation": { "module:factions/faction/lantern_wardens": 60 }
+    },
+    "expect": { "target": 50 }
+  },
+  {
+    "name": "stacking: standing and rank of one faction are two sources and add",
+    "function": "skill_target",
+    "skill": "intimidation",
+    "actor": {
+      "skills": { "intimidation": 30 },
+      "reputation": { "module:factions/faction/lantern_wardens": 60 },
+      "faction_ranks": { "module:factions/faction/lantern_wardens": "sergeant" }
+    },
+    "expect": { "target": 40 }
+  }
+]
