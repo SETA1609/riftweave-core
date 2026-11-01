@@ -21,6 +21,7 @@ from validate import (
     build_namespaced_ref_index,
     check_damage_type_vocabulary,
     check_equipment_uniqueness,
+    check_racial_trait_refs,
     load_canonical_damage_types,
     check_references,
     equipment_ref_valid,
@@ -334,4 +335,65 @@ class TestDamageTypeVocabulary(unittest.TestCase):
                     f"{bg.get('key')} item {ref} does not resolve",
                 )
 
+
+class TestRacialTraitRefs(unittest.TestCase):
+    def _write(self, root, features, races):
+        f = root / "features.json"
+        r = root / "races.json"
+        f.write_text(json.dumps({"features": features}))
+        r.write_text(json.dumps({"races": races}))
+        return [f, r]
+
+    def test_race_trait_resolving_to_racial_trait_feature_passes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            files = self._write(
+                Path(tmp),
+                [{"key": "elf_darkvision", "type": "racial_trait"}],
+                [{"key": "elf", "traits": [{"id": "core:feature/elf_darkvision"}]}],
+            )
+            self.assertEqual(check_racial_trait_refs(files), [])
+
+    def test_core_trait_ref_is_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            files = self._write(
+                Path(tmp), [], [{"key": "elf", "traits": [{"id": "core:trait/elf_darkvision"}]}]
+            )
+            errors = check_racial_trait_refs(files)
+            self.assertEqual(len(errors), 1)
+            self.assertIn("must be a core:feature/<key> ref", errors[0])
+
+    def test_race_trait_pointing_at_a_perk_is_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            files = self._write(
+                Path(tmp),
+                [{"key": "toughness", "type": "perk"}],
+                [{"key": "dwarf", "traits": [{"id": "core:feature/toughness"}]}],
+            )
+            errors = check_racial_trait_refs(files)
+            self.assertEqual(len(errors), 1)
+            self.assertIn("not 'racial_trait'", errors[0])
+
+    def test_racial_trait_no_race_lists_is_an_orphan(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            files = self._write(
+                Path(tmp), [{"key": "lonely", "type": "racial_trait"}], []
+            )
+            errors = check_racial_trait_refs(files)
+            self.assertEqual(
+                errors, ["racial_trait 'core:feature/lonely' is not listed by any race"]
+            )
+
+    def test_module_trait_refs_pass(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            files = self._write(
+                Path(tmp), [], [{"key": "x", "traits": [{"id": "module:m/feature/y"}]}]
+            )
+            self.assertEqual(check_racial_trait_refs(files), [])
+
+    def test_live_data_has_no_traits_table_and_all_race_traits_are_features(self):
+        root = Path(__file__).resolve().parent.parent
+        self.assertFalse((root / "data" / "traits").exists())
+        self.assertFalse((root / "schemas" / "trait.schema.json").exists())
+        files = list((root / "data").rglob("*.json"))
+        self.assertEqual(check_racial_trait_refs(files), [])
 

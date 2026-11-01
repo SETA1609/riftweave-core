@@ -1272,6 +1272,58 @@ def validate_modules(store, equipment_index=None, effect_channels=None):
     return passed, failed, total, conflicts
 
 
+def check_racial_trait_refs(data_files):
+    """Racial traits live only in features, as type racial_trait (M1-06).
+
+    A race's traits[].id must be a core:feature/<key> ref (module: refs pass)
+    to a racial_trait feature, and every core racial_trait must be listed by
+    at least one race.
+    """
+    feature_types = {}
+    race_refs = []
+    for fp in data_files:
+        try:
+            data = json.loads(fp.read_text())
+        except (json.JSONDecodeError, OSError):
+            continue
+        if not isinstance(data, dict):
+            continue
+        for f in data.get("features", []):
+            if isinstance(f, dict) and isinstance(f.get("key"), str):
+                feature_types[f"core:feature/{f['key']}"] = f.get("type")
+        for r in data.get("races", []):
+            if not isinstance(r, dict):
+                continue
+            for t in r.get("traits", []):
+                if isinstance(t, dict) and isinstance(t.get("id"), str):
+                    race_refs.append((r.get("key", "?"), t["id"]))
+
+    errors = []
+    used = set()
+    for race_key, ref in race_refs:
+        if ref.startswith("module:"):
+            continue
+        if not ref.startswith("core:feature/"):
+            errors.append(
+                f"race '{race_key}': trait '{ref}' must be a core:feature/<key> ref"
+            )
+            continue
+        if ref not in feature_types:
+            errors.append(f"race '{race_key}': trait '{ref}' does not exist in features")
+            continue
+        if feature_types[ref] != "racial_trait":
+            errors.append(
+                f"race '{race_key}': trait '{ref}' has type "
+                f"'{feature_types[ref]}', not 'racial_trait'"
+            )
+            continue
+        used.add(ref)
+    for ref, ftype in sorted(feature_types.items()):
+        if ftype == "racial_trait" and ref not in used:
+            errors.append(f"racial_trait '{ref}' is not listed by any race")
+    return errors
+
+
 def main():
     store = load_store()
     data_files = list(collect_data_files())
@@ -1301,6 +1353,13 @@ def main():
     if damage_errors:
         print("  ✗  damage type vocabulary")
         for e in damage_errors:
+            print(f"       {e}")
+        failed += 1
+
+    trait_errors = check_racial_trait_refs(data_files)
+    if trait_errors:
+        print("  \u2717  racial traits (features of type racial_trait)")
+        for e in trait_errors:
             print(f"       {e}")
         failed += 1
 
