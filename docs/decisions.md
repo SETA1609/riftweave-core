@@ -7,6 +7,21 @@ issue settles them.
 
 ## Decided
 
+### 2026-11-02: Changelog fragments (M5-02)
+
+- Each PR adds `changes/<issue-id>.md` instead of a `CHANGELOG.md` line, as in new-world. Every
+  PR used to add a line at the same places in the changelog, so parallel PRs conflicted there;
+  the rebase workflow only resolves pure additions. Rules: [changes/README.md](../changes/README.md).
+- CI runs `devops-tools changelog-fragments check --branch` on every PR through the reusable
+  workflow at the devops-tools pin (`fde087b`, unchanged; it already has the command and the
+  workflow). A branch whose issue has no fragment fails.
+- The owner releases the fragments into `CHANGELOG.md` with `changelog-fragments release` in
+  a PR of its own. The release writes `### <issue-id> <title> (#N)` entries under a new
+  `## <title>` section above `[Unreleased]`; the categorized `[Unreleased]` list holds the
+  entries written before M5-02 and is folded into the first release by hand. **[A]**
+- Risk: a release PR deletes every fragment, its own included, so it adds its own fragment
+  after `release` or its branch check fails.
+
 ### 2026-11-01: Story-scoped issue IDs and a computed order (M5-01)
 
 - Open issues are renumbered per story (`M1-01`, `POST-03`), as in new-world. Owner decision;

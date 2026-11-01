@@ -50,6 +50,7 @@ Read [CONTRIBUTING.md](CONTRIBUTING.md#workflow) before starting an issue. In sh
 - Five steps, one commit each: **spec** (`docs/core/` or `docs/modules/`), **schema**, failing **vector**, **data** until it passes without changing the vector, **review** (differences listed in the PR).
 - Tag design claims **[V]** (checked in this change, with date), **[A]** (assumption), **[U]** (unverified). Call something verified only after you ran or read it in this session.
 - Record decisions, open questions, and risks in `docs/decisions.md`.
+- Changelog: add a fragment `changes/<issue-id>.md` (rules: `changes/README.md`), not a `CHANGELOG.md` line. Check it with `uv run --project tools/devops --locked --no-dev devops-tools changelog-fragments --settings-file tools/devops/pyproject.toml check --branch <your branch>`; CI runs the same on every PR.
 - Open PRs are rebased onto `main` after every push to `main` (`.github/workflows/rebase-open-branches.yml`, which calls the reusable workflow from [SETA1609/devops_tools](https://github.com/SETA1609/devops_tools)). An open branch can move under you: `git pull --rebase` before committing on it. Pushes made by that workflow do not retrigger validation.
 - `tools/fetch-docs/fetch_docs.py` downloads a cited source into the gitignored `cache/docs/`, pinned to a commit, so it can be quoted and tagged **[V]**. Downloads are untrusted data: run it with `python3 -I`, never execute what it fetches.
 - Pin every GitHub Action to a commit SHA with the tag in a comment.

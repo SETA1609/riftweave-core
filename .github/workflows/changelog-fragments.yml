@@ -1,0 +1,21 @@
+name: Changelog fragments
+
+# Every pull request adds changes/<issue-id>.md instead of a CHANGELOG.md line (changes/README.md).
+# No paths filter: the branch's issue needs a fragment whatever else the pull request touches.
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  # The shared workflow from devops-tools runs `changelog-fragments check --branch <head ref>`.
+  # Keep the ref and devops-tools-version equal to the devops-tools pin in
+  # tools/devops/pyproject.toml, and move them in one PR with rebase-open-branches.yml.
+  check-changelog-fragments:
+    uses: SETA1609/devops_tools/.github/workflows/changelog-fragments.yml@fde087b7f18a8b0c10913dd322350f08562eea46 # main, 2026-11-01 (after v0.1.0)
+    with:
+      devops-tools-version: fde087b7f18a8b0c10913dd322350f08562eea46
+      settings-file: tools/devops/pyproject.toml
