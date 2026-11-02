@@ -42,6 +42,7 @@
     },
     {
       "key": "damage_shock",
+      "reserved": true,
       "label": "Damage Shock",
       "description": "Deals shock damage and drains mana.",
       "category": "damage",
@@ -148,6 +149,7 @@
     },
     {
       "key": "light",
+      "reserved": true,
       "label": "Light",
       "description": "Conjures light around the subject or a point.",
       "category": "utility",
@@ -201,6 +203,7 @@
     },
     {
       "key": "telekinesis",
+      "reserved": true,
       "label": "Telekinesis",
       "description": "Manipulate distant objects at range.",
       "category": "control",
@@ -235,6 +238,7 @@
     },
     {
       "key": "bound_weapon",
+      "reserved": true,
       "label": "Bound Weapon",
       "description": "Conjures a weapon of shaped energy in the caster's hand. Use 'parameter' for the weapon it copies (e.g. 'core:weapon/longsword'); the caster attacks with that weapon's skill. Magnitude is the number of weapons conjured (normally 1). The weapon vanishes when the duration ends or it leaves the caster's hand.",
       "category": "conjure",
@@ -488,6 +492,7 @@
     },
     {
       "key": "movement_speed",
+      "reserved": true,
       "label": "Movement Speed",
       "description": "Modifies base movement speed (exploration feet/round or combat units/speed rating). Parameter can specify mode ('exploration', 'combat_turnbased', 'action') or be general. Negative values slow the character.",
       "category": "utility",
@@ -562,6 +567,7 @@
     },
     {
       "key": "fortify_resource",
+      "reserved": true,
       "label": "Fortify Resource",
       "description": "Increases the maximum of a resource pool (e.g. hit points, mana, stamina). Use 'parameter' to specify the resource ('health', 'stamina', 'mana', 'action_points'). Magnitude is the increase in points. Supports durationType for temporal vs unlimited behavior.",
       "category": "fortify",
@@ -581,6 +587,7 @@
     },
     {
       "key": "drain_skill",
+      "reserved": true,
       "label": "Drain Skill",
       "description": "Reduces a specific skill (temporary or with duration). Parameter specifies the skill id. Magnitude is the amount drained.",
       "category": "drain",
@@ -600,6 +607,7 @@
     },
     {
       "key": "drain_attribute",
+      "reserved": true,
       "label": "Drain Attribute",
       "description": "Reduces a specific attribute (temporary drain). Parameter specifies the ability id. Magnitude is the amount drained (can go below normal min temporarily).",
       "category": "drain",
@@ -618,6 +626,7 @@
     },
     {
       "key": "damage_attribute",
+      "reserved": true,
       "label": "Damage Attribute",
       "description": "Directly damages/reduces an attribute (like a wound or curse). Parameter for the ability. Can be temporary (with duration) or longer-lasting. Magnitude is the reduction.",
       "category": "damage",
@@ -636,6 +645,7 @@
     },
     {
       "key": "damage_skill",
+      "reserved": true,
       "label": "Damage Skill",
       "description": "Directly damages a skill rating (e.g. crippling a skill). Parameter for the skill id. Magnitude is the reduction in points.",
       "category": "damage",
@@ -655,6 +665,7 @@
     },
     {
       "key": "drain_resource",
+      "reserved": true,
       "label": "Drain Resource",
       "description": "Drains a resource pool (temporary reduction to current or max). Parameter: 'health', 'stamina', 'mana', etc. Magnitude is the amount drained.",
       "category": "drain",
@@ -673,6 +684,7 @@
     },
     {
       "key": "damage_resource",
+      "reserved": true,
       "label": "Damage Resource",
       "description": "Directly damages a resource pool (like a wound reducing max HP). Parameter for the resource. Magnitude is the reduction.",
       "category": "damage",
@@ -766,6 +778,7 @@
     },
     {
       "key": "poison_weakness",
+      "reserved": true,
       "label": "Weakness Poison",
       "description": "Saps the target's stamina and strength over a short period. Common in coatings or toxic weapons. Applies its sub_effects (e.g. damage_stamina) as symptoms. Resistance (via resist effect with parameter 'poison') can reduce magnitude or duration. A poison must not apply other poison effects to avoid recursion.",
       "category": "drain",
@@ -786,6 +799,7 @@
     },
     {
       "key": "poison_health_drain",
+      "reserved": true,
       "label": "Health Drain Poison",
       "description": "Directly damages the target's health over time. Potent versions used by assassins or in deadly traps. Applies its sub_effects (e.g. damage_health) as symptoms. Resistance (via resist effect with parameter 'poison') can reduce magnitude or duration. A poison must not apply other poison effects to avoid recursion.",
       "category": "damage",
@@ -1165,6 +1179,7 @@
     },
     {
       "key": "armor_pierce",
+      "reserved": true,
       "label": "Armor Pierce",
       "description": "Partially ignores the target's armor DR. Magnitude is the percentage of armor DR ignored (e.g. magnitude 50 = 50% armor ignored). Common on piercing weapons and dedicated armor-piercing ammunition.",
       "category": "control",
@@ -1185,6 +1200,7 @@
     },
     {
       "key": "sunder_armor",
+      "reserved": true,
       "label": "Sunder Armor",
       "description": "Reduces the target's armor DR for a duration. Magnitude is the flat DR reduction. Stacks across multiple applications up to a cap.",
       "category": "control",
@@ -1205,6 +1221,7 @@
     },
     {
       "key": "rend",
+      "reserved": true,
       "label": "Rend",
       "description": "Causes a deep wound that deals damage over time. More severe than a standard bleed. Magnitude is damage per tick, duration controls total ticks. Common on serrated blades and beast claws.",
       "category": "damage",
@@ -1225,6 +1242,7 @@
     },
     {
       "key": "cripple",
+      "reserved": true,
       "label": "Cripple",
       "description": "Reduces the target's movement speed and Agility. Magnitude is the penalty to effective AGI and speed percentage.",
       "category": "control",
@@ -1246,6 +1264,7 @@
     },
     {
       "key": "weapon_damage_buff",
+      "reserved": true,
       "label": "Weapon Damage Buff",
       "description": "Temporarily increases the damage dealt by a weapon. Magnitude is added to the weapon's damage roll (flat bonus, not dice). Common from magical enchantments or temporary coatings.",
       "category": "fortify",
@@ -1284,6 +1303,7 @@
     },
     {
       "key": "fortify_critical",
+      "reserved": true,
       "label": "Fortify Critical",
       "description": "Expands the critical hit window or increases critical damage multiplier. Magnitude is the bonus to the crit range (e.g. +1 = 01-06 instead of 01-05).",
       "category": "fortify",
@@ -1304,6 +1324,7 @@
     },
     {
       "key": "fortify_defense",
+      "reserved": true,
       "label": "Fortify Defense",
       "description": "Increases the target's effective armor DR or evasion. Magnitude is the bonus to DR (if parameter is 'armor') or evasion (if parameter is 'evasion').",
       "category": "fortify",
@@ -1324,6 +1345,7 @@
     },
     {
       "key": "life_steal",
+      "reserved": true,
       "label": "Life Steal",
       "description": "Converts a percentage of dealt damage into health for the attacker. Magnitude is the percentage converted. Common on necrotic weapons and vampiric enchantments.",
       "category": "restore",
@@ -1343,6 +1365,7 @@
     },
     {
       "key": "mana_leech",
+      "reserved": true,
       "label": "Mana Leech",
       "description": "Converts a percentage of dealt damage into mana for the attacker. Magnitude is the percentage converted.",
       "category": "restore",
@@ -1361,6 +1384,7 @@
     },
     {
       "key": "expose_weakness",
+      "reserved": true,
       "label": "Expose Weakness",
       "description": "Marks the target, making them more vulnerable to all damage. Magnitude is the percentage increase in damage taken. Stacks with expose (id 62).",
       "category": "control",
@@ -1381,6 +1405,7 @@
     },
     {
       "key": "cleave",
+      "reserved": true,
       "label": "Cleave",
       "description": "On a successful melee hit, the attack also strikes a second adjacent target. Magnitude is the percentage of the original damage dealt to the secondary target.",
       "category": "damage",
@@ -1399,6 +1424,7 @@
     },
     {
       "key": "interrupt",
+      "reserved": true,
       "label": "Interrupt",
       "description": "On hit, disrupts the target's current action. Magnitude is a bonus to the interrupt check. Targets with higher END resist more effectively.",
       "category": "control",

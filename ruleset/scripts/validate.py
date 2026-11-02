@@ -7,6 +7,7 @@ are also validated. Module data files share the same schema store as core data.
 
 import json
 import os
+import re
 import sys
 import warnings
 from pathlib import Path
@@ -457,6 +458,91 @@ def check_damage_type_vocabulary(data_files, canonical, rel_base=ROOT):
             if isinstance(resistances, dict):
                 for tag in resistances:
                     consider(tag, f"{rel}:{key} resistances")
+    return errors
+
+
+NAMESPACED_REF = re.compile(r"^core:[a-z_]+/[a-z0-9_]+$")
+
+
+def _walk_strings(node):
+    if isinstance(node, str):
+        yield node
+    elif isinstance(node, dict):
+        for value in node.values():
+            yield from _walk_strings(value)
+    elif isinstance(node, list):
+        for value in node:
+            yield from _walk_strings(value)
+
+
+def _all_files(data_files, module_data_files=None):
+    files = list(data_files)
+    if module_data_files:
+        files.extend(fp for fp, _ in module_data_files)
+    return files
+
+
+def _load_json_file(fp):
+    try:
+        return json.loads(fp.read_text())
+    except (json.JSONDecodeError, OSError):
+        return None
+
+
+def _rel(fp, rel_base):
+    try:
+        return fp.relative_to(rel_base).as_posix()
+    except ValueError:
+        return fp.name
+
+
+def check_all_references(data_files, module_data_files=None, rel_base=ROOT):
+    """Gate 1 (docs/core/integrity.md): every core:<category>/<key> string in any data or module
+    file names an entry that exists. Walks every string, so no field escapes the check."""
+    known = build_namespaced_ref_index(data_files, module_data_files)
+    known |= build_equipment_index(data_files, module_data_files, rel_base=rel_base)["namespaced_keys"]
+    errors = []
+    for fp in _all_files(data_files, module_data_files):
+        data = _load_json_file(fp)
+        if data is None:
+            continue
+        missing = sorted({s for s in _walk_strings(data) if NAMESPACED_REF.match(s) and s not in known})
+        for ref in missing:
+            errors.append(f"{_rel(fp, rel_base)}: reference {ref} does not resolve")
+    return errors
+
+
+def _is_effect_registry(data):
+    entries = data.get("effects") if isinstance(data, dict) else None
+    return (
+        isinstance(entries, list)
+        and bool(entries)
+        and all(isinstance(e, dict) and "channels" in e and "key" in e for e in entries)
+    )
+
+
+def check_effect_usage(data_files, module_data_files=None):
+    """Gate 3 (docs/core/integrity.md): every core registry effect is referenced from a file outside the
+    registry, or is marked reserved; a reserved effect must not be referenced."""
+    registry = []
+    referenced = set()
+    core_files = {fp for fp in data_files}
+    for fp in _all_files(data_files, module_data_files):
+        data = _load_json_file(fp)
+        if data is None:
+            continue
+        if _is_effect_registry(data):
+            if fp in core_files:  # a module's own effects are its author's business
+                registry.extend(data["effects"])
+        else:
+            referenced.update(s for s in _walk_strings(data) if NAMESPACED_REF.match(s))
+    errors = []
+    for effect in registry:
+        ref = f"core:effect/{effect['key']}"
+        if effect.get("reserved") and ref in referenced:
+            errors.append(f"effect {effect['key']} is marked reserved but is referenced; remove the flag")
+        elif not effect.get("reserved") and ref not in referenced:
+            errors.append(f"effect {effect['key']} is referenced nowhere; use it or mark it reserved")
     return errors
 
 
@@ -1354,6 +1440,16 @@ def main():
         for e in damage_errors:
             print(f"       {e}")
         failed += 1
+
+    for label, errors in (
+        ("references (every core: ref resolves)", check_all_references(data_files, module_data_files)),
+        ("effects (used or reserved)", check_effect_usage(data_files, module_data_files)),
+    ):
+        if errors:
+            print(f"  \u2717  {label}")
+            for e in errors:
+                print(f"       {e}")
+            failed += 1
 
     trait_errors = check_racial_trait_refs(data_files)
     if trait_errors:
