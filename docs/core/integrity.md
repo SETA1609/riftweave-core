@@ -10,7 +10,7 @@ Categories (singular, as in `docs/core/keys.md`): `weapon`, `armor`, `accessory`
 
 ## 2. No bare string where a key is required
 
-A schema property that holds a reference uses `schema.json#/definitions/namespacedRef`, which is a pattern, not `type: string`. Crafting data names its inputs by bare key in a collection the field's description gives (`material_key`, `gem_key`, a recipe's `key`); those use `bareKey`, a snake_case pattern. A typo that is not even shaped like a key fails the schema, and a well-shaped one fails gate 1 or the per-collection check.
+A schema property that holds a reference uses `schema.json#/definitions/namespacedRef`, which is a pattern, not `type: string`. That includes the crafting fields that read like keys (`base_key`, `material_key`, `gem_key`, a recipe's `skill`, `crafted_item_key`, and an input's `key`): the data already writes them as `core:<category>/<key>`. A typo that is not even shaped like a reference fails the schema, and a well-shaped one fails gate 1 or the per-collection check.
 
 Free text stays free where it is not a key: a modifier `target` (`hp_max`, `melee_damage`), an effect `parameter` (a skill, attribute, or condition named by the effect), labels, and descriptions. [A]
 
