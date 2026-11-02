@@ -13,7 +13,7 @@ Roadmap: [M4](../../ROADMAP.md#where-we-are). Format and rules: [README.md](READ
 Done: —
 
 #### M4-01 Economy: currency, price formula, merchants
-- Status: doing
+- Status: review
 - Priority: high
 - Needs: M1-07
 - Was: RW-20
