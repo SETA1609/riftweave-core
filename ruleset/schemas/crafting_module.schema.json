@@ -1,0 +1,116 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Crafting module",
+  "description": "Rows of the crafting module (docs/modules/crafting.md): stations, the quality rules, and recipes. A file holds one or more of the three.",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "stations": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/station" }
+    },
+    "quality": { "$ref": "#/definitions/quality" },
+    "crafting_recipes": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/recipe" }
+    }
+  },
+  "anyOf": [{ "required": ["stations"] }, { "required": ["quality"] }, { "required": ["crafting_recipes"] }],
+  "additionalProperties": false,
+  "definitions": {
+    "coreRef": {
+      "type": "string",
+      "pattern": "^core:[a-z_]+/[a-z0-9_]+$",
+      "description": "A namespaced reference to a core row (docs/core/keys.md)."
+    },
+    "stationRef": {
+      "type": "string",
+      "pattern": "^module:crafting/station/[a-z_][a-z0-9_]*$"
+    },
+    "station": {
+      "type": "object",
+      "properties": {
+        "id": { "$ref": "schema.json#/definitions/entryId" },
+        "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
+        "label": { "type": "string" },
+        "description": { "type": "string" },
+        "skill_bonus": { "type": "integer", "description": "Added to the check target, in percentage points." },
+        "max_grade": { "$ref": "schema.json#/definitions/qualityGrade", "description": "Highest grade this station can produce." },
+        "time_percent": { "type": "integer", "minimum": 1, "description": "Percent of a recipe's hours this station takes." },
+        "counts_as": {
+          "type": "array",
+          "description": "Other stations this one also serves as.",
+          "items": { "$ref": "#/definitions/stationRef" }
+        }
+      },
+      "required": ["id", "key", "label", "description", "skill_bonus", "max_grade", "time_percent", "counts_as"],
+      "additionalProperties": false
+    },
+    "quality": {
+      "type": "object",
+      "properties": {
+        "grades": {
+          "type": "array",
+          "description": "The ladder, lowest first. Its order is the index the grade formula returns.",
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "properties": {
+              "grade": { "$ref": "schema.json#/definitions/qualityGrade" },
+              "value_percent": { "type": "integer", "minimum": 1, "description": "Price multiplier for the economy, percent of the common price." }
+            },
+            "required": ["grade", "value_percent"],
+            "additionalProperties": false
+          }
+        },
+        "base_grade": { "$ref": "schema.json#/definitions/qualityGrade", "description": "Grade at margin 0, no crit." },
+        "grade_index": { "description": "Reads vars base, margin, crit_bonus.", "$ref": "schema.json#/definitions/formulaNode" },
+        "hours": { "description": "Reads vars hours, time_percent.", "$ref": "schema.json#/definitions/formulaNode" },
+        "min_hours": { "type": "integer", "minimum": 1 },
+        "fail_loss_percent": { "type": "integer", "minimum": 0, "maximum": 100, "description": "Share of the inputs a plain failure consumes. A fumble consumes all." }
+      },
+      "required": ["grades", "base_grade", "grade_index", "hours", "min_hours", "fail_loss_percent"],
+      "additionalProperties": false
+    },
+    "recipe": {
+      "type": "object",
+      "properties": {
+        "id": { "$ref": "schema.json#/definitions/entryId" },
+        "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
+        "label": { "type": "string" },
+        "description": { "type": "string" },
+        "skill": { "$ref": "#/definitions/coreRef", "description": "core:skill/<key> of the check." },
+        "station": { "$ref": "#/definitions/stationRef" },
+        "difficulty": { "type": "integer", "minimum": 0, "maximum": 80, "description": "Subtracted from the check target, in percentage points." },
+        "time": { "type": "integer", "minimum": 1, "description": "Hours at a station with time_percent 100." },
+        "inputs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "properties": {
+              "item": { "$ref": "#/definitions/coreRef" },
+              "quantity": { "type": "integer", "minimum": 1 }
+            },
+            "required": ["item", "quantity"],
+            "additionalProperties": false
+          }
+        },
+        "output": {
+          "type": "object",
+          "properties": {
+            "item": { "$ref": "#/definitions/coreRef", "description": "The core item made." },
+            "material": { "$ref": "#/definitions/coreRef", "description": "core:material/<key> for gear; absent for consumables." },
+            "quantity": { "type": "integer", "minimum": 1 }
+          },
+          "required": ["item", "quantity"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["id", "key", "label", "description", "skill", "station", "difficulty", "time", "inputs", "output"],
+      "additionalProperties": false
+    }
+  }
+}
