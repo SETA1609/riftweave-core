@@ -65,6 +65,20 @@ issue settles them.
   have been a breaking key change for no gain.
 - The audit is a separate script, not part of `validate.py`, so it can land without
   touching the validator while M1-06 changes it. Folding it into `validate.py` is M5-08.
+### 2026-11-02: One vector test and a kernel checklist (M1-07)
+
+- `ruleset/scripts/test_vectors.py` globs `ruleset/tests/vectors/*.json`; a vector's function
+  is its `function` field or the file name. The reference runners live in
+  `ruleset/scripts/kernel_reference.py`, one per kernel function.
+- The checklist of kernel functions is the table in `docs/core/vectors.md`, and the test reads
+  it, so the doc and the test cannot disagree. A row is `covered` or `pending <issue>`.
+- Progression stays `pending M1-03`: it has no data yet, and writing its vectors here would do
+  M1-03's work against prose that M1-03 replaces. Risk: the M1-07 "no function without a
+  vector" check holds for five of six functions until M1-03 merges.
+- The modifier vectors cover only `add`, `mul`, and same-source duplicates. The order of
+  `set`, `grant`, and `resist`, and whether two `mul` from different sources multiply or add,
+  is open for M1-05; the reference multiplies [A].
+
 ### 2026-11-02: Factions and reputation module (POST-05)
 
 - Reputation is one signed integer per faction on the actor (`reputation[faction ref]`),

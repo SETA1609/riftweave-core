@@ -1,0 +1,26 @@
+[
+  {
+    "name": "ap tree, agi 6",
+    "formula": "ap",
+    "actor": { "attributes": { "agi": 6 } },
+    "expect": { "value": 4 }
+  },
+  {
+    "name": "ap tree, agi 5, div floors",
+    "formula": "ap",
+    "actor": { "attributes": { "agi": 5 } },
+    "expect": { "value": 3 }
+  },
+  {
+    "name": "inline tree, str 7 times 10 minus 5",
+    "expr": {
+      "op": "sub",
+      "args": [
+        { "op": "mul", "args": [{ "attr": "str" }, { "lit": 10 }] },
+        { "lit": 5 }
+      ]
+    },
+    "actor": { "attributes": { "str": 7 } },
+    "expect": { "value": 65 }
+  }
+]

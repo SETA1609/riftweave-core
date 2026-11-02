@@ -1,0 +1,19 @@
+[
+  {
+    "name": "derived.md example, level 1, no modifiers",
+    "function": "derived",
+    "actor": { "attributes": { "end": 5, "int": 4, "agi": 6, "str": 7, "per": 5 }, "level": 1 },
+    "modifiers": [],
+    "expect": { "hp": 59, "mp": 34, "ap": 4, "carry": 95, "initiative": 5 }
+  },
+  {
+    "name": "perk tough adds 8 hp, two copies do not stack",
+    "function": "derived",
+    "actor": { "attributes": { "end": 5 }, "level": 1 },
+    "modifiers": [
+      { "target": "hp", "op": "add", "value": 8, "source": "perk:tough" },
+      { "target": "hp", "op": "add", "value": 8, "source": "perk:tough" }
+    ],
+    "expect": { "hp": 67 }
+  }
+]
