@@ -1,0 +1,143 @@
+{
+  "$schema": "../../../schemas/faction.schema.json",
+  "factions": [
+    {
+      "id": 1,
+      "key": "lantern_wardens",
+      "label": "Lantern Wardens",
+      "description": "The city watch. They keep the lamps lit and the roads open, and remember who broke the peace.",
+      "reputation_min": -100,
+      "reputation_max": 100,
+      "reputation_start": 0,
+      "standings": [
+        { "key": "hostile", "label": "Hostile", "min_reputation": -100, "modifiers": [
+          { "target": "lantern_wardens_hostile", "op": "grant", "value": 1, "duration": "while_applied", "source": "faction_standing:lantern_wardens" },
+          { "target": "persuasion", "op": "add", "value": -10, "duration": "while_applied", "source": "faction_standing:lantern_wardens" }
+        ] },
+        { "key": "unfriendly", "label": "Unfriendly", "min_reputation": -50, "modifiers": [
+          { "target": "persuasion", "op": "add", "value": -5, "duration": "while_applied", "source": "faction_standing:lantern_wardens" }
+        ] },
+        { "key": "neutral", "label": "Neutral", "min_reputation": -10, "modifiers": [] },
+        { "key": "friendly", "label": "Friendly", "min_reputation": 10, "modifiers": [
+          { "target": "persuasion", "op": "add", "value": 5, "duration": "while_applied", "source": "faction_standing:lantern_wardens" }
+        ] },
+        { "key": "honored", "label": "Honored", "min_reputation": 50, "modifiers": [
+          { "target": "persuasion", "op": "add", "value": 10, "duration": "while_applied", "source": "faction_standing:lantern_wardens" },
+          { "target": "intimidation", "op": "add", "value": 5, "duration": "while_applied", "source": "faction_standing:lantern_wardens" },
+          { "target": "lantern_wardens_safe_passage", "op": "grant", "value": 1, "duration": "while_applied", "source": "faction_standing:lantern_wardens" }
+        ] }
+      ],
+      "ranks": [
+        { "key": "recruit", "label": "Recruit", "min_reputation": 10, "modifiers": [
+          { "target": "lantern_wardens_member", "op": "grant", "value": 1, "duration": "while_applied", "source": "faction_rank:lantern_wardens" }
+        ] },
+        { "key": "sergeant", "label": "Sergeant", "min_reputation": 35, "modifiers": [
+          { "target": "lantern_wardens_member", "op": "grant", "value": 1, "duration": "while_applied", "source": "faction_rank:lantern_wardens" },
+          { "target": "intimidation", "op": "add", "value": 5, "duration": "while_applied", "source": "faction_rank:lantern_wardens" }
+        ] },
+        { "key": "captain", "label": "Captain", "min_reputation": 70, "modifiers": [
+          { "target": "lantern_wardens_member", "op": "grant", "value": 1, "duration": "while_applied", "source": "faction_rank:lantern_wardens" },
+          { "target": "intimidation", "op": "add", "value": 10, "duration": "while_applied", "source": "faction_rank:lantern_wardens" },
+          { "target": "insight", "op": "add", "value": 5, "duration": "while_applied", "source": "faction_rank:lantern_wardens" }
+        ] }
+      ],
+      "relations": [
+        { "faction": "module:factions/faction/ashen_circle", "share_percent": -50 }
+      ],
+      "reputation_events": [
+        { "key": "contract_completed", "label": "Contract completed", "delta": 15 },
+        { "key": "crime_witnessed", "label": "Crime witnessed", "delta": -10 },
+        { "key": "member_killed", "label": "Member killed", "delta": -40 }
+      ]
+    },
+    {
+      "id": 2,
+      "key": "ashen_circle",
+      "label": "Ashen Circle",
+      "description": "A cabal of black-magic scholars who trade in forbidden lore and the silence of their members.",
+      "reputation_min": -100,
+      "reputation_max": 100,
+      "reputation_start": 0,
+      "standings": [
+        { "key": "hostile", "label": "Hostile", "min_reputation": -100, "modifiers": [
+          { "target": "ashen_circle_hostile", "op": "grant", "value": 1, "duration": "while_applied", "source": "faction_standing:ashen_circle" },
+          { "target": "deception", "op": "add", "value": -10, "duration": "while_applied", "source": "faction_standing:ashen_circle" }
+        ] },
+        { "key": "unfriendly", "label": "Unfriendly", "min_reputation": -50, "modifiers": [
+          { "target": "deception", "op": "add", "value": -5, "duration": "while_applied", "source": "faction_standing:ashen_circle" }
+        ] },
+        { "key": "neutral", "label": "Neutral", "min_reputation": -10, "modifiers": [] },
+        { "key": "friendly", "label": "Friendly", "min_reputation": 10, "modifiers": [
+          { "target": "deception", "op": "add", "value": 5, "duration": "while_applied", "source": "faction_standing:ashen_circle" }
+        ] },
+        { "key": "honored", "label": "Honored", "min_reputation": 50, "modifiers": [
+          { "target": "deception", "op": "add", "value": 10, "duration": "while_applied", "source": "faction_standing:ashen_circle" },
+          { "target": "stealth", "op": "add", "value": 5, "duration": "while_applied", "source": "faction_standing:ashen_circle" }
+        ] }
+      ],
+      "ranks": [
+        { "key": "initiate", "label": "Initiate", "min_reputation": 15, "modifiers": [
+          { "target": "ashen_circle_member", "op": "grant", "value": 1, "duration": "while_applied", "source": "faction_rank:ashen_circle" }
+        ] },
+        { "key": "adept", "label": "Adept", "min_reputation": 45, "modifiers": [
+          { "target": "ashen_circle_member", "op": "grant", "value": 1, "duration": "while_applied", "source": "faction_rank:ashen_circle" },
+          { "target": "black_magic", "op": "add", "value": 5, "duration": "while_applied", "source": "faction_rank:ashen_circle" }
+        ] },
+        { "key": "magister", "label": "Magister", "min_reputation": 80, "modifiers": [
+          { "target": "ashen_circle_member", "op": "grant", "value": 1, "duration": "while_applied", "source": "faction_rank:ashen_circle" },
+          { "target": "black_magic", "op": "add", "value": 10, "duration": "while_applied", "source": "faction_rank:ashen_circle" },
+          { "target": "lore", "op": "add", "value": 5, "duration": "while_applied", "source": "faction_rank:ashen_circle" }
+        ] }
+      ],
+      "relations": [
+        { "faction": "module:factions/faction/lantern_wardens", "share_percent": -50 }
+      ],
+      "reputation_events": [
+        { "key": "ritual_completed", "label": "Ritual completed", "delta": 20 },
+        { "key": "secret_betrayed", "label": "Secret betrayed", "delta": -50 }
+      ]
+    },
+    {
+      "id": 3,
+      "key": "gilded_ledger",
+      "label": "Gilded Ledger",
+      "description": "A merchant guild that lends, insures, and keeps accounts on everyone who trades in the city.",
+      "reputation_min": -100,
+      "reputation_max": 100,
+      "reputation_start": 0,
+      "standings": [
+        { "key": "hostile", "label": "Hostile", "min_reputation": -100, "modifiers": [
+          { "target": "gilded_ledger_hostile", "op": "grant", "value": 1, "duration": "while_applied", "source": "faction_standing:gilded_ledger" },
+          { "target": "persuasion", "op": "add", "value": -10, "duration": "while_applied", "source": "faction_standing:gilded_ledger" }
+        ] },
+        { "key": "unfriendly", "label": "Unfriendly", "min_reputation": -50, "modifiers": [
+          { "target": "persuasion", "op": "add", "value": -5, "duration": "while_applied", "source": "faction_standing:gilded_ledger" }
+        ] },
+        { "key": "neutral", "label": "Neutral", "min_reputation": -10, "modifiers": [] },
+        { "key": "friendly", "label": "Friendly", "min_reputation": 10, "modifiers": [
+          { "target": "persuasion", "op": "add", "value": 5, "duration": "while_applied", "source": "faction_standing:gilded_ledger" }
+        ] },
+        { "key": "honored", "label": "Honored", "min_reputation": 50, "modifiers": [
+          { "target": "persuasion", "op": "add", "value": 10, "duration": "while_applied", "source": "faction_standing:gilded_ledger" },
+          { "target": "gilded_ledger_credit", "op": "grant", "value": 1, "duration": "while_applied", "source": "faction_standing:gilded_ledger" }
+        ] }
+      ],
+      "ranks": [
+        { "key": "associate", "label": "Associate", "min_reputation": 10, "modifiers": [
+          { "target": "gilded_ledger_member", "op": "grant", "value": 1, "duration": "while_applied", "source": "faction_rank:gilded_ledger" }
+        ] },
+        { "key": "factor", "label": "Factor", "min_reputation": 40, "modifiers": [
+          { "target": "gilded_ledger_member", "op": "grant", "value": 1, "duration": "while_applied", "source": "faction_rank:gilded_ledger" },
+          { "target": "investigation", "op": "add", "value": 5, "duration": "while_applied", "source": "faction_rank:gilded_ledger" }
+        ] }
+      ],
+      "relations": [
+        { "faction": "module:factions/faction/lantern_wardens", "share_percent": 25 }
+      ],
+      "reputation_events": [
+        { "key": "debt_repaid", "label": "Debt repaid", "delta": 10 },
+        { "key": "contract_broken", "label": "Contract broken", "delta": -25 }
+      ]
+    }
+  ]
+}

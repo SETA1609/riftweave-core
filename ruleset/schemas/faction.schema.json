@@ -1,0 +1,101 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Faction",
+  "description": "A faction from the factions module (docs/modules/factions.md). Reputation is one integer per faction on the actor. Standing and rank are functions of it; their effects are contract modifiers. Referenced as module:factions/faction/<key>.",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "factions": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/faction" }
+    }
+  },
+  "required": ["factions"],
+  "additionalProperties": false,
+  "definitions": {
+    "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
+    "factionRef": {
+      "type": "string",
+      "pattern": "^module:[a-z][a-z0-9_]*/faction/[a-z_][a-z0-9_]*$",
+      "description": "Namespaced faction ref, e.g. module:factions/faction/lantern_wardens."
+    },
+    "standingModifier": {
+      "description": "A contract modifier emitted while this standing holds. Every standing of one faction uses source faction_standing:<faction key>, so a new standing replaces the old bundle.",
+      "allOf": [
+        { "$ref": "schema.json#/definitions/modifier" },
+        { "properties": { "source": { "pattern": "^faction_standing:[a-z_][a-z0-9_]*$" } } }
+      ]
+    },
+    "rankModifier": {
+      "description": "A contract modifier emitted while this rank is held and not suspended. Every rank of one faction uses source faction_rank:<faction key>.",
+      "allOf": [
+        { "$ref": "schema.json#/definitions/modifier" },
+        { "properties": { "source": { "pattern": "^faction_rank:[a-z_][a-z0-9_]*$" } } }
+      ]
+    },
+    "standing": {
+      "type": "object",
+      "description": "A named reputation band. The standing is the last row whose min_reputation <= reputation.",
+      "properties": {
+        "key": { "$ref": "#/definitions/key" },
+        "label": { "type": "string" },
+        "min_reputation": { "type": "integer", "description": "Inclusive lower bound. The first row equals the faction's reputation_min." },
+        "modifiers": { "type": "array", "items": { "$ref": "#/definitions/standingModifier" } }
+      },
+      "required": ["key", "label", "min_reputation", "modifiers"],
+      "additionalProperties": false
+    },
+    "rank": {
+      "type": "object",
+      "description": "A membership rank, lowest first. Held by event; suspended (no modifiers) while reputation is below min_reputation.",
+      "properties": {
+        "key": { "$ref": "#/definitions/key" },
+        "label": { "type": "string" },
+        "min_reputation": { "type": "integer", "description": "Reputation needed to be promoted to, and to keep the benefits of, this rank." },
+        "modifiers": { "type": "array", "items": { "$ref": "#/definitions/rankModifier" }, "description": "The whole bundle for this rank. Ranks do not accumulate." }
+      },
+      "required": ["key", "label", "min_reputation", "modifiers"],
+      "additionalProperties": false
+    },
+    "relation": {
+      "type": "object",
+      "description": "A one-hop spillover. A change of delta here changes the related faction by trunc(delta * share_percent / 100), toward zero.",
+      "properties": {
+        "faction": { "$ref": "#/definitions/factionRef" },
+        "share_percent": { "type": "integer", "minimum": -100, "maximum": 100 }
+      },
+      "required": ["faction", "share_percent"],
+      "additionalProperties": false
+    },
+    "reputationEvent": {
+      "type": "object",
+      "description": "A default reputation delta a consumer may emit for this faction.",
+      "properties": {
+        "key": { "$ref": "#/definitions/key" },
+        "label": { "type": "string" },
+        "delta": { "type": "integer" }
+      },
+      "required": ["key", "label", "delta"],
+      "additionalProperties": false
+    },
+    "faction": {
+      "type": "object",
+      "properties": {
+        "id": { "$ref": "schema.json#/definitions/entryId" },
+        "key": { "$ref": "#/definitions/key" },
+        "label": { "type": "string" },
+        "description": { "type": "string" },
+        "source": { "$ref": "schema.json#/definitions/sourceRef" },
+        "reputation_min": { "type": "integer", "default": -100 },
+        "reputation_max": { "type": "integer", "default": 100 },
+        "reputation_start": { "type": "integer", "default": 0, "description": "Reputation of an actor with no entry for this faction." },
+        "standings": { "type": "array", "minItems": 1, "items": { "$ref": "#/definitions/standing" } },
+        "ranks": { "type": "array", "items": { "$ref": "#/definitions/rank" } },
+        "relations": { "type": "array", "items": { "$ref": "#/definitions/relation" } },
+        "reputation_events": { "type": "array", "items": { "$ref": "#/definitions/reputationEvent" } }
+      },
+      "required": ["id", "key", "label", "description", "standings"],
+      "additionalProperties": false
+    }
+  }
+}

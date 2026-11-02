@@ -1,0 +1,17 @@
+{
+  "$schema": "../../schemas/module.manifest.schema.json",
+  "id": "factions",
+  "version": "0.1.0",
+  "description": "Factions and reputation. One reputation integer per faction on the actor; standings and ranks are functions of it and emit contract modifiers. See docs/modules/factions.md.",
+  "author": "Riftweave Core Team",
+  "requires": [],
+  "extends": {
+    "collections": [
+      "factions"
+    ]
+  },
+  "data": [
+    "data/factions.json"
+  ],
+  "schemas": []
+}

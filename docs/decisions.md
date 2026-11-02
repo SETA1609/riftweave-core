@@ -65,6 +65,20 @@ issue settles them.
   have been a breaking key change for no gain.
 - The audit is a separate script, not part of `validate.py`, so it can land without
   touching the validator while M1-06 changes it. Folding it into `validate.py` is M5-08.
+### 2026-11-02: Factions and reputation module (POST-05)
+
+- Reputation is one signed integer per faction on the actor (`reputation[faction ref]`),
+  bounded by the faction row. It is primary state, like XP. Standing, promotion
+  eligibility, and the emitted modifiers are recomputed from it, never stored.
+- Rank is held state written by a consumer event (join, promote, expel), not computed from
+  reputation, so quests can gate promotion. A held rank below its `min_reputation` is
+  suspended: it emits nothing until reputation recovers.
+- Every standing of a faction shares the source `faction_standing:<key>`, every rank
+  `faction_rank:<key>`. The kernel's same-source rule then replaces the old bundle when the
+  standing changes; no second stacking rule. The schema enforces the prefix.
+- Spillover to related factions is one hop, `trunc(delta * share_percent / 100)` toward
+  zero, from the unclamped delta. One hop keeps it loop-free.
+- No price or barter modifiers until the economy issue (M4) defines a target for them.
 
 ### 2026-11-01: Story-scoped issue IDs and a computed order (M5-01)
 
@@ -120,6 +134,16 @@ issue settles them.
   compare (margin against margin, ties) is not specified
   ([checks.md](core/checks.md)). Decide with the casting and combat contest rules in M3.
 
+- **Faction cross-row rules in the validator.** Band order, the source key matching the
+  faction, and relation targets are checked by `faction_reference.py`, not `validate.py`
+  (POST-05). Move them into the integrity gates
+  ([M5-08](stories/05-release.md#m5-08-integrity-gates)) or a module-aware check.
+- **Module ref spelling.** `docs/core/keys.md` writes a module key as `mod:copper_fiber`;
+  `AGENTS.md` and `validate.py` use `module:<module>/<category>/<key>`. POST-05 uses the
+  latter (`module:factions/faction/lantern_wardens`). One of the two docs should change.
+- **Modifier `duration` vocabulary.** The contract lists `turns | uses | while_equipped |
+  permanent`; conditions and factions use `while_applied`. The schema leaves `duration` a
+  free string.
 - **Traits versus features.** Whether creation traits stay a `features` type or become
   their own table ([M1-06](stories/01-kernel.md#m1-06-resolve-the-traits-vs-features-fork)).
 - **Casting scope.** What the core casting procedure includes and what is a module
@@ -133,6 +157,13 @@ issue settles them.
 
 ## Risks
 
+- **Two stacking implementations.** `faction_reference.py` carries a small
+  `apply_modifiers` for its stacking vectors. When M1-05 lands the shared stacking
+  reference, the factions reference should call it instead (POST-05).
+- **Module vectors live in the module.** The factions vectors are in
+  `ruleset/modules/factions/tests/vectors.json`, run by `test_faction_reference.py`, not in
+  `ruleset/tests/vectors/`: the core runner (M1-07) checks only kernel functions against the
+  checklist in `docs/core/vectors.md`. [V 2026-11-02] (POST-05)
 - **Silent cross-reference breaks.** Refs are strings. `validate.py` checks most namespaced
   refs, but not every category yet
   ([M5-08](stories/05-release.md#m5-08-integrity-gates)).

@@ -74,7 +74,7 @@ is the earliest wave of its open issues; stories in the same wave can run in par
 | 1 | M3 | blocked, critical | M1 | 4 |
 | 1 | M4 | blocked | M1 | 5 |
 | 0 | M5 | ready, critical | M1, M2, M3, M4 | 7 |
-| 0 | POST | ready | M1, M3 | 8 |
+| 1 | POST | blocked | M1, M3 | 7 |
 
 <!-- roadmap-order end -->
 
