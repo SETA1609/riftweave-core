@@ -1,0 +1,178 @@
+[
+  {
+    "name": "xp to reach level 1",
+    "op": "xp",
+    "level": 1,
+    "expect": {
+      "xp_total": 0,
+      "xp_step": null
+    }
+  },
+  {
+    "name": "xp to reach level 2",
+    "op": "xp",
+    "level": 2,
+    "expect": {
+      "xp_total": 900,
+      "xp_step": 900
+    }
+  },
+  {
+    "name": "xp to reach level 10",
+    "op": "xp",
+    "level": 10,
+    "expect": {
+      "xp_total": 40500,
+      "xp_step": 8100
+    }
+  },
+  {
+    "name": "xp to reach level 30",
+    "op": "xp",
+    "level": 30,
+    "expect": {
+      "xp_total": 391500,
+      "xp_step": 26100
+    }
+  },
+  {
+    "name": "level from xp: just below level 2",
+    "op": "level",
+    "xp": 899,
+    "expect": {
+      "level": 1
+    }
+  },
+  {
+    "name": "level from xp: exactly level 2",
+    "op": "level",
+    "xp": 900,
+    "expect": {
+      "level": 2
+    }
+  },
+  {
+    "name": "level from xp: capped at 30",
+    "op": "level",
+    "xp": 10000000,
+    "expect": {
+      "level": 30
+    }
+  },
+  {
+    "name": "level-up pool: int 5, luck roll 0",
+    "op": "level_up",
+    "actor": {
+      "attributes": {
+        "int": 5,
+        "lck": 4
+      }
+    },
+    "luck_roll": 0,
+    "expect": {
+      "skill_points": 15,
+      "perks": 1
+    }
+  },
+  {
+    "name": "level-up pool: luck roll at the LCK ceiling",
+    "op": "level_up",
+    "actor": {
+      "attributes": {
+        "int": 5,
+        "lck": 4
+      }
+    },
+    "luck_roll": 4,
+    "expect": {
+      "skill_points": 19,
+      "perks": 1
+    }
+  },
+  {
+    "name": "level-up pool: luck roll above LCK is rejected",
+    "op": "level_up",
+    "actor": {
+      "attributes": {
+        "int": 5,
+        "lck": 4
+      }
+    },
+    "luck_roll": 5,
+    "expect": {
+      "error": "luck_roll out of range"
+    }
+  },
+  {
+    "name": "spend on a normal skill: 2 points per rating",
+    "op": "spend",
+    "skill": 40,
+    "tagged": false,
+    "points": 10,
+    "expect": {
+      "ranks": 5,
+      "spent": 10,
+      "left": 0
+    }
+  },
+  {
+    "name": "spend on a normal skill: odd point stays",
+    "op": "spend",
+    "skill": 40,
+    "tagged": false,
+    "points": 9,
+    "expect": {
+      "ranks": 4,
+      "spent": 8,
+      "left": 1
+    }
+  },
+  {
+    "name": "spend on a tag skill: 1 point per rating",
+    "op": "spend",
+    "skill": 40,
+    "tagged": true,
+    "points": 10,
+    "expect": {
+      "ranks": 10,
+      "spent": 10,
+      "left": 0
+    }
+  },
+  {
+    "name": "tag skill stops at the cap of 100",
+    "op": "spend",
+    "skill": 97,
+    "tagged": true,
+    "points": 10,
+    "expect": {
+      "ranks": 3,
+      "spent": 3,
+      "left": 7
+    }
+  },
+  {
+    "name": "normal skill stops at the cap of 100",
+    "op": "spend",
+    "skill": 99,
+    "tagged": false,
+    "points": 10,
+    "expect": {
+      "ranks": 1,
+      "spent": 2,
+      "left": 8
+    }
+  },
+  {
+    "name": "skill already at the cap buys nothing",
+    "op": "spend",
+    "skill": 100,
+    "tagged": true,
+    "points": 5,
+    "expect": {
+      "ranks": 0,
+      "spent": 0,
+      "left": 5
+    }
+  }
+]

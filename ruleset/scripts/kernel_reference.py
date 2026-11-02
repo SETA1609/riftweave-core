@@ -88,14 +88,16 @@ def run_derived(vector):
     return result
 
 
-def evaluate_formula(node, attributes):
-    """Evaluate a formula tree: lit, attr, and the ops add, sub, mul, div (floor)."""
+def evaluate_formula(node, attributes, variables=None):
+    """Evaluate a formula tree: lit, attr, var, and the ops add, sub, mul, div (floor)."""
     if "lit" in node:
         return node["lit"]
     if "attr" in node:
         return attributes[node["attr"]]
+    if "var" in node:
+        return (variables or {})[node["var"]]
     op = node["op"]
-    args = [evaluate_formula(arg, attributes) for arg in node["args"]]
+    args = [evaluate_formula(arg, attributes, variables) for arg in node["args"]]
     if op == "add":
         return sum(args)
     if op == "sub":
@@ -131,12 +133,48 @@ def run_actions(vector):
     return {"pool": pool, "cost": cost}
 
 
+def run_progression(vector):
+    """XP and level, one level-up pool, and spending a pool on one skill; `op` picks which."""
+    rules = load_data("progression/core.json")["progression"]
+    op = vector["op"]
+    if op == "xp":
+        level = vector["level"]
+        total = evaluate_formula(rules["xp_to_reach"], {}, {"level": level})
+        step = None
+        if level > rules["start_level"]:
+            step = total - evaluate_formula(rules["xp_to_reach"], {}, {"level": level - 1})
+        return {"xp_total": total, "xp_step": step}
+    if op == "level":
+        level = rules["start_level"]
+        while level < rules["max_level"]:
+            needed = evaluate_formula(rules["xp_to_reach"], {}, {"level": level + 1})
+            if needed > vector["xp"]:
+                break
+            level += 1
+        return {"level": level}
+    if op == "level_up":
+        attributes = vector["actor"]["attributes"]
+        luck_roll = vector["luck_roll"]
+        ceiling = attributes[rules["luck_roll"]["max_attr"]]
+        if not rules["luck_roll"]["min"] <= luck_roll <= ceiling:
+            return {"error": "luck_roll out of range"}
+        points = evaluate_formula(rules["skill_points"], attributes, {"luck_roll": luck_roll})
+        return {"skill_points": points, "perks": rules["perks_per_level"]}
+    if op == "spend":
+        cost = rules["skill_cost"]["tag" if vector["tagged"] else "normal"]
+        room = rules["skill_cap"] - vector["skill"]
+        ranks = min(vector["points"] // cost, max(room, 0))
+        return {"ranks": ranks, "spent": ranks * cost, "left": vector["points"] - ranks * cost}
+    raise ValueError(f"progression op {op!r} is not defined")
+
+
 RUNNERS = {
     "resolution": run_resolution,
     "derived": run_derived,
     "formula": run_formula,
     "modifiers": run_modifiers,
     "actions": run_actions,
+    "progression": run_progression,
 }
 
 

@@ -7,6 +7,21 @@ issue settles them.
 
 ## Decided
 
+### 2026-11-02: Progression is data and formula trees (M1-03)
+
+- **Decision:** `ruleset/data/progression/core.json` holds the level and skill caps, the XP
+  and skill-point formulas as trees, the tag-skill cost ratio, and the perk cadence. The
+  formula AST gains a `var` leaf for named inputs (`level`, `luck_roll`), and `schema.json`
+  gains `formulaNode`. The luck roll is an input, so vectors pin it. Spec:
+  `docs/core/progression.md`.
+- **Why:** the numbers were prose in `docs/modules/progression.md`, which a second
+  implementation cannot read.
+- **Open:** a character gets a skill-point pool at level 1 as well as at each level-up
+  (30 pools by level 30) **[A]**. Points that cannot buy a whole rating stay in the pool
+  **[A]**. `CLAUDE.md` says tag skills get "+2 per point instead of +1"; the module doc says
+  2:1 cost. Same ratio, so the data uses cost. Breakthrough bonuses and stamina growth are
+  not in the data.
+
 ### 2026-11-02: The rebase keeps both sides of decision-log additions (M5-10)
 
 - `docs/decisions.md` is in `keep-both-added-lines`: when two open PRs each add a section at

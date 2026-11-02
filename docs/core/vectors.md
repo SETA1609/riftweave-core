@@ -37,6 +37,7 @@ The other fields are the input the function reads. They are listed per function 
 | `formula` | `formula` (a key in `ruleset/data/formulas/`) or `expr` (an inline tree), `actor.attributes` | `value` |
 | `modifiers` | `value`, `modifiers` | `value` |
 | `actions` | `actor.attributes`, `actions` (a list of action keys) | `pool`, `cost` |
+| `progression` | `op`: `xp` (`level`), `level` (`xp`), `level_up` (`actor.attributes`, `luck_roll`), `spend` (`skill`, `tagged`, `points`) | `xp_total`, `xp_step`; `level`; `skill_points`, `perks` (or `error`); `ranks`, `spent`, `left` |
 
 Coefficients come from `ruleset/data/`, not from the vector, so a data change that breaks a rule fails a vector.
 
@@ -59,6 +60,6 @@ Every kernel function and the vector file that covers it. The test reads this ta
 | `formula` | `formula.json` | covered |
 | `modifiers` | `modifiers.json` | covered |
 | `actions` | `actions.json` | covered |
-| `progression` | `progression.json` | pending M1-03 |
+| `progression` | `progression.json` | covered |
 
-Progression has no data yet; XP, skill points, and perk cadence are still prose in `docs/modules/progression.md`. M1-03 moves them to data and adds the vectors. The modifier vectors here cover `add`, `mul`, and same-source duplicates; M1-05 adds `set`, `grant`, `resist`, expiry, and conditions.
+The modifier vectors here cover `add`, `mul`, and same-source duplicates; M1-05 adds `set`, `grant`, `resist`, expiry, and conditions.
