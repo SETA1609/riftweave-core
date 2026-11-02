@@ -63,7 +63,7 @@ Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02 ([done.md](done.md#m5-releas
 - Done when: README tree, AGENTS, and CONTRIBUTING match the repo; authority order is written down once; historical files are moved under `docs/archive/` with a note.
 
 #### M5-07 Key stability and versioning policy
-- Status: doing
+- Status: review
 - Priority: high
 - Needs: —
 - Was: RW-28
