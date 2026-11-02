@@ -59,6 +59,6 @@ Every kernel function and the vector file that covers it. The test reads this ta
 | `formula` | `formula.json` | covered |
 | `modifiers` | `modifiers.json` | covered |
 | `actions` | `actions.json` | covered |
-| `progression` | `progression.json` | pending M1-03 |
+| `progression` | `progression.json` | covered |
 
-Progression has no data yet; XP, skill points, and perk cadence are still prose in `docs/modules/progression.md`. M1-03 moves them to data and adds the vectors. The modifier vectors here cover `add`, `mul`, and same-source duplicates; M1-05 adds `set`, `grant`, `resist`, expiry, and conditions.
+The modifier vectors here cover `add`, `mul`, and same-source duplicates; M1-05 adds `set`, `grant`, `resist`, expiry, and conditions.
