@@ -208,6 +208,74 @@
         "source"
       ],
       "additionalProperties": false
+    },
+    "formulaNode": {
+      "description": "A formula tree node (docs/core/formula.md): a leaf (lit, attr, var) or an op over args. Integer only.",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "lit": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "lit"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "attr": {
+              "$ref": "#/definitions/ability"
+            }
+          },
+          "required": [
+            "attr"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "var": {
+              "type": "string",
+              "pattern": "^[a-z_][a-z0-9_]*$"
+            }
+          },
+          "required": [
+            "var"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "op": {
+              "type": "string",
+              "enum": [
+                "add",
+                "sub",
+                "mul",
+                "div"
+              ]
+            },
+            "args": {
+              "type": "array",
+              "minItems": 2,
+              "items": {
+                "$ref": "#/definitions/formulaNode"
+              }
+            }
+          },
+          "required": [
+            "op",
+            "args"
+          ],
+          "additionalProperties": false
+        }
+      ]
     }
   }
 }

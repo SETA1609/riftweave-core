@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Progression",
+  "description": "XP, skill points, perk cadence, and the level and skill caps. Formulas are trees (docs/core/formula.md); the luck roll is an input, not a roll.",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "progression": { "$ref": "#/definitions/progression" }
+  },
+  "required": ["progression"],
+  "additionalProperties": false,
+  "definitions": {
+    "progression": {
+      "type": "object",
+      "properties": {
+        "start_level": { "type": "integer", "minimum": 1 },
+        "max_level": { "type": "integer", "minimum": 1 },
+        "skill_cap": { "type": "integer", "minimum": 1 },
+        "xp_to_reach": {
+          "description": "Total XP needed for the level named by the var `level`.",
+          "$ref": "schema.json#/definitions/formulaNode"
+        },
+        "skill_points": {
+          "description": "Points in one level's pool; reads the var `luck_roll`.",
+          "$ref": "schema.json#/definitions/formulaNode"
+        },
+        "luck_roll": {
+          "type": "object",
+          "properties": {
+            "min": { "type": "integer", "minimum": 0 },
+            "max_attr": { "$ref": "schema.json#/definitions/ability" }
+          },
+          "required": ["min", "max_attr"],
+          "additionalProperties": false
+        },
+        "perks_per_level": { "type": "integer", "minimum": 0 },
+        "tag_skills": { "type": "integer", "minimum": 0 },
+        "skill_cost": {
+          "type": "object",
+          "properties": {
+            "normal": { "type": "integer", "minimum": 1 },
+            "tag": { "type": "integer", "minimum": 1 }
+          },
+          "required": ["normal", "tag"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["start_level", "max_level", "skill_cap", "xp_to_reach", "skill_points", "luck_roll", "perks_per_level", "tag_skills", "skill_cost"],
+      "additionalProperties": false
+    }
+  }
+}
