@@ -57,6 +57,16 @@
           "type": "string",
           "description": "Optional gating condition for imbalance cycles (e.g. backlash fires only when the actor's magnitude exceeds the recipient's)."
         },
+        "gate": {
+          "type": "object",
+          "description": "Machine-readable form of `condition`. When the gate fails, the cycle named by otherwise_cycle applies to the reversed pair (recipient acts on actor).",
+          "properties": {
+            "when": { "type": "string", "enum": ["actor_magnitude_exceeds_recipient"] },
+            "otherwise_cycle": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" }
+          },
+          "required": ["when", "otherwise_cycle"],
+          "additionalProperties": false
+        },
         "description": { "type": "string" },
         "edges": {
           "type": "array",
