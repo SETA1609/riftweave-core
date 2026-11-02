@@ -10,17 +10,17 @@ Roadmap: [M5](../../ROADMAP.md#where-we-are). Format and rules: [README.md](READ
 
 **Done when:** items 3, 5, 6, 7, and 8 of the [definition of finished](../../ROADMAP.md#definition-of-finished) hold, and `v1.0.0` is tagged.
 
-Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01 ([done.md](done.md#m5-release-10))
+Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02 ([done.md](done.md#m5-release-10))
 
-#### M5-02 Changelog fragments instead of CHANGELOG edits
-- Status: review
-- Priority: medium
-- Needs: M5-01
-- Do: Every PR edits `CHANGELOG.md`, so parallel PRs conflict on it (the rebase workflow only merges pure additions). Each PR adds `changes/<issue-id>.md` instead; the owner releases the fragments into `CHANGELOG.md` with `devops-tools changelog-fragments release` in a PR of its own, as in new-world.
-- Keys: `changes/<issue-id>.md`, `changes-directory` setting
-- Files: ~8 (changes/README.md, CHANGELOG.md, CONTRIBUTING.md, docs/stories/README.md, AGENTS.md, tools/devops/pyproject.toml, .github/workflows/changelog-fragments.yml)
-- See: https://github.com/SETA1609/devops_tools (changelog-fragments, reusable workflow)
-- Done when: `changes/README.md` states the rules; CI runs `changelog-fragments check --branch` on every PR through the reusable workflow at the pinned SHA; CONTRIBUTING and the stories README say to add a fragment, not a CHANGELOG line; this PR's own entry is a fragment.
+#### M5-10 Keep both sides of decision-log additions in the rebase
+- Status: doing
+- Priority: high
+- Needs: M5-02
+- Do: The rebase workflow has failed on every push to `main` since 2026-11-01: two open PRs that each add a dated section at the top of `docs/decisions.md` conflict, and the tool leaves the branch for a person. new-world has no shared append-only log, so it never hit this. Add `docs/decisions.md` to `keep-both-added-lines`, so the rebase keeps both sections like the changelog and story files. Pin devops-tools to v0.2.0, as new-world does.
+- Keys: `keep-both-added-lines` in `[tool.devops-tools]`
+- Files: ~8 (tools/devops/pyproject.toml, tools/devops/uv.lock, .github/workflows/, docs/decisions.md, AGENTS.md, CONTRIBUTING.md)
+- See: https://github.com/SETA1609/devops_tools (rebase-open-branches, `keep-both-added-lines`)
+- Done when: `keep-both-added-lines` lists `docs/decisions.md`; a local `rebase-open-branches --no-push` of two branches that both add a decision section succeeds; devops-tools, the rebase workflow, and the fragments workflow are pinned to the same v0.2.0 SHA; tooling tests pass.
 
 #### M5-03 Move the container runner, agent image, and fetch-docs to devops-tools
 - Status: todo
