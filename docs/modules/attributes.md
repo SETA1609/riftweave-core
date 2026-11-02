@@ -76,10 +76,14 @@ game picks one mode; the rest of the system is identical.
 
 Each entry lists what it **governs**, the **skills it seeds** (a skill's starting
 rating is `5 + associatedAbility × 2`), and the **resources/derived stats** it feeds.
+The **Seeds skills** lines match `associatedAbility` in `skills/core.json`
+**[V 2026-11-02]**: `ruleset/scripts/skill_audit.py` fails when they differ. What
+consumes each skill (weapon, armor, spell color, check, perk) is in
+[`docs/core/checks.md`](../core/checks.md).
 
 ### Strength (STR)
 - **Governs:** melee damage, carrying capacity, Strength-gated equipment.
-- **Seeds skills:** `blades`, `blunt`, `heavy_armor`, `athletics`.
+- **Seeds skills:** `blades`, `blunt`, `heavy_armor`, `athletics`, `blacksmithing`, `building`.
 - **Feeds:** Carry weight `25 + STR × 10`.
 
 ### Perception (PER)
@@ -89,7 +93,7 @@ rating is `5 + associatedAbility × 2`), and the **resources/derived stats** it 
 
 ### Endurance (END)
 - **Governs:** hit points, fatigue, resistance to poison and disease.
-- **Seeds skills:** `block`, `medium_armor`.
+- **Seeds skills:** `block`, `medium_armor`, `farming`.
 - **Feeds:** **Hit points** `15 + END × 8 + level × 4`; **Stamina** pool
   `15 + END × 5 + level × 2` (action-combat mode). END is the single biggest lever on
   survivability.
@@ -98,9 +102,10 @@ rating is `5 + associatedAbility × 2`), and the **resources/derived stats** it 
 - **Governs:** the **skill-point gain rate**, the **mana pool**, the **power of all
   nine magic schools**, and knowledge/tech skills. This is the magic attribute and the
   learning attribute at once — the most load-bearing stat in the system.
-- **Seeds skills:** **all nine** `<color>_magic` schools (`red` `orange` `yellow`
-  `green` `blue` `indigo` `violet` `white` `black`), plus `lore`, `investigation`,
-  `medicine`, `repair`, `alchemy`.
+- **Seeds skills:** **all nine** color schools (`red_magic`, `orange_magic`,
+  `yellow_magic`, `green_magic`, `blue_magic`, `indigo_magic`, `violet_magic`,
+  `white_magic`, `black_magic`), plus `lore`, `investigation`, `medicine`, `repair`,
+  `alchemy`, `crafting`, `enchanting`, `engineering`.
 - **Feeds:** Skill points per level `5 + INT × 2 + random(0…LCK)`; **Mana pool**
   `INT × 8 + level × 2`. INT compounds — it raises *every* future level's skill points
   on top of powering magic.
@@ -344,8 +349,8 @@ See the sample effects in `effects/core.json` and the resist/cure generalized ef
 - **Combat mode picks the third resource.** Turn-based → Action Points (AGI);
   action-combat → Stamina (END). The AP-per-turn and Stamina formulas above are
   reference values; the mode itself is a per-game choice (`progression.md` open items).
-- **INT load.** With all magic, the skill-point rate, the mana pool, and five
-  knowledge skills riding on INT, it is by far the strongest attribute for a caster.
+- **INT load.** With all magic, the skill-point rate, the mana pool, and eight
+  knowledge and craft skills riding on INT, it is by far the strongest attribute for a caster.
   A game wanting flatter builds may redistribute some knowledge skills or cap INT's
   reach; the ruleset leaves it concentrated by design.
 - **Above-10 attributes.** Racial and creation-perk stacking can exceed 10; whether a game caps

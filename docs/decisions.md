@@ -36,6 +36,19 @@ issue settles them.
   field name `traits` is unchanged, so no data key is renamed.
 - `validate.py` checks that a race's `traits` point at `racial_trait` features and that
   every core `racial_trait` is used by a race.
+### 2026-11-02: Every skill has a consumer; checks are rows (M2-02)
+
+- A skill needs a governing attribute and at least one consumer: a weapon, an armor
+  category, a spell or effect color, a check, or a perk ([checks.md](core/checks.md)).
+  Background bonuses do not count. `ruleset/scripts/skill_audit.py` enforces it.
+- Checks get their own collection, `ruleset/data/checks/core.json`. There was no row a
+  non-combat skill could be rolled through, so 18 of the 44 skills had no consumer.
+- No skill is removed. Every orphan was a skill the design docs already use (TTRPG
+  social, knowledge, and survival skills, the crafting trades, the nine color schools), so
+  each gets a check row, and `orange_magic` gets its first effect. Removing them would
+  have been a breaking key change for no gain.
+- The audit is a separate script, not part of `validate.py`, so it can land without
+  touching the validator while M1-06 changes it. Folding it into `validate.py` is M5-08.
 
 ### 2026-11-01: Story-scoped issue IDs and a computed order (M5-01)
 
@@ -87,6 +100,12 @@ issue settles them.
 
 ## Open questions
 
+- **Opposed checks.** A check row may name an `opposed_by` skill, but how two results
+  compare (margin against margin, ties) is not specified
+  ([checks.md](core/checks.md)). Decide with the casting and combat contest rules in M3.
+
+- **Traits versus features.** Whether creation traits stay a `features` type or become
+  their own table ([M1-06](stories/01-kernel.md#m1-06-resolve-the-traits-vs-features-fork)).
 - **Casting scope.** What the core casting procedure includes and what is a module
   ([M3-01](stories/03-combat-magic.md#m3-01-casting-procedure-decide-scope-then-specify)).
 - **Content floors.** The targets in [ROADMAP.md](../ROADMAP.md#definition-of-finished) are
