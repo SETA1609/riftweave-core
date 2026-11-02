@@ -43,7 +43,7 @@ Done: —
 - Done when: `ruleset/data/progression/` (or equivalent) holds the XP table and per-level gains, validated by a schema; level-up 1 to 30 has vectors, including the tag-skill and cap rules; `progression.md` becomes commentary that cites the data.
 
 #### M1-04 Rest and recovery rules as data
-- Status: todo
+- Status: doing
 - Priority: medium
 - Needs: M1-07
 - Was: RW-6
