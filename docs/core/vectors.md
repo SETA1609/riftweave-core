@@ -63,6 +63,7 @@ Every kernel function and the vector file that covers it. The test reads this ta
 | `formula` | `formula.json` | covered |
 | `modifiers` | `modifiers.json` | covered |
 | `actions` | `actions.json` | covered |
+| `wuxing` | `wuxing.json` | covered |
 | `economy` | `economy.json` | covered |
 | `rest` | `rest.json` | covered |
 | `combat` | `combat.json` | covered |
