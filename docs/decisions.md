@@ -7,6 +7,24 @@ issue settles them.
 
 ## Decided
 
+### 2026-11-02: Crafting module slice (POST-01)
+
+- **Decision:** `ruleset/modules/crafting/` ships stations, a quality ladder with two formula
+  trees (grade and hours), and 39 recipes across blacksmithing, woodworking, leatherwork,
+  jewelry, alchemy, and field cooking. One d100 check; the margin sets the grade, capped by
+  the station. Rules: `docs/modules/crafting.md`. Reference: `craft_reference.py`; vectors in
+  `ruleset/modules/crafting/tests/vectors.json`, run by `test_craft_reference.py`.
+- **Why:** crafting was design prose plus three recipe stubs with no check, time, station,
+  or quality.
+- **Open:** every number is a first choice **[U]**: the ladder's value percents, the 10-point
+  margin step, `lesser` as the bare-success grade, 50 percent loss on a plain failure. Recipes
+  name one station; `counts_as` lets a better station serve a lesser one **[A]**.
+- **Risk:** the collection is `crafting_recipes`, not `recipes`: `validate.py` treats
+  `recipes` as the core stub collection and indexes it as `core:recipe/...`. The module's
+  references are checked by `craft_reference.check_module`, not by `validate.py`. The core
+  `recipes` stubs and `crafted_items` are untouched, so the module output is an item plus
+  material and does not write a `crafted_item` row.
+
 ### 2026-11-02: Progression is data and formula trees (M1-03)
 
 - **Decision:** `ruleset/data/progression/core.json` holds the level and skill caps, the XP

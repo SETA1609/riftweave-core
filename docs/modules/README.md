@@ -78,7 +78,7 @@ Create one document per module (or per major subsystem). Use it to:
 
 | Module            | Focus                              | Likely Touch Points                     | Status   |
 |-------------------|------------------------------------|-----------------------------------------|----------|
-| Crafting          | General item creation, recipes     | New equipment types, recipes, features  | Planned  |
+| Crafting          | General item creation, recipes     | New `stations` and `crafting_recipes` collections | Shipping (`crafting.md`) |
 | Alchemy           | Potion brewing, extracts, reagents | Equipment (potions), features, skills   | Planned  |
 | Magic Crafting    | Enchanting, wondrous items, runes  | Equipment, spells, features, effects    | Planned  |
 | Advancement       | XP level-up + item-boosted breakthroughs (cores, elixirs, Wuxing) | progression, alchemy, ingredients, effects, features | In design |
