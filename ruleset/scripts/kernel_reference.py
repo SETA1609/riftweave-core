@@ -133,6 +133,49 @@ def run_actions(vector):
     return {"pool": pool, "cost": cost}
 
 
+def run_combat(vector):
+    """One attack, in the order of docs/core/combat.md. Dice and rolls are inputs."""
+    pipeline = load_data("combat/pipeline.json")["pipeline"]
+    types = {t["key"]: t for t in load_data("combat/damage_types.json")["damage_types"]}
+    attacker, defender, damage = vector["attacker"], vector["defender"], vector["damage"]
+    tags = types[damage["type"]]["tags"]
+
+    penalty = evaluate_formula(
+        pipeline["evasion"], defender["attributes"], {"evasion_skill": defender["evasion_skill"]}
+    )
+    attack = run_resolution(
+        {
+            "actor": {"skills": {"attack": attacker["skill"]}, "attributes": attacker.get("attributes", {})},
+            "modifiers": vector.get("modifiers", []) + [{"op": "add", "value": -penalty}],
+            "roll": attacker["roll"],
+        }
+    )
+    crit = "crit" in attack["tags"]
+    result = {"target": attack["target"], "margin": attack["margin"], "crit": crit, "blocked": False}
+    if not attack["success"]:
+        result.update(outcome="fumble" if "fumble" in attack["tags"] else "miss", damage=0, hp=defender["hp"])
+        return result
+    result["outcome"] = "hit"
+
+    amount = damage["roll"]
+    if crit:
+        amount = evaluate_formula(pipeline["crit_damage"], {}, {"damage": amount})
+    physical = pipeline["dr_applies_tag"] in tags
+    block = defender.get("block")
+    if block and physical and block["roll"] <= block["skill"]:
+        if block["skill"] - block["roll"] >= attack["margin"]:
+            result["blocked"] = True
+            amount = max(amount - block["shield_dr"], 0)
+    if physical:
+        dr = defender.get("armor_dr", 0)
+        if pipeline["pierce_tag"] in tags:
+            dr = evaluate_formula(pipeline["pierce_dr"], {}, {"dr": dr})
+        amount = max(amount - dr, 0)
+    amount = max(amount - defender.get("resist", {}).get(damage["type"], 0), 0)
+    result.update(damage=amount, hp=max(defender["hp"] - amount, 0))
+    return result
+
+
 def run_progression(vector):
     """XP and level, one level-up pool, and spending a pool on one skill; `op` picks which."""
     rules = load_data("progression/core.json")["progression"]
@@ -174,6 +217,7 @@ RUNNERS = {
     "formula": run_formula,
     "modifiers": run_modifiers,
     "actions": run_actions,
+    "combat": run_combat,
     "progression": run_progression,
 }
 

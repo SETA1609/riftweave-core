@@ -1,0 +1,67 @@
+{
+  "$schema": "../../schemas/combat.schema.json",
+  "pipeline": {
+    "evasion": {
+      "op": "add",
+      "args": [
+        {
+          "lit": 10
+        },
+        {
+          "op": "div",
+          "args": [
+            {
+              "op": "mul",
+              "args": [
+                {
+                  "var": "evasion_skill"
+                },
+                {
+                  "lit": 15
+                }
+              ]
+            },
+            {
+              "lit": 100
+            }
+          ]
+        },
+        {
+          "op": "mul",
+          "args": [
+            {
+              "attr": "agi"
+            },
+            {
+              "lit": 2
+            }
+          ]
+        }
+      ]
+    },
+    "crit_damage": {
+      "op": "mul",
+      "args": [
+        {
+          "var": "damage"
+        },
+        {
+          "lit": 2
+        }
+      ]
+    },
+    "pierce_dr": {
+      "op": "div",
+      "args": [
+        {
+          "var": "dr"
+        },
+        {
+          "lit": 2
+        }
+      ]
+    },
+    "dr_applies_tag": "armor_dr_applies",
+    "pierce_tag": "armor_pierce_partial"
+  }
+}
