@@ -11,3 +11,9 @@ ap = 2 + floor(AGI / 3)
 ```
 
 Python and Zig implement the same evaluate(). The tree is the authority. The prose is a reading of it.
+
+## Leaves
+
+- `{ "lit": n }` an integer.
+- `{ "attr": "agi" }` a current attribute.
+- `{ "var": "level" }` a named input the caller supplies, such as `level` or `luck_roll`. A formula that reads a var names it in the data that holds it. [A]
