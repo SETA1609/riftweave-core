@@ -37,6 +37,7 @@ The other fields are the input the function reads. They are listed per function 
 | `formula` | `formula` (a key in `ruleset/data/formulas/`) or `expr` (an inline tree), `actor.attributes` | `value` |
 | `modifiers` | `value`, `modifiers` | `value` |
 | `actions` | `actor.attributes`, `actions` (a list of action keys) | `pool`, `cost` |
+| `progression` | `op`: `xp` (`level`), `level` (`xp`), `level_up` (`actor.attributes`, `luck_roll`), `spend` (`skill`, `tagged`, `points`) | `xp_total`, `xp_step`; `level`; `skill_points`, `perks` (or `error`); `ranks`, `spent`, `left` |
 
 Coefficients come from `ruleset/data/`, not from the vector, so a data change that breaks a rule fails a vector.
 

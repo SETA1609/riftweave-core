@@ -33,7 +33,7 @@ Done: —
 - Done when: hit, miss, crit, and fumble each have a vector; DR, block, resist, and damage-type interaction each have a vector; A reference evaluator reproduces every vector; the prose is a reading of the tree.
 
 #### M1-03 Progression as data: XP, skill points, perk cadence
-- Status: doing
+- Status: review
 - Priority: high
 - Needs: M1-07
 - Was: RW-5

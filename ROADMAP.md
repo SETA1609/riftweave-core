@@ -69,12 +69,12 @@ is the earliest wave of its open issues; stories in the same wave can run in par
 
 | Wave | Story | Keyword | Blocked by | Open issues |
 |---|---|---|---|---|
-| 0 | M1 | first (1), ready, critical | — | 6 |
+| 0 | M1 | first (1), ready, critical | — | 5 |
 | 1 | M2 | blocked | M1 | 4 |
 | 0 | M3 | ready, critical | M1 | 4 |
 | 0 | M4 | ready | M1 | 5 |
 | 0 | M5 | ready, critical | M1, M2, M3, M4 | 7 |
-| 1 | POST | blocked | M1, M3 | 7 |
+| 0 | POST | ready | M1, M3 | 7 |
 
 <!-- roadmap-order end -->
 
