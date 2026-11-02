@@ -30,7 +30,6 @@ There are no tagged releases yet. `[Unreleased]` becomes `[1.0.0]` when the road
 - **SET-22** Golden vectors for resolution and derived HP. (#36)
 - **SET-25** Module overrides: a module may override a vanilla row by key. (#39)
 - **SET-15** Vertical loop example: create, equip, attack, DR, XP, perk. (#27)
-- **POST-05** Factions and reputation module: `factions` collection and schema, three factions, standings and ranks that emit contract modifiers, one-hop spillover, and vectors.
 
 ### Changed
 - **M5-01** Open issues get story-scoped ids (`M1-01`, old id in `Was:`), real `Needs` and `Files`, and a computed order (`devops-tools roadmap-order`); the story table in `ROADMAP.md` is generated and checked in CI. (#46)
