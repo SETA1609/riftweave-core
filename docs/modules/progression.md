@@ -5,6 +5,15 @@ of eight attributes, a spread of point-buy skills (some tagged), and a stack of
 perks. The numeric formulas below are the **ruleset reference**; a consuming game or
 tabletop group may override them via its own data.
 
+## Where the numbers live
+
+XP thresholds, the level cap, the skill cap, the skill-point pool, the tag-skill cost ratio,
+and the perk cadence are in [`ruleset/data/progression/core.json`](../../ruleset/data/progression/core.json),
+read as [`docs/core/progression.md`](../core/progression.md) and pinned by
+`ruleset/tests/vectors/progression.json`. The tables and formulas below are commentary on
+that data. If they disagree, the data wins. Resource growth is the derived function
+([`derived.md`](../core/derived.md)); stamina growth is still only described here.
+
 ## Resolution — d100 roll-under
 
 - To attempt something, roll **1d100** and succeed if the roll is **≤ your target

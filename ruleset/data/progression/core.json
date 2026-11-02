@@ -1,0 +1,62 @@
+{
+  "$schema": "../../schemas/progression.schema.json",
+  "progression": {
+    "start_level": 1,
+    "max_level": 30,
+    "skill_cap": 100,
+    "xp_to_reach": {
+      "op": "mul",
+      "args": [
+        {
+          "lit": 450
+        },
+        {
+          "var": "level"
+        },
+        {
+          "op": "sub",
+          "args": [
+            {
+              "var": "level"
+            },
+            {
+              "lit": 1
+            }
+          ]
+        }
+      ]
+    },
+    "skill_points": {
+      "op": "add",
+      "args": [
+        {
+          "lit": 5
+        },
+        {
+          "op": "mul",
+          "args": [
+            {
+              "attr": "int"
+            },
+            {
+              "lit": 2
+            }
+          ]
+        },
+        {
+          "var": "luck_roll"
+        }
+      ]
+    },
+    "luck_roll": {
+      "min": 0,
+      "max_attr": "lck"
+    },
+    "perks_per_level": 1,
+    "tag_skills": 3,
+    "skill_cost": {
+      "normal": 2,
+      "tag": 1
+    }
+  }
+}

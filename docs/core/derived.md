@@ -22,7 +22,7 @@ Division is integer division. `per_point_divisor` defaults to 1. `attr` is the c
 | carry | STR | `25 + STR * 10` pounds |
 | initiative | PER | `PER` |
 
-These closed forms are the ones already printed under Derived statistics in `docs/modules/progression.md`. That table is now a copy. The JSON is the authority. The level-up bullets (`END × 8 + 4` and so on) are the grant procedure, not a second max. Stamina stays in that prose. This file does not own a second action economy.
+These closed forms are the ones already printed under Derived statistics in `docs/modules/progression.md`. That table is now a copy. The JSON is the authority. The level-up bullets (`END × 8 + 4` and so on) are the grant procedure, not a second max. Stamina stays in that prose. XP, skill points, and perk cadence are data too: [progression.md](progression.md). This file does not own a second action economy.
 
 ## Example
 
