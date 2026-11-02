@@ -13,7 +13,7 @@ Roadmap: [M5](../../ROADMAP.md#where-we-are). Format and rules: [README.md](READ
 Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02 ([done.md](done.md#m5-release-10))
 
 #### M5-10 Keep both sides of decision-log additions in the rebase
-- Status: doing
+- Status: review
 - Priority: high
 - Needs: M5-02
 - Do: The rebase workflow has failed on every push to `main` since 2026-11-01: two open PRs that each add a dated section at the top of `docs/decisions.md` conflict, and the tool leaves the branch for a person. new-world has no shared append-only log, so it never hit this. Add `docs/decisions.md` to `keep-both-added-lines`, so the rebase keeps both sections like the changelog and story files. Pin devops-tools to v0.2.0, as new-world does.
