@@ -4,9 +4,17 @@ on:
   push:
     paths:
       - "ruleset/**"
+      - ".github/**"
+      - "Dockerfile"
+      - "docs/core/**"
+      - "docs/stories/**"
   pull_request:
     paths:
       - "ruleset/**"
+      - ".github/**"
+      - "Dockerfile"
+      - "docs/core/**"
+      - "docs/stories/**"
   workflow_dispatch:
 
 jobs:
@@ -27,3 +35,9 @@ jobs:
 
       - name: Validate JSON data against schemas
         run: python ruleset/scripts/validate.py
+
+      - name: Run unit tests
+        run: python -m unittest discover -s ruleset/scripts -p "test_[!v]*.py" -v
+
+      - name: Run golden vectors
+        run: python -m unittest discover -s ruleset/scripts -p "test_vectors.py" -v
