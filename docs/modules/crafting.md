@@ -127,7 +127,7 @@ success  margin = target - roll
 time     hours = max(min_hours, floor(recipe.time * station.time_percent / 100))
 ```
 
-- `base_index` is the index of `common` on the ladder (3). `crit_bonus` is 1 when the roll is tagged `crit`, else 0. A margin of 30 or more on a good station gives `greater`; a station caps what skill alone cannot exceed. [A]
+- `base_index` is the index of the `base_grade` row, `lesser` (2): a bare success is a lesser piece, a margin of 10 makes it `common`, 20 `major`, 30 `greater`, 40 `grand`, and 50 or more `legendary`. `crit_bonus` is 1 when the roll is tagged `crit`, else 0. A station caps what skill alone would give. [A]
 - A station is a module row `module:crafting/station/<key>`. A recipe names the one it needs; a station whose `counts_as` lists it also serves (a master's forge serves as a smithy forge). A recipe with no suitable station cannot be started, and the check never rolls. [A]
 - Inputs are core rows (`core:material/...`, `core:ingredient/...`, `core:gem/...`). The output is a core item, with a `core:material/...` for gear. The material must be in the base template's `valid_materials` ([materials.md](../core/materials.md)). The output is an item instance with a grade; this module does not write a `crafted_item` row, and phase composition stays in `crafting_reference.py`.
 - Experience: none. Crafting does not award XP ([progression.md](progression.md)).
