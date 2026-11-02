@@ -1,0 +1,20 @@
+{
+  "$schema": "../../schemas/module.manifest.schema.json",
+  "id": "crafting",
+  "version": "0.1.0",
+  "description": "Crafting: recipes, a skill check, time, stations, and a quality grade. Optional; core resolves without it. See docs/modules/crafting.md.",
+  "author": "Riftweave Core Team",
+  "requires": [],
+  "extends": {
+    "collections": [
+      "stations",
+      "crafting_recipes"
+    ]
+  },
+  "data": [
+    "data/stations.json",
+    "data/quality.json",
+    "data/recipes.json"
+  ],
+  "schemas": []
+}

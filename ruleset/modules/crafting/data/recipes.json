@@ -1,0 +1,856 @@
+{
+  "$schema": "../../../schemas/crafting_module.schema.json",
+  "crafting_recipes": [
+    {
+      "id": 1,
+      "key": "forge_iron_dagger",
+      "label": "Forge Iron Dagger",
+      "description": "Draw a single iron bar into a short blade and set a tang.",
+      "skill": "core:skill/blacksmithing",
+      "station": "module:crafting/station/smithy_forge",
+      "difficulty": 10,
+      "time": 2,
+      "inputs": [
+        {
+          "item": "core:material/iron",
+          "quantity": 1
+        }
+      ],
+      "output": {
+        "item": "core:weapon/dagger",
+        "quantity": 1,
+        "material": "core:material/iron"
+      }
+    },
+    {
+      "id": 2,
+      "key": "forge_steel_dagger",
+      "label": "Forge Steel Dagger",
+      "description": "Fold and quench a steel billet into a keen dagger.",
+      "skill": "core:skill/blacksmithing",
+      "station": "module:crafting/station/smithy_forge",
+      "difficulty": 25,
+      "time": 3,
+      "inputs": [
+        {
+          "item": "core:material/steel",
+          "quantity": 1
+        }
+      ],
+      "output": {
+        "item": "core:weapon/dagger",
+        "quantity": 1,
+        "material": "core:material/steel"
+      }
+    },
+    {
+      "id": 3,
+      "key": "forge_bronze_shortsword",
+      "label": "Forge Bronze Shortsword",
+      "description": "Cast and finish a bronze shortsword.",
+      "skill": "core:skill/blacksmithing",
+      "station": "module:crafting/station/smithy_forge",
+      "difficulty": 12,
+      "time": 3,
+      "inputs": [
+        {
+          "item": "core:material/bronze",
+          "quantity": 2
+        }
+      ],
+      "output": {
+        "item": "core:weapon/shortsword",
+        "quantity": 1,
+        "material": "core:material/bronze"
+      }
+    },
+    {
+      "id": 4,
+      "key": "forge_iron_longsword",
+      "label": "Forge Iron Longsword",
+      "description": "Hammer iron into a plain, serviceable longsword.",
+      "skill": "core:skill/blacksmithing",
+      "station": "module:crafting/station/smithy_forge",
+      "difficulty": 20,
+      "time": 4,
+      "inputs": [
+        {
+          "item": "core:material/iron",
+          "quantity": 3
+        }
+      ],
+      "output": {
+        "item": "core:weapon/longsword",
+        "quantity": 1,
+        "material": "core:material/iron"
+      }
+    },
+    {
+      "id": 5,
+      "key": "forge_steel_longsword",
+      "label": "Forge Steel Longsword",
+      "description": "Heat, fold, and quench steel into a fine longsword at the anvil.",
+      "skill": "core:skill/blacksmithing",
+      "station": "module:crafting/station/smithy_forge",
+      "difficulty": 30,
+      "time": 4,
+      "inputs": [
+        {
+          "item": "core:material/steel",
+          "quantity": 3
+        }
+      ],
+      "output": {
+        "item": "core:weapon/longsword",
+        "quantity": 1,
+        "material": "core:material/steel"
+      }
+    },
+    {
+      "id": 6,
+      "key": "forge_steel_greatsword",
+      "label": "Forge Steel Greatsword",
+      "description": "A long two-handed blade that taxes the forge and the smith.",
+      "skill": "core:skill/blacksmithing",
+      "station": "module:crafting/station/smithy_forge",
+      "difficulty": 40,
+      "time": 8,
+      "inputs": [
+        {
+          "item": "core:material/steel",
+          "quantity": 5
+        }
+      ],
+      "output": {
+        "item": "core:weapon/greatsword",
+        "quantity": 1,
+        "material": "core:material/steel"
+      }
+    },
+    {
+      "id": 7,
+      "key": "forge_iron_handaxe",
+      "label": "Forge Iron Handaxe",
+      "description": "A small iron axehead on a short haft.",
+      "skill": "core:skill/blacksmithing",
+      "station": "module:crafting/station/smithy_forge",
+      "difficulty": 12,
+      "time": 2,
+      "inputs": [
+        {
+          "item": "core:material/iron",
+          "quantity": 2
+        }
+      ],
+      "output": {
+        "item": "core:weapon/handaxe",
+        "quantity": 1,
+        "material": "core:material/iron"
+      }
+    },
+    {
+      "id": 8,
+      "key": "forge_iron_battleaxe",
+      "label": "Forge Iron Battleaxe",
+      "description": "A broad double-bitted iron axe.",
+      "skill": "core:skill/blacksmithing",
+      "station": "module:crafting/station/smithy_forge",
+      "difficulty": 22,
+      "time": 4,
+      "inputs": [
+        {
+          "item": "core:material/iron",
+          "quantity": 4
+        }
+      ],
+      "output": {
+        "item": "core:weapon/battleaxe",
+        "quantity": 1,
+        "material": "core:material/iron"
+      }
+    },
+    {
+      "id": 9,
+      "key": "forge_iron_mace",
+      "label": "Forge Iron Mace",
+      "description": "A flanged iron head forged in one piece with its shaft.",
+      "skill": "core:skill/blacksmithing",
+      "station": "module:crafting/station/smithy_forge",
+      "difficulty": 15,
+      "time": 3,
+      "inputs": [
+        {
+          "item": "core:material/iron",
+          "quantity": 3
+        }
+      ],
+      "output": {
+        "item": "core:weapon/mace",
+        "quantity": 1,
+        "material": "core:material/iron"
+      }
+    },
+    {
+      "id": 10,
+      "key": "forge_steel_warhammer",
+      "label": "Forge Steel Warhammer",
+      "description": "A balanced steel hammer with a spiked back.",
+      "skill": "core:skill/blacksmithing",
+      "station": "module:crafting/station/smithy_forge",
+      "difficulty": 35,
+      "time": 6,
+      "inputs": [
+        {
+          "item": "core:material/steel",
+          "quantity": 4
+        }
+      ],
+      "output": {
+        "item": "core:weapon/warhammer",
+        "quantity": 1,
+        "material": "core:material/steel"
+      }
+    },
+    {
+      "id": 11,
+      "key": "forge_steel_war_pick",
+      "label": "Forge Steel War Pick",
+      "description": "A curved steel pick meant to punch through plate.",
+      "skill": "core:skill/blacksmithing",
+      "station": "module:crafting/station/smithy_forge",
+      "difficulty": 35,
+      "time": 5,
+      "inputs": [
+        {
+          "item": "core:material/steel",
+          "quantity": 3
+        }
+      ],
+      "output": {
+        "item": "core:weapon/war_pick",
+        "quantity": 1,
+        "material": "core:material/steel"
+      }
+    },
+    {
+      "id": 12,
+      "key": "forge_iron_spear",
+      "label": "Forge Iron Spear",
+      "description": "An iron head socketed onto a wooden shaft.",
+      "skill": "core:skill/blacksmithing",
+      "station": "module:crafting/station/smithy_forge",
+      "difficulty": 12,
+      "time": 2,
+      "inputs": [
+        {
+          "item": "core:material/iron",
+          "quantity": 2
+        },
+        {
+          "item": "core:material/wood",
+          "quantity": 1
+        }
+      ],
+      "output": {
+        "item": "core:weapon/spear",
+        "quantity": 1,
+        "material": "core:material/iron"
+      }
+    },
+    {
+      "id": 13,
+      "key": "forge_steel_glaive",
+      "label": "Forge Steel Glaive",
+      "description": "A single-edged steel blade on a long pole.",
+      "skill": "core:skill/blacksmithing",
+      "station": "module:crafting/station/smithy_forge",
+      "difficulty": 38,
+      "time": 6,
+      "inputs": [
+        {
+          "item": "core:material/steel",
+          "quantity": 4
+        },
+        {
+          "item": "core:material/wood",
+          "quantity": 1
+        }
+      ],
+      "output": {
+        "item": "core:weapon/glaive",
+        "quantity": 1,
+        "material": "core:material/steel"
+      }
+    },
+    {
+      "id": 14,
+      "key": "forge_steel_halberd",
+      "label": "Forge Steel Halberd",
+      "description": "Axe, spike, and hook on one steel head.",
+      "skill": "core:skill/blacksmithing",
+      "station": "module:crafting/station/smithy_forge",
+      "difficulty": 40,
+      "time": 7,
+      "inputs": [
+        {
+          "item": "core:material/steel",
+          "quantity": 5
+        },
+        {
+          "item": "core:material/wood",
+          "quantity": 1
+        }
+      ],
+      "output": {
+        "item": "core:weapon/halberd",
+        "quantity": 1,
+        "material": "core:material/steel"
+      }
+    },
+    {
+      "id": 15,
+      "key": "forge_steel_rapier",
+      "label": "Forge Steel Rapier",
+      "description": "A slender thrusting blade with a swept hilt.",
+      "skill": "core:skill/blacksmithing",
+      "station": "module:crafting/station/smithy_forge",
+      "difficulty": 38,
+      "time": 5,
+      "inputs": [
+        {
+          "item": "core:material/steel",
+          "quantity": 2
+        }
+      ],
+      "output": {
+        "item": "core:weapon/rapier",
+        "quantity": 1,
+        "material": "core:material/steel"
+      }
+    },
+    {
+      "id": 16,
+      "key": "forge_iron_chainmail",
+      "label": "Forge Iron Chainmail",
+      "description": "Draw wire, form rings, and rivet them into a mail shirt.",
+      "skill": "core:skill/blacksmithing",
+      "station": "module:crafting/station/smithy_forge",
+      "difficulty": 28,
+      "time": 10,
+      "inputs": [
+        {
+          "item": "core:material/iron",
+          "quantity": 6
+        }
+      ],
+      "output": {
+        "item": "core:armor/chainmail",
+        "quantity": 1,
+        "material": "core:material/iron"
+      }
+    },
+    {
+      "id": 17,
+      "key": "forge_bronze_scale_shirt",
+      "label": "Forge Bronze Scale Shirt",
+      "description": "Overlapping bronze scales laced to a backing.",
+      "skill": "core:skill/blacksmithing",
+      "station": "module:crafting/station/smithy_forge",
+      "difficulty": 24,
+      "time": 8,
+      "inputs": [
+        {
+          "item": "core:material/bronze",
+          "quantity": 5
+        }
+      ],
+      "output": {
+        "item": "core:armor/scale_shirt",
+        "quantity": 1,
+        "material": "core:material/bronze"
+      }
+    },
+    {
+      "id": 18,
+      "key": "forge_iron_helmet",
+      "label": "Forge Iron Helmet",
+      "description": "Raise an iron bowl and fit a brow band.",
+      "skill": "core:skill/blacksmithing",
+      "station": "module:crafting/station/smithy_forge",
+      "difficulty": 16,
+      "time": 3,
+      "inputs": [
+        {
+          "item": "core:material/iron",
+          "quantity": 2
+        }
+      ],
+      "output": {
+        "item": "core:armor/helmet",
+        "quantity": 1,
+        "material": "core:material/iron"
+      }
+    },
+    {
+      "id": 19,
+      "key": "forge_iron_gauntlets",
+      "label": "Forge Iron Gauntlets",
+      "description": "Articulated iron plates for the hand and wrist.",
+      "skill": "core:skill/blacksmithing",
+      "station": "module:crafting/station/smithy_forge",
+      "difficulty": 18,
+      "time": 3,
+      "inputs": [
+        {
+          "item": "core:material/iron",
+          "quantity": 2
+        }
+      ],
+      "output": {
+        "item": "core:armor/gauntlets",
+        "quantity": 1,
+        "material": "core:material/iron"
+      }
+    },
+    {
+      "id": 20,
+      "key": "forge_iron_greaves",
+      "label": "Forge Iron Greaves",
+      "description": "Iron shin guards hinged at the calf.",
+      "skill": "core:skill/blacksmithing",
+      "station": "module:crafting/station/smithy_forge",
+      "difficulty": 18,
+      "time": 4,
+      "inputs": [
+        {
+          "item": "core:material/iron",
+          "quantity": 3
+        }
+      ],
+      "output": {
+        "item": "core:armor/greaves",
+        "quantity": 1,
+        "material": "core:material/iron"
+      }
+    },
+    {
+      "id": 21,
+      "key": "forge_iron_plate_cuirass",
+      "label": "Forge Iron Plate Cuirass",
+      "description": "Shape iron plates over a form and rivet them into a cuirass.",
+      "skill": "core:skill/blacksmithing",
+      "station": "module:crafting/station/smithy_forge",
+      "difficulty": 32,
+      "time": 12,
+      "inputs": [
+        {
+          "item": "core:material/iron",
+          "quantity": 8
+        }
+      ],
+      "output": {
+        "item": "core:armor/plate_cuirass",
+        "quantity": 1,
+        "material": "core:material/iron"
+      }
+    },
+    {
+      "id": 22,
+      "key": "forge_steel_breastplate",
+      "label": "Forge Steel Breastplate",
+      "description": "A single hammered steel breastplate fitted to the wearer.",
+      "skill": "core:skill/blacksmithing",
+      "station": "module:crafting/station/smithy_forge",
+      "difficulty": 42,
+      "time": 14,
+      "inputs": [
+        {
+          "item": "core:material/steel",
+          "quantity": 6
+        }
+      ],
+      "output": {
+        "item": "core:armor/breastplate",
+        "quantity": 1,
+        "material": "core:material/steel"
+      }
+    },
+    {
+      "id": 23,
+      "key": "forge_iron_standard_shield",
+      "label": "Forge Iron Standard Shield",
+      "description": "A wooden core faced and bound with iron.",
+      "skill": "core:skill/blacksmithing",
+      "station": "module:crafting/station/smithy_forge",
+      "difficulty": 14,
+      "time": 4,
+      "inputs": [
+        {
+          "item": "core:material/iron",
+          "quantity": 3
+        },
+        {
+          "item": "core:material/wood",
+          "quantity": 2
+        }
+      ],
+      "output": {
+        "item": "core:armor/standard_shield",
+        "quantity": 1,
+        "material": "core:material/iron"
+      }
+    },
+    {
+      "id": 24,
+      "key": "forge_bronze_buckler",
+      "label": "Forge Bronze Buckler",
+      "description": "A small round bronze shield with a fist grip.",
+      "skill": "core:skill/blacksmithing",
+      "station": "module:crafting/station/smithy_forge",
+      "difficulty": 8,
+      "time": 2,
+      "inputs": [
+        {
+          "item": "core:material/bronze",
+          "quantity": 1
+        }
+      ],
+      "output": {
+        "item": "core:armor/buckler",
+        "quantity": 1,
+        "material": "core:material/bronze"
+      }
+    },
+    {
+      "id": 25,
+      "key": "carve_wood_quarterstaff",
+      "label": "Carve Wooden Quarterstaff",
+      "description": "Plane and sand a straight length of wood.",
+      "skill": "core:skill/crafting",
+      "station": "module:crafting/station/woodworking_bench",
+      "difficulty": 5,
+      "time": 1,
+      "inputs": [
+        {
+          "item": "core:material/wood",
+          "quantity": 2
+        }
+      ],
+      "output": {
+        "item": "core:weapon/quarterstaff",
+        "quantity": 1,
+        "material": "core:material/wood"
+      }
+    },
+    {
+      "id": 26,
+      "key": "carve_wood_shortbow",
+      "label": "Carve Wooden Shortbow",
+      "description": "Bend and string a short bow.",
+      "skill": "core:skill/crafting",
+      "station": "module:crafting/station/woodworking_bench",
+      "difficulty": 15,
+      "time": 3,
+      "inputs": [
+        {
+          "item": "core:material/wood",
+          "quantity": 2
+        }
+      ],
+      "output": {
+        "item": "core:weapon/shortbow",
+        "quantity": 1,
+        "material": "core:material/wood"
+      }
+    },
+    {
+      "id": 27,
+      "key": "carve_elven_wood_longbow",
+      "label": "Carve Elven Wood Longbow",
+      "description": "A tall bow from seasoned elven wood, slow to get right.",
+      "skill": "core:skill/crafting",
+      "station": "module:crafting/station/woodworking_bench",
+      "difficulty": 45,
+      "time": 8,
+      "inputs": [
+        {
+          "item": "core:material/elven_wood",
+          "quantity": 3
+        }
+      ],
+      "output": {
+        "item": "core:weapon/longbow",
+        "quantity": 1,
+        "material": "core:material/elven_wood"
+      }
+    },
+    {
+      "id": 28,
+      "key": "build_wood_light_crossbow",
+      "label": "Build Light Crossbow",
+      "description": "A wooden stock, a steel-free prod, and an iron trigger.",
+      "skill": "core:skill/crafting",
+      "station": "module:crafting/station/woodworking_bench",
+      "difficulty": 30,
+      "time": 5,
+      "inputs": [
+        {
+          "item": "core:material/wood",
+          "quantity": 3
+        },
+        {
+          "item": "core:material/iron",
+          "quantity": 1
+        }
+      ],
+      "output": {
+        "item": "core:weapon/light_crossbow",
+        "quantity": 1,
+        "material": "core:material/wood"
+      }
+    },
+    {
+      "id": 29,
+      "key": "sew_leather_jerkin",
+      "label": "Sew Leather Jerkin",
+      "description": "Cut, stitch, and oil a leather jerkin.",
+      "skill": "core:skill/crafting",
+      "station": "module:crafting/station/tanning_rack",
+      "difficulty": 10,
+      "time": 3,
+      "inputs": [
+        {
+          "item": "core:material/leather",
+          "quantity": 4
+        }
+      ],
+      "output": {
+        "item": "core:armor/leather_jerkin",
+        "quantity": 1,
+        "material": "core:material/leather"
+      }
+    },
+    {
+      "id": 30,
+      "key": "sew_leather_boots",
+      "label": "Sew Leather Boots",
+      "description": "Last and stitch a pair of boots.",
+      "skill": "core:skill/crafting",
+      "station": "module:crafting/station/tanning_rack",
+      "difficulty": 8,
+      "time": 2,
+      "inputs": [
+        {
+          "item": "core:material/leather",
+          "quantity": 2
+        }
+      ],
+      "output": {
+        "item": "core:armor/boots",
+        "quantity": 1,
+        "material": "core:material/leather"
+      }
+    },
+    {
+      "id": 31,
+      "key": "sew_leather_gloves",
+      "label": "Sew Leather Gloves",
+      "description": "Cut and sew a pair of gloves.",
+      "skill": "core:skill/crafting",
+      "station": "module:crafting/station/tanning_rack",
+      "difficulty": 8,
+      "time": 2,
+      "inputs": [
+        {
+          "item": "core:material/leather",
+          "quantity": 1
+        }
+      ],
+      "output": {
+        "item": "core:armor/gloves",
+        "quantity": 1,
+        "material": "core:material/leather"
+      }
+    },
+    {
+      "id": 32,
+      "key": "sew_leather_cloak",
+      "label": "Sew Leather Cloak",
+      "description": "A hooded leather cloak, oiled against rain.",
+      "skill": "core:skill/crafting",
+      "station": "module:crafting/station/tanning_rack",
+      "difficulty": 12,
+      "time": 3,
+      "inputs": [
+        {
+          "item": "core:material/leather",
+          "quantity": 3
+        }
+      ],
+      "output": {
+        "item": "core:armor/cloak",
+        "quantity": 1,
+        "material": "core:material/leather"
+      }
+    },
+    {
+      "id": 33,
+      "key": "stitch_leather_cap",
+      "label": "Stitch Leather Cap",
+      "description": "A simple cap stitched with a field kit and no bench.",
+      "skill": "core:skill/crafting",
+      "station": "module:crafting/station/field_kit",
+      "difficulty": 5,
+      "time": 1,
+      "inputs": [
+        {
+          "item": "core:material/leather",
+          "quantity": 1
+        }
+      ],
+      "output": {
+        "item": "core:armor/cap_hood",
+        "quantity": 1,
+        "material": "core:material/leather"
+      }
+    },
+    {
+      "id": 34,
+      "key": "cast_silver_ring",
+      "label": "Cast Silver Ring",
+      "description": "Cast and polish a plain silver ring.",
+      "skill": "core:skill/crafting",
+      "station": "module:crafting/station/jewelers_bench",
+      "difficulty": 20,
+      "time": 3,
+      "inputs": [
+        {
+          "item": "core:material/silver",
+          "quantity": 1
+        }
+      ],
+      "output": {
+        "item": "core:accessory/silver_ring",
+        "quantity": 1,
+        "material": "core:material/silver"
+      }
+    },
+    {
+      "id": 35,
+      "key": "cast_gold_necklace",
+      "label": "Cast Gold Necklace",
+      "description": "Draw gold wire and link it into a necklace.",
+      "skill": "core:skill/crafting",
+      "station": "module:crafting/station/jewelers_bench",
+      "difficulty": 30,
+      "time": 5,
+      "inputs": [
+        {
+          "item": "core:material/gold",
+          "quantity": 2
+        }
+      ],
+      "output": {
+        "item": "core:accessory/gold_necklace",
+        "quantity": 1,
+        "material": "core:material/gold"
+      }
+    },
+    {
+      "id": 36,
+      "key": "brew_minor_healing_potion",
+      "label": "Brew Minor Healing Potion",
+      "description": "Steep red mushroom and sweetgrass into a red healing draught.",
+      "skill": "core:skill/alchemy",
+      "station": "module:crafting/station/alchemy_table",
+      "difficulty": 15,
+      "time": 1,
+      "inputs": [
+        {
+          "item": "core:ingredient/red_mushroom",
+          "quantity": 2
+        },
+        {
+          "item": "core:ingredient/sweetgrass",
+          "quantity": 1
+        }
+      ],
+      "output": {
+        "item": "core:consumable/potion_minor_healing",
+        "quantity": 1
+      }
+    },
+    {
+      "id": 37,
+      "key": "brew_fire_resistance_potion",
+      "label": "Brew Fire Resistance Potion",
+      "description": "Temper emberbloom with frost lily so the drinker shrugs off flame.",
+      "skill": "core:skill/alchemy",
+      "station": "module:crafting/station/alchemy_table",
+      "difficulty": 25,
+      "time": 2,
+      "inputs": [
+        {
+          "item": "core:ingredient/emberbloom",
+          "quantity": 2
+        },
+        {
+          "item": "core:ingredient/frost_lily",
+          "quantity": 1
+        }
+      ],
+      "output": {
+        "item": "core:consumable/potion_fire_resistance",
+        "quantity": 1
+      }
+    },
+    {
+      "id": 38,
+      "key": "brew_invisibility_potion",
+      "label": "Brew Invisibility Potion",
+      "description": "A delicate draught that bends light for a short while.",
+      "skill": "core:skill/alchemy",
+      "station": "module:crafting/station/alchemy_table",
+      "difficulty": 40,
+      "time": 3,
+      "inputs": [
+        {
+          "item": "core:ingredient/glowcap",
+          "quantity": 2
+        },
+        {
+          "item": "core:ingredient/nightshade",
+          "quantity": 1
+        }
+      ],
+      "output": {
+        "item": "core:consumable/potion_invisibility",
+        "quantity": 1
+      }
+    },
+    {
+      "id": 39,
+      "key": "cook_hearty_stew",
+      "label": "Cook Hearty Stew",
+      "description": "A filling stew over a camp fire.",
+      "skill": "core:skill/crafting",
+      "station": "module:crafting/station/field_kit",
+      "difficulty": 3,
+      "time": 1,
+      "inputs": [
+        {
+          "item": "core:ingredient/sweetgrass",
+          "quantity": 2
+        },
+        {
+          "item": "core:ingredient/red_mushroom",
+          "quantity": 1
+        }
+      ],
+      "output": {
+        "item": "core:consumable/ration_hearty_stew",
+        "quantity": 1
+      }
+    }
+  ]
+}

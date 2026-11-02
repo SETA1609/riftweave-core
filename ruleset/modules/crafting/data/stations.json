@@ -1,0 +1,77 @@
+{
+  "$schema": "../../../schemas/crafting_module.schema.json",
+  "stations": [
+    {
+      "id": 1,
+      "key": "smithy_forge",
+      "label": "Smithy forge",
+      "description": "An anvil, a forge, and a quench trough.",
+      "skill_bonus": 0,
+      "max_grade": "major",
+      "time_percent": 100,
+      "counts_as": []
+    },
+    {
+      "id": 2,
+      "key": "masters_forge",
+      "label": "Master's forge",
+      "description": "A forge with a draught-tuned hearth and a full tool wall; it also serves as a smithy forge.",
+      "skill_bonus": 10,
+      "max_grade": "legendary",
+      "time_percent": 75,
+      "counts_as": [
+        "module:crafting/station/smithy_forge"
+      ]
+    },
+    {
+      "id": 3,
+      "key": "woodworking_bench",
+      "label": "Woodworking bench",
+      "description": "A vise-fitted bench with planes, saws, and a steaming box.",
+      "skill_bonus": 0,
+      "max_grade": "major",
+      "time_percent": 100,
+      "counts_as": []
+    },
+    {
+      "id": 4,
+      "key": "tanning_rack",
+      "label": "Tanning rack",
+      "description": "Frames, tubs, and awls for working hides.",
+      "skill_bonus": 0,
+      "max_grade": "major",
+      "time_percent": 100,
+      "counts_as": []
+    },
+    {
+      "id": 5,
+      "key": "jewelers_bench",
+      "label": "Jeweler's bench",
+      "description": "A small bench with crucibles, tweezers, and a loupe.",
+      "skill_bonus": 0,
+      "max_grade": "greater",
+      "time_percent": 100,
+      "counts_as": []
+    },
+    {
+      "id": 6,
+      "key": "alchemy_table",
+      "label": "Alchemy table",
+      "description": "Glassware, a brazier, and a mortar.",
+      "skill_bonus": 0,
+      "max_grade": "major",
+      "time_percent": 100,
+      "counts_as": []
+    },
+    {
+      "id": 7,
+      "key": "field_kit",
+      "label": "Field kit",
+      "description": "A roll of basic tools carried on the road. No bench, so slower and cruder.",
+      "skill_bonus": -10,
+      "max_grade": "lesser",
+      "time_percent": 150,
+      "counts_as": []
+    }
+  ]
+}

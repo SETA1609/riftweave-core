@@ -1,0 +1,83 @@
+{
+  "$schema": "../../../schemas/crafting_module.schema.json",
+  "quality": {
+    "grades": [
+      {
+        "grade": "petty",
+        "value_percent": 50
+      },
+      {
+        "grade": "minor",
+        "value_percent": 70
+      },
+      {
+        "grade": "lesser",
+        "value_percent": 85
+      },
+      {
+        "grade": "common",
+        "value_percent": 100
+      },
+      {
+        "grade": "major",
+        "value_percent": 130
+      },
+      {
+        "grade": "greater",
+        "value_percent": 170
+      },
+      {
+        "grade": "grand",
+        "value_percent": 250
+      },
+      {
+        "grade": "legendary",
+        "value_percent": 400
+      }
+    ],
+    "base_grade": "lesser",
+    "grade_index": {
+      "op": "add",
+      "args": [
+        {
+          "var": "base"
+        },
+        {
+          "op": "div",
+          "args": [
+            {
+              "var": "margin"
+            },
+            {
+              "lit": 10
+            }
+          ]
+        },
+        {
+          "var": "crit_bonus"
+        }
+      ]
+    },
+    "hours": {
+      "op": "div",
+      "args": [
+        {
+          "op": "mul",
+          "args": [
+            {
+              "var": "hours"
+            },
+            {
+              "var": "time_percent"
+            }
+          ]
+        },
+        {
+          "lit": 100
+        }
+      ]
+    },
+    "min_hours": 1,
+    "fail_loss_percent": 50
+  }
+}
