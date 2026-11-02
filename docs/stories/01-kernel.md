@@ -23,7 +23,7 @@ Done: —
 - Done when: no bonus action, reaction slot, or per-mode rule remains in `docs/modules/combat.md`, `docs/combat/*`, or the combat examples; each rule in `combat.md` links to the `docs/core/` file that owns it, or is moved into `docs/core/`; worked examples are recomputed against current data and match a vector (M1-02).
 
 #### M1-02 Combat pipeline as data, formulas, and vectors
-- Status: doing
+- Status: review
 - Priority: high
 - Needs: M1-07
 - Was: RW-4

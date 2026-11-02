@@ -73,6 +73,12 @@ with optional auto-pause on OA trigger.
 
 ## 3. Defense Model — Two Trees
 
+> **Order of operations.** The physical tree below, from the attack roll to the HP lost, is
+> specified once in [`docs/core/combat.md`](../core/combat.md), with its coefficients in
+> `ruleset/data/combat/pipeline.json` and its vectors in `ruleset/tests/vectors/combat.json`.
+> The prose in this section reads that tree. If they disagree, the data wins.
+
+
 Both trees consider **active effects** on the player (from the effects registry,
 e.g. `resist` core:effect/resist, `spell_absorption` core:effect/spell_absorption) as modifiers at their respective
 layers. See [`conditions.md`](./conditions.md) and [`armor.md`](./armor.md) for details

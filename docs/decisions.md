@@ -7,6 +7,24 @@ issue settles them.
 
 ## Decided
 
+### 2026-11-02: One physical attack pipeline (M1-02)
+
+- **Decision:** `docs/core/combat.md` fixes the order evasion, attack roll, damage, crit,
+  block, armor DR, resist, HP. `ruleset/data/combat/pipeline.json` holds the evasion, crit
+  damage, and pierce trees and the damage-type tags the steps read. `combat.json` vectors
+  pin hit, miss, crit, fumble, block, DR, resist, and damage-type interaction. The
+  reference is `run_combat` in `kernel_reference.py`.
+- **Why:** the order lived only in `docs/modules/combat.md` prose, with worked examples that
+  disagree on small points (for example whether a crit multiplies before DR).
+- **Open:** these rules are choices the prose left open **[A]**: crit multiplies before any
+  reduction; a piercing hit halves DR; block applies to physical types only; evasion is a
+  penalty on the attacker's target. The magic defense tree, called shots, cover, hit
+  quality, and what happens at 0 HP are not specified **[U]**.
+- **Risk:** `base_resolution.json` still holds `defense.*` and `critDamageMultiplier`, which
+  the pipeline trees now restate as literals. Change one and the other drifts. Remove or
+  derive the old keys in a follow-up. `combat_reference.py` is the older crafted-item
+  simulator and is not the vector reference.
+
 ### 2026-11-02: Integrity gates (M5-08)
 
 - **Decision:** `validate.py` gains two checks: every `core:<category>/<key>` string in any
