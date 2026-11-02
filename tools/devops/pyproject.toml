@@ -6,7 +6,7 @@ requires-python = ">=3.13"
 # Runtime uses the standard library and devops-tools (run logs, the rebase workflow).
 # The host needs nothing but uv. Pin devops-tools to a full commit SHA; bump it in its own PR.
 dependencies = [
-    "devops-tools @ git+https://github.com/SETA1609/devops_tools@fde087b7f18a8b0c10913dd322350f08562eea46",
+    "devops-tools @ git+https://github.com/SETA1609/devops_tools@15c1bf161101353bacc7c7f3f8d36076eda10796",
 ]
 
 [project.scripts]
@@ -38,4 +38,4 @@ select = ["E", "W", "F", "I", "B", "UP", "SIM", "RUF"]
 roadmap-file = "ROADMAP.md"
 changes-directory = "changes"
 changelog-file = "CHANGELOG.md"
-keep-both-added-lines = ["docs/stories/*.md"]
+keep-both-added-lines = ["docs/stories/*.md", "docs/decisions.md"]

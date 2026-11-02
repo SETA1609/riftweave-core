@@ -168,3 +168,14 @@ Tracked in Linear before this repo had a tracker, recovered from git history. Th
 - Files: ~14 (docs/stories/, ROADMAP.md, docs/decisions.md, CONTRIBUTING.md, AGENTS.md, tools/devops/pyproject.toml, .github/workflows/)
 - See: docs/stories/README.md#order, https://github.com/SETA1609/devops_tools
 - Done when: every open issue has a story-scoped id, a `Was:` line, `Needs`, and `Files`; `devops-tools roadmap-order show` lists a critical path and more than one wave; `roadmap-order check` passes and runs in CI on story changes; no link points at an old `rw-NN` anchor; `CHANGELOG.md` entry added.
+
+#### M5-02 Changelog fragments instead of CHANGELOG edits
+- Status: done
+- Merged: #50, 2026-11-02
+- Priority: medium
+- Needs: M5-01
+- Do: Every PR edits `CHANGELOG.md`, so parallel PRs conflict on it (the rebase workflow only merges pure additions). Each PR adds `changes/<issue-id>.md` instead; the owner releases the fragments into `CHANGELOG.md` with `devops-tools changelog-fragments release` in a PR of its own, as in new-world.
+- Keys: `changes/<issue-id>.md`, `changes-directory` setting
+- Files: ~8 (changes/README.md, CHANGELOG.md, CONTRIBUTING.md, docs/stories/README.md, AGENTS.md, tools/devops/pyproject.toml, .github/workflows/changelog-fragments.yml)
+- See: https://github.com/SETA1609/devops_tools (changelog-fragments, reusable workflow)
+- Done when: `changes/README.md` states the rules; CI runs `changelog-fragments check --branch` on every PR through the reusable workflow at the pinned SHA; CONTRIBUTING and the stories README say to add a fragment, not a CHANGELOG line; this PR's own entry is a fragment.
