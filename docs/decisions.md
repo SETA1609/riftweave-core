@@ -21,6 +21,21 @@ issue settles them.
   entries written before M5-02 and is folded into the first release by hand. **[A]**
 - Risk: a release PR deletes every fragment, its own included, so it adds its own fragment
   after `release` or its branch check fails.
+### 2026-11-02: Racial traits are features (M1-06)
+
+- `features` is the only table for racial traits. The 18 rows of `data/traits/core.json`
+  move to `data/features/core.json` as `type: racial_trait`, keeping their keys;
+  `traits/core.json` and `trait.schema.json` are removed. Races keep their `traits` field,
+  which now holds `core:feature/<key>` refs.
+- Why: `AGENTS.md` names `features` the single perk table, `feature.schema.json` already had
+  the `racial_trait` type, and the traits table repeated the row shape without `effects`.
+  One table means one ref category and one effect shape for everything a character has.
+- Rejected: keeping `traits` as its own table and dropping `racial_trait`. It would make
+  the docs match the data, but keep two row shapes and two ref categories for one concept.
+- Breaking: `core:trait/<key>` refs no longer resolve; use `core:feature/<key>`. The race
+  field name `traits` is unchanged, so no data key is renamed.
+- `validate.py` checks that a race's `traits` point at `racial_trait` features and that
+  every core `racial_trait` is used by a race.
 
 ### 2026-11-01: Story-scoped issue IDs and a computed order (M5-01)
 
@@ -72,8 +87,6 @@ issue settles them.
 
 ## Open questions
 
-- **Traits versus features.** Whether creation traits stay a `features` type or become
-  their own table ([M1-06](stories/01-kernel.md#m1-06-resolve-the-traits-vs-features-fork)).
 - **Casting scope.** What the core casting procedure includes and what is a module
   ([M3-01](stories/03-combat-magic.md#m3-01-casting-procedure-decide-scope-then-specify)).
 - **Content floors.** The targets in [ROADMAP.md](../ROADMAP.md#definition-of-finished) are
