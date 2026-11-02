@@ -1,0 +1,272 @@
+[
+  {
+    "name": "success at a smithy forge: margin 20 reaches major, the forge's cap",
+    "function": "craft",
+    "recipe": "forge_iron_dagger",
+    "actor": {
+      "skills": {
+        "core:skill/blacksmithing": 60
+      },
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "station": "module:crafting/station/smithy_forge",
+    "roll": 30,
+    "expect": {
+      "outcome": "made",
+      "target": 50,
+      "margin": 20,
+      "grade_index": 4,
+      "grade": "major",
+      "value_percent": 130,
+      "hours": 2,
+      "consumed_percent": 100,
+      "output": {
+        "item": "core:weapon/dagger",
+        "material": "core:material/iron",
+        "quantity": 1
+      }
+    }
+  },
+  {
+    "name": "margin 5 is below one step: the base grade, lesser",
+    "function": "craft",
+    "recipe": "forge_iron_dagger",
+    "actor": {
+      "skills": {
+        "core:skill/blacksmithing": 60
+      },
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "station": "module:crafting/station/smithy_forge",
+    "roll": 45,
+    "expect": {
+      "outcome": "made",
+      "margin": 5,
+      "grade": "lesser"
+    }
+  },
+  {
+    "name": "margin 0 (roll equals target) still succeeds, at the base grade",
+    "function": "craft",
+    "recipe": "forge_iron_dagger",
+    "actor": {
+      "skills": {
+        "core:skill/blacksmithing": 60
+      },
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "station": "module:crafting/station/smithy_forge",
+    "roll": 50,
+    "expect": {
+      "outcome": "made",
+      "margin": 0,
+      "grade": "lesser"
+    }
+  },
+  {
+    "name": "margin 10 is one step: common",
+    "function": "craft",
+    "recipe": "forge_iron_dagger",
+    "actor": {
+      "skills": {
+        "core:skill/blacksmithing": 60
+      },
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "station": "module:crafting/station/smithy_forge",
+    "roll": 40,
+    "expect": {
+      "outcome": "made",
+      "margin": 10,
+      "grade_index": 3,
+      "grade": "common"
+    }
+  },
+  {
+    "name": "the station caps the grade: margin 70 at a smithy forge is still major",
+    "function": "craft",
+    "recipe": "forge_iron_dagger",
+    "actor": {
+      "skills": {
+        "core:skill/blacksmithing": 100
+      },
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "station": "module:crafting/station/smithy_forge",
+    "roll": 20,
+    "expect": {
+      "outcome": "made",
+      "target": 90,
+      "margin": 70,
+      "grade_index": 4,
+      "grade": "major"
+    }
+  },
+  {
+    "name": "a master's forge serves a smithy recipe: +10 to the target, 75 percent time, a crit adds a grade, legendary cap",
+    "function": "craft",
+    "recipe": "forge_iron_dagger",
+    "actor": {
+      "skills": {
+        "core:skill/blacksmithing": 60
+      },
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "station": "module:crafting/station/masters_forge",
+    "roll": 3,
+    "expect": {
+      "outcome": "made",
+      "target": 60,
+      "margin": 57,
+      "grade_index": 7,
+      "grade": "legendary",
+      "value_percent": 400,
+      "hours": 1
+    }
+  },
+  {
+    "name": "hours scale with the station: 4 hours at 75 percent is 3",
+    "function": "craft",
+    "recipe": "forge_steel_longsword",
+    "actor": {
+      "skills": {
+        "core:skill/blacksmithing": 80
+      },
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "station": "module:crafting/station/masters_forge",
+    "roll": 40,
+    "expect": {
+      "outcome": "made",
+      "target": 60,
+      "margin": 20,
+      "grade": "major",
+      "hours": 3,
+      "output": {
+        "item": "core:weapon/longsword",
+        "material": "core:material/steel",
+        "quantity": 1
+      }
+    }
+  },
+  {
+    "name": "a failed check makes nothing and consumes half the inputs",
+    "function": "craft",
+    "recipe": "forge_iron_dagger",
+    "actor": {
+      "skills": {
+        "core:skill/blacksmithing": 60
+      },
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "station": "module:crafting/station/smithy_forge",
+    "roll": 70,
+    "expect": {
+      "outcome": "failed",
+      "target": 50,
+      "consumed_percent": 50
+    }
+  },
+  {
+    "name": "a fumble ruins the work and consumes everything",
+    "function": "craft",
+    "recipe": "forge_iron_dagger",
+    "actor": {
+      "skills": {
+        "core:skill/blacksmithing": 60
+      },
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "station": "module:crafting/station/smithy_forge",
+    "roll": 100,
+    "expect": {
+      "outcome": "ruined",
+      "consumed_percent": 100
+    }
+  },
+  {
+    "name": "the wrong station: no roll, nothing consumed",
+    "function": "craft",
+    "recipe": "forge_iron_dagger",
+    "actor": {
+      "skills": {
+        "core:skill/blacksmithing": 60
+      },
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "station": "module:crafting/station/woodworking_bench",
+    "roll": 30,
+    "expect": {
+      "outcome": "no_station",
+      "consumed_percent": 0
+    }
+  },
+  {
+    "name": "a field kit is -10 and capped at lesser, and slow",
+    "function": "craft",
+    "recipe": "stitch_leather_cap",
+    "actor": {
+      "skills": {
+        "core:skill/crafting": 40
+      },
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "station": "module:crafting/station/field_kit",
+    "roll": 10,
+    "expect": {
+      "outcome": "made",
+      "target": 25,
+      "margin": 15,
+      "grade_index": 2,
+      "grade": "lesser",
+      "hours": 1
+    }
+  },
+  {
+    "name": "a consumable has no material",
+    "function": "craft",
+    "recipe": "brew_minor_healing_potion",
+    "actor": {
+      "skills": {
+        "core:skill/alchemy": 50
+      },
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "station": "module:crafting/station/alchemy_table",
+    "roll": 20,
+    "expect": {
+      "outcome": "made",
+      "target": 35,
+      "margin": 15,
+      "grade": "common",
+      "output": {
+        "item": "core:consumable/potion_minor_healing",
+        "quantity": 1
+      }
+    }
+  }
+]
