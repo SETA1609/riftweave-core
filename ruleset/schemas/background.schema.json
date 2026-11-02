@@ -32,7 +32,7 @@
             "type": "object",
             "properties": {
               "skill": {
-                "type": "string",
+                "$ref": "schema.json#/definitions/namespacedRef",
                 "description": "Skill reference: namespaced format core:skill/<key>"
               },
               "bonus": {
@@ -53,7 +53,7 @@
             "type": "object",
             "properties": {
               "item": {
-                "type": "string",
+                "$ref": "schema.json#/definitions/namespacedRef",
                 "description": "Equipment reference: namespaced format core:<category>/<key> (e.g. core:weapon/shortsword)"
               },
               "quantity": {
@@ -69,7 +69,7 @@
         "starting_spells": {
           "type": "array",
           "description": "Spells the character begins knowing. These are granted regardless of current skill level (though casting them effectively still requires investment in the governing <color>_magic skill). Use namespaced format core:spell/<key>.",
-          "items": { "type": "string" }
+          "items": { "$ref": "schema.json#/definitions/namespacedRef" }
         },
         "granted_features": {
           "type": "array",
@@ -88,7 +88,7 @@
         "suggested_tag_skills": {
           "type": "array",
           "description": "Skills this background naturally pairs well with for tag skill selection. Purely advisory; does not mechanically force or grant tags. Use namespaced format core:skill/<key>.",
-          "items": { "type": "string" }
+          "items": { "$ref": "schema.json#/definitions/namespacedRef" }
         }
       },
       "required": ["id", "key", "label", "description"],

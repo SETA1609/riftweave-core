@@ -99,7 +99,7 @@
       "description": "An instance of an effect drawn from the effect registry (data/effects), with its applied magnitude and duration. Shared by spells, consumables, ingredients, and enchantments. Use 'parameter' for generic effects (e.g. fortify_skill with a specific skill key, fortify_attribute with an ability, restore_resource with 'health'/'stamina'/'mana', resist with 'fire'/'poison'/'undead'/'magic'/'physical', cure with a condition, summon with a type, allergy with a material key).",
       "properties": {
         "effect": {
-          "type": "string",
+          "$ref": "schema.json#/definitions/namespacedRef",
           "description": "Effect reference: namespaced format core:effect/<key> (e.g. core:effect/damage_fire)"
         },
         "magnitude": {
@@ -208,6 +208,11 @@
         "source"
       ],
       "additionalProperties": false
+    },
+    "namespacedRef": {
+      "type": "string",
+      "pattern": "^(core:[a-z_]+/[a-z0-9_]+|module:[a-z0-9_]+(/[a-z0-9_]+)+)$",
+      "description": "A cross-reference to another entry: core:<singular-category>/<key>, or module:<module>/... for module content (docs/core/keys.md). A bare string is not a reference."
     },
     "formulaNode": {
       "description": "A formula tree node (docs/core/formula.md): a leaf (lit, attr, var) or an op over args. Integer only.",
