@@ -60,6 +60,7 @@ Every kernel function and the vector file that covers it. The test reads this ta
 | `formula` | `formula.json` | covered |
 | `modifiers` | `modifiers.json` | covered |
 | `actions` | `actions.json` | covered |
+| `combat` | `combat.json` | covered |
 | `progression` | `progression.json` | covered |
 
 The modifier vectors here cover `add`, `mul`, and same-source duplicates; M1-05 adds `set`, `grant`, `resist`, expiry, and conditions.

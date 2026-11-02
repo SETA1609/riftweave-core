@@ -1,0 +1,566 @@
+[
+  {
+    "name": "hit: evasion 23 takes the target from 72 to 49, armor DR 2 absorbs part",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "attributes": {
+        "agi": 5
+      },
+      "armor_dr": 2,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "target": 49,
+      "margin": 2,
+      "crit": false,
+      "blocked": false,
+      "damage": 6,
+      "hp": 24
+    }
+  },
+  {
+    "name": "miss: roll above the target does no damage",
+    "attacker": {
+      "skill": 72,
+      "roll": 60,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "attributes": {
+        "agi": 5
+      },
+      "armor_dr": 2,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "miss",
+      "target": 49,
+      "margin": null,
+      "crit": false,
+      "damage": 0,
+      "hp": 30
+    }
+  },
+  {
+    "name": "crit: LCK 4 widens the window to 7; damage doubles before DR",
+    "attacker": {
+      "skill": 72,
+      "roll": 6,
+      "attributes": {
+        "lck": 4
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "attributes": {
+        "agi": 5
+      },
+      "armor_dr": 2,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "margin": 43,
+      "crit": true,
+      "damage": 14,
+      "hp": 16
+    }
+  },
+  {
+    "name": "roll 6 is not a crit at LCK 0",
+    "attacker": {
+      "skill": 72,
+      "roll": 6,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "attributes": {
+        "agi": 5
+      },
+      "armor_dr": 2,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "crit": false,
+      "damage": 6,
+      "hp": 24
+    }
+  },
+  {
+    "name": "fumble: roll 100 does no damage",
+    "attacker": {
+      "skill": 72,
+      "roll": 100,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "attributes": {
+        "agi": 5
+      },
+      "armor_dr": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "fumble",
+      "crit": false,
+      "damage": 0,
+      "hp": 30
+    }
+  },
+  {
+    "name": "an attack modifier moves the target",
+    "attacker": {
+      "skill": 72,
+      "roll": 55,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "attributes": {
+        "agi": 5
+      },
+      "armor_dr": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "modifiers": [
+      {
+        "target": "attack",
+        "op": "add",
+        "value": 10,
+        "source": "perk:test"
+      }
+    ],
+    "expect": {
+      "outcome": "hit",
+      "target": 59,
+      "margin": 4,
+      "damage": 8,
+      "hp": 22
+    }
+  },
+  {
+    "name": "DR: armor 22 absorbs 8 damage entirely, never below zero",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "attributes": {
+        "agi": 5
+      },
+      "armor_dr": 22,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "damage": 0,
+      "hp": 30
+    }
+  },
+  {
+    "name": "block: margin 14 reaches the attacker's margin 2, shield DR 2 subtracts",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "attributes": {
+        "agi": 5
+      },
+      "armor_dr": 0,
+      "hp": 30,
+      "block": {
+        "skill": 55,
+        "roll": 41,
+        "shield_dr": 2
+      }
+    },
+    "damage": {
+      "roll": 5,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "blocked": true,
+      "damage": 3,
+      "hp": 27
+    }
+  },
+  {
+    "name": "block fails: block roll 90 is over skill 55",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "attributes": {
+        "agi": 5
+      },
+      "armor_dr": 0,
+      "hp": 30,
+      "block": {
+        "skill": 55,
+        "roll": 90,
+        "shield_dr": 2
+      }
+    },
+    "damage": {
+      "roll": 5,
+      "type": "slashing"
+    },
+    "expect": {
+      "blocked": false,
+      "damage": 5,
+      "hp": 25
+    }
+  },
+  {
+    "name": "block fails: block margin 14 is under the attacker's margin 39",
+    "attacker": {
+      "skill": 72,
+      "roll": 10,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "attributes": {
+        "agi": 5
+      },
+      "armor_dr": 0,
+      "hp": 30,
+      "block": {
+        "skill": 55,
+        "roll": 41,
+        "shield_dr": 2
+      }
+    },
+    "damage": {
+      "roll": 5,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "blocked": false,
+      "damage": 5,
+      "hp": 25
+    }
+  },
+  {
+    "name": "block then armor: shield 2 and DR 4 both subtract",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "attributes": {
+        "agi": 5
+      },
+      "armor_dr": 4,
+      "hp": 30,
+      "block": {
+        "skill": 55,
+        "roll": 41,
+        "shield_dr": 2
+      }
+    },
+    "damage": {
+      "roll": 12,
+      "type": "slashing"
+    },
+    "expect": {
+      "blocked": true,
+      "damage": 6,
+      "hp": 24
+    }
+  },
+  {
+    "name": "damage type: fire ignores armor DR",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "attributes": {
+        "agi": 5
+      },
+      "armor_dr": 22,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 10,
+      "type": "fire"
+    },
+    "expect": {
+      "damage": 10,
+      "hp": 20
+    }
+  },
+  {
+    "name": "damage type: a shield does not block fire",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "attributes": {
+        "agi": 5
+      },
+      "armor_dr": 0,
+      "hp": 30,
+      "block": {
+        "skill": 55,
+        "roll": 41,
+        "shield_dr": 2
+      }
+    },
+    "damage": {
+      "roll": 10,
+      "type": "fire"
+    },
+    "expect": {
+      "blocked": false,
+      "damage": 10,
+      "hp": 20
+    }
+  },
+  {
+    "name": "damage type: piercing halves armor DR (6 becomes 3)",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "attributes": {
+        "agi": 5
+      },
+      "armor_dr": 6,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 10,
+      "type": "piercing"
+    },
+    "expect": {
+      "damage": 7,
+      "hp": 23
+    }
+  },
+  {
+    "name": "damage type: slashing takes the whole armor DR",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "attributes": {
+        "agi": 5
+      },
+      "armor_dr": 6,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 10,
+      "type": "slashing"
+    },
+    "expect": {
+      "damage": 4,
+      "hp": 26
+    }
+  },
+  {
+    "name": "resist: fire resist 4 subtracts from fire damage",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "attributes": {
+        "agi": 5
+      },
+      "armor_dr": 0,
+      "hp": 30,
+      "resist": {
+        "fire": 4
+      }
+    },
+    "damage": {
+      "roll": 10,
+      "type": "fire"
+    },
+    "expect": {
+      "damage": 6,
+      "hp": 24
+    }
+  },
+  {
+    "name": "resist: a frost resist does not touch fire damage",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "attributes": {
+        "agi": 5
+      },
+      "armor_dr": 0,
+      "hp": 30,
+      "resist": {
+        "frost": 4
+      }
+    },
+    "damage": {
+      "roll": 10,
+      "type": "fire"
+    },
+    "expect": {
+      "damage": 10,
+      "hp": 20
+    }
+  },
+  {
+    "name": "order: crit doubles fire damage 6 to 12 before resist 4",
+    "attacker": {
+      "skill": 72,
+      "roll": 3,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "attributes": {
+        "agi": 5
+      },
+      "armor_dr": 0,
+      "hp": 30,
+      "resist": {
+        "fire": 4
+      }
+    },
+    "damage": {
+      "roll": 6,
+      "type": "fire"
+    },
+    "expect": {
+      "crit": true,
+      "damage": 8,
+      "hp": 22
+    }
+  },
+  {
+    "name": "hp floors at zero",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "attributes": {
+        "agi": 5
+      },
+      "armor_dr": 2,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 50,
+      "type": "slashing"
+    },
+    "expect": {
+      "damage": 48,
+      "hp": 0
+    }
+  }
+]
