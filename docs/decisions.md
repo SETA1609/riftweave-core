@@ -7,6 +7,19 @@ issue settles them.
 
 ## Decided
 
+### 2026-11-02: Rest is rows per occasion (M1-04)
+
+- **Decision:** `ruleset/data/rest/core.json` holds one row per occasion (`short_rest`,
+  `long_rest`, `end_of_combat`) with a recovery rule for each of `hp`, `mp`, `stamina`, `ap`,
+  and `conditions`. A resource that does not recover says `none`. The `rest` vector runner
+  reads the rows and the derived maxima. Spec: `docs/core/rest.md`.
+- **Why:** the only recorded rule was "a short rest refills AP". Prose recovery cannot be
+  pinned by a vector, and a second implementation would invent its own numbers.
+- **Open:** the fractions (a quarter of hp and mp on a short rest) are a first choice **[U]**.
+  Stamina has no derived row, so the vector supplies its maximum **[A]**. `pool.rest` in
+  `actions/core.json` still says `refill`; it agrees with the rest row for `ap` but is a second
+  place to change it.
+
 ### 2026-11-02: One physical attack pipeline (M1-02)
 
 - **Decision:** `docs/core/combat.md` fixes the order attack roll, one defender reaction
