@@ -66,7 +66,7 @@ The repo is bind-mounted, so a commit made in the container is a commit in the h
 
 ## Shared devops-tools
 
-The run log, log pruning, and the open-PR rebase come from [SETA1609/devops_tools](https://github.com/SETA1609/devops_tools), not from code in this repo. It is a dependency in `pyproject.toml`, pinned to commit `fde087b` (after `v0.1.0`) (full SHA in `pyproject.toml` and `uv.lock`). This package keeps only what is specific to Riftweave: the toolchain and agent containers and the cache cleanup.
+The run log, log pruning, and the open-PR rebase come from [SETA1609/devops_tools](https://github.com/SETA1609/devops_tools), not from code in this repo. It is a dependency in `pyproject.toml`, pinned to `v0.2.0` (commit `15c1bf1`) (full SHA in `pyproject.toml` and `uv.lock`). This package keeps only what is specific to Riftweave: the toolchain and agent containers and the cache cleanup.
 
 ```sh
 uv run --project tools/devops --locked --no-dev devops-tools prune-logs --older-than-days 7

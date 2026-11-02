@@ -7,6 +7,20 @@ issue settles them.
 
 ## Decided
 
+### 2026-11-02: The rebase keeps both sides of decision-log additions (M5-10)
+
+- `docs/decisions.md` is in `keep-both-added-lines`: when two open PRs each add a section at
+  the top, the rebase keeps both, the branch's first, like the changelog and story files.
+  Before this, the rebase workflow failed on every push to `main` since 2026-11-01 and left
+  each such branch for a person. Reproduced locally with `rebase-open-branches --no-push`;
+  `docs/decisions.md` was the only conflicting file. **[V 2026-11-02]**
+- new-world never hit this: it has no shared append-only log; decisions go into the topic
+  doc they change. Kept the single log here because it is short and newest-first. **[A]**
+- devops-tools, the rebase workflow, and the fragments workflow move to `v0.2.0`
+  (`15c1bf1`), the tag new-world uses; the code is the same as `fde087b` apart from the
+  version bump.
+- Risk: two PRs that edit the same existing lines of the log still need a person.
+
 ### 2026-11-02: Changelog fragments (M5-02)
 
 - Each PR adds `changes/<issue-id>.md` instead of a `CHANGELOG.md` line, as in new-world. Every
@@ -21,6 +35,7 @@ issue settles them.
   entries written before M5-02 and is folded into the first release by hand. **[A]**
 - Risk: a release PR deletes every fragment, its own included, so it adds its own fragment
   after `release` or its branch check fails.
+
 ### 2026-11-02: Racial traits are features (M1-06)
 
 - `features` is the only table for racial traits. The 18 rows of `data/traits/core.json`
@@ -36,6 +51,7 @@ issue settles them.
   field name `traits` is unchanged, so no data key is renamed.
 - `validate.py` checks that a race's `traits` point at `racial_trait` features and that
   every core `racial_trait` is used by a race.
+
 ### 2026-11-02: Every skill has a consumer; checks are rows (M2-02)
 
 - A skill needs a governing attribute and at least one consumer: a weapon, an armor
