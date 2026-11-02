@@ -30,7 +30,6 @@ There are no tagged releases yet. `[Unreleased]` becomes `[1.0.0]` when the road
 - **SET-22** Golden vectors for resolution and derived HP. (#36)
 - **SET-25** Module overrides: a module may override a vanilla row by key. (#39)
 - **SET-15** Vertical loop example: create, equip, attack, DR, XP, perk. (#27)
-- **M1-07** One test runs every vector file; a checklist in `docs/core/vectors.md` names each kernel function's vectors.
 
 ### Changed
 - **M5-01** Open issues get story-scoped ids (`M1-01`, old id in `Was:`), real `Needs` and `Files`, and a computed order (`devops-tools roadmap-order`); the story table in `ROADMAP.md` is generated and checked in CI. (#46)
