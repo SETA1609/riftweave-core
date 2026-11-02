@@ -102,3 +102,43 @@ See `scripts/crafting_reference.py --verbose` for a runnable demonstration.
 ---
 
 **Next action:** Flesh out a minimal recipe schema and example data once the core module system shape is clearer.
+
+## The module slice (POST-01)
+
+The module `crafting` (`ruleset/modules/crafting/`) turns the data above into a procedure: a recipe, a skill check, time, a station, and a quality grade. It is optional. Core resolves an attack and a level-up with it unloaded ([contract](../core/contract.md)); it reads core rows and emits an item, and nothing calls into it. The older `data/crafting/` stubs and `crafting_reference.py` (phase composition) stay as they are. [A]
+
+### Inspiration and how it differs
+
+- **Morrowind and Oblivion** make an item's quality a function of one skill roll; **Fallout: New Vegas** gates recipes on a workbench **[U]**. Riftweave takes both: one d100 roll-under check on the recipe's skill ([resolution.md](../core/resolution.md)), and a station every recipe names.
+- **D&D 5e downtime crafting** counts days against gold **[U]**. Riftweave counts hours and lets the station change them.
+- The grade ladder is the shared `qualityGrade` vocabulary in `schema.json` (`petty` to `legendary`, `common` the baseline). No bonus taxonomy: a station's bonus is an `add` on the check.
+
+### Rules
+
+```
+target   = skill + station.skill_bonus - recipe.difficulty        no cap (resolution.md)
+roll     d100 against target, by the one resolution function
+fumble   ruined: no item, all inputs consumed
+failure  no item, fail_loss_percent of the inputs consumed
+success  margin = target - roll
+         grade_index = base_index + floor(margin / 10) + crit_bonus     formula tree
+         grade_index = clamp(grade_index, 0, station.max_grade_index)
+         the item is made at that grade
+time     hours = max(min_hours, floor(recipe.time * station.time_percent / 100))
+```
+
+- `base_index` is the index of `common` on the ladder (3). `crit_bonus` is 1 when the roll is tagged `crit`, else 0. A margin of 30 or more on a good station gives `greater`; a station caps what skill alone cannot exceed. [A]
+- A station is a module row `module:crafting/station/<key>`. A recipe names the one it needs; a station whose `counts_as` lists it also serves (a master's forge serves as a smithy forge). A recipe with no suitable station cannot be started, and the check never rolls. [A]
+- Inputs are core rows (`core:material/...`, `core:ingredient/...`, `core:gem/...`). The output is a core item, with a `core:material/...` for gear. The material must be in the base template's `valid_materials` ([materials.md](../core/materials.md)). The output is an item instance with a grade; this module does not write a `crafted_item` row, and phase composition stays in `crafting_reference.py`.
+- Experience: none. Crafting does not award XP ([progression.md](progression.md)).
+
+### Data
+
+| file | holds |
+| --- | --- |
+| `data/stations.json` | `stations`: skill bonus, highest grade, time percent, `counts_as` |
+| `data/quality.json` | `quality`: the grade ladder with value percent, the base grade, the grade formula tree, the time formula tree, the failure loss |
+| `data/recipes.json` | `crafting_recipes`: skill, station, difficulty, hours, inputs, output |
+
+Vectors are in `ruleset/modules/crafting/tests/vectors.json`, run by `ruleset/scripts/test_craft_reference.py` (the core vector test checks kernel functions only). The numbers are first choices **[U]**; the check is that the vectors pin them.
+
