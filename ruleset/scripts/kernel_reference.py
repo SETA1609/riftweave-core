@@ -140,32 +140,48 @@ def run_combat(vector):
     attacker, defender, damage = vector["attacker"], vector["defender"], vector["damage"]
     tags = types[damage["type"]]["tags"]
 
-    penalty = evaluate_formula(
-        pipeline["evasion"], defender["attributes"], {"evasion_skill": defender["evasion_skill"]}
-    )
     attack = run_resolution(
         {
             "actor": {"skills": {"attack": attacker["skill"]}, "attributes": attacker.get("attributes", {})},
-            "modifiers": vector.get("modifiers", []) + [{"op": "add", "value": -penalty}],
+            "modifiers": vector.get("modifiers", []),
             "roll": attacker["roll"],
         }
     )
     crit = "crit" in attack["tags"]
-    result = {"target": attack["target"], "margin": attack["margin"], "crit": crit, "blocked": False}
+    result = {
+        "target": attack["target"],
+        "margin": attack["margin"],
+        "crit": crit,
+        "evaded": False,
+        "blocked": False,
+    }
     if not attack["success"]:
         result.update(outcome="fumble" if "fumble" in attack["tags"] else "miss", damage=0, hp=defender["hp"])
         return result
+
+    # One reaction per attack, rolled only on a hit, against physical types only.
+    physical = pipeline["dr_applies_tag"] in tags
+    reaction = defender.get("reaction") if physical else None
+    kind = reaction["kind"] if reaction else None
+    if kind == "evade":
+        evade_target = evaluate_formula(
+            pipeline["evasion"], defender["attributes"], {"evasion_skill": defender["evasion_skill"]}
+        )
+        if reaction["roll"] <= evade_target and evade_target - reaction["roll"] >= attack["margin"]:
+            result.update(outcome="evaded", evaded=True, damage=0, hp=defender["hp"])
+            return result
+    elif kind == "block":
+        if reaction["roll"] <= reaction["skill"] and reaction["skill"] - reaction["roll"] >= attack["margin"]:
+            result["blocked"] = True
+    elif kind is not None:
+        raise ValueError(f"reaction kind {kind!r} is not defined")
     result["outcome"] = "hit"
 
     amount = damage["roll"]
     if crit:
         amount = evaluate_formula(pipeline["crit_damage"], {}, {"damage": amount})
-    physical = pipeline["dr_applies_tag"] in tags
-    block = defender.get("block")
-    if block and physical and block["roll"] <= block["skill"]:
-        if block["skill"] - block["roll"] >= attack["margin"]:
-            result["blocked"] = True
-            amount = max(amount - block["shield_dr"], 0)
+    if result["blocked"]:
+        amount = max(amount - reaction["shield_dr"], 0)
     if physical:
         dr = defender.get("armor_dr", 0)
         if pipeline["pierce_tag"] in tags:
