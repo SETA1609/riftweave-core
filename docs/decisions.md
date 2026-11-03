@@ -7,6 +7,16 @@ issue settles them.
 
 ## Decided
 
+### 2026-11-03: Post-1.0 modules wait for the 1.0 tag (M5-11)
+
+- **Decision:** every POST issue without a POST parent lists `M5-09` in `Needs`, so
+  `roadmap-order` blocks the whole POST story until `v1.0.0` is tagged.
+- **Why:** the roadmap already said modules come after 1.0, but the root POST issues only
+  needed kernel issues, so `roadmap-order show` listed POST-01, POST-04, and POST-06 as ready
+  next to core work. **[V 2026-11-03]**
+- **Open:** POST-05 (factions) was merged before this, in #51. It stays merged; nothing in
+  core depends on it. **[V 2026-11-03]**
+
 ### 2026-11-04: The rebase regenerates the roadmap table (M5-13)
 
 - **Decision:** devops-tools moves to v0.3.0 (`f7aca2e`), with

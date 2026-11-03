@@ -179,3 +179,27 @@ Tracked in Linear before this repo had a tracker, recovered from git history. Th
 - Files: ~8 (changes/README.md, CHANGELOG.md, CONTRIBUTING.md, docs/stories/README.md, AGENTS.md, tools/devops/pyproject.toml, .github/workflows/changelog-fragments.yml)
 - See: https://github.com/SETA1609/devops_tools (changelog-fragments, reusable workflow)
 - Done when: `changes/README.md` states the rules; CI runs `changelog-fragments check --branch` on every PR through the reusable workflow at the pinned SHA; CONTRIBUTING and the stories README say to add a fragment, not a CHANGELOG line; this PR's own entry is a fragment.
+
+#### M5-10 Keep both sides of decision-log additions in the rebase
+- Status: done
+- Merged: #53, 2026-11-02
+- Priority: high
+- Needs: M5-02
+- Do: The rebase workflow has failed on every push to `main` since 2026-11-01: two open PRs that each add a dated section at the top of `docs/decisions.md` conflict, and the tool leaves the branch for a person. new-world has no shared append-only log, so it never hit this. Add `docs/decisions.md` to `keep-both-added-lines`, so the rebase keeps both sections like the changelog and story files. Pin devops-tools to v0.2.0, as new-world does.
+- Keys: `keep-both-added-lines` in `[tool.devops-tools]`
+- Files: ~8 (tools/devops/pyproject.toml, tools/devops/uv.lock, .github/workflows/, docs/decisions.md, AGENTS.md, CONTRIBUTING.md)
+- See: https://github.com/SETA1609/devops_tools (rebase-open-branches, `keep-both-added-lines`)
+- Done when: `keep-both-added-lines` lists `docs/decisions.md`; a local `rebase-open-branches --no-push` of two branches that both add a decision section succeeds; devops-tools, the rebase workflow, and the fragments workflow are pinned to the same v0.2.0 SHA; tooling tests pass.
+
+## POST Post-1.0 modules
+
+#### POST-05 Factions and reputation module
+- Status: done
+- Merged: #51, 2026-11-02
+- Priority: medium
+- Needs: —
+- Was: RW-35
+- Do: No faction schema or data yet. Design doc first.
+- Files: ~6 (ruleset/modules/<module>/, docs/modules/<module>.md)
+- See: issues.md section 3
+- Done when: `docs/modules/factions.md`, schema, and data.

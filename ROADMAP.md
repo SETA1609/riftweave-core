@@ -80,8 +80,8 @@ is the earliest wave of its open issues; stories in the same wave can run in par
 | 1 | M3 | blocked, critical | M1 | 4 |
 | 0 | M4 | ready | M1 | 4 |
 | 0 | M5 | ready, critical | M1, M2, M3, M4 | 5 |
-| 0 | POST | ready | M1, M3 | 7 |
-| 0 | APP | ready, critical | M1, M5 | 7 |
+| 5 | POST | blocked, critical | M1, M3, M5 | 7 |
+| 0 | APP | ready | M1, M5 | 7 |
 
 <!-- roadmap-order end -->
 
