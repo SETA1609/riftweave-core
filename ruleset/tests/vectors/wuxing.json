@@ -1,0 +1,313 @@
+[
+  {
+    "name": "generating: wood feeds fire",
+    "actor_phase": "wood",
+    "recipient_phase": "fire",
+    "expect": {
+      "cycle": "generating",
+      "interaction": "amplify",
+      "affects": "recipient",
+      "multiplier": 1.5
+    }
+  },
+  {
+    "name": "generating: fire feeds earth",
+    "actor_phase": "fire",
+    "recipient_phase": "earth",
+    "expect": {
+      "cycle": "generating",
+      "interaction": "amplify",
+      "affects": "recipient",
+      "multiplier": 1.5
+    }
+  },
+  {
+    "name": "generating: earth feeds metal",
+    "actor_phase": "earth",
+    "recipient_phase": "metal",
+    "expect": {
+      "cycle": "generating",
+      "interaction": "amplify",
+      "affects": "recipient",
+      "multiplier": 1.5
+    }
+  },
+  {
+    "name": "generating: metal feeds water",
+    "actor_phase": "metal",
+    "recipient_phase": "water",
+    "expect": {
+      "cycle": "generating",
+      "interaction": "amplify",
+      "affects": "recipient",
+      "multiplier": 1.5
+    }
+  },
+  {
+    "name": "generating: water feeds wood",
+    "actor_phase": "water",
+    "recipient_phase": "wood",
+    "expect": {
+      "cycle": "generating",
+      "interaction": "amplify",
+      "affects": "recipient",
+      "multiplier": 1.5
+    }
+  },
+  {
+    "name": "overcoming: wood controls earth",
+    "actor_phase": "wood",
+    "recipient_phase": "earth",
+    "expect": {
+      "cycle": "overcoming",
+      "interaction": "suppress",
+      "affects": "recipient",
+      "multiplier": 0.5
+    }
+  },
+  {
+    "name": "overcoming: fire controls metal",
+    "actor_phase": "fire",
+    "recipient_phase": "metal",
+    "expect": {
+      "cycle": "overcoming",
+      "interaction": "suppress",
+      "affects": "recipient",
+      "multiplier": 0.5
+    }
+  },
+  {
+    "name": "overcoming: earth controls water",
+    "actor_phase": "earth",
+    "recipient_phase": "water",
+    "expect": {
+      "cycle": "overcoming",
+      "interaction": "suppress",
+      "affects": "recipient",
+      "multiplier": 0.5
+    }
+  },
+  {
+    "name": "overcoming: metal controls wood",
+    "actor_phase": "metal",
+    "recipient_phase": "wood",
+    "expect": {
+      "cycle": "overcoming",
+      "interaction": "suppress",
+      "affects": "recipient",
+      "multiplier": 0.5
+    }
+  },
+  {
+    "name": "overcoming: water controls fire",
+    "actor_phase": "water",
+    "recipient_phase": "fire",
+    "expect": {
+      "cycle": "overcoming",
+      "interaction": "suppress",
+      "affects": "recipient",
+      "multiplier": 0.5
+    }
+  },
+  {
+    "name": "weakening: fire drains its mother wood",
+    "actor_phase": "fire",
+    "recipient_phase": "wood",
+    "expect": {
+      "cycle": "weakening",
+      "interaction": "drain",
+      "affects": "recipient",
+      "multiplier": 0.75
+    }
+  },
+  {
+    "name": "weakening: earth drains its mother fire",
+    "actor_phase": "earth",
+    "recipient_phase": "fire",
+    "expect": {
+      "cycle": "weakening",
+      "interaction": "drain",
+      "affects": "recipient",
+      "multiplier": 0.75
+    }
+  },
+  {
+    "name": "weakening: metal drains its mother earth",
+    "actor_phase": "metal",
+    "recipient_phase": "earth",
+    "expect": {
+      "cycle": "weakening",
+      "interaction": "drain",
+      "affects": "recipient",
+      "multiplier": 0.75
+    }
+  },
+  {
+    "name": "weakening: water drains its mother metal",
+    "actor_phase": "water",
+    "recipient_phase": "metal",
+    "expect": {
+      "cycle": "weakening",
+      "interaction": "drain",
+      "affects": "recipient",
+      "multiplier": 0.75
+    }
+  },
+  {
+    "name": "weakening: wood drains its mother water",
+    "actor_phase": "wood",
+    "recipient_phase": "water",
+    "expect": {
+      "cycle": "weakening",
+      "interaction": "drain",
+      "affects": "recipient",
+      "multiplier": 0.75
+    }
+  },
+  {
+    "name": "insulting: a stronger earth backlashes onto its controller wood",
+    "actor_phase": "earth",
+    "recipient_phase": "wood",
+    "actor_magnitude": 10,
+    "recipient_magnitude": 5,
+    "expect": {
+      "cycle": "insulting",
+      "interaction": "backlash",
+      "affects": "recipient",
+      "multiplier": 1.25
+    }
+  },
+  {
+    "name": "insulting: a stronger metal backlashes onto its controller fire",
+    "actor_phase": "metal",
+    "recipient_phase": "fire",
+    "actor_magnitude": 10,
+    "recipient_magnitude": 5,
+    "expect": {
+      "cycle": "insulting",
+      "interaction": "backlash",
+      "affects": "recipient",
+      "multiplier": 1.25
+    }
+  },
+  {
+    "name": "insulting: a stronger water backlashes onto its controller earth",
+    "actor_phase": "water",
+    "recipient_phase": "earth",
+    "actor_magnitude": 10,
+    "recipient_magnitude": 5,
+    "expect": {
+      "cycle": "insulting",
+      "interaction": "backlash",
+      "affects": "recipient",
+      "multiplier": 1.25
+    }
+  },
+  {
+    "name": "insulting: a stronger wood backlashes onto its controller metal",
+    "actor_phase": "wood",
+    "recipient_phase": "metal",
+    "actor_magnitude": 10,
+    "recipient_magnitude": 5,
+    "expect": {
+      "cycle": "insulting",
+      "interaction": "backlash",
+      "affects": "recipient",
+      "multiplier": 1.25
+    }
+  },
+  {
+    "name": "insulting: a stronger fire backlashes onto its controller water",
+    "actor_phase": "fire",
+    "recipient_phase": "water",
+    "actor_magnitude": 10,
+    "recipient_magnitude": 5,
+    "expect": {
+      "cycle": "insulting",
+      "interaction": "backlash",
+      "affects": "recipient",
+      "multiplier": 1.25
+    }
+  },
+  {
+    "name": "insulting falls back: fire equal to water is suppressed by it",
+    "actor_phase": "fire",
+    "recipient_phase": "water",
+    "actor_magnitude": 5,
+    "recipient_magnitude": 5,
+    "expect": {
+      "cycle": "overcoming",
+      "interaction": "suppress",
+      "affects": "actor",
+      "multiplier": 0.5
+    }
+  },
+  {
+    "name": "insulting falls back: fire weaker than water is suppressed by it",
+    "actor_phase": "fire",
+    "recipient_phase": "water",
+    "actor_magnitude": 3,
+    "recipient_magnitude": 8,
+    "expect": {
+      "cycle": "overcoming",
+      "interaction": "suppress",
+      "affects": "actor",
+      "multiplier": 0.5
+    }
+  },
+  {
+    "name": "insulting needs both magnitudes",
+    "actor_phase": "fire",
+    "recipient_phase": "water",
+    "actor_magnitude": 10,
+    "expect": {
+      "error": "insulting needs actor_magnitude and recipient_magnitude"
+    }
+  },
+  {
+    "name": "a cycle without a condition ignores magnitudes",
+    "actor_phase": "water",
+    "recipient_phase": "fire",
+    "actor_magnitude": 1,
+    "recipient_magnitude": 99,
+    "expect": {
+      "cycle": "overcoming",
+      "interaction": "suppress",
+      "affects": "recipient",
+      "multiplier": 0.5
+    }
+  },
+  {
+    "name": "same phase: nothing fires",
+    "actor_phase": "fire",
+    "recipient_phase": "fire",
+    "expect": {
+      "cycle": null,
+      "interaction": "none",
+      "affects": null,
+      "multiplier": 1
+    }
+  },
+  {
+    "name": "missing recipient phase: nothing fires",
+    "actor_phase": "fire",
+    "recipient_phase": null,
+    "expect": {
+      "cycle": null,
+      "interaction": "none",
+      "affects": null,
+      "multiplier": 1
+    }
+  },
+  {
+    "name": "missing actor phase: nothing fires",
+    "actor_phase": null,
+    "recipient_phase": "water",
+    "expect": {
+      "cycle": null,
+      "interaction": "none",
+      "affects": null,
+      "multiplier": 1
+    }
+  }
+]

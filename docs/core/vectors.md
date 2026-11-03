@@ -41,6 +41,7 @@ The other fields are the input the function reads. They are listed per function 
 | `rest` | `occasion` (a key in `ruleset/data/rest/core.json`), `actor.attributes`, `actor.level`, `modifiers`, `current` (hp, mp, stamina, ap), `max.stamina`, `conditions` (key and duration) | the four resources after the rest, and `conditions` (the keys left) |
 | `combat` | `attacker` (`skill`, `roll`, `attributes.lck`), `defender` (`evasion_skill`, `attributes.lck` for reaction crits, `armor_dr`, `hp`, `resist` by damage type, optional `reaction`: `kind` `evade` with `roll`, or `kind` `block` with `skill`, `roll`, `shield_dr`), `damage` (`roll`, `type`), `delivery` (`single`, the default, `area`, or `instant`), `modifiers` on the attack | `outcome` (`hit`, `miss`, `fumble`, `evaded`), `target`, `margin`, `crit`, `evaded`, `blocked`, `reaction_tags` (`crit`, `fumble` on the reaction roll), `damage` after reductions, `hp` |
 | `progression` | `op`: `xp` (`level`), `level` (`xp`), `level_up` (`actor.attributes`, `luck_roll`), `spend` (`skill`, `tagged`, `points`) | `xp_total`, `xp_step`; `level`; `skill_points`, `perks` (or `error`); `ranks`, `spent`, `left` |
+| `wuxing` | `actor_phase`, `recipient_phase` (a phase or null), `actor_magnitude` and `recipient_magnitude` (read only by a cycle with a `condition`) | `cycle`, `interaction`, `affects`, `multiplier` (or `error`) |
 
 Coefficients come from `ruleset/data/`, not from the vector, so a data change that breaks a rule fails a vector.
 
@@ -50,6 +51,7 @@ Notes on the reference, for a second implementation to check against:
 - `modifiers` applies the contract stacking rule for `add` and `mul` only: same source and op, the latest wins; different sources add; `mul` after `add`. Two `mul` from different sources multiply. [A] `set`, `grant`, and `resist` raise an error in the reference until M1-05 fixes their order with vectors.
 - `derived` and `resolution` read a missing attribute as 0, and `derived` a missing level as 1. [A] Each vector names every value its `expect` fields depend on.
 - `formula` evaluates `lit`, `attr`, and the ops `add`, `sub`, `mul`, `div`. `div` is integer floor division, the `floor` rounding named in `ap.json`. [A] Other ops raise an error.
+- `wuxing` reads the cycles in `ruleset/data/wuxing/core.json` through `ruleset/scripts/wuxing_reference.py`; the rules are in [wuxing.md](../modules/wuxing.md). It is a module function, listed here because its vectors run with the kernel's. [A]
 - `actions` pool is `base + attr * per_point / per_point_divisor` from `ruleset/data/actions/core.json`; cost is the sum of the named actions' costs, so `attack` plus `aimed` is 5. The turn cap and carry are not checked yet. [A]
 
 ## Checklist
@@ -67,5 +69,6 @@ Every kernel function and the vector file that covers it. The test reads this ta
 | `rest` | `rest.json` | covered |
 | `combat` | `combat.json` | covered |
 | `progression` | `progression.json` | covered |
+| `wuxing` | `wuxing.json` | covered |
 
 The modifier vectors here cover `add`, `mul`, and same-source duplicates; M1-05 adds `set`, `grant`, `resist`, expiry, and conditions.
