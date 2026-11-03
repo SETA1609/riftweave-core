@@ -395,7 +395,7 @@
     }
   },
   {
-    "name": "evade does not apply to fire without a perk",
+    "name": "delivery single: a fire bolt is dodged whole, like an arrow",
     "attacker": {
       "skill": 72,
       "roll": 65,
@@ -412,6 +412,128 @@
         "roll": 10
       }
     },
+    "delivery": "single",
+    "damage": {
+      "roll": 10,
+      "type": "fire"
+    },
+    "expect": {
+      "outcome": "evaded",
+      "evaded": true,
+      "damage": 0,
+      "hp": 30
+    }
+  },
+  {
+    "name": "delivery area: a successful evade halves a fireball, 10 to 5",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "evade",
+        "roll": 10
+      }
+    },
+    "delivery": "area",
+    "damage": {
+      "roll": 10,
+      "type": "fire"
+    },
+    "expect": {
+      "outcome": "hit",
+      "evaded": true,
+      "damage": 5,
+      "hp": 25
+    }
+  },
+  {
+    "name": "delivery area: halving rounds down, 9 to 4",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "evade",
+        "roll": 10
+      }
+    },
+    "delivery": "area",
+    "damage": {
+      "roll": 9,
+      "type": "fire"
+    },
+    "expect": {
+      "outcome": "hit",
+      "evaded": true,
+      "damage": 4,
+      "hp": 26
+    }
+  },
+  {
+    "name": "delivery area: a crit doubles 6 to 12 before the evade halves it to 6",
+    "attacker": {
+      "skill": 72,
+      "roll": 3,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 100,
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "evade",
+        "roll": 20
+      }
+    },
+    "delivery": "area",
+    "damage": {
+      "roll": 6,
+      "type": "fire"
+    },
+    "expect": {
+      "outcome": "hit",
+      "crit": true,
+      "evaded": true,
+      "damage": 6,
+      "hp": 24
+    }
+  },
+  {
+    "name": "delivery area: a failed evade takes the whole fireball",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "evade",
+        "roll": 40
+      }
+    },
+    "delivery": "area",
     "damage": {
       "roll": 10,
       "type": "fire"
@@ -421,6 +543,101 @@
       "evaded": false,
       "damage": 10,
       "hp": 20
+    }
+  },
+  {
+    "name": "delivery area: a shield blocks a physical blast, shield DR 2 subtracts",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "block",
+        "skill": 55,
+        "roll": 41,
+        "shield_dr": 2
+      }
+    },
+    "delivery": "area",
+    "damage": {
+      "roll": 5,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "blocked": true,
+      "evaded": false,
+      "damage": 3,
+      "hp": 27
+    }
+  },
+  {
+    "name": "delivery instant: no evade; the spell lands in full (its save is M3-05)",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 100,
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "evade",
+        "roll": 1
+      }
+    },
+    "delivery": "instant",
+    "damage": {
+      "roll": 10,
+      "type": "fire"
+    },
+    "expect": {
+      "outcome": "hit",
+      "evaded": false,
+      "damage": 10,
+      "hp": 20
+    }
+  },
+  {
+    "name": "delivery instant: no block either",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "block",
+        "skill": 55,
+        "roll": 41,
+        "shield_dr": 2
+      }
+    },
+    "delivery": "instant",
+    "damage": {
+      "roll": 5,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "blocked": false,
+      "damage": 5,
+      "hp": 25
     }
   },
   {
