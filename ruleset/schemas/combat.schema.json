@@ -138,7 +138,7 @@
         "dr_applies_tag": { "type": "string", "description": "Damage-type tag that lets armor DR and block apply." },
         "pierce_tag": { "type": "string", "description": "Damage-type tag that swaps armor DR for pierce_dr." }
       },
-      "required": ["evasion", "crit_damage", "pierce_dr", "dr_applies_tag", "pierce_tag"],
+      "required": ["crit_damage", "pierce_dr", "dr_applies_tag", "pierce_tag"],
       "additionalProperties": false
     }
   },
