@@ -1,44 +1,6 @@
 {
   "$schema": "../../schemas/combat.schema.json",
   "pipeline": {
-    "evasion": {
-      "op": "add",
-      "args": [
-        {
-          "lit": 10
-        },
-        {
-          "op": "div",
-          "args": [
-            {
-              "op": "mul",
-              "args": [
-                {
-                  "var": "evasion_skill"
-                },
-                {
-                  "lit": 15
-                }
-              ]
-            },
-            {
-              "lit": 100
-            }
-          ]
-        },
-        {
-          "op": "mul",
-          "args": [
-            {
-              "attr": "agi"
-            },
-            {
-              "lit": 2
-            }
-          ]
-        }
-      ]
-    },
     "crit_damage": {
       "op": "mul",
       "args": [

@@ -164,9 +164,7 @@ def run_combat(vector):
     reaction = defender.get("reaction") if physical else None
     kind = reaction["kind"] if reaction else None
     if kind == "evade":
-        evade_target = evaluate_formula(
-            pipeline["evasion"], defender["attributes"], {"evasion_skill": defender["evasion_skill"]}
-        )
+        evade_target = defender["evasion_skill"]
         if reaction["roll"] <= evade_target and evade_target - reaction["roll"] >= attack["margin"]:
             result.update(outcome="evaded", evaded=True, damage=0, hp=defender["hp"])
             return result
