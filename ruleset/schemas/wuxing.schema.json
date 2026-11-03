@@ -55,7 +55,13 @@
         },
         "condition": {
           "type": "string",
-          "description": "Optional gating condition for imbalance cycles (e.g. backlash fires only when the actor's magnitude exceeds the recipient's)."
+          "enum": ["actor_magnitude_exceeds_recipient"],
+          "description": "Optional gate. actor_magnitude_exceeds_recipient: the cycle fires only when the actor's magnitude is strictly greater than the recipient's; otherwise its reverse_of cycle fires on the same pair with actor and recipient swapped. A cycle with a condition must name reverse_of. See docs/modules/wuxing.md."
+        },
+        "reverse_of": {
+          "type": "string",
+          "pattern": "^[a-z_][a-z0-9_]*$",
+          "description": "Id of another cycle in this file whose edges this cycle uses read backwards (each from -> to becomes to -> from). A cycle names reverse_of or lists edges, not both; the reverse is computed, never stored twice."
         },
         "description": { "type": "string" },
         "edges": {
@@ -74,7 +80,11 @@
           }
         }
       },
-      "required": ["id", "name", "interaction", "affects", "magnitudeMultiplier", "edges"],
+      "required": ["id", "name", "interaction", "affects", "magnitudeMultiplier"],
+      "oneOf": [
+        { "required": ["edges"], "not": { "required": ["reverse_of"] } },
+        { "required": ["reverse_of"], "not": { "required": ["edges"] } }
+      ],
       "additionalProperties": false
     }
   }

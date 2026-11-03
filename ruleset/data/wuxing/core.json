@@ -59,7 +59,7 @@
       "interaction": "backlash",
       "affects": "recipient",
       "magnitudeMultiplier": 1.25,
-      "condition": "Fires only when the actor's magnitude exceeds the recipient's; otherwise the overcoming cycle applies normally.",
+      "condition": "actor_magnitude_exceeds_recipient",
       "description": "The rebellion cycle (reverse of overcoming): when the normally-controlled phase is overwhelming, it turns on its controller. An over-strong Fire insults the Water that should quench it, backlashing onto the controller. 'from' is the rebelling phase (actor), 'to' is the would-be controller taking backlash (recipient).",
       "edges": [
         { "from": "earth", "to": "wood" },
