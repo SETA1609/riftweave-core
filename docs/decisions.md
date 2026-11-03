@@ -7,6 +7,26 @@ issue settles them.
 
 ## Decided
 
+### 2026-11-02: Integrity gates (M5-08)
+
+- **Decision:** `validate.py` gains two checks: every `core:<category>/<key>` string in any
+  data or module file must resolve (it walks all strings, so no field escapes), and every
+  core registry effect is referenced from another file or marked `"reserved": true`. A
+  reserved effect that is referenced also fails. Every schema property that holds a
+  reference uses `schema.json#/definitions/namespacedRef`, a pattern. Spec:
+  `docs/core/integrity.md`; tests: `ruleset/scripts/test_integrity.py`.
+- **Why:** the data review found 25 unreferenced effects (M6) and free-string branches
+  that let typos through (M3). 161 references resolved when the walk was first run, so the
+  gate went in green.
+- **Open:** the 26 unreferenced effects are marked reserved, not wired into content. The
+  review recommended wiring the two poison composites into the poison consumables **[U]**;
+  that changes content and is left to a content issue. The `oneOf`s that choose a structure
+  (equipment, monster) stay. A reference from another effect (`sub_effects`) does not count
+  as use **[A]**. `module:` references are not looked up **[A]**.
+- **Risk:** the crafting schemas described `base_key`, `material_key`, `gem_key`, and a
+  recipe's `skill` as "keys", but the data and the validator already used namespaced refs;
+  the descriptions were wrong, the data was right.
+
 ### 2026-11-02: Progression is data and formula trees (M1-03)
 
 - **Decision:** `ruleset/data/progression/core.json` holds the level and skill caps, the XP

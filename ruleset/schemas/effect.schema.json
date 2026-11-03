@@ -61,8 +61,12 @@
         "tags": { "type": "array", "items": { "type": "string" } },
         "sub_effects": {
           "type": "array",
-          "items": { "type": "string" },
+          "items": { "$ref": "schema.json#/definitions/namespacedRef" },
           "description": "Other effect refs that this effect applies (recursively) when it takes hold on a target. Use namespaced format core:effect/<key>. Used by poison effects to deliver symptoms (e.g. damage, drain, control effects). A poison effect (any effect with 'poison' in its tags or delivered via poison/coating channel) MUST NOT list any other effect that has 'poison' in its tags, to prevent infinite recursion or self-poisoning."
+        },
+        "reserved": {
+          "type": "boolean",
+          "description": "true when no data references this effect yet and it is kept for planned content (docs/core/integrity.md gate 3). validate.py fails if a reserved effect is referenced, so the flag cannot go stale."
         }
       },
       "required": ["key", "label", "description", "category", "polarity", "channels"],

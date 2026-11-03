@@ -73,7 +73,7 @@ Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02 ([done.md](done.md#m5-releas
 - Done when: `docs/core/versioning.md`: semver, key rename and removal are breaking, deprecation window; A tool diffs keys between tags and lists removals; CHANGELOG marks breaking entries.
 
 #### M5-08 Integrity gates
-- Status: todo
+- Status: review
 - Priority: high
 - Needs: M1-06
 - Was: RW-29
