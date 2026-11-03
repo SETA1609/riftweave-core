@@ -10,9 +10,6 @@
     },
     "defender": {
       "evasion_skill": 25,
-      "attributes": {
-        "agi": 5
-      },
       "armor_dr": 2,
       "hp": 30
     },
@@ -42,9 +39,6 @@
     },
     "defender": {
       "evasion_skill": 25,
-      "attributes": {
-        "agi": 5
-      },
       "armor_dr": 2,
       "hp": 30
     },
@@ -73,9 +67,6 @@
     },
     "defender": {
       "evasion_skill": 25,
-      "attributes": {
-        "agi": 5
-      },
       "armor_dr": 2,
       "hp": 30
     },
@@ -102,9 +93,6 @@
     },
     "defender": {
       "evasion_skill": 25,
-      "attributes": {
-        "agi": 5
-      },
       "armor_dr": 2,
       "hp": 30
     },
@@ -130,9 +118,6 @@
     },
     "defender": {
       "evasion_skill": 25,
-      "attributes": {
-        "agi": 5
-      },
       "armor_dr": 0,
       "hp": 30
     },
@@ -158,9 +143,6 @@
     },
     "defender": {
       "evasion_skill": 25,
-      "attributes": {
-        "agi": 5
-      },
       "armor_dr": 0,
       "hp": 30
     },
@@ -185,7 +167,7 @@
     }
   },
   {
-    "name": "evasion no longer lowers the attacker's target: a high evader still faces target 72",
+    "name": "evasion does not lower the attacker's target: evasion 90 without a reaction still faces target 72",
     "attacker": {
       "skill": 72,
       "roll": 70,
@@ -195,9 +177,6 @@
     },
     "defender": {
       "evasion_skill": 90,
-      "attributes": {
-        "agi": 10
-      },
       "armor_dr": 0,
       "hp": 30
     },
@@ -224,9 +203,6 @@
     },
     "defender": {
       "evasion_skill": 25,
-      "attributes": {
-        "agi": 5
-      },
       "armor_dr": 22,
       "hp": 30
     },
@@ -241,7 +217,7 @@
     }
   },
   {
-    "name": "evade: target 23 (10 + 25*15/100 + AGI 5*2), margin 13 reaches the attack margin 7",
+    "name": "evade: target is the evasion skill 25; evade margin 15 reaches the attack margin 7",
     "attacker": {
       "skill": 72,
       "roll": 65,
@@ -251,9 +227,6 @@
     },
     "defender": {
       "evasion_skill": 25,
-      "attributes": {
-        "agi": 5
-      },
       "armor_dr": 2,
       "hp": 30,
       "reaction": {
@@ -286,14 +259,11 @@
     },
     "defender": {
       "evasion_skill": 25,
-      "attributes": {
-        "agi": 5
-      },
       "armor_dr": 0,
       "hp": 30,
       "reaction": {
         "kind": "evade",
-        "roll": 11
+        "roll": 13
       }
     },
     "damage": {
@@ -308,7 +278,7 @@
     }
   },
   {
-    "name": "evade fails: evade roll 40 is over the evade target 23",
+    "name": "evade fails: evade roll 40 is over the evasion skill 25",
     "attacker": {
       "skill": 72,
       "roll": 65,
@@ -318,9 +288,6 @@
     },
     "defender": {
       "evasion_skill": 25,
-      "attributes": {
-        "agi": 5
-      },
       "armor_dr": 0,
       "hp": 30,
       "reaction": {
@@ -340,7 +307,7 @@
     }
   },
   {
-    "name": "evade fails: evade margin 13 is under the attack margin 25",
+    "name": "evade fails: evade margin 15 is under the attack margin 25",
     "attacker": {
       "skill": 72,
       "roll": 47,
@@ -350,9 +317,6 @@
     },
     "defender": {
       "evasion_skill": 25,
-      "attributes": {
-        "agi": 5
-      },
       "armor_dr": 0,
       "hp": 30,
       "reaction": {
@@ -382,9 +346,6 @@
     },
     "defender": {
       "evasion_skill": 25,
-      "attributes": {
-        "agi": 5
-      },
       "armor_dr": 0,
       "hp": 30,
       "reaction": {
@@ -404,6 +365,36 @@
     }
   },
   {
+    "name": "evade: evasion 90 dodges an attack margin of 25 (roll 30, margin 60); skill points count in full",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 90,
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "evade",
+        "roll": 30
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "evaded",
+      "margin": 25,
+      "evaded": true,
+      "damage": 0,
+      "hp": 30
+    }
+  },
+  {
     "name": "evade does not apply to fire without a perk",
     "attacker": {
       "skill": 72,
@@ -414,9 +405,6 @@
     },
     "defender": {
       "evasion_skill": 25,
-      "attributes": {
-        "agi": 5
-      },
       "armor_dr": 0,
       "hp": 30,
       "reaction": {
@@ -446,9 +434,6 @@
     },
     "defender": {
       "evasion_skill": 25,
-      "attributes": {
-        "agi": 5
-      },
       "armor_dr": 0,
       "hp": 30,
       "reaction": {
@@ -480,9 +465,6 @@
     },
     "defender": {
       "evasion_skill": 25,
-      "attributes": {
-        "agi": 5
-      },
       "armor_dr": 0,
       "hp": 30,
       "reaction": {
@@ -513,9 +495,6 @@
     },
     "defender": {
       "evasion_skill": 25,
-      "attributes": {
-        "agi": 5
-      },
       "armor_dr": 0,
       "hp": 30,
       "reaction": {
@@ -547,9 +526,6 @@
     },
     "defender": {
       "evasion_skill": 25,
-      "attributes": {
-        "agi": 5
-      },
       "armor_dr": 4,
       "hp": 30,
       "reaction": {
@@ -580,9 +556,6 @@
     },
     "defender": {
       "evasion_skill": 25,
-      "attributes": {
-        "agi": 5
-      },
       "armor_dr": 22,
       "hp": 30
     },
@@ -606,9 +579,6 @@
     },
     "defender": {
       "evasion_skill": 25,
-      "attributes": {
-        "agi": 5
-      },
       "armor_dr": 0,
       "hp": 30,
       "reaction": {
@@ -639,9 +609,6 @@
     },
     "defender": {
       "evasion_skill": 25,
-      "attributes": {
-        "agi": 5
-      },
       "armor_dr": 6,
       "hp": 30
     },
@@ -665,9 +632,6 @@
     },
     "defender": {
       "evasion_skill": 25,
-      "attributes": {
-        "agi": 5
-      },
       "armor_dr": 6,
       "hp": 30
     },
@@ -691,9 +655,6 @@
     },
     "defender": {
       "evasion_skill": 25,
-      "attributes": {
-        "agi": 5
-      },
       "armor_dr": 0,
       "hp": 30,
       "resist": {
@@ -720,9 +681,6 @@
     },
     "defender": {
       "evasion_skill": 25,
-      "attributes": {
-        "agi": 5
-      },
       "armor_dr": 0,
       "hp": 30,
       "resist": {
@@ -749,9 +707,6 @@
     },
     "defender": {
       "evasion_skill": 25,
-      "attributes": {
-        "agi": 5
-      },
       "armor_dr": 0,
       "hp": 30,
       "resist": {
@@ -779,9 +734,6 @@
     },
     "defender": {
       "evasion_skill": 25,
-      "attributes": {
-        "agi": 5
-      },
       "armor_dr": 2,
       "hp": 30
     },
