@@ -1,6 +1,6 @@
 [
   {
-    "name": "hit: evasion 23 takes the target from 72 to 49, armor DR 2 absorbs part",
+    "name": "hit: no reaction, the target is the attacker's skill 72; armor DR 2 absorbs part",
     "attacker": {
       "skill": 72,
       "roll": 47,
@@ -22,10 +22,11 @@
     },
     "expect": {
       "outcome": "hit",
-      "target": 49,
-      "margin": 2,
+      "target": 72,
+      "margin": 25,
       "crit": false,
       "blocked": false,
+      "evaded": false,
       "damage": 6,
       "hp": 24
     }
@@ -34,7 +35,7 @@
     "name": "miss: roll above the target does no damage",
     "attacker": {
       "skill": 72,
-      "roll": 60,
+      "roll": 80,
       "attributes": {
         "lck": 0
       }
@@ -53,9 +54,10 @@
     },
     "expect": {
       "outcome": "miss",
-      "target": 49,
+      "target": 72,
       "margin": null,
       "crit": false,
+      "evaded": false,
       "damage": 0,
       "hp": 30
     }
@@ -83,7 +85,7 @@
     },
     "expect": {
       "outcome": "hit",
-      "margin": 43,
+      "margin": 66,
       "crit": true,
       "damage": 14,
       "hp": 16
@@ -176,8 +178,37 @@
     ],
     "expect": {
       "outcome": "hit",
-      "target": 59,
-      "margin": 4,
+      "target": 82,
+      "margin": 27,
+      "damage": 8,
+      "hp": 22
+    }
+  },
+  {
+    "name": "evasion no longer lowers the attacker's target: a high evader still faces target 72",
+    "attacker": {
+      "skill": 72,
+      "roll": 70,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 90,
+      "attributes": {
+        "agi": 10
+      },
+      "armor_dr": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "target": 72,
+      "margin": 2,
       "damage": 8,
       "hp": 22
     }
@@ -210,7 +241,106 @@
     }
   },
   {
-    "name": "block: margin 14 reaches the attacker's margin 2, shield DR 2 subtracts",
+    "name": "evade: target 23 (10 + 25*15/100 + AGI 5*2), margin 13 reaches the attack margin 7",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "attributes": {
+        "agi": 5
+      },
+      "armor_dr": 2,
+      "hp": 30,
+      "reaction": {
+        "kind": "evade",
+        "roll": 10
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "evaded",
+      "target": 72,
+      "margin": 7,
+      "evaded": true,
+      "blocked": false,
+      "damage": 0,
+      "hp": 30
+    }
+  },
+  {
+    "name": "evade: a tie on margin goes to the defender (12 against 12)",
+    "attacker": {
+      "skill": 72,
+      "roll": 60,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "attributes": {
+        "agi": 5
+      },
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "evade",
+        "roll": 11
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "evaded",
+      "evaded": true,
+      "damage": 0,
+      "hp": 30
+    }
+  },
+  {
+    "name": "evade fails: evade roll 40 is over the evade target 23",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "attributes": {
+        "agi": 5
+      },
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "evade",
+        "roll": 40
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "evaded": false,
+      "damage": 8,
+      "hp": 22
+    }
+  },
+  {
+    "name": "evade fails: evade margin 13 is under the attack margin 25",
     "attacker": {
       "skill": 72,
       "roll": 47,
@@ -225,7 +355,104 @@
       },
       "armor_dr": 0,
       "hp": 30,
-      "block": {
+      "reaction": {
+        "kind": "evade",
+        "roll": 10
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "evaded": false,
+      "damage": 8,
+      "hp": 22
+    }
+  },
+  {
+    "name": "evade is not rolled on a miss",
+    "attacker": {
+      "skill": 72,
+      "roll": 80,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "attributes": {
+        "agi": 5
+      },
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "evade",
+        "roll": 1
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "miss",
+      "evaded": false,
+      "damage": 0,
+      "hp": 30
+    }
+  },
+  {
+    "name": "evade does not apply to fire without a perk",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "attributes": {
+        "agi": 5
+      },
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "evade",
+        "roll": 10
+      }
+    },
+    "damage": {
+      "roll": 10,
+      "type": "fire"
+    },
+    "expect": {
+      "outcome": "hit",
+      "evaded": false,
+      "damage": 10,
+      "hp": 20
+    }
+  },
+  {
+    "name": "block: margin 14 reaches the attack margin 7, shield DR 2 subtracts",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "attributes": {
+        "agi": 5
+      },
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "block",
         "skill": 55,
         "roll": 41,
         "shield_dr": 2
@@ -246,7 +473,7 @@
     "name": "block fails: block roll 90 is over skill 55",
     "attacker": {
       "skill": 72,
-      "roll": 47,
+      "roll": 65,
       "attributes": {
         "lck": 0
       }
@@ -258,7 +485,8 @@
       },
       "armor_dr": 0,
       "hp": 30,
-      "block": {
+      "reaction": {
+        "kind": "block",
         "skill": 55,
         "roll": 90,
         "shield_dr": 2
@@ -275,7 +503,7 @@
     }
   },
   {
-    "name": "block fails: block margin 14 is under the attacker's margin 39",
+    "name": "block fails: block margin 14 is under the attack margin 62",
     "attacker": {
       "skill": 72,
       "roll": 10,
@@ -290,7 +518,8 @@
       },
       "armor_dr": 0,
       "hp": 30,
-      "block": {
+      "reaction": {
+        "kind": "block",
         "skill": 55,
         "roll": 41,
         "shield_dr": 2
@@ -311,7 +540,7 @@
     "name": "block then armor: shield 2 and DR 4 both subtract",
     "attacker": {
       "skill": 72,
-      "roll": 47,
+      "roll": 65,
       "attributes": {
         "lck": 0
       }
@@ -323,7 +552,8 @@
       },
       "armor_dr": 4,
       "hp": 30,
-      "block": {
+      "reaction": {
+        "kind": "block",
         "skill": 55,
         "roll": 41,
         "shield_dr": 2
@@ -369,7 +599,7 @@
     "name": "damage type: a shield does not block fire",
     "attacker": {
       "skill": 72,
-      "roll": 47,
+      "roll": 65,
       "attributes": {
         "lck": 0
       }
@@ -381,7 +611,8 @@
       },
       "armor_dr": 0,
       "hp": 30,
-      "block": {
+      "reaction": {
+        "kind": "block",
         "skill": 55,
         "roll": 41,
         "shield_dr": 2
