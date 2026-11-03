@@ -132,7 +132,7 @@
       "type": "object",
       "description": "The attack pipeline of docs/core/combat.md: formula trees and the damage-type tags the steps read.",
       "properties": {
-        "evasion": { "description": "Penalty to the attacker's target. Reads var `evasion_skill` and attr agi.", "$ref": "schema.json#/definitions/formulaNode" },
+        "evasion": { "description": "The defender's evade target, rolled as a reaction after a hit (docs/core/combat.md step 2). Reads var `evasion_skill` and attr agi.", "$ref": "schema.json#/definitions/formulaNode" },
         "crit_damage": { "description": "Damage after a crit. Reads var `damage`.", "$ref": "schema.json#/definitions/formulaNode" },
         "pierce_dr": { "description": "Armor DR against a partial-pierce type. Reads var `dr`.", "$ref": "schema.json#/definitions/formulaNode" },
         "dr_applies_tag": { "type": "string", "description": "Damage-type tag that lets armor DR and block apply." },
