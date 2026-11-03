@@ -99,7 +99,7 @@ Attack hits (d100 ≤ weapon skill)
 
 ```
 Spell lands (d100 ≤ cast check)
-  → Layer 1: Evasion* — evasion can apply to magic only with a perk (not baseline)
+  → Layer 1: Evasion* — by delivery: single dodged whole, area halved, instant none (save)
   → Layer 2: Spell Absorption (spell_absorption core:effect/spell_absorption, WIL-based %) — % chance to absorb into mana
     → Layer 3: Magic Resistance (resist core:effect/resist with parameter "magic" + WIL) — % reduction or resist roll
       → Layer 4: Elemental/Phase Resistance (resist core:effect/resist with parameter = phase/type) — per-element DR
@@ -107,16 +107,19 @@ Spell lands (d100 ≤ cast check)
           → Final magical damage
 ```
 
-\*Baseline evasion only applies to physical attacks. A perk (e.g. "Spell Dodger")
-unlocks Layer 1 in the magic tree, allowing evasion skill to contribute against
-targeted spells.
+\*Evasion reads the spell's delivery, not its school or damage type: a single-target
+spell is dodged like an arrow, a successful dodge halves an area spell, and an instant
+spell cannot be dodged; its target makes the save the spell names instead
+([`docs/core/combat.md`](../core/combat.md)). Perks such as "Spell Dodger" can improve
+the dodge; they are not needed for it.
 
 ### TTRPG Resolution
 
 - **Evasion:** An active dodge as a reaction (declared before the attack roll,
   rolled after it hits, contested vs the attacker's margin). It is the defender's one
-  reaction against that attack: dodge or block, not both. Magic evasion only with the
-  perk. Order and numbers: [`docs/core/combat.md`](../core/combat.md).
+  reaction against that attack: dodge or block, not both. Single-target attacks and
+  spells are dodged whole, area attacks are halved by a dodge, and instant spells cannot
+  be dodged and take a save instead. Order and numbers: [`docs/core/combat.md`](../core/combat.md).
 - **Block (shield):** Declared reaction before the attack roll. The blocker makes a
   block skill check against the attacker's margin of success. On success, the shield's
   DR is subtracted from incoming damage. On failure, no block benefit.
@@ -139,7 +142,8 @@ targeted spells.
 ### Video Game Resolution
 
 - **Evasion:** Dodge against the evasion skill, contested on margin, as in the
-  table. Auto-rolled on each incoming attack the defender is set to dodge. Magic evasion only with perk. Visually: a "miss" or "dodge"
+  table. Auto-rolled on each incoming attack the defender is set to dodge; area attacks
+  are halved, instant spells skip it. Visually: a "miss" or "dodge"
   animation plays.
 - **Block:** Input-timed block/parry window. Pressing block just before impact triggers
   a successful block; skill determines window length and DR %.
