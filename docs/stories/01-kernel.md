@@ -83,7 +83,7 @@ Done: —
 - Done when: adding a vector file needs no test edit; A checklist of kernel functions (resolution, derived, formula, modifiers, actions, progression) shows no function without a vector.
 
 #### M1-08 CI runs unit tests and vectors
-- Status: todo
+- Status: review
 - Priority: high
 - Needs: M1-07
 - Was: RW-10
