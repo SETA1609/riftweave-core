@@ -7,6 +7,21 @@ issue settles them.
 
 ## Decided
 
+### 2026-11-03: Wuxing reverse cycles are computed, insulting is an opcode (M3-04)
+
+- **Decision:** weakening and insulting name `reverse_of` instead of listing edges, and the
+  insulting trigger is the enum `actor_magnitude_exceeds_recipient` instead of a sentence.
+  `ruleset/scripts/wuxing_reference.py` is the only lookup; 27 vectors in
+  `ruleset/tests/vectors/wuxing.json` pin all 20 ordered pairs and the fallback. Spec:
+  `docs/modules/wuxing.md`. **[V 2026-11-03]**
+- **Why:** the reverse edges were stored twice, and both demo scripts had a `1.0 / multiplier`
+  fallback that never fired and would divide by zero at ×0 (review M8, DOD-13).
+- **Open:** equal magnitudes do not insult; overcoming suppresses the actor instead **[A]**.
+  A same-phase hit is ×1, though `magic.md` calls it "reduced" without a number **[A]**.
+- **Risk:** `combat_reference.py` and `crafting_reference.py` already crash on `main` before
+  any wuxing code (bare-key lookups of `core:` refs), so their wuxing lines were checked by
+  calling the shared lookup directly, not by running the demos. **[V 2026-11-03]**
+
 ### 2026-11-02: Key stability and versioning (M5-07)
 
 - **Decision:** semver, with keys, schema properties and enum members, and vector results as the

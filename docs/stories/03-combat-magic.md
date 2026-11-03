@@ -43,7 +43,7 @@ Done: —
 - Done when: each is a row set with vectors, or is moved to a named optional module; no special-case stacking rule.
 
 #### M3-04 Wuxing interaction vectors
-- Status: doing
+- Status: review
 - Priority: medium
 - Needs: M1-07
 - Was: RW-19
