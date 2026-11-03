@@ -133,6 +133,7 @@
       "description": "The attack pipeline of docs/core/combat.md: formula trees and the damage-type tags the steps read.",
       "properties": {
         "crit_damage": { "description": "Damage after a crit. Reads var `damage`.", "$ref": "schema.json#/definitions/formulaNode" },
+        "area_evade_damage": { "description": "Damage after a successful evade against an area attack (docs/core/combat.md step 5). Reads var `damage`.", "$ref": "schema.json#/definitions/formulaNode" },
         "pierce_dr": { "description": "Armor DR against a partial-pierce type. Reads var `dr`.", "$ref": "schema.json#/definitions/formulaNode" },
         "dr_applies_tag": { "type": "string", "description": "Damage-type tag that lets armor DR and block apply." },
         "pierce_tag": { "type": "string", "description": "Damage-type tag that swaps armor DR for pierce_dr." }
