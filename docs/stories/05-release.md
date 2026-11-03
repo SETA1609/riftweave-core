@@ -62,6 +62,15 @@ Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-07, M5-08, M5-10, M5-12,
 - See: LICENSING.md, ROADMAP.md
 - Done when: all checklist items in `ROADMAP.md` 'Definition of finished' are ticked; `v1.0.0` tagged and `[Unreleased]` in the changelog becomes `[1.0.0]`.
 
+#### M5-11 Gate post-1.0 modules on the 1.0 release
+- Status: review
+- Priority: high
+- Needs: —
+- Do: The roadmap puts every POST module after `v1.0.0`, but the root POST issues only needed kernel issues, so `roadmap-order show` listed POST-01, POST-04, and POST-06 as ready next to core work, and POST-05 was merged before 1.0. Add `M5-09` to the `Needs` of every POST issue that has no POST parent, so the computed order matches the roadmap.
+- Files: ~6 (docs/stories/06-modules.md, docs/stories/05-release.md, docs/stories/done.md, ROADMAP.md, docs/decisions.md)
+- See: ROADMAP.md#post-10-modules, docs/stories/README.md#order
+- Done when: `roadmap-order show` lists no POST issue as ready and blocks every root POST issue on M5-09; `roadmap-order check` passes.
+
 #### M5-16 Move merged issues to done.md
 - Status: review
 - Priority: low
