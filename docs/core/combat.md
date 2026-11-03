@@ -11,7 +11,7 @@ One attack, in order, from the roll to the HP lost. Every step reads the actor s
               hit           otherwise; tag crit if roll <= window
 2. reaction   on a hit, the defender may take one reaction: evade or block, not both
               physical types only (tag armor_dr_applies)
-   evade      evade_target = evasion(evasion_skill, AGI)            formula tree
+   evade      evade_target = evasion_skill + evade mods             resolution.md
               evaded if evade roll <= evade_target and evade margin >= attack margin
               if evaded: no damage, stop
    block      blocked if block roll <= block skill and block margin >= attack margin
@@ -29,7 +29,8 @@ Each subtraction stops at zero before the next step: a step never raises damage.
 
 ## Reading the steps
 
-- **Evasion** is a defender reaction after the attack hits, contested like block: the defender's evade margin must reach the attacker's margin, ties go to the defender. It replaces the earlier passive penalty on the attacker's target, so the attack roll reads only the attacker's numbers and "dodged" is its own outcome (`evaded`), apart from "missed". This is the defense-tree reading of [`modules/combat.md`](../modules/combat.md) (layer 1, "chance to avoid entirely") and its video-game auto-dodge; the TTRPG passive-penalty variant is dropped. The evade target is the existing tree, `10 + floor(evasion_skill * 15 / 100) + AGI * 2` (`baseEvasion` 10, skill factor 0.15, AGI factor 2 in `base_resolution.json`, written as integers). [A] Armor and encumbrance evasion penalties are modifiers on that target; they are not in the vectors yet. [U]
+- **Evasion** is a defender reaction after the attack hits, contested like block: the defender's evade margin must reach the attacker's margin, ties go to the defender. It replaces the earlier passive penalty on the attacker's target, so the attack roll reads only the attacker's numbers and "dodged" is its own outcome (`evaded`), apart from "missed". This is the defense-tree reading of [`modules/combat.md`](../modules/combat.md) (layer 1, "chance to avoid entirely") and its video-game auto-dodge; the TTRPG passive-penalty variant is dropped. The evade target is the raw `evasion` skill, the same way block reads the block skill, so points bought in Evasion buy dodges; AGI counts once, through the skill's base value. Armor and encumbrance evasion penalties are modifiers on that target; they are not in the vectors yet. [U] The earlier tree `10 + evasion_skill * 0.15 + AGI * 2` is dropped: skill points barely moved it and it topped out at 45. [V 2026-11-04, owner decision]
+- **Balance between evade and block.** At equal skill an evade avoids all damage and a block only subtracts shield DR, so the raw skill alone favours evading. The balance is not in this pipeline: perks gate stronger dodges and blocks, armor penalties land on evasion, and magic attacks that cannot be dodged resolve against other skills. Those rows come with their own issues. [A]
 - **One reaction per attack.** The defender declares evade or block before the attack roll, as `modules/combat.md` has it for block, and rolls it only if the attack hits; the input has a single `reaction`. A failed evade does not allow a block. [A]
 - **Crit** multiplies damage by 2 (`critDamageMultiplier`). It is a consumer of the `crit` tag, not a second roll. Crit multiplies before any reduction. [A]
 - **Block** compares margins as the TTRPG prose does: the blocker's margin must reach the attacker's. It is the other reaction (step 2) and reduces damage instead of avoiding it. The video-game input-timed block is a client mapping of the same numbers. Evade and block apply only to types with `armor_dr_applies`; evading magic needs a perk. [A]

@@ -974,13 +974,14 @@ Heavy armor nearly negates low-to-mid-tier physical damage. This is intentional 
 
 ### Auto-Dodge Calculation
 
-Video game evasion is a **passive percentage** computed from:
+Video game evasion uses the same numbers as the table: the evade target is the
+evasion skill, contested on margin ([`docs/core/combat.md`](../core/combat.md)):
 ```
-Dodge% = baseEvasion% + (evasionSkill × 0.15) + (AGI × 2)
-       − sum(armorEvasionPenalties) − encumbrancePenalty
+evade target = evasionSkill − sum(armorEvasionPenalties) − encumbrancePenalty
+dodged if evade roll <= evade target and evade margin >= attack margin
 ```
 
-- Rolled automatically on each incoming attack.
+- Rolled automatically on each incoming attack the defender is set to dodge.
 - Visually: a "dodge" animation plays (lean back, sidestep, or roll based on distance to attacker).
 - Dodging an attack should briefly interrupt the enemy's combo (giving the player a window to counter).
 - Overcapped dodge (>100%) grants a chance to **counter-attack** (optional mechanic).
