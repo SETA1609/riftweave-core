@@ -85,6 +85,8 @@
         { "required": ["edges"], "not": { "required": ["reverse_of"] } },
         { "required": ["reverse_of"], "not": { "required": ["edges"] } }
       ],
+      "if": { "required": ["condition"] },
+      "then": { "required": ["reverse_of"] },
       "additionalProperties": false
     }
   }

@@ -9,6 +9,8 @@ of each runner are listed in docs/core/vectors.md.
 import json
 from pathlib import Path
 
+from wuxing_reference import run_wuxing
+
 RULESET = Path(__file__).resolve().parent.parent
 DATA_DIR = RULESET / "data"
 
@@ -313,6 +315,7 @@ RUNNERS = {
     "economy": run_economy,
     "combat": run_combat,
     "progression": run_progression,
+    "wuxing": run_wuxing,
 }
 
 

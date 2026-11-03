@@ -18,6 +18,8 @@ import re
 import sys
 from pathlib import Path
 
+from wuxing_reference import interaction_tuple as get_interaction
+
 ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "data"
 SCHEMA_DIR = ROOT / "schemas"
@@ -39,34 +41,6 @@ def find_by_key(collection, key):
 
 def d100():
     return random.randint(1, 100)
-
-
-def find_cycle(cycles, from_phase, to_phase):
-    """Find a Wuxing cycle where from_phase acts upon to_phase."""
-    for cycle in cycles:
-        for edge in cycle["edges"]:
-            if edge["from"] == from_phase and edge["to"] == to_phase:
-                return (
-                    cycle["id"],
-                    cycle["interaction"],
-                    cycle["magnitudeMultiplier"],
-                    cycle["affects"],
-                )
-    return None
-
-
-def get_interaction(cycles, item_phase, effect_phase):
-    """Look up the Wuxing interaction between item phase and effect phase."""
-    if item_phase == effect_phase:
-        return ("same_phase", "identity", 1.0, "none")
-    result = find_cycle(cycles, item_phase, effect_phase)
-    if result:
-        return result
-    result = find_cycle(cycles, effect_phase, item_phase)
-    if result:
-        cycle_id, interaction, mult, affects = result
-        return (f"reverse_{cycle_id}", f"reverse_{interaction}", 1.0 / mult, affects)
-    return ("unrelated", "none", 1.0, "none")
 
 
 class CombatResolver:

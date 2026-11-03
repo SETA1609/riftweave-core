@@ -44,14 +44,8 @@
       "interaction": "drain",
       "affects": "recipient",
       "magnitudeMultiplier": 0.75,
-      "description": "The exhaustion cycle (reverse of generating): a child drawn upon saps its mother. The child effect drains the mother it meets, reducing it. 'from' is the draining child (actor), 'to' is the depleted mother (recipient).",
-      "edges": [
-        { "from": "fire", "to": "wood" },
-        { "from": "earth", "to": "fire" },
-        { "from": "metal", "to": "earth" },
-        { "from": "water", "to": "metal" },
-        { "from": "wood", "to": "water" }
-      ]
+      "description": "The exhaustion cycle (reverse of generating): a child drawn upon saps its mother. The child effect drains the mother it meets, reducing it. The child (actor) drains the mother (recipient); the edges are generating's, read backwards.",
+      "reverse_of": "generating"
     },
     {
       "id": "insulting",
@@ -60,14 +54,8 @@
       "affects": "recipient",
       "magnitudeMultiplier": 1.25,
       "condition": "actor_magnitude_exceeds_recipient",
-      "description": "The rebellion cycle (reverse of overcoming): when the normally-controlled phase is overwhelming, it turns on its controller. An over-strong Fire insults the Water that should quench it, backlashing onto the controller. 'from' is the rebelling phase (actor), 'to' is the would-be controller taking backlash (recipient).",
-      "edges": [
-        { "from": "earth", "to": "wood" },
-        { "from": "water", "to": "earth" },
-        { "from": "fire", "to": "water" },
-        { "from": "metal", "to": "fire" },
-        { "from": "wood", "to": "metal" }
-      ]
+      "description": "The rebellion cycle (reverse of overcoming): when the normally-controlled phase is overwhelming, it turns on its controller. An over-strong Fire insults the Water that should quench it, backlashing onto the controller. The rebelling phase (actor) backlashes onto its would-be controller (recipient); the edges are overcoming's, read backwards. Fires only when the actor's magnitude is greater; otherwise overcoming fires on the same pair, suppressing the actor.",
+      "reverse_of": "overcoming"
     }
   ]
 }
