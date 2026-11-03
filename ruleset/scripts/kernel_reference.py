@@ -159,17 +159,23 @@ def run_combat(vector):
         result.update(outcome="fumble" if "fumble" in attack["tags"] else "miss", damage=0, hp=defender["hp"])
         return result
 
-    # One reaction per attack, rolled only on a hit, against physical types only.
+    # One reaction per attack, rolled only on a hit. Delivery decides what it can do:
+    # single is evaded whole, area is halved by an evade, instant takes no reaction.
     physical = pipeline["dr_applies_tag"] in tags
-    reaction = defender.get("reaction") if physical else None
+    delivery = vector.get("delivery", "single")
+    if delivery not in ("single", "area", "instant"):
+        raise ValueError(f"delivery {delivery!r} is not defined")
+    reaction = defender.get("reaction") if delivery != "instant" else None
     kind = reaction["kind"] if reaction else None
     if kind == "evade":
         evade_target = defender["evasion_skill"]
         if reaction["roll"] <= evade_target and evade_target - reaction["roll"] >= attack["margin"]:
-            result.update(outcome="evaded", evaded=True, damage=0, hp=defender["hp"])
-            return result
+            result["evaded"] = True
+            if delivery == "single":
+                result.update(outcome="evaded", damage=0, hp=defender["hp"])
+                return result
     elif kind == "block":
-        if reaction["roll"] <= reaction["skill"] and reaction["skill"] - reaction["roll"] >= attack["margin"]:
+        if physical and reaction["roll"] <= reaction["skill"] and reaction["skill"] - reaction["roll"] >= attack["margin"]:
             result["blocked"] = True
     elif kind is not None:
         raise ValueError(f"reaction kind {kind!r} is not defined")
@@ -178,6 +184,8 @@ def run_combat(vector):
     amount = damage["roll"]
     if crit:
         amount = evaluate_formula(pipeline["crit_damage"], {}, {"damage": amount})
+    if result["evaded"]:
+        amount = evaluate_formula(pipeline["area_evade_damage"], {}, {"damage": amount})
     if result["blocked"]:
         amount = max(amount - reaction["shield_dr"], 0)
     if physical:

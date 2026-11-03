@@ -12,6 +12,17 @@
         }
       ]
     },
+    "area_evade_damage": {
+      "op": "div",
+      "args": [
+        {
+          "var": "damage"
+        },
+        {
+          "lit": 2
+        }
+      ]
+    },
     "pierce_dr": {
       "op": "div",
       "args": [
