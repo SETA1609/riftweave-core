@@ -113,9 +113,10 @@ targeted spells.
 
 ### TTRPG Resolution
 
-- **Evasion:** Passive penalty to the attacker's roll (reduces their effective skill),
-  or an active dodge as a reaction (declared before the attack roll, contested vs
-  the attacker's margin). Magic evasion only with the perk.
+- **Evasion:** An active dodge as a reaction (declared before the attack roll,
+  rolled after it hits, contested vs the attacker's margin). It is the defender's one
+  reaction against that attack: dodge or block, not both. Magic evasion only with the
+  perk. Order and numbers: [`docs/core/combat.md`](../core/combat.md).
 - **Block (shield):** Declared reaction before the attack roll. The blocker makes a
   block skill check against the attacker's margin of success. On success, the shield's
   DR is subtracted from incoming damage. On failure, no block benefit.
