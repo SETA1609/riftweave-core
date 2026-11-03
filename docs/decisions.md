@@ -11,9 +11,10 @@ issue settles them.
 
 - **Decision:** `docs/core/combat.md` fixes the order attack roll, one defender reaction
   (evade or block), damage, crit, block reduction, armor DR, resist, HP.
-  `ruleset/data/combat/pipeline.json` holds the evasion, crit damage, and pierce trees and the damage-type tags the steps read. `combat.json` vectors
-  pin hit, miss, crit, fumble, block, DR, resist, and damage-type interaction. The
-  reference is `run_combat` in `kernel_reference.py`.
+  `ruleset/data/combat/pipeline.json` holds the crit damage and pierce trees and the
+  damage-type tags the steps read. `combat.json` vectors pin hit, miss, crit, fumble, evade,
+  block, DR, resist, and damage-type interaction. The reference is `run_combat` in
+  `kernel_reference.py`.
 - **Why:** the order lived only in `docs/modules/combat.md` prose, with worked examples that
   disagree on small points (for example whether a crit multiplies before DR).
 - **Open:** these rules are choices the prose left open **[A]**: crit multiplies before any
@@ -23,15 +24,19 @@ issue settles them.
 - **Evasion after the attack (owner, 2026-11-04):** evasion is a defender reaction rolled
   after a hit, contested on margin like block, not a passive penalty on the attacker's
   target. A defender takes one reaction per attack, declared before the attack roll. The
-  evade target is the old evasion tree, `10 + evasion_skill * 15 / 100 + AGI * 2`, which is
-  far below a block of the same rating: evasion 60 with AGI 9 gives an evade target of 37,
-  block 60 a target of 60 **[A]**. Tune the tree or use the raw evasion skill before content
-  relies on it. Armor evasion penalties are not
-  in the vectors **[U]**.
-- **Risk:** `base_resolution.json` still holds `defense.*` and `critDamageMultiplier`, which
-  the pipeline trees now restate as literals. Change one and the other drifts. Remove or
-  derive the old keys in a follow-up. `combat_reference.py` is the older crafted-item
-  simulator and is not the vector reference.
+  evade target is the raw `evasion` skill, as block reads the block skill; the old tree
+  `10 + evasion_skill * 0.15 + AGI * 2` is gone, because Evasion skill points barely moved
+  it and it topped out at 45.
+- **Balance (owner, 2026-11-04):** at equal skill an evade avoids all damage and a block
+  only subtracts shield DR. That is balanced outside the pipeline: perks gate stronger dodges
+  and blocks, armor penalties land on evasion, and magic attacks that cannot be dodged roll
+  against other skills **[A]**. None of these rows exists yet; armor evasion penalties are
+  not in the vectors **[U]**.
+- **Risk:** `base_resolution.json` still holds `defense.*` and `critDamageMultiplier`.
+  The evasion keys (`baseEvasion`, `evasionSkillFactor`, `agiEvasionFactor`) are now read by
+  nothing; `critDamageMultiplier` is restated as a literal in the crit tree, so changing one
+  drifts from the other. Removing keys is breaking, so it is a follow-up issue.
+  `combat_reference.py` is the older crafted-item simulator and is not the vector reference.
 
 ### 2026-11-02: Integrity gates (M5-08)
 

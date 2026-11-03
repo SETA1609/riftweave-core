@@ -138,8 +138,8 @@ targeted spells.
 
 ### Video Game Resolution
 
-- **Evasion:** Percentage dodge chance computed from evasion skill + AGI. Auto-rolled
-  on each incoming attack. Magic evasion only with perk. Visually: a "miss" or "dodge"
+- **Evasion:** Dodge against the evasion skill, contested on margin, as in the
+  table. Auto-rolled on each incoming attack the defender is set to dodge. Magic evasion only with perk. Visually: a "miss" or "dodge"
   animation plays.
 - **Block:** Input-timed block/parry window. Pressing block just before impact triggers
   a successful block; skill determines window length and DR %.
