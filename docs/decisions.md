@@ -9,17 +9,25 @@ issue settles them.
 
 ### 2026-11-02: One physical attack pipeline (M1-02)
 
-- **Decision:** `docs/core/combat.md` fixes the order evasion, attack roll, damage, crit,
-  block, armor DR, resist, HP. `ruleset/data/combat/pipeline.json` holds the evasion, crit
-  damage, and pierce trees and the damage-type tags the steps read. `combat.json` vectors
+- **Decision:** `docs/core/combat.md` fixes the order attack roll, one defender reaction
+  (evade or block), damage, crit, block reduction, armor DR, resist, HP.
+  `ruleset/data/combat/pipeline.json` holds the evasion, crit damage, and pierce trees and the damage-type tags the steps read. `combat.json` vectors
   pin hit, miss, crit, fumble, block, DR, resist, and damage-type interaction. The
   reference is `run_combat` in `kernel_reference.py`.
 - **Why:** the order lived only in `docs/modules/combat.md` prose, with worked examples that
   disagree on small points (for example whether a crit multiplies before DR).
 - **Open:** these rules are choices the prose left open **[A]**: crit multiplies before any
-  reduction; a piercing hit halves DR; block applies to physical types only; evasion is a
-  penalty on the attacker's target. The magic defense tree, called shots, cover, hit
-  quality, and what happens at 0 HP are not specified **[U]**.
+  reduction; a piercing hit halves DR; evade and block apply to physical types only. The
+  magic defense tree, called shots, cover, hit quality, and what happens at 0 HP are not
+  specified **[U]**.
+- **Evasion after the attack (owner, 2026-11-04):** evasion is a defender reaction rolled
+  after a hit, contested on margin like block, not a passive penalty on the attacker's
+  target. A defender takes one reaction per attack, declared before the attack roll. The
+  evade target is the old evasion tree, `10 + evasion_skill * 15 / 100 + AGI * 2`, which is
+  far below a block of the same rating: evasion 60 with AGI 9 gives an evade target of 37,
+  block 60 a target of 60 **[A]**. Tune the tree or use the raw evasion skill before content
+  relies on it. Armor evasion penalties are not
+  in the vectors **[U]**.
 - **Risk:** `base_resolution.json` still holds `defense.*` and `critDamageMultiplier`, which
   the pipeline trees now restate as literals. Change one and the other drifts. Remove or
   derive the old keys in a follow-up. `combat_reference.py` is the older crafted-item
