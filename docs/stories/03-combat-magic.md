@@ -51,3 +51,13 @@ Done: —
 - Files: ~3 (ruleset/data/wuxing/core.json, ruleset/tests/vectors/wuxing.json, docs/modules/wuxing.md)
 - See: docs/modules/wuxing.md, ruleset/data/wuxing/core.json
 - Done when: vectors for generating, overcoming, weakening, and insulting; reverse-cycle logic exists once.
+
+#### M3-05 Spell delivery and save rolls for instant spells
+- Status: todo
+- Priority: medium
+- Needs: M1-02, M3-01
+- Do: M1-02 makes the attack's `delivery` (`single`, `area`, `instant`) decide the dodge, but spells do not carry it yet, and an instant spell's save is unspecified. Give each offensive spell a delivery (from its effects' `target` shape, plus an `instant` marker), let each instant spell name its save skill or attribute, and define how the save margin picks the effect's outcome (none, partial, full).
+- Keys: `delivery` and `save` on spells (proposal)
+- Files: ~6 (docs/core/combat.md, docs/modules/magic.md, ruleset/schemas/spell.schema.json, ruleset/data/spells/core.json, ruleset/tests/vectors/, ruleset/scripts/kernel_reference.py)
+- See: docs/core/combat.md (delivery), docs/decisions.md (M1-02)
+- Done when: every offensive spell has a delivery; every instant spell names a save; vectors cover a full save, a partial save, and a failed save.

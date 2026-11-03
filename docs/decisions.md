@@ -27,11 +27,17 @@ issue settles them.
   evade target is the raw `evasion` skill, as block reads the block skill; the old tree
   `10 + evasion_skill * 0.15 + AGI * 2` is gone, because Evasion skill points barely moved
   it and it topped out at 45.
+- **Delivery decides the dodge (owner, 2026-11-04):** not the damage type. A `single`
+  attack or spell (sword, arrow, fire bolt, touch) is evaded whole; an evade halves an `area`
+  attack (fireball, breath, bomb), rounded down, after a crit; an `instant` spell cannot be
+  evaded or blocked, and its target makes a save on a skill or attribute the spell names.
+  Block stays physical-only. Spells do not carry `delivery` yet, and saves are unspecified:
+  M3-05. **[V 2026-11-04]** vectors pin the three deliveries.
 - **Balance (owner, 2026-11-04):** at equal skill an evade avoids all damage and a block
   only subtracts shield DR. That is balanced outside the pipeline: perks gate stronger dodges
-  and blocks, armor penalties land on evasion, and magic attacks that cannot be dodged roll
-  against other skills **[A]**. None of these rows exists yet; armor evasion penalties are
-  not in the vectors **[U]**.
+  and blocks, armor penalties land on evasion, area attacks are only halved, and instant
+  spells skip the dodge for a save **[A]**. The perk rows do not exist yet; armor evasion
+  penalties are not in the vectors **[U]**.
 - **Risk:** `base_resolution.json` still holds `defense.*` and `critDamageMultiplier`.
   The evasion keys (`baseEvasion`, `evasionSkillFactor`, `agiEvasionFactor`) are now read by
   nothing; `critDamageMultiplier` is restated as a literal in the crit tree, so changing one
