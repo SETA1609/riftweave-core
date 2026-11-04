@@ -227,7 +227,7 @@ A real-time game runs the same functions. These notes are presentation, not rule
 
 ## 12. Deferred
 
-Mounted combat, underwater combat, vehicles, and mass battles are not specified. Mounts and vehicles are POST-07 (after 1.0). Notes for when they are picked up:
+Mounted combat, underwater combat, vehicles, and mass battles are not specified. Mounts and vehicles belong to a post-1.0 module. Notes for when they are picked up:
 
 - **Mounted:** the rider uses the mount's movement and acts on the rider's initiative; attacks may hit rider or mount; a charge of 4+ units adds damage.
 - **Underwater:** moves halved; slashing and blunt deal half; breath `END × 15` seconds; fire-phase effects fail, water-phase ones are amplified.
