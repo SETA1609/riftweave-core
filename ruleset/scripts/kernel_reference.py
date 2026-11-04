@@ -133,6 +133,27 @@ def run_actions(vector):
     return {"pool": pool, "cost": cost}
 
 
+def run_rest(vector):
+    """Apply one rest occasion: refill or fraction per resource, then clear timed conditions."""
+    occasion = next(o for o in load_data("rest/core.json")["rest"] if o["key"] == vector["occasion"])
+    maxima = run_derived(vector)
+    maxima["stamina"] = vector.get("max", {}).get("stamina", 0)
+    result = {resource: amount for resource, amount in vector["current"].items()}
+    conditions = vector.get("conditions", [])
+    for row in occasion["recovery"]:
+        resource, mode = row["resource"], row["mode"]
+        if resource == "conditions":
+            if mode == "clear":
+                conditions = [c for c in conditions if c["duration"] not in row["durations"]]
+        elif mode == "full":
+            result[resource] = maxima[resource]
+        elif mode == "fraction":
+            gain = maxima[resource] * row["numerator"] // row["denominator"]
+            result[resource] = min(maxima[resource], result[resource] + gain)
+    result["conditions"] = [c["key"] for c in conditions]
+    return result
+
+
 def to_copper(economy, cost):
     value = {d["unit"]: d["value"] for d in economy["currency"]["denominations"]}
     return cost["quantity"] * value[cost["unit"]]
@@ -288,6 +309,7 @@ RUNNERS = {
     "formula": run_formula,
     "modifiers": run_modifiers,
     "actions": run_actions,
+    "rest": run_rest,
     "economy": run_economy,
     "combat": run_combat,
     "progression": run_progression,

@@ -1,0 +1,51 @@
+[
+  {
+    "name": "short rest: a quarter of hp and mp, full stamina and ap, conditions stay",
+    "occasion": "short_rest",
+    "actor": { "attributes": { "end": 6, "int": 5, "agi": 6 }, "level": 1 },
+    "current": { "hp": 20, "mp": 10, "stamina": 3, "ap": 0 },
+    "max": { "stamina": 57 },
+    "conditions": [{ "key": "poisoned", "duration": "turns" }],
+    "expect": { "hp": 36, "mp": 20, "stamina": 57, "ap": 4, "conditions": ["poisoned"] }
+  },
+  {
+    "name": "short rest stops at the maximum",
+    "occasion": "short_rest",
+    "actor": { "attributes": { "end": 6, "int": 5, "agi": 6 }, "level": 1 },
+    "current": { "hp": 60, "mp": 42, "stamina": 57, "ap": 4 },
+    "max": { "stamina": 57 },
+    "expect": { "hp": 67, "mp": 42, "stamina": 57, "ap": 4, "conditions": [] }
+  },
+  {
+    "name": "short rest: a derived modifier raises the maximum and so the recovery",
+    "occasion": "short_rest",
+    "actor": { "attributes": { "end": 6, "int": 5, "agi": 6 }, "level": 1 },
+    "modifiers": [{ "target": "hp", "op": "add", "value": 10, "source": "perk:test" }],
+    "current": { "hp": 50, "mp": 42, "stamina": 57, "ap": 4 },
+    "max": { "stamina": 57 },
+    "expect": { "hp": 69 }
+  },
+  {
+    "name": "long rest: everything full, timed conditions clear, permanent and worn stay",
+    "occasion": "long_rest",
+    "actor": { "attributes": { "end": 6, "int": 5, "agi": 6 }, "level": 1 },
+    "current": { "hp": 1, "mp": 0, "stamina": 0, "ap": 1 },
+    "max": { "stamina": 57 },
+    "conditions": [
+      { "key": "poisoned", "duration": "turns" },
+      { "key": "cursed", "duration": "permanent" },
+      { "key": "blessed", "duration": "uses" },
+      { "key": "ring_of_warding", "duration": "while_equipped" }
+    ],
+    "expect": { "hp": 67, "mp": 42, "stamina": 57, "ap": 4, "conditions": ["cursed", "ring_of_warding"] }
+  },
+  {
+    "name": "end of combat: stamina and ap refill, hp, mp and conditions do not change",
+    "occasion": "end_of_combat",
+    "actor": { "attributes": { "end": 6, "int": 5, "agi": 6 }, "level": 1 },
+    "current": { "hp": 20, "mp": 10, "stamina": 3, "ap": 0 },
+    "max": { "stamina": 57 },
+    "conditions": [{ "key": "poisoned", "duration": "turns" }],
+    "expect": { "hp": 20, "mp": 10, "stamina": 57, "ap": 4, "conditions": ["poisoned"] }
+  }
+]

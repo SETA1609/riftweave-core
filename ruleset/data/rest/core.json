@@ -1,0 +1,94 @@
+{
+  "$schema": "../../schemas/rest.schema.json",
+  "rest": [
+    {
+      "key": "short_rest",
+      "label": "Short rest",
+      "minutes": 60,
+      "recovery": [
+        {
+          "resource": "hp",
+          "mode": "fraction",
+          "numerator": 1,
+          "denominator": 4
+        },
+        {
+          "resource": "mp",
+          "mode": "fraction",
+          "numerator": 1,
+          "denominator": 4
+        },
+        {
+          "resource": "stamina",
+          "mode": "full"
+        },
+        {
+          "resource": "ap",
+          "mode": "full"
+        },
+        {
+          "resource": "conditions",
+          "mode": "none"
+        }
+      ]
+    },
+    {
+      "key": "long_rest",
+      "label": "Long rest",
+      "minutes": 480,
+      "recovery": [
+        {
+          "resource": "hp",
+          "mode": "full"
+        },
+        {
+          "resource": "mp",
+          "mode": "full"
+        },
+        {
+          "resource": "stamina",
+          "mode": "full"
+        },
+        {
+          "resource": "ap",
+          "mode": "full"
+        },
+        {
+          "resource": "conditions",
+          "mode": "clear",
+          "durations": [
+            "turns",
+            "uses"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "end_of_combat",
+      "label": "End of combat",
+      "minutes": 0,
+      "recovery": [
+        {
+          "resource": "hp",
+          "mode": "none"
+        },
+        {
+          "resource": "mp",
+          "mode": "none"
+        },
+        {
+          "resource": "stamina",
+          "mode": "full"
+        },
+        {
+          "resource": "ap",
+          "mode": "full"
+        },
+        {
+          "resource": "conditions",
+          "mode": "none"
+        }
+      ]
+    }
+  ]
+}
