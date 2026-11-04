@@ -1,56 +1,23 @@
-# Combat Examples — Worked Resolutions
+# Combat examples
 
-**Status:** Comprehensive worked examples live in `docs/modules/combat.md` §10 (Worked Combat Examples).
-This file is a quick-reference index and supplement for the data-oriented examples.
+The worked examples live in [`docs/modules/combat.md`](../modules/combat.md#9-worked-examples). Every step in them is a vector in `ruleset/tests/vectors/combat.json`, so CI checks the numbers on every pull request.
 
----
+| Example | Vectors | Shows |
+| --- | --- | --- |
+| 1. Knight against bandit | `example 1a`, `example 1b`, `example 1c` | a hit through a failed evade, a block that leaves the rest to armor, a crit doubling before DR |
+| 2. Mage against fire | `example 2a`, `example 2b`, `example 2c` | a single-target spell not dodged, fire resist, an area spell halved by one evade and taken in full by another |
 
-## Existing Examples (in docs/modules/combat.md)
-
-The main combat document contains 5 fully worked examples:
-
-| Example | Title | Type | Focus |
-|---------|-------|------|-------|
-| 1 | Knight vs. Bandit | TTRPG turn-based | Basic attack, block, OA, DR |
-| 2 | Critical Hit with Effects Table | TTRPG turn-based | Confirmation, double damage, disarm |
-| 3 | cRPG Party Combat | cRPG tactical | 3 PCs vs 3 goblins, called shots, positioning |
-| 4 | Rogue vs. Guard Captain | Video game action-combat | Parry, poison, armor bypass, conditions |
-| 5 | Magic Defense Tree | TTRPG | Spell absorption, resistance, elemental phases |
-
----
-
-## Simulated Examples (Reference Script)
-
-Run `python ruleset/scripts/combat_reference.py --verbose` for randomly-rolled data-driven examples.
-These use real data from the JSON files and produce output like:
+To check one by hand, run its vector through the reference:
 
 ```
-============================================================
-  Example 1: Sir Aldric (Blades 72, LCK 4) vs Bandit (DR 2)
-============================================================
-  Weapon: Longsword
-  Skill: blades = 72
-  Target number: 72 + 0 (mod) + 2 (LCK/2) = 74
-  Defender armor DR: 2
-  d100 roll: 47, margin: 27
-  Hit quality: solid (margin 27)
-  Damage roll: 1d8 = 6
-  Damage type: slashing (armor applies: True)
-  Raw: 6 - DR: 2 = Net: 4
-
-  Result: HIT
-  Quality: SOLID
-  Damage: 4 (slashing)
-============================================================
+python -m unittest ruleset/scripts/test_vectors.py
 ```
 
----
+`ruleset/scripts/combat_reference.py` is the older crafted-item simulator. It is not the vector reference, and its output is not an authority.
 
-## Data Integration Examples
+## Data shapes
 
-### Weapon with On-Hit Effect (Flaming Longsword)
-
-A magical longsword that sets targets ablaze would look like:
+### A weapon with an on-hit effect
 
 ```json
 {
@@ -62,15 +29,15 @@ A magical longsword that sets targets ablaze would look like:
     "damage": { "dice": "1d8", "type": "slashing" },
     "properties": ["versatile", "magical"],
     "on_hit_effects": [
-      { "effect": 57, "magnitude": 3, "duration": 10 }
+      { "effect": "core:effect/burn", "magnitude": 3, "duration": 10 }
     ]
   }
 }
 ```
 
-On a successful hit, this weapon deals its 1d8 slashing damage AND applies effect id 57 (burn) with magnitude 3 and duration 10 seconds.
+On a hit it deals 1d8 slashing through the pipeline and applies `burn`, which applies the `burning` condition.
 
-### Armor with Resistances (Asbestos-Lined Plate)
+### Armor with resistances
 
 ```json
 {
@@ -85,13 +52,10 @@ On a successful hit, this weapon deals its 1d8 slashing damage AND applies effec
 }
 ```
 
-This piece provides +8 DR vs fire damage but −4 DR vs frost (vulnerability to cold).
+It resists 8 fire and takes 4 more frost. In the pipeline these are the resist step's values for those damage types ([`docs/core/combat.md`](../core/combat.md)).
 
----
+## See also
 
-## See Also
-
-- `docs/modules/combat.md` — Full combat rules with TTRPG + video game dual resolution
-- `docs/modules/combat.md#10-worked-combat-examples` — The 5 main worked examples
-- `docs/combat/integration.md` — How effects, perks, weapons, and armor compose
-- `ruleset/scripts/combat_reference.py` — Run with `--seed N` for reproducible examples
+- [`docs/core/combat.md`](../core/combat.md): the order of one attack
+- [`docs/modules/combat.md`](../modules/combat.md): commentary and the worked examples
+- [`docs/combat/integration.md`](integration.md): how effects, perks, weapons, and armor compose

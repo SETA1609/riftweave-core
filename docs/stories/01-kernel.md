@@ -13,7 +13,7 @@ Roadmap: [M1](../../ROADMAP.md#where-we-are). Format and rules: [README.md](READ
 Done: —
 
 #### M1-01 Reconcile docs/modules/combat.md with the kernel
-- Status: todo
+- Status: doing
 - Priority: high
 - Needs: M1-02
 - Was: RW-3
