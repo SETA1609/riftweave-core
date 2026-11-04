@@ -90,7 +90,9 @@ vector existed before the rows.
    result. They fail against the Python reference; the commit message records the
    failing run.
 4. **Data.** Add rows and the reference code (`ruleset/scripts/*_reference.py`) until
-   `validate.py` and the vectors pass, without changing the vectors. If a vector turns
+   `validate.py` and the vectors pass, without changing the vectors. A rule that adds or
+   changes a function also updates its command in `backend/contract/` and, once the Go core
+   exists (APP-02), its Go code, in the same pull request. If a vector turns
    out wrong, fix it in its own commit before this one and say why.
 5. **Review.** Read the result against the spec and list every difference in the PR
    description, as a bug (fix it) or intended (say why).
