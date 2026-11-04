@@ -13,7 +13,7 @@ Roadmap: [M1](../../ROADMAP.md#where-we-are). Format and rules: [README.md](READ
 Done: M1-01, M1-02, M1-03, M1-04, M1-06, M1-07, M1-08 ([done.md](done.md#m1-kernel-closed))
 
 #### M1-05 Modifier stacking and condition vectors
-- Status: doing
+- Status: review
 - Priority: medium
 - Needs: M1-07, M1-08
 - Was: RW-7
