@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Command contract: shared definitions",
+  "definitions": {
+    "error": {
+      "type": "object",
+      "description": "Any command may return this instead of its result.",
+      "properties": { "error": { "type": "string", "minLength": 1 } },
+      "required": ["error"],
+      "additionalProperties": false
+    },
+    "attributes": {
+      "type": "object",
+      "description": "Attribute values by ability key; a missing attribute reads as 0.",
+      "propertyNames": { "$ref": "../../ruleset/schemas/schema.json#/definitions/ability" },
+      "additionalProperties": { "type": "integer" }
+    },
+    "skills": {
+      "type": "object",
+      "description": "Skill values by skill key.",
+      "propertyNames": { "pattern": "^[a-z_][a-z0-9_]*$" },
+      "additionalProperties": { "type": "integer" }
+    },
+    "actor": {
+      "type": "object",
+      "properties": {
+        "attributes": { "$ref": "#/definitions/attributes" },
+        "skills": { "$ref": "#/definitions/skills" },
+        "level": { "type": "integer", "minimum": 1 }
+      },
+      "additionalProperties": false
+    },
+    "modifiers": {
+      "type": "array",
+      "items": { "$ref": "../../ruleset/schemas/schema.json#/definitions/modifier" }
+    },
+    "cost": {
+      "type": "object",
+      "properties": {
+        "quantity": { "type": "integer", "minimum": 0 },
+        "unit": { "type": "string", "enum": ["cp", "sp", "gp", "pp"] }
+      },
+      "required": ["quantity", "unit"],
+      "additionalProperties": false
+    },
+    "ref": { "$ref": "../../ruleset/schemas/schema.json#/definitions/namespacedRef" },
+    "phase": { "$ref": "../../ruleset/schemas/schema.json#/definitions/phase" },
+    "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
+    "d100": { "type": "integer", "minimum": 1, "maximum": 100 },
+    "tags": { "type": "array", "items": { "type": "string", "enum": ["crit", "fumble"] } }
+  }
+}
