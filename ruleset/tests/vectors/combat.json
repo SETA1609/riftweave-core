@@ -1,0 +1,1133 @@
+[
+  {
+    "name": "hit: no reaction, the target is the attacker's skill 72; armor DR 2 absorbs part",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "target": 72,
+      "margin": 25,
+      "crit": false,
+      "blocked": false,
+      "evaded": false,
+      "damage": 6,
+      "hp": 24,
+      "reaction_tags": []
+    }
+  },
+  {
+    "name": "miss: roll above the target does no damage",
+    "attacker": {
+      "skill": 72,
+      "roll": 80,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "miss",
+      "target": 72,
+      "margin": null,
+      "crit": false,
+      "evaded": false,
+      "damage": 0,
+      "hp": 30
+    }
+  },
+  {
+    "name": "crit: LCK 4 widens the window to 7; damage doubles before DR",
+    "attacker": {
+      "skill": 72,
+      "roll": 6,
+      "attributes": {
+        "lck": 4
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "margin": 66,
+      "crit": true,
+      "damage": 14,
+      "hp": 16
+    }
+  },
+  {
+    "name": "roll 6 is not a crit at LCK 0",
+    "attacker": {
+      "skill": 72,
+      "roll": 6,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "crit": false,
+      "damage": 6,
+      "hp": 24
+    }
+  },
+  {
+    "name": "fumble: roll 100 does no damage",
+    "attacker": {
+      "skill": 72,
+      "roll": 100,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "fumble",
+      "crit": false,
+      "damage": 0,
+      "hp": 30
+    }
+  },
+  {
+    "name": "an attack modifier moves the target",
+    "attacker": {
+      "skill": 72,
+      "roll": 55,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "modifiers": [
+      {
+        "target": "attack",
+        "op": "add",
+        "value": 10,
+        "source": "perk:test"
+      }
+    ],
+    "expect": {
+      "outcome": "hit",
+      "target": 82,
+      "margin": 27,
+      "damage": 8,
+      "hp": 22
+    }
+  },
+  {
+    "name": "evasion does not lower the attacker's target: evasion 90 without a reaction still faces target 72",
+    "attacker": {
+      "skill": 72,
+      "roll": 70,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 90,
+      "armor_dr": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "target": 72,
+      "margin": 2,
+      "damage": 8,
+      "hp": 22
+    }
+  },
+  {
+    "name": "DR: armor 22 absorbs 8 damage entirely, never below zero",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 22,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "damage": 0,
+      "hp": 30
+    }
+  },
+  {
+    "name": "evade: target is the evasion skill 25; evade margin 15 reaches the attack margin 7",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "reaction": {
+        "kind": "evade",
+        "roll": 10
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "evaded",
+      "target": 72,
+      "margin": 7,
+      "evaded": true,
+      "blocked": false,
+      "damage": 0,
+      "hp": 30
+    }
+  },
+  {
+    "name": "evade: a tie on margin goes to the defender (12 against 12)",
+    "attacker": {
+      "skill": 72,
+      "roll": 60,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "evade",
+        "roll": 13
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "evaded",
+      "evaded": true,
+      "damage": 0,
+      "hp": 30
+    }
+  },
+  {
+    "name": "evade fails: evade roll 40 is over the evasion skill 25",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "evade",
+        "roll": 40
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "evaded": false,
+      "damage": 8,
+      "hp": 22
+    }
+  },
+  {
+    "name": "evade fails: evade margin 15 is under the attack margin 25",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "evade",
+        "roll": 10
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "evaded": false,
+      "damage": 8,
+      "hp": 22
+    }
+  },
+  {
+    "name": "evade is not rolled on a miss",
+    "attacker": {
+      "skill": 72,
+      "roll": 80,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "evade",
+        "roll": 1
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "miss",
+      "evaded": false,
+      "damage": 0,
+      "hp": 30
+    }
+  },
+  {
+    "name": "evade: evasion 90 dodges an attack margin of 25 (roll 30, margin 60); skill points count in full",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 90,
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "evade",
+        "roll": 30
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "evaded",
+      "margin": 25,
+      "evaded": true,
+      "damage": 0,
+      "hp": 30
+    }
+  },
+  {
+    "name": "delivery single: a fire bolt is dodged whole, like an arrow",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "evade",
+        "roll": 10
+      }
+    },
+    "delivery": "single",
+    "damage": {
+      "roll": 10,
+      "type": "fire"
+    },
+    "expect": {
+      "outcome": "evaded",
+      "evaded": true,
+      "damage": 0,
+      "hp": 30
+    }
+  },
+  {
+    "name": "delivery area: a successful evade halves a fireball, 10 to 5",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "evade",
+        "roll": 10
+      }
+    },
+    "delivery": "area",
+    "damage": {
+      "roll": 10,
+      "type": "fire"
+    },
+    "expect": {
+      "outcome": "hit",
+      "evaded": true,
+      "damage": 5,
+      "hp": 25
+    }
+  },
+  {
+    "name": "delivery area: halving rounds down, 9 to 4",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "evade",
+        "roll": 10
+      }
+    },
+    "delivery": "area",
+    "damage": {
+      "roll": 9,
+      "type": "fire"
+    },
+    "expect": {
+      "outcome": "hit",
+      "evaded": true,
+      "damage": 4,
+      "hp": 26
+    }
+  },
+  {
+    "name": "delivery area: a crit doubles 6 to 12 before the evade halves it to 6",
+    "attacker": {
+      "skill": 72,
+      "roll": 3,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 100,
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "evade",
+        "roll": 20
+      }
+    },
+    "delivery": "area",
+    "damage": {
+      "roll": 6,
+      "type": "fire"
+    },
+    "expect": {
+      "outcome": "hit",
+      "crit": true,
+      "evaded": true,
+      "damage": 6,
+      "hp": 24
+    }
+  },
+  {
+    "name": "delivery area: a failed evade takes the whole fireball",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "evade",
+        "roll": 40
+      }
+    },
+    "delivery": "area",
+    "damage": {
+      "roll": 10,
+      "type": "fire"
+    },
+    "expect": {
+      "outcome": "hit",
+      "evaded": false,
+      "damage": 10,
+      "hp": 20
+    }
+  },
+  {
+    "name": "delivery area: a shield blocks a physical blast, shield DR 2 subtracts",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "block",
+        "skill": 55,
+        "roll": 41,
+        "shield_dr": 2
+      }
+    },
+    "delivery": "area",
+    "damage": {
+      "roll": 5,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "blocked": true,
+      "evaded": false,
+      "damage": 3,
+      "hp": 27
+    }
+  },
+  {
+    "name": "delivery instant: no evade; the spell lands in full (its save is M3-05)",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 100,
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "evade",
+        "roll": 1
+      }
+    },
+    "delivery": "instant",
+    "damage": {
+      "roll": 10,
+      "type": "fire"
+    },
+    "expect": {
+      "outcome": "hit",
+      "evaded": false,
+      "damage": 10,
+      "hp": 20
+    }
+  },
+  {
+    "name": "delivery instant: no block either",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "block",
+        "skill": 55,
+        "roll": 41,
+        "shield_dr": 2
+      }
+    },
+    "delivery": "instant",
+    "damage": {
+      "roll": 5,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "blocked": false,
+      "damage": 5,
+      "hp": 25
+    }
+  },
+  {
+    "name": "reaction fumble: evade roll 100 fails even at evasion 100 against an attack margin of 0",
+    "attacker": {
+      "skill": 72,
+      "roll": 72,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 100,
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "evade",
+        "roll": 100
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "margin": 0,
+      "evaded": false,
+      "reaction_tags": [
+        "fumble"
+      ],
+      "damage": 8,
+      "hp": 22
+    }
+  },
+  {
+    "name": "reaction fumble: block roll 100 fails even at block 100",
+    "attacker": {
+      "skill": 72,
+      "roll": 72,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "block",
+        "skill": 100,
+        "roll": 100,
+        "shield_dr": 2
+      }
+    },
+    "damage": {
+      "roll": 5,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "blocked": false,
+      "reaction_tags": [
+        "fumble"
+      ],
+      "damage": 5,
+      "hp": 25
+    }
+  },
+  {
+    "name": "reaction crit: the defender's LCK 4 widens the window to 7; evade roll 6 is tagged crit",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "attributes": {
+        "lck": 4
+      },
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "evade",
+        "roll": 6
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "evaded",
+      "evaded": true,
+      "reaction_tags": [
+        "crit"
+      ],
+      "damage": 0,
+      "hp": 30
+    }
+  },
+  {
+    "name": "reaction crit: evade roll 6 is not a crit at LCK 0",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "evade",
+        "roll": 6
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "evaded",
+      "evaded": true,
+      "reaction_tags": [],
+      "damage": 0,
+      "hp": 30
+    }
+  },
+  {
+    "name": "reaction crit: a crit block (roll 3) has no extra effect yet, shield DR 2 as usual",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "block",
+        "skill": 55,
+        "roll": 3,
+        "shield_dr": 2
+      }
+    },
+    "damage": {
+      "roll": 5,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "blocked": true,
+      "reaction_tags": [
+        "crit"
+      ],
+      "damage": 3,
+      "hp": 27
+    }
+  },
+  {
+    "name": "block: margin 14 reaches the attack margin 7, shield DR 2 subtracts",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "block",
+        "skill": 55,
+        "roll": 41,
+        "shield_dr": 2
+      }
+    },
+    "damage": {
+      "roll": 5,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "blocked": true,
+      "damage": 3,
+      "hp": 27
+    }
+  },
+  {
+    "name": "block fails: block roll 90 is over skill 55",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "block",
+        "skill": 55,
+        "roll": 90,
+        "shield_dr": 2
+      }
+    },
+    "damage": {
+      "roll": 5,
+      "type": "slashing"
+    },
+    "expect": {
+      "blocked": false,
+      "damage": 5,
+      "hp": 25
+    }
+  },
+  {
+    "name": "block fails: block margin 14 is under the attack margin 62",
+    "attacker": {
+      "skill": 72,
+      "roll": 10,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "block",
+        "skill": 55,
+        "roll": 41,
+        "shield_dr": 2
+      }
+    },
+    "damage": {
+      "roll": 5,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "blocked": false,
+      "damage": 5,
+      "hp": 25
+    }
+  },
+  {
+    "name": "block then armor: shield 2 and DR 4 both subtract",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 4,
+      "hp": 30,
+      "reaction": {
+        "kind": "block",
+        "skill": 55,
+        "roll": 41,
+        "shield_dr": 2
+      }
+    },
+    "damage": {
+      "roll": 12,
+      "type": "slashing"
+    },
+    "expect": {
+      "blocked": true,
+      "damage": 6,
+      "hp": 24
+    }
+  },
+  {
+    "name": "damage type: fire ignores armor DR",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 22,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 10,
+      "type": "fire"
+    },
+    "expect": {
+      "damage": 10,
+      "hp": 20
+    }
+  },
+  {
+    "name": "damage type: a shield does not block fire",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "block",
+        "skill": 55,
+        "roll": 41,
+        "shield_dr": 2
+      }
+    },
+    "damage": {
+      "roll": 10,
+      "type": "fire"
+    },
+    "expect": {
+      "blocked": false,
+      "damage": 10,
+      "hp": 20
+    }
+  },
+  {
+    "name": "damage type: piercing halves armor DR (6 becomes 3)",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 6,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 10,
+      "type": "piercing"
+    },
+    "expect": {
+      "damage": 7,
+      "hp": 23
+    }
+  },
+  {
+    "name": "damage type: slashing takes the whole armor DR",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 6,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 10,
+      "type": "slashing"
+    },
+    "expect": {
+      "damage": 4,
+      "hp": 26
+    }
+  },
+  {
+    "name": "resist: fire resist 4 subtracts from fire damage",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "resist": {
+        "fire": 4
+      }
+    },
+    "damage": {
+      "roll": 10,
+      "type": "fire"
+    },
+    "expect": {
+      "damage": 6,
+      "hp": 24
+    }
+  },
+  {
+    "name": "resist: a frost resist does not touch fire damage",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "resist": {
+        "frost": 4
+      }
+    },
+    "damage": {
+      "roll": 10,
+      "type": "fire"
+    },
+    "expect": {
+      "damage": 10,
+      "hp": 20
+    }
+  },
+  {
+    "name": "order: crit doubles fire damage 6 to 12 before resist 4",
+    "attacker": {
+      "skill": 72,
+      "roll": 3,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "resist": {
+        "fire": 4
+      }
+    },
+    "damage": {
+      "roll": 6,
+      "type": "fire"
+    },
+    "expect": {
+      "crit": true,
+      "damage": 8,
+      "hp": 22
+    }
+  },
+  {
+    "name": "hp floors at zero",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 50,
+      "type": "slashing"
+    },
+    "expect": {
+      "damage": 48,
+      "hp": 0
+    }
+  }
+]

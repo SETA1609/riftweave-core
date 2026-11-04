@@ -73,6 +73,12 @@ with optional auto-pause on OA trigger.
 
 ## 3. Defense Model — Two Trees
 
+> **Order of operations.** The physical tree below, from the attack roll to the HP lost, is
+> specified once in [`docs/core/combat.md`](../core/combat.md), with its coefficients in
+> `ruleset/data/combat/pipeline.json` and its vectors in `ruleset/tests/vectors/combat.json`.
+> The prose in this section reads that tree. If they disagree, the data wins.
+
+
 Both trees consider **active effects** on the player (from the effects registry,
 e.g. `resist` core:effect/resist, `spell_absorption` core:effect/spell_absorption) as modifiers at their respective
 layers. See [`conditions.md`](./conditions.md) and [`armor.md`](./armor.md) for details
@@ -93,7 +99,7 @@ Attack hits (d100 ≤ weapon skill)
 
 ```
 Spell lands (d100 ≤ cast check)
-  → Layer 1: Evasion* — evasion can apply to magic only with a perk (not baseline)
+  → Layer 1: Evasion* — by delivery: single dodged whole, area halved, instant none (save)
   → Layer 2: Spell Absorption (spell_absorption core:effect/spell_absorption, WIL-based %) — % chance to absorb into mana
     → Layer 3: Magic Resistance (resist core:effect/resist with parameter "magic" + WIL) — % reduction or resist roll
       → Layer 4: Elemental/Phase Resistance (resist core:effect/resist with parameter = phase/type) — per-element DR
@@ -101,15 +107,19 @@ Spell lands (d100 ≤ cast check)
           → Final magical damage
 ```
 
-\*Baseline evasion only applies to physical attacks. A perk (e.g. "Spell Dodger")
-unlocks Layer 1 in the magic tree, allowing evasion skill to contribute against
-targeted spells.
+\*Evasion reads the spell's delivery, not its school or damage type: a single-target
+spell is dodged like an arrow, a successful dodge halves an area spell, and an instant
+spell cannot be dodged; its target makes the save the spell names instead
+([`docs/core/combat.md`](../core/combat.md)). Perks such as "Spell Dodger" can improve
+the dodge; they are not needed for it.
 
 ### TTRPG Resolution
 
-- **Evasion:** Passive penalty to the attacker's roll (reduces their effective skill),
-  or an active dodge as a reaction (declared before the attack roll, contested vs
-  the attacker's margin). Magic evasion only with the perk.
+- **Evasion:** An active dodge as a reaction (declared before the attack roll,
+  rolled after it hits, contested vs the attacker's margin). It is the defender's one
+  reaction against that attack: dodge or block, not both. Single-target attacks and
+  spells are dodged whole, area attacks are halved by a dodge, and instant spells cannot
+  be dodged and take a save instead. Order and numbers: [`docs/core/combat.md`](../core/combat.md).
 - **Block (shield):** Declared reaction before the attack roll. The blocker makes a
   block skill check against the attacker's margin of success. On success, the shield's
   DR is subtracted from incoming damage. On failure, no block benefit.
@@ -131,8 +141,9 @@ targeted spells.
 
 ### Video Game Resolution
 
-- **Evasion:** Percentage dodge chance computed from evasion skill + AGI. Auto-rolled
-  on each incoming attack. Magic evasion only with perk. Visually: a "miss" or "dodge"
+- **Evasion:** Dodge against the evasion skill, contested on margin, as in the
+  table. Auto-rolled on each incoming attack the defender is set to dodge; area attacks
+  are halved, instant spells skip it. Visually: a "miss" or "dodge"
   animation plays.
 - **Block:** Input-timed block/parry window. Pressing block just before impact triggers
   a successful block; skill determines window length and DR %.
@@ -967,13 +978,14 @@ Heavy armor nearly negates low-to-mid-tier physical damage. This is intentional 
 
 ### Auto-Dodge Calculation
 
-Video game evasion is a **passive percentage** computed from:
+Video game evasion uses the same numbers as the table: the evade target is the
+evasion skill, contested on margin ([`docs/core/combat.md`](../core/combat.md)):
 ```
-Dodge% = baseEvasion% + (evasionSkill × 0.15) + (AGI × 2)
-       − sum(armorEvasionPenalties) − encumbrancePenalty
+evade target = evasionSkill − sum(armorEvasionPenalties) − encumbrancePenalty
+dodged if evade roll <= evade target and evade margin >= attack margin
 ```
 
-- Rolled automatically on each incoming attack.
+- Rolled automatically on each incoming attack the defender is set to dodge.
 - Visually: a "dodge" animation plays (lean back, sidestep, or roll based on distance to attacker).
 - Dodging an attack should briefly interrupt the enemy's combo (giving the player a window to counter).
 - Overcapped dodge (>100%) grants a chance to **counter-attack** (optional mechanic).

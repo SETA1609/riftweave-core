@@ -7,6 +7,49 @@ issue settles them.
 
 ## Decided
 
+### 2026-11-02: One physical attack pipeline (M1-02)
+
+- **Decision:** `docs/core/combat.md` fixes the order attack roll, one defender reaction
+  (evade or block), damage, crit, block reduction, armor DR, resist, HP.
+  `ruleset/data/combat/pipeline.json` holds the crit damage and pierce trees and the
+  damage-type tags the steps read. `combat.json` vectors pin hit, miss, crit, fumble, evade,
+  block, DR, resist, and damage-type interaction. The reference is `run_combat` in
+  `kernel_reference.py`.
+- **Why:** the order lived only in `docs/modules/combat.md` prose, with worked examples that
+  disagree on small points (for example whether a crit multiplies before DR).
+- **Open:** these rules are choices the prose left open **[A]**: crit multiplies before any
+  reduction; a piercing hit halves DR; evade and block apply to physical types only. The
+  magic defense tree, called shots, cover, hit quality, and what happens at 0 HP are not
+  specified **[U]**.
+- **Evasion after the attack (owner, 2026-11-04):** evasion is a defender reaction rolled
+  after a hit, contested on margin like block, not a passive penalty on the attacker's
+  target. A defender takes one reaction per attack, declared before the attack roll. The
+  evade target is the raw `evasion` skill, as block reads the block skill; the old tree
+  `10 + evasion_skill * 0.15 + AGI * 2` is gone, because Evasion skill points barely moved
+  it and it topped out at 45.
+- **Delivery decides the dodge (owner, 2026-11-04):** not the damage type. A `single`
+  attack or spell (sword, arrow, fire bolt, touch) is evaded whole; an evade halves an `area`
+  attack (fireball, breath, bomb), rounded down, after a crit; an `instant` spell cannot be
+  evaded or blocked, and its target makes a save on a skill or attribute the spell names.
+  Block stays physical-only. Spells do not carry `delivery` yet, and saves are unspecified:
+  M3-05. **[V 2026-11-04]** vectors pin the three deliveries.
+- **Reaction rolls (owner, 2026-11-04):** evade and block roll through the one d100
+  function with the defender's skill and LCK: a 100 fumbles and fails, and a roll in the
+  defender's crit window is tagged `crit`. A crit reaction has no effect yet; later perks
+  may read the tag. **[V 2026-11-04]** vectors pin both.
+- **Balance (owner, 2026-11-04):** at equal skill an evade avoids all damage and a block
+  only subtracts shield DR. That is balanced outside the pipeline: perks gate stronger dodges
+  and blocks, armor penalties land on evasion, area attacks are only halved, and instant
+  spells skip the dodge for a save **[A]**. The perk ladders are M2-06: block against magic
+  at half shield DR, then full; block-side resistance scales with the block, not a general
+  resist; instant spells stay unblockable. Armor evasion penalties are not in the vectors
+  **[U]**.
+- **Risk:** `base_resolution.json` still holds `defense.*` and `critDamageMultiplier`.
+  The evasion keys (`baseEvasion`, `evasionSkillFactor`, `agiEvasionFactor`) are now read by
+  nothing; `critDamageMultiplier` is restated as a literal in the crit tree, so changing one
+  drifts from the other. Removing keys is breaking, so it is a follow-up issue.
+  `combat_reference.py` is the older crafted-item simulator and is not the vector reference.
+
 ### 2026-11-02: Integrity gates (M5-08)
 
 - **Decision:** `validate.py` gains two checks: every `core:<category>/<key>` string in any

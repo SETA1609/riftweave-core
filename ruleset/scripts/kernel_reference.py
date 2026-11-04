@@ -133,6 +133,82 @@ def run_actions(vector):
     return {"pool": pool, "cost": cost}
 
 
+def run_combat(vector):
+    """One attack, in the order of docs/core/combat.md. Dice and rolls are inputs."""
+    pipeline = load_data("combat/pipeline.json")["pipeline"]
+    types = {t["key"]: t for t in load_data("combat/damage_types.json")["damage_types"]}
+    attacker, defender, damage = vector["attacker"], vector["defender"], vector["damage"]
+    tags = types[damage["type"]]["tags"]
+
+    attack = run_resolution(
+        {
+            "actor": {"skills": {"attack": attacker["skill"]}, "attributes": attacker.get("attributes", {})},
+            "modifiers": vector.get("modifiers", []),
+            "roll": attacker["roll"],
+        }
+    )
+    crit = "crit" in attack["tags"]
+    result = {
+        "target": attack["target"],
+        "margin": attack["margin"],
+        "crit": crit,
+        "evaded": False,
+        "blocked": False,
+        "reaction_tags": [],
+    }
+    if not attack["success"]:
+        result.update(outcome="fumble" if "fumble" in attack["tags"] else "miss", damage=0, hp=defender["hp"])
+        return result
+
+    # One reaction per attack, rolled only on a hit. Delivery decides what it can do:
+    # single is evaded whole, area is halved by an evade, instant takes no reaction.
+    physical = pipeline["dr_applies_tag"] in tags
+    delivery = vector.get("delivery", "single")
+    if delivery not in ("single", "area", "instant"):
+        raise ValueError(f"delivery {delivery!r} is not defined")
+    reaction = defender.get("reaction") if delivery != "instant" else None
+    kind = reaction["kind"] if reaction else None
+    if kind not in (None, "evade", "block"):
+        raise ValueError(f"reaction kind {kind!r} is not defined")
+    if kind == "block" and not physical:
+        kind = None
+    if kind is not None:
+        # The reaction is a d100 check like the attack: same fumble and crit window.
+        skill = defender["evasion_skill"] if kind == "evade" else reaction["skill"]
+        check = run_resolution(
+            {
+                "actor": {"skills": {kind: skill}, "attributes": defender.get("attributes", {})},
+                "roll": reaction["roll"],
+            }
+        )
+        result["reaction_tags"] = check["tags"]
+        if check["success"] and check["margin"] >= attack["margin"]:
+            if kind == "block":
+                result["blocked"] = True
+            else:
+                result["evaded"] = True
+                if delivery == "single":
+                    result.update(outcome="evaded", damage=0, hp=defender["hp"])
+                    return result
+    result["outcome"] = "hit"
+
+    amount = damage["roll"]
+    if crit:
+        amount = evaluate_formula(pipeline["crit_damage"], {}, {"damage": amount})
+    if result["evaded"]:
+        amount = evaluate_formula(pipeline["area_evade_damage"], {}, {"damage": amount})
+    if result["blocked"]:
+        amount = max(amount - reaction["shield_dr"], 0)
+    if physical:
+        dr = defender.get("armor_dr", 0)
+        if pipeline["pierce_tag"] in tags:
+            dr = evaluate_formula(pipeline["pierce_dr"], {}, {"dr": dr})
+        amount = max(amount - dr, 0)
+    amount = max(amount - defender.get("resist", {}).get(damage["type"], 0), 0)
+    result.update(damage=amount, hp=max(defender["hp"] - amount, 0))
+    return result
+
+
 def run_progression(vector):
     """XP and level, one level-up pool, and spending a pool on one skill; `op` picks which."""
     rules = load_data("progression/core.json")["progression"]
@@ -174,6 +250,7 @@ RUNNERS = {
     "formula": run_formula,
     "modifiers": run_modifiers,
     "actions": run_actions,
+    "combat": run_combat,
     "progression": run_progression,
 }
 

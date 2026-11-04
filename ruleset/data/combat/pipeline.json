@@ -1,0 +1,40 @@
+{
+  "$schema": "../../schemas/combat.schema.json",
+  "pipeline": {
+    "crit_damage": {
+      "op": "mul",
+      "args": [
+        {
+          "var": "damage"
+        },
+        {
+          "lit": 2
+        }
+      ]
+    },
+    "area_evade_damage": {
+      "op": "div",
+      "args": [
+        {
+          "var": "damage"
+        },
+        {
+          "lit": 2
+        }
+      ]
+    },
+    "pierce_dr": {
+      "op": "div",
+      "args": [
+        {
+          "var": "dr"
+        },
+        {
+          "lit": 2
+        }
+      ]
+    },
+    "dr_applies_tag": "armor_dr_applies",
+    "pierce_tag": "armor_pierce_partial"
+  }
+}
