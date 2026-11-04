@@ -23,7 +23,7 @@ Done: —
 - Done when: `docs/core/economy.md` and a price formula in the AST; merchant stock and buy/sell spread as data; vectors for a purchase and a sale with a barter check.
 
 #### M4-02 Loot and treasure tables
-- Status: doing
+- Status: review
 - Priority: high
 - Needs: M4-01
 - Was: RW-21

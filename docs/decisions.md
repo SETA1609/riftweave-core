@@ -7,6 +7,21 @@ issue settles them.
 
 ## Decided
 
+### 2026-11-04: Loot tables on the price scale (M4-02)
+
+- **Decision:** `ruleset/data/loot/core.json` holds d100 loot tables (coins, an item ref, or
+  nothing per range), one drop row per core monster, and `budget_cp = 500 * level * level` as
+  a formula tree. Items are valued at list price through the price formula, so loot and prices
+  are one scale. A table's expected value must fit the budget at its level;
+  `test_loot.py` checks every table. 14 seeded vectors. Spec: `docs/core/loot.md`.
+  **[V 2026-11-04]**
+- **Why:** no loot data existed; monsters had no drops and levels no treasure budget.
+- **Open:** the budget curve (5 gp at level 1, 2000 gp at level 20) is a proposal **[A]**.
+  Drops live in the loot file, not on monster rows, so a module can change a monster's loot
+  without touching the bestiary **[A]**. Breakthrough cores (`coreDrop`) stay with the
+  breakthrough module. Magic items, unique items, and campaign wealth curves are not covered
+  **[U]**.
+
 ### 2026-11-04: The rebase regenerates the roadmap table (M5-13)
 
 - **Decision:** devops-tools moves to v0.3.0 (`f7aca2e`), with
