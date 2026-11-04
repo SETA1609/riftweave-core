@@ -40,8 +40,10 @@ issue settles them.
 - **Balance (owner, 2026-11-04):** at equal skill an evade avoids all damage and a block
   only subtracts shield DR. That is balanced outside the pipeline: perks gate stronger dodges
   and blocks, armor penalties land on evasion, area attacks are only halved, and instant
-  spells skip the dodge for a save **[A]**. The perk rows do not exist yet; armor evasion
-  penalties are not in the vectors **[U]**.
+  spells skip the dodge for a save **[A]**. The perk ladders are M2-06: block against magic
+  at half shield DR, then full; block-side resistance scales with the block, not a general
+  resist; instant spells stay unblockable. Armor evasion penalties are not in the vectors
+  **[U]**.
 - **Risk:** `base_resolution.json` still holds `defense.*` and `critDamageMultiplier`.
   The evasion keys (`baseEvasion`, `evasionSkillFactor`, `agiEvasionFactor`) are now read by
   nothing; `critDamageMultiplier` is restated as a literal in the crit tree, so changing one
