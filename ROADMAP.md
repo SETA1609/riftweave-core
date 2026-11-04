@@ -7,7 +7,8 @@ back here (see [docs/stories/README.md](docs/stories/README.md)).
 
 ## What "core SRD" means
 
-Riftweave is data plus schemas plus docs. There is no engine here. The core is finished when a
+Riftweave is data plus schemas plus docs, served by a reference backend that adds no rules
+(story APP). There is no game engine here. The core is finished when a
 programmer who has never seen this repo could build a game, or a referee could run a table,
 from `ruleset/data/`, `ruleset/schemas/`, `docs/core/`, and the golden vectors alone, and a
 second implementation that disagrees with the vectors is wrong.
@@ -21,7 +22,11 @@ advancement, factions, companions, mounts and vehicles, survival needs, psionics
 A module may extend core through modifiers and rows but core never requires one
 ([contract](docs/core/contract.md), [overrides](docs/core/overrides.md)).
 
-**Out of scope for this repo:** engines, UIs, and virtual tabletop code. A Zig or other second
+**In this repo, not a 1.0 gate:** the reference backend (story APP): a Go implementation of the
+kernel behind one command contract, exposed as an agent CLI, a human CLI, an HTTP API, and an
+Angular frontend. It is a way to call and test the ruleset, not a game.
+
+**Out of scope for this repo:** game engines and virtual tabletop code. A Zig or other second
 implementation is the long-term conformance proof, but it lives elsewhere. The 1.0 gate is that
 the vectors fully specify the kernel, not that a second implementation exists.
 
@@ -59,6 +64,7 @@ Foundations are done. Milestone M0 below is complete and archived in
 | M3 Combat and magic playable | Not started |
 | M4 World | Not started |
 | M5 Release 1.0 | Not started |
+| APP Reference backend | Not started |
 
 ### Story order
 
@@ -75,6 +81,7 @@ is the earliest wave of its open issues; stories in the same wave can run in par
 | 0 | M4 | ready | M1 | 4 |
 | 0 | M5 | ready, critical | M1, M2, M3, M4 | 6 |
 | 0 | POST | ready | M1, M3 | 7 |
+| 0 | APP | ready, critical | M1, M5 | 7 |
 
 <!-- roadmap-order end -->
 
@@ -117,6 +124,16 @@ Issues, in order: [docs/stories/04-world.md](docs/stories/04-world.md).
 **Exit:** items 3, 5, 6, 7, and 8 of the definition hold, and `v1.0.0` is tagged.
 
 Issues, in order: [docs/stories/05-release.md](docs/stories/05-release.md).
+
+## APP Reference backend
+
+One fast backend for every consumer, in Go: a language-neutral command contract, a Go core
+that passes every vector in CI, and an agent CLI, a human CLI, an HTTP API, and an Angular
+frontend as thin adapters. The Go core is a second implementation of the kernel, so the vectors
+now prove themselves inside this repo. It starts after M1 closes; the Python reference stays
+the reference until 1.0. Not a 1.0 gate.
+
+Issues, in order: [docs/stories/07-backend.md](docs/stories/07-backend.md).
 
 ## Post-1.0 modules
 
