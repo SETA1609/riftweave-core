@@ -37,6 +37,7 @@ The other fields are the input the function reads. They are listed per function 
 | `formula` | `formula` (a key in `ruleset/data/formulas/`) or `expr` (an inline tree), `actor.attributes` | `value` |
 | `modifiers` | `value`, `modifiers` | `value` |
 | `actions` | `actor.attributes`, `actions` (a list of action keys) | `pool`, `cost` |
+| `wuxing` | `actor_phase`, `recipient_phase` (null for none), optional `actor_magnitude` and `recipient_magnitude` | `cycle`, `interaction`, `multiplier`, `affects` |
 | `economy` | `op`: `convert` (`cost`) or `trade` (`side` buy or sell, `merchant`, `item_cost`, optional `value_percent`, optional `barter` with `skill_value` and `roll`) | `cp`; or `base_cp`, `shift`, `percent`, `price_cp` |
 | `rest` | `occasion` (a key in `ruleset/data/rest/core.json`), `actor.attributes`, `actor.level`, `modifiers`, `current` (hp, mp, stamina, ap), `max.stamina`, `conditions` (key and duration) | the four resources after the rest, and `conditions` (the keys left) |
 | `combat` | `attacker` (`skill`, `roll`, `attributes.lck`), `defender` (`evasion_skill`, `attributes.lck` for reaction crits, `armor_dr`, `hp`, `resist` by damage type, optional `reaction`: `kind` `evade` with `roll`, or `kind` `block` with `skill`, `roll`, `shield_dr`), `damage` (`roll`, `type`), `delivery` (`single`, the default, `area`, or `instant`), `modifiers` on the attack | `outcome` (`hit`, `miss`, `fumble`, `evaded`), `target`, `margin`, `crit`, `evaded`, `blocked`, `reaction_tags` (`crit`, `fumble` on the reaction roll), `damage` after reductions, `hp` |
@@ -63,6 +64,7 @@ Every kernel function and the vector file that covers it. The test reads this ta
 | `formula` | `formula.json` | covered |
 | `modifiers` | `modifiers.json` | covered |
 | `actions` | `actions.json` | covered |
+| `wuxing` | `wuxing.json` | covered |
 | `economy` | `economy.json` | covered |
 | `rest` | `rest.json` | covered |
 | `combat` | `combat.json` | covered |

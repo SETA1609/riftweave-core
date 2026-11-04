@@ -18,6 +18,8 @@ import json
 import sys
 from pathlib import Path
 
+from wuxing_reference import get_interaction
+
 ROOT = Path(__file__).resolve().parent.parent
 
 
@@ -33,39 +35,6 @@ def find_by_key(collection, key):
         if item.get("key") == key:
             return item
     return None
-
-
-def find_cycle(cycles, from_phase, to_phase):
-    """Find a Wuxing cycle where from_phase acts upon to_phase.
-    Returns (cycle_id, interaction, multiplier, affects) or None."""
-    for cycle in cycles:
-        for edge in cycle["edges"]:
-            if edge["from"] == from_phase and edge["to"] == to_phase:
-                return (
-                    cycle["id"],
-                    cycle["interaction"],
-                    cycle["magnitudeMultiplier"],
-                    cycle["affects"],
-                )
-    return None
-
-
-def get_interaction(cycles, item_phase, effect_phase):
-    """Look up the Wuxing interaction between item phase and effect phase.
-    Returns (cycle_id, interaction, multiplier, affects) or None."""
-    if item_phase == effect_phase:
-        return ("same_phase", "identity", 1.0, "none")
-    result = find_cycle(cycles, item_phase, effect_phase)
-    if result:
-        return result
-    # TODO: The current reverse logic (1.0 / mult) works for generating/overcoming/weakening.
-    #       The "insulting" cycle has special conditions (magnitude check).
-    #       Revisit when we add full insulting cycle support.
-    result = find_cycle(cycles, effect_phase, item_phase)
-    if result:
-        cycle_id, interaction, mult, affects = result
-        return (f"reverse_{cycle_id}", f"reverse_{interaction}", 1.0 / mult, affects)
-    return ("unrelated", "none", 1.0, "none")
 
 
 class CraftingResolver:

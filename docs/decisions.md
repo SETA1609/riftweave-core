@@ -7,6 +7,22 @@ issue settles them.
 
 ## Decided
 
+### 2026-11-02: One Wuxing interaction function, no reverse lookup (M3-04)
+
+- **Decision:** `ruleset/scripts/wuxing_reference.py` holds the only reader of the cycle edges.
+  The combat and crafting simulators import it instead of carrying a copy each. The `1 / multiplier`
+  reverse fallback is gone: `core.json` lists all 20 ordered pairs of distinct phases, each in
+  exactly one cycle, so the fallback never ran (`test_wuxing.py` pins this). An unlisted pair
+  is `unrelated`. The insulting cycle gains a machine-readable `gate`.
+- **Why:** the review called the reverse math fragile; it was dead code that would have
+  invented a multiplier on an incomplete override matrix.
+- **Open:** when the insulting gate fails the overcoming cycle applies to the reversed pair
+  and modifies the actor **[A]**. A caller that passes no magnitudes skips the gate, so
+  backlash fires as before; the simulators pass none today **[A]**.
+- **Risk:** `combat_reference.py` and `crafting_reference.py` already fail on `main` with
+  `Unknown weapon: core:weapon/longsword`, before and after this change, so their output could
+  not be compared. Track separately.
+
 ### 2026-11-02: Key stability and versioning (M5-07)
 
 - **Decision:** semver, with keys, schema properties and enum members, and vector results as the
