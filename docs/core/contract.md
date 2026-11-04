@@ -47,6 +47,8 @@ Stacking, written once:
 - `grant` adds a flag or a tag. It does not add a number.
 - `resist` subtracts from a packet whose tag matches `target`.
 
+The order of these steps for one target, expiry, and how a condition is applied and removed are in [modifier.md](modifier.md).
+
 There is no bonus taxonomy. No dodge-stacks-except-circumstance. A perk that wants a second copy uses a different source id.
 
 ## Event
