@@ -7,6 +7,23 @@ issue settles them.
 
 ## Decided
 
+### 2026-11-04: A reference backend is in scope (M5-12)
+
+- **Decision (owner):** the repo gets one backend that serves the ruleset: a command registry
+  over the Python reference, with an agent CLI, a human CLI, an HTTP API, and an Angular
+  frontend as thin adapters (story APP, `docs/stories/07-backend.md`). Game engines and VTT
+  code stay out of scope. It is not a 1.0 gate.
+- **Why:** the ruleset could only be called through the vector test. A backend lets agents and
+  people play it, find broken builds, and turn any run into a vector, and gives consumers an
+  API.
+- **Defaults [A]:** Python, in `backend/`, because the reference is Python; the registry
+  wraps `kernel_reference.RUNNERS` instead of moving them, so open runner branches do not
+  conflict; rolls are inputs or seeded and echoed; the API's OpenAPI document is generated
+  from the command schemas; the frontend is in `frontend/` and calls only the API. Backend and
+  frontend code are Apache-2.0, as tooling ([LICENSING.md](../LICENSING.md)).
+- **Risk:** a backend invites rules in adapters. Rule: an adapter only parses, calls the
+  registry, and formats; anything else is a bug.
+
 ### 2026-11-02: Economy rows and one price formula (M4-01)
 
 - **Decision:** `ruleset/data/economy/core.json` holds the denominations (copper is the base
