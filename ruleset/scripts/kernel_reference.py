@@ -9,6 +9,7 @@ of each runner are listed in docs/core/vectors.md.
 import json
 from pathlib import Path
 
+from loot_reference import run_loot
 from wuxing_reference import get_interaction
 
 RULESET = Path(__file__).resolve().parent.parent
@@ -327,6 +328,7 @@ RUNNERS = {
     "rest": run_rest,
     "economy": run_economy,
     "combat": run_combat,
+    "loot": run_loot,
     "progression": run_progression,
 }
 
