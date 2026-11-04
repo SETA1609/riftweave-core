@@ -154,6 +154,7 @@ def run_combat(vector):
         "crit": crit,
         "evaded": False,
         "blocked": False,
+        "reaction_tags": [],
     }
     if not attack["success"]:
         result.update(outcome="fumble" if "fumble" in attack["tags"] else "miss", damage=0, hp=defender["hp"])
@@ -167,18 +168,28 @@ def run_combat(vector):
         raise ValueError(f"delivery {delivery!r} is not defined")
     reaction = defender.get("reaction") if delivery != "instant" else None
     kind = reaction["kind"] if reaction else None
-    if kind == "evade":
-        evade_target = defender["evasion_skill"]
-        if reaction["roll"] <= evade_target and evade_target - reaction["roll"] >= attack["margin"]:
-            result["evaded"] = True
-            if delivery == "single":
-                result.update(outcome="evaded", damage=0, hp=defender["hp"])
-                return result
-    elif kind == "block":
-        if physical and reaction["roll"] <= reaction["skill"] and reaction["skill"] - reaction["roll"] >= attack["margin"]:
-            result["blocked"] = True
-    elif kind is not None:
+    if kind not in (None, "evade", "block"):
         raise ValueError(f"reaction kind {kind!r} is not defined")
+    if kind == "block" and not physical:
+        kind = None
+    if kind is not None:
+        # The reaction is a d100 check like the attack: same fumble and crit window.
+        skill = defender["evasion_skill"] if kind == "evade" else reaction["skill"]
+        check = run_resolution(
+            {
+                "actor": {"skills": {kind: skill}, "attributes": defender.get("attributes", {})},
+                "roll": reaction["roll"],
+            }
+        )
+        result["reaction_tags"] = check["tags"]
+        if check["success"] and check["margin"] >= attack["margin"]:
+            if kind == "block":
+                result["blocked"] = True
+            else:
+                result["evaded"] = True
+                if delivery == "single":
+                    result.update(outcome="evaded", damage=0, hp=defender["hp"])
+                    return result
     result["outcome"] = "hit"
 
     amount = damage["roll"]
