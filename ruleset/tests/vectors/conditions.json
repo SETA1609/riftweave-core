@@ -1,0 +1,940 @@
+[
+  {
+    "name": "apply blinded: blind applies it and grants its flag",
+    "events": [
+      {
+        "effect": "core:effect/blind"
+      }
+    ],
+    "expect": {
+      "conditions": {
+        "blinded": 1
+      },
+      "flags": [
+        "blinded"
+      ]
+    }
+  },
+  {
+    "name": "apply charmed: charm applies it and grants its flag",
+    "events": [
+      {
+        "effect": "core:effect/charm"
+      }
+    ],
+    "expect": {
+      "conditions": {
+        "charmed": 1
+      },
+      "flags": [
+        "charmed"
+      ]
+    }
+  },
+  {
+    "name": "apply deafened: deafen applies it and grants its flag",
+    "events": [
+      {
+        "effect": "core:effect/deafen"
+      }
+    ],
+    "expect": {
+      "conditions": {
+        "deafened": 1
+      },
+      "flags": [
+        "deafened"
+      ]
+    }
+  },
+  {
+    "name": "apply frightened: phobia applies it and grants its flag",
+    "events": [
+      {
+        "effect": "core:effect/phobia"
+      }
+    ],
+    "expect": {
+      "conditions": {
+        "frightened": 1
+      },
+      "flags": [
+        "frightened"
+      ]
+    }
+  },
+  {
+    "name": "apply grappled: grapple applies it and grants its flag",
+    "events": [
+      {
+        "effect": "core:effect/grapple"
+      }
+    ],
+    "expect": {
+      "conditions": {
+        "grappled": 1
+      },
+      "flags": [
+        "grappled"
+      ]
+    }
+  },
+  {
+    "name": "apply incapacitated: incapacitate applies it and grants its flag",
+    "events": [
+      {
+        "effect": "core:effect/incapacitate"
+      }
+    ],
+    "expect": {
+      "conditions": {
+        "incapacitated": 1
+      },
+      "flags": [
+        "incapacitated"
+      ]
+    }
+  },
+  {
+    "name": "apply invisible: invisibility applies it and grants its flag",
+    "events": [
+      {
+        "effect": "core:effect/invisibility"
+      }
+    ],
+    "expect": {
+      "conditions": {
+        "invisible": 1
+      },
+      "flags": [
+        "invisible"
+      ]
+    }
+  },
+  {
+    "name": "apply paralyzed: paralyze applies it and grants its flag",
+    "events": [
+      {
+        "effect": "core:effect/paralyze"
+      }
+    ],
+    "expect": {
+      "conditions": {
+        "paralyzed": 1
+      },
+      "flags": [
+        "paralyzed"
+      ]
+    }
+  },
+  {
+    "name": "apply petrified: petrify applies it and grants its flag",
+    "events": [
+      {
+        "effect": "core:effect/petrify"
+      }
+    ],
+    "expect": {
+      "conditions": {
+        "petrified": 1
+      },
+      "flags": [
+        "petrified"
+      ]
+    }
+  },
+  {
+    "name": "apply poisoned: poison applies it and grants its flag",
+    "events": [
+      {
+        "effect": "core:effect/poison"
+      }
+    ],
+    "expect": {
+      "conditions": {
+        "poisoned": 1
+      },
+      "flags": [
+        "poisoned"
+      ]
+    }
+  },
+  {
+    "name": "apply prone: knockdown applies it and grants its flag",
+    "events": [
+      {
+        "effect": "core:effect/knockdown"
+      }
+    ],
+    "expect": {
+      "conditions": {
+        "prone": 1
+      },
+      "flags": [
+        "prone"
+      ]
+    }
+  },
+  {
+    "name": "apply restrained: restrain applies it and grants its flag",
+    "events": [
+      {
+        "effect": "core:effect/restrain"
+      }
+    ],
+    "expect": {
+      "conditions": {
+        "restrained": 1
+      },
+      "flags": [
+        "restrained"
+      ]
+    }
+  },
+  {
+    "name": "apply stunned: stun applies it and grants its flag",
+    "events": [
+      {
+        "effect": "core:effect/stun"
+      }
+    ],
+    "expect": {
+      "conditions": {
+        "stunned": 1
+      },
+      "flags": [
+        "stunned"
+      ]
+    }
+  },
+  {
+    "name": "apply unconscious: unconsciousness applies it and grants its flag",
+    "events": [
+      {
+        "effect": "core:effect/unconsciousness"
+      }
+    ],
+    "expect": {
+      "conditions": {
+        "unconscious": 1
+      },
+      "flags": [
+        "unconscious"
+      ]
+    }
+  },
+  {
+    "name": "apply exhaustion: blight applies it and grants its flag",
+    "events": [
+      {
+        "effect": "core:effect/blight"
+      }
+    ],
+    "expect": {
+      "conditions": {
+        "diseased": 1,
+        "exhaustion": 1
+      },
+      "flags": [
+        "diseased",
+        "exhaustion"
+      ]
+    }
+  },
+  {
+    "name": "apply burning: burn applies it and grants its flag",
+    "events": [
+      {
+        "effect": "core:effect/burn"
+      }
+    ],
+    "expect": {
+      "conditions": {
+        "burning": 1
+      },
+      "flags": [
+        "burning"
+      ]
+    }
+  },
+  {
+    "name": "apply bleeding: bleed applies it and grants its flag",
+    "events": [
+      {
+        "effect": "core:effect/bleed"
+      }
+    ],
+    "expect": {
+      "conditions": {
+        "bleeding": 1
+      },
+      "flags": [
+        "bleeding"
+      ]
+    }
+  },
+  {
+    "name": "apply slowed: slow applies it and grants its flag",
+    "events": [
+      {
+        "effect": "core:effect/slow"
+      }
+    ],
+    "expect": {
+      "conditions": {
+        "slowed": 1
+      },
+      "flags": [
+        "slowed"
+      ]
+    }
+  },
+  {
+    "name": "apply silenced: silence applies it and grants its flag",
+    "events": [
+      {
+        "effect": "core:effect/silence"
+      }
+    ],
+    "expect": {
+      "conditions": {
+        "silenced": 1
+      },
+      "flags": [
+        "silenced"
+      ]
+    }
+  },
+  {
+    "name": "apply diseased: blight applies it and grants its flag",
+    "events": [
+      {
+        "effect": "core:effect/blight"
+      }
+    ],
+    "expect": {
+      "conditions": {
+        "diseased": 1,
+        "exhaustion": 1
+      },
+      "flags": [
+        "diseased",
+        "exhaustion"
+      ]
+    }
+  },
+  {
+    "name": "apply cursed: curse applies it and grants its flag",
+    "events": [
+      {
+        "effect": "core:effect/curse"
+      }
+    ],
+    "expect": {
+      "conditions": {
+        "cursed": 1
+      },
+      "flags": [
+        "cursed"
+      ]
+    }
+  },
+  {
+    "name": "apply exposed: expose applies it and grants its flag",
+    "events": [
+      {
+        "effect": "core:effect/expose"
+      }
+    ],
+    "expect": {
+      "conditions": {
+        "exposed": 1
+      },
+      "flags": [
+        "exposed"
+      ]
+    }
+  },
+  {
+    "name": "apply taunted: taunt applies it and grants its flag",
+    "events": [
+      {
+        "effect": "core:effect/taunt"
+      }
+    ],
+    "expect": {
+      "conditions": {
+        "taunted": 1
+      },
+      "flags": [
+        "taunted"
+      ]
+    }
+  },
+  {
+    "name": "apply staggered: stagger applies it and grants its flag",
+    "events": [
+      {
+        "effect": "core:effect/stagger"
+      }
+    ],
+    "expect": {
+      "conditions": {
+        "staggered": 1
+      },
+      "flags": [
+        "staggered"
+      ]
+    }
+  },
+  {
+    "name": "remove blinded: cure removes it and its flag",
+    "conditions": {
+      "blinded": 1
+    },
+    "events": [
+      {
+        "effect": "core:effect/cure"
+      }
+    ],
+    "expect": {
+      "conditions": {},
+      "flags": []
+    }
+  },
+  {
+    "name": "remove charmed: cure removes it and its flag",
+    "conditions": {
+      "charmed": 1
+    },
+    "events": [
+      {
+        "effect": "core:effect/cure"
+      }
+    ],
+    "expect": {
+      "conditions": {},
+      "flags": []
+    }
+  },
+  {
+    "name": "remove deafened: cure removes it and its flag",
+    "conditions": {
+      "deafened": 1
+    },
+    "events": [
+      {
+        "effect": "core:effect/cure"
+      }
+    ],
+    "expect": {
+      "conditions": {},
+      "flags": []
+    }
+  },
+  {
+    "name": "remove frightened: cure removes it and its flag",
+    "conditions": {
+      "frightened": 1
+    },
+    "events": [
+      {
+        "effect": "core:effect/cure"
+      }
+    ],
+    "expect": {
+      "conditions": {},
+      "flags": []
+    }
+  },
+  {
+    "name": "remove grappled: cure removes it and its flag",
+    "conditions": {
+      "grappled": 1
+    },
+    "events": [
+      {
+        "effect": "core:effect/cure"
+      }
+    ],
+    "expect": {
+      "conditions": {},
+      "flags": []
+    }
+  },
+  {
+    "name": "remove incapacitated: cure removes it and its flag",
+    "conditions": {
+      "incapacitated": 1
+    },
+    "events": [
+      {
+        "effect": "core:effect/cure"
+      }
+    ],
+    "expect": {
+      "conditions": {},
+      "flags": []
+    }
+  },
+  {
+    "name": "remove invisible: cure removes it and its flag",
+    "conditions": {
+      "invisible": 1
+    },
+    "events": [
+      {
+        "effect": "core:effect/cure"
+      }
+    ],
+    "expect": {
+      "conditions": {},
+      "flags": []
+    }
+  },
+  {
+    "name": "remove paralyzed: cure removes it and its flag",
+    "conditions": {
+      "paralyzed": 1
+    },
+    "events": [
+      {
+        "effect": "core:effect/cure"
+      }
+    ],
+    "expect": {
+      "conditions": {},
+      "flags": []
+    }
+  },
+  {
+    "name": "remove petrified: cure removes it and its flag",
+    "conditions": {
+      "petrified": 1
+    },
+    "events": [
+      {
+        "effect": "core:effect/cure"
+      }
+    ],
+    "expect": {
+      "conditions": {},
+      "flags": []
+    }
+  },
+  {
+    "name": "remove poisoned: cure removes it and its flag",
+    "conditions": {
+      "poisoned": 1
+    },
+    "events": [
+      {
+        "effect": "core:effect/cure"
+      }
+    ],
+    "expect": {
+      "conditions": {},
+      "flags": []
+    }
+  },
+  {
+    "name": "remove prone: no effect removes it; a remove event does (standing up)",
+    "conditions": {
+      "prone": 1
+    },
+    "events": [
+      {
+        "remove": "core:condition/prone"
+      }
+    ],
+    "expect": {
+      "conditions": {},
+      "flags": []
+    }
+  },
+  {
+    "name": "remove restrained: cure removes it and its flag",
+    "conditions": {
+      "restrained": 1
+    },
+    "events": [
+      {
+        "effect": "core:effect/cure"
+      }
+    ],
+    "expect": {
+      "conditions": {},
+      "flags": []
+    }
+  },
+  {
+    "name": "remove stunned: cure removes it and its flag",
+    "conditions": {
+      "stunned": 1
+    },
+    "events": [
+      {
+        "effect": "core:effect/cure"
+      }
+    ],
+    "expect": {
+      "conditions": {},
+      "flags": []
+    }
+  },
+  {
+    "name": "remove unconscious: cure removes it and its flag",
+    "conditions": {
+      "unconscious": 1
+    },
+    "events": [
+      {
+        "effect": "core:effect/cure"
+      }
+    ],
+    "expect": {
+      "conditions": {},
+      "flags": []
+    }
+  },
+  {
+    "name": "remove exhaustion: cure removes it and its flag",
+    "conditions": {
+      "exhaustion": 1
+    },
+    "events": [
+      {
+        "effect": "core:effect/cure"
+      }
+    ],
+    "expect": {
+      "conditions": {},
+      "flags": []
+    }
+  },
+  {
+    "name": "remove burning: cure removes it and its flag",
+    "conditions": {
+      "burning": 1
+    },
+    "events": [
+      {
+        "effect": "core:effect/cure"
+      }
+    ],
+    "expect": {
+      "conditions": {},
+      "flags": []
+    }
+  },
+  {
+    "name": "remove bleeding: cure removes it and its flag",
+    "conditions": {
+      "bleeding": 1
+    },
+    "events": [
+      {
+        "effect": "core:effect/cure"
+      }
+    ],
+    "expect": {
+      "conditions": {},
+      "flags": []
+    }
+  },
+  {
+    "name": "remove slowed: cure removes it and its flag",
+    "conditions": {
+      "slowed": 1
+    },
+    "events": [
+      {
+        "effect": "core:effect/cure"
+      }
+    ],
+    "expect": {
+      "conditions": {},
+      "flags": []
+    }
+  },
+  {
+    "name": "remove silenced: cure removes it and its flag",
+    "conditions": {
+      "silenced": 1
+    },
+    "events": [
+      {
+        "effect": "core:effect/cure"
+      }
+    ],
+    "expect": {
+      "conditions": {},
+      "flags": []
+    }
+  },
+  {
+    "name": "remove diseased: cure removes it and its flag",
+    "conditions": {
+      "diseased": 1
+    },
+    "events": [
+      {
+        "effect": "core:effect/cure"
+      }
+    ],
+    "expect": {
+      "conditions": {},
+      "flags": []
+    }
+  },
+  {
+    "name": "remove cursed: cure removes it and its flag",
+    "conditions": {
+      "cursed": 1
+    },
+    "events": [
+      {
+        "effect": "core:effect/cure"
+      }
+    ],
+    "expect": {
+      "conditions": {},
+      "flags": []
+    }
+  },
+  {
+    "name": "remove exposed: cure removes it and its flag",
+    "conditions": {
+      "exposed": 1
+    },
+    "events": [
+      {
+        "effect": "core:effect/cure"
+      }
+    ],
+    "expect": {
+      "conditions": {},
+      "flags": []
+    }
+  },
+  {
+    "name": "remove taunted: cure removes it and its flag",
+    "conditions": {
+      "taunted": 1
+    },
+    "events": [
+      {
+        "effect": "core:effect/cure"
+      }
+    ],
+    "expect": {
+      "conditions": {},
+      "flags": []
+    }
+  },
+  {
+    "name": "remove staggered: cure removes it and its flag",
+    "conditions": {
+      "staggered": 1
+    },
+    "events": [
+      {
+        "effect": "core:effect/cure"
+      }
+    ],
+    "expect": {
+      "conditions": {},
+      "flags": []
+    }
+  },
+  {
+    "name": "paralyzed sets AP to 0 over the actor's own AP bonus",
+    "base": {
+      "ap": 5
+    },
+    "modifiers": [
+      {
+        "target": "ap",
+        "op": "add",
+        "value": 2,
+        "source": "perk:quick"
+      }
+    ],
+    "events": [
+      {
+        "effect": "core:effect/paralyze"
+      }
+    ],
+    "expect": {
+      "conditions": {
+        "paralyzed": 1
+      },
+      "values": {
+        "ap": 0
+      }
+    }
+  },
+  {
+    "name": "removing paralyzed gives the AP back",
+    "base": {
+      "ap": 5
+    },
+    "modifiers": [
+      {
+        "target": "ap",
+        "op": "add",
+        "value": 2,
+        "source": "perk:quick"
+      }
+    ],
+    "events": [
+      {
+        "effect": "core:effect/paralyze"
+      },
+      {
+        "effect": "core:effect/cure"
+      }
+    ],
+    "expect": {
+      "conditions": {},
+      "values": {
+        "ap": 7
+      }
+    }
+  },
+  {
+    "name": "exhaustion stacks to maxStacks 6 and no further; blight also applies diseased once",
+    "events": [
+      {
+        "effect": "core:effect/blight"
+      },
+      {
+        "effect": "core:effect/blight"
+      },
+      {
+        "effect": "core:effect/blight"
+      },
+      {
+        "effect": "core:effect/blight"
+      },
+      {
+        "effect": "core:effect/blight"
+      },
+      {
+        "effect": "core:effect/blight"
+      },
+      {
+        "effect": "core:effect/blight"
+      }
+    ],
+    "expect": {
+      "conditions": {
+        "diseased": 1,
+        "exhaustion": 6
+      }
+    }
+  },
+  {
+    "name": "a condition without maxStacks applied twice is one condition",
+    "events": [
+      {
+        "effect": "core:effect/blind"
+      },
+      {
+        "effect": "core:effect/blind"
+      }
+    ],
+    "expect": {
+      "conditions": {
+        "blinded": 1
+      }
+    }
+  },
+  {
+    "name": "cure removes blinded and poisoned but not prone",
+    "conditions": {
+      "blinded": 1,
+      "poisoned": 1,
+      "prone": 1
+    },
+    "events": [
+      {
+        "effect": "core:effect/cure"
+      }
+    ],
+    "expect": {
+      "conditions": {
+        "prone": 1
+      },
+      "flags": [
+        "prone"
+      ]
+    }
+  },
+  {
+    "name": "restore_resource removes poisoned and bleeding, not blinded",
+    "conditions": {
+      "blinded": 1,
+      "poisoned": 1,
+      "bleeding": 1
+    },
+    "events": [
+      {
+        "effect": "core:effect/restore_resource"
+      }
+    ],
+    "expect": {
+      "conditions": {
+        "blinded": 1
+      },
+      "flags": [
+        "blinded"
+      ]
+    }
+  },
+  {
+    "name": "damage_frost puts out burning",
+    "conditions": {
+      "burning": 1
+    },
+    "events": [
+      {
+        "effect": "core:effect/damage_frost"
+      }
+    ],
+    "expect": {
+      "conditions": {}
+    }
+  },
+  {
+    "name": "removing exhaustion drops every stack at once",
+    "conditions": {
+      "exhaustion": 4
+    },
+    "events": [
+      {
+        "effect": "core:effect/cure"
+      }
+    ],
+    "expect": {
+      "conditions": {},
+      "flags": []
+    }
+  },
+  {
+    "name": "an effect that names no condition changes nothing",
+    "conditions": {
+      "prone": 1
+    },
+    "events": [
+      {
+        "effect": "core:effect/damage_fire"
+      }
+    ],
+    "expect": {
+      "conditions": {
+        "prone": 1
+      }
+    }
+  }
+]

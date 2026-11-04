@@ -35,7 +35,8 @@ The other fields are the input the function reads. They are listed per function 
 | `resolution` | `actor.skills` (one skill, or `skill` names it), `actor.attributes.lck`, `modifiers`, `roll` | `target`, `success`, `margin` (null on a failure), `tags` |
 | `derived` | `actor.attributes`, `actor.level`, `modifiers` | one field per derived key (`hp`, `mp`, `ap`, `carry`, `initiative`) |
 | `formula` | `formula` (a key in `ruleset/data/formulas/`) or `expr` (an inline tree), `actor.attributes` | `value` |
-| `modifiers` | `value`, `modifiers` | `value` |
+| `modifiers` | `value` of `target`, `modifiers`, optional `elapsed_turns`, `removed_sources`, `packet` (`amount`, `tag`) | `value`, `flags`, `packet` (the amount after resist) |
+| `conditions` | optional `base` (target values), `modifiers` (the actor's own), `conditions` (active key and stacks), `events` (`effect` refs or `remove` refs, in order) | `conditions` (key and stacks), `flags`, `values` (one per `base` target) |
 | `actions` | `actor.attributes`, `actions` (a list of action keys) | `pool`, `cost` |
 | `wuxing` | `actor_phase`, `recipient_phase` (null for none), optional `actor_magnitude` and `recipient_magnitude` | `cycle`, `interaction`, `multiplier`, `affects` |
 | `economy` | `op`: `convert` (`cost`) or `trade` (`side` buy or sell, `merchant`, `item_cost`, optional `value_percent`, optional `barter` with `skill_value` and `roll`) | `cp`; or `base_cp`, `shift`, `percent`, `price_cp` |
@@ -48,7 +49,7 @@ Coefficients come from `ruleset/data/`, not from the vector, so a data change th
 Notes on the reference, for a second implementation to check against:
 
 - `resolution` adds every `add` modifier's value to the target. Resolution sees bonuses and penalties as one signed list. [V 2026-11-02, matches `resolution.md`]
-- `modifiers` applies the contract stacking rule for `add` and `mul` only: same source and op, the latest wins; different sources add; `mul` after `add`. Two `mul` from different sources multiply. [A] `set`, `grant`, and `resist` raise an error in the reference until M1-05 fixes their order with vectors.
+- `modifiers` and `conditions` follow the order in [modifier.md](modifier.md): expire, dedupe by source, target, and op, then add, mul (floored), set; `grant` makes flags and `resist` reduces a packet. [V 2026-11-04]
 - `derived` and `resolution` read a missing attribute as 0, and `derived` a missing level as 1. [A] Each vector names every value its `expect` fields depend on.
 - `formula` evaluates `lit`, `attr`, and the ops `add`, `sub`, `mul`, `div`. `div` is integer floor division, the `floor` rounding named in `ap.json`. [A] Other ops raise an error.
 - `actions` pool is `base + attr * per_point / per_point_divisor` from `ruleset/data/actions/core.json`; cost is the sum of the named actions' costs, so `attack` plus `aimed` is 5. The turn cap and carry are not checked yet. [A]
@@ -63,6 +64,7 @@ Every kernel function and the vector file that covers it. The test reads this ta
 | `derived` | `derived.json` | covered |
 | `formula` | `formula.json` | covered |
 | `modifiers` | `modifiers.json` | covered |
+| `conditions` | `conditions.json` | covered |
 | `actions` | `actions.json` | covered |
 | `wuxing` | `wuxing.json` | covered |
 | `economy` | `economy.json` | covered |
@@ -70,4 +72,4 @@ Every kernel function and the vector file that covers it. The test reads this ta
 | `combat` | `combat.json` | covered |
 | `progression` | `progression.json` | covered |
 
-The modifier vectors here cover `add`, `mul`, and same-source duplicates; M1-05 adds `set`, `grant`, `resist`, expiry, and conditions.
+The modifier vectors cover every op, mixed ops, same-source duplicates, and expiry. The condition vectors apply and remove each of the 24 conditions once, plus stacks and multi-condition effects.
