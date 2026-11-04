@@ -96,7 +96,7 @@ Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02 ([done.md](done.md#m5-releas
 - Status: review
 - Priority: medium
 - Needs: —
-- Do: The roadmap put every UI out of scope, so there was no way to call the ruleset except through the vector test. The owner wants one backend that an agent CLI, a human CLI, an API server, and an Angular frontend all use. Add the APP story with its issues, and change the scope lines in ROADMAP, AGENTS, and CLAUDE: a reference backend is in, not a 1.0 gate; game engines and VTT code stay out.
+- Do: The roadmap put every UI out of scope, so there was no way to call the ruleset except through the vector test. The owner wants one fast backend, in Go, that an agent CLI, a human CLI, an API server, and an Angular frontend all use. Add the APP story with its issues, and change the scope lines in ROADMAP, AGENTS, and CLAUDE: a reference backend is in, not a 1.0 gate; game engines and VTT code stay out.
 - Files: ~8 (docs/stories/07-backend.md, docs/stories/README.md, docs/stories/05-release.md, ROADMAP.md, AGENTS.md, CLAUDE.md, docs/decisions.md)
 - See: ROADMAP.md#app-reference-backend
 - Done when: `roadmap-order show` lists the APP issues with their edges; ROADMAP, AGENTS, and CLAUDE say the same about scope; `roadmap-order check` passes.

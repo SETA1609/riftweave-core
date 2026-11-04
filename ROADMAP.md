@@ -22,9 +22,9 @@ advancement, factions, companions, mounts and vehicles, survival needs, psionics
 A module may extend core through modifiers and rows but core never requires one
 ([contract](docs/core/contract.md), [overrides](docs/core/overrides.md)).
 
-**In this repo, not a 1.0 gate:** the reference backend (story APP): one command registry over
-the Python reference, exposed as an agent CLI, a human CLI, an HTTP API, and an Angular frontend.
-It is a way to call and test the ruleset, not a game.
+**In this repo, not a 1.0 gate:** the reference backend (story APP): a Go implementation of the
+kernel behind one command contract, exposed as an agent CLI, a human CLI, an HTTP API, and an
+Angular frontend. It is a way to call and test the ruleset, not a game.
 
 **Out of scope for this repo:** game engines and virtual tabletop code. A Zig or other second
 implementation is the long-term conformance proof, but it lives elsewhere. The 1.0 gate is that
@@ -81,7 +81,7 @@ is the earliest wave of its open issues; stories in the same wave can run in par
 | 0 | M4 | ready | M1 | 4 |
 | 0 | M5 | ready, critical | M1, M2, M3, M4 | 6 |
 | 0 | POST | ready | M1, M3 | 7 |
-| 0 | APP | ready, critical | M5 | 6 |
+| 0 | APP | ready, critical | M1, M5 | 7 |
 
 <!-- roadmap-order end -->
 
@@ -127,9 +127,11 @@ Issues, in order: [docs/stories/05-release.md](docs/stories/05-release.md).
 
 ## APP Reference backend
 
-One backend for every consumer: a command registry over the Python reference, with an agent
-CLI, a human CLI, an HTTP API, and an Angular frontend as thin adapters. It runs every vector,
-so it cannot drift from the rules. Not a 1.0 gate; it can grow alongside M1 to M5.
+One fast backend for every consumer, in Go: a language-neutral command contract, a Go core
+that passes every vector in CI, and an agent CLI, a human CLI, an HTTP API, and an Angular
+frontend as thin adapters. The Go core is a second implementation of the kernel, so the vectors
+now prove themselves inside this repo. It starts after M1 closes; the Python reference stays
+the reference until 1.0. Not a 1.0 gate.
 
 Issues, in order: [docs/stories/07-backend.md](docs/stories/07-backend.md).
 
