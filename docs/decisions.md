@@ -1,5 +1,8 @@
 # Decisions, risks, and open questions
 
+> **Frozen on 2026-11-04.** New decisions go in [`docs/decisions/<issue-id>.md`](decisions/README.md),
+> one file per issue, so open pull requests do not conflict here. This log is kept as it is.
+
 A dated log of process and design decisions that are not obvious from the data. Newest
 first. A decision that changes a rule also updates the doc for that rule; this file only
 records that it was decided, when, and why. Open questions move to **Decided** once an
