@@ -168,7 +168,7 @@
     },
     "modifier": {
       "type": "object",
-      "description": "One opcode on one target. Same source does not stack. Different sources add. mul after add. Two set on one target: last in load order wins.",
+      "description": "One opcode on one target. Order for a target, expiry, and conditions: docs/core/modifier.md. Same source (and target and op) does not stack; different sources add; add, then mul (floored), then set; grant adds a flag; resist subtracts from a packet with the matching tag.",
       "properties": {
         "target": {
           "type": "string"
@@ -187,7 +187,20 @@
           "type": "number"
         },
         "duration": {
-          "type": "string"
+          "type": "string",
+          "enum": [
+            "turns",
+            "uses",
+            "while_equipped",
+            "while_applied",
+            "permanent"
+          ],
+          "description": "When the modifier ends. while_applied and while_equipped end with their source; turns ends after `turns` elapsed turns; uses is counted by the caller; permanent never ends."
+        },
+        "turns": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "How many turns a `turns` modifier lasts."
         },
         "source": {
           "type": "string"
