@@ -7,6 +7,22 @@ issue settles them.
 
 ## Decided
 
+### 2026-11-02: Key stability and versioning (M5-07)
+
+- **Decision:** semver, with keys, schema properties and enum members, and vector results as the
+  public surface. Removing or renaming a key is breaking; so is narrowing a schema.
+  A key is deprecated in a MINOR release and removed no earlier than the next MAJOR.
+  `ruleset/scripts/key_diff.py OLD NEW` lists removed and added keys between two git refs and
+  exits 1 on a removal. Spec: `docs/core/versioning.md`.
+- **Why:** references are strings that JSON Schema does not check, so a rename breaks
+  consumers silently.
+- **Open:** deprecation is recorded in the changelog only, with no `deprecated` schema field
+  **[A]**. Module data is outside the tool **[A]**. The tool is not wired into a release job;
+  the owner runs it at release.
+- **Not done:** the issue lists `CHANGELOG.md` among its files. `CONTRIBUTING.md` forbids
+  editing it in a PR (changelog fragments, M5-02), and it already marks breaking entries
+  with **(breaking)**, so this PR adds a fragment only.
+
 ### 2026-11-04: A reference backend is in scope (M5-12)
 
 - **Decision (owner):** the repo gets one backend that serves the ruleset: a Go implementation
