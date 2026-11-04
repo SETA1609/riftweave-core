@@ -14,7 +14,7 @@ issue settles them.
   `ROADMAP.md`, merges the rest of the file, and regenerates the table for each branch.
   `docs/core/vectors.md` joins `keep-both-added-lines`.
 - **Why:** the table conflict hit almost every open branch after each merge (M5-07, M5-08,
-  POST-01, M1-02 on 2026-11-02 to 11-04). Reproduced locally: two branches that add issues to
+  and M1-02 among them, 2026-11-02 to 11-04). Reproduced locally: two branches that add issues to
   M5 change its row differently; v0.2.0 left the second for a person, v0.3.0 rebased it and
   `roadmap-order check` passed on the result. **[V 2026-11-04]** On the five branches open
   today, both versions rebase every merge order cleanly; the change matters when two of them
