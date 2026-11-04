@@ -108,6 +108,12 @@ vectors.
 2. **At most 20 changed files** per PR, as `git diff --stat` counts them. A file with 5 or
    fewer changed lines does not count. If the counted files grow past 20, split the issue.
    Content-floor issues (perks, spells, monsters) split by color, level band, or skill.
+   A rule issue that also changes the backend may instead split into two PRs for the one
+   issue, by area: `<issue-id>-ruleset-<slug>` (spec, schema, vectors, data, reference) and
+   `<issue-id>-backend-<slug>` (contract and Go core). The ruleset PR merges first and adds
+   the changelog fragment; the backend PR opens on top of it and adds its own bullet to the
+   same fragment. The issue goes to `review` with the first PR and is done when the second
+   merges.
 3. **Each PR leaves `main` green.** `validate.py` and `./scripts/test.sh` pass at the PR's
    last commit.
 4. **Docs in the same PR.** A change to a rule, a decision, or a tag updates the matching
@@ -120,7 +126,9 @@ vectors.
    release. After merge, the next PR that touches the story file moves the issue to
    [done.md](docs/stories/done.md) ([how](docs/stories/README.md#workflow)).
 6. **Names.** Branch `<issue-id>-<slug>`, e.g. `M1-07-<slug>` (the issue title in lowercase
-   kebab-case, shortened if long), PR title `<issue-id> <title>`. Agents prefix the branch
+   kebab-case, shortened if long), or `<issue-id>-ruleset-<slug>` and `<issue-id>-backend-<slug>`
+   for a split issue (rule 2); the issue id always comes first, because the changelog check
+   reads it there. PR title `<issue-id> <title>`, with `(ruleset)` or `(backend)` for a split. Agents prefix the branch
    with `agent/<name>/`. Pick work from `roadmap-order show`
    ([order](docs/stories/README.md#order)).
 7. **Describe it for both audiences.** Say *what rule or content* changed and why, so

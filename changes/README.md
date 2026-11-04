@@ -12,7 +12,8 @@ changelog. The owner moves the fragments into the changelog at a release.
 ```
 
 - **File name:** the issue id plus `.md`, spelled as in the story file: `M1-07.md`,
-  `POST-05.md`. One fragment per issue.
+  `POST-05.md`. One fragment per issue. An issue split into a ruleset and a backend pull
+  request has one fragment: the ruleset one adds it, the backend one adds a bullet to it.
 - **First line:** `### <issue-id> <issue title>`, with the same id as the file name. No
   PR number; the release adds ` (#N)` from the squash-merge commit subject.
 - **Then at least one `- ` bullet.** Start each bullet with its

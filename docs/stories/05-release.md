@@ -84,7 +84,7 @@ Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-07, M5-08, M5-10, M5-12,
 - Status: review
 - Priority: medium
 - Needs: M5-12
-- Do: The APP story waited on core issues: the Go core on M1-01, M1-04, and M1-05, sessions on M5-04. The owner wants the backend built alongside the rules instead: a rule issue that adds or changes a function also changes the backend. Drop the core issues from APP's `Needs` (APP keeps its own order), and say in CONTRIBUTING that a rule's data step updates the contract and, once it exists, the Go core.
-- Files: ~5 (docs/stories/07-backend.md, docs/stories/05-release.md, ROADMAP.md, CONTRIBUTING.md, docs/decisions.md)
+- Do: The APP story waited on core issues: the Go core on M1-01, M1-04, and M1-05, sessions on M5-04. The owner wants the backend built alongside the rules instead: a rule issue that adds or changes a function also changes the backend. Drop the core issues from APP's `Needs` (APP keeps its own order), and say in CONTRIBUTING that a rule's data step updates the contract and, once it exists, the Go core. An issue that passes 20 files that way splits into a ruleset PR and a backend PR (`<issue-id>-ruleset-<slug>`, `<issue-id>-backend-<slug>`).
+- Files: ~8 (docs/stories/07-backend.md, docs/stories/05-release.md, docs/stories/README.md, ROADMAP.md, CONTRIBUTING.md, AGENTS.md, changes/README.md, docs/decisions.md)
 - See: docs/stories/07-backend.md, docs/backend/README.md
 - Done when: no APP issue needs an issue outside the APP story except APP-01's `M1-02`; `roadmap-order show` lists APP-02 as blocked only by APP-01; `roadmap-order check` passes.
