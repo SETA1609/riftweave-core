@@ -66,10 +66,10 @@ Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-07, M5-08, M5-10, M5-12,
 - Status: review
 - Priority: high
 - Needs: —
-- Do: The roadmap puts every POST module after `v1.0.0`, but the root POST issues only needed kernel issues, so `roadmap-order show` listed POST-01, POST-04, and POST-06 as ready next to core work, and POST-05 was merged before 1.0. Add `M5-09` to the `Needs` of every POST issue that has no POST parent, so the computed order matches the roadmap.
+- Do: The roadmap puts every post-1.0 module after `v1.0.0`, but those issues only needed kernel issues, so `roadmap-order show` listed three of them as ready next to core work, and one was merged before 1.0. Add `M5-09` to the `Needs` of every post-1.0 module issue that has no parent in its story, so the computed order matches the roadmap.
 - Files: ~6 (docs/stories/06-modules.md, docs/stories/05-release.md, docs/stories/done.md, ROADMAP.md, docs/decisions.md)
 - See: ROADMAP.md#post-10-modules, docs/stories/README.md#order
-- Done when: `roadmap-order show` lists no POST issue as ready and blocks every root POST issue on M5-09; `roadmap-order check` passes.
+- Done when: `roadmap-order show` lists no post-1.0 module issue as ready and blocks each one without a parent on M5-09; `roadmap-order check` passes.
 
 #### M5-16 Move merged issues to done.md
 - Status: review
