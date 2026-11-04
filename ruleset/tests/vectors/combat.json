@@ -25,7 +25,8 @@
       "blocked": false,
       "evaded": false,
       "damage": 6,
-      "hp": 24
+      "hp": 24,
+      "reaction_tags": []
     }
   },
   {
@@ -638,6 +639,172 @@
       "blocked": false,
       "damage": 5,
       "hp": 25
+    }
+  },
+  {
+    "name": "reaction fumble: evade roll 100 fails even at evasion 100 against an attack margin of 0",
+    "attacker": {
+      "skill": 72,
+      "roll": 72,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 100,
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "evade",
+        "roll": 100
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "margin": 0,
+      "evaded": false,
+      "reaction_tags": [
+        "fumble"
+      ],
+      "damage": 8,
+      "hp": 22
+    }
+  },
+  {
+    "name": "reaction fumble: block roll 100 fails even at block 100",
+    "attacker": {
+      "skill": 72,
+      "roll": 72,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "block",
+        "skill": 100,
+        "roll": 100,
+        "shield_dr": 2
+      }
+    },
+    "damage": {
+      "roll": 5,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "blocked": false,
+      "reaction_tags": [
+        "fumble"
+      ],
+      "damage": 5,
+      "hp": 25
+    }
+  },
+  {
+    "name": "reaction crit: the defender's LCK 4 widens the window to 7; evade roll 6 is tagged crit",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "attributes": {
+        "lck": 4
+      },
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "evade",
+        "roll": 6
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "evaded",
+      "evaded": true,
+      "reaction_tags": [
+        "crit"
+      ],
+      "damage": 0,
+      "hp": 30
+    }
+  },
+  {
+    "name": "reaction crit: evade roll 6 is not a crit at LCK 0",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "evade",
+        "roll": 6
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "evaded",
+      "evaded": true,
+      "reaction_tags": [],
+      "damage": 0,
+      "hp": 30
+    }
+  },
+  {
+    "name": "reaction crit: a crit block (roll 3) has no extra effect yet, shield DR 2 as usual",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "block",
+        "skill": 55,
+        "roll": 3,
+        "shield_dr": 2
+      }
+    },
+    "damage": {
+      "roll": 5,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "blocked": true,
+      "reaction_tags": [
+        "crit"
+      ],
+      "damage": 3,
+      "hp": 27
     }
   },
   {
