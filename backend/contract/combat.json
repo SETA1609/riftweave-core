@@ -1,0 +1,211 @@
+{
+  "$schema": "./command.schema.json",
+  "name": "combat",
+  "summary": "One attack from the roll to the HP lost, with one defender reaction.",
+  "doc": "docs/core/combat.md",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "attacker": {
+        "type": "object",
+        "properties": {
+          "skill": {
+            "type": "integer"
+          },
+          "roll": {
+            "$ref": "common.json#/definitions/d100"
+          },
+          "attributes": {
+            "$ref": "common.json#/definitions/attributes"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "skill",
+          "roll"
+        ]
+      },
+      "defender": {
+        "type": "object",
+        "properties": {
+          "evasion_skill": {
+            "type": "integer"
+          },
+          "attributes": {
+            "$ref": "common.json#/definitions/attributes"
+          },
+          "armor_dr": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "hp": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "resist": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "propertyNames": {
+              "pattern": "^[a-z_][a-z0-9_]*$"
+            }
+          },
+          "reaction": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "evade",
+                  "block"
+                ]
+              },
+              "roll": {
+                "$ref": "common.json#/definitions/d100"
+              },
+              "skill": {
+                "type": "integer"
+              },
+              "shield_dr": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "kind",
+              "roll"
+            ],
+            "additionalProperties": false,
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "block"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "skill",
+                "shield_dr"
+              ]
+            },
+            "else": {
+              "not": {
+                "anyOf": [
+                  {
+                    "required": [
+                      "skill"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "shield_dr"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "hp"
+        ]
+      },
+      "damage": {
+        "type": "object",
+        "properties": {
+          "roll": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "type": {
+            "$ref": "common.json#/definitions/key"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "roll",
+          "type"
+        ]
+      },
+      "delivery": {
+        "type": "string",
+        "enum": [
+          "single",
+          "area",
+          "instant"
+        ]
+      },
+      "modifiers": {
+        "$ref": "common.json#/definitions/modifiers"
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "attacker",
+      "defender",
+      "damage"
+    ]
+  },
+  "result_schema": {
+    "type": "object",
+    "properties": {
+      "outcome": {
+        "type": "string",
+        "enum": [
+          "hit",
+          "miss",
+          "fumble",
+          "evaded"
+        ]
+      },
+      "target": {
+        "type": "integer"
+      },
+      "margin": {
+        "anyOf": [
+          {
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "crit": {
+        "type": "boolean"
+      },
+      "evaded": {
+        "type": "boolean"
+      },
+      "blocked": {
+        "type": "boolean"
+      },
+      "reaction_tags": {
+        "$ref": "common.json#/definitions/tags"
+      },
+      "damage": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "hp": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "outcome",
+      "target",
+      "margin",
+      "crit",
+      "evaded",
+      "blocked",
+      "reaction_tags",
+      "damage",
+      "hp"
+    ]
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "$schema": "./command.schema.json",
+  "name": "loot",
+  "summary": "Roll a loot table, by key or by monster, and value it on the price scale.",
+  "doc": "docs/core/loot.md",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "table": {
+        "$ref": "common.json#/definitions/key"
+      },
+      "monster": {
+        "$ref": "common.json#/definitions/ref"
+      },
+      "rolls": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "integer"
+        }
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "rolls"
+    ],
+    "oneOf": [
+      {
+        "required": [
+          "table"
+        ]
+      },
+      {
+        "required": [
+          "monster"
+        ]
+      }
+    ]
+  },
+  "result_schema": {
+    "type": "object",
+    "properties": {
+      "table": {
+        "$ref": "common.json#/definitions/key"
+      },
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "item": {
+              "$ref": "common.json#/definitions/ref"
+            },
+            "quantity": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "item",
+            "quantity"
+          ]
+        }
+      },
+      "coins_cp": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "value_cp": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "budget_cp": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "table",
+      "items",
+      "coins_cp",
+      "value_cp",
+      "budget_cp"
+    ]
+  }
+}

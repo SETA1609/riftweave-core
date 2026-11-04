@@ -1,0 +1,40 @@
+{
+  "$schema": "./command.schema.json",
+  "name": "actions",
+  "summary": "The AP pool and the cost of a list of actions.",
+  "doc": "docs/core/actions.md",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "actor": {
+        "$ref": "common.json#/definitions/actor"
+      },
+      "actions": {
+        "type": "array",
+        "items": {
+          "$ref": "common.json#/definitions/key"
+        }
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "actor"
+    ]
+  },
+  "result_schema": {
+    "type": "object",
+    "properties": {
+      "pool": {
+        "type": "integer"
+      },
+      "cost": {
+        "type": "integer"
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "pool",
+      "cost"
+    ]
+  }
+}

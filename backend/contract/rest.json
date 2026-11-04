@@ -1,0 +1,115 @@
+{
+  "$schema": "./command.schema.json",
+  "name": "rest",
+  "summary": "Recover resources and clear conditions for one rest occasion.",
+  "doc": "docs/core/rest.md",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "occasion": {
+        "$ref": "common.json#/definitions/key"
+      },
+      "actor": {
+        "$ref": "common.json#/definitions/actor"
+      },
+      "modifiers": {
+        "$ref": "common.json#/definitions/modifiers"
+      },
+      "current": {
+        "type": "object",
+        "properties": {
+          "hp": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "mp": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "stamina": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "ap": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "additionalProperties": false
+      },
+      "max": {
+        "type": "object",
+        "properties": {
+          "stamina": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "additionalProperties": false
+      },
+      "conditions": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "key": {
+              "$ref": "common.json#/definitions/key"
+            },
+            "duration": {
+              "type": "string",
+              "enum": [
+                "turns",
+                "uses",
+                "while_equipped",
+                "while_applied",
+                "permanent"
+              ]
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "key",
+            "duration"
+          ]
+        }
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "occasion",
+      "actor",
+      "current"
+    ]
+  },
+  "result_schema": {
+    "type": "object",
+    "properties": {
+      "hp": {
+        "type": "integer"
+      },
+      "mp": {
+        "type": "integer"
+      },
+      "stamina": {
+        "type": "integer"
+      },
+      "ap": {
+        "type": "integer"
+      },
+      "conditions": {
+        "type": "array",
+        "items": {
+          "$ref": "common.json#/definitions/key"
+        }
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "hp",
+      "mp",
+      "stamina",
+      "ap",
+      "conditions"
+    ]
+  }
+}

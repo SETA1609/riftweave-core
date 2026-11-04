@@ -1,0 +1,59 @@
+{
+  "$schema": "./command.schema.json",
+  "name": "resolution",
+  "summary": "One d100 check: target, success, margin, and crit and fumble tags.",
+  "doc": "docs/core/resolution.md",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "actor": {
+        "$ref": "common.json#/definitions/actor"
+      },
+      "skill": {
+        "$ref": "common.json#/definitions/key"
+      },
+      "modifiers": {
+        "$ref": "common.json#/definitions/modifiers"
+      },
+      "roll": {
+        "$ref": "common.json#/definitions/d100"
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "actor",
+      "roll"
+    ]
+  },
+  "result_schema": {
+    "type": "object",
+    "properties": {
+      "target": {
+        "type": "integer"
+      },
+      "success": {
+        "type": "boolean"
+      },
+      "margin": {
+        "anyOf": [
+          {
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "tags": {
+        "$ref": "common.json#/definitions/tags"
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "target",
+      "success",
+      "margin",
+      "tags"
+    ]
+  }
+}

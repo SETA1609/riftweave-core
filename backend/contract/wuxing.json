@@ -1,0 +1,68 @@
+{
+  "$schema": "./command.schema.json",
+  "name": "wuxing",
+  "summary": "The cycle that fires when two phased participants meet.",
+  "doc": "docs/modules/wuxing.md",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "actor_phase": {
+        "anyOf": [
+          {
+            "$ref": "common.json#/definitions/phase"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "recipient_phase": {
+        "anyOf": [
+          {
+            "$ref": "common.json#/definitions/phase"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "actor_magnitude": {
+        "type": "number"
+      },
+      "recipient_magnitude": {
+        "type": "number"
+      }
+    },
+    "additionalProperties": false
+  },
+  "result_schema": {
+    "type": "object",
+    "properties": {
+      "cycle": {
+        "type": "string"
+      },
+      "interaction": {
+        "type": "string"
+      },
+      "affects": {
+        "type": "string",
+        "enum": [
+          "actor",
+          "recipient",
+          "none"
+        ]
+      },
+      "multiplier": {
+        "type": "number",
+        "minimum": 0
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "cycle",
+      "interaction",
+      "affects",
+      "multiplier"
+    ]
+  }
+}

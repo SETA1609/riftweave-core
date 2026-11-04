@@ -1,0 +1,71 @@
+{
+  "$schema": "./command.schema.json",
+  "name": "modifiers",
+  "summary": "Apply modifiers to one value; report granted flags and a packet after resist.",
+  "doc": "docs/core/modifier.md",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "value": {
+        "type": "integer"
+      },
+      "target": {
+        "type": "string"
+      },
+      "modifiers": {
+        "$ref": "common.json#/definitions/modifiers"
+      },
+      "elapsed_turns": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "removed_sources": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "packet": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "integer"
+          },
+          "tag": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "amount",
+          "tag"
+        ]
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "value"
+    ]
+  },
+  "result_schema": {
+    "type": "object",
+    "properties": {
+      "value": {
+        "type": "integer"
+      },
+      "flags": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "packet": {
+        "type": "integer"
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "value"
+    ]
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "$schema": "./command.schema.json",
+  "name": "conditions",
+  "summary": "Apply and remove conditions by effect events, then read values and flags.",
+  "doc": "docs/core/modifier.md",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "base": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "integer"
+        },
+        "propertyNames": {
+          "pattern": "^[a-z_][a-z0-9_]*$"
+        }
+      },
+      "modifiers": {
+        "$ref": "common.json#/definitions/modifiers"
+      },
+      "conditions": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "propertyNames": {
+          "pattern": "^[a-z_][a-z0-9_]*$"
+        }
+      },
+      "events": {
+        "type": "array",
+        "items": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "effect": {
+                  "$ref": "common.json#/definitions/ref"
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "effect"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "remove": {
+                  "$ref": "common.json#/definitions/ref"
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "remove"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "events"
+    ]
+  },
+  "result_schema": {
+    "type": "object",
+    "properties": {
+      "conditions": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "propertyNames": {
+          "pattern": "^[a-z_][a-z0-9_]*$"
+        }
+      },
+      "flags": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "values": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "integer"
+        },
+        "propertyNames": {
+          "pattern": "^[a-z_][a-z0-9_]*$"
+        }
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "conditions",
+      "flags",
+      "values"
+    ]
+  }
+}
