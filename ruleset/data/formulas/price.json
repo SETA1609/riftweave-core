@@ -1,0 +1,11 @@
+{
+  "key": "price",
+  "round": "floor",
+  "expr": {
+    "op": "div",
+    "args": [
+      { "op": "mul", "args": [{ "var": "base_cp" }, { "var": "value_percent" }, { "var": "percent" }] },
+      { "lit": 10000 }
+    ]
+  }
+}

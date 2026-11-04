@@ -1,0 +1,88 @@
+{
+  "$schema": "../../schemas/economy.schema.json",
+  "currency": {
+    "base": "cp",
+    "denominations": [
+      {
+        "unit": "cp",
+        "label": "Copper piece",
+        "value": 1
+      },
+      {
+        "unit": "sp",
+        "label": "Silver piece",
+        "value": 10
+      },
+      {
+        "unit": "gp",
+        "label": "Gold piece",
+        "value": 100
+      },
+      {
+        "unit": "pp",
+        "label": "Platinum piece",
+        "value": 1000
+      }
+    ]
+  },
+  "barter": {
+    "skill": "persuasion",
+    "margin_divisor": 5,
+    "max_shift": 20,
+    "fumble_penalty": 10
+  },
+  "merchants": [
+    {
+      "key": "general_store",
+      "label": "General store",
+      "buy_percent": 125,
+      "sell_percent": 40,
+      "stock": [
+        {
+          "item": "core:consumable/potion_minor_healing",
+          "quantity": 5
+        },
+        {
+          "item": "core:consumable/ration_hearty_stew",
+          "quantity": 20
+        },
+        {
+          "item": "core:weapon/dagger",
+          "quantity": 3
+        },
+        {
+          "item": "core:armor/padded_tunic",
+          "quantity": 2
+        }
+      ]
+    },
+    {
+      "key": "smithy",
+      "label": "Smithy",
+      "buy_percent": 120,
+      "sell_percent": 50,
+      "stock": [
+        {
+          "item": "core:weapon/longsword",
+          "quantity": 2
+        },
+        {
+          "item": "core:weapon/mace",
+          "quantity": 2
+        },
+        {
+          "item": "core:armor/chainmail",
+          "quantity": 1
+        },
+        {
+          "item": "core:armor/standard_shield",
+          "quantity": 2
+        },
+        {
+          "item": "core:armor/buckler",
+          "quantity": 2
+        }
+      ]
+    }
+  ]
+}

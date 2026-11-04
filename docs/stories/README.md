@@ -19,6 +19,7 @@ One file per milestone. Issues inside a file are in the order they should be don
 | [04-world.md](04-world.md) | M4 World |
 | [05-release.md](05-release.md) | M5 Release 1.0, plus repo process and tooling |
 | [06-modules.md](06-modules.md) | Post-1.0 modules |
+| [07-backend.md](07-backend.md) | APP Reference backend: CLIs, API server, Angular frontend |
 | [done.md](done.md) | Issues whose PR is merged, with the PR number and merge date (M0 is here) |
 
 ## Order
@@ -49,8 +50,8 @@ Run these from the repo root (`DT` is `uv run --project tools/devops --locked --
 
 ## IDs
 
-- **Story ID:** the milestone in the story heading: `M1` to `M5`, and `POST` for post-1.0
-  modules.
+- **Story ID:** the milestone in the story heading: `M1` to `M5`, `POST` for post-1.0
+  modules, and `APP` for the reference backend.
 - **Issue ID:** story ID plus a two-digit number: `M1-01`, `POST-03`. Next id = highest
   number in that story (open or in [done.md](done.md)), plus one. Numbers are never reused;
   a dropped issue stays in its file marked `dropped` with a one-line reason.

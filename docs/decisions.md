@@ -7,6 +7,47 @@ issue settles them.
 
 ## Decided
 
+### 2026-11-04: A reference backend is in scope (M5-12)
+
+- **Decision (owner):** the repo gets one backend that serves the ruleset: a Go implementation
+  of the kernel behind one command contract, with an agent CLI, a human CLI, an HTTP API,
+  and an Angular frontend as thin adapters (story APP, `docs/stories/07-backend.md`). Game
+  engines and VTT code stay out of scope. It is not a 1.0 gate.
+- **Why:** the ruleset could only be called through the vector test. A backend lets agents and
+  people play it, find broken builds, and turn any run into a vector, and gives consumers an
+  API.
+- **Go (owner, 2026-11-04):** the backend is written in Go for speed where it matters: a
+  static binary that starts in milliseconds for agent CLI loops, and bulk simulation of many
+  fights. Per call, the rule work is microseconds in any language; JSON and HTTP dominate
+  **[U]**: estimates, not measured. The cost is a second implementation of every rule, so:
+  - APP-01 defines a language-neutral command contract (`backend/contract/`, JSON Schemas)
+    that Go, both CLIs, the OpenAPI document, and the frontend are built from;
+  - the Go core (APP-02) starts after M1 closes, so the kernel stops changing before it is
+    written twice, and CI runs every vector against both Python and Go;
+  - the Python reference stays the reference until 1.0; whether Go replaces it is decided
+    then.
+- **Defaults [A]:** Go module in `backend/`, Angular in `frontend/` calling only the API
+  through a client generated from the OpenAPI document; rolls are inputs or seeded and echoed.
+  Backend and frontend code are Apache-2.0, as tooling ([LICENSING.md](../LICENSING.md)).
+- **Risk:** a backend invites rules in adapters. Rule: an adapter only parses, calls the
+  core, and formats; anything else is a bug.
+
+### 2026-11-02: Economy rows and one price formula (M4-01)
+
+- **Decision:** `ruleset/data/economy/core.json` holds the denominations (copper is the base
+  unit), the barter check, and two merchant rows with stock. `ruleset/data/formulas/price.json`
+  is the one price tree. A purchase and a sale differ only in which merchant percent they read
+  and which way the barter shift goes. Spec: `docs/core/economy.md`.
+- **Why:** equipment had `cost` and materials `valueFactor`, but no rule turned them into a
+  price or said what a merchant pays.
+- **Open:** every number is a first choice **[U]**: the 1/10/100/1000 ratios, 125 and 40
+  percent for the general store, the barter divisor and cap. `value_percent` is
+  `valueFactor * 100` supplied by the caller, not looked up **[A]**. Prices round down, so a
+  1 cp item sells for 0 **[A]**.
+- **Risk:** `validate.py` does not check merchant stock refs; `test_economy.py` does, until
+  [M5-08](stories/05-release.md#m5-08-integrity-gates) covers every category. The issue's
+  `See: issues.md section 1` points at a file that is not in the repo.
+
 ### 2026-11-02: Rest is rows per occasion (M1-04)
 
 - **Decision:** `ruleset/data/rest/core.json` holds one row per occasion (`short_rest`,
