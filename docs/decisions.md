@@ -33,6 +33,10 @@ issue settles them.
   evaded or blocked, and its target makes a save on a skill or attribute the spell names.
   Block stays physical-only. Spells do not carry `delivery` yet, and saves are unspecified:
   M3-05. **[V 2026-11-04]** vectors pin the three deliveries.
+- **Reaction rolls (owner, 2026-11-04):** evade and block roll through the one d100
+  function with the defender's skill and LCK: a 100 fumbles and fails, and a roll in the
+  defender's crit window is tagged `crit`. A crit reaction has no effect yet; later perks
+  may read the tag. **[V 2026-11-04]** vectors pin both.
 - **Balance (owner, 2026-11-04):** at equal skill an evade avoids all damage and a block
   only subtracts shield DR. That is balanced outside the pipeline: perks gate stronger dodges
   and blocks, armor penalties land on evasion, area attacks are only halved, and instant
