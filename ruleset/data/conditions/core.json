@@ -138,7 +138,7 @@
       "label": "Incapacitated",
       "description": "Cannot take actions of any kind.",
       "effects": {
-        "ttrpg": "Cannot take actions, bonus actions, or reactions. No concentration possible.",
+        "ttrpg": "Cannot spend AP or take a reaction. No concentration possible.",
         "video_game": "Cannot act, use abilities, or move. Duration varies by source."
       },
       "appliedBy": [
@@ -480,7 +480,7 @@
       "label": "Slowed",
       "description": "Movement speed and action economy are impaired.",
       "effects": {
-        "ttrpg": "Speed halved (rounded down). -10 on AGI-based skills. Cannot take the Dash action. One fewer bonus action per turn if using AP pool: +1 AP cost on all actions.",
+        "ttrpg": "Speed halved (rounded down). -10 on AGI-based skills. +1 AP cost on all actions.",
         "video_game": "Movement speed -30%. Attack speed -20%. Dodge chance -10%. Duration in seconds."
       },
       "appliedBy": [
@@ -636,7 +636,7 @@
       "label": "Staggered",
       "description": "Knocked off-balance. Cannot react and suffers a penalty to the next action.",
       "effects": {
-        "ttrpg": "Loses next reaction. -10 on the next action taken. Removed at end of next turn or when taking damage.",
+        "ttrpg": "Cannot declare a reaction until its next turn. -10 on the next action taken. Removed at end of next turn or when taking damage.",
         "video_game": "Stagger animation plays. Cannot block or dodge for 1-2 seconds. Recovery roll animation plays on exit."
       },
       "appliedBy": [

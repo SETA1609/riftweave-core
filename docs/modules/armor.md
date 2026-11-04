@@ -239,13 +239,11 @@ Instead, their DR value applies only during an **active block** action
 
 - **Shield DR is NOT added to the passive DR total.** A shield provides no benefit
   unless the wearer actively blocks.
-- **Active block:** A reaction declared when an attack is incoming. The blocker
-  makes a block skill check; on success, the shield's DR (base + material modifier)
+- **Active block:** The defender's one reaction, declared before the attack roll
+  (2 AP, refunded if no attack comes). The blocker makes a block skill check; on success, the shield's DR (base + material modifier)
   is subtracted from incoming damage. On failure, no block benefit.
-- **Shield DR does not stack with armor DR during a block** — the shield's DR
-  replaces the armor DR contribution for that specific hit (whichever is higher
-  applies). Alternatively, if using additive DR: shield DR adds on top of armor DR
-  for that hit (GM/engine choice, set once per campaign).
+- **Shield DR and armor DR both subtract on a block:** shield DR first, then armor
+  DR ([`docs/core/combat.md`](../core/combat.md), vector `example 1b`).
 
 ### Shield Types
 
@@ -269,7 +267,7 @@ a **parry** instead of a shield block:
 - Parry does not require a shield, but requires a free hand or a light off-hand
   weapon.
 - **Two-weapon fighting:** A character wielding two weapons may use the off-hand
-  weapon to parry. The off-hand can either attack (bonus action) or be reserved
+  weapon to parry. The off-hand can either attack (an attack, 3 AP) or be reserved
   to parry — **not both** in the same turn.
 - Perks can improve parry windows and success chances.
 
