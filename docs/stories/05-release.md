@@ -100,3 +100,13 @@ Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02 ([done.md](done.md#m5-releas
 - Files: ~8 (docs/stories/07-backend.md, docs/stories/README.md, docs/stories/05-release.md, ROADMAP.md, AGENTS.md, CLAUDE.md, docs/decisions.md)
 - See: ROADMAP.md#app-reference-backend
 - Done when: `roadmap-order show` lists the APP issues with their edges; ROADMAP, AGENTS, and CLAUDE say the same about scope; `roadmap-order check` passes.
+
+#### M5-13 Use devops-tools v0.3: regenerate the roadmap table on rebase
+- Status: review
+- Priority: high
+- Needs: M5-10
+- Do: Every pull request regenerates the story table in `ROADMAP.md`, so two open pull requests that change the same story's row conflict, and the rebase workflow leaves the second for a person; `docs/core/vectors.md` conflicts the same way when two pull requests add checklist rows. devops-tools v0.3.0 adds `regenerate-roadmap-on-rebase`: the rebase takes the main branch's table and regenerates it after each branch. Pin devops-tools and both reusable workflows to v0.3.0, turn the setting on, and add `docs/core/vectors.md` to `keep-both-added-lines`.
+- Keys: `regenerate-roadmap-on-rebase` in `[tool.devops-tools]`
+- Files: ~8 (tools/devops/pyproject.toml, tools/devops/uv.lock, .github/workflows/, AGENTS.md, CONTRIBUTING.md, docs/decisions.md)
+- See: https://github.com/SETA1609/devops_tools (v0.3.0, issue 10)
+- Done when: devops-tools, the rebase workflow, and the fragments workflow pin the v0.3.0 commit; a local `rebase-open-branches --no-push` of two branches that change the same story's table row succeeds where v0.2.0 left it for a person; tooling tests pass.
