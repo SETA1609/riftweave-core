@@ -1,0 +1,248 @@
+[
+  {
+    "name": "convert: 3 silver is 30 copper",
+    "op": "convert",
+    "cost": {
+      "quantity": 3,
+      "unit": "sp"
+    },
+    "expect": {
+      "cp": 30
+    }
+  },
+  {
+    "name": "convert: 2 gold is 200 copper",
+    "op": "convert",
+    "cost": {
+      "quantity": 2,
+      "unit": "gp"
+    },
+    "expect": {
+      "cp": 200
+    }
+  },
+  {
+    "name": "convert: 1 platinum is 1000 copper",
+    "op": "convert",
+    "cost": {
+      "quantity": 1,
+      "unit": "pp"
+    },
+    "expect": {
+      "cp": 1000
+    }
+  },
+  {
+    "name": "buy a 2 gp dagger at the general store, no barter",
+    "op": "trade",
+    "side": "buy",
+    "merchant": "general_store",
+    "item_cost": {
+      "quantity": 2,
+      "unit": "gp"
+    },
+    "expect": {
+      "base_cp": 200,
+      "shift": 0,
+      "percent": 125,
+      "price_cp": 250
+    }
+  },
+  {
+    "name": "buy at the smithy: a different spread",
+    "op": "trade",
+    "side": "buy",
+    "merchant": "smithy",
+    "item_cost": {
+      "quantity": 2,
+      "unit": "gp"
+    },
+    "expect": {
+      "percent": 120,
+      "price_cp": 240
+    }
+  },
+  {
+    "name": "buy a steel dagger: material valueFactor 2.0 doubles the price",
+    "op": "trade",
+    "side": "buy",
+    "merchant": "general_store",
+    "item_cost": {
+      "quantity": 2,
+      "unit": "gp"
+    },
+    "value_percent": 200,
+    "expect": {
+      "price_cp": 500
+    }
+  },
+  {
+    "name": "buy a steel longsword, 15 gp base",
+    "op": "trade",
+    "side": "buy",
+    "merchant": "general_store",
+    "item_cost": {
+      "quantity": 15,
+      "unit": "gp"
+    },
+    "value_percent": 200,
+    "expect": {
+      "base_cp": 1500,
+      "price_cp": 3750
+    }
+  },
+  {
+    "name": "buy with a successful barter: margin 35 shifts 7 points",
+    "op": "trade",
+    "side": "buy",
+    "merchant": "general_store",
+    "item_cost": {
+      "quantity": 2,
+      "unit": "gp"
+    },
+    "barter": {
+      "skill_value": 60,
+      "roll": 25
+    },
+    "expect": {
+      "shift": 7,
+      "percent": 118,
+      "price_cp": 236
+    }
+  },
+  {
+    "name": "buy with barter: the shift stops at max_shift 20",
+    "op": "trade",
+    "side": "buy",
+    "merchant": "general_store",
+    "item_cost": {
+      "quantity": 2,
+      "unit": "gp"
+    },
+    "barter": {
+      "skill_value": 130,
+      "roll": 1
+    },
+    "expect": {
+      "shift": 20,
+      "percent": 105,
+      "price_cp": 210
+    }
+  },
+  {
+    "name": "buy with a failed barter: no shift",
+    "op": "trade",
+    "side": "buy",
+    "merchant": "general_store",
+    "item_cost": {
+      "quantity": 2,
+      "unit": "gp"
+    },
+    "barter": {
+      "skill_value": 60,
+      "roll": 80
+    },
+    "expect": {
+      "shift": 0,
+      "percent": 125,
+      "price_cp": 250
+    }
+  },
+  {
+    "name": "buy with a fumbled barter: the player pays 10 points more",
+    "op": "trade",
+    "side": "buy",
+    "merchant": "general_store",
+    "item_cost": {
+      "quantity": 2,
+      "unit": "gp"
+    },
+    "barter": {
+      "skill_value": 60,
+      "roll": 100
+    },
+    "expect": {
+      "shift": -10,
+      "percent": 135,
+      "price_cp": 270
+    }
+  },
+  {
+    "name": "sell the dagger: the merchant pays 40 percent",
+    "op": "trade",
+    "side": "sell",
+    "merchant": "general_store",
+    "item_cost": {
+      "quantity": 2,
+      "unit": "gp"
+    },
+    "expect": {
+      "percent": 40,
+      "price_cp": 80
+    }
+  },
+  {
+    "name": "sell at the smithy: 50 percent",
+    "op": "trade",
+    "side": "sell",
+    "merchant": "smithy",
+    "item_cost": {
+      "quantity": 2,
+      "unit": "gp"
+    },
+    "expect": {
+      "price_cp": 100
+    }
+  },
+  {
+    "name": "sell with a successful barter: 40 plus 7",
+    "op": "trade",
+    "side": "sell",
+    "merchant": "general_store",
+    "item_cost": {
+      "quantity": 2,
+      "unit": "gp"
+    },
+    "barter": {
+      "skill_value": 60,
+      "roll": 25
+    },
+    "expect": {
+      "shift": 7,
+      "percent": 47,
+      "price_cp": 94
+    }
+  },
+  {
+    "name": "sell with a fumbled barter: 40 minus 10",
+    "op": "trade",
+    "side": "sell",
+    "merchant": "general_store",
+    "item_cost": {
+      "quantity": 2,
+      "unit": "gp"
+    },
+    "barter": {
+      "skill_value": 60,
+      "roll": 100
+    },
+    "expect": {
+      "shift": -10,
+      "percent": 30,
+      "price_cp": 60
+    }
+  },
+  {
+    "name": "a price rounds down: 1 cp sold at 40 percent is 0",
+    "op": "trade",
+    "side": "sell",
+    "merchant": "general_store",
+    "item_cost": {
+      "quantity": 1,
+      "unit": "cp"
+    },
+    "expect": {
+      "price_cp": 0
+    }
+  }
+]

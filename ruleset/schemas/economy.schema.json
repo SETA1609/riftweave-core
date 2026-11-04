@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Economy",
+  "description": "Denominations, the barter check, and merchant rows. Prices are integers in the base unit (copper). The price formula is a tree in ruleset/data/formulas/price.json.",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "currency": { "$ref": "#/definitions/currency" },
+    "barter": { "$ref": "#/definitions/barter" },
+    "merchants": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/merchant" }
+    }
+  },
+  "required": ["currency", "barter", "merchants"],
+  "additionalProperties": false,
+  "definitions": {
+    "currency": {
+      "type": "object",
+      "properties": {
+        "base": { "type": "string", "enum": ["cp", "sp", "gp", "pp"] },
+        "denominations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "properties": {
+              "unit": { "type": "string", "enum": ["cp", "sp", "gp", "pp"] },
+              "label": { "type": "string" },
+              "value": { "type": "integer", "minimum": 1, "description": "Worth in base units." }
+            },
+            "required": ["unit", "label", "value"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["base", "denominations"],
+      "additionalProperties": false
+    },
+    "barter": {
+      "type": "object",
+      "properties": {
+        "skill": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "Skill key the check rolls." },
+        "margin_divisor": { "type": "integer", "minimum": 1, "description": "Shift is floor(margin / this)." },
+        "max_shift": { "type": "integer", "minimum": 0, "description": "Cap on the shift, in percentage points." },
+        "fumble_penalty": { "type": "integer", "minimum": 0, "description": "Percentage points against the player on a fumble." }
+      },
+      "required": ["skill", "margin_divisor", "max_shift", "fumble_penalty"],
+      "additionalProperties": false
+    },
+    "merchant": {
+      "type": "object",
+      "properties": {
+        "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
+        "label": { "type": "string" },
+        "buy_percent": { "type": "integer", "minimum": 100, "description": "What the player pays, as a percent of the item's price." },
+        "sell_percent": { "type": "integer", "minimum": 0, "maximum": 100, "description": "What the merchant pays the player, as a percent of the item's price." },
+        "stock": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "item": { "type": "string", "pattern": "^[a-z0-9_]+:[a-z_]+/[a-z0-9_]+$", "description": "Namespaced ref, for example core:weapon/dagger." },
+              "quantity": { "type": "integer", "minimum": 1 }
+            },
+            "required": ["item", "quantity"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["key", "label", "buy_percent", "sell_percent", "stock"],
+      "additionalProperties": false
+    }
+  }
+}

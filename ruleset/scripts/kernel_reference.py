@@ -133,6 +133,44 @@ def run_actions(vector):
     return {"pool": pool, "cost": cost}
 
 
+def to_copper(economy, cost):
+    value = {d["unit"]: d["value"] for d in economy["currency"]["denominations"]}
+    return cost["quantity"] * value[cost["unit"]]
+
+
+def run_economy(vector):
+    """`convert` a cost to copper, or price one `trade` (buy or sell) with an optional barter check."""
+    economy = load_data("economy/core.json")
+    op = vector["op"]
+    if op == "convert":
+        return {"cp": to_copper(economy, vector["cost"])}
+    if op != "trade":
+        raise ValueError(f"economy op {op!r} is not defined")
+    rules = economy["barter"]
+    merchant = next(m for m in economy["merchants"] if m["key"] == vector["merchant"])
+    buying = vector["side"] == "buy"
+    shift = 0
+    if "barter" in vector:
+        check = run_resolution(
+            {
+                "actor": {"skills": {rules["skill"]: vector["barter"]["skill_value"]}},
+                "roll": vector["barter"]["roll"],
+            }
+        )
+        if "fumble" in check["tags"]:
+            shift = -rules["fumble_penalty"]
+        elif check["success"]:
+            shift = min(rules["max_shift"], check["margin"] // rules["margin_divisor"])
+    percent = merchant["buy_percent"] - shift if buying else merchant["sell_percent"] + shift
+    base_cp = to_copper(economy, vector["item_cost"])
+    price = evaluate_formula(
+        load_data("formulas/price.json")["expr"],
+        {},
+        {"base_cp": base_cp, "value_percent": vector.get("value_percent", 100), "percent": percent},
+    )
+    return {"base_cp": base_cp, "shift": shift, "percent": percent, "price_cp": price}
+
+
 def run_combat(vector):
     """One attack, in the order of docs/core/combat.md. Dice and rolls are inputs."""
     pipeline = load_data("combat/pipeline.json")["pipeline"]
@@ -250,6 +288,7 @@ RUNNERS = {
     "formula": run_formula,
     "modifiers": run_modifiers,
     "actions": run_actions,
+    "economy": run_economy,
     "combat": run_combat,
     "progression": run_progression,
 }
