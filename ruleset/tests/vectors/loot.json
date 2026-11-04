@@ -1,0 +1,210 @@
+[
+  {
+    "name": "bandit purse, roll 10: 3 sp, worth 30 cp; budget at level 1 is 500 cp",
+    "table": "bandit_purse",
+    "rolls": [
+      10
+    ],
+    "expect": {
+      "table": "bandit_purse",
+      "items": [],
+      "coins_cp": 30,
+      "value_cp": 30,
+      "budget_cp": 500
+    }
+  },
+  {
+    "name": "range edge: roll 40 is still the 3 sp entry",
+    "table": "bandit_purse",
+    "rolls": [
+      40
+    ],
+    "expect": {
+      "coins_cp": 30
+    }
+  },
+  {
+    "name": "range edge: roll 41 is the 1 gp entry",
+    "table": "bandit_purse",
+    "rolls": [
+      41
+    ],
+    "expect": {
+      "coins_cp": 100,
+      "value_cp": 100
+    }
+  },
+  {
+    "name": "bandit purse, roll 90: a dagger at list price 2 gp",
+    "table": "bandit_purse",
+    "rolls": [
+      90
+    ],
+    "expect": {
+      "items": [
+        {
+          "item": "core:weapon/dagger",
+          "quantity": 1
+        }
+      ],
+      "coins_cp": 0,
+      "value_cp": 200
+    }
+  },
+  {
+    "name": "a lucky roll may pass the budget: roll 100 is a 25 gp potion against 5 gp",
+    "table": "bandit_purse",
+    "rolls": [
+      100
+    ],
+    "expect": {
+      "items": [
+        {
+          "item": "core:consumable/potion_minor_healing",
+          "quantity": 1
+        }
+      ],
+      "value_cp": 2500,
+      "budget_cp": 500
+    }
+  },
+  {
+    "name": "grave goods, roll 60: nothing",
+    "table": "grave_goods",
+    "rolls": [
+      60
+    ],
+    "expect": {
+      "table": "grave_goods",
+      "items": [],
+      "coins_cp": 0,
+      "value_cp": 0
+    }
+  },
+  {
+    "name": "by monster: a zombie drops grave goods; roll 95 is a cap worth 1 gp",
+    "monster": "core:monster/zombie",
+    "rolls": [
+      95
+    ],
+    "expect": {
+      "table": "grave_goods",
+      "items": [
+        {
+          "item": "core:armor/cap_hood",
+          "quantity": 1
+        }
+      ],
+      "value_cp": 100,
+      "budget_cp": 500
+    }
+  },
+  {
+    "name": "beast den at level 3: budget 4500 cp; roll 1 is nothing",
+    "table": "beast_den",
+    "rolls": [
+      1
+    ],
+    "expect": {
+      "table": "beast_den",
+      "value_cp": 0,
+      "budget_cp": 4500
+    }
+  },
+  {
+    "name": "two rolls on one coins entry add: 20 gp twice",
+    "table": "hoard_minor",
+    "rolls": [
+      10,
+      10
+    ],
+    "expect": {
+      "items": [],
+      "coins_cp": 4000,
+      "value_cp": 4000,
+      "budget_cp": 12500
+    }
+  },
+  {
+    "name": "two rolls, two items: chainmail 50 gp and a fire resistance potion 60 gp",
+    "table": "hoard_minor",
+    "rolls": [
+      80,
+      95
+    ],
+    "expect": {
+      "items": [
+        {
+          "item": "core:armor/chainmail",
+          "quantity": 1
+        },
+        {
+          "item": "core:consumable/potion_fire_resistance",
+          "quantity": 1
+        }
+      ],
+      "coins_cp": 0,
+      "value_cp": 11000
+    }
+  },
+  {
+    "name": "the same item twice merges its quantity",
+    "table": "hoard_minor",
+    "rolls": [
+      60,
+      70
+    ],
+    "expect": {
+      "items": [
+        {
+          "item": "core:consumable/potion_minor_healing",
+          "quantity": 2
+        }
+      ],
+      "value_cp": 5000
+    }
+  },
+  {
+    "name": "by monster: an ember drake's hoard, roll 95 and 50: an elven wood longbow and a silver ring",
+    "monster": "core:monster/ember_drake",
+    "rolls": [
+      95,
+      50
+    ],
+    "expect": {
+      "table": "hoard_major",
+      "items": [
+        {
+          "item": "core:accessory/silver_ring",
+          "quantity": 1
+        },
+        {
+          "item": "core:weapon/elven_wood_longbow",
+          "quantity": 1
+        }
+      ],
+      "value_cp": 25000,
+      "budget_cp": 24500
+    }
+  },
+  {
+    "name": "a table takes exactly its number of rolls",
+    "table": "hoard_minor",
+    "rolls": [
+      10
+    ],
+    "expect": {
+      "error": "hoard_minor takes 2 rolls, got 1"
+    }
+  },
+  {
+    "name": "a roll outside 1 to 100 is an error",
+    "table": "bandit_purse",
+    "rolls": [
+      0
+    ],
+    "expect": {
+      "error": "roll 0 is not 1 to 100"
+    }
+  }
+]
