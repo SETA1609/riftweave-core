@@ -53,7 +53,7 @@ Done: —
 - Done when: recovery is rows plus formulas, not prose; every resource in the actor snapshot has a recovery rule or an explicit 'none'; vectors cover a short rest and a long rest.
 
 #### M1-05 Modifier stacking and condition vectors
-- Status: doing
+- Status: review
 - Priority: medium
 - Needs: M1-07, M1-08
 - Was: RW-7
