@@ -10,17 +10,7 @@ Roadmap: [M4](../../ROADMAP.md#where-we-are). Format and rules: [README.md](READ
 
 **Done when:** prices, treasure, and monster stats are consistent under checkable balance bands.
 
-Done: —
-
-#### M4-01 Economy: currency, price formula, merchants
-- Status: review
-- Priority: high
-- Needs: M1-07
-- Was: RW-20
-- Do: Equipment has `cost` and materials have `valueFactor`, but there are no price rules, denominations, or merchant model. Core play needs buy, sell, and barter.
-- Files: ~6 (docs/core/economy.md, ruleset/data/economy/, ruleset/schemas/economy.schema.json, ruleset/data/formulas/, ruleset/tests/vectors/economy.json)
-- See: issues.md section 1
-- Done when: `docs/core/economy.md` and a price formula in the AST; merchant stock and buy/sell spread as data; vectors for a purchase and a sale with a barter check.
+Done: M4-01 ([done.md](done.md#m4-world))
 
 #### M4-02 Loot and treasure tables
 - Status: todo

@@ -10,7 +10,7 @@ Roadmap: [M5](../../ROADMAP.md#where-we-are). Format and rules: [README.md](READ
 
 **Done when:** items 3, 5, 6, 7, and 8 of the [definition of finished](../../ROADMAP.md#definition-of-finished) hold, and `v1.0.0` is tagged.
 
-Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02 ([done.md](done.md#m5-release-10))
+Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-07, M5-08, M5-13, M5-15 ([done.md](done.md#m5-release-10))
 
 #### M5-10 Keep both sides of decision-log additions in the rebase
 - Status: review
@@ -62,26 +62,6 @@ Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02 ([done.md](done.md#m5-releas
 - See: docs/review/findings-docs-hygiene.md
 - Done when: README tree, AGENTS, and CONTRIBUTING match the repo; authority order is written down once; historical files are moved under `docs/archive/` with a note.
 
-#### M5-07 Key stability and versioning policy
-- Status: review
-- Priority: high
-- Needs: —
-- Was: RW-28
-- Do: Cross-references are by key, so renaming a key silently breaks consumers. Define what is breaking before tagging a version.
-- Files: ~4 (docs/core/versioning.md, ruleset/scripts/, CHANGELOG.md)
-- See: docs/core/keys.md
-- Done when: `docs/core/versioning.md`: semver, key rename and removal are breaking, deprecation window; A tool diffs keys between tags and lists removals; CHANGELOG marks breaking entries.
-
-#### M5-08 Integrity gates
-- Status: review
-- Priority: high
-- Needs: M1-06
-- Was: RW-29
-- Do: Close the review's remaining integrity items: effects referenced nowhere (review M6), `oneOf` escape hatches in schemas (M3), and reference checks for every category.
-- Files: ~6 (ruleset/scripts/validate.py, ruleset/scripts/test_validate.py, ruleset/schemas/, ruleset/data/effects/core.json)
-- See: docs/review/findings-data-schemas.md M3, M6
-- Done when: every cross-reference category is checked by `validate.py`; unreferenced effects are used or documented as reserved; no schema accepts a bare string where a key is required.
-
 #### M5-09 Licensing and attribution audit, tag v1.0.0
 - Status: todo
 - Priority: high
@@ -101,22 +81,11 @@ Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02 ([done.md](done.md#m5-releas
 - See: ROADMAP.md#app-reference-backend
 - Done when: `roadmap-order show` lists the APP issues with their edges; ROADMAP, AGENTS, and CLAUDE say the same about scope; `roadmap-order check` passes.
 
-#### M5-13 Use devops-tools v0.3: regenerate the roadmap table on rebase
+#### M5-16 Move merged issues to done.md
 - Status: review
-- Priority: high
-- Needs: M5-10
-- Do: Every pull request regenerates the story table in `ROADMAP.md`, so two open pull requests that change the same story's row conflict, and the rebase workflow leaves the second for a person; `docs/core/vectors.md` conflicts the same way when two pull requests add checklist rows. devops-tools v0.3.0 adds `regenerate-roadmap-on-rebase`: the rebase takes the main branch's table and regenerates it after each branch. Pin devops-tools and both reusable workflows to v0.3.0, turn the setting on, and add `docs/core/vectors.md` to `keep-both-added-lines`.
-- Keys: `regenerate-roadmap-on-rebase` in `[tool.devops-tools]`
-- Files: ~8 (tools/devops/pyproject.toml, tools/devops/uv.lock, .github/workflows/, AGENTS.md, CONTRIBUTING.md, docs/decisions.md)
-- See: https://github.com/SETA1609/devops_tools (v0.3.0, issue 10)
-- Done when: devops-tools, the rebase workflow, and the fragments workflow pin the v0.3.0 commit; a local `rebase-open-branches --no-push` of two branches that change the same story's table row succeeds where v0.2.0 left it for a person; tooling tests pass.
-
-#### M5-15 One file per decision
-- Status: review
-- Priority: high
-- Needs: M5-10
-- Do: Every pull request inserts its section at the top of `docs/decisions.md`, so any two open pull requests conflict there. `keep-both-added-lines` only helps inside the rebase workflow; GitHub's merge button ignores it. Record each issue's decisions in its own file, `docs/decisions/<issue-id>.md`, freeze the old log, and point CONTRIBUTING, AGENTS, and the stories README at the new place.
-- Keys: `docs/decisions/<issue-id>.md`
-- Files: ~7 (docs/decisions/, docs/decisions.md, CONTRIBUTING.md, AGENTS.md, docs/stories/README.md, docs/stories/05-release.md)
-- See: docs/decisions/README.md, changes/README.md
-- Done when: `docs/decisions/README.md` states the format; no rule tells a pull request to edit `docs/decisions.md`; two branches that each add a decision file merge into `main` with plain git in either order.
+- Priority: low
+- Needs: —
+- Do: Ten issues whose pull requests are merged (M1-02, M1-03, M1-04, M1-07, M1-08, M3-04, M4-01, M5-07, M5-08, M5-13) and M5-15 still said `review` in their story files. Move them to `done.md` with `Status: done` and `Merged: #<PR>, <date>`, and list them on each story's `Done:` line.
+- Files: ~6 (docs/stories/01-kernel.md, 03-combat-magic.md, 04-world.md, 05-release.md, done.md, ROADMAP.md)
+- See: docs/stories/README.md#workflow
+- Done when: no issue whose PR is merged is still in a story file; `roadmap-order check` passes.

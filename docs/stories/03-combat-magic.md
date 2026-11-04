@@ -10,7 +10,7 @@ Roadmap: [M3](../../ROADMAP.md#where-we-are). Format and rules: [README.md](READ
 
 **Done when:** optional mechanics (cover, called shots, counterspell, and the like) are each either core with vectors or a named module.
 
-Done: —
+Done: M3-04 ([done.md](done.md#m3-combat-and-magic-playable))
 
 #### M3-01 Casting procedure: decide scope, then specify
 - Status: todo
@@ -41,16 +41,6 @@ Done: —
 - Files: ~5 (docs/modules/combat.md, ruleset/data/combat/, ruleset/tests/vectors/combat.json)
 - See: docs/modules/combat.md
 - Done when: each is a row set with vectors, or is moved to a named optional module; no special-case stacking rule.
-
-#### M3-04 Wuxing interaction vectors
-- Status: review
-- Priority: medium
-- Needs: M1-07
-- Was: RW-19
-- Do: Wuxing is a tag reader (SET-18). Pin the four cycles and their multipliers with vectors, including the reverse-cycle math the review called fragile.
-- Files: ~3 (ruleset/data/wuxing/core.json, ruleset/tests/vectors/wuxing.json, docs/modules/wuxing.md)
-- See: docs/modules/wuxing.md, ruleset/data/wuxing/core.json
-- Done when: vectors for generating, overcoming, weakening, and insulting; reverse-cycle logic exists once.
 
 #### M3-05 Spell delivery and save rolls for instant spells
 - Status: todo
