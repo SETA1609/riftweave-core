@@ -13,7 +13,7 @@ Roadmap: [M4](../../ROADMAP.md#where-we-are). Format and rules: [README.md](READ
 Done: M4-01 ([done.md](done.md#m4-world))
 
 #### M4-02 Loot and treasure tables
-- Status: todo
+- Status: doing
 - Priority: high
 - Needs: M4-01
 - Was: RW-21
