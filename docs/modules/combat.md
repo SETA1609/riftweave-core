@@ -41,7 +41,7 @@ There is no bonus action and no reaction slot. An off-hand attack is an attack. 
 
 Leaving an enemy's reach without disengaging provokes one attack from that enemy, resolved as an ordinary attack ([combat.md](../core/combat.md)). Reach weapons (`attackReach` 2) threaten 2 units, others 1.
 
-- The attack costs the attacker its normal 3 AP from its carried pool. An attacker with fewer than 3 AP carried does not get it. **[A]** This replaces the old "reaction" for it; it is logged as an open question in `docs/decisions.md`.
+- The attack costs the attacker its normal 3 AP from its carried pool. An attacker with fewer than 3 AP carried does not get it. **[A]** This replaces the old "reaction" for it; it is logged as an open question in [`docs/decisions/M1-01.md`](../decisions/M1-01.md).
 - Disengage (1 AP) prevents it. Perks may add other triggers (casting in reach, standing up, drinking a potion). **[A]**
 
 ## 3. Defense
