@@ -128,8 +128,9 @@ vectors.
 6. **Names.** Branch `<issue-id>-<slug>`, e.g. `M1-07-<slug>` (the issue title in lowercase
    kebab-case, shortened if long), or `<issue-id>-ruleset-<slug>` and `<issue-id>-backend-<slug>`
    for a split issue (rule 2); the issue id always comes first, because the changelog check
-   reads it there. PR title `<issue-id> <title>`, with `(ruleset)` or `(backend)` for a split. Agents prefix the branch
-   with `agent/<name>/`. Pick work from `roadmap-order show`
+   reads it there. People and agents use the same names; there is no `agent/<name>/` prefix.
+   PR title `<issue-id> <title>`, with `(ruleset)` or `(backend)` for a split. Pick work from
+   `roadmap-order show`
    ([order](docs/stories/README.md#order)).
 7. **Describe it for both audiences.** Say *what rule or content* changed and why, so
    programmers and game designers reviewing the PR can follow it.
