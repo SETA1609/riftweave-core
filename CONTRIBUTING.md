@@ -125,8 +125,10 @@ vectors.
 
 Open pull requests are rebased onto `main` after every push to `main`
 (`.github/workflows/rebase-open-branches.yml`). Conflicts where both sides only added
-lines to a story file, `docs/decisions.md`, or `CHANGELOG.md` keep both, the branch's lines
-first; any other conflict leaves the branch for a person. Because of it, an open branch can move under you: run `git pull --rebase` before committing on it.
+lines to a story file, `docs/decisions.md`, `docs/core/vectors.md`, or `CHANGELOG.md` keep
+both, the branch's lines first. The generated story table in `ROADMAP.md` is not merged: the
+rebase takes `main`'s table and regenerates it from the branch's story files. Any other
+conflict leaves the branch for a person. Because of it, an open branch can move under you: run `git pull --rebase` before committing on it.
 
 ### Verification tags
 

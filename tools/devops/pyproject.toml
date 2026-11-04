@@ -6,7 +6,7 @@ requires-python = ">=3.13"
 # Runtime uses the standard library and devops-tools (run logs, the rebase workflow).
 # The host needs nothing but uv. Pin devops-tools to a full commit SHA; bump it in its own PR.
 dependencies = [
-    "devops-tools @ git+https://github.com/SETA1609/devops_tools@15c1bf161101353bacc7c7f3f8d36076eda10796",
+    "devops-tools @ git+https://github.com/SETA1609/devops_tools@f7aca2eaf932f1a9b1f8f38721eaee378262c6ef",
 ]
 
 [project.scripts]
@@ -38,4 +38,6 @@ select = ["E", "W", "F", "I", "B", "UP", "SIM", "RUF"]
 roadmap-file = "ROADMAP.md"
 changes-directory = "changes"
 changelog-file = "CHANGELOG.md"
-keep-both-added-lines = ["docs/stories/*.md", "docs/decisions.md"]
+keep-both-added-lines = ["docs/stories/*.md", "docs/decisions.md", "docs/core/vectors.md"]
+# The rebase takes main's generated story table in ROADMAP.md and regenerates it after each branch.
+regenerate-roadmap-on-rebase = true

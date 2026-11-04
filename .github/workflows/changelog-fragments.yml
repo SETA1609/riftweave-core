@@ -15,7 +15,7 @@ jobs:
   # Keep the ref and devops-tools-version equal to the devops-tools pin in
   # tools/devops/pyproject.toml, and move them in one PR with rebase-open-branches.yml.
   check-changelog-fragments:
-    uses: SETA1609/devops_tools/.github/workflows/changelog-fragments.yml@15c1bf161101353bacc7c7f3f8d36076eda10796 # v0.2.0
+    uses: SETA1609/devops_tools/.github/workflows/changelog-fragments.yml@f7aca2eaf932f1a9b1f8f38721eaee378262c6ef # v0.3.0
     with:
-      devops-tools-version: 15c1bf161101353bacc7c7f3f8d36076eda10796
+      devops-tools-version: f7aca2eaf932f1a9b1f8f38721eaee378262c6ef
       settings-file: tools/devops/pyproject.toml

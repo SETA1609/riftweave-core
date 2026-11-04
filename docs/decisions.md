@@ -7,6 +7,23 @@ issue settles them.
 
 ## Decided
 
+### 2026-11-04: The rebase regenerates the roadmap table (M5-13)
+
+- **Decision:** devops-tools moves to v0.3.0 (`f7aca2e`), with
+  `regenerate-roadmap-on-rebase = true`: the rebase takes `main`'s generated story table in
+  `ROADMAP.md`, merges the rest of the file, and regenerates the table for each branch.
+  `docs/core/vectors.md` joins `keep-both-added-lines`.
+- **Why:** the table conflict hit almost every open branch after each merge (M5-07, M5-08,
+  and M1-02 among them, 2026-11-02 to 11-04). Reproduced locally: two branches that add issues to
+  M5 change its row differently; v0.2.0 left the second for a person, v0.3.0 rebased it and
+  `roadmap-order check` passed on the result. **[V 2026-11-04]** On the five branches open
+  today, both versions rebase every merge order cleanly; the change matters when two of them
+  touch the same story row.
+- **Not done:** `kernel_reference.py` is not in `keep-both-added-lines`. Its conflicts are also
+  pure additions (an import, a `RUNNERS` entry), but rebase pushes do not rerun CI, so a bad
+  merge in code would only show after merge. Runners that register themselves would remove
+  that conflict instead. **[A]**
+
 ### 2026-11-02: One Wuxing interaction function, no reverse lookup (M3-04)
 
 - **Decision:** `ruleset/scripts/wuxing_reference.py` holds the only reader of the cycle edges.
