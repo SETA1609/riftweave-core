@@ -12,11 +12,12 @@ One attack, in order, from the roll to the HP lost. Every step reads the actor s
 2. reaction   on a hit, the defender may take one reaction: evade or block, not both
               delivery single: evade or block      delivery area: evade or block
               delivery instant: none (a save, M3-05)
-   evade      evade_target = evasion_skill + evade mods             resolution.md
-              evaded if evade roll <= evade_target and evade margin >= attack margin
+   evade      evade roll through resolution.md, target = evasion_skill + evade mods
+              evaded if the evade succeeds and evade margin >= attack margin
               single: no damage, stop        area: damage halved at step 5
    block      physical types only (tag armor_dr_applies)
-              blocked if block roll <= block skill and block margin >= attack margin
+              block roll through resolution.md, target = block skill
+              blocked if the block succeeds and block margin >= attack margin
 3. damage     damage = the caller's rolled damage dice
 4. crit       if crit: damage = crit_damage(damage)                 formula tree
 5. reduce     if evaded an area attack: damage = area_evade_damage(damage)   formula tree
@@ -35,6 +36,7 @@ Each subtraction stops at zero before the next step: a step never raises damage.
 - **Delivery, not damage type, decides the dodge.** `single` is one target: a sword cut, an arrow, a fire bolt, a touch spell. A full evade avoids it. `area` is a radius or a cone: a fireball, a breath weapon, a thrown bomb. An evade halves the damage (rounded down) instead of avoiding it. `instant` cannot be dodged or blocked: the effect lands, and a save roll on a skill or attribute the spell names decides how it behaves (M3-05). Physical and magic attacks follow the same rule. [V 2026-11-04, owner decision] A spell effect's `target` shape maps to it: `touch` and `ranged` are `single`, `area` is `area`; `instant` is a new marker for spells, added in M3-05. [A]
 - **Balance between evade and block.** At equal skill an evade avoids all damage and a block only subtracts shield DR, so the raw skill alone favours evading. The balance is not in this pipeline: perks gate stronger dodges and blocks, armor penalties land on evasion, area attacks are only halved, and instant spells skip the dodge for a save. The perk rows come with their own issues. [A]
 - **One reaction per attack.** The defender declares evade or block before the attack roll, as `modules/combat.md` has it for block, and rolls it only if the attack hits; the input has a single `reaction`. A failed evade does not allow a block. [A]
+- **Reaction rolls use the one d100 function.** Evade and block go through [resolution.md](resolution.md) with the defender's skill and LCK, exactly like the attack roll: a 100 fumbles and fails, and a roll inside the defender's crit window is tagged `crit` (`reaction_tags`). A crit reaction has no extra effect yet; perks may read the tag later. [V 2026-11-04, owner decision]
 - **Crit** multiplies damage by 2 (`critDamageMultiplier`). It is a consumer of the `crit` tag, not a second roll. Crit multiplies before any reduction. [A]
 - **Block** compares margins as the TTRPG prose does: the blocker's margin must reach the attacker's. It is the other reaction (step 2) and reduces damage instead of avoiding it. The video-game input-timed block is a client mapping of the same numbers. Block applies only to types with `armor_dr_applies`: a shield does not stop fire. Evade applies to any type the delivery allows. [A]
 - **Armor DR** is the sum of worn pieces ([armor.md](../modules/armor.md)); the pipeline takes the sum as an input. Types tagged `bypasses_armor` or `bypasses_physical_armor` carry no `armor_dr_applies`, so DR skips them. A piercing hit halves DR, rounded down. [A]
