@@ -1129,5 +1129,194 @@
       "damage": 48,
       "hp": 0
     }
+  },
+  {
+    "name": "example 1a: Aldric's longsword hits the bandit; the bandit's evade fails",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 4
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "reaction": {
+        "kind": "evade",
+        "roll": 63
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "margin": 25,
+      "evaded": false,
+      "damage": 6,
+      "hp": 24
+    }
+  },
+  {
+    "name": "example 1b: the bandit's shortsword is blocked; Aldric's armor takes the rest",
+    "attacker": {
+      "skill": 45,
+      "roll": 32,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 30,
+      "armor_dr": 22,
+      "hp": 75,
+      "reaction": {
+        "kind": "block",
+        "skill": 55,
+        "roll": 41,
+        "shield_dr": 2
+      }
+    },
+    "damage": {
+      "roll": 5,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "margin": 13,
+      "blocked": true,
+      "damage": 0,
+      "hp": 75
+    }
+  },
+  {
+    "name": "example 1c: Aldric crits on 4 (LCK 4, window 7); damage doubles before DR",
+    "attacker": {
+      "skill": 72,
+      "roll": 4,
+      "attributes": {
+        "lck": 4
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 24,
+      "reaction": {
+        "kind": "evade",
+        "roll": 63
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "crit": true,
+      "damage": 14,
+      "hp": 10
+    }
+  },
+  {
+    "name": "example 2a: Lyra's fire bolt (single) is not dodged; fire resist 3, scales DR 3 do not apply",
+    "attacker": {
+      "skill": 65,
+      "roll": 38,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 30,
+      "armor_dr": 3,
+      "hp": 40,
+      "resist": {
+        "fire": 3
+      },
+      "reaction": {
+        "kind": "evade",
+        "roll": 12
+      }
+    },
+    "delivery": "single",
+    "damage": {
+      "roll": 8,
+      "type": "fire"
+    },
+    "expect": {
+      "outcome": "hit",
+      "margin": 27,
+      "evaded": false,
+      "damage": 5,
+      "hp": 35
+    }
+  },
+  {
+    "name": "example 2b: fire burst (area) on goblin A; a tied evade halves 28 to 14",
+    "attacker": {
+      "skill": 65,
+      "roll": 50,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 1,
+      "hp": 15,
+      "reaction": {
+        "kind": "evade",
+        "roll": 5
+      }
+    },
+    "delivery": "area",
+    "damage": {
+      "roll": 28,
+      "type": "fire"
+    },
+    "expect": {
+      "outcome": "hit",
+      "margin": 15,
+      "evaded": true,
+      "reaction_tags": [
+        "crit"
+      ],
+      "damage": 14,
+      "hp": 1
+    }
+  },
+  {
+    "name": "example 2c: fire burst (area) on goblin B; the evade fails, 28 in full",
+    "attacker": {
+      "skill": 65,
+      "roll": 50,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 1,
+      "hp": 15,
+      "reaction": {
+        "kind": "evade",
+        "roll": 40
+      }
+    },
+    "delivery": "area",
+    "damage": {
+      "roll": 28,
+      "type": "fire"
+    },
+    "expect": {
+      "outcome": "hit",
+      "evaded": false,
+      "damage": 28,
+      "hp": 0
+    }
   }
 ]

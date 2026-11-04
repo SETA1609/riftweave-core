@@ -119,7 +119,7 @@ Armor DR (`drBase + material.modifiers.defense`) provides the primary physical d
 - **DR is flat subtraction**: Applied after the hit is confirmed and after any block/parry reduction.
 - **Resistances modify per-element DR**: The `resistances` object on each armor piece provides flat DR adjustments per damage type key.
 - **Evasion penalties** from armor reduce the character's effective evasion skill.
-- **Speed penalties** reduce movement speed (units for TTRPG, % for video game).
+- **Speed penalties** reduce movement speed (units per move; a real-time client scales speed by the same share).
 
 Material phase on armor (e.g. steel = `metal`) interacts with incoming phased effects through the Wuxing cycles — see `data/wuxing/core.json` and `docs/modules/magic.md`.
 
@@ -127,7 +127,7 @@ Material phase on armor (e.g. steel = `metal`) interacts with incoming phased ef
 
 ## 5. Conditions → Combat
 
-Conditions (`data/conditions/core.json`) are the "envelope" for combat status effects. Each condition has an `appliedBy` array of effect IDs and an `effects` object describing its impact in both TTRPG and video game modes.
+Conditions (`data/conditions/core.json`) are the "envelope" for combat status effects. Each condition has an `appliedBy` array of effect IDs and an `effects` object describing its impact in prose. The prose is not yet modifiers (M3-03); the `modifiers` array is what the kernel reads ([modifier.md](../core/modifier.md)).
 
 ### Combat Impact of Conditions
 
@@ -160,7 +160,7 @@ Combat-relevant conditions include:
 | bleeding | 58 | Damage over time (1 HP/round) |
 | burning | 57 | Fire DoT (1d4/round) |
 | stunned | 55 | No actions, +10 to attacks against |
-| staggered | 64 | Lose reaction, -10 on next action |
+| staggered | 64 | No reaction until its next turn, -10 on next action |
 | prone | 53 | -20 melee, ranged attacks against +10 |
 | exposed | 62 | DR halved, incoming damage ×1.25 |
 

@@ -909,7 +909,7 @@
     {
       "key": "incapacitate",
       "label": "Incapacitate",
-      "description": "Renders the target unable to take any actions, bonus actions, or reactions.",
+      "description": "Renders the target unable to spend AP or take a reaction.",
       "category": "control",
       "polarity": "harmful",
       "color": "blue",
@@ -1161,7 +1161,7 @@
     {
       "key": "stagger",
       "label": "Stagger",
-      "description": "Knocks the target off-balance, costing them their reaction and imposing a penalty.",
+      "description": "Knocks the target off-balance: no reaction until their next turn, and a penalty.",
       "category": "control",
       "polarity": "harmful",
       "color": "blue",

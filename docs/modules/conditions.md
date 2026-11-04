@@ -111,7 +111,7 @@ Data in `conditions/core.json` (24 entries). Each entry:
 | 3 | deafened | −10 initiative, auto-fail hearing PER | -10 detect range, no audio cues | 49* |
 | 4 | frightened | −10 attack/checks while source in LoS, cannot approach | -10 damage, forced retreat if source closes | 22 (phobia) |
 | 5 | grappled | Speed 0, −10 attacks/AGI, contested athletics to escape | Immobilized, -10 attack, escape via skill | 50* |
-| 6 | incapacitated | No actions, bonus, or reactions | Cannot act or use abilities | 51* |
+| 6 | incapacitated | Spends no AP, takes no reaction | Cannot act or use abilities | 51* |
 | 7 | invisible | Cannot be seen; −20 enemy attacks, +10 your attacks | Stealthed; attacks break stealth | 8 (invisibility) |
 | 8 | paralyzed | Incapacitated + immobile; auto-fail STR/AGI; melee auto-crit | Immobilized + defenseless; melee hits guaranteed | 11, 43 |
 | 9 | petrified | Incapacitated; DR 20 vs all; immune poison/disease | DR +90, cannot act, no HP regen | 52* |
@@ -129,7 +129,7 @@ Data in `conditions/core.json` (24 entries). Each entry:
 | 21 | cursed | −2 all stats; needs remove curse or ritual | −X stats; requires specialized cure | 61 |
 | 22 | exposed | −10 evasion/block; DR halved; ×1.25 damage | Evasion -15; resist -20; incoming +X | 62 |
 | 23 | taunted | −20 attacks vs non-taunter; cannot flee | Forced aggro; -20 damage to others | 63 |
-| 24 | staggered | Loses reaction; −10 next action; ends next turn | Cannot block/dodge 1–2s | 64 |
+| 24 | staggered | No reaction until its next turn; −10 next action; ends next turn | Cannot block/dodge 1–2s | 64 |
 
 ---
 
@@ -330,7 +330,7 @@ entire object for conditions with no combat impact (e.g. `charmed`,
 |-------|------|---------|-------------|
 | `attack_penalty` | integer | 0 | Flat penalty applied to the bearer's attack rolls while active. The resolver adds all active conditions' penalties together. Example: `prone` → `-20` (melee disadvantage). |
 | `defense_bonus` | integer | 0 | Flat bonus added to **attackers'** rolls against the bearer. Represents the condition making the bearer an easier target. Example: `blinded` → `+10`. |
-| `prevents_action` | boolean | false | If true, the bearer cannot take any actions, bonus actions, or reactions. Used for full-incapacitation conditions. Example: `paralyzed`, `stunned`, `unconscious`. |
+| `prevents_action` | boolean | false | If true, the bearer cannot spend AP or take a reaction. Used for full-incapacitation conditions. Example: `paralyzed`, `stunned`, `unconscious`. |
 | `auto_crit_when_target` | boolean | false | If true, melee attacks against the bearer automatically become critical hits (damage dice doubled). Typically paired with `prevents_action`. Example: `paralyzed` (helpless target), `unconscious`. |
 | `attack_penalty_per_stack` | integer | 0 | Per-stack attack penalty for **stacking** conditions. The resolver multiplies this by the current stack count (clamped to `maxStacks`). Each stacking condition defines its own rate, allowing different severities (e.g. exhaustion at `-10`/stack, hypothetical poison at `-5`/stack). |
 
