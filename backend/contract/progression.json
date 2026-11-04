@@ -1,0 +1,86 @@
+{
+  "$schema": "./command.schema.json",
+  "name": "progression",
+  "summary": "XP and level, a level-up pool, and spending points on a skill.",
+  "doc": "docs/core/progression.md",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "op": {
+        "type": "string",
+        "enum": [
+          "xp",
+          "level",
+          "level_up",
+          "spend"
+        ]
+      },
+      "level": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "xp": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "actor": {
+        "$ref": "common.json#/definitions/actor"
+      },
+      "luck_roll": {
+        "type": "integer"
+      },
+      "skill": {
+        "type": "integer"
+      },
+      "tagged": {
+        "type": "boolean"
+      },
+      "points": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "op"
+    ]
+  },
+  "result_schema": {
+    "type": "object",
+    "properties": {
+      "xp_total": {
+        "type": "integer"
+      },
+      "xp_step": {
+        "anyOf": [
+          {
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "level": {
+        "type": "integer"
+      },
+      "skill_points": {
+        "type": "integer"
+      },
+      "perks": {
+        "type": "integer"
+      },
+      "ranks": {
+        "type": "integer"
+      },
+      "spent": {
+        "type": "integer"
+      },
+      "left": {
+        "type": "integer"
+      }
+    },
+    "additionalProperties": false,
+    "minProperties": 1
+  }
+}

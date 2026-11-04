@@ -1,0 +1,45 @@
+{
+  "$schema": "./command.schema.json",
+  "name": "formula",
+  "summary": "Evaluate a formula tree, by key or inline.",
+  "doc": "docs/core/formula.md",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "formula": {
+        "$ref": "common.json#/definitions/key"
+      },
+      "expr": {
+        "$ref": "../../ruleset/schemas/schema.json#/definitions/formulaNode"
+      },
+      "actor": {
+        "$ref": "common.json#/definitions/actor"
+      }
+    },
+    "additionalProperties": false,
+    "oneOf": [
+      {
+        "required": [
+          "formula"
+        ]
+      },
+      {
+        "required": [
+          "expr"
+        ]
+      }
+    ]
+  },
+  "result_schema": {
+    "type": "object",
+    "properties": {
+      "value": {
+        "type": "integer"
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "value"
+    ]
+  }
+}

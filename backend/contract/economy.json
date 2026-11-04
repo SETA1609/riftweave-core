@@ -1,0 +1,112 @@
+{
+  "$schema": "./command.schema.json",
+  "name": "economy",
+  "summary": "Convert a cost to copper, or price a purchase or sale with an optional barter check.",
+  "doc": "docs/core/economy.md",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "op": {
+        "type": "string",
+        "enum": [
+          "convert",
+          "trade"
+        ]
+      },
+      "cost": {
+        "$ref": "common.json#/definitions/cost"
+      },
+      "side": {
+        "type": "string",
+        "enum": [
+          "buy",
+          "sell"
+        ]
+      },
+      "merchant": {
+        "$ref": "common.json#/definitions/key"
+      },
+      "item_cost": {
+        "$ref": "common.json#/definitions/cost"
+      },
+      "value_percent": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "barter": {
+        "type": "object",
+        "properties": {
+          "skill_value": {
+            "type": "integer"
+          },
+          "roll": {
+            "$ref": "common.json#/definitions/d100"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "skill_value",
+          "roll"
+        ]
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "op"
+    ],
+    "allOf": [
+      {
+        "if": {
+          "properties": {
+            "op": {
+              "const": "convert"
+            }
+          }
+        },
+        "then": {
+          "required": [
+            "cost"
+          ]
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "op": {
+              "const": "trade"
+            }
+          }
+        },
+        "then": {
+          "required": [
+            "side",
+            "merchant",
+            "item_cost"
+          ]
+        }
+      }
+    ]
+  },
+  "result_schema": {
+    "type": "object",
+    "properties": {
+      "cp": {
+        "type": "integer"
+      },
+      "base_cp": {
+        "type": "integer"
+      },
+      "shift": {
+        "type": "integer"
+      },
+      "percent": {
+        "type": "integer"
+      },
+      "price_cp": {
+        "type": "integer"
+      }
+    },
+    "additionalProperties": false,
+    "minProperties": 1
+  }
+}

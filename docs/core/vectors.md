@@ -14,7 +14,7 @@ python -m unittest ruleset/scripts/test_vectors.py
 
 `./scripts/test.sh` runs it with the other `ruleset/scripts/test_*.py` tests.
 
-The test globs `ruleset/tests/vectors/*.json`. Adding a vector file, or a vector to a file, needs no test edit. A new kernel function needs a runner in `ruleset/scripts/kernel_reference.py` and a row in the checklist below; the test fails until both exist.
+The test globs `ruleset/tests/vectors/*.json`. Adding a vector file, or a vector to a file, needs no test edit. A new kernel function needs a runner in `ruleset/scripts/kernel_reference.py`, a row in the checklist below, and a command file in `backend/contract/` ([backend](../backend/README.md)); the tests fail until all three exist. A new input field on an existing function goes into its command's `input_schema` in the same pull request.
 
 ## File format
 

@@ -8,6 +8,8 @@ on:
       - "Dockerfile"
       - "docs/core/**"
       - "docs/stories/**"
+      - "backend/**"
+      - "docs/backend/**"
   pull_request:
     paths:
       - "ruleset/**"
@@ -15,6 +17,8 @@ on:
       - "Dockerfile"
       - "docs/core/**"
       - "docs/stories/**"
+      - "backend/**"
+      - "docs/backend/**"
   workflow_dispatch:
 
 jobs:

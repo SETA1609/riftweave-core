@@ -1,0 +1,49 @@
+{
+  "$schema": "./command.schema.json",
+  "name": "derived",
+  "summary": "HP, MP, AP, carry, and initiative from attributes, level, and modifiers.",
+  "doc": "docs/core/derived.md",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "actor": {
+        "$ref": "common.json#/definitions/actor"
+      },
+      "modifiers": {
+        "$ref": "common.json#/definitions/modifiers"
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "actor"
+    ]
+  },
+  "result_schema": {
+    "type": "object",
+    "properties": {
+      "hp": {
+        "type": "integer"
+      },
+      "mp": {
+        "type": "integer"
+      },
+      "ap": {
+        "type": "integer"
+      },
+      "carry": {
+        "type": "integer"
+      },
+      "initiative": {
+        "type": "integer"
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "hp",
+      "mp",
+      "ap",
+      "carry",
+      "initiative"
+    ]
+  }
+}
