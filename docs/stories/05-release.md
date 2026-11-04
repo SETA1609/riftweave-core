@@ -110,3 +110,13 @@ Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02 ([done.md](done.md#m5-releas
 - Files: ~8 (tools/devops/pyproject.toml, tools/devops/uv.lock, .github/workflows/, AGENTS.md, CONTRIBUTING.md, docs/decisions.md)
 - See: https://github.com/SETA1609/devops_tools (v0.3.0, issue 10)
 - Done when: devops-tools, the rebase workflow, and the fragments workflow pin the v0.3.0 commit; a local `rebase-open-branches --no-push` of two branches that change the same story's table row succeeds where v0.2.0 left it for a person; tooling tests pass.
+
+#### M5-15 One file per decision
+- Status: review
+- Priority: high
+- Needs: M5-10
+- Do: Every pull request inserts its section at the top of `docs/decisions.md`, so any two open pull requests conflict there. `keep-both-added-lines` only helps inside the rebase workflow; GitHub's merge button ignores it. Record each issue's decisions in its own file, `docs/decisions/<issue-id>.md`, freeze the old log, and point CONTRIBUTING, AGENTS, and the stories README at the new place.
+- Keys: `docs/decisions/<issue-id>.md`
+- Files: ~7 (docs/decisions/, docs/decisions.md, CONTRIBUTING.md, AGENTS.md, docs/stories/README.md, docs/stories/05-release.md)
+- See: docs/decisions/README.md, changes/README.md
+- Done when: `docs/decisions/README.md` states the format; no rule tells a pull request to edit `docs/decisions.md`; two branches that each add a decision file merge into `main` with plain git in either order.

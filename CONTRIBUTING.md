@@ -109,7 +109,8 @@ vectors.
 3. **Each PR leaves `main` green.** `validate.py` and `./scripts/test.sh` pass at the PR's
    last commit.
 4. **Docs in the same PR.** A change to a rule, a decision, or a tag updates the matching
-   doc. Record decisions in [docs/decisions.md](docs/decisions.md).
+   doc. Record decisions in `docs/decisions/<issue-id>.md`, one file per issue
+   ([format](docs/decisions/README.md)); `docs/decisions.md` is the frozen log before 2026-11-04.
 5. **Status and changelog.** Set the issue's `Status` in its story file in the PR that
    changes it. The issue's PR adds a changelog fragment, `changes/<issue-id>.md`
    ([rules](changes/README.md)), and does not edit [CHANGELOG.md](CHANGELOG.md); CI checks

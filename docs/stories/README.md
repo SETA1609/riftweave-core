@@ -80,7 +80,7 @@ The five steps (spec, schema, vector, data, review) and the pull request rules a
    Story files list only open work.
 
 Design questions that need a spec go to `docs/core/` or `docs/modules/` before the issue
-starts. Decisions go to [docs/decisions.md](../decisions.md).
+starts. Decisions go to `docs/decisions/<issue-id>.md`, one file per issue ([format](../decisions/README.md)).
 
 ## Story and issue format
 
