@@ -10,7 +10,7 @@ Roadmap: [POST](../../ROADMAP.md#where-we-are). Format and rules: [README.md](RE
 
 **Done when:** each module ships, validates, and has vectors for its formulas. Parked with no issue yet: psionics, alignment and morality, birthsigns.
 
-Done: —
+Done: POST-05 ([done.md](done.md#post-post-10-modules))
 
 #### POST-01 Crafting module: recipes, quality, stations
 - Status: todo
@@ -51,16 +51,6 @@ Done: —
 - Files: ~6 (ruleset/modules/<module>/, docs/modules/<module>.md)
 - See: docs/modules/advancement.md
 - Done when: manifest, data, and vectors; core unchanged.
-
-#### POST-05 Factions and reputation module
-- Status: review
-- Priority: medium
-- Needs: —
-- Was: RW-35
-- Do: No faction schema or data yet. Design doc first.
-- Files: ~6 (ruleset/modules/<module>/, docs/modules/<module>.md)
-- See: issues.md section 3
-- Done when: `docs/modules/factions.md`, schema, and data.
 
 #### POST-06 Companions and followers module
 - Status: todo
