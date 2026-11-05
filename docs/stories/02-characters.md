@@ -10,7 +10,7 @@ Roadmap: [M2](../../ROADMAP.md#where-we-are). Format and rules: [README.md](READ
 
 **Done when:** perk, skill, race, background, and equipment floors are met, and two multi-level characters are vectors.
 
-Done: —
+Done: M2-02 ([done.md](done.md#m2-characters))
 
 #### M2-01 Perk catalogue to the content floor
 - Status: todo
@@ -21,16 +21,6 @@ Done: —
 - Files: ~3 (ruleset/data/features/core.json, docs/modules/progression.md)
 - See: ruleset/data/features/core.json, docs/modules/progression.md
 - Done when: at least 60 perks, spread across all 8 attributes and the combat, magic, and social skill groups; every perk emits modifiers; prerequisites are keys; no perk is dominated by another at the same level.
-
-#### M2-02 Skill audit: no orphan skills
-- Status: review
-- Priority: medium
-- Needs: —
-- Was: RW-12
-- Do: 44 skills. Each needs a governing attribute and at least one consumer: a weapon, spell color, check, or perk.
-- Files: ~4 (ruleset/data/skills/core.json, docs/modules/attributes.md, ruleset/scripts/)
-- See: ruleset/data/skills/core.json, docs/modules/attributes.md
-- Done when: script lists skills with zero references; each is wired up or removed; `attributes.md` seeds match the data.
 
 #### M2-03 Multi-level example characters as vectors
 - Status: todo

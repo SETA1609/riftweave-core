@@ -10,17 +10,7 @@ Roadmap: [M5](../../ROADMAP.md#where-we-are). Format and rules: [README.md](READ
 
 **Done when:** items 3, 5, 6, 7, and 8 of the [definition of finished](../../ROADMAP.md#definition-of-finished) hold, and `v1.0.0` is tagged.
 
-Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-07, M5-08, M5-13, M5-15 ([done.md](done.md#m5-release-10))
-
-#### M5-10 Keep both sides of decision-log additions in the rebase
-- Status: review
-- Priority: high
-- Needs: M5-02
-- Do: The rebase workflow has failed on every push to `main` since 2026-11-01: two open PRs that each add a dated section at the top of `docs/decisions.md` conflict, and the tool leaves the branch for a person. new-world has no shared append-only log, so it never hit this. Add `docs/decisions.md` to `keep-both-added-lines`, so the rebase keeps both sections like the changelog and story files. Pin devops-tools to v0.2.0, as new-world does.
-- Keys: `keep-both-added-lines` in `[tool.devops-tools]`
-- Files: ~8 (tools/devops/pyproject.toml, tools/devops/uv.lock, .github/workflows/, docs/decisions.md, AGENTS.md, CONTRIBUTING.md)
-- See: https://github.com/SETA1609/devops_tools (rebase-open-branches, `keep-both-added-lines`)
-- Done when: `keep-both-added-lines` lists `docs/decisions.md`; a local `rebase-open-branches --no-push` of two branches that both add a decision section succeeds; devops-tools, the rebase workflow, and the fragments workflow are pinned to the same v0.2.0 SHA; tooling tests pass.
+Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-07, M5-08, M5-10, M5-12, M5-13, M5-15 ([done.md](done.md#m5-release-10))
 
 #### M5-03 Move the container runner, agent image, and fetch-docs to devops-tools
 - Status: todo
@@ -71,15 +61,6 @@ Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-07, M5-08, M5-13, M5-15 
 - Files: ~6 (LICENSING.md, NOTICE, CONTRIBUTORS.md, CHANGELOG.md, ROADMAP.md)
 - See: LICENSING.md, ROADMAP.md
 - Done when: all checklist items in `ROADMAP.md` 'Definition of finished' are ticked; `v1.0.0` tagged and `[Unreleased]` in the changelog becomes `[1.0.0]`.
-
-#### M5-12 Put the reference backend in scope
-- Status: review
-- Priority: medium
-- Needs: —
-- Do: The roadmap put every UI out of scope, so there was no way to call the ruleset except through the vector test. The owner wants one fast backend, in Go, that an agent CLI, a human CLI, an API server, and an Angular frontend all use. Add the APP story with its issues, and change the scope lines in ROADMAP, AGENTS, and CLAUDE: a reference backend is in, not a 1.0 gate; game engines and VTT code stay out.
-- Files: ~8 (docs/stories/07-backend.md, docs/stories/README.md, docs/stories/05-release.md, ROADMAP.md, AGENTS.md, CLAUDE.md, docs/decisions.md)
-- See: ROADMAP.md#app-reference-backend
-- Done when: `roadmap-order show` lists the APP issues with their edges; ROADMAP, AGENTS, and CLAUDE say the same about scope; `roadmap-order check` passes.
 
 #### M5-16 Move merged issues to done.md
 - Status: review

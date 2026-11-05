@@ -116,6 +116,17 @@ Tracked in Linear before this repo had a tracker, recovered from git history. Th
 
 ## M1 Kernel closed
 
+#### M1-01 Reconcile docs/modules/combat.md with the kernel
+- Status: done
+- Merged: #70, 2026-11-04
+- Priority: high
+- Needs: M1-02
+- Was: RW-3
+- Do: `combat.md` still describes Action, Bonus Action, and Reaction (about 30 mentions) and separate TTRPG and video-game modes. SET-8 and SET-9 removed both: one resolution function, one AP budget. Two authorities for combat is a defect in an SRD.
+- Files: ~6 (docs/modules/combat.md, docs/combat/, docs/core/)
+- See: docs/modules/combat.md, docs/core/actions.md, docs/core/resolution.md
+- Done when: no bonus action, reaction slot, or per-mode rule remains in `docs/modules/combat.md`, `docs/combat/*`, or the combat examples; each rule in `combat.md` links to the `docs/core/` file that owns it, or is moved into `docs/core/`; worked examples are recomputed against current data and match a vector (M1-02).
+
 #### M1-02 Combat pipeline as data, formulas, and vectors
 - Status: done
 - Merged: #60, 2026-11-04
@@ -149,6 +160,17 @@ Tracked in Linear before this repo had a tracker, recovered from git history. Th
 - See: docs/core/contract.md, docs/core/derived.md
 - Done when: recovery is rows plus formulas, not prose; every resource in the actor snapshot has a recovery rule or an explicit 'none'; vectors cover a short rest and a long rest.
 
+#### M1-06 Resolve the traits vs features fork
+- Status: done
+- Merged: #52, 2026-11-02
+- Priority: medium
+- Needs: —
+- Was: RW-8
+- Do: `traits/core.json` (18) and `features/core.json` (23) both exist, and the review (data-schemas M1) flagged the fork. CLAUDE.md says `features` is the single perk table. Pick one model before more racial content lands.
+- Files: ~8 (ruleset/data/traits/, ruleset/data/features/core.json, ruleset/data/races/core.json, ruleset/schemas/trait.schema.json, ruleset/schemas/feature.schema.json, ruleset/schemas/race.schema.json, ruleset/scripts/validate.py, docs/modules/race.md)
+- See: docs/review/findings-data-schemas.md M1, docs/review/findings-docs-hygiene.md M3
+- Done when: one table owns racial traits; the other is removed or documented as a view; all references migrated; `validate.py` is green; `docs/modules/race.md` and the schemas describe the decision.
+
 #### M1-07 One test runs every vector file
 - Status: done
 - Merged: #48, 2026-11-02
@@ -170,6 +192,19 @@ Tracked in Linear before this repo had a tracker, recovered from git history. Th
 - Files: ~2 (.github/workflows/validate-ruleset.yml)
 - See: docs/review/findings-tooling-ci.md H1, .github/workflows/validate-ruleset.yml
 - Done when: workflow runs validate, unit tests, and vectors; path filter covers `ruleset/**`, `.github/**`, `Dockerfile`, `docs/core/**`, and `docs/stories/**`; A failing vector fails the PR.
+
+## M2 Characters
+
+#### M2-02 Skill audit: no orphan skills
+- Status: done
+- Merged: #49, 2026-11-02
+- Priority: medium
+- Needs: —
+- Was: RW-12
+- Do: 44 skills. Each needs a governing attribute and at least one consumer: a weapon, spell color, check, or perk.
+- Files: ~4 (ruleset/data/skills/core.json, docs/modules/attributes.md, ruleset/scripts/)
+- See: ruleset/data/skills/core.json, docs/modules/attributes.md
+- Done when: script lists skills with zero references; each is wired up or removed; `attributes.md` seeds match the data.
 
 ## M3 Combat and magic playable
 
@@ -285,6 +320,27 @@ Tracked in Linear before this repo had a tracker, recovered from git history. Th
 - See: docs/review/findings-data-schemas.md M3, M6
 - Done when: every cross-reference category is checked by `validate.py`; unreferenced effects are used or documented as reserved; no schema accepts a bare string where a key is required.
 
+#### M5-10 Keep both sides of decision-log additions in the rebase
+- Status: done
+- Merged: #53, 2026-11-02
+- Priority: high
+- Needs: M5-02
+- Do: The rebase workflow has failed on every push to `main` since 2026-11-01: two open PRs that each add a dated section at the top of `docs/decisions.md` conflict, and the tool leaves the branch for a person. new-world has no shared append-only log, so it never hit this. Add `docs/decisions.md` to `keep-both-added-lines`, so the rebase keeps both sections like the changelog and story files. Pin devops-tools to v0.2.0, as new-world does.
+- Keys: `keep-both-added-lines` in `[tool.devops-tools]`
+- Files: ~8 (tools/devops/pyproject.toml, tools/devops/uv.lock, .github/workflows/, docs/decisions.md, AGENTS.md, CONTRIBUTING.md)
+- See: https://github.com/SETA1609/devops_tools (rebase-open-branches, `keep-both-added-lines`)
+- Done when: `keep-both-added-lines` lists `docs/decisions.md`; a local `rebase-open-branches --no-push` of two branches that both add a decision section succeeds; devops-tools, the rebase workflow, and the fragments workflow are pinned to the same v0.2.0 SHA; tooling tests pass.
+
+#### M5-12 Put the reference backend in scope
+- Status: done
+- Merged: #65, 2026-11-04
+- Priority: medium
+- Needs: —
+- Do: The roadmap put every UI out of scope, so there was no way to call the ruleset except through the vector test. The owner wants one fast backend, in Go, that an agent CLI, a human CLI, an API server, and an Angular frontend all use. Add the APP story with its issues, and change the scope lines in ROADMAP, AGENTS, and CLAUDE: a reference backend is in, not a 1.0 gate; game engines and VTT code stay out.
+- Files: ~8 (docs/stories/07-backend.md, docs/stories/README.md, docs/stories/05-release.md, ROADMAP.md, AGENTS.md, CLAUDE.md, docs/decisions.md)
+- See: ROADMAP.md#app-reference-backend
+- Done when: `roadmap-order show` lists the APP issues with their edges; ROADMAP, AGENTS, and CLAUDE say the same about scope; `roadmap-order check` passes.
+
 #### M5-13 Use devops-tools v0.3: regenerate the roadmap table on rebase
 - Status: done
 - Merged: #68, 2026-11-04
@@ -306,3 +362,29 @@ Tracked in Linear before this repo had a tracker, recovered from git history. Th
 - Files: ~7 (docs/decisions/, docs/decisions.md, CONTRIBUTING.md, AGENTS.md, docs/stories/README.md, docs/stories/05-release.md)
 - See: docs/decisions/README.md, changes/README.md
 - Done when: `docs/decisions/README.md` states the format; no rule tells a pull request to edit `docs/decisions.md`; two branches that each add a decision file merge into `main` with plain git in either order.
+
+## POST Post-1.0 modules
+
+#### POST-05 Factions and reputation module
+- Status: done
+- Merged: #51, 2026-11-02
+- Priority: medium
+- Needs: —
+- Was: RW-35
+- Do: No faction schema or data yet. Design doc first.
+- Files: ~6 (ruleset/modules/<module>/, docs/modules/<module>.md)
+- See: issues.md section 3
+- Done when: `docs/modules/factions.md`, schema, and data.
+
+## APP Reference backend
+
+#### APP-01 Command contract: commands and their schemas as data
+- Status: done
+- Merged: #74, 2026-11-04
+- Priority: medium
+- Needs: M1-02
+- Do: Define the backend's interface without choosing a language, so Go, both CLIs, the OpenAPI document, and the frontend are all built from one source. One file per command in `backend/contract/` (name, summary, input schema, result schema, error shape), one per reference runner (`resolution`, `combat`, `derived`, `progression`, `actions`, `formula`, `modifiers`, and each runner that lands later). Rolls are inputs, or are drawn from a seed and echoed in the result as `rolls`, so any call can be saved as a vector. A Python test checks every vector's input and the reference's result against the command's schemas. Write `docs/backend/README.md`: the layers (contract, Go core, adapters, frontend), the error shape, and that no adapter holds a rule.
+- Keys: `backend/contract/<command>.json`; command `name`, `input_schema`, `result_schema`; result field `rolls`
+- Files: ~12 (backend/contract/, docs/backend/README.md, ruleset/scripts/test_contract.py)
+- See: ruleset/scripts/kernel_reference.py, docs/core/vectors.md
+- Done when: every runner has a contract file; every vector input and every reference result validate against its command's schemas; a vector function without a contract file fails the test.
