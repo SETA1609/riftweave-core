@@ -17,10 +17,10 @@ Done: M4-01 ([done.md](done.md#m4-world))
 - Priority: high
 - Needs: M4-01
 - Was: RW-21
-- Do: No loot data exists. Monsters need drops, and levels need treasure budgets.
+- Do: No loot data exists. Monsters need drops, and levels need treasure budgets. Monsters that share a table must still differ: per-monster rolls, a `chance` gate, a `shift` toward better entries, extra table or item rows, and a `material` for better versions.
 - Files: ~4 (ruleset/data/loot/, ruleset/schemas/loot.schema.json, ruleset/tests/vectors/loot.json)
 - See: issues.md section 1
-- Done when: `ruleset/data/loot/` with a schema; A treasure-by-level budget consistent with the price formula; seeded roll vectors.
+- Done when: `ruleset/data/loot/` with a schema; A treasure-by-level budget consistent with the price formula, checked per table and per monster; seeded roll vectors, including chance, shift, material, and several rows per monster.
 
 #### M4-03 Bestiary to the content floor
 - Status: todo
