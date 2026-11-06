@@ -1,0 +1,22 @@
+{
+  "$schema": "../../schemas/balance.schema.json",
+  "tiers": [
+    { "key": "early", "levels": [1, 5], "expected_damage": [4, 7], "worn_dr": { "light": [3, 8], "medium": [8, 18], "heavy": [14, 28] } },
+    { "key": "mid", "levels": [6, 14], "expected_damage": [7, 12], "worn_dr": { "light": [3, 8], "medium": [8, 18], "heavy": [14, 28] } },
+    { "key": "high", "levels": [15, 20], "expected_damage": [10, 16], "worn_dr": { "light": [3, 8], "medium": [8, 18], "heavy": [14, 28] } },
+    { "key": "endgame", "levels": [21, 30], "expected_damage": [14, 22], "worn_dr": { "light": [3, 8], "medium": [8, 18], "heavy": [14, 28] } }
+  ],
+  "weapon_dice": [3.5, 11],
+  "hits_to_kill": { "standard": [4, 6], "boss": [8, 12], "minion": [1, 2] },
+  "checks": [
+    { "key": "weapon_dice", "mode": "gate", "description": "A weapon's dice mean is between 1d6 and 2d10." },
+    { "key": "armor_piece_dr", "mode": "gate", "description": "No armor piece passes the highest worn-set DR of its category." },
+    { "key": "worn_set_dr", "mode": "warn", "description": "The best set per category lands in its worn-set band. Warning until the armor DR pass." },
+    { "key": "monster_damage", "mode": "warn", "description": "A monster's strongest damage ability is within its tier's expected damage. Warning until the bestiary pass (M4-03)." },
+    { "key": "monster_hits_to_kill", "mode": "warn", "description": "A monster takes a standard 4 to 6 hits of its tier's damage. Warning until the bestiary pass (M4-03)." }
+  ],
+  "accepted": [
+    { "check": "weapon_dice", "subject": "dagger", "reason": "A light weapon: cheap, concealable, and fast; its 1d4 is meant to sit below the band." },
+    { "check": "weapon_dice", "subject": "sling", "reason": "A light weapon: cheap ammunition and no proficiency cost; its 1d4 is meant to sit below the band." }
+  ]
+}

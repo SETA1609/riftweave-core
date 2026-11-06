@@ -46,6 +46,9 @@ jobs:
       - name: Run golden vectors
         run: python -m unittest discover -s ruleset/scripts -p "test_vectors.py" -v
 
+      - name: Balance report (gate checks fail, warn checks are listed)
+        run: python ruleset/scripts/balance_report.py --gate
+
   # The Go core (APP-02) runs every golden vector, so a data or rule change that breaks one
   # fails here and in the Python job above.
   backend:
