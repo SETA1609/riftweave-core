@@ -1086,7 +1086,7 @@
     {
       "key": "silence",
       "label": "Silence",
-      "description": "Prevents the target from casting spells with verbal components.",
+      "description": "Prevents the target from casting any spell (docs/core/casting.md).",
       "category": "control",
       "polarity": "harmful",
       "color": "yellow",
@@ -1099,6 +1099,21 @@
       ],
       "tags": [
         "control",
+        "magic"
+      ]
+    },
+    {
+      "key": "dispel",
+      "label": "Dispel",
+      "description": "Ends every spell standing on the target whose level is the magnitude or below (docs/core/casting.md).",
+      "category": "utility",
+      "polarity": "neutral",
+      "color": "violet",
+      "magnitudeUnit": "level",
+      "channels": [
+        "spell"
+      ],
+      "tags": [
         "magic"
       ]
     },

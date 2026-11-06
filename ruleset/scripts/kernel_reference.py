@@ -10,6 +10,7 @@ import json
 import math
 from pathlib import Path
 
+from casting_reference import run_casting
 from hazard_reference import run_hazard
 from loot_reference import run_loot
 from wuxing_reference import get_interaction
@@ -487,6 +488,7 @@ RUNNERS = {
     "combat": run_combat,
     "loot": run_loot,
     "hazard": run_hazard,
+    "casting": run_casting,
     "progression": run_progression,
 }
 

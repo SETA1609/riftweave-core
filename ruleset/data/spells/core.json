@@ -7,6 +7,7 @@
       "label": "Fire Bolt",
       "description": "Hurl a mote of fire at a target.",
       "color": "red",
+      "level": 1,
       "effects": [
         {
           "effect": "core:effect/damage_fire",
@@ -24,6 +25,7 @@
       "label": "Force Dart",
       "description": "Loose glowing darts of force that strike unerringly.",
       "color": "red",
+      "level": 2,
       "effects": [
         {
           "effect": "core:effect/damage_force",
@@ -41,6 +43,7 @@
       "label": "Mend Wounds",
       "description": "Restore health to a creature you touch.",
       "color": "green",
+      "level": 1,
       "effects": [
         {
           "effect": "core:effect/restore_resource",
@@ -59,6 +62,8 @@
       "label": "Blessing",
       "description": "Bolster an ally's prowess in battle for a short time.",
       "color": "white",
+      "level": 3,
+      "concentration": true,
       "effects": [
         {
           "effect": "core:effect/fortify_skill",
@@ -79,6 +84,8 @@
       "label": "Ward",
       "description": "Raise a barrier that hardens your defenses for a moment.",
       "color": "blue",
+      "level": 2,
+      "concentration": true,
       "effects": [
         {
           "effect": "core:effect/fortify_attribute",
@@ -100,6 +107,7 @@
       "label": "Fire Burst",
       "description": "A streak of flame erupts into a fiery sphere at a chosen point.",
       "color": "red",
+      "level": 6,
       "effects": [
         {
           "effect": "core:effect/damage_fire",
@@ -119,6 +127,7 @@
       "label": "Raise Thrall",
       "description": "Animate a fallen corpse to fight at your side for a time.",
       "color": "black",
+      "level": 8,
       "effects": [
         {
           "effect": "core:effect/summon",
@@ -135,6 +144,24 @@
         ]
       },
       "cooldown": 30
+    },
+    {
+      "id": 8,
+      "key": "dispel_magic",
+      "label": "Dispel Magic",
+      "description": "Unravel the spells standing on a target, up to the dispel's level.",
+      "color": "violet",
+      "level": 4,
+      "effects": [
+        {
+          "effect": "core:effect/dispel",
+          "magnitude": 4,
+          "target": "ranged"
+        }
+      ],
+      "cost": {
+        "mana": 12
+      }
     }
   ]
 }
