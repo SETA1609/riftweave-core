@@ -136,6 +136,7 @@ COLLECTION_CATEGORIES = {
     "recipes": "recipe",
     "crafted_items": "crafted_item",
     "origins": "origin",
+    "hazards": "hazard",
 }
 
 

@@ -1,0 +1,97 @@
+{
+  "$schema": "./command.schema.json",
+  "name": "hazard",
+  "summary": "Detect, disarm, or trigger a hazard: the checks go through the resolution function; a trigger emits a packet and effects.",
+  "doc": "docs/core/hazards.md",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "hazard": {
+        "$ref": "common.json#/definitions/key"
+      },
+      "op": {
+        "type": "string",
+        "enum": [
+          "detect",
+          "disarm",
+          "trigger"
+        ]
+      },
+      "actor": {
+        "$ref": "common.json#/definitions/actor"
+      },
+      "modifiers": {
+        "$ref": "common.json#/definitions/modifiers"
+      },
+      "roll": {
+        "$ref": "common.json#/definitions/d100"
+      },
+      "damage_roll": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "hazard",
+      "op"
+    ]
+  },
+  "result_schema": {
+    "type": "object",
+    "properties": {
+      "success": {
+        "type": "boolean"
+      },
+      "target": {
+        "type": "integer"
+      },
+      "margin": {
+        "type": [
+          "integer",
+          "null"
+        ]
+      },
+      "tags": {
+        "$ref": "common.json#/definitions/tags"
+      },
+      "triggered": {
+        "type": "boolean"
+      },
+      "avoided": {
+        "type": "boolean"
+      },
+      "packet": {
+        "oneOf": [
+          {
+            "type": "null"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "amount": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "type": {
+                "$ref": "common.json#/definitions/key"
+              }
+            },
+            "required": [
+              "amount",
+              "type"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "effects": {
+        "type": "array",
+        "items": {
+          "$ref": "common.json#/definitions/ref"
+        }
+      }
+    },
+    "additionalProperties": false
+  }
+}
