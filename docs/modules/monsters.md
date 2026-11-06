@@ -141,6 +141,32 @@ end/agi/wil computed from growth.
 HP follows the same pattern with `hitPointsPerLevel`. If an override specifies
 `hitPoints`, that always takes precedence.
 
+## Attacks, resistances, and role
+
+A monster fights with the same numbers as a character ([core/combat.md](../core/combat.md)).
+[V 2026-11-06]
+
+- **`attacks`** — what it hits with: a `key`, a `label`, a `damage` of an `amount` (the
+  authored average, the caller's damage roll) and a `type` (a key in
+  `combat/damage_types.json`), a `delivery` (`single`, the default, `area`, or `instant`),
+  and an optional `phase` that the attack carries into the five-phase cycles. `abilities`
+  stay the effects it applies (conditions, drains).
+- **`resist`** — a flat number per damage type, the combat pipeline's `defender.resist`.
+- **`role`** — `standard` (the default), `boss`, or `minion`: which hits-to-kill band of
+  `balance/core.json` the monster's HP is checked against.
+
+The phase is two-sided. A monster's own `phase` is how incoming phased effects land on it
+(its resistance side, through the cycles); an attack's `phase` is how its blows land on
+others (its attack side). [A]
+
+### The floor
+
+At least 40 monsters span levels 1 to 30; every phase is a monster's phase and an attack's
+phase at least once, and every damage type is an attack and a resistance at least once.
+Each monster is a base plus overrides. `ruleset/scripts/test_bestiary.py` checks it, and the
+balance gate checks each monster's strongest attack and its HP against its tier and role
+([core/balance.md](../core/balance.md)). [V 2026-11-06]
+
 ## Why Base + Override (Not Full Inheritance)
 
 - **Simple and flat** — no deep chains, no diamond problems, no multiple inheritance.
