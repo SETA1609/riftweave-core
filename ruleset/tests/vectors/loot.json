@@ -88,7 +88,9 @@
       95
     ],
     "expect": {
-      "table": "grave_goods",
+      "tables": [
+        "grave_goods"
+      ],
       "items": [
         {
           "item": "core:armor/cap_hood",
@@ -165,26 +167,26 @@
     }
   },
   {
-    "name": "by monster: an ember drake's hoard, roll 95 and 50: an elven wood longbow and a silver ring",
+    "name": "by monster: an ember drake rolls its hoard once and a minor hoard once; 95 and 50 are an elven wood longbow and 20 gp, against 180 gp at level 6",
     "monster": "core:monster/ember_drake",
     "rolls": [
       95,
       50
     ],
     "expect": {
-      "table": "hoard_major",
+      "tables": [
+        "hoard_major",
+        "hoard_minor"
+      ],
       "items": [
-        {
-          "item": "core:accessory/silver_ring",
-          "quantity": 1
-        },
         {
           "item": "core:weapon/elven_wood_longbow",
           "quantity": 1
         }
       ],
-      "value_cp": 25000,
-      "budget_cp": 24500
+      "coins_cp": 2000,
+      "value_cp": 22000,
+      "budget_cp": 18000
     }
   },
   {
@@ -205,6 +207,254 @@
     ],
     "expect": {
       "error": "roll 0 is not 1 to 100"
+    }
+  },
+  {
+    "name": "skeleton: grave goods, then a 20% spear; 95 is a cap and 10 is the spear",
+    "monster": "core:monster/skeleton",
+    "rolls": [
+      95,
+      10
+    ],
+    "expect": {
+      "tables": [
+        "grave_goods"
+      ],
+      "items": [
+        {
+          "item": "core:armor/cap_hood",
+          "quantity": 1
+        },
+        {
+          "item": "core:weapon/spear",
+          "quantity": 1
+        }
+      ],
+      "value_cp": 600,
+      "budget_cp": 500
+    }
+  },
+  {
+    "name": "chance edge: 20 against chance 20 yields the spear",
+    "monster": "core:monster/skeleton",
+    "rolls": [
+      60,
+      20
+    ],
+    "expect": {
+      "items": [
+        {
+          "item": "core:weapon/spear",
+          "quantity": 1
+        }
+      ],
+      "value_cp": 500
+    }
+  },
+  {
+    "name": "chance edge: 21 against chance 20 yields nothing",
+    "monster": "core:monster/skeleton",
+    "rolls": [
+      95,
+      21
+    ],
+    "expect": {
+      "items": [
+        {
+          "item": "core:armor/cap_hood",
+          "quantity": 1
+        }
+      ],
+      "value_cp": 100
+    }
+  },
+  {
+    "name": "shift: a dire wolf rolls the beast den +15, so 85 is 100, a shortbow",
+    "monster": "core:monster/dire_wolf",
+    "rolls": [
+      85
+    ],
+    "expect": {
+      "tables": [
+        "beast_den"
+      ],
+      "items": [
+        {
+          "item": "core:weapon/shortbow",
+          "quantity": 1
+        }
+      ],
+      "value_cp": 2500,
+      "budget_cp": 4500
+    }
+  },
+  {
+    "name": "no shift: a grove stalker's 85 on the same table is 5 gp",
+    "monster": "core:monster/grove_stalker",
+    "rolls": [
+      85
+    ],
+    "expect": {
+      "items": [],
+      "coins_cp": 500,
+      "value_cp": 500
+    }
+  },
+  {
+    "name": "shift caps at 100: a dire wolf's 99 is still the shortbow",
+    "monster": "core:monster/dire_wolf",
+    "rolls": [
+      99
+    ],
+    "expect": {
+      "items": [
+        {
+          "item": "core:weapon/shortbow",
+          "quantity": 1
+        }
+      ]
+    }
+  },
+  {
+    "name": "shift edge: a dire wolf's 55 is 70, nothing",
+    "monster": "core:monster/dire_wolf",
+    "rolls": [
+      55
+    ],
+    "expect": {
+      "items": [],
+      "value_cp": 0
+    }
+  },
+  {
+    "name": "shift edge: a dire wolf's 56 is 71, 5 gp",
+    "monster": "core:monster/dire_wolf",
+    "rolls": [
+      56
+    ],
+    "expect": {
+      "coins_cp": 500
+    }
+  },
+  {
+    "name": "material: a stone golem's hoard chainmail is steel, worth twice the iron one",
+    "monster": "core:monster/stone_golem",
+    "rolls": [
+      80,
+      10
+    ],
+    "expect": {
+      "items": [
+        {
+          "item": "core:armor/chainmail",
+          "quantity": 1,
+          "material": "core:material/steel"
+        }
+      ],
+      "coins_cp": 2000,
+      "value_cp": 12000,
+      "budget_cp": 12500
+    }
+  },
+  {
+    "name": "material leaves potions alone",
+    "monster": "core:monster/stone_golem",
+    "rolls": [
+      60,
+      95
+    ],
+    "expect": {
+      "items": [
+        {
+          "item": "core:consumable/potion_fire_resistance",
+          "quantity": 1
+        },
+        {
+          "item": "core:consumable/potion_minor_healing",
+          "quantity": 1
+        }
+      ],
+      "value_cp": 8500
+    }
+  },
+  {
+    "name": "extra item row: a fire elemental's 30 against chance 30 adds a fire resistance potion",
+    "monster": "core:monster/fire_elemental",
+    "rolls": [
+      10,
+      10,
+      30
+    ],
+    "expect": {
+      "tables": [
+        "hoard_minor"
+      ],
+      "items": [
+        {
+          "item": "core:consumable/potion_fire_resistance",
+          "quantity": 1
+        }
+      ],
+      "coins_cp": 4000,
+      "value_cp": 10000,
+      "budget_cp": 12500
+    }
+  },
+  {
+    "name": "extra item row: 31 against chance 30 adds nothing",
+    "monster": "core:monster/fire_elemental",
+    "rolls": [
+      10,
+      10,
+      31
+    ],
+    "expect": {
+      "items": [],
+      "value_cp": 4000
+    }
+  },
+  {
+    "name": "rolls override: an ice elemental rolls the minor hoard once, then a 40% frost coating",
+    "monster": "core:monster/ice_elemental",
+    "rolls": [
+      10,
+      40
+    ],
+    "expect": {
+      "tables": [
+        "hoard_minor"
+      ],
+      "items": [
+        {
+          "item": "core:consumable/coating_frost",
+          "quantity": 1
+        }
+      ],
+      "coins_cp": 2000,
+      "value_cp": 5500,
+      "budget_cp": 8000
+    }
+  },
+  {
+    "name": "too few rolls is an error",
+    "monster": "core:monster/skeleton",
+    "rolls": [
+      95
+    ],
+    "expect": {
+      "error": "core:monster/skeleton: ran out of rolls after 1"
+    }
+  },
+  {
+    "name": "too many rolls is an error",
+    "monster": "core:monster/skeleton",
+    "rolls": [
+      95,
+      50,
+      3
+    ],
+    "expect": {
+      "error": "core:monster/skeleton: 3 rolls given, 2 used"
     }
   }
 ]
