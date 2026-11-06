@@ -17,6 +17,13 @@
           },
           "attributes": {
             "$ref": "common.json#/definitions/attributes"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "$ref": "common.json#/definitions/key"
+            },
+            "description": "Flags from conditions (prone, blinded, invisible); a situation row with `when` reads them."
           }
         },
         "additionalProperties": false,
@@ -106,6 +113,13 @@
                 ]
               }
             }
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "$ref": "common.json#/definitions/key"
+            },
+            "description": "Flags from conditions (prone, blinded, invisible); a situation row with `when` reads them."
           }
         },
         "additionalProperties": false,
@@ -140,6 +154,26 @@
       },
       "modifiers": {
         "$ref": "common.json#/definitions/modifiers"
+      },
+      "range": {
+        "type": "string",
+        "enum": [
+          "melee",
+          "ranged"
+        ],
+        "description": "Default melee."
+      },
+      "situations": {
+        "type": "array",
+        "uniqueItems": true,
+        "items": {
+          "$ref": "common.json#/definitions/key"
+        },
+        "description": "Keys in ruleset/data/combat/situations.json the caller names (cover, flanking, into melee)."
+      },
+      "called_shot": {
+        "$ref": "common.json#/definitions/key",
+        "description": "A called_shots key in ruleset/data/combat/situations.json."
       }
     },
     "additionalProperties": false,
@@ -193,6 +227,29 @@
       "hp": {
         "type": "integer",
         "minimum": 0
+      },
+      "riders": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "condition": {
+              "$ref": "common.json#/definitions/ref"
+            },
+            "event": {
+              "type": "string"
+            },
+            "check": {
+              "type": "string"
+            },
+            "turns": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "description": "A called shot's riders on a hit."
       }
     },
     "additionalProperties": false,
