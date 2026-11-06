@@ -49,7 +49,7 @@ Coefficients come from `ruleset/data/`, not from the vector, so a data change th
 Notes on the reference, for a second implementation to check against:
 
 - `resolution` adds every `add` modifier's value to the target. Resolution sees bonuses and penalties as one signed list. [V 2026-11-02, matches `resolution.md`]
-- `modifiers` and `conditions` follow the order in [modifier.md](modifier.md): expire, dedupe by source, target, and op, then add, mul (floored), set; `grant` makes flags and `resist` reduces a packet. [V 2026-11-04]
+- `modifiers` and `conditions` follow the order in [modifier.md](modifier.md): expire, dedupe by origin, source, target, and op (strongest wins), keep the strongest bonus and penalty of each `highest` origin, then add, mul (floored), set; `grant` makes flags and `resist` reduces a packet. [V 2026-11-06]
 - `derived` and `resolution` read a missing attribute as 0, and `derived` a missing level as 1. [A] Each vector names every value its `expect` fields depend on.
 - `formula` evaluates `lit`, `attr`, and the ops `add`, `sub`, `mul`, `div`. `div` is integer floor division, the `floor` rounding named in `ap.json`. [A] Other ops raise an error.
 - `actions` pool is `base + attr * per_point / per_point_divisor` from `ruleset/data/actions/core.json`; cost is the sum of the named actions' costs, so `attack` plus `aimed` is 5. The turn cap and carry are not checked yet. [A]
@@ -72,4 +72,4 @@ Every kernel function and the vector file that covers it. The test reads this ta
 | `combat` | `combat.json` | covered |
 | `progression` | `progression.json` | covered |
 
-The modifier vectors cover every op, mixed ops, same-source duplicates, and expiry. The condition vectors apply and remove each of the 24 conditions once, plus stacks and multi-condition effects.
+The modifier vectors cover every op, mixed ops, same-source duplicates, origins, and expiry. The condition vectors apply and remove each of the 24 conditions once, plus stacks and multi-condition effects.

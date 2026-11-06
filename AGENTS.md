@@ -143,6 +143,7 @@ Each collection has a matching `*.schema.json`:
 - `equipment` (split: `weapons.json`, `armor.json`, `consumables.json`, `accessories.json`)
 - `ingredients`, `materials`, `gems`, `tiers`
 - `wuxing` (the interaction matrix — single source of truth for cycles)
+- `origins` (the kinds of modifier source and their stacking policy, `highest` or `add`)
 
 Equipment (weapons, armors, accessories) and monsters use a **Base + Override** pattern:
 - Base templates live in `bases/<category>/` subdirectories (e.g., `equipment/bases/weapons/`, `monsters/bases/`).

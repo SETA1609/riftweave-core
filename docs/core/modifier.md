@@ -9,30 +9,60 @@ target     skill, attribute, ap, dr, a flag, a damage tag
 op         add | mul | set | grant | resist
 value      number
 source     perk:quick, condition:blinded
+origin     core:origin/alchemy (optional; the kind of source, see below)
 duration   turns | uses | while_equipped | while_applied | permanent
 turns      how many turns a `turns` modifier lasts
 stack      none | add
 ```
 
-This is the departure from 3.5, where typed bonuses stack by name. Here the source is the type. The stacking rule is written once, in [contract.md](contract.md); this file fixes its order so a second implementation gets the same number. The `modifiers` and `conditions` vectors pin every step. [V 2026-11-04]
+The stacking rule is written once, in [contract.md](contract.md); this file fixes its order so a second implementation gets the same number. The `modifiers` and `conditions` vectors pin every step. [V 2026-11-04]
+
+## Origin
+
+The source says *which* thing made a modifier (`effect:fortify_strength`). The origin says *what kind* of thing it is (`core:origin/alchemy`). Origins are rows in `ruleset/data/origins/core.json`, and each row has a stacking policy:
+
+- **`highest`**: modifiers of this origin on one target and op do not stack with each other. The strongest bonus counts, and the strongest penalty counts. A Potion of Fortify Strength (+10) and a Potion of Giant Strength (+5) give +10, in any order.
+- **`add`**: modifiers of this origin stack, one per source, as if they had no origin. Two perks, two armor pieces, or two conditions add.
+
+Different origins always stack: a Fortify Strength potion (alchemy, +10) and a Fortify Strength spell (arcane, +10) give +20, though both carry the same effect.
+
+| Origin | Policy | What carries it | Default for |
+| --- | --- | --- | --- |
+| `arcane` | highest | spells of the nine color schools | spell |
+| `divine` | highest | prayers, blessings, shrines, relics | none: a row names it |
+| `primal` | highest | nature and spirit magic, totems, shamanic rites | none: a row names it |
+| `alchemy` | highest | potions, elixirs, poisons, oils, raw ingredients | consumable, ingredient |
+| `enchantment` | highest | magic effects on worn or wielded items, gems | an applied effect on an item, gem |
+| `martial` | highest | stances, battle cries, combat techniques | none: a row names it |
+| `morale` | highest | inspiration, leadership, fear, despair | none: a row names it |
+| `environment` | highest | terrain, weather, light, cover | none: a row names it |
+| `equipment` | add | an item's own numbers: armor DR, weapon damage | weapon, armor, accessory stats |
+| `trained` | add | perks, features, backgrounds | feature, background |
+| `innate` | add | ancestry and natural traits | race, monster |
+| `condition` | add | status conditions | condition |
+
+The emitter stamps the origin when it turns a row into modifiers: the row's own `origin` if it names one (an `appliedEffect` may), else the default for its category. A modifier with no origin stacks by source alone, the same as an `add` origin. [A] The White school is not mapped to `divine`; a white spell that should be divine names the origin itself. [U]
 
 ## Order for one numeric target
 
 ```
 1. expire     drop a modifier whose source was removed,
               and a `turns` modifier whose turns have elapsed (elapsed >= turns)
-2. dedupe     same source, same target, same op: the latest in list order wins
-3. add        value = value + sum(add)
-4. mul        value = floor(value * product(mul))
-5. set        if any set: value = the latest set in list order
+2. dedupe     same origin, source, target, and op: the strongest wins
+3. origin     for a `highest` origin, same origin, target, and op: the strongest bonus
+              and the strongest penalty win
+4. add        value = value + sum(add)
+5. mul        value = floor(value * product(mul))
+6. set        if any set: value = the latest set in list order
 ```
 
-- **Same source does not stack.** Two `add` from `perk:tough` on `hp` count once; the later one wins, even if it is smaller. A source that touches two targets, or uses two ops on one target, keeps each: the key is source, target, and op. [V 2026-11-04]
-- **Different sources add**, and two `mul` from different sources multiply. [V 2026-11-04]
+- **Strongest.** For `add` and `resist`, a bonus is a value above 0 and the strongest is the largest; a penalty is below 0 and the strongest is the most negative. For `mul`, a bonus is above 1 and a penalty below 1, the same way. One bonus and one penalty from the same group both count: an alchemy +10 and an alchemy −3 on one target give +7. A ±0 `add` or a ×1 `mul` changes nothing and is dropped. Ties keep the first in list order. `set` is not ranked: the latest wins. [A] Bonuses and penalties are ranked apart so a poison cannot cancel a potion of the same origin.
+- **Same source does not stack.** Two `add` from `perk:tough` on `hp` count once; the larger one wins, in any order. A source that touches two targets, or uses two ops on one target, keeps each: the key is origin, source, target, and op. [V 2026-11-06]
+- **Different sources add** unless they share a `highest` origin, and two `mul` from different sources multiply. [V 2026-11-06]
 - **`mul` after `add`**, whatever the list order. The product is floored, so `mul 1.5` on 5 is 7. [A] Numbers in the snapshot are integers; the floor keeps them so.
 - **`set` is last.** It replaces the value whatever the `add` and `mul`, so a paralyzed actor with an AP bonus still has 0 AP. Two `set` on one target: the latest in list order (load order) wins. [A] The contract says `set` replaces the value "for that source's duration"; expiry (step 1) is what ends it.
 - **`grant`** adds the flag named by `target`. It adds no number, and its `value` is ignored. A flag stays while any live source grants it: removing one of two sources that grant `prone` leaves the actor prone. [V 2026-11-04]
-- **`resist`** subtracts from a packet whose tag equals `target`: `amount = max(amount - sum(resist), 0)`. Same-source and different-source rules are the ones above. It is the same op the combat pipeline's resist step reads ([combat.md](combat.md)). [V 2026-11-04]
+- **`resist`** subtracts from a packet whose tag equals `target`: `amount = max(amount - sum(resist), 0)`. Same-source, origin, and different-source rules are the ones above: two enchanted rings of fire resistance give the larger one. It is the same op the combat pipeline's resist step reads ([combat.md](combat.md)). [V 2026-11-04]
 - **Expiry.** `permanent` never expires. `while_applied` and `while_equipped` end when their source is removed. `turns` ends when the elapsed turns reach `turns`. `uses` is counted by the caller, who removes the source when the uses run out; the vectors do not cover it. [A]
 
 ## Conditions

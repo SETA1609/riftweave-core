@@ -36,12 +36,13 @@ Modifier
   value             number
   duration          turns | uses | while_equipped | permanent
   source            perk:12 | item:44 | effect:19
+  origin            core:origin/alchemy (optional; the kind of source)
 ```
 
 Stacking, written once:
 
-- Same `source` does not stack. The latest application wins.
-- Different sources add.
+- Same `source` does not stack. The strongest application wins.
+- Different sources add, unless they share an `origin` whose policy is `highest`: then the strongest bonus and the strongest penalty of that origin count.
 - `mul` applies after `add`.
 - `set` replaces the current value for that source's duration.
 - `grant` adds a flag or a tag. It does not add a number.
@@ -49,7 +50,7 @@ Stacking, written once:
 
 The order of these steps for one target, expiry, and how a condition is applied and removed are in [modifier.md](modifier.md).
 
-There is no bonus taxonomy. No dodge-stacks-except-circumstance. A perk that wants a second copy uses a different source id.
+The origins (arcane, divine, alchemy, trained, ...) are one short table in data, each with one policy, `highest` or `add`; [modifier.md](modifier.md#origin) lists them. There is no per-chapter exception. No dodge-stacks-except-circumstance. A perk that wants a second copy uses a different source id.
 
 ## Event
 
