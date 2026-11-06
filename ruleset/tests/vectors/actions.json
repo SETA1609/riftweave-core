@@ -16,5 +16,6 @@
     "actor": { "attributes": { "agi": 3 } },
     "actions": ["move", "move"],
     "expect": { "pool": 3, "cost": 2 }
-  }
+  },
+  { "name": "standing up from prone costs 2", "actor": { "attributes": { "agi": 6 } }, "actions": ["stand_up"], "expect": { "pool": 4, "cost": 2 } }
 ]
