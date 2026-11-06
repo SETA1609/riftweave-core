@@ -18,6 +18,26 @@
   "required": ["monsters"],
   "additionalProperties": false,
   "definitions": {
+    "attack": {
+      "type": "object",
+      "properties": {
+        "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
+        "label": { "type": "string", "minLength": 1 },
+        "damage": {
+          "type": "object",
+          "properties": {
+            "amount": { "type": "integer", "minimum": 0, "description": "The authored average; the caller's damage roll." },
+            "type": { "$ref": "schema.json#/definitions/damageType" }
+          },
+          "required": ["amount", "type"],
+          "additionalProperties": false
+        },
+        "delivery": { "type": "string", "enum": ["single", "area", "instant"], "description": "Which reactions the attack allows (docs/core/combat.md); default single." },
+        "phase": { "$ref": "schema.json#/definitions/phase", "description": "The phase the attack carries into the five-phase cycles." }
+      },
+      "required": ["key", "label", "damage"],
+      "additionalProperties": false
+    },
     "monsterData": {
       "description": "Shared data shape used by both flat monster entries and overrides. All fields are optional here; requiredness is enforced at the entry level. Overrides may use the $extend merge convention on array fields (abilities, tags) to append to the base instead of replacing.",
       "type": "object",
@@ -46,6 +66,9 @@
           "description": "The monster's attacks and innate powers, drawn from the shared effect registry (data/effects). A monster typically wields effects of its own phase, but need not.",
           "items": { "$ref": "schema.json#/definitions/appliedEffect" }
         },
+        "role": { "type": "string", "enum": ["standard", "boss", "minion"], "description": "Which hits-to-kill band of balance/core.json the HP is checked against; default standard." },
+        "attacks": { "type": "array", "items": { "$ref": "#/definitions/attack" }, "description": "What the monster hits with, as combat attacks (docs/modules/monsters.md#attacks-resistances-and-role)." },
+        "resist": { "type": "object", "description": "Flat resistance by damage type (a key in combat/damage_types.json), the combat pipeline's defender.resist.", "propertyNames": { "$ref": "schema.json#/definitions/damageType" }, "additionalProperties": { "type": "integer", "minimum": 0 } },
         "tags": { "type": "array", "items": { "type": "string" } },
         "coreDrop": { "$ref": "#/definitions/coreDropShape" }
       }
@@ -112,6 +135,9 @@
           "description": "The monster's attacks and innate powers.",
           "items": { "$ref": "schema.json#/definitions/appliedEffect" }
         },
+        "role": { "type": "string", "enum": ["standard", "boss", "minion"], "description": "Which hits-to-kill band of balance/core.json the HP is checked against; default standard." },
+        "attacks": { "type": "array", "items": { "$ref": "#/definitions/attack" }, "description": "What the monster hits with, as combat attacks (docs/modules/monsters.md#attacks-resistances-and-role)." },
+        "resist": { "type": "object", "description": "Flat resistance by damage type (a key in combat/damage_types.json), the combat pipeline's defender.resist.", "propertyNames": { "$ref": "schema.json#/definitions/damageType" }, "additionalProperties": { "type": "integer", "minimum": 0 } },
         "tags": { "type": "array", "items": { "type": "string" } },
         "coreDrop": { "$ref": "#/definitions/coreDropShape" }
       },

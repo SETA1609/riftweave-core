@@ -10,7 +10,7 @@ Roadmap: [M4](../../ROADMAP.md#where-we-are). Format and rules: [README.md](READ
 
 **Done when:** prices, treasure, and monster stats are consistent under checkable balance bands.
 
-Done: M4-01, M4-02, M4-06 ([done.md](done.md#m4-world))
+Done: M4-01, M4-02, M4-04, M4-05, M4-06 ([done.md](done.md#m4-world))
 
 #### M4-03 Bestiary to the content floor
 - Status: doing
@@ -21,23 +21,3 @@ Done: M4-01, M4-02, M4-06 ([done.md](done.md#m4-world))
 - Files: ~4 (ruleset/data/monsters/, ruleset/schemas/monster.schema.json)
 - See: ruleset/data/monsters/core.json, docs/modules/monsters.md
 - Done when: at least 40 monsters covering levels 1 to 30; every phase and damage type is used at least once as an attack and as a resistance; each monster inherits from a base plus overrides.
-
-#### M4-04 Traps and environmental hazards
-- Status: review
-- Priority: medium
-- Needs: M1-02, M1-05
-- Was: RW-23
-- Do: Mentioned as missing in the backlog. Minimal core: a hazard is a trigger plus a modifier or damage packet, with a detect and a disarm check. Add an avoid check for hazards a quick step escapes, and environment hazards that cannot be disarmed.
-- Files: ~5 (docs/core/, ruleset/data/hazards/, ruleset/schemas/hazard.schema.json, ruleset/tests/vectors/hazards.json)
-- See: issues.md section 8
-- Done when: schema and at least 10 hazards; detect and disarm use the one resolution function.
-
-#### M4-05 Encounter and balance validation
-- Status: review
-- Priority: medium
-- Needs: M1-02, M1-08
-- Was: RW-24
-- Do: `combat.md` has balance guidelines (damage, DR, HP by tier, hits-to-kill). Turn them into checks so data cannot drift. Each check carries its mode (`warn` or `gate`) in data, so a check moves from warning to gate when its data is fixed.
-- Files: ~4 (ruleset/data/balance/, ruleset/scripts/, .github/workflows/validate-ruleset.yml)
-- See: docs/modules/combat.md
-- Done when: A script reports monsters and gear outside the guideline bands; bands are data, not prose; report runs in CI as a warning, then as a gate.
