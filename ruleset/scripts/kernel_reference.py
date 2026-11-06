@@ -165,7 +165,7 @@ def run_resolution(vector):
         if len(skills) != 1:
             raise ValueError("actor has several skills; name one with `skill`")
         (skill,) = skills
-    bonus = sum(m["value"] for m in vector.get("modifiers", []) if m["op"] == "add")
+    bonus = apply_modifiers(0, [m for m in vector.get("modifiers", []) if m["op"] == "add"])
     target = skills[skill] + bonus
     if rules["target_cap"] is not None:
         target = min(target, rules["target_cap"])
@@ -322,6 +322,35 @@ def run_economy(vector):
     return {"base_cp": base_cp, "shift": shift, "percent": percent, "price_cp": price}
 
 
+def situation_modifiers(vector, delivery):
+    """Step 0 of docs/core/combat.md: the attack modifiers of every situation that applies,
+    and the called-shot row. A situation that forbids the range raises ValueError."""
+    data = load_data("combat/situations.json")
+    rows = {row["key"]: row for row in data["situations"]}
+    range_ = vector.get("range", "melee")
+    flags = {
+        "attacker": set(vector["attacker"].get("flags", [])),
+        "defender": set(vector["defender"].get("flags", [])),
+    }
+    applied = [rows[key] for key in vector.get("situations", [])]
+    for row in data["situations"]:
+        side, flag = next(iter(row.get("when", {}).items()), (None, None))
+        if side is not None and flag in flags[side] and row not in applied:
+            applied.append(row)
+    modifiers = []
+    for row in applied:
+        if range_ in row.get("forbids", []):
+            raise ValueError(f"{row['key']} forbids a {range_} attack")
+        if delivery in row.get("deliveries", ["single", "area", "instant"]):
+            modifiers.extend(row.get(range_, []))
+    called = None
+    if "called_shot" in vector:
+        called = next(c for c in data["called_shots"] if c["key"] == vector["called_shot"])
+        if called["attack"]:
+            modifiers.append({"target": "attack", "op": "add", "value": called["attack"], "source": f"called_shot:{called['key']}"})
+    return modifiers, called
+
+
 def run_combat(vector):
     """One attack, in the order of docs/core/combat.md. Dice and rolls are inputs."""
     pipeline = load_data("combat/pipeline.json")["pipeline"]
@@ -329,10 +358,16 @@ def run_combat(vector):
     attacker, defender, damage = vector["attacker"], vector["defender"], vector["damage"]
     tags = types[damage["type"]]["tags"]
 
+    delivery = vector.get("delivery", "single")
+    try:
+        situation_mods, called = situation_modifiers(vector, delivery)
+    except ValueError as error:
+        return {"error": str(error)}
+
     attack = run_resolution(
         {
             "actor": {"skills": {"attack": attacker["skill"]}, "attributes": attacker.get("attributes", {})},
-            "modifiers": vector.get("modifiers", []),
+            "modifiers": vector.get("modifiers", []) + situation_mods,
             "roll": attacker["roll"],
         }
     )
@@ -345,6 +380,8 @@ def run_combat(vector):
         "blocked": False,
         "reaction_tags": [],
     }
+    if called is not None:
+        result["riders"] = []
     if not attack["success"]:
         result.update(outcome="fumble" if "fumble" in attack["tags"] else "miss", damage=0, hp=defender["hp"])
         return result
@@ -352,7 +389,6 @@ def run_combat(vector):
     # One reaction per attack, rolled only on a hit. Delivery decides what it can do:
     # single is evaded whole, area is halved by an evade, instant takes no reaction.
     physical = pipeline["dr_applies_tag"] in tags
-    delivery = vector.get("delivery", "single")
     if delivery not in ("single", "area", "instant"):
         raise ValueError(f"delivery {delivery!r} is not defined")
     reaction = defender.get("reaction") if delivery != "instant" else None
@@ -382,6 +418,8 @@ def run_combat(vector):
     result["outcome"] = "hit"
 
     amount = damage["roll"]
+    if called is not None:
+        amount = math.floor(amount * called["damage_mul"])
     if crit:
         amount = evaluate_formula(pipeline["crit_damage"], {}, {"damage": amount})
     if result["evaded"]:
@@ -395,6 +433,8 @@ def run_combat(vector):
         amount = max(amount - dr, 0)
     amount = max(amount - defender.get("resist", {}).get(damage["type"], 0), 0)
     result.update(damage=amount, hp=max(defender["hp"] - amount, 0))
+    if called is not None:
+        result["riders"] = [dict(rider) for rider in called.get("riders", [])]
     return result
 
 
