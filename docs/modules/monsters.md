@@ -118,8 +118,11 @@ scale with level:
 
 The growth formula is:
 ```
-computed = round(base_attr + perLevel * (level - base_level))
+computed = min(10, max(1, round(base_attr + perLevel * (level - base_level))))
 ```
+
+An attribute stays in its 1 to 10 range, as a character's does, so a level-30 monster
+built on a level-4 base tops out at 10 instead of passing the schema's cap. [V 2026-11-06]
 
 Individual monster overrides only need to specify attributes that **differ**
 from the growth curve. Missing attributes are filled in automatically:
