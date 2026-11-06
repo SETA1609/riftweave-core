@@ -8,7 +8,7 @@ This file provides guidance to AI coding agents (Grok, Claude Code, Cursor, etc.
 
 - All game content lives as **JSON** under `ruleset/data/`.
 - All content is validated against **JSON Schema (draft-07)** under `ruleset/schemas/`.
-- There is **no game engine** here. The deliverable is the data + schemas + documentation. A reference backend in Go (story APP, `docs/stories/07-backend.md`, planned) will serve the ruleset to an agent CLI, a human CLI, an HTTP API, and an Angular frontend; it adds no rules.
+- There is **no game engine** here. The deliverable is the data + schemas + documentation. A reference backend in Go (story APP, `docs/stories/07-backend.md`, in `backend/`) serves the ruleset to an agent CLI, a human CLI, an HTTP API, and an Angular frontend; it adds no rules.
 - Design ethos: **declarative data first**. New mechanics are expressed as JSON + schema extensions, not code or special-cased behavior.
 
 The same data is intended to drive both computer games and TTRPG/virtual tabletop use.

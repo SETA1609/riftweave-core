@@ -13,7 +13,7 @@ Roadmap: [APP](../../ROADMAP.md#app-reference-backend). Format and rules: [READM
 Done: APP-01 ([done.md](done.md#app-reference-backend))
 
 #### APP-02 Go core: the kernel in Go, every vector in CI
-- Status: todo
+- Status: doing
 - Priority: medium
 - Needs: APP-01
 - Do: A Go module in `backend/` that loads `ruleset/data/` (and module data), evaluates formula trees, and implements every command in the contract. It reads coefficients from the data, never from constants. A Go test runs every file in `ruleset/tests/vectors/` and fails on any disagreement, and CI runs it on every PR. It starts with the commands that exist and grows with the rules: from then on a rule issue that adds or changes a function updates the Python reference, the Go core, and the contract in the same pull request; CONTRIBUTING says so.
@@ -46,7 +46,7 @@ Done: APP-01 ([done.md](done.md#app-reference-backend))
 - Status: todo
 - Priority: low
 - Needs: APP-03
-- Do: A readable, interactive mode of the same binary: prompts for inputs, tables for results, a short log of the rolls. It calls the same core as the agent CLI; it holds no rule.
+- Do: A readable, interactive mode of the same binary, built as a terminal UI with the Charm libraries (Bubble Tea for the program loop, Bubbles for inputs and tables, Lip Gloss for styling): prompts for inputs, tables for results, a short log of the rolls. It calls the same core as the agent CLI; it holds no rule. The agent CLI path imports none of it, so its start stays fast, and `backend/core` and `backend/internal/` stay free of Charm.
 - Files: ~4 (backend/cmd/riftweave/, docs/backend/cli.md)
 - See: docs/backend/cli.md
 - Done when: a person can create a character and resolve an attack interactively; the result matches the agent CLI for the same inputs and rolls.

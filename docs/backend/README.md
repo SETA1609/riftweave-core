@@ -6,12 +6,58 @@ One backend serves the ruleset to every consumer: an agent CLI, a human CLI, an 
 
 ```
 backend/contract/   one file per command: name, input schema, result schema      (APP-01, data)
-Go core             loads ruleset/data/, implements every command, passes every vector   (APP-02)
-adapters            agent CLI, human CLI, HTTP API: parse, call the core, format         (APP-03, 05, 06)
+Go core             backend/: loads ruleset/data/, implements every command, passes every vector   (APP-02)
+adapters            agent CLI, human CLI (a Charm TUI), HTTP API: parse, call the core, format   (APP-03, 05, 06)
 frontend            Angular, talks only to the HTTP API through a generated client       (APP-07)
 ```
 
 The contract is language-neutral, so the Go core, both CLIs, the OpenAPI document, and the frontend are all built from it, and the Python reference is checked against it today. **An adapter only parses, calls the core, and formats. A rule in an adapter is a bug.** [V 2026-11-04, owner decision]
+
+## Go core
+
+`backend/` is one Go module, standard library only. The only door is `backend/core`:
+`core.Open("ruleset/data")`, then `Run(name, json) (json, error)`. A rule error comes back as
+`{"error": "..."}` and an error that wraps `core.ErrRule`; bad input wraps `ErrInput` (inputs
+decode strictly, as the contract says); an unknown command wraps `ErrUnknownCommand`. An adapter maps these to an
+exit code or a status and does nothing else.
+
+```
+backend/core/                one file: the command table, the JSON binding, Run
+backend/internal/data/       the loader and the tables: no rules
+backend/internal/actor/      attributes (a fixed array by ability) and the actor input
+backend/internal/formula/    formula trees compiled to flat programs
+backend/internal/modifier/   the one stacking function
+backend/internal/<area>/     one package per kernel area: resolution, derived (and actions),
+                             rest, progression, condition, wuxing, economy, combat, loot
+```
+
+**Modular.** An area package imports `data`, `formula`, `modifier`, `actor`, and the areas it
+calls (combat and economy call `resolution`, loot calls `economy`, rest calls `derived`); it
+never imports `core`, and it knows nothing of JSON plumbing: its command is a typed
+`func(*data.Ruleset, In) (Out, error)`. A new command is one package and one line in
+`core.commands`. A module's rules join the same way, and its data joins through the `fs.FS`
+the loader reads.
+
+**Data-oriented.** The rules never walk raw JSON. `data.Load` reads `ruleset/data/` once into
+typed tables: dense slices of rows with a key index beside them (`data.Table`). Every
+cross-reference is resolved when the table is built: attribute names to an index, a loot
+row's table to a row index, a damage type's tags to two booleans, a Wuxing edge to a bit
+mask, a loot roll to its entry through a 100-slot lookup, an effect ref to the conditions it
+applies and removes. Every formula is compiled to a flat postfix program evaluated on a fixed
+stack, with no allocation. A command is then array reads and integer math. Coefficients come
+from the tables, never from constants, so a data change that breaks a rule fails a vector.
+
+**Checks.** `go test ./...` in `backend/` runs every file in `ruleset/tests/vectors/` through
+`core.Run` and compares each `expect` field, and checks that the command table and
+`backend/contract/` list the same commands. CI runs it with `gofmt` and `go vet` on every
+change under `ruleset/`, `backend/`, or `docs/backend/`. **A rule issue that adds or changes a
+function updates the Python reference, the Go package, and the contract in the same pull
+request.** [V 2026-11-06, run in this change: 256 of 256 vectors pass in Go]
+
+**Human CLI.** The interactive mode (APP-05) is a terminal UI built with Charm: Bubble Tea, Bubbles, and Lip Gloss. It lives in `backend/cmd/` as an adapter and calls `core.Run` like every other adapter, so it holds no rule and the core and `internal/` never import Charm. The agent CLI must not import it either, so a script that calls the binary thousands of times pays no TUI start cost. [A: owner decision 2026-11-06; the exact libraries and whether `cmd/` needs its own `go.mod` to keep the core dependency-free are settled in APP-05]
+
+Not in the Go core yet: module data (`ruleset/modules/`), which the Python kernel does not
+read either. [U]
 
 ## Commands
 
@@ -41,7 +87,7 @@ Any command may return an error instead of its result:
 
 ## Rolls
 
-Rolls are inputs, as in the vectors: the caller rolls, or a client draws them from a seed. A backend that draws rolls itself (APP-02) echoes them in the result under `rolls`, so any call can be saved as a vector and replayed. The Python reference never rolls, so no result has `rolls` yet. [A]
+Rolls are inputs, as in the vectors: the caller rolls, or a client draws them from a seed. A backend that draws rolls itself echoes them in the result under `rolls`, so any call can be saved as a vector and replayed. The Python reference never rolls and neither does the Go core (APP-02): both take every roll as input, so no result has `rolls` yet. Drawing rolls from a seed belongs to the adapters and sessions (APP-03, APP-04). [A]
 
 ## Checks
 
