@@ -1,0 +1,176 @@
+{
+  "$schema": "./command.schema.json",
+  "name": "casting",
+  "summary": "Cast one spell: the gate, the mana and reagent cost, one resolution on the spell's color skill with the armor penalty, then the effects, concentration, and dispel.",
+  "doc": "docs/core/casting.md",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "spell": {
+        "$ref": "common.json#/definitions/key"
+      },
+      "caster": {
+        "type": "object",
+        "properties": {
+          "skills": {
+            "$ref": "common.json#/definitions/skills"
+          },
+          "attributes": {
+            "$ref": "common.json#/definitions/attributes"
+          },
+          "mana": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "$ref": "common.json#/definitions/key"
+            }
+          },
+          "armor": {
+            "type": "string",
+            "enum": [
+              "none",
+              "light",
+              "medium",
+              "heavy"
+            ]
+          },
+          "reagents": {
+            "type": "array",
+            "items": {
+              "$ref": "common.json#/definitions/ref"
+            }
+          },
+          "concentration": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "common.json#/definitions/key"
+              }
+            ]
+          }
+        },
+        "required": [
+          "skills",
+          "mana"
+        ],
+        "additionalProperties": false
+      },
+      "modifiers": {
+        "$ref": "common.json#/definitions/modifiers"
+      },
+      "roll": {
+        "$ref": "common.json#/definitions/d100"
+      },
+      "standing": {
+        "type": "array",
+        "items": {
+          "$ref": "common.json#/definitions/key"
+        },
+        "description": "Spell keys standing on the target, for dispel."
+      }
+    },
+    "required": [
+      "spell",
+      "caster",
+      "roll"
+    ],
+    "additionalProperties": false
+  },
+  "result_schema": {
+    "type": "object",
+    "properties": {
+      "outcome": {
+        "type": "string",
+        "enum": [
+          "cast",
+          "failed",
+          "prevented",
+          "no_mana",
+          "no_reagents"
+        ]
+      },
+      "mana": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "consumed": {
+        "type": "array",
+        "items": {
+          "$ref": "common.json#/definitions/ref"
+        }
+      },
+      "check": {
+        "oneOf": [
+          {
+            "type": "null"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "target": {
+                "type": "integer"
+              },
+              "success": {
+                "type": "boolean"
+              },
+              "margin": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "tags": {
+                "$ref": "common.json#/definitions/tags"
+              }
+            },
+            "required": [
+              "target",
+              "success",
+              "margin",
+              "tags"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "effects": {
+        "type": "array",
+        "items": {
+          "$ref": "../../ruleset/schemas/schema.json#/definitions/appliedEffect"
+        }
+      },
+      "concentration": {
+        "oneOf": [
+          {
+            "type": "null"
+          },
+          {
+            "$ref": "common.json#/definitions/key"
+          }
+        ]
+      },
+      "ended": {
+        "oneOf": [
+          {
+            "type": "null"
+          },
+          {
+            "$ref": "common.json#/definitions/key"
+          }
+        ]
+      },
+      "dispelled": {
+        "type": "array",
+        "items": {
+          "$ref": "common.json#/definitions/key"
+        }
+      }
+    },
+    "additionalProperties": false
+  }
+}

@@ -22,6 +22,8 @@
         "description": { "type": "string" },
         "source": { "$ref": "schema.json#/definitions/sourceRef" },
         "color": { "$ref": "schema.json#/definitions/color" },
+        "level": { "type": "integer", "minimum": 1, "maximum": 30, "description": "The spell's place on the level scale; a dispel of magnitude N ends standing spells of level N or below (docs/core/casting.md)." },
+        "concentration": { "type": "boolean", "description": "True if the caster holds the spell; a caster holds one, and a new one ends the old (docs/core/casting.md)." },
         "effects": {
           "type": "array",
           "minItems": 1,
