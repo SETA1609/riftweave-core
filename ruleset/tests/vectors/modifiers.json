@@ -42,7 +42,7 @@
     }
   },
   {
-    "name": "same source, latest application wins",
+    "name": "same source, the larger wins (smaller first)",
     "value": 59,
     "modifiers": [
       {
@@ -363,7 +363,7 @@
     }
   },
   {
-    "name": "resist: same source, the latest wins",
+    "name": "resist: same source, the larger wins",
     "target": "hp",
     "value": 10,
     "packet": {
@@ -514,6 +514,276 @@
     ],
     "expect": {
       "value": 7
+    }
+  },
+  {
+    "name": "same source: the larger wins even when it comes first",
+    "value": 59,
+    "modifiers": [
+      {
+        "target": "hp",
+        "op": "add",
+        "value": 8,
+        "source": "perk:tough"
+      },
+      {
+        "target": "hp",
+        "op": "add",
+        "value": 4,
+        "source": "perk:tough"
+      }
+    ],
+    "expect": {
+      "value": 67
+    }
+  },
+  {
+    "name": "origin: a potion and a spell of the same effect stack (alchemy + arcane)",
+    "target": "str",
+    "value": 40,
+    "modifiers": [
+      {
+        "target": "str",
+        "op": "add",
+        "value": 10,
+        "source": "effect:fortify_strength",
+        "origin": "core:origin/alchemy"
+      },
+      {
+        "target": "str",
+        "op": "add",
+        "value": 10,
+        "source": "effect:fortify_strength",
+        "origin": "core:origin/arcane"
+      }
+    ],
+    "expect": {
+      "value": 60
+    }
+  },
+  {
+    "name": "origin: two potions on one stat, the bigger wins (fortify +10, giant +5)",
+    "target": "str",
+    "value": 40,
+    "modifiers": [
+      {
+        "target": "str",
+        "op": "add",
+        "value": 10,
+        "source": "effect:fortify_strength",
+        "origin": "core:origin/alchemy"
+      },
+      {
+        "target": "str",
+        "op": "add",
+        "value": 5,
+        "source": "effect:giant_strength",
+        "origin": "core:origin/alchemy"
+      }
+    ],
+    "expect": {
+      "value": 50
+    }
+  },
+  {
+    "name": "origin: the bigger wins whatever the list order",
+    "target": "str",
+    "value": 40,
+    "modifiers": [
+      {
+        "target": "str",
+        "op": "add",
+        "value": 5,
+        "source": "effect:giant_strength",
+        "origin": "core:origin/alchemy"
+      },
+      {
+        "target": "str",
+        "op": "add",
+        "value": 10,
+        "source": "effect:fortify_strength",
+        "origin": "core:origin/alchemy"
+      }
+    ],
+    "expect": {
+      "value": 50
+    }
+  },
+  {
+    "name": "origin: two penalties of one origin, the worst counts",
+    "target": "str",
+    "value": 40,
+    "modifiers": [
+      {
+        "target": "str",
+        "op": "add",
+        "value": -3,
+        "source": "effect:weakness",
+        "origin": "core:origin/alchemy"
+      },
+      {
+        "target": "str",
+        "op": "add",
+        "value": -5,
+        "source": "effect:poison_str",
+        "origin": "core:origin/alchemy"
+      }
+    ],
+    "expect": {
+      "value": 35
+    }
+  },
+  {
+    "name": "origin: a bonus and a penalty of one origin both count",
+    "target": "str",
+    "value": 40,
+    "modifiers": [
+      {
+        "target": "str",
+        "op": "add",
+        "value": 10,
+        "source": "effect:fortify_strength",
+        "origin": "core:origin/alchemy"
+      },
+      {
+        "target": "str",
+        "op": "add",
+        "value": -3,
+        "source": "effect:weakness",
+        "origin": "core:origin/alchemy"
+      },
+      {
+        "target": "str",
+        "op": "add",
+        "value": 5,
+        "source": "effect:giant_strength",
+        "origin": "core:origin/alchemy"
+      }
+    ],
+    "expect": {
+      "value": 47
+    }
+  },
+  {
+    "name": "origin: two mul of one highest origin, the bigger counts",
+    "target": "str",
+    "value": 10,
+    "modifiers": [
+      {
+        "target": "str",
+        "op": "mul",
+        "value": 1.5,
+        "source": "spell:might",
+        "origin": "core:origin/arcane"
+      },
+      {
+        "target": "str",
+        "op": "mul",
+        "value": 2,
+        "source": "spell:titan",
+        "origin": "core:origin/arcane"
+      }
+    ],
+    "expect": {
+      "value": 20
+    }
+  },
+  {
+    "name": "origin: an add origin stacks every source (two perks)",
+    "target": "hp",
+    "value": 59,
+    "modifiers": [
+      {
+        "target": "hp",
+        "op": "add",
+        "value": 8,
+        "source": "perk:tough",
+        "origin": "core:origin/trained"
+      },
+      {
+        "target": "hp",
+        "op": "add",
+        "value": 2,
+        "source": "perk:hardy",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "value": 69
+    }
+  },
+  {
+    "name": "origin: no origin stacks by source alone",
+    "target": "str",
+    "value": 40,
+    "modifiers": [
+      {
+        "target": "str",
+        "op": "add",
+        "value": 10,
+        "source": "effect:fortify_strength"
+      },
+      {
+        "target": "str",
+        "op": "add",
+        "value": 5,
+        "source": "effect:giant_strength"
+      }
+    ],
+    "expect": {
+      "value": 55
+    }
+  },
+  {
+    "name": "origin: two enchanted rings resist fire, the larger counts",
+    "target": "hp",
+    "value": 10,
+    "packet": {
+      "amount": 10,
+      "tag": "fire"
+    },
+    "modifiers": [
+      {
+        "target": "fire",
+        "op": "resist",
+        "value": 4,
+        "source": "item:ring_a",
+        "origin": "core:origin/enchantment"
+      },
+      {
+        "target": "fire",
+        "op": "resist",
+        "value": 6,
+        "source": "item:ring_b",
+        "origin": "core:origin/enchantment"
+      }
+    ],
+    "expect": {
+      "packet": 4
+    }
+  },
+  {
+    "name": "origin: an origin groups by target, so two stats keep their own bonus",
+    "target": "str",
+    "value": 40,
+    "modifiers": [
+      {
+        "target": "str",
+        "op": "add",
+        "value": 10,
+        "source": "effect:fortify_strength",
+        "origin": "core:origin/alchemy"
+      },
+      {
+        "target": "end",
+        "op": "add",
+        "value": 10,
+        "source": "effect:fortify_endurance",
+        "origin": "core:origin/alchemy"
+      }
+    ],
+    "expect": {
+      "value": 50
     }
   }
 ]
