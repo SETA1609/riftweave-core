@@ -160,6 +160,18 @@ Tracked in Linear before this repo had a tracker, recovered from git history. Th
 - See: docs/core/contract.md, docs/core/derived.md
 - Done when: recovery is rows plus formulas, not prose; every resource in the actor snapshot has a recovery rule or an explicit 'none'; vectors cover a short rest and a long rest.
 
+#### M1-05 Modifier stacking and condition vectors
+- Status: done
+- Merged: #73, 2026-11-06
+- Priority: medium
+- Needs: M1-07, M1-08
+- Was: RW-7
+- Do: The contract states one stacking rule. Prove it: ordering of `add`, `mul`, `set`, `grant`, and `resist`, duplicate sources, expiry, and condition application and removal. Add origins (arcane, divine, primal, alchemy, enchantment, martial, morale, environment, equipment, trained, innate, condition), each with a stacking policy (`highest` or `add`), so a potion and a spell of one effect stack while two potions on one stat keep the bigger.
+- Keys: `core:origin/<key>`; modifier and applied effect field `origin`; origin fields `stack`, `defaultFor`
+- Files: ~12 (docs/core/modifier.md, docs/core/contract.md, ruleset/schemas/schema.json, ruleset/schemas/condition.schema.json, ruleset/schemas/origin.schema.json, ruleset/data/conditions/core.json, ruleset/data/origins/core.json, ruleset/scripts/kernel_reference.py, ruleset/tests/vectors/)
+- See: docs/core/modifier.md, docs/core/contract.md, ruleset/data/conditions/core.json
+- Done when: vectors for each operator, mixed operators, and same-source duplicates; every origin is a row with a policy, and vectors cover two origins stacking and two sources of one `highest` origin (bonus, penalty, both, `mul`, `resist`); vectors for each of the 24 conditions' apply and remove paths, or a documented subset with a reason; A contradiction between vector and docs fails CI.
+
 #### M1-06 Resolve the traits vs features fork
 - Status: done
 - Merged: #52, 2026-11-02
@@ -231,6 +243,28 @@ Tracked in Linear before this repo had a tracker, recovered from git history. Th
 - Files: ~6 (docs/core/economy.md, ruleset/data/economy/, ruleset/schemas/economy.schema.json, ruleset/data/formulas/, ruleset/tests/vectors/economy.json)
 - See: issues.md section 1
 - Done when: `docs/core/economy.md` and a price formula in the AST; merchant stock and buy/sell spread as data; vectors for a purchase and a sale with a barter check.
+
+#### M4-02 Loot and treasure tables
+- Status: done
+- Merged: #71, 2026-11-06
+- Priority: high
+- Needs: M4-01
+- Was: RW-21
+- Do: No loot data exists. Monsters need drops, and levels need treasure budgets. Monsters that share a table must still differ: per-monster rolls, a `chance` gate, a `shift` toward better entries, extra table or item rows, and a `material` for better versions.
+- Files: ~4 (ruleset/data/loot/, ruleset/schemas/loot.schema.json, ruleset/tests/vectors/loot.json)
+- See: issues.md section 1
+- Done when: `ruleset/data/loot/` with a schema; A treasure-by-level budget consistent with the price formula, checked per table and per monster; seeded roll vectors, including chance, shift, material, and several rows per monster.
+
+#### M4-06 Looter shift: Luck and perks on loot rolls
+- Status: done
+- Merged: #77, 2026-11-06
+- Priority: medium
+- Needs: —
+- Do: Loot rolls read only the monster's rows; who loots does not matter. Add a looter shift: Luck emits `add loot_roll ((LCK - 5) * 2)` as a formula, perks and other sources emit `add loot_roll` modifiers that stack by the kernel rules, and the total moves every table roll and every `chance`. Add a Scavenger perk that uses it.
+- Keys: modifier target `loot_roll`; formula `loot_luck`; perk `core:feature/scavenger`; loot input `actor`, `modifiers`; result `looter_shift`
+- Files: ~10 (docs/core/loot.md, docs/core/vectors.md, ruleset/data/formulas/loot_luck.json, ruleset/data/features/core.json, ruleset/scripts/loot_reference.py, ruleset/tests/vectors/loot.json, backend/contract/loot.json)
+- See: docs/core/loot.md, docs/core/resolution.md, docs/core/modifier.md
+- Done when: vectors cover Luck high, neutral, and low, a perk, two modifiers of one `highest` origin, the 1-to-100 and 1-to-99 clamps, and no looter; the reference passes them; the budget check still uses a shift of 0.
 
 ## M5 Release 1.0
 
@@ -331,6 +365,16 @@ Tracked in Linear before this repo had a tracker, recovered from git history. Th
 - See: https://github.com/SETA1609/devops_tools (rebase-open-branches, `keep-both-added-lines`)
 - Done when: `keep-both-added-lines` lists `docs/decisions.md`; a local `rebase-open-branches --no-push` of two branches that both add a decision section succeeds; devops-tools, the rebase workflow, and the fragments workflow are pinned to the same v0.2.0 SHA; tooling tests pass.
 
+#### M5-11 Gate post-1.0 modules on the 1.0 release
+- Status: done
+- Merged: #69, 2026-11-06
+- Priority: high
+- Needs: —
+- Do: The roadmap puts every post-1.0 module after `v1.0.0`, but those issues only needed kernel issues, so `roadmap-order show` listed three of them as ready next to core work, and one was merged before 1.0. Add `M5-09` to the `Needs` of every post-1.0 module issue that has no parent in its story, so the computed order matches the roadmap.
+- Files: ~6 (docs/stories/06-modules.md, docs/stories/05-release.md, docs/stories/done.md, ROADMAP.md, docs/decisions/M5-11.md)
+- See: ROADMAP.md#post-10-modules, docs/stories/README.md#order
+- Done when: `roadmap-order show` lists no post-1.0 module issue as ready and blocks each one without a parent on M5-09; `roadmap-order check` passes.
+
 #### M5-12 Put the reference backend in scope
 - Status: done
 - Merged: #65, 2026-11-04
@@ -352,6 +396,16 @@ Tracked in Linear before this repo had a tracker, recovered from git history. Th
 - See: https://github.com/SETA1609/devops_tools (v0.3.0, issue 10)
 - Done when: devops-tools, the rebase workflow, and the fragments workflow pin the v0.3.0 commit; a local `rebase-open-branches --no-push` of two branches that change the same story's table row succeeds where v0.2.0 left it for a person; tooling tests pass.
 
+#### M5-14 Work the backend alongside the rules
+- Status: done
+- Merged: #72, 2026-11-06
+- Priority: medium
+- Needs: M5-12
+- Do: The APP story waited on core issues: the Go core on M1-01, M1-04, and M1-05, sessions on M5-04. The owner wants the backend built alongside the rules instead: a rule issue that adds or changes a function also changes the backend. Drop the core issues from APP's `Needs` (APP keeps its own order), and say in CONTRIBUTING that a rule's data step updates the contract and, once it exists, the Go core. An issue that passes 20 files that way splits into a ruleset PR and a backend PR (`<issue-id>-ruleset-<slug>`, `<issue-id>-backend-<slug>`). Branches drop the `agent/<name>/` prefix: people and agents name branches the same way.
+- Files: ~8 (docs/stories/07-backend.md, docs/stories/05-release.md, docs/stories/README.md, ROADMAP.md, CONTRIBUTING.md, AGENTS.md, changes/README.md, docs/decisions/M5-14.md)
+- See: docs/stories/07-backend.md, docs/backend/README.md
+- Done when: no APP issue needs an issue outside the APP story except APP-01's `M1-02`; `roadmap-order show` lists APP-02 as blocked only by APP-01; `roadmap-order check` passes.
+
 #### M5-15 One file per decision
 - Status: done
 - Merged: #75, 2026-11-04
@@ -362,6 +416,16 @@ Tracked in Linear before this repo had a tracker, recovered from git history. Th
 - Files: ~7 (docs/decisions/, docs/decisions.md, CONTRIBUTING.md, AGENTS.md, docs/stories/README.md, docs/stories/05-release.md)
 - See: docs/decisions/README.md, changes/README.md
 - Done when: `docs/decisions/README.md` states the format; no rule tells a pull request to edit `docs/decisions.md`; two branches that each add a decision file merge into `main` with plain git in either order.
+
+#### M5-16 Move merged issues to done.md
+- Status: done
+- Merged: #76, 2026-11-06
+- Priority: low
+- Needs: —
+- Do: Ten issues whose pull requests are merged (M1-02, M1-03, M1-04, M1-07, M1-08, M3-04, M4-01, M5-07, M5-08, M5-13) and M5-15 still said `review` in their story files. Move them to `done.md` with `Status: done` and `Merged: #<PR>, <date>`, and list them on each story's `Done:` line.
+- Files: ~6 (docs/stories/01-kernel.md, 03-combat-magic.md, 04-world.md, 05-release.md, done.md, ROADMAP.md)
+- See: docs/stories/README.md#workflow
+- Done when: no issue whose PR is merged is still in a story file; `roadmap-order check` passes.
 
 ## POST Post-1.0 modules
 

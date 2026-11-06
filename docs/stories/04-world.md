@@ -10,17 +10,7 @@ Roadmap: [M4](../../ROADMAP.md#where-we-are). Format and rules: [README.md](READ
 
 **Done when:** prices, treasure, and monster stats are consistent under checkable balance bands.
 
-Done: M4-01 ([done.md](done.md#m4-world))
-
-#### M4-02 Loot and treasure tables
-- Status: review
-- Priority: high
-- Needs: M4-01
-- Was: RW-21
-- Do: No loot data exists. Monsters need drops, and levels need treasure budgets. Monsters that share a table must still differ: per-monster rolls, a `chance` gate, a `shift` toward better entries, extra table or item rows, and a `material` for better versions.
-- Files: ~4 (ruleset/data/loot/, ruleset/schemas/loot.schema.json, ruleset/tests/vectors/loot.json)
-- See: issues.md section 1
-- Done when: `ruleset/data/loot/` with a schema; A treasure-by-level budget consistent with the price formula, checked per table and per monster; seeded roll vectors, including chance, shift, material, and several rows per monster.
+Done: M4-01, M4-02, M4-06 ([done.md](done.md#m4-world))
 
 #### M4-03 Bestiary to the content floor
 - Status: todo
@@ -51,13 +41,3 @@ Done: M4-01 ([done.md](done.md#m4-world))
 - Files: ~4 (ruleset/data/balance/, ruleset/scripts/, .github/workflows/validate-ruleset.yml)
 - See: docs/modules/combat.md
 - Done when: A script reports monsters and gear outside the guideline bands; bands are data, not prose; report runs in CI as a warning, then as a gate.
-
-#### M4-06 Looter shift: Luck and perks on loot rolls
-- Status: review
-- Priority: medium
-- Needs: —
-- Do: Loot rolls read only the monster's rows; who loots does not matter. Add a looter shift: Luck emits `add loot_roll ((LCK - 5) * 2)` as a formula, perks and other sources emit `add loot_roll` modifiers that stack by the kernel rules, and the total moves every table roll and every `chance`. Add a Scavenger perk that uses it.
-- Keys: modifier target `loot_roll`; formula `loot_luck`; perk `core:feature/scavenger`; loot input `actor`, `modifiers`; result `looter_shift`
-- Files: ~10 (docs/core/loot.md, docs/core/vectors.md, ruleset/data/formulas/loot_luck.json, ruleset/data/features/core.json, ruleset/scripts/loot_reference.py, ruleset/tests/vectors/loot.json, backend/contract/loot.json)
-- See: docs/core/loot.md, docs/core/resolution.md, docs/core/modifier.md
-- Done when: vectors cover Luck high, neutral, and low, a perk, two modifiers of one `highest` origin, the 1-to-100 and 1-to-99 clamps, and no looter; the reference passes them; the budget check still uses a shift of 0.

@@ -24,7 +24,7 @@ One file per milestone. Issues inside a file are in the order they should be don
 
 ## Order
 
-Focus: M1
+Focus: M3
 
 The `Focus:` line is the owner's order. Everything else about order is computed from each
 issue's `Status` and `Needs`, so it never goes stale by hand:
