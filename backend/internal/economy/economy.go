@@ -19,7 +19,7 @@ type Barter struct {
 
 // Input is the `economy` command's input; `op` says which fields it reads.
 type Input struct {
-	Op           string     `json:"op"`
+	Operation    string     `json:"op"`
 	Cost         *data.Cost `json:"cost"`
 	Side         string     `json:"side"`
 	Merchant     string     `json:"merchant"`
@@ -30,70 +30,71 @@ type Input struct {
 
 // Result has `cp` for a conversion, the other fields for a trade.
 type Result struct {
-	CP      *int64 `json:"cp,omitempty"`
-	BaseCP  *int64 `json:"base_cp,omitempty"`
-	Shift   *int64 `json:"shift,omitempty"`
-	Percent *int64 `json:"percent,omitempty"`
-	PriceCP *int64 `json:"price_cp,omitempty"`
+	Copper      *int64 `json:"cp,omitempty"`
+	BaseCopper  *int64 `json:"base_cp,omitempty"`
+	Shift       *int64 `json:"shift,omitempty"`
+	Percent     *int64 `json:"percent,omitempty"`
+	PriceCopper *int64 `json:"price_cp,omitempty"`
 }
 
-// Price is base_cp scaled by a value percent and a merchant percent, with the data's rounding.
-func Price(rs *data.Ruleset, baseCP, valuePercent, percent int64) (int64, error) {
-	return rs.Price.Eval(nil,
-		formula.Var{Name: "base_cp", Val: baseCP},
-		formula.Var{Name: "value_percent", Val: valuePercent},
-		formula.Var{Name: "percent", Val: percent})
+// Price is the base price in copper scaled by a value percent and a merchant percent, with
+// the data's rounding.
+func Price(ruleset *data.Ruleset, baseCopper, valuePercent, percent int64) (int64, error) {
+	return ruleset.Price.Evaluate(nil,
+		formula.Variable{Name: "base_cp", Value: baseCopper},
+		formula.Variable{Name: "value_percent", Value: valuePercent},
+		formula.Variable{Name: "percent", Value: percent})
 }
 
 // Run is the `economy` command.
-func Run(rs *data.Ruleset, in Input) (Result, error) {
-	switch in.Op {
+func Run(ruleset *data.Ruleset, input Input) (Result, error) {
+	switch input.Operation {
 	case "convert":
-		if in.Cost == nil {
+		if input.Cost == nil {
 			return Result{}, fmt.Errorf("economy convert needs cost")
 		}
-		cp, err := rs.Economy.ToCP(*in.Cost)
-		return Result{CP: &cp}, err
+		copper, err := ruleset.Economy.ToCopper(*input.Cost)
+		return Result{Copper: &copper}, err
 	case "trade":
-		return trade(rs, in)
+		return trade(ruleset, input)
 	}
-	return Result{}, fmt.Errorf("economy op %q is not defined", in.Op)
+	return Result{}, fmt.Errorf("economy op %q is not defined", input.Operation)
 }
 
-func trade(rs *data.Ruleset, in Input) (Result, error) {
-	if in.ItemCost == nil || (in.Side != "buy" && in.Side != "sell") {
+func trade(ruleset *data.Ruleset, input Input) (Result, error) {
+	if input.ItemCost == nil || (input.Side != "buy" && input.Side != "sell") {
 		return Result{}, fmt.Errorf("economy trade needs side (buy or sell), merchant and item_cost")
 	}
-	merchant, ok := rs.Economy.Merchants.Get(in.Merchant)
+	merchant, ok := ruleset.Economy.Merchants.Get(input.Merchant)
 	if !ok {
-		return Result{}, fmt.Errorf("merchant %q is not defined", in.Merchant)
+		return Result{}, fmt.Errorf("merchant %q is not defined", input.Merchant)
 	}
-	rules := &rs.Economy.Barter
+	var rules *data.Barter = &ruleset.Economy.Barter
 	var shift int64
-	if in.Barter != nil {
-		check := resolution.Check(&rs.Resolution, in.Barter.SkillValue, 0, 0, in.Barter.Roll)
+	if input.Barter != nil {
+		var check resolution.Result = resolution.Check(&ruleset.Resolution, input.Barter.SkillValue, 0, 0, input.Barter.Roll)
 		switch {
 		case slices.Contains(check.Tags, "fumble"):
 			shift = -rules.FumblePenalty
 		case check.Success:
-			shift = min(rules.MaxShift, formula.FloorDiv(*check.Margin, rules.MarginDivisor))
+			shift = min(rules.MaximumShift, formula.FloorDivide(*check.Margin, rules.MarginDivisor))
 		}
 	}
-	percent := merchant.SellPercent + shift
-	if in.Side == "buy" {
+	var percent int64 = merchant.SellPercent + shift
+	if input.Side == "buy" {
 		percent = merchant.BuyPercent - shift
 	}
-	baseCP, err := rs.Economy.ToCP(*in.ItemCost)
+	baseCopper, err := ruleset.Economy.ToCopper(*input.ItemCost)
 	if err != nil {
 		return Result{}, err
 	}
-	valuePercent := int64(100)
-	if in.ValuePercent != nil {
-		valuePercent = *in.ValuePercent
+	var valuePercent int64 = 100
+	if input.ValuePercent != nil {
+		valuePercent = *input.ValuePercent
 	}
-	price, err := Price(rs, baseCP, valuePercent, percent)
+	price, err := Price(ruleset, baseCopper, valuePercent, percent)
 	if err != nil {
 		return Result{}, err
 	}
-	return Result{BaseCP: &baseCP, Shift: &shift, Percent: &percent, PriceCP: &price}, nil
+	return Result{BaseCopper: &baseCopper, Shift: &shift, Percent: &percent, PriceCopper: &price}, nil
 }

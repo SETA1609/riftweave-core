@@ -30,52 +30,52 @@ type Result struct {
 
 // Bonus is the signed sum of every `add` modifier's value. Resolution sees bonuses and
 // penalties as one list.
-func Bonus(mods []modifier.Modifier) int64 {
-	sum := 0.0
-	for _, m := range mods {
-		if m.Op == modifier.Add {
-			sum += m.Value
+func Bonus(modifiers []modifier.Modifier) int64 {
+	var sum float64 = 0.0
+	for _, current := range modifiers {
+		if current.Operation == modifier.Add {
+			sum += current.Value
 		}
 	}
 	return int64(math.Floor(sum))
 }
 
 // Check rolls one check: the skill plus the bonus is the target, capped if the data caps it.
-func Check(r *data.Resolution, skill, luck, bonus, roll int64) Result {
-	target := skill + bonus
-	if r.TargetCap != nil {
-		target = min(target, *r.TargetCap)
+func Check(rules *data.Resolution, skill, luck, bonus, roll int64) Result {
+	var target int64 = skill + bonus
+	if rules.TargetCap != nil {
+		target = min(target, *rules.TargetCap)
 	}
-	success := roll <= target && roll < r.FumbleAt
-	window := r.CritWindow + formula.FloorDiv(luck, r.CritWindowPerTwoLuck)
-	res := Result{Target: target, Success: success, Tags: []string{}}
+	var success bool = roll <= target && roll < rules.FumbleAt
+	var criticalWindow int64 = rules.CriticalWindow + formula.FloorDivide(luck, rules.CriticalWindowPerTwoLuck)
+	var result Result = Result{Target: target, Success: success, Tags: []string{}}
 	if success {
-		margin := target - roll
-		res.Margin = &margin
-		if roll <= window {
-			res.Tags = append(res.Tags, "crit")
+		var margin int64 = target - roll
+		result.Margin = &margin
+		if roll <= criticalWindow {
+			result.Tags = append(result.Tags, "crit")
 		}
 	}
-	if roll >= r.FumbleAt {
-		res.Tags = append(res.Tags, "fumble")
+	if roll >= rules.FumbleAt {
+		result.Tags = append(result.Tags, "fumble")
 	}
-	return res
+	return result
 }
 
 // Run is the `resolution` command.
-func Run(rs *data.Ruleset, in Input) (Result, error) {
-	skill := in.Skill
+func Run(ruleset *data.Ruleset, input Input) (Result, error) {
+	var skill string = input.Skill
 	if skill == "" {
-		if len(in.Actor.Skills) != 1 {
+		if len(input.Actor.Skills) != 1 {
 			return Result{}, fmt.Errorf("actor has several skills; name one with `skill`")
 		}
-		for name := range in.Actor.Skills {
+		for name := range input.Actor.Skills {
 			skill = name
 		}
 	}
-	value, ok := in.Actor.Skills[skill]
+	value, ok := input.Actor.Skills[skill]
 	if !ok {
 		return Result{}, fmt.Errorf("actor has no skill %q", skill)
 	}
-	return Check(&rs.Resolution, value, in.Actor.Attributes.Get(actor.Lck), Bonus(in.Modifiers), in.Roll), nil
+	return Check(&ruleset.Resolution, value, input.Actor.Attributes.Get(actor.Luck), Bonus(input.Modifiers), input.Roll), nil
 }

@@ -14,78 +14,80 @@ import (
 type Ability uint8
 
 const (
-	Str Ability = iota
-	Per
-	End
-	Int
-	Wil
-	Agi
-	Cha
-	Lck
-	Count
+	Strength Ability = iota
+	Perception
+	Endurance
+	Intelligence
+	Willpower
+	Agility
+	Charisma
+	Luck
+	AbilityCount
 )
 
-var keys = [Count]string{"str", "per", "end", "int", "wil", "agi", "cha", "lck"}
+var abilityKeys = [AbilityCount]string{"str", "per", "end", "int", "wil", "agi", "cha", "lck"}
 
 // ByKey returns the ability with the given key ("str", "lck", ...).
 func ByKey(key string) (Ability, bool) {
-	for i, k := range keys {
-		if k == key {
-			return Ability(i), true
+	for index, candidateKey := range abilityKeys {
+		if candidateKey == key {
+			return Ability(index), true
 		}
 	}
 	return 0, false
 }
 
-func (a Ability) String() string { return keys[a] }
+func (ability Ability) String() string { return abilityKeys[ability] }
 
-// Attrs are an actor's attribute values.
-type Attrs struct {
-	v   [Count]int64
-	set uint8
+// Attributes are an actor's attribute values.
+type Attributes struct {
+	values    [AbilityCount]int64
+	givenMask uint8
 }
 
 // Get returns the attribute, or 0 when it was not given.
-func (a Attrs) Get(ab Ability) int64 { return a.v[ab] }
+func (attributes Attributes) Get(ability Ability) int64 { return attributes.values[ability] }
 
 // Has reports whether the attribute was given.
-func (a Attrs) Has(ab Ability) bool { return a.set&(1<<ab) != 0 }
+func (attributes Attributes) Has(ability Ability) bool {
+	return attributes.givenMask&(1<<ability) != 0
+}
 
 // With returns a copy with one attribute set.
-func (a Attrs) With(ab Ability, value int64) Attrs {
-	a.v[ab] = value
-	a.set |= 1 << ab
-	return a
+func (attributes Attributes) With(ability Ability, value int64) Attributes {
+	attributes.values[ability] = value
+	attributes.givenMask |= 1 << ability
+	return attributes
 }
 
 // UnmarshalJSON reads an object keyed by ability and rejects any other key.
-func (a *Attrs) UnmarshalJSON(b []byte) error {
-	var m map[string]int64
-	if err := json.Unmarshal(b, &m); err != nil {
+func (attributes *Attributes) UnmarshalJSON(encoded []byte) error {
+	var valuesByKey map[string]int64
+	if err := json.Unmarshal(encoded, &valuesByKey); err != nil {
 		return err
 	}
-	*a = Attrs{}
-	for key, value := range m {
-		ab, ok := ByKey(key)
+	*attributes = Attributes{}
+	for key, value := range valuesByKey {
+		ability, ok := ByKey(key)
 		if !ok {
 			return fmt.Errorf("%q is not an attribute", key)
 		}
-		*a = a.With(ab, value)
+		*attributes = attributes.With(ability, value)
 	}
 	return nil
 }
 
 // Actor is the shape of the `actor` input (backend/contract/common.json).
 type Actor struct {
-	Attributes Attrs            `json:"attributes"`
+	Attributes Attributes       `json:"attributes"`
 	Skills     map[string]int64 `json:"skills"`
 	Level      *int64           `json:"level"`
 }
 
-// LevelOr returns the level, or def when none was given.
-func (a Actor) LevelOr(def int64) int64 {
-	if a.Level == nil {
-		return def
+// LevelOrDefault returns the level, or defaultLevel when none was given.
+func (actor Actor) LevelOrDefault(defaultLevel int64) int64 {
+	if actor.Level == nil {
+		return defaultLevel
 	}
-	return *a.Level
+	return *actor.Level
 }

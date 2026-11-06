@@ -2,9 +2,9 @@
 // opens a Core, then calls Run with a command name and JSON, and gets JSON back. It parses,
 // calls, and formats; every rule is in a package under internal/.
 //
-// Each command is a typed function `func(*data.Ruleset, In) (Out, error)` in its own package,
-// bound here to JSON in a single table. Adding a command is one package and one line in
-// `commands`.
+// Each command is a typed function `func(*data.Ruleset, Input) (Output, error)` in its own
+// package, bound here to JSON in a single table. Adding a command is one package and one
+// line in `commands`.
 package core
 
 import (
@@ -40,36 +40,36 @@ var (
 
 // RuleError is a command that ran and refused: the wrong number of rolls, an unknown key.
 // It matches ErrRule.
-type RuleError struct{ Msg string }
+type RuleError struct{ Message string }
 
-func (e *RuleError) Error() string        { return e.Msg }
-func (e *RuleError) Is(target error) bool { return target == ErrRule }
+func (ruleError *RuleError) Error() string        { return ruleError.Message }
+func (ruleError *RuleError) Is(target error) bool { return target == ErrRule }
 
-type handler func(rs *data.Ruleset, input []byte) (any, error)
+type commandHandler func(ruleset *data.Ruleset, encodedInput []byte) (any, error)
 
-// bind decodes the input strictly into In (an unknown field is an error, as in the contract)
-// and runs the typed command.
-func bind[In, Out any](run func(*data.Ruleset, In) (Out, error)) handler {
-	return func(rs *data.Ruleset, input []byte) (any, error) {
-		var in In
-		dec := json.NewDecoder(bytes.NewReader(input))
-		dec.DisallowUnknownFields()
-		if err := dec.Decode(&in); err != nil {
+// bind decodes the input strictly into Input (an unknown field is an error, as in the
+// contract) and runs the typed command.
+func bind[Input, Output any](run func(*data.Ruleset, Input) (Output, error)) commandHandler {
+	return func(ruleset *data.Ruleset, encodedInput []byte) (any, error) {
+		var input Input
+		var decoder *json.Decoder = json.NewDecoder(bytes.NewReader(encodedInput))
+		decoder.DisallowUnknownFields()
+		if err := decoder.Decode(&input); err != nil {
 			return nil, fmt.Errorf("%w: %v", ErrInput, err)
 		}
-		if dec.More() {
+		if decoder.More() {
 			return nil, fmt.Errorf("%w: more than one JSON value", ErrInput)
 		}
-		out, err := run(rs, in)
+		output, err := run(ruleset, input)
 		if err != nil {
 			return nil, &RuleError{err.Error()}
 		}
-		return out, nil
+		return output, nil
 	}
 }
 
 // commands is the registry, keyed by the command and vector function name.
-var commands = map[string]handler{
+var commands map[string]commandHandler = map[string]commandHandler{
 	"resolution":  bind(resolution.Run),
 	"derived":     bind(derived.Run),
 	"actions":     bind(derived.RunActions),
@@ -87,21 +87,21 @@ var commands = map[string]handler{
 // Core is an opened ruleset.
 type Core struct{ rules *data.Ruleset }
 
-// New loads the ruleset from the data directory held by fsys.
-func New(fsys fs.FS) (*Core, error) {
-	rs, err := data.Load(fsys)
+// New loads the ruleset from the data directory held by fileSystem.
+func New(fileSystem fs.FS) (*Core, error) {
+	ruleset, err := data.Load(fileSystem)
 	if err != nil {
 		return nil, err
 	}
-	return &Core{rs}, nil
+	return &Core{ruleset}, nil
 }
 
 // Open loads the ruleset from a directory such as ruleset/data.
-func Open(dir string) (*Core, error) { return New(os.DirFS(dir)) }
+func Open(directory string) (*Core, error) { return New(os.DirFS(directory)) }
 
 // Commands lists the command names, sorted.
 func Commands() []string {
-	names := make([]string, 0, len(commands))
+	var names []string = make([]string, 0, len(commands))
 	for name := range commands {
 		names = append(names, name)
 	}
@@ -112,53 +112,55 @@ func Commands() []string {
 // Run runs a command on JSON input and returns its JSON result. A rule error comes back
 // both as `{"error": "..."}` bytes, so any call can be saved as a vector, and as an
 // error wrapping ErrRule; bad input wraps ErrInput; a missing command, ErrUnknownCommand.
-func (c *Core) Run(name string, input []byte) ([]byte, error) {
-	h, ok := commands[name]
+func (core *Core) Run(name string, input []byte) ([]byte, error) {
+	handler, ok := commands[name]
 	if !ok {
 		return nil, fmt.Errorf("%w: %q", ErrUnknownCommand, name)
 	}
-	out, err := h(c.rules, input)
+	output, err := handler(core.rules, input)
 	if err != nil {
 		if !errors.Is(err, ErrRule) {
 			return nil, err
 		}
-		var rule *RuleError
-		errors.As(err, &rule)
-		body, _ := json.Marshal(map[string]string{"error": rule.Msg})
+		var ruleError *RuleError
+		errors.As(err, &ruleError)
+		body, _ := json.Marshal(map[string]string{"error": ruleError.Message})
 		return body, err
 	}
-	return json.Marshal(out)
+	return json.Marshal(output)
 }
 
 type formulaInput struct {
-	Formula string           `json:"formula"`
-	Expr    *formula.Program `json:"expr"`
-	Actor   actor.Actor      `json:"actor"`
+	Expression *formula.Program `json:"expr"`
+	Formula    string           `json:"formula"`
+	Actor      actor.Actor      `json:"actor"`
 }
 
-func runFormula(rs *data.Ruleset, in formulaInput) (map[string]int64, error) {
-	program := in.Expr
+func runFormula(ruleset *data.Ruleset, input formulaInput) (map[string]int64, error) {
+	var program *formula.Program = input.Expression
 	if program == nil {
 		var ok bool
-		if program, ok = rs.Formulas[in.Formula]; !ok {
-			return nil, fmt.Errorf("formula %q is not defined", in.Formula)
+		if program, ok = ruleset.Formulas[input.Formula]; !ok {
+			return nil, fmt.Errorf("formula %q is not defined", input.Formula)
 		}
 	}
-	a := in.Actor.Attributes
-	value, err := program.Eval(&a)
+	var attributes actor.Attributes = input.Actor.Attributes
+	value, err := program.Evaluate(&attributes)
 	return map[string]int64{"value": value}, err
 }
 
+type damagePacket struct {
+	Tag    string `json:"tag"`
+	Amount int64  `json:"amount"`
+}
+
 type modifiersInput struct {
-	Value          int64               `json:"value"`
 	Target         *string             `json:"target"`
+	Packet         *damagePacket       `json:"packet"`
 	Modifiers      []modifier.Modifier `json:"modifiers"`
-	ElapsedTurns   int64               `json:"elapsed_turns"`
 	RemovedSources []string            `json:"removed_sources"`
-	Packet         *struct {
-		Amount int64  `json:"amount"`
-		Tag    string `json:"tag"`
-	} `json:"packet"`
+	Value          int64               `json:"value"`
+	ElapsedTurns   int64               `json:"elapsed_turns"`
 }
 
 type modifiersResult struct {
@@ -167,22 +169,25 @@ type modifiersResult struct {
 	Packet *int64   `json:"packet,omitempty"`
 }
 
-func runModifiers(rs *data.Ruleset, in modifiersInput) (modifiersResult, error) {
-	own := in.Modifiers
-	if in.Target != nil {
-		own = modifier.Target(in.Modifiers, *in.Target)
+func runModifiers(ruleset *data.Ruleset, input modifiersInput) (modifiersResult, error) {
+	var targetModifiers []modifier.Modifier = input.Modifiers
+	if input.Target != nil {
+		targetModifiers = modifier.Target(input.Modifiers, *input.Target)
 	}
-	value, err := modifier.Value(in.Value, own, rs.Origins, in.ElapsedTurns, in.RemovedSources)
+	value, err := modifier.Value(input.Value, targetModifiers, ruleset.Origins, input.ElapsedTurns, input.RemovedSources)
 	if err != nil {
 		return modifiersResult{}, err
 	}
-	res := modifiersResult{Value: value, Flags: modifier.Flags(in.Modifiers, in.ElapsedTurns, in.RemovedSources)}
-	if in.Packet != nil {
-		packet, err := modifier.Packet(in.Packet.Amount, in.Packet.Tag, in.Modifiers, rs.Origins, in.ElapsedTurns, in.RemovedSources)
+	var result modifiersResult = modifiersResult{
+		Value: value,
+		Flags: modifier.Flags(input.Modifiers, input.ElapsedTurns, input.RemovedSources),
+	}
+	if input.Packet != nil {
+		packet, err := modifier.Packet(input.Packet.Amount, input.Packet.Tag, input.Modifiers, ruleset.Origins, input.ElapsedTurns, input.RemovedSources)
 		if err != nil {
 			return modifiersResult{}, err
 		}
-		res.Packet = &packet
+		result.Packet = &packet
 	}
-	return res, nil
+	return result, nil
 }

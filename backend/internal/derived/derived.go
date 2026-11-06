@@ -18,38 +18,38 @@ type Input struct {
 	Modifiers []modifier.Modifier `json:"modifiers"`
 }
 
-// Compute returns one value per row of rs.Derived, in row order: the formula, then the
+// Compute returns one value per row of ruleset.Derived, in row order: the formula, then the
 // modifiers that name the stat. A missing attribute reads as 0 and a missing level as 1.
-func Compute(rs *data.Ruleset, a actor.Actor, mods []modifier.Modifier) ([]int64, error) {
-	level := a.LevelOr(1)
-	rows := rs.Derived.Rows()
-	out := make([]int64, len(rows))
-	for i := range rows {
-		stat := &rows[i]
-		attr := a.Attributes.Get(stat.AttrID)
-		value := stat.Base +
-			formula.FloorDiv(attr*stat.PerPoint, stat.PerPointDivisor) +
-			level*(attr*stat.PerLevelAttr+stat.PerLevelFlat)
-		v, err := modifier.Value(value, modifier.Target(mods, stat.Key), rs.Origins, 0, nil)
+func Compute(ruleset *data.Ruleset, character actor.Actor, modifiers []modifier.Modifier) ([]int64, error) {
+	var level int64 = character.LevelOrDefault(1)
+	var rows []data.DerivedStat = ruleset.Derived.Rows()
+	var values []int64 = make([]int64, len(rows))
+	for index := range rows {
+		var stat *data.DerivedStat = &rows[index]
+		var attributeValue int64 = character.Attributes.Get(stat.Ability)
+		var unmodifiedValue int64 = stat.Base +
+			formula.FloorDivide(attributeValue*stat.PerPoint, stat.PerPointDivisor) +
+			level*(attributeValue*stat.PerLevelAttribute+stat.PerLevelFlat)
+		modifiedValue, err := modifier.Value(unmodifiedValue, modifier.Target(modifiers, stat.Key), ruleset.Origins, 0, nil)
 		if err != nil {
 			return nil, err
 		}
-		out[i] = v
+		values[index] = modifiedValue
 	}
-	return out, nil
+	return values, nil
 }
 
 // Run is the `derived` command: one field per derived stat.
-func Run(rs *data.Ruleset, in Input) (map[string]int64, error) {
-	values, err := Compute(rs, in.Actor, in.Modifiers)
+func Run(ruleset *data.Ruleset, input Input) (map[string]int64, error) {
+	values, err := Compute(ruleset, input.Actor, input.Modifiers)
 	if err != nil {
 		return nil, err
 	}
-	out := make(map[string]int64, len(values))
-	for i, row := range rs.Derived.Rows() {
-		out[row.Key] = values[i]
+	var valuesByStat map[string]int64 = make(map[string]int64, len(values))
+	for index, row := range ruleset.Derived.Rows() {
+		valuesByStat[row.Key] = values[index]
 	}
-	return out, nil
+	return valuesByStat, nil
 }
 
 // ActionsInput is the `actions` command's input.
@@ -64,19 +64,20 @@ type ActionsResult struct {
 	Cost int64 `json:"cost"`
 }
 
-// RunActions is the `actions` command: the pool is base + attr * per_point / divisor.
-func RunActions(rs *data.Ruleset, in ActionsInput) (ActionsResult, error) {
-	pool := &rs.Actions.Pool
-	if !in.Actor.Attributes.Has(pool.AttrID) {
-		return ActionsResult{}, fmt.Errorf("actor needs the %s attribute", pool.AttrID)
+// RunActions is the `actions` command: the pool is base + attribute * per_point / divisor.
+func RunActions(ruleset *data.Ruleset, input ActionsInput) (ActionsResult, error) {
+	var pool *data.ActionPool = &ruleset.Actions.Pool
+	if !input.Actor.Attributes.Has(pool.Ability) {
+		return ActionsResult{}, fmt.Errorf("actor needs the %s attribute", pool.Ability)
 	}
-	res := ActionsResult{Pool: pool.Base + formula.FloorDiv(in.Actor.Attributes.Get(pool.AttrID)*pool.PerPoint, pool.PerPointDivisor)}
-	for _, key := range in.Actions {
-		action, ok := rs.Actions.Actions.Get(key)
+	var attributeValue int64 = input.Actor.Attributes.Get(pool.Ability)
+	var result ActionsResult = ActionsResult{Pool: pool.Base + formula.FloorDivide(attributeValue*pool.PerPoint, pool.PerPointDivisor)}
+	for _, key := range input.Actions {
+		action, ok := ruleset.Actions.Actions.Get(key)
 		if !ok {
 			return ActionsResult{}, fmt.Errorf("action %q is not defined", key)
 		}
-		res.Cost += action.Cost
+		result.Cost += action.Cost
 	}
-	return res, nil
+	return result, nil
 }

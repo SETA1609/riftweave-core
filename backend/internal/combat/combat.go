@@ -16,27 +16,27 @@ import (
 
 // Attacker is who rolls the attack.
 type Attacker struct {
-	Skill      int64       `json:"skill"`
-	Roll       int64       `json:"roll"`
-	Attributes actor.Attrs `json:"attributes"`
+	Skill      int64            `json:"skill"`
+	Roll       int64            `json:"roll"`
+	Attributes actor.Attributes `json:"attributes"`
 }
 
 // Reaction is the defender's one reaction: an evade, or a block with a shield.
 type Reaction struct {
-	Kind     string `json:"kind"`
-	Roll     int64  `json:"roll"`
-	Skill    *int64 `json:"skill"`
-	ShieldDR *int64 `json:"shield_dr"`
+	Kind                  string `json:"kind"`
+	Roll                  int64  `json:"roll"`
+	Skill                 *int64 `json:"skill"`
+	ShieldDamageReduction *int64 `json:"shield_dr"`
 }
 
 // Defender is who takes the attack.
 type Defender struct {
-	EvasionSkill *int64           `json:"evasion_skill"`
-	Attributes   actor.Attrs      `json:"attributes"`
-	ArmorDR      int64            `json:"armor_dr"`
-	HP           int64            `json:"hp"`
-	Resist       map[string]int64 `json:"resist"`
-	Reaction     *Reaction        `json:"reaction"`
+	EvasionSkill         *int64           `json:"evasion_skill"`
+	Attributes           actor.Attributes `json:"attributes"`
+	ArmorDamageReduction int64            `json:"armor_dr"`
+	HitPoints            int64            `json:"hp"`
+	Resist               map[string]int64 `json:"resist"`
+	Reaction             *Reaction        `json:"reaction"`
 }
 
 // Damage is the damage roll and its type.
@@ -59,44 +59,51 @@ type Result struct {
 	Outcome      string   `json:"outcome"`
 	Target       int64    `json:"target"`
 	Margin       *int64   `json:"margin"`
-	Crit         bool     `json:"crit"`
+	Critical     bool     `json:"crit"`
 	Evaded       bool     `json:"evaded"`
 	Blocked      bool     `json:"blocked"`
 	ReactionTags []string `json:"reaction_tags"`
 	Damage       int64    `json:"damage"`
-	HP           int64    `json:"hp"`
+	HitPoints    int64    `json:"hp"`
 }
 
 // Run is the `combat` command.
-func Run(rs *data.Ruleset, in Input) (Result, error) {
-	damageType, ok := rs.DamageTypes.Get(in.Damage.Type)
+func Run(ruleset *data.Ruleset, input Input) (Result, error) {
+	damageType, ok := ruleset.DamageTypes.Get(input.Damage.Type)
 	if !ok {
-		return Result{}, fmt.Errorf("damage type %q is not defined", in.Damage.Type)
+		return Result{}, fmt.Errorf("damage type %q is not defined", input.Damage.Type)
 	}
-	delivery := in.Delivery
+	var delivery string = input.Delivery
 	if delivery == "" {
 		delivery = "single"
 	}
 	if delivery != "single" && delivery != "area" && delivery != "instant" {
 		return Result{}, fmt.Errorf("delivery %q is not defined", delivery)
 	}
-	def, pipe := &in.Defender, &rs.Pipeline
+	var defender *Defender = &input.Defender
+	var pipeline *data.Pipeline = &ruleset.Pipeline
 
-	attack := resolution.Check(&rs.Resolution, in.Attacker.Skill, in.Attacker.Attributes.Get(actor.Lck), resolution.Bonus(in.Modifiers), in.Attacker.Roll)
-	res := Result{Target: attack.Target, Margin: attack.Margin, Crit: slices.Contains(attack.Tags, "crit"), ReactionTags: []string{}}
+	var attackerLuck int64 = input.Attacker.Attributes.Get(actor.Luck)
+	var attack resolution.Result = resolution.Check(&ruleset.Resolution, input.Attacker.Skill, attackerLuck, resolution.Bonus(input.Modifiers), input.Attacker.Roll)
+	var result Result = Result{
+		Target:       attack.Target,
+		Margin:       attack.Margin,
+		Critical:     slices.Contains(attack.Tags, "crit"),
+		ReactionTags: []string{},
+	}
 	if !attack.Success {
-		res.Outcome, res.HP = "miss", def.HP
+		result.Outcome, result.HitPoints = "miss", defender.HitPoints
 		if slices.Contains(attack.Tags, "fumble") {
-			res.Outcome = "fumble"
+			result.Outcome = "fumble"
 		}
-		return res, nil
+		return result, nil
 	}
 
 	// One reaction per attack, rolled only on a hit. Delivery decides what it can do: single
 	// is evaded whole, area is halved by an evade, instant takes no reaction.
 	var reaction *Reaction
 	if delivery != "instant" {
-		reaction = def.Reaction
+		reaction = defender.Reaction
 	}
 	if reaction != nil {
 		if reaction.Kind != "evade" && reaction.Kind != "block" {
@@ -110,57 +117,57 @@ func Run(rs *data.Ruleset, in Input) (Result, error) {
 		// The reaction is a d100 check like the attack: same fumble and crit window.
 		var skill int64
 		if reaction.Kind == "evade" {
-			if def.EvasionSkill == nil {
+			if defender.EvasionSkill == nil {
 				return Result{}, fmt.Errorf("an evade needs the defender's evasion_skill")
 			}
-			skill = *def.EvasionSkill
+			skill = *defender.EvasionSkill
 		} else {
-			if reaction.Skill == nil || reaction.ShieldDR == nil {
+			if reaction.Skill == nil || reaction.ShieldDamageReduction == nil {
 				return Result{}, fmt.Errorf("a block needs skill and shield_dr")
 			}
 			skill = *reaction.Skill
 		}
-		check := resolution.Check(&rs.Resolution, skill, def.Attributes.Get(actor.Lck), 0, reaction.Roll)
-		res.ReactionTags = check.Tags
+		var check resolution.Result = resolution.Check(&ruleset.Resolution, skill, defender.Attributes.Get(actor.Luck), 0, reaction.Roll)
+		result.ReactionTags = check.Tags
 		if check.Success && *check.Margin >= *attack.Margin {
 			if reaction.Kind == "block" {
-				res.Blocked = true
+				result.Blocked = true
 			} else {
-				res.Evaded = true
+				result.Evaded = true
 				if delivery == "single" {
-					res.Outcome, res.Damage, res.HP = "evaded", 0, def.HP
-					return res, nil
+					result.Outcome, result.Damage, result.HitPoints = "evaded", 0, defender.HitPoints
+					return result, nil
 				}
 			}
 		}
 	}
-	res.Outcome = "hit"
+	result.Outcome = "hit"
 
-	amount := in.Damage.Roll
+	var amount int64 = input.Damage.Roll
 	var err error
-	if res.Crit {
-		if amount, err = pipe.CritDamage.Eval(nil, formula.Var{Name: "damage", Val: amount}); err != nil {
+	if result.Critical {
+		if amount, err = pipeline.CriticalDamage.Evaluate(nil, formula.Variable{Name: "damage", Value: amount}); err != nil {
 			return Result{}, err
 		}
 	}
-	if res.Evaded {
-		if amount, err = pipe.AreaEvadeDamage.Eval(nil, formula.Var{Name: "damage", Val: amount}); err != nil {
+	if result.Evaded {
+		if amount, err = pipeline.AreaEvadeDamage.Evaluate(nil, formula.Variable{Name: "damage", Value: amount}); err != nil {
 			return Result{}, err
 		}
 	}
-	if res.Blocked {
-		amount = max(amount-*reaction.ShieldDR, 0)
+	if result.Blocked {
+		amount = max(amount-*reaction.ShieldDamageReduction, 0)
 	}
 	if damageType.Physical {
-		dr := def.ArmorDR
+		var damageReduction int64 = defender.ArmorDamageReduction
 		if damageType.Pierce {
-			if dr, err = pipe.PierceDR.Eval(nil, formula.Var{Name: "dr", Val: dr}); err != nil {
+			if damageReduction, err = pipeline.PierceDamageReduction.Evaluate(nil, formula.Variable{Name: "dr", Value: damageReduction}); err != nil {
 				return Result{}, err
 			}
 		}
-		amount = max(amount-dr, 0)
+		amount = max(amount-damageReduction, 0)
 	}
-	amount = max(amount-def.Resist[in.Damage.Type], 0)
-	res.Damage, res.HP = amount, max(def.HP-amount, 0)
-	return res, nil
+	amount = max(amount-defender.Resist[input.Damage.Type], 0)
+	result.Damage, result.HitPoints = amount, max(defender.HitPoints-amount, 0)
+	return result, nil
 }

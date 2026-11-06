@@ -21,10 +21,10 @@ type Condition struct {
 
 // Resources are the four numbers a rest changes.
 type Resources struct {
-	HP      int64 `json:"hp"`
-	MP      int64 `json:"mp"`
-	Stamina int64 `json:"stamina"`
-	AP      int64 `json:"ap"`
+	HitPoints    int64 `json:"hp"`
+	ManaPoints   int64 `json:"mp"`
+	Stamina      int64 `json:"stamina"`
+	ActionPoints int64 `json:"ap"`
 }
 
 // Input is the `rest` command's input.
@@ -33,7 +33,7 @@ type Input struct {
 	Actor     actor.Actor         `json:"actor"`
 	Modifiers []modifier.Modifier `json:"modifiers"`
 	Current   Resources           `json:"current"`
-	Max       struct {
+	Maximum   struct {
 		Stamina int64 `json:"stamina"`
 	} `json:"max"`
 	Conditions []Condition `json:"conditions"`
@@ -46,63 +46,63 @@ type Result struct {
 }
 
 // Run is the `rest` command. The maximums are the derived stats, and stamina's comes in.
-func Run(rs *data.Ruleset, in Input) (Result, error) {
-	occasion, ok := rs.Rest.Get(in.Occasion)
+func Run(ruleset *data.Ruleset, input Input) (Result, error) {
+	occasion, ok := ruleset.Rest.Get(input.Occasion)
 	if !ok {
-		return Result{}, fmt.Errorf("rest occasion %q is not defined", in.Occasion)
+		return Result{}, fmt.Errorf("rest occasion %q is not defined", input.Occasion)
 	}
-	stats, err := derived.Compute(rs, in.Actor, in.Modifiers)
+	stats, err := derived.Compute(ruleset, input.Actor, input.Modifiers)
 	if err != nil {
 		return Result{}, err
 	}
-	maximum := func(resource string) (int64, error) {
+	var maximumOf func(resource string) (int64, error) = func(resource string) (int64, error) {
 		if resource == "stamina" {
-			return in.Max.Stamina, nil
+			return input.Maximum.Stamina, nil
 		}
-		i, ok := rs.Derived.Index(resource)
+		statIndex, ok := ruleset.Derived.Index(resource)
 		if !ok {
 			return 0, fmt.Errorf("rest resource %q is not defined", resource)
 		}
-		return stats[i], nil
+		return stats[statIndex], nil
 	}
-	res := Result{Resources: in.Current}
-	conditions := in.Conditions
-	for _, row := range occasion.Recovery {
-		if row.Resource == "conditions" {
-			if row.Mode == "clear" {
-				conditions = slices.DeleteFunc(slices.Clone(conditions), func(c Condition) bool {
-					return slices.Contains(row.Durations, c.Duration)
+	var result Result = Result{Resources: input.Current}
+	var conditions []Condition = input.Conditions
+	for _, recovery := range occasion.Recovery {
+		if recovery.Resource == "conditions" {
+			if recovery.Mode == "clear" {
+				conditions = slices.DeleteFunc(slices.Clone(conditions), func(condition Condition) bool {
+					return slices.Contains(recovery.Durations, condition.Duration)
 				})
 			}
 			continue
 		}
-		var slot *int64
-		switch row.Resource {
+		var resourceValue *int64
+		switch recovery.Resource {
 		case "hp":
-			slot = &res.HP
+			resourceValue = &result.HitPoints
 		case "mp":
-			slot = &res.MP
+			resourceValue = &result.ManaPoints
 		case "stamina":
-			slot = &res.Stamina
+			resourceValue = &result.Stamina
 		case "ap":
-			slot = &res.AP
+			resourceValue = &result.ActionPoints
 		default:
-			return Result{}, fmt.Errorf("rest resource %q is not defined", row.Resource)
+			return Result{}, fmt.Errorf("rest resource %q is not defined", recovery.Resource)
 		}
-		limit, err := maximum(row.Resource)
+		limit, err := maximumOf(recovery.Resource)
 		if err != nil {
 			return Result{}, err
 		}
-		switch row.Mode {
+		switch recovery.Mode {
 		case "full":
-			*slot = limit
+			*resourceValue = limit
 		case "fraction":
-			*slot = min(limit, *slot+limit*row.Numerator/row.Denominator)
+			*resourceValue = min(limit, *resourceValue+limit*recovery.Numerator/recovery.Denominator)
 		}
 	}
-	res.Conditions = make([]string, len(conditions))
-	for i, c := range conditions {
-		res.Conditions[i] = c.Key
+	result.Conditions = make([]string, len(conditions))
+	for index, condition := range conditions {
+		result.Conditions[index] = condition.Key
 	}
-	return res, nil
+	return result, nil
 }

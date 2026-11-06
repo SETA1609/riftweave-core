@@ -18,52 +18,52 @@ import (
 type opcode uint8
 
 const (
-	opLit opcode = iota
-	opAttr
-	opVar
-	opAdd
-	opSub
-	opMul
-	opDiv
+	opcodeLiteral opcode = iota
+	opcodeAttribute
+	opcodeVariable
+	opcodeAdd
+	opcodeSubtract
+	opcodeMultiply
+	opcodeDivide
 )
 
 const stackSize = 32
 
-type instr struct {
-	op  opcode
-	arg int64 // literal, ability, variable slot, or argument count
+type instruction struct {
+	operation opcode
+	argument  int64 // literal, ability, variable slot, or argument count
 }
 
 // Program is a compiled formula. Its zero value evaluates to an error.
 type Program struct {
-	code []instr
-	vars []string
+	instructions  []instruction
+	variableNames []string
 }
 
-// Var is a named input of a formula, such as `level` or `base_cp`.
-type Var struct {
-	Name string
-	Val  int64
+// Variable is a named input of a formula, such as `level` or `base_cp`.
+type Variable struct {
+	Name  string
+	Value int64
 }
 
 type node struct {
-	Lit  *int64  `json:"lit"`
-	Attr *string `json:"attr"`
-	Var  *string `json:"var"`
-	Op   string  `json:"op"`
-	Args []node  `json:"args"`
+	Literal   *int64  `json:"lit"`
+	Attribute *string `json:"attr"`
+	Variable  *string `json:"var"`
+	Operation string  `json:"op"`
+	Arguments []node  `json:"args"`
 }
 
 // UnmarshalJSON compiles the tree it reads, so a data struct can hold a Program directly.
-func (p *Program) UnmarshalJSON(b []byte) error {
+func (program *Program) UnmarshalJSON(encoded []byte) error {
 	var root node
-	dec := json.NewDecoder(bytes.NewReader(b))
-	dec.DisallowUnknownFields()
-	if err := dec.Decode(&root); err != nil {
+	var decoder *json.Decoder = json.NewDecoder(bytes.NewReader(encoded))
+	decoder.DisallowUnknownFields()
+	if err := decoder.Decode(&root); err != nil {
 		return err
 	}
-	*p = Program{}
-	depth, err := p.emit(root)
+	*program = Program{}
+	depth, err := program.emit(root)
 	if err != nil {
 		return err
 	}
@@ -74,132 +74,132 @@ func (p *Program) UnmarshalJSON(b []byte) error {
 }
 
 // emit appends the node's instructions and returns the stack depth they need.
-func (p *Program) emit(n node) (int, error) {
+func (program *Program) emit(tree node) (int, error) {
 	switch {
-	case n.Lit != nil:
-		p.code = append(p.code, instr{opLit, *n.Lit})
+	case tree.Literal != nil:
+		program.instructions = append(program.instructions, instruction{opcodeLiteral, *tree.Literal})
 		return 1, nil
-	case n.Attr != nil:
-		ab, ok := actor.ByKey(*n.Attr)
+	case tree.Attribute != nil:
+		ability, ok := actor.ByKey(*tree.Attribute)
 		if !ok {
-			return 0, fmt.Errorf("%q is not an attribute", *n.Attr)
+			return 0, fmt.Errorf("%q is not an attribute", *tree.Attribute)
 		}
-		p.code = append(p.code, instr{opAttr, int64(ab)})
+		program.instructions = append(program.instructions, instruction{opcodeAttribute, int64(ability)})
 		return 1, nil
-	case n.Var != nil:
-		slot := -1
-		for i, name := range p.vars {
-			if name == *n.Var {
-				slot = i
+	case tree.Variable != nil:
+		var slot int = -1
+		for index, name := range program.variableNames {
+			if name == *tree.Variable {
+				slot = index
 			}
 		}
 		if slot < 0 {
-			slot = len(p.vars)
-			p.vars = append(p.vars, *n.Var)
+			slot = len(program.variableNames)
+			program.variableNames = append(program.variableNames, *tree.Variable)
 		}
-		p.code = append(p.code, instr{opVar, int64(slot)})
+		program.instructions = append(program.instructions, instruction{opcodeVariable, int64(slot)})
 		return 1, nil
 	}
-	var op opcode
-	switch n.Op {
+	var operation opcode
+	switch tree.Operation {
 	case "add":
-		op = opAdd
+		operation = opcodeAdd
 	case "sub":
-		op = opSub
+		operation = opcodeSubtract
 	case "mul":
-		op = opMul
+		operation = opcodeMultiply
 	case "div":
-		op = opDiv
-		if len(n.Args) != 2 {
+		operation = opcodeDivide
+		if len(tree.Arguments) != 2 {
 			return 0, errors.New("div takes two arguments")
 		}
 	default:
-		return 0, fmt.Errorf("formula op %q has no implementation", n.Op)
+		return 0, fmt.Errorf("formula op %q has no implementation", tree.Operation)
 	}
-	if op == opSub && len(n.Args) == 0 {
+	if operation == opcodeSubtract && len(tree.Arguments) == 0 {
 		return 0, errors.New("sub takes at least one argument")
 	}
-	depth := 0
-	for i, arg := range n.Args {
-		d, err := p.emit(arg)
+	var depth int = 0
+	for index, argument := range tree.Arguments {
+		argumentDepth, err := program.emit(argument)
 		if err != nil {
 			return 0, err
 		}
-		depth = max(depth, i+d)
+		depth = max(depth, index+argumentDepth)
 	}
-	p.code = append(p.code, instr{op, int64(len(n.Args))})
+	program.instructions = append(program.instructions, instruction{operation, int64(len(tree.Arguments))})
 	return max(depth, 1), nil
 }
 
-// FloorDiv is integer division that rounds toward negative infinity. b must not be 0.
-func FloorDiv(a, b int64) int64 {
-	q := a / b
-	if a%b != 0 && (a < 0) != (b < 0) {
-		q--
+// FloorDivide is integer division that rounds toward negative infinity. divisor must not be 0.
+func FloorDivide(dividend, divisor int64) int64 {
+	var quotient int64 = dividend / divisor
+	if dividend%divisor != 0 && (dividend < 0) != (divisor < 0) {
+		quotient--
 	}
-	return q
+	return quotient
 }
 
-// Eval runs the program. attrs may be nil when the formula reads no attribute.
-func (p *Program) Eval(attrs *actor.Attrs, vars ...Var) (int64, error) {
-	if len(p.code) == 0 {
+// Evaluate runs the program. attributes may be nil when the formula reads no attribute.
+func (program *Program) Evaluate(attributes *actor.Attributes, variables ...Variable) (int64, error) {
+	if len(program.instructions) == 0 {
 		return 0, errors.New("empty formula")
 	}
 	var stack [stackSize]int64
-	sp := 0
-	for _, in := range p.code {
-		switch in.op {
-		case opLit:
-			stack[sp] = in.arg
-			sp++
-		case opAttr:
-			ab := actor.Ability(in.arg)
-			if attrs == nil || !attrs.Has(ab) {
-				return 0, fmt.Errorf("formula reads attribute %q, which the actor does not have", ab)
+	var stackPointer int = 0
+	for _, step := range program.instructions {
+		switch step.operation {
+		case opcodeLiteral:
+			stack[stackPointer] = step.argument
+			stackPointer++
+		case opcodeAttribute:
+			var ability actor.Ability = actor.Ability(step.argument)
+			if attributes == nil || !attributes.Has(ability) {
+				return 0, fmt.Errorf("formula reads attribute %q, which the actor does not have", ability)
 			}
-			stack[sp] = attrs.Get(ab)
-			sp++
-		case opVar:
-			name := p.vars[in.arg]
-			found := false
-			for _, v := range vars {
-				if v.Name == name {
-					stack[sp], found = v.Val, true
+			stack[stackPointer] = attributes.Get(ability)
+			stackPointer++
+		case opcodeVariable:
+			var name string = program.variableNames[step.argument]
+			var found bool = false
+			for _, variable := range variables {
+				if variable.Name == name {
+					stack[stackPointer], found = variable.Value, true
 					break
 				}
 			}
 			if !found {
 				return 0, fmt.Errorf("formula reads variable %q, which was not given", name)
 			}
-			sp++
+			stackPointer++
 		default:
-			n := int(in.arg)
-			args := stack[sp-n : sp]
-			var out int64
-			switch in.op {
-			case opAdd:
-				for _, a := range args {
-					out += a
+			var argumentCount int = int(step.argument)
+			var arguments []int64 = stack[stackPointer-argumentCount : stackPointer]
+			var result int64
+			switch step.operation {
+			case opcodeAdd:
+				for _, argument := range arguments {
+					result += argument
 				}
-			case opSub:
-				out = args[0]
-				for _, a := range args[1:] {
-					out -= a
+			case opcodeSubtract:
+				result = arguments[0]
+				for _, argument := range arguments[1:] {
+					result -= argument
 				}
-			case opMul:
-				out = 1
-				for _, a := range args {
-					out *= a
+			case opcodeMultiply:
+				result = 1
+				for _, argument := range arguments {
+					result *= argument
 				}
-			case opDiv:
-				if args[1] == 0 {
+			case opcodeDivide:
+				if arguments[1] == 0 {
 					return 0, errors.New("formula divides by zero")
 				}
-				out = FloorDiv(args[0], args[1])
+				result = FloorDivide(arguments[0], arguments[1])
 			}
-			sp -= n
-			stack[sp] = out
-			sp++
+			stackPointer -= argumentCount
+			stack[stackPointer] = result
+			stackPointer++
 		}
 	}
 	return stack[0], nil

@@ -25,43 +25,44 @@ type Result struct {
 	Affects     string  `json:"affects"`
 }
 
-var unrelated = Result{"unrelated", "none", 1, "none"}
+var unrelated Result = Result{Cycle: "unrelated", Interaction: "none", Multiplier: 1, Affects: "none"}
 
 // Run is the `wuxing` command.
-func Run(rs *data.Ruleset, in Input) (Result, error) {
-	if in.ActorPhase == nil || in.RecipientPhase == nil || *in.ActorPhase == "" || *in.RecipientPhase == "" {
+func Run(ruleset *data.Ruleset, input Input) (Result, error) {
+	if input.ActorPhase == nil || input.RecipientPhase == nil || *input.ActorPhase == "" || *input.RecipientPhase == "" {
 		return unrelated, nil
 	}
-	if *in.ActorPhase == *in.RecipientPhase {
-		return Result{"same_phase", "identity", 1, "none"}, nil
+	if *input.ActorPhase == *input.RecipientPhase {
+		return Result{Cycle: "same_phase", Interaction: "identity", Multiplier: 1, Affects: "none"}, nil
 	}
-	w := &rs.Wuxing
-	from, to := w.Phase(*in.ActorPhase), w.Phase(*in.RecipientPhase)
+	var wuxing *data.Wuxing = &ruleset.Wuxing
+	var from, to int = wuxing.Phase(*input.ActorPhase), wuxing.Phase(*input.RecipientPhase)
 	if from < 0 || to < 0 {
 		return unrelated, nil
 	}
-	for i := range w.Cycles {
-		c := &w.Cycles[i]
-		if !c.Has(from, to) {
+	for index := range wuxing.Cycles {
+		var cycle *data.Cycle = &wuxing.Cycles[index]
+		if !cycle.Has(from, to) {
 			continue
 		}
-		if c.Gate != nil && in.ActorMagnitude != nil && in.RecipientMagnitude != nil && !(*in.ActorMagnitude > *in.RecipientMagnitude) {
+		var bothMagnitudesGiven bool = input.ActorMagnitude != nil && input.RecipientMagnitude != nil
+		if cycle.Gate != nil && bothMagnitudesGiven && !(*input.ActorMagnitude > *input.RecipientMagnitude) {
 			// The gate failed: the named cycle applies to the reversed pair, so the side it
 			// modifies flips with it.
-			fallback, ok := w.Cycle(c.Gate.OtherwiseCycle)
+			fallback, ok := wuxing.Cycle(cycle.Gate.OtherwiseCycle)
 			if !ok {
-				return Result{}, fmt.Errorf("cycle %q names the unknown cycle %q", c.ID, c.Gate.OtherwiseCycle)
+				return Result{}, fmt.Errorf("cycle %q names the unknown cycle %q", cycle.Identifier, cycle.Gate.OtherwiseCycle)
 			}
 			if !fallback.Has(to, from) {
 				return unrelated, nil
 			}
-			affects := "recipient"
+			var affects string = "recipient"
 			if fallback.Affects == "recipient" {
 				affects = "actor"
 			}
-			return Result{fallback.ID, fallback.Interaction, fallback.Multiplier, affects}, nil
+			return Result{Cycle: fallback.Identifier, Interaction: fallback.Interaction, Multiplier: fallback.Multiplier, Affects: affects}, nil
 		}
-		return Result{c.ID, c.Interaction, c.Multiplier, c.Affects}, nil
+		return Result{Cycle: cycle.Identifier, Interaction: cycle.Interaction, Multiplier: cycle.Multiplier, Affects: cycle.Affects}, nil
 	}
 	return unrelated, nil
 }

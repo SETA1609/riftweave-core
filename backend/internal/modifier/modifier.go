@@ -13,183 +13,192 @@ import (
 	"slices"
 )
 
-// Op is what a modifier does to its target.
-type Op uint8
+// Operation is what a modifier does to its target.
+type Operation uint8
 
 const (
-	Add Op = iota
-	Mul
+	Add Operation = iota
+	Multiply
 	Set
 	Grant
 	Resist
 )
 
-var opNames = [...]string{"add", "mul", "set", "grant", "resist"}
+var operationNames = [...]string{"add", "mul", "set", "grant", "resist"}
 
-// UnmarshalText reads an op name.
-func (o *Op) UnmarshalText(b []byte) error {
-	for i, name := range opNames {
-		if name == string(b) {
-			*o = Op(i)
+// UnmarshalText reads an operation name.
+func (operation *Operation) UnmarshalText(encoded []byte) error {
+	for index, name := range operationNames {
+		if name == string(encoded) {
+			*operation = Operation(index)
 			return nil
 		}
 	}
-	return fmt.Errorf("modifier op %q is not defined", b)
+	return fmt.Errorf("modifier op %q is not defined", encoded)
 }
 
-func (o Op) String() string { return opNames[o] }
+func (operation Operation) String() string { return operationNames[operation] }
 
 // Modifier is one opcode on one target (ruleset/schemas/schema.json, "modifier").
 type Modifier struct {
-	Target   string  `json:"target"`
-	Op       Op      `json:"op"`
-	Value    float64 `json:"value"`
-	Source   string  `json:"source"`
-	Origin   string  `json:"origin,omitempty"`
-	Duration string  `json:"duration,omitempty"`
-	Turns    int64   `json:"turns,omitempty"`
-	Stack    string  `json:"stack,omitempty"`
+	Target    string    `json:"target"`
+	Operation Operation `json:"op"`
+	Value     float64   `json:"value"`
+	Source    string    `json:"source"`
+	Origin    string    `json:"origin,omitempty"`
+	Duration  string    `json:"duration,omitempty"`
+	Turns     int64     `json:"turns,omitempty"`
+	Stack     string    `json:"stack,omitempty"`
 }
 
-// Highest maps an origin ref to whether its policy is `highest`. An origin that is not in
-// the map has no policy, which is an error.
-type Highest map[string]bool
+// OriginPolicies maps an origin ref to whether its policy is `highest`. An origin that is
+// not in the map has no policy, which is an error.
+type OriginPolicies map[string]bool
 
 // Live drops the modifiers of removed sources and the `turns` modifiers that have elapsed.
-func Live(mods []Modifier, elapsedTurns int64, removed []string) []Modifier {
-	live := make([]Modifier, 0, len(mods))
-	for _, m := range mods {
-		if slices.Contains(removed, m.Source) {
+func Live(modifiers []Modifier, elapsedTurns int64, removedSources []string) []Modifier {
+	var live []Modifier = make([]Modifier, 0, len(modifiers))
+	for _, candidate := range modifiers {
+		if slices.Contains(removedSources, candidate.Source) {
 			continue
 		}
-		if m.Duration == "turns" && elapsedTurns >= m.Turns {
+		if candidate.Duration == "turns" && elapsedTurns >= candidate.Turns {
 			continue
 		}
-		live = append(live, m)
+		live = append(live, candidate)
 	}
 	return live
 }
 
 type groupKey struct {
 	origin, source, target string
-	op                     Op
+	operation              Operation
 }
 
-// keepStrongest groups the modifiers at idx by key and keeps the strongest of each group,
-// returning the survivors' indexes in list order.
-func keepStrongest(mods []Modifier, idx []int, key func(*Modifier) groupKey) []int {
-	groups := map[groupKey][]int{}
+// keepStrongest groups the modifiers at indexes by key and keeps the strongest of each
+// group, returning the survivors' indexes in list order.
+func keepStrongest(modifiers []Modifier, indexes []int, keyOf func(*Modifier) groupKey) []int {
+	var groups map[groupKey][]int = map[groupKey][]int{}
 	var order []groupKey
-	for _, i := range idx {
-		k := key(&mods[i])
-		if _, seen := groups[k]; !seen {
-			order = append(order, k)
+	for _, index := range indexes {
+		var key groupKey = keyOf(&modifiers[index])
+		if _, seen := groups[key]; !seen {
+			order = append(order, key)
 		}
-		groups[k] = append(groups[k], i)
+		groups[key] = append(groups[key], index)
 	}
 	var kept []int
-	for _, k := range order {
-		kept = append(kept, strongest(mods, groups[k])...)
+	for _, key := range order {
+		kept = append(kept, strongest(modifiers, groups[key])...)
 	}
 	slices.Sort(kept)
 	return kept
 }
 
-// strongest is the strongest bonus and the strongest penalty of one group (one op). `set`
-// is not ranked: the latest wins. The neutral value is 1 for mul and 0 for the others.
-func strongest(mods []Modifier, group []int) []int {
-	if mods[group[0]].Op == Set {
+// strongest is the strongest bonus and the strongest penalty of one group (one operation).
+// `set` is not ranked: the latest wins. The neutral value is 1 for mul and 0 for the others.
+func strongest(modifiers []Modifier, group []int) []int {
+	if modifiers[group[0]].Operation == Set {
 		return group[len(group)-1:]
 	}
-	neutral := 0.0
-	if mods[group[0]].Op == Mul {
+	var neutral float64 = 0.0
+	if modifiers[group[0]].Operation == Multiply {
 		neutral = 1
 	}
-	best, worst := -1, -1
-	for _, i := range group {
-		v := mods[i].Value
-		if v > neutral && (best < 0 || v > mods[best].Value) {
-			best = i
+	var bestIndex, worstIndex int = -1, -1
+	for _, index := range group {
+		var value float64 = modifiers[index].Value
+		if value > neutral && (bestIndex < 0 || value > modifiers[bestIndex].Value) {
+			bestIndex = index
 		}
-		if v < neutral && (worst < 0 || v < mods[worst].Value) {
-			worst = i
+		if value < neutral && (worstIndex < 0 || value < modifiers[worstIndex].Value) {
+			worstIndex = index
 		}
 	}
 	var kept []int
-	if best >= 0 {
-		kept = append(kept, best)
+	if bestIndex >= 0 {
+		kept = append(kept, bestIndex)
 	}
-	if worst >= 0 {
-		kept = append(kept, worst)
+	if worstIndex >= 0 {
+		kept = append(kept, worstIndex)
 	}
 	return kept
 }
 
-// Dedupe is steps 2 and 3: the same origin, source, target, and op keeps the strongest;
-// then a `highest` origin keeps its strongest bonus and penalty per target and op.
-func Dedupe(mods []Modifier, policy Highest) ([]Modifier, error) {
-	all := make([]int, len(mods))
-	for i := range all {
-		all[i] = i
+// Deduplicate is steps 2 and 3: the same origin, source, target, and operation keeps the
+// strongest; then a `highest` origin keeps its strongest bonus and penalty per target and
+// operation.
+func Deduplicate(modifiers []Modifier, policies OriginPolicies) ([]Modifier, error) {
+	var allIndexes []int = make([]int, len(modifiers))
+	for index := range allIndexes {
+		allIndexes[index] = index
 	}
-	kept := keepStrongest(mods, all, func(m *Modifier) groupKey { return groupKey{m.Origin, m.Source, m.Target, m.Op} })
-	var rest, highest []int
-	for _, i := range kept {
-		if origin := mods[i].Origin; origin != "" {
-			isHighest, ok := policy[origin]
+	var kept []int = keepStrongest(modifiers, allIndexes, func(candidate *Modifier) groupKey {
+		return groupKey{candidate.Origin, candidate.Source, candidate.Target, candidate.Operation}
+	})
+	var otherIndexes, highestIndexes []int
+	for _, index := range kept {
+		if origin := modifiers[index].Origin; origin != "" {
+			isHighest, ok := policies[origin]
 			if !ok {
 				return nil, fmt.Errorf("origin %q has no stacking policy", origin)
 			}
 			if isHighest {
-				highest = append(highest, i)
+				highestIndexes = append(highestIndexes, index)
 				continue
 			}
 		}
-		rest = append(rest, i)
+		otherIndexes = append(otherIndexes, index)
 	}
-	highest = keepStrongest(mods, highest, func(m *Modifier) groupKey { return groupKey{m.Origin, "", m.Target, m.Op} })
-	order := slices.Concat(rest, highest)
+	highestIndexes = keepStrongest(modifiers, highestIndexes, func(candidate *Modifier) groupKey {
+		return groupKey{candidate.Origin, "", candidate.Target, candidate.Operation}
+	})
+	var order []int = slices.Concat(otherIndexes, highestIndexes)
 	slices.Sort(order)
-	out := make([]Modifier, len(order))
-	for n, i := range order {
-		out[n] = mods[i]
+	var deduplicated []Modifier = make([]Modifier, len(order))
+	for position, index := range order {
+		deduplicated[position] = modifiers[index]
 	}
-	return out, nil
+	return deduplicated, nil
 }
 
-// Value is steps 1 to 6 for one numeric target: expire, dedupe, then add, mul (floored),
-// set. The caller passes the modifiers of one target; grant and resist carry no number.
-func Value(base int64, mods []Modifier, policy Highest, elapsedTurns int64, removed []string) (int64, error) {
-	deduped, err := Dedupe(Live(mods, elapsedTurns, removed), policy)
+// Value is steps 1 to 6 for one numeric target: expire, deduplicate, then add, mul
+// (floored), set. The caller passes the modifiers of one target; grant and resist carry no
+// number.
+func Value(base int64, modifiers []Modifier, policies OriginPolicies, elapsedTurns int64, removedSources []string) (int64, error) {
+	deduplicated, err := Deduplicate(Live(modifiers, elapsedTurns, removedSources), policies)
 	if err != nil {
 		return 0, err
 	}
-	value, factor, set, hasSet := float64(base), 1.0, 0.0, false
-	for _, m := range deduped {
-		switch m.Op {
+	var value float64 = float64(base)
+	var factor float64 = 1.0
+	var setValue float64 = 0.0
+	var hasSet bool = false
+	for _, current := range deduplicated {
+		switch current.Operation {
 		case Add:
-			value += m.Value
-		case Mul:
-			factor *= m.Value
+			value += current.Value
+		case Multiply:
+			factor *= current.Value
 		case Set:
-			set, hasSet = m.Value, true
+			setValue, hasSet = current.Value, true
 		}
 	}
 	if factor != 1 {
 		value = math.Floor(value * factor)
 	}
 	if hasSet {
-		value = set
+		value = setValue
 	}
 	return int64(math.Floor(value)), nil
 }
 
 // Flags are the targets that at least one live grant names, sorted.
-func Flags(mods []Modifier, elapsedTurns int64, removed []string) []string {
-	flags := []string{}
-	for _, m := range Live(mods, elapsedTurns, removed) {
-		if m.Op == Grant && !slices.Contains(flags, m.Target) {
-			flags = append(flags, m.Target)
+func Flags(modifiers []Modifier, elapsedTurns int64, removedSources []string) []string {
+	var flags []string = []string{}
+	for _, current := range Live(modifiers, elapsedTurns, removedSources) {
+		if current.Operation == Grant && !slices.Contains(flags, current.Target) {
+			flags = append(flags, current.Target)
 		}
 	}
 	slices.Sort(flags)
@@ -197,27 +206,27 @@ func Flags(mods []Modifier, elapsedTurns int64, removed []string) []string {
 }
 
 // Packet is a packet's amount after every live resist on its tag, never below zero.
-func Packet(amount int64, tag string, mods []Modifier, policy Highest, elapsedTurns int64, removed []string) (int64, error) {
-	deduped, err := Dedupe(Live(mods, elapsedTurns, removed), policy)
+func Packet(amount int64, tag string, modifiers []Modifier, policies OriginPolicies, elapsedTurns int64, removedSources []string) (int64, error) {
+	deduplicated, err := Deduplicate(Live(modifiers, elapsedTurns, removedSources), policies)
 	if err != nil {
 		return 0, err
 	}
-	total := 0.0
-	for _, m := range deduped {
-		if m.Op == Resist && m.Target == tag {
-			total += m.Value
+	var totalResist float64 = 0.0
+	for _, current := range deduplicated {
+		if current.Operation == Resist && current.Target == tag {
+			totalResist += current.Value
 		}
 	}
-	return max(int64(math.Floor(float64(amount)-total)), 0), nil
+	return max(int64(math.Floor(float64(amount)-totalResist)), 0), nil
 }
 
 // Target filters the modifiers that name one target.
-func Target(mods []Modifier, target string) []Modifier {
-	var out []Modifier
-	for _, m := range mods {
-		if m.Target == target {
-			out = append(out, m)
+func Target(modifiers []Modifier, target string) []Modifier {
+	var matching []Modifier
+	for _, current := range modifiers {
+		if current.Target == target {
+			matching = append(matching, current)
 		}
 	}
-	return out
+	return matching
 }

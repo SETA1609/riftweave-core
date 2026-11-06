@@ -12,10 +12,10 @@ import (
 	"github.com/SETA1609/riftweave-core/backend/internal/modifier"
 )
 
-// active is one condition on an actor: its row and its stacks.
-type active struct {
-	key    string
+// activeCondition is one condition on an actor: its row and its stacks.
+type activeCondition struct {
 	row    *data.Condition
+	key    string
 	stacks int64
 }
 
@@ -23,28 +23,28 @@ type active struct {
 // the order of an actor's conditions is the order of their modifiers, and `set` is won by
 // the last.
 type Stacks struct {
-	keys []string
-	vals []int64
+	keys   []string
+	counts []int64
 }
 
 // UnmarshalJSON reads the object in key order.
-func (s *Stacks) UnmarshalJSON(b []byte) error {
-	dec := json.NewDecoder(strings.NewReader(string(b)))
-	if tok, err := dec.Token(); err != nil || tok != json.Delim('{') {
+func (stacks *Stacks) UnmarshalJSON(encoded []byte) error {
+	var decoder *json.Decoder = json.NewDecoder(strings.NewReader(string(encoded)))
+	if token, err := decoder.Token(); err != nil || token != json.Delim('{') {
 		return errors.New("conditions must be an object")
 	}
-	*s = Stacks{}
-	for dec.More() {
-		tok, err := dec.Token()
+	*stacks = Stacks{}
+	for decoder.More() {
+		token, err := decoder.Token()
 		if err != nil {
 			return err
 		}
-		var n int64
-		if err := dec.Decode(&n); err != nil {
+		var count int64
+		if err := decoder.Decode(&count); err != nil {
 			return err
 		}
-		s.keys = append(s.keys, tok.(string))
-		s.vals = append(s.vals, n)
+		stacks.keys = append(stacks.keys, token.(string))
+		stacks.counts = append(stacks.counts, count)
 	}
 	return nil
 }
@@ -70,68 +70,68 @@ type Result struct {
 	Values     map[string]int64 `json:"values"`
 }
 
-type state []active
+type activeConditions []activeCondition
 
-func (s state) find(key string) int {
-	for i := range s {
-		if s[i].key == key {
-			return i
+func (conditions activeConditions) find(key string) int {
+	for index := range conditions {
+		if conditions[index].key == key {
+			return index
 		}
 	}
 	return -1
 }
 
-func (s *state) remove(key string) {
-	if i := s.find(key); i >= 0 {
-		*s = append((*s)[:i], (*s)[i+1:]...)
+func (conditions *activeConditions) remove(key string) {
+	if index := conditions.find(key); index >= 0 {
+		*conditions = append((*conditions)[:index], (*conditions)[index+1:]...)
 	}
 }
 
 // Run is the `conditions` command. An effect first removes the conditions it is
 // `removedBy`, then applies the ones it is `appliedBy`, each adding a stack up to its cap.
-func Run(rs *data.Ruleset, in Input) (Result, error) {
-	table := &rs.Conditions
-	var conds state
-	for i, key := range in.Conditions.keys {
+func Run(ruleset *data.Ruleset, input Input) (Result, error) {
+	var table *data.Conditions = &ruleset.Conditions
+	var active activeConditions
+	for index, key := range input.Conditions.keys {
 		row, ok := table.Table.Get(key)
 		if !ok {
 			return Result{}, fmt.Errorf("condition %q is not defined", key)
 		}
-		conds = append(conds, active{key, row, in.Conditions.vals[i]})
+		active = append(active, activeCondition{row: row, key: key, stacks: input.Conditions.counts[index]})
 	}
-	for _, event := range in.Events {
+	for _, event := range input.Events {
 		switch {
 		case event.Remove != "":
-			conds.remove(event.Remove[strings.LastIndex(event.Remove, "/")+1:])
+			active.remove(event.Remove[strings.LastIndex(event.Remove, "/")+1:])
 		case event.Effect != "":
-			for _, i := range table.RemovedBy[event.Effect] {
-				conds.remove(table.Table.At(i).Key)
+			for _, rowIndex := range table.RemovedBy[event.Effect] {
+				active.remove(table.Table.At(rowIndex).Key)
 			}
-			for _, i := range table.AppliedBy[event.Effect] {
-				row := table.Table.At(i)
-				if n := conds.find(row.Key); n >= 0 {
-					conds[n].stacks = min(conds[n].stacks+1, row.MaxStacks)
+			for _, rowIndex := range table.AppliedBy[event.Effect] {
+				var row *data.Condition = table.Table.At(rowIndex)
+				if position := active.find(row.Key); position >= 0 {
+					active[position].stacks = min(active[position].stacks+1, row.MaximumStacks)
 				} else {
-					conds = append(conds, active{row.Key, row, 1})
+					active = append(active, activeCondition{row: row, key: row.Key, stacks: 1})
 				}
 			}
 		default:
 			return Result{}, errors.New("an event needs `effect` or `remove`")
 		}
 	}
-	mods := append([]modifier.Modifier(nil), in.Modifiers...)
-	res := Result{Conditions: map[string]int64{}, Values: map[string]int64{}}
-	for _, c := range conds {
-		mods = append(mods, c.row.Modifiers...)
-		res.Conditions[c.key] = c.stacks
+	var modifiers []modifier.Modifier = append([]modifier.Modifier(nil), input.Modifiers...)
+	var result Result = Result{Conditions: map[string]int64{}, Values: map[string]int64{}}
+	for _, condition := range active {
+		modifiers = append(modifiers, condition.row.Modifiers...)
+		result.Conditions[condition.key] = condition.stacks
 	}
-	for target, base := range in.Base {
-		v, err := modifier.Value(base, modifier.Target(mods, target), rs.Origins, 0, nil)
+	for target, base := range input.Base {
+		value, err := modifier.Value(base, modifier.Target(modifiers, target), ruleset.Origins, 0, nil)
 		if err != nil {
 			return Result{}, err
 		}
-		res.Values[target] = v
+		result.Values[target] = value
 	}
-	res.Flags = modifier.Flags(mods, 0, nil)
-	return res, nil
+	result.Flags = modifier.Flags(modifiers, 0, nil)
+	return result, nil
 }

@@ -34,58 +34,58 @@ type Item struct {
 
 // Result is what dropped. A table input has `table`; a monster input has `tables`.
 type Result struct {
-	Table       *string   `json:"table,omitempty"`
-	Tables      *[]string `json:"tables,omitempty"`
-	Items       []Item    `json:"items"`
-	CoinsCP     int64     `json:"coins_cp"`
-	ValueCP     int64     `json:"value_cp"`
-	BudgetCP    int64     `json:"budget_cp"`
-	LooterShift int64     `json:"looter_shift"`
+	Table        *string   `json:"table,omitempty"`
+	Tables       *[]string `json:"tables,omitempty"`
+	Items        []Item    `json:"items"`
+	CoinsCopper  int64     `json:"coins_cp"`
+	ValueCopper  int64     `json:"value_cp"`
+	BudgetCopper int64     `json:"budget_cp"`
+	LooterShift  int64     `json:"looter_shift"`
 }
 
-type stack struct {
-	ref, material string
-	quantity      int64
+type itemStack struct {
+	reference, material string
+	quantity            int64
 }
 
 type roller struct {
-	rs    *data.Ruleset
-	items []stack
-	err   error
+	ruleset *data.Ruleset
+	err     error
+	items   []itemStack
 }
 
-func (r *roller) add(ref string, quantity int64, material string) {
-	item, ok := r.rs.Items[ref]
+func (roller *roller) add(reference string, quantity int64, material string) {
+	item, ok := roller.ruleset.Items[reference]
 	if !ok {
-		r.err = fmt.Errorf("item %q is not defined", ref)
+		roller.err = fmt.Errorf("item %q is not defined", reference)
 		return
 	}
 	if !item.TakesMaterial {
 		material = ""
 	}
-	for i := range r.items {
-		if r.items[i].ref == ref && r.items[i].material == material {
-			r.items[i].quantity += quantity
+	for index := range roller.items {
+		if roller.items[index].reference == reference && roller.items[index].material == material {
+			roller.items[index].quantity += quantity
 			return
 		}
 	}
-	r.items = append(r.items, stack{ref, material, quantity})
+	roller.items = append(roller.items, itemStack{reference: reference, material: material, quantity: quantity})
 }
 
-// table rolls one table and returns the copper it yields; its items are added.
-func (r *roller) table(t *data.LootTable, rolls []int64, shift int64, material string) int64 {
+// rollTable rolls one table and returns the copper it yields; its items are added.
+func (roller *roller) rollTable(table *data.LootTable, rolls []int64, shift int64, material string) int64 {
 	var coins int64
 	for _, roll := range rolls {
-		slot := t.ByRoll[min(max(roll+shift, 1), 100)-1]
-		if slot < 0 {
-			r.err = fmt.Errorf("%s has no entry for roll %d", t.Key, roll)
+		var entryIndex int8 = table.EntryIndexByRoll[min(max(roll+shift, 1), 100)-1]
+		if entryIndex < 0 {
+			roller.err = fmt.Errorf("%s has no entry for roll %d", table.Key, roll)
 			return 0
 		}
-		switch entry := &t.Entries[slot]; entry.Kind {
+		switch entry := &table.Entries[entryIndex]; entry.Kind {
 		case "coins":
-			coins += entry.CoinsCP
+			coins += entry.CoinsCopper
 		case "item":
-			r.add(entry.Item, entry.Quantity, material)
+			roller.add(entry.Item, entry.Quantity, material)
 		}
 	}
 	return coins
@@ -93,108 +93,114 @@ func (r *roller) table(t *data.LootTable, rolls []int64, shift int64, material s
 
 // result sorts and values the items at list price: the price formula at the item's cost,
 // the material's value factor, and 100 percent.
-func (r *roller) result(coins int64, level int64) (Result, error) {
-	if r.err != nil {
-		return Result{}, r.err
+func (roller *roller) result(coins int64, level int64) (Result, error) {
+	if roller.err != nil {
+		return Result{}, roller.err
 	}
-	rs := r.rs
-	slices.SortFunc(r.items, func(a, b stack) int {
-		return cmp.Or(cmp.Compare(a.ref, b.ref), cmp.Compare(a.material, b.material))
+	var ruleset *data.Ruleset = roller.ruleset
+	slices.SortFunc(roller.items, func(first, second itemStack) int {
+		return cmp.Or(cmp.Compare(first.reference, second.reference), cmp.Compare(first.material, second.material))
 	})
-	res := Result{Items: make([]Item, 0, len(r.items)), CoinsCP: coins}
-	value := coins
-	for _, s := range r.items {
-		percent := int64(100)
-		item := Item{Item: s.ref, Quantity: s.quantity}
-		if s.material != "" {
-			key := s.material[strings.LastIndex(s.material, "/")+1:]
-			p, ok := rs.MaterialPercent[key]
+	var result Result = Result{Items: make([]Item, 0, len(roller.items)), CoinsCopper: coins}
+	var value int64 = coins
+	for _, stack := range roller.items {
+		var percent int64 = 100
+		var item Item = Item{Item: stack.reference, Quantity: stack.quantity}
+		if stack.material != "" {
+			var materialKey string = stack.material[strings.LastIndex(stack.material, "/")+1:]
+			materialPercent, ok := ruleset.MaterialPercent[materialKey]
 			if !ok {
-				return Result{}, fmt.Errorf("material %q is not defined", s.material)
+				return Result{}, fmt.Errorf("material %q is not defined", stack.material)
 			}
-			percent = p
-			material := s.material
+			percent = materialPercent
+			var material string = stack.material
 			item.Material = &material
 		}
-		price, err := economy.Price(rs, rs.Items[s.ref].CostCP, percent, 100)
+		price, err := economy.Price(ruleset, ruleset.Items[stack.reference].CostCopper, percent, 100)
 		if err != nil {
 			return Result{}, err
 		}
-		value += price * s.quantity
-		res.Items = append(res.Items, item)
+		value += price * stack.quantity
+		result.Items = append(result.Items, item)
 	}
-	res.ValueCP = value
-	budget, err := rs.Loot.Budget.Eval(nil, formula.Var{Name: "level", Val: level})
-	res.BudgetCP = budget
-	return res, err
+	result.ValueCopper = value
+	budget, err := ruleset.Loot.BudgetCopper.Evaluate(nil, formula.Variable{Name: "level", Value: level})
+	result.BudgetCopper = budget
+	return result, err
 }
 
 // looterShift is Luck plus the looter's loot_roll modifiers, after kernel stacking. Luck
 // emits an innate add on loot_roll from formulas/loot_luck.json. No actor and no modifiers: 0.
-func looterShift(rs *data.Ruleset, in Input) (int64, error) {
-	mods := modifier.Target(in.Modifiers, "loot_roll")
-	if in.Actor != nil {
-		attrs := actor.Attrs{}.With(actor.Lck, in.Actor.Attributes.Get(actor.Lck))
-		luck, err := rs.LootLuck.Eval(&attrs)
+func looterShift(ruleset *data.Ruleset, input Input) (int64, error) {
+	var modifiers []modifier.Modifier = modifier.Target(input.Modifiers, "loot_roll")
+	if input.Actor != nil {
+		var attributes actor.Attributes = actor.Attributes{}.With(actor.Luck, input.Actor.Attributes.Get(actor.Luck))
+		luck, err := ruleset.LootLuck.Evaluate(&attributes)
 		if err != nil {
 			return 0, err
 		}
-		luckMod := modifier.Modifier{Target: "loot_roll", Op: modifier.Add, Value: float64(luck), Source: "attr:lck", Origin: "core:origin/innate"}
-		mods = append([]modifier.Modifier{luckMod}, mods...)
+		var luckModifier modifier.Modifier = modifier.Modifier{
+			Target:    "loot_roll",
+			Operation: modifier.Add,
+			Value:     float64(luck),
+			Source:    "attr:lck",
+			Origin:    "core:origin/innate",
+		}
+		modifiers = append([]modifier.Modifier{luckModifier}, modifiers...)
 	}
-	return modifier.Value(0, mods, rs.Origins, 0, nil)
+	return modifier.Value(0, modifiers, ruleset.Origins, 0, nil)
 }
 
 // Run is the `loot` command. A rule error, such as the wrong number of rolls, is an error.
-func Run(rs *data.Ruleset, in Input) (Result, error) {
-	for _, roll := range in.Rolls {
+func Run(ruleset *data.Ruleset, input Input) (Result, error) {
+	for _, roll := range input.Rolls {
 		if roll < 1 || roll > 100 {
 			return Result{}, fmt.Errorf("roll %d is not 1 to 100", roll)
 		}
 	}
-	looter, err := looterShift(rs, in)
+	looter, err := looterShift(ruleset, input)
 	if err != nil {
 		return Result{}, err
 	}
-	r := &roller{rs: rs}
-	if in.Table != "" {
-		t, ok := rs.Loot.Tables.Get(in.Table)
+	var lootRoller *roller = &roller{ruleset: ruleset}
+	if input.Table != "" {
+		table, ok := ruleset.Loot.Tables.Get(input.Table)
 		if !ok {
-			return Result{}, fmt.Errorf("table %q is not defined", in.Table)
+			return Result{}, fmt.Errorf("table %q is not defined", input.Table)
 		}
-		if int64(len(in.Rolls)) != t.Rolls {
-			return Result{}, fmt.Errorf("%s takes %d rolls, got %d", t.Key, t.Rolls, len(in.Rolls))
+		if int64(len(input.Rolls)) != table.Rolls {
+			return Result{}, fmt.Errorf("%s takes %d rolls, got %d", table.Key, table.Rolls, len(input.Rolls))
 		}
-		coins := r.table(t, in.Rolls, looter, "")
-		res, err := r.result(coins, t.Level)
-		res.Table, res.LooterShift = &t.Key, looter
-		return res, err
+		var coins int64 = lootRoller.rollTable(table, input.Rolls, looter, "")
+		result, err := lootRoller.result(coins, table.Level)
+		result.Table, result.LooterShift = &table.Key, looter
+		return result, err
 	}
 
-	drop, ok := rs.Loot.Drops.Get(in.Monster)
+	drop, ok := ruleset.Loot.Drops.Get(input.Monster)
 	if !ok {
-		return Result{}, fmt.Errorf("%q has no loot rows", in.Monster)
+		return Result{}, fmt.Errorf("%q has no loot rows", input.Monster)
 	}
-	level, ok := rs.MonsterLevel[in.Monster[strings.LastIndex(in.Monster, "/")+1:]]
+	level, ok := ruleset.MonsterLevel[input.Monster[strings.LastIndex(input.Monster, "/")+1:]]
 	if !ok {
-		return Result{}, fmt.Errorf("monster %q is not defined", in.Monster)
+		return Result{}, fmt.Errorf("monster %q is not defined", input.Monster)
 	}
 	var coins int64
-	used := 0
-	take := func(n int64) ([]int64, bool) {
-		if int64(len(in.Rolls)-used) < n {
+	var used int = 0
+	var take func(count int64) ([]int64, bool) = func(count int64) ([]int64, bool) {
+		if int64(len(input.Rolls)-used) < count {
 			return nil, false
 		}
-		taken := in.Rolls[used : used+int(n)]
-		used += int(n)
+		var taken []int64 = input.Rolls[used : used+int(count)]
+		used += int(count)
 		return taken, true
 	}
-	tables := []string{}
+	var tables []string = []string{}
 	for _, row := range drop.Loot {
 		if row.Chance != nil {
 			chance, ok := take(1)
 			if !ok {
-				return Result{}, fmt.Errorf("%s: ran out of rolls after %d", in.Monster, used)
+				return Result{}, fmt.Errorf("%s: ran out of rolls after %d", input.Monster, used)
 			}
 			// A row's chance after the looter shift, kept between 1 and 99.
 			if chance[0] > min(max(*row.Chance+looter, 1), 99) {
@@ -202,29 +208,29 @@ func Run(rs *data.Ruleset, in Input) (Result, error) {
 			}
 		}
 		if row.Item != "" {
-			quantity := int64(1)
+			var quantity int64 = 1
 			if row.Quantity != nil {
 				quantity = *row.Quantity
 			}
-			r.add(row.Item, quantity, row.Material)
+			lootRoller.add(row.Item, quantity, row.Material)
 			continue
 		}
-		t := rs.Loot.Tables.At(row.TableIdx)
-		tables = append(tables, t.Key)
-		n := t.Rolls
+		var table *data.LootTable = ruleset.Loot.Tables.At(row.TableIndex)
+		tables = append(tables, table.Key)
+		var rollCount int64 = table.Rolls
 		if row.Rolls != nil {
-			n = *row.Rolls
+			rollCount = *row.Rolls
 		}
-		rolls, ok := take(n)
+		rolls, ok := take(rollCount)
 		if !ok {
-			return Result{}, fmt.Errorf("%s: ran out of rolls after %d", in.Monster, used)
+			return Result{}, fmt.Errorf("%s: ran out of rolls after %d", input.Monster, used)
 		}
-		coins += r.table(t, rolls, row.Shift+looter, row.Material)
+		coins += lootRoller.rollTable(table, rolls, row.Shift+looter, row.Material)
 	}
-	if used != len(in.Rolls) {
-		return Result{}, fmt.Errorf("%s: %d rolls given, %d used", in.Monster, len(in.Rolls), used)
+	if used != len(input.Rolls) {
+		return Result{}, fmt.Errorf("%s: %d rolls given, %d used", input.Monster, len(input.Rolls), used)
 	}
-	res, err := r.result(coins, level)
-	res.Tables, res.LooterShift = &tables, looter
-	return res, err
+	result, err := lootRoller.result(coins, level)
+	result.Tables, result.LooterShift = &tables, looter
+	return result, err
 }
