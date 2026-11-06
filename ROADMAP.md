@@ -75,7 +75,7 @@ is the earliest wave of its open issues; stories in the same wave can run in par
 
 | Wave | Story | Keyword | Blocked by | Open issues |
 |---|---|---|---|---|
-| 0 | M2 | ready | — | 4 |
+| 0 | M2 | ready | — | 3 |
 | 0 | M3 | first (1), ready, critical | — | 3 |
 | 0 | M4 | ready | — | 1 |
 | 0 | M5 | ready, critical | M2, M3, M4 | 5 |
