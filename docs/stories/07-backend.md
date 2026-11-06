@@ -4,7 +4,7 @@ Roadmap: [APP](../../ROADMAP.md#app-reference-backend). Format and rules: [READM
 
 ## APP Reference backend
 
-**Goal:** one fast backend, written in Go, serves the ruleset: every rule the vectors pin can be called as a command, by an agent CLI, a human CLI, an HTTP API, or the Angular frontend, with the same inputs, results, and rolls. It is a second implementation of the kernel, checked against every vector in CI, so it cannot drift from the rules. It adds no rules; the vectors stay the authority.
+**Goal:** one fast backend, written in Go, serves the ruleset, built alongside the rules rather than after them: every rule the vectors pin can be called as a command, by an agent CLI, a human CLI, an HTTP API, or the Angular frontend, with the same inputs, results, and rolls. It is a second implementation of the kernel, checked against every vector in CI, so it cannot drift from the rules. It adds no rules; the vectors stay the authority.
 
 **Spec:** `docs/backend/` (written in APP-01). Rules stay in `docs/core/` and `docs/modules/`.
 
@@ -15,8 +15,8 @@ Done: APP-01 ([done.md](done.md#app-reference-backend))
 #### APP-02 Go core: the kernel in Go, every vector in CI
 - Status: todo
 - Priority: medium
-- Needs: APP-01, M1-01, M1-04, M1-05
-- Do: A Go module in `backend/` that loads `ruleset/data/` (and module data), evaluates formula trees, and implements every command in the contract. It reads coefficients from the data, never from constants. A Go test runs every file in `ruleset/tests/vectors/` and fails on any disagreement, and CI runs it on every PR. It starts after M1 closes, so the kernel stops changing before it is built twice. From then on a rule issue's data step updates the Python reference and Go together; CONTRIBUTING says so.
+- Needs: APP-01
+- Do: A Go module in `backend/` that loads `ruleset/data/` (and module data), evaluates formula trees, and implements every command in the contract. It reads coefficients from the data, never from constants. A Go test runs every file in `ruleset/tests/vectors/` and fails on any disagreement, and CI runs it on every PR. It starts with the commands that exist and grows with the rules: from then on a rule issue that adds or changes a function updates the Python reference, the Go core, and the contract in the same pull request; CONTRIBUTING says so.
 - Keys: Go module `backend/`; package per kernel area (formula, resolution, combat, ...)
 - Files: ~15 (backend/, .github/workflows/, CONTRIBUTING.md, docs/backend/README.md)
 - See: docs/core/vectors.md, backend/contract/
@@ -35,12 +35,12 @@ Done: APP-01 ([done.md](done.md#app-reference-backend))
 #### APP-04 Session state and the play chain
 - Status: todo
 - Priority: medium
-- Needs: APP-02, M5-04
-- Do: Commands are stateless. Add a session: an actor snapshot (HP, MP, AP, XP, level, inventory, conditions) that commands read and update, so a chain like M5-04's playthrough (create, buy, fight, loot, rest, level, cast) runs as calls. Sessions serialize to JSON so a run can be saved, replayed, or turned into vectors.
+- Needs: APP-02
+- Do: Commands are stateless. Add a session: an actor snapshot (HP, MP, AP, XP, level, inventory, conditions) that commands read and update, so a chain of commands (create, buy, fight, loot, rest, level, cast) runs as calls. The chain grows with the rules; M5-04's playthrough runs through it once it lands. Sessions serialize to JSON so a run can be saved, replayed, or turned into vectors.
 - Keys: session object and its schema in `backend/contract/`; `session` input on commands
 - Files: ~6 (backend/, backend/contract/, docs/backend/sessions.md)
 - See: docs/core/loop.md, docs/stories/05-release.md (M5-04)
-- Done when: the M5-04 playthrough runs as a sequence of backend calls and matches its vectors; a saved session replays to the same result.
+- Done when: a chain of the commands that exist (at least derived, combat, rest, progression) runs as backend calls and matches their vectors; a saved session replays to the same result.
 
 #### APP-05 Human CLI
 - Status: todo

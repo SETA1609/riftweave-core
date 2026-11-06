@@ -57,10 +57,12 @@ Run these from the repo root (`DT` is `uv run --project tools/devops --locked --
   a dropped issue stays in its file marked `dropped` with a one-line reason.
 - **Older ids:** `SET-NN` (tracked in Linear) and `RW-NN` (this tracker until M5-01) keep
   their ids in [done.md](done.md). An open issue that was renumbered says so in `Was:`.
-- **Branch:** `<issue-id>-<slug>` for human work, `agent/<agent-name>/<issue-id>-<slug>` for
-  agent work, for example `M1-07-one-test-runs-every-vector-file`. The slug is the issue title
-  in lowercase kebab-case, shortened if long. No branch without an issue; if work has none,
-  add one to the story file first.
+- **Branch:** `<issue-id>-<slug>`, for people and agents alike (no `agent/<name>/` prefix),
+  for example `M1-07-one-test-runs-every-vector-file`. The slug is the issue title
+  in lowercase kebab-case, shortened if long. An issue split by area over the 20-file limit
+  uses `<issue-id>-ruleset-<slug>` and `<issue-id>-backend-<slug>`, the ruleset one first
+  ([CONTRIBUTING](../../CONTRIBUTING.md#pull-request-rules)). No branch without an issue; if
+  work has none, add one to the story file first.
 - **PR title:** `<issue-id> <issue title>`.
 
 ## Workflow
