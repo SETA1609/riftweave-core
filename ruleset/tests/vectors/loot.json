@@ -456,5 +456,283 @@
     "expect": {
       "error": "core:monster/skeleton: 3 rolls given, 2 used"
     }
+  },
+  {
+    "name": "looter: LCK 10 is +10, so a dire wolf's 75 is 75 + 15 + 10 = 100, a shortbow",
+    "monster": "core:monster/dire_wolf",
+    "rolls": [
+      75
+    ],
+    "actor": {
+      "attributes": {
+        "lck": 10
+      }
+    },
+    "expect": {
+      "looter_shift": 10,
+      "items": [
+        {
+          "item": "core:weapon/shortbow",
+          "quantity": 1
+        }
+      ],
+      "value_cp": 2500
+    }
+  },
+  {
+    "name": "looter: LCK 5 is neutral, so the same 75 is 90, 5 gp",
+    "monster": "core:monster/dire_wolf",
+    "rolls": [
+      75
+    ],
+    "actor": {
+      "attributes": {
+        "lck": 5
+      }
+    },
+    "expect": {
+      "looter_shift": 0,
+      "items": [],
+      "coins_cp": 500
+    }
+  },
+  {
+    "name": "looter: LCK 1 is -8, so a dire wolf's 63 is 70, nothing (78 without the looter)",
+    "monster": "core:monster/dire_wolf",
+    "rolls": [
+      63
+    ],
+    "actor": {
+      "attributes": {
+        "lck": 1
+      }
+    },
+    "expect": {
+      "looter_shift": -8,
+      "items": [],
+      "value_cp": 0
+    }
+  },
+  {
+    "name": "looter: the Scavenger perk adds 10, so a grove stalker's 61 is 71, 5 gp",
+    "monster": "core:monster/grove_stalker",
+    "rolls": [
+      61
+    ],
+    "actor": {
+      "attributes": {
+        "lck": 5
+      }
+    },
+    "modifiers": [
+      {
+        "target": "loot_roll",
+        "op": "add",
+        "value": 10,
+        "source": "perk:scavenger",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "looter_shift": 10,
+      "coins_cp": 500
+    }
+  },
+  {
+    "name": "looter: two alchemy fortunes keep the larger (+10, not +15), plus the perk: +20, so 76 is 96, a shortbow",
+    "monster": "core:monster/grove_stalker",
+    "rolls": [
+      76
+    ],
+    "actor": {
+      "attributes": {
+        "lck": 5
+      }
+    },
+    "modifiers": [
+      {
+        "target": "loot_roll",
+        "op": "add",
+        "value": 10,
+        "source": "effect:fortune",
+        "origin": "core:origin/alchemy"
+      },
+      {
+        "target": "loot_roll",
+        "op": "add",
+        "value": 5,
+        "source": "effect:lucky_draught",
+        "origin": "core:origin/alchemy"
+      },
+      {
+        "target": "loot_roll",
+        "op": "add",
+        "value": 10,
+        "source": "perk:scavenger",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "looter_shift": 20,
+      "items": [
+        {
+          "item": "core:weapon/shortbow",
+          "quantity": 1
+        }
+      ]
+    }
+  },
+  {
+    "name": "looter: a table roll never drops below 1: a cursed 10 - 30 is 1, 3 sp",
+    "table": "bandit_purse",
+    "rolls": [
+      10
+    ],
+    "modifiers": [
+      {
+        "target": "loot_roll",
+        "op": "add",
+        "value": -30,
+        "source": "effect:curse"
+      }
+    ],
+    "expect": {
+      "looter_shift": -30,
+      "coins_cp": 30
+    }
+  },
+  {
+    "name": "looter: a treasure cache takes the shift too: LCK 10 makes the purse's 85 a 95, a healing potion",
+    "table": "bandit_purse",
+    "rolls": [
+      85
+    ],
+    "actor": {
+      "attributes": {
+        "lck": 10
+      }
+    },
+    "expect": {
+      "looter_shift": 10,
+      "items": [
+        {
+          "item": "core:consumable/potion_minor_healing",
+          "quantity": 1
+        }
+      ]
+    }
+  },
+  {
+    "name": "looter: the shift raises a chance: LCK 10 makes the spear 20 + 10 = 30, and 30 yields it",
+    "monster": "core:monster/skeleton",
+    "rolls": [
+      60,
+      30
+    ],
+    "actor": {
+      "attributes": {
+        "lck": 10
+      }
+    },
+    "expect": {
+      "looter_shift": 10,
+      "items": [
+        {
+          "item": "core:weapon/spear",
+          "quantity": 1
+        }
+      ],
+      "coins_cp": 20,
+      "value_cp": 520
+    }
+  },
+  {
+    "name": "looter: a chance stops at 99: +90 makes the spear 99, and 99 yields it",
+    "monster": "core:monster/skeleton",
+    "rolls": [
+      5,
+      99
+    ],
+    "modifiers": [
+      {
+        "target": "loot_roll",
+        "op": "add",
+        "value": 90,
+        "source": "effect:blessing_of_plenty"
+      }
+    ],
+    "expect": {
+      "items": [
+        {
+          "item": "core:armor/cap_hood",
+          "quantity": 1
+        },
+        {
+          "item": "core:weapon/spear",
+          "quantity": 1
+        }
+      ]
+    }
+  },
+  {
+    "name": "looter: a chance stops at 99: 100 still fails",
+    "monster": "core:monster/skeleton",
+    "rolls": [
+      5,
+      100
+    ],
+    "modifiers": [
+      {
+        "target": "loot_roll",
+        "op": "add",
+        "value": 90,
+        "source": "effect:blessing_of_plenty"
+      }
+    ],
+    "expect": {
+      "items": [
+        {
+          "item": "core:armor/cap_hood",
+          "quantity": 1
+        }
+      ]
+    }
+  },
+  {
+    "name": "looter: a chance stops at 1: a -50 curse leaves the spear at 1, and 1 yields it",
+    "monster": "core:monster/skeleton",
+    "rolls": [
+      95,
+      1
+    ],
+    "modifiers": [
+      {
+        "target": "loot_roll",
+        "op": "add",
+        "value": -50,
+        "source": "effect:curse"
+      }
+    ],
+    "expect": {
+      "looter_shift": -50,
+      "items": [
+        {
+          "item": "core:weapon/spear",
+          "quantity": 1
+        }
+      ],
+      "value_cp": 500
+    }
+  },
+  {
+    "name": "no looter: the looter shift is 0",
+    "table": "bandit_purse",
+    "rolls": [
+      10
+    ],
+    "expect": {
+      "looter_shift": 0,
+      "coins_cp": 30
+    }
   }
 ]

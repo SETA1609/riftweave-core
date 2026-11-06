@@ -1,0 +1,11 @@
+{
+  "key": "loot_luck",
+  "round": "floor",
+  "expr": {
+    "op": "mul",
+    "args": [
+      { "op": "sub", "args": [{ "attr": "lck" }, { "lit": 5 }] },
+      { "lit": 2 }
+    ]
+  }
+}
