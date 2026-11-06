@@ -191,49 +191,16 @@
     }
   ],
   "drops": [
-    {
-      "monster": "core:monster/bandit",
-      "table": "bandit_purse"
-    },
-    {
-      "monster": "core:monster/skeleton",
-      "table": "grave_goods"
-    },
-    {
-      "monster": "core:monster/zombie",
-      "table": "grave_goods"
-    },
-    {
-      "monster": "core:monster/dire_wolf",
-      "table": "beast_den"
-    },
-    {
-      "monster": "core:monster/grove_stalker",
-      "table": "beast_den"
-    },
-    {
-      "monster": "core:monster/frost_revenant",
-      "table": "hoard_minor"
-    },
-    {
-      "monster": "core:monster/ice_elemental",
-      "table": "hoard_minor"
-    },
-    {
-      "monster": "core:monster/fire_elemental",
-      "table": "hoard_minor"
-    },
-    {
-      "monster": "core:monster/stone_golem",
-      "table": "hoard_minor"
-    },
-    {
-      "monster": "core:monster/ember_drake",
-      "table": "hoard_major"
-    },
-    {
-      "monster": "core:monster/iron_sentinel",
-      "table": "hoard_major"
-    }
+    { "monster": "core:monster/bandit", "loot": [{ "table": "bandit_purse" }] },
+    { "monster": "core:monster/skeleton", "loot": [{ "table": "grave_goods" }, { "item": "core:weapon/spear", "chance": 20 }] },
+    { "monster": "core:monster/zombie", "loot": [{ "table": "grave_goods" }] },
+    { "monster": "core:monster/dire_wolf", "loot": [{ "table": "beast_den", "shift": 15 }] },
+    { "monster": "core:monster/grove_stalker", "loot": [{ "table": "beast_den" }] },
+    { "monster": "core:monster/frost_revenant", "loot": [{ "table": "hoard_minor" }, { "item": "core:consumable/coating_frost", "chance": 20 }] },
+    { "monster": "core:monster/ice_elemental", "loot": [{ "table": "hoard_minor", "rolls": 1 }, { "item": "core:consumable/coating_frost", "chance": 40 }] },
+    { "monster": "core:monster/fire_elemental", "loot": [{ "table": "hoard_minor" }, { "item": "core:consumable/potion_fire_resistance", "chance": 30 }] },
+    { "monster": "core:monster/stone_golem", "loot": [{ "table": "hoard_minor", "material": "core:material/steel" }] },
+    { "monster": "core:monster/ember_drake", "loot": [{ "table": "hoard_major", "rolls": 1 }, { "table": "hoard_minor", "rolls": 1 }] },
+    { "monster": "core:monster/iron_sentinel", "loot": [{ "table": "hoard_major" }] }
   ]
 }

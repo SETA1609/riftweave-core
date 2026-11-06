@@ -61,16 +61,34 @@ def item_cost(ref):
     return cost
 
 
-def item_value_cp(ref):
+MATERIAL_CATEGORIES = ("weapon", "armor")
+
+
+def takes_material(ref):
+    """Only weapons and armor take a loot row's material."""
+    return ref.split(":", 1)[1].split("/", 1)[0] in MATERIAL_CATEGORIES
+
+
+def value_percent(material):
+    """100, or the material's valueFactor times 100 (docs/core/economy.md)."""
+    if material is None:
+        return 100
+    key = material.rsplit("/", 1)[-1]
+    row = next(m for m in load_data("materials/core.json")["materials"] if m["key"] == key)
+    return round(row["valueFactor"] * 100)
+
+
+def item_value_cp(ref, material=None):
     price = load_data("formulas/price.json")["expr"]
-    return evaluate(price, {"base_cp": to_copper(item_cost(ref)), "value_percent": 100, "percent": 100})
+    percent = value_percent(material if takes_material(ref) else None)
+    return evaluate(price, {"base_cp": to_copper(item_cost(ref)), "value_percent": percent, "percent": 100})
 
 
-def entry_value_cp(entry):
+def entry_value_cp(entry, material=None):
     if entry["kind"] == "coins":
         return to_copper(entry["coins"])
     if entry["kind"] == "item":
-        return item_value_cp(entry["item"]) * entry["quantity"]
+        return item_value_cp(entry["item"], material) * entry["quantity"]
     return 0
 
 
@@ -78,39 +96,113 @@ def budget_cp(loot, level):
     return evaluate(loot["budget_cp"], {"level": level})
 
 
-def find_table(loot, vector):
-    key = vector.get("table")
-    if key is None:
-        key = next(d["table"] for d in loot["drops"] if d["monster"] == vector["monster"])
+def table_by_key(loot, key):
     return next(t for t in loot["tables"] if t["key"] == key)
 
 
-def expected_value_cp(table):
-    """Mean value over the d100 ranges, times the number of rolls."""
-    total = sum(entry_value_cp(e) * (e["max"] - e["min"] + 1) for e in table["entries"])
-    return total * table["rolls"] / 100
+def entry_for(table, roll, shift=0):
+    """The entry a roll lands on after its shift, capped at 100."""
+    roll = min(roll + shift, 100)
+    return next(e for e in table["entries"] if e["min"] <= roll <= e["max"])
+
+
+def monster_level(ref):
+    """A core monster's level: its overrides', or its base's."""
+    key = ref.rsplit("/", 1)[-1]
+    row = next(m for m in load_data("monsters/core.json")["monsters"] if m["key"] == key)
+    if "level" in row.get("overrides", {}):
+        return row["overrides"]["level"]
+    if "level" in row:
+        return row["level"]
+    return load_data(f"monsters/bases/{row['base']}.json")["level"]
+
+
+def expected_value_cp(table, shift=0, material=None, rolls=None):
+    """Mean value over the d100 rolls after the shift, times the number of rolls."""
+    total = sum(entry_value_cp(entry_for(table, roll, shift), material) for roll in range(1, 101))
+    return total * (table["rolls"] if rolls is None else rolls) / 100
+
+
+def row_expected_value_cp(loot, row):
+    """One loot row's mean value, times chance / 100."""
+    chance = row.get("chance", 100) / 100
+    material = row.get("material")
+    if "item" in row:
+        return item_value_cp(row["item"], material) * row.get("quantity", 1) * chance
+    table = table_by_key(loot, row["table"])
+    return expected_value_cp(table, row.get("shift", 0), material, row.get("rolls")) * chance
+
+
+def monster_expected_value_cp(loot, drop):
+    return sum(row_expected_value_cp(loot, row) for row in drop["loot"])
+
+
+def _add(items, ref, quantity, material):
+    key = (ref, material if takes_material(ref) else None)
+    items[key] = items.get(key, 0) + quantity
+
+
+def _result(loot, items, coins_cp, level):
+    value = coins_cp + sum(item_value_cp(ref, material) * q for (ref, material), q in items.items())
+    listed = []
+    for (ref, material), quantity in sorted(items.items(), key=lambda kv: (kv[0][0], kv[0][1] or "")):
+        item = {"item": ref, "quantity": quantity}
+        if material is not None:
+            item["material"] = material
+        listed.append(item)
+    return {"items": listed, "coins_cp": coins_cp, "value_cp": value, "budget_cp": budget_cp(loot, level)}
+
+
+def roll_table(table, rolls, shift, material, items):
+    """Roll one table; return the copper it yields and add its items."""
+    coins_cp = 0
+    for roll in rolls:
+        entry = entry_for(table, roll, shift)
+        if entry["kind"] == "coins":
+            coins_cp += to_copper(entry["coins"])
+        elif entry["kind"] == "item":
+            _add(items, entry["item"], entry["quantity"], material)
+    return coins_cp
 
 
 def run_loot(vector):
     loot = load_data("loot/core.json")
-    table = find_table(loot, vector)
     rolls = vector["rolls"]
-    if len(rolls) != table["rolls"]:
-        return {"error": f"{table['key']} takes {table['rolls']} rolls, got {len(rolls)}"}
-    coins_cp, items = 0, {}
     for roll in rolls:
         if not 1 <= roll <= 100:
             return {"error": f"roll {roll} is not 1 to 100"}
-        entry = next(e for e in table["entries"] if e["min"] <= roll <= e["max"])
-        if entry["kind"] == "coins":
-            coins_cp += to_copper(entry["coins"])
-        elif entry["kind"] == "item":
-            items[entry["item"]] = items.get(entry["item"], 0) + entry["quantity"]
-    value = coins_cp + sum(item_value_cp(ref) * quantity for ref, quantity in items.items())
-    return {
-        "table": table["key"],
-        "items": [{"item": ref, "quantity": quantity} for ref, quantity in sorted(items.items())],
-        "coins_cp": coins_cp,
-        "value_cp": value,
-        "budget_cp": budget_cp(loot, table["level"]),
-    }
+    items = {}
+    if "table" in vector:
+        table = table_by_key(loot, vector["table"])
+        if len(rolls) != table["rolls"]:
+            return {"error": f"{table['key']} takes {table['rolls']} rolls, got {len(rolls)}"}
+        coins_cp = roll_table(table, rolls, 0, None, items)
+        return {"table": table["key"], **_result(loot, items, coins_cp, table["level"])}
+
+    monster = vector["monster"]
+    drop = next(d for d in loot["drops"] if d["monster"] == monster)
+    queue, used, coins_cp, tables = list(rolls), 0, 0, []
+
+    def take(n):
+        nonlocal used
+        if len(queue) < n:
+            raise IndexError
+        used += n
+        return [queue.pop(0) for _ in range(n)]
+
+    try:
+        for row in drop["loot"]:
+            if "chance" in row and take(1)[0] > row["chance"]:
+                continue
+            material = row.get("material")
+            if "item" in row:
+                _add(items, row["item"], row.get("quantity", 1), material)
+                continue
+            table = table_by_key(loot, row["table"])
+            tables.append(table["key"])
+            coins_cp += roll_table(table, take(row.get("rolls", table["rolls"])), row.get("shift", 0), material, items)
+    except IndexError:
+        return {"error": f"{monster}: ran out of rolls after {used}"}
+    if queue:
+        return {"error": f"{monster}: {len(rolls)} rolls given, {used} used"}
+    return {"tables": tables, **_result(loot, items, coins_cp, monster_level(monster))}
