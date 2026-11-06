@@ -4,7 +4,7 @@ Roadmap: [POST](../../ROADMAP.md#where-we-are). Format and rules: [README.md](RE
 
 ## POST Post-1.0 modules
 
-**Goal:** optional modules, each with a manifest, written against the [kernel contract](../core/contract.md), that do not change core. Order is by demand, not commitment.
+**Goal:** optional modules, each with a manifest, written against the [kernel contract](../core/contract.md), that do not change core. Work starts after `v1.0.0` (M5-09): every issue here without a parent in this story needs M5-09. Order is by demand, not commitment.
 
 **Spec:** `docs/core/` for kernel rules, `docs/modules/` for module rules.
 
@@ -15,7 +15,7 @@ Done: POST-05 ([done.md](done.md#post-post-10-modules))
 #### POST-01 Crafting module: recipes, quality, stations
 - Status: todo
 - Priority: medium
-- Needs: M1-07
+- Needs: M1-07, M5-09
 - Was: RW-31
 - Do: Design only today. Ship one vertical slice as a module: recipes, check, time, station, quality grade.
 - Files: ~6 (ruleset/modules/<module>/, docs/modules/<module>.md)
@@ -45,7 +45,7 @@ Done: POST-05 ([done.md](done.md#post-post-10-modules))
 #### POST-04 Breakthrough advancement module
 - Status: todo
 - Priority: medium
-- Needs: M1-03
+- Needs: M1-03, M5-09
 - Was: RW-34
 - Do: Core level-up names no alchemy (SET-14). Breakthroughs ship as an optional module that emits modifiers.
 - Files: ~6 (ruleset/modules/<module>/, docs/modules/<module>.md)
@@ -55,7 +55,7 @@ Done: POST-05 ([done.md](done.md#post-post-10-modules))
 #### POST-06 Companions and followers module
 - Status: todo
 - Priority: medium
-- Needs: M1-03
+- Needs: M1-03, M5-09
 - Was: RW-36
 - Do: No companion model. Design doc first.
 - Files: ~6 (ruleset/modules/<module>/, docs/modules/<module>.md)
@@ -65,7 +65,7 @@ Done: POST-05 ([done.md](done.md#post-post-10-modules))
 #### POST-07 Mounts, vehicles, and ship combat module
 - Status: todo
 - Priority: low
-- Needs: M1-02
+- Needs: M1-02, M5-09
 - Was: RW-37
 - Do: Stubs only in combat edge cases.
 - Files: ~6 (ruleset/modules/<module>/, docs/modules/<module>.md)
@@ -75,7 +75,7 @@ Done: POST-05 ([done.md](done.md#post-post-10-modules))
 #### POST-08 Survival needs module
 - Status: todo
 - Priority: low
-- Needs: M1-04, M1-05
+- Needs: M1-04, M1-05, M5-09
 - Was: RW-38
 - Do: Hunger, thirst, sleep, disease, radiation, addiction beyond basic effects.
 - Files: ~6 (ruleset/modules/<module>/, docs/modules/<module>.md)
