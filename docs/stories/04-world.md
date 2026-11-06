@@ -33,7 +33,7 @@ Done: M4-01 ([done.md](done.md#m4-world))
 - Done when: at least 40 monsters covering levels 1 to 30; every phase and damage type is used at least once as an attack and as a resistance; each monster inherits from a base plus overrides.
 
 #### M4-04 Traps and environmental hazards
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: M1-02, M1-05
 - Was: RW-23
