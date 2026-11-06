@@ -1,0 +1,545 @@
+[
+  {
+    "name": "cast: fire bolt on red magic 50, roll 30, costs 5 mana",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 20
+    },
+    "roll": 30,
+    "expect": {
+      "outcome": "cast",
+      "mana": 15,
+      "consumed": [],
+      "check": {
+        "target": 50,
+        "success": true,
+        "margin": 20,
+        "tags": []
+      },
+      "effects": [
+        {
+          "effect": "core:effect/damage_fire",
+          "magnitude": 8,
+          "target": "ranged"
+        }
+      ],
+      "concentration": null,
+      "ended": null,
+      "dispelled": []
+    }
+  },
+  {
+    "name": "failed: roll 70 against 50 still spends the mana",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 20
+    },
+    "roll": 70,
+    "expect": {
+      "outcome": "failed",
+      "mana": 15,
+      "check": {
+        "target": 50,
+        "success": false,
+        "margin": null,
+        "tags": []
+      },
+      "effects": [],
+      "concentration": null,
+      "ended": null,
+      "dispelled": []
+    }
+  },
+  {
+    "name": "no mana: fire burst costs 25, the caster has 20, nothing is spent or rolled",
+    "spell": "fire_burst",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 20
+    },
+    "roll": 30,
+    "expect": {
+      "outcome": "no_mana",
+      "mana": 20,
+      "consumed": [],
+      "check": null,
+      "effects": []
+    }
+  },
+  {
+    "name": "prevented: a silenced caster cannot cast, nothing is spent",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 20,
+      "flags": [
+        "silenced"
+      ]
+    },
+    "roll": 30,
+    "expect": {
+      "outcome": "prevented",
+      "mana": 20,
+      "check": null,
+      "effects": []
+    }
+  },
+  {
+    "name": "no reagents: raise thrall needs nightshade",
+    "spell": "raise_thrall",
+    "caster": {
+      "skills": {
+        "black_magic": 60
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 40,
+      "reagents": []
+    },
+    "roll": 20,
+    "expect": {
+      "outcome": "no_reagents",
+      "mana": 40,
+      "consumed": [],
+      "check": null
+    }
+  },
+  {
+    "name": "reagents: one nightshade of two is consumed on a cast",
+    "spell": "raise_thrall",
+    "caster": {
+      "skills": {
+        "black_magic": 60
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 40,
+      "reagents": [
+        "core:ingredient/nightshade",
+        "core:ingredient/nightshade"
+      ]
+    },
+    "roll": 20,
+    "expect": {
+      "outcome": "cast",
+      "mana": 10,
+      "consumed": [
+        "core:ingredient/nightshade"
+      ],
+      "check": {
+        "target": 60,
+        "success": true,
+        "margin": 40,
+        "tags": []
+      }
+    }
+  },
+  {
+    "name": "reagents: a failed cast consumes them too",
+    "spell": "raise_thrall",
+    "caster": {
+      "skills": {
+        "black_magic": 60
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 40,
+      "reagents": [
+        "core:ingredient/nightshade"
+      ]
+    },
+    "roll": 90,
+    "expect": {
+      "outcome": "failed",
+      "mana": 10,
+      "consumed": [
+        "core:ingredient/nightshade"
+      ],
+      "effects": []
+    }
+  },
+  {
+    "name": "armor: heavy armor is -25, so 30 fails against 25",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 20,
+      "armor": "heavy"
+    },
+    "roll": 30,
+    "expect": {
+      "outcome": "failed",
+      "mana": 15,
+      "check": {
+        "target": 25,
+        "success": false,
+        "margin": null,
+        "tags": []
+      }
+    }
+  },
+  {
+    "name": "armor: light armor costs nothing",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 20,
+      "armor": "light"
+    },
+    "roll": 30,
+    "expect": {
+      "outcome": "cast",
+      "check": {
+        "target": 50,
+        "success": true,
+        "margin": 20,
+        "tags": []
+      }
+    }
+  },
+  {
+    "name": "armor: medium -10 and a +5 on red magic; a +20 on blue magic does not count",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 20,
+      "armor": "medium"
+    },
+    "roll": 40,
+    "modifiers": [
+      {
+        "target": "red_magic",
+        "op": "add",
+        "value": 5,
+        "source": "feature:spell_focus"
+      },
+      {
+        "target": "blue_magic",
+        "op": "add",
+        "value": 20,
+        "source": "feature:blue_focus"
+      }
+    ],
+    "expect": {
+      "outcome": "cast",
+      "check": {
+        "target": 45,
+        "success": true,
+        "margin": 5,
+        "tags": []
+      }
+    }
+  },
+  {
+    "name": "fumble: a 100 fails against 120 and is tagged, and costs only the mana",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 20
+    },
+    "roll": 100,
+    "modifiers": [
+      {
+        "target": "red_magic",
+        "op": "add",
+        "value": 70,
+        "source": "feature:spell_focus"
+      }
+    ],
+    "expect": {
+      "outcome": "failed",
+      "mana": 15,
+      "check": {
+        "target": 120,
+        "success": false,
+        "margin": null,
+        "tags": [
+          "fumble"
+        ]
+      }
+    }
+  },
+  {
+    "name": "crit: Luck 6 widens the window to 8, roll 4",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 6
+      },
+      "mana": 20
+    },
+    "roll": 4,
+    "expect": {
+      "outcome": "cast",
+      "check": {
+        "target": 50,
+        "success": true,
+        "margin": 46,
+        "tags": [
+          "crit"
+        ]
+      }
+    }
+  },
+  {
+    "name": "concentration: blessing is held",
+    "spell": "blessing",
+    "caster": {
+      "skills": {
+        "white_magic": 60
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 30
+    },
+    "roll": 10,
+    "expect": {
+      "outcome": "cast",
+      "mana": 18,
+      "concentration": "blessing",
+      "ended": null
+    }
+  },
+  {
+    "name": "concentration: ward ends the held blessing",
+    "spell": "ward",
+    "caster": {
+      "skills": {
+        "blue_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 30,
+      "concentration": "blessing"
+    },
+    "roll": 20,
+    "expect": {
+      "outcome": "cast",
+      "mana": 22,
+      "concentration": "ward",
+      "ended": "blessing"
+    }
+  },
+  {
+    "name": "concentration: a failed ward keeps the blessing",
+    "spell": "ward",
+    "caster": {
+      "skills": {
+        "blue_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 30,
+      "concentration": "blessing"
+    },
+    "roll": 80,
+    "expect": {
+      "outcome": "failed",
+      "mana": 22,
+      "concentration": "blessing",
+      "ended": null
+    }
+  },
+  {
+    "name": "concentration: a fire bolt does not touch the held blessing",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 20,
+      "concentration": "blessing"
+    },
+    "roll": 30,
+    "expect": {
+      "outcome": "cast",
+      "concentration": "blessing",
+      "ended": null
+    }
+  },
+  {
+    "name": "concentration: recasting the held blessing ends nothing",
+    "spell": "blessing",
+    "caster": {
+      "skills": {
+        "white_magic": 60
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 30,
+      "concentration": "blessing"
+    },
+    "roll": 10,
+    "expect": {
+      "outcome": "cast",
+      "concentration": "blessing",
+      "ended": null
+    }
+  },
+  {
+    "name": "dispel: magnitude 4 ends blessing (3) and ward (2), not fire burst (6)",
+    "spell": "dispel_magic",
+    "caster": {
+      "skills": {
+        "violet_magic": 55
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 20
+    },
+    "roll": 25,
+    "standing": [
+      "blessing",
+      "fire_burst",
+      "ward"
+    ],
+    "expect": {
+      "outcome": "cast",
+      "mana": 8,
+      "effects": [
+        {
+          "effect": "core:effect/dispel",
+          "magnitude": 4,
+          "target": "ranged"
+        }
+      ],
+      "dispelled": [
+        "blessing",
+        "ward"
+      ]
+    }
+  },
+  {
+    "name": "dispel: a failed dispel ends nothing",
+    "spell": "dispel_magic",
+    "caster": {
+      "skills": {
+        "violet_magic": 55
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 20
+    },
+    "roll": 70,
+    "standing": [
+      "blessing",
+      "ward"
+    ],
+    "expect": {
+      "outcome": "failed",
+      "mana": 8,
+      "dispelled": []
+    }
+  },
+  {
+    "name": "error: an unknown spell",
+    "spell": "nope",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 20
+    },
+    "roll": 30,
+    "expect": {
+      "error": "spell \"nope\" is not defined"
+    }
+  },
+  {
+    "name": "error: the caster has no skill for the spell's color",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "blue_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 20
+    },
+    "roll": 30,
+    "expect": {
+      "error": "casting fire_bolt needs red_magic"
+    }
+  },
+  {
+    "name": "error: an unknown standing spell",
+    "spell": "dispel_magic",
+    "caster": {
+      "skills": {
+        "violet_magic": 55
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 20
+    },
+    "roll": 25,
+    "standing": [
+      "nope"
+    ],
+    "expect": {
+      "error": "spell \"nope\" is not defined"
+    }
+  }
+]
