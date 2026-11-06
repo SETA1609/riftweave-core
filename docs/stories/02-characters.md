@@ -10,10 +10,10 @@ Roadmap: [M2](../../ROADMAP.md#where-we-are). Format and rules: [README.md](READ
 
 **Done when:** perk, skill, race, background, and equipment floors are met, and two multi-level characters are vectors.
 
-Done: M2-02 ([done.md](done.md#m2-characters))
+Done: M2-02, M2-04 ([done.md](done.md#m2-characters))
 
 #### M2-01 Perk catalogue to the content floor
-- Status: todo
+- Status: doing
 - Priority: high
 - Needs: M1-05, M1-06
 - Was: RW-11
@@ -31,16 +31,6 @@ Done: M2-02 ([done.md](done.md#m2-characters))
 - Files: ~4 (ruleset/tests/vectors/characters.json, docs/modules/character-creation.md)
 - See: docs/modules/character-creation.md, docs/core/loop.md
 - Done when: two characters, each with a level-by-level record; each level's derived stats match a vector; prose in `character-creation.md` is generated from or checked against the record.
-
-#### M2-04 Races and backgrounds emit modifiers only
-- Status: review
-- Priority: medium
-- Needs: M1-05, M1-06
-- Was: RW-14
-- Do: 12 races and 8 backgrounds. Confirm every racial effect and background bonus is a modifier row, not prose, and that lineage inheritance is covered by tests. The 18 racial traits have no structured effect: give each `modifiers` (or a `natural_weapon`), and read `abilityModifiers` and `skill_bonuses` as `add` modifiers.
-- Files: ~6 (ruleset/data/races/core.json, ruleset/data/backgrounds/core.json, ruleset/schemas/race.schema.json, ruleset/schemas/background.schema.json, ruleset/scripts/test_validate.py)
-- See: docs/modules/race.md, docs/modules/backgrounds.md
-- Done when: no mechanical statement exists only in a description string; lineage (parent, subrace, template, kin) has validator tests for each role.
 
 #### M2-05 Equipment to the content floor
 - Status: todo
