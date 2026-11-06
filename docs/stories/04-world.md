@@ -53,7 +53,7 @@ Done: M4-01 ([done.md](done.md#m4-world))
 - Done when: A script reports monsters and gear outside the guideline bands; bands are data, not prose; report runs in CI as a warning, then as a gate.
 
 #### M4-06 Looter shift: Luck and perks on loot rolls
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: —
 - Do: Loot rolls read only the monster's rows; who loots does not matter. Add a looter shift: Luck emits `add loot_roll ((LCK - 5) * 2)` as a formula, perks and other sources emit `add loot_roll` modifiers that stack by the kernel rules, and the total moves every table roll and every `chance`. Add a Scavenger perk that uses it.
