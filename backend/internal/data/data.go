@@ -281,6 +281,27 @@ type CalledShot struct {
 	DamageMultiplier float64 `json:"damage_mul"`
 }
 
+// HazardCheck is a check a hazard asks for: a row of checks/core.json, and the hazard's
+// difficulty as an add on its target. Skill is the check's skill key, resolved at load.
+type HazardCheck struct {
+	Check      string `json:"check"`
+	OnAvoid    string `json:"on_avoid"` // avoid only: "none" or "half"
+	Skill      string `json:"-"`
+	Difficulty int64  `json:"difficulty"`
+}
+
+// Hazard is one row of hazards/core.json (docs/core/hazards.md).
+type Hazard struct {
+	Detect HazardCheck  `json:"detect"`
+	Disarm *HazardCheck `json:"disarm"` // nil: cannot be disarmed
+	Avoid  *HazardCheck `json:"avoid"`  // nil: no chance to avoid
+	Damage *struct {
+		Type string `json:"type"`
+	} `json:"damage"`
+	Key     string   `json:"key"`
+	Effects []string `json:"effects"`
+}
+
 // Condition is one row of conditions/core.json.
 type Condition struct {
 	Key           string              `json:"key"`
@@ -366,6 +387,7 @@ type Ruleset struct {
 	DamageTypes Table[DamageType]
 	Situations  Table[Situation]
 	CalledShots Table[CalledShot]
+	Hazards     Table[Hazard]
 	Origins     modifier.OriginPolicies
 	Conditions  Conditions
 	Loot        Loot
@@ -507,6 +529,7 @@ func Load(fileSystem fs.FS) (*Ruleset, error) {
 	}
 
 	loader.loadConditions(ruleset)
+	loader.loadHazards(ruleset)
 	loader.loadFormulas(ruleset)
 	// Items and loot are priced in copper, so they need the economy's denominations.
 	if economyLoaded {
@@ -578,6 +601,38 @@ func (loader *rulesetLoader) loadConditions(ruleset *Ruleset) {
 	}
 	conditions.Table = newTable(raw.Conditions, func(row *Condition) string { return row.Key })
 	ruleset.Conditions = conditions
+}
+
+// loadHazards reads the hazards and resolves each check ref to the skill it rolls.
+func (loader *rulesetLoader) loadHazards(ruleset *Ruleset) {
+	var checks struct {
+		Checks []struct{ Key, Skill string }
+	}
+	var hazards struct{ Hazards []Hazard }
+	var checksLoaded bool = loader.read("checks/core.json", &checks)
+	var hazardsLoaded bool = loader.read("hazards/core.json", &hazards)
+	if !checksLoaded || !hazardsLoaded {
+		return
+	}
+	var skillByCheck map[string]string = make(map[string]string, len(checks.Checks))
+	for _, check := range checks.Checks {
+		skillByCheck["core:check/"+check.Key] = check.Skill[strings.LastIndex(check.Skill, "/")+1:]
+	}
+	for index := range hazards.Hazards {
+		var hazard *Hazard = &hazards.Hazards[index]
+		for _, check := range []*HazardCheck{&hazard.Detect, hazard.Disarm, hazard.Avoid} {
+			if check == nil {
+				continue
+			}
+			skill, ok := skillByCheck[check.Check]
+			if !ok {
+				loader.fail("hazards/core.json: %s names the unknown check %q", hazard.Key, check.Check)
+				continue
+			}
+			check.Skill = skill
+		}
+	}
+	ruleset.Hazards = newTable(hazards.Hazards, func(hazard *Hazard) string { return hazard.Key })
 }
 
 func (loader *rulesetLoader) loadFormulas(ruleset *Ruleset) {

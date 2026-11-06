@@ -23,6 +23,7 @@ import (
 	"github.com/SETA1609/riftweave-core/backend/internal/derived"
 	"github.com/SETA1609/riftweave-core/backend/internal/economy"
 	"github.com/SETA1609/riftweave-core/backend/internal/formula"
+	"github.com/SETA1609/riftweave-core/backend/internal/hazard"
 	"github.com/SETA1609/riftweave-core/backend/internal/loot"
 	"github.com/SETA1609/riftweave-core/backend/internal/modifier"
 	"github.com/SETA1609/riftweave-core/backend/internal/progression"
@@ -92,6 +93,7 @@ var commands map[string]commandHandler = map[string]commandHandler{
 	"rest":        bind(rest.Run),
 	"combat":      bind(combat.Run),
 	"loot":        bind(loot.Run),
+	"hazard":      bind(hazard.Run),
 	"progression": bind(progression.Run),
 }
 

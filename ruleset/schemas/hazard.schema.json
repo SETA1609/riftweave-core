@@ -1,0 +1,65 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Hazard",
+  "description": "A trap or an environmental hazard: a trigger, a damage packet and effects, and detect, disarm, and avoid checks through the one resolution function (docs/core/hazards.md). Referenced as core:hazard/<key>.",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "hazards": { "type": "array", "minItems": 1, "items": { "$ref": "#/definitions/hazard" } }
+  },
+  "required": ["hazards"],
+  "additionalProperties": false,
+  "definitions": {
+    "check": {
+      "type": "object",
+      "properties": {
+        "check": { "$ref": "schema.json#/definitions/namespacedRef", "description": "core:check/<key>: the check row whose skill rolls." },
+        "difficulty": { "type": "integer", "minimum": -50, "maximum": 50, "description": "An add on the check's target; negative is harder. Default 0." }
+      },
+      "required": ["check"],
+      "additionalProperties": false
+    },
+    "hazard": {
+      "type": "object",
+      "properties": {
+        "id": { "$ref": "schema.json#/definitions/entryId" },
+        "key": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "label": { "type": "string", "minLength": 1 },
+        "description": { "type": "string", "minLength": 1 },
+        "level": { "type": "integer", "minimum": 1, "maximum": 30 },
+        "kind": { "type": "string", "enum": ["trap", "environment"] },
+        "trigger": { "type": "string", "enum": ["pressure_plate", "tripwire", "touch", "open", "proximity", "enter"] },
+        "detect": { "$ref": "#/definitions/check" },
+        "disarm": { "$ref": "#/definitions/check" },
+        "avoid": {
+          "type": "object",
+          "properties": {
+            "check": { "$ref": "schema.json#/definitions/namespacedRef", "description": "core:check/<key>: the check row whose skill rolls." },
+            "difficulty": { "type": "integer", "minimum": -50, "maximum": 50, "description": "An add on the check's target; negative is harder. Default 0." },
+            "on_avoid": { "type": "string", "enum": ["none", "half"], "description": "none: a success avoids everything. half: a success halves the damage and avoids the effects." }
+          },
+          "required": ["check", "on_avoid"],
+          "additionalProperties": false
+        },
+        "damage": {
+          "type": "object",
+          "properties": {
+            "dice": { "$ref": "schema.json#/definitions/diceExpression" },
+            "type": { "type": "string", "pattern": "^[a-z_]+$", "description": "A key in ruleset/data/combat/damage_types.json." }
+          },
+          "required": ["dice", "type"],
+          "additionalProperties": false
+        },
+        "effects": { "type": "array", "items": { "$ref": "schema.json#/definitions/namespacedRef" }, "description": "core:effect/<key>, applied when the hazard is not avoided." },
+        "source": { "$ref": "schema.json#/definitions/sourceRef" }
+      },
+      "required": ["id", "key", "label", "description", "level", "kind", "trigger", "detect"],
+      "allOf": [
+        { "if": { "properties": { "kind": { "const": "environment" } } }, "then": { "not": { "required": ["disarm"] } } },
+        { "if": { "properties": { "kind": { "const": "trap" } } }, "then": { "required": ["disarm"] } },
+        { "anyOf": [{ "required": ["damage"] }, { "required": ["effects"] }] }
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -33,11 +33,11 @@ Done: M4-01 ([done.md](done.md#m4-world))
 - Done when: at least 40 monsters covering levels 1 to 30; every phase and damage type is used at least once as an attack and as a resistance; each monster inherits from a base plus overrides.
 
 #### M4-04 Traps and environmental hazards
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: M1-02, M1-05
 - Was: RW-23
-- Do: Mentioned as missing in the backlog. Minimal core: a hazard is a trigger plus a modifier or damage packet, with a detect and a disarm check.
+- Do: Mentioned as missing in the backlog. Minimal core: a hazard is a trigger plus a modifier or damage packet, with a detect and a disarm check. Add an avoid check for hazards a quick step escapes, and environment hazards that cannot be disarmed.
 - Files: ~5 (docs/core/, ruleset/data/hazards/, ruleset/schemas/hazard.schema.json, ruleset/tests/vectors/hazards.json)
 - See: issues.md section 8
 - Done when: schema and at least 10 hazards; detect and disarm use the one resolution function.

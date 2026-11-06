@@ -778,7 +778,6 @@
     },
     {
       "key": "poison_weakness",
-      "reserved": true,
       "label": "Weakness Poison",
       "description": "Saps the target's stamina and strength over a short period. Common in coatings or toxic weapons. Applies its sub_effects (e.g. damage_stamina) as symptoms. Resistance (via resist effect with parameter 'poison') can reduce magnitude or duration. A poison must not apply other poison effects to avoid recursion.",
       "category": "drain",
