@@ -118,6 +118,7 @@ EQUIPMENT_FILE_CATEGORIES = {
     "armor.json": "armor",
     "consumables.json": "consumable",
     "accessories.json": "accessory",
+    "gear.json": "gear",
 }
 
 # Maps collection names to their singular category for namespaced refs.

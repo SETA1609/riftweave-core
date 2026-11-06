@@ -48,6 +48,18 @@ All weapons use standard D&D 3.5 / Pathfinder-style dice expressions for their b
 | Glaive          | 1d10       | slashing  | reach  | 2            | blades     | heavy, two_handed          |
 | Warhammer       | 1d10       | bludgeoning | reach | 2            | blunt      | heavy, two_handed          |
 | Halberd         | 1d10       | slashing  | reach  | 2            | blades     | heavy, two_handed          |
+| Self Bow        | 1d6        | piercing  | -      | -            | bows       | ammunition, two_handed     |
+| Hand Crossbow   | 1d6        | piercing  | -      | -            | crossbows  | ammunition, light, loading |
+| Crossbow        | 1d8        | piercing  | -      | -            | crossbows  | ammunition, two_handed     |
+| Javelin         | 1d6        | piercing  | -      | -            | throwing_weapons | thrown               |
+| Throwing Knife  | 1d4        | piercing  | -      | -            | throwing_weapons | thrown, light, finesse |
+| Throwing Axe    | 1d6        | slashing  | -      | -            | throwing_weapons | thrown               |
+| Brass Knuckles  | 1d4        | bludgeoning | short | 1           | unarmed    | light                      |
+| Cestus          | 1d6        | bludgeoning | short | 1           | unarmed    | light                      |
+| Spiked Gauntlet | 1d6        | piercing  | short  | 1            | unarmed    | light                      |
+| Flintlock Pistol | 1d10      | piercing  | -      | -            | guns       | ammunition, loading, light |
+| Arquebus        | 1d12       | piercing  | -      | -            | guns       | ammunition, loading, two_handed |
+| Blunderbuss     | 2d6        | piercing  | -      | -            | guns       | ammunition, loading, two_handed |
 
 These are the **base** dice for the weapon type. They assume a baseline construction (historically often iron or steel quality). The actual performance changes with the material used.
 

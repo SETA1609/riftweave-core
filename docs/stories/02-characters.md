@@ -43,7 +43,7 @@ Done: M2-02 ([done.md](done.md#m2-characters))
 - Done when: no mechanical statement exists only in a description string; lineage (parent, subrace, template, kin) has validator tests for each role.
 
 #### M2-05 Equipment to the content floor
-- Status: todo
+- Status: doing
 - Priority: medium
 - Needs: M1-02
 - Was: RW-15

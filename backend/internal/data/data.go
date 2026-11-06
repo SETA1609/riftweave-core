@@ -663,6 +663,7 @@ func (loader *rulesetLoader) loadItems(ruleset *Ruleset) {
 		{"armor", "armor", "armor"},
 		{"consumable", "consumables", ""},
 		{"accessory", "accessories", "accessories"},
+		{"gear", "gear", ""},
 	}
 	for _, category := range categories {
 		var raw struct {

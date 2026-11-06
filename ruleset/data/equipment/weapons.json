@@ -20,6 +20,18 @@
     { "id": 47, "key": "light_crossbow", "base": "light_crossbow", "overrides": {} },
     { "id": 48, "key": "sling",          "base": "sling",          "overrides": {} },
     { "id": 100, "key": "cursed_iron_longsword", "base": "longsword", "overrides": { "enchantment_slots": -1, "phase": "earth", "cost": { "quantity": 8, "unit": "gp" } } },
-    { "id": 101, "key": "elven_wood_longbow",    "base": "longbow",  "overrides": { "enchantment_slots": 2, "phase": "wood", "effect_magnitude_mult": 1.2, "cost": { "quantity": 200, "unit": "gp" } } }
+    { "id": 101, "key": "elven_wood_longbow",    "base": "longbow",  "overrides": { "enchantment_slots": 2, "phase": "wood", "effect_magnitude_mult": 1.2, "cost": { "quantity": 200, "unit": "gp" } } },
+    {"id": 102, "key": "hand_crossbow", "base": "hand_crossbow", "overrides": {}},
+    {"id": 103, "key": "crossbow", "base": "crossbow", "overrides": {}},
+    {"id": 104, "key": "self_bow", "base": "self_bow", "overrides": {}},
+    {"id": 105, "key": "javelin", "base": "javelin", "overrides": {}},
+    {"id": 106, "key": "throwing_knife", "base": "throwing_knife", "overrides": {}},
+    {"id": 107, "key": "throwing_axe", "base": "throwing_axe", "overrides": {}},
+    {"id": 108, "key": "brass_knuckles", "base": "brass_knuckles", "overrides": {}},
+    {"id": 109, "key": "cestus", "base": "cestus", "overrides": {}},
+    {"id": 110, "key": "spiked_gauntlet", "base": "spiked_gauntlet", "overrides": {}},
+    {"id": 111, "key": "flintlock_pistol", "base": "flintlock_pistol", "overrides": {}},
+    {"id": 112, "key": "arquebus", "base": "arquebus", "overrides": {}},
+    {"id": 113, "key": "blunderbuss", "base": "blunderbuss", "overrides": {}}
   ]
 }

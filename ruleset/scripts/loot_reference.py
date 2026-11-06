@@ -14,6 +14,7 @@ EQUIPMENT = {
     "armor": ("armor.json", "armor"),
     "consumable": ("consumables.json", None),
     "accessory": ("accessories.json", "accessories"),
+    "gear": ("gear.json", None),
 }
 
 

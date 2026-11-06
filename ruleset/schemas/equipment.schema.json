@@ -157,6 +157,15 @@
           },
           "required": ["accessoryType"],
           "additionalProperties": false
+        },
+        "gear": {
+          "type": "object",
+          "description": "Adventuring gear or a tool. A tool emits contract modifiers while it is used, source item:<key>, origin core:origin/equipment (docs/modules/equipment.md).",
+          "properties": {
+            "modifiers": { "type": "array", "items": { "$ref": "schema.json#/definitions/modifier" } },
+            "uses": { "type": "integer", "minimum": 1, "description": "Uses before the item is spent; omitted means it is not used up." }
+          },
+          "additionalProperties": false
         }
       }
     },
@@ -189,7 +198,8 @@
             "weapon": { "type": "object" },
             "armor": { "type": "object" },
             "consumable": { "type": "object" },
-            "accessory": { "type": "object" }
+            "accessory": { "type": "object" },
+            "gear": { "type": "object" }
           },
           "required": ["id", "key", "label", "description", "type", "cost", "weight"],
           "additionalProperties": false,
@@ -197,7 +207,8 @@
             { "required": ["weapon"] },
             { "required": ["armor"] },
             { "required": ["consumable"] },
-            { "required": ["accessory"] }
+            { "required": ["accessory"] },
+            { "required": ["gear"] }
           ]
         }
       ]

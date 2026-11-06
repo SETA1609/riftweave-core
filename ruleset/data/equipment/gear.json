@@ -1,0 +1,324 @@
+{
+  "$schema": "../../schemas/equipment.schema.json",
+  "equipment": [
+    {
+      "id": 400,
+      "key": "thieves_tools",
+      "label": "Thieves' Tools",
+      "description": "Picks, tension wrenches, and a small mirror for locks and traps.",
+      "type": "tool",
+      "cost": {
+        "quantity": 25,
+        "unit": "gp"
+      },
+      "weight": 1,
+      "gear": {
+        "modifiers": [
+          {
+            "target": "lockpick",
+            "op": "add",
+            "value": 10,
+            "source": "item:thieves_tools",
+            "origin": "core:origin/equipment"
+          }
+        ]
+      }
+    },
+    {
+      "id": 401,
+      "key": "healers_kit",
+      "label": "Healer's Kit",
+      "description": "Bandages, salves, and splints; each use is spent.",
+      "type": "tool",
+      "cost": {
+        "quantity": 5,
+        "unit": "gp"
+      },
+      "weight": 3,
+      "gear": {
+        "modifiers": [
+          {
+            "target": "medicine",
+            "op": "add",
+            "value": 10,
+            "source": "item:healers_kit",
+            "origin": "core:origin/equipment"
+          }
+        ],
+        "uses": 10
+      }
+    },
+    {
+      "id": 402,
+      "key": "climbing_kit",
+      "label": "Climbing Kit",
+      "description": "Pitons, a harness, and boot spikes.",
+      "type": "tool",
+      "cost": {
+        "quantity": 25,
+        "unit": "gp"
+      },
+      "weight": 12,
+      "gear": {
+        "modifiers": [
+          {
+            "target": "athletics",
+            "op": "add",
+            "value": 10,
+            "source": "item:climbing_kit",
+            "origin": "core:origin/equipment"
+          }
+        ]
+      }
+    },
+    {
+      "id": 403,
+      "key": "alchemy_kit",
+      "label": "Alchemy Kit",
+      "description": "Alembic, mortar, and vials for brewing on the road.",
+      "type": "tool",
+      "cost": {
+        "quantity": 50,
+        "unit": "gp"
+      },
+      "weight": 8,
+      "gear": {
+        "modifiers": [
+          {
+            "target": "alchemy",
+            "op": "add",
+            "value": 10,
+            "source": "item:alchemy_kit",
+            "origin": "core:origin/equipment"
+          }
+        ]
+      }
+    },
+    {
+      "id": 404,
+      "key": "smiths_tools",
+      "label": "Smith's Tools",
+      "description": "Hammers, tongs, and a small anvil.",
+      "type": "tool",
+      "cost": {
+        "quantity": 20,
+        "unit": "gp"
+      },
+      "weight": 8,
+      "gear": {
+        "modifiers": [
+          {
+            "target": "blacksmithing",
+            "op": "add",
+            "value": 10,
+            "source": "item:smiths_tools",
+            "origin": "core:origin/equipment"
+          }
+        ]
+      }
+    },
+    {
+      "id": 405,
+      "key": "tinkers_tools",
+      "label": "Tinker's Tools",
+      "description": "Fine pliers, screws, and solder for fixing gear.",
+      "type": "tool",
+      "cost": {
+        "quantity": 15,
+        "unit": "gp"
+      },
+      "weight": 4,
+      "gear": {
+        "modifiers": [
+          {
+            "target": "repair",
+            "op": "add",
+            "value": 10,
+            "source": "item:tinkers_tools",
+            "origin": "core:origin/equipment"
+          }
+        ]
+      }
+    },
+    {
+      "id": 406,
+      "key": "navigators_tools",
+      "label": "Navigator's Tools",
+      "description": "Compass, charts, and a sighting staff.",
+      "type": "tool",
+      "cost": {
+        "quantity": 25,
+        "unit": "gp"
+      },
+      "weight": 2,
+      "gear": {
+        "modifiers": [
+          {
+            "target": "survival",
+            "op": "add",
+            "value": 5,
+            "source": "item:navigators_tools",
+            "origin": "core:origin/equipment"
+          }
+        ]
+      }
+    },
+    {
+      "id": 407,
+      "key": "disguise_kit",
+      "label": "Disguise Kit",
+      "description": "Paints, wigs, and props to pass as someone else.",
+      "type": "tool",
+      "cost": {
+        "quantity": 25,
+        "unit": "gp"
+      },
+      "weight": 3,
+      "gear": {
+        "modifiers": [
+          {
+            "target": "deception",
+            "op": "add",
+            "value": 10,
+            "source": "item:disguise_kit",
+            "origin": "core:origin/equipment"
+          }
+        ]
+      }
+    },
+    {
+      "id": 408,
+      "key": "rope_hemp",
+      "label": "Hemp Rope (15 m)",
+      "description": "Fifteen metres of sturdy hemp rope.",
+      "type": "adventuring_gear",
+      "cost": {
+        "quantity": 1,
+        "unit": "gp"
+      },
+      "weight": 5,
+      "gear": {}
+    },
+    {
+      "id": 409,
+      "key": "torch",
+      "label": "Torch",
+      "description": "A pitch-soaked torch that burns for an hour.",
+      "type": "adventuring_gear",
+      "cost": {
+        "quantity": 1,
+        "unit": "cp"
+      },
+      "weight": 1,
+      "gear": {
+        "uses": 1
+      }
+    },
+    {
+      "id": 410,
+      "key": "lantern",
+      "label": "Hooded Lantern",
+      "description": "An oil lantern with a shutter to hide its light.",
+      "type": "adventuring_gear",
+      "cost": {
+        "quantity": 5,
+        "unit": "gp"
+      },
+      "weight": 2,
+      "gear": {}
+    },
+    {
+      "id": 411,
+      "key": "bedroll",
+      "label": "Bedroll",
+      "description": "A rolled blanket and ground cloth.",
+      "type": "adventuring_gear",
+      "cost": {
+        "quantity": 10,
+        "unit": "sp"
+      },
+      "weight": 3,
+      "gear": {}
+    },
+    {
+      "id": 412,
+      "key": "tent",
+      "label": "Two-Person Tent",
+      "description": "A canvas tent that keeps off rain and wind.",
+      "type": "adventuring_gear",
+      "cost": {
+        "quantity": 2,
+        "unit": "gp"
+      },
+      "weight": 10,
+      "gear": {}
+    },
+    {
+      "id": 413,
+      "key": "grappling_hook",
+      "label": "Grappling Hook",
+      "description": "A three-pronged iron hook for a rope's end.",
+      "type": "adventuring_gear",
+      "cost": {
+        "quantity": 2,
+        "unit": "gp"
+      },
+      "weight": 2,
+      "gear": {}
+    },
+    {
+      "id": 414,
+      "key": "waterskin",
+      "label": "Waterskin",
+      "description": "A leather skin that holds a day's water.",
+      "type": "adventuring_gear",
+      "cost": {
+        "quantity": 2,
+        "unit": "sp"
+      },
+      "weight": 2,
+      "gear": {}
+    },
+    {
+      "id": 415,
+      "key": "crowbar",
+      "label": "Crowbar",
+      "description": "An iron bar for prying doors and crates.",
+      "type": "adventuring_gear",
+      "cost": {
+        "quantity": 2,
+        "unit": "gp"
+      },
+      "weight": 2,
+      "gear": {}
+    },
+    {
+      "id": 416,
+      "key": "chalk",
+      "label": "Chalk",
+      "description": "A stick of chalk for marking walls and maps.",
+      "type": "adventuring_gear",
+      "cost": {
+        "quantity": 1,
+        "unit": "cp"
+      },
+      "weight": 0,
+      "gear": {
+        "uses": 10
+      }
+    },
+    {
+      "id": 417,
+      "key": "tinderbox",
+      "label": "Tinderbox",
+      "description": "Flint, steel, and tinder to start a fire.",
+      "type": "adventuring_gear",
+      "cost": {
+        "quantity": 5,
+        "unit": "sp"
+      },
+      "weight": 1,
+      "gear": {}
+    }
+  ]
+}
