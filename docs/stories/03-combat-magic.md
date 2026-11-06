@@ -13,7 +13,7 @@ Roadmap: [M3](../../ROADMAP.md#where-we-are). Format and rules: [README.md](READ
 Done: M3-03, M3-04 ([done.md](done.md#m3-combat-and-magic-playable))
 
 #### M3-01 Casting procedure: decide scope, then specify
-- Status: doing
+- Status: review
 - Priority: high
 - Needs: M1-02, M1-05
 - Was: RW-16
