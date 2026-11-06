@@ -290,6 +290,74 @@ A "deliberate cultivator" often prioritizes LCK and a clear phase identity at cr
 
 These examples show the 2:1 vs 1:1 spending, tag skill efficiency, creation perk option for humans (including ability-gated perks via Ambition), the recommended 100 gp + kit baseline, and how starting choices (especially backgrounds) set up both immediate competence and the long-term breakthrough system. You can (and should) play with the attribute spreads, background, creation perks, and gear choices to fit the concept and your intended cultivation path.
 
+## Two characters from level 1 to 10
+
+Borin (martial) and Sefa (caster) walked from creation to level 10. The record is
+[`ruleset/data/examples/characters.json`](../../ruleset/data/examples/characters.json):
+the point-buy, race, background, tag skills, and per level the luck roll, the perk taken,
+the ranks bought, and any gear or spells gained. `ruleset/scripts/test_characters.py`
+replays it and fails if a choice breaks a rule: a perk taken before its level, attribute,
+skill, or prerequisite perk allows; a pool spent wrong (a tag skill costs 1 point a
+rank, another 2, and the pool is spent whole); a skill over 100. It generates the
+vectors in `ruleset/tests/vectors/characters.json` (each level's derived stats and
+skill-point pool) and the two tables below, so neither can drift from the record. Run
+`python ruleset/scripts/test_characters.py --write` after changing the record.
+
+Level ups follow [progression.md](progression.md#full-level-up-procedure): add the level,
+take the perk (its prerequisites read the skills as they stood), then spend the pool
+`5 + INT × 2 + luck_roll`. Derived stats are the closed forms of
+`ruleset/data/derived/core.json` plus the perks' modifiers, a ranked perk at value
+times rank: HP `15 + END × 8 + 4 × level`, MP `INT × 8 + 2 × level`, AP
+`2 + floor(AGI / 3)`, Carry `25 + STR × 10`, Initiative `PER`.
+
+### Borin, common dwarf, former soldier
+
+STR 7 · PER 5 · END 8 · INT 5 · WIL 4 · AGI 4 · CHA 4 · LCK 7 (assigned STR 6, END 6,
+AGI 5, then the dwarf's +1 STR, +2 END, −1 AGI). Tag skills `blunt`, `block`,
+`athletics`; `blades` comes from the background and is bought at 2 points a rank.
+
+<!-- characters:borin -->
+| Level | XP | Perk taken | Pool | `athletics` | `block` | `blunt` | HP | MP | AP | Carry | Init |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | 0 | — | 19 | 24 | 39 | 27 | 83 | 42 | 3 | 95 | 5 |
+| 2 | 900 | `toughness` | 17 | 27 | 43 | 37 | 102 | 44 | 3 | 95 | 5 |
+| 3 | 2700 | `toughness` (rank 2) | 21 | 37 | 43 | 48 | 121 | 46 | 3 | 95 | 5 |
+| 4 | 5400 | `pack_mule` | 18 | 37 | 51 | 58 | 125 | 48 | 3 | 120 | 5 |
+| 5 | 9000 | `lucky` | 20 | 47 | 61 | 58 | 129 | 50 | 3 | 120 | 5 |
+| 6 | 13500 | `crushing_blow` | 16 | 47 | 61 | 58 | 133 | 52 | 3 | 120 | 5 |
+| 7 | 18900 | `toughness` (rank 3) | 22 | 47 | 71 | 70 | 152 | 54 | 3 | 120 | 5 |
+| 8 | 25200 | `iron_stomach` | 18 | 65 | 71 | 70 | 156 | 56 | 3 | 120 | 5 |
+| 9 | 32400 | `shield_wall` | 19 | 65 | 80 | 80 | 160 | 58 | 3 | 120 | 5 |
+| 10 | 40500 | `scavenger` | 17 | 76 | 80 | 80 | 164 | 60 | 3 | 120 | 5 |
+
+Gear by level 10: `light_crossbow`, `standard_shield`, `longsword`, `mace`, `chainmail`, `helmet`, `breastplate`, `warhammer`.
+Spells by level 10: none.
+<!-- /characters:borin -->
+
+### Sefa, common elf, arcane apprentice
+
+STR 4 · PER 5 · END 4 · INT 9 · WIL 7 · AGI 5 · CHA 4 · LCK 5 (assigned INT 8, END 5,
+AGI 4, then the elf's +1 INT, +1 AGI, −1 END). Tag skills `red_magic`, `blue_magic`,
+`lore`; `investigation` comes from the background and is bought at 2 points a rank.
+
+<!-- characters:sefa -->
+| Level | XP | Perk taken | Pool | `blue_magic` | `lore` | `red_magic` | HP | MP | AP | Carry | Init |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | 0 | — | 26 | 31 | 43 | 43 | 51 | 74 | 3 | 65 | 5 |
+| 2 | 900 | `arcane_reservoir` | 24 | 39 | 51 | 51 | 55 | 86 | 3 | 65 | 5 |
+| 3 | 2700 | `scholar` | 27 | 48 | 60 | 60 | 59 | 88 | 3 | 65 | 5 |
+| 4 | 5400 | `pyromancer` | 25 | 58 | 60 | 75 | 63 | 90 | 3 | 65 | 5 |
+| 5 | 9000 | `arcane_reservoir` (rank 2) | 28 | 68 | 68 | 85 | 67 | 102 | 3 | 65 | 5 |
+| 6 | 13500 | `mana_flow` | 23 | 80 | 79 | 85 | 71 | 104 | 3 | 65 | 5 |
+| 7 | 18900 | `transmuter` | 26 | 80 | 90 | 100 | 75 | 106 | 3 | 65 | 5 |
+| 8 | 25200 | `meditative` | 25 | 95 | 100 | 100 | 79 | 108 | 3 | 65 | 5 |
+| 9 | 32400 | `iron_will` | 27 | 100 | 100 | 100 | 83 | 110 | 3 | 65 | 5 |
+| 10 | 40500 | `arcane_reservoir` (rank 3) | 24 | 100 | 100 | 100 | 87 | 122 | 3 | 65 | 5 |
+
+Gear by level 10: `quarterstaff`, `cloth_robe`, `cloak`.
+Spells by level 10: `fire_bolt`, `ward`, `force_dart`, `fire_burst`.
+<!-- /characters:sefa -->
+
 ---
 
 ## Data & schema map

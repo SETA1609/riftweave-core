@@ -1,0 +1,1135 @@
+[
+  {
+    "name": "Borin level 1: derived stats",
+    "function": "derived",
+    "actor": {
+      "attributes": {
+        "str": 7,
+        "per": 5,
+        "end": 8,
+        "int": 5,
+        "wil": 4,
+        "agi": 4,
+        "cha": 4,
+        "lck": 7
+      },
+      "level": 1
+    },
+    "modifiers": [],
+    "expect": {
+      "hp": 83,
+      "mp": 42,
+      "ap": 3,
+      "carry": 95,
+      "initiative": 5
+    }
+  },
+  {
+    "name": "Borin level 1: skill points",
+    "function": "progression",
+    "op": "level_up",
+    "actor": {
+      "attributes": {
+        "str": 7,
+        "per": 5,
+        "end": 8,
+        "int": 5,
+        "wil": 4,
+        "agi": 4,
+        "cha": 4,
+        "lck": 7
+      }
+    },
+    "luck_roll": 4,
+    "expect": {
+      "skill_points": 19,
+      "perks": 1
+    }
+  },
+  {
+    "name": "Borin level 2: derived stats",
+    "function": "derived",
+    "actor": {
+      "attributes": {
+        "str": 7,
+        "per": 5,
+        "end": 8,
+        "int": 5,
+        "wil": 4,
+        "agi": 4,
+        "cha": 4,
+        "lck": 7
+      },
+      "level": 2
+    },
+    "modifiers": [
+      {
+        "target": "hp",
+        "op": "add",
+        "value": 15,
+        "source": "feature:toughness",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "hp": 102,
+      "mp": 44,
+      "ap": 3,
+      "carry": 95,
+      "initiative": 5
+    }
+  },
+  {
+    "name": "Borin level 2: skill points",
+    "function": "progression",
+    "op": "level_up",
+    "actor": {
+      "attributes": {
+        "str": 7,
+        "per": 5,
+        "end": 8,
+        "int": 5,
+        "wil": 4,
+        "agi": 4,
+        "cha": 4,
+        "lck": 7
+      }
+    },
+    "luck_roll": 2,
+    "expect": {
+      "skill_points": 17,
+      "perks": 1
+    }
+  },
+  {
+    "name": "Borin level 3: derived stats",
+    "function": "derived",
+    "actor": {
+      "attributes": {
+        "str": 7,
+        "per": 5,
+        "end": 8,
+        "int": 5,
+        "wil": 4,
+        "agi": 4,
+        "cha": 4,
+        "lck": 7
+      },
+      "level": 3
+    },
+    "modifiers": [
+      {
+        "target": "hp",
+        "op": "add",
+        "value": 30,
+        "source": "feature:toughness",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "hp": 121,
+      "mp": 46,
+      "ap": 3,
+      "carry": 95,
+      "initiative": 5
+    }
+  },
+  {
+    "name": "Borin level 3: skill points",
+    "function": "progression",
+    "op": "level_up",
+    "actor": {
+      "attributes": {
+        "str": 7,
+        "per": 5,
+        "end": 8,
+        "int": 5,
+        "wil": 4,
+        "agi": 4,
+        "cha": 4,
+        "lck": 7
+      }
+    },
+    "luck_roll": 6,
+    "expect": {
+      "skill_points": 21,
+      "perks": 1
+    }
+  },
+  {
+    "name": "Borin level 4: derived stats",
+    "function": "derived",
+    "actor": {
+      "attributes": {
+        "str": 7,
+        "per": 5,
+        "end": 8,
+        "int": 5,
+        "wil": 4,
+        "agi": 4,
+        "cha": 4,
+        "lck": 7
+      },
+      "level": 4
+    },
+    "modifiers": [
+      {
+        "target": "hp",
+        "op": "add",
+        "value": 30,
+        "source": "feature:toughness",
+        "origin": "core:origin/trained"
+      },
+      {
+        "target": "carry",
+        "op": "add",
+        "value": 25,
+        "source": "feature:pack_mule",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "hp": 125,
+      "mp": 48,
+      "ap": 3,
+      "carry": 120,
+      "initiative": 5
+    }
+  },
+  {
+    "name": "Borin level 4: skill points",
+    "function": "progression",
+    "op": "level_up",
+    "actor": {
+      "attributes": {
+        "str": 7,
+        "per": 5,
+        "end": 8,
+        "int": 5,
+        "wil": 4,
+        "agi": 4,
+        "cha": 4,
+        "lck": 7
+      }
+    },
+    "luck_roll": 3,
+    "expect": {
+      "skill_points": 18,
+      "perks": 1
+    }
+  },
+  {
+    "name": "Borin level 5: derived stats",
+    "function": "derived",
+    "actor": {
+      "attributes": {
+        "str": 7,
+        "per": 5,
+        "end": 8,
+        "int": 5,
+        "wil": 4,
+        "agi": 4,
+        "cha": 4,
+        "lck": 7
+      },
+      "level": 5
+    },
+    "modifiers": [
+      {
+        "target": "hp",
+        "op": "add",
+        "value": 30,
+        "source": "feature:toughness",
+        "origin": "core:origin/trained"
+      },
+      {
+        "target": "carry",
+        "op": "add",
+        "value": 25,
+        "source": "feature:pack_mule",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "hp": 129,
+      "mp": 50,
+      "ap": 3,
+      "carry": 120,
+      "initiative": 5
+    }
+  },
+  {
+    "name": "Borin level 5: skill points",
+    "function": "progression",
+    "op": "level_up",
+    "actor": {
+      "attributes": {
+        "str": 7,
+        "per": 5,
+        "end": 8,
+        "int": 5,
+        "wil": 4,
+        "agi": 4,
+        "cha": 4,
+        "lck": 7
+      }
+    },
+    "luck_roll": 5,
+    "expect": {
+      "skill_points": 20,
+      "perks": 1
+    }
+  },
+  {
+    "name": "Borin level 6: derived stats",
+    "function": "derived",
+    "actor": {
+      "attributes": {
+        "str": 7,
+        "per": 5,
+        "end": 8,
+        "int": 5,
+        "wil": 4,
+        "agi": 4,
+        "cha": 4,
+        "lck": 7
+      },
+      "level": 6
+    },
+    "modifiers": [
+      {
+        "target": "hp",
+        "op": "add",
+        "value": 30,
+        "source": "feature:toughness",
+        "origin": "core:origin/trained"
+      },
+      {
+        "target": "carry",
+        "op": "add",
+        "value": 25,
+        "source": "feature:pack_mule",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "hp": 133,
+      "mp": 52,
+      "ap": 3,
+      "carry": 120,
+      "initiative": 5
+    }
+  },
+  {
+    "name": "Borin level 6: skill points",
+    "function": "progression",
+    "op": "level_up",
+    "actor": {
+      "attributes": {
+        "str": 7,
+        "per": 5,
+        "end": 8,
+        "int": 5,
+        "wil": 4,
+        "agi": 4,
+        "cha": 4,
+        "lck": 7
+      }
+    },
+    "luck_roll": 1,
+    "expect": {
+      "skill_points": 16,
+      "perks": 1
+    }
+  },
+  {
+    "name": "Borin level 7: derived stats",
+    "function": "derived",
+    "actor": {
+      "attributes": {
+        "str": 7,
+        "per": 5,
+        "end": 8,
+        "int": 5,
+        "wil": 4,
+        "agi": 4,
+        "cha": 4,
+        "lck": 7
+      },
+      "level": 7
+    },
+    "modifiers": [
+      {
+        "target": "hp",
+        "op": "add",
+        "value": 45,
+        "source": "feature:toughness",
+        "origin": "core:origin/trained"
+      },
+      {
+        "target": "carry",
+        "op": "add",
+        "value": 25,
+        "source": "feature:pack_mule",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "hp": 152,
+      "mp": 54,
+      "ap": 3,
+      "carry": 120,
+      "initiative": 5
+    }
+  },
+  {
+    "name": "Borin level 7: skill points",
+    "function": "progression",
+    "op": "level_up",
+    "actor": {
+      "attributes": {
+        "str": 7,
+        "per": 5,
+        "end": 8,
+        "int": 5,
+        "wil": 4,
+        "agi": 4,
+        "cha": 4,
+        "lck": 7
+      }
+    },
+    "luck_roll": 7,
+    "expect": {
+      "skill_points": 22,
+      "perks": 1
+    }
+  },
+  {
+    "name": "Borin level 8: derived stats",
+    "function": "derived",
+    "actor": {
+      "attributes": {
+        "str": 7,
+        "per": 5,
+        "end": 8,
+        "int": 5,
+        "wil": 4,
+        "agi": 4,
+        "cha": 4,
+        "lck": 7
+      },
+      "level": 8
+    },
+    "modifiers": [
+      {
+        "target": "hp",
+        "op": "add",
+        "value": 45,
+        "source": "feature:toughness",
+        "origin": "core:origin/trained"
+      },
+      {
+        "target": "carry",
+        "op": "add",
+        "value": 25,
+        "source": "feature:pack_mule",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "hp": 156,
+      "mp": 56,
+      "ap": 3,
+      "carry": 120,
+      "initiative": 5
+    }
+  },
+  {
+    "name": "Borin level 8: skill points",
+    "function": "progression",
+    "op": "level_up",
+    "actor": {
+      "attributes": {
+        "str": 7,
+        "per": 5,
+        "end": 8,
+        "int": 5,
+        "wil": 4,
+        "agi": 4,
+        "cha": 4,
+        "lck": 7
+      }
+    },
+    "luck_roll": 3,
+    "expect": {
+      "skill_points": 18,
+      "perks": 1
+    }
+  },
+  {
+    "name": "Borin level 9: derived stats",
+    "function": "derived",
+    "actor": {
+      "attributes": {
+        "str": 7,
+        "per": 5,
+        "end": 8,
+        "int": 5,
+        "wil": 4,
+        "agi": 4,
+        "cha": 4,
+        "lck": 7
+      },
+      "level": 9
+    },
+    "modifiers": [
+      {
+        "target": "hp",
+        "op": "add",
+        "value": 45,
+        "source": "feature:toughness",
+        "origin": "core:origin/trained"
+      },
+      {
+        "target": "carry",
+        "op": "add",
+        "value": 25,
+        "source": "feature:pack_mule",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "hp": 160,
+      "mp": 58,
+      "ap": 3,
+      "carry": 120,
+      "initiative": 5
+    }
+  },
+  {
+    "name": "Borin level 9: skill points",
+    "function": "progression",
+    "op": "level_up",
+    "actor": {
+      "attributes": {
+        "str": 7,
+        "per": 5,
+        "end": 8,
+        "int": 5,
+        "wil": 4,
+        "agi": 4,
+        "cha": 4,
+        "lck": 7
+      }
+    },
+    "luck_roll": 4,
+    "expect": {
+      "skill_points": 19,
+      "perks": 1
+    }
+  },
+  {
+    "name": "Borin level 10: derived stats",
+    "function": "derived",
+    "actor": {
+      "attributes": {
+        "str": 7,
+        "per": 5,
+        "end": 8,
+        "int": 5,
+        "wil": 4,
+        "agi": 4,
+        "cha": 4,
+        "lck": 7
+      },
+      "level": 10
+    },
+    "modifiers": [
+      {
+        "target": "hp",
+        "op": "add",
+        "value": 45,
+        "source": "feature:toughness",
+        "origin": "core:origin/trained"
+      },
+      {
+        "target": "carry",
+        "op": "add",
+        "value": 25,
+        "source": "feature:pack_mule",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "hp": 164,
+      "mp": 60,
+      "ap": 3,
+      "carry": 120,
+      "initiative": 5
+    }
+  },
+  {
+    "name": "Borin level 10: skill points",
+    "function": "progression",
+    "op": "level_up",
+    "actor": {
+      "attributes": {
+        "str": 7,
+        "per": 5,
+        "end": 8,
+        "int": 5,
+        "wil": 4,
+        "agi": 4,
+        "cha": 4,
+        "lck": 7
+      }
+    },
+    "luck_roll": 2,
+    "expect": {
+      "skill_points": 17,
+      "perks": 1
+    }
+  },
+  {
+    "name": "Sefa level 1: derived stats",
+    "function": "derived",
+    "actor": {
+      "attributes": {
+        "str": 4,
+        "per": 5,
+        "end": 4,
+        "int": 9,
+        "wil": 7,
+        "agi": 5,
+        "cha": 4,
+        "lck": 5
+      },
+      "level": 1
+    },
+    "modifiers": [],
+    "expect": {
+      "hp": 51,
+      "mp": 74,
+      "ap": 3,
+      "carry": 65,
+      "initiative": 5
+    }
+  },
+  {
+    "name": "Sefa level 1: skill points",
+    "function": "progression",
+    "op": "level_up",
+    "actor": {
+      "attributes": {
+        "str": 4,
+        "per": 5,
+        "end": 4,
+        "int": 9,
+        "wil": 7,
+        "agi": 5,
+        "cha": 4,
+        "lck": 5
+      }
+    },
+    "luck_roll": 3,
+    "expect": {
+      "skill_points": 26,
+      "perks": 1
+    }
+  },
+  {
+    "name": "Sefa level 2: derived stats",
+    "function": "derived",
+    "actor": {
+      "attributes": {
+        "str": 4,
+        "per": 5,
+        "end": 4,
+        "int": 9,
+        "wil": 7,
+        "agi": 5,
+        "cha": 4,
+        "lck": 5
+      },
+      "level": 2
+    },
+    "modifiers": [
+      {
+        "target": "mp",
+        "op": "add",
+        "value": 10,
+        "source": "feature:arcane_reservoir",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "hp": 55,
+      "mp": 86,
+      "ap": 3,
+      "carry": 65,
+      "initiative": 5
+    }
+  },
+  {
+    "name": "Sefa level 2: skill points",
+    "function": "progression",
+    "op": "level_up",
+    "actor": {
+      "attributes": {
+        "str": 4,
+        "per": 5,
+        "end": 4,
+        "int": 9,
+        "wil": 7,
+        "agi": 5,
+        "cha": 4,
+        "lck": 5
+      }
+    },
+    "luck_roll": 1,
+    "expect": {
+      "skill_points": 24,
+      "perks": 1
+    }
+  },
+  {
+    "name": "Sefa level 3: derived stats",
+    "function": "derived",
+    "actor": {
+      "attributes": {
+        "str": 4,
+        "per": 5,
+        "end": 4,
+        "int": 9,
+        "wil": 7,
+        "agi": 5,
+        "cha": 4,
+        "lck": 5
+      },
+      "level": 3
+    },
+    "modifiers": [
+      {
+        "target": "mp",
+        "op": "add",
+        "value": 10,
+        "source": "feature:arcane_reservoir",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "hp": 59,
+      "mp": 88,
+      "ap": 3,
+      "carry": 65,
+      "initiative": 5
+    }
+  },
+  {
+    "name": "Sefa level 3: skill points",
+    "function": "progression",
+    "op": "level_up",
+    "actor": {
+      "attributes": {
+        "str": 4,
+        "per": 5,
+        "end": 4,
+        "int": 9,
+        "wil": 7,
+        "agi": 5,
+        "cha": 4,
+        "lck": 5
+      }
+    },
+    "luck_roll": 4,
+    "expect": {
+      "skill_points": 27,
+      "perks": 1
+    }
+  },
+  {
+    "name": "Sefa level 4: derived stats",
+    "function": "derived",
+    "actor": {
+      "attributes": {
+        "str": 4,
+        "per": 5,
+        "end": 4,
+        "int": 9,
+        "wil": 7,
+        "agi": 5,
+        "cha": 4,
+        "lck": 5
+      },
+      "level": 4
+    },
+    "modifiers": [
+      {
+        "target": "mp",
+        "op": "add",
+        "value": 10,
+        "source": "feature:arcane_reservoir",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "hp": 63,
+      "mp": 90,
+      "ap": 3,
+      "carry": 65,
+      "initiative": 5
+    }
+  },
+  {
+    "name": "Sefa level 4: skill points",
+    "function": "progression",
+    "op": "level_up",
+    "actor": {
+      "attributes": {
+        "str": 4,
+        "per": 5,
+        "end": 4,
+        "int": 9,
+        "wil": 7,
+        "agi": 5,
+        "cha": 4,
+        "lck": 5
+      }
+    },
+    "luck_roll": 2,
+    "expect": {
+      "skill_points": 25,
+      "perks": 1
+    }
+  },
+  {
+    "name": "Sefa level 5: derived stats",
+    "function": "derived",
+    "actor": {
+      "attributes": {
+        "str": 4,
+        "per": 5,
+        "end": 4,
+        "int": 9,
+        "wil": 7,
+        "agi": 5,
+        "cha": 4,
+        "lck": 5
+      },
+      "level": 5
+    },
+    "modifiers": [
+      {
+        "target": "mp",
+        "op": "add",
+        "value": 20,
+        "source": "feature:arcane_reservoir",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "hp": 67,
+      "mp": 102,
+      "ap": 3,
+      "carry": 65,
+      "initiative": 5
+    }
+  },
+  {
+    "name": "Sefa level 5: skill points",
+    "function": "progression",
+    "op": "level_up",
+    "actor": {
+      "attributes": {
+        "str": 4,
+        "per": 5,
+        "end": 4,
+        "int": 9,
+        "wil": 7,
+        "agi": 5,
+        "cha": 4,
+        "lck": 5
+      }
+    },
+    "luck_roll": 5,
+    "expect": {
+      "skill_points": 28,
+      "perks": 1
+    }
+  },
+  {
+    "name": "Sefa level 6: derived stats",
+    "function": "derived",
+    "actor": {
+      "attributes": {
+        "str": 4,
+        "per": 5,
+        "end": 4,
+        "int": 9,
+        "wil": 7,
+        "agi": 5,
+        "cha": 4,
+        "lck": 5
+      },
+      "level": 6
+    },
+    "modifiers": [
+      {
+        "target": "mp",
+        "op": "add",
+        "value": 20,
+        "source": "feature:arcane_reservoir",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "hp": 71,
+      "mp": 104,
+      "ap": 3,
+      "carry": 65,
+      "initiative": 5
+    }
+  },
+  {
+    "name": "Sefa level 6: skill points",
+    "function": "progression",
+    "op": "level_up",
+    "actor": {
+      "attributes": {
+        "str": 4,
+        "per": 5,
+        "end": 4,
+        "int": 9,
+        "wil": 7,
+        "agi": 5,
+        "cha": 4,
+        "lck": 5
+      }
+    },
+    "luck_roll": 0,
+    "expect": {
+      "skill_points": 23,
+      "perks": 1
+    }
+  },
+  {
+    "name": "Sefa level 7: derived stats",
+    "function": "derived",
+    "actor": {
+      "attributes": {
+        "str": 4,
+        "per": 5,
+        "end": 4,
+        "int": 9,
+        "wil": 7,
+        "agi": 5,
+        "cha": 4,
+        "lck": 5
+      },
+      "level": 7
+    },
+    "modifiers": [
+      {
+        "target": "mp",
+        "op": "add",
+        "value": 20,
+        "source": "feature:arcane_reservoir",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "hp": 75,
+      "mp": 106,
+      "ap": 3,
+      "carry": 65,
+      "initiative": 5
+    }
+  },
+  {
+    "name": "Sefa level 7: skill points",
+    "function": "progression",
+    "op": "level_up",
+    "actor": {
+      "attributes": {
+        "str": 4,
+        "per": 5,
+        "end": 4,
+        "int": 9,
+        "wil": 7,
+        "agi": 5,
+        "cha": 4,
+        "lck": 5
+      }
+    },
+    "luck_roll": 3,
+    "expect": {
+      "skill_points": 26,
+      "perks": 1
+    }
+  },
+  {
+    "name": "Sefa level 8: derived stats",
+    "function": "derived",
+    "actor": {
+      "attributes": {
+        "str": 4,
+        "per": 5,
+        "end": 4,
+        "int": 9,
+        "wil": 7,
+        "agi": 5,
+        "cha": 4,
+        "lck": 5
+      },
+      "level": 8
+    },
+    "modifiers": [
+      {
+        "target": "mp",
+        "op": "add",
+        "value": 20,
+        "source": "feature:arcane_reservoir",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "hp": 79,
+      "mp": 108,
+      "ap": 3,
+      "carry": 65,
+      "initiative": 5
+    }
+  },
+  {
+    "name": "Sefa level 8: skill points",
+    "function": "progression",
+    "op": "level_up",
+    "actor": {
+      "attributes": {
+        "str": 4,
+        "per": 5,
+        "end": 4,
+        "int": 9,
+        "wil": 7,
+        "agi": 5,
+        "cha": 4,
+        "lck": 5
+      }
+    },
+    "luck_roll": 2,
+    "expect": {
+      "skill_points": 25,
+      "perks": 1
+    }
+  },
+  {
+    "name": "Sefa level 9: derived stats",
+    "function": "derived",
+    "actor": {
+      "attributes": {
+        "str": 4,
+        "per": 5,
+        "end": 4,
+        "int": 9,
+        "wil": 7,
+        "agi": 5,
+        "cha": 4,
+        "lck": 5
+      },
+      "level": 9
+    },
+    "modifiers": [
+      {
+        "target": "mp",
+        "op": "add",
+        "value": 20,
+        "source": "feature:arcane_reservoir",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "hp": 83,
+      "mp": 110,
+      "ap": 3,
+      "carry": 65,
+      "initiative": 5
+    }
+  },
+  {
+    "name": "Sefa level 9: skill points",
+    "function": "progression",
+    "op": "level_up",
+    "actor": {
+      "attributes": {
+        "str": 4,
+        "per": 5,
+        "end": 4,
+        "int": 9,
+        "wil": 7,
+        "agi": 5,
+        "cha": 4,
+        "lck": 5
+      }
+    },
+    "luck_roll": 4,
+    "expect": {
+      "skill_points": 27,
+      "perks": 1
+    }
+  },
+  {
+    "name": "Sefa level 10: derived stats",
+    "function": "derived",
+    "actor": {
+      "attributes": {
+        "str": 4,
+        "per": 5,
+        "end": 4,
+        "int": 9,
+        "wil": 7,
+        "agi": 5,
+        "cha": 4,
+        "lck": 5
+      },
+      "level": 10
+    },
+    "modifiers": [
+      {
+        "target": "mp",
+        "op": "add",
+        "value": 30,
+        "source": "feature:arcane_reservoir",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "hp": 87,
+      "mp": 122,
+      "ap": 3,
+      "carry": 65,
+      "initiative": 5
+    }
+  },
+  {
+    "name": "Sefa level 10: skill points",
+    "function": "progression",
+    "op": "level_up",
+    "actor": {
+      "attributes": {
+        "str": 4,
+        "per": 5,
+        "end": 4,
+        "int": 9,
+        "wil": 7,
+        "agi": 5,
+        "cha": 4,
+        "lck": 5
+      }
+    },
+    "luck_roll": 1,
+    "expect": {
+      "skill_points": 24,
+      "perks": 1
+    }
+  }
+]
