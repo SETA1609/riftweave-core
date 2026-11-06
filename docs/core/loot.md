@@ -38,6 +38,22 @@ So monsters can share a table and still differ:
 
 **Roll order.** The rolls are one list, used in row order: for each row, first its `chance` roll (if `chance` is below 100), then, if it yields, the table's rolls. A failed chance uses no table rolls. Too few or too many rolls is an error. [V 2026-11-06]
 
+## Looter
+
+Who loots matters too. The looter's shift is one number, added to every table roll on top of the row's own `shift`, and to every `chance`:
+
+```
+looter_shift = value of target `loot_roll`, starting at 0, after the looter's modifiers
+luck         = add loot_roll ((LCK - 5) * 2), source attr:lck, origin innate      formulas/loot_luck.json
+```
+
+- **Luck** emits one modifier, the way it widens the crit window in [resolution.md](resolution.md). LCK 5 is neutral, LCK 10 is +10, LCK 1 is −8. An average looter gets the average the budget is checked against. [A]
+- **Perks and everything else** emit `add` on `loot_roll`: the Scavenger perk gives +10 per rank. They stack by the kernel rules ([modifier.md](modifier.md)): two `highest` origins of one kind keep the strongest, a potion of fortune does not stack with another potion. [V 2026-11-06]
+- **Table rolls:** roll + row shift + looter shift, kept between 1 and 100. A negative looter shift (a curse, bad luck) moves toward the bottom of the table.
+- **Chance:** a row yields if its roll is at most `chance` + looter shift, kept between 1 and 99, so luck never makes a drop certain and bad luck never makes it impossible. A row with no `chance` always yields and is not affected. [A]
+- A table rolled on its own (a treasure cache) takes the looter shift the same way. With no `actor` and no `modifiers` in the input, the looter shift is 0.
+- The budget check uses a looter shift of 0. A lucky looter beats the budget on average; that is the point of luck. [A]
+
 ## Value and budget
 
 ```
@@ -54,4 +70,4 @@ budget_cp(level) = 500 * level * level                          formula tree
 
 ## Not covered
 
-Unique and quest items, magic item generation from enchantments, the looter's own shift (a perk or Luck adding to loot rolls), a per-level wealth curve for whole campaigns, and loot shared between party members. [U]
+Unique and quest items, magic item generation from enchantments, a per-level wealth curve for whole campaigns, and loot shared between party members. [U]
