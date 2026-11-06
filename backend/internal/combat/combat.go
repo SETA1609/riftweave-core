@@ -4,7 +4,6 @@
 package combat
 
 import (
-	"fmt"
 	"slices"
 
 	"github.com/SETA1609/riftweave-core/backend/internal/actor"
@@ -69,16 +68,16 @@ type Result struct {
 
 // Run is the `combat` command.
 func Run(ruleset *data.Ruleset, input Input) (Result, error) {
-	damageType, ok := ruleset.DamageTypes.Get(input.Damage.Type)
-	if !ok {
-		return Result{}, fmt.Errorf("damage type %q is not defined", input.Damage.Type)
+	damageType, err := ruleset.DamageTypes.Require("damage type", input.Damage.Type)
+	if err != nil {
+		return Result{}, err
 	}
 	var delivery string = input.Delivery
 	if delivery == "" {
 		delivery = "single"
 	}
 	if delivery != "single" && delivery != "area" && delivery != "instant" {
-		return Result{}, fmt.Errorf("delivery %q is not defined", delivery)
+		return Result{}, &data.NotDefinedError{Kind: "delivery", Key: delivery}
 	}
 	var defender *Defender = &input.Defender
 	var pipeline *data.Pipeline = &ruleset.Pipeline
@@ -107,7 +106,7 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	}
 	if reaction != nil {
 		if reaction.Kind != "evade" && reaction.Kind != "block" {
-			return Result{}, fmt.Errorf("reaction kind %q is not defined", reaction.Kind)
+			return Result{}, &data.NotDefinedError{Kind: "reaction kind", Key: reaction.Kind}
 		}
 		if reaction.Kind == "block" && !damageType.Physical {
 			reaction = nil
@@ -118,12 +117,12 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		var skill int64
 		if reaction.Kind == "evade" {
 			if defender.EvasionSkill == nil {
-				return Result{}, fmt.Errorf("an evade needs the defender's evasion_skill")
+				return Result{}, &data.MissingInputError{Subject: "an evade", Needs: "the defender's evasion_skill"}
 			}
 			skill = *defender.EvasionSkill
 		} else {
 			if reaction.Skill == nil || reaction.ShieldDamageReduction == nil {
-				return Result{}, fmt.Errorf("a block needs skill and shield_dr")
+				return Result{}, &data.MissingInputError{Subject: "a block", Needs: "skill and shield_dr"}
 			}
 			skill = *reaction.Skill
 		}
@@ -144,7 +143,6 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	result.Outcome = "hit"
 
 	var amount int64 = input.Damage.Roll
-	var err error
 	if result.Critical {
 		if amount, err = pipeline.CriticalDamage.Evaluate(nil, formula.Variable{Name: "damage", Value: amount}); err != nil {
 			return Result{}, err

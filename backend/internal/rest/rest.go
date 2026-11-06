@@ -4,7 +4,6 @@
 package rest
 
 import (
-	"fmt"
 	"slices"
 
 	"github.com/SETA1609/riftweave-core/backend/internal/actor"
@@ -47,9 +46,9 @@ type Result struct {
 
 // Run is the `rest` command. The maximums are the derived stats, and stamina's comes in.
 func Run(ruleset *data.Ruleset, input Input) (Result, error) {
-	occasion, ok := ruleset.Rest.Get(input.Occasion)
-	if !ok {
-		return Result{}, fmt.Errorf("rest occasion %q is not defined", input.Occasion)
+	occasion, err := ruleset.Rest.Require("rest occasion", input.Occasion)
+	if err != nil {
+		return Result{}, err
 	}
 	stats, err := derived.Compute(ruleset, input.Actor, input.Modifiers)
 	if err != nil {
@@ -61,7 +60,7 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		}
 		statIndex, ok := ruleset.Derived.Index(resource)
 		if !ok {
-			return 0, fmt.Errorf("rest resource %q is not defined", resource)
+			return 0, &data.NotDefinedError{Kind: "rest resource", Key: resource}
 		}
 		return stats[statIndex], nil
 	}
@@ -87,7 +86,7 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		case "ap":
 			resourceValue = &result.ActionPoints
 		default:
-			return Result{}, fmt.Errorf("rest resource %q is not defined", recovery.Resource)
+			return Result{}, &data.NotDefinedError{Kind: "rest resource", Key: recovery.Resource}
 		}
 		limit, err := maximumOf(recovery.Resource)
 		if err != nil {

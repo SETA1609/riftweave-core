@@ -12,6 +12,7 @@ package data
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/fs"
 	"math"
@@ -337,50 +338,52 @@ type Ruleset struct {
 	MonsterLevel    map[string]int64 // monster key
 }
 
+// rulesetLoader reads every file even after one fails, and joins every error, so one run
+// reports every broken file and row. A check runs only when its file was read, so a file
+// that failed is reported once, not again for each zero value it left behind.
 type rulesetLoader struct {
 	fileSystem fs.FS
-	err        error
+	errs       []error
 }
 
-func (loader *rulesetLoader) read(file string, target any) {
-	if loader.err != nil {
-		return
-	}
+// read decodes one file into target and reports whether it could.
+func (loader *rulesetLoader) read(file string, target any) bool {
 	content, err := fs.ReadFile(loader.fileSystem, file)
 	if err == nil {
 		err = json.Unmarshal(content, target)
 	}
 	if err != nil {
-		loader.err = fmt.Errorf("%s: %w", file, err)
+		loader.errs = append(loader.errs, fmt.Errorf("%s: %w", file, err))
+		return false
 	}
+	return true
 }
 
 func (loader *rulesetLoader) fail(format string, arguments ...any) {
-	if loader.err == nil {
-		loader.err = fmt.Errorf(format, arguments...)
-	}
+	loader.errs = append(loader.errs, fmt.Errorf(format, arguments...))
 }
 
-// Load reads the ruleset from the data directory held by fileSystem.
+// Load reads the ruleset from the data directory held by fileSystem. The error, if any,
+// joins one error per broken file or row.
 func Load(fileSystem fs.FS) (*Ruleset, error) {
 	var loader *rulesetLoader = &rulesetLoader{fileSystem: fileSystem}
 	var ruleset *Ruleset = &Ruleset{}
 
 	var resolution struct{ Resolution Resolution }
-	loader.read("resolution/core.json", &resolution)
-	if resolution.Resolution.CriticalWindowPerTwoLuck <= 0 {
+	if loader.read("resolution/core.json", &resolution) && resolution.Resolution.CriticalWindowPerTwoLuck <= 0 {
 		loader.fail("resolution/core.json: crit_window_per_two_luck must be positive")
 	}
 	ruleset.Resolution = resolution.Resolution
 
 	var derived struct{ Derived []DerivedStat }
-	loader.read("derived/core.json", &derived)
-	for index := range derived.Derived {
-		var stat *DerivedStat = &derived.Derived[index]
-		if stat.PerPointDivisor == 0 {
-			stat.PerPointDivisor = 1
+	if loader.read("derived/core.json", &derived) {
+		for index := range derived.Derived {
+			var stat *DerivedStat = &derived.Derived[index]
+			if stat.PerPointDivisor == 0 {
+				stat.PerPointDivisor = 1
+			}
+			stat.Ability = loader.ability("derived/core.json", stat.Attribute)
 		}
-		stat.Ability = loader.ability(stat.Attribute)
 	}
 	ruleset.Derived = newTable(derived.Derived, func(stat *DerivedStat) string { return stat.Key })
 
@@ -388,10 +391,11 @@ func Load(fileSystem fs.FS) (*Ruleset, error) {
 		Pool    ActionPool
 		Actions []Action
 	}
-	loader.read("actions/core.json", &actions)
-	actions.Pool.Ability = loader.ability(actions.Pool.Attribute)
-	if actions.Pool.PerPointDivisor <= 0 {
-		loader.fail("actions/core.json: per_point_divisor must be positive")
+	if loader.read("actions/core.json", &actions) {
+		actions.Pool.Ability = loader.ability("actions/core.json", actions.Pool.Attribute)
+		if actions.Pool.PerPointDivisor <= 0 {
+			loader.fail("actions/core.json: per_point_divisor must be positive")
+		}
 	}
 	ruleset.Actions = Actions{Pool: actions.Pool, Actions: newTable(actions.Actions, func(action *Action) string { return action.Key })}
 
@@ -413,23 +417,25 @@ func Load(fileSystem fs.FS) (*Ruleset, error) {
 		Barter    Barter
 		Merchants []Merchant
 	}
-	loader.read("economy/core.json", &economy)
+	var economyLoaded bool = loader.read("economy/core.json", &economy)
 	ruleset.Economy = Economy{
 		Denominations: economy.Currency.Denominations,
 		Barter:        economy.Barter,
 		Merchants:     newTable(economy.Merchants, func(merchant *Merchant) string { return merchant.Key }),
 	}
-	if economy.Barter.MarginDivisor <= 0 {
+	if economyLoaded && economy.Barter.MarginDivisor <= 0 {
 		loader.fail("economy/core.json: barter margin_divisor must be positive")
 	}
 
 	var progression struct{ Progression Progression }
-	loader.read("progression/core.json", &progression)
-	ruleset.Progression = progression.Progression
-	ruleset.Progression.LuckMaximumAbility = loader.ability(ruleset.Progression.LuckRoll.MaximumAttribute)
-	if ruleset.Progression.SkillCost.Normal <= 0 || ruleset.Progression.SkillCost.Tag <= 0 {
-		loader.fail("progression/core.json: skill costs must be positive")
+	if loader.read("progression/core.json", &progression) {
+		var rules *Progression = &progression.Progression
+		rules.LuckMaximumAbility = loader.ability("progression/core.json", rules.LuckRoll.MaximumAttribute)
+		if rules.SkillCost.Normal <= 0 || rules.SkillCost.Tag <= 0 {
+			loader.fail("progression/core.json: skill costs must be positive")
+		}
 	}
+	ruleset.Progression = progression.Progression
 
 	var pipeline struct{ Pipeline Pipeline }
 	loader.read("combat/pipeline.json", &pipeline)
@@ -454,15 +460,20 @@ func Load(fileSystem fs.FS) (*Ruleset, error) {
 
 	loader.loadConditions(ruleset)
 	loader.loadFormulas(ruleset)
-	loader.loadItems(ruleset)
-	loader.loadLoot(ruleset)
-	return ruleset, loader.err
+	// Items and loot are priced in copper, so they need the economy's denominations.
+	if economyLoaded {
+		loader.loadItems(ruleset)
+		loader.loadLoot(ruleset)
+	} else {
+		loader.fail("equipment and loot: not loaded, because economy/core.json did not load")
+	}
+	return ruleset, errors.Join(loader.errs...)
 }
 
-func (loader *rulesetLoader) ability(key string) actor.Ability {
+func (loader *rulesetLoader) ability(file, key string) actor.Ability {
 	ability, ok := actor.ByKey(key)
 	if !ok {
-		loader.fail("%q is not an attribute", key)
+		loader.fail("%s: %q is not an attribute", file, key)
 	}
 	return ability
 }
@@ -474,7 +485,9 @@ func (loader *rulesetLoader) loadWuxing(ruleset *Ruleset) {
 		}
 		Cycles []Cycle
 	}
-	loader.read("wuxing/core.json", &raw)
+	if !loader.read("wuxing/core.json", &raw) {
+		return
+	}
 	if len(raw.Phases) > 8 {
 		loader.fail("wuxing/core.json: at most 8 phases")
 		return
@@ -489,7 +502,7 @@ func (loader *rulesetLoader) loadWuxing(ruleset *Ruleset) {
 			var from, to int = ruleset.Wuxing.Phase(edge.From), ruleset.Wuxing.Phase(edge.To)
 			if from < 0 || to < 0 {
 				loader.fail("wuxing/core.json: cycle %s edge %s -> %s names an unknown phase", cycle.Identifier, edge.From, edge.To)
-				return
+				continue
 			}
 			cycle.NextPhasesMask[from] |= 1 << to
 		}
@@ -521,9 +534,6 @@ func (loader *rulesetLoader) loadConditions(ruleset *Ruleset) {
 
 func (loader *rulesetLoader) loadFormulas(ruleset *Ruleset) {
 	ruleset.Formulas = map[string]*formula.Program{}
-	if loader.err != nil {
-		return
-	}
 	files, err := fs.ReadDir(loader.fileSystem, "formulas")
 	if err != nil {
 		loader.fail("formulas: %v", err)
@@ -573,12 +583,12 @@ func (loader *rulesetLoader) loadItems(ruleset *Ruleset) {
 			}
 			if cost == nil {
 				loader.fail("equipment/%s.json: %s has no cost", category.file, row.Key)
-				return
+				continue
 			}
 			copper, err := ruleset.Economy.ToCopper(*cost)
 			if err != nil {
 				loader.fail("equipment/%s.json: %s: %v", category.file, row.Key, err)
-				return
+				continue
 			}
 			ruleset.Items["core:"+category.category+"/"+row.Key] = Item{
 				CostCopper:    copper,
@@ -616,7 +626,9 @@ func (loader *rulesetLoader) loadItems(ruleset *Ruleset) {
 		}
 		if level == nil {
 			var base struct{ Level int64 }
-			loader.read("monsters/bases/"+monster.Base+".json", &base)
+			if !loader.read("monsters/bases/"+monster.Base+".json", &base) {
+				continue
+			}
 			level = &base.Level
 		}
 		ruleset.MonsterLevel[monster.Key] = *level
@@ -629,8 +641,7 @@ func (loader *rulesetLoader) loadLoot(ruleset *Ruleset) {
 		Tables       []LootTable
 		Drops        []Drop
 	}
-	loader.read("loot/core.json", &raw)
-	if loader.err != nil {
+	if !loader.read("loot/core.json", &raw) {
 		return
 	}
 	for tableIndex := range raw.Tables {
@@ -644,7 +655,7 @@ func (loader *rulesetLoader) loadLoot(ruleset *Ruleset) {
 				copper, err := ruleset.Economy.ToCopper(*entry.Coins)
 				if err != nil {
 					loader.fail("loot/core.json: %s: %v", table.Key, err)
-					return
+					continue
 				}
 				entry.CoinsCopper = copper
 			}
@@ -665,13 +676,13 @@ func (loader *rulesetLoader) loadLoot(ruleset *Ruleset) {
 			row.TableIndex = -1
 			if row.Table == "" && row.Item == "" {
 				loader.fail("loot/core.json: %s has a loot row with neither table nor item", drop.Monster)
-				return
+				continue
 			}
 			if row.Table != "" {
 				tableIndex, ok := ruleset.Loot.Tables.indexByKey[row.Table]
 				if !ok {
 					loader.fail("loot/core.json: %s drops unknown table %q", drop.Monster, row.Table)
-					return
+					continue
 				}
 				row.TableIndex = tableIndex
 			}

@@ -57,7 +57,7 @@ type roller struct {
 func (roller *roller) add(reference string, quantity int64, material string) {
 	item, ok := roller.ruleset.Items[reference]
 	if !ok {
-		roller.err = fmt.Errorf("item %q is not defined", reference)
+		roller.err = &data.NotDefinedError{Kind: "item", Key: reference}
 		return
 	}
 	if !item.TakesMaterial {
@@ -110,7 +110,7 @@ func (roller *roller) result(coins int64, level int64) (Result, error) {
 			var materialKey string = stack.material[strings.LastIndex(stack.material, "/")+1:]
 			materialPercent, ok := ruleset.MaterialPercent[materialKey]
 			if !ok {
-				return Result{}, fmt.Errorf("material %q is not defined", stack.material)
+				return Result{}, &data.NotDefinedError{Kind: "material", Key: stack.material}
 			}
 			percent = materialPercent
 			var material string = stack.material
@@ -164,9 +164,9 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	}
 	var lootRoller *roller = &roller{ruleset: ruleset}
 	if input.Table != "" {
-		table, ok := ruleset.Loot.Tables.Get(input.Table)
-		if !ok {
-			return Result{}, fmt.Errorf("table %q is not defined", input.Table)
+		table, err := ruleset.Loot.Tables.Require("table", input.Table)
+		if err != nil {
+			return Result{}, err
 		}
 		if int64(len(input.Rolls)) != table.Rolls {
 			return Result{}, fmt.Errorf("%s takes %d rolls, got %d", table.Key, table.Rolls, len(input.Rolls))
@@ -183,7 +183,7 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	}
 	level, ok := ruleset.MonsterLevel[input.Monster[strings.LastIndex(input.Monster, "/")+1:]]
 	if !ok {
-		return Result{}, fmt.Errorf("monster %q is not defined", input.Monster)
+		return Result{}, &data.NotDefinedError{Kind: "monster", Key: input.Monster}
 	}
 	var coins int64
 	var used int = 0

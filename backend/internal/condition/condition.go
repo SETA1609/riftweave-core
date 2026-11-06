@@ -5,7 +5,6 @@ package condition
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"strings"
 
 	"github.com/SETA1609/riftweave-core/backend/internal/data"
@@ -93,9 +92,9 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	var table *data.Conditions = &ruleset.Conditions
 	var active activeConditions
 	for index, key := range input.Conditions.keys {
-		row, ok := table.Table.Get(key)
-		if !ok {
-			return Result{}, fmt.Errorf("condition %q is not defined", key)
+		row, err := table.Table.Require("condition", key)
+		if err != nil {
+			return Result{}, err
 		}
 		active = append(active, activeCondition{row: row, key: key, stacks: input.Conditions.counts[index]})
 	}
@@ -116,7 +115,7 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 				}
 			}
 		default:
-			return Result{}, errors.New("an event needs `effect` or `remove`")
+			return Result{}, &data.MissingInputError{Subject: "an event", Needs: "`effect` or `remove`"}
 		}
 	}
 	var modifiers []modifier.Modifier = append([]modifier.Modifier(nil), input.Modifiers...)

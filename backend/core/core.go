@@ -39,11 +39,22 @@ var (
 )
 
 // RuleError is a command that ran and refused: the wrong number of rolls, an unknown key.
-// It matches ErrRule.
-type RuleError struct{ Message string }
+// It matches ErrRule, and errors.As reaches its Cause, so an adapter can tell a
+// NotDefinedError (an unknown key, 404) from a MissingInputError (400) from the rest.
+type RuleError struct {
+	Cause   error
+	Message string
+}
 
 func (ruleError *RuleError) Error() string        { return ruleError.Message }
 func (ruleError *RuleError) Is(target error) bool { return target == ErrRule }
+func (ruleError *RuleError) Unwrap() error        { return ruleError.Cause }
+
+// The typed causes a RuleError can carry.
+type (
+	NotDefinedError   = data.NotDefinedError
+	MissingInputError = data.MissingInputError
+)
 
 type commandHandler func(ruleset *data.Ruleset, encodedInput []byte) (any, error)
 
@@ -62,7 +73,7 @@ func bind[Input, Output any](run func(*data.Ruleset, Input) (Output, error)) com
 		}
 		output, err := run(ruleset, input)
 		if err != nil {
-			return nil, &RuleError{err.Error()}
+			return nil, &RuleError{Cause: err, Message: err.Error()}
 		}
 		return output, nil
 	}
@@ -141,7 +152,7 @@ func runFormula(ruleset *data.Ruleset, input formulaInput) (map[string]int64, er
 	if program == nil {
 		var ok bool
 		if program, ok = ruleset.Formulas[input.Formula]; !ok {
-			return nil, fmt.Errorf("formula %q is not defined", input.Formula)
+			return nil, &data.NotDefinedError{Kind: "formula", Key: input.Formula}
 		}
 	}
 	var attributes actor.Attributes = input.Actor.Attributes

@@ -4,7 +4,6 @@ package progression
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/SETA1609/riftweave-core/backend/internal/actor"
 	"github.com/SETA1609/riftweave-core/backend/internal/data"
@@ -47,7 +46,7 @@ func requireField(operation, field string, given bool) error {
 	if given {
 		return nil
 	}
-	return fmt.Errorf("progression %s needs %s", operation, field)
+	return &data.MissingInputError{Subject: "progression " + operation, Needs: field}
 }
 
 // Run is the `progression` command. Its result type depends on `op`.
@@ -94,7 +93,7 @@ func Run(ruleset *data.Ruleset, input Input) (any, error) {
 		}
 		var attributes actor.Attributes = input.Actor.Attributes
 		if !attributes.Has(rules.LuckMaximumAbility) {
-			return nil, fmt.Errorf("progression level_up needs the %s attribute", rules.LuckMaximumAbility)
+			return nil, &data.MissingInputError{Subject: "progression level_up", Needs: "the " + rules.LuckMaximumAbility.String() + " attribute"}
 		}
 		if *input.LuckRoll < rules.LuckRoll.Minimum || *input.LuckRoll > attributes.Get(rules.LuckMaximumAbility) {
 			return nil, errors.New("luck_roll out of range")
@@ -116,5 +115,5 @@ func Run(ruleset *data.Ruleset, input Input) (any, error) {
 		var ranks int64 = min(*input.Points/cost, max(rules.SkillCap-*input.Skill, 0))
 		return spendResult{Ranks: ranks, Spent: ranks * cost, Left: *input.Points - ranks*cost}, nil
 	}
-	return nil, fmt.Errorf("progression op %q is not defined", input.Operation)
+	return nil, &data.NotDefinedError{Kind: "progression op", Key: input.Operation}
 }

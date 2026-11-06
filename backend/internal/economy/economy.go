@@ -3,7 +3,6 @@
 package economy
 
 import (
-	"fmt"
 	"slices"
 
 	"github.com/SETA1609/riftweave-core/backend/internal/data"
@@ -51,23 +50,23 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	switch input.Operation {
 	case "convert":
 		if input.Cost == nil {
-			return Result{}, fmt.Errorf("economy convert needs cost")
+			return Result{}, &data.MissingInputError{Subject: "economy convert", Needs: "cost"}
 		}
 		copper, err := ruleset.Economy.ToCopper(*input.Cost)
 		return Result{Copper: &copper}, err
 	case "trade":
 		return trade(ruleset, input)
 	}
-	return Result{}, fmt.Errorf("economy op %q is not defined", input.Operation)
+	return Result{}, &data.NotDefinedError{Kind: "economy op", Key: input.Operation}
 }
 
 func trade(ruleset *data.Ruleset, input Input) (Result, error) {
 	if input.ItemCost == nil || (input.Side != "buy" && input.Side != "sell") {
-		return Result{}, fmt.Errorf("economy trade needs side (buy or sell), merchant and item_cost")
+		return Result{}, &data.MissingInputError{Subject: "economy trade", Needs: "side (buy or sell), merchant and item_cost"}
 	}
-	merchant, ok := ruleset.Economy.Merchants.Get(input.Merchant)
-	if !ok {
-		return Result{}, fmt.Errorf("merchant %q is not defined", input.Merchant)
+	merchant, err := ruleset.Economy.Merchants.Require("merchant", input.Merchant)
+	if err != nil {
+		return Result{}, err
 	}
 	var rules *data.Barter = &ruleset.Economy.Barter
 	var shift int64

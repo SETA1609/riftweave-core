@@ -4,8 +4,6 @@
 package derived
 
 import (
-	"fmt"
-
 	"github.com/SETA1609/riftweave-core/backend/internal/actor"
 	"github.com/SETA1609/riftweave-core/backend/internal/data"
 	"github.com/SETA1609/riftweave-core/backend/internal/formula"
@@ -68,14 +66,14 @@ type ActionsResult struct {
 func RunActions(ruleset *data.Ruleset, input ActionsInput) (ActionsResult, error) {
 	var pool *data.ActionPool = &ruleset.Actions.Pool
 	if !input.Actor.Attributes.Has(pool.Ability) {
-		return ActionsResult{}, fmt.Errorf("actor needs the %s attribute", pool.Ability)
+		return ActionsResult{}, &data.MissingInputError{Subject: "actor", Needs: "the " + pool.Ability.String() + " attribute"}
 	}
 	var attributeValue int64 = input.Actor.Attributes.Get(pool.Ability)
 	var result ActionsResult = ActionsResult{Pool: pool.Base + formula.FloorDivide(attributeValue*pool.PerPoint, pool.PerPointDivisor)}
 	for _, key := range input.Actions {
-		action, ok := ruleset.Actions.Actions.Get(key)
-		if !ok {
-			return ActionsResult{}, fmt.Errorf("action %q is not defined", key)
+		action, err := ruleset.Actions.Actions.Require("action", key)
+		if err != nil {
+			return ActionsResult{}, err
 		}
 		result.Cost += action.Cost
 	}

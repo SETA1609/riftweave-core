@@ -122,3 +122,21 @@ func TestBadInput(t *testing.T) {
 		t.Errorf("rule error: %s, %v", out, err)
 	}
 }
+
+func TestTypedRuleErrors(t *testing.T) {
+	opened := open(t)
+	_, err := opened.Run("loot", []byte(`{"table":"no_such_table","rolls":[1]}`))
+	var notDefined *NotDefinedError
+	if !errors.Is(err, ErrRule) || !errors.As(err, &notDefined) || notDefined.Kind != "table" || notDefined.Key != "no_such_table" {
+		t.Errorf("unknown table: want a NotDefinedError for table no_such_table, got %v", err)
+	}
+	_, err = opened.Run("economy", []byte(`{"op":"convert"}`))
+	var missing *MissingInputError
+	if !errors.Is(err, ErrRule) || !errors.As(err, &missing) || missing.Needs != "cost" {
+		t.Errorf("convert without cost: want a MissingInputError for cost, got %v", err)
+	}
+	_, err = opened.Run("loot", []byte(`{"table":"hoard_minor","rolls":[1]}`))
+	if errors.As(err, &notDefined) || errors.As(err, &missing) {
+		t.Errorf("wrong number of rolls is neither typed error, got %T", errors.Unwrap(err))
+	}
+}
