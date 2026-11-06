@@ -10,6 +10,7 @@ import json
 import math
 from pathlib import Path
 
+from hazard_reference import run_hazard
 from loot_reference import run_loot
 from wuxing_reference import get_interaction
 
@@ -485,6 +486,7 @@ RUNNERS = {
     "economy": run_economy,
     "combat": run_combat,
     "loot": run_loot,
+    "hazard": run_hazard,
     "progression": run_progression,
 }
 

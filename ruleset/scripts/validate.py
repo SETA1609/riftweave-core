@@ -137,6 +137,7 @@ COLLECTION_CATEGORIES = {
     "crafted_items": "crafted_item",
     "origins": "origin",
     "hazards": "hazard",
+    "checks": "check",
 }
 
 
