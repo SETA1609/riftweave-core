@@ -1,7 +1,7 @@
 {
   "$schema": "./command.schema.json",
   "name": "loot",
-  "summary": "Roll a loot table by key, or a monster's loot rows, and value it on the price scale.",
+  "summary": "Roll a loot table by key, or a monster's loot rows, with the looter's Luck and modifiers, and value it on the price scale.",
   "doc": "docs/core/loot.md",
   "input_schema": {
     "type": "object",
@@ -18,6 +18,14 @@
         "items": {
           "type": "integer"
         }
+      },
+      "actor": {
+        "$ref": "common.json#/definitions/actor",
+        "description": "The looter; attributes.lck emits the Luck shift."
+      },
+      "modifiers": {
+        "$ref": "common.json#/definitions/modifiers",
+        "description": "The looter's modifiers; those on loot_roll add to the looter shift."
       }
     },
     "additionalProperties": false,
@@ -84,6 +92,10 @@
           "$ref": "common.json#/definitions/key"
         },
         "description": "For a monster: the tables it rolled, in row order."
+      },
+      "looter_shift": {
+        "type": "integer",
+        "description": "Luck plus the looter's loot_roll modifiers, after kernel stacking; 0 with no looter."
       }
     },
     "additionalProperties": false,
