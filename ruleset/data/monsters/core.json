@@ -20,7 +20,7 @@
         "abilities": [
           {
             "effect": "core:effect/damage_fire",
-            "magnitude": 18,
+            "magnitude": 12,
             "target": "area",
             "radius": 3
           },
@@ -40,6 +40,31 @@
           "baseChance": 0.09,
           "minGrade": "lesser",
           "maxGrade": "common"
+        },
+        "role": "boss",
+        "attacks": [
+          {
+            "key": "claw",
+            "label": "Claw",
+            "damage": {
+              "amount": 10,
+              "type": "slashing"
+            },
+            "phase": "fire"
+          },
+          {
+            "key": "flame_breath",
+            "label": "Flame Breath",
+            "damage": {
+              "amount": 12,
+              "type": "fire"
+            },
+            "delivery": "area",
+            "phase": "fire"
+          }
+        ],
+        "resist": {
+          "fire": 10
         }
       }
     },
@@ -58,7 +83,7 @@
           "end": 9,
           "agi": 2
         },
-        "hitPoints": 110,
+        "hitPoints": 60,
         "abilities": [
           {
             "effect": "core:effect/paralyze",
@@ -67,7 +92,7 @@
           },
           {
             "effect": "core:effect/damage_stamina",
-            "magnitude": 12,
+            "magnitude": 6,
             "target": "touch"
           },
           {
@@ -85,6 +110,23 @@
           "baseChance": 0.08,
           "minGrade": "lesser",
           "maxGrade": "common"
+        },
+        "role": "boss",
+        "attacks": [
+          {
+            "key": "slam",
+            "label": "Slam",
+            "damage": {
+              "amount": 7,
+              "type": "bludgeoning"
+            },
+            "phase": "earth"
+          }
+        ],
+        "resist": {
+          "slashing": 3,
+          "piercing": 3,
+          "poison": 20
         }
       }
     },
@@ -103,7 +145,7 @@
           "agi": 7,
           "per": 6
         },
-        "hitPoints": 38,
+        "hitPoints": 30,
         "abilities": [
           {
             "effect": "core:effect/bleed",
@@ -126,6 +168,20 @@
           "baseChance": 0.07,
           "minGrade": "minor",
           "maxGrade": "lesser"
+        },
+        "attacks": [
+          {
+            "key": "claws",
+            "label": "Claws",
+            "damage": {
+              "amount": 6,
+              "type": "slashing"
+            },
+            "phase": "wood"
+          }
+        ],
+        "resist": {
+          "poison": 5
         }
       }
     },
@@ -147,7 +203,7 @@
         "abilities": [
           {
             "effect": "core:effect/damage_frost",
-            "magnitude": 14,
+            "magnitude": 7,
             "target": "ranged"
           },
           {
@@ -159,7 +215,23 @@
         ],
         "tags": [
           "undead"
-        ]
+        ],
+        "hitPoints": 30,
+        "attacks": [
+          {
+            "key": "frost_touch",
+            "label": "Frost Touch",
+            "damage": {
+              "amount": 7,
+              "type": "frost"
+            },
+            "phase": "water"
+          }
+        ],
+        "resist": {
+          "frost": 15,
+          "necrotic": 10
+        }
       }
     },
     {
@@ -177,11 +249,11 @@
           "end": 8,
           "agi": 4
         },
-        "hitPoints": 95,
+        "hitPoints": 55,
         "abilities": [
           {
             "effect": "core:effect/damage_force",
-            "magnitude": 16,
+            "magnitude": 11,
             "target": "touch"
           },
           {
@@ -206,6 +278,21 @@
           "baseChance": 0.1,
           "minGrade": "common",
           "maxGrade": "major"
+        },
+        "attacks": [
+          {
+            "key": "halberd",
+            "label": "Halberd",
+            "damage": {
+              "amount": 11,
+              "type": "slashing"
+            },
+            "phase": "metal"
+          }
+        ],
+        "resist": {
+          "slashing": 4,
+          "piercing": 4
         }
       }
     },
@@ -224,7 +311,7 @@
           "agi": 4,
           "per": 2
         },
-        "hitPoints": 18,
+        "hitPoints": 22,
         "abilities": [
           {
             "effect": "core:effect/damage_force",
@@ -241,7 +328,21 @@
         "tags": [
           "undead",
           "skeletal"
-        ]
+        ],
+        "attacks": [
+          {
+            "key": "rusty_blade",
+            "label": "Rusty Blade",
+            "damage": {
+              "amount": 5,
+              "type": "slashing"
+            }
+          }
+        ],
+        "resist": {
+          "piercing": 3,
+          "poison": 20
+        }
       }
     },
     {
@@ -276,7 +377,21 @@
         ],
         "tags": [
           "undead"
-        ]
+        ],
+        "attacks": [
+          {
+            "key": "slam",
+            "label": "Slam",
+            "damage": {
+              "amount": 5,
+              "type": "bludgeoning"
+            }
+          }
+        ],
+        "resist": {
+          "necrotic": 10,
+          "poison": 20
+        }
       }
     },
     {
@@ -294,7 +409,7 @@
           "agi": 6,
           "per": 6
         },
-        "hitPoints": 35,
+        "hitPoints": 33,
         "abilities": [
           {
             "effect": "core:effect/bleed",
@@ -311,6 +426,17 @@
         ],
         "tags": [
           "beast"
+        ],
+        "attacks": [
+          {
+            "key": "bite",
+            "label": "Bite",
+            "damage": {
+              "amount": 6,
+              "type": "piercing"
+            },
+            "phase": "wood"
+          }
         ]
       }
     },
@@ -329,11 +455,11 @@
           "agi": 6,
           "per": 4
         },
-        "hitPoints": 55,
+        "hitPoints": 30,
         "abilities": [
           {
             "effect": "core:effect/damage_fire",
-            "magnitude": 14,
+            "magnitude": 7,
             "target": "touch"
           },
           {
@@ -351,6 +477,21 @@
           "baseChance": 0.1,
           "minGrade": "lesser",
           "maxGrade": "greater"
+        },
+        "attacks": [
+          {
+            "key": "burning_fist",
+            "label": "Burning Fist",
+            "damage": {
+              "amount": 7,
+              "type": "fire"
+            },
+            "phase": "fire"
+          }
+        ],
+        "resist": {
+          "fire": 20,
+          "poison": 20
         }
       }
     },
@@ -369,11 +510,11 @@
           "agi": 4,
           "per": 5
         },
-        "hitPoints": 48,
+        "hitPoints": 28,
         "abilities": [
           {
             "effect": "core:effect/damage_frost",
-            "magnitude": 12,
+            "magnitude": 7,
             "target": "ranged"
           },
           {
@@ -391,6 +532,20 @@
           "baseChance": 0.09,
           "minGrade": "lesser",
           "maxGrade": "greater"
+        },
+        "attacks": [
+          {
+            "key": "ice_shard",
+            "label": "Ice Shard",
+            "damage": {
+              "amount": 6,
+              "type": "frost"
+            },
+            "phase": "water"
+          }
+        ],
+        "resist": {
+          "frost": 20
         }
       }
     },
@@ -408,7 +563,7 @@
           "agi": 4,
           "per": 3
         },
-        "hitPoints": 20,
+        "hitPoints": 24,
         "abilities": [
           {
             "effect": "core:effect/damage_force",
@@ -425,6 +580,1055 @@
         "tags": [
           "humanoid",
           "bandit"
+        ],
+        "attacks": [
+          {
+            "key": "short_sword",
+            "label": "Short Sword",
+            "damage": {
+              "amount": 5,
+              "type": "slashing"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "key": "giant_rat",
+      "base": "beast",
+      "overrides": {
+        "label": "Giant Rat",
+        "description": "A dog-sized rat from the sewers. Alone it is a nuisance; in a pack it is a danger.",
+        "phase": "wood",
+        "size": "small",
+        "level": 1,
+        "role": "minion",
+        "hitPoints": 8,
+        "attacks": [
+          {
+            "key": "bite",
+            "label": "Bite",
+            "damage": {
+              "amount": 4,
+              "type": "piercing"
+            },
+            "phase": "wood"
+          }
+        ],
+        "resist": {
+          "poison": 5
+        },
+        "tags": [
+          "beast",
+          "vermin"
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "key": "goblin_skirmisher",
+      "base": "humanoid",
+      "overrides": {
+        "label": "Goblin Skirmisher",
+        "description": "A quick, cowardly raider that jabs from behind its friends.",
+        "phase": "wood",
+        "size": "small",
+        "level": 2,
+        "hitPoints": 24,
+        "attacks": [
+          {
+            "key": "spear",
+            "label": "Spear",
+            "damage": {
+              "amount": 5,
+              "type": "piercing"
+            }
+          }
+        ],
+        "tags": [
+          "humanoid",
+          "goblin"
+        ]
+      }
+    },
+    {
+      "id": 14,
+      "key": "cave_spider",
+      "base": "beast",
+      "overrides": {
+        "label": "Cave Spider",
+        "description": "A pale spider the size of a shield that hunts in the dark under the hills.",
+        "phase": "earth",
+        "size": "medium",
+        "level": 2,
+        "hitPoints": 26,
+        "attacks": [
+          {
+            "key": "venom_bite",
+            "label": "Venom Bite",
+            "damage": {
+              "amount": 5,
+              "type": "poison"
+            },
+            "phase": "earth"
+          }
+        ],
+        "resist": {
+          "poison": 10
+        },
+        "tags": [
+          "beast",
+          "spider"
+        ]
+      }
+    },
+    {
+      "id": 15,
+      "key": "bog_shambler",
+      "base": "plant",
+      "overrides": {
+        "label": "Bog Shambler",
+        "description": "A heap of rotting reeds and mud that lurches out of the marsh.",
+        "phase": "water",
+        "size": "medium",
+        "level": 3,
+        "hitPoints": 30,
+        "attacks": [
+          {
+            "key": "slam",
+            "label": "Slam",
+            "damage": {
+              "amount": 6,
+              "type": "bludgeoning"
+            },
+            "phase": "water"
+          }
+        ],
+        "resist": {
+          "acid": 10,
+          "bludgeoning": 2
+        },
+        "tags": [
+          "plant"
+        ]
+      }
+    },
+    {
+      "id": 16,
+      "key": "acid_ooze",
+      "base": "plant",
+      "overrides": {
+        "label": "Acid Ooze",
+        "description": "A quivering mass that dissolves whatever it engulfs.",
+        "phase": "earth",
+        "size": "medium",
+        "level": 4,
+        "hitPoints": 32,
+        "attacks": [
+          {
+            "key": "pseudopod",
+            "label": "Pseudopod",
+            "damage": {
+              "amount": 7,
+              "type": "acid"
+            },
+            "phase": "earth"
+          }
+        ],
+        "resist": {
+          "acid": 20,
+          "slashing": 3
+        },
+        "tags": [
+          "ooze"
+        ]
+      }
+    },
+    {
+      "id": 17,
+      "key": "storm_hawk",
+      "base": "beast",
+      "overrides": {
+        "label": "Storm Hawk",
+        "description": "A grey hawk that rides thunderheads and strikes with a crackle of lightning.",
+        "phase": "metal",
+        "size": "small",
+        "level": 5,
+        "hitPoints": 28,
+        "attacks": [
+          {
+            "key": "lightning_dive",
+            "label": "Lightning Dive",
+            "damage": {
+              "amount": 7,
+              "type": "shock"
+            },
+            "phase": "metal"
+          }
+        ],
+        "resist": {
+          "shock": 10
+        },
+        "tags": [
+          "beast",
+          "bird"
+        ]
+      }
+    },
+    {
+      "id": 18,
+      "key": "orc_raider",
+      "base": "humanoid",
+      "overrides": {
+        "label": "Orc Raider",
+        "description": "A scarred warrior who fights for plunder and the joy of it.",
+        "phase": "fire",
+        "size": "medium",
+        "level": 6,
+        "hitPoints": 45,
+        "attacks": [
+          {
+            "key": "great_axe",
+            "label": "Great Axe",
+            "damage": {
+              "amount": 9,
+              "type": "slashing"
+            }
+          }
+        ],
+        "tags": [
+          "humanoid",
+          "orc"
+        ]
+      }
+    },
+    {
+      "id": 19,
+      "key": "ghoul",
+      "base": "undead",
+      "overrides": {
+        "label": "Ghoul",
+        "description": "A corpse-eater whose touch carries the chill of the grave.",
+        "phase": "water",
+        "size": "medium",
+        "level": 6,
+        "hitPoints": 42,
+        "attacks": [
+          {
+            "key": "rotting_claws",
+            "label": "Rotting Claws",
+            "damage": {
+              "amount": 8,
+              "type": "necrotic"
+            },
+            "phase": "water"
+          }
+        ],
+        "resist": {
+          "necrotic": 15,
+          "poison": 20
+        },
+        "tags": [
+          "undead"
+        ]
+      }
+    },
+    {
+      "id": 20,
+      "key": "thunder_ram",
+      "base": "beast",
+      "overrides": {
+        "label": "Thunder Ram",
+        "description": "A mountain ram whose charge lands with a clap like thunder.",
+        "phase": "earth",
+        "size": "large",
+        "level": 7,
+        "hitPoints": 50,
+        "attacks": [
+          {
+            "key": "charge",
+            "label": "Charge",
+            "damage": {
+              "amount": 10,
+              "type": "thunder"
+            },
+            "phase": "earth"
+          }
+        ],
+        "resist": {
+          "thunder": 10
+        },
+        "tags": [
+          "beast"
+        ]
+      }
+    },
+    {
+      "id": 21,
+      "key": "wisp",
+      "base": "elemental",
+      "overrides": {
+        "label": "Wisp",
+        "description": "A drifting mote of light that lures travellers off the path and burns them.",
+        "phase": "fire",
+        "size": "tiny",
+        "level": 7,
+        "role": "minion",
+        "hitPoints": 15,
+        "attacks": [
+          {
+            "key": "searing_light",
+            "label": "Searing Light",
+            "damage": {
+              "amount": 8,
+              "type": "radiant"
+            },
+            "phase": "fire"
+          }
+        ],
+        "resist": {
+          "radiant": 15
+        },
+        "tags": [
+          "elemental"
+        ]
+      }
+    },
+    {
+      "id": 22,
+      "key": "mind_leech",
+      "base": "beast",
+      "overrides": {
+        "label": "Mind Leech",
+        "description": "A slick cave grub that feeds on thoughts and leaves its prey dazed.",
+        "phase": "water",
+        "size": "small",
+        "level": 8,
+        "hitPoints": 40,
+        "attacks": [
+          {
+            "key": "psychic_lash",
+            "label": "Psychic Lash",
+            "damage": {
+              "amount": 9,
+              "type": "psychic"
+            },
+            "delivery": "instant",
+            "phase": "water"
+          }
+        ],
+        "resist": {
+          "psychic": 15
+        },
+        "tags": [
+          "aberration"
+        ]
+      }
+    },
+    {
+      "id": 23,
+      "key": "bandit_captain",
+      "base": "humanoid",
+      "overrides": {
+        "label": "Bandit Captain",
+        "description": "The one the others fear: quick with a blade and quicker with a threat.",
+        "phase": "metal",
+        "size": "medium",
+        "level": 8,
+        "role": "boss",
+        "hitPoints": 85,
+        "attacks": [
+          {
+            "key": "rapier",
+            "label": "Rapier",
+            "damage": {
+              "amount": 10,
+              "type": "piercing"
+            },
+            "phase": "metal"
+          }
+        ],
+        "tags": [
+          "humanoid",
+          "bandit"
+        ]
+      }
+    },
+    {
+      "id": 24,
+      "key": "treant_sapling",
+      "base": "plant",
+      "overrides": {
+        "label": "Treant Sapling",
+        "description": "A young tree-guardian, slow to anger and slow to fall.",
+        "phase": "wood",
+        "size": "large",
+        "level": 9,
+        "hitPoints": 55,
+        "attacks": [
+          {
+            "key": "branch_slam",
+            "label": "Branch Slam",
+            "damage": {
+              "amount": 11,
+              "type": "bludgeoning"
+            },
+            "phase": "wood"
+          }
+        ],
+        "resist": {
+          "bludgeoning": 4,
+          "piercing": 4
+        },
+        "tags": [
+          "plant"
+        ]
+      }
+    },
+    {
+      "id": 25,
+      "key": "bronze_guardian",
+      "base": "construct",
+      "overrides": {
+        "label": "Bronze Guardian",
+        "description": "A temple statue that walks when its doors are forced.",
+        "phase": "metal",
+        "size": "large",
+        "level": 10,
+        "hitPoints": 52,
+        "attacks": [
+          {
+            "key": "bronze_fist",
+            "label": "Bronze Fist",
+            "damage": {
+              "amount": 11,
+              "type": "bludgeoning"
+            },
+            "phase": "metal"
+          }
+        ],
+        "resist": {
+          "poison": 30,
+          "psychic": 30
+        },
+        "tags": [
+          "construct"
+        ]
+      }
+    },
+    {
+      "id": 26,
+      "key": "wraith",
+      "base": "undead",
+      "overrides": {
+        "label": "Wraith",
+        "description": "A shade of hate that drinks the warmth from the living.",
+        "phase": "water",
+        "size": "medium",
+        "level": 11,
+        "hitPoints": 48,
+        "attacks": [
+          {
+            "key": "draining_touch",
+            "label": "Draining Touch",
+            "damage": {
+              "amount": 11,
+              "type": "necrotic"
+            },
+            "phase": "water"
+          }
+        ],
+        "resist": {
+          "necrotic": 20,
+          "frost": 10
+        },
+        "tags": [
+          "undead"
+        ]
+      }
+    },
+    {
+      "id": 27,
+      "key": "harpy",
+      "base": "beast",
+      "overrides": {
+        "label": "Harpy",
+        "description": "A shrieking bird-woman whose cry rattles the bones.",
+        "phase": "metal",
+        "size": "medium",
+        "level": 11,
+        "hitPoints": 44,
+        "attacks": [
+          {
+            "key": "talons",
+            "label": "Talons",
+            "damage": {
+              "amount": 10,
+              "type": "slashing"
+            }
+          },
+          {
+            "key": "screech",
+            "label": "Screech",
+            "damage": {
+              "amount": 8,
+              "type": "thunder"
+            },
+            "delivery": "area"
+          }
+        ],
+        "resist": {
+          "thunder": 5
+        },
+        "tags": [
+          "beast",
+          "monstrosity"
+        ]
+      }
+    },
+    {
+      "id": 28,
+      "key": "salamander",
+      "base": "elemental",
+      "overrides": {
+        "label": "Salamander",
+        "description": "A serpent-bodied warrior of the burning deep.",
+        "phase": "fire",
+        "size": "medium",
+        "level": 12,
+        "hitPoints": 50,
+        "attacks": [
+          {
+            "key": "fire_spear",
+            "label": "Fire Spear",
+            "damage": {
+              "amount": 12,
+              "type": "fire"
+            },
+            "phase": "fire"
+          }
+        ],
+        "resist": {
+          "fire": 25
+        },
+        "tags": [
+          "elemental",
+          "fire"
+        ]
+      }
+    },
+    {
+      "id": 29,
+      "key": "troll",
+      "base": "humanoid",
+      "overrides": {
+        "label": "Troll",
+        "description": "A towering brute whose wounds close almost as fast as they open.",
+        "phase": "wood",
+        "size": "large",
+        "level": 13,
+        "role": "boss",
+        "hitPoints": 100,
+        "attacks": [
+          {
+            "key": "claws",
+            "label": "Claws",
+            "damage": {
+              "amount": 12,
+              "type": "slashing"
+            },
+            "phase": "wood"
+          }
+        ],
+        "resist": {
+          "acid": 5
+        },
+        "tags": [
+          "giant"
+        ]
+      }
+    },
+    {
+      "id": 30,
+      "key": "basilisk",
+      "base": "beast",
+      "overrides": {
+        "label": "Basilisk",
+        "description": "An eight-legged lizard whose stare turns flesh to stone.",
+        "phase": "earth",
+        "size": "medium",
+        "level": 14,
+        "hitPoints": 56,
+        "attacks": [
+          {
+            "key": "bite",
+            "label": "Bite",
+            "damage": {
+              "amount": 12,
+              "type": "piercing"
+            },
+            "phase": "earth"
+          }
+        ],
+        "resist": {
+          "poison": 10
+        },
+        "tags": [
+          "monstrosity"
+        ]
+      }
+    },
+    {
+      "id": 31,
+      "key": "storm_giant_youth",
+      "base": "humanoid",
+      "overrides": {
+        "label": "Storm Giant Youth",
+        "description": "A giant still learning to call the storm, and already dangerous with it.",
+        "phase": "metal",
+        "size": "large",
+        "level": 15,
+        "hitPoints": 70,
+        "attacks": [
+          {
+            "key": "lightning_strike",
+            "label": "Lightning Strike",
+            "damage": {
+              "amount": 14,
+              "type": "shock"
+            },
+            "phase": "metal"
+          }
+        ],
+        "resist": {
+          "shock": 20,
+          "thunder": 20
+        },
+        "tags": [
+          "giant"
+        ]
+      }
+    },
+    {
+      "id": 32,
+      "key": "lich_acolyte",
+      "base": "undead",
+      "overrides": {
+        "label": "Lich Acolyte",
+        "description": "A dead mage bound to a greater master, still casting what it learned in life.",
+        "phase": "water",
+        "size": "medium",
+        "level": 16,
+        "hitPoints": 60,
+        "attacks": [
+          {
+            "key": "force_bolt",
+            "label": "Force Bolt",
+            "damage": {
+              "amount": 14,
+              "type": "force"
+            }
+          }
+        ],
+        "resist": {
+          "force": 10,
+          "necrotic": 20
+        },
+        "tags": [
+          "undead",
+          "caster"
+        ]
+      }
+    },
+    {
+      "id": 33,
+      "key": "sand_wyrm",
+      "base": "beast",
+      "overrides": {
+        "label": "Sand Wyrm",
+        "description": "A burrowing serpent that rises out of the dunes beneath its prey.",
+        "phase": "earth",
+        "size": "huge",
+        "level": 17,
+        "hitPoints": 75,
+        "attacks": [
+          {
+            "key": "bite",
+            "label": "Bite",
+            "damage": {
+              "amount": 15,
+              "type": "piercing"
+            },
+            "phase": "earth"
+          }
+        ],
+        "resist": {
+          "slashing": 5
+        },
+        "tags": [
+          "beast",
+          "wyrm"
+        ]
+      }
+    },
+    {
+      "id": 34,
+      "key": "radiant_seraph",
+      "base": "elemental",
+      "overrides": {
+        "label": "Radiant Seraph",
+        "description": "A winged herald of a forgotten court, terrible in its certainty.",
+        "phase": "metal",
+        "size": "medium",
+        "level": 18,
+        "hitPoints": 65,
+        "attacks": [
+          {
+            "key": "radiant_spear",
+            "label": "Radiant Spear",
+            "damage": {
+              "amount": 15,
+              "type": "radiant"
+            },
+            "phase": "metal"
+          }
+        ],
+        "resist": {
+          "radiant": 25,
+          "necrotic": 10
+        },
+        "tags": [
+          "celestial"
+        ]
+      }
+    },
+    {
+      "id": 35,
+      "key": "frost_giant",
+      "base": "humanoid",
+      "overrides": {
+        "label": "Frost Giant",
+        "description": "A giant of the glaciers who wears the ice as armor.",
+        "phase": "water",
+        "size": "huge",
+        "level": 19,
+        "role": "boss",
+        "hitPoints": 140,
+        "attacks": [
+          {
+            "key": "maul",
+            "label": "Maul",
+            "damage": {
+              "amount": 16,
+              "type": "bludgeoning"
+            },
+            "phase": "water"
+          }
+        ],
+        "resist": {
+          "frost": 30
+        },
+        "tags": [
+          "giant"
+        ]
+      }
+    },
+    {
+      "id": 36,
+      "key": "iron_colossus",
+      "base": "construct",
+      "overrides": {
+        "label": "Iron Colossus",
+        "description": "A war engine of riveted iron, built to break walls.",
+        "phase": "metal",
+        "size": "huge",
+        "level": 20,
+        "role": "boss",
+        "hitPoints": 150,
+        "attacks": [
+          {
+            "key": "crushing_fist",
+            "label": "Crushing Fist",
+            "damage": {
+              "amount": 16,
+              "type": "bludgeoning"
+            }
+          }
+        ],
+        "resist": {
+          "slashing": 6,
+          "piercing": 6,
+          "psychic": 40
+        },
+        "tags": [
+          "construct"
+        ]
+      }
+    },
+    {
+      "id": 37,
+      "key": "shadow_hound",
+      "base": "beast",
+      "overrides": {
+        "label": "Shadow Hound",
+        "description": "A hound of living darkness that hunts by the fear it smells.",
+        "phase": "water",
+        "size": "medium",
+        "level": 21,
+        "hitPoints": 80,
+        "attacks": [
+          {
+            "key": "shadow_bite",
+            "label": "Shadow Bite",
+            "damage": {
+              "amount": 16,
+              "type": "necrotic"
+            }
+          }
+        ],
+        "resist": {
+          "necrotic": 15
+        },
+        "tags": [
+          "beast",
+          "shadow"
+        ]
+      }
+    },
+    {
+      "id": 38,
+      "key": "elder_treant",
+      "base": "plant",
+      "overrides": {
+        "label": "Elder Treant",
+        "description": "An ancient tree-lord whose anger shakes the forest floor.",
+        "phase": "wood",
+        "size": "huge",
+        "level": 22,
+        "role": "boss",
+        "hitPoints": 180,
+        "attacks": [
+          {
+            "key": "root_slam",
+            "label": "Root Slam",
+            "damage": {
+              "amount": 18,
+              "type": "bludgeoning"
+            },
+            "delivery": "area",
+            "phase": "wood"
+          }
+        ],
+        "resist": {
+          "bludgeoning": 6
+        },
+        "tags": [
+          "plant"
+        ]
+      }
+    },
+    {
+      "id": 39,
+      "key": "void_horror",
+      "base": "elemental",
+      "overrides": {
+        "label": "Void Horror",
+        "description": "A thing from between the stars that unmakes minds by looking at them.",
+        "phase": "water",
+        "size": "large",
+        "level": 24,
+        "hitPoints": 95,
+        "attacks": [
+          {
+            "key": "mind_rend",
+            "label": "Mind Rend",
+            "damage": {
+              "amount": 18,
+              "type": "psychic"
+            },
+            "delivery": "instant",
+            "phase": "water"
+          }
+        ],
+        "resist": {
+          "psychic": 30,
+          "force": 10
+        },
+        "tags": [
+          "aberration"
+        ]
+      }
+    },
+    {
+      "id": 40,
+      "key": "thunderbird",
+      "base": "beast",
+      "overrides": {
+        "label": "Thunderbird",
+        "description": "A storm-sized bird whose wingbeats are thunder.",
+        "phase": "metal",
+        "size": "huge",
+        "level": 25,
+        "hitPoints": 100,
+        "attacks": [
+          {
+            "key": "thunderclap",
+            "label": "Thunderclap",
+            "damage": {
+              "amount": 18,
+              "type": "thunder"
+            },
+            "delivery": "area",
+            "phase": "metal"
+          }
+        ],
+        "resist": {
+          "thunder": 30,
+          "shock": 15
+        },
+        "tags": [
+          "beast",
+          "bird"
+        ]
+      }
+    },
+    {
+      "id": 41,
+      "key": "magma_titan",
+      "base": "elemental",
+      "overrides": {
+        "label": "Magma Titan",
+        "description": "A walking mountain of molten rock.",
+        "phase": "fire",
+        "size": "huge",
+        "level": 26,
+        "role": "boss",
+        "hitPoints": 200,
+        "attacks": [
+          {
+            "key": "magma_fist",
+            "label": "Magma Fist",
+            "damage": {
+              "amount": 20,
+              "type": "fire"
+            },
+            "phase": "fire"
+          }
+        ],
+        "resist": {
+          "fire": 40,
+          "acid": 15
+        },
+        "tags": [
+          "elemental",
+          "fire"
+        ]
+      }
+    },
+    {
+      "id": 42,
+      "key": "acid_hydra",
+      "base": "beast",
+      "overrides": {
+        "label": "Acid Hydra",
+        "description": "A many-headed swamp serpent that spits caustic venom.",
+        "phase": "water",
+        "size": "huge",
+        "level": 27,
+        "role": "boss",
+        "hitPoints": 190,
+        "attacks": [
+          {
+            "key": "acid_bite",
+            "label": "Acid Bite",
+            "damage": {
+              "amount": 20,
+              "type": "acid"
+            },
+            "phase": "water"
+          }
+        ],
+        "resist": {
+          "acid": 30
+        },
+        "tags": [
+          "monstrosity"
+        ]
+      }
+    },
+    {
+      "id": 43,
+      "key": "bone_colossus",
+      "base": "undead",
+      "overrides": {
+        "label": "Bone Colossus",
+        "description": "A giant knit from the bones of a battlefield.",
+        "phase": "earth",
+        "size": "huge",
+        "level": 28,
+        "hitPoints": 105,
+        "attacks": [
+          {
+            "key": "bone_slam",
+            "label": "Bone Slam",
+            "damage": {
+              "amount": 21,
+              "type": "bludgeoning"
+            },
+            "phase": "earth"
+          }
+        ],
+        "resist": {
+          "piercing": 8,
+          "poison": 30
+        },
+        "tags": [
+          "undead"
+        ]
+      }
+    },
+    {
+      "id": 44,
+      "key": "ancient_dragon",
+      "base": "elemental",
+      "overrides": {
+        "label": "Ancient Dragon",
+        "description": "The oldest of the drakes, whose breath ends armies.",
+        "phase": "fire",
+        "size": "huge",
+        "level": 30,
+        "role": "boss",
+        "hitPoints": 210,
+        "attacks": [
+          {
+            "key": "bite",
+            "label": "Bite",
+            "damage": {
+              "amount": 22,
+              "type": "piercing"
+            },
+            "phase": "fire"
+          },
+          {
+            "key": "dragon_fire",
+            "label": "Dragon Fire",
+            "damage": {
+              "amount": 20,
+              "type": "fire"
+            },
+            "delivery": "area",
+            "phase": "fire"
+          }
+        ],
+        "resist": {
+          "fire": 30,
+          "slashing": 5,
+          "piercing": 5
+        },
+        "tags": [
+          "dragon",
+          "elemental"
         ]
       }
     }

@@ -84,6 +84,7 @@ def _worn_set_dr(bands, _weapons, armor, _monsters):
 
 def _damage(monster):
     hits = [a["magnitude"] for a in monster.get("abilities", []) if a["effect"].rsplit("/", 1)[-1].startswith("damage_")]
+    hits += [a["damage"]["amount"] for a in monster.get("attacks", [])]
     return max(hits) if hits else None
 
 
@@ -99,9 +100,10 @@ def _monster_hits_to_kill(bands, _weapons, _armor, monsters):
     for row in monsters:
         damage = _tier(bands, row["level"])["expected_damage"]
         hits = round(row["hitPoints"] / ((damage[0] + damage[1]) / 2), 1)
-        band = bands["hits_to_kill"]["standard"]
+        role = row.get("role", "standard")
+        band = bands["hits_to_kill"][role]
         if not _within(hits, band):
-            yield _finding("monster_hits_to_kill", row["key"], hits, band, f"level {row['level']}, {row['hitPoints']} HP")
+            yield _finding("monster_hits_to_kill", row["key"], hits, band, f"level {row['level']}, {role}, {row['hitPoints']} HP")
 
 
 CHECKS = {

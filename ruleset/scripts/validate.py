@@ -982,7 +982,7 @@ def _apply_growth(base, level):
     the base template's growth rules.
 
     Growth is defined per ability as a perLevel rate. The formula:
-      attr = round(base_attr + perLevel * (level - base_level))
+      attr = round(base_attr + perLevel * (level - base_level)), within 1 to 10
 
     Returns a dict of ability -> int, or None if base has no growth section.
     """
@@ -999,7 +999,7 @@ def _apply_growth(base, level):
     for ability in attr_growth:
         base_val = base_attrs.get(ability, 1)
         per = attr_growth[ability].get("perLevel", 0)
-        computed[ability] = max(1, round(base_val + per * delta))
+        computed[ability] = min(10, max(1, round(base_val + per * delta)))
     return computed
 
 
