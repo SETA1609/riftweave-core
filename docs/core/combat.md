@@ -16,17 +16,21 @@ One attack, in order, from the roll to the HP lost. Every step reads the actor s
 2. reaction   on a hit, the defender may take one reaction: evade or block, not both
               delivery single: evade or block      delivery area: evade or block
               delivery instant: none (a save, M3-05)
-   evade      evade roll through resolution.md, target = evasion_skill + evade mods
+   evade      evade roll through resolution.md, target = evasion_skill + defender mods on evasion
               evaded if the evade succeeds and evade margin >= attack margin
               single: no damage, stop        area: damage halved at step 5
-   block      physical types only (tag armor_dr_applies)
-              block roll through resolution.md, target = block skill
+              riposte: a crit evade of a single attack sets counter
+   block      physical types only (tag armor_dr_applies); with block_magic, any type
+              block roll through resolution.md, target = block skill + defender mods on block
               blocked if the block succeeds and block margin >= attack margin
+              shield_dr = the reaction's shield_dr + defender mods on shield_dr;
+              halved (rounded down) against a type without armor_dr_applies
 3. damage     damage = the caller's rolled damage dice
               if a called shot: damage = floor(damage * the location's damage_mul)
 4. crit       if crit: damage = crit_damage(damage)                 formula tree
 5. reduce     if evaded an area attack: damage = area_evade_damage(damage)   formula tree
               if blocked: damage = damage - shield_dr
+              bulwark: a crit block (the block roll tagged crit) sets damage to 0
 6. armor DR   if the damage type has tag armor_dr_applies:
               dr = armor_dr, or pierce_dr(armor_dr) if the type also has armor_pierce_partial
               damage = damage - dr
@@ -48,6 +52,23 @@ Each subtraction stops at zero before the next step: a step never raises damage.
 - **Armor DR** is the sum of worn pieces ([armor.md](../modules/armor.md)); the pipeline takes the sum as an input. Types tagged `bypasses_armor` or `bypasses_physical_armor` carry no `armor_dr_applies`, so DR skips them. A piercing hit halves DR, rounded down. [A]
 - **Resist** is the contract's `resist` op: a flat subtraction from a packet whose tag matches the damage type. [V 2026-11-02, read contract.md]
 - **HP** floors at 0. What happens at 0 (down, dead) is not in this file. [U]
+
+## Block and dodge perks
+
+The defender's perks reach the pipeline as `defender.modifiers`, stacked by [modifier.md](modifier.md): `add` on `evasion` and `block` (the reaction targets) and on `shield_dr`, and three `grant` flags. The rows are perks in `ruleset/data/features/core.json`, each gated by a skill threshold and the perk below it. [V 2026-11-06]
+
+| Ladder | Perk | Emits | Effect |
+| --- | --- | --- | --- |
+| Block | Shield Training | `add shield_dr 2` | a block subtracts 2 more |
+| Block | Spell Ward | `grant block_magic` | a block also stops a single or area attack of a type without `armor_dr_applies` (fire, a force dart), at half shield DR |
+| Block | Bulwark | `grant bulwark` | a block whose roll is tagged `crit` negates the hit: damage 0 |
+| Dodge | Sidestep | `add dodge -1` | the dodge action costs 1 AP less ([actions.md](actions.md)) |
+| Dodge | Armored Evasion | `add evasion 10` | offsets the armor penalties on the evade target |
+| Dodge | Riposte | `grant riposte` | a crit evade of a `single` attack sets `counter`: the defender may make one attack at no AP cost; the caller runs it as its own attack |
+
+- **Instant stays out.** An `instant` attack takes no reaction, so no perk blocks or evades it; its defense is the save (M3-05). [V 2026-11-06, owner rule in M2-06]
+- **The block scales with the shield.** Spell Ward subtracts half the shield DR, not a general `resist`, so it does not stack with the armor DR and resist steps. [A]
+- **A negated hit is still a hit.** Bulwark leaves `outcome` hit and `blocked` true with 0 damage, so the called shot's riders are still listed. [A]
 
 ## Situations and called shots
 

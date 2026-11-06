@@ -43,7 +43,7 @@ Done: M2-02, M2-04 ([done.md](done.md#m2-characters))
 - Done when: each weapon skill has at least 3 weapons across tiers; at least 12 accessories and 20 consumables; adventuring gear and tools exist as rows.
 
 #### M2-06 Gated block and dodge perks
-- Status: todo
+- Status: doing
 - Priority: medium
 - Needs: M1-02, M1-05
 - Do: After M1-02 an evade reaches single and area magic and avoids all damage, while a block only subtracts shield DR against physical types. Balance them with gated perk ladders instead of pipeline changes. Block: Shield Training (shield DR +2), Spell Ward (block also works against single and area magic, at half shield DR), Bulwark (a crit block negates the hit). Dodge: a mirror ladder (cheaper dodges in armor; a counter-attack on a crit dodge). Instant spells stay unblockable and undodgeable, even with a perk: their defense is the save (M3-05). Block-side resistance scales with the block (margin or shield DR), not a general `resist`, so it does not stack with armor and the resist step.
