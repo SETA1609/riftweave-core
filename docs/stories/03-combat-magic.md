@@ -33,7 +33,7 @@ Done: M3-04 ([done.md](done.md#m3-combat-and-magic-playable))
 - Done when: at least 5 spells per color (45 total) across levels 1 to 30; each spell composes effects from the shared pool and respects `channels`; every color has a damage, utility, and defensive option or a documented reason it does not.
 
 #### M3-03 Cover, flanking, terrain, and called shots as modifiers
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: M1-01, M1-05
 - Was: RW-18
