@@ -687,6 +687,29 @@
       ]
     },
     {
+      "id": 42,
+      "key": "scavenger",
+      "label": "Scavenger",
+      "description": "You know where the good stuff hides: under the floorboards, in the lining of a purse, behind the den. Every loot roll you make is better.",
+      "type": "perk",
+      "category": "survival",
+      "prerequisite": {
+        "abilities": {
+          "lck": 6
+        },
+        "perks": []
+      },
+      "ranks": 2,
+      "effects": [
+        {
+          "type": "bonus",
+          "description": "+10 to loot rolls per rank (docs/core/loot.md#looter)",
+          "target": "loot_roll",
+          "value": 10
+        }
+      ]
+    },
+    {
       "id": 24,
       "key": "human_versatility",
       "label": "Versatility",

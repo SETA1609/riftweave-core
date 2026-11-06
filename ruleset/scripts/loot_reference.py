@@ -101,8 +101,8 @@ def table_by_key(loot, key):
 
 
 def entry_for(table, roll, shift=0):
-    """The entry a roll lands on after its shift, capped at 100."""
-    roll = min(roll + shift, 100)
+    """The entry a roll lands on after its shift, kept between 1 and 100."""
+    roll = max(1, min(roll + shift, 100))
     return next(e for e in table["entries"] if e["min"] <= roll <= e["max"])
 
 
@@ -153,6 +153,28 @@ def _result(loot, items, coins_cp, level):
     return {"items": listed, "coins_cp": coins_cp, "value_cp": value, "budget_cp": budget_cp(loot, level)}
 
 
+def looter_shift(vector):
+    """Luck plus the looter's loot_roll modifiers, after kernel stacking (docs/core/loot.md#looter).
+
+    Luck emits add loot_roll from formulas/loot_luck.json, source attr:lck, origin innate.
+    No actor and no modifiers: 0.
+    """
+    from kernel_reference import apply_modifiers, evaluate_formula  # kernel_reference imports this module
+
+    modifiers = [m for m in vector.get("modifiers", []) if m["target"] == "loot_roll"]
+    actor = vector.get("actor")
+    if actor is not None:
+        expr = load_data("formulas/loot_luck.json")["expr"]
+        luck = evaluate_formula(expr, {"lck": actor.get("attributes", {}).get("lck", 0)})
+        modifiers.insert(0, {"target": "loot_roll", "op": "add", "value": luck, "source": "attr:lck", "origin": "core:origin/innate"})
+    return apply_modifiers(0, modifiers)
+
+
+def chance_target(chance, shift):
+    """A row's chance after the looter shift, kept between 1 and 99."""
+    return max(1, min(chance + shift, 99))
+
+
 def roll_table(table, rolls, shift, material, items):
     """Roll one table; return the copper it yields and add its items."""
     coins_cp = 0
@@ -172,12 +194,13 @@ def run_loot(vector):
         if not 1 <= roll <= 100:
             return {"error": f"roll {roll} is not 1 to 100"}
     items = {}
+    looter = looter_shift(vector)
     if "table" in vector:
         table = table_by_key(loot, vector["table"])
         if len(rolls) != table["rolls"]:
             return {"error": f"{table['key']} takes {table['rolls']} rolls, got {len(rolls)}"}
-        coins_cp = roll_table(table, rolls, 0, None, items)
-        return {"table": table["key"], **_result(loot, items, coins_cp, table["level"])}
+        coins_cp = roll_table(table, rolls, looter, None, items)
+        return {"table": table["key"], **_result(loot, items, coins_cp, table["level"]), "looter_shift": looter}
 
     monster = vector["monster"]
     drop = next(d for d in loot["drops"] if d["monster"] == monster)
@@ -192,7 +215,7 @@ def run_loot(vector):
 
     try:
         for row in drop["loot"]:
-            if "chance" in row and take(1)[0] > row["chance"]:
+            if "chance" in row and take(1)[0] > chance_target(row["chance"], looter):
                 continue
             material = row.get("material")
             if "item" in row:
@@ -200,9 +223,9 @@ def run_loot(vector):
                 continue
             table = table_by_key(loot, row["table"])
             tables.append(table["key"])
-            coins_cp += roll_table(table, take(row.get("rolls", table["rolls"])), row.get("shift", 0), material, items)
+            coins_cp += roll_table(table, take(row.get("rolls", table["rolls"])), row.get("shift", 0) + looter, material, items)
     except IndexError:
         return {"error": f"{monster}: ran out of rolls after {used}"}
     if queue:
         return {"error": f"{monster}: {len(rolls)} rolls given, {used} used"}
-    return {"tables": tables, **_result(loot, items, coins_cp, monster_level(monster))}
+    return {"tables": tables, **_result(loot, items, coins_cp, monster_level(monster)), "looter_shift": looter}
