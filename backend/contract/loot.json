@@ -1,7 +1,7 @@
 {
   "$schema": "./command.schema.json",
   "name": "loot",
-  "summary": "Roll a loot table, by key or by monster, and value it on the price scale.",
+  "summary": "Roll a loot table by key, or a monster's loot rows, and value it on the price scale.",
   "doc": "docs/core/loot.md",
   "input_schema": {
     "type": "object",
@@ -54,6 +54,9 @@
             "quantity": {
               "type": "integer",
               "minimum": 1
+            },
+            "material": {
+              "$ref": "common.json#/definitions/ref"
             }
           },
           "additionalProperties": false,
@@ -74,11 +77,17 @@
       "budget_cp": {
         "type": "integer",
         "minimum": 0
+      },
+      "tables": {
+        "type": "array",
+        "items": {
+          "$ref": "common.json#/definitions/key"
+        },
+        "description": "For a monster: the tables it rolled, in row order."
       }
     },
     "additionalProperties": false,
     "required": [
-      "table",
       "items",
       "coins_cp",
       "value_cp",
