@@ -33,7 +33,7 @@ Done: M2-02 ([done.md](done.md#m2-characters))
 - Done when: two characters, each with a level-by-level record; each level's derived stats match a vector; prose in `character-creation.md` is generated from or checked against the record.
 
 #### M2-04 Races and backgrounds emit modifiers only
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: M1-05, M1-06
 - Was: RW-14
