@@ -13,7 +13,7 @@ Roadmap: [M4](../../ROADMAP.md#where-we-are). Format and rules: [README.md](READ
 Done: M4-01, M4-02, M4-04, M4-05, M4-06 ([done.md](done.md#m4-world))
 
 #### M4-03 Bestiary to the content floor
-- Status: doing
+- Status: review
 - Priority: high
 - Needs: M1-02
 - Was: RW-22
