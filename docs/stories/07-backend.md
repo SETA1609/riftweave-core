@@ -13,7 +13,7 @@ Roadmap: [APP](../../ROADMAP.md#app-reference-backend). Format and rules: [READM
 Done: APP-01 ([done.md](done.md#app-reference-backend))
 
 #### APP-02 Go core: the kernel in Go, every vector in CI
-- Status: doing
+- Status: review
 - Priority: medium
 - Needs: APP-01
 - Do: A Go module in `backend/` that loads `ruleset/data/` (and module data), evaluates formula trees, and implements every command in the contract. It reads coefficients from the data, never from constants. A Go test runs every file in `ruleset/tests/vectors/` and fails on any disagreement, and CI runs it on every PR. It starts with the commands that exist and grows with the rules: from then on a rule issue that adds or changes a function updates the Python reference, the Go core, and the contract in the same pull request; CONTRIBUTING says so.
