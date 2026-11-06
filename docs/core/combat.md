@@ -5,7 +5,11 @@ One attack, in order, from the roll to the HP lost. Every step reads the actor s
 ## Order
 
 ```
-1. attack     target = weapon_skill + attack mods                   resolution.md
+0. setup      forbidden: a situation that forbids the range is an error  situations.json
+              attack mods += every situation that applies (rows for the range,
+              the delivery, and the attacker's and defender's flags)
+              attack mods += the called shot's attack row               situations.json
+1. attack     target = weapon_skill + attack mods, stacked by modifier.md   resolution.md
               miss          roll > target
               fumble        roll >= fumble_at, no damage
               hit           otherwise; tag crit if roll <= window
@@ -19,6 +23,7 @@ One attack, in order, from the roll to the HP lost. Every step reads the actor s
               block roll through resolution.md, target = block skill
               blocked if the block succeeds and block margin >= attack margin
 3. damage     damage = the caller's rolled damage dice
+              if a called shot: damage = floor(damage * the location's damage_mul)
 4. crit       if crit: damage = crit_damage(damage)                 formula tree
 5. reduce     if evaded an area attack: damage = area_evade_damage(damage)   formula tree
               if blocked: damage = damage - shield_dr
@@ -27,6 +32,7 @@ One attack, in order, from the roll to the HP lost. Every step reads the actor s
               damage = damage - dr
 7. resist     damage = damage - resist[damage_type]
 8. hp         lost = max(damage, 0); hp = max(hp - lost, 0)
+9. riders     on a hit (not evaded), the called shot's riders are listed for the caller
 ```
 Each subtraction stops at zero before the next step: a step never raises damage. Dice and rolls are inputs, so a vector pins them. The reference does not roll.
 
@@ -43,6 +49,16 @@ Each subtraction stops at zero before the next step: a step never raises damage.
 - **Resist** is the contract's `resist` op: a flat subtraction from a packet whose tag matches the damage type. [V 2026-11-02, read contract.md]
 - **HP** floors at 0. What happens at 0 (down, dead) is not in this file. [U]
 
+## Situations and called shots
+
+Cover, flanking, prone, unseen, and shooting into melee are rows in `ruleset/data/combat/situations.json`; called shots are rows in the same file. Each row is plain modifiers on the attack target, so they stack under the one rule ([modifier.md](modifier.md)). Resolution reads the attack modifiers through the same stacking: two cover rows (both origin `environment`) keep the stronger penalty, half and three-quarters cover give −20, not −30. [V 2026-11-06]
+
+- **Range.** An attack is `melee` (the default) or `ranged`. A situation row lists its modifiers per range; a range it does not list gets nothing.
+- **Explicit or flag.** Cover, flanking, and shooting into melee are named by the caller (`situations`), since positions are the caller's. Prone, blinded, and invisible come from flags (`grant` modifiers of the conditions): a row with `when` applies when the attacker or the defender has that flag. [A]
+- **Forbidden.** Full cover forbids ranged attacks, and a prone attacker cannot shoot. The pipeline returns an error; the caller picks another action. [A]
+- **Unseen.** A blinded attacker and an invisible target share the source `situation:unseen`, so both together are still −20. Area attacks ignore it (`deliveries`). [A]
+- **Called shots.** The location's `attack` is an `add` on the attack target; `damage_mul` multiplies the damage dice before the crit doubles it (a head crit is ×1.5, then ×2), rounded down. Its `riders` (staggered, slowed, a disarm on a failed STR check, a stun on a failed END check) are listed on a hit; the caller rolls the checks and applies the conditions. [A]
+
 ## Not covered
 
-Called shots, cover and flanking, opportunity attacks, hit quality (`solid` and `glancing` margins), condition riders on a hit, and the video-game timing windows. They add terms to the same steps; none changes the order.
+Opportunity attacks, hit quality (`solid` and `glancing` margins), condition riders on a crit, range bands for called shots (the extra −10 beyond short range), the perks that halve called-shot penalties, and the video-game timing windows. Difficult terrain is movement, not an attack term: it belongs to an optional positioning module, and standing up is an action row (2 AP). They add terms to the same steps; none changes the order. [U]

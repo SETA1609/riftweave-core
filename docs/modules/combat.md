@@ -85,7 +85,7 @@ Condition riders on a crit (bleed on a blade, stagger on a blunt weapon) are not
 
 ## 5. Cover, flanking, terrain, prone
 
-One table, applied as modifiers on the attack target. **[A]** They become modifier rows in M3-03.
+The rows are in `ruleset/data/combat/situations.json`; the order and the stacking are in [core/combat.md](../core/combat.md#situations-and-called-shots). This table is the reading of those rows. Difficult terrain is movement and belongs to an optional positioning module; standing up is the `stand_up` action (2 AP).
 
 | Situation | Effect |
 | --- | --- |
@@ -102,7 +102,7 @@ One table, applied as modifiers on the attack target. **[A]** They become modifi
 
 ## 6. Called shots
 
-Declared before the roll; the penalty is an `add` on the attack target, the multiplier applies to damage before reductions. **[A]** M3-03.
+Declared before the roll. The rows are in `ruleset/data/combat/situations.json` (`called_shots`); the penalty is an `add` on the attack target and the multiplier applies to the damage dice before the crit and the reductions ([core/combat.md](../core/combat.md#situations-and-called-shots)).
 
 | Location | Attack | Damage | On a hit |
 | --- | --- | --- | --- |

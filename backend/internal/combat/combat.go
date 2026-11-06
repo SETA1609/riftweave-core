@@ -1,9 +1,12 @@
-// Package combat resolves one attack in the order of docs/core/combat.md: the attack roll,
-// one reaction, then damage through crit, area, block, armor, and resist. Dice and rolls
+// Package combat resolves one attack in the order of docs/core/combat.md: the situations
+// and the called shot, the attack roll, one reaction, then damage through the called shot,
+// crit, area, block, armor, and resist. Dice and rolls
 // are inputs. The multipliers are formulas in combat/pipeline.json, not constants here.
 package combat
 
 import (
+	"fmt"
+	"math"
 	"slices"
 
 	"github.com/SETA1609/riftweave-core/backend/internal/actor"
@@ -18,6 +21,7 @@ type Attacker struct {
 	Skill      int64            `json:"skill"`
 	Roll       int64            `json:"roll"`
 	Attributes actor.Attributes `json:"attributes"`
+	Flags      []string         `json:"flags"`
 }
 
 // Reaction is the defender's one reaction: an evade, or a block with a shield.
@@ -36,6 +40,7 @@ type Defender struct {
 	HitPoints            int64            `json:"hp"`
 	Resist               map[string]int64 `json:"resist"`
 	Reaction             *Reaction        `json:"reaction"`
+	Flags                []string         `json:"flags"`
 }
 
 // Damage is the damage roll and its type.
@@ -46,11 +51,14 @@ type Damage struct {
 
 // Input is the `combat` command's input.
 type Input struct {
-	Attacker  Attacker            `json:"attacker"`
-	Defender  Defender            `json:"defender"`
-	Damage    Damage              `json:"damage"`
-	Delivery  string              `json:"delivery"`
-	Modifiers []modifier.Modifier `json:"modifiers"`
+	Attacker   Attacker            `json:"attacker"`
+	Defender   Defender            `json:"defender"`
+	Damage     Damage              `json:"damage"`
+	Delivery   string              `json:"delivery"`
+	Modifiers  []modifier.Modifier `json:"modifiers"`
+	Range      string              `json:"range"`
+	Situations []string            `json:"situations"`
+	CalledShot string              `json:"called_shot"`
 }
 
 // Result is the outcome of the attack.
@@ -64,6 +72,64 @@ type Result struct {
 	ReactionTags []string `json:"reaction_tags"`
 	Damage       int64    `json:"damage"`
 	HitPoints    int64    `json:"hp"`
+	// Riders are the called shot's riders on a hit, and empty on a miss or an evade. Without
+	// a called shot the field is left out.
+	Riders *[]data.Rider `json:"riders,omitempty"`
+}
+
+// situationModifiers is step 0: the attack modifiers of every situation that applies (the
+// ones the caller names, then the ones a flag applies, each once) and of the called shot.
+// A situation that forbids the range is an error.
+func situationModifiers(ruleset *data.Ruleset, input *Input, delivery string) ([]modifier.Modifier, *data.CalledShot, error) {
+	var attackRange string = input.Range
+	if attackRange == "" {
+		attackRange = "melee"
+	}
+	if attackRange != "melee" && attackRange != "ranged" {
+		return nil, nil, &data.NotDefinedError{Kind: "range", Key: attackRange}
+	}
+	var applied []*data.Situation
+	for _, key := range input.Situations {
+		situation, err := ruleset.Situations.Require("situation", key)
+		if err != nil {
+			return nil, nil, err
+		}
+		applied = append(applied, situation)
+	}
+	var rows []data.Situation = ruleset.Situations.Rows()
+	for index := range rows {
+		var situation *data.Situation = &rows[index]
+		var attackerFlagged bool = situation.When.Attacker != "" && slices.Contains(input.Attacker.Flags, situation.When.Attacker)
+		var defenderFlagged bool = situation.When.Defender != "" && slices.Contains(input.Defender.Flags, situation.When.Defender)
+		if (attackerFlagged || defenderFlagged) && !slices.Contains(applied, situation) {
+			applied = append(applied, situation)
+		}
+	}
+	var modifiers []modifier.Modifier
+	for _, situation := range applied {
+		if slices.Contains(situation.Forbids, attackRange) {
+			return nil, nil, fmt.Errorf("%s forbids a %s attack", situation.Key, attackRange)
+		}
+		if situation.Deliveries == nil || slices.Contains(situation.Deliveries, delivery) {
+			modifiers = append(modifiers, situation.RangeModifiers(attackRange)...)
+		}
+	}
+	if input.CalledShot == "" {
+		return modifiers, nil, nil
+	}
+	calledShot, err := ruleset.CalledShots.Require("called shot", input.CalledShot)
+	if err != nil {
+		return nil, nil, err
+	}
+	if calledShot.Attack != 0 {
+		modifiers = append(modifiers, modifier.Modifier{
+			Target:    "attack",
+			Operation: modifier.Add,
+			Value:     float64(calledShot.Attack),
+			Source:    "called_shot:" + calledShot.Key,
+		})
+	}
+	return modifiers, calledShot, nil
 }
 
 // Run is the `combat` command.
@@ -82,13 +148,25 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	var defender *Defender = &input.Defender
 	var pipeline *data.Pipeline = &ruleset.Pipeline
 
+	attackModifiers, calledShot, err := situationModifiers(ruleset, &input, delivery)
+	if err != nil {
+		return Result{}, err
+	}
+	bonus, err := resolution.Bonus(ruleset.Origins, slices.Concat(input.Modifiers, attackModifiers))
+	if err != nil {
+		return Result{}, err
+	}
 	var attackerLuck int64 = input.Attacker.Attributes.Get(actor.Luck)
-	var attack resolution.Result = resolution.Check(&ruleset.Resolution, input.Attacker.Skill, attackerLuck, resolution.Bonus(input.Modifiers), input.Attacker.Roll)
+	var attack resolution.Result = resolution.Check(&ruleset.Resolution, input.Attacker.Skill, attackerLuck, bonus, input.Attacker.Roll)
 	var result Result = Result{
 		Target:       attack.Target,
 		Margin:       attack.Margin,
 		Critical:     slices.Contains(attack.Tags, "crit"),
 		ReactionTags: []string{},
+	}
+	if calledShot != nil {
+		var noRiders []data.Rider = []data.Rider{}
+		result.Riders = &noRiders
 	}
 	if !attack.Success {
 		result.Outcome, result.HitPoints = "miss", defender.HitPoints
@@ -143,6 +221,9 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	result.Outcome = "hit"
 
 	var amount int64 = input.Damage.Roll
+	if calledShot != nil {
+		amount = int64(math.Floor(float64(amount) * calledShot.DamageMultiplier))
+	}
 	if result.Critical {
 		if amount, err = pipeline.CriticalDamage.Evaluate(nil, formula.Variable{Name: "damage", Value: amount}); err != nil {
 			return Result{}, err
@@ -167,5 +248,9 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	}
 	amount = max(amount-defender.Resist[input.Damage.Type], 0)
 	result.Damage, result.HitPoints = amount, max(defender.HitPoints-amount, 0)
+	if calledShot != nil {
+		var riders []data.Rider = append([]data.Rider{}, calledShot.Riders...)
+		result.Riders = &riders
+	}
 	return result, nil
 }

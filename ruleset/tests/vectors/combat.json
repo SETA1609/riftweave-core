@@ -1318,5 +1318,529 @@
       "damage": 28,
       "hp": 0
     }
+  },
+  {
+    "name": "situation: half cover is -10 on a melee attack",
+    "attacker": {
+      "skill": 50,
+      "roll": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 10,
+      "type": "slashing"
+    },
+    "situations": [
+      "half_cover"
+    ],
+    "expect": {
+      "outcome": "hit",
+      "target": 40,
+      "margin": 10,
+      "damage": 10
+    }
+  },
+  {
+    "name": "situation: half and three-quarters cover are one origin, the stronger -20 counts",
+    "attacker": {
+      "skill": 50,
+      "roll": 25,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 10,
+      "type": "slashing"
+    },
+    "situations": [
+      "half_cover",
+      "three_quarters_cover"
+    ],
+    "expect": {
+      "target": 30,
+      "margin": 5
+    }
+  },
+  {
+    "name": "situation: flanking is +10 on a melee attack",
+    "attacker": {
+      "skill": 50,
+      "roll": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 10,
+      "type": "slashing"
+    },
+    "situations": [
+      "flanking"
+    ],
+    "expect": {
+      "target": 60
+    }
+  },
+  {
+    "name": "situation: flanking does nothing at range",
+    "attacker": {
+      "skill": 50,
+      "roll": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 10,
+      "type": "slashing"
+    },
+    "range": "ranged",
+    "situations": [
+      "flanking"
+    ],
+    "expect": {
+      "target": 50
+    }
+  },
+  {
+    "name": "situation: full cover forbids a ranged attack",
+    "attacker": {
+      "skill": 50,
+      "roll": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 10,
+      "type": "slashing"
+    },
+    "range": "ranged",
+    "situations": [
+      "full_cover"
+    ],
+    "expect": {
+      "error": "full_cover forbids a ranged attack"
+    }
+  },
+  {
+    "name": "situation: full cover does not change a melee attack",
+    "attacker": {
+      "skill": 50,
+      "roll": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 10,
+      "type": "slashing"
+    },
+    "situations": [
+      "full_cover"
+    ],
+    "expect": {
+      "target": 50
+    }
+  },
+  {
+    "name": "situation: a prone attacker is -20 in melee, from the prone flag",
+    "attacker": {
+      "skill": 50,
+      "roll": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "flags": [
+        "prone"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 10,
+      "type": "slashing"
+    },
+    "expect": {
+      "target": 30
+    }
+  },
+  {
+    "name": "situation: a prone attacker cannot shoot",
+    "attacker": {
+      "skill": 50,
+      "roll": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "flags": [
+        "prone"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 10,
+      "type": "slashing"
+    },
+    "range": "ranged",
+    "expect": {
+      "error": "attacker_prone forbids a ranged attack"
+    }
+  },
+  {
+    "name": "situation: a prone target is +10 to a ranged attack",
+    "attacker": {
+      "skill": 50,
+      "roll": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30,
+      "flags": [
+        "prone"
+      ]
+    },
+    "damage": {
+      "roll": 10,
+      "type": "slashing"
+    },
+    "range": "ranged",
+    "expect": {
+      "target": 60
+    }
+  },
+  {
+    "name": "situation: a prone target changes nothing in melee",
+    "attacker": {
+      "skill": 50,
+      "roll": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30,
+      "flags": [
+        "prone"
+      ]
+    },
+    "damage": {
+      "roll": 10,
+      "type": "slashing"
+    },
+    "expect": {
+      "target": 50
+    }
+  },
+  {
+    "name": "situation: a blinded attacker against an invisible target is -20 once (one source, unseen)",
+    "attacker": {
+      "skill": 50,
+      "roll": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "flags": [
+        "blinded"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30,
+      "flags": [
+        "invisible"
+      ]
+    },
+    "damage": {
+      "roll": 10,
+      "type": "slashing"
+    },
+    "expect": {
+      "target": 30
+    }
+  },
+  {
+    "name": "situation: an area attack ignores unseen",
+    "attacker": {
+      "skill": 50,
+      "roll": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "flags": [
+        "blinded"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 10,
+      "type": "slashing"
+    },
+    "delivery": "area",
+    "expect": {
+      "target": 50
+    }
+  },
+  {
+    "name": "situation: shooting into melee from half cover is -10 and -10 (two origins)",
+    "attacker": {
+      "skill": 50,
+      "roll": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 10,
+      "type": "slashing"
+    },
+    "range": "ranged",
+    "situations": [
+      "shooting_into_melee",
+      "half_cover"
+    ],
+    "expect": {
+      "target": 30
+    }
+  },
+  {
+    "name": "called shot: head is -20 and x1.5 damage, and staggers",
+    "attacker": {
+      "skill": 50,
+      "roll": 25,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 10,
+      "type": "slashing"
+    },
+    "called_shot": "head",
+    "expect": {
+      "outcome": "hit",
+      "target": 30,
+      "damage": 15,
+      "hp": 15,
+      "riders": [
+        {
+          "condition": "core:condition/staggered"
+        }
+      ]
+    }
+  },
+  {
+    "name": "called shot: a head crit is x1.5, then x2",
+    "attacker": {
+      "skill": 50,
+      "roll": 3,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 10,
+      "type": "slashing"
+    },
+    "called_shot": "head",
+    "expect": {
+      "crit": true,
+      "damage": 30,
+      "hp": 0,
+      "riders": [
+        {
+          "condition": "core:condition/staggered"
+        }
+      ]
+    }
+  },
+  {
+    "name": "called shot: arms are -15 and x0.75, rounded down, and disarm on a failed STR check",
+    "attacker": {
+      "skill": 50,
+      "roll": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 10,
+      "type": "slashing"
+    },
+    "called_shot": "arms",
+    "expect": {
+      "target": 35,
+      "damage": 7,
+      "riders": [
+        {
+          "event": "disarm",
+          "check": "str"
+        }
+      ]
+    }
+  },
+  {
+    "name": "called shot: legs slow for 2 turns",
+    "attacker": {
+      "skill": 50,
+      "roll": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 10,
+      "type": "slashing"
+    },
+    "called_shot": "legs",
+    "expect": {
+      "target": 35,
+      "damage": 7,
+      "riders": [
+        {
+          "condition": "core:condition/slowed",
+          "turns": 2
+        }
+      ]
+    }
+  },
+  {
+    "name": "called shot: groin or eyes are -30 and x2, stagger, and stun on a failed END check",
+    "attacker": {
+      "skill": 50,
+      "roll": 15,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 10,
+      "type": "slashing"
+    },
+    "called_shot": "groin_eyes",
+    "expect": {
+      "target": 20,
+      "damage": 20,
+      "riders": [
+        {
+          "condition": "core:condition/staggered"
+        },
+        {
+          "condition": "core:condition/stunned",
+          "check": "end",
+          "turns": 1
+        }
+      ]
+    }
+  },
+  {
+    "name": "called shot: torso changes nothing",
+    "attacker": {
+      "skill": 50,
+      "roll": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 10,
+      "type": "slashing"
+    },
+    "called_shot": "torso",
+    "expect": {
+      "target": 50,
+      "damage": 10,
+      "riders": []
+    }
+  },
+  {
+    "name": "called shot: a miss has no riders",
+    "attacker": {
+      "skill": 50,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 10,
+      "type": "slashing"
+    },
+    "called_shot": "head",
+    "expect": {
+      "outcome": "miss",
+      "riders": []
+    }
   }
 ]

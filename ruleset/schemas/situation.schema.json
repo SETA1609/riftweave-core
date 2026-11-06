@@ -1,0 +1,81 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Situations and called shots",
+  "description": "Cover, flanking, prone, unseen, shooting into melee, and called-shot locations as modifiers on the attack target, so they stack under the one rule (docs/core/combat.md#situations-and-called-shots).",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "situations": { "type": "array", "minItems": 1, "items": { "$ref": "#/definitions/situation" } },
+    "called_shots": { "type": "array", "minItems": 1, "items": { "$ref": "#/definitions/calledShot" } }
+  },
+  "required": ["situations", "called_shots"],
+  "additionalProperties": false,
+  "definitions": {
+    "key": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+    "attackModifiers": {
+      "type": "array",
+      "description": "Modifiers on the attack target (target `attack`, op `add`).",
+      "items": { "$ref": "schema.json#/definitions/modifier" }
+    },
+    "situation": {
+      "type": "object",
+      "properties": {
+        "key": { "$ref": "#/definitions/key" },
+        "label": { "type": "string", "minLength": 1 },
+        "description": { "type": "string", "minLength": 1 },
+        "when": {
+          "type": "object",
+          "description": "Applies by itself when the attacker or the defender has this flag. Omitted: the caller names the situation.",
+          "properties": {
+            "attacker": { "$ref": "#/definitions/key" },
+            "defender": { "$ref": "#/definitions/key" }
+          },
+          "minProperties": 1,
+          "maxProperties": 1,
+          "additionalProperties": false
+        },
+        "melee": { "$ref": "#/definitions/attackModifiers" },
+        "ranged": { "$ref": "#/definitions/attackModifiers" },
+        "forbids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "enum": ["melee", "ranged"] },
+          "description": "Ranges that cannot attack in this situation; the pipeline returns an error."
+        },
+        "deliveries": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "enum": ["single", "area", "instant"] },
+          "description": "Deliveries this situation affects. Omitted: all."
+        }
+      },
+      "required": ["key", "label", "description"],
+      "anyOf": [{ "required": ["melee"] }, { "required": ["ranged"] }, { "required": ["forbids"] }],
+      "additionalProperties": false
+    },
+    "rider": {
+      "type": "object",
+      "description": "What a called-shot hit does beyond damage. The caller rolls the check and applies the condition.",
+      "properties": {
+        "condition": { "$ref": "schema.json#/definitions/namespacedRef" },
+        "event": { "type": "string", "enum": ["disarm"] },
+        "check": { "$ref": "schema.json#/definitions/ability", "description": "The defender avoids the rider on a successful check of this attribute." },
+        "turns": { "type": "integer", "minimum": 1 }
+      },
+      "oneOf": [{ "required": ["condition"] }, { "required": ["event"] }],
+      "additionalProperties": false
+    },
+    "calledShot": {
+      "type": "object",
+      "properties": {
+        "key": { "$ref": "#/definitions/key" },
+        "label": { "type": "string", "minLength": 1 },
+        "attack": { "type": "integer", "maximum": 0, "description": "An add on the attack target." },
+        "damage_mul": { "type": "number", "exclusiveMinimum": 0, "description": "Multiplies the damage dice before the crit; rounded down." },
+        "riders": { "type": "array", "items": { "$ref": "#/definitions/rider" } }
+      },
+      "required": ["key", "label", "attack", "damage_mul"],
+      "additionalProperties": false
+    }
+  }
+}

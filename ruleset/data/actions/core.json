@@ -17,6 +17,7 @@
     { "key": "dodge", "cost": 3 },
     { "key": "item", "cost": 2 },
     { "key": "block", "cost": 2, "reserved": true, "refund_if_unused": true },
-    { "key": "aimed", "cost": 2, "adds_to": "attack" }
+    { "key": "aimed", "cost": 2, "adds_to": "attack" },
+    { "key": "stand_up", "cost": 2 }
   ]
 }
