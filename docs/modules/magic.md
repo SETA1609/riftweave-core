@@ -87,24 +87,36 @@ id plus its `magnitude`, `duration`, `target` shape (`self`/`touch`/`ranged`/`ar
 effects — there is no separate phase field on the spell. A multi-effect spell can
 therefore carry multiple phases.
 
-`cost`, `cooldown`, and the `custom` flag round out the spell. `cost` is the
+`level` (1–30) places the spell on the level scale; dispel reads it. `concentration`
+marks a spell the caster holds. `cost`, `cooldown`, and the `custom` flag round out the
+spell. `cost` is the
 authored baseline; the engine derives it (§5).
 
 ---
 
 ## 4. Casting resolution (d100 roll-under)
 
-Casting uses the standard resolution from [`progression.md`](./progression.md):
+The procedure is [docs/core/casting.md](../core/casting.md): one resolution request on
+the spell's `<color>_magic` skill, after the cast spends its mana and reagents.
 
-1. **Cost** is paid from the mana pool (`INT × 8 + level × 2`; regenerates with WIL).
-   Insufficient mana → no cast.
-2. **Success** — spend the resource, then one resolution request on the spell skill. Crit and fumble are tags from [docs/core/resolution.md](../core/resolution.md). A phase is a tag. It is not required to cast.
-3. **Potency** — `margin = target − roll` scales the realized magnitude (a wide
-   margin overcharges the effect; a narrow one underdelivers).
-4. **Elemental interaction** (§6) then adjusts the realized magnitude/duration based
+1. **Gate.** A `silenced` caster cannot cast. Too little mana, or a missing reagent,
+   means no cast and nothing spent.
+2. **Cost.** Mana (`INT × 8 + level × 2` is the pool; it regenerates with WIL) and the
+   spell's reagents are spent before the roll, so a failed cast still costs them.
+3. **Success.** The target is the skill, plus the armor penalty of the heaviest armor
+   worn, plus the modifiers on the skill. Crit and fumble are tags from
+   [docs/core/resolution.md](../core/resolution.md). A phase is a tag. It is not
+   required to cast.
+4. **Effects.** A success emits the spell's effects at their authored magnitudes. The
+   margin is in the result; scaling a magnitude by it is not core.
+5. **Concentration and dispel.** A `concentration` spell is held, one at a time. A
+   `dispel` effect of magnitude N ends the target's standing spells of level N or
+   below.
+6. **Elemental interaction** (§6) then adjusts the realized magnitude/duration based
    on the target's element and any standing effects.
 
-Casting **never grants skill XP** — magic skills rise by point-buy like every other
+Counterspell is cut (there is no reaction slot), and ritual casting is a module after
+1.0. Casting **never grants skill XP** — magic skills rise by point-buy like every other
 skill (advancement, not use-training).
 
 ---

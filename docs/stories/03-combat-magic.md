@@ -10,10 +10,10 @@ Roadmap: [M3](../../ROADMAP.md#where-we-are). Format and rules: [README.md](READ
 
 **Done when:** optional mechanics (cover, called shots, counterspell, and the like) are each either core with vectors or a named module.
 
-Done: M3-04 ([done.md](done.md#m3-combat-and-magic-playable))
+Done: M3-03, M3-04 ([done.md](done.md#m3-combat-and-magic-playable))
 
 #### M3-01 Casting procedure: decide scope, then specify
-- Status: todo
+- Status: doing
 - Priority: high
 - Needs: M1-02, M1-05
 - Was: RW-16
@@ -31,16 +31,6 @@ Done: M3-04 ([done.md](done.md#m3-combat-and-magic-playable))
 - Files: ~2 (ruleset/data/spells/core.json, ruleset/data/effects/core.json)
 - See: ruleset/data/spells/core.json
 - Done when: at least 5 spells per color (45 total) across levels 1 to 30; each spell composes effects from the shared pool and respects `channels`; every color has a damage, utility, and defensive option or a documented reason it does not.
-
-#### M3-03 Cover, flanking, terrain, and called shots as modifiers
-- Status: review
-- Priority: medium
-- Needs: M1-01, M1-05
-- Was: RW-18
-- Do: These are prose in `combat.md`. Decide core or optional, then express them as modifier rows so they stack under the one rule. Cover, flanking, prone, unseen, shooting into melee, and called shots are core rows; difficult terrain moves to an optional positioning module; standing up is an action row.
-- Files: ~5 (docs/modules/combat.md, ruleset/data/combat/, ruleset/tests/vectors/combat.json)
-- See: docs/modules/combat.md
-- Done when: each is a row set with vectors, or is moved to a named optional module; no special-case stacking rule.
 
 #### M3-05 Spell delivery and save rolls for instant spells
 - Status: todo
