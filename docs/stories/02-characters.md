@@ -13,7 +13,7 @@ Roadmap: [M2](../../ROADMAP.md#where-we-are). Format and rules: [README.md](READ
 Done: M2-02, M2-04 ([done.md](done.md#m2-characters))
 
 #### M2-01 Perk catalogue to the content floor
-- Status: review
+- Status: doing
 - Priority: high
 - Needs: M1-05, M1-06
 - Was: RW-11
