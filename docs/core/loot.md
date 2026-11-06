@@ -1,0 +1,57 @@
+# Loot
+
+What a defeated monster or a treasure cache leaves behind, as data. The rows are in `ruleset/data/loot/core.json`, the vectors in `ruleset/tests/vectors/loot.json`. Values use the price formula of [economy.md](economy.md), so treasure and prices are one scale. Nothing here needs another module: breakthrough cores (`coreDrop` on monster rows) belong to the breakthrough module and are not loot here. [A]
+
+## Tables
+
+A loot table has a `level` (the encounter it is for), a number of `rolls`, and `entries`. Each entry covers a range of a d100 roll (`min` to `max`, inclusive) and is one of:
+
+| kind | yields |
+| --- | --- |
+| `coins` | `coins` (`quantity` and `unit`) |
+| `item` | `quantity` of the namespaced `item` |
+| `nothing` | nothing |
+
+The ranges of one table cover 1 to 100 exactly once, so every roll lands on one entry. A table is rolled `rolls` times; each roll is independent, and repeats add up (two rolls on the same coins entry give twice the coins). The rolls are inputs, so a vector pins them; the reference does not roll. [V 2026-11-04]
+
+## Drops
+
+`drops` gives each monster (`core:monster/<key>`) a `loot` list: the rows it rolls when defeated, in order. Every core monster has exactly one drop row. A monster's own row does not name its loot, so a module can give a monster other loot, or add a row, without touching the bestiary. [A]
+
+A loot row is a table or a single item:
+
+| field | on | meaning | default |
+| --- | --- | --- | --- |
+| `table` | table row | key of a table in this file | — |
+| `rolls` | table row | how many times this monster rolls the table | the table's `rolls` |
+| `shift` | table row | added to every roll on the table, capped at 100 | 0 |
+| `item`, `quantity` | item row | one namespaced item | quantity 1 |
+| `chance` | either | a d100 roll-under gate: the row yields only if a roll is at most `chance` | 100, no roll |
+| `material` | either | the material of every weapon and armor the row yields | the item's own |
+
+So monsters can share a table and still differ:
+
+- **Rates:** two rolls instead of one, or a `chance` below 100.
+- **Extras:** a second table row, or an item row (a skeleton's spear, a fire elemental's fire resistance potion).
+- **Better results:** a `shift`. Entries in a table go from the least valuable to the most, so +15 skips the bottom 15 results: a dire wolf rolls the beast den with +15, a grove stalker without. A test checks the order. [V 2026-11-06]
+- **Better versions:** a `material`. A stone golem's hoard chainmail is steel, worth twice the iron one. Only weapons and armor take a material. [A]
+
+**Roll order.** The rolls are one list, used in row order: for each row, first its `chance` roll (if `chance` is below 100), then, if it yields, the table's rolls. A failed chance uses no table rolls. Too few or too many rolls is an error. [V 2026-11-06]
+
+## Value and budget
+
+```
+value of coins   = quantity * the unit's copper value          economy.md
+value of an item = price(base_cp, value_percent, percent = 100) * quantity
+                   value_percent = 100, or the row's material valueFactor * 100
+budget_cp(level) = 500 * level * level                          formula tree
+```
+
+- An item is valued at its list price: its `cost` (from its row, its overrides, or its base) through the price formula with no merchant spread, and with no material unless its loot row names one. What a merchant pays for it is the economy's business. [A]
+- **Consistency:** a table's expected value, the mean over its d100 ranges times `rolls`, must not exceed `budget_cp` at the table's level. A monster's expected value, the sum of its loot rows (each row's mean with its shift and material, times its rolls, times `chance / 100`), must not exceed `budget_cp` at the monster's level. A test checks every table and every monster. A single lucky roll may exceed the budget; the average may not. [V 2026-11-06]
+- A material sets `value_percent` to its `valueFactor` times 100, as in [economy.md](economy.md). [A]
+- The budget is per encounter. It grows with the square of the level: 5 gp at level 1, 125 gp at level 5, 500 gp at level 10, 2000 gp at level 20, against the 100 gp a character starts with ([character creation](../modules/character-creation.md)). [A]
+
+## Not covered
+
+Unique and quest items, magic item generation from enchantments, the looter's own shift (a perk or Luck adding to loot rolls), a per-level wealth curve for whole campaigns, and loot shared between party members. [U]

@@ -1,0 +1,96 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Loot",
+  "description": "Loot tables rolled on d100, the loot rows each monster rolls (tables and items, with rolls, chance, shift, and material), and the treasure budget per encounter level. Values use the price formula (docs/core/loot.md).",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "budget_cp": {
+      "description": "Treasure budget in copper for one encounter. Reads var `level`.",
+      "$ref": "schema.json#/definitions/formulaNode"
+    },
+    "tables": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/table" }
+    },
+    "drops": {
+      "type": "array",
+      "description": "One row per monster: the loot rows it rolls when defeated, in order (docs/core/loot.md#drops).",
+      "items": {
+        "type": "object",
+        "properties": {
+          "monster": { "$ref": "schema.json#/definitions/namespacedRef" },
+          "loot": { "type": "array", "minItems": 1, "items": { "$ref": "#/definitions/lootRow" } }
+        },
+        "required": ["monster", "loot"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["budget_cp", "tables", "drops"],
+  "additionalProperties": false,
+  "definitions": {
+    "lootRow": {
+      "type": "object",
+      "description": "A table row (table, optional rolls and shift) or an item row (item, optional quantity). Either may take a chance gate and a material.",
+      "properties": {
+        "table": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "Key of a table in this file." },
+        "rolls": { "type": "integer", "minimum": 1, "description": "How many times this monster rolls the table. Default: the table's rolls." },
+        "shift": { "type": "integer", "minimum": 1, "maximum": 99, "description": "Added to every roll on the table, capped at 100. Entries go from least to most valuable, so a shift skips the bottom results." },
+        "item": { "$ref": "schema.json#/definitions/namespacedRef" },
+        "quantity": { "type": "integer", "minimum": 1, "description": "Default 1." },
+        "chance": { "type": "integer", "minimum": 1, "maximum": 99, "description": "d100 roll-under gate: the row yields only if a roll is at most this. Omitted: the row always yields and takes no chance roll." },
+        "material": { "$ref": "schema.json#/definitions/namespacedRef", "description": "core:material/<key>: the material of every weapon and armor this row yields; its valueFactor sets value_percent." }
+      },
+      "oneOf": [
+        { "required": ["table"], "not": { "anyOf": [{ "required": ["item"] }, { "required": ["quantity"] }] } },
+        { "required": ["item"], "not": { "anyOf": [{ "required": ["table"] }, { "required": ["rolls"] }, { "required": ["shift"] }] } }
+      ],
+      "additionalProperties": false
+    },
+    "table": {
+      "type": "object",
+      "properties": {
+        "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
+        "label": { "type": "string" },
+        "level": { "type": "integer", "minimum": 1, "maximum": 30, "description": "The encounter level the table is for; its expected value must fit budget_cp at this level." },
+        "rolls": { "type": "integer", "minimum": 1, "description": "How many d100 rolls the table takes." },
+        "entries": {
+          "type": "array",
+          "minItems": 1,
+          "description": "d100 ranges that together cover 1 to 100 exactly once, from the least valuable entry to the most.",
+          "items": { "$ref": "#/definitions/entry" }
+        }
+      },
+      "required": ["key", "label", "level", "rolls", "entries"],
+      "additionalProperties": false
+    },
+    "entry": {
+      "type": "object",
+      "properties": {
+        "min": { "type": "integer", "minimum": 1, "maximum": 100 },
+        "max": { "type": "integer", "minimum": 1, "maximum": 100 },
+        "kind": { "type": "string", "enum": ["coins", "item", "nothing"] },
+        "coins": {
+          "type": "object",
+          "properties": {
+            "quantity": { "type": "integer", "minimum": 1 },
+            "unit": { "type": "string", "enum": ["cp", "sp", "gp", "pp"] }
+          },
+          "required": ["quantity", "unit"],
+          "additionalProperties": false
+        },
+        "item": { "$ref": "schema.json#/definitions/namespacedRef" },
+        "quantity": { "type": "integer", "minimum": 1 }
+      },
+      "required": ["min", "max", "kind"],
+      "allOf": [
+        { "if": { "properties": { "kind": { "const": "coins" } } }, "then": { "required": ["coins"], "not": { "required": ["item"] } } },
+        { "if": { "properties": { "kind": { "const": "item" } } }, "then": { "required": ["item", "quantity"], "not": { "required": ["coins"] } } },
+        { "if": { "properties": { "kind": { "const": "nothing" } } }, "then": { "not": { "anyOf": [{ "required": ["coins"] }, { "required": ["item"] }] } } }
+      ],
+      "additionalProperties": false
+    }
+  }
+}

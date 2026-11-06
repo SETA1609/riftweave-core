@@ -1,0 +1,206 @@
+{
+  "$schema": "../../schemas/loot.schema.json",
+  "budget_cp": {
+    "op": "mul",
+    "args": [
+      {
+        "lit": 500
+      },
+      {
+        "var": "level"
+      },
+      {
+        "var": "level"
+      }
+    ]
+  },
+  "tables": [
+    {
+      "key": "bandit_purse",
+      "label": "Bandit's purse",
+      "level": 1,
+      "rolls": 1,
+      "entries": [
+        {
+          "min": 1,
+          "max": 40,
+          "kind": "coins",
+          "coins": {
+            "quantity": 3,
+            "unit": "sp"
+          }
+        },
+        {
+          "min": 41,
+          "max": 70,
+          "kind": "coins",
+          "coins": {
+            "quantity": 1,
+            "unit": "gp"
+          }
+        },
+        {
+          "min": 71,
+          "max": 90,
+          "kind": "item",
+          "item": "core:weapon/dagger",
+          "quantity": 1
+        },
+        {
+          "min": 91,
+          "max": 100,
+          "kind": "item",
+          "item": "core:consumable/potion_minor_healing",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "key": "grave_goods",
+      "label": "Grave goods",
+      "level": 1,
+      "rolls": 1,
+      "entries": [
+        {
+          "min": 1,
+          "max": 60,
+          "kind": "nothing"
+        },
+        {
+          "min": 61,
+          "max": 90,
+          "kind": "coins",
+          "coins": {
+            "quantity": 2,
+            "unit": "sp"
+          }
+        },
+        {
+          "min": 91,
+          "max": 100,
+          "kind": "item",
+          "item": "core:armor/cap_hood",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "key": "beast_den",
+      "label": "Beast's den",
+      "level": 3,
+      "rolls": 1,
+      "entries": [
+        {
+          "min": 1,
+          "max": 70,
+          "kind": "nothing"
+        },
+        {
+          "min": 71,
+          "max": 95,
+          "kind": "coins",
+          "coins": {
+            "quantity": 5,
+            "unit": "gp"
+          }
+        },
+        {
+          "min": 96,
+          "max": 100,
+          "kind": "item",
+          "item": "core:weapon/shortbow",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "key": "hoard_minor",
+      "label": "Minor hoard",
+      "level": 5,
+      "rolls": 2,
+      "entries": [
+        {
+          "min": 1,
+          "max": 50,
+          "kind": "coins",
+          "coins": {
+            "quantity": 20,
+            "unit": "gp"
+          }
+        },
+        {
+          "min": 51,
+          "max": 75,
+          "kind": "item",
+          "item": "core:consumable/potion_minor_healing",
+          "quantity": 1
+        },
+        {
+          "min": 76,
+          "max": 90,
+          "kind": "item",
+          "item": "core:armor/chainmail",
+          "quantity": 1
+        },
+        {
+          "min": 91,
+          "max": 100,
+          "kind": "item",
+          "item": "core:consumable/potion_fire_resistance",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "key": "hoard_major",
+      "label": "Major hoard",
+      "level": 7,
+      "rolls": 2,
+      "entries": [
+        {
+          "min": 1,
+          "max": 40,
+          "kind": "coins",
+          "coins": {
+            "quantity": 50,
+            "unit": "gp"
+          }
+        },
+        {
+          "min": 41,
+          "max": 70,
+          "kind": "item",
+          "item": "core:accessory/silver_ring",
+          "quantity": 1
+        },
+        {
+          "min": 71,
+          "max": 90,
+          "kind": "item",
+          "item": "core:armor/breastplate",
+          "quantity": 1
+        },
+        {
+          "min": 91,
+          "max": 100,
+          "kind": "item",
+          "item": "core:weapon/elven_wood_longbow",
+          "quantity": 1
+        }
+      ]
+    }
+  ],
+  "drops": [
+    { "monster": "core:monster/bandit", "loot": [{ "table": "bandit_purse" }] },
+    { "monster": "core:monster/skeleton", "loot": [{ "table": "grave_goods" }, { "item": "core:weapon/spear", "chance": 20 }] },
+    { "monster": "core:monster/zombie", "loot": [{ "table": "grave_goods" }] },
+    { "monster": "core:monster/dire_wolf", "loot": [{ "table": "beast_den", "shift": 15 }] },
+    { "monster": "core:monster/grove_stalker", "loot": [{ "table": "beast_den" }] },
+    { "monster": "core:monster/frost_revenant", "loot": [{ "table": "hoard_minor" }, { "item": "core:consumable/coating_frost", "chance": 20 }] },
+    { "monster": "core:monster/ice_elemental", "loot": [{ "table": "hoard_minor", "rolls": 1 }, { "item": "core:consumable/coating_frost", "chance": 40 }] },
+    { "monster": "core:monster/fire_elemental", "loot": [{ "table": "hoard_minor" }, { "item": "core:consumable/potion_fire_resistance", "chance": 30 }] },
+    { "monster": "core:monster/stone_golem", "loot": [{ "table": "hoard_minor", "material": "core:material/steel" }] },
+    { "monster": "core:monster/ember_drake", "loot": [{ "table": "hoard_major", "rolls": 1 }, { "table": "hoard_minor", "rolls": 1 }] },
+    { "monster": "core:monster/iron_sentinel", "loot": [{ "table": "hoard_major" }] }
+  ]
+}
