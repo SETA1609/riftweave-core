@@ -120,6 +120,9 @@
               "$ref": "common.json#/definitions/key"
             },
             "description": "Flags from conditions (prone, blinded, invisible); a situation row with `when` reads them."
+          },
+          "modifiers": {
+            "$ref": "common.json#/definitions/modifiers"
           }
         },
         "additionalProperties": false,
@@ -250,6 +253,10 @@
           "additionalProperties": false
         },
         "description": "A called shot's riders on a hit."
+      },
+      "counter": {
+        "type": "boolean",
+        "description": "A riposte: the defender may make one attack at no AP cost."
       }
     },
     "additionalProperties": false,
