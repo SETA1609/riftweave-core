@@ -243,6 +243,44 @@ type DamageType struct {
 	Pierce   bool     `json:"-"`
 }
 
+// Situation is one row of combat/situations.json: attack modifiers per range, named by
+// the caller or applied by a flag (docs/core/combat.md, step 0).
+type Situation struct {
+	When struct {
+		Attacker string `json:"attacker"` // applies when the attacker has this flag
+		Defender string `json:"defender"` // applies when the defender has this flag
+	} `json:"when"`
+	Key        string              `json:"key"`
+	Melee      []modifier.Modifier `json:"melee"`
+	Ranged     []modifier.Modifier `json:"ranged"`
+	Forbids    []string            `json:"forbids"`
+	Deliveries []string            `json:"deliveries"` // nil: every delivery
+}
+
+// RangeModifiers returns the row's modifiers for a range, "melee" or "ranged".
+func (situation *Situation) RangeModifiers(attackRange string) []modifier.Modifier {
+	if attackRange == "ranged" {
+		return situation.Ranged
+	}
+	return situation.Melee
+}
+
+// Rider is what a called shot does on a hit, for the caller to apply.
+type Rider struct {
+	Condition string `json:"condition,omitempty"`
+	Event     string `json:"event,omitempty"`
+	Check     string `json:"check,omitempty"`
+	Turns     int64  `json:"turns,omitempty"`
+}
+
+// CalledShot is one called_shots row of combat/situations.json.
+type CalledShot struct {
+	Key              string  `json:"key"`
+	Riders           []Rider `json:"riders"`
+	Attack           int64   `json:"attack"`
+	DamageMultiplier float64 `json:"damage_mul"`
+}
+
 // Condition is one row of conditions/core.json.
 type Condition struct {
 	Key           string              `json:"key"`
@@ -326,6 +364,8 @@ type Ruleset struct {
 	Progression Progression
 	Pipeline    Pipeline
 	DamageTypes Table[DamageType]
+	Situations  Table[Situation]
+	CalledShots Table[CalledShot]
 	Origins     modifier.OriginPolicies
 	Conditions  Conditions
 	Loot        Loot
@@ -450,6 +490,14 @@ func Load(fileSystem fs.FS) (*Ruleset, error) {
 		damageType.Pierce = slices.Contains(damageType.Tags, ruleset.Pipeline.PierceTag)
 	}
 	ruleset.DamageTypes = newTable(damageTypes.DamageTypes, func(damageType *DamageType) string { return damageType.Key })
+
+	var situations struct {
+		Situations  []Situation  `json:"situations"`
+		CalledShots []CalledShot `json:"called_shots"`
+	}
+	loader.read("combat/situations.json", &situations)
+	ruleset.Situations = newTable(situations.Situations, func(situation *Situation) string { return situation.Key })
+	ruleset.CalledShots = newTable(situations.CalledShots, func(calledShot *CalledShot) string { return calledShot.Key })
 
 	var origins struct{ Origins []struct{ Key, Stack string } }
 	loader.read("origins/core.json", &origins)

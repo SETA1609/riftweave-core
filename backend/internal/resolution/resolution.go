@@ -4,7 +4,6 @@ package resolution
 
 import (
 	"fmt"
-	"math"
 
 	"github.com/SETA1609/riftweave-core/backend/internal/actor"
 	"github.com/SETA1609/riftweave-core/backend/internal/data"
@@ -28,16 +27,17 @@ type Result struct {
 	Tags    []string `json:"tags"`
 }
 
-// Bonus is the signed sum of every `add` modifier's value. Resolution sees bonuses and
-// penalties as one list.
-func Bonus(modifiers []modifier.Modifier) int64 {
-	var sum float64 = 0.0
+// Bonus is the `add` modifiers stacked by the one rule (docs/core/modifier.md): two rows of
+// a `highest` origin, such as half and three-quarters cover, keep the stronger. Resolution
+// sees bonuses and penalties as one list.
+func Bonus(policies modifier.OriginPolicies, modifiers []modifier.Modifier) (int64, error) {
+	var additions []modifier.Modifier
 	for _, current := range modifiers {
 		if current.Operation == modifier.Add {
-			sum += current.Value
+			additions = append(additions, current)
 		}
 	}
-	return int64(math.Floor(sum))
+	return modifier.Value(0, additions, policies, 0, nil)
 }
 
 // Check rolls one check: the skill plus the bonus is the target, capped if the data caps it.
@@ -77,5 +77,9 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	if !ok {
 		return Result{}, fmt.Errorf("actor has no skill %q", skill)
 	}
-	return Check(&ruleset.Resolution, value, input.Actor.Attributes.Get(actor.Luck), Bonus(input.Modifiers), input.Roll), nil
+	bonus, err := Bonus(ruleset.Origins, input.Modifiers)
+	if err != nil {
+		return Result{}, err
+	}
+	return Check(&ruleset.Resolution, value, input.Actor.Attributes.Get(actor.Luck), bonus, input.Roll), nil
 }
