@@ -37,7 +37,7 @@ Done: M3-04 ([done.md](done.md#m3-combat-and-magic-playable))
 - Priority: medium
 - Needs: M1-01, M1-05
 - Was: RW-18
-- Do: These are prose in `combat.md`. Decide core or optional, then express them as modifier rows so they stack under the one rule.
+- Do: These are prose in `combat.md`. Decide core or optional, then express them as modifier rows so they stack under the one rule. Cover, flanking, prone, unseen, shooting into melee, and called shots are core rows; difficult terrain moves to an optional positioning module; standing up is an action row.
 - Files: ~5 (docs/modules/combat.md, ruleset/data/combat/, ruleset/tests/vectors/combat.json)
 - See: docs/modules/combat.md
 - Done when: each is a row set with vectors, or is moved to a named optional module; no special-case stacking rule.
