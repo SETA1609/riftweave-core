@@ -2,7 +2,7 @@
 
 Author: SETA1609
 
-One file is the contract between Python and Zig. An actor, a modifier list, a seeded roll, an expected result. Python runs it now. Zig runs the same file later. A second implementation that disagrees fails the vector, not a review comment.
+One file is the contract between implementations. An actor, a modifier list, a seeded roll, an expected result. Python runs it, and the Go core in `backend/` runs the same file. A second implementation that disagrees fails the vector, not a review comment.
 
 ## Running them
 
@@ -12,9 +12,9 @@ One test runs every file:
 python -m unittest ruleset/scripts/test_vectors.py
 ```
 
-`./scripts/test.sh` runs it with the other `ruleset/scripts/test_*.py` tests.
+`./scripts/test.sh` runs it with the other `ruleset/scripts/test_*.py` tests. The Go core runs every file too: `cd backend && go test ./...`.
 
-The test globs `ruleset/tests/vectors/*.json`. Adding a vector file, or a vector to a file, needs no test edit. A new kernel function needs a runner in `ruleset/scripts/kernel_reference.py`, a row in the checklist below, and a command file in `backend/contract/` ([backend](../backend/README.md)); the tests fail until all three exist. A new input field on an existing function goes into its command's `input_schema` in the same pull request.
+The test globs `ruleset/tests/vectors/*.json`. Adding a vector file, or a vector to a file, needs no test edit. A new kernel function needs a runner in `ruleset/scripts/kernel_reference.py`, a row in the checklist below, and a command file in `backend/contract/` and a Go command ([backend](../backend/README.md)); the tests fail until all four exist. A new input field on an existing function goes into its command's `input_schema` in the same pull request.
 
 ## File format
 

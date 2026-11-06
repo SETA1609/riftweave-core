@@ -45,3 +45,28 @@ jobs:
 
       - name: Run golden vectors
         run: python -m unittest discover -s ruleset/scripts -p "test_vectors.py" -v
+
+  # The Go core (APP-02) runs every golden vector, so a data or rule change that breaks one
+  # fails here and in the Python job above.
+  backend:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Set up Go
+        uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+        with:
+          go-version-file: backend/go.mod
+          cache: false
+
+      - name: Check formatting and vet
+        working-directory: backend
+        run: |
+          test -z "$(gofmt -l .)"
+          go vet ./...
+
+      - name: Run every golden vector in Go
+        working-directory: backend
+        run: go test ./... -count=1
