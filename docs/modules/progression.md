@@ -329,8 +329,8 @@ narrative downtime activity tied to the level-up.
 Perks are the **character-defining** progression in this classless system, defined
 in a single `features` table (`ruleset/data/features/core.json`). They are gated by
 `prerequisite` — any of `level`, `abilities` (min attribute values), `skills` (min
-skill values), and `perks` (prerequisite perk ids) — and may have multiple `ranks`.
-Their `effects` compose into the character's active modifier set. The `type` field
+skill values), and `perks` (prerequisite perk refs, `core:feature/<key>`) — and may have
+multiple `ranks`. Their `modifiers` compose into the character's active modifier set. The `type` field
 says how each is acquired:
 
 - **`perk`** — chosen on level-up (one per normal level). This is the primary
@@ -343,6 +343,31 @@ says how each is acquired:
 
 All four live in the same perk table; "trait" is no longer a separate concept.
 Racial features may also be authored inline on a race in `races/core.json`.
+
+### What a perk emits
+
+A perk reaches the character only as contract modifiers ([modifier.md](../core/modifier.md)),
+in its `modifiers` list: source `feature:<key>`, origin `core:origin/trained`, so every
+perk counts and two perks never cancel. A ranked perk's values are per rank: rank 2
+emits each `add` at twice its value. The older `effects` list on a few perks is prose
+for readers; the modifiers are the rule. [V 2026-11-06]
+
+Targets are a skill key (`lockpick`, `persuasion`), a derived stat (`hp`, `mp`,
+`carry`, `initiative`), an action key for its AP cost (`cast`, `aimed`), a target that
+a kernel function reads (`attack`, `crit_window`, `loot_roll`), or a named target a
+consumer reads (`sneak_attack_damage_percent`, `thrall_limit`); a `grant` names a
+flag. A value with `_percent` in the target is a percentage. [A]
+
+### The catalogue
+
+76 perks (`type: perk`) in `features/core.json`, at five level tiers (1, 6, 12, 18,
+24, read from `prerequisite.level`; no level is tier 1). Every attribute gates at least
+one perk, and combat, magic, and social have at least eight each. A higher tier often
+needs a lower perk (`iron_fist` needs `brawler`, `archmage` needs
+`arcane_reservoir`). No two perks at one tier emit the same set of targets, so neither
+is a strictly worse copy of the other; `ruleset/scripts/test_perks.py` checks this, the
+count, the gates, and that each prerequisite perk exists at a lower or equal tier.
+[V 2026-11-06]
 
 ## Magic — 9 color schools
 
