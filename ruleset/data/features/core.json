@@ -714,126 +714,348 @@
       "key": "human_versatility",
       "label": "Versatility",
       "description": "You begin with one additional tag skill.",
-      "type": "racial_trait"
+      "type": "racial_trait",
+      "modifiers": [
+        {
+          "target": "tag_skills",
+          "op": "add",
+          "value": 1,
+          "source": "feature:human_versatility",
+          "origin": "core:origin/innate"
+        }
+      ]
     },
     {
       "id": 25,
       "key": "human_ambition",
       "label": "Ambition",
       "description": "You may take one bonus perk at 1st level (any perk whose prerequisites you already meet).",
-      "type": "racial_trait"
+      "type": "racial_trait",
+      "modifiers": [
+        {
+          "target": "creation_perks",
+          "op": "add",
+          "value": 1,
+          "source": "feature:human_ambition",
+          "origin": "core:origin/innate"
+        }
+      ]
     },
     {
       "id": 26,
       "key": "elf_darkvision",
       "label": "Darkvision",
       "description": "You can see in dim light as if it were bright light, and in darkness as if it were dim light, out to 18 meters.",
-      "type": "racial_trait"
+      "type": "racial_trait",
+      "modifiers": [
+        {
+          "target": "darkvision",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:elf_darkvision",
+          "origin": "core:origin/innate"
+        },
+        {
+          "target": "darkvision_range",
+          "op": "add",
+          "value": 18,
+          "source": "feature:elf_darkvision",
+          "origin": "core:origin/innate"
+        }
+      ]
     },
     {
       "id": 27,
       "key": "elf_fey_ancestry",
       "label": "Fey Ancestry",
       "description": "You resist charm and mind-affecting magic, and cannot be magically put to sleep.",
-      "type": "racial_trait"
+      "type": "racial_trait",
+      "modifiers": [
+        {
+          "target": "charm_resistant",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:elf_fey_ancestry",
+          "origin": "core:origin/innate"
+        },
+        {
+          "target": "magical_sleep_immune",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:elf_fey_ancestry",
+          "origin": "core:origin/innate"
+        }
+      ]
     },
     {
       "id": 28,
       "key": "elf_keen_senses",
       "label": "Keen Senses",
       "description": "+10 to detection (Perception) checks.",
-      "type": "racial_trait"
+      "type": "racial_trait",
+      "modifiers": [
+        {
+          "target": "investigation",
+          "op": "add",
+          "value": 10,
+          "source": "feature:elf_keen_senses",
+          "origin": "core:origin/innate"
+        }
+      ]
     },
     {
       "id": 29,
       "key": "green_elf_woodland_stride",
       "label": "Woodland Stride",
       "description": "Difficult terrain of plants and undergrowth costs you no extra movement.",
-      "type": "racial_trait"
+      "type": "racial_trait",
+      "modifiers": [
+        {
+          "target": "woodland_stride",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:green_elf_woodland_stride",
+          "origin": "core:origin/innate"
+        }
+      ]
     },
     {
       "id": 30,
       "key": "black_elf_sunless_sight",
       "label": "Sunless Sight",
       "description": "Your darkvision extends to 36 meters, but you have disadvantage on checks in bright sunlight.",
-      "type": "racial_trait"
+      "type": "racial_trait",
+      "modifiers": [
+        {
+          "target": "darkvision_range",
+          "op": "add",
+          "value": 18,
+          "source": "feature:black_elf_sunless_sight",
+          "origin": "core:origin/innate"
+        },
+        {
+          "target": "sunlight_sensitive",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:black_elf_sunless_sight",
+          "origin": "core:origin/innate"
+        }
+      ]
     },
     {
       "id": 31,
       "key": "black_elf_shadowmeld",
       "label": "Shadowmeld",
       "description": "+10 to stealth while in dim light or darkness.",
-      "type": "racial_trait"
+      "type": "racial_trait",
+      "modifiers": [
+        {
+          "target": "stealth_in_darkness",
+          "op": "add",
+          "value": 10,
+          "source": "feature:black_elf_shadowmeld",
+          "origin": "core:origin/innate"
+        }
+      ]
     },
     {
       "id": 32,
       "key": "dwarf_darkvision",
       "label": "Darkvision",
       "description": "You can see in dim light as if it were bright light, and in darkness as if it were dim light, out to 18 meters.",
-      "type": "racial_trait"
+      "type": "racial_trait",
+      "modifiers": [
+        {
+          "target": "darkvision",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:dwarf_darkvision",
+          "origin": "core:origin/innate"
+        },
+        {
+          "target": "darkvision_range",
+          "op": "add",
+          "value": 18,
+          "source": "feature:dwarf_darkvision",
+          "origin": "core:origin/innate"
+        }
+      ]
     },
     {
       "id": 33,
       "key": "dwarf_resilience",
       "label": "Dwarven Resilience",
-      "description": "You resist poison and disease, taking reduced damage from both. (Modeled as innate resist effects with parameter 'poison' and 'disease' granting +25% resistance.)",
-      "type": "racial_trait"
+      "description": "You resist poison and disease, taking a quarter less from both.",
+      "type": "racial_trait",
+      "modifiers": [
+        {
+          "target": "poison_resistance_percent",
+          "op": "add",
+          "value": 25,
+          "source": "feature:dwarf_resilience",
+          "origin": "core:origin/innate"
+        },
+        {
+          "target": "disease_resistance_percent",
+          "op": "add",
+          "value": 25,
+          "source": "feature:dwarf_resilience",
+          "origin": "core:origin/innate"
+        }
+      ]
     },
     {
       "id": 34,
       "key": "dwarf_stoneworker",
       "label": "Stoneworker",
       "description": "+10 to Repair and crafting checks.",
-      "type": "racial_trait"
+      "type": "racial_trait",
+      "modifiers": [
+        {
+          "target": "repair",
+          "op": "add",
+          "value": 10,
+          "source": "feature:dwarf_stoneworker",
+          "origin": "core:origin/innate"
+        },
+        {
+          "target": "crafting",
+          "op": "add",
+          "value": 10,
+          "source": "feature:dwarf_stoneworker",
+          "origin": "core:origin/innate"
+        }
+      ]
     },
     {
       "id": 35,
       "key": "hill_dwarf_toughness",
       "label": "Dwarven Toughness",
       "description": "Your hit point maximum increases by 1 per level.",
-      "type": "racial_trait"
+      "type": "racial_trait",
+      "modifiers": [
+        {
+          "target": "hp_per_level",
+          "op": "add",
+          "value": 1,
+          "source": "feature:hill_dwarf_toughness",
+          "origin": "core:origin/innate"
+        }
+      ]
     },
     {
       "id": 36,
       "key": "mountain_dwarf_armor_training",
       "label": "Mountain Armor Training",
       "description": "You are proficient with light and medium armor.",
-      "type": "racial_trait"
+      "type": "racial_trait",
+      "modifiers": [
+        {
+          "target": "proficient_light_armor",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:mountain_dwarf_armor_training",
+          "origin": "core:origin/innate"
+        },
+        {
+          "target": "proficient_medium_armor",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:mountain_dwarf_armor_training",
+          "origin": "core:origin/innate"
+        }
+      ]
     },
     {
       "id": 37,
       "key": "beastfolk_kinship",
       "label": "Beastfolk",
       "description": "Marks the race as beastfolk. A kin typically defines natural-weapon and heightened-sense traits, but no values are inherited from the template or from sibling kin.",
-      "type": "racial_trait"
+      "type": "racial_trait",
+      "modifiers": [
+        {
+          "target": "beastfolk",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:beastfolk_kinship",
+          "origin": "core:origin/innate"
+        }
+      ]
     },
     {
       "id": 38,
       "key": "catman_claws",
       "label": "Retractable Claws",
       "description": "Your claws are natural weapons dealing 1d6 slashing damage.",
-      "type": "racial_trait"
+      "type": "racial_trait",
+      "modifiers": [
+        {
+          "target": "natural_weapon",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:catman_claws",
+          "origin": "core:origin/innate"
+        }
+      ],
+      "natural_weapon": {
+        "dice": "1d6",
+        "type": "slashing"
+      }
     },
     {
       "id": 39,
       "key": "catman_landing",
       "label": "Cat's Landing",
       "description": "You take no damage from falls of 6 meters or less and always land on your feet.",
-      "type": "racial_trait"
+      "type": "racial_trait",
+      "modifiers": [
+        {
+          "target": "safe_fall_meters",
+          "op": "add",
+          "value": 6,
+          "source": "feature:catman_landing",
+          "origin": "core:origin/innate"
+        },
+        {
+          "target": "lands_on_feet",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:catman_landing",
+          "origin": "core:origin/innate"
+        }
+      ]
     },
     {
       "id": 40,
       "key": "wolfman_pack_tactics",
       "label": "Pack Tactics",
       "description": "+10 to attack checks against a foe that an ally is also engaging.",
-      "type": "racial_trait"
+      "type": "racial_trait",
+      "modifiers": [
+        {
+          "target": "attack_with_ally_engaged",
+          "op": "add",
+          "value": 10,
+          "source": "feature:wolfman_pack_tactics",
+          "origin": "core:origin/innate"
+        }
+      ]
     },
     {
       "id": 41,
       "key": "wolfman_keen_smell",
       "label": "Keen Smell",
       "description": "+10 to detection checks that rely on scent.",
-      "type": "racial_trait"
+      "type": "racial_trait",
+      "modifiers": [
+        {
+          "target": "investigation_by_scent",
+          "op": "add",
+          "value": 10,
+          "source": "feature:wolfman_keen_smell",
+          "origin": "core:origin/innate"
+        }
+      ]
     }
   ]
 }
