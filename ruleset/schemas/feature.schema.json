@@ -113,6 +113,21 @@
             "required": ["type", "description"],
             "additionalProperties": false
           }
+        },
+        "modifiers": {
+          "type": "array",
+          "description": "Contract modifiers this feature emits (docs/core/modifier.md). Racial traits use source feature:<key> and origin core:origin/innate (docs/modules/race.md#5a-what-a-race-emits).",
+          "items": { "$ref": "schema.json#/definitions/modifier" }
+        },
+        "natural_weapon": {
+          "type": "object",
+          "description": "A natural weapon this feature gives, rolled with the unarmed skill.",
+          "properties": {
+            "dice": { "$ref": "schema.json#/definitions/diceExpression" },
+            "type": { "type": "string", "pattern": "^[a-z_]+$", "description": "A key in ruleset/data/combat/damage_types.json." }
+          },
+          "required": ["dice", "type"],
+          "additionalProperties": false
         }
       },
       "required": ["id", "key", "label", "description", "type"],

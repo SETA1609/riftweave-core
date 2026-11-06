@@ -33,11 +33,11 @@ Done: M2-02 ([done.md](done.md#m2-characters))
 - Done when: two characters, each with a level-by-level record; each level's derived stats match a vector; prose in `character-creation.md` is generated from or checked against the record.
 
 #### M2-04 Races and backgrounds emit modifiers only
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: M1-05, M1-06
 - Was: RW-14
-- Do: 12 races and 8 backgrounds. Confirm every racial effect and background bonus is a modifier row, not prose, and that lineage inheritance is covered by tests.
+- Do: 12 races and 8 backgrounds. Confirm every racial effect and background bonus is a modifier row, not prose, and that lineage inheritance is covered by tests. The 18 racial traits have no structured effect: give each `modifiers` (or a `natural_weapon`), and read `abilityModifiers` and `skill_bonuses` as `add` modifiers.
 - Files: ~6 (ruleset/data/races/core.json, ruleset/data/backgrounds/core.json, ruleset/schemas/race.schema.json, ruleset/schemas/background.schema.json, ruleset/scripts/test_validate.py)
 - See: docs/modules/race.md, docs/modules/backgrounds.md
 - Done when: no mechanical statement exists only in a description string; lineage (parent, subrace, template, kin) has validator tests for each role.

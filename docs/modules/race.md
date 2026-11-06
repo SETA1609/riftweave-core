@@ -189,6 +189,15 @@ ref format, one prerequisite and effect shape, and one place an engine looks for
 
 ---
 
+## 5a. What a race emits
+
+A race and its traits reach the actor only as contract modifiers ([modifier.md](../core/modifier.md)); no rule lives only in a description. `ruleset/scripts/ancestry_reference.py` reads them, and `test_ancestry.py` pins the reading. [V 2026-11-06]
+
+- **`abilityModifiers`** is the compact form of `add` modifiers: `{ "agi": 1 }` is `add agi 1`, source `race:<key>`, origin `innate`.
+- **Traits** carry their own `modifiers` (source `feature:<key>`, origin `innate`): a number is an `add` on a skill or a named target (`darkvision_range`, `tag_skills`, `hp_per_level`), a sense or a proficiency is a `grant` flag (`darkvision`, `proficient_medium_armor`). A trait with weapon dice carries `natural_weapon` instead (catman claws, 1d6 slashing).
+- **Lineage.** A subrace emits its parent's modifiers and traits, then its own; the two stack because their sources differ. A kin emits only its own: nothing comes from the template or from sibling kin. A parent or a standalone race emits its own. A template is never played.
+- **Situational bonuses** (shadowmeld in darkness, pack tactics against an engaged foe, a scent-based detection) are `add` on a named situational target the caller reads when the situation holds. [A]
+
 ## 6. Authoring guide
 
 **Add a subrace to elf or dwarf**

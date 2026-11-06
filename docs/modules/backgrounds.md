@@ -106,6 +106,10 @@ Here are concrete, ready-to-use backgrounds plus additional ideas for expansion.
 - Disgraced Knight — Blades or Blunt + Persuasion (or Intimidation); broken or pawned armor pieces, a surcoat with the sigil torn off, lingering honor.
 - Fey-Touched — One magic school + Insight or Deception; minor fey mark (flavor trait), strange small item, sensitivity to iron (purely narrative for now).
 
+## What a background emits
+
+`skill_bonuses` is the compact form of `add` modifiers: `{ "skill": "core:skill/survival", "bonus": 12 }` is `add survival 12`, source `background:<key>`, origin `trained` ([modifier.md](../core/modifier.md)). They stack with racial modifiers, which have other sources. `ruleset/scripts/ancestry_reference.py` reads them; `test_ancestry.py` pins the reading. Starting equipment, spells, wealth, and suggested tag skills are character-creation inputs, not modifiers. [V 2026-11-06]
+
 ## Implementation Notes for Engines & GMs
 
 - **When to apply**: After attributes are final and before (or while) the player spends their level-1 skill points. The flat bonuses simply increase the displayed starting ratings.
