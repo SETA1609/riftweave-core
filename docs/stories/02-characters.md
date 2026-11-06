@@ -23,7 +23,7 @@ Done: M2-02, M2-04 ([done.md](done.md#m2-characters))
 - Done when: at least 60 perks, spread across all 8 attributes and the combat, magic, and social skill groups; every perk emits modifiers; prerequisites are keys; no perk is dominated by another at the same level.
 
 #### M2-03 Multi-level example characters as vectors
-- Status: doing
+- Status: review
 - Priority: high
 - Needs: M1-03, M1-05
 - Was: RW-13
