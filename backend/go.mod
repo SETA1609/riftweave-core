@@ -1,3 +1,3 @@
 module github.com/SETA1609/riftweave-core/backend
 
-go 1.24
+go 1.27
