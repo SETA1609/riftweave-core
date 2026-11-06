@@ -1,0 +1,290 @@
+[
+  {
+    "name": "detect: a dart trap, Search on investigation 40, roll 35",
+    "hazard": "dart_trap",
+    "op": "detect",
+    "actor": {
+      "skills": {
+        "investigation": 40
+      },
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "roll": 35,
+    "expect": {
+      "success": true,
+      "target": 40,
+      "margin": 5,
+      "tags": []
+    }
+  },
+  {
+    "name": "detect: a fire rune is -20, so 35 fails against 20",
+    "hazard": "fire_rune",
+    "op": "detect",
+    "actor": {
+      "skills": {
+        "investigation": 40
+      },
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "roll": 35,
+    "expect": {
+      "success": false,
+      "target": 20,
+      "margin": null
+    }
+  },
+  {
+    "name": "detect: a lantern's +10 is a modifier on the target",
+    "hazard": "fire_rune",
+    "op": "detect",
+    "actor": {
+      "skills": {
+        "investigation": 40
+      },
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "roll": 25,
+    "modifiers": [
+      {
+        "target": "investigation",
+        "op": "add",
+        "value": 10,
+        "source": "item:lantern"
+      }
+    ],
+    "expect": {
+      "success": true,
+      "target": 30,
+      "margin": 5
+    }
+  },
+  {
+    "name": "disarm: a dart trap is +10, lockpick 30 against 38 succeeds",
+    "hazard": "dart_trap",
+    "op": "disarm",
+    "actor": {
+      "skills": {
+        "lockpick": 30
+      },
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "roll": 38,
+    "expect": {
+      "success": true,
+      "target": 40,
+      "margin": 2,
+      "triggered": false
+    }
+  },
+  {
+    "name": "disarm: a failure leaves the trap armed",
+    "hazard": "dart_trap",
+    "op": "disarm",
+    "actor": {
+      "skills": {
+        "lockpick": 30
+      },
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "roll": 60,
+    "expect": {
+      "success": false,
+      "triggered": false
+    }
+  },
+  {
+    "name": "disarm: a fumble triggers the trap",
+    "hazard": "dart_trap",
+    "op": "disarm",
+    "actor": {
+      "skills": {
+        "lockpick": 90
+      },
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "roll": 100,
+    "expect": {
+      "success": false,
+      "tags": [
+        "fumble"
+      ],
+      "triggered": true
+    }
+  },
+  {
+    "name": "disarm: thin ice is an environment hazard and cannot be disarmed",
+    "hazard": "thin_ice",
+    "op": "disarm",
+    "actor": {
+      "skills": {
+        "lockpick": 50
+      },
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "roll": 10,
+    "expect": {
+      "error": "thin_ice cannot be disarmed"
+    }
+  },
+  {
+    "name": "trigger: a failed dodge takes the dart and its poison",
+    "hazard": "dart_trap",
+    "op": "trigger",
+    "actor": {
+      "skills": {
+        "evasion": 30
+      },
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "roll": 50,
+    "damage_roll": 3,
+    "expect": {
+      "avoided": false,
+      "packet": {
+        "amount": 3,
+        "type": "piercing"
+      },
+      "effects": [
+        "core:effect/poison"
+      ]
+    }
+  },
+  {
+    "name": "trigger: a dodge avoids a dart trap whole",
+    "hazard": "dart_trap",
+    "op": "trigger",
+    "actor": {
+      "skills": {
+        "evasion": 30
+      },
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "roll": 20,
+    "damage_roll": 3,
+    "expect": {
+      "avoided": true,
+      "packet": null,
+      "effects": []
+    }
+  },
+  {
+    "name": "trigger: no avoid roll, the victim had no chance",
+    "hazard": "dart_trap",
+    "op": "trigger",
+    "damage_roll": 3,
+    "expect": {
+      "avoided": false,
+      "packet": {
+        "amount": 3,
+        "type": "piercing"
+      },
+      "effects": [
+        "core:effect/poison"
+      ]
+    }
+  },
+  {
+    "name": "trigger: a dodge halves a fire rune, rounded down, and avoids the burn",
+    "hazard": "fire_rune",
+    "op": "trigger",
+    "actor": {
+      "skills": {
+        "evasion": 30
+      },
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "roll": 20,
+    "damage_roll": 15,
+    "expect": {
+      "avoided": true,
+      "packet": {
+        "amount": 7,
+        "type": "fire"
+      },
+      "effects": []
+    }
+  },
+  {
+    "name": "trigger: a failed dodge takes the whole fire rune and the burn",
+    "hazard": "fire_rune",
+    "op": "trigger",
+    "actor": {
+      "skills": {
+        "evasion": 30
+      },
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "roll": 50,
+    "damage_roll": 15,
+    "expect": {
+      "avoided": false,
+      "packet": {
+        "amount": 15,
+        "type": "fire"
+      },
+      "effects": [
+        "core:effect/burn"
+      ]
+    }
+  },
+  {
+    "name": "trigger: a net has no damage, only the restrain",
+    "hazard": "net_trap",
+    "op": "trigger",
+    "actor": {
+      "skills": {
+        "evasion": 30
+      },
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "roll": 80,
+    "expect": {
+      "avoided": false,
+      "packet": null,
+      "effects": [
+        "core:effect/restrain"
+      ]
+    }
+  },
+  {
+    "name": "trigger: thin ice has no avoid; it always lands",
+    "hazard": "thin_ice",
+    "op": "trigger",
+    "damage_roll": 4,
+    "expect": {
+      "avoided": false,
+      "packet": {
+        "amount": 4,
+        "type": "frost"
+      },
+      "effects": [
+        "core:effect/slow"
+      ]
+    }
+  }
+]
