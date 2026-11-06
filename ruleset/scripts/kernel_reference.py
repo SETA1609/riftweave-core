@@ -7,6 +7,7 @@ of each runner are listed in docs/core/vectors.md.
 """
 
 import json
+import math
 from pathlib import Path
 
 from wuxing_reference import get_interaction
@@ -19,25 +20,139 @@ def load_data(rel_path):
     return json.loads((DATA_DIR / rel_path).read_text())
 
 
-def apply_modifiers(value, modifiers):
-    """Contract stacking for add and mul: same source, latest wins; add, then mul."""
-    latest_by_source = {}
+def live_modifiers(modifiers, elapsed_turns=0, removed_sources=()):
+    """Step 1 of docs/core/modifier.md: drop removed sources and elapsed `turns` modifiers."""
+    live = []
     for modifier in modifiers:
-        op = modifier["op"]
-        if op not in ("add", "mul"):
-            raise NotImplementedError(f"modifier op {op!r} has no reference yet (M1-05)")
-        latest_by_source[(op, modifier["source"])] = modifier["value"]
-    for (op, _), amount in latest_by_source.items():
-        if op == "add":
-            value += amount
-    for (op, _), amount in latest_by_source.items():
-        if op == "mul":
-            value *= amount
+        if modifier["source"] in removed_sources:
+            continue
+        if modifier.get("duration") == "turns" and elapsed_turns >= modifier["turns"]:
+            continue
+        live.append(modifier)
+    return live
+
+
+def origin_policies():
+    """Stacking policy by origin ref, from ruleset/data/origins/core.json."""
+    return {f"core:origin/{row['key']}": row["stack"] for row in load_data("origins/core.json")["origins"]}
+
+
+def strongest(group):
+    """The strongest bonus and the strongest penalty of one group, in list order.
+
+    A group is (index, modifier) pairs with one op. `set` is not ranked: the latest wins.
+    For add and resist the neutral value is 0; for mul it is 1.
+    """
+    if group[0][1]["op"] == "set":
+        return [group[-1]]
+    neutral = 1 if group[0][1]["op"] == "mul" else 0
+    bonuses = [pair for pair in group if pair[1]["value"] > neutral]
+    penalties = [pair for pair in group if pair[1]["value"] < neutral]
+    kept = []
+    if bonuses:
+        kept.append(max(bonuses, key=lambda pair: pair[1]["value"]))
+    if penalties:
+        kept.append(min(penalties, key=lambda pair: pair[1]["value"]))
+    return kept
+
+
+def _keep_strongest(pairs, key):
+    groups = {}
+    for pair in pairs:
+        groups.setdefault(key(pair[1]), []).append(pair)
+    return sorted((kept for group in groups.values() for kept in strongest(group)), key=lambda pair: pair[0])
+
+
+def dedupe_modifiers(modifiers):
+    """Steps 2 and 3: same origin, source, target, and op keeps the strongest; then, for a
+    `highest` origin, same origin, target, and op keeps the strongest bonus and penalty."""
+    policies = origin_policies()
+    pairs = _keep_strongest(
+        list(enumerate(modifiers)),
+        lambda m: (m.get("origin"), m["source"], m["target"], m["op"]),
+    )
+    highest = [pair for pair in pairs if "origin" in pair[1] and policies[pair[1]["origin"]] == "highest"]
+    rest = [pair for pair in pairs if pair not in highest]
+    highest = _keep_strongest(highest, lambda m: (m["origin"], m["target"], m["op"]))
+    return [m for _, m in sorted(rest + highest, key=lambda pair: pair[0])]
+
+
+def apply_modifiers(value, modifiers, elapsed_turns=0, removed_sources=()):
+    """Steps 1 to 6 for one numeric target: expire, dedupe, origin, add, mul (floored), set.
+
+    The caller passes the modifiers of one target; grant and resist carry no number here.
+    """
+    numeric = [
+        m
+        for m in dedupe_modifiers(live_modifiers(modifiers, elapsed_turns, removed_sources))
+        if m["op"] in ("add", "mul", "set")
+    ]
+    value += sum(m["value"] for m in numeric if m["op"] == "add")
+    factor = 1
+    for m in numeric:
+        if m["op"] == "mul":
+            factor *= m["value"]
+    if factor != 1:
+        value = math.floor(value * factor)
+    sets = [m["value"] for m in numeric if m["op"] == "set"]
+    if sets:
+        value = sets[-1]
     return value
 
 
+def granted_flags(modifiers, elapsed_turns=0, removed_sources=()):
+    """Flags that at least one live grant names."""
+    live = live_modifiers(modifiers, elapsed_turns, removed_sources)
+    return sorted({m["target"] for m in live if m["op"] == "grant"})
+
+
+def apply_resist(amount, tag, modifiers, elapsed_turns=0, removed_sources=()):
+    """A packet's amount after every live resist on its tag, never below zero."""
+    live = dedupe_modifiers(live_modifiers(modifiers, elapsed_turns, removed_sources))
+    resist = sum(m["value"] for m in live if m["op"] == "resist" and m["target"] == tag)
+    return max(amount - resist, 0)
+
+
 def run_modifiers(vector):
-    return {"value": apply_modifiers(vector["value"], vector.get("modifiers", []))}
+    modifiers = vector.get("modifiers", [])
+    elapsed = vector.get("elapsed_turns", 0)
+    removed = vector.get("removed_sources", [])
+    target = vector.get("target")
+    own = [m for m in modifiers if target is None or m["target"] == target]
+    result = {
+        "value": apply_modifiers(vector["value"], own, elapsed, removed),
+        "flags": granted_flags(modifiers, elapsed, removed),
+    }
+    if "packet" in vector:
+        packet = vector["packet"]
+        result["packet"] = apply_resist(packet["amount"], packet["tag"], modifiers, elapsed, removed)
+    return result
+
+
+def run_conditions(vector):
+    """Apply effect and remove events to an actor's conditions, then read its values and flags."""
+    rows = {row["key"]: row for row in load_data("conditions/core.json")["conditions"]}
+    active = dict(vector.get("conditions", {}))
+    for event in vector.get("events", []):
+        if "remove" in event:
+            active.pop(event["remove"].rsplit("/", 1)[-1], None)
+            continue
+        effect = event["effect"]
+        for key, row in rows.items():
+            if effect in row.get("removedBy", []):
+                active.pop(key, None)
+        for key, row in rows.items():
+            if effect in row.get("appliedBy", []):
+                cap = row.get("maxStacks", 1) if row.get("stacking") else 1
+                active[key] = min(active.get(key, 0) + 1, cap)
+    modifiers = list(vector.get("modifiers", []))
+    for key in active:
+        modifiers.extend(rows[key]["modifiers"])
+    values = {
+        target: apply_modifiers(base, [m for m in modifiers if m["target"] == target])
+        for target, base in vector.get("base", {}).items()
+    }
+    return {"conditions": dict(sorted(active.items())), "flags": granted_flags(modifiers), "values": values}
 
 
 def run_resolution(vector):
@@ -322,6 +437,7 @@ RUNNERS = {
     "derived": run_derived,
     "formula": run_formula,
     "modifiers": run_modifiers,
+    "conditions": run_conditions,
     "actions": run_actions,
     "wuxing": run_wuxing,
     "rest": run_rest,

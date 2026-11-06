@@ -3,36 +3,787 @@
     "name": "different sources add",
     "value": 59,
     "modifiers": [
-      { "target": "hp", "op": "add", "value": 8, "source": "perk:tough" },
-      { "target": "hp", "op": "add", "value": 2, "source": "item:ring" }
+      {
+        "target": "hp",
+        "op": "add",
+        "value": 8,
+        "source": "perk:tough"
+      },
+      {
+        "target": "hp",
+        "op": "add",
+        "value": 2,
+        "source": "item:ring"
+      }
     ],
-    "expect": { "value": 69 }
+    "expect": {
+      "value": 69
+    }
   },
   {
     "name": "same source does not stack",
     "value": 59,
     "modifiers": [
-      { "target": "hp", "op": "add", "value": 8, "source": "perk:tough" },
-      { "target": "hp", "op": "add", "value": 8, "source": "perk:tough" }
+      {
+        "target": "hp",
+        "op": "add",
+        "value": 8,
+        "source": "perk:tough"
+      },
+      {
+        "target": "hp",
+        "op": "add",
+        "value": 8,
+        "source": "perk:tough"
+      }
     ],
-    "expect": { "value": 67 }
+    "expect": {
+      "value": 67
+    }
   },
   {
-    "name": "same source, latest application wins",
+    "name": "same source, the larger wins (smaller first)",
     "value": 59,
     "modifiers": [
-      { "target": "hp", "op": "add", "value": 4, "source": "perk:tough" },
-      { "target": "hp", "op": "add", "value": 8, "source": "perk:tough" }
+      {
+        "target": "hp",
+        "op": "add",
+        "value": 4,
+        "source": "perk:tough"
+      },
+      {
+        "target": "hp",
+        "op": "add",
+        "value": 8,
+        "source": "perk:tough"
+      }
     ],
-    "expect": { "value": 67 }
+    "expect": {
+      "value": 67
+    }
   },
   {
     "name": "mul after add, whatever the list order",
     "value": 10,
     "modifiers": [
-      { "target": "hp", "op": "mul", "value": 2, "source": "effect:fortify" },
-      { "target": "hp", "op": "add", "value": 5, "source": "perk:tough" }
+      {
+        "target": "hp",
+        "op": "mul",
+        "value": 2,
+        "source": "effect:fortify"
+      },
+      {
+        "target": "hp",
+        "op": "add",
+        "value": 5,
+        "source": "perk:tough"
+      }
     ],
-    "expect": { "value": 30 }
+    "expect": {
+      "value": 30
+    }
+  },
+  {
+    "name": "set: paralyzed sets AP to 0 whatever the add",
+    "target": "ap",
+    "value": 5,
+    "modifiers": [
+      {
+        "target": "ap",
+        "op": "add",
+        "value": 2,
+        "source": "perk:quick"
+      },
+      {
+        "target": "ap",
+        "op": "set",
+        "value": 0,
+        "source": "condition:paralyzed"
+      }
+    ],
+    "expect": {
+      "value": 0
+    }
+  },
+  {
+    "name": "set is last whatever the list order",
+    "target": "ap",
+    "value": 5,
+    "modifiers": [
+      {
+        "target": "ap",
+        "op": "set",
+        "value": 0,
+        "source": "condition:paralyzed"
+      },
+      {
+        "target": "ap",
+        "op": "add",
+        "value": 2,
+        "source": "perk:quick"
+      },
+      {
+        "target": "ap",
+        "op": "mul",
+        "value": 2,
+        "source": "effect:haste"
+      }
+    ],
+    "expect": {
+      "value": 0
+    }
+  },
+  {
+    "name": "two set on one target: the latest in list order wins",
+    "target": "ap",
+    "value": 5,
+    "modifiers": [
+      {
+        "target": "ap",
+        "op": "set",
+        "value": 3,
+        "source": "effect:a"
+      },
+      {
+        "target": "ap",
+        "op": "set",
+        "value": 1,
+        "source": "effect:b"
+      }
+    ],
+    "expect": {
+      "value": 1
+    }
+  },
+  {
+    "name": "two mul from different sources multiply",
+    "target": "hp",
+    "value": 10,
+    "modifiers": [
+      {
+        "target": "hp",
+        "op": "mul",
+        "value": 2,
+        "source": "effect:a"
+      },
+      {
+        "target": "hp",
+        "op": "mul",
+        "value": 3,
+        "source": "effect:b"
+      }
+    ],
+    "expect": {
+      "value": 60
+    }
+  },
+  {
+    "name": "mul is floored: 5 * 1.5 is 7",
+    "target": "hp",
+    "value": 5,
+    "modifiers": [
+      {
+        "target": "hp",
+        "op": "mul",
+        "value": 1.5,
+        "source": "effect:a"
+      }
+    ],
+    "expect": {
+      "value": 7
+    }
+  },
+  {
+    "name": "mixed: (10 + 4 + 2) * 2",
+    "target": "hp",
+    "value": 10,
+    "modifiers": [
+      {
+        "target": "hp",
+        "op": "mul",
+        "value": 2,
+        "source": "effect:c"
+      },
+      {
+        "target": "hp",
+        "op": "add",
+        "value": 4,
+        "source": "perk:a"
+      },
+      {
+        "target": "hp",
+        "op": "add",
+        "value": 2,
+        "source": "item:b"
+      }
+    ],
+    "expect": {
+      "value": 32
+    }
+  },
+  {
+    "name": "same source on two targets keeps both: only hp counts for hp",
+    "target": "hp",
+    "value": 10,
+    "modifiers": [
+      {
+        "target": "hp",
+        "op": "add",
+        "value": 3,
+        "source": "perk:x"
+      },
+      {
+        "target": "mp",
+        "op": "add",
+        "value": 5,
+        "source": "perk:x"
+      }
+    ],
+    "expect": {
+      "value": 13
+    }
+  },
+  {
+    "name": "same source with two ops on one target keeps both",
+    "target": "hp",
+    "value": 10,
+    "modifiers": [
+      {
+        "target": "hp",
+        "op": "add",
+        "value": 5,
+        "source": "perk:x"
+      },
+      {
+        "target": "hp",
+        "op": "mul",
+        "value": 2,
+        "source": "perk:x"
+      }
+    ],
+    "expect": {
+      "value": 30
+    }
+  },
+  {
+    "name": "grant adds a flag and no number",
+    "target": "hp",
+    "value": 10,
+    "modifiers": [
+      {
+        "target": "prone",
+        "op": "grant",
+        "value": 1,
+        "source": "condition:prone"
+      }
+    ],
+    "expect": {
+      "value": 10,
+      "flags": [
+        "prone"
+      ]
+    }
+  },
+  {
+    "name": "grant: a flag stays while one of two sources still grants it",
+    "target": "hp",
+    "value": 10,
+    "removed_sources": [
+      "effect:knockdown"
+    ],
+    "modifiers": [
+      {
+        "target": "prone",
+        "op": "grant",
+        "value": 1,
+        "source": "effect:knockdown"
+      },
+      {
+        "target": "prone",
+        "op": "grant",
+        "value": 1,
+        "source": "perk:clumsy"
+      }
+    ],
+    "expect": {
+      "flags": [
+        "prone"
+      ]
+    }
+  },
+  {
+    "name": "grant: removing the only source removes the flag",
+    "target": "hp",
+    "value": 10,
+    "removed_sources": [
+      "condition:prone"
+    ],
+    "modifiers": [
+      {
+        "target": "prone",
+        "op": "grant",
+        "value": 1,
+        "source": "condition:prone"
+      }
+    ],
+    "expect": {
+      "flags": []
+    }
+  },
+  {
+    "name": "resist: different sources add against a fire packet; frost resist does not count",
+    "target": "hp",
+    "value": 10,
+    "packet": {
+      "amount": 10,
+      "tag": "fire"
+    },
+    "modifiers": [
+      {
+        "target": "fire",
+        "op": "resist",
+        "value": 4,
+        "source": "item:ring"
+      },
+      {
+        "target": "fire",
+        "op": "resist",
+        "value": 3,
+        "source": "perk:salamander"
+      },
+      {
+        "target": "frost",
+        "op": "resist",
+        "value": 5,
+        "source": "item:cloak"
+      }
+    ],
+    "expect": {
+      "packet": 3
+    }
+  },
+  {
+    "name": "resist: same source, the larger wins",
+    "target": "hp",
+    "value": 10,
+    "packet": {
+      "amount": 10,
+      "tag": "fire"
+    },
+    "modifiers": [
+      {
+        "target": "fire",
+        "op": "resist",
+        "value": 4,
+        "source": "item:ring"
+      },
+      {
+        "target": "fire",
+        "op": "resist",
+        "value": 6,
+        "source": "item:ring"
+      }
+    ],
+    "expect": {
+      "packet": 4
+    }
+  },
+  {
+    "name": "resist never takes a packet below zero",
+    "target": "hp",
+    "value": 10,
+    "packet": {
+      "amount": 3,
+      "tag": "fire"
+    },
+    "modifiers": [
+      {
+        "target": "fire",
+        "op": "resist",
+        "value": 5,
+        "source": "item:ring"
+      }
+    ],
+    "expect": {
+      "packet": 0
+    }
+  },
+  {
+    "name": "expiry: a 2-turn add still counts after 1 turn",
+    "target": "hp",
+    "value": 10,
+    "elapsed_turns": 1,
+    "modifiers": [
+      {
+        "target": "hp",
+        "op": "add",
+        "value": 5,
+        "source": "effect:bless",
+        "duration": "turns",
+        "turns": 2
+      }
+    ],
+    "expect": {
+      "value": 15
+    }
+  },
+  {
+    "name": "expiry: a 2-turn add is gone after 2 turns",
+    "target": "hp",
+    "value": 10,
+    "elapsed_turns": 2,
+    "modifiers": [
+      {
+        "target": "hp",
+        "op": "add",
+        "value": 5,
+        "source": "effect:bless",
+        "duration": "turns",
+        "turns": 2
+      }
+    ],
+    "expect": {
+      "value": 10
+    }
+  },
+  {
+    "name": "expiry: a permanent add never ends",
+    "target": "hp",
+    "value": 10,
+    "elapsed_turns": 99,
+    "modifiers": [
+      {
+        "target": "hp",
+        "op": "add",
+        "value": 5,
+        "source": "perk:tough",
+        "duration": "permanent"
+      }
+    ],
+    "expect": {
+      "value": 15
+    }
+  },
+  {
+    "name": "expiry: a removed source takes its add with it",
+    "target": "hp",
+    "value": 10,
+    "removed_sources": [
+      "perk:tough"
+    ],
+    "modifiers": [
+      {
+        "target": "hp",
+        "op": "add",
+        "value": 5,
+        "source": "perk:tough",
+        "duration": "while_applied"
+      },
+      {
+        "target": "hp",
+        "op": "add",
+        "value": 2,
+        "source": "item:ring",
+        "duration": "while_equipped"
+      }
+    ],
+    "expect": {
+      "value": 12
+    }
+  },
+  {
+    "name": "expiry: an expired set no longer overrides",
+    "target": "ap",
+    "value": 5,
+    "elapsed_turns": 1,
+    "modifiers": [
+      {
+        "target": "ap",
+        "op": "set",
+        "value": 0,
+        "source": "effect:stun",
+        "duration": "turns",
+        "turns": 1
+      },
+      {
+        "target": "ap",
+        "op": "add",
+        "value": 2,
+        "source": "perk:quick"
+      }
+    ],
+    "expect": {
+      "value": 7
+    }
+  },
+  {
+    "name": "same source: the larger wins even when it comes first",
+    "value": 59,
+    "modifiers": [
+      {
+        "target": "hp",
+        "op": "add",
+        "value": 8,
+        "source": "perk:tough"
+      },
+      {
+        "target": "hp",
+        "op": "add",
+        "value": 4,
+        "source": "perk:tough"
+      }
+    ],
+    "expect": {
+      "value": 67
+    }
+  },
+  {
+    "name": "origin: a potion and a spell of the same effect stack (alchemy + arcane)",
+    "target": "str",
+    "value": 40,
+    "modifiers": [
+      {
+        "target": "str",
+        "op": "add",
+        "value": 10,
+        "source": "effect:fortify_strength",
+        "origin": "core:origin/alchemy"
+      },
+      {
+        "target": "str",
+        "op": "add",
+        "value": 10,
+        "source": "effect:fortify_strength",
+        "origin": "core:origin/arcane"
+      }
+    ],
+    "expect": {
+      "value": 60
+    }
+  },
+  {
+    "name": "origin: two potions on one stat, the bigger wins (fortify +10, giant +5)",
+    "target": "str",
+    "value": 40,
+    "modifiers": [
+      {
+        "target": "str",
+        "op": "add",
+        "value": 10,
+        "source": "effect:fortify_strength",
+        "origin": "core:origin/alchemy"
+      },
+      {
+        "target": "str",
+        "op": "add",
+        "value": 5,
+        "source": "effect:giant_strength",
+        "origin": "core:origin/alchemy"
+      }
+    ],
+    "expect": {
+      "value": 50
+    }
+  },
+  {
+    "name": "origin: the bigger wins whatever the list order",
+    "target": "str",
+    "value": 40,
+    "modifiers": [
+      {
+        "target": "str",
+        "op": "add",
+        "value": 5,
+        "source": "effect:giant_strength",
+        "origin": "core:origin/alchemy"
+      },
+      {
+        "target": "str",
+        "op": "add",
+        "value": 10,
+        "source": "effect:fortify_strength",
+        "origin": "core:origin/alchemy"
+      }
+    ],
+    "expect": {
+      "value": 50
+    }
+  },
+  {
+    "name": "origin: two penalties of one origin, the worst counts",
+    "target": "str",
+    "value": 40,
+    "modifiers": [
+      {
+        "target": "str",
+        "op": "add",
+        "value": -3,
+        "source": "effect:weakness",
+        "origin": "core:origin/alchemy"
+      },
+      {
+        "target": "str",
+        "op": "add",
+        "value": -5,
+        "source": "effect:poison_str",
+        "origin": "core:origin/alchemy"
+      }
+    ],
+    "expect": {
+      "value": 35
+    }
+  },
+  {
+    "name": "origin: a bonus and a penalty of one origin both count",
+    "target": "str",
+    "value": 40,
+    "modifiers": [
+      {
+        "target": "str",
+        "op": "add",
+        "value": 10,
+        "source": "effect:fortify_strength",
+        "origin": "core:origin/alchemy"
+      },
+      {
+        "target": "str",
+        "op": "add",
+        "value": -3,
+        "source": "effect:weakness",
+        "origin": "core:origin/alchemy"
+      },
+      {
+        "target": "str",
+        "op": "add",
+        "value": 5,
+        "source": "effect:giant_strength",
+        "origin": "core:origin/alchemy"
+      }
+    ],
+    "expect": {
+      "value": 47
+    }
+  },
+  {
+    "name": "origin: two mul of one highest origin, the bigger counts",
+    "target": "str",
+    "value": 10,
+    "modifiers": [
+      {
+        "target": "str",
+        "op": "mul",
+        "value": 1.5,
+        "source": "spell:might",
+        "origin": "core:origin/arcane"
+      },
+      {
+        "target": "str",
+        "op": "mul",
+        "value": 2,
+        "source": "spell:titan",
+        "origin": "core:origin/arcane"
+      }
+    ],
+    "expect": {
+      "value": 20
+    }
+  },
+  {
+    "name": "origin: an add origin stacks every source (two perks)",
+    "target": "hp",
+    "value": 59,
+    "modifiers": [
+      {
+        "target": "hp",
+        "op": "add",
+        "value": 8,
+        "source": "perk:tough",
+        "origin": "core:origin/trained"
+      },
+      {
+        "target": "hp",
+        "op": "add",
+        "value": 2,
+        "source": "perk:hardy",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "value": 69
+    }
+  },
+  {
+    "name": "origin: no origin stacks by source alone",
+    "target": "str",
+    "value": 40,
+    "modifiers": [
+      {
+        "target": "str",
+        "op": "add",
+        "value": 10,
+        "source": "effect:fortify_strength"
+      },
+      {
+        "target": "str",
+        "op": "add",
+        "value": 5,
+        "source": "effect:giant_strength"
+      }
+    ],
+    "expect": {
+      "value": 55
+    }
+  },
+  {
+    "name": "origin: two enchanted rings resist fire, the larger counts",
+    "target": "hp",
+    "value": 10,
+    "packet": {
+      "amount": 10,
+      "tag": "fire"
+    },
+    "modifiers": [
+      {
+        "target": "fire",
+        "op": "resist",
+        "value": 4,
+        "source": "item:ring_a",
+        "origin": "core:origin/enchantment"
+      },
+      {
+        "target": "fire",
+        "op": "resist",
+        "value": 6,
+        "source": "item:ring_b",
+        "origin": "core:origin/enchantment"
+      }
+    ],
+    "expect": {
+      "packet": 4
+    }
+  },
+  {
+    "name": "origin: an origin groups by target, so two stats keep their own bonus",
+    "target": "str",
+    "value": 40,
+    "modifiers": [
+      {
+        "target": "str",
+        "op": "add",
+        "value": 10,
+        "source": "effect:fortify_strength",
+        "origin": "core:origin/alchemy"
+      },
+      {
+        "target": "end",
+        "op": "add",
+        "value": 10,
+        "source": "effect:fortify_endurance",
+        "origin": "core:origin/alchemy"
+      }
+    ],
+    "expect": {
+      "value": 50
+    }
   }
 ]

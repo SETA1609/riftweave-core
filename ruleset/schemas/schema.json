@@ -131,6 +131,10 @@
           "type": "string",
           "description": "For generic parameterized effects (fortify_skill, fortify_attribute, restore_resource, resist, cure, summon, phobia, allergy, etc.), specifies the subject. Use namespaced key (core:category/<key>) when referencing another collection (e.g. core:skill/<key> for fortify_skill), or vocabulary (e.g. 'health', 'fire', 'all', ability codes, creature categories)."
         },
+        "origin": {
+          "$ref": "schema.json#/definitions/namespacedRef",
+          "description": "The origin its modifiers carry (core:origin/<key>), when it is not the default for the row's category: a divine spell, holy water. docs/core/modifier.md#origin."
+        },
         "durationType": {
           "type": "string",
           "enum": [
@@ -168,7 +172,7 @@
     },
     "modifier": {
       "type": "object",
-      "description": "One opcode on one target. Same source does not stack. Different sources add. mul after add. Two set on one target: last in load order wins.",
+      "description": "One opcode on one target. Order for a target, expiry, origins, and conditions: docs/core/modifier.md. Same origin, source, target, and op does not stack (the strongest wins); different sources add unless they share a highest origin; add, then mul (floored), then set; grant adds a flag; resist subtracts from a packet with the matching tag.",
       "properties": {
         "target": {
           "type": "string"
@@ -187,10 +191,27 @@
           "type": "number"
         },
         "duration": {
-          "type": "string"
+          "type": "string",
+          "enum": [
+            "turns",
+            "uses",
+            "while_equipped",
+            "while_applied",
+            "permanent"
+          ],
+          "description": "When the modifier ends. while_applied and while_equipped end with their source; turns ends after `turns` elapsed turns; uses is counted by the caller; permanent never ends."
+        },
+        "turns": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "How many turns a `turns` modifier lasts."
         },
         "source": {
           "type": "string"
+        },
+        "origin": {
+          "$ref": "schema.json#/definitions/namespacedRef",
+          "description": "The kind of source: core:origin/<key> (ruleset/data/origins). Its policy decides whether modifiers of this origin on one target and op stack (add) or only the strongest bonus and penalty count (highest). Omitted: stacks by source alone. docs/core/modifier.md#origin."
         },
         "stack": {
           "type": "string",
