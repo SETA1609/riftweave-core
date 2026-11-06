@@ -32,16 +32,53 @@ def live_modifiers(modifiers, elapsed_turns=0, removed_sources=()):
     return live
 
 
+def origin_policies():
+    """Stacking policy by origin ref, from ruleset/data/origins/core.json."""
+    return {f"core:origin/{row['key']}": row["stack"] for row in load_data("origins/core.json")["origins"]}
+
+
+def strongest(group):
+    """The strongest bonus and the strongest penalty of one group, in list order.
+
+    A group is (index, modifier) pairs with one op. `set` is not ranked: the latest wins.
+    For add and resist the neutral value is 0; for mul it is 1.
+    """
+    if group[0][1]["op"] == "set":
+        return [group[-1]]
+    neutral = 1 if group[0][1]["op"] == "mul" else 0
+    bonuses = [pair for pair in group if pair[1]["value"] > neutral]
+    penalties = [pair for pair in group if pair[1]["value"] < neutral]
+    kept = []
+    if bonuses:
+        kept.append(max(bonuses, key=lambda pair: pair[1]["value"]))
+    if penalties:
+        kept.append(min(penalties, key=lambda pair: pair[1]["value"]))
+    return kept
+
+
+def _keep_strongest(pairs, key):
+    groups = {}
+    for pair in pairs:
+        groups.setdefault(key(pair[1]), []).append(pair)
+    return sorted((kept for group in groups.values() for kept in strongest(group)), key=lambda pair: pair[0])
+
+
 def dedupe_modifiers(modifiers):
-    """Step 2: same source, target, and op keeps the latest, in list order."""
-    latest = {}
-    for index, modifier in enumerate(modifiers):
-        latest[(modifier["source"], modifier["target"], modifier["op"])] = (index, modifier)
-    return [modifier for _, modifier in sorted(latest.values(), key=lambda pair: pair[0])]
+    """Steps 2 and 3: same origin, source, target, and op keeps the strongest; then, for a
+    `highest` origin, same origin, target, and op keeps the strongest bonus and penalty."""
+    policies = origin_policies()
+    pairs = _keep_strongest(
+        list(enumerate(modifiers)),
+        lambda m: (m.get("origin"), m["source"], m["target"], m["op"]),
+    )
+    highest = [pair for pair in pairs if "origin" in pair[1] and policies[pair[1]["origin"]] == "highest"]
+    rest = [pair for pair in pairs if pair not in highest]
+    highest = _keep_strongest(highest, lambda m: (m["origin"], m["target"], m["op"]))
+    return [m for _, m in sorted(rest + highest, key=lambda pair: pair[0])]
 
 
 def apply_modifiers(value, modifiers, elapsed_turns=0, removed_sources=()):
-    """Steps 1 to 5 for one numeric target: expire, dedupe, add, mul (floored), set.
+    """Steps 1 to 6 for one numeric target: expire, dedupe, origin, add, mul (floored), set.
 
     The caller passes the modifiers of one target; grant and resist carry no number here.
     """
