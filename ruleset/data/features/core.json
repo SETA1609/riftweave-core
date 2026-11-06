@@ -22,6 +22,15 @@
           "target": "hp_max",
           "value": 15
         }
+      ],
+      "modifiers": [
+        {
+          "target": "hp",
+          "op": "add",
+          "value": 15,
+          "source": "feature:toughness",
+          "origin": "core:origin/trained"
+        }
       ]
     },
     {
@@ -49,6 +58,22 @@
           "type": "immunity",
           "description": "Cannot be surprised while conscious",
           "target": "surprise"
+        }
+      ],
+      "modifiers": [
+        {
+          "target": "initiative",
+          "op": "add",
+          "value": 10,
+          "source": "feature:alert",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "surprise_immune",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:alert",
+          "origin": "core:origin/trained"
         }
       ]
     },
@@ -79,6 +104,15 @@
           "description": "+25% melee weapon damage",
           "target": "melee_damage",
           "value": 0.25
+        }
+      ],
+      "modifiers": [
+        {
+          "target": "melee_damage_percent",
+          "op": "add",
+          "value": 25,
+          "source": "feature:power_attack",
+          "origin": "core:origin/trained"
         }
       ]
     },
@@ -120,6 +154,15 @@
           "target": "ranged_crit_chance",
           "value": 10
         }
+      ],
+      "modifiers": [
+        {
+          "target": "ranged_crit_window",
+          "op": "add",
+          "value": 10,
+          "source": "feature:deadeye",
+          "origin": "core:origin/trained"
+        }
       ]
     },
     {
@@ -150,6 +193,15 @@
           "target": "block_amount",
           "value": 0.15
         }
+      ],
+      "modifiers": [
+        {
+          "target": "block_percent",
+          "op": "add",
+          "value": 15,
+          "source": "feature:shield_wall",
+          "origin": "core:origin/trained"
+        }
       ]
     },
     {
@@ -176,6 +228,15 @@
           "description": "+15% Red Magic effect magnitude per rank",
           "target": "red_magic_magnitude",
           "value": 0.15
+        }
+      ],
+      "modifiers": [
+        {
+          "target": "red_magic_magnitude_percent",
+          "op": "add",
+          "value": 15,
+          "source": "feature:pyromancer",
+          "origin": "core:origin/trained"
         }
       ]
     },
@@ -206,6 +267,15 @@
           "description": "-25% chance to be detected while sneaking",
           "target": "detection_chance",
           "value": -0.25
+        }
+      ],
+      "modifiers": [
+        {
+          "target": "detection_percent",
+          "op": "add",
+          "value": -25,
+          "source": "feature:ghost",
+          "origin": "core:origin/trained"
         }
       ]
     },
@@ -243,6 +313,22 @@
           "target": "barter_prices",
           "value": 0.1
         }
+      ],
+      "modifiers": [
+        {
+          "target": "persuasion",
+          "op": "add",
+          "value": 10,
+          "source": "feature:silver_tongue",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "barter_percent",
+          "op": "add",
+          "value": 10,
+          "source": "feature:silver_tongue",
+          "origin": "core:origin/trained"
+        }
       ]
     },
     {
@@ -269,6 +355,15 @@
           "description": "+50% healing from Medicine",
           "target": "medicine_healing",
           "value": 0.5
+        }
+      ],
+      "modifiers": [
+        {
+          "target": "medicine_healing_percent",
+          "op": "add",
+          "value": 50,
+          "source": "feature:field_medic",
+          "origin": "core:origin/trained"
         }
       ]
     },
@@ -599,6 +694,15 @@
           "target": "heavy_armor_surcharge",
           "value": 0.5
         }
+      ],
+      "modifiers": [
+        {
+          "target": "heavy_armor_surcharge_percent",
+          "op": "add",
+          "value": -50,
+          "source": "feature:heavy_armor_expert",
+          "origin": "core:origin/trained"
+        }
       ]
     },
     {
@@ -629,6 +733,15 @@
           "target": "medium_armor_surcharge",
           "value": 1.0
         }
+      ],
+      "modifiers": [
+        {
+          "target": "medium_armor_surcharge_ignored",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:light_foot",
+          "origin": "core:origin/trained"
+        }
       ]
     },
     {
@@ -653,6 +766,15 @@
           "description": "Power attacks in heavy armor cost light attack stamina (no heavy surcharge)",
           "target": "brutal_charge_surcharge",
           "value": 1
+        }
+      ],
+      "modifiers": [
+        {
+          "target": "heavy_power_attack_surcharge_ignored",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:brutal_charge",
+          "origin": "core:origin/trained"
         }
       ]
     },
@@ -684,6 +806,15 @@
           "target": "dodge_stamina_cost",
           "value": -0.25
         }
+      ],
+      "modifiers": [
+        {
+          "target": "dodge_stamina_percent",
+          "op": "add",
+          "value": -25,
+          "source": "feature:acrobat",
+          "origin": "core:origin/trained"
+        }
       ]
     },
     {
@@ -706,6 +837,1861 @@
           "description": "+10 to loot rolls per rank (docs/core/loot.md#looter)",
           "target": "loot_roll",
           "value": 10
+        }
+      ],
+      "modifiers": [
+        {
+          "target": "loot_roll",
+          "op": "add",
+          "value": 10,
+          "source": "feature:scavenger",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 43,
+      "key": "cleave",
+      "label": "Cleave",
+      "description": "When a melee blow drops a foe, the swing carries into one more within reach.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 6,
+        "abilities": {
+          "str": 6
+        },
+        "skills": [
+          {
+            "id": [
+              "core:skill/blades",
+              "core:skill/blunt"
+            ],
+            "label": [
+              "Blades",
+              "Blunt"
+            ],
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "cleave_on_kill",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:cleave",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 44,
+      "key": "crushing_blow",
+      "label": "Crushing Blow",
+      "description": "Your hammer and mace blows dent plate; they ignore 2 points of armor DR.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 6,
+        "abilities": {
+          "str": 7
+        },
+        "skills": [
+          {
+            "id": "core:skill/blunt",
+            "label": "Blunt",
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "ignore_armor_dr",
+          "op": "add",
+          "value": 2,
+          "source": "feature:crushing_blow",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 45,
+      "key": "precise_thrust",
+      "label": "Precise Thrust",
+      "description": "Spear and rapier find the gaps: piercing attacks crit on 5 more.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 6,
+        "abilities": {
+          "agi": 6
+        },
+        "skills": [
+          {
+            "id": "core:skill/piercing",
+            "label": "Piercing",
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "piercing_crit_window",
+          "op": "add",
+          "value": 5,
+          "source": "feature:precise_thrust",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 46,
+      "key": "brawler",
+      "label": "Brawler",
+      "description": "Tavern-floor fighting hardened your fists: +2 unarmed damage per rank.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "abilities": {
+          "end": 5
+        },
+        "skills": [
+          {
+            "id": "core:skill/unarmed",
+            "label": "Unarmed",
+            "min": 30
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 2,
+      "modifiers": [
+        {
+          "target": "unarmed_damage",
+          "op": "add",
+          "value": 2,
+          "source": "feature:brawler",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 47,
+      "key": "iron_fist",
+      "label": "Iron Fist",
+      "description": "Your strikes land like a cudgel: +50% unarmed damage.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 12,
+        "abilities": {
+          "str": 7
+        },
+        "skills": [
+          {
+            "id": "core:skill/unarmed",
+            "label": "Unarmed",
+            "min": 60
+          }
+        ],
+        "perks": [
+          "core:feature/brawler"
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "unarmed_damage_percent",
+          "op": "add",
+          "value": 50,
+          "source": "feature:iron_fist",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 48,
+      "key": "quick_draw",
+      "label": "Quick Draw",
+      "description": "A weapon is in your hand before the thought is finished: swapping costs 1 AP less.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "abilities": {
+          "agi": 6
+        },
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "swap_cost",
+          "op": "add",
+          "value": -1,
+          "source": "feature:quick_draw",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 49,
+      "key": "steady_aim",
+      "label": "Steady Aim",
+      "description": "You line up a shot without wasting breath: an aimed attack costs 1 AP less.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 6,
+        "abilities": {
+          "per": 6
+        },
+        "skills": [
+          {
+            "id": [
+              "core:skill/bows",
+              "core:skill/crossbows",
+              "core:skill/guns",
+              "core:skill/throwing_weapons"
+            ],
+            "label": [
+              "Bows",
+              "Crossbows",
+              "Guns",
+              "Throwing Weapons"
+            ],
+            "min": 40
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "aimed",
+          "op": "add",
+          "value": -1,
+          "source": "feature:steady_aim",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 50,
+      "key": "sniper",
+      "label": "Sniper",
+      "description": "Distance matters less to you: range penalties are halved.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 18,
+        "abilities": {
+          "per": 8
+        },
+        "skills": [
+          {
+            "id": [
+              "core:skill/bows",
+              "core:skill/crossbows",
+              "core:skill/guns"
+            ],
+            "label": [
+              "Bows",
+              "Crossbows",
+              "Guns"
+            ],
+            "min": 70
+          }
+        ],
+        "perks": [
+          "core:feature/deadeye"
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "ranged_range_penalty_percent",
+          "op": "add",
+          "value": -50,
+          "source": "feature:sniper",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 51,
+      "key": "duelist",
+      "label": "Duelist",
+      "description": "One on one, your blade reads every opening: +10 to attack when only one foe engages you.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 12,
+        "abilities": {
+          "agi": 7
+        },
+        "skills": [
+          {
+            "id": "core:skill/blades",
+            "label": "Blades",
+            "min": 60
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "attack_single_opponent",
+          "op": "add",
+          "value": 10,
+          "source": "feature:duelist",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 52,
+      "key": "second_wind",
+      "label": "Second Wind",
+      "description": "Once per rest, when you fall below half health, you catch your breath and recover 20 HP.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 12,
+        "abilities": {
+          "end": 7
+        },
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "second_wind",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:second_wind",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "second_wind_hp",
+          "op": "add",
+          "value": 20,
+          "source": "feature:second_wind",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 53,
+      "key": "unstoppable",
+      "label": "Unstoppable",
+      "description": "Blows that rock others barely move you: you cannot be staggered.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 18,
+        "abilities": {
+          "end": 8
+        },
+        "skills": [
+          {
+            "id": "core:skill/heavy_armor",
+            "label": "Heavy Armor",
+            "min": 50
+          }
+        ],
+        "perks": [
+          "core:feature/toughness"
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "staggered_immune",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:unstoppable",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 54,
+      "key": "berserker",
+      "label": "Berserker",
+      "description": "Pain feeds your fury: +20% damage below half HP, but -10 evasion.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 12,
+        "abilities": {
+          "str": 7
+        },
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "damage_percent_below_half_hp",
+          "op": "add",
+          "value": 20,
+          "source": "feature:berserker",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "evasion",
+          "op": "add",
+          "value": -10,
+          "source": "feature:berserker",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 55,
+      "key": "executioner",
+      "label": "Executioner",
+      "description": "Your critical blows are final: +50% critical damage.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 24,
+        "abilities": {
+          "str": 8
+        },
+        "perks": [
+          "core:feature/power_attack"
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "crit_damage_percent",
+          "op": "add",
+          "value": 50,
+          "source": "feature:executioner",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 56,
+      "key": "thrown_mastery",
+      "label": "Thrown Mastery",
+      "description": "Knives and axes leave your hand with killing weight: +2 thrown damage.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 12,
+        "abilities": {
+          "agi": 7
+        },
+        "skills": [
+          {
+            "id": "core:skill/throwing_weapons",
+            "label": "Throwing Weapons",
+            "min": 60
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "throwing_weapons_damage",
+          "op": "add",
+          "value": 2,
+          "source": "feature:thrown_mastery",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 57,
+      "key": "fast_reload",
+      "label": "Fast Reload",
+      "description": "You crank and load in one motion: reloading costs 1 AP less.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 6,
+        "abilities": {
+          "str": 5
+        },
+        "skills": [
+          {
+            "id": "core:skill/crossbows",
+            "label": "Crossbows",
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "reload_cost",
+          "op": "add",
+          "value": -1,
+          "source": "feature:fast_reload",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 58,
+      "key": "gunslinger",
+      "label": "Gunslinger",
+      "description": "You fire from the hip and still hit the heart: guns crit on 5 more.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 12,
+        "abilities": {
+          "agi": 7
+        },
+        "skills": [
+          {
+            "id": "core:skill/guns",
+            "label": "Guns",
+            "min": 60
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "guns_crit_window",
+          "op": "add",
+          "value": 5,
+          "source": "feature:gunslinger",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 59,
+      "key": "arcane_reservoir",
+      "label": "Arcane Reservoir",
+      "description": "Your pool of mana runs deeper: +10 maximum MP per rank.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "abilities": {
+          "int": 6
+        },
+        "perks": []
+      },
+      "ranks": 3,
+      "modifiers": [
+        {
+          "target": "mp",
+          "op": "add",
+          "value": 10,
+          "source": "feature:arcane_reservoir",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 60,
+      "key": "mana_flow",
+      "label": "Mana Flow",
+      "description": "Mana returns to you faster: +25% MP regeneration.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 6,
+        "abilities": {
+          "wil": 6
+        },
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "mp_regen_percent",
+          "op": "add",
+          "value": 25,
+          "source": "feature:mana_flow",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 61,
+      "key": "battle_mage",
+      "label": "Battle Mage",
+      "description": "You have learned to cast in a hauberk: the armor penalty on casting is halved.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 12,
+        "abilities": {
+          "int": 6,
+          "end": 6
+        },
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "armor_cast_penalty_percent",
+          "op": "add",
+          "value": -50,
+          "source": "feature:battle_mage",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 62,
+      "key": "spell_penetration",
+      "label": "Spell Penetration",
+      "description": "Your spells pierce wards: they ignore 5 points of resist.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 12,
+        "abilities": {
+          "int": 7
+        },
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "ignore_spell_resist",
+          "op": "add",
+          "value": 5,
+          "source": "feature:spell_penetration",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 63,
+      "key": "elemental_harmony",
+      "label": "Elemental Harmony",
+      "description": "You weave phases that feed each other: the generating cycle multiplies 0.25 more for you.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 18,
+        "abilities": {
+          "int": 6,
+          "wil": 6
+        },
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "generating_multiplier",
+          "op": "add",
+          "value": 0.25,
+          "source": "feature:elemental_harmony",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 64,
+      "key": "healer",
+      "label": "Healer",
+      "description": "Your restoration knits deeper: +15% Green Magic magnitude per rank.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 6,
+        "skills": [
+          {
+            "id": "core:skill/green_magic",
+            "label": "Green Magic",
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 2,
+      "modifiers": [
+        {
+          "target": "green_magic_magnitude_percent",
+          "op": "add",
+          "value": 15,
+          "source": "feature:healer",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 65,
+      "key": "illusionist",
+      "label": "Illusionist",
+      "description": "Your illusions linger: +25% Yellow Magic duration.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 6,
+        "skills": [
+          {
+            "id": "core:skill/yellow_magic",
+            "label": "Yellow Magic",
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "yellow_magic_duration_percent",
+          "op": "add",
+          "value": 25,
+          "source": "feature:illusionist",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 66,
+      "key": "conjurer",
+      "label": "Conjurer",
+      "description": "What you call stays longer: +50% summon duration.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 6,
+        "skills": [
+          {
+            "id": "core:skill/orange_magic",
+            "label": "Orange Magic",
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "summon_duration_percent",
+          "op": "add",
+          "value": 50,
+          "source": "feature:conjurer",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 67,
+      "key": "transmuter",
+      "label": "Transmuter",
+      "description": "Your alterations hold: +25% Blue Magic duration.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 6,
+        "skills": [
+          {
+            "id": "core:skill/blue_magic",
+            "label": "Blue Magic",
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "blue_magic_duration_percent",
+          "op": "add",
+          "value": 25,
+          "source": "feature:transmuter",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 68,
+      "key": "telekinetic",
+      "label": "Telekinetic",
+      "description": "Your force reaches farther: +50% Indigo Magic range.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 6,
+        "skills": [
+          {
+            "id": "core:skill/indigo_magic",
+            "label": "Indigo Magic",
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "indigo_magic_range_percent",
+          "op": "add",
+          "value": 50,
+          "source": "feature:telekinetic",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 69,
+      "key": "unraveler",
+      "label": "Unraveler",
+      "description": "You see the knots in a spell: your dispels end spells of one more level.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 6,
+        "skills": [
+          {
+            "id": "core:skill/violet_magic",
+            "label": "Violet Magic",
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "dispel_level",
+          "op": "add",
+          "value": 1,
+          "source": "feature:unraveler",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 70,
+      "key": "zealot",
+      "label": "Zealot",
+      "description": "Your faith burns bright: +15% White Magic magnitude per rank.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 6,
+        "abilities": {
+          "wil": 6
+        },
+        "skills": [
+          {
+            "id": "core:skill/white_magic",
+            "label": "White Magic",
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 2,
+      "modifiers": [
+        {
+          "target": "white_magic_magnitude_percent",
+          "op": "add",
+          "value": 15,
+          "source": "feature:zealot",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 71,
+      "key": "necromancer",
+      "label": "Necromancer",
+      "description": "The dead answer more readily: you can hold one more thrall.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 12,
+        "skills": [
+          {
+            "id": "core:skill/black_magic",
+            "label": "Black Magic",
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "thrall_limit",
+          "op": "add",
+          "value": 1,
+          "source": "feature:necromancer",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 72,
+      "key": "warded_mind",
+      "label": "Warded Mind",
+      "description": "Your thoughts are a locked room: +10 against charm, fear, and sleep.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 12,
+        "abilities": {
+          "wil": 7
+        },
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "mental_resist",
+          "op": "add",
+          "value": 10,
+          "source": "feature:warded_mind",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 73,
+      "key": "quick_caster",
+      "label": "Quick Caster",
+      "description": "Your gestures are economical: casting costs 1 AP less.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 18,
+        "abilities": {
+          "agi": 6,
+          "int": 6
+        },
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "cast",
+          "op": "add",
+          "value": -1,
+          "source": "feature:quick_caster",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 74,
+      "key": "archmage",
+      "label": "Archmage",
+      "description": "Mastery makes magic cheap: spells cost 20% less mana.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 24,
+        "abilities": {
+          "int": 9
+        },
+        "perks": [
+          "core:feature/arcane_reservoir"
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "mana_cost_percent",
+          "op": "add",
+          "value": -20,
+          "source": "feature:archmage",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 75,
+      "key": "haggler",
+      "label": "Haggler",
+      "description": "You never pay the first price: 5% better barter prices.",
+      "type": "perk",
+      "category": "social",
+      "prerequisite": {
+        "abilities": {
+          "cha": 5
+        },
+        "skills": [
+          {
+            "id": "core:skill/persuasion",
+            "label": "Persuasion",
+            "min": 30
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "barter_percent",
+          "op": "add",
+          "value": 5,
+          "source": "feature:haggler",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 76,
+      "key": "intimidating_presence",
+      "label": "Intimidating Presence",
+      "description": "People step aside before you ask: +10 to intimidation.",
+      "type": "perk",
+      "category": "social",
+      "prerequisite": {
+        "abilities": {
+          "str": 6
+        },
+        "skills": [
+          {
+            "id": "core:skill/intimidation",
+            "label": "Intimidation",
+            "min": 40
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "intimidation",
+          "op": "add",
+          "value": 10,
+          "source": "feature:intimidating_presence",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 77,
+      "key": "smooth_liar",
+      "label": "Smooth Liar",
+      "description": "Your lies come with a warm smile: +10 to deception.",
+      "type": "perk",
+      "category": "social",
+      "prerequisite": {
+        "abilities": {
+          "cha": 6
+        },
+        "skills": [
+          {
+            "id": "core:skill/deception",
+            "label": "Deception",
+            "min": 40
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "deception",
+          "op": "add",
+          "value": 10,
+          "source": "feature:smooth_liar",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 78,
+      "key": "empath",
+      "label": "Empath",
+      "description": "You read a face like a page: +10 to insight.",
+      "type": "perk",
+      "category": "social",
+      "prerequisite": {
+        "abilities": {
+          "per": 6
+        },
+        "skills": [
+          {
+            "id": "core:skill/insight",
+            "label": "Insight",
+            "min": 40
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "insight",
+          "op": "add",
+          "value": 10,
+          "source": "feature:empath",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 79,
+      "key": "leader",
+      "label": "Leader",
+      "description": "Allies who can see you fight better: +5 to their attack.",
+      "type": "perk",
+      "category": "social",
+      "prerequisite": {
+        "level": 12,
+        "abilities": {
+          "cha": 7
+        },
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "aura_ally_attack",
+          "op": "add",
+          "value": 5,
+          "source": "feature:leader",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 80,
+      "key": "diplomat",
+      "label": "Diplomat",
+      "description": "Even a drawn sword can be talked down: you may parley with hostile foes.",
+      "type": "perk",
+      "category": "social",
+      "prerequisite": {
+        "level": 18,
+        "abilities": {
+          "cha": 8
+        },
+        "skills": [
+          {
+            "id": "core:skill/persuasion",
+            "label": "Persuasion",
+            "min": 70
+          }
+        ],
+        "perks": [
+          "core:feature/silver_tongue"
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "hostile_parley",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:diplomat",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 81,
+      "key": "streetwise",
+      "label": "Streetwise",
+      "description": "You know who buys what nobody should sell: +10% when fencing.",
+      "type": "perk",
+      "category": "social",
+      "prerequisite": {
+        "level": 6,
+        "abilities": {
+          "cha": 5
+        },
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "fence_percent",
+          "op": "add",
+          "value": 10,
+          "source": "feature:streetwise",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 82,
+      "key": "menacing",
+      "label": "Menacing",
+      "description": "A critical hit from you shakes the foe: they are frightened.",
+      "type": "perk",
+      "category": "social",
+      "prerequisite": {
+        "level": 12,
+        "abilities": {
+          "str": 7
+        },
+        "skills": [
+          {
+            "id": "core:skill/intimidation",
+            "label": "Intimidation",
+            "min": 60
+          }
+        ],
+        "perks": [
+          "core:feature/intimidating_presence"
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "frighten_on_crit",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:menacing",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 83,
+      "key": "trap_sense",
+      "label": "Trap Sense",
+      "description": "A loose stone, a taut thread: +15 to detect traps.",
+      "type": "perk",
+      "category": "stealth",
+      "prerequisite": {
+        "abilities": {
+          "per": 6
+        },
+        "skills": [
+          {
+            "id": "core:skill/investigation",
+            "label": "Investigation",
+            "min": 40
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "trap_detect",
+          "op": "add",
+          "value": 15,
+          "source": "feature:trap_sense",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 84,
+      "key": "light_fingers",
+      "label": "Light Fingers",
+      "description": "Purses open themselves for you: +10 to sleight of hand.",
+      "type": "perk",
+      "category": "stealth",
+      "prerequisite": {
+        "abilities": {
+          "agi": 6
+        },
+        "skills": [
+          {
+            "id": "core:skill/sleight_of_hand",
+            "label": "Sleight of Hand",
+            "min": 40
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "sleight_of_hand",
+          "op": "add",
+          "value": 10,
+          "source": "feature:light_fingers",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 85,
+      "key": "locksmith",
+      "label": "Locksmith",
+      "description": "Tumblers talk to you: +10 to lockpick.",
+      "type": "perk",
+      "category": "stealth",
+      "prerequisite": {
+        "abilities": {
+          "agi": 6
+        },
+        "skills": [
+          {
+            "id": "core:skill/lockpick",
+            "label": "Lockpick",
+            "min": 40
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "lockpick",
+          "op": "add",
+          "value": 10,
+          "source": "feature:locksmith",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 86,
+      "key": "backstab",
+      "label": "Backstab",
+      "description": "A blade from the dark bites deeper: +50% damage on a sneak attack.",
+      "type": "perk",
+      "category": "stealth",
+      "prerequisite": {
+        "level": 6,
+        "abilities": {
+          "agi": 7
+        },
+        "skills": [
+          {
+            "id": "core:skill/stealth",
+            "label": "Stealth",
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "sneak_attack_damage_percent",
+          "op": "add",
+          "value": 50,
+          "source": "feature:backstab",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 87,
+      "key": "assassin",
+      "label": "Assassin",
+      "description": "Your sneak attacks always crit.",
+      "type": "perk",
+      "category": "stealth",
+      "prerequisite": {
+        "level": 18,
+        "abilities": {
+          "agi": 8
+        },
+        "skills": [
+          {
+            "id": "core:skill/stealth",
+            "label": "Stealth",
+            "min": 70
+          }
+        ],
+        "perks": [
+          "core:feature/backstab",
+          "core:feature/ghost"
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "sneak_attack_crit",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:assassin",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 88,
+      "key": "scholar",
+      "label": "Scholar",
+      "description": "Years in the stacks pay off: +10 to lore.",
+      "type": "perk",
+      "category": "knowledge",
+      "prerequisite": {
+        "abilities": {
+          "int": 6
+        },
+        "skills": [
+          {
+            "id": "core:skill/lore",
+            "label": "Lore",
+            "min": 40
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "lore",
+          "op": "add",
+          "value": 10,
+          "source": "feature:scholar",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 89,
+      "key": "polyglot",
+      "label": "Polyglot",
+      "description": "Tongues come easily to you: you know two more languages.",
+      "type": "perk",
+      "category": "knowledge",
+      "prerequisite": {
+        "level": 6,
+        "abilities": {
+          "int": 7
+        },
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "languages",
+          "op": "add",
+          "value": 2,
+          "source": "feature:polyglot",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 90,
+      "key": "quick_learner",
+      "label": "Quick Learner",
+      "description": "You learn from everything: +2 skill points per level.",
+      "type": "perk",
+      "category": "knowledge",
+      "prerequisite": {
+        "abilities": {
+          "int": 7
+        },
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "skill_points_per_level",
+          "op": "add",
+          "value": 2,
+          "source": "feature:quick_learner",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 91,
+      "key": "tracker",
+      "label": "Tracker",
+      "description": "Bent grass and a scuffed stone tell you the way: +10 to survival.",
+      "type": "perk",
+      "category": "survival",
+      "prerequisite": {
+        "abilities": {
+          "per": 6
+        },
+        "skills": [
+          {
+            "id": "core:skill/survival",
+            "label": "Survival",
+            "min": 40
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "survival",
+          "op": "add",
+          "value": 10,
+          "source": "feature:tracker",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 92,
+      "key": "beast_friend",
+      "label": "Beast Friend",
+      "description": "Animals trust you: +10 to animal handling.",
+      "type": "perk",
+      "category": "survival",
+      "prerequisite": {
+        "abilities": {
+          "wil": 6
+        },
+        "skills": [
+          {
+            "id": "core:skill/animal_handling",
+            "label": "Animal Handling",
+            "min": 40
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "animal_handling",
+          "op": "add",
+          "value": 10,
+          "source": "feature:beast_friend",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 93,
+      "key": "iron_stomach",
+      "label": "Iron Stomach",
+      "description": "Bad water and worse food rarely bother you: 25% resistance to poison and disease.",
+      "type": "perk",
+      "category": "survival",
+      "prerequisite": {
+        "level": 6,
+        "abilities": {
+          "end": 7
+        },
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "poison_resistance_percent",
+          "op": "add",
+          "value": 25,
+          "source": "feature:iron_stomach",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "disease_resistance_percent",
+          "op": "add",
+          "value": 25,
+          "source": "feature:iron_stomach",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 94,
+      "key": "pack_mule",
+      "label": "Pack Mule",
+      "description": "You carry what others leave behind: +25 carry per rank.",
+      "type": "perk",
+      "category": "general",
+      "prerequisite": {
+        "abilities": {
+          "str": 7
+        },
+        "perks": []
+      },
+      "ranks": 2,
+      "modifiers": [
+        {
+          "target": "carry",
+          "op": "add",
+          "value": 25,
+          "source": "feature:pack_mule",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 95,
+      "key": "fleet_footed",
+      "label": "Fleet-Footed",
+      "description": "You cover ground quickly: +1 speed.",
+      "type": "perk",
+      "category": "general",
+      "prerequisite": {
+        "level": 6,
+        "abilities": {
+          "agi": 7
+        },
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "speed",
+          "op": "add",
+          "value": 1,
+          "source": "feature:fleet_footed",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 96,
+      "key": "tinkerer",
+      "label": "Tinkerer",
+      "description": "Broken things want to work for you: +10 to repair.",
+      "type": "perk",
+      "category": "utility",
+      "prerequisite": {
+        "abilities": {
+          "int": 6
+        },
+        "skills": [
+          {
+            "id": "core:skill/repair",
+            "label": "Repair",
+            "min": 40
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "repair",
+          "op": "add",
+          "value": 10,
+          "source": "feature:tinkerer",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 97,
+      "key": "master_alchemist",
+      "label": "Master Alchemist",
+      "description": "Your brews are stronger: +25% potion magnitude.",
+      "type": "perk",
+      "category": "utility",
+      "prerequisite": {
+        "level": 12,
+        "abilities": {
+          "int": 7
+        },
+        "skills": [
+          {
+            "id": "core:skill/alchemy",
+            "label": "Alchemy",
+            "min": 60
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "potion_magnitude_percent",
+          "op": "add",
+          "value": 25,
+          "source": "feature:master_alchemist",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 98,
+      "key": "master_smith",
+      "label": "Master Smith",
+      "description": "Your forge work comes out one quality grade higher.",
+      "type": "perk",
+      "category": "utility",
+      "prerequisite": {
+        "level": 12,
+        "abilities": {
+          "str": 6
+        },
+        "skills": [
+          {
+            "id": "core:skill/blacksmithing",
+            "label": "Blacksmithing",
+            "min": 60
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "crafted_quality",
+          "op": "add",
+          "value": 1,
+          "source": "feature:master_smith",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 99,
+      "key": "lucky",
+      "label": "Lucky",
+      "description": "Once per rest, you may roll a check again and keep the second roll.",
+      "type": "perk",
+      "category": "general",
+      "prerequisite": {
+        "abilities": {
+          "lck": 7
+        },
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "reroll_per_rest",
+          "op": "add",
+          "value": 1,
+          "source": "feature:lucky",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 100,
+      "key": "fortune_favored",
+      "label": "Fortune Favored",
+      "description": "Luck leans your way in a fight: you crit on 3 more.",
+      "type": "perk",
+      "category": "general",
+      "prerequisite": {
+        "level": 12,
+        "abilities": {
+          "lck": 8
+        },
+        "perks": [
+          "core:feature/lucky"
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "crit_window",
+          "op": "add",
+          "value": 3,
+          "source": "feature:fortune_favored",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 101,
+      "key": "iron_will",
+      "label": "Iron Will",
+      "description": "Fear finds no purchase in you: you cannot be frightened.",
+      "type": "perk",
+      "category": "general",
+      "prerequisite": {
+        "level": 6,
+        "abilities": {
+          "wil": 7
+        },
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "frightened_immune",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:iron_will",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 102,
+      "key": "meditative",
+      "label": "Meditative",
+      "description": "A short rest settles your mind: +50% MP recovered when resting.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 6,
+        "abilities": {
+          "wil": 6
+        },
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "rest_mp_percent",
+          "op": "add",
+          "value": 50,
+          "source": "feature:meditative",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 103,
+      "key": "night_eyes",
+      "label": "Night Eyes",
+      "description": "Your eyes adjust to the dark: darkvision to 9 metres.",
+      "type": "perk",
+      "category": "survival",
+      "prerequisite": {
+        "level": 6,
+        "abilities": {
+          "per": 7
+        },
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "darkvision",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:night_eyes",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "darkvision_range",
+          "op": "add",
+          "value": 9,
+          "source": "feature:night_eyes",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 104,
+      "key": "survivor",
+      "label": "Survivor",
+      "description": "Once per rest, a blow that would drop you leaves you at 1 HP instead.",
+      "type": "perk",
+      "category": "general",
+      "prerequisite": {
+        "level": 18,
+        "abilities": {
+          "end": 6,
+          "wil": 6
+        },
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "last_stand",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:survivor",
+          "origin": "core:origin/trained"
         }
       ]
     },
