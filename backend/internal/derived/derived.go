@@ -52,8 +52,9 @@ func Run(ruleset *data.Ruleset, input Input) (map[string]int64, error) {
 
 // ActionsInput is the `actions` command's input.
 type ActionsInput struct {
-	Actor   actor.Actor `json:"actor"`
-	Actions []string    `json:"actions"`
+	Actor     actor.Actor         `json:"actor"`
+	Actions   []string            `json:"actions"`
+	Modifiers []modifier.Modifier `json:"modifiers"` // adds on an action's key change its cost
 }
 
 // ActionsResult is the pool and the cost of the named actions.
@@ -75,7 +76,11 @@ func RunActions(ruleset *data.Ruleset, input ActionsInput) (ActionsResult, error
 		if err != nil {
 			return ActionsResult{}, err
 		}
-		result.Cost += action.Cost
+		cost, err := modifier.Value(action.Cost, modifier.Target(input.Modifiers, key), ruleset.Origins, 0, nil)
+		if err != nil {
+			return ActionsResult{}, err
+		}
+		result.Cost += max(cost, 0)
 	}
 	return result, nil
 }

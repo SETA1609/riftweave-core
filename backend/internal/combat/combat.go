@@ -41,6 +41,9 @@ type Defender struct {
 	Resist               map[string]int64 `json:"resist"`
 	Reaction             *Reaction        `json:"reaction"`
 	Flags                []string         `json:"flags"`
+	// Modifiers are the defender's perks: adds on evasion, block, and shield_dr, and the
+	// block_magic, bulwark, and riposte grants.
+	Modifiers []modifier.Modifier `json:"modifiers"`
 }
 
 // Damage is the damage roll and its type.
@@ -72,6 +75,8 @@ type Result struct {
 	ReactionTags []string `json:"reaction_tags"`
 	Damage       int64    `json:"damage"`
 	HitPoints    int64    `json:"hp"`
+	// Counter is a riposte: a crit evade of a single attack lets the defender attack back.
+	Counter bool `json:"counter"`
 	// Riders are the called shot's riders on a hit, and empty on a miss or an evade. Without
 	// a called shot the field is left out.
 	Riders *[]data.Rider `json:"riders,omitempty"`
@@ -182,18 +187,22 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	if delivery != "instant" {
 		reaction = defender.Reaction
 	}
+	// The defender's perks: adds on the reaction targets and shield_dr, and grant flags.
+	var perkFlags []string = modifier.Flags(defender.Modifiers, 0, nil)
 	if reaction != nil {
 		if reaction.Kind != "evade" && reaction.Kind != "block" {
 			return Result{}, &data.NotDefinedError{Kind: "reaction kind", Key: reaction.Kind}
 		}
-		if reaction.Kind == "block" && !damageType.Physical {
+		if reaction.Kind == "block" && !damageType.Physical && !slices.Contains(perkFlags, "block_magic") {
 			reaction = nil
 		}
 	}
 	if reaction != nil {
 		// The reaction is a d100 check like the attack: same fumble and crit window.
 		var skill int64
+		var reactionTarget string = "block"
 		if reaction.Kind == "evade" {
+			reactionTarget = "evasion"
 			if defender.EvasionSkill == nil {
 				return Result{}, &data.MissingInputError{Subject: "an evade", Needs: "the defender's evasion_skill"}
 			}
@@ -204,13 +213,18 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 			}
 			skill = *reaction.Skill
 		}
-		var check resolution.Result = resolution.Check(&ruleset.Resolution, skill, defender.Attributes.Get(actor.Luck), 0, reaction.Roll)
+		reactionBonus, err := resolution.Bonus(ruleset.Origins, modifier.Target(defender.Modifiers, reactionTarget))
+		if err != nil {
+			return Result{}, err
+		}
+		var check resolution.Result = resolution.Check(&ruleset.Resolution, skill, defender.Attributes.Get(actor.Luck), reactionBonus, reaction.Roll)
 		result.ReactionTags = check.Tags
 		if check.Success && *check.Margin >= *attack.Margin {
 			if reaction.Kind == "block" {
 				result.Blocked = true
 			} else {
 				result.Evaded = true
+				result.Counter = delivery == "single" && slices.Contains(check.Tags, "crit") && slices.Contains(perkFlags, "riposte")
 				if delivery == "single" {
 					result.Outcome, result.Damage, result.HitPoints = "evaded", 0, defender.HitPoints
 					return result, nil
@@ -235,7 +249,17 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		}
 	}
 	if result.Blocked {
-		amount = max(amount-*reaction.ShieldDamageReduction, 0)
+		shieldDamageReduction, err := modifier.Value(*reaction.ShieldDamageReduction, modifier.Target(defender.Modifiers, "shield_dr"), ruleset.Origins, 0, nil)
+		if err != nil {
+			return Result{}, err
+		}
+		if !damageType.Physical {
+			shieldDamageReduction = formula.FloorDivide(shieldDamageReduction, 2)
+		}
+		amount = max(amount-shieldDamageReduction, 0)
+		if slices.Contains(perkFlags, "bulwark") && slices.Contains(result.ReactionTags, "crit") {
+			amount = 0
+		}
 	}
 	if damageType.Physical {
 		var damageReduction int64 = defender.ArmorDamageReduction
