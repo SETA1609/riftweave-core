@@ -50,7 +50,7 @@ Done: M4-01 ([done.md](done.md#m4-world))
 - Do: `combat.md` has balance guidelines (damage, DR, HP by tier, hits-to-kill). Turn them into checks so data cannot drift.
 - Files: ~4 (ruleset/data/balance/, ruleset/scripts/, .github/workflows/validate-ruleset.yml)
 - See: docs/modules/combat.md
-- Done when: A script reports monsters and gear outside the guideline bands; bands are data, not prose; report runs in CI as a warning, then as a gate.
+- Done when: A script reports monsters and gear outside the guideline bands; bands are data, not prose; report runs in CI as a warning, then as a gate. Each check carries its mode (`warn` or `gate`) in data, so a check moves from warning to gate when its data is fixed.
 
 #### M4-06 Looter shift: Luck and perks on loot rolls
 - Status: review

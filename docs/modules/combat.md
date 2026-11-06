@@ -169,7 +169,7 @@ Each step below is a vector in `ruleset/tests/vectors/combat.json` (the names st
 
 ## 10. Balance guidelines
 
-Reference values for building encounters and gear. They are not rules; tune them per campaign.
+Reference values for building encounters and gear. They are not rules; tune them per campaign. The bands are data in `ruleset/data/balance/core.json`, and a report checks monsters and gear against them ([core/balance.md](../core/balance.md)).
 
 ### Hit points
 
