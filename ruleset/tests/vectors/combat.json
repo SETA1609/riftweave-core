@@ -1842,5 +1842,615 @@
       "outcome": "miss",
       "riders": []
     }
+  },
+  {
+    "name": "shield training: a block subtracts the shield's 2 and 2 more",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "reaction": {
+        "kind": "block",
+        "skill": 55,
+        "roll": 41,
+        "shield_dr": 2
+      },
+      "modifiers": [
+        {
+          "target": "shield_dr",
+          "op": "add",
+          "value": 2,
+          "source": "feature:shield_training",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "damage": {
+      "roll": 10,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "blocked": true,
+      "damage": 6,
+      "hp": 24
+    }
+  },
+  {
+    "name": "spell ward: a block stops a fire bolt at half shield DR",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "reaction": {
+        "kind": "block",
+        "skill": 55,
+        "roll": 41,
+        "shield_dr": 4
+      },
+      "modifiers": [
+        {
+          "target": "block_magic",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:spell_ward",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "damage": {
+      "roll": 8,
+      "type": "fire"
+    },
+    "expect": {
+      "outcome": "hit",
+      "blocked": true,
+      "damage": 6,
+      "hp": 24
+    }
+  },
+  {
+    "name": "spell ward: without it a shield does not stop fire",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "reaction": {
+        "kind": "block",
+        "skill": 55,
+        "roll": 41,
+        "shield_dr": 4
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "fire"
+    },
+    "expect": {
+      "outcome": "hit",
+      "blocked": false,
+      "damage": 8,
+      "hp": 22
+    }
+  },
+  {
+    "name": "spell ward and shield training: half of 4 + 2 is 3 against fire",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "reaction": {
+        "kind": "block",
+        "skill": 55,
+        "roll": 41,
+        "shield_dr": 4
+      },
+      "modifiers": [
+        {
+          "target": "shield_dr",
+          "op": "add",
+          "value": 2,
+          "source": "feature:shield_training",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "block_magic",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:spell_ward",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "damage": {
+      "roll": 8,
+      "type": "fire"
+    },
+    "expect": {
+      "outcome": "hit",
+      "blocked": true,
+      "damage": 5,
+      "hp": 25
+    }
+  },
+  {
+    "name": "spell ward: a physical block keeps the full shield DR",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "reaction": {
+        "kind": "block",
+        "skill": 55,
+        "roll": 41,
+        "shield_dr": 4
+      },
+      "modifiers": [
+        {
+          "target": "block_magic",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:spell_ward",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "damage": {
+      "roll": 10,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "blocked": true,
+      "damage": 6,
+      "hp": 24
+    }
+  },
+  {
+    "name": "bulwark: a crit block negates the hit",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "reaction": {
+        "kind": "block",
+        "skill": 55,
+        "roll": 3,
+        "shield_dr": 2
+      },
+      "modifiers": [
+        {
+          "target": "bulwark",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:bulwark",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "damage": {
+      "roll": 10,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "blocked": true,
+      "reaction_tags": [
+        "crit"
+      ],
+      "damage": 0,
+      "hp": 30
+    }
+  },
+  {
+    "name": "bulwark: a block that is not a crit only subtracts",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "reaction": {
+        "kind": "block",
+        "skill": 55,
+        "roll": 41,
+        "shield_dr": 2
+      },
+      "modifiers": [
+        {
+          "target": "bulwark",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:bulwark",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "damage": {
+      "roll": 10,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "blocked": true,
+      "reaction_tags": [],
+      "damage": 8,
+      "hp": 22
+    }
+  },
+  {
+    "name": "instant: every block perk and a crit block roll, still unblocked",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "reaction": {
+        "kind": "block",
+        "skill": 55,
+        "roll": 3,
+        "shield_dr": 4
+      },
+      "modifiers": [
+        {
+          "target": "shield_dr",
+          "op": "add",
+          "value": 2,
+          "source": "feature:shield_training",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "block_magic",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:spell_ward",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "bulwark",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:bulwark",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "delivery": "instant",
+    "damage": {
+      "roll": 12,
+      "type": "fire"
+    },
+    "expect": {
+      "outcome": "hit",
+      "blocked": false,
+      "evaded": false,
+      "reaction_tags": [],
+      "damage": 12,
+      "hp": 18
+    }
+  },
+  {
+    "name": "instant: riposte and armored evasion, still no evade",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 40,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "reaction": {
+        "kind": "evade",
+        "roll": 2
+      },
+      "modifiers": [
+        {
+          "target": "evasion",
+          "op": "add",
+          "value": 10,
+          "source": "feature:armored_evasion",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "riposte",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:riposte",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "delivery": "instant",
+    "damage": {
+      "roll": 12,
+      "type": "fire"
+    },
+    "expect": {
+      "outcome": "hit",
+      "evaded": false,
+      "counter": false,
+      "damage": 12,
+      "hp": 18
+    }
+  },
+  {
+    "name": "riposte: a crit evade of a single attack sets counter",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 40,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "reaction": {
+        "kind": "evade",
+        "roll": 2
+      },
+      "modifiers": [
+        {
+          "target": "riposte",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:riposte",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "damage": {
+      "roll": 10,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "evaded",
+      "evaded": true,
+      "reaction_tags": [
+        "crit"
+      ],
+      "counter": true,
+      "damage": 0
+    }
+  },
+  {
+    "name": "riposte: an evade that is not a crit sets no counter",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 40,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "reaction": {
+        "kind": "evade",
+        "roll": 20
+      },
+      "modifiers": [
+        {
+          "target": "riposte",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:riposte",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "damage": {
+      "roll": 10,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "evaded",
+      "evaded": true,
+      "counter": false
+    }
+  },
+  {
+    "name": "riposte: a crit evade of an area attack halves it, no counter",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 40,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "reaction": {
+        "kind": "evade",
+        "roll": 2
+      },
+      "modifiers": [
+        {
+          "target": "riposte",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:riposte",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "delivery": "area",
+    "damage": {
+      "roll": 10,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "evaded": true,
+      "counter": false,
+      "damage": 5,
+      "hp": 25
+    }
+  },
+  {
+    "name": "armored evasion: +10 turns a margin of 5 into 15, enough against 7",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 30,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "reaction": {
+        "kind": "evade",
+        "roll": 25
+      },
+      "modifiers": [
+        {
+          "target": "evasion",
+          "op": "add",
+          "value": 10,
+          "source": "feature:armored_evasion",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "damage": {
+      "roll": 10,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "evaded",
+      "evaded": true
+    }
+  },
+  {
+    "name": "armored evasion: without it the evade margin 5 falls short of 7",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 30,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "reaction": {
+        "kind": "evade",
+        "roll": 25
+      }
+    },
+    "damage": {
+      "roll": 10,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "evaded": false,
+      "damage": 10
+    }
   }
 ]
