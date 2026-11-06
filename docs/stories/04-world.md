@@ -43,7 +43,7 @@ Done: M4-01 ([done.md](done.md#m4-world))
 - Done when: schema and at least 10 hazards; detect and disarm use the one resolution function.
 
 #### M4-05 Encounter and balance validation
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: M1-02, M1-08
 - Was: RW-24
