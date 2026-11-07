@@ -17,6 +17,7 @@ import (
 	"slices"
 
 	"github.com/SETA1609/riftweave-core/backend/internal/actor"
+	"github.com/SETA1609/riftweave-core/backend/internal/casting"
 	"github.com/SETA1609/riftweave-core/backend/internal/combat"
 	"github.com/SETA1609/riftweave-core/backend/internal/condition"
 	"github.com/SETA1609/riftweave-core/backend/internal/data"
@@ -94,6 +95,7 @@ var commands map[string]commandHandler = map[string]commandHandler{
 	"combat":      bind(combat.Run),
 	"loot":        bind(loot.Run),
 	"hazard":      bind(hazard.Run),
+	"casting":     bind(casting.Run),
 	"progression": bind(progression.Run),
 }
 

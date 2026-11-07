@@ -124,7 +124,7 @@ Data in `conditions/core.json` (24 entries). Each entry:
 | 16 | burning | 1d4 fire/round; action to extinguish (AGI check, difficulty 10) | Fire DoT every 2s; extinguished by water/cure | 57 |
 | 17 | bleeding | 1 HP/round; Medicine check (difficulty 10) or bandage stops | Health DoT every 2s; severity 1–3 | 58 |
 | 18 | slowed | Speed halved; −10 AGI; no Dash; +1 AP cost | Speed -30; attack speed -20; dodge -10 | 59 |
-| 19 | silenced | Verbal spells blocked; −20 social speech | Spellcasting disabled for verbal skills | 60 |
+| 19 | silenced | No spellcasting; −20 social speech | Spellcasting disabled | 60 |
 | 20 | diseased | Symptoms from disease effect (blight/fever/plague) | Periodic stat drain; worsens if untreated | 40, 41, 42 |
 | 21 | cursed | −2 all stats; needs remove curse or ritual | −X stats; requires specialized cure | 61 |
 | 22 | exposed | −10 evasion/block; DR halved; ×1.25 damage | Evasion -15; resist -20; incoming +X | 62 |

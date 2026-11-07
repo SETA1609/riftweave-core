@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Casting",
+  "description": "The coefficients of the cast procedure (docs/core/casting.md): the caster flags that block a cast, and the cast penalty of the heaviest armor category worn.",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "casting": {
+      "type": "object",
+      "properties": {
+        "prevented_by": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
+          "uniqueItems": true,
+          "description": "Caster flags (granted by conditions) that block every cast; nothing is spent."
+        },
+        "armor_penalty": {
+          "type": "object",
+          "description": "An add on the cast target by the heaviest armor category worn; `none` is no armor.",
+          "properties": {
+            "none": { "type": "integer", "maximum": 0 },
+            "light": { "type": "integer", "maximum": 0 },
+            "medium": { "type": "integer", "maximum": 0 },
+            "heavy": { "type": "integer", "maximum": 0 }
+          },
+          "required": ["none", "light", "medium", "heavy"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["prevented_by", "armor_penalty"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["casting"],
+  "additionalProperties": false
+}

@@ -1,0 +1,7 @@
+{
+  "$schema": "../../schemas/casting.schema.json",
+  "casting": {
+    "prevented_by": ["silenced"],
+    "armor_penalty": { "none": 0, "light": 0, "medium": -10, "heavy": -25 }
+  }
+}

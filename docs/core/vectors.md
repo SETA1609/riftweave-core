@@ -45,6 +45,7 @@ The other fields are the input the function reads. They are listed per function 
 | `combat` | `attacker` (`skill`, `roll`, `attributes.lck`), `defender` (`evasion_skill`, `attributes.lck` for reaction crits, `armor_dr`, `hp`, `resist` by damage type, optional `reaction`: `kind` `evade` with `roll`, or `kind` `block` with `skill`, `roll`, `shield_dr`), `damage` (`roll`, `type`), `delivery` (`single`, the default, `area`, or `instant`), `modifiers` on the attack, optional `range` (`melee` or `ranged`), `situations` (keys), `called_shot` (a key), `attacker.flags` and `defender.flags` | `outcome` (`hit`, `miss`, `fumble`, `evaded`), `target`, `margin`, `crit`, `evaded`, `blocked`, `reaction_tags` (`crit`, `fumble` on the reaction roll), `damage` after reductions, `hp`, `riders` (on a called-shot hit), or `error` |
 | `progression` | `op`: `xp` (`level`), `level` (`xp`), `level_up` (`actor.attributes`, `luck_roll`), `spend` (`skill`, `tagged`, `points`) | `xp_total`, `xp_step`; `level`; `skill_points`, `perks` (or `error`); `ranks`, `spent`, `left` |
 | `hazard` | `hazard` (a key), `op`: `detect`, `disarm`, or `trigger`; for a check: `actor.skills` (the check's skill), `actor.attributes.lck`, `modifiers`, `roll`; for a trigger: optional `actor` and `roll` (the avoid check) and `damage_roll` | `success`, `target`, `margin`, `tags` (and `triggered` for a disarm); or `avoided`, `packet` (`amount`, `type`, or null), `effects`; or `error` |
+| `casting` | `spell` (a key), `caster` (`skills` with the spell's `<color>_magic`, `attributes.lck`, `mana`, optional `flags`, `armor` (`none`, `light`, `medium`, `heavy`), `reagents` (refs), `concentration` (the held spell key or null)), `modifiers` on the skill, `roll`, optional `standing` (spell keys on the target, for dispel) | `outcome` (`cast`, `failed`, `prevented`, `no_mana`, `no_reagents`), `mana`, `consumed`, `check` (`target`, `success`, `margin`, `tags`, or null), `effects`, `concentration`, `ended`, `dispelled`; or `error` |
 
 Coefficients come from `ruleset/data/`, not from the vector, so a data change that breaks a rule fails a vector.
 
@@ -75,5 +76,6 @@ Every kernel function and the vector file that covers it. The test reads this ta
 | `loot` | `loot.json` | covered |
 | `progression` | `progression.json` | covered |
 | `hazard` | `hazard.json` | covered |
+| `casting` | `casting.json` | covered |
 
 The modifier vectors cover every op, mixed ops, same-source duplicates, origins, and expiry. The condition vectors apply and remove each of the 24 conditions once, plus stacks and multi-condition effects.

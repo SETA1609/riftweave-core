@@ -302,6 +302,48 @@ type Hazard struct {
 	Effects []string `json:"effects"`
 }
 
+// AppliedEffect is one entry of a spell's effects. Encoded keeps the entry as written, so
+// a cast returns it unchanged; Effect and Magnitude are what dispel reads.
+type AppliedEffect struct {
+	Encoded   json.RawMessage
+	Effect    string
+	Magnitude float64
+}
+
+// UnmarshalJSON keeps the entry and reads its effect ref and magnitude.
+func (applied *AppliedEffect) UnmarshalJSON(encoded []byte) error {
+	var fields struct {
+		Effect    string  `json:"effect"`
+		Magnitude float64 `json:"magnitude"`
+	}
+	if err := json.Unmarshal(encoded, &fields); err != nil {
+		return err
+	}
+	applied.Encoded = append(json.RawMessage{}, encoded...)
+	applied.Effect, applied.Magnitude = fields.Effect, fields.Magnitude
+	return nil
+}
+
+// Spell is what a cast needs of one row of spells/core.json (docs/core/casting.md).
+type Spell struct {
+	Key     string          `json:"key"`
+	Color   string          `json:"color"`
+	Effects []AppliedEffect `json:"effects"`
+	Cost    struct {
+		Reagents []string `json:"reagents"`
+		Mana     int64    `json:"mana"`
+	} `json:"cost"`
+	Level         int64 `json:"level"`
+	Concentration bool  `json:"concentration"`
+}
+
+// Casting is casting/core.json: the caster flags that block a cast, and the cast penalty by
+// the heaviest armor category worn.
+type Casting struct {
+	ArmorPenalty map[string]int64 `json:"armor_penalty"`
+	PreventedBy  []string         `json:"prevented_by"`
+}
+
 // Condition is one row of conditions/core.json.
 type Condition struct {
 	Key           string              `json:"key"`
@@ -388,6 +430,8 @@ type Ruleset struct {
 	Situations  Table[Situation]
 	CalledShots Table[CalledShot]
 	Hazards     Table[Hazard]
+	Spells      Table[Spell]
+	Casting     Casting
 	Origins     modifier.OriginPolicies
 	Conditions  Conditions
 	Loot        Loot
@@ -530,6 +574,14 @@ func Load(fileSystem fs.FS) (*Ruleset, error) {
 
 	loader.loadConditions(ruleset)
 	loader.loadHazards(ruleset)
+
+	var spells struct{ Spells []Spell }
+	loader.read("spells/core.json", &spells)
+	ruleset.Spells = newTable(spells.Spells, func(spell *Spell) string { return spell.Key })
+	var casting struct{ Casting Casting }
+	loader.read("casting/core.json", &casting)
+	ruleset.Casting = casting.Casting
+
 	loader.loadFormulas(ruleset)
 	// Items and loot are priced in copper, so they need the economy's denominations.
 	if economyLoaded {

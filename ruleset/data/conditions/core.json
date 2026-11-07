@@ -504,10 +504,10 @@
       "id": 19,
       "key": "silenced",
       "label": "Silenced",
-      "description": "Cannot speak or make verbal sounds. Spells with verbal components cannot be cast.",
+      "description": "Cannot speak or make verbal sounds, and cannot cast spells (docs/core/casting.md).",
       "effects": {
-        "ttrpg": "Cannot cast spells that require verbal components (GM determines which schools or specific spells require speech). -20 on social checks that rely on speaking.",
-        "video_game": "Spellcasting disabled for skills that use verbal components. Subtle/innate casting (if perk-gated) still works. Duration in seconds."
+        "ttrpg": "Cannot cast spells. -20 on social checks that rely on speaking.",
+        "video_game": "Spellcasting disabled. Duration in seconds."
       },
       "appliedBy": [
         "core:effect/silence"
