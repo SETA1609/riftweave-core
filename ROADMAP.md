@@ -24,7 +24,9 @@ A module may extend core through modifiers and rows but core never requires one
 
 **In this repo, not a 1.0 gate:** the reference backend (story APP): a Go implementation of the
 kernel behind one command contract, exposed as an agent CLI, a human CLI, an HTTP API, and an
-Angular frontend. It is a way to call and test the ruleset, not a game.
+Angular frontend. It is a way to call and test the ruleset, not a game. One exception: the alpha
+playtest (M5-18) runs through its sessions and human CLI (APP-04, APP-05), so those two gate 1.0;
+the HTTP API and the frontend do not.
 
 **Out of scope for this repo:** game engines and virtual tabletop code. A Zig or other second
 implementation is the long-term conformance proof, but it lives elsewhere. The 1.0 gate is that
