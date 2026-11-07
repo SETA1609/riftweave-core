@@ -66,10 +66,9 @@ These are the **base** dice for the weapon type. They assume a baseline construc
 
 ## Damage Dice by Handling and Size
 
-Every weapon row is a **medium** weapon: the dice in the table above are for a medium
-wielder. Two things set a weapon's dice: how it is handled, and the size it is made for.
-Nothing in the data or the pipeline reads this yet; it is the reference for new rows and
-for sized weapons. [A]
+The dice in the table above are for a normal-sized weapon. Two things set a weapon's dice:
+how it is handled, and how big it is built. The handling ranges are a guide for new rows;
+the size step is data. [A]
 
 ### The dice ladder
 
@@ -82,7 +81,7 @@ One step is one die size. Moving up or down the ladder is the only way dice grow
 
 `1d12` (mean 6.5) sits on step 7 with `2d6`: same step, a swingier roll. [A]
 
-### By handling (medium)
+### By handling (normal size)
 
 | Handling | Properties | Dice | Examples |
 | --- | --- | --- | --- |
@@ -97,15 +96,18 @@ or a high price. A bow trades dice for range: the longbow is `heavy` for its dra
 1d8, and pays back in reach (150 / 600). A weapon below the range is cheap or
 concealable; the balance gate lists it as an accepted finding (dagger, sling, throwing
 knife, brass knuckles). The balance band `weapon_dice` (`balance/core.json`, 1d6 to 2d10)
-is for medium rows. [A]
+is checked after the size step. [V 2026-11-07, `balance_report.py --gate`]
 
 ### By size
 
-Size is a modifier of one ladder step: a weapon made for a smaller wielder (tiny, small)
-rolls one die lower, one made for a larger wielder (large, huge) one die higher. It is an
-`add` of −1 or +1 on the weapon's dice step, never more. [A]
+Size is how a weapon is built, not who wields it: anyone can find an undersized shortbow or
+an oversized longbow. A row's `size` is `undersized`, `normal`, or `oversized`; omitted
+means `normal`, so every row without it keeps its dice. Undersized moves the dice one rung
+down the ladder, oversized one rung up, never more. The ladder and the steps are data:
+`ruleset/data/combat/dice_ladder.json`. A row keeps its base dice; the consumer applies the
+step (`balance_report.sized_dice`). [V 2026-11-07, `test_equipment.py`]
 
-| Medium | Smaller (−1) | Larger (+1) | Medium examples |
+| Normal | Undersized (−1) | Oversized (+1) | Normal examples |
 | --- | --- | --- | --- |
 | 1d4 | 1d3 | 1d6 | dagger, sling |
 | 1d6 | 1d4 | 1d8 | mace, shortsword, shortbow |
@@ -113,9 +115,11 @@ rolls one die lower, one made for a larger wielder (large, huge) one die higher.
 | 1d10 | 1d8 | 2d6 | glaive, halberd, flintlock pistol |
 | 1d12, 2d6 | 1d10 | 2d8 | greatsword, arquebus, blunderbuss |
 
-A small character's longsword rolls 1d6; an ogre's greatsword rolls 2d8. Monster natural
-attacks keep their own flat `attack.damage.amount` ([monsters.md](monsters.md)); the
-ladder is for weapons. [A]
+Two rows use it: `undersized_shortbow` (1d4) and `oversized_longbow` (1d10). Size is not an
+enchantment: it takes no enchantment slot, does not stack under the `enchantment` origin,
+and a dispel does not remove it. Nothing about size touches range, handling, or who can
+use the weapon. [A] Monster natural attacks keep their own flat `attack.damage.amount`
+([monsters.md](monsters.md)); the ladder is for weapons. [A]
 
 ## Materials and Weapon Variations
 

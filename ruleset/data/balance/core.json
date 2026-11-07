@@ -19,6 +19,7 @@
     { "check": "weapon_dice", "subject": "dagger", "reason": "A light weapon: cheap, concealable, and fast; its 1d4 is meant to sit below the band." },
     { "check": "weapon_dice", "subject": "sling", "reason": "A light weapon: cheap ammunition and no proficiency cost; its 1d4 is meant to sit below the band." },
     { "check": "weapon_dice", "subject": "throwing_knife", "reason": "A light weapon: cheap, carried by the handful, and thrown in volleys; its 1d4 is meant to sit below the band." },
-    { "check": "weapon_dice", "subject": "brass_knuckles", "reason": "A light weapon: a fist's own damage with a metal grip, cheap and hidden in a pocket; its 1d4 is meant to sit below the band." }
+    { "check": "weapon_dice", "subject": "brass_knuckles", "reason": "A light weapon: a fist's own damage with a metal grip, cheap and hidden in a pocket; its 1d4 is meant to sit below the band." },
+    { "check": "weapon_dice", "subject": "undersized_shortbow", "reason": "An undersized weapon: one die below the shortbow by its size, cheap and light; its 1d4 is meant to sit below the band." }
   ]
 }

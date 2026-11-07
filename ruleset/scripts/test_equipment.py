@@ -7,7 +7,11 @@ Run with:
 
 import json
 import unittest
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from balance_report import sized_dice  # noqa: E402
 
 DATA = Path(__file__).resolve().parent.parent / "data"
 EQUIPMENT = DATA / "equipment"
@@ -49,6 +53,20 @@ class TestEquipmentFloor(unittest.TestCase):
     def test_twelve_accessories_and_twenty_consumables(self):
         self.assertGreaterEqual(len(rows("accessories")), 12)
         self.assertGreaterEqual(len(rows("consumables")), 20)
+
+    def test_every_weapon_dice_is_on_the_ladder_and_its_size_step_lands(self):
+        ladder = json.loads((DATA / "combat" / "dice_ladder.json").read_text())
+        rungs = [dice for rung in ladder["dice_ladder"] for dice in rung]
+        for key, weapon in resolved_weapons():
+            with self.subTest(weapon=key):
+                self.assertIn(weapon["weapon"]["damage"]["dice"], rungs)
+                self.assertIn(sized_dice(weapon, ladder), rungs)
+
+    def test_size_moves_one_step(self):
+        sized = {key: sized_dice(weapon) for key, weapon in resolved_weapons()}
+        self.assertEqual(sized["shortbow"], "1d6")
+        self.assertEqual(sized["undersized_shortbow"], "1d4")
+        self.assertEqual(sized["oversized_longbow"], "1d10")
 
     def test_food_is_always_over_time(self):
         for row in rows("consumables"):

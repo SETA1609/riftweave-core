@@ -1,0 +1,5 @@
+{
+  "$schema": "../../schemas/dice_ladder.schema.json",
+  "dice_ladder": [["1d2"], ["1d3"], ["1d4"], ["1d6"], ["1d8"], ["1d10"], ["2d6", "1d12"], ["2d8"], ["3d6"], ["3d8"], ["4d8"]],
+  "size_steps": { "undersized": -1, "normal": 0, "oversized": 1 }
+}
