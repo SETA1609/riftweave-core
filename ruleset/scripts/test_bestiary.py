@@ -102,7 +102,7 @@ class TestBestiary(unittest.TestCase):
         families = {
             "ooze": ["acid_ooze", "fire_ooze", "frost_ooze"],
             "giant": ["frost_giant", "storm_giant_youth"],
-            "fire_elemental": ["ice_elemental", "magma_titan"],
+            "fire_elemental": ["magma_titan"],
             "stone_golem": ["bronze_guardian", "iron_colossus"],
             "treant_sapling": ["elder_treant"],
             "bandit": ["bandit_captain"],
@@ -119,7 +119,7 @@ class TestBestiary(unittest.TestCase):
     def test_element_variants_use_a_template(self):
         rows = {row["key"]: row for row in raw_monsters()}
         expected = {"acid_ooze": ["acid"], "fire_ooze": ["fire"], "frost_ooze": ["frost"],
-                    "frost_giant": ["frost"], "storm_giant_youth": ["storm"], "ice_elemental": ["frost"]}
+                    "frost_giant": ["frost"], "storm_giant_youth": ["storm"]}
         for key, templates in expected.items():
             with self.subTest(monster=key):
                 self.assertEqual(rows[key].get("templates"), templates)

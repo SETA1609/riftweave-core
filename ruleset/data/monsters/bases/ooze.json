@@ -1,0 +1,21 @@
+{
+  "key": "ooze",
+  "label": "Ooze Base",
+  "description": "Base template for oozes and slimes: mindless jellies that flow over their prey. Oozes have great endurance and almost no agility, perception, or will. They are earth-phase until a template gives them an element.",
+  "phase": "earth",
+  "size": "medium",
+  "level": 2,
+  "attributes": { "str": 4, "end": 7, "agi": 1, "per": 1, "wil": 1 },
+  "hitPoints": 30,
+  "tags": ["ooze"],
+  "growth": {
+    "attributes": {
+      "str": { "perLevel": 0.35 },
+      "end": { "perLevel": 0.5 },
+      "agi": { "perLevel": 0.05 },
+      "per": { "perLevel": 0.05 },
+      "wil": { "perLevel": 0.1 }
+    },
+    "hitPointsPerLevel": 6
+  }
+}

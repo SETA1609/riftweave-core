@@ -185,7 +185,7 @@ Fire Ooze is an ooze with the fire template:
 
 ```json
 { "id": 46, "key": "fire_ooze", "base": "core:monster/ooze", "templates": ["fire"],
-  "overrides": { "level": 5, "hitPoints": 42 } }
+  "overrides": { "level": 5, "hitPoints": 32 } }
 ```
 
 A family member that is not an element change is a derived monster with overrides only:

@@ -717,32 +717,14 @@
     {
       "id": 16,
       "key": "acid_ooze",
-      "base": "plant",
+      "base": "core:monster/ooze",
+      "templates": [
+        "acid"
+      ],
       "overrides": {
-        "label": "Acid Ooze",
-        "description": "A quivering mass that dissolves whatever it engulfs.",
-        "phase": "earth",
-        "size": "medium",
         "level": 4,
-        "hitPoints": 32,
-        "attacks": [
-          {
-            "key": "pseudopod",
-            "label": "Pseudopod",
-            "damage": {
-              "amount": 7,
-              "type": "acid"
-            },
-            "phase": "earth"
-          }
-        ],
-        "resist": {
-          "acid": 20,
-          "slashing": 3
-        },
-        "tags": [
-          "ooze"
-        ]
+        "description": "A quivering mass that dissolves whatever it engulfs.",
+        "hitPoints": 32
       }
     },
     {
@@ -929,15 +911,20 @@
     {
       "id": 23,
       "key": "bandit_captain",
-      "base": "humanoid",
+      "base": "core:monster/bandit",
       "overrides": {
+        "level": 8,
         "label": "Bandit Captain",
         "description": "The one the others fear: quick with a blade and quicker with a threat.",
         "phase": "metal",
-        "size": "medium",
-        "level": 8,
-        "role": "boss",
+        "attributes": {
+          "str": 6,
+          "end": 6,
+          "per": 6,
+          "wil": 6
+        },
         "hitPoints": 85,
+        "role": "boss",
         "attacks": [
           {
             "key": "rapier",
@@ -948,10 +935,6 @@
             },
             "phase": "metal"
           }
-        ],
-        "tags": [
-          "humanoid",
-          "bandit"
         ]
       }
     },
@@ -989,14 +972,16 @@
     {
       "id": 25,
       "key": "bronze_guardian",
-      "base": "construct",
+      "base": "core:monster/stone_golem",
       "overrides": {
+        "level": 10,
         "label": "Bronze Guardian",
         "description": "A temple statue that walks when its doors are forced.",
         "phase": "metal",
-        "size": "large",
-        "level": 10,
         "hitPoints": 52,
+        "tags": [
+          "construct"
+        ],
         "attacks": [
           {
             "key": "bronze_fist",
@@ -1012,9 +997,7 @@
           "poison": 30,
           "psychic": 30
         },
-        "tags": [
-          "construct"
-        ]
+        "role": "standard"
       }
     },
     {
@@ -1182,13 +1165,22 @@
     {
       "id": 31,
       "key": "storm_giant_youth",
-      "base": "humanoid",
+      "base": "core:monster/giant",
+      "templates": [
+        "storm"
+      ],
       "overrides": {
+        "level": 15,
         "label": "Storm Giant Youth",
         "description": "A giant still learning to call the storm, and already dangerous with it.",
-        "phase": "metal",
         "size": "large",
-        "level": 15,
+        "attributes": {
+          "str": 8,
+          "end": 8,
+          "agi": 8,
+          "per": 8,
+          "wil": 8
+        },
         "hitPoints": 70,
         "attacks": [
           {
@@ -1204,10 +1196,7 @@
         "resist": {
           "shock": 20,
           "thunder": 20
-        },
-        "tags": [
-          "giant"
-        ]
+        }
       }
     },
     {
@@ -1306,46 +1295,45 @@
     {
       "id": 35,
       "key": "frost_giant",
-      "base": "humanoid",
+      "base": "core:monster/giant",
+      "templates": [
+        "frost"
+      ],
       "overrides": {
-        "label": "Frost Giant",
-        "description": "A giant of the glaciers who wears the ice as armor.",
-        "phase": "water",
-        "size": "huge",
         "level": 19,
-        "role": "boss",
+        "description": "A giant of the glaciers who wears the ice as armor.",
         "hitPoints": 140,
+        "role": "boss",
         "attacks": [
           {
             "key": "maul",
             "label": "Maul",
             "damage": {
               "amount": 16,
-              "type": "bludgeoning"
+              "type": "frost"
             },
             "phase": "water"
           }
         ],
         "resist": {
           "frost": 30
-        },
-        "tags": [
-          "giant"
-        ]
+        }
       }
     },
     {
       "id": 36,
       "key": "iron_colossus",
-      "base": "construct",
+      "base": "core:monster/stone_golem",
       "overrides": {
+        "level": 20,
         "label": "Iron Colossus",
         "description": "A war engine of riveted iron, built to break walls.",
         "phase": "metal",
         "size": "huge",
-        "level": 20,
-        "role": "boss",
         "hitPoints": 150,
+        "tags": [
+          "construct"
+        ],
         "attacks": [
           {
             "key": "crushing_fist",
@@ -1360,23 +1348,24 @@
           "slashing": 6,
           "piercing": 6,
           "psychic": 40
-        },
-        "tags": [
-          "construct"
-        ]
+        }
       }
     },
     {
       "id": 37,
       "key": "shadow_hound",
-      "base": "beast",
+      "base": "core:monster/dire_wolf",
       "overrides": {
+        "level": 21,
         "label": "Shadow Hound",
         "description": "A hound of living darkness that hunts by the fear it smells.",
         "phase": "water",
         "size": "medium",
-        "level": 21,
         "hitPoints": 80,
+        "tags": [
+          "beast",
+          "shadow"
+        ],
         "attacks": [
           {
             "key": "shadow_bite",
@@ -1389,25 +1378,20 @@
         ],
         "resist": {
           "necrotic": 15
-        },
-        "tags": [
-          "beast",
-          "shadow"
-        ]
+        }
       }
     },
     {
       "id": 38,
       "key": "elder_treant",
-      "base": "plant",
+      "base": "core:monster/treant_sapling",
       "overrides": {
+        "level": 22,
         "label": "Elder Treant",
         "description": "An ancient tree-lord whose anger shakes the forest floor.",
-        "phase": "wood",
         "size": "huge",
-        "level": 22,
-        "role": "boss",
         "hitPoints": 180,
+        "role": "boss",
         "attacks": [
           {
             "key": "root_slam",
@@ -1422,10 +1406,7 @@
         ],
         "resist": {
           "bludgeoning": 6
-        },
-        "tags": [
-          "plant"
-        ]
+        }
       }
     },
     {
@@ -1463,13 +1444,12 @@
     {
       "id": 40,
       "key": "thunderbird",
-      "base": "beast",
+      "base": "core:monster/storm_hawk",
       "overrides": {
+        "level": 25,
         "label": "Thunderbird",
         "description": "A storm-sized bird whose wingbeats are thunder.",
-        "phase": "metal",
         "size": "huge",
-        "level": 25,
         "hitPoints": 100,
         "attacks": [
           {
@@ -1486,25 +1466,20 @@
         "resist": {
           "thunder": 30,
           "shock": 15
-        },
-        "tags": [
-          "beast",
-          "bird"
-        ]
+        }
       }
     },
     {
       "id": 41,
       "key": "magma_titan",
-      "base": "elemental",
+      "base": "core:monster/fire_elemental",
       "overrides": {
+        "level": 26,
         "label": "Magma Titan",
         "description": "A walking mountain of molten rock.",
-        "phase": "fire",
         "size": "huge",
-        "level": 26,
-        "role": "boss",
         "hitPoints": 200,
+        "role": "boss",
         "attacks": [
           {
             "key": "magma_fist",
@@ -1519,11 +1494,7 @@
         "resist": {
           "fire": 40,
           "acid": 15
-        },
-        "tags": [
-          "elemental",
-          "fire"
-        ]
+        }
       }
     },
     {
@@ -1560,14 +1531,20 @@
     {
       "id": 43,
       "key": "bone_colossus",
-      "base": "undead",
+      "base": "core:monster/skeleton",
       "overrides": {
+        "level": 28,
         "label": "Bone Colossus",
         "description": "A giant knit from the bones of a battlefield.",
         "phase": "earth",
         "size": "huge",
-        "level": 28,
+        "attributes": {
+          "agi": 8
+        },
         "hitPoints": 105,
+        "tags": [
+          "undead"
+        ],
         "attacks": [
           {
             "key": "bone_slam",
@@ -1582,23 +1559,18 @@
         "resist": {
           "piercing": 8,
           "poison": 30
-        },
-        "tags": [
-          "undead"
-        ]
+        }
       }
     },
     {
       "id": 44,
       "key": "ancient_dragon",
-      "base": "elemental",
+      "base": "core:monster/ember_drake",
       "overrides": {
+        "level": 30,
         "label": "Ancient Dragon",
         "description": "The oldest of the drakes, whose breath ends armies.",
-        "phase": "fire",
         "size": "huge",
-        "level": 30,
-        "role": "boss",
         "hitPoints": 210,
         "attacks": [
           {
@@ -1625,10 +1597,87 @@
           "fire": 30,
           "slashing": 5,
           "piercing": 5
+        }
+      }
+    },
+    {
+      "id": 45,
+      "key": "ooze",
+      "base": "ooze",
+      "overrides": {
+        "label": "Ooze",
+        "description": "A blind, quivering mass that flows over the cave floor and engulfs whatever it touches.",
+        "level": 2,
+        "resist": {
+          "slashing": 3,
+          "piercing": 3
         },
+        "attacks": [
+          {
+            "key": "pseudopod",
+            "label": "Pseudopod",
+            "damage": {
+              "amount": 6,
+              "type": "bludgeoning"
+            },
+            "phase": "earth"
+          }
+        ]
+      }
+    },
+    {
+      "id": 46,
+      "key": "fire_ooze",
+      "base": "core:monster/ooze",
+      "templates": [
+        "fire"
+      ],
+      "overrides": {
+        "description": "An ooze that soaked up a fire vent; it boils as it flows and sets alight what it engulfs.",
+        "level": 5,
+        "hitPoints": 32
+      }
+    },
+    {
+      "id": 47,
+      "key": "frost_ooze",
+      "base": "core:monster/ooze",
+      "templates": [
+        "frost"
+      ],
+      "overrides": {
+        "description": "An ooze from the glacier caves, half slush, that numbs whatever it swallows.",
+        "level": 4,
+        "hitPoints": 30
+      }
+    },
+    {
+      "id": 48,
+      "key": "giant",
+      "base": "humanoid",
+      "overrides": {
+        "label": "Giant",
+        "description": "A towering brute of the high moors who uproots trees for clubs and boulders to throw.",
+        "phase": "earth",
+        "size": "huge",
+        "level": 13,
+        "hitPoints": 55,
         "tags": [
-          "dragon",
-          "elemental"
+          "giant"
+        ],
+        "resist": {
+          "bludgeoning": 5
+        },
+        "attacks": [
+          {
+            "key": "tree_club",
+            "label": "Tree Club",
+            "damage": {
+              "amount": 11,
+              "type": "bludgeoning"
+            },
+            "phase": "earth"
+          }
         ]
       }
     }

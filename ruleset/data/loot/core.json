@@ -234,6 +234,10 @@
     { "monster": "core:monster/magma_titan", "loot": [{ "table": "hoard_major" }, { "table": "hoard_minor" }] },
     { "monster": "core:monster/acid_hydra", "loot": [{ "table": "hoard_major" }, { "table": "hoard_minor" }] },
     { "monster": "core:monster/bone_colossus", "loot": [{ "table": "hoard_major" }] },
-    { "monster": "core:monster/ancient_dragon", "loot": [{ "table": "hoard_major" }, { "table": "hoard_major" }, { "table": "hoard_minor" }] }
+    { "monster": "core:monster/ancient_dragon", "loot": [{ "table": "hoard_major" }, { "table": "hoard_major" }, { "table": "hoard_minor" }] },
+    { "monster": "core:monster/ooze", "loot": [{ "table": "grave_goods" }] },
+    { "monster": "core:monster/fire_ooze", "loot": [{ "table": "grave_goods" }] },
+    { "monster": "core:monster/frost_ooze", "loot": [{ "table": "grave_goods" }] },
+    { "monster": "core:monster/giant", "loot": [{ "table": "hoard_major" }] }
   ]
 }
