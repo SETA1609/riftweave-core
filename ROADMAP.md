@@ -24,7 +24,9 @@ A module may extend core through modifiers and rows but core never requires one
 
 **In this repo, not a 1.0 gate:** the reference backend (story APP): a Go implementation of the
 kernel behind one command contract, exposed as an agent CLI, a human CLI, an HTTP API, and an
-Angular frontend. It is a way to call and test the ruleset, not a game.
+Angular frontend. It is a way to call and test the ruleset, not a game. One exception: the alpha
+playtest (M5-18) runs through its sessions, its human CLI, and its dev mode
+(APP-04, APP-05, APP-08), so those gate 1.0; the HTTP API and the frontend do not.
 
 **Out of scope for this repo:** game engines and virtual tabletop code. A Zig or other second
 implementation is the long-term conformance proof, but it lives elsewhere. The 1.0 gate is that
@@ -78,9 +80,9 @@ is the earliest wave of its open issues; stories in the same wave can run in par
 | 0 | M2 | ready | — | 1 |
 | 0 | M3 | first (1), ready | — | 3 |
 | 0 | M4 | ready | — | 1 |
-| 0 | M5 | ready, critical | M3, M4 | 5 |
-| 3 | POST | blocked, critical | M5 | 7 |
-| 0 | APP | ready | — | 5 |
+| 0 | M5 | ready, critical | APP, M3, M4 | 7 |
+| 5 | POST | blocked, critical | M5 | 7 |
+| 0 | APP | ready, critical | — | 7 |
 
 <!-- roadmap-order end -->
 

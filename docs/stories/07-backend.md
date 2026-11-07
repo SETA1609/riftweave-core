@@ -8,7 +8,7 @@ Roadmap: [APP](../../ROADMAP.md#app-reference-backend). Format and rules: [READM
 
 **Spec:** `docs/backend/` (written in APP-01). Rules stay in `docs/core/` and `docs/modules/`.
 
-**Done when:** every vector passes under the Python reference and under the Go backend in CI; the agent CLI, the human CLI, and the API return the same result for the same input and rolls; the frontend can create a character and resolve an attack through the API. Not a 1.0 gate.
+**Done when:** every vector passes under the Python reference and under the Go backend in CI; the agent CLI, the human CLI, and the API return the same result for the same input and rolls; the frontend can create a character and resolve an attack through the API. Not a 1.0 gate, except the issues the alpha playtest (M5-18) runs on: APP-04, APP-05, and APP-08.
 
 Done: APP-01 ([done.md](done.md#app-reference-backend))
 
@@ -69,3 +69,23 @@ Done: APP-01 ([done.md](done.md#app-reference-backend))
 - Files: ~15 (frontend/, docs/backend/frontend.md, .github/workflows/)
 - See: docs/backend/api.md
 - Done when: the app builds and its tests pass in CI; it creates a character and resolves an attack through the API; the attack result matches the vector for the same inputs.
+
+#### APP-08 Dev mode: inflict state on a session for testing
+- Status: todo
+- Priority: medium
+- Needs: APP-03, APP-04
+- Do: A dev mode in both CLIs, off unless the binary runs with `--dev`, that changes a session's actor directly so a tester can reach a state without playing to it. Operations: set or adjust a resource (HP, MP, stamina, AP); grant XP or set the level; set an attribute or skill; grant or remove a perk; learn a spell or an effect; add or remove an item or gold; inflict or clear a condition or an effect (any effect from the registry, with magnitude, duration, and an origin from `origins/core.json`, so it stacks by the real rule); advance time in turns or rests; fix the next rolls (a d100 sequence) or the seed. Each operation runs through the same core and checks its refs like any command; it holds no rule. Agent CLI: `riftweave dev <operation>` with JSON in and out. Human CLI: a dev panel and short commands (`:give`, `:inflict`, `:level`, `:roll`). The HTTP API does not serve dev operations. Each operation is logged in the session, which is marked `dev: true`, so a replay repeats it and a dev run is never taken for a played one.
+- Keys: `--dev` flag; `dev` command and its operations in `backend/contract/`; `dev` mark and log on the session
+- Files: ~6 (backend/cmd/riftweave/, backend/core/dev/, backend/contract/, docs/backend/dev-mode.md, docs/backend/cli.md)
+- See: docs/stories/07-backend.md (APP-03, APP-04, APP-05), ruleset/data/origins/core.json
+- Done when: without `--dev`, every dev operation is refused with a JSON error; with it, each operation has a test; an inflicted effect stacks with a real one by its origin's policy; a bad ref is refused; a dev session replays to the same result and stays marked `dev: true`; the human CLI and the agent CLI give the same result for the same operations.
+
+#### APP-09 MCP server over the command contract
+- Status: todo
+- Priority: medium
+- Needs: APP-03, APP-04
+- Do: A third front end in the same binary, `riftweave mcp`, serving the Model Context Protocol over stdio for agents in an MCP client. Each command is one tool, generated from `backend/contract/` (name, description, input schema) as the OpenAPI document is in APP-06, never written by hand. The server holds the open session between calls, so an agent plays a run without passing the session back each time; tools to open, save, and load a session wrap APP-04. The dev operations (APP-08) are tools only when the server starts with `--dev`. It calls the same core as the agent CLI and holds no rule. Not a 1.0 gate.
+- Keys: `riftweave mcp` subcommand; one tool per contract command; session tools
+- Files: ~5 (backend/cmd/riftweave/, backend/mcp/, docs/backend/mcp.md, docs/backend/cli.md)
+- See: docs/stories/07-backend.md (APP-03, APP-04, APP-06, APP-08), backend/contract/
+- Done when: every contract command is a tool with the contract's input schema; a test runs a vector through MCP and gets the same JSON as the agent CLI; a session persists across calls and saves to the same JSON as APP-04; dev tools are absent without `--dev` and present with it.

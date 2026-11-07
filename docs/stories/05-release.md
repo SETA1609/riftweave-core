@@ -55,7 +55,7 @@ Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-07, M5-08, M5-10, M5-11,
 #### M5-09 Licensing and attribution audit, tag v1.0.0
 - Status: todo
 - Priority: high
-- Needs: M2-01, M2-02, M2-03, M2-04, M2-05, M3-02, M3-03, M3-04, M4-03, M4-04, M4-05, M5-01, M5-05, M5-06, M5-07, M5-08
+- Needs: M2-01, M2-02, M2-03, M2-04, M2-05, M3-02, M3-03, M3-04, M4-03, M4-04, M4-05, M5-01, M5-05, M5-06, M5-07, M5-08, M5-19
 - Was: RW-30
 - Do: Final pass: licence headers, `source` fields, NOTICE and CONTRIBUTORS, and the changelog. Then tag.
 - Files: ~6 (LICENSING.md, NOTICE, CONTRIBUTORS.md, CHANGELOG.md, ROADMAP.md)
@@ -70,3 +70,21 @@ Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-07, M5-08, M5-10, M5-11,
 - Files: ~6 (docs/stories/01-kernel.md, 04-world.md, 05-release.md, done.md, README.md, ROADMAP.md)
 - See: docs/stories/README.md#order
 - Done when: no issue whose PR is merged is still in a story file; `roadmap-order show` names a first issue in M3; `roadmap-order check` passes.
+
+#### M5-18 Alpha playtest through the human CLI
+- Status: todo
+- Priority: high
+- Needs: M2-01, M2-06, M3-02, M3-06, M4-03, M5-04, APP-04, APP-05, APP-08
+- Do: The alpha, before the 1.0 tag: the content floors are met and the playthrough chain passes, so play the rules as a person would, with dev mode (APP-08) to reach the states a run is slow to reach. Run at least five characters through the human CLI from creation to level 30, across builds (melee, ranged, each magic color, a hybrid), each run a saved session. Log what a person had to decide, what never came up, and where a rule was missing or read two ways. File each finding as an issue or a decision; turn a run that exposes a wrong result into a vector.
+- Files: ~4 (docs/decisions/M5-18.md, docs/playtests/, ruleset/tests/vectors/playthrough.json)
+- See: docs/stories/07-backend.md (APP-04, APP-05), docs/core/loop.md
+- Done when: five saved sessions reach level 30 and replay to the same result; every finding is an issue, a decision, or a vector; the decision record lists, for every perk, how often the runs took it and what it changed.
+
+#### M5-19 Perk throughput veto and distillation
+- Status: todo
+- Priority: high
+- Needs: M5-18
+- Do: Use the alpha's perk tallies to judge every perk. Veto perks that inflate throughput (damage, actions, or recovery a level band cannot answer) or that no run took; distil perks that overlap into one; rename perks whose label or key does not say what they do; remove the vetoed ones. Each perk gets one verdict: keep, merge, rename, or cut. A rename or removal is a breaking key change and is marked so in the changelog; references in examples, vectors, and docs move with it.
+- Files: ~8 (ruleset/data/features/core.json, docs/modules/progression.md, docs/decisions/M5-19.md, ruleset/data/examples/, ruleset/tests/vectors/, ruleset/scripts/test_features.py)
+- See: docs/decisions/M5-18.md, docs/stories/done.md (M2-01)
+- Done when: every perk has a verdict and a reason in the decision record; no cut or renamed key is still referenced; the perk floor (60) still holds or the decision record moves it; vectors pass.
