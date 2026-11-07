@@ -1,0 +1,273 @@
+{
+  "$schema": "../../schemas/character_example.schema.json",
+  "characters": [
+    {
+      "key": "borin",
+      "label": "Borin",
+      "concept": "martial",
+      "description": "A dwarven shield-bearer: mace and shield up front, built to last.",
+      "race": "core:race/common_dwarf",
+      "background": "core:background/former_soldier",
+      "assigned": {
+        "str": 6,
+        "per": 5,
+        "end": 6,
+        "int": 5,
+        "wil": 4,
+        "agi": 5,
+        "cha": 4,
+        "lck": 7
+      },
+      "tag_skills": [
+        "core:skill/blunt",
+        "core:skill/block",
+        "core:skill/athletics"
+      ],
+      "creation_perks": [],
+      "levels": [
+        {
+          "level": 1,
+          "luck_roll": 4,
+          "perk": null,
+          "spend": {
+            "blunt": 8,
+            "block": 6,
+            "athletics": 5
+          },
+          "gear": [
+            "core:weapon/light_crossbow",
+            "core:armor/standard_shield",
+            "core:weapon/longsword",
+            "core:weapon/mace",
+            "core:armor/chainmail"
+          ]
+        },
+        {
+          "level": 2,
+          "luck_roll": 2,
+          "perk": "core:feature/toughness",
+          "spend": {
+            "blunt": 10,
+            "block": 4,
+            "athletics": 3
+          }
+        },
+        {
+          "level": 3,
+          "luck_roll": 6,
+          "perk": "core:feature/toughness",
+          "spend": {
+            "blunt": 11,
+            "athletics": 10
+          }
+        },
+        {
+          "level": 4,
+          "luck_roll": 3,
+          "perk": "core:feature/pack_mule",
+          "spend": {
+            "blunt": 10,
+            "block": 8
+          },
+          "gear": [
+            "core:armor/helmet"
+          ]
+        },
+        {
+          "level": 5,
+          "luck_roll": 5,
+          "perk": "core:feature/lucky",
+          "spend": {
+            "block": 10,
+            "athletics": 10
+          }
+        },
+        {
+          "level": 6,
+          "luck_roll": 1,
+          "perk": "core:feature/crushing_blow",
+          "spend": {
+            "blades": 8
+          }
+        },
+        {
+          "level": 7,
+          "luck_roll": 7,
+          "perk": "core:feature/toughness",
+          "spend": {
+            "blunt": 12,
+            "block": 10
+          },
+          "gear": [
+            "core:armor/breastplate"
+          ]
+        },
+        {
+          "level": 8,
+          "luck_roll": 3,
+          "perk": "core:feature/iron_stomach",
+          "spend": {
+            "athletics": 18
+          }
+        },
+        {
+          "level": 9,
+          "luck_roll": 4,
+          "perk": "core:feature/shield_wall",
+          "spend": {
+            "blunt": 10,
+            "block": 9
+          }
+        },
+        {
+          "level": 10,
+          "luck_roll": 2,
+          "perk": "core:feature/scavenger",
+          "spend": {
+            "athletics": 11,
+            "blades": 3
+          },
+          "gear": [
+            "core:weapon/warhammer"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "sefa",
+      "label": "Sefa",
+      "concept": "caster",
+      "description": "An elven arcane apprentice: red magic to strike, blue magic to ward, lore to know what she faces.",
+      "race": "core:race/common_elf",
+      "background": "core:background/arcane_apprentice",
+      "assigned": {
+        "str": 4,
+        "per": 5,
+        "end": 5,
+        "int": 8,
+        "wil": 7,
+        "agi": 4,
+        "cha": 4,
+        "lck": 5
+      },
+      "tag_skills": [
+        "core:skill/red_magic",
+        "core:skill/blue_magic",
+        "core:skill/lore"
+      ],
+      "creation_perks": [],
+      "levels": [
+        {
+          "level": 1,
+          "luck_roll": 3,
+          "perk": null,
+          "spend": {
+            "red_magic": 10,
+            "blue_magic": 8,
+            "lore": 8
+          },
+          "gear": [
+            "core:weapon/quarterstaff",
+            "core:armor/cloth_robe"
+          ],
+          "spells": [
+            "core:spell/fire_bolt",
+            "core:spell/ward"
+          ]
+        },
+        {
+          "level": 2,
+          "luck_roll": 1,
+          "perk": "core:feature/arcane_reservoir",
+          "spend": {
+            "red_magic": 8,
+            "blue_magic": 8,
+            "lore": 8
+          }
+        },
+        {
+          "level": 3,
+          "luck_roll": 4,
+          "perk": "core:feature/scholar",
+          "spend": {
+            "red_magic": 9,
+            "blue_magic": 9,
+            "lore": 9
+          },
+          "spells": [
+            "core:spell/force_dart"
+          ]
+        },
+        {
+          "level": 4,
+          "luck_roll": 2,
+          "perk": "core:feature/pyromancer",
+          "spend": {
+            "red_magic": 15,
+            "blue_magic": 10
+          }
+        },
+        {
+          "level": 5,
+          "luck_roll": 5,
+          "perk": "core:feature/arcane_reservoir",
+          "spend": {
+            "red_magic": 10,
+            "blue_magic": 10,
+            "lore": 8
+          },
+          "gear": [
+            "core:armor/cloak"
+          ]
+        },
+        {
+          "level": 6,
+          "luck_roll": 0,
+          "perk": "core:feature/mana_flow",
+          "spend": {
+            "blue_magic": 12,
+            "lore": 11
+          },
+          "spells": [
+            "core:spell/fire_burst"
+          ]
+        },
+        {
+          "level": 7,
+          "luck_roll": 3,
+          "perk": "core:feature/transmuter",
+          "spend": {
+            "red_magic": 15,
+            "lore": 11
+          }
+        },
+        {
+          "level": 8,
+          "luck_roll": 2,
+          "perk": "core:feature/meditative",
+          "spend": {
+            "blue_magic": 15,
+            "lore": 10
+          }
+        },
+        {
+          "level": 9,
+          "luck_roll": 4,
+          "perk": "core:feature/iron_will",
+          "spend": {
+            "blue_magic": 5,
+            "investigation": 11
+          }
+        },
+        {
+          "level": 10,
+          "luck_roll": 1,
+          "perk": "core:feature/arcane_reservoir",
+          "spend": {
+            "investigation": 12
+          }
+        }
+      ]
+    }
+  ]
+}

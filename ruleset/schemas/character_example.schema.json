@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Example characters",
+  "description": "Worked characters walked level by level (docs/modules/character-creation.md#two-characters-from-level-1-to-10). ruleset/scripts/test_characters.py replays each record, checks every choice against the rules, and generates the vectors in ruleset/tests/vectors/characters.json and the tables in the doc.",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "characters": { "type": "array", "minItems": 1, "items": { "$ref": "#/definitions/character" } }
+  },
+  "required": ["characters"],
+  "additionalProperties": false,
+  "definitions": {
+    "character": {
+      "type": "object",
+      "properties": {
+        "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
+        "label": { "type": "string", "minLength": 1 },
+        "concept": { "type": "string", "enum": ["martial", "caster"] },
+        "description": { "type": "string", "minLength": 1 },
+        "race": { "$ref": "schema.json#/definitions/namespacedRef" },
+        "background": { "$ref": "schema.json#/definitions/namespacedRef" },
+        "assigned": {
+          "type": "object",
+          "description": "Attributes after the point-buy (all start at 4, +10 distributed), before the race's modifiers.",
+          "propertyNames": { "$ref": "schema.json#/definitions/ability" },
+          "additionalProperties": { "type": "integer", "minimum": 1, "maximum": 10 }
+        },
+        "tag_skills": { "type": "array", "items": { "$ref": "schema.json#/definitions/namespacedRef" }, "minItems": 3 },
+        "creation_perks": { "type": "array", "items": { "$ref": "schema.json#/definitions/namespacedRef" } },
+        "levels": { "type": "array", "minItems": 1, "items": { "$ref": "#/definitions/level" } }
+      },
+      "required": ["key", "label", "concept", "description", "race", "background", "assigned", "tag_skills", "creation_perks", "levels"],
+      "additionalProperties": false
+    },
+    "level": {
+      "type": "object",
+      "properties": {
+        "level": { "type": "integer", "minimum": 1, "maximum": 30 },
+        "luck_roll": { "type": "integer", "minimum": 0, "maximum": 10, "description": "The random(0..LCK) term of this level's skill-point pool." },
+        "perk": { "oneOf": [{ "type": "null" }, { "$ref": "schema.json#/definitions/namespacedRef" }], "description": "The perk taken at this level, before the pool is spent; null at level 1 for a non-human." },
+        "spend": { "type": "object", "description": "Ranks bought per skill key; a tag skill costs 1 point a rank, another 2. The pool is spent whole.", "propertyNames": { "pattern": "^[a-z_][a-z0-9_]*$" }, "additionalProperties": { "type": "integer", "minimum": 1 } },
+        "gear": { "type": "array", "items": { "$ref": "schema.json#/definitions/namespacedRef" }, "description": "Items gained at this level." },
+        "spells": { "type": "array", "items": { "$ref": "schema.json#/definitions/namespacedRef" }, "description": "Spells learned at this level." }
+      },
+      "required": ["level", "luck_roll", "perk", "spend"],
+      "additionalProperties": false
+    }
+  }
+}
