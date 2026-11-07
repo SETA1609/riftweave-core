@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Monster template",
+  "description": "A reusable change a monster row applies with templates: [...] (docs/modules/monsters.md#templates). Applied after the base and before the row's overrides.",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "monster_templates": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/template" }
+    }
+  },
+  "required": ["monster_templates"],
+  "additionalProperties": false,
+  "definitions": {
+    "template": {
+      "type": "object",
+      "properties": {
+        "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
+        "label": { "type": "string" },
+        "description": { "type": "string" },
+        "label_prefix": { "type": "string", "description": "Put before the monster's label, with a space, unless the row's overrides give a label." },
+        "phase": { "$ref": "schema.json#/definitions/phase", "description": "The monster's phase, and the phase of every attack." },
+        "damage_type": { "$ref": "schema.json#/definitions/damageType", "description": "Every attack's damage type." },
+        "resist": {
+          "type": "object",
+          "description": "Added to the monster's resist, per damage type.",
+          "propertyNames": { "$ref": "schema.json#/definitions/damageType" },
+          "additionalProperties": { "type": "integer", "minimum": 0 }
+        },
+        "tags": { "type": "array", "items": { "type": "string" }, "description": "Appended to the monster's tags, skipping any it has." }
+      },
+      "required": ["key", "label", "description", "label_prefix", "phase", "damage_type"],
+      "additionalProperties": false
+    }
+  }
+}

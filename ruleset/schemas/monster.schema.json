@@ -153,7 +153,14 @@
         "source": { "$ref": "schema.json#/definitions/sourceRef" },
         "base": {
           "type": "string",
-          "description": "Name of the base template in bases/<name>.json (without .json suffix). Base templates provide default values; overrides replace them."
+          "pattern": "^([a-z_][a-z0-9_]*|core:monster/[a-z_][a-z0-9_]*)$",
+          "description": "The base: a creature type in bases/<name>.json (a bare name, without .json), or another monster in the same file as core:monster/<key>, which this one derives from (docs/modules/monsters.md#derived-monsters). A derived monster states its level in overrides."
+        },
+        "templates": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
+          "uniqueItems": true,
+          "description": "Keys in monsters/templates.json, applied in order after the base and before overrides (docs/modules/monsters.md#templates)."
         },
         "overrides": { "$ref": "#/definitions/monsterData" }
       },
