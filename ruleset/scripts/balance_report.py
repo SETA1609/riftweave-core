@@ -31,7 +31,7 @@ def sized_dice(weapon_row, ladder=None):
     if ladder is None:
         ladder = json.loads((DATA_DIR / "combat/dice_ladder.json").read_text())
     dice = weapon_row["weapon"]["damage"]["dice"]
-    step = ladder["size_steps"][weapon_row.get("size", "normal")]
+    step = ladder["sizes"][weapon_row.get("size", "normal")]["dice_step"]
     if step == 0:
         return dice
     rung = next(i for i, rung in enumerate(ladder["dice_ladder"]) if dice in rung)

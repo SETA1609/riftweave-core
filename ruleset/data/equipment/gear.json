@@ -189,8 +189,8 @@
     {
       "id": 408,
       "key": "rope_hemp",
-      "label": "Hemp Rope (15 m)",
-      "description": "Fifteen metres of sturdy hemp rope.",
+      "label": "Hemp Rope (10 units)",
+      "description": "Ten units of sturdy hemp rope.",
       "type": "adventuring_gear",
       "cost": {
         "quantity": 1,

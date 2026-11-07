@@ -59,7 +59,7 @@
         "speed": {
           "type": "integer",
           "minimum": 1,
-          "description": "Walking speed in feet per round"
+          "description": "Walking speed in units (grid squares) per round (docs/core/contract.md#distance)"
         },
         "size": {
           "type": "string",

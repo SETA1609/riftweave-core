@@ -26,7 +26,7 @@ def race(key, role, **fields):
     return row
 
 
-FULL = {"phase": "earth", "speed": 30, "size": "medium"}
+FULL = {"phase": "earth", "speed": 6, "size": "medium"}
 
 
 class TestLineageSchema(unittest.TestCase):

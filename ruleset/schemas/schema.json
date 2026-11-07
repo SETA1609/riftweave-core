@@ -125,7 +125,7 @@
         "radius": {
           "type": "number",
           "minimum": 0,
-          "description": "Area radius in meters when target is 'area'"
+          "description": "Area radius in units (grid squares, docs/core/contract.md#distance) when target is 'area'"
         },
         "parameter": {
           "type": "string",

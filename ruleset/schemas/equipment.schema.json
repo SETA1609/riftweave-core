@@ -84,8 +84,8 @@
               "additionalProperties": false
             },
             "properties": { "type": "array", "items": { "type": "string" } },
-            "rangeNormal": { "type": "integer", "minimum": 1 },
-            "rangeLong": { "type": "integer", "minimum": 1 },
+            "rangeNormal": { "type": "integer", "minimum": 1, "description": "Normal range in units (grid squares, docs/core/contract.md#distance)." },
+            "rangeLong": { "type": "integer", "minimum": 1, "description": "Long range in units (grid squares)." },
             "on_hit_effects": {
               "type": "array",
               "description": "Effects from the shared registry that trigger when this weapon lands a hit. Each entry is an appliedEffect shape, exactly like spell effects. Examples: a flaming sword applies burn (id 57), a poisonous blade applies poison_health_drain (id 45). Duration and magnitude may be fixed or scale with weapon quality.",

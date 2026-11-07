@@ -74,6 +74,18 @@ cast(actor, spell):
   # magic does not know DR, alchemy, or factions
 ```
 
+## Distance
+
+Every distance in the data and the docs is in **units**. One unit is one square of a grid.
+Walking speed (`speed`, units per round), weapon range (`rangeNormal`, `rangeLong`), melee
+reach (`attackReach`), area radius (`radius`), and distances in descriptions (darkvision,
+falls, rope) all count squares. No definition uses feet or metres. [V 2026-11-07, owner
+decision]
+
+For tabletop play a square is 1.5 m by 1.5 m: a human walks 6 units (9 m) a round, and a
+longbow reaches 30 units (45 m) at normal range. That conversion is for reading aloud only;
+nothing stores it. [A]
+
 ## What a later module is forbidden to do
 
 - Call another system's procedure. Alchemy does not call advancement. Magic does not call defense.

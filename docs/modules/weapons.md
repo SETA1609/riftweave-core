@@ -93,7 +93,7 @@ One step is one die size. Moving up or down the ladder is the only way dice grow
 A weapon one step above its handling's range pays for it elsewhere: `loading` (the
 flintlock pistol is light at 1d10, the arquebus and blunderbuss two-handed at 1d12 and 2d6),
 or a high price. A bow trades dice for range: the longbow is `heavy` for its draw and rolls
-1d8, and pays back in reach (150 / 600). A weapon below the range is cheap or
+1d8, and pays back in range (30 / 120 units). A weapon below the range is cheap or
 concealable; the balance gate lists it as an accepted finding (dagger, sling, throwing
 knife, brass knuckles). The balance band `weapon_dice` (`balance/core.json`, 1d6 to 2d10)
 is checked after the size step. [V 2026-11-07, `balance_report.py --gate`]
@@ -107,7 +107,12 @@ down the ladder, oversized one rung up, never more. The ladder and the steps are
 `ruleset/data/combat/dice_ladder.json`. A row keeps its base dice; the consumer applies the
 step (`balance_report.sized_dice`). [V 2026-11-07, `test_equipment.py`]
 
-| Normal | Undersized (−1) | Oversized (+1) | Normal examples |
+Size also changes how easy the weapon is to use: an undersized weapon gives +10 to the
+attack, an oversized one −10. The weapon emits it as an `add` on `attack`, source
+`item:<key>`, origin `core:origin/equipment`, while it is used. Small dice, easy to land;
+big dice, hard to land. [A]
+
+| Normal | Undersized (−1, +10 attack) | Oversized (+1, −10 attack) | Normal examples |
 | --- | --- | --- | --- |
 | 1d4 | 1d3 | 1d6 | dagger, sling |
 | 1d6 | 1d4 | 1d8 | mace, shortsword, shortbow |
@@ -117,8 +122,8 @@ step (`balance_report.sized_dice`). [V 2026-11-07, `test_equipment.py`]
 
 Two rows use it: `undersized_shortbow` (1d4) and `oversized_longbow` (1d10). Size is not an
 enchantment: it takes no enchantment slot, does not stack under the `enchantment` origin,
-and a dispel does not remove it. Nothing about size touches range, handling, or who can
-use the weapon. [A] Monster natural attacks keep their own flat `attack.damage.amount`
+and a dispel does not remove it. Size does not touch range, handling, or who can use the
+weapon. [A] Monster natural attacks keep their own flat `attack.damage.amount`
 ([monsters.md](monsters.md)); the ladder is for weapons. [A]
 
 ## Materials and Weapon Variations
