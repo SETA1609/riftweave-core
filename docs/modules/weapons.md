@@ -1,6 +1,6 @@
 # Weapons
 
-Weapons in Riftweave are defined as base equipment entries in `ruleset/data/equipment/weapons.json` (governed by `equipment.schema.json`). They are deliberately simple and use **classic D&D 3.5-style dice** for damage. Material-based variations, crafting options, and restrictions are **not** encoded as data variations in the schema or base entries. Instead, they are explained here for use by the crafting and magic-crafting modules.
+Weapons in Riftweave are defined as base equipment entries in `ruleset/data/equipment/weapons.json` (governed by `equipment.schema.json`). They are deliberately simple and use **classic D&D 3.5-style dice** for damage. Material-based variations and crafting options are **not** encoded as data variations in the schema or base entries. Instead, they are explained here for use by the crafting and magic-crafting modules.
 
 ## Core Classification Axes
 
@@ -128,6 +128,16 @@ weapon. [A] Monster natural attacks keep their own flat `attack.damage.amount`
 
 ## Materials and Weapon Variations
 
+**Default materials, not valid materials.** Like Elin, any material can go into any base:
+a granite bow, a gold dagger, a wooden greatsword. A base's `default_materials` names the
+materials it is found and sold in; loot and shops should use only that list, so odd
+combinations come from player crafting alone. Not yet enforced: a loot row's `material`
+applies to every weapon and armor it yields, so the stone golem's steel hoard can drop a
+steel bow. [U] A poor combination is weak, not forbidden:
+the material's own numbers (attack bonus, weight, tags such as `brittle`) are the cost.
+[V 2026-11-07, owner decision] `validate.py` no longer rejects a `crafted_items` row whose
+material is outside the base's list. [V 2026-11-07]
+
 Materials (see `data/materials/core.json` and `docs/modules/materials.md`) are the primary way to create **variations** of the base weapons.
 
 When a weapon is crafted from a material:
@@ -182,7 +192,7 @@ The same base weapon type becomes a different effective weapon depending on mate
   - Wood: almost never (a wooden dagger is barely a weapon).
 
 - **Bows (shortbow 1d6, longbow 1d8 piercing)**:
-  - Heavily restricted to wood or elven wood. Metal bows don't make sense. Wood provides the necessary flexibility and light weight. Elven wood versions are superior in power and magic conduction.
+  - Default materials are wood and elven wood: wood gives the flexibility and light weight, and elven wood versions are superior in power and magic conduction. A granite or iron bow is possible, but only a player crafts one.
 
 ### Design Notes for Crafting Modules
 
@@ -197,7 +207,7 @@ The same base weapon type becomes a different effective weapon depending on mate
 
 See the table in the "Base Damage" section above for the complete list with dice, length, reach, skill, and key properties.
 
-All entries live in `ruleset/data/equipment/weapons.json`. The schema only enforces the core structure (category, range, length, attackReach, skill, damage dice+type, properties). Material application and any "this weapon can't be made from X" logic live in documentation and the crafting modules, not as hard schema constraints on the base data.
+All entries live in `ruleset/data/equipment/weapons.json`. The schema only enforces the core structure (category, range, length, attackReach, skill, damage dice+type, properties). Material application lives in documentation and the crafting modules, not as schema constraints on the base data.
 
 ## Related Systems
 

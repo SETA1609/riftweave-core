@@ -20,8 +20,6 @@ SCHEMA_DIR = ROOT / "schemas"
 MODULES_DIR = ROOT / "modules"
 MONSTERS_BASES_DIR = DATA_DIR / "monsters" / "bases"
 
-# Cache for equipment base templates (loaded lazily for valid_materials checks).
-_EQUIPMENT_BASES_CACHE = None
 
 # Mapping: delivery context name -> required channel name.
 # Extend this dict to add enforcement for new delivery channels.
@@ -88,26 +86,6 @@ def build_effect_channels(data_files, module_data_files=None):
                 if isinstance(key, str) and isinstance(chlist, list):
                     channels[f"core:effect/{key}"] = set(chlist)
     return channels
-
-
-def _load_equipment_bases_cache():
-    """Load all equipment base templates and cache them.
-    Returns dict mapping base_key -> full base data dict.
-    """
-    global _EQUIPMENT_BASES_CACHE
-    if _EQUIPMENT_BASES_CACHE is not None:
-        return _EQUIPMENT_BASES_CACHE
-    cache = {}
-    for base_dir in EQUIPMENT_BASES_DIRS.values():
-        if not base_dir.exists():
-            continue
-        for f in sorted(base_dir.glob("*.json")):
-            try:
-                cache[f.stem] = json.loads(f.read_text())
-            except (json.JSONDecodeError, OSError):
-                pass
-    _EQUIPMENT_BASES_CACHE = cache
-    return cache
 
 
 # Maps equipment source filenames to namespaced reference categories.
@@ -843,7 +821,6 @@ def check_references(
                 )
 
     elif coll_name == "crafted_items":
-        bases_cache = _load_equipment_bases_cache()
         for ci in data.get("crafted_items", []) or []:
             if not isinstance(ci, dict):
                 continue
@@ -851,9 +828,6 @@ def check_references(
             bk = ci.get("base_key")
             mk = ci.get("material_key")
 
-            # Resolve namespaced refs to bare keys for valid_materials lookup
-            bare_bk = bk.split("/")[-1] if isinstance(bk, str) and "/" in bk else bk
-            bare_mk = mk.split("/")[-1] if isinstance(mk, str) and "/" in mk else mk
 
             # Check base_key resolves as namespaced equipment ref
             if isinstance(bk, str) and not equipment_ref_valid(
@@ -873,15 +847,8 @@ def check_references(
                     f"crafted item '{ckey}': material_key '{mk}' does not resolve to any material"
                 )
 
-            # Validate material_key is in base template's valid_materials
-            if isinstance(bare_bk, str) and isinstance(bare_mk, str):
-                base_data = bases_cache.get(bare_bk)
-                if base_data:
-                    valid_mats = base_data.get("valid_materials", [])
-                    if valid_mats and bare_mk not in valid_mats:
-                        errors.append(
-                            f"crafted item '{ckey}': material '{bare_mk}' is not valid for base '{bare_bk}' (valid: {valid_mats})"
-                        )
+            # Any material may be crafted onto any base (a granite bow is fine);
+            # default_materials only names what a base is found or sold in.
             gj = ci.get("engraving_jewel")
             if isinstance(gj, dict):
                 gk = gj.get("gem_key")
@@ -1185,7 +1152,7 @@ def _resolve_equipment_bases(data, errors, fp):
         merged = dict(base_data)
 
         # Strip base-only fields that should not appear in merged output
-        merged.pop("valid_materials", None)
+        merged.pop("default_materials", None)
 
         for k, v in overrides.items():
             merged[k] = _merge_field(merged.get(k), v)
