@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Dice ladder",
+  "description": "Weapon damage dice in order, one die size per step (docs/modules/weapons.md). A size step moves a weapon's dice one rung; dice on the same rung count as the same step.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "dice_ladder": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "$ref": "schema.json#/definitions/diceExpression"
+        },
+        "description": "One rung. The first dice is what a size step lands on; the others share the rung."
+      }
+    },
+    "sizes": {
+      "type": "object",
+      "description": "What each weapon size does.",
+      "properties": {
+        "undersized": {
+          "$ref": "#/definitions/size"
+        },
+        "normal": {
+          "$ref": "#/definitions/size"
+        },
+        "oversized": {
+          "$ref": "#/definitions/size"
+        }
+      },
+      "required": [
+        "undersized",
+        "normal",
+        "oversized"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "dice_ladder",
+    "sizes"
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "size": {
+      "type": "object",
+      "properties": {
+        "dice_step": {
+          "type": "integer",
+          "description": "Rungs the size moves the weapon's dice."
+        },
+        "attack": {
+          "type": "integer",
+          "description": "An add on the attack target while the weapon is used, source item:<key>, origin core:origin/equipment. Undersized is easier to use, oversized harder."
+        },
+        "value_percent": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "The weapon's price as a percent of its base price: undersized is cheaper, oversized dearer. It multiplies with the material's valueFactor (docs/core/economy.md)."
+        }
+      },
+      "required": [
+        "dice_step",
+        "attack",
+        "value_percent"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

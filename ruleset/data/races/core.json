@@ -10,7 +10,7 @@
         "role": "standalone"
       },
       "phase": "earth",
-      "speed": 30,
+      "speed": 6,
       "size": "medium",
       "abilityModifiers": {
         "cha": 1,
@@ -36,7 +36,7 @@
         "role": "parent"
       },
       "phase": "wood",
-      "speed": 30,
+      "speed": 6,
       "size": "medium",
       "abilityModifiers": {
         "agi": 1,
@@ -123,7 +123,7 @@
         "role": "parent"
       },
       "phase": "metal",
-      "speed": 25,
+      "speed": 5,
       "size": "medium",
       "abilityModifiers": {
         "end": 2,
@@ -221,7 +221,7 @@
         "parentRace": "core:race/beastman"
       },
       "phase": "metal",
-      "speed": 35,
+      "speed": 7,
       "size": "medium",
       "abilityModifiers": {
         "agi": 2,
@@ -249,7 +249,7 @@
         "parentRace": "core:race/beastman"
       },
       "phase": "wood",
-      "speed": 30,
+      "speed": 6,
       "size": "medium",
       "abilityModifiers": {
         "str": 1,

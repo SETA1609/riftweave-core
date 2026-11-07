@@ -56,7 +56,7 @@
                 "description": "Effect reference: namespaced format core:effect/<key>."
               },
               "magnitude": { "type": "number", "description": "Effect strength." },
-              "duration": { "type": "number", "minimum": 0, "description": "Duration in seconds; 0 = instantaneous." },
+              "duration": { "type": "integer", "minimum": 1, "default": 1, "description": "Seconds the effect runs per hit; 1, the default, is instant (schema.json appliedEffect)." },
               "uses_left": { "type": "integer", "minimum": 1, "description": "Number of hits or applications remaining before the coating is consumed." }
             },
             "required": ["effect", "uses_left"],

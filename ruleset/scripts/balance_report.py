@@ -26,6 +26,18 @@ def dice_mean(dice):
     return count * (sides + 1) / 2 + bonus
 
 
+def sized_dice(weapon_row, ladder=None):
+    """The dice after the row's size step (combat/dice_ladder.json); normal or no size keeps them."""
+    if ladder is None:
+        ladder = json.loads((DATA_DIR / "combat/dice_ladder.json").read_text())
+    dice = weapon_row["weapon"]["damage"]["dice"]
+    step = ladder["sizes"][weapon_row.get("size", "normal")]["dice_step"]
+    if step == 0:
+        return dice
+    rung = next(i for i, rung in enumerate(ladder["dice_ladder"]) if dice in rung)
+    return ladder["dice_ladder"][rung + step][0]
+
+
 def _within(value, band):
     return band[0] <= value <= band[1]
 
@@ -40,7 +52,7 @@ def _finding(check, subject, value, band, detail):
 
 def _weapon_dice(bands, weapons, _armor, _monsters):
     for row in weapons:
-        dice = row["weapon"]["damage"]["dice"]
+        dice = sized_dice(row)
         mean = dice_mean(dice)
         if not _within(mean, bands["weapon_dice"]):
             yield _finding("weapon_dice", row["key"], mean, bands["weapon_dice"], f"{dice} has mean {mean}")

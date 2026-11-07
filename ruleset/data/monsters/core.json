@@ -22,14 +22,14 @@
             "effect": "core:effect/damage_fire",
             "magnitude": 18,
             "target": "area",
-            "radius": 5
+            "radius": 3
           },
           {
             "effect": "core:effect/burn",
             "magnitude": 4,
             "duration": 10,
             "target": "area",
-            "radius": 5
+            "radius": 3
           }
         ],
         "tags": [

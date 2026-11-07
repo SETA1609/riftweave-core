@@ -136,7 +136,7 @@ ruleset. Per applied effect:
 ```
 effectCost = magnitude × unitWeight(magnitudeUnit)
            + durationSeconds × 0.1
-effectCost ×= targetMultiplier      // self 1.0, touch 1.0, ranged 1.25, area 1.5 (+0.1 per metre radius), world 3.0
+effectCost ×= targetMultiplier      // self 1.0, touch 1.0, ranged 1.25, area 1.5 (+0.15 per unit of radius), world 3.0
 
 spellComplexity = sum(effectCost over all effects)
 manaCost        = ceil( spellComplexity × (1 − skillDiscount) )   // skillDiscount = <color>_magic / 200, capped at 0.45

@@ -107,9 +107,10 @@
           "description": "Effect strength; interpreted per the effect's magnitudeUnit"
         },
         "duration": {
-          "type": "number",
-          "minimum": 0,
-          "description": "Duration in seconds; 0 or omitted means instantaneous"
+          "type": "integer",
+          "minimum": 1,
+          "default": 1,
+          "description": "Seconds the effect runs; 1, the default when omitted, is instant. Magnitude is always the amount per second: a pool effect (restore, damage, drain) applies it each second, so the total is magnitude times duration; a stat effect (fortify, resist) holds it for the duration. On a worn item (enchantment, accessory) a stat effect holds while equipped and takes no duration; an on-hit effect uses its duration per hit."
         },
         "target": {
           "type": "string",
@@ -125,7 +126,7 @@
         "radius": {
           "type": "number",
           "minimum": 0,
-          "description": "Area radius in meters when target is 'area'"
+          "description": "Area radius in units (grid squares, docs/core/contract.md#distance) when target is 'area'"
         },
         "parameter": {
           "type": "string",

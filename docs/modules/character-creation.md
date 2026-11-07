@@ -220,7 +220,7 @@ adds **+floor(LCK/2)%** to every check at resolution time.
   uses d100 roll-under against the color skill; see [`magic.md`](./magic.md).
 - **Equipment & wealth.** The reference baseline for a solid starting character is:
   - Starting wealth: **100 gp** (or roll 3d6×10 gp for variety).
-  - Must acquire at least: one weapon (or rely on unarmed), basic armor if desired for the concept, and a simple kit (bedroll, 7 rations, waterskin, backpack, 50 ft rope, flint & steel, 10 torches or a lantern + oil).
+  - Must acquire at least: one weapon (or rely on unarmed), basic armor if desired for the concept, and a simple kit (bedroll, 7 rations, waterskin, backpack, 10 units of rope, flint & steel, 10 torches or a lantern + oil).
   - Spend the rest on personal choices (extra weapons, tools, consumables, trade goods, or saved for later).
   This 100 gp + kit package is the recommended reference starting loadout. Full item lists and costs live in the equipment collections. GMs and consuming games may raise or lower the budget for desired power level or campaign tone.
 

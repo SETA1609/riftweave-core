@@ -18,7 +18,7 @@
           {
             "effect": "core:effect/restore_resource",
             "parameter": "health",
-            "magnitude": 50
+            "magnitude": 20
           }
         ]
       }
@@ -84,7 +84,7 @@
         "effects": [
           {
             "effect": "core:effect/damage_health",
-            "magnitude": 10,
+            "magnitude": 2,
             "duration": 6
           },
           {
@@ -155,8 +155,341 @@
           {
             "effect": "core:effect/restore_resource",
             "parameter": "stamina",
-            "magnitude": 30,
+            "magnitude": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    {
+      "id": 300,
+      "key": "potion_healing",
+      "label": "Potion of Healing",
+      "description": "A deep red draught that closes serious wounds.",
+      "type": "potion",
+      "cost": {
+        "quantity": 75,
+        "unit": "gp"
+      },
+      "weight": 0.5,
+      "consumable": {
+        "delivery": "drink",
+        "effects": [
+          {
+            "effect": "core:effect/restore_resource",
+            "parameter": "health",
+            "magnitude": 40
+          }
+        ]
+      }
+    },
+    {
+      "id": 301,
+      "key": "potion_greater_healing",
+      "label": "Potion of Greater Healing",
+      "description": "A thick crimson draught that can pull a fighter back from the brink.",
+      "type": "potion",
+      "cost": {
+        "quantity": 200,
+        "unit": "gp"
+      },
+      "weight": 0.5,
+      "consumable": {
+        "delivery": "drink",
+        "effects": [
+          {
+            "effect": "core:effect/restore_resource",
+            "parameter": "health",
+            "magnitude": 80
+          }
+        ]
+      }
+    },
+    {
+      "id": 302,
+      "key": "potion_mana",
+      "label": "Potion of Mana",
+      "description": "A blue draught that refills a caster's reserves.",
+      "type": "potion",
+      "cost": {
+        "quantity": 40,
+        "unit": "gp"
+      },
+      "weight": 0.5,
+      "consumable": {
+        "delivery": "drink",
+        "effects": [
+          {
+            "effect": "core:effect/restore_resource",
+            "parameter": "mana",
+            "magnitude": 15
+          }
+        ]
+      }
+    },
+    {
+      "id": 303,
+      "key": "potion_stamina",
+      "label": "Potion of Stamina",
+      "description": "A bitter green tonic that chases off fatigue.",
+      "type": "potion",
+      "cost": {
+        "quantity": 20,
+        "unit": "gp"
+      },
+      "weight": 0.5,
+      "consumable": {
+        "delivery": "drink",
+        "effects": [
+          {
+            "effect": "core:effect/restore_resource",
+            "parameter": "stamina",
+            "magnitude": 30
+          }
+        ]
+      }
+    },
+    {
+      "id": 304,
+      "key": "antidote",
+      "label": "Antidote",
+      "description": "A cloudy draught that neutralises most poisons.",
+      "type": "potion",
+      "cost": {
+        "quantity": 15,
+        "unit": "gp"
+      },
+      "weight": 0.5,
+      "consumable": {
+        "delivery": "drink",
+        "effects": [
+          {
+            "effect": "core:effect/cure",
+            "parameter": "poison"
+          }
+        ]
+      }
+    },
+    {
+      "id": 305,
+      "key": "potion_cure_disease",
+      "label": "Potion of Cure Disease",
+      "description": "A sharp-smelling tincture that purges sickness.",
+      "type": "potion",
+      "cost": {
+        "quantity": 40,
+        "unit": "gp"
+      },
+      "weight": 0.5,
+      "consumable": {
+        "delivery": "drink",
+        "effects": [
+          {
+            "effect": "core:effect/cure",
+            "parameter": "disease"
+          }
+        ]
+      }
+    },
+    {
+      "id": 306,
+      "key": "potion_strength",
+      "label": "Potion of Strength",
+      "description": "A murky brew that swells the muscles for a minute.",
+      "type": "potion",
+      "cost": {
+        "quantity": 50,
+        "unit": "gp"
+      },
+      "weight": 0.5,
+      "consumable": {
+        "delivery": "drink",
+        "effects": [
+          {
+            "effect": "core:effect/fortify_attribute",
+            "parameter": "str",
+            "magnitude": 2,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    {
+      "id": 307,
+      "key": "potion_featherfall",
+      "label": "Potion of Featherfall",
+      "description": "A pale, fizzing draught that makes the drinker light as down.",
+      "type": "potion",
+      "cost": {
+        "quantity": 35,
+        "unit": "gp"
+      },
+      "weight": 0.5,
+      "consumable": {
+        "delivery": "drink",
+        "effects": [
+          {
+            "effect": "core:effect/feather",
+            "magnitude": 50,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    {
+      "id": 308,
+      "key": "potion_haste",
+      "label": "Potion of Haste",
+      "description": "A sparkling draught that quickens every blow.",
+      "type": "potion",
+      "cost": {
+        "quantity": 90,
+        "unit": "gp"
+      },
+      "weight": 0.5,
+      "consumable": {
+        "delivery": "drink",
+        "effects": [
+          {
+            "effect": "core:effect/haste_attack",
+            "magnitude": 25,
             "duration": 30
+          }
+        ]
+      }
+    },
+    {
+      "id": 309,
+      "key": "elixir_of_wits",
+      "label": "Elixir of Wits",
+      "description": "A clear elixir that sharpens the mind.",
+      "type": "potion",
+      "cost": {
+        "quantity": 60,
+        "unit": "gp"
+      },
+      "weight": 0.5,
+      "consumable": {
+        "delivery": "drink",
+        "effects": [
+          {
+            "effect": "core:effect/fortify_attribute",
+            "parameter": "int",
+            "magnitude": 1,
+            "duration": 120
+          }
+        ]
+      }
+    },
+    {
+      "id": 310,
+      "key": "potion_frost_resistance",
+      "label": "Potion of Frost Resistance",
+      "description": "A warm amber draught that wards off the cold.",
+      "type": "potion",
+      "cost": {
+        "quantity": 50,
+        "unit": "gp"
+      },
+      "weight": 0.5,
+      "consumable": {
+        "delivery": "drink",
+        "effects": [
+          {
+            "effect": "core:effect/resist",
+            "parameter": "frost",
+            "magnitude": 50,
+            "duration": 120
+          }
+        ]
+      }
+    },
+    {
+      "id": 311,
+      "key": "poison_paralytic",
+      "label": "Paralytic Venom",
+      "description": "Spider venom for a blade; a struck foe stiffens.",
+      "type": "poison",
+      "cost": {
+        "quantity": 60,
+        "unit": "gp"
+      },
+      "weight": 0.1,
+      "consumable": {
+        "delivery": "apply_weapon",
+        "uses": 2,
+        "effects": [
+          {
+            "effect": "core:effect/poison_paralytic",
+            "duration": 6
+          }
+        ]
+      }
+    },
+    {
+      "id": 312,
+      "key": "coating_blinding",
+      "label": "Blinding Powder",
+      "description": "A fine grit for a blade's edge that gets into the eyes.",
+      "type": "coating",
+      "cost": {
+        "quantity": 30,
+        "unit": "gp"
+      },
+      "weight": 0.1,
+      "consumable": {
+        "delivery": "apply_weapon",
+        "uses": 3,
+        "effects": [
+          {
+            "effect": "core:effect/blind",
+            "duration": 4
+          }
+        ]
+      }
+    },
+    {
+      "id": 313,
+      "key": "travel_rations",
+      "label": "Travel Rations",
+      "description": "Hard bread, dried meat, and nuts for a day on the road.",
+      "type": "food",
+      "cost": {
+        "quantity": 5,
+        "unit": "sp"
+      },
+      "weight": 2,
+      "consumable": {
+        "delivery": "eat",
+        "effects": [
+          {
+            "effect": "core:effect/restore_resource",
+            "parameter": "stamina",
+            "magnitude": 1,
+            "duration": 20
+          }
+        ]
+      }
+    },
+    {
+      "id": 314,
+      "key": "bread_and_cheese",
+      "label": "Bread and Cheese",
+      "description": "A simple meal that takes the edge off hunger and pain.",
+      "type": "food",
+      "cost": {
+        "quantity": 2,
+        "unit": "sp"
+      },
+      "weight": 1,
+      "consumable": {
+        "delivery": "eat",
+        "effects": [
+          {
+            "effect": "core:effect/restore_resource",
+            "parameter": "health",
+            "magnitude": 1,
+            "duration": 10
           }
         ]
       }

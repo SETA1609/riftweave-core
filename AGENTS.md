@@ -170,11 +170,10 @@ See `docs/modules/README.md` for the philosophy and current state.
 5. Update or add documentation in `docs/modules/` when introducing new concepts or collections.
 6. The `source` field is the preferred way to attribute content.
 7. **Base + Override pattern**: Weapons, armors, accessories (and monsters) use a base+override data pattern. Base templates live in `ruleset/data/<collection>/bases/<category>/` and define the default stats. Override entries in the main data file reference a `base` and provide only the fields that differ. The files in `bases/` directories are automatically skipped during validation — the `_resolve_equipment_bases()` and `_resolve_monster_bases()` functions merge them at validation time.
-   - **Equipment base templates** include `enchantment_slots` (maximum enchantments, negative = cannot enchant), `phase` (Wuxing element), and `valid_materials` (list of material keys allowed for this base).
+   - **Equipment base templates** include `enchantment_slots` (maximum enchantments, negative = cannot enchant), `phase` (Wuxing element), and `default_materials` (the material keys the base is found and sold in, not a limit: any material may be crafted onto any base, as in Elin; odd combinations are player-crafted only).
    - **Material overrides** in override entries can modify `enchantment_slots` (including negative values), change the Wuxing `phase`, and set `effect_magnitude_mult` (fractional multiplier on enchantment magnitudes).
    - A negative `enchantment_slots` value means the item cannot receive enchantments (e.g. cursed materials, base items with no magic affinity).
-   - Validation rejects `crafted_items` whose `material_key` is not in the base template's `valid_materials` list.
-   - Accessory base template files use a `_base` suffix (e.g. `ring_base.json`) to distinguish them from their entries, while weapon and armor bases do not. New base templates should always specify `valid_materials`, `enchantment_slots`, and `phase`.
+   - Accessory base template files use a `_base` suffix (e.g. `ring_base.json`) to distinguish them from their entries, while weapon and armor bases do not. New base templates should always specify `default_materials`, `enchantment_slots`, and `phase`.
    - **Leather** and **Studded Leather** are materials, not base armor types. They apply to bases like `padded`, `brigandine`, or generic armor bases via the `material` field in overrides.
 
 ## Licensing

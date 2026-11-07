@@ -745,7 +745,7 @@
       "id": 26,
       "key": "elf_darkvision",
       "label": "Darkvision",
-      "description": "You can see in dim light as if it were bright light, and in darkness as if it were dim light, out to 18 meters.",
+      "description": "You can see in dim light as if it were bright light, and in darkness as if it were dim light, out to 12 units.",
       "type": "racial_trait",
       "modifiers": [
         {
@@ -823,7 +823,7 @@
       "id": 30,
       "key": "black_elf_sunless_sight",
       "label": "Sunless Sight",
-      "description": "Your darkvision extends to 36 meters, but you have disadvantage on checks in bright sunlight.",
+      "description": "Your darkvision extends to 24 units, but you have disadvantage on checks in bright sunlight.",
       "type": "racial_trait",
       "modifiers": [
         {
@@ -862,7 +862,7 @@
       "id": 32,
       "key": "dwarf_darkvision",
       "label": "Darkvision",
-      "description": "You can see in dim light as if it were bright light, and in darkness as if it were dim light, out to 18 meters.",
+      "description": "You can see in dim light as if it were bright light, and in darkness as if it were dim light, out to 12 units.",
       "type": "racial_trait",
       "modifiers": [
         {
@@ -1006,7 +1006,7 @@
       "id": 39,
       "key": "catman_landing",
       "label": "Cat's Landing",
-      "description": "You take no damage from falls of 6 meters or less and always land on your feet.",
+      "description": "You take no damage from falls of 4 units or less and always land on your feet.",
       "type": "racial_trait",
       "modifiers": [
         {

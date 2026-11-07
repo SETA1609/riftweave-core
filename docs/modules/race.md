@@ -58,7 +58,7 @@ green elf or a mountain dwarf. The parent holds the **shared defaults**; each
 `subrace` **descends from it** and may keep or override any of them:
 
 - **Inherit** — omit a field and the parent's value applies. A subrace may drop
-  `speed`/`size` to take the parent's (e.g. `green_elf` inherits the elf's 30 / medium).
+  `speed`/`size` to take the parent's (e.g. `green_elf` inherits the elf's 6 / medium).
 - **Override** — declare a field to replace the parent's. A subrace may even change
   its **element**: `black_elf` overrides the elf's `wood` to `water`; `hill_dwarf`
   overrides the dwarf's `metal` to `earth`.
