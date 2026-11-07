@@ -72,8 +72,13 @@ class TestEquipmentFloor(unittest.TestCase):
     def test_undersized_is_easier_to_use_and_oversized_harder(self):
         sizes = json.loads((DATA / "combat" / "dice_ladder.json").read_text())["sizes"]
         self.assertGreater(sizes["undersized"]["attack"], 0)
-        self.assertEqual(sizes["normal"], {"dice_step": 0, "attack": 0})
+        self.assertEqual(sizes["normal"], {"dice_step": 0, "attack": 0, "value_percent": 100})
         self.assertLess(sizes["oversized"]["attack"], 0)
+
+    def test_undersized_is_cheaper_and_oversized_dearer(self):
+        sizes = json.loads((DATA / "combat" / "dice_ladder.json").read_text())["sizes"]
+        self.assertLess(sizes["undersized"]["value_percent"], 100)
+        self.assertGreater(sizes["oversized"]["value_percent"], 100)
 
     def test_food_is_always_over_time(self):
         for row in rows("consumables"):

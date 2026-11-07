@@ -2,8 +2,8 @@
   "$schema": "../../schemas/dice_ladder.schema.json",
   "dice_ladder": [["1d2"], ["1d3"], ["1d4"], ["1d6"], ["1d8"], ["1d10"], ["2d6", "1d12"], ["2d8"], ["3d6"], ["3d8"], ["4d8"]],
   "sizes": {
-    "undersized": { "dice_step": -1, "attack": 10 },
-    "normal": { "dice_step": 0, "attack": 0 },
-    "oversized": { "dice_step": 1, "attack": -10 }
+    "undersized": { "dice_step": -1, "attack": 10, "value_percent": 75 },
+    "normal": { "dice_step": 0, "attack": 0, "value_percent": 100 },
+    "oversized": { "dice_step": 1, "attack": -10, "value_percent": 150 }
   }
 }

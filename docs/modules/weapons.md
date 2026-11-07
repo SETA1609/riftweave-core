@@ -110,9 +110,11 @@ step (`balance_report.sized_dice`). [V 2026-11-07, `test_equipment.py`]
 Size also changes how easy the weapon is to use: an undersized weapon gives +10 to the
 attack, an oversized one −10. The weapon emits it as an `add` on `attack`, source
 `item:<key>`, origin `core:origin/equipment`, while it is used. Small dice, easy to land;
-big dice, hard to land. [A]
+big dice, hard to land. [A] Size sets the price too: an undersized weapon costs 75% of its
+base, an oversized one 150% (`value_percent`), multiplied with the material's
+`valueFactor`. [A]
 
-| Normal | Undersized (−1, +10 attack) | Oversized (+1, −10 attack) | Normal examples |
+| Normal | Undersized (−1, +10 attack, 75% price) | Oversized (+1, −10 attack, 150% price) | Normal examples |
 | --- | --- | --- | --- |
 | 1d4 | 1d3 | 1d6 | dagger, sling |
 | 1d6 | 1d4 | 1d8 | mace, shortsword, shortbow |
