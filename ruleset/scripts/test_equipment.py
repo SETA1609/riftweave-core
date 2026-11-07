@@ -63,10 +63,11 @@ class TestEquipmentFloor(unittest.TestCase):
                 self.assertIn(sized_dice(weapon, ladder), rungs)
 
     def test_size_moves_one_step(self):
-        sized = {key: sized_dice(weapon) for key, weapon in resolved_weapons()}
-        self.assertEqual(sized["shortbow"], "1d6")
-        self.assertEqual(sized["undersized_shortbow"], "1d4")
-        self.assertEqual(sized["oversized_longbow"], "1d10")
+        weapons = dict(resolved_weapons())
+        self.assertEqual(sized_dice(weapons["shortbow"]), "1d6")
+        self.assertEqual(sized_dice({**weapons["shortbow"], "size": "undersized"}), "1d4")
+        self.assertEqual(sized_dice({**weapons["longbow"], "size": "oversized"}), "1d10")
+        self.assertEqual(sized_dice({**weapons["greatsword"], "size": "oversized"}), "2d8")
 
     def test_undersized_is_easier_to_use_and_oversized_harder(self):
         sizes = json.loads((DATA / "combat" / "dice_ladder.json").read_text())["sizes"]

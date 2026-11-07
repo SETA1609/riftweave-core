@@ -120,11 +120,22 @@ big dice, hard to land. [A]
 | 1d10 | 1d8 | 2d6 | glaive, halberd, flintlock pistol |
 | 1d12, 2d6 | 1d10 | 2d8 | greatsword, arquebus, blunderbuss |
 
-Two rows use it: `undersized_shortbow` (1d4) and `oversized_longbow` (1d10). Size is not an
+No row is sized. A sized weapon is composed where it is used, like its material: a base
+plus `size` (an undersized shortbow is the shortbow at 1d4). Size is not an
 enchantment: it takes no enchantment slot, does not stack under the `enchantment` origin,
 and a dispel does not remove it. Size does not touch range, handling, or who can use the
 weapon. [A] Monster natural attacks keep their own flat `attack.damage.amount`
 ([monsters.md](monsters.md)); the ladder is for weapons. [A]
+
+## Rows and Composed Items
+
+A weapon is a base plus a material, a size, enchantments, and coatings, and the rules
+build any combination. `weapons.json` lists only what the rules cannot build: each
+distinct base weapon (the catalogue entry that loot, shops, and prices name as
+`core:weapon/<key>`), and named items that differ from the rules on purpose, with their
+own name, story, or price (`elven_wood_longbow`, `cursed_iron_longsword`). Generic
+variants are not rows: a loot row or a crafted item names the base and its `material`
+(and, from M4-07, its `size`). [V 2026-11-07, owner decision]
 
 ## Materials and Weapon Variations
 
