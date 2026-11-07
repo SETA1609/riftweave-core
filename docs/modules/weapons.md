@@ -64,6 +64,60 @@ All weapons use standard D&D 3.5 / Pathfinder-style dice expressions for their b
 
 These are the **base** dice for the weapon type. They assume a baseline construction (historically often iron or steel quality). The actual performance changes with the material used.
 
+## Damage Dice by Handling and Size
+
+Every weapon row is a **medium** weapon: the dice in the table above are for a medium
+wielder. Two things set a weapon's dice: how it is handled, and the size it is made for.
+Nothing in the data or the pipeline reads this yet; it is the reference for new rows and
+for sized weapons. [A]
+
+### The dice ladder
+
+One step is one die size. Moving up or down the ladder is the only way dice grow or shrink.
+
+| Step | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Dice | 1d2 | 1d3 | 1d4 | 1d6 | 1d8 | 1d10 | 2d6 | 2d8 | 3d6 | 3d8 | 4d8 |
+| Mean | 1.5 | 2 | 2.5 | 3.5 | 4.5 | 5.5 | 7 | 9 | 10.5 | 13.5 | 18 |
+
+`1d12` (mean 6.5) sits on step 7 with `2d6`: same step, a swingier roll. [A]
+
+### By handling (medium)
+
+| Handling | Properties | Dice | Examples |
+| --- | --- | --- | --- |
+| Light | `light` | 1d4 to 1d6 | dagger, shortsword, brass knuckles, throwing knife |
+| One-handed | none, or `versatile` | 1d6 to 1d8 | mace, longsword, battleaxe, javelin |
+| Two-handed | `two_handed` | 1d6 to 1d10 | spear, shortbow, composite bow, crossbow |
+| Heavy two-handed | `heavy`, `two_handed` | 1d10 to 2d6 | glaive, halberd, greatsword |
+
+A weapon one step above its handling's range pays for it elsewhere: `loading` (the
+flintlock pistol is light at 1d10, the arquebus and blunderbuss two-handed at 1d12 and 2d6),
+or a high price. A bow trades dice for range: the longbow is `heavy` for its draw and rolls
+1d8, and pays back in reach (150 / 600). A weapon below the range is cheap or
+concealable; the balance gate lists it as an accepted finding (dagger, sling, throwing
+knife, brass knuckles). The balance band `weapon_dice` (`balance/core.json`, 1d6 to 2d10)
+is for medium rows. [A]
+
+### By size
+
+A weapon made for a larger wielder moves one step up the ladder per size; one made for a
+smaller wielder moves one step down. Sizes are the race and monster sizes.
+
+| Medium | Tiny (−2) | Small (−1) | Large (+1) | Huge (+2) | Medium examples |
+| --- | --- | --- | --- | --- | --- |
+| 1d4 | 1d2 | 1d3 | 1d6 | 1d8 | dagger, sling |
+| 1d6 | 1d3 | 1d4 | 1d8 | 1d10 | mace, shortsword, shortbow |
+| 1d8 | 1d4 | 1d6 | 1d10 | 2d6 | longsword, longbow, crossbow |
+| 1d10 | 1d6 | 1d8 | 2d6 | 2d8 | glaive, halberd, flintlock pistol |
+| 1d12, 2d6 | 1d8 | 1d10 | 2d8 | 3d6 | greatsword, arquebus, blunderbuss |
+
+A small character with a small longsword rolls 1d6; an ogre's greatsword (large) rolls
+2d8. Using a weapon made for another size: its handling moves one step per size (a large
+longsword is two-handed for a medium wielder; a large greatsword cannot be used), and the
+attack takes −10 per size step. [A] Monster natural attacks keep their own flat
+`attack.damage.amount` ([monsters.md](monsters.md)); the ladder is for weapons. [A]
+
 ## Materials and Weapon Variations
 
 Materials (see `data/materials/core.json` and `docs/modules/materials.md`) are the primary way to create **variations** of the base weapons.
