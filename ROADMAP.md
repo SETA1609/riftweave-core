@@ -82,7 +82,7 @@ is the earliest wave of its open issues; stories in the same wave can run in par
 | 0 | M4 | ready | — | 1 |
 | 0 | M5 | ready, critical | APP, M3, M4 | 7 |
 | 5 | POST | blocked, critical | M5 | 7 |
-| 0 | APP | ready, critical | — | 6 |
+| 0 | APP | ready, critical | — | 7 |
 
 <!-- roadmap-order end -->
 
