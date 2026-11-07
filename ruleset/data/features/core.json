@@ -2641,7 +2641,7 @@
       "id": 103,
       "key": "night_eyes",
       "label": "Night Eyes",
-      "description": "Your eyes adjust to the dark: darkvision to 9 metres.",
+      "description": "Your eyes adjust to the dark: darkvision to 6 units.",
       "type": "perk",
       "category": "survival",
       "prerequisite": {
