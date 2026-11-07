@@ -18,7 +18,7 @@
           {
             "effect": "core:effect/restore_resource",
             "parameter": "health",
-            "magnitude": 50
+            "magnitude": 20
           }
         ]
       }
@@ -84,7 +84,7 @@
         "effects": [
           {
             "effect": "core:effect/damage_health",
-            "magnitude": 10,
+            "magnitude": 2,
             "duration": 6
           },
           {
@@ -155,8 +155,8 @@
           {
             "effect": "core:effect/restore_resource",
             "parameter": "stamina",
-            "magnitude": 30,
-            "duration": 30
+            "magnitude": 1,
+            "duration": 60
           }
         ]
       }
@@ -178,7 +178,7 @@
           {
             "effect": "core:effect/restore_resource",
             "parameter": "health",
-            "magnitude": 100
+            "magnitude": 40
           }
         ]
       }
@@ -200,7 +200,7 @@
           {
             "effect": "core:effect/restore_resource",
             "parameter": "health",
-            "magnitude": 200
+            "magnitude": 80
           }
         ]
       }
@@ -222,7 +222,7 @@
           {
             "effect": "core:effect/restore_resource",
             "parameter": "mana",
-            "magnitude": 40
+            "magnitude": 15
           }
         ]
       }
@@ -244,7 +244,7 @@
           {
             "effect": "core:effect/restore_resource",
             "parameter": "stamina",
-            "magnitude": 60
+            "magnitude": 30
           }
         ]
       }
@@ -465,7 +465,8 @@
           {
             "effect": "core:effect/restore_resource",
             "parameter": "stamina",
-            "magnitude": 20
+            "magnitude": 1,
+            "duration": 20
           }
         ]
       }
@@ -487,7 +488,8 @@
           {
             "effect": "core:effect/restore_resource",
             "parameter": "health",
-            "magnitude": 5
+            "magnitude": 1,
+            "duration": 10
           }
         ]
       }

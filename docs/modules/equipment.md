@@ -21,6 +21,24 @@ base in `bases/` plus overrides, consumables and gear as full rows. Weapons are 
 - **Gear:** adventuring gear and tools exist as rows (`equipment/gear.json`, refs
   `core:gear/<key>`).
 
+## Consumables
+
+An effect that moves a pool (`restore_resource`, `damage_health`, `damage_stamina`) with no
+`duration` lands at once: a Potion of Healing restores 40 HP. With a `duration`, its
+`magnitude` is per second: Hearty Stew restores 1 stamina a second for 60 seconds, 60 in
+all. An effect that changes a stat (`fortify_attribute`, `resist`) keeps its magnitude for
+the duration. [A]
+
+- **Potions** are instant or over time, whichever the row says. Instant healing stays
+  near a third of the HP of a character of the level where it drops: minor 20, healing 40,
+  greater 80; a mana potion restores 15. [A] Stamina has no formula in
+  [derived.md](../core/derived.md), so stamina numbers are provisional. [U]
+- **Food** (`type: food`) is always over time; `test_equipment.py` checks that every food
+  effect has a duration. [V 2026-11-07] Food can be eaten at any time except in combat, and a
+  new dish replaces every effect of the previous one, including effects the new dish does
+  not have. Nothing enforces either yet: M2-07 adds the `food` origin with a `replace`
+  stacking policy, the tick rule, and the combat check. [U]
+
 ## Gear and tools
 
 A row of `type: tool` or `adventuring_gear` carries a `gear` block. A tool emits contract

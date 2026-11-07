@@ -50,6 +50,14 @@ class TestEquipmentFloor(unittest.TestCase):
         self.assertGreaterEqual(len(rows("accessories")), 12)
         self.assertGreaterEqual(len(rows("consumables")), 20)
 
+    def test_food_is_always_over_time(self):
+        for row in rows("consumables"):
+            if row["type"] != "food":
+                continue
+            for effect in row["consumable"]["effects"]:
+                with self.subTest(item=row["key"], effect=effect["effect"]):
+                    self.assertGreater(effect.get("duration", 0), 0)
+
     def test_adventuring_gear_and_tools_exist(self):
         types = [row["type"] for row in rows("gear")]
         self.assertIn("adventuring_gear", types)

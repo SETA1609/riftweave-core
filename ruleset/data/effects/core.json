@@ -113,7 +113,7 @@
     {
       "key": "restore_resource",
       "label": "Restore Resource",
-      "description": "Restores points to a resource pool (e.g. healing, stamina recovery, mana). Use 'parameter' to specify the resource ('health', 'stamina', 'mana', 'action_points'). Magnitude is the amount restored. This generalizes the former specific restore_* effects.",
+      "description": "Restores points to a resource pool (e.g. healing, stamina recovery, mana). Use 'parameter' to specify the resource ('health', 'stamina', 'mana', 'action_points'). Magnitude is the amount restored; with a duration it is the amount per second, so the total is magnitude times duration. This generalizes the former specific restore_* effects.",
       "category": "restore",
       "polarity": "beneficial",
       "magnitudeUnit": "points",

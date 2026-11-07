@@ -61,3 +61,13 @@ Done: M2-02 ([done.md](done.md#m2-characters))
 - Files: ~5 (ruleset/data/features/core.json, docs/core/combat.md, docs/modules/combat.md, ruleset/tests/vectors/combat.json, ruleset/scripts/kernel_reference.py)
 - See: docs/core/combat.md (reactions), docs/decisions.md (M1-02 balance)
 - Done when: each perk is a row gated by skill thresholds and prerequisite perks; vectors show Spell Ward blocking a fire bolt at half shield DR, Bulwark negating a hit on a crit block, and an instant spell still unblocked with every perk.
+
+#### M2-07 Effects over time and food
+- Status: todo
+- Priority: medium
+- Needs: M1-04, M1-05, M2-05
+- Do: An applied effect that moves a pool (restore, damage) with no `duration` is instant; with a `duration` its `magnitude` is per second, so the total is magnitude times duration. Write the tick rule in the kernel and pick one duration unit: seconds in data, a fixed number of seconds per turn for turn-based play (`schema.json` says seconds, `contract.md` and `modifier.md` say turns). Food (`type: food`) is always over time; a potion may be either. Food can be eaten at any time except in combat. Add a `food` origin with a new stacking policy `replace`: a new dish removes every modifier and running tick of the previous dish, even effects the new dish lacks (fries, then a hot dog: only the hot dog counts). Each dish is one source, `food:<key>`. A dish's effects are the combined effects of its ingredients, written on the row; cooking a dish from ingredients is crafting (POST-01).
+- Keys: `core:origin/food`; origin `stack` value `replace`; the tick rule for `appliedEffect.duration`
+- Files: ~10 (docs/core/modifier.md, docs/core/contract.md, ruleset/schemas/schema.json, ruleset/schemas/origin.schema.json, ruleset/data/origins/core.json, ruleset/data/equipment/consumables.json, ruleset/scripts/kernel_reference.py, backend/, ruleset/tests/vectors/)
+- See: docs/modules/equipment.md (consumables), docs/decisions/M2-05.md
+- Done when: vectors cover an instant restore, a restore over time and its total, a second dish replacing the first (including an effect only the first had), a potion and a dish stacking, and eating refused in combat; the Python reference and Go pass them.
