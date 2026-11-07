@@ -249,7 +249,11 @@ def run_actions(vector):
     costs = {action["key"]: action["cost"] for action in data["actions"]}
     attr = vector["actor"]["attributes"][pool_rules["attr"]]
     pool = pool_rules["base"] + (attr * pool_rules["per_point"]) // pool_rules["per_point_divisor"]
-    cost = sum(costs[key] for key in vector.get("actions", []))
+    modifiers = vector.get("modifiers", [])
+    cost = sum(
+        max(apply_modifiers(costs[key], [m for m in modifiers if m["target"] == key]), 0)
+        for key in vector.get("actions", [])
+    )
     return {"pool": pool, "cost": cost}
 
 
@@ -381,6 +385,7 @@ def run_combat(vector):
         "evaded": False,
         "blocked": False,
         "reaction_tags": [],
+        "counter": False,
     }
     if called is not None:
         result["riders"] = []
@@ -397,14 +402,19 @@ def run_combat(vector):
     kind = reaction["kind"] if reaction else None
     if kind not in (None, "evade", "block"):
         raise ValueError(f"reaction kind {kind!r} is not defined")
-    if kind == "block" and not physical:
+    # The defender's perks: adds on the reaction targets and shield_dr, and grant flags.
+    defender_mods = defender.get("modifiers", [])
+    perk_flags = granted_flags(defender_mods)
+    if kind == "block" and not physical and "block_magic" not in perk_flags:
         kind = None
     if kind is not None:
         # The reaction is a d100 check like the attack: same fumble and crit window.
         skill = defender["evasion_skill"] if kind == "evade" else reaction["skill"]
+        target = "evasion" if kind == "evade" else "block"
         check = run_resolution(
             {
                 "actor": {"skills": {kind: skill}, "attributes": defender.get("attributes", {})},
+                "modifiers": [m for m in defender_mods if m["target"] == target],
                 "roll": reaction["roll"],
             }
         )
@@ -414,6 +424,7 @@ def run_combat(vector):
                 result["blocked"] = True
             else:
                 result["evaded"] = True
+                result["counter"] = delivery == "single" and "crit" in check["tags"] and "riposte" in perk_flags
                 if delivery == "single":
                     result.update(outcome="evaded", damage=0, hp=defender["hp"])
                     return result
@@ -427,7 +438,12 @@ def run_combat(vector):
     if result["evaded"]:
         amount = evaluate_formula(pipeline["area_evade_damage"], {}, {"damage": amount})
     if result["blocked"]:
-        amount = max(amount - reaction["shield_dr"], 0)
+        shield_dr = apply_modifiers(reaction["shield_dr"], [m for m in defender_mods if m["target"] == "shield_dr"])
+        if not physical:
+            shield_dr //= 2
+        amount = max(amount - shield_dr, 0)
+        if "bulwark" in perk_flags and "crit" in result["reaction_tags"]:
+            amount = 0
     if physical:
         dr = defender.get("armor_dr", 0)
         if pipeline["pierce_tag"] in tags:

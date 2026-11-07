@@ -14,6 +14,9 @@
         "items": {
           "$ref": "common.json#/definitions/key"
         }
+      },
+      "modifiers": {
+        "$ref": "common.json#/definitions/modifiers"
       }
     },
     "additionalProperties": false,

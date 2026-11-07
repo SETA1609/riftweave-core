@@ -2641,7 +2641,7 @@
       "id": 103,
       "key": "night_eyes",
       "label": "Night Eyes",
-      "description": "Your eyes adjust to the dark: darkvision to 9 metres.",
+      "description": "Your eyes adjust to the dark: darkvision to 6 units.",
       "type": "perk",
       "category": "survival",
       "prerequisite": {
@@ -2691,6 +2691,201 @@
           "op": "grant",
           "value": 1,
           "source": "feature:survivor",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 105,
+      "key": "shield_training",
+      "label": "Shield Training",
+      "description": "You angle the shield to take the blow on its boss: a block subtracts 2 more damage.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "abilities": {
+          "end": 5
+        },
+        "skills": [
+          {
+            "id": "core:skill/block",
+            "label": "Block",
+            "min": 30
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "shield_dr",
+          "op": "add",
+          "value": 2,
+          "source": "feature:shield_training",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 106,
+      "key": "spell_ward",
+      "label": "Spell Ward",
+      "description": "Your shield catches fire and force as well as steel: a block also stops a single or area spell of any type, at half shield DR. An instant spell still cannot be blocked.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 6,
+        "abilities": {
+          "wil": 6
+        },
+        "skills": [
+          {
+            "id": "core:skill/block",
+            "label": "Block",
+            "min": 50
+          }
+        ],
+        "perks": [
+          "core:feature/shield_training"
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "block_magic",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:spell_ward",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 107,
+      "key": "bulwark",
+      "label": "Bulwark",
+      "description": "A perfect block turns the blow aside entirely: a critical block negates the hit.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 12,
+        "abilities": {
+          "end": 7
+        },
+        "skills": [
+          {
+            "id": "core:skill/block",
+            "label": "Block",
+            "min": 70
+          }
+        ],
+        "perks": [
+          "core:feature/spell_ward"
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "bulwark",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:bulwark",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 108,
+      "key": "sidestep",
+      "label": "Sidestep",
+      "description": "A half step is all you need: the dodge action costs 1 AP less.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "abilities": {
+          "agi": 6
+        },
+        "skills": [
+          {
+            "id": "core:skill/evasion",
+            "label": "Evasion",
+            "min": 30
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "dodge",
+          "op": "add",
+          "value": -1,
+          "source": "feature:sidestep",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 109,
+      "key": "armored_evasion",
+      "label": "Armored Evasion",
+      "description": "You have learned to move in your armor: +10 to evade, which offsets what armor costs you.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 6,
+        "skills": [
+          {
+            "id": "core:skill/evasion",
+            "label": "Evasion",
+            "min": 50
+          }
+        ],
+        "perks": [
+          "core:feature/sidestep"
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "evasion",
+          "op": "add",
+          "value": 10,
+          "source": "feature:armored_evasion",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "id": 110,
+      "key": "riposte",
+      "label": "Riposte",
+      "description": "When you slip a blow perfectly you answer it: a critical evade of a single attack lets you make one attack at no AP cost.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 12,
+        "abilities": {
+          "agi": 7
+        },
+        "skills": [
+          {
+            "id": "core:skill/evasion",
+            "label": "Evasion",
+            "min": 60
+          }
+        ],
+        "perks": [
+          "core:feature/armored_evasion"
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "riposte",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:riposte",
           "origin": "core:origin/trained"
         }
       ]

@@ -17,5 +17,26 @@
     "actions": ["move", "move"],
     "expect": { "pool": 3, "cost": 2 }
   },
-  { "name": "standing up from prone costs 2", "actor": { "attributes": { "agi": 6 } }, "actions": ["stand_up"], "expect": { "pool": 4, "cost": 2 } }
+  { "name": "standing up from prone costs 2", "actor": { "attributes": { "agi": 6 } }, "actions": ["stand_up"], "expect": { "pool": 4, "cost": 2 } },
+  {
+    "name": "sidestep: a dodge costs 1 AP less",
+    "actor": { "attributes": { "agi": 6 } },
+    "actions": ["dodge"],
+    "modifiers": [{ "target": "dodge", "op": "add", "value": -1, "source": "feature:sidestep", "origin": "core:origin/trained" }],
+    "expect": { "pool": 4, "cost": 2 }
+  },
+  {
+    "name": "sidestep: an attack and a dodge cost 3 and 2",
+    "actor": { "attributes": { "agi": 6 } },
+    "actions": ["attack", "dodge"],
+    "modifiers": [{ "target": "dodge", "op": "add", "value": -1, "source": "feature:sidestep", "origin": "core:origin/trained" }],
+    "expect": { "pool": 4, "cost": 5 }
+  },
+  {
+    "name": "a cost never falls below 0",
+    "actor": { "attributes": { "agi": 6 } },
+    "actions": ["move"],
+    "modifiers": [{ "target": "move", "op": "add", "value": -3, "source": "feature:example", "origin": "core:origin/trained" }],
+    "expect": { "pool": 4, "cost": 0 }
+  }
 ]

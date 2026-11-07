@@ -28,6 +28,8 @@ block 2, reserved, refund if unused
 aimed +2 on the attack cost
 ```
 
+A perk changes a cost with `add` on the action's key: the Sidestep perk emits `add dodge -1`, and the cost is the row's cost after the actor's modifiers on that key, stacked by [modifier.md](modifier.md), never below 0. [V 2026-11-06]
+
 Cast AP is static. A spell also spends its mana cost. AP does not vary by spell. A petty spark and a heavy bolt both cost 3 AP. The bolt costs more mana. A perk that wants a cheaper cast emits `add` on the cast cost. It does not edit the spell.
 
 Block is a hold on this pool, not a reaction slot. Declare it, spend 2, and the unused 2 comes back if nobody swings. Aimed is not a second attack. It adds 2 to the attack cost.
