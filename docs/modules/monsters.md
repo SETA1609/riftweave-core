@@ -159,6 +159,8 @@ differs. The creature type is the root's: a derived monster cannot change it. [V
   row (the loot budget, the Go loader) never walks the chain. When it differs from the
   base monster's, attributes and HP move by the type's growth for the difference:
   `round(base_attr + perLevel × Δlevel)`, within 1 to 10, and `base_hp + hitPointsPerLevel × Δlevel`.
+- **Order.** `core.json` lists the base monsters first (those another row derives from), then
+  their variants, family by family, then the one-off monsters, each group by level.
 - **Chains** may be longer than one step; a cycle, or a base monster that does not exist, is
   a validation error.
 

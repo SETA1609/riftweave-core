@@ -174,6 +174,12 @@ class TestBestiary(unittest.TestCase):
                 validate._resolve_monster_bases({"monsters": rows}, errors)
                 self.assertTrue(errors)
 
+    def test_bases_then_variants_then_one_off_monsters(self):
+        rows = raw_monsters()
+        parent = {row["key"]: row["base"].removeprefix("core:monster/") for row in rows if row["base"].startswith("core:monster/")}
+        group = [0 if row["key"] in parent.values() else 1 if row["key"] in parent else 2 for row in rows]
+        self.assertEqual(group, sorted(group))
+
     def test_no_name_from_another_franchise(self):
         for row in monsters():
             text = " ".join([row["key"].replace("_", " "), row["label"], row["description"]]).lower()
