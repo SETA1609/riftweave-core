@@ -48,7 +48,8 @@ All weapons use standard D&D 3.5 / Pathfinder-style dice expressions for their b
 | Glaive          | 1d10       | slashing  | reach  | 2            | blades     | heavy, two_handed          |
 | Warhammer       | 1d10       | bludgeoning | reach | 2            | blunt      | heavy, two_handed          |
 | Halberd         | 1d10       | slashing  | reach  | 2            | blades     | heavy, two_handed          |
-| Self Bow        | 1d6        | piercing  | -      | -            | bows       | ammunition, two_handed     |
+| Improvised Bow  | 1d6        | piercing  | -      | -            | bows       | ammunition, two_handed     |
+| Composite Bow   | 1d8        | piercing  | -      | -            | bows       | ammunition, two_handed     |
 | Hand Crossbow   | 1d6        | piercing  | -      | -            | crossbows  | ammunition, light, loading |
 | Crossbow        | 1d8        | piercing  | -      | -            | crossbows  | ammunition, two_handed     |
 | Javelin         | 1d6        | piercing  | -      | -            | throwing_weapons | thrown               |
