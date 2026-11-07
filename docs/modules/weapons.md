@@ -101,22 +101,21 @@ is for medium rows. [A]
 
 ### By size
 
-A weapon made for a larger wielder moves one step up the ladder per size; one made for a
-smaller wielder moves one step down. Sizes are the race and monster sizes.
+Size is a modifier of one ladder step: a weapon made for a smaller wielder (tiny, small)
+rolls one die lower, one made for a larger wielder (large, huge) one die higher. It is an
+`add` of −1 or +1 on the weapon's dice step, never more. [A]
 
-| Medium | Tiny (−2) | Small (−1) | Large (+1) | Huge (+2) | Medium examples |
-| --- | --- | --- | --- | --- | --- |
-| 1d4 | 1d2 | 1d3 | 1d6 | 1d8 | dagger, sling |
-| 1d6 | 1d3 | 1d4 | 1d8 | 1d10 | mace, shortsword, shortbow |
-| 1d8 | 1d4 | 1d6 | 1d10 | 2d6 | longsword, longbow, crossbow |
-| 1d10 | 1d6 | 1d8 | 2d6 | 2d8 | glaive, halberd, flintlock pistol |
-| 1d12, 2d6 | 1d8 | 1d10 | 2d8 | 3d6 | greatsword, arquebus, blunderbuss |
+| Medium | Smaller (−1) | Larger (+1) | Medium examples |
+| --- | --- | --- | --- |
+| 1d4 | 1d3 | 1d6 | dagger, sling |
+| 1d6 | 1d4 | 1d8 | mace, shortsword, shortbow |
+| 1d8 | 1d6 | 1d10 | longsword, longbow, crossbow |
+| 1d10 | 1d8 | 2d6 | glaive, halberd, flintlock pistol |
+| 1d12, 2d6 | 1d10 | 2d8 | greatsword, arquebus, blunderbuss |
 
-A small character with a small longsword rolls 1d6; an ogre's greatsword (large) rolls
-2d8. Using a weapon made for another size: its handling moves one step per size (a large
-longsword is two-handed for a medium wielder; a large greatsword cannot be used), and the
-attack takes −10 per size step. [A] Monster natural attacks keep their own flat
-`attack.damage.amount` ([monsters.md](monsters.md)); the ladder is for weapons. [A]
+A small character's longsword rolls 1d6; an ogre's greatsword rolls 2d8. Monster natural
+attacks keep their own flat `attack.damage.amount` ([monsters.md](monsters.md)); the
+ladder is for weapons. [A]
 
 ## Materials and Weapon Variations
 
