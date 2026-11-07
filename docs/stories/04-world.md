@@ -20,7 +20,7 @@ Done: M4-01, M4-02, M4-04, M4-05, M4-06 ([done.md](done.md#m4-world))
 - Do: 11 monsters. An SRD needs a bestiary that spans the level range and the phases.
 - Files: ~4 (ruleset/data/monsters/, ruleset/schemas/monster.schema.json)
 - See: ruleset/data/monsters/core.json, docs/modules/monsters.md
-- Done when: at least 40 monsters covering levels 1 to 30; every phase and damage type is used at least once as an attack and as a resistance; each monster inherits from a base plus overrides.
+- Done when: at least 40 monsters covering levels 1 to 30; every phase and damage type is used at least once as an attack and as a resistance; each monster inherits from a base plus overrides; a family member derives from its base monster, and an element variant is a base monster plus a template; no name comes from another game.
 
 #### M4-07 Loot composes items: default materials and size
 - Status: todo
