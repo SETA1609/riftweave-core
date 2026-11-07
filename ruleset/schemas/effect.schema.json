@@ -44,7 +44,7 @@
           "enum": ["points", "percent", "dice", "count", "seconds", "level"],
           "description": "How an appliedEffect.magnitude is interpreted for this effect"
         },
-        "defaultDuration": { "type": "number", "minimum": 0, "description": "Default duration in seconds when not overridden by the appliedEffect" },
+        "defaultDuration": { "type": "integer", "minimum": 1, "default": 1, "description": "Default duration in seconds when not overridden by the appliedEffect; 1 is instant (schema.json appliedEffect)." },
         "defaultDurationType": {
           "type": "string",
           "enum": ["temporal", "unlimited"],

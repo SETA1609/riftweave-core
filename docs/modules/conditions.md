@@ -423,7 +423,7 @@ effect (healing always stops bleeding regardless of which resource is restored).
 | Condition | Determined By |
 |-----------|--------------|
 | `permanent` | Effect has tag `"disease"` or `defaultDurationType: "unlimited"` |
-| `timed` | Effect has `duration > 0` or `defaultDuration > 0` |
+| `timed` | Effect has `duration > 1` or `defaultDuration > 1` (1 is instant) |
 | `until_dispelled` | No duration and no disease tag (fallback) |
 
 ---

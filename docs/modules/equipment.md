@@ -23,11 +23,13 @@ base in `bases/` plus overrides, consumables and gear as full rows. Weapons are 
 
 ## Consumables
 
-An effect that moves a pool (`restore_resource`, `damage_health`, `damage_stamina`) with no
-`duration` lands at once: a Potion of Healing restores 40 HP. With a `duration`, its
-`magnitude` is per second: Hearty Stew restores 1 stamina a second for 60 seconds, 60 in
-all. An effect that changes a stat (`fortify_attribute`, `resist`) keeps its magnitude for
-the duration. [A]
+`magnitude` is how much, `duration` is how long, in seconds. Duration 1 is instant and is
+the default when omitted: a Potion of Healing restores 40 HP at once. Magnitude is always
+per second, so an effect that moves a pool (`restore_resource`, `damage_health`,
+`damage_stamina`) totals magnitude times duration: Hearty Stew restores 1 stamina a second
+for 60 seconds, 60 in all. An effect that changes a stat (`fortify_attribute`, `resist`)
+holds its magnitude for the duration. There is no separate instant and over-time effect:
+the same effect takes either duration. [V 2026-11-07, owner decision]
 
 - **Potions** are instant or over time, whichever the row says. Instant healing stays
   near a third of the HP of a character of the level where it drops: minor 20, healing 40,
