@@ -49,17 +49,53 @@ def to_copper(cost):
     return cost["quantity"] * values[cost["unit"]]
 
 
-def item_cost(ref):
-    """An equipment item's cost: its own, its overrides', or its base's."""
+def item_field(ref, field):
+    """An equipment item's field: its own, its overrides', or its base's (None if none)."""
     category, key = ref.split(":", 1)[1].split("/", 1)
     file_name, base_dir = EQUIPMENT[category]
     collection = load_data(f"equipment/{file_name}")
     rows = next(value for value in collection.values() if isinstance(value, list))
     row = next(r for r in rows if r["key"] == key)
-    cost = row.get("cost") or row.get("overrides", {}).get("cost")
-    if cost is None:
-        cost = load_data(f"equipment/bases/{base_dir}/{row['base']}.json")["cost"]
-    return cost
+    value = row.get(field, row.get("overrides", {}).get(field))
+    if value is None and "base" in row:
+        value = load_data(f"equipment/bases/{base_dir}/{row['base']}.json").get(field)
+    return value
+
+
+def item_cost(ref):
+    """An equipment item's cost: its own, its overrides', or its base's."""
+    return item_field(ref, "cost")
+
+
+def landed_material(ref, material):
+    """The material that lands on an item (docs/core/loot.md#what-lands-on-an-item): the row's,
+    if the item's default_materials include it, else the first default. No row material, or
+    an item that takes none: None."""
+    if material is None or not takes_material(ref):
+        return None
+    defaults = item_field(ref, "default_materials") or []
+    key = material.rsplit("/", 1)[-1]
+    if not defaults or key in defaults:
+        return material
+    return f"core:material/{defaults[0]}"
+
+
+def is_weapon(ref):
+    return ref.split(":", 1)[1].split("/", 1)[0] == "weapon"
+
+
+def item_size(ref, size):
+    """A loot row's size on an item: weapons only; normal or none is no size."""
+    return size if size not in (None, "normal") and is_weapon(ref) else None
+
+
+def sized_weapon(ref, size):
+    """The sized dice and the attack change of a weapon at a size (combat/dice_ladder.json)."""
+    ladder = load_data("combat/dice_ladder.json")
+    step = ladder["sizes"][size]
+    dice = item_field(ref, "weapon")["damage"]["dice"]
+    rung = next(i for i, rung in enumerate(ladder["dice_ladder"]) if dice in rung)
+    return ladder["dice_ladder"][rung + step["dice_step"]][0], step["attack"]
 
 
 MATERIAL_CATEGORIES = ("weapon", "armor")
@@ -79,17 +115,22 @@ def value_percent(material):
     return round(row["valueFactor"] * 100)
 
 
-def item_value_cp(ref, material=None):
+def item_value_cp(ref, material=None, size=None):
+    """List price at value_percent = material percent x size percent / 100, rounded down. The
+    material and size are the ones that landed (landed_material, item_size)."""
     price = load_data("formulas/price.json")["expr"]
-    percent = value_percent(material if takes_material(ref) else None)
+    percent = value_percent(material)
+    if size is not None:
+        percent = percent * load_data("combat/dice_ladder.json")["sizes"][size]["value_percent"] // 100
     return evaluate(price, {"base_cp": to_copper(item_cost(ref)), "value_percent": percent, "percent": 100})
 
 
-def entry_value_cp(entry, material=None):
+def entry_value_cp(entry, material=None, size=None):
     if entry["kind"] == "coins":
         return to_copper(entry["coins"])
     if entry["kind"] == "item":
-        return item_value_cp(entry["item"], material) * entry["quantity"]
+        ref = entry["item"]
+        return item_value_cp(ref, landed_material(ref, material), item_size(ref, size)) * entry["quantity"]
     return 0
 
 
@@ -118,9 +159,9 @@ def monster_level(ref):
     return load_data(f"monsters/bases/{row['base']}.json")["level"]
 
 
-def expected_value_cp(table, shift=0, material=None, rolls=None):
+def expected_value_cp(table, shift=0, material=None, rolls=None, size=None):
     """Mean value over the d100 rolls after the shift, times the number of rolls."""
-    total = sum(entry_value_cp(entry_for(table, roll, shift), material) for roll in range(1, 101))
+    total = sum(entry_value_cp(entry_for(table, roll, shift), material, size) for roll in range(1, 101))
     return total * (table["rolls"] if rolls is None else rolls) / 100
 
 
@@ -128,28 +169,33 @@ def row_expected_value_cp(loot, row):
     """One loot row's mean value, times chance / 100."""
     chance = row.get("chance", 100) / 100
     material = row.get("material")
+    size = row.get("size")
     if "item" in row:
-        return item_value_cp(row["item"], material) * row.get("quantity", 1) * chance
+        ref = row["item"]
+        return item_value_cp(ref, landed_material(ref, material), item_size(ref, size)) * row.get("quantity", 1) * chance
     table = table_by_key(loot, row["table"])
-    return expected_value_cp(table, row.get("shift", 0), material, row.get("rolls")) * chance
+    return expected_value_cp(table, row.get("shift", 0), material, row.get("rolls"), size) * chance
 
 
 def monster_expected_value_cp(loot, drop):
     return sum(row_expected_value_cp(loot, row) for row in drop["loot"])
 
 
-def _add(items, ref, quantity, material):
-    key = (ref, material if takes_material(ref) else None)
+def _add(items, ref, quantity, material, size=None):
+    key = (ref, landed_material(ref, material), item_size(ref, size))
     items[key] = items.get(key, 0) + quantity
 
 
 def _result(loot, items, coins_cp, level):
-    value = coins_cp + sum(item_value_cp(ref, material) * q for (ref, material), q in items.items())
+    value = coins_cp + sum(item_value_cp(ref, material, size) * q for (ref, material, size), q in items.items())
     listed = []
-    for (ref, material), quantity in sorted(items.items(), key=lambda kv: (kv[0][0], kv[0][1] or "")):
+    for (ref, material, size), quantity in sorted(items.items(), key=lambda kv: (kv[0][0], kv[0][1] or "", kv[0][2] or "")):
         item = {"item": ref, "quantity": quantity}
         if material is not None:
             item["material"] = material
+        if size is not None:
+            dice, attack = sized_weapon(ref, size)
+            item.update(size=size, dice=dice, attack=attack)
         listed.append(item)
     return {"items": listed, "coins_cp": coins_cp, "value_cp": value, "budget_cp": budget_cp(loot, level)}
 
@@ -176,7 +222,7 @@ def chance_target(chance, shift):
     return max(1, min(chance + shift, 99))
 
 
-def roll_table(table, rolls, shift, material, items):
+def roll_table(table, rolls, shift, material, items, size=None):
     """Roll one table; return the copper it yields and add its items."""
     coins_cp = 0
     for roll in rolls:
@@ -184,7 +230,7 @@ def roll_table(table, rolls, shift, material, items):
         if entry["kind"] == "coins":
             coins_cp += to_copper(entry["coins"])
         elif entry["kind"] == "item":
-            _add(items, entry["item"], entry["quantity"], material)
+            _add(items, entry["item"], entry["quantity"], material, size)
     return coins_cp
 
 
@@ -220,11 +266,11 @@ def run_loot(vector):
                 continue
             material = row.get("material")
             if "item" in row:
-                _add(items, row["item"], row.get("quantity", 1), material)
+                _add(items, row["item"], row.get("quantity", 1), material, row.get("size"))
                 continue
             table = table_by_key(loot, row["table"])
             tables.append(table["key"])
-            coins_cp += roll_table(table, take(row.get("rolls", table["rolls"])), row.get("shift", 0) + looter, material, items)
+            coins_cp += roll_table(table, take(row.get("rolls", table["rolls"])), row.get("shift", 0) + looter, material, items, row.get("size"))
     except IndexError:
         return {"error": f"{monster}: ran out of rolls after {used}"}
     if queue:
