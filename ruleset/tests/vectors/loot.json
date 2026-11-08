@@ -734,5 +734,111 @@
       "looter_shift": 0,
       "coins_cp": 30
     }
+  },
+  {
+    "name": "material lands only where the item is found in it: the steel hoard yields a steel breastplate and an elven wood longbow, each valued by its own material",
+    "monster": "core:monster/iron_colossus",
+    "rolls": [
+      80,
+      95
+    ],
+    "expect": {
+      "items": [
+        {
+          "item": "core:armor/breastplate",
+          "quantity": 1,
+          "material": "core:material/steel"
+        },
+        {
+          "item": "core:weapon/elven_wood_longbow",
+          "quantity": 1,
+          "material": "core:material/elven_wood"
+        }
+      ],
+      "coins_cp": 0,
+      "value_cp": 120000,
+      "budget_cp": 200000
+    }
+  },
+  {
+    "name": "size: a giant's hoard longbow is oversized, 1d10 and -10 to attack, at 150 percent; the breastplate ignores the size",
+    "monster": "core:monster/giant",
+    "rolls": [
+      95,
+      80
+    ],
+    "expect": {
+      "items": [
+        {
+          "item": "core:armor/breastplate",
+          "quantity": 1
+        },
+        {
+          "item": "core:weapon/elven_wood_longbow",
+          "quantity": 1,
+          "size": "oversized",
+          "dice": "1d10",
+          "attack": -10
+        }
+      ],
+      "coins_cp": 0,
+      "value_cp": 50000,
+      "budget_cp": 84500
+    }
+  },
+  {
+    "name": "size and material together: a frost giant's oversized longbow falls back to elven wood, 400 x 150 / 100 = 600 percent",
+    "monster": "core:monster/frost_giant",
+    "rolls": [
+      95,
+      80,
+      10,
+      10
+    ],
+    "expect": {
+      "tables": [
+        "hoard_major",
+        "hoard_minor"
+      ],
+      "items": [
+        {
+          "item": "core:armor/breastplate",
+          "quantity": 1,
+          "material": "core:material/steel"
+        },
+        {
+          "item": "core:weapon/elven_wood_longbow",
+          "quantity": 1,
+          "material": "core:material/elven_wood",
+          "size": "oversized",
+          "dice": "1d10",
+          "attack": -10
+        }
+      ],
+      "coins_cp": 4000,
+      "value_cp": 164000,
+      "budget_cp": 180500
+    }
+  },
+  {
+    "name": "size: a goblin's dagger is undersized, 1d3 and +10 to attack, at 75 percent",
+    "monster": "core:monster/goblin_skirmisher",
+    "rolls": [
+      80
+    ],
+    "expect": {
+      "items": [
+        {
+          "item": "core:weapon/dagger",
+          "quantity": 1,
+          "size": "undersized",
+          "dice": "1d3",
+          "attack": 10
+        }
+      ],
+      "coins_cp": 0,
+      "value_cp": 150,
+      "budget_cp": 2000
+    }
   }
 ]
