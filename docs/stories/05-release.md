@@ -13,7 +13,7 @@ Roadmap: [M5](../../ROADMAP.md#where-we-are). Format and rules: [README.md](READ
 Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-07, M5-08, M5-10, M5-11, M5-12, M5-13, M5-14, M5-15, M5-16, M5-17 ([done.md](done.md#m5-release-10))
 
 #### M5-03 Move the container runner and agent image to devops-tools
-- Status: doing
+- Status: review
 - Priority: medium
 - Needs: M5-01
 - Do: devops-tools now ships `devops-tools container` (image, exec, shell, prune, clean, named commands), a shared base image, and the agent container with a plugin start script. Replace the local runner in `tools/devops/` and `container/agent.Dockerfile` with it, configured by `[tool.devops-tools.container]`; the project Dockerfile builds `FROM ${BASE_IMAGE}`. Moving `fetch-docs` is M5-22, split off to stay under 20 counted files.
