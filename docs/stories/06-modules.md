@@ -81,3 +81,13 @@ Done: POST-05 ([done.md](done.md#post-post-10-modules))
 - Files: ~6 (ruleset/modules/<module>/, docs/modules/<module>.md)
 - See: issues.md section 8
 - Done when: design doc, then conditions and recovery rows.
+
+#### POST-09 Weapon advantage module: the guard cycle
+- Status: todo
+- Priority: low
+- Needs: M3-03, M5-09, M5-20
+- Do: A small module, the first example a module author reads: a rock-paper-scissors between weapon groups, as one situation row each, a bonus to hit of the order of the size bonus (+10, [A]) for the attacker whose group beats the defender's wielded one and the same penalty the other way. Core weapon skills split by damage type (an axe is a `blades` weapon, a spear is `piercing` with the dagger), so the module brings its own groups: a table from weapon base to group (sword, axe, polearm, and the like), no field on core rows. Decide the cycle (one proposal: swords beat axes, axes beat polearms, polearms beat swords; ranged, unarmed, and natural attacks stand outside it) and whether swapping weapons costs AP enough that carrying the counter is a choice, not a reflex. It runs alongside Wuxing or alone; a table may load either, both, or neither. The name is our own: no other game's term for it.
+- Keys: `ruleset/modules/weapon_advantage/` with its manifest, a weapon-group table, situation rows
+- Files: ~5 (ruleset/modules/weapon_advantage/, docs/modules/weapon-advantage.md, ruleset/tests/vectors/)
+- See: docs/modules/combat.md (situations), docs/modules/module-system.md
+- Done when: every melee base has a group or is listed as outside the cycle; vectors cover advantage, disadvantage, equal groups, and an attack outside the cycle; with the module off, combat vectors are unchanged; `module-system.md` links it as the minimal example.

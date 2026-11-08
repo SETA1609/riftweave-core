@@ -55,7 +55,7 @@ Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-07, M5-08, M5-10, M5-11,
 #### M5-09 Licensing and attribution audit, tag v1.0.0
 - Status: todo
 - Priority: high
-- Needs: M2-01, M2-02, M2-03, M2-04, M2-05, M3-02, M3-03, M3-04, M4-03, M4-04, M4-05, M5-01, M5-05, M5-06, M5-07, M5-08, M5-19
+- Needs: M2-01, M2-02, M2-03, M2-04, M2-05, M3-02, M3-03, M3-04, M4-03, M4-04, M4-05, M5-01, M5-05, M5-06, M5-07, M5-08, M5-19, M5-20
 - Was: RW-30
 - Do: Final pass: licence headers, `source` fields, NOTICE and CONTRIBUTORS, and the changelog. Then tag.
 - Files: ~6 (LICENSING.md, NOTICE, CONTRIBUTORS.md, CHANGELOG.md, ROADMAP.md)
@@ -88,3 +88,13 @@ Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-07, M5-08, M5-10, M5-11,
 - Files: ~8 (ruleset/data/features/core.json, docs/modules/progression.md, docs/decisions/M5-19.md, ruleset/data/examples/, ruleset/tests/vectors/, ruleset/scripts/test_features.py)
 - See: docs/decisions/M5-18.md, docs/stories/done.md (M2-01)
 - Done when: every perk has a verdict and a reason in the decision record; no cut or renamed key is still referenced; the perk floor (60) still holds or the decision record moves it; vectors pass.
+
+#### M5-20 Wuxing becomes a module, the reference for cross-cutting modules
+- Status: todo
+- Priority: high
+- Needs: M3-02, M4-03
+- Do: The contract already names Wuxing a module and says a phase is a tag a module may read, but core still requires `phase` on monsters, monster templates, playable races, gems, crafted items, and engraving jewels, and ships the cycles in `data/wuxing/core.json`. Split it. Core keeps `phase` as an optional tag (the vocabulary in `schema.json`), so rows keep their phases and nothing changes with the module off. `ruleset/modules/wuxing/` takes the cycles and multipliers, the interaction rules (`magic.md` §6, `docs/modules/wuxing.md`), `wuxing_reference.py` and its vectors, and the bestiary's phase-coverage test; its effect on an attack or a cast is a modifier through the contract, never a call into combat or casting. The Go backend learns to load modules (it loads none today), and `internal/wuxing` reads the module's data. Moving `data/wuxing/` out of core is a breaking change, so it lands before the 1.0 tag. Write `docs/modules/module-system.md` up as the guide a module author follows, with Wuxing as the worked example of a module that adds a collection, reads tags on core rows, and emits modifiers.
+- Keys: `ruleset/modules/wuxing/` with its manifest; `phase` optional in the six core schemas
+- Files: ~16 (ruleset/schemas/, ruleset/data/wuxing/, ruleset/modules/wuxing/, ruleset/scripts/wuxing_reference.py, ruleset/scripts/test_wuxing.py, ruleset/scripts/test_bestiary.py, ruleset/scripts/crafting_reference.py, ruleset/tests/vectors/wuxing.json, backend/internal/data/data.go, backend/internal/wuxing/, docs/modules/wuxing.md, docs/modules/magic.md, docs/modules/module-system.md, docs/core/contract.md)
+- See: docs/core/contract.md, docs/core/materials.md, docs/modules/module-system.md, ruleset/modules/factions/
+- Done when: validate, the unit tests, the vectors, and the Go tests pass with the module and without it; without it no core rule reads a phase; with it the wuxing vectors pass under Python and Go from the module's data; the change is marked breaking in the changelog; `module-system.md` walks through Wuxing step by step.
