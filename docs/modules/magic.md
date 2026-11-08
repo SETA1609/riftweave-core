@@ -92,6 +92,38 @@ marks a spell the caster holds. `cost`, `cooldown`, and the `custom` flag round 
 spell. `cost` is the
 authored baseline; the engine derives it (§5).
 
+### The core spell list
+
+`spells/core.json` holds at least five spells per color, 45 or more in all, from level 1 to
+30. An authored spell draws only effects on its own color or with no color, so the list
+teaches which school casts what; a crafted spell may be off-color only where a game allows it
+(§5). [V 2026-11-08]
+
+Every color has a damage, a utility, and a defensive spell, or a reason it has none:
+
+| Color | Damage | Utility | Defensive |
+| --- | --- | --- | --- |
+| red | fire, frost, shock, force | none: red is the offense school; its range is shape (bolt, burst, storm) | flame shield |
+| orange | conjured blades (bleed) | familiar, bound weapons, summoned elemental | conjured barrier |
+| yellow | psychic | light, blinding flash, charm, silence, veil | blur |
+| green | none: restoration does not harm; life taken is black's | cures, vigor | regeneration, purity ward, heals |
+| blue | acid (corrosion) | feather fall, slow, paralyze, petrify | ward, stoneskin |
+| indigo | thunder | unlock, disarm trap, force push | force wall |
+| violet | mana and will drain | dispel, dispel ward | spell absorption |
+| white | radiant | blessing, cleanse | holy ward, divine shield |
+| black | necrotic | curse, wither, raise thrall | bone armor |
+
+The damage effects `damage_radiant` (white), `damage_necrotic` (black), `damage_psychic`
+(yellow), `damage_thunder` (indigo), and `damage_acid` (blue) join the pool so that every
+color but green deals damage of its own; each matches a key in `combat/damage_types.json`.
+`disarm_hazard` and `unlock` (indigo) are the spell side of traps and locks
+([hazards.md](../core/hazards.md#spells-on-a-hazard)). `test_spells.py` checks the floor,
+the colors, the channels, and this table.
+
+Authored mana costs follow §5 with the skill discount of a caster at 50 (0.25):
+`ceil(spellComplexity × 0.75)`. The eight spells from before keep their costs; the casting
+vectors read them. [A]
+
 ---
 
 ## 4. Casting resolution (d100 roll-under)
