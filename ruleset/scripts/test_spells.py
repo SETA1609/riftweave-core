@@ -6,18 +6,19 @@ Run with:
 """
 
 import json
-import math
+import sys
 import unittest
 from collections import Counter
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from casting_reference import spell_cost  # noqa: E402
 
 DATA = Path(__file__).resolve().parent.parent / "data"
 COLORS = ("red", "orange", "yellow", "green", "blue", "indigo", "violet", "white", "black")
 # A color with no spell of a kind names the kind here; magic.md gives the reason.
 GAPS = {"red": {"utility"}, "green": {"damage"}}
-# The spells from before M3-02 keep their costs: the casting vectors read them.
-KEPT_COSTS = {"fire_bolt": 5, "force_dart": 8, "mend_wounds": 10, "blessing": 12, "ward": 8,
-              "fire_burst": 25, "raise_thrall": 30, "dispel_magic": 12}
 NEW_DAMAGE = {"damage_radiant": "white", "damage_necrotic": "black", "damage_psychic": "yellow",
               "damage_thunder": "indigo", "damage_acid": "blue"}
 
@@ -48,11 +49,9 @@ def kinds(spell):
     return found
 
 
-def mana(spell):
-    """The authored cost by level (magic.md#the-core-spell-list): 4 + 2.5 per level, a quarter
-    more when any effect covers an area, rounded up."""
-    area = any(applied.get("target") == "area" for applied in spell["effects"])
-    return math.ceil((4 + 2.5 * spell["level"]) * (1.25 if area else 1.0))
+def pool(level, intelligence=8):
+    """The mana pool, INT x 8 + level x 2 (docs/core/casting.md), for an able caster."""
+    return intelligence * 8 + level * 2
 
 
 class TestSpells(unittest.TestCase):
@@ -114,12 +113,36 @@ class TestSpells(unittest.TestCase):
                 self.assertEqual(pool[key]["color"], color)
                 self.assertIn(key.removeprefix("damage_"), types)
 
-    def test_older_spells_keep_their_costs_and_new_ones_follow_the_level_rule(self):
+    def test_every_spell_costs_what_its_effects_cost(self):
         for row in spells():
             with self.subTest(spell=row["key"]):
-                expected = KEPT_COSTS.get(row["key"], mana(row))
-                self.assertEqual(row["cost"]["mana"], expected)
+                self.assertEqual(row["cost"]["mana"], spell_cost(row))
 
+    def test_every_effect_a_spell_may_draw_has_a_base_cost(self):
+        for key, effect in effects().items():
+            if "spell" in effect["channels"]:
+                with self.subTest(effect=key):
+                    self.assertGreater(effect.get("baseCost", 0), 0)
+
+    def test_a_spell_is_affordable_at_its_level(self):
+        for row in spells():
+            with self.subTest(spell=row["key"]):
+                self.assertLessEqual(row["cost"]["mana"], pool(row["level"]))
+
+    def test_over_time_costs_its_total(self):
+        heal = lambda magnitude, duration: {"effects": [{"effect": "core:effect/restore_resource", "parameter": "health",
+                                                         "magnitude": magnitude, "duration": duration, "target": "touch"}]}
+        self.assertEqual(spell_cost(heal(10, 10)), spell_cost(heal(100, 1)))
+
+    def test_control_is_priced_by_its_duration_not_its_magnitude(self):
+        hold = lambda magnitude, duration: {"effects": [{"effect": "core:effect/paralyze", "magnitude": magnitude,
+                                                         "duration": duration, "target": "ranged"}]}
+        self.assertEqual(spell_cost(hold(1, 6)), spell_cost(hold(9, 6)))
+        self.assertEqual(spell_cost(hold(1, 12)), 2 * spell_cost(hold(1, 6)))
+
+    def test_the_shape_multiplies(self):
+        bolt = lambda target: {"effects": [{"effect": "core:effect/damage_fire", "magnitude": 20, "target": target}]}
+        self.assertEqual((spell_cost(bolt("touch")), spell_cost(bolt("ranged"))), (10, 15))
 
 if __name__ == "__main__":
     unittest.main()
