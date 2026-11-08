@@ -12,8 +12,8 @@
     { "key": "weapon_dice", "mode": "gate", "description": "A weapon's dice mean is between 1d6 and 2d10." },
     { "key": "armor_piece_dr", "mode": "gate", "description": "No armor piece passes the highest worn-set DR of its category." },
     { "key": "worn_set_dr", "mode": "warn", "description": "The best set per category lands in its worn-set band. Warning until the armor DR pass." },
-    { "key": "monster_damage", "mode": "warn", "description": "A monster's strongest damage ability is within its tier's expected damage. Warning until the bestiary pass (M4-03)." },
-    { "key": "monster_hits_to_kill", "mode": "warn", "description": "A monster takes a standard 4 to 6 hits of its tier's damage. Warning until the bestiary pass (M4-03)." }
+    { "key": "monster_damage", "mode": "gate", "description": "A monster's strongest attack or damage ability is within its tier's expected damage." },
+    { "key": "monster_hits_to_kill", "mode": "gate", "description": "A monster takes the hits of its role's band (standard 4 to 6, boss 8 to 12, minion 1 to 2) of its tier's damage." }
   ],
   "accepted": [
     { "check": "weapon_dice", "subject": "dagger", "reason": "A light weapon: cheap, concealable, and fast; its 1d4 is meant to sit below the band." },

@@ -13,8 +13,10 @@ ruleset/data/monsters/
 │   ├── construct.json    # Animated objects, high END, no mind
 │   ├── elemental.json    # Pure elemental beings, extreme phase stats
 │   ├── humanoid.json     # Balanced bipedal sentients
+│   ├── ooze.json         # Mindless jellies, high END, almost no AGI or senses
 │   ├── plant.json        # Rooted/fungal creatures, vulnerable to fire
 │   └── undead.json       # Risen dead, high WIL, immune to poison
+├── templates.json        # Element templates a row applies (fire, frost, storm, acid, venom)
 └── core.json             # Concrete monster entries (flat or base+override)
 ```
 
@@ -65,10 +67,12 @@ References a base template and provides only the fields that differ:
 
 ### Merge Rules
 
-1. The base template is loaded from `bases/<base>.json`.
-2. Fields from `overrides` are shallow-merged onto the base (override wins).
-3. `id` and `key` come from the entry wrapper, never from the base or overrides.
-4. After merge, the entry is validated against the flat monster schema.
+1. The base is either a creature type, `bases/<base>.json`, or another monster,
+   `core:monster/<key>` in the same file (see [Derived monsters](#derived-monsters)).
+2. Templates, if the entry lists any, apply in order (see [Templates](#templates)).
+3. Fields from `overrides` are shallow-merged on top (override wins).
+4. `id` and `key` come from the entry wrapper, never from the base or overrides.
+5. After merge, the entry is validated against the flat monster schema.
 
 ### Array Merging: `$extend` Convention
 
@@ -118,8 +122,11 @@ scale with level:
 
 The growth formula is:
 ```
-computed = round(base_attr + perLevel * (level - base_level))
+computed = min(10, max(1, round(base_attr + perLevel * (level - base_level))))
 ```
+
+An attribute stays in its 1 to 10 range, as a character's does, so a level-30 monster
+built on a level-4 base tops out at 10 instead of passing the schema's cap. [V 2026-11-06]
 
 Individual monster overrides only need to specify attributes that **differ**
 from the growth curve. Missing attributes are filled in automatically:
@@ -140,6 +147,87 @@ end/agi/wil computed from growth.
 
 HP follows the same pattern with `hitPointsPerLevel`. If an override specifies
 `hitPoints`, that always takes precedence.
+
+### Derived monsters
+
+A monster that is another monster with changes names that monster as its base:
+`"base": "core:monster/ooze"`. It inherits the other monster's merged entry (its attacks,
+resistances, tags, everything), so a family is written once and its members only say what
+differs. The creature type is the root's: a derived monster cannot change it. [V 2026-11-08]
+
+- **Level.** A derived monster always states its `level` in `overrides`, so a reader of one
+  row (the loot budget, the Go loader) never walks the chain. When it differs from the
+  base monster's, attributes and HP move by the type's growth for the difference:
+  `round(base_attr + perLevel × Δlevel)`, within 1 to 10, and `base_hp + hitPointsPerLevel × Δlevel`.
+- **Order.** `core.json` lists the base monsters first (those another row derives from), then
+  their variants, family by family, then the one-off monsters, each group by level.
+- **Chains** may be longer than one step; a cycle, or a base monster that does not exist, is
+  a validation error.
+
+### Templates
+
+A template is a reusable change, written once in `monsters/templates.json`, that any monster
+row applies with `"templates": ["fire"]`. The five element templates are one per phase:
+
+| Template | Phase | Damage type | Label |
+| --- | --- | --- | --- |
+| `fire` | fire | fire | Fire … |
+| `frost` | water | frost | Frost … |
+| `storm` | metal | shock | Storm … |
+| `acid` | earth | acid | Acid … |
+| `venom` | wood | poison | Venom … |
+
+A template sets the monster's `phase`; turns every attack into its damage type and gives it
+the template's phase; adds its `resist` to the monster's, per damage type; appends its
+`tags`; and puts its label prefix before the label, unless `overrides` gives a label.
+Templates apply after the base and before `overrides`, so a row can still correct any of
+it. [V 2026-11-08]
+
+Fire Ooze is an ooze with the fire template:
+
+```json
+{ "id": 46, "key": "fire_ooze", "base": "core:monster/ooze", "templates": ["fire"],
+  "overrides": { "level": 5, "hitPoints": 32 } }
+```
+
+A family member that is not an element change is a derived monster with overrides only:
+an elder treant is the treant sapling at level 22.
+
+### Names
+
+Monster names and descriptions come from folklore, myth, or plain description, never from
+a game or film franchise. Product identity of other games (Dungeons & Dragons, Final Fantasy,
+Pokémon, Warhammer, and the like) is not used, renamed or not: no beholder, mind flayer
+(illithid), displacer beast, owlbear, umber hulk, carrion crawler, gelatinous cube,
+githyanki, githzerai, kuo-toa, slaad, yuan-ti, flan, tonberry, cactuar, malboro, or moogle.
+`test_bestiary.py` fails on any of these names in a key, label, or description. Folklore
+names (troll, ghoul, basilisk, hydra, harpy, golem, wraith) are free to use. [V 2026-11-08]
+
+## Attacks, resistances, and role
+
+A monster fights with the same numbers as a character ([core/combat.md](../core/combat.md)).
+[V 2026-11-06]
+
+- **`attacks`** — what it hits with: a `key`, a `label`, a `damage` of an `amount` (the
+  authored average, the caller's damage roll) and a `type` (a key in
+  `combat/damage_types.json`), a `delivery` (`single`, the default, `area`, or `instant`),
+  and an optional `phase` that the attack carries into the five-phase cycles. `abilities`
+  stay the effects it applies (conditions, drains).
+- **`resist`** — a flat number per damage type, the combat pipeline's `defender.resist`.
+- **`role`** — `standard` (the default), `boss`, or `minion`: which hits-to-kill band of
+  `balance/core.json` the monster's HP is checked against.
+
+The phase is two-sided. A monster's own `phase` is how incoming phased effects land on it
+(its resistance side, through the cycles); an attack's `phase` is how its blows land on
+others (its attack side). [A]
+
+### The floor
+
+At least 40 monsters span levels 1 to 30; every phase is a monster's phase and an attack's
+phase at least once, and every damage type is an attack and a resistance at least once.
+Each monster is a base plus overrides. `ruleset/scripts/test_bestiary.py` checks it, and the
+balance gate checks each monster's strongest attack and its HP against its tier and role
+([core/balance.md](../core/balance.md)). [V 2026-11-06]
 
 ## Why Base + Override (Not Full Inheritance)
 
@@ -171,6 +259,7 @@ To migrate, the merge logic would stay the same — only the container shape cha
 Run `python ruleset/scripts/validate.py` as usual. The validator:
 
 1. Skips `bases/` files (they are templates, not standalone data).
-2. Detects entries with a `base` field, loads the referenced base, and merges.
+2. Detects entries with a `base` field, resolves the creature type or the base monster,
+   applies the templates, and merges the overrides.
 3. Validates the merged entry against the flat monster schema.
 4. Runs referential integrity checks (effect IDs exist, etc.).

@@ -277,6 +277,28 @@ Tracked in Linear before this repo had a tracker, recovered from git history. Th
 - See: issues.md section 1
 - Done when: `ruleset/data/loot/` with a schema; A treasure-by-level budget consistent with the price formula, checked per table and per monster; seeded roll vectors, including chance, shift, material, and several rows per monster.
 
+#### M4-04 Traps and environmental hazards
+- Status: done
+- Merged: #81, 2026-11-06
+- Priority: medium
+- Needs: M1-02, M1-05
+- Was: RW-23
+- Do: Mentioned as missing in the backlog. Minimal core: a hazard is a trigger plus a modifier or damage packet, with a detect and a disarm check. Add an avoid check for hazards a quick step escapes, and environment hazards that cannot be disarmed.
+- Files: ~5 (docs/core/, ruleset/data/hazards/, ruleset/schemas/hazard.schema.json, ruleset/tests/vectors/hazards.json)
+- See: issues.md section 8
+- Done when: schema and at least 10 hazards; detect and disarm use the one resolution function.
+
+#### M4-05 Encounter and balance validation
+- Status: done
+- Merged: #82, 2026-11-06
+- Priority: medium
+- Needs: M1-02, M1-08
+- Was: RW-24
+- Do: `combat.md` has balance guidelines (damage, DR, HP by tier, hits-to-kill). Turn them into checks so data cannot drift. Each check carries its mode (`warn` or `gate`) in data, so a check moves from warning to gate when its data is fixed.
+- Files: ~4 (ruleset/data/balance/, ruleset/scripts/, .github/workflows/validate-ruleset.yml)
+- See: docs/modules/combat.md
+- Done when: A script reports monsters and gear outside the guideline bands; bands are data, not prose; report runs in CI as a warning, then as a gate.
+
 #### M4-06 Looter shift: Luck and perks on loot rolls
 - Status: done
 - Merged: #77, 2026-11-06

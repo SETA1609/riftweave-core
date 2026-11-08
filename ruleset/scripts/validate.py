@@ -982,7 +982,7 @@ def _apply_growth(base, level):
     the base template's growth rules.
 
     Growth is defined per ability as a perLevel rate. The formula:
-      attr = round(base_attr + perLevel * (level - base_level))
+      attr = round(base_attr + perLevel * (level - base_level)), within 1 to 10
 
     Returns a dict of ability -> int, or None if base has no growth section.
     """
@@ -999,7 +999,7 @@ def _apply_growth(base, level):
     for ability in attr_growth:
         base_val = base_attrs.get(ability, 1)
         per = attr_growth[ability].get("perLevel", 0)
-        computed[ability] = max(1, round(base_val + per * delta))
+        computed[ability] = min(10, max(1, round(base_val + per * delta)))
     return computed
 
 
@@ -1034,13 +1034,56 @@ def _merge_field(base_val, override_val):
     return override_val
 
 
+MONSTER_REF_PREFIX = "core:monster/"
+MONSTER_TEMPLATES_FILE = DATA_DIR / "monsters" / "templates.json"
+_MONSTER_TEMPLATES = None
+
+
+def _monster_templates():
+    """Monster templates by key (monsters/templates.json), loaded once."""
+    global _MONSTER_TEMPLATES
+    if _MONSTER_TEMPLATES is None:
+        _MONSTER_TEMPLATES = {}
+        if MONSTER_TEMPLATES_FILE.exists():
+            for template in json.loads(MONSTER_TEMPLATES_FILE.read_text()).get("monster_templates", []):
+                _MONSTER_TEMPLATES[template["key"]] = template
+    return _MONSTER_TEMPLATES
+
+
+def _apply_monster_template(merged, template):
+    """Apply one template (docs/modules/monsters.md#templates) to a merged entry in place."""
+    merged["phase"] = template["phase"]
+    attacks = []
+    for attack in merged.get("attacks", []) or []:
+        attack = json.loads(json.dumps(attack))
+        attack.setdefault("damage", {})["type"] = template["damage_type"]
+        attack["phase"] = template["phase"]
+        attacks.append(attack)
+    if attacks:
+        merged["attacks"] = attacks
+    if template.get("resist"):
+        resist = dict(merged.get("resist") or {})
+        for kind, amount in template["resist"].items():
+            resist[kind] = resist.get(kind, 0) + amount
+        merged["resist"] = resist
+    tags = list(merged.get("tags") or [])
+    tags += [tag for tag in template.get("tags", []) if tag not in tags]
+    if tags:
+        merged["tags"] = tags
+    if merged.get("label"):
+        merged["label"] = f"{template['label_prefix']} {merged['label']}"
+
+
 def _resolve_monster_bases(data, errors):
     """Mutate data in-place: replace base+override entries with merged flat entries.
 
-    Supports:
+    The base is a creature type (bases/<name>.json) or another monster in the same
+    file (core:monster/<key>), resolved first (docs/modules/monsters.md#derived-monsters).
+    Then the row's templates apply in order, then its overrides:
       - $extend convention for array fields (abilities, tags)
-      - Growth-based attribute and HP scaling from base templates
-      - Full override of any field (replaces base)
+      - growth-based attribute and HP scaling from the creature type, on the type's
+        level for a type base and on the level difference for a base monster
+      - full override of any field (replaces base)
     """
     global _BASE_CACHE
     if _BASE_CACHE is None:
@@ -1050,56 +1093,95 @@ def _resolve_monster_bases(data, errors):
     if not isinstance(monsters, list):
         return
 
-    for i, entry in enumerate(monsters):
-        if not isinstance(entry, dict):
-            continue
+    rows = {entry.get("key"): entry for entry in monsters if isinstance(entry, dict)}
+    resolved = {}
+
+    def resolve(entry, chain):
+        """Return (merged entry, creature type data) or None after recording an error."""
+        key = entry.get("key")
+        if key in resolved:
+            return resolved[key]
         base_key = entry.get("base")
         if not base_key:
-            continue
+            resolved[key] = (entry, None)
+            return resolved[key]
         overrides = entry.get("overrides")
         if not isinstance(overrides, dict):
-            errors.append(f"monsters[{i}]: base '{base_key}' has no overrides object")
-            continue
-        if base_key not in _BASE_CACHE:
-            errors.append(f"monsters[{i}]: base '{base_key}' not found in bases/")
-            continue
+            errors.append(f"monster '{key}': base '{base_key}' has no overrides object")
+            return None
 
-        base_data = _BASE_CACHE[base_key]
-        merged = dict(base_data)
+        if base_key.startswith(MONSTER_REF_PREFIX):
+            parent_key = base_key[len(MONSTER_REF_PREFIX):]
+            if parent_key in chain:
+                errors.append(f"monster '{key}': base monster cycle {' -> '.join(chain + [parent_key])}")
+                return None
+            if parent_key not in rows:
+                errors.append(f"monster '{key}': base monster '{base_key}' does not exist")
+                return None
+            if "level" not in overrides:
+                errors.append(f"monster '{key}': a derived monster states its level in overrides")
+                return None
+            parent = resolve(rows[parent_key], chain + [parent_key])
+            if parent is None:
+                return None
+            parent_entry, type_data = parent
+            merged = json.loads(json.dumps(parent_entry))
+            for field in ("id", "key", "source"):
+                merged.pop(field, None)
+            growth = (type_data or {}).get("growth") or {}
+            delta = overrides["level"] - parent_entry.get("level", overrides["level"])
+            if delta and growth:
+                attributes = dict(merged.get("attributes") or {})
+                for ability, rule in (growth.get("attributes") or {}).items():
+                    if ability in attributes:
+                        attributes[ability] = min(10, max(1, round(attributes[ability] + rule.get("perLevel", 0) * delta)))
+                merged["attributes"] = attributes
+                if "hitPointsPerLevel" in growth and "hitPoints" in merged:
+                    merged["hitPoints"] = max(1, round(merged["hitPoints"] + growth["hitPointsPerLevel"] * delta))
+        else:
+            if base_key not in _BASE_CACHE:
+                errors.append(f"monster '{key}': base '{base_key}' not found in bases/")
+                return None
+            type_data = _BASE_CACHE[base_key]
+            merged = dict(type_data)
+            merged.pop("growth", None)
+            level = overrides.get("level") or type_data.get("level", 1)
+            computed_attrs = _apply_growth(type_data, level)
+            if computed_attrs is not None:
+                merged["attributes"] = computed_attrs
+            computed_hp = _apply_growth_hp(type_data, level)
+            if computed_hp is not None:
+                merged["hitPoints"] = computed_hp
 
-        # Remove growth blueprint from merged entry (it's not a valid monster field)
-        merged.pop("growth", None)
-
-        # Apply growth-based attribute scaling
-        level = overrides.get("level") or base_data.get("level", 1)
-        computed_attrs = _apply_growth(base_data, level)
-        if computed_attrs is not None:
-            merged["attributes"] = computed_attrs
-
-        # Apply growth-based HP scaling
-        computed_hp = _apply_growth_hp(base_data, level)
-        if computed_hp is not None:
-            merged["hitPoints"] = computed_hp
+        templates = _monster_templates()
+        for template_key in entry.get("templates", []) or []:
+            if template_key not in templates:
+                errors.append(f"monster '{key}': template '{template_key}' not found in monsters/templates.json")
+                return None
+            _apply_monster_template(merged, templates[template_key])
 
         # Merge override fields on top (individual attribute overrides merge
         # into the computed set rather than replacing the whole object)
         for k, v in overrides.items():
-            if (
-                k == "attributes"
-                and isinstance(v, dict)
-                and isinstance(merged.get("attributes"), dict)
-            ):
-                merged["attributes"].update(v)
+            if k == "attributes" and isinstance(v, dict) and isinstance(merged.get("attributes"), dict):
+                merged["attributes"] = {**merged["attributes"], **v}
             else:
                 merged[k] = _merge_field(merged.get(k), v)
 
         # Carry over id and key from the entry wrapper
         merged["id"] = entry.get("id")
-        merged["key"] = entry.get("key")
+        merged["key"] = key
         if entry.get("source"):
             merged["source"] = entry["source"]
-        # Replace the entry in-place for validation
-        monsters[i] = merged
+        resolved[key] = (merged, type_data)
+        return resolved[key]
+
+    for i, entry in enumerate(monsters):
+        if not isinstance(entry, dict) or not entry.get("base"):
+            continue
+        result = resolve(entry, [entry.get("key")])
+        if result is not None:
+            monsters[i] = result[0]
 
 
 # Maps equipment data files to their bases/ subdirectories.
