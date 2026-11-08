@@ -1,36 +1,16 @@
 [project]
 name = "devops"
 version = "0.1.0"
-description = "Host-side devops CLI: runs the Riftweave Python toolchain container with timestamped, logged output."
+description = "The devops-tools pin and its settings: the toolchain and agent containers, and the repository workflow tools."
 requires-python = ">=3.13"
-# Runtime uses the standard library and devops-tools (run logs, the rebase workflow).
-# The host needs nothing but uv. Pin devops-tools to a full commit SHA; bump it in its own PR.
+# No local code: everything runs through devops-tools (README.md). The host needs nothing but
+# uv. Pin devops-tools to a full commit SHA; bump it in its own PR.
 dependencies = [
     "devops-tools @ git+https://github.com/SETA1609/devops_tools@f7aca2eaf932f1a9b1f8f38721eaee378262c6ef",
 ]
 
-[project.scripts]
-devops = "devops.cli:main"
-
-[dependency-groups]
-dev = [
-    "pytest>=8.3",
-    "ruff>=0.8",
-]
-
-[build-system]
-requires = ["uv_build>=0.10,<0.11"]
-build-backend = "uv_build"
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-
-[tool.ruff]
-line-length = 100
-target-version = "py313"
-
-[tool.ruff.lint]
-select = ["E", "W", "F", "I", "B", "UP", "SIM", "RUF"]
+[tool.uv]
+package = false
 
 # Read by devops-tools (roadmap-order, changelog-fragments, rebase-open-branches). Pass this file
 # with --settings-file.
@@ -41,3 +21,27 @@ changelog-file = "CHANGELOG.md"
 keep-both-added-lines = ["docs/stories/*.md", "docs/decisions.md", "docs/core/vectors.md"]
 # The rebase takes main's generated story table in ROADMAP.md and regenerates it after each branch.
 regenerate-roadmap-on-rebase = true
+
+# Read by `devops-tools container` (README.md#usage).
+[tool.devops-tools.container]
+image = "riftweave"
+dockerfile = "container/Dockerfile"
+toolchain = "python"
+version-file = ".toolchain-python-version"
+version-argument = "PYTHON_VERSION"
+cache-environment-variable = "UV_CACHE_DIR"
+cache-volume = "riftweave-uv-cache"
+clean-directories = [
+    "ruleset/scripts/__pycache__",
+    "scripts/__pycache__",
+    "tools/devops/.venv",
+    "tools/devops/.pytest_cache",
+    "tools/devops/.ruff_cache",
+    ".pytest_cache",
+    ".ruff_cache",
+]
+
+[tool.devops-tools.container.commands]
+validate = ["python", "ruleset/scripts/validate.py"]
+test = ["python", "-m", "unittest", "discover", "-s", "ruleset/scripts", "-p", "test_*.py"]
+python = ["python"]
