@@ -541,5 +541,40 @@
     "expect": {
       "error": "spell \"nope\" is not defined"
     }
+  },
+  {
+    "name": "cast: unlock (2) on indigo magic 40 emits unlock of level 2 for the consumer to compare with the lock",
+    "spell": "unlock",
+    "caster": {
+      "skills": {
+        "indigo_magic": 40
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 20
+    },
+    "roll": 20,
+    "expect": {
+      "outcome": "cast",
+      "mana": 11,
+      "consumed": [],
+      "check": {
+        "target": 40,
+        "success": true,
+        "margin": 20,
+        "tags": []
+      },
+      "effects": [
+        {
+          "effect": "core:effect/unlock",
+          "magnitude": 2,
+          "target": "touch"
+        }
+      ],
+      "concentration": null,
+      "ended": null,
+      "dispelled": []
+    }
   }
 ]
