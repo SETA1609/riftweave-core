@@ -42,7 +42,6 @@
     },
     {
       "key": "damage_shock",
-      "reserved": true,
       "label": "Damage Shock",
       "description": "Deals shock damage and drains mana.",
       "category": "damage",
@@ -93,6 +92,85 @@
       ],
       "tags": [
         "harmful"
+      ]
+    },
+    {
+      "key": "damage_radiant",
+      "label": "Damage Radiant",
+      "description": "Deals radiant damage: holy light that burns what it touches.",
+      "category": "damage",
+      "polarity": "harmful",
+      "color": "white",
+      "magnitudeUnit": "points",
+      "channels": [
+        "spell"
+      ],
+      "tags": [
+        "holy"
+      ]
+    },
+    {
+      "key": "damage_necrotic",
+      "label": "Damage Necrotic",
+      "description": "Deals necrotic damage: the chill of death that withers living flesh.",
+      "category": "damage",
+      "polarity": "harmful",
+      "color": "black",
+      "magnitudeUnit": "points",
+      "channels": [
+        "spell"
+      ],
+      "tags": [
+        "necromancy"
+      ]
+    },
+    {
+      "key": "damage_psychic",
+      "label": "Damage Psychic",
+      "description": "Deals psychic damage: pain the mind believes, felt as real.",
+      "category": "damage",
+      "polarity": "harmful",
+      "color": "yellow",
+      "magnitudeUnit": "points",
+      "channels": [
+        "spell"
+      ],
+      "tags": [
+        "illusion",
+        "mind"
+      ]
+    },
+    {
+      "key": "damage_thunder",
+      "label": "Damage Thunder",
+      "description": "Deals thunder damage: a shock of force and sound.",
+      "category": "damage",
+      "polarity": "harmful",
+      "color": "indigo",
+      "magnitudeUnit": "points",
+      "channels": [
+        "spell"
+      ],
+      "tags": [
+        "force",
+        "sound"
+      ]
+    },
+    {
+      "key": "damage_acid",
+      "label": "Damage Acid",
+      "description": "Deals acid damage: flesh and metal altered into something that dissolves.",
+      "category": "damage",
+      "polarity": "harmful",
+      "color": "blue",
+      "phase": "earth",
+      "magnitudeUnit": "points",
+      "channels": [
+        "spell"
+      ],
+      "tags": [
+        "alteration",
+        "acid"
       ]
     },
     {
@@ -149,7 +227,6 @@
     },
     {
       "key": "light",
-      "reserved": true,
       "label": "Light",
       "description": "Conjures light around the subject or a point.",
       "category": "utility",
@@ -203,7 +280,6 @@
     },
     {
       "key": "telekinesis",
-      "reserved": true,
       "label": "Telekinesis",
       "description": "Manipulate distant objects at range.",
       "category": "control",
@@ -224,7 +300,6 @@
       "description": "Conjures or animates a creature/servant to fight for or assist the caster. Use 'parameter' to specify the type or category (e.g. 'undead'). Magnitude is typically a count or power rating; duration controls persistence. Generalizes former summon_* effects.",
       "category": "conjure",
       "polarity": "harmful",
-      "color": "black",
       "magnitudeUnit": "count",
       "defaultDuration": 120,
       "channels": [
@@ -238,7 +313,6 @@
     },
     {
       "key": "bound_weapon",
-      "reserved": true,
       "label": "Bound Weapon",
       "description": "Conjures a weapon of shaped energy in the caster's hand. Use 'parameter' for the weapon it copies (e.g. 'core:weapon/longsword'); the caster attacks with that weapon's skill. Magnitude is the number of weapons conjured (normally 1). The weapon vanishes when the duration ends or it leaves the caster's hand.",
       "category": "conjure",
@@ -607,7 +681,6 @@
     },
     {
       "key": "drain_attribute",
-      "reserved": true,
       "label": "Drain Attribute",
       "description": "Reduces a specific attribute (temporary drain). Parameter specifies the ability id. Magnitude is the amount drained (can go below normal min temporarily).",
       "category": "drain",
@@ -665,7 +738,6 @@
     },
     {
       "key": "drain_resource",
-      "reserved": true,
       "label": "Drain Resource",
       "description": "Drains a resource pool (temporary reduction to current or max). Parameter: 'health', 'stamina', 'mana', etc. Magnitude is the amount drained.",
       "category": "drain",
@@ -1338,7 +1410,6 @@
     },
     {
       "key": "fortify_defense",
-      "reserved": true,
       "label": "Fortify Defense",
       "description": "Increases the target's effective armor DR or evasion. Magnitude is the bonus to DR (if parameter is 'armor') or evasion (if parameter is 'evasion').",
       "category": "fortify",
@@ -1455,6 +1526,38 @@
         "combat",
         "control",
         "interrupt"
+      ]
+    },
+    {
+      "key": "disarm_hazard",
+      "label": "Disarm Hazard",
+      "description": "Makes a mechanical trap of level magnitude or below safe (docs/core/hazards.md#spells-on-a-hazard). An arcane hazard needs a dispel; a natural one cannot be undone.",
+      "category": "utility",
+      "polarity": "neutral",
+      "color": "indigo",
+      "magnitudeUnit": "level",
+      "channels": [
+        "spell"
+      ],
+      "tags": [
+        "trap",
+        "force"
+      ]
+    },
+    {
+      "key": "unlock",
+      "label": "Unlock",
+      "description": "Opens a lock of level magnitude or below (docs/core/hazards.md#spells-on-a-hazard).",
+      "category": "utility",
+      "polarity": "neutral",
+      "color": "indigo",
+      "magnitudeUnit": "level",
+      "channels": [
+        "spell"
+      ],
+      "tags": [
+        "lock",
+        "force"
       ]
     }
   ]

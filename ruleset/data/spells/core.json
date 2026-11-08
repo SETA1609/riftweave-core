@@ -162,6 +162,1237 @@
       "cost": {
         "mana": 12
       }
+    },
+    {
+      "id": 9,
+      "key": "frost_lance",
+      "label": "Frost Lance",
+      "description": "A spear of ice that strikes one target.",
+      "color": "red",
+      "level": 4,
+      "effects": [
+        {
+          "effect": "core:effect/damage_frost",
+          "magnitude": 14,
+          "target": "ranged"
+        }
+      ],
+      "cost": {
+        "mana": 14
+      }
+    },
+    {
+      "id": 10,
+      "key": "flame_shield",
+      "label": "Flame Shield",
+      "description": "Wreathe yourself in flame that turns aside fire.",
+      "color": "red",
+      "level": 8,
+      "concentration": true,
+      "effects": [
+        {
+          "effect": "core:effect/resist",
+          "parameter": "fire",
+          "magnitude": 50,
+          "duration": 60,
+          "target": "self"
+        }
+      ],
+      "cost": {
+        "mana": 24
+      }
+    },
+    {
+      "id": 11,
+      "key": "chain_lightning",
+      "label": "Chain Lightning",
+      "description": "Lightning leaps from foe to foe across the field.",
+      "color": "red",
+      "level": 12,
+      "effects": [
+        {
+          "effect": "core:effect/damage_shock",
+          "magnitude": 30,
+          "target": "area",
+          "radius": 3
+        }
+      ],
+      "cost": {
+        "mana": 43
+      }
+    },
+    {
+      "id": 12,
+      "key": "ice_storm",
+      "label": "Ice Storm",
+      "description": "Hail and shards of ice hammer an area.",
+      "color": "red",
+      "level": 18,
+      "effects": [
+        {
+          "effect": "core:effect/damage_frost",
+          "magnitude": 30,
+          "target": "area",
+          "radius": 4
+        }
+      ],
+      "cost": {
+        "mana": 62
+      }
+    },
+    {
+      "id": 13,
+      "key": "meteor",
+      "label": "Meteor",
+      "description": "A burning stone falls from the sky and sets the ground alight.",
+      "color": "red",
+      "level": 24,
+      "effects": [
+        {
+          "effect": "core:effect/damage_fire",
+          "magnitude": 50,
+          "target": "area",
+          "radius": 4
+        },
+        {
+          "effect": "core:effect/burn",
+          "magnitude": 4,
+          "duration": 10,
+          "target": "area",
+          "radius": 4
+        }
+      ],
+      "cost": {
+        "mana": 80
+      }
+    },
+    {
+      "id": 14,
+      "key": "inferno",
+      "label": "Inferno",
+      "description": "A firestorm that swallows a whole battlefield.",
+      "color": "red",
+      "level": 30,
+      "effects": [
+        {
+          "effect": "core:effect/damage_fire",
+          "magnitude": 70,
+          "target": "area",
+          "radius": 5
+        }
+      ],
+      "cost": {
+        "mana": 99
+      }
+    },
+    {
+      "id": 15,
+      "key": "summon_familiar",
+      "label": "Summon Familiar",
+      "description": "Call a small spirit-beast that scouts and fetches for you.",
+      "color": "orange",
+      "level": 2,
+      "effects": [
+        {
+          "effect": "core:effect/summon",
+          "parameter": "familiar",
+          "magnitude": 1,
+          "duration": 120,
+          "target": "ranged"
+        }
+      ],
+      "cost": {
+        "mana": 9
+      }
+    },
+    {
+      "id": 16,
+      "key": "bound_blade",
+      "label": "Bound Blade",
+      "description": "Shape a longsword of conjured light in your hand.",
+      "color": "orange",
+      "level": 3,
+      "concentration": true,
+      "effects": [
+        {
+          "effect": "core:effect/bound_weapon",
+          "parameter": "core:weapon/longsword",
+          "magnitude": 1,
+          "duration": 60,
+          "target": "self"
+        }
+      ],
+      "cost": {
+        "mana": 12
+      }
+    },
+    {
+      "id": 17,
+      "key": "conjured_barrier",
+      "label": "Conjured Barrier",
+      "description": "A shell of conjured force that takes blows meant for you.",
+      "color": "orange",
+      "level": 6,
+      "effects": [
+        {
+          "effect": "core:effect/fortify_defense",
+          "parameter": "armor",
+          "magnitude": 4,
+          "duration": 30,
+          "target": "self"
+        }
+      ],
+      "cost": {
+        "mana": 19
+      }
+    },
+    {
+      "id": 18,
+      "key": "conjured_blades",
+      "label": "Conjured Blades",
+      "description": "A whirl of conjured knives cuts everyone in the area.",
+      "color": "orange",
+      "level": 9,
+      "effects": [
+        {
+          "effect": "core:effect/bleed",
+          "magnitude": 4,
+          "duration": 10,
+          "target": "area",
+          "radius": 2
+        }
+      ],
+      "cost": {
+        "mana": 34
+      }
+    },
+    {
+      "id": 19,
+      "key": "bound_bow",
+      "label": "Bound Bow",
+      "description": "Shape a longbow of conjured light, strung and ready.",
+      "color": "orange",
+      "level": 14,
+      "concentration": true,
+      "effects": [
+        {
+          "effect": "core:effect/bound_weapon",
+          "parameter": "core:weapon/longbow",
+          "magnitude": 1,
+          "duration": 120,
+          "target": "self"
+        }
+      ],
+      "cost": {
+        "mana": 39
+      }
+    },
+    {
+      "id": 20,
+      "key": "summon_elemental",
+      "label": "Summon Elemental",
+      "description": "Call an elemental to fight beside you while you hold it.",
+      "color": "orange",
+      "level": 16,
+      "concentration": true,
+      "effects": [
+        {
+          "effect": "core:effect/summon",
+          "parameter": "elemental",
+          "magnitude": 1,
+          "duration": 120,
+          "target": "ranged"
+        }
+      ],
+      "cost": {
+        "mana": 44
+      }
+    },
+    {
+      "id": 21,
+      "key": "conjured_legion",
+      "label": "Conjured Legion",
+      "description": "Call three elementals at once.",
+      "color": "orange",
+      "level": 28,
+      "concentration": true,
+      "effects": [
+        {
+          "effect": "core:effect/summon",
+          "parameter": "elemental",
+          "magnitude": 3,
+          "duration": 120,
+          "target": "ranged"
+        }
+      ],
+      "cost": {
+        "mana": 74
+      }
+    },
+    {
+      "id": 22,
+      "key": "light",
+      "label": "Light",
+      "description": "A floating light that follows you.",
+      "color": "yellow",
+      "level": 1,
+      "effects": [
+        {
+          "effect": "core:effect/light",
+          "magnitude": 1,
+          "duration": 120,
+          "target": "self"
+        }
+      ],
+      "cost": {
+        "mana": 7
+      }
+    },
+    {
+      "id": 23,
+      "key": "blinding_flash",
+      "label": "Blinding Flash",
+      "description": "A burst of false light blinds those nearby.",
+      "color": "yellow",
+      "level": 3,
+      "effects": [
+        {
+          "effect": "core:effect/blind",
+          "magnitude": 1,
+          "duration": 6,
+          "target": "area",
+          "radius": 2
+        }
+      ],
+      "cost": {
+        "mana": 15
+      }
+    },
+    {
+      "id": 24,
+      "key": "blur",
+      "label": "Blur",
+      "description": "Your outline wavers, and blows go wide.",
+      "color": "yellow",
+      "level": 4,
+      "concentration": true,
+      "effects": [
+        {
+          "effect": "core:effect/fortify_skill",
+          "parameter": "core:skill/evasion",
+          "magnitude": 15,
+          "duration": 30,
+          "target": "self"
+        }
+      ],
+      "cost": {
+        "mana": 14
+      }
+    },
+    {
+      "id": 25,
+      "key": "mind_spike",
+      "label": "Mind Spike",
+      "description": "A pain the target believes in, and so feels.",
+      "color": "yellow",
+      "level": 5,
+      "effects": [
+        {
+          "effect": "core:effect/damage_psychic",
+          "magnitude": 12,
+          "target": "ranged"
+        }
+      ],
+      "cost": {
+        "mana": 17
+      }
+    },
+    {
+      "id": 26,
+      "key": "charm_person",
+      "label": "Charm Person",
+      "description": "The target sees you as a friend while you hold the spell.",
+      "color": "yellow",
+      "level": 7,
+      "concentration": true,
+      "effects": [
+        {
+          "effect": "core:effect/charm",
+          "magnitude": 1,
+          "duration": 60,
+          "target": "ranged"
+        }
+      ],
+      "cost": {
+        "mana": 22
+      }
+    },
+    {
+      "id": 27,
+      "key": "silence",
+      "label": "Silence",
+      "description": "Steal the sound from around a caster; no spell can be spoken.",
+      "color": "yellow",
+      "level": 10,
+      "effects": [
+        {
+          "effect": "core:effect/silence",
+          "magnitude": 1,
+          "duration": 10,
+          "target": "ranged"
+        }
+      ],
+      "cost": {
+        "mana": 29
+      }
+    },
+    {
+      "id": 28,
+      "key": "veil",
+      "label": "Veil",
+      "description": "You fade from sight while you hold the spell.",
+      "color": "yellow",
+      "level": 12,
+      "concentration": true,
+      "effects": [
+        {
+          "effect": "core:effect/invisibility",
+          "magnitude": 1,
+          "duration": 60,
+          "target": "self"
+        }
+      ],
+      "cost": {
+        "mana": 34
+      }
+    },
+    {
+      "id": 29,
+      "key": "psychic_scream",
+      "label": "Psychic Scream",
+      "description": "A shriek only minds can hear, that blinds those it reaches.",
+      "color": "yellow",
+      "level": 18,
+      "effects": [
+        {
+          "effect": "core:effect/damage_psychic",
+          "magnitude": 30,
+          "target": "area",
+          "radius": 4
+        },
+        {
+          "effect": "core:effect/blind",
+          "magnitude": 1,
+          "duration": 3,
+          "target": "area",
+          "radius": 4
+        }
+      ],
+      "cost": {
+        "mana": 62
+      }
+    },
+    {
+      "id": 30,
+      "key": "mass_charm",
+      "label": "Mass Charm",
+      "description": "A crowd sees you as its friend.",
+      "color": "yellow",
+      "level": 22,
+      "concentration": true,
+      "effects": [
+        {
+          "effect": "core:effect/charm",
+          "magnitude": 1,
+          "duration": 30,
+          "target": "area",
+          "radius": 4
+        }
+      ],
+      "cost": {
+        "mana": 74
+      }
+    },
+    {
+      "id": 31,
+      "key": "cure_poison",
+      "label": "Cure Poison",
+      "description": "Draw the poison out of a creature you touch.",
+      "color": "green",
+      "level": 3,
+      "effects": [
+        {
+          "effect": "core:effect/cure",
+          "parameter": "poison",
+          "magnitude": 1,
+          "target": "touch"
+        }
+      ],
+      "cost": {
+        "mana": 12
+      }
+    },
+    {
+      "id": 32,
+      "key": "vigor",
+      "label": "Vigor",
+      "description": "Restore the stamina of a creature you touch.",
+      "color": "green",
+      "level": 4,
+      "effects": [
+        {
+          "effect": "core:effect/restore_resource",
+          "parameter": "stamina",
+          "magnitude": 20,
+          "target": "touch"
+        }
+      ],
+      "cost": {
+        "mana": 14
+      }
+    },
+    {
+      "id": 33,
+      "key": "regeneration",
+      "label": "Regeneration",
+      "description": "Wounds close slowly, two points each second for twenty seconds.",
+      "color": "green",
+      "level": 5,
+      "effects": [
+        {
+          "effect": "core:effect/restore_resource",
+          "parameter": "health",
+          "magnitude": 2,
+          "duration": 20,
+          "target": "touch"
+        }
+      ],
+      "cost": {
+        "mana": 17
+      }
+    },
+    {
+      "id": 34,
+      "key": "purity_ward",
+      "label": "Purity Ward",
+      "description": "A ward of clean breath that turns poison aside.",
+      "color": "green",
+      "level": 8,
+      "effects": [
+        {
+          "effect": "core:effect/resist",
+          "parameter": "poison",
+          "magnitude": 50,
+          "duration": 120,
+          "target": "touch"
+        }
+      ],
+      "cost": {
+        "mana": 24
+      }
+    },
+    {
+      "id": 35,
+      "key": "greater_heal",
+      "label": "Greater Heal",
+      "description": "Restore a great deal of health to a creature you touch.",
+      "color": "green",
+      "level": 12,
+      "effects": [
+        {
+          "effect": "core:effect/restore_resource",
+          "parameter": "health",
+          "magnitude": 60,
+          "target": "touch"
+        }
+      ],
+      "cost": {
+        "mana": 34
+      }
+    },
+    {
+      "id": 36,
+      "key": "mass_heal",
+      "label": "Mass Heal",
+      "description": "Restore health to every ally in the area.",
+      "color": "green",
+      "level": 20,
+      "effects": [
+        {
+          "effect": "core:effect/restore_resource",
+          "parameter": "health",
+          "magnitude": 40,
+          "target": "area",
+          "radius": 4
+        }
+      ],
+      "cost": {
+        "mana": 68
+      }
+    },
+    {
+      "id": 37,
+      "key": "renewal",
+      "label": "Renewal",
+      "description": "Every ally in the area mends, ten points each second for thirty seconds.",
+      "color": "green",
+      "level": 28,
+      "effects": [
+        {
+          "effect": "core:effect/restore_resource",
+          "parameter": "health",
+          "magnitude": 10,
+          "duration": 30,
+          "target": "area",
+          "radius": 4
+        }
+      ],
+      "cost": {
+        "mana": 93
+      }
+    },
+    {
+      "id": 38,
+      "key": "feather_fall",
+      "label": "Feather Fall",
+      "description": "Your burden lightens and your falls slow.",
+      "color": "blue",
+      "level": 1,
+      "effects": [
+        {
+          "effect": "core:effect/feather",
+          "magnitude": 50,
+          "duration": 60,
+          "target": "self"
+        }
+      ],
+      "cost": {
+        "mana": 7
+      }
+    },
+    {
+      "id": 39,
+      "key": "corrode",
+      "label": "Corrode",
+      "description": "Alter what you touch into something that dissolves.",
+      "color": "blue",
+      "level": 4,
+      "effects": [
+        {
+          "effect": "core:effect/damage_acid",
+          "magnitude": 12,
+          "target": "touch"
+        }
+      ],
+      "cost": {
+        "mana": 14
+      }
+    },
+    {
+      "id": 40,
+      "key": "slow",
+      "label": "Slow",
+      "description": "The target moves as if through deep water.",
+      "color": "blue",
+      "level": 5,
+      "effects": [
+        {
+          "effect": "core:effect/slow",
+          "magnitude": 2,
+          "duration": 10,
+          "target": "ranged"
+        }
+      ],
+      "cost": {
+        "mana": 17
+      }
+    },
+    {
+      "id": 41,
+      "key": "stoneskin",
+      "label": "Stoneskin",
+      "description": "The skin of a creature you touch hardens like stone.",
+      "color": "blue",
+      "level": 9,
+      "effects": [
+        {
+          "effect": "core:effect/fortify_defense",
+          "parameter": "armor",
+          "magnitude": 6,
+          "duration": 60,
+          "target": "touch"
+        }
+      ],
+      "cost": {
+        "mana": 27
+      }
+    },
+    {
+      "id": 42,
+      "key": "paralyze",
+      "label": "Paralyze",
+      "description": "The target's limbs lock in place.",
+      "color": "blue",
+      "level": 11,
+      "effects": [
+        {
+          "effect": "core:effect/paralyze",
+          "magnitude": 1,
+          "duration": 6,
+          "target": "ranged"
+        }
+      ],
+      "cost": {
+        "mana": 32
+      }
+    },
+    {
+      "id": 43,
+      "key": "acid_rain",
+      "label": "Acid Rain",
+      "description": "A rain that eats through armor and skin.",
+      "color": "blue",
+      "level": 17,
+      "effects": [
+        {
+          "effect": "core:effect/damage_acid",
+          "magnitude": 30,
+          "target": "area",
+          "radius": 4
+        }
+      ],
+      "cost": {
+        "mana": 59
+      }
+    },
+    {
+      "id": 44,
+      "key": "petrify",
+      "label": "Petrify",
+      "description": "Turn the target to stone.",
+      "color": "blue",
+      "level": 26,
+      "effects": [
+        {
+          "effect": "core:effect/petrify",
+          "magnitude": 1,
+          "duration": 30,
+          "target": "ranged"
+        }
+      ],
+      "cost": {
+        "mana": 69
+      }
+    },
+    {
+      "id": 45,
+      "key": "unlock",
+      "label": "Unlock",
+      "description": "Force the tumblers of a lock of level 2 or below.",
+      "color": "indigo",
+      "level": 2,
+      "effects": [
+        {
+          "effect": "core:effect/unlock",
+          "magnitude": 2,
+          "target": "touch"
+        }
+      ],
+      "cost": {
+        "mana": 9
+      }
+    },
+    {
+      "id": 46,
+      "key": "disarm_trap",
+      "label": "Disarm Trap",
+      "description": "Jam the works of a mechanical trap of level 4 or below from a distance.",
+      "color": "indigo",
+      "level": 4,
+      "effects": [
+        {
+          "effect": "core:effect/disarm_hazard",
+          "magnitude": 4,
+          "target": "ranged"
+        }
+      ],
+      "cost": {
+        "mana": 14
+      }
+    },
+    {
+      "id": 47,
+      "key": "thunderclap",
+      "label": "Thunderclap",
+      "description": "A clap of force and sound around you.",
+      "color": "indigo",
+      "level": 5,
+      "effects": [
+        {
+          "effect": "core:effect/damage_thunder",
+          "magnitude": 12,
+          "target": "area",
+          "radius": 2
+        }
+      ],
+      "cost": {
+        "mana": 21
+      }
+    },
+    {
+      "id": 48,
+      "key": "force_push",
+      "label": "Force Push",
+      "description": "A shove of force that knocks the target down.",
+      "color": "indigo",
+      "level": 6,
+      "effects": [
+        {
+          "effect": "core:effect/knockdown",
+          "magnitude": 1,
+          "duration": 3,
+          "target": "ranged"
+        }
+      ],
+      "cost": {
+        "mana": 19
+      }
+    },
+    {
+      "id": 49,
+      "key": "force_wall",
+      "label": "Force Wall",
+      "description": "A wall of force between you and harm while you hold it.",
+      "color": "indigo",
+      "level": 10,
+      "concentration": true,
+      "effects": [
+        {
+          "effect": "core:effect/fortify_defense",
+          "parameter": "armor",
+          "magnitude": 5,
+          "duration": 30,
+          "target": "self"
+        }
+      ],
+      "cost": {
+        "mana": 29
+      }
+    },
+    {
+      "id": 50,
+      "key": "greater_unlock",
+      "label": "Greater Unlock",
+      "description": "Force a lock of level 15 or below.",
+      "color": "indigo",
+      "level": 15,
+      "effects": [
+        {
+          "effect": "core:effect/unlock",
+          "magnitude": 15,
+          "target": "touch"
+        }
+      ],
+      "cost": {
+        "mana": 42
+      }
+    },
+    {
+      "id": 51,
+      "key": "greater_disarm",
+      "label": "Greater Disarm",
+      "description": "Jam the works of a mechanical trap of level 20 or below.",
+      "color": "indigo",
+      "level": 20,
+      "effects": [
+        {
+          "effect": "core:effect/disarm_hazard",
+          "magnitude": 20,
+          "target": "ranged"
+        }
+      ],
+      "cost": {
+        "mana": 54
+      }
+    },
+    {
+      "id": 52,
+      "key": "sonic_boom",
+      "label": "Sonic Boom",
+      "description": "A blast of thunder that throws everyone in the area down.",
+      "color": "indigo",
+      "level": 24,
+      "effects": [
+        {
+          "effect": "core:effect/damage_thunder",
+          "magnitude": 55,
+          "target": "area",
+          "radius": 5
+        },
+        {
+          "effect": "core:effect/knockdown",
+          "magnitude": 1,
+          "duration": 3,
+          "target": "area",
+          "radius": 5
+        }
+      ],
+      "cost": {
+        "mana": 80
+      }
+    },
+    {
+      "id": 53,
+      "key": "telekinesis",
+      "label": "Telekinesis",
+      "description": "Lift and move an object at a distance.",
+      "color": "violet",
+      "level": 3,
+      "effects": [
+        {
+          "effect": "core:effect/telekinesis",
+          "magnitude": 20,
+          "duration": 20,
+          "target": "ranged"
+        }
+      ],
+      "cost": {
+        "mana": 12
+      }
+    },
+    {
+      "id": 54,
+      "key": "sap_will",
+      "label": "Sap Will",
+      "description": "Drain the target's will.",
+      "color": "violet",
+      "level": 6,
+      "effects": [
+        {
+          "effect": "core:effect/drain_attribute",
+          "parameter": "wil",
+          "magnitude": 2,
+          "duration": 30,
+          "target": "ranged"
+        }
+      ],
+      "cost": {
+        "mana": 19
+      }
+    },
+    {
+      "id": 55,
+      "key": "spell_absorption",
+      "label": "Spell Absorption",
+      "description": "Drink a share of the hostile magic that strikes you.",
+      "color": "violet",
+      "level": 9,
+      "concentration": true,
+      "effects": [
+        {
+          "effect": "core:effect/spell_absorption",
+          "magnitude": 30,
+          "duration": 30,
+          "target": "self"
+        }
+      ],
+      "cost": {
+        "mana": 27
+      }
+    },
+    {
+      "id": 56,
+      "key": "dispel_ward",
+      "label": "Dispel Ward",
+      "description": "Unravel spells and arcane hazards of level 12 or below in an area.",
+      "color": "violet",
+      "level": 12,
+      "effects": [
+        {
+          "effect": "core:effect/dispel",
+          "magnitude": 12,
+          "target": "area",
+          "radius": 4
+        }
+      ],
+      "cost": {
+        "mana": 43
+      }
+    },
+    {
+      "id": 57,
+      "key": "mana_drain",
+      "label": "Mana Drain",
+      "description": "Bleed the target's mana away, three points each second.",
+      "color": "violet",
+      "level": 16,
+      "effects": [
+        {
+          "effect": "core:effect/drain_resource",
+          "parameter": "mana",
+          "magnitude": 3,
+          "duration": 10,
+          "target": "ranged"
+        }
+      ],
+      "cost": {
+        "mana": 44
+      }
+    },
+    {
+      "id": 58,
+      "key": "greater_dispel",
+      "label": "Greater Dispel",
+      "description": "Unravel spells of level 25 or below on a target.",
+      "color": "violet",
+      "level": 25,
+      "effects": [
+        {
+          "effect": "core:effect/dispel",
+          "magnitude": 25,
+          "target": "ranged"
+        }
+      ],
+      "cost": {
+        "mana": 67
+      }
+    },
+    {
+      "id": 59,
+      "key": "holy_light",
+      "label": "Holy Light",
+      "description": "A touch of light that burns the unholy.",
+      "color": "white",
+      "level": 1,
+      "effects": [
+        {
+          "effect": "core:effect/damage_radiant",
+          "magnitude": 6,
+          "target": "touch"
+        }
+      ],
+      "cost": {
+        "mana": 7
+      }
+    },
+    {
+      "id": 60,
+      "key": "smite",
+      "label": "Smite",
+      "description": "A lance of holy light.",
+      "color": "white",
+      "level": 5,
+      "effects": [
+        {
+          "effect": "core:effect/damage_radiant",
+          "magnitude": 12,
+          "target": "ranged"
+        }
+      ],
+      "cost": {
+        "mana": 17
+      }
+    },
+    {
+      "id": 61,
+      "key": "holy_ward",
+      "label": "Holy Ward",
+      "description": "A ward that turns hostile magic aside.",
+      "color": "white",
+      "level": 7,
+      "effects": [
+        {
+          "effect": "core:effect/resist",
+          "parameter": "magic",
+          "magnitude": 30,
+          "duration": 60,
+          "target": "touch"
+        }
+      ],
+      "cost": {
+        "mana": 22
+      }
+    },
+    {
+      "id": 62,
+      "key": "cleanse",
+      "label": "Cleanse",
+      "description": "Cure a disease in a creature you touch.",
+      "color": "white",
+      "level": 10,
+      "effects": [
+        {
+          "effect": "core:effect/cure",
+          "parameter": "disease",
+          "magnitude": 1,
+          "target": "touch"
+        }
+      ],
+      "cost": {
+        "mana": 29
+      }
+    },
+    {
+      "id": 63,
+      "key": "sunburst",
+      "label": "Sunburst",
+      "description": "Light bursts from a point and burns all it reaches.",
+      "color": "white",
+      "level": 18,
+      "effects": [
+        {
+          "effect": "core:effect/damage_radiant",
+          "magnitude": 40,
+          "target": "area",
+          "radius": 4
+        }
+      ],
+      "cost": {
+        "mana": 62
+      }
+    },
+    {
+      "id": 64,
+      "key": "divine_shield",
+      "label": "Divine Shield",
+      "description": "A shield of light around an ally while you hold it.",
+      "color": "white",
+      "level": 27,
+      "concentration": true,
+      "effects": [
+        {
+          "effect": "core:effect/fortify_defense",
+          "parameter": "armor",
+          "magnitude": 12,
+          "duration": 30,
+          "target": "touch"
+        }
+      ],
+      "cost": {
+        "mana": 72
+      }
+    },
+    {
+      "id": 65,
+      "key": "drain_life",
+      "label": "Drain Life",
+      "description": "A cold that withers the target's flesh.",
+      "color": "black",
+      "level": 3,
+      "effects": [
+        {
+          "effect": "core:effect/damage_necrotic",
+          "magnitude": 8,
+          "target": "ranged"
+        }
+      ],
+      "cost": {
+        "mana": 12
+      }
+    },
+    {
+      "id": 66,
+      "key": "curse",
+      "label": "Curse",
+      "description": "Lay a curse on the target.",
+      "color": "black",
+      "level": 5,
+      "effects": [
+        {
+          "effect": "core:effect/curse",
+          "magnitude": 1,
+          "duration": 60,
+          "target": "ranged"
+        }
+      ],
+      "cost": {
+        "mana": 17
+      }
+    },
+    {
+      "id": 67,
+      "key": "bone_armor",
+      "label": "Bone Armor",
+      "description": "Plates of bone knit over your skin.",
+      "color": "black",
+      "level": 7,
+      "effects": [
+        {
+          "effect": "core:effect/fortify_defense",
+          "parameter": "armor",
+          "magnitude": 5,
+          "duration": 60,
+          "target": "self"
+        }
+      ],
+      "cost": {
+        "mana": 22
+      }
+    },
+    {
+      "id": 68,
+      "key": "wither",
+      "label": "Wither",
+      "description": "The target's strength drains away.",
+      "color": "black",
+      "level": 10,
+      "effects": [
+        {
+          "effect": "core:effect/drain_attribute",
+          "parameter": "str",
+          "magnitude": 2,
+          "duration": 60,
+          "target": "ranged"
+        }
+      ],
+      "cost": {
+        "mana": 29
+      }
+    },
+    {
+      "id": 69,
+      "key": "raise_horde",
+      "label": "Raise Horde",
+      "description": "Raise three of the fallen to fight for you while you hold them.",
+      "color": "black",
+      "level": 22,
+      "concentration": true,
+      "effects": [
+        {
+          "effect": "core:effect/summon",
+          "parameter": "undead",
+          "magnitude": 3,
+          "duration": 120,
+          "target": "ranged"
+        }
+      ],
+      "cost": {
+        "mana": 59
+      }
+    },
+    {
+      "id": 70,
+      "key": "death_grip",
+      "label": "Death Grip",
+      "description": "Death's hand closes on the target and holds it still.",
+      "color": "black",
+      "level": 28,
+      "effects": [
+        {
+          "effect": "core:effect/damage_necrotic",
+          "magnitude": 60,
+          "target": "ranged"
+        },
+        {
+          "effect": "core:effect/grapple",
+          "magnitude": 1,
+          "duration": 3,
+          "target": "ranged"
+        }
+      ],
+      "cost": {
+        "mana": 74
+      }
     }
   ]
 }

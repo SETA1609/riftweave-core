@@ -18,8 +18,6 @@ GAPS = {"red": {"utility"}, "green": {"damage"}}
 # The spells from before M3-02 keep their costs: the casting vectors read them.
 KEPT_COSTS = {"fire_bolt": 5, "force_dart": 8, "mend_wounds": 10, "blessing": 12, "ward": 8,
               "fire_burst": 25, "raise_thrall": 30, "dispel_magic": 12}
-UNIT_WEIGHT = {"points": 1.0, "percent": 0.5, "dice": 1.0, "count": 8.0, "seconds": 0.25, "level": 6.0}
-TARGET_MULT = {"self": 1.0, "touch": 1.0, "ranged": 1.25, "world": 3.0}
 NEW_DAMAGE = {"damage_radiant": "white", "damage_necrotic": "black", "damage_psychic": "yellow",
               "damage_thunder": "indigo", "damage_acid": "blue"}
 
@@ -51,16 +49,10 @@ def kinds(spell):
 
 
 def mana(spell):
-    """The authored cost: §5's complexity at a skill of 50 (discount 0.25), rounded up."""
-    total = 0.0
-    for applied in spell["effects"]:
-        effect = effect_of(applied)
-        cost = applied.get("magnitude", 0) * UNIT_WEIGHT.get(effect.get("magnitudeUnit"), 1.0)
-        cost += applied.get("duration", 1) * 0.1 if applied.get("duration", 1) > 1 else 0
-        target = applied.get("target", "self")
-        cost *= 1.5 + 0.15 * applied.get("radius", 0) if target == "area" else TARGET_MULT[target]
-        total += cost
-    return math.ceil(round(total * 0.75, 6))
+    """The authored cost by level (magic.md#the-core-spell-list): 4 + 2.5 per level, a quarter
+    more when any effect covers an area, rounded up."""
+    area = any(applied.get("target") == "area" for applied in spell["effects"])
+    return math.ceil((4 + 2.5 * spell["level"]) * (1.25 if area else 1.0))
 
 
 class TestSpells(unittest.TestCase):
@@ -122,7 +114,7 @@ class TestSpells(unittest.TestCase):
                 self.assertEqual(pool[key]["color"], color)
                 self.assertIn(key.removeprefix("damage_"), types)
 
-    def test_older_spells_keep_their_costs_and_new_ones_follow_the_formula(self):
+    def test_older_spells_keep_their_costs_and_new_ones_follow_the_level_rule(self):
         for row in spells():
             with self.subTest(spell=row["key"]):
                 expected = KEPT_COSTS.get(row["key"], mana(row))

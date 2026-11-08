@@ -120,9 +120,11 @@ color but green deals damage of its own; each matches a key in `combat/damage_ty
 ([hazards.md](../core/hazards.md#spells-on-a-hazard)). `test_spells.py` checks the floor,
 the colors, the channels, and this table.
 
-Authored mana costs follow §5 with the skill discount of a caster at 50 (0.25):
-`ceil(spellComplexity × 0.75)`. The eight spells from before keep their costs; the casting
-vectors read them. [A]
+An authored spell costs `ceil((4 + 2.5 × level) × 1.25)` mana when any of its effects covers
+an area, and `ceil(4 + 2.5 × level)` otherwise, so a spell is affordable at its level: the
+pool is `INT × 8 + level × 2`. The eight spells from before keep their costs; the casting
+vectors read them. §5's formula is not used for authored costs: its unit weights price a
+level-25 dispel at 141 mana and a 30-second petrify at 4. [A]
 
 ---
 

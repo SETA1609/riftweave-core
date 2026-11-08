@@ -2,8 +2,10 @@
 """Python reference for hazards (docs/core/hazards.md).
 
 Detect, disarm, and avoid are checks: one call of the resolution function through a check
-row, with the hazard's difficulty as an add on the target. A trigger emits one packet and the
-effect list; the consumer applies DR, resist, and conditions. Rolls are inputs.
+row, with the hazard's difficulty as an add on the target. An arcane hazard detects and
+disarms on its color's magic skill instead. A trigger emits one packet and the effect list;
+the consumer applies DR, resist, and conditions. A spell op applies a cast that succeeded.
+Rolls are inputs.
 """
 
 import json
@@ -27,11 +29,19 @@ def check_skill(ref):
     return row["skill"].rsplit("/", 1)[-1]
 
 
-def run_check(spec, vector):
-    """One check through the resolution function; the difficulty is an add on the target."""
+# The effect that undoes a hazard of each nature (docs/core/hazards.md#spells-on-a-hazard).
+UNDONE_BY = {"mechanical": "core:effect/disarm_hazard", "arcane": "core:effect/dispel"}
+
+
+def run_check(spec, vector, hazard=None):
+    """One check through the resolution function; the difficulty is an add on the target.
+    An arcane hazard's detect and disarm name no check row: they roll <color>_magic."""
     from kernel_reference import run_resolution  # kernel_reference imports this module
 
-    skill = check_skill(spec["check"])
+    if "check" in spec:
+        skill = check_skill(spec["check"])
+    else:
+        skill = f"{hazard['color']}_magic"
     actor = vector["actor"]
     modifiers = [m for m in vector.get("modifiers", []) if m["target"] == skill]
     if spec.get("difficulty"):
@@ -50,12 +60,14 @@ def run_hazard(vector):
     hazard = hazard_row(vector["hazard"])
     op = vector["op"]
     if op == "detect":
-        return run_check(hazard["detect"], vector)
+        return run_check(hazard["detect"], vector, hazard)
     if op == "disarm":
         if "disarm" not in hazard:
             return {"error": f"{hazard['key']} cannot be disarmed"}
-        result = run_check(hazard["disarm"], vector)
+        result = run_check(hazard["disarm"], vector, hazard)
         return {**result, "triggered": "fumble" in result["tags"]}
+    if op == "spell":
+        return run_spell(hazard, vector["spell"])
     if op != "trigger":
         return {"error": f"op {op!r} is not defined"}
 
@@ -69,3 +81,13 @@ def run_hazard(vector):
         packet = {"amount": amount // 2 if half else amount, "type": hazard["damage"]["type"]}
     effects = [] if avoided else list(hazard.get("effects", []))
     return {"avoided": avoided, "packet": packet, "effects": effects}
+
+
+def run_spell(hazard, spell_key):
+    """A cast spell on a hazard: the effect that undoes its nature, at magnitude >= its level."""
+    spell = next(s for s in load_data("spells/core.json")["spells"] if s["key"] == spell_key)
+    wanted = UNDONE_BY.get(hazard["nature"])
+    for applied in spell["effects"]:
+        if applied["effect"] == wanted and applied["magnitude"] >= hazard["level"]:
+            return {"disarmed": True, "effect": wanted}
+    return {"disarmed": False, "effect": None}
