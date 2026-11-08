@@ -13,7 +13,7 @@ Roadmap: [M3](../../ROADMAP.md#where-we-are). Format and rules: [README.md](READ
 Done: M3-01, M3-03, M3-04 ([done.md](done.md#m3-combat-and-magic-playable))
 
 #### M3-02 Spell list to the content floor
-- Status: todo
+- Status: review
 - Priority: high
 - Needs: M3-01, M4-04
 - Was: RW-17
