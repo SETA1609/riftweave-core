@@ -8,6 +8,7 @@ One backend serves the ruleset to every consumer: an agent CLI, a human CLI, an 
 backend/contract/   one file per command: name, input schema, result schema      (APP-01, data)
 Go core             backend/: loads ruleset/data/, implements every command, passes every vector   (APP-02)
 adapters            agent CLI, human CLI (a Charm TUI), HTTP API: parse, call the core, format   (APP-03, 05, 06)
+                    the agent CLI is backend/cmd/riftweave (cli.md)
 frontend            Angular, talks only to the HTTP API through a generated client       (APP-07)
 ```
 

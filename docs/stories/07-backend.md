@@ -13,7 +13,7 @@ Roadmap: [APP](../../ROADMAP.md#app-reference-backend). Format and rules: [READM
 Done: APP-01, APP-02 ([done.md](done.md#app-reference-backend))
 
 #### APP-03 Agent CLI
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: APP-02
 - Do: A single static Go binary for agents and scripts: `riftweave list`, `riftweave describe <command>` (prints the contract), and `riftweave <command>` reading JSON from stdin or a file and writing JSON to stdout. Errors are JSON on stderr with a non-zero exit code. No prompts, no colour, fast start, so an agent can call it thousands of times in a loop.
