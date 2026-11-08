@@ -10,17 +10,7 @@ Roadmap: [M3](../../ROADMAP.md#where-we-are). Format and rules: [README.md](READ
 
 **Done when:** optional mechanics (cover, called shots, counterspell, and the like) are each either core with vectors or a named module.
 
-Done: M3-03, M3-04 ([done.md](done.md#m3-combat-and-magic-playable))
-
-#### M3-01 Casting procedure: decide scope, then specify
-- Status: review
-- Priority: high
-- Needs: M1-02, M1-05
-- Was: RW-16
-- Do: Magic emits a roll request and an effect list (SET-16). Still undecided: components, concentration, counterspell and dispel, ritual casting, and spell failure from armor. Decide which are core and which are optional modules, and write the core ones as data.
-- Files: ~6 (docs/modules/magic.md, docs/core/, ruleset/data/spells/core.json, ruleset/schemas/spell.schema.json, ruleset/tests/vectors/casting.json)
-- See: issues.md section 4, docs/modules/magic.md
-- Done when: A decision record lists each mechanic as core, module, or cut; core mechanics have rows, formulas, and vectors; `magic.md` matches.
+Done: M3-01, M3-03, M3-04 ([done.md](done.md#m3-combat-and-magic-playable))
 
 #### M3-02 Spell list to the content floor
 - Status: todo
