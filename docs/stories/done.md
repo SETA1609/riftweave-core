@@ -229,6 +229,50 @@ Tracked in Linear before this repo had a tracker, recovered from git history. Th
 - See: docs/modules/race.md, docs/modules/backgrounds.md
 - Done when: no mechanical statement exists only in a description string; lineage (parent, subrace, template, kin) has validator tests for each role.
 
+#### M2-01 Perk catalogue to the content floor
+- Status: done
+- Merged: #90, 2026-11-08 (with M2-06, which was stacked on it)
+- Priority: high
+- Needs: M1-05, M1-06
+- Was: RW-11
+- Do: 23 features exist (13 perks, 10 creation). A character gains a perk about every 3 levels, so 10 or more by level 30; real choice needs a wide pool.
+- Files: ~3 (ruleset/data/features/core.json, docs/modules/progression.md)
+- See: ruleset/data/features/core.json, docs/modules/progression.md
+- Done when: at least 60 perks, spread across all 8 attributes and the combat, magic, and social skill groups; every perk emits modifiers; prerequisites are keys; no perk is dominated by another at the same level.
+
+#### M2-03 Multi-level example characters as vectors
+- Status: done
+- Merged: #86, 2026-11-07
+- Priority: high
+- Needs: M1-03, M1-05
+- Was: RW-13
+- Do: Single-level creation examples exist. Walk two characters (one martial, one caster) from creation to level 10, with perks, tag skills, gear, and spells, and encode them as vectors.
+- Files: ~4 (ruleset/tests/vectors/characters.json, docs/modules/character-creation.md)
+- See: docs/modules/character-creation.md, docs/core/loop.md
+- Done when: two characters, each with a level-by-level record; each level's derived stats match a vector; prose in `character-creation.md` is generated from or checked against the record.
+
+#### M2-05 Equipment to the content floor
+- Status: done
+- Merged: #87, 2026-11-07
+- Priority: medium
+- Needs: M1-02
+- Was: RW-15
+- Do: 20 weapons, 24 armor, 3 accessories, 7 consumables. Accessories and consumables are far below playable.
+- Files: ~6 (ruleset/data/equipment/, ruleset/schemas/equipment.schema.json)
+- See: ruleset/data/equipment/
+- Done when: each weapon skill has at least 3 weapons across tiers; at least 12 accessories and 20 consumables; adventuring gear and tools exist as rows.
+
+#### M2-06 Gated block and dodge perks
+- Status: done
+- Merged: #90, 2026-11-08
+- Priority: medium
+- Needs: M1-02, M1-05
+- Do: After M1-02 an evade reaches single and area magic and avoids all damage, while a block only subtracts shield DR against physical types. Balance them with gated perk ladders instead of pipeline changes. Block: Shield Training (shield DR +2), Spell Ward (block also works against single and area magic, at half shield DR), Bulwark (a crit block negates the hit). Dodge: a mirror ladder (cheaper dodges in armor; a counter-attack on a crit dodge). Instant spells stay unblockable and undodgeable, even with a perk: their defense is the save (M3-05). Block-side resistance scales with the block (margin or shield DR), not a general `resist`, so it does not stack with armor and the resist step.
+- Keys: perk rows in `ruleset/data/features/core.json`; a `grant` modifier that widens the damage types block applies to (proposal)
+- Files: ~5 (ruleset/data/features/core.json, docs/core/combat.md, docs/modules/combat.md, ruleset/tests/vectors/combat.json, ruleset/scripts/kernel_reference.py)
+- See: docs/core/combat.md (reactions), docs/decisions.md (M1-02 balance)
+- Done when: each perk is a row gated by skill thresholds and prerequisite perks; vectors show Spell Ward blocking a fire bolt at half shield DR, Bulwark negating a hit on a crit block, and an instant spell still unblocked with every perk.
+
 ## M3 Combat and magic playable
 
 #### M3-03 Cover, flanking, terrain, and called shots as modifiers
@@ -252,6 +296,17 @@ Tracked in Linear before this repo had a tracker, recovered from git history. Th
 - Files: ~3 (ruleset/data/wuxing/core.json, ruleset/tests/vectors/wuxing.json, docs/modules/wuxing.md)
 - See: docs/modules/wuxing.md, ruleset/data/wuxing/core.json
 - Done when: vectors for generating, overcoming, weakening, and insulting; reverse-cycle logic exists once.
+
+#### M3-01 Casting procedure: decide scope, then specify
+- Status: done
+- Merged: #88, 2026-11-07
+- Priority: high
+- Needs: M1-02, M1-05
+- Was: RW-16
+- Do: Magic emits a roll request and an effect list (SET-16). Still undecided: components, concentration, counterspell and dispel, ritual casting, and spell failure from armor. Decide which are core and which are optional modules, and write the core ones as data.
+- Files: ~6 (docs/modules/magic.md, docs/core/, ruleset/data/spells/core.json, ruleset/schemas/spell.schema.json, ruleset/tests/vectors/casting.json)
+- See: issues.md section 4, docs/modules/magic.md
+- Done when: A decision record lists each mechanic as core, module, or cut; core mechanics have rows, formulas, and vectors; `magic.md` matches.
 
 ## M4 World
 
@@ -309,6 +364,17 @@ Tracked in Linear before this repo had a tracker, recovered from git history. Th
 - Files: ~10 (docs/core/loot.md, docs/core/vectors.md, ruleset/data/formulas/loot_luck.json, ruleset/data/features/core.json, ruleset/scripts/loot_reference.py, ruleset/tests/vectors/loot.json, backend/contract/loot.json)
 - See: docs/core/loot.md, docs/core/resolution.md, docs/core/modifier.md
 - Done when: vectors cover Luck high, neutral, and low, a perk, two modifiers of one `highest` origin, the 1-to-100 and 1-to-99 clamps, and no looter; the reference passes them; the budget check still uses a shift of 0.
+
+#### M4-03 Bestiary to the content floor
+- Status: done
+- Merged: #84, 2026-11-08
+- Priority: high
+- Needs: M1-02
+- Was: RW-22
+- Do: 11 monsters. An SRD needs a bestiary that spans the level range and the phases.
+- Files: ~4 (ruleset/data/monsters/, ruleset/schemas/monster.schema.json)
+- See: ruleset/data/monsters/core.json, docs/modules/monsters.md
+- Done when: at least 40 monsters covering levels 1 to 30; every phase and damage type is used at least once as an attack and as a resistance; each monster inherits from a base plus overrides; a family member derives from its base monster, and an element variant is a base monster plus a template; no name comes from another game.
 
 ## M5 Release 1.0
 
@@ -471,6 +537,16 @@ Tracked in Linear before this repo had a tracker, recovered from git history. Th
 - See: docs/stories/README.md#workflow
 - Done when: no issue whose PR is merged is still in a story file; `roadmap-order check` passes.
 
+#### M5-17 Move merged issues to done.md and focus M3
+- Status: done
+- Merged: #78, 2026-11-06
+- Priority: low
+- Needs: —
+- Do: Six issues whose pull requests are merged (M1-05, M4-02, M4-06, M5-11, M5-14, M5-16) still said `review` in their story files, and the focus was still M1, which has no open issue left, so `roadmap-order show` listed no first issue. Move them to `done.md` with `Status: done` and `Merged: #<PR>, <date>`, list them on each story's `Done:` line, and set `Focus: M3`, where the critical path starts (M3-01).
+- Files: ~6 (docs/stories/01-kernel.md, 04-world.md, 05-release.md, done.md, README.md, ROADMAP.md)
+- See: docs/stories/README.md#order
+- Done when: no issue whose PR is merged is still in a story file; `roadmap-order show` names a first issue in M3; `roadmap-order check` passes.
+
 ## POST Post-1.0 modules
 
 #### POST-05 Factions and reputation module
@@ -496,3 +572,15 @@ Tracked in Linear before this repo had a tracker, recovered from git history. Th
 - Files: ~12 (backend/contract/, docs/backend/README.md, ruleset/scripts/test_contract.py)
 - See: ruleset/scripts/kernel_reference.py, docs/core/vectors.md
 - Done when: every runner has a contract file; every vector input and every reference result validate against its command's schemas; a vector function without a contract file fails the test.
+
+#### APP-02 Go core: the kernel in Go, every vector in CI
+- Status: done
+- Merged: #83, 2026-11-06
+- Priority: medium
+- Needs: APP-01
+- Do: A Go module in `backend/` that loads `ruleset/data/` (and module data), evaluates formula trees, and implements every command in the contract. It reads coefficients from the data, never from constants. A Go test runs every file in `ruleset/tests/vectors/` and fails on any disagreement, and CI runs it on every PR. It starts with the commands that exist and grows with the rules: from then on a rule issue that adds or changes a function updates the Python reference, the Go core, and the contract in the same pull request; CONTRIBUTING says so.
+- Keys: Go module `backend/`; package per kernel area (formula, resolution, combat, ...)
+- Files: ~15 (backend/, .github/workflows/, CONTRIBUTING.md, docs/backend/README.md)
+- See: docs/core/vectors.md, backend/contract/
+- Done when: `go test ./...` passes every vector the Python reference passes; CI runs it; a data change that breaks a rule fails both.
+

@@ -10,7 +10,7 @@ Roadmap: [M5](../../ROADMAP.md#where-we-are). Format and rules: [README.md](READ
 
 **Done when:** items 3, 5, 6, 7, and 8 of the [definition of finished](../../ROADMAP.md#definition-of-finished) hold, and `v1.0.0` is tagged.
 
-Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-07, M5-08, M5-10, M5-11, M5-12, M5-13, M5-14, M5-15, M5-16 ([done.md](done.md#m5-release-10))
+Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-07, M5-08, M5-10, M5-11, M5-12, M5-13, M5-14, M5-15, M5-16, M5-17 ([done.md](done.md#m5-release-10))
 
 #### M5-03 Move the container runner, agent image, and fetch-docs to devops-tools
 - Status: todo
@@ -62,15 +62,6 @@ Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-07, M5-08, M5-10, M5-11,
 - See: LICENSING.md, ROADMAP.md
 - Done when: all checklist items in `ROADMAP.md` 'Definition of finished' are ticked; `v1.0.0` tagged and `[Unreleased]` in the changelog becomes `[1.0.0]`.
 
-#### M5-17 Move merged issues to done.md and focus M3
-- Status: review
-- Priority: low
-- Needs: —
-- Do: Six issues whose pull requests are merged (M1-05, M4-02, M4-06, M5-11, M5-14, M5-16) still said `review` in their story files, and the focus was still M1, which has no open issue left, so `roadmap-order show` listed no first issue. Move them to `done.md` with `Status: done` and `Merged: #<PR>, <date>`, list them on each story's `Done:` line, and set `Focus: M3`, where the critical path starts (M3-01).
-- Files: ~6 (docs/stories/01-kernel.md, 04-world.md, 05-release.md, done.md, README.md, ROADMAP.md)
-- See: docs/stories/README.md#order
-- Done when: no issue whose PR is merged is still in a story file; `roadmap-order show` names a first issue in M3; `roadmap-order check` passes.
-
 #### M5-18 Alpha playtest through the human CLI
 - Status: todo
 - Priority: high
@@ -98,3 +89,12 @@ Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-07, M5-08, M5-10, M5-11,
 - Files: ~16 (ruleset/schemas/, ruleset/data/wuxing/, ruleset/modules/wuxing/, ruleset/scripts/wuxing_reference.py, ruleset/scripts/test_wuxing.py, ruleset/scripts/test_bestiary.py, ruleset/scripts/crafting_reference.py, ruleset/tests/vectors/wuxing.json, backend/internal/data/data.go, backend/internal/wuxing/, docs/modules/wuxing.md, docs/modules/magic.md, docs/modules/module-system.md, docs/core/contract.md)
 - See: docs/core/contract.md, docs/core/materials.md, docs/modules/module-system.md, ruleset/modules/factions/
 - Done when: validate, the unit tests, the vectors, and the Go tests pass with the module and without it; without it no core rule reads a phase; with it the wuxing vectors pass under Python and Go from the module's data; the change is marked breaking in the changelog; `module-system.md` walks through Wuxing step by step.
+
+#### M5-21 Move merged issues to done.md: M2, M3-01, M4-03, M5-17, APP-02
+- Status: review
+- Priority: low
+- Needs: —
+- Do: Eight issues whose pull requests are merged still said `review` in their story files: M2-01 and M2-06 (both in #90, M2-06 was stacked on M2-01), M2-03, M2-05, M3-01, M4-03, M5-17, and APP-02. Move them to `done.md` with `Status: done` and `Merged: #<PR>, <date>`, and list them on each story's `Done:` line.
+- Files: ~7 (docs/stories/02-characters.md, 03-combat-magic.md, 04-world.md, 05-release.md, 07-backend.md, done.md, ROADMAP.md)
+- See: docs/stories/README.md#order
+- Done when: no issue whose PR is merged is still in a story file; `roadmap-order check` passes.

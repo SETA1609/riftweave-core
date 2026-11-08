@@ -10,17 +10,7 @@ Roadmap: [APP](../../ROADMAP.md#app-reference-backend). Format and rules: [READM
 
 **Done when:** every vector passes under the Python reference and under the Go backend in CI; the agent CLI, the human CLI, and the API return the same result for the same input and rolls; the frontend can create a character and resolve an attack through the API. Not a 1.0 gate, except the issues the alpha playtest (M5-18) runs on: APP-04, APP-05, and APP-08.
 
-Done: APP-01 ([done.md](done.md#app-reference-backend))
-
-#### APP-02 Go core: the kernel in Go, every vector in CI
-- Status: review
-- Priority: medium
-- Needs: APP-01
-- Do: A Go module in `backend/` that loads `ruleset/data/` (and module data), evaluates formula trees, and implements every command in the contract. It reads coefficients from the data, never from constants. A Go test runs every file in `ruleset/tests/vectors/` and fails on any disagreement, and CI runs it on every PR. It starts with the commands that exist and grows with the rules: from then on a rule issue that adds or changes a function updates the Python reference, the Go core, and the contract in the same pull request; CONTRIBUTING says so.
-- Keys: Go module `backend/`; package per kernel area (formula, resolution, combat, ...)
-- Files: ~15 (backend/, .github/workflows/, CONTRIBUTING.md, docs/backend/README.md)
-- See: docs/core/vectors.md, backend/contract/
-- Done when: `go test ./...` passes every vector the Python reference passes; CI runs it; a data change that breaks a rule fails both.
+Done: APP-01, APP-02 ([done.md](done.md#app-reference-backend))
 
 #### APP-03 Agent CLI
 - Status: todo
