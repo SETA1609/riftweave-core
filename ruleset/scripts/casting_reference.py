@@ -34,7 +34,7 @@ def spell_cost(spell):
         cost = coefficients["magnitude_factor"] * effect["baseCost"] * magnitude * applied.get("duration", 1)
         if applied["target"] == "area":
             cost += coefficients["area_factor"] * effect["baseCost"] * applied.get("radius", 0)
-        total += cost * coefficients["target"][applied["target"]]
+        total += cost * coefficients["target_multiplier"][applied["target"]]
     return math.ceil(round(total, 6))
 
 

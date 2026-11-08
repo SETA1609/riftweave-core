@@ -32,7 +32,7 @@
           "properties": {
             "magnitude_factor": { "type": "number", "exclusiveMinimum": 0 },
             "area_factor": { "type": "number", "minimum": 0 },
-            "target": {
+            "target_multiplier": {
               "type": "object",
               "properties": {
                 "self": { "type": "number", "exclusiveMinimum": 0 },
@@ -45,7 +45,7 @@
               "additionalProperties": false
             }
           },
-          "required": ["magnitude_factor", "area_factor", "target"],
+          "required": ["magnitude_factor", "area_factor", "target_multiplier"],
           "additionalProperties": false
         }
       },
