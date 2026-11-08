@@ -13,7 +13,7 @@ Roadmap: [M4](../../ROADMAP.md#where-we-are). Format and rules: [README.md](READ
 Done: M4-01, M4-02, M4-03, M4-04, M4-05, M4-06 ([done.md](done.md#m4-world))
 
 #### M4-07 Loot composes items: default materials and size
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: M2-05, M4-02
 - Do: A loot row's `material` lands on every weapon and armor the row yields, so the stone golem's steel hoard can drop a steel bow. Since M2-05 each equipment base lists `default_materials`: the materials it is found and sold in. Any other material is player-crafted only (a granite bow), never loot. When a row's material is not in an item's `default_materials`, the item drops in its first default material instead, and its value follows the material that lands (`value_percent`). Decide whether a row with no `material` also takes the first default, and check the treasure budget against it. Add an optional `size` on loot rows (`undersized`, `normal` by default, `oversized`, the weapon `size` from M2-05): it applies to every weapon the row yields, moves its dice one rung (`combat/dice_ladder.json`) and its attack by +10 or −10, and is how a sized weapon enters play, since sized weapons are composed, not rows. Size changes value: the item is worth its size `value_percent` (undersized 75, oversized 150) times the material `value_percent`. Merchant stock is out of scope.
