@@ -1,0 +1,200 @@
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"errors"
+	"os"
+	"path/filepath"
+	"reflect"
+	"strings"
+	"testing"
+
+	"github.com/SETA1609/riftweave-core/backend/core"
+)
+
+// The CLI is checked as a process sees it: arguments, stdin, stdout, stderr, and the exit
+// code (docs/backend/cli.md).
+
+const repo = "../../.."
+
+var dataDirectory string = filepath.Join(repo, "ruleset", "data")
+
+func noEnvironment(string) string { return "" }
+
+// call runs the CLI and returns its exit code, stdout, and stderr.
+func call(t *testing.T, stdin string, args ...string) (int, string, string) {
+	t.Helper()
+	var stdout, stderr bytes.Buffer
+	var code int = run(args, strings.NewReader(stdin), &stdout, &stderr, noEnvironment)
+	return code, stdout.String(), stderr.String()
+}
+
+func decode(t *testing.T, text string) any {
+	t.Helper()
+	var value any
+	if err := json.Unmarshal([]byte(text), &value); err != nil {
+		t.Fatalf("not JSON: %q: %v", text, err)
+	}
+	return value
+}
+
+func TestEveryVectorThroughTheCLI(t *testing.T) {
+	opened, err := core.Open(dataDirectory)
+	if err != nil {
+		t.Fatal(err)
+	}
+	files, err := filepath.Glob(filepath.Join(repo, "ruleset", "tests", "vectors", "*.json"))
+	if err != nil || len(files) == 0 {
+		t.Fatalf("no vector files: %v", err)
+	}
+	for _, file := range files {
+		content, err := os.ReadFile(file)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var vectors []map[string]any
+		if err := json.Unmarshal(content, &vectors); err != nil {
+			var single map[string]any
+			if json.Unmarshal(content, &single) != nil {
+				t.Fatalf("%s: %v", file, err)
+			}
+			vectors = []map[string]any{single}
+		}
+		var stem string = strings.TrimSuffix(filepath.Base(file), ".json")
+		for _, vector := range vectors {
+			function, ok := vector["function"].(string)
+			if !ok {
+				function = stem
+			}
+			var input map[string]any = map[string]any{}
+			for key, value := range vector {
+				if key != "name" && key != "function" && key != "expect" {
+					input[key] = value
+				}
+			}
+			name, _ := vector["name"].(string)
+			t.Run(stem+"/"+name, func(t *testing.T) {
+				body, _ := json.Marshal(input)
+				want, coreErr := opened.Run(function, body)
+				code, stdout, stderr := call(t, string(body), "--data", dataDirectory, function)
+				switch {
+				case coreErr == nil:
+					if code != 0 || stderr != "" {
+						t.Fatalf("exit %d, stderr %q", code, stderr)
+					}
+					if !reflect.DeepEqual(decode(t, stdout), decode(t, string(want))) {
+						t.Fatalf("stdout %s, core %s", stdout, want)
+					}
+				case errors.Is(coreErr, core.ErrRule):
+					if code != 1 || stdout != "" {
+						t.Fatalf("exit %d, stdout %q", code, stdout)
+					}
+					if !reflect.DeepEqual(decode(t, stderr), decode(t, string(want))) {
+						t.Fatalf("stderr %s, core %s", stderr, want)
+					}
+				default:
+					t.Fatalf("core: %v", coreErr)
+				}
+			})
+		}
+	}
+}
+
+func TestInputFromAFile(t *testing.T) {
+	var path string = filepath.Join(t.TempDir(), "input.json")
+	if err := os.WriteFile(path, []byte(`{"actor":{"skills":{"blades":40},"attributes":{"lck":5}},"skill":"blades","roll":30}`), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	code, stdout, stderr := call(t, "", "--data", dataDirectory, "resolution", path)
+	if code != 0 || stderr != "" {
+		t.Fatalf("exit %d, stderr %q", code, stderr)
+	}
+	if result, ok := decode(t, stdout).(map[string]any); !ok || result["success"] != true {
+		t.Fatalf("stdout %s", stdout)
+	}
+}
+
+func TestListMatchesTheContract(t *testing.T) {
+	code, stdout, _ := call(t, "", "list")
+	if code != 0 {
+		t.Fatalf("exit %d", code)
+	}
+	var listed []struct{ Name, Summary string }
+	if err := json.Unmarshal([]byte(stdout), &listed); err != nil {
+		t.Fatal(err)
+	}
+	var names []string
+	for _, command := range listed {
+		if command.Summary == "" {
+			t.Errorf("%s has no summary", command.Name)
+		}
+		names = append(names, command.Name)
+	}
+	if !reflect.DeepEqual(names, core.Commands()) {
+		t.Fatalf("list %v, core %v", names, core.Commands())
+	}
+}
+
+func TestDescribePrintsTheContractFile(t *testing.T) {
+	code, stdout, _ := call(t, "", "describe", "loot")
+	if code != 0 {
+		t.Fatalf("exit %d", code)
+	}
+	content, err := os.ReadFile(filepath.Join(repo, "backend", "contract", "loot.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(decode(t, stdout), decode(t, string(content))) {
+		t.Fatalf("describe loot is not backend/contract/loot.json")
+	}
+}
+
+func TestBadInputExitsTwoWithAJSONError(t *testing.T) {
+	cases := map[string]struct {
+		stdin string
+		args  []string
+	}{
+		"not JSON":         {"{", []string{"--data", dataDirectory, "resolution"}},
+		"an unknown field": {`{"bogus": 1}`, []string{"--data", dataDirectory, "resolution"}},
+		"two values":       {`{} {}`, []string{"--data", dataDirectory, "resolution"}},
+		"unknown command":  {`{}`, []string{"--data", dataDirectory, "fireball"}},
+		"describe nothing": {"", []string{"describe"}},
+		"describe unknown": {"", []string{"describe", "fireball"}},
+		"no command":       {"", nil},
+		"missing file":     {"", []string{"--data", dataDirectory, "resolution", "/nonexistent/input.json"}},
+	}
+	for name, test := range cases {
+		t.Run(name, func(t *testing.T) {
+			code, stdout, stderr := call(t, test.stdin, test.args...)
+			if code != 2 || stdout != "" {
+				t.Fatalf("exit %d, stdout %q", code, stdout)
+			}
+			if result, ok := decode(t, stderr).(map[string]any); !ok || result["error"] == "" {
+				t.Fatalf("stderr %q", stderr)
+			}
+		})
+	}
+}
+
+func TestAMissingRulesetExitsThree(t *testing.T) {
+	code, stdout, stderr := call(t, `{}`, "--data", filepath.Join(t.TempDir(), "nowhere"), "resolution")
+	if code != 3 || stdout != "" {
+		t.Fatalf("exit %d, stdout %q", code, stdout)
+	}
+	decode(t, stderr)
+}
+
+func TestTheRulesetFromTheEnvironment(t *testing.T) {
+	var stdout, stderr bytes.Buffer
+	var environment func(string) string = func(name string) string {
+		if name == "RIFTWEAVE_DATA" {
+			return dataDirectory
+		}
+		return ""
+	}
+	var input string = `{"actor":{"skills":{"blades":40},"attributes":{"lck":5}},"skill":"blades","roll":30}`
+	if code := run([]string{"resolution"}, strings.NewReader(input), &stdout, &stderr, environment); code != 0 {
+		t.Fatalf("exit %d, stderr %q", code, stderr.String())
+	}
+}
