@@ -1,7 +1,7 @@
 {
   "$schema": "./command.schema.json",
   "name": "hazard",
-  "summary": "Detect, disarm, or trigger a hazard: the checks go through the resolution function; a trigger emits a packet and effects.",
+  "summary": "Detect, disarm, or trigger a hazard, or apply a cast spell to it: the checks go through the resolution function; a trigger emits a packet and effects; a spell may disarm it.",
   "doc": "docs/core/hazards.md",
   "input_schema": {
     "type": "object",
@@ -14,8 +14,13 @@
         "enum": [
           "detect",
           "disarm",
-          "trigger"
+          "trigger",
+          "spell"
         ]
+      },
+      "spell": {
+        "$ref": "common.json#/definitions/key",
+        "description": "op spell: the spell that was cast on the hazard."
       },
       "actor": {
         "$ref": "common.json#/definitions/actor"
@@ -90,6 +95,19 @@
         "items": {
           "$ref": "common.json#/definitions/ref"
         }
+      },
+      "disarmed": {
+        "type": "boolean"
+      },
+      "effect": {
+        "oneOf": [
+          {
+            "type": "null"
+          },
+          {
+            "$ref": "common.json#/definitions/ref"
+          }
+        ]
       }
     },
     "additionalProperties": false
