@@ -10,6 +10,7 @@
       "color": "red",
       "phase": "fire",
       "magnitudeUnit": "points",
+      "baseCost": 5,
       "channels": [
         "spell",
         "coating",
@@ -29,6 +30,7 @@
       "color": "red",
       "phase": "water",
       "magnitudeUnit": "points",
+      "baseCost": 5,
       "channels": [
         "spell",
         "coating",
@@ -49,6 +51,7 @@
       "color": "red",
       "phase": "wood",
       "magnitudeUnit": "points",
+      "baseCost": 7,
       "channels": [
         "spell",
         "coating",
@@ -68,6 +71,7 @@
       "color": "red",
       "phase": "metal",
       "magnitudeUnit": "points",
+      "baseCost": 5,
       "channels": [
         "spell"
       ],
@@ -84,6 +88,7 @@
       "color": "red",
       "phase": "wood",
       "magnitudeUnit": "points",
+      "baseCost": 8,
       "channels": [
         "spell",
         "poison",
@@ -102,6 +107,7 @@
       "polarity": "harmful",
       "color": "white",
       "magnitudeUnit": "points",
+      "baseCost": 5,
       "channels": [
         "spell"
       ],
@@ -117,6 +123,7 @@
       "polarity": "harmful",
       "color": "black",
       "magnitudeUnit": "points",
+      "baseCost": 6,
       "channels": [
         "spell"
       ],
@@ -132,6 +139,7 @@
       "polarity": "harmful",
       "color": "yellow",
       "magnitudeUnit": "points",
+      "baseCost": 6,
       "channels": [
         "spell"
       ],
@@ -148,6 +156,7 @@
       "polarity": "harmful",
       "color": "indigo",
       "magnitudeUnit": "points",
+      "baseCost": 5,
       "channels": [
         "spell"
       ],
@@ -165,6 +174,7 @@
       "color": "blue",
       "phase": "earth",
       "magnitudeUnit": "points",
+      "baseCost": 5,
       "channels": [
         "spell"
       ],
@@ -182,6 +192,7 @@
       "color": "red",
       "phase": "earth",
       "magnitudeUnit": "points",
+      "baseCost": 2,
       "channels": [
         "spell",
         "poison",
@@ -195,6 +206,7 @@
       "category": "restore",
       "polarity": "beneficial",
       "magnitudeUnit": "points",
+      "baseCost": 5,
       "channels": [
         "spell",
         "potion",
@@ -215,6 +227,7 @@
       "polarity": "beneficial",
       "color": "yellow",
       "magnitudeUnit": "seconds",
+      "baseCost": 8,
       "defaultDuration": 30,
       "channels": [
         "spell",
@@ -233,6 +246,7 @@
       "polarity": "neutral",
       "color": "yellow",
       "magnitudeUnit": "seconds",
+      "baseCost": 0.2,
       "defaultDuration": 120,
       "channels": [
         "spell"
@@ -249,6 +263,7 @@
       "polarity": "beneficial",
       "color": "blue",
       "magnitudeUnit": "points",
+      "baseCost": 0.02,
       "defaultDuration": 120,
       "channels": [
         "spell",
@@ -268,6 +283,7 @@
       "color": "blue",
       "phase": "earth",
       "magnitudeUnit": "seconds",
+      "baseCost": 40,
       "defaultDuration": 4,
       "channels": [
         "spell",
@@ -286,6 +302,7 @@
       "polarity": "neutral",
       "color": "violet",
       "magnitudeUnit": "seconds",
+      "baseCost": 1,
       "defaultDuration": 20,
       "channels": [
         "spell"
@@ -301,6 +318,7 @@
       "category": "conjure",
       "polarity": "harmful",
       "magnitudeUnit": "count",
+      "baseCost": 2,
       "defaultDuration": 120,
       "channels": [
         "spell"
@@ -319,6 +337,7 @@
       "polarity": "beneficial",
       "color": "orange",
       "magnitudeUnit": "count",
+      "baseCost": 2,
       "defaultDuration": 60,
       "channels": [
         "spell"
@@ -420,6 +439,7 @@
       "category": "resist",
       "polarity": "beneficial",
       "magnitudeUnit": "percent",
+      "baseCost": 0.1,
       "defaultDuration": 60,
       "channels": [
         "innate",
@@ -438,6 +458,7 @@
       "description": "Removes active conditions, poisons, or afflictions. Use 'parameter' to specify the condition (e.g. 'poison'). Generalizes specific cure_* effects.",
       "category": "cure",
       "polarity": "beneficial",
+      "baseCost": 20,
       "channels": [
         "spell",
         "potion",
@@ -454,6 +475,7 @@
       "category": "utility",
       "polarity": "beneficial",
       "magnitudeUnit": "percent",
+      "baseCost": 0.2,
       "channels": [
         "innate",
         "spell"
@@ -572,6 +594,7 @@
       "category": "utility",
       "polarity": "beneficial",
       "magnitudeUnit": "percent",
+      "baseCost": 0.1,
       "channels": [
         "innate",
         "spell",
@@ -589,6 +612,7 @@
       "category": "fortify",
       "polarity": "beneficial",
       "magnitudeUnit": "percent",
+      "baseCost": 0.5,
       "channels": [
         "innate",
         "spell",
@@ -607,6 +631,7 @@
       "category": "fortify",
       "polarity": "beneficial",
       "magnitudeUnit": "points",
+      "baseCost": 0.2,
       "defaultDurationType": "unlimited",
       "channels": [
         "innate",
@@ -626,6 +651,7 @@
       "category": "fortify",
       "polarity": "beneficial",
       "magnitudeUnit": "points",
+      "baseCost": 2,
       "defaultDurationType": "unlimited",
       "channels": [
         "innate",
@@ -647,6 +673,7 @@
       "category": "fortify",
       "polarity": "beneficial",
       "magnitudeUnit": "points",
+      "baseCost": 0.2,
       "defaultDurationType": "unlimited",
       "channels": [
         "innate",
@@ -667,6 +694,7 @@
       "category": "drain",
       "polarity": "harmful",
       "magnitudeUnit": "points",
+      "baseCost": 0.2,
       "channels": [
         "innate",
         "spell",
@@ -686,6 +714,7 @@
       "category": "drain",
       "polarity": "harmful",
       "magnitudeUnit": "points",
+      "baseCost": 1,
       "channels": [
         "innate",
         "spell",
@@ -705,6 +734,7 @@
       "category": "damage",
       "polarity": "harmful",
       "magnitudeUnit": "points",
+      "baseCost": 10,
       "channels": [
         "innate",
         "spell",
@@ -724,6 +754,7 @@
       "category": "damage",
       "polarity": "harmful",
       "magnitudeUnit": "points",
+      "baseCost": 1,
       "channels": [
         "innate",
         "spell",
@@ -743,6 +774,7 @@
       "category": "drain",
       "polarity": "harmful",
       "magnitudeUnit": "points",
+      "baseCost": 3,
       "channels": [
         "innate",
         "spell",
@@ -762,6 +794,7 @@
       "category": "damage",
       "polarity": "harmful",
       "magnitudeUnit": "points",
+      "baseCost": 8,
       "channels": [
         "innate",
         "spell",
@@ -781,6 +814,7 @@
       "polarity": "harmful",
       "phase": "wood",
       "magnitudeUnit": "points",
+      "baseCost": 1,
       "defaultDuration": 86400,
       "channels": [
         "innate",
@@ -912,6 +946,7 @@
       "polarity": "harmful",
       "color": "yellow",
       "magnitudeUnit": "seconds",
+      "baseCost": 10,
       "defaultDuration": 30,
       "channels": [
         "spell",
@@ -932,6 +967,7 @@
       "polarity": "harmful",
       "color": "yellow",
       "magnitudeUnit": "seconds",
+      "baseCost": 3,
       "defaultDuration": 60,
       "channels": [
         "spell",
@@ -950,6 +986,7 @@
       "polarity": "harmful",
       "color": "yellow",
       "magnitudeUnit": "seconds",
+      "baseCost": 5,
       "defaultDuration": 30,
       "channels": [
         "spell",
@@ -967,6 +1004,7 @@
       "category": "control",
       "polarity": "harmful",
       "magnitudeUnit": "seconds",
+      "baseCost": 20,
       "defaultDuration": 10,
       "channels": [
         "spell",
@@ -985,6 +1023,7 @@
       "polarity": "harmful",
       "color": "blue",
       "magnitudeUnit": "seconds",
+      "baseCost": 30,
       "defaultDuration": 10,
       "channels": [
         "spell",
@@ -1005,6 +1044,7 @@
       "color": "blue",
       "phase": "earth",
       "magnitudeUnit": "seconds",
+      "baseCost": 50,
       "defaultDuration": 120,
       "channels": [
         "spell",
@@ -1022,6 +1062,7 @@
       "category": "control",
       "polarity": "harmful",
       "magnitudeUnit": "seconds",
+      "baseCost": 20,
       "defaultDuration": 5,
       "channels": [
         "spell",
@@ -1042,6 +1083,7 @@
       "color": "blue",
       "phase": "wood",
       "magnitudeUnit": "seconds",
+      "baseCost": 15,
       "defaultDuration": 20,
       "channels": [
         "spell",
@@ -1061,6 +1103,7 @@
       "polarity": "harmful",
       "color": "blue",
       "magnitudeUnit": "seconds",
+      "baseCost": 30,
       "defaultDuration": 4,
       "channels": [
         "spell",
@@ -1080,6 +1123,7 @@
       "polarity": "harmful",
       "color": "blue",
       "magnitudeUnit": "seconds",
+      "baseCost": 40,
       "defaultDuration": 60,
       "channels": [
         "spell",
@@ -1100,6 +1144,7 @@
       "color": "red",
       "phase": "fire",
       "magnitudeUnit": "points",
+      "baseCost": 5,
       "defaultDuration": 10,
       "channels": [
         "spell",
@@ -1122,6 +1167,7 @@
       "polarity": "harmful",
       "phase": "wood",
       "magnitudeUnit": "points",
+      "baseCost": 5,
       "defaultDuration": 15,
       "channels": [
         "spell",
@@ -1143,6 +1189,7 @@
       "color": "blue",
       "phase": "water",
       "magnitudeUnit": "seconds",
+      "baseCost": 10,
       "defaultDuration": 15,
       "channels": [
         "spell",
@@ -1163,6 +1210,7 @@
       "polarity": "harmful",
       "color": "yellow",
       "magnitudeUnit": "seconds",
+      "baseCost": 40,
       "defaultDuration": 10,
       "channels": [
         "spell",
@@ -1182,6 +1230,7 @@
       "polarity": "neutral",
       "color": "violet",
       "magnitudeUnit": "level",
+      "baseCost": 20,
       "channels": [
         "spell"
       ],
@@ -1197,6 +1246,7 @@
       "polarity": "harmful",
       "color": "black",
       "magnitudeUnit": "seconds",
+      "baseCost": 3,
       "defaultDuration": 60,
       "channels": [
         "spell",
@@ -1215,6 +1265,7 @@
       "polarity": "harmful",
       "color": "indigo",
       "magnitudeUnit": "seconds",
+      "baseCost": 5,
       "defaultDuration": 10,
       "channels": [
         "spell",
@@ -1234,6 +1285,7 @@
       "polarity": "harmful",
       "color": "yellow",
       "magnitudeUnit": "seconds",
+      "baseCost": 5,
       "defaultDuration": 8,
       "channels": [
         "spell",
@@ -1252,6 +1304,7 @@
       "polarity": "harmful",
       "color": "blue",
       "magnitudeUnit": "seconds",
+      "baseCost": 10,
       "defaultDuration": 4,
       "channels": [
         "spell",
@@ -1271,6 +1324,7 @@
       "category": "control",
       "polarity": "harmful",
       "magnitudeUnit": "percent",
+      "baseCost": 0.5,
       "defaultDuration": 1,
       "channels": [
         "enchantment",
@@ -1292,6 +1346,7 @@
       "category": "control",
       "polarity": "harmful",
       "magnitudeUnit": "points",
+      "baseCost": 2,
       "defaultDuration": 10,
       "channels": [
         "enchantment",
@@ -1313,6 +1368,7 @@
       "category": "damage",
       "polarity": "harmful",
       "magnitudeUnit": "points",
+      "baseCost": 5,
       "defaultDuration": 12,
       "channels": [
         "enchantment",
@@ -1334,6 +1390,7 @@
       "category": "control",
       "polarity": "harmful",
       "magnitudeUnit": "points",
+      "baseCost": 2,
       "defaultDuration": 8,
       "channels": [
         "enchantment",
@@ -1356,6 +1413,7 @@
       "category": "fortify",
       "polarity": "beneficial",
       "magnitudeUnit": "points",
+      "baseCost": 1,
       "defaultDuration": 60,
       "channels": [
         "enchantment",
@@ -1375,6 +1433,7 @@
       "category": "fortify",
       "polarity": "beneficial",
       "magnitudeUnit": "percent",
+      "baseCost": 0.5,
       "defaultDuration": 15,
       "channels": [
         "enchantment",
@@ -1395,6 +1454,7 @@
       "category": "fortify",
       "polarity": "beneficial",
       "magnitudeUnit": "points",
+      "baseCost": 1,
       "defaultDuration": 60,
       "channels": [
         "enchantment",
@@ -1415,6 +1475,7 @@
       "category": "fortify",
       "polarity": "beneficial",
       "magnitudeUnit": "points",
+      "baseCost": 2,
       "defaultDuration": 30,
       "channels": [
         "enchantment",
@@ -1436,6 +1497,7 @@
       "category": "restore",
       "polarity": "beneficial",
       "magnitudeUnit": "percent",
+      "baseCost": 0.5,
       "defaultDuration": 1,
       "channels": [
         "enchantment",
@@ -1456,6 +1518,7 @@
       "category": "restore",
       "polarity": "beneficial",
       "magnitudeUnit": "percent",
+      "baseCost": 0.5,
       "defaultDuration": 1,
       "channels": [
         "enchantment",
@@ -1475,6 +1538,7 @@
       "category": "control",
       "polarity": "harmful",
       "magnitudeUnit": "percent",
+      "baseCost": 0.5,
       "defaultDuration": 8,
       "channels": [
         "enchantment",
@@ -1515,6 +1579,7 @@
       "category": "control",
       "polarity": "harmful",
       "magnitudeUnit": "points",
+      "baseCost": 10,
       "defaultDuration": 1,
       "channels": [
         "enchantment",
@@ -1536,6 +1601,7 @@
       "polarity": "neutral",
       "color": "indigo",
       "magnitudeUnit": "level",
+      "baseCost": 20,
       "channels": [
         "spell"
       ],
@@ -1552,6 +1618,7 @@
       "polarity": "neutral",
       "color": "indigo",
       "magnitudeUnit": "level",
+      "baseCost": 20,
       "channels": [
         "spell"
       ],

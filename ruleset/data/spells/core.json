@@ -16,7 +16,7 @@
         }
       ],
       "cost": {
-        "mana": 5
+        "mana": 6
       }
     },
     {
@@ -53,7 +53,7 @@
         }
       ],
       "cost": {
-        "mana": 10
+        "mana": 6
       }
     },
     {
@@ -97,7 +97,7 @@
         }
       ],
       "cost": {
-        "mana": 8
+        "mana": 5
       },
       "cooldown": 6
     },
@@ -117,7 +117,7 @@
         }
       ],
       "cost": {
-        "mana": 25
+        "mana": 30
       },
       "cooldown": 4
     },
@@ -138,7 +138,7 @@
         }
       ],
       "cost": {
-        "mana": 30,
+        "mana": 36,
         "reagents": [
           "core:ingredient/nightshade"
         ]
@@ -178,7 +178,7 @@
         }
       ],
       "cost": {
-        "mana": 14
+        "mana": 11
       }
     },
     {
@@ -199,7 +199,7 @@
         }
       ],
       "cost": {
-        "mana": 24
+        "mana": 30
       }
     },
     {
@@ -218,7 +218,7 @@
         }
       ],
       "cost": {
-        "mana": 43
+        "mana": 45
       }
     },
     {
@@ -231,13 +231,13 @@
       "effects": [
         {
           "effect": "core:effect/damage_frost",
-          "magnitude": 30,
+          "magnitude": 45,
           "target": "area",
           "radius": 4
         }
       ],
       "cost": {
-        "mana": 62
+        "mana": 47
       }
     },
     {
@@ -263,7 +263,7 @@
         }
       ],
       "cost": {
-        "mana": 80
+        "mana": 94
       }
     },
     {
@@ -276,13 +276,13 @@
       "effects": [
         {
           "effect": "core:effect/damage_fire",
-          "magnitude": 70,
+          "magnitude": 90,
           "target": "area",
-          "radius": 5
+          "radius": 6
         }
       ],
       "cost": {
-        "mana": 99
+        "mana": 93
       }
     },
     {
@@ -297,12 +297,12 @@
           "effect": "core:effect/summon",
           "parameter": "familiar",
           "magnitude": 1,
-          "duration": 120,
+          "duration": 60,
           "target": "ranged"
         }
       ],
       "cost": {
-        "mana": 9
+        "mana": 18
       }
     },
     {
@@ -343,7 +343,7 @@
         }
       ],
       "cost": {
-        "mana": 19
+        "mana": 24
       }
     },
     {
@@ -363,7 +363,7 @@
         }
       ],
       "cost": {
-        "mana": 34
+        "mana": 41
       }
     },
     {
@@ -384,7 +384,7 @@
         }
       ],
       "cost": {
-        "mana": 39
+        "mana": 24
       }
     },
     {
@@ -405,7 +405,7 @@
         }
       ],
       "cost": {
-        "mana": 44
+        "mana": 36
       }
     },
     {
@@ -426,7 +426,7 @@
         }
       ],
       "cost": {
-        "mana": 74
+        "mana": 108
       }
     },
     {
@@ -445,7 +445,7 @@
         }
       ],
       "cost": {
-        "mana": 7
+        "mana": 3
       }
     },
     {
@@ -465,7 +465,7 @@
         }
       ],
       "cost": {
-        "mana": 15
+        "mana": 14
       }
     },
     {
@@ -486,7 +486,7 @@
         }
       ],
       "cost": {
-        "mana": 14
+        "mana": 9
       }
     },
     {
@@ -504,7 +504,7 @@
         }
       ],
       "cost": {
-        "mana": 17
+        "mana": 11
       }
     },
     {
@@ -524,7 +524,7 @@
         }
       ],
       "cost": {
-        "mana": 22
+        "mana": 27
       }
     },
     {
@@ -538,12 +538,12 @@
         {
           "effect": "core:effect/silence",
           "magnitude": 1,
-          "duration": 10,
+          "duration": 6,
           "target": "ranged"
         }
       ],
       "cost": {
-        "mana": 29
+        "mana": 36
       }
     },
     {
@@ -563,7 +563,7 @@
         }
       ],
       "cost": {
-        "mana": 34
+        "mana": 48
       }
     },
     {
@@ -589,7 +589,7 @@
         }
       ],
       "cost": {
-        "mana": 62
+        "mana": 49
       }
     },
     {
@@ -604,13 +604,13 @@
         {
           "effect": "core:effect/charm",
           "magnitude": 1,
-          "duration": 30,
+          "duration": 60,
           "target": "area",
           "radius": 4
         }
       ],
       "cost": {
-        "mana": 74
+        "mana": 38
       }
     },
     {
@@ -629,7 +629,7 @@
         }
       ],
       "cost": {
-        "mana": 12
+        "mana": 2
       }
     },
     {
@@ -648,7 +648,7 @@
         }
       ],
       "cost": {
-        "mana": 14
+        "mana": 10
       }
     },
     {
@@ -668,7 +668,7 @@
         }
       ],
       "cost": {
-        "mana": 17
+        "mana": 20
       }
     },
     {
@@ -683,12 +683,12 @@
           "effect": "core:effect/resist",
           "parameter": "poison",
           "magnitude": 50,
-          "duration": 120,
+          "duration": 60,
           "target": "touch"
         }
       ],
       "cost": {
-        "mana": 24
+        "mana": 30
       }
     },
     {
@@ -707,7 +707,7 @@
         }
       ],
       "cost": {
-        "mana": 34
+        "mana": 30
       }
     },
     {
@@ -727,28 +727,28 @@
         }
       ],
       "cost": {
-        "mana": 68
+        "mana": 42
       }
     },
     {
       "id": 37,
       "key": "renewal",
       "label": "Renewal",
-      "description": "Every ally in the area mends, ten points each second for thirty seconds.",
+      "description": "Every ally in the area mends, six points each second for fifteen seconds.",
       "color": "green",
       "level": 28,
       "effects": [
         {
           "effect": "core:effect/restore_resource",
           "parameter": "health",
-          "magnitude": 10,
-          "duration": 30,
+          "magnitude": 6,
+          "duration": 15,
           "target": "area",
           "radius": 4
         }
       ],
       "cost": {
-        "mana": 93
+        "mana": 92
       }
     },
     {
@@ -767,7 +767,7 @@
         }
       ],
       "cost": {
-        "mana": 7
+        "mana": 6
       }
     },
     {
@@ -785,7 +785,7 @@
         }
       ],
       "cost": {
-        "mana": 14
+        "mana": 6
       }
     },
     {
@@ -804,7 +804,7 @@
         }
       ],
       "cost": {
-        "mana": 17
+        "mana": 15
       }
     },
     {
@@ -819,12 +819,12 @@
           "effect": "core:effect/fortify_defense",
           "parameter": "armor",
           "magnitude": 6,
-          "duration": 60,
+          "duration": 30,
           "target": "touch"
         }
       ],
       "cost": {
-        "mana": 27
+        "mana": 36
       }
     },
     {
@@ -843,7 +843,7 @@
         }
       ],
       "cost": {
-        "mana": 32
+        "mana": 36
       }
     },
     {
@@ -862,7 +862,7 @@
         }
       ],
       "cost": {
-        "mana": 59
+        "mana": 32
       }
     },
     {
@@ -876,12 +876,12 @@
         {
           "effect": "core:effect/petrify",
           "magnitude": 1,
-          "duration": 30,
+          "duration": 10,
           "target": "ranged"
         }
       ],
       "cost": {
-        "mana": 69
+        "mana": 75
       }
     },
     {
@@ -899,7 +899,7 @@
         }
       ],
       "cost": {
-        "mana": 9
+        "mana": 4
       }
     },
     {
@@ -917,7 +917,7 @@
         }
       ],
       "cost": {
-        "mana": 14
+        "mana": 12
       }
     },
     {
@@ -936,7 +936,7 @@
         }
       ],
       "cost": {
-        "mana": 21
+        "mana": 13
       }
     },
     {
@@ -955,7 +955,7 @@
         }
       ],
       "cost": {
-        "mana": 19
+        "mana": 9
       }
     },
     {
@@ -976,7 +976,7 @@
         }
       ],
       "cost": {
-        "mana": 29
+        "mana": 30
       }
     },
     {
@@ -994,7 +994,7 @@
         }
       ],
       "cost": {
-        "mana": 42
+        "mana": 30
       }
     },
     {
@@ -1012,7 +1012,7 @@
         }
       ],
       "cost": {
-        "mana": 54
+        "mana": 60
       }
     },
     {
@@ -1057,7 +1057,7 @@
         }
       ],
       "cost": {
-        "mana": 12
+        "mana": 3
       }
     },
     {
@@ -1077,7 +1077,7 @@
         }
       ],
       "cost": {
-        "mana": 19
+        "mana": 9
       }
     },
     {
@@ -1097,7 +1097,7 @@
         }
       ],
       "cost": {
-        "mana": 27
+        "mana": 18
       }
     },
     {
@@ -1116,7 +1116,7 @@
         }
       ],
       "cost": {
-        "mana": 43
+        "mana": 56
       }
     },
     {
@@ -1136,7 +1136,7 @@
         }
       ],
       "cost": {
-        "mana": 44
+        "mana": 14
       }
     },
     {
@@ -1154,7 +1154,7 @@
         }
       ],
       "cost": {
-        "mana": 67
+        "mana": 75
       }
     },
     {
@@ -1172,7 +1172,7 @@
         }
       ],
       "cost": {
-        "mana": 7
+        "mana": 3
       }
     },
     {
@@ -1190,7 +1190,7 @@
         }
       ],
       "cost": {
-        "mana": 17
+        "mana": 9
       }
     },
     {
@@ -1210,7 +1210,7 @@
         }
       ],
       "cost": {
-        "mana": 22
+        "mana": 18
       }
     },
     {
@@ -1229,7 +1229,7 @@
         }
       ],
       "cost": {
-        "mana": 29
+        "mana": 2
       }
     },
     {
@@ -1248,7 +1248,7 @@
         }
       ],
       "cost": {
-        "mana": 62
+        "mana": 42
       }
     },
     {
@@ -1287,7 +1287,7 @@
         }
       ],
       "cost": {
-        "mana": 12
+        "mana": 8
       }
     },
     {
@@ -1306,7 +1306,7 @@
         }
       ],
       "cost": {
-        "mana": 17
+        "mana": 27
       }
     },
     {
@@ -1321,12 +1321,12 @@
           "effect": "core:effect/fortify_defense",
           "parameter": "armor",
           "magnitude": 5,
-          "duration": 60,
+          "duration": 30,
           "target": "self"
         }
       ],
       "cost": {
-        "mana": 22
+        "mana": 30
       }
     },
     {
@@ -1346,7 +1346,7 @@
         }
       ],
       "cost": {
-        "mana": 29
+        "mana": 18
       }
     },
     {
@@ -1367,7 +1367,7 @@
         }
       ],
       "cost": {
-        "mana": 59
+        "mana": 108
       }
     },
     {
@@ -1391,7 +1391,7 @@
         }
       ],
       "cost": {
-        "mana": 74
+        "mana": 63
       }
     }
   ]

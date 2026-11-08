@@ -7,6 +7,7 @@ dispel. The roll is an input.
 """
 
 import json
+import math
 from pathlib import Path
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
@@ -14,6 +15,27 @@ DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 
 def load_data(rel_path):
     return json.loads((DATA_DIR / rel_path).read_text())
+
+
+# A magnitude in these units is not a strength: the effect counts it as 1 (magic.md#cost-formula).
+UNPRICED_MAGNITUDE_UNITS = (None, "seconds")
+
+
+def spell_cost(spell):
+    """A spell's mana cost from its effects alone (docs/modules/magic.md#cost-formula):
+    per effect magnitude_factor x baseCost x magnitude x duration, plus area_factor x baseCost x
+    radius for an area, times the target multiplier; the sum rounded up. No caster input."""
+    coefficients = load_data("casting/core.json")["casting"]["spell_cost"]
+    effects = {e["key"]: e for e in load_data("effects/core.json")["effects"]}
+    total = 0.0
+    for applied in spell["effects"]:
+        effect = effects[applied["effect"].rsplit("/", 1)[-1]]
+        magnitude = 1 if effect.get("magnitudeUnit") in UNPRICED_MAGNITUDE_UNITS else applied.get("magnitude", 1)
+        cost = coefficients["magnitude_factor"] * effect["baseCost"] * magnitude * applied.get("duration", 1)
+        if applied["target"] == "area":
+            cost += coefficients["area_factor"] * effect["baseCost"] * applied.get("radius", 0)
+        total += cost * coefficients["target"][applied["target"]]
+    return math.ceil(round(total, 6))
 
 
 def spell_row(spells, key):
