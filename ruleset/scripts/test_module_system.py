@@ -432,7 +432,7 @@ class TestIntegration(unittest.TestCase):
         self.assertEqual(mod.id, "example_module")
         self.assertIn("features", mod.data)
         self.assertEqual(len(mod.data["features"]), 1)
-        self.assertEqual(mod.data["features"][0]["id"], 1001)
+        self.assertEqual(mod.data["features"][0]["key"], "module_demo_perk")
 
     def test_example_module_merges_without_conflicts(self):
         core = {"features": []}

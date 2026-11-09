@@ -81,7 +81,6 @@
     "faction": {
       "type": "object",
       "properties": {
-        "id": { "$ref": "schema.json#/definitions/entryId" },
         "key": { "$ref": "#/definitions/key" },
         "label": { "type": "string" },
         "description": { "type": "string" },

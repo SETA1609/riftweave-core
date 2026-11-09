@@ -11,7 +11,7 @@ The ruleset is versioned with [Semantic Versioning](https://semver.org/): `MAJOR
 | A **schema property or enum member** | `ability` in `schema.json`, a property of `race.schema.json` |
 | A **vector's expected result** | `ruleset/tests/vectors/*.json`; a second implementation passes them |
 
-Numeric `id`s were internal bookkeeping, were never public, and are being removed ([keys.md](keys.md)). Labels, descriptions, and prose are not public.
+Rows have no numeric `id`; the ones they had were internal and never public ([keys.md](keys.md)). Labels, descriptions, and prose are not public.
 
 ## What is breaking
 

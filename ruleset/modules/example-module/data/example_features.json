@@ -2,7 +2,6 @@
   "$schema": "../../../schemas/feature.schema.json",
   "features": [
     {
-      "id": 1001,
       "key": "module_demo_perk",
       "label": "Module Demo Perk",
       "description": "A perk added by the example module to demonstrate how modules extend core collections. Provides a small damage bonus.",

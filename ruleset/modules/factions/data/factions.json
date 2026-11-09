@@ -2,7 +2,6 @@
   "$schema": "../../../schemas/faction.schema.json",
   "factions": [
     {
-      "id": 1,
       "key": "lantern_wardens",
       "label": "Lantern Wardens",
       "description": "The city watch. They keep the lamps lit and the roads open, and remember who broke the peace.",
@@ -51,7 +50,6 @@
       ]
     },
     {
-      "id": 2,
       "key": "ashen_circle",
       "label": "Ashen Circle",
       "description": "A cabal of black-magic scholars who trade in forbidden lore and the silence of their members.",
@@ -98,7 +96,6 @@
       ]
     },
     {
-      "id": 3,
       "key": "gilded_ledger",
       "label": "Gilded Ledger",
       "description": "A merchant guild that lends, insures, and keeps accounts on everyone who trades in the city.",

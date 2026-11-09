@@ -21,7 +21,6 @@
     "check": {
       "type": "object",
       "properties": {
-        "id": { "$ref": "schema.json#/definitions/entryId" },
         "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "Symbolic snake_case key, unique within the collection." },
         "label": { "type": "string", "description": "Human-readable display name." },
         "description": { "type": "string", "description": "What the check does, in one sentence." },

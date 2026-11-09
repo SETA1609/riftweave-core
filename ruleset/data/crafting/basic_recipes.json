@@ -2,7 +2,6 @@
   "$schema": "../../schemas/recipe.schema.json",
   "recipes": [
     {
-      "id": 1,
       "key": "forge_steel_longsword",
       "label": "Forge Steel Longsword",
       "description": "Heat, fold, and quench a steel billet into a serviceable longsword at the anvil.",
@@ -28,7 +27,6 @@
       }
     },
     {
-      "id": 2,
       "key": "forge_iron_plate_cuirass",
       "label": "Forge Iron Plate Cuirass",
       "description": "Shape iron plates over a form and rivet them into a protective cuirass.",
@@ -54,7 +52,6 @@
       }
     },
     {
-      "id": 3,
       "key": "engrave_ruby_longsword",
       "label": "Engrave Ruby Into Longsword",
       "description": "Set a ruby into the crossguard of a steel longsword. The gem's fire phase overwrites the blade's element.",

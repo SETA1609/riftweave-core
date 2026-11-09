@@ -1,17 +1,17 @@
 {
   "$schema": "../../schemas/origin.schema.json",
   "origins": [
-    { "id": 1, "key": "arcane", "label": "Arcane", "stack": "highest", "defaultFor": ["spell"], "description": "Spells of the nine color schools. Two arcane bonuses on one stat do not stack; the strongest counts." },
-    { "id": 2, "key": "divine", "label": "Divine", "stack": "highest", "description": "Prayers, blessings, shrines, and relics. A row names it; nothing defaults to it." },
-    { "id": 3, "key": "primal", "label": "Primal", "stack": "highest", "description": "Nature and spirit magic: totems, druidic and shamanic rites. A row names it." },
-    { "id": 4, "key": "alchemy", "label": "Alchemy", "stack": "highest", "defaultFor": ["consumable", "ingredient"], "description": "Potions, elixirs, poisons, oils, and raw ingredients. A Fortify Strength +10 and a Giant Strength +5 give +10." },
-    { "id": 5, "key": "enchantment", "label": "Enchantment", "stack": "highest", "defaultFor": ["item_effect", "gem"], "description": "Magic effects on worn or wielded items, and engraved gems. Two rings of fire resistance give the larger one." },
-    { "id": 6, "key": "martial", "label": "Martial", "stack": "highest", "description": "Stances, battle cries, and combat techniques. A row names it." },
-    { "id": 7, "key": "morale", "label": "Morale", "stack": "highest", "description": "Inspiration, leadership, fear, and despair. A row names it." },
-    { "id": 8, "key": "environment", "label": "Environment", "stack": "highest", "description": "Terrain, weather, light, and cover. A row names it." },
-    { "id": 9, "key": "equipment", "label": "Equipment", "stack": "add", "defaultFor": ["item_stat"], "description": "An item's own numbers: armor DR per slot, weapon damage. Every item counts." },
-    { "id": 10, "key": "trained", "label": "Trained", "stack": "add", "defaultFor": ["feature", "background"], "description": "Perks, features, and backgrounds. Every perk counts." },
-    { "id": 11, "key": "innate", "label": "Innate", "stack": "add", "defaultFor": ["race", "monster"], "description": "Ancestry and natural traits. Every trait counts." },
-    { "id": 12, "key": "condition", "label": "Condition", "stack": "add", "defaultFor": ["condition"], "description": "Status conditions. Different conditions add; one condition is one source and counts once." }
+    { "key": "arcane", "label": "Arcane", "stack": "highest", "defaultFor": ["spell"], "description": "Spells of the nine color schools. Two arcane bonuses on one stat do not stack; the strongest counts." },
+    { "key": "divine", "label": "Divine", "stack": "highest", "description": "Prayers, blessings, shrines, and relics. A row names it; nothing defaults to it." },
+    { "key": "primal", "label": "Primal", "stack": "highest", "description": "Nature and spirit magic: totems, druidic and shamanic rites. A row names it." },
+    { "key": "alchemy", "label": "Alchemy", "stack": "highest", "defaultFor": ["consumable", "ingredient"], "description": "Potions, elixirs, poisons, oils, and raw ingredients. A Fortify Strength +10 and a Giant Strength +5 give +10." },
+    { "key": "enchantment", "label": "Enchantment", "stack": "highest", "defaultFor": ["item_effect", "gem"], "description": "Magic effects on worn or wielded items, and engraved gems. Two rings of fire resistance give the larger one." },
+    { "key": "martial", "label": "Martial", "stack": "highest", "description": "Stances, battle cries, and combat techniques. A row names it." },
+    { "key": "morale", "label": "Morale", "stack": "highest", "description": "Inspiration, leadership, fear, and despair. A row names it." },
+    { "key": "environment", "label": "Environment", "stack": "highest", "description": "Terrain, weather, light, and cover. A row names it." },
+    { "key": "equipment", "label": "Equipment", "stack": "add", "defaultFor": ["item_stat"], "description": "An item's own numbers: armor DR per slot, weapon damage. Every item counts." },
+    { "key": "trained", "label": "Trained", "stack": "add", "defaultFor": ["feature", "background"], "description": "Perks, features, and backgrounds. Every perk counts." },
+    { "key": "innate", "label": "Innate", "stack": "add", "defaultFor": ["race", "monster"], "description": "Ancestry and natural traits. Every trait counts." },
+    { "key": "condition", "label": "Condition", "stack": "add", "defaultFor": ["condition"], "description": "Status conditions. Different conditions add; one condition is one source and counts once." }
   ]
 }

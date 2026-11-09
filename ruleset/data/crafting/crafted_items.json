@@ -2,7 +2,6 @@
   "$schema": "../../schemas/crafted_item.schema.json",
   "crafted_items": [
     {
-      "id": 1,
       "key": "steel_longsword",
       "label": "Steel Longsword",
       "description": "A steel-forged longsword with a keen edge. The standard of any professional soldier.",
@@ -16,7 +15,6 @@
       "coatings": []
     },
     {
-      "id": 2,
       "key": "iron_plate_cuirass",
       "label": "Iron Plate Cuirass",
       "description": "A sturdy iron cuirass forged to protect the torso. Heavy but reliable.",
@@ -30,7 +28,6 @@
       "coatings": []
     },
     {
-      "id": 3,
       "key": "ruby_engraved_steel_longsword",
       "label": "Ruby-Engraved Steel Longsword",
       "description": "A steel longsword with a ruby set into the crossguard. The gem's fire phase overwrites the blade's metal element, making it interact as Fire in Wuxing cycles.",
@@ -47,7 +44,6 @@
       "coatings": []
     },
     {
-      "id": 4,
       "key": "sapphire_engraved_elven_bow",
       "label": "Sapphire-Engraved Elven Bow",
       "description": "An elven wood longbow engraved with a sapphire. The bow's natural Wood phase is overwritten by the sapphire's Water phase. Frost arrows fired from this bow benefit from the generating cycle (Water feeds Wood).",
@@ -64,7 +60,6 @@
       "coatings": []
     },
     {
-      "id": 5,
       "key": "poisoned_obsidian_dagger",
       "label": "Poisoned Obsidian Dagger",
       "description": "An obsidian dagger with a burn enchantment and temporary coatings (paralytic poison + stamina drain). The Fire phase of the blade interacts with the Earth-phase stamina-drain coating via Wuxing cycles. See crafting_reference.py --verbose for exact interaction output.",
@@ -83,7 +78,6 @@
       ]
     },
     {
-      "id": 6,
       "key": "enchanted_gold_amulet",
       "label": "Enchanted Gold Amulet",
       "description": "A gold amulet engraved with a diamond, carrying a permanent ward enchantment. Gold's high effectMagnitude (0.30) amplifies the resist effect, and the diamond's Metal phase gives it full generating-cycle benefit for the Metal-phase resist.",

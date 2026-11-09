@@ -16,7 +16,6 @@
     "feature": {
       "type": "object",
       "properties": {
-        "id": { "$ref": "schema.json#/definitions/entryId" },
         "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "Symbolic snake_case key (the old string id) for human readability when editing JSON." },
         "label": { "type": "string", "description": "Human-readable display name with spaces and capitalization." },
         "description": { "type": "string" },

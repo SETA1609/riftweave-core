@@ -2,7 +2,6 @@
   "$schema": "../../schemas/condition.schema.json",
   "conditions": [
     {
-      "id": 1,
       "key": "blinded",
       "label": "Blinded",
       "description": "Cannot see. Vision-dependent checks auto-fail.",
@@ -30,7 +29,6 @@
       ]
     },
     {
-      "id": 2,
       "key": "charmed",
       "label": "Charmed",
       "description": "Cannot attack the charmer. The charmer has leverage over you.",
@@ -55,7 +53,6 @@
       ]
     },
     {
-      "id": 3,
       "key": "deafened",
       "label": "Deafened",
       "description": "Cannot hear. Audio-dependent checks auto-fail.",
@@ -80,7 +77,6 @@
       ]
     },
     {
-      "id": 4,
       "key": "frightened",
       "label": "Frightened",
       "description": "Terrified of the source. Cannot approach it and suffer penalties while it is in sight.",
@@ -108,7 +104,6 @@
       ]
     },
     {
-      "id": 5,
       "key": "grappled",
       "label": "Grappled",
       "description": "Held in place by an opponent. Movement and agility are heavily restricted.",
@@ -133,7 +128,6 @@
       ]
     },
     {
-      "id": 6,
       "key": "incapacitated",
       "label": "Incapacitated",
       "description": "Cannot take actions of any kind.",
@@ -161,7 +155,6 @@
       ]
     },
     {
-      "id": 7,
       "key": "invisible",
       "label": "Invisible",
       "description": "Cannot be seen normally. Greatly advantaged in combat and stealth.",
@@ -186,7 +179,6 @@
       ]
     },
     {
-      "id": 8,
       "key": "paralyzed",
       "label": "Paralyzed",
       "description": "Frozen in place. Unable to move or act.",
@@ -223,7 +215,6 @@
       ]
     },
     {
-      "id": 9,
       "key": "petrified",
       "label": "Petrified",
       "description": "Turned to stone. Incapacitated and nearly invulnerable.",
@@ -251,7 +242,6 @@
       ]
     },
     {
-      "id": 10,
       "key": "poisoned",
       "label": "Poisoned",
       "description": "Under the effect of a poison. The poison's sub_effects carry the actual symptoms.",
@@ -277,7 +267,6 @@
       ]
     },
     {
-      "id": 11,
       "key": "prone",
       "label": "Prone",
       "description": "Knocked to the ground. Vulnerable in melee but harder to hit at range.",
@@ -304,7 +293,6 @@
       ]
     },
     {
-      "id": 12,
       "key": "restrained",
       "label": "Restrained",
       "description": "Tied, bound, or entangled. Movement is impossible and attacks are hampered.",
@@ -333,7 +321,6 @@
       ]
     },
     {
-      "id": 13,
       "key": "stunned",
       "label": "Stunned",
       "description": "Reeling from a powerful blow or effect. Cannot act and is vulnerable.",
@@ -362,7 +349,6 @@
       ]
     },
     {
-      "id": 14,
       "key": "unconscious",
       "label": "Unconscious",
       "description": "Knocked out or asleep. Completely unaware and helpless.",
@@ -391,7 +377,6 @@
       ]
     },
     {
-      "id": 15,
       "key": "exhaustion",
       "label": "Exhaustion",
       "description": "Accumulated fatigue or debilitating sickness. Stacks in severity.",
@@ -423,7 +408,6 @@
       ]
     },
     {
-      "id": 16,
       "key": "burning",
       "label": "Burning",
       "description": "On fire. Takes fire damage over time until extinguished.",
@@ -449,7 +433,6 @@
       ]
     },
     {
-      "id": 17,
       "key": "bleeding",
       "label": "Bleeding",
       "description": "A wound that bleeds, dealing health damage over time.",
@@ -475,7 +458,6 @@
       ]
     },
     {
-      "id": 18,
       "key": "slowed",
       "label": "Slowed",
       "description": "Movement speed and action economy are impaired.",
@@ -501,7 +483,6 @@
       ]
     },
     {
-      "id": 19,
       "key": "silenced",
       "label": "Silenced",
       "description": "Cannot speak or make verbal sounds, and cannot cast spells (docs/core/casting.md).",
@@ -526,7 +507,6 @@
       ]
     },
     {
-      "id": 20,
       "key": "diseased",
       "label": "Diseased",
       "description": "Afflicted by a disease effect. Symptoms vary by source.",
@@ -553,7 +533,6 @@
       ]
     },
     {
-      "id": 21,
       "key": "cursed",
       "label": "Cursed",
       "description": "Under a hex. All attributes or specific ones are reduced.",
@@ -578,7 +557,6 @@
       ]
     },
     {
-      "id": 22,
       "key": "exposed",
       "label": "Exposed",
       "description": "Defenses are compromised. Takes extra damage from all sources.",
@@ -603,7 +581,6 @@
       ]
     },
     {
-      "id": 23,
       "key": "taunted",
       "label": "Taunted",
       "description": "Forced to focus on the taunter. Attacks against other targets are penalized.",
@@ -631,7 +608,6 @@
       ]
     },
     {
-      "id": 24,
       "key": "staggered",
       "label": "Staggered",
       "description": "Knocked off-balance. Cannot react and suffers a penalty to the next action.",

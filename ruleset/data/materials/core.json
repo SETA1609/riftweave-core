@@ -2,7 +2,6 @@
   "$schema": "../../schemas/material.schema.json",
   "materials": [
     {
-      "id": 1,
       "key": "copper",
       "label": "Copper",
       "description": "A soft, conductive metal \u2014 prized for enchanted trinkets, poor as a blade.",
@@ -25,7 +24,6 @@
       }
     },
     {
-      "id": 2,
       "key": "bronze",
       "label": "Bronze",
       "description": "A workmanlike alloy of the early forges, holding an edge better than copper.",
@@ -43,7 +41,6 @@
       "ingredient": {}
     },
     {
-      "id": 3,
       "key": "iron",
       "label": "Iron",
       "description": "The reliable standard of arms and armor.",
@@ -61,7 +58,6 @@
       "ingredient": {}
     },
     {
-      "id": 4,
       "key": "steel",
       "label": "Steel",
       "description": "Refined iron \u2014 sharper, tougher, and the smith's preferred metal.",
@@ -79,7 +75,6 @@
       "ingredient": {}
     },
     {
-      "id": 5,
       "key": "silver",
       "label": "Silver",
       "description": "Conducts magic well and bites the undead and unholy.",
@@ -101,7 +96,6 @@
       }
     },
     {
-      "id": 6,
       "key": "gold",
       "label": "Gold",
       "description": "Too soft for arms, but the finest conductor of magic \u2014 the enchanter's metal.",
@@ -122,7 +116,6 @@
       }
     },
     {
-      "id": 7,
       "key": "wood",
       "label": "Wood",
       "description": "Common timber for hafts, bows, and shields \u2014 light and cheap.",
@@ -140,7 +133,6 @@
       "ingredient": {}
     },
     {
-      "id": 8,
       "key": "elven_wood",
       "label": "Elven Wood",
       "description": "Living wood coaxed into shape by elven craft \u2014 light, resilient, and magically attuned.",
@@ -163,7 +155,6 @@
       }
     },
     {
-      "id": 9,
       "key": "obsidian",
       "label": "Obsidian",
       "description": "Volcanic glass \u2014 wickedly sharp, but brittle and unfit for armor.",
@@ -182,7 +173,6 @@
       "ingredient": {}
     },
     {
-      "id": 10,
       "key": "leather",
       "label": "Leather",
       "description": "Cured animal hide. Common for light armor, straps, and flexible gear.",
@@ -202,7 +192,6 @@
       "ingredient": {}
     },
     {
-      "id": 11,
       "key": "studded_leather",
       "label": "Studded Leather",
       "description": "Leather reinforced with brass or iron studs. More protective than raw hide while retaining flexibility.",
@@ -221,7 +210,6 @@
       "ingredient": {}
     },
     {
-      "id": 12,
       "key": "granite",
       "label": "Granite",
       "description": "Found as ore. A recipe may still draw fiber from it. The fiber carries this weight and no ingredient effect.",
