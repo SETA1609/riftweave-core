@@ -619,7 +619,6 @@
       }
     },
     {
-      "id": 49,
       "key": "storm_elemental",
       "base": "core:monster/fire_elemental",
       "templates": [
@@ -658,7 +657,6 @@
       }
     },
     {
-      "id": 50,
       "key": "acid_elemental",
       "base": "core:monster/fire_elemental",
       "templates": [
@@ -697,7 +695,6 @@
       }
     },
     {
-      "id": 51,
       "key": "venom_elemental",
       "base": "core:monster/fire_elemental",
       "templates": [
@@ -736,7 +733,6 @@
       }
     },
     {
-      "id": 41,
       "key": "magma_titan",
       "base": "core:monster/fire_elemental",
       "overrides": {
@@ -1023,7 +1019,6 @@
       }
     },
     {
-      "id": 52,
       "key": "owl_familiar",
       "base": "familiar",
       "overrides": {
@@ -1057,7 +1052,6 @@
       }
     },
     {
-      "id": 53,
       "key": "cat_familiar",
       "base": "familiar",
       "overrides": {
@@ -1091,7 +1085,6 @@
       }
     },
     {
-      "id": 54,
       "key": "raven_familiar",
       "base": "familiar",
       "overrides": {
@@ -1125,7 +1118,6 @@
       }
     },
     {
-      "id": 14,
       "key": "cave_spider",
       "base": "beast",
       "overrides": {

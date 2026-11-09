@@ -2,7 +2,6 @@
   "$schema": "../../schemas/summon.schema.json",
   "summons": [
     {
-      "id": 1,
       "key": "familiar",
       "label": "Familiar",
       "description": "A small spirit-beast that scouts and fetches for its caster.",
@@ -13,7 +12,6 @@
       ]
     },
     {
-      "id": 2,
       "key": "elemental",
       "label": "Elemental",
       "description": "A being of one element, called to fight beside its caster.",
@@ -26,7 +24,6 @@
       ]
     },
     {
-      "id": 3,
       "key": "undead",
       "label": "Undead",
       "description": "A corpse raised to fight for its caster.",

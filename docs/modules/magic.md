@@ -196,8 +196,8 @@ appear. The creatures are ordinary monster rows ([monsters.md](./monsters.md#sum
 | `undead` | Raise Thrall, Raise Horde | skeleton, zombie |
 
 A stronger spell summons more for longer; it does not summon a stronger creature. The
-creature's stats are its row's, at the row's level [A]. `test_spells.py` fails on a summon
-whose group or variant does not exist. [V 2026-11-09]
+creature's stats are its row's, at the row's level [A]. `validate.py` refuses a summon whose
+`parameter` is not a group, and `test_spells.py` fails on a group or variant that does not exist. [V 2026-11-09]
 
 ---
 

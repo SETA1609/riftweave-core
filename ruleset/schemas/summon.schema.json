@@ -22,9 +22,6 @@
     "summon": {
       "type": "object",
       "properties": {
-        "id": {
-          "$ref": "schema.json#/definitions/entryId"
-        },
         "key": {
           "type": "string",
           "pattern": "^[a-z_][a-z0-9_]*$"
@@ -40,13 +37,12 @@
           "minItems": 1,
           "uniqueItems": true,
           "items": {
-            "$ref": "schema.json#/definitions/namespacedRef"
+            "$ref": "schema.json#/definitions/monsterRef"
           },
           "description": "The monster rows the caster may pick from, as core:monster/<key>."
         }
       },
       "required": [
-        "id",
         "key",
         "label",
         "description",
