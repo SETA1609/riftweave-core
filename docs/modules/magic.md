@@ -296,8 +296,7 @@ on a player-made spell's duration. [V 2026-11-08]
 What a caster pays is the spell cost after their skill and perks, never their level.
 Daggerfall lowers spell points as the skill rises (`gold × (110 − skill) / 400`); here the
 skill discount is `<color>_magic / 200`, capped at 0.45, and perks emit modifiers on
-`spell_cost`. Applying them in the cast is M3-07; until then the cast spends `cost.mana` as
-authored. The cast threshold and the craft threshold read the spell cost before any
+`spell_cost` ([paid cost](../core/casting.md#paid-cost)). The cast threshold and the craft threshold read the spell cost before any
 discount:
 
 ```
