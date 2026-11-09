@@ -64,7 +64,7 @@
           }
         }
       },
-      "required": ["id", "key", "label", "description", "base_key", "material_key", "phase"],
+      "required": ["key", "label", "description", "base_key", "material_key", "phase"],
       "additionalProperties": false
     }
   }

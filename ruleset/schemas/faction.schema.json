@@ -94,7 +94,7 @@
         "relations": { "type": "array", "items": { "$ref": "#/definitions/relation" } },
         "reputation_events": { "type": "array", "items": { "$ref": "#/definitions/reputationEvent" } }
       },
-      "required": ["id", "key", "label", "description", "standings"],
+      "required": ["key", "label", "description", "standings"],
       "additionalProperties": false
     }
   }

@@ -42,7 +42,7 @@
         "cooldown": { "type": "number", "minimum": 0, "description": "Cooldown in seconds" },
         "custom": { "type": "boolean", "description": "True for player-made (spellmaking) spells; false or omitted for authored content" }
       },
-      "required": ["id", "key", "label", "description", "color", "level", "effects"],
+      "required": ["key", "label", "description", "color", "level", "effects"],
       "additionalProperties": false
     }
   }

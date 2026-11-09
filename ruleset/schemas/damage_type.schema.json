@@ -31,7 +31,7 @@
           "description": "Tags for resistance matching, phase interaction, and special rules. Common tags: 'armor_dr_applies' (physical only), 'bypasses_armor' (energy/mental), 'phase_wood', 'phase_fire', etc."
         }
       },
-      "required": ["id", "key", "label", "description", "category"],
+      "required": ["key", "label", "description", "category"],
       "additionalProperties": false
     }
   }

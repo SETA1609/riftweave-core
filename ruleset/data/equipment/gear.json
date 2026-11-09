@@ -2,7 +2,6 @@
   "$schema": "../../schemas/equipment.schema.json",
   "equipment": [
     {
-      "id": 400,
       "key": "thieves_tools",
       "label": "Thieves' Tools",
       "description": "Picks, tension wrenches, and a small mirror for locks and traps.",
@@ -25,7 +24,6 @@
       }
     },
     {
-      "id": 401,
       "key": "healers_kit",
       "label": "Healer's Kit",
       "description": "Bandages, salves, and splints; each use is spent.",
@@ -49,7 +47,6 @@
       }
     },
     {
-      "id": 402,
       "key": "climbing_kit",
       "label": "Climbing Kit",
       "description": "Pitons, a harness, and boot spikes.",
@@ -72,7 +69,6 @@
       }
     },
     {
-      "id": 403,
       "key": "alchemy_kit",
       "label": "Alchemy Kit",
       "description": "Alembic, mortar, and vials for brewing on the road.",
@@ -95,7 +91,6 @@
       }
     },
     {
-      "id": 404,
       "key": "smiths_tools",
       "label": "Smith's Tools",
       "description": "Hammers, tongs, and a small anvil.",
@@ -118,7 +113,6 @@
       }
     },
     {
-      "id": 405,
       "key": "tinkers_tools",
       "label": "Tinker's Tools",
       "description": "Fine pliers, screws, and solder for fixing gear.",
@@ -141,7 +135,6 @@
       }
     },
     {
-      "id": 406,
       "key": "navigators_tools",
       "label": "Navigator's Tools",
       "description": "Compass, charts, and a sighting staff.",
@@ -164,7 +157,6 @@
       }
     },
     {
-      "id": 407,
       "key": "disguise_kit",
       "label": "Disguise Kit",
       "description": "Paints, wigs, and props to pass as someone else.",
@@ -187,7 +179,6 @@
       }
     },
     {
-      "id": 408,
       "key": "rope_hemp",
       "label": "Hemp Rope (10 units)",
       "description": "Ten units of sturdy hemp rope.",
@@ -200,7 +191,6 @@
       "gear": {}
     },
     {
-      "id": 409,
       "key": "torch",
       "label": "Torch",
       "description": "A pitch-soaked torch that burns for an hour.",
@@ -215,7 +205,6 @@
       }
     },
     {
-      "id": 410,
       "key": "lantern",
       "label": "Hooded Lantern",
       "description": "An oil lantern with a shutter to hide its light.",
@@ -228,7 +217,6 @@
       "gear": {}
     },
     {
-      "id": 411,
       "key": "bedroll",
       "label": "Bedroll",
       "description": "A rolled blanket and ground cloth.",
@@ -241,7 +229,6 @@
       "gear": {}
     },
     {
-      "id": 412,
       "key": "tent",
       "label": "Two-Person Tent",
       "description": "A canvas tent that keeps off rain and wind.",
@@ -254,7 +241,6 @@
       "gear": {}
     },
     {
-      "id": 413,
       "key": "grappling_hook",
       "label": "Grappling Hook",
       "description": "A three-pronged iron hook for a rope's end.",
@@ -267,7 +253,6 @@
       "gear": {}
     },
     {
-      "id": 414,
       "key": "waterskin",
       "label": "Waterskin",
       "description": "A leather skin that holds a day's water.",
@@ -280,7 +265,6 @@
       "gear": {}
     },
     {
-      "id": 415,
       "key": "crowbar",
       "label": "Crowbar",
       "description": "An iron bar for prying doors and crates.",
@@ -293,7 +277,6 @@
       "gear": {}
     },
     {
-      "id": 416,
       "key": "chalk",
       "label": "Chalk",
       "description": "A stick of chalk for marking walls and maps.",
@@ -308,7 +291,6 @@
       }
     },
     {
-      "id": 417,
       "key": "tinderbox",
       "label": "Tinderbox",
       "description": "Flint, steel, and tinder to start a fire.",

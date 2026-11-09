@@ -111,7 +111,7 @@ When a consuming engine loads modules via `module_loader.merge_data()`, the foll
 Modules may **add** new entries to core collections. A module overrides a core entry only by listing its key in the manifest's `overrides` ([overrides.md](../core/overrides.md), which wins here); a duplicate with no override flag still fails. `merge_data()` does not read `overrides` yet, so it flags every duplicate as a conflict. [V 2026-11-09]
 
 ### Rule 2: No Inter-Module Override
-If two modules both contribute an entry with the same `id` in the same collection, a conflict is flagged. The first module loaded "wins" in terms of which entry appears in the merged data, but both are flagged.
+If two modules both contribute an entry with the same `key` in the same collection, a conflict is flagged. The first module loaded "wins" in terms of which entry appears in the merged data, but both are flagged.
 
 ### Rule 3: Conflicts Are Reported, Not Silently Resolved
 The `merge_data()` function returns a list of conflict tuples. The caller decides how to handle them (warn, abort, skip). The default test harness treats any conflict as a failure.
@@ -225,7 +225,7 @@ Data files follow the exact same format as core collection files:
 Key rules:
 - Each data file **must** declare a `$schema` field pointing to a schema in `ruleset/schemas/`.
 - The `$schema` is used by `validate.py` for JSON Schema validation and cross-schema `$ref` resolution.
-- Module entry `id` values should be in a high range (e.g. 1000+) to avoid accidental collision with core (which uses 1–64). This is a convention, not enforced by the schema.
+- A module entry is identified by its `key`. An entry with no `key` falls back to a string `id`, and with neither it is simply appended.
 
 ---
 

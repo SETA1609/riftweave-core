@@ -143,7 +143,7 @@
         "tags": { "type": "array", "items": { "type": "string" } },
         "coreDrop": { "$ref": "#/definitions/coreDropShape" }
       },
-      "required": ["id", "key", "label", "description", "phase", "size"],
+      "required": ["key", "label", "description", "phase", "size"],
       "additionalProperties": false
     },
     "monsterWithBase": {
@@ -166,7 +166,7 @@
         },
         "overrides": { "$ref": "#/definitions/monsterData" }
       },
-      "required": ["id", "key", "base", "overrides"],
+      "required": ["key", "base", "overrides"],
       "additionalProperties": false
     }
   }

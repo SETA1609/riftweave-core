@@ -96,7 +96,7 @@
           "additionalProperties": false
         }
       },
-      "required": ["id", "key", "label", "description", "effects", "appliedBy", "removedBy"],
+      "required": ["key", "label", "description", "effects", "appliedBy", "removedBy"],
       "additionalProperties": false
     }
   }

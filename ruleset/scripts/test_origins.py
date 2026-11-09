@@ -20,7 +20,7 @@ class TestOrigins(unittest.TestCase):
 
     def test_keys_and_ids_are_unique(self):
         self.assertEqual(len({r["key"] for r in self.rows}), len(self.rows))
-        self.assertEqual(len({r["id"] for r in self.rows}), len(self.rows))
+        self.assertEqual(len({r["key"] for r in self.rows}), len(self.rows))
 
 
 if __name__ == "__main__":

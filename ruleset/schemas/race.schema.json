@@ -79,7 +79,7 @@
           }
         }
       },
-      "required": ["id", "key", "label", "description", "lineage"],
+      "required": ["key", "label", "description", "lineage"],
       "additionalProperties": false,
       "allOf": [
         {

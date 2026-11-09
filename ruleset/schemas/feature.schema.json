@@ -130,7 +130,7 @@
           "additionalProperties": false
         }
       },
-      "required": ["id", "key", "label", "description", "type"],
+      "required": ["key", "label", "description", "type"],
       "additionalProperties": false
     }
   }

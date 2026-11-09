@@ -182,9 +182,14 @@ def build_identity_map(modules):
         for coll_name, entries in mod.data.items():
             identity.setdefault(coll_name, set())
             for entry in entries:
-                if isinstance(entry, dict) and "id" in entry:
-                    identity[coll_name].add(entry["id"])
+                if isinstance(entry, dict) and row_identity(entry) is not None:
+                    identity[coll_name].add(row_identity(entry))
     return identity
+
+
+def row_identity(entry):
+    """A row is its key; a vocabulary row with no key is its id (docs/core/keys.md)."""
+    return entry.get("key", entry.get("id"))
 
 
 def merge_data(core_data, modules):
@@ -219,8 +224,8 @@ def merge_data(core_data, modules):
         if not isinstance(entries, list):
             continue
         for entry in entries:
-            if isinstance(entry, dict) and "id" in entry:
-                sources[coll_name][entry["id"]] = "core"
+            if isinstance(entry, dict) and row_identity(entry) is not None:
+                sources[coll_name][row_identity(entry)] = "core"
 
     # Merge module entries into the copy
     for mod in modules:
@@ -228,10 +233,10 @@ def merge_data(core_data, modules):
             if coll_name not in merged:
                 merged[coll_name] = []
             for entry in entries:
-                if not isinstance(entry, dict) or "id" not in entry:
+                if not isinstance(entry, dict) or row_identity(entry) is None:
                     merged[coll_name].append(entry)
                     continue
-                eid = entry["id"]
+                eid = row_identity(entry)
                 existing = sources[coll_name].get(eid)
                 if existing is not None and existing != mod.id:
                     conflicts.append((coll_name, eid, existing, mod.id))

@@ -321,12 +321,12 @@ class TestModuleDataMerging(unittest.TestCase):
 
     def test_merge_detects_conflict_with_core(self):
         core = self._make_core()
-        # Module tries to add an entry with id=1 which already exists in core
+        # Module tries to add an entry whose key already exists in core
         module_data = {
             "features": [
                 {
                     "id": 1,
-                    "key": "toughness_dupe",
+                    "key": "toughness",
                     "label": "Toughness Dupe",
                     "type": "perk",
                     "category": "general",
@@ -341,17 +341,17 @@ class TestModuleDataMerging(unittest.TestCase):
         self.assertEqual(len(conflicts), 1)
         coll, eid, src_a, src_b = conflicts[0]
         self.assertEqual(coll, "features")
-        self.assertEqual(eid, 1)
+        self.assertEqual(eid, "toughness")
         self.assertEqual(src_a, "core")
 
     def test_merge_detects_conflict_between_modules(self):
         core = self._make_core()
-        # Two modules both try to add id=100
+        # Two modules both try to add one key
         mod_a_data = {
             "features": [
                 {
                     "id": 100,
-                    "key": "mod_a_perk",
+                    "key": "shared_perk",
                     "label": "Mod A",
                     "type": "perk",
                     "category": "combat",
@@ -362,7 +362,7 @@ class TestModuleDataMerging(unittest.TestCase):
             "features": [
                 {
                     "id": 100,
-                    "key": "mod_b_perk",
+                    "key": "shared_perk",
                     "label": "Mod B",
                     "type": "perk",
                     "category": "combat",
@@ -383,7 +383,7 @@ class TestModuleDataMerging(unittest.TestCase):
         self.assertEqual(len(conflicts), 1)
         coll, eid, src_a, src_b = conflicts[0]
         self.assertEqual(coll, "features")
-        self.assertEqual(eid, 100)
+        self.assertEqual(eid, "shared_perk")
         self.assertEqual(src_a, "mod_a")
         self.assertEqual(src_b, "mod_b")
 
@@ -472,7 +472,7 @@ class TestNegativeCases(unittest.TestCase):
         self.assertEqual(ids, ["clashing_id", "clashing_id"])
 
     def test_merge_duplicate_ids_flagged(self):
-        """merge_data should flag duplicate IDs across modules."""
+        """merge_data should flag duplicate keys across modules."""
         core = {"features": []}
         mod_a = make_manifest({"id": "mod_a", "data": ["data/a.json"]})
         mod_b = make_manifest({"id": "mod_b", "data": ["data/b.json"]})
@@ -494,7 +494,7 @@ class TestNegativeCases(unittest.TestCase):
         merged, conflicts = merge_data(core, [ma, mb])
         self.assertEqual(len(conflicts), 1)
         self.assertEqual(conflicts[0][0], "features")
-        self.assertEqual(conflicts[0][1], 1)
+        self.assertEqual(conflicts[0][1], "shared")
 
     def test_module_data_with_missing_schema(self):
         """Module data file with $schema pointing to nonexistent schema should not crash
@@ -626,6 +626,23 @@ class TestEdgeCases(unittest.TestCase):
         tmpdir = Path(tempfile.mkdtemp())
         modules = load_all_modules(modules_dir=tmpdir)
         self.assertEqual(modules, [])
+
+
+class TestIdentityIsTheKey(unittest.TestCase):
+    def module(self, name, rows):
+        mod = ModuleInfo({"id": name, "version": "1.0.0", "description": "d"}, Path("."))
+        mod.data = {"features": rows}
+        return mod
+
+    def test_two_rows_with_one_key_conflict_without_any_id(self):
+        merged, conflicts = merge_data({"features": [{"key": "a"}]}, [self.module("m", [{"key": "a"}])])
+        self.assertEqual(conflicts, [("features", "a", "core", "m")])
+        self.assertEqual(len(merged["features"]), 1)
+
+    def test_a_new_key_is_added_without_any_id(self):
+        merged, conflicts = merge_data({"features": [{"key": "a"}]}, [self.module("m", [{"key": "b"}])])
+        self.assertEqual(conflicts, [])
+        self.assertEqual(len(merged["features"]), 2)
 
 
 if __name__ == "__main__":
