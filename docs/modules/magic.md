@@ -36,11 +36,71 @@ train.
 ### The nine color schools
 
 Each color is a normal point-buy skill (`<color>_magic`, 0–100) in
-`skills/core.json`. Functional parallels are commentary only:
+`skills/core.json`. A school is defined by the kind of change its magic makes; the element
+of that change is the other axis. The word in brackets is a functional parallel,
+commentary only. Spells are listed by level, from `spells/core.json`. "Not in the data
+yet" is what the skill's description promises and no effect or spell provides.
+[V 2026-11-09]
 
-`red` (offense) · `orange` (conjuration) · `yellow` (illusion) · `green`
-(restoration) · `blue` (alteration) · `indigo` (force/levitation) · `violet`
-(mysticism) · `white` (holy) · `black` (necromancy).
+**`red` (offense).** Harms at range with raw energy: fire, frost, shock, and force. Its
+variety is shape, from one bolt to a whole battlefield, and it has no utility spell.
+- Spells: Fire Bolt, Force Dart, Frost Lance, Fire Burst, Flame Shield, Chain Lightning,
+  Ice Storm, Meteor, Inferno.
+- Not in the data yet: poison spells.
+
+**`orange` (conjuration).** Makes what was not there, for as long as the spell lasts:
+spirit creatures, elementals, weapons of light, and barriers.
+- Spells: Summon Familiar, Bound Blade, Conjured Barrier, Conjured Blades, Bound Bow,
+  Summon Elemental, Conjured Legion.
+
+**`yellow` (illusion).** Changes what others see, hear, and believe: light and darkness of
+the senses, false friendship, invisibility, and pain that exists only in the mind.
+- Spells: Light, Blinding Flash, Blur, Mind Spike, Charm Person, Silence, Veil, Psychic
+  Scream, Mass Charm.
+- Not in the data yet: calm.
+
+**`green` (restoration).** Mends the mortal body: health, stamina, poison and its cures. It
+deals no damage.
+- Spells: Mend Wounds, Cure Poison, Vigor, Regeneration, Purity Ward, Greater Heal, Mass
+  Heal, Renewal.
+
+**`blue` (alteration).** Changes the physical state of a body or thing: how heavy, how
+hard, how fast, or what it is made of. Its damage is matter altered into acid; its
+strongest spell turns flesh to stone.
+- Spells: Feather Fall, Ward, Corrode, Slow, Stoneskin, Paralyze, Acid Rain, Petrify.
+- Not in the data yet: water-walking, transmutation.
+
+**`indigo` (force).** Pushes, blocks, and shakes with unseen force and sound, and works
+locks and mechanical traps from a distance.
+- Spells: Unlock, Disarm Trap, Thunderclap, Force Push, Force Wall, Greater Unlock, Greater
+  Disarm, Sonic Boom.
+- Not in the data yet: levitation.
+
+**`violet` (mysticism).** Works on magic itself and on what magic connects: unravels and
+absorbs spells, drains mana and will, moves objects by thought.
+- Spells: Telekinesis, Dispel Magic, Sap Will, Spell Absorption, Dispel Ward, Mana Drain,
+  Greater Dispel.
+- Not in the data yet: Mark and Recall (planned effects, M3-06), soul detection and storage.
+
+**`white` (holy).** Divine power that shelters allies and burns the unholy: radiant damage,
+blessings, wards, and the cure of disease. Opposed by black.
+- Spells: Holy Light, Blessing, Smite, Holy Ward, Cleanse, Sunburst, Divine Shield.
+- Not in the data yet: banishing undead and demons, divine-grade healing, sanctify.
+
+**`black` (necromancy).** Death and what it leaves behind: necrotic damage, curses, stolen
+strength, armor of bone, and corpses raised to fight. Opposed by white.
+- Spells: Drain Life, Curse, Bone Armor, Raise Thrall, Wither, Raise Horde, Death Grip.
+- Not in the data yet: soul-corruption.
+
+Where two schools come close, this is the line between them:
+
+| Both touch | Who does what |
+| --- | --- |
+| Force | Red strikes with it (Force Dart); indigo pushes and blocks with it. |
+| Summoning | Orange calls spirits and elementals; black raises the dead. |
+| Moving things | Indigo shoves with force; violet lifts by thought. |
+| Drains | Violet takes mana and will; black takes life and strength. |
+| Cures | Green cures poison; white cures disease. |
 
 ### The five phases
 
