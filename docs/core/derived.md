@@ -8,7 +8,7 @@ Derived stats are functions of the actor snapshot. They are not fields a module 
 
 ```
 attr_term = (attr * per_point) / per_point_divisor
-value = base + attr_term + level * (attr * per_level_attr + per_level_flat)
+value = base + attr_term + level * (attr * per_level_attr + per_level_flat) + growth[key]
 final = apply(modifiers, value)
 ```
 
@@ -18,11 +18,14 @@ Division is integer division. `per_point_divisor` defaults to 1. `attr` is the c
 | --- | --- | --- |
 | hp | END | `15 + END * 8 + level * 4` |
 | mp | INT | `INT * 8 + level * 2` |
+| sp | END | `10 + END * 5 + level * 2` [A] |
 | ap | AGI | `2 + floor(AGI / 3)` |
 | carry | STR | `25 + STR * 10` pounds |
 | initiative | PER | `PER` |
 
 These closed forms are the ones already printed under Derived statistics in `docs/modules/progression.md`. That table is now a copy. The JSON is the authority. The level-up bullets (`END × 8 + 4` and so on) are the grant procedure, not a second max. Stamina stays in that prose. XP, skill points, and perk cadence are data too: [progression.md](progression.md). This file does not own a second action economy.
+
+`growth` is what the actor has stored from its level-up luck rolls ([progression.md](progression.md#resource-growth)), per pool: `hp`, `mp`, `sp`. A pool's maximum depends on those rolls, so it is not a pure function of attributes and level. Missing growth reads as 0.
 
 ## Example
 
@@ -31,6 +34,7 @@ Level 1. No modifiers. END 5, INT 4, AGI 6, STR 7, PER 5.
 ```
 hp         = 15 + 5 * 8 + 1 * 4 = 59
 mp         = 4 * 8 + 1 * 2       = 34
+sp         = 10 + 5 * 5 + 1 * 2  = 37
 ap         = 2 + floor(6 / 3)    = 4
 carry      = 25 + 7 * 10         = 95 lb
 initiative = 5

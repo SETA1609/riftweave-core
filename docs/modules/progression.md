@@ -12,7 +12,7 @@ and the perk cadence are in [`ruleset/data/progression/core.json`](../../ruleset
 read as [`docs/core/progression.md`](../core/progression.md) and pinned by
 `ruleset/tests/vectors/progression.json`. The tables and formulas below are commentary on
 that data. If they disagree, the data wins. Resource growth is the derived function
-([`derived.md`](../core/derived.md)); stamina growth is still only described here.
+([`derived.md`](../core/derived.md)).
 
 ## Resolution — d100 roll-under
 
@@ -220,9 +220,10 @@ character receives the following base package:
   bought at a 2:1 ratio (2 points for +1 rating). Tagged skills are bought at a 1:1
   ratio (1 point for +1 rating). Same pool, double efficiency on focus skills.
 - **Resource growth** (added to maximums). Closed form is [`ruleset/data/derived/core.json`](../../ruleset/data/derived/core.json). These bullets are the grant, not a second formula.
-  - Hit Points: `END × 8 + 4`
-  - Mana (MP): `INT × 8 + 2`
-  - Stamina (SP, action-combat mode): `END × 5 + 2`
+  - Hit Points: `4 + hp_roll`
+  - Mana (MP): `2 + mp_roll`
+  - Stamina (SP, action-combat mode): `2 + sp_roll`
+  - Each roll is from 0 to `⌊LCK / 2⌋`, one per pool.
 - In **TTRPG / turn-based** mode: Action Point pool rules (maximum 10; the pool
   carries over from turn to turn but cannot exceed 10).
 
@@ -240,8 +241,8 @@ XP to reach level 2 is 900. No ingredient, core, or phase is required.
 
 1. Add 1 to level.
 2. Choose 1 perk whose prerequisites are met.
-3. Gain skill points `5 + INT * 2`.
-4. Add HP `END * 8 + 4` and MP `INT * 8 + 2` to the maximums.
+3. Gain skill points `5 + INT * 2 + luck_roll`.
+4. Add HP `4 + hp_roll`, MP `2 + mp_roll`, and stamina `2 + sp_roll` to the maximums.
 5. Stop. A breakthrough is optional and lives in `advancement.md`.
 
 
@@ -260,9 +261,10 @@ narrative downtime activity tied to the level-up.
    - Gain **1 perk** (chosen from `features/core.json` entries with `type: "perk"` that meet prerequisites).
    - Receive a **skill point pool**: `5 + INT × 2 + random(0…LCK)`.
    - Apply **resource growth** (added to current maximums):
-     - Hit Points: `+ (END × 8 + 4)`
-     - Mana (MP): `+ (INT × 8 + 2)`
-     - Stamina (SP, if using action-combat mode): `+ (END × 5 + 2)`
+     - Hit Points: `+ (4 + hp_roll)`
+     - Mana (MP): `+ (2 + mp_roll)`
+     - Stamina (SP, if using action-combat mode): `+ (2 + sp_roll)`
+     - Each roll is from 0 to `⌊LCK / 2⌋`, one per pool.
    - In **TTRPG / turn-based** mode: Update the Action Point pool (maximum 10; the pool carries over from turn to turn but cannot exceed 10).
 
 3. **Allocate Skill Points**
