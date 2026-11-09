@@ -130,6 +130,16 @@ Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-03, M5-07, M5-08, M5-10,
 - See: docs/core/integrity.md, docs/core/keys.md
 - Done when: a schema rejects a reference of the wrong category; only fields that really hold several kinds keep the general reference; an effect with `parameter_category` refuses another kind; `validate.py` and the tests pass.
 
+#### M5-29 The key is the only row identity
+- Status: review
+- Priority: medium
+- Needs: M5-27
+- Do: Rows carry both a numeric `id` and a `key`, yet references reject numeric ids and 14 of the 35 keyed tables have none. Make the key the identity: the module loader detects conflicts by key, nothing requires `id`, and the first half of the data drops it (monsters, spells, features, skills, equipment). M5-30 finishes the data and removes the field. Built on M5-27, which changes the same merge.
+- Keys: removes numeric `id` from rows **(breaking)**
+- Files: ~16 (docs/core/keys.md, docs/core/versioning.md, AGENTS.md, docs/modules/module-system.md, ruleset/schemas/, ruleset/scripts/module_loader.py, ruleset/scripts/validate.py, ruleset/data/)
+- See: docs/core/keys.md, docs/archive/review/findings-data-oriented-design.md (DOD-17)
+- Done when: module conflicts work with no ids; no schema requires `id`; the listed data has none and is otherwise unchanged; `validate.py` and the tests pass.
+
 #### M5-25 Game state is a snapshot and a log
 - Status: review
 - Priority: high
