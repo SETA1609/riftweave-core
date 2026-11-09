@@ -46,7 +46,6 @@ yet" is what the skill's description promises and no effect or spell provides.
 variety is shape, from one bolt to a whole battlefield, and it has no utility spell.
 - Spells: Fire Bolt, Force Dart, Frost Lance, Fire Burst, Flame Shield, Chain Lightning,
   Ice Storm, Meteor, Inferno.
-- Not in the data yet: poison spells.
 
 **`orange` (conjuration).** Makes what was not there, for as long as the spell lasts:
 spirit creatures, elementals, weapons of light, and barriers.

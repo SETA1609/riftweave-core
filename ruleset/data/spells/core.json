@@ -23,7 +23,7 @@
       "id": 2,
       "key": "force_dart",
       "label": "Force Dart",
-      "description": "Loose glowing darts of force that strike unerringly.",
+      "description": "A needle of raw force leaps from your fingertip to its target.",
       "color": "red",
       "level": 2,
       "effects": [
@@ -105,7 +105,7 @@
       "id": 6,
       "key": "fire_burst",
       "label": "Fire Burst",
-      "description": "A streak of flame erupts into a fiery sphere at a chosen point.",
+      "description": "Flames burst outward from a spot you choose, scorching all around it.",
       "color": "red",
       "level": 6,
       "effects": [
