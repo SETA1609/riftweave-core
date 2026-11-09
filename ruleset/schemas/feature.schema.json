@@ -48,10 +48,10 @@
                 "properties": {
                   "id": {
                     "oneOf": [
-                      { "$ref": "schema.json#/definitions/namespacedRef" },
+                      { "$ref": "schema.json#/definitions/skillRef" },
                       {
                         "type": "array",
-                        "items": { "$ref": "schema.json#/definitions/namespacedRef" },
+                        "items": { "$ref": "schema.json#/definitions/skillRef" },
                         "minItems": 1,
                         "description": "Array of acceptable skill refs. The prerequisite is met if the character has the required min in any one of them."
                       }
@@ -77,7 +77,7 @@
             "perks": {
               "type": "array",
               "description": "Prerequisite perk refs (namespaced core:feature/<key>) that must already be owned",
-              "items": { "$ref": "schema.json#/definitions/namespacedRef" }
+              "items": { "$ref": "schema.json#/definitions/featureRef" }
             },
             "other": { "type": "string" }
           },

@@ -57,7 +57,7 @@
       "type": "object",
       "description": "What a called-shot hit does beyond damage. The caller rolls the check and applies the condition.",
       "properties": {
-        "condition": { "$ref": "schema.json#/definitions/namespacedRef" },
+        "condition": { "$ref": "schema.json#/definitions/conditionRef" },
         "event": { "type": "string", "enum": ["disarm"] },
         "check": { "$ref": "schema.json#/definitions/ability", "description": "The defender avoids the rider on a successful check of this attribute." },
         "turns": { "type": "integer", "minimum": 1 }

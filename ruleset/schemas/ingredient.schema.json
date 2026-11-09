@@ -24,7 +24,7 @@
         "effects": {
           "type": "array",
           "description": "Effect references this ingredient can impart (must have 'ingredient' in their channels). For normal reagents, magnitude/duration are derived at brew time from Alchemy skill. For spirit cores and essences, effects are typically marker effects (e.g. essence_fire) used to identify the core's nature during refinement or breakthrough resolution. Use namespaced format core:effect/<key>.",
-          "items": { "$ref": "schema.json#/definitions/namespacedRef" },
+          "items": { "$ref": "schema.json#/definitions/effectRef" },
           "minItems": 1,
           "uniqueItems": true
         },

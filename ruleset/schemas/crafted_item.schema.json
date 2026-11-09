@@ -21,8 +21,8 @@
         "label": { "type": "string", "description": "Human-readable display name." },
         "description": { "type": "string" },
         "source": { "$ref": "schema.json#/definitions/sourceRef" },
-        "base_key": { "$ref": "schema.json#/definitions/namespacedRef", "description": "Key of the base equipment template (from equipment/weapons.json or armor.json)." },
-        "material_key": { "$ref": "schema.json#/definitions/namespacedRef", "description": "Key of the material (from materials/core.json)." },
+        "base_key": { "$ref": "schema.json#/definitions/itemRef", "description": "Key of the base equipment template (from equipment/weapons.json or armor.json)." },
+        "material_key": { "$ref": "schema.json#/definitions/materialRef", "description": "Key of the material (from materials/core.json)." },
         "phase": {
           "$ref": "schema.json#/definitions/phase",
           "description": "Effective element of the crafted item. Defaults to the material's phase. Overwritten by engraving_jewel's phase when present."
@@ -34,7 +34,7 @@
           "type": "object",
           "description": "Optional jewel engraved into the item. Overwrites the item's effective phase with the jewel's phase. In v1, this is the entire engraving mechanic — no additional effects.",
           "properties": {
-            "gem_key": { "$ref": "schema.json#/definitions/namespacedRef", "description": "Key of the gem in data/gems/core.json." },
+            "gem_key": { "$ref": "schema.json#/definitions/gemRef", "description": "Key of the gem in data/gems/core.json." },
             "phase": { "$ref": "schema.json#/definitions/phase", "description": "Gem's phase, which becomes the item's effective phase." }
           },
           "required": ["gem_key", "phase"],
@@ -52,7 +52,7 @@
             "type": "object",
             "properties": {
               "effect": {
-                "$ref": "schema.json#/definitions/namespacedRef",
+                "$ref": "schema.json#/definitions/effectRef",
                 "description": "Effect reference: namespaced format core:effect/<key>."
               },
               "magnitude": { "type": "number", "description": "Effect strength." },

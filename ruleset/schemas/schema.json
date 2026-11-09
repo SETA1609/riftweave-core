@@ -99,7 +99,7 @@
       "description": "An instance of an effect drawn from the effect registry (data/effects), with its applied magnitude and duration. Shared by spells, consumables, ingredients, and enchantments. Use 'parameter' for generic effects (e.g. fortify_skill with a specific skill key, fortify_attribute with an ability, restore_resource with 'health'/'stamina'/'mana', resist with 'fire'/'poison'/'undead'/'magic'/'physical', cure with a condition, summon with a type, allergy with a material key).",
       "properties": {
         "effect": {
-          "$ref": "schema.json#/definitions/namespacedRef",
+          "$ref": "schema.json#/definitions/effectRef",
           "description": "Effect reference: namespaced format core:effect/<key> (e.g. core:effect/damage_fire)"
         },
         "magnitude": {
@@ -133,7 +133,7 @@
           "description": "For generic parameterized effects (fortify_skill, fortify_attribute, restore_resource, resist, cure, summon, phobia, allergy, etc.), specifies the subject. Use namespaced key (core:category/<key>) when referencing another collection (e.g. core:skill/<key> for fortify_skill), or vocabulary (e.g. 'health', 'fire', 'all', ability codes, creature categories)."
         },
         "origin": {
-          "$ref": "schema.json#/definitions/namespacedRef",
+          "$ref": "schema.json#/definitions/originRef",
           "description": "The origin its modifiers carry (core:origin/<key>), when it is not the default for the row's category: a divine spell, holy water. docs/core/modifier.md#origin."
         },
         "durationType": {
@@ -211,7 +211,7 @@
           "type": "string"
         },
         "origin": {
-          "$ref": "schema.json#/definitions/namespacedRef",
+          "$ref": "schema.json#/definitions/originRef",
           "description": "The kind of source: core:origin/<key> (ruleset/data/origins). Its policy decides whether modifiers of this origin on one target and op stack (add) or only the strongest bonus and penalty count (highest). Omitted: stacks by source alone. docs/core/modifier.md#origin."
         },
         "stack": {
@@ -235,6 +235,81 @@
       "type": "string",
       "pattern": "^(core:[a-z_]+/[a-z0-9_]+|module:[a-z0-9_]+(/[a-z0-9_]+)+)$",
       "description": "A cross-reference to another entry: core:<singular-category>/<key>, or module:<module>/... for module content (docs/core/keys.md). A bare string is not a reference."
+    },
+    "backgroundRef": {
+      "type": "string",
+      "pattern": "^(core:background/[a-z0-9_]+|module:[a-z0-9_]+/background/[a-z0-9_]+)$",
+      "description": "A reference to a background row (docs/core/integrity.md)."
+    },
+    "checkRef": {
+      "type": "string",
+      "pattern": "^(core:check/[a-z0-9_]+|module:[a-z0-9_]+/check/[a-z0-9_]+)$",
+      "description": "A reference to a check row (docs/core/integrity.md)."
+    },
+    "conditionRef": {
+      "type": "string",
+      "pattern": "^(core:condition/[a-z0-9_]+|module:[a-z0-9_]+/condition/[a-z0-9_]+)$",
+      "description": "A reference to a condition row (docs/core/integrity.md)."
+    },
+    "craftedItemRef": {
+      "type": "string",
+      "pattern": "^(core:crafted_item/[a-z0-9_]+|module:[a-z0-9_]+/crafted_item/[a-z0-9_]+)$",
+      "description": "A reference to a crafted_item row (docs/core/integrity.md)."
+    },
+    "effectRef": {
+      "type": "string",
+      "pattern": "^(core:effect/[a-z0-9_]+|module:[a-z0-9_]+/effect/[a-z0-9_]+)$",
+      "description": "A reference to a effect row (docs/core/integrity.md)."
+    },
+    "featureRef": {
+      "type": "string",
+      "pattern": "^(core:feature/[a-z0-9_]+|module:[a-z0-9_]+/feature/[a-z0-9_]+)$",
+      "description": "A reference to a feature row (docs/core/integrity.md)."
+    },
+    "gemRef": {
+      "type": "string",
+      "pattern": "^(core:gem/[a-z0-9_]+|module:[a-z0-9_]+/gem/[a-z0-9_]+)$",
+      "description": "A reference to a gem row (docs/core/integrity.md)."
+    },
+    "ingredientRef": {
+      "type": "string",
+      "pattern": "^(core:ingredient/[a-z0-9_]+|module:[a-z0-9_]+/ingredient/[a-z0-9_]+)$",
+      "description": "A reference to a ingredient row (docs/core/integrity.md)."
+    },
+    "materialRef": {
+      "type": "string",
+      "pattern": "^(core:material/[a-z0-9_]+|module:[a-z0-9_]+/material/[a-z0-9_]+)$",
+      "description": "A reference to a material row (docs/core/integrity.md)."
+    },
+    "monsterRef": {
+      "type": "string",
+      "pattern": "^(core:monster/[a-z0-9_]+|module:[a-z0-9_]+/monster/[a-z0-9_]+)$",
+      "description": "A reference to a monster row (docs/core/integrity.md)."
+    },
+    "originRef": {
+      "type": "string",
+      "pattern": "^(core:origin/[a-z0-9_]+|module:[a-z0-9_]+/origin/[a-z0-9_]+)$",
+      "description": "A reference to a origin row (docs/core/integrity.md)."
+    },
+    "raceRef": {
+      "type": "string",
+      "pattern": "^(core:race/[a-z0-9_]+|module:[a-z0-9_]+/race/[a-z0-9_]+)$",
+      "description": "A reference to a race row (docs/core/integrity.md)."
+    },
+    "skillRef": {
+      "type": "string",
+      "pattern": "^(core:skill/[a-z0-9_]+|module:[a-z0-9_]+/skill/[a-z0-9_]+)$",
+      "description": "A reference to a skill row (docs/core/integrity.md)."
+    },
+    "spellRef": {
+      "type": "string",
+      "pattern": "^(core:spell/[a-z0-9_]+|module:[a-z0-9_]+/spell/[a-z0-9_]+)$",
+      "description": "A reference to a spell row (docs/core/integrity.md)."
+    },
+    "itemRef": {
+      "type": "string",
+      "pattern": "^(core:(weapon|armor|consumable|accessory|gear)/[a-z0-9_]+|module:[a-z0-9_]+/(weapon|armor|consumable|accessory|gear)/[a-z0-9_]+)$",
+      "description": "A reference to an equipment row of any category (docs/core/integrity.md)."
     },
     "formulaNode": {
       "description": "A formula tree node (docs/core/formula.md): a leaf (lit, attr, var) or an op over args. Integer only.",

@@ -89,6 +89,42 @@ class TestSchemasAcceptNoBareStringAsReference(unittest.TestCase):
             self.assertFalse(pattern.match(bad), bad)
 
 
+class TestReferencesAreTyped(unittest.TestCase):
+    def definitions(self):
+        return json.loads((SCHEMA_DIR / "schema.json").read_text())["definitions"]
+
+    def test_a_typed_reference_rejects_another_category(self):
+        import re
+        pattern = re.compile(self.definitions()["monsterRef"]["pattern"])
+        for good in ("core:monster/skeleton", "module:m/monster/y"):
+            self.assertTrue(pattern.match(good), good)
+        for bad in ("core:weapon/dagger", "skeleton", "module:m/weapon/y"):
+            self.assertFalse(pattern.match(bad), bad)
+
+    def test_only_a_recipe_input_keeps_the_general_reference(self):
+        general = []
+        for path in sorted(SCHEMA_DIR.glob("*.schema.json")):
+            lines = path.read_text().split("\n")
+            general += [path.name for line in lines if "definitions/namespacedRef" in line]
+        self.assertEqual(general, ["recipe.schema.json"])
+
+    def test_the_real_parameters_match_their_category(self):
+        data_files = list(validate.collect_data_files())
+        modules = list(validate.collect_module_data_files())
+        self.assertEqual(validate.check_effect_parameters(data_files, modules), [])
+
+    def test_a_parameter_of_the_wrong_kind_is_reported(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            effects = write_json(root / "effects" / "core.json", {"effects": [effect("fortify_skill", parameter_category="skill")]})
+            good = {"effect": "core:effect/fortify_skill", "parameter": "core:skill/stealth"}
+            bare = {"effect": "core:effect/fortify_skill", "parameter": "stealth"}
+            other = write_json(root / "misc" / "x.json", {"things": [good, bare]})
+            errors = validate.check_effect_parameters([effects, other])
+            self.assertEqual(len(errors), 1)
+            self.assertIn("stealth", errors[0])
+
+
 class TestEveryReferenceResolves(unittest.TestCase):
     def test_the_real_data_has_no_dangling_reference(self):
         data_files = list(validate.collect_data_files())

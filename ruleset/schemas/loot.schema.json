@@ -20,7 +20,7 @@
       "items": {
         "type": "object",
         "properties": {
-          "monster": { "$ref": "schema.json#/definitions/namespacedRef" },
+          "monster": { "$ref": "schema.json#/definitions/monsterRef" },
           "loot": { "type": "array", "minItems": 1, "items": { "$ref": "#/definitions/lootRow" } }
         },
         "required": ["monster", "loot"],
@@ -38,10 +38,10 @@
         "table": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "Key of a table in this file." },
         "rolls": { "type": "integer", "minimum": 1, "description": "How many times this monster rolls the table. Default: the table's rolls." },
         "shift": { "type": "integer", "minimum": 1, "maximum": 99, "description": "Added to every roll on the table, capped at 100. Entries go from least to most valuable, so a shift skips the bottom results." },
-        "item": { "$ref": "schema.json#/definitions/namespacedRef" },
+        "item": { "$ref": "schema.json#/definitions/itemRef" },
         "quantity": { "type": "integer", "minimum": 1, "description": "Default 1." },
         "chance": { "type": "integer", "minimum": 1, "maximum": 99, "description": "d100 roll-under gate: the row yields only if a roll is at most this. Omitted: the row always yields and takes no chance roll." },
-        "material": { "$ref": "schema.json#/definitions/namespacedRef", "description": "core:material/<key>: the material of every weapon and armor this row yields that is found in it (its default_materials); another item drops in its first default. The landed material's valueFactor sets value_percent (docs/core/loot.md#what-lands-on-an-item)." },
+        "material": { "$ref": "schema.json#/definitions/materialRef", "description": "core:material/<key>: the material of every weapon and armor this row yields that is found in it (its default_materials); another item drops in its first default. The landed material's valueFactor sets value_percent (docs/core/loot.md#what-lands-on-an-item)." },
         "size": { "type": "string", "enum": ["undersized", "normal", "oversized"], "default": "normal", "description": "The size of every weapon this row yields: dice one rung down or up, the size's attack, and its value_percent (combat/dice_ladder.json). Other items ignore it." }
       },
       "oneOf": [
@@ -82,7 +82,7 @@
           "required": ["quantity", "unit"],
           "additionalProperties": false
         },
-        "item": { "$ref": "schema.json#/definitions/namespacedRef" },
+        "item": { "$ref": "schema.json#/definitions/itemRef" },
         "quantity": { "type": "integer", "minimum": 1 }
       },
       "required": ["min", "max", "kind"],

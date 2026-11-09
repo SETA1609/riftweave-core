@@ -21,7 +21,7 @@
         "label": { "type": "string", "description": "Human-readable display name." },
         "description": { "type": "string" },
         "source": { "$ref": "schema.json#/definitions/sourceRef" },
-        "skill": { "$ref": "schema.json#/definitions/namespacedRef", "description": "Governing skill key (e.g. 'blacksmithing', 'crafting') for the check." },
+        "skill": { "$ref": "schema.json#/definitions/skillRef", "description": "Governing skill key (e.g. 'blacksmithing', 'crafting') for the check." },
         "category": {
           "type": "string",
           "enum": ["weapon", "armor", "accessory", "consumable"],
@@ -47,7 +47,7 @@
           "type": "object",
           "description": "The resulting crafted_item key. In future, this will be the recipe's product with any quality/grade modifications.",
           "properties": {
-            "crafted_item_key": { "$ref": "schema.json#/definitions/namespacedRef", "description": "Key of the crafted_item this recipe produces." },
+            "crafted_item_key": { "$ref": "schema.json#/definitions/craftedItemRef", "description": "Key of the crafted_item this recipe produces." },
             "quantity": { "type": "integer", "minimum": 1, "default": 1 }
           },
           "required": ["crafted_item_key"],
