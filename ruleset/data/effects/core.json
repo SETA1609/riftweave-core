@@ -314,7 +314,7 @@
     {
       "key": "summon",
       "label": "Summon",
-      "description": "Conjures or animates a creature/servant to fight for or assist the caster. Use 'parameter' to specify the type or category (e.g. 'undead'). Magnitude is typically a count or power rating; duration controls persistence. Generalizes former summon_* effects.",
+      "description": "Conjures or animates a creature/servant to fight for or assist the caster. Use 'parameter' for the group it calls (core:summon/<key>). Magnitude is typically a count or power rating; duration controls persistence. Generalizes former summon_* effects.",
       "category": "conjure",
       "polarity": "harmful",
       "magnitudeUnit": "count",
