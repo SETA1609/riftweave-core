@@ -18,10 +18,9 @@ engraving with a gem can later **overwrite** that element.
 | Field | Meaning |
 | --- | --- |
 | `phase` | The material's element. The crafted item carries it (until engraving overwrites it) and it resolves through the five-phase cycles in [`data/wuxing`](../../ruleset/data/wuxing/core.json). |
-| `modifiers.attack` | Bonus to the item's attack/damage rating (weapons). |
-| `modifiers.defense` | Bonus to the item's defense/armor rating (armor, shields). |
-| `modifiers.effectMagnitude` | Magic-conduction bonus: a fractional boost to the magnitude of effects enchanted onto the item (e.g. `0.15` = +15%). |
-| `appliesTo` | Which item kinds the material can make: `weapon`, `armor`, `accessory`. |
+| `weapon.attack` | Bonus to the item's attack/damage rating (weapons). |
+| `armor.defense` | Bonus to the item's defense/armor rating (armor, shields). |
+| `ingredient.effectMagnitude` | Magic-conduction bonus: a fractional boost to the magnitude of effects enchanted onto the item (e.g. `0.15` = +15%). |
 | `tier` | Rarity/quality tier (aligns with the `data/tiers` ladder). |
 | `weightFactor` / `valueFactor` | Multipliers on the item's base weight and value (1.0 = neutral). |
 

@@ -89,3 +89,13 @@ Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-03, M5-07, M5-08, M5-10,
 - Files: ~6 (tools/fetch-docs/, tools/devops/pyproject.toml, AGENTS.md, CONTRIBUTING.md)
 - See: https://github.com/SETA1609/devops_tools (fetch-docs)
 - Done when: a cited source downloads into `cache/docs/` through `devops-tools fetch-docs`; no local fetch-docs code remains; the docs name the new command.
+
+#### M5-23 Drop the old material columns
+- Status: review
+- Priority: medium
+- Needs: —
+- Do: Materials still carry two columns from before SET-19 that the schema calls "not the authority": `appliesTo` and `modifiers`. Nothing reads either. `modifiers` repeats the `weapon`, `armor`, and `ingredient` blocks exactly in all 11 rows that have it, and `default_materials` on each base now says what an item is found and sold in, while a recipe does not refuse a material. Granite, the newest row, has neither. Remove both from `materials/core.json` and from `material.schema.json`. Module docs still treat them as live and contradict `docs/core/materials.md`: `armor.md` says a material without `"armor"` in `appliesTo` cannot be used, and `armor.md`, `weapons.md`, `materials.md`, `magic-crafting.md`, and the `crafted_item` schema descriptions read `material.modifiers.*`. Point them at `material.armor.defense`, `material.weapon.attack`, and `material.ingredient.effectMagnitude`. Removing a field breaks consumers, so mark it **(breaking)** in the changelog.
+- Keys: removes `appliesTo` and `modifiers` from materials
+- Files: ~9 (ruleset/data/materials/core.json, ruleset/schemas/material.schema.json, ruleset/schemas/crafted_item.schema.json, docs/core/materials.md, docs/modules/materials.md, docs/modules/armor.md, docs/modules/weapons.md, docs/modules/crafting.md, docs/modules/magic-crafting.md)
+- See: docs/core/materials.md, docs/archive/review/findings-data-oriented-design.md (it recommended this)
+- Done when: no row or schema has `appliesTo` or `modifiers` on a material; the `weapon`, `armor`, and `ingredient` values are unchanged; no doc outside `docs/archive/` and the frozen logs names either column as a material field; `validate.py` and the tests pass; the changelog fragment marks the removal **(breaking)**.
