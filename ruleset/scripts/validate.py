@@ -8,6 +8,7 @@ are also validated. Module data files share the same schema store as core data.
 import json
 import os
 import re
+from functools import partial
 import sys
 import warnings
 from pathlib import Path
@@ -1087,6 +1088,24 @@ def _monster_templates():
     return _MONSTER_TEMPLATES
 
 
+def compose_row(base, overrides, layers=(), entry=None):
+    """One row from a base, layers, and overrides (docs/core/composition.md)."""
+    merged = json.loads(json.dumps(base))
+    for apply_layer in layers:
+        apply_layer(merged)
+    for field, value in overrides.items():
+        if field == "attributes" and isinstance(value, dict) and isinstance(merged.get(field), dict):
+            merged[field] = {**merged[field], **value}
+        else:
+            merged[field] = _merge_field(merged.get(field), value)
+    if entry is not None:
+        merged["id"] = entry.get("id")
+        merged["key"] = entry.get("key")
+        if entry.get("source"):
+            merged["source"] = entry["source"]
+    return merged
+
+
 def _apply_monster_template(merged, template):
     """Apply one template (docs/modules/monsters.md#templates) to a merged entry in place."""
     merged["phase"] = template["phase"]
@@ -1191,25 +1210,14 @@ def _resolve_monster_bases(data, errors):
                 merged["hitPoints"] = computed_hp
 
         templates = _monster_templates()
+        layers = []
         for template_key in entry.get("templates", []) or []:
             if template_key not in templates:
                 errors.append(f"monster '{key}': template '{template_key}' not found in monsters/templates.json")
                 return None
-            _apply_monster_template(merged, templates[template_key])
+            layers.append(partial(_apply_monster_template, template=templates[template_key]))
 
-        # Merge override fields on top (individual attribute overrides merge
-        # into the computed set rather than replacing the whole object)
-        for k, v in overrides.items():
-            if k == "attributes" and isinstance(v, dict) and isinstance(merged.get("attributes"), dict):
-                merged["attributes"] = {**merged["attributes"], **v}
-            else:
-                merged[k] = _merge_field(merged.get(k), v)
-
-        # Carry over id and key from the entry wrapper
-        merged["id"] = entry.get("id")
-        merged["key"] = key
-        if entry.get("source"):
-            merged["source"] = entry["source"]
+        merged = compose_row(merged, overrides, layers=layers, entry=entry)
         resolved[key] = (merged, type_data)
         return resolved[key]
 
@@ -1267,12 +1275,7 @@ def _resolve_equipment_bases(data, errors, fp):
             )
             continue
 
-        base_data = bases[base_key]
-        merged = dict(base_data)
-
-
-        for k, v in overrides.items():
-            merged[k] = _merge_field(merged.get(k), v)
+        merged = compose_row(bases[base_key], overrides, entry=entry)
         # default_materials names what a base (or a row's overrides) is found and sold in
         # (docs/core/loot.md#what-lands-on-an-item); loot reads it, the item schema does not.
         merged.pop("default_materials", None)
@@ -1284,11 +1287,6 @@ def _resolve_equipment_bases(data, errors, fp):
                 f"equipment[{i}]: enchantment_slots must be an integer, got {type(es).__name__}"
             )
 
-        # Carry over id and key from the entry wrapper
-        merged["id"] = entry.get("id")
-        merged["key"] = entry.get("key")
-        if entry.get("source"):
-            merged["source"] = entry["source"]
         # Replace the entry in-place for validation
         equipment[i] = merged
 
