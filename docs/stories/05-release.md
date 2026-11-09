@@ -100,6 +100,16 @@ Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-03, M5-07, M5-08, M5-10,
 - See: docs/core/materials.md, docs/archive/review/findings-data-oriented-design.md (it recommended this)
 - Done when: no row or schema has `appliesTo` or `modifiers` on a material; the `weapon`, `armor`, and `ingredient` values are unchanged; no doc outside `docs/archive/` and the frozen logs names either column as a material field; `validate.py` and the tests pass; the changelog fragment marks the removal **(breaking)**.
 
+#### M5-25 Game state is a snapshot and a log
+- Status: review
+- Priority: high
+- Needs: —
+- Do: The ruleset is static, but a running game changes on every command, and nothing says what that state's model is. Before APP-04 builds sessions, define it: a session is the ruleset version, a starting actor, an ordered log of commands with their inputs, and the current actor as a cached result. Rolls are already inputs, so a log replays exactly, which gives save files, replays, reproducible bug reports, and vectors from one mechanism.
+- Keys: none; the session schema is APP-04's
+- Files: ~3 (docs/core/state.md, docs/stories/07-backend.md, docs/stories/05-release.md)
+- See: docs/core/contract.md, docs/core/resolution.md, docs/stories/07-backend.md (APP-04)
+- Done when: `docs/core/state.md` defines the session and its rules, and APP-04 builds on it.
+
 #### M5-24 Define the data model
 - Status: review
 - Priority: medium
