@@ -60,7 +60,8 @@
           "propertyNames": { "$ref": "schema.json#/definitions/ability" },
           "additionalProperties": { "type": "integer", "minimum": 1, "maximum": 10 }
         },
-        "hitPoints": { "type": "integer", "minimum": 1, "description": "Authored baseline HP; engines may derive from END + level." },
+        "hitPoints": { "type": "integer", "minimum": 1, "description": "Optional authored HP; it replaces the computed value (docs/core/actor-sheet.md)." },
+        "skills": { "type": "object", "description": "Only the skills this monster fights or casts with; any other reads as a starting value (docs/core/actor-sheet.md).", "propertyNames": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" }, "additionalProperties": { "type": "integer", "minimum": 0, "maximum": 100 } },
         "abilities": {
           "type": "array",
           "description": "The monster's attacks and innate powers, drawn from the shared effect registry (data/effects). A monster typically wields effects of its own phase, but need not.",
@@ -129,7 +130,8 @@
           "propertyNames": { "$ref": "schema.json#/definitions/ability" },
           "additionalProperties": { "type": "integer", "minimum": 1, "maximum": 10 }
         },
-        "hitPoints": { "type": "integer", "minimum": 1, "description": "Authored baseline HP." },
+        "hitPoints": { "type": "integer", "minimum": 1, "description": "Optional authored HP; it replaces the computed value (docs/core/actor-sheet.md)." },
+        "skills": { "type": "object", "description": "Only the skills this monster fights or casts with; any other reads as a starting value (docs/core/actor-sheet.md).", "propertyNames": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" }, "additionalProperties": { "type": "integer", "minimum": 0, "maximum": 100 } },
         "abilities": {
           "type": "array",
           "description": "The monster's attacks and innate powers.",
