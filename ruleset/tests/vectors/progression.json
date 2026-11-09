@@ -69,9 +69,17 @@
       }
     },
     "luck_roll": 0,
+    "hp_roll": 0,
+    "mp_roll": 0,
+    "sp_roll": 0,
     "expect": {
       "skill_points": 15,
-      "perks": 1
+      "perks": 1,
+      "gain": {
+        "hp": 4,
+        "mp": 2,
+        "sp": 2
+      }
     }
   },
   {
@@ -84,9 +92,17 @@
       }
     },
     "luck_roll": 4,
+    "hp_roll": 0,
+    "mp_roll": 0,
+    "sp_roll": 0,
     "expect": {
       "skill_points": 19,
-      "perks": 1
+      "perks": 1,
+      "gain": {
+        "hp": 4,
+        "mp": 2,
+        "sp": 2
+      }
     }
   },
   {
@@ -99,6 +115,9 @@
       }
     },
     "luck_roll": 5,
+    "hp_roll": 0,
+    "mp_roll": 0,
+    "sp_roll": 0,
     "expect": {
       "error": "luck_roll out of range"
     }
@@ -173,6 +192,166 @@
       "ranks": 0,
       "spent": 0,
       "left": 5
+    }
+  },
+  {
+    "name": "pool growth: LCK 10, the best rolls of 5 each",
+    "op": "level_up",
+    "actor": {
+      "attributes": {
+        "int": 5,
+        "lck": 10
+      }
+    },
+    "luck_roll": 10,
+    "hp_roll": 5,
+    "mp_roll": 5,
+    "sp_roll": 5,
+    "expect": {
+      "skill_points": 25,
+      "perks": 1,
+      "gain": {
+        "hp": 9,
+        "mp": 7,
+        "sp": 7
+      }
+    }
+  },
+  {
+    "name": "pool growth: one roll for each pool, each its own",
+    "op": "level_up",
+    "actor": {
+      "attributes": {
+        "int": 5,
+        "lck": 10
+      }
+    },
+    "luck_roll": 0,
+    "hp_roll": 1,
+    "mp_roll": 2,
+    "sp_roll": 3,
+    "expect": {
+      "skill_points": 15,
+      "perks": 1,
+      "gain": {
+        "hp": 5,
+        "mp": 4,
+        "sp": 5
+      }
+    }
+  },
+  {
+    "name": "pool growth: LCK 5 floors to a highest roll of 2",
+    "op": "level_up",
+    "actor": {
+      "attributes": {
+        "int": 5,
+        "lck": 5
+      }
+    },
+    "luck_roll": 0,
+    "hp_roll": 2,
+    "mp_roll": 2,
+    "sp_roll": 2,
+    "expect": {
+      "skill_points": 15,
+      "perks": 1,
+      "gain": {
+        "hp": 6,
+        "mp": 4,
+        "sp": 4
+      }
+    }
+  },
+  {
+    "name": "pool growth: LCK 5 refuses an mp_roll of 3",
+    "op": "level_up",
+    "actor": {
+      "attributes": {
+        "int": 5,
+        "lck": 5
+      }
+    },
+    "luck_roll": 0,
+    "hp_roll": 2,
+    "mp_roll": 3,
+    "sp_roll": 2,
+    "expect": {
+      "error": "mp_roll out of range"
+    }
+  },
+  {
+    "name": "pool growth: LCK 10 refuses an hp_roll of 6",
+    "op": "level_up",
+    "actor": {
+      "attributes": {
+        "int": 5,
+        "lck": 10
+      }
+    },
+    "luck_roll": 0,
+    "hp_roll": 6,
+    "mp_roll": 0,
+    "sp_roll": 0,
+    "expect": {
+      "error": "hp_roll out of range"
+    }
+  },
+  {
+    "name": "pool growth: LCK 1 caps every roll at 0",
+    "op": "level_up",
+    "actor": {
+      "attributes": {
+        "int": 5,
+        "lck": 1
+      }
+    },
+    "luck_roll": 1,
+    "hp_roll": 0,
+    "mp_roll": 0,
+    "sp_roll": 0,
+    "expect": {
+      "skill_points": 16,
+      "perks": 1,
+      "gain": {
+        "hp": 4,
+        "mp": 2,
+        "sp": 2
+      }
+    }
+  },
+  {
+    "name": "pool growth: LCK 1 refuses an sp_roll of 1",
+    "op": "level_up",
+    "actor": {
+      "attributes": {
+        "int": 5,
+        "lck": 1
+      }
+    },
+    "luck_roll": 0,
+    "hp_roll": 0,
+    "mp_roll": 0,
+    "sp_roll": 1,
+    "expect": {
+      "error": "sp_roll out of range"
+    }
+  },
+  {
+    "name": "pool growth: a negative roll is refused",
+    "op": "level_up",
+    "actor": {
+      "attributes": {
+        "int": 5,
+        "lck": 10
+      }
+    },
+    "luck_roll": 0,
+    "hp_roll": -1,
+    "mp_roll": 0,
+    "sp_roll": 0,
+    "expect": {
+      "error": "hp_roll out of range"
     }
   }
 ]
