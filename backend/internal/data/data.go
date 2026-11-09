@@ -207,6 +207,13 @@ func (economy *Economy) ToCopper(cost Cost) (int64, error) {
 	return 0, fmt.Errorf("unit %q is not a denomination", cost.Unit)
 }
 
+// Skill is what the rules need of one row of skills/core.json.
+type Skill struct {
+	Key               string        `json:"key"`
+	AssociatedAbility string        `json:"associatedAbility"`
+	Ability           actor.Ability `json:"-"`
+}
+
 // Progression is progression/core.json.
 type Progression struct {
 	StartLevel        int64           `json:"start_level"`
@@ -218,8 +225,9 @@ type Progression struct {
 		Minimum          int64  `json:"min"`
 		MaximumAttribute string `json:"max_attr"`
 	} `json:"luck_roll"`
-	LuckMaximumAbility actor.Ability `json:"-"`
-	PerksPerLevel      int64         `json:"perks_per_level"`
+	LuckMaximumAbility actor.Ability   `json:"-"`
+	SkillStart         formula.Program `json:"skill_start"`
+	PerksPerLevel      int64           `json:"perks_per_level"`
 	SkillCost          struct {
 		Normal int64 `json:"normal"`
 		Tag    int64 `json:"tag"`
@@ -437,6 +445,7 @@ type Size struct {
 type Ruleset struct {
 	Resolution  Resolution
 	Derived     Table[DerivedStat]
+	Skills      Table[Skill]
 	Actions     Actions
 	Wuxing      Wuxing
 	Rest        Table[Occasion]
@@ -551,6 +560,15 @@ func Load(fileSystem fs.FS) (*Ruleset, error) {
 	if economyLoaded && economy.Barter.MarginDivisor <= 0 {
 		loader.fail("economy/core.json: barter margin_divisor must be positive")
 	}
+
+	var skills struct{ Skills []Skill }
+	if loader.read("skills/core.json", &skills) {
+		for index := range skills.Skills {
+			var skill *Skill = &skills.Skills[index]
+			skill.Ability = loader.ability("skills/core.json", skill.AssociatedAbility)
+		}
+	}
+	ruleset.Skills = newTable(skills.Skills, func(skill *Skill) string { return skill.Key })
 
 	var progression struct{ Progression Progression }
 	if loader.read("progression/core.json", &progression) {

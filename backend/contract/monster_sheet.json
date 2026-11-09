@@ -1,0 +1,74 @@
+{
+  "$schema": "./command.schema.json",
+  "name": "monster_sheet",
+  "summary": "A monster's derived stats and the skills asked for, by the same rules as a player.",
+  "doc": "docs/core/actor-sheet.md",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "monster": {
+        "type": "object",
+        "properties": {
+          "attributes": {
+            "$ref": "common.json#/definitions/attributes"
+          },
+          "skills": {
+            "$ref": "common.json#/definitions/skills"
+          },
+          "level": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "hitPoints": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      },
+      "read_skills": {
+        "type": "array",
+        "items": {
+          "$ref": "common.json#/definitions/key"
+        }
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "monster"
+    ]
+  },
+  "result_schema": {
+    "type": "object",
+    "properties": {
+      "hp": {
+        "type": "integer"
+      },
+      "mp": {
+        "type": "integer"
+      },
+      "ap": {
+        "type": "integer"
+      },
+      "carry": {
+        "type": "integer"
+      },
+      "initiative": {
+        "type": "integer"
+      },
+      "skills": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "integer"
+        }
+      }
+    },
+    "required": [
+      "hp",
+      "mp",
+      "ap",
+      "carry",
+      "initiative",
+      "skills"
+    ]
+  }
+}

@@ -84,3 +84,52 @@ func RunActions(ruleset *data.Ruleset, input ActionsInput) (ActionsResult, error
 	}
 	return result, nil
 }
+
+// MonsterRow is what the sheet reads of one composed monster row.
+type MonsterRow struct {
+	Attributes actor.Attributes `json:"attributes"`
+	Skills     map[string]int64 `json:"skills"`
+	Level      *int64           `json:"level"`
+	HitPoints  *int64           `json:"hitPoints"`
+}
+
+// MonsterSheetInput is the `monster_sheet` command's input.
+type MonsterSheetInput struct {
+	Monster    MonsterRow `json:"monster"`
+	ReadSkills []string   `json:"read_skills"`
+}
+
+// RunMonsterSheet is the `monster_sheet` command (docs/core/actor-sheet.md): a monster's stats
+// and skills by the rules a player uses, with authored hit points replacing the computed value.
+func RunMonsterSheet(ruleset *data.Ruleset, input MonsterSheetInput) (map[string]any, error) {
+	var row *MonsterRow = &input.Monster
+	values, err := Compute(ruleset, actor.Actor{Attributes: row.Attributes, Level: row.Level}, nil)
+	if err != nil {
+		return nil, err
+	}
+	var result map[string]any = make(map[string]any, len(values)+1)
+	for index, stat := range ruleset.Derived.Rows() {
+		result[stat.Key] = values[index]
+	}
+	if row.HitPoints != nil {
+		result["hp"] = *row.HitPoints
+	}
+	var skills map[string]int64 = make(map[string]int64, len(input.ReadSkills))
+	for _, key := range input.ReadSkills {
+		if written, ok := row.Skills[key]; ok {
+			skills[key] = written
+			continue
+		}
+		skill, err := ruleset.Skills.Require("skill", key)
+		if err != nil {
+			return nil, err
+		}
+		start, err := ruleset.Progression.SkillStart.Evaluate(&row.Attributes, formula.Variable{Name: "attribute", Value: row.Attributes.Get(skill.Ability)})
+		if err != nil {
+			return nil, err
+		}
+		skills[key] = start
+	}
+	result["skills"] = skills
+	return result, nil
+}
