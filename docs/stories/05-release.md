@@ -100,6 +100,16 @@ Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-03, M5-07, M5-08, M5-10,
 - See: docs/core/materials.md, docs/archive/review/findings-data-oriented-design.md (it recommended this)
 - Done when: no row or schema has `appliesTo` or `modifiers` on a material; the `weapon`, `armor`, and `ingredient` values are unchanged; no doc outside `docs/archive/` and the frozen logs names either column as a material field; `validate.py` and the tests pass; the changelog fragment marks the removal **(breaking)**.
 
+#### M5-26 References are typed by category
+- Status: todo
+- Priority: high
+- Needs: —
+- Do: Every reference field accepts any `core:` row, so a field that needs a monster would take a weapon, and an effect's free `parameter` let summons name a plain word. Give `schema.json` one typed reference per category and use it on every field. Add `parameter_category` on an effect, for the effects whose `parameter` is a reference, and fail validation when a use names anything else.
+- Keys: `monsterRef`, `effectRef`, and the rest in `schema.json`; `itemRef`; `parameter_category` on effects
+- Files: ~18 (ruleset/schemas/, ruleset/data/effects/core.json, ruleset/data/equipment/accessories.json, ruleset/scripts/validate.py, ruleset/scripts/test_integrity.py, docs/core/integrity.md)
+- See: docs/core/integrity.md, docs/core/keys.md
+- Done when: a schema rejects a reference of the wrong category; only fields that really hold several kinds keep the general reference; an effect with `parameter_category` refuses another kind; `validate.py` and the tests pass.
+
 #### M5-25 Game state is a snapshot and a log
 - Status: review
 - Priority: high
