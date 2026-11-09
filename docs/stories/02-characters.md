@@ -33,7 +33,7 @@ Done: M2-01, M2-02, M2-03, M2-04, M2-05, M2-06 ([done.md](done.md#m2-characters)
 - Done when: every `drink` row states `toxicity`; vectors cover a drink raising toxicity, decay over time, the limit at END 1 and END 10, a drink over the limit applying the condition, a long rest clearing toxicity, and a dish adding none; the Python reference and Go pass them.
 
 #### M2-08 Luck growth of HP, mana, and stamina
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: M1-03
 - Do: Each level-up after the first adds a luck roll to each resource pool, on top of its fixed growth: HP `4 + hp_roll`, mana `2 + mp_roll`, stamina `2 + sp_roll`, each roll from 0 to `⌊LCK / 2⌋`, inclusive, one per pool. The rolls are inputs to the `level_up` op, as `luck_roll` is for skill points (`docs/core/progression.md`), and the result returns each pool's gain. A pool's maximum then depends on its rolls, so it is no longer a pure function of attributes and level: the actor stores its summed `growth` (`hp`, `mp`, `sp`), and the derived stat is `base + attr term + level × per_level_flat + growth`. Growth 0 gives today's values (mana `8 × INT + 2 × level`: 10 to 82 at level 1, 68 to 140 at level 30), and the best rolls add `29 × 5` = 145 at level 30 with LCK 10 (mana 285 at INT 10). Stamina becomes a derived row (`sp`, END, proposal `10 + END × 5 + level × 2` [A]), since the stamina potion and `restore_resource` already name it. Fix the docs that disagree with the data: `progression.md` grants `INT × 8 + 2` mana and `END × 8 + 4` HP per level, where the data adds only the flat part; its step list drops the skill points' luck roll that its table has.
