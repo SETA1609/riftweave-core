@@ -28,11 +28,13 @@ Python packages on your machine, use the dev toolchain, which mounts your checko
 1. [README.md](../../README.md): what the project is and how it is laid out.
 2. [ROADMAP.md](../../ROADMAP.md): what is in scope and what "finished" means.
 3. [docs/core/contract.md](../core/contract.md): the one rule every system follows.
-4. [docs/modules/progression.md](../modules/progression.md): the game itself: classless,
+4. [docs/core/data-model.md](../core/data-model.md): how the information is shaped, with the
+   [theory](../theory/data-models.md) behind it.
+5. [docs/modules/progression.md](../modules/progression.md): the game itself: classless,
    d100 roll-under, eight attributes, point-buy skills, and perks.
-5. [CONTRIBUTING.md](../../CONTRIBUTING.md): the rules for changes, the workflow, and
+6. [CONTRIBUTING.md](../../CONTRIBUTING.md): the rules for changes, the workflow, and
    [which document wins](../../CONTRIBUTING.md#which-document-wins).
-6. [AGENTS.md](../../AGENTS.md): the short version of all of this. Its section on how
+7. [AGENTS.md](../../AGENTS.md): the short version of all of this. Its section on how
    validation works is worth reading before you edit a schema.
 
 ## 3. Pick an issue

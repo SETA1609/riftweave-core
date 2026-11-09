@@ -1,0 +1,53 @@
+# Data model
+
+What shape Riftweave's information has. For what a data model is, the common types, and why
+this one was chosen, see [the theory page](../theory/data-models.md). This page links to the
+document that owns each rule and does not repeat it.
+
+## The type
+
+Riftweave is **a relational model stored as JSON documents**, loaded by the backend into flat
+in-memory tables. It is a hybrid, and each layer has its own type. [V 2026-11-10]
+
+| Layer | Type | What that means here |
+| --- | --- | --- |
+| Logical | Relational | Tables of rows, unique keys, references that act as foreign keys, one fact in one place |
+| Storage | Document | JSON files under `ruleset/data/`, with some nested lists, such as a spell's `effects` |
+| Runtime | Flat tables | `backend/internal/data`: dense slices of rows with a key index, built once at load |
+
+## The parts
+
+| Part | Rule | Owner |
+| --- | --- | --- |
+| Tables of rows | A file wraps named lists of rows. A row's identity is its `key`. | [keys.md](keys.md) |
+| Schemas | Every data file names its JSON Schema, and unknown fields are rejected. | `ruleset/schemas/` |
+| References | `core:<category>/<key>`. A numeric id is not a reference. | [keys.md](keys.md), [integrity.md](integrity.md) |
+| Shared pools | An effect is one row; spells, consumables, and ingredients point at it. | `ruleset/data/effects/core.json` |
+| Composition | A row is a base, plus templates, plus overrides, merged into one flat row. | [monsters.md](../modules/monsters.md), [overrides.md](overrides.md) |
+| Stored and computed | Store the primary facts. Derived stats are functions of them. | [contract.md](contract.md), [derived.md](derived.md) |
+| One way to change a value | A modifier, with one stacking rule. | [contract.md](contract.md), [modifier.md](modifier.md) |
+| Formulas as data | Math is a tree in JSON, compiled by the backend to a flat program. | [formula.md](formula.md) |
+| Rolls as inputs | The rules never roll. A roll is an input, so a result can be repeated. | [resolution.md](resolution.md) |
+| Vectors | An input and its exact expected result. An implementation that disagrees is wrong. | [vectors.md](vectors.md) |
+| Modules | A module adds rows, and overrides a core row only by listing its key. | [overrides.md](overrides.md) |
+
+## What it is not
+
+- **Not entity-component (ECS).** A monster is a whole row, not an id with attachable
+  components. `monsters.md` describes ECS as a possible later path. [V 2026-11-10]
+- **Not object inheritance.** Base, templates, and overrides merge into one flat row. A
+  derived monster cannot change its creature type. [V 2026-11-10]
+- **Not a database.** There is no query engine or transaction. The files are the source of
+  truth, and git is their history. [V 2026-11-10]
+
+## Known exceptions
+
+Places where the data does not yet follow the model:
+
+- **Authored monster HP.** Monster rows store `hitPoints` instead of computing it. [V 2026-11-10]
+- **Row identity is uneven.** Of the 35 tables whose rows have a `key`, 21 also give every row
+  a numeric `id`, and 14 have none, effects among them. [V 2026-11-10]
+- **JSON Schema cannot check references.** `validate.py` and tests do that on top of it, and a
+  free-text field such as `parameter` is only checked where a test says so. [V 2026-11-10]
+- **Module overrides.** `module_loader.merge_data()` does not read `overrides` yet.
+  [V 2026-11-10]
