@@ -81,7 +81,7 @@ Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-03, M5-07, M5-08, M5-10,
 - Done when: validate, the unit tests, the vectors, and the Go tests pass with the module and without it; without it no core rule reads a phase; with it the wuxing vectors pass under Python and Go from the module's data; the change is marked breaking in the changelog; `module-system.md` walks through Wuxing step by step.
 
 #### M5-22 Move fetch-docs to devops-tools
-- Status: todo
+- Status: review
 - Priority: low
 - Needs: M5-03
 - Do: devops-tools ships `devops-tools fetch-docs` (url, github, list), the same downloader as `tools/fetch-docs/`, into the gitignored docs cache, pinned to a commit. Set `docs-cache-directory = "cache/docs"` in `[tool.devops-tools]`, remove `tools/fetch-docs/` and its tests, and point AGENTS, CLAUDE, and CONTRIBUTING at the new command. Split from M5-03.
