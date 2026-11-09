@@ -28,12 +28,13 @@
         },
         "skill_discount": {
           "type": "object",
-          "description": "What skill takes off a spell's mana cost: min(skill / divisor, cap) (docs/core/casting.md#paid-cost).",
+          "description": "What skill takes off a spell's mana cost: min(skill / divisor, cap), and the least a cast can cost (docs/core/casting.md#paid-cost).",
           "properties": {
             "divisor": { "type": "number", "exclusiveMinimum": 0 },
-            "cap": { "type": "number", "minimum": 0, "maximum": 1 }
+            "cap": { "type": "number", "minimum": 0, "maximum": 1 },
+            "minimum_paid": { "type": "integer", "minimum": 0 }
           },
-          "required": ["divisor", "cap"],
+          "required": ["divisor", "cap", "minimum_paid"],
           "additionalProperties": false
         },
         "spell_cost": {

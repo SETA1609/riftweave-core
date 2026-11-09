@@ -44,7 +44,7 @@ What the caster pays depends on skill and modifiers, never on level:
 ```
 discount  = min( <color>_magic / divisor, cap )      divisor 200, cap 0.45
 base      = ceil( cost.mana × (1 − discount) )
-paid      = max( 1, base with the modifiers on spell_cost applied )
+paid      = max( minimum_paid, base with the modifiers on spell_cost applied )   minimum_paid 1
 ```
 
 - The discount reads the caster's own skill, before the armor penalty and the modifiers on the skill. [A]

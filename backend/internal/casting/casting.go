@@ -149,7 +149,7 @@ func paidCost(ruleset *data.Ruleset, authored int64, skill int64, modifiers []mo
 	if err != nil {
 		return 0, err
 	}
-	return max(1, value), nil
+	return max(rule.MinimumPaid, value), nil
 }
 
 // castCheck is step 5: the modifiers on the spell's skill, plus the armor penalty as one more

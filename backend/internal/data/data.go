@@ -360,8 +360,9 @@ type Casting struct {
 
 // SkillDiscount is what skill takes off a spell's mana cost: min(skill / Divisor, Cap).
 type SkillDiscount struct {
-	Divisor float64 `json:"divisor"`
-	Cap     float64 `json:"cap"`
+	Divisor     float64 `json:"divisor"`
+	Cap         float64 `json:"cap"`
+	MinimumPaid int64   `json:"minimum_paid"`
 }
 
 // Condition is one row of conditions/core.json.

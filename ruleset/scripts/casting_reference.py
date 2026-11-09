@@ -46,7 +46,7 @@ def paid_cost(authored, skill, modifiers, rules):
     discount = min(skill / rules["skill_discount"]["divisor"], rules["skill_discount"]["cap"])
     base = math.ceil(round(authored * (1 - discount), 6))
     own = [m for m in modifiers if m["target"] == "spell_cost"]
-    return max(1, apply_modifiers(base, own))
+    return max(rules["skill_discount"]["minimum_paid"], apply_modifiers(base, own))
 
 
 def spell_row(spells, key):
