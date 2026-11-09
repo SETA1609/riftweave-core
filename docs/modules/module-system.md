@@ -1,6 +1,6 @@
 # Formal Module System
 
-**Branch Status (ft/modules-foundation):** Foundation complete — module directory structure, manifest schema, Python loader with discover/validate/merge, conflict detection, and **validator integration**. The core validator (`validate.py`) now discovers and validates module data automatically. 36 unit tests passing.
+**Status:** Implemented — module directory structure, manifest schema, Python loader with discover/validate/merge, conflict detection, and **validator integration**. The core validator (`validate.py`) discovers and validates module data automatically.
 
 ---
 
@@ -61,7 +61,7 @@ ruleset/modules/my-custom-content/
                       ▼
 ┌─────────────────────────────────────────────────────────────┐
 │  1. DISCOVER                                                │
-│     validate.py scanns modules/ for subdirs with            │
+│     validate.py scans modules/  for subdirs with            │
 │     manifest.json. Skip hidden dirs (.name).                │
 └─────────────────────┬───────────────────────────────────────┘
                       │
@@ -107,8 +107,8 @@ ruleset/modules/my-custom-content/
 
 When a consuming engine loads modules via `module_loader.merge_data()`, the following rules apply:
 
-### Rule 1: Extend Only (No Core Override)
-Modules may **add** new entries to core collections. They may **not** override existing core entries. If a module tries to add an entry with an `id` that already exists in the same core collection, a conflict is flagged.
+### Rule 1: Add, or Override by Listing the Key
+Modules may **add** new entries to core collections. A module overrides a core entry only by listing its key in the manifest's `overrides` ([overrides.md](../core/overrides.md), which wins here); a duplicate with no override flag still fails. `merge_data()` does not read `overrides` yet, so it flags every duplicate as a conflict. [V 2026-11-09]
 
 ### Rule 2: No Inter-Module Override
 If two modules both contribute an entry with the same `id` in the same collection, a conflict is flagged. The first module loaded "wins" in terms of which entry appears in the merged data, but both are flagged.
@@ -120,7 +120,7 @@ The `merge_data()` function returns a list of conflict tuples. The caller decide
 
 | Source A | Source B | Outcome |
 |----------|----------|---------|
-| core (id=1) | module (id=1) | **Conflict** — module cannot override core |
+| core (id=1) | module (id=1) | **Conflict**, unless the module lists the key in `overrides` |
 | module_a (id=100) | module_b (id=100) | **Conflict** — duplicate across modules |
 | core (id=1) | core (id=1) | Not possible (single source) |
 | module (id=500) | — (new) | **OK** — appended |

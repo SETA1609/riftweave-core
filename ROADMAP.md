@@ -61,12 +61,12 @@ Foundations are done. Milestone M0 below is complete and archived in
 | Milestone | State |
 | --- | --- |
 | M0 Foundations | Done: kernel contract, resolution, derived stats, action budget, modifiers, conditions, formula AST, golden vectors (resolution, derived HP), module overrides, one namespaced key format (SET-6 to SET-25) |
-| M1 Kernel closed | Not started |
-| M2 Characters | Not started |
-| M3 Combat and magic playable | Not started |
-| M4 World | Not started |
-| M5 Release 1.0 | Not started |
-| APP Reference backend | Not started |
+| M1 Kernel closed | Done |
+| M2 Characters | In progress |
+| M3 Combat and magic playable | In progress |
+| M4 World | In progress |
+| M5 Release 1.0 | In progress |
+| APP Reference backend | In progress |
 
 ### Story order
 
@@ -80,14 +80,14 @@ is the earliest wave of its open issues; stories in the same wave can run in par
 | 0 | M2 | ready | — | 3 |
 | 0 | M3 | first (1), ready | — | 5 |
 | 0 | M4 | ready | — | 1 |
-| 0 | M5 | ready, critical | APP, M3 | 8 |
+| 0 | M5 | ready, critical | APP, M3 | 7 |
 | 5 | POST | blocked, critical | M2, M5 | 8 |
 | 0 | APP | ready, critical | — | 6 |
 
 <!-- roadmap-order end -->
 
-Content today, for scale: 23 features, 7 spells, 11 monsters, 3 recipes, 3 accessories,
-7 consumables, 44 skills, 12 races, 8 backgrounds.
+Content today, for scale: 110 features, 70 spells, 48 monsters, 3 recipes, 13 accessories,
+22 consumables, 44 skills, 12 races, 8 backgrounds.
 
 ## M1 Kernel closed
 

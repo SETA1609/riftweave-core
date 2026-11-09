@@ -17,43 +17,36 @@ and emit modifiers or events. It may not call another system's procedure.
 
 ```
 docs/
-  core/
+  onboarding/         How to get started, and the AI rules
+  core/               Kernel rules. Wins over docs/modules/ on a conflict.
     contract.md       Actor snapshot, modifier, event. The only shared sentence.
-  modules/            Documentation for optional, composable extensions
-    README.md
-    progression.md    Core system: attributes, skills, perks, dice, magic
-    crafting.md
-    alchemy.md
-    magic-crafting.md
+  modules/            Core systems in detail, and optional modules
+  stories/            Milestones and the issues to work on
+  decisions/          One decision file per issue
+  backend/            The reference backend and its CLI
+  combat/             Worked combat examples
+  archive/            Retired plans and the July 2026 review
 ruleset/
-  schemas/            JSON Schema definitions (draft-07)
-    schema.json       Shared types & definitions (incl. color + appliedEffect)
-    ability.schema.json
-    race.schema.json
-    skill.schema.json
-    effect.schema.json    Shared effect registry (the pool)
-    ingredient.schema.json
-    equipment.schema.json
-    spell.schema.json
-    feature.schema.json   Perks, traits, and racial features
-  data/               Game data files (JSON)
-    abilities/core.json   Eight attributes (STR PER END INT WIL AGI CHA LCK)
-    races/core.json
-    skills/core.json
-    effects/core.json     Shared effect pool (magic + alchemy)
-    ingredients/core.json Alchemy reagents (effects from the pool)
-    equipment/weapons.json
-    equipment/armor.json
-    equipment/consumables.json  Potions/poisons/coatings (effects from the pool)
-    spells/core.json      Color-school spells (effect compositions)
-    features/core.json    Perks and traits
+  schemas/            JSON Schema (draft-07)
+    schema.json       Shared vocabulary (ability, color, phase, appliedEffect, ...)
+  data/               Core game data (JSON), one directory per collection
+  modules/            Optional modules, each with a manifest (factions, example-module)
+  tests/vectors/      Golden vectors every implementation must pass
   scripts/
-    validate.py       Schema validation script
+    validate.py       Schema, reference, and integrity checks
+    *_reference.py    Python reference for each system
+    test_*.py         Unit tests and the vector runner
   requirements.txt    Python dependencies
+backend/              Reference backend in Go; it adds no rules
+changes/              Changelog fragments, one per issue
+scripts/              Dev toolchain wrappers (validate, test, shell, agent)
+tools/                The devops-tools pin and fetch-docs
 ```
 
-See [docs/modules/README.md](docs/modules/README.md) for the current thinking on
-extensibility and planned optional modules (crafting, alchemy, magic crafting, etc.).
+See [docs/modules/README.md](docs/modules/README.md) for how modules work and which are
+planned (crafting, alchemy, magic crafting, etc.). Scope and milestones are in
+[ROADMAP.md](ROADMAP.md). New contributors start at
+[docs/onboarding/](docs/onboarding/README.md).
 Modules must speak the kernel contract. They must not call another system's procedure.
 
 ## Validation
@@ -81,7 +74,8 @@ The dev toolchain mounts this checkout instead. It needs [uv](https://docs.astra
 `./scripts/shell.sh` opens a shell in that image. `./scripts/agent.sh` runs the agent image (Claude Code and uv, with its own login). See [tools/devops/README.md](tools/devops/README.md).
 
 CI runs automatically via `.github/workflows/validate-ruleset.yml` on every push
-or PR that touches the `ruleset/` directory.
+or PR that touches `ruleset/`, `docs/core/`, `docs/stories/`, `docs/backend/`, `backend/`,
+`.github/`, or the `Dockerfile`.
 
 ## License
 

@@ -24,7 +24,7 @@ The numbers that turn experience into levels, skill points, and perks. They live
 2. **Level-up.** Each level gained, `start_level + 1` to `max_level`, grants one skill-point pool and `perks_per_level` perks. A new character also gets a pool at `start_level`; with the cap at 30 that is 30 pools in a career. [A]
 3. **The pool.** `skill_points` is a formula tree ([formula.md](formula.md)). The one random term is the `luck_roll`, an input, so a vector pins it. The reference does not roll.
 4. **Spending.** One rating point costs `skill_cost.normal` points, or `skill_cost.tag` if the skill is tagged. A skill never goes past `skill_cap`: points that would buy rating above the cap are not spent. Points that cannot buy a whole rating point (one left over on a normal skill) stay in the pool. [A]
-5. **Tag ratio.** The ratio is 2:1 in favour of tag skills, as in `docs/modules/progression.md`. `CLAUDE.md` words it as "+2 per point instead of +1", which is the same ratio on a different scale; the data uses cost, so a point is a point. [V 2026-11-02, read both]
+5. **Tag ratio.** The ratio is 2:1 in favour of tag skills, as in `docs/modules/progression.md`. `AGENTS.md` words it as "+2 per point instead of +1", which is the same ratio on a different scale; the data uses cost, so a point is a point. [V 2026-11-02, read both]
 
 ## Not in the data
 

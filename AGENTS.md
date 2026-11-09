@@ -89,7 +89,7 @@ This is the most important thing to understand before editing schemas or data:
 - **Namespace rules:**
   - `core:` = Base / official content that ships with the ruleset.
   - Modules can use their own namespace (e.g. `module:examplemod/weapon/frost_sword`).
-  - Modules **can override** core entries by using the same `core:category/key` (this is intentional for module flexibility).
+  - A module overrides a core entry only by listing its key in the manifest's `overrides`; a duplicate key without that fails (`docs/core/overrides.md`).
   - We use **singular** category names: `weapon`, `armor`, `effect`, `spell`, `background`, `trait`, `condition`, `consumable`, `recipe`, `ingredient`, `material`, `gem`, `skill`, `feature`, `crafted_item`.
 - Use the optional `source: { source, page }` field (defined in `schema.json`) for provenance instead of inventing per-file metadata.
 
@@ -119,7 +119,7 @@ This is the most important thing to understand before editing schemas or data:
 
 There is **no** class schema or data — the system is deliberately classless.
 
-Cross-file references (effect IDs, skill IDs, perk prerequisites, `parentRace`, `color` → `<color>_magic` skill, etc.) are **by string ID only** and are not validated by JSON Schema. However, `validate.py` now validates most namespaced key references (`core:category/key`) at runtime, including:
+Cross-file references (effect IDs, skill IDs, perk prerequisites, `parentRace`, `color` → `<color>_magic` skill, etc.) are strings, which JSON Schema cannot check, so `validate.py` fails on any `core:category/key` that does not resolve (`docs/core/integrity.md`). The per-collection checks include:
 
 - Crafted item `base_key`, `material_key`, `engraving_jewel.gem_key`
 - Recipe skill, inputs, and output `crafted_item_key`
@@ -137,11 +137,13 @@ Renaming an ID in a data file may cause the validator to report broken reference
 
 ## Current Data Collections & Schemas
 
-Each collection has a matching `*.schema.json`:
+Each data file names its schema in `$schema`:
 
-- `abilities`, `skills`, `effects`, `features`, `spells`, `races`, `monsters`
-- `equipment` (split: `weapons.json`, `armor.json`, `consumables.json`, `accessories.json`)
-- `ingredients`, `materials`, `gems`, `tiers`
+- `abilities`, `skills`, `effects`, `features`, `spells`, `races`, `monsters`, `backgrounds`, `conditions`
+- `equipment` (split: `weapons.json`, `armor.json`, `consumables.json`, `accessories.json`, `gear.json`)
+- `ingredients`, `materials`, `gems`, `tiers`, `crafting` (recipes and crafted items)
+- kernel and world tables: `actions`, `casting`, `checks`, `combat`, `derived`, `formulas`, `progression`, `resolution`, `rest`, `economy`, `loot`, `hazards`, `balance`
+- `examples` (worked characters and the play loop)
 - `wuxing` (the interaction matrix — single source of truth for cycles)
 - `origins` (the kinds of modifier source and their stacking policy, `highest` or `add`)
 
@@ -153,11 +155,11 @@ Equipment (weapons, armors, accessories) and monsters use a **Base + Override** 
 
 `features` is the **single** perk table. Do not create separate trait/class/race tables.
 
-## Modules (Planned / Aspirational)
+## Modules
 
-`docs/modules/` contains design documents for optional, composable extensions (crafting, alchemy, magic-crafting, etc.). 
+`ruleset/modules/` holds optional modules, each a directory with a `manifest.json` (`factions` and `example-module` today); `validate.py` checks them along with core data.
 
-Today the ruleset is monolithic under `ruleset/data/`. The module docs are **design specs** — write data against the contracts described there before implementing new top-level collections or extension points.
+`docs/modules/` documents core systems and modules. `docs/core/` wins over it on a conflict ([which document wins](CONTRIBUTING.md#which-document-wins)). For modules not built yet (crafting, alchemy, magic crafting, and the rest), its documents are **design specs** — write data against the contracts described there before implementing new top-level collections or extension points.
 
 See `docs/modules/README.md` for the philosophy and current state.
 
@@ -184,16 +186,21 @@ Dual-licensed (see `LICENSING.md`):
 
 Contributions are accepted under the same terms (inbound = outbound).
 
+## AI use
+
+AI is welcome as a tool, and a human always reviews before committing ([AI rules](docs/onboarding/ai.md)). An agent commits only when a person asks, after that person has reviewed the change.
+
 ## Personal / Local Rules
 
-`CLAUDE.md` and `.claude/` are listed in `.gitignore`. This is intentional so individuals can maintain personal overrides without committing them. The canonical, shareable rules for the project live in this `AGENTS.md`.
+`.claude/` and any personal `CLAUDE.md` are listed in `.gitignore`, so individuals can keep personal overrides without committing them. The repo's rules for every agent live in this `AGENTS.md`. Claude Code reads it by default, but a `CLAUDE.md` or `CLAUDE.local.md` in the checkout replaces it, so a personal file should start with `@AGENTS.md`.
 
 ## References
 
 - `README.md` — high-level project overview
+- `docs/onboarding/` — how to get started, and the AI rules
 - `ROADMAP.md` and `docs/stories/` — scope, milestones, and the issues to work on
 - `CONTRIBUTING.md` — contribution process and rules for changes
-- `docs/modules/` — detailed design for core systems and planned modules (start here before adding new mechanics)
+- `docs/core/` — kernel rules; `docs/modules/` — core systems in detail and modules (start here before adding new mechanics)
 - `ruleset/schemas/schema.json` — shared definitions
 - `ruleset/scripts/validate.py` — the validator implementation (read if debugging resolution issues)
 - `tools/devops/README.md` — the devops-tools pin: toolchain and agent containers, devcontainer

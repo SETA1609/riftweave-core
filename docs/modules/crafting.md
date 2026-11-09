@@ -45,8 +45,8 @@ The following was added in this branch:
 | `schemas/recipe.schema.json` | Stub schema for crafting recipes (data only, no resolution implemented) |
 | `data/crafting/crafted_items.json` | 6 example items demonstrating phase inheritance, jewel overwrite, enchantments, and coatings |
 | `data/crafting/basic_recipes.json` | 3 recipe stubs showing the input/output structure for future resolution |
-| `scripts/crafting_reference.py` | Reference resolver demonstrating phase propagation, Wuxing interaction, and permanent vs temporary tracking |
-| `scripts/validate.py` | Crafting key-reference validation: recipe inputs/outputs and crafted_item base_key/material_key/gem_key are checked against their respective collections |
+| `ruleset/scripts/crafting_reference.py` | Reference resolver demonstrating phase propagation, Wuxing interaction, and permanent vs temporary tracking |
+| `ruleset/scripts/validate.py` | Crafting key-reference validation: recipe inputs/outputs and crafted_item base_key/material_key/gem_key are checked against their respective collections |
 
 ### Composition Model
 
@@ -76,7 +76,7 @@ Base Template  +  Material  +  [Jewel]  +  [Enchantments]  +  [Coatings]
 
 Key rule: **phase defaults to material's phase; engraving jewel overwrites it entirely.** This is the full engraving mechanic for v1.
 
-See `scripts/crafting_reference.py --verbose` for a runnable demonstration.
+See `ruleset/scripts/crafting_reference.py --verbose` for a runnable demonstration.
 
 ## Integration Points
 
