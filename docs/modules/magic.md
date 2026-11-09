@@ -182,6 +182,23 @@ the colors, the channels, and this table.
 Every spell, authored or crafted, costs what §5's formula gives for its effects. A spell's `level`
 (1–30) is its power band, which dispel reads; it does not set the cost.
 
+### Summon groups
+
+A summon spell may exist only once what it summons is data. A `summon` effect's `parameter`
+is a group, `core:summon/<key>`, from `summons/core.json`. A group lists its `variants` as
+`core:monster/<key>` refs, and the caster picks one when casting [A]. `magnitude` is how many
+appear. The creatures are ordinary monster rows ([monsters.md](./monsters.md#summoned-creatures)).
+
+| Group | Spells | Variants |
+| --- | --- | --- |
+| `familiar` | Summon Familiar | owl, cat, raven |
+| `elemental` | Summon Elemental, Conjured Legion | fire, ice, storm, acid, venom |
+| `undead` | Raise Thrall, Raise Horde | skeleton, zombie |
+
+A stronger spell summons more for longer; it does not summon a stronger creature. The
+creature's stats are its row's, at the row's level [A]. `test_spells.py` fails on a summon
+whose group or variant does not exist. [V 2026-11-09]
+
 ---
 
 ## 4. Casting resolution (d100 roll-under)
