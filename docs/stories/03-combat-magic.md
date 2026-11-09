@@ -61,3 +61,13 @@ Done: M3-01, M3-03, M3-04 ([done.md](done.md#m3-combat-and-magic-playable))
 - Files: ~7 (docs/core/casting.md, docs/modules/magic.md, ruleset/data/casting/core.json, ruleset/schemas/casting.schema.json, ruleset/scripts/casting_reference.py, backend/internal/casting/, ruleset/tests/vectors/casting.json)
 - See: docs/modules/magic.md#the-casters-side
 - Done when: vectors show the same spell costing less at a higher skill, a perk on `spell_cost` lowering it further, the cap at 0.45, the minimum of 1, and two casters of different levels and the same skill paying the same; Python and Go pass them.
+
+#### M3-09 Bound weapons have a material, perks, and enchants
+- Status: todo
+- Priority: medium
+- Needs: M3-02, M3-06
+- Do: `bound_weapon` names only the weapon it copies, so it gets no stats from a material. A bound weapon starts with the stats of `core:material/iron` (tier 2, attack +3), written once as data and not on each spell. Perks swap in another base material and add enchants; decide how a perk names a material, since a modifier holds a number. The material gives stats only: a bound weapon overrides the material's phase and has none, so it sits out the five-phase cycles, and it deals magic, non-elemental damage in place of its weapon's physical type. Proposal: `force`, the existing "raw magical energy" type [A]; decide whether its `bypasses_armor` and `unerring` tags are too strong on a weapon attack, or whether a new type is needed. A coating or an elemental enchantment overrides the damage type and gives the weapon that element's phase. The same rules apply to every bound weapon, including Bound Bow.
+- Keys: the default material for `bound_weapon`; bound weapon perks in `features/core.json`; the damage type rule
+- Files: ~8 (docs/modules/magic.md, docs/modules/weapons.md, ruleset/schemas/effect.schema.json, ruleset/data/effects/core.json, ruleset/data/features/core.json, ruleset/tests/vectors/casting.json, ruleset/scripts/casting_reference.py, backend/internal/casting/)
+- See: ruleset/schemas/crafted_item.schema.json (base, material, enchantments), ruleset/data/combat/damage_types.json, docs/modules/weapons.md
+- Done when: vectors cover a bound weapon with iron's stats and no phase, its magic damage type, a perk changing its material, an added enchant, and a coating and an elemental enchantment each overriding the damage type and phase; Python and Go pass them.
