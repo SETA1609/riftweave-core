@@ -2,7 +2,6 @@
   "$schema": "../../schemas/race.schema.json",
   "races": [
     {
-      "id": 1,
       "key": "human",
       "label": "Human",
       "description": "The most common and adaptable people, found in every corner of the world.",
@@ -28,7 +27,6 @@
       ]
     },
     {
-      "id": 2,
       "key": "elf",
       "label": "Elf",
       "description": "Graceful, long-lived people with a deep connection to nature and magic. An abstract ancestry: play one of its subraces, not the generic elf.",
@@ -59,7 +57,6 @@
       ]
     },
     {
-      "id": 3,
       "key": "common_elf",
       "label": "Common Elf",
       "description": "The baseline playable elf. A subrace that overrides nothing — it inherits the elf parent's phase, speed, size, ability modifiers, and traits unchanged. Use this to play a 'plain' elf.",
@@ -70,7 +67,6 @@
       "phase": "wood"
     },
     {
-      "id": 4,
       "key": "green_elf",
       "label": "Green Elf",
       "description": "Forest-dwelling elves bound to the living wood. Inherits the elf base; speed and size carry over from the parent.",
@@ -90,7 +86,6 @@
       ]
     },
     {
-      "id": 5,
       "key": "black_elf",
       "label": "Black Elf",
       "description": "Subterranean elves of the lightless deeps. A subrace that OVERRIDES the elf phase (wood → water), showing how descent need not preserve every trait.",
@@ -115,7 +110,6 @@
       ]
     },
     {
-      "id": 6,
       "key": "dwarf",
       "label": "Dwarf",
       "description": "Sturdy, industrious folk carved from the mountain stone itself. An abstract ancestry: play one of its subraces.",
@@ -146,7 +140,6 @@
       ]
     },
     {
-      "id": 7,
       "key": "common_dwarf",
       "label": "Common Dwarf",
       "description": "The baseline playable dwarf. A subrace that overrides nothing — it inherits the dwarf parent's phase, speed, size, ability modifiers, and traits unchanged. Use this to play a 'plain' dwarf.",
@@ -157,7 +150,6 @@
       "phase": "metal"
     },
     {
-      "id": 8,
       "key": "hill_dwarf",
       "label": "Hill Dwarf",
       "description": "Dwarves of the rolling foothills, closer to soil than ore. Inherits the dwarf base but OVERRIDES its phase (metal → earth).",
@@ -177,7 +169,6 @@
       ]
     },
     {
-      "id": 9,
       "key": "mountain_dwarf",
       "label": "Mountain Dwarf",
       "description": "Dwarves of the high peaks and deep mines. Inherits the dwarf base, phase included.",
@@ -197,7 +188,6 @@
       ]
     },
     {
-      "id": 10,
       "key": "beastman",
       "label": "Beastman",
       "description": "A TEMPLATE, not a race you play. It defines the shape of anthropomorphic beastfolk so users can author their own kin (catman, wolfman, ratman, …). Kin are SISTERS: each declares its own phase, attributes, speed, size, and traits, and need share nothing mechanical with the others — only the template's shape and the 'beastfolk' kinship.",
@@ -212,7 +202,6 @@
       ]
     },
     {
-      "id": 11,
       "key": "catman",
       "label": "Catman",
       "description": "An agile feline beastfolk. A kin of the beastman template — fully self-defined, sharing nothing mechanical with other beastfolk.",
@@ -240,7 +229,6 @@
       ]
     },
     {
-      "id": 12,
       "key": "wolfman",
       "label": "Wolfman",
       "description": "A wild, pack-bonded lupine beastfolk. A sister kin to the catman with an entirely different phase, attributes, and traits — the template imposes shape, not commonality.",

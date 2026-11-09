@@ -182,7 +182,6 @@
         {
           "type": "object",
           "properties": {
-            "id": { "$ref": "schema.json#/definitions/entryId" },
             "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "Symbolic snake_case key (the old string id) for human readability when editing JSON." },
             "label": { "type": "string" },
             "description": { "type": "string" },
@@ -224,7 +223,6 @@
       "description": "An equipment entry that references a base template and provides only overrides. The base is resolved at load time from bases/<file>/<base>.json and merged with overrides (override wins). This keeps equipment files lean and enables easy variant creation.",
       "type": "object",
       "properties": {
-        "id": { "$ref": "schema.json#/definitions/entryId" },
         "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "Symbolic snake_case key." },
         "source": { "$ref": "schema.json#/definitions/sourceRef" },
         "base": {

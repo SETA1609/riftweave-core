@@ -2,7 +2,6 @@
   "$schema": "../../schemas/ingredient.schema.json",
   "ingredients": [
     {
-      "id": 1,
       "key": "red_mushroom",
       "label": "Red Mushroom",
       "description": "A common cap that aids vigor.",
@@ -16,7 +15,6 @@
       ]
     },
     {
-      "id": 2,
       "key": "frost_lily",
       "label": "Frost Lily",
       "description": "A pale flower that blooms in the cold.",
@@ -30,7 +28,6 @@
       ]
     },
     {
-      "id": 3,
       "key": "nightshade",
       "label": "Nightshade",
       "description": "A toxic herb favored by poisoners.",
@@ -45,7 +42,6 @@
       ]
     },
     {
-      "id": 4,
       "key": "glowcap",
       "label": "Glowcap",
       "description": "A luminescent cave fungus.",
@@ -59,7 +55,6 @@
       ]
     },
     {
-      "id": 5,
       "key": "ironvine",
       "label": "Ironvine",
       "description": "A tough creeper that clings to stone.",
@@ -73,7 +68,6 @@
       ]
     },
     {
-      "id": 6,
       "key": "emberbloom",
       "label": "Emberbloom",
       "description": "A flower warm to the touch.",
@@ -87,7 +81,6 @@
       ]
     },
     {
-      "id": 7,
       "key": "sweetgrass",
       "label": "Sweetgrass",
       "description": "A fragrant grass with restorative properties.",
@@ -101,7 +94,6 @@
       ]
     },
     {
-      "id": 8,
       "key": "greater_blazing_spirit_core",
       "label": "Blazing Spirit Core",
       "description": "A fist-sized crystal burning with inner flame. Holds concentrated fire-aspected essence, ideal for breakthroughs seeking power and transformation.",
@@ -117,7 +109,6 @@
       ]
     },
     {
-      "id": 9,
       "key": "major_verdant_spirit_core",
       "label": "Verdant Spirit Core",
       "description": "A living green crystal thrumming with growth energy. Carries wood-aspected essence suited to vital and regenerative advancements.",
@@ -133,7 +124,6 @@
       ]
     },
     {
-      "id": 10,
       "key": "common_earthen_spirit_core",
       "label": "Earthen Spirit Core",
       "description": "A dense, heavy stone-like crystal embodying stability. Provides earth-aspected essence for breakthroughs emphasizing endurance and foundation.",
@@ -149,7 +139,6 @@
       ]
     },
     {
-      "id": 11,
       "key": "lesser_tempered_spirit_core",
       "label": "Tempered Spirit Core",
       "description": "A sharp, metallic crystal that rings when struck. Embodies metal-aspected essence for precise, conductive, or cutting advancements.",
@@ -165,7 +154,6 @@
       ]
     },
     {
-      "id": 12,
       "key": "grand_flowing_spirit_core",
       "label": "Flowing Spirit Core",
       "description": "A cool, translucent crystal that seems to shift like liquid. Holds water-aspected essence excellent for adaptive, perceptive, or restorative breakthroughs.",

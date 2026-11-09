@@ -16,7 +16,6 @@
     "condition": {
       "type": "object",
       "properties": {
-        "id": { "$ref": "schema.json#/definitions/entryId" },
         "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "Stable symbolic identifier (snake_case)." },
         "label": { "type": "string", "description": "Human-readable name with spaces and capitalization." },
         "description": { "type": "string", "description": "What the condition is and what it does at a glance." },

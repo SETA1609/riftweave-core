@@ -116,7 +116,6 @@
       "description": "A fully self-contained monster entry with all required fields inline.",
       "type": "object",
       "properties": {
-        "id": { "$ref": "schema.json#/definitions/entryId" },
         "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "Symbolic snake_case key (the old string id) for human readability when editing JSON." },
         "label": { "type": "string", "description": "Human-readable display name with spaces and capitalization." },
         "description": { "type": "string" },
@@ -150,7 +149,6 @@
       "description": "A monster entry that references a base template and provides only overrides. The base is resolved at load time from bases/<base>.json and merged with overrides (override wins). This keeps core.json lean and enables easy variant creation.",
       "type": "object",
       "properties": {
-        "id": { "$ref": "schema.json#/definitions/entryId" },
         "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "Symbolic snake_case key." },
         "source": { "$ref": "schema.json#/definitions/sourceRef" },
         "base": {

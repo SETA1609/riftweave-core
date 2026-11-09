@@ -89,11 +89,6 @@
       ],
       "description": "Crafting quality ladder, listed lowest to highest (common is the baseline). Shared vocabulary reused across crafting conventions (gems, and future components)."
     },
-    "entryId": {
-      "type": "integer",
-      "minimum": 1,
-      "description": "Deprecated; a row's identity is its key (docs/core/keys.md). Numeric primary identifier for an entry within a collection (effects, skills, features, races, materials, ingredients, equipment, spells, monsters, backgrounds, etc.). Used only for the entry's own 'id' field - cross-references between collections must use string keys (bare or namespaced) instead."
-    },
     "appliedEffect": {
       "type": "object",
       "description": "An instance of an effect drawn from the effect registry (data/effects), with its applied magnitude and duration. Shared by spells, consumables, ingredients, and enchantments. Use 'parameter' for generic effects (e.g. fortify_skill with a specific skill key, fortify_attribute with an ability, restore_resource with 'health'/'stamina'/'mana', resist with 'fire'/'poison'/'undead'/'magic'/'physical', cure with a condition, summon with a type, allergy with a material key).",

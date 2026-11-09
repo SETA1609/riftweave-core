@@ -2,7 +2,6 @@
   "$schema": "../../schemas/background.schema.json",
   "backgrounds": [
     {
-      "id": 1,
       "key": "scout",
       "label": "Scout",
       "description": "You spent years mapping trails, tracking game, and guiding travelers through dangerous wilds. You know how to read the land and stay unseen.",
@@ -51,7 +50,6 @@
       "starting_spells": []
     },
     {
-      "id": 2,
       "key": "former_soldier",
       "label": "Former Soldier",
       "description": "You served in a standing army, militia, or mercenary company. Drill, shield walls, and discipline are second nature.",
@@ -97,7 +95,6 @@
       "starting_spells": []
     },
     {
-      "id": 3,
       "key": "hedge_witch",
       "label": "Hedge Witch",
       "description": "You learned simple healing and warding from a local wise woman or forest spirit. Your magic is practical, not flashy.",
@@ -144,7 +141,6 @@
       }
     },
     {
-      "id": 4,
       "key": "street_urchin",
       "label": "Street Urchin",
       "description": "You grew up in the alleys of a large city, surviving by your wits, quick hands, and the ability to disappear when needed.",
@@ -190,7 +186,6 @@
       "starting_spells": []
     },
     {
-      "id": 5,
       "key": "noble_scion",
       "label": "Noble Scion",
       "description": "You were raised in a house of wealth and influence. You understand etiquette, leverage, and how to make problems (and people) go away quietly.",
@@ -222,7 +217,6 @@
       "starting_spells": []
     },
     {
-      "id": 6,
       "key": "arcane_apprentice",
       "label": "Arcane Apprentice",
       "description": "You served (or still serve) as an apprentice to a mage, scribe, or collegiate wizard. Theory, symbols, and the first cantrips came easily.",
@@ -262,7 +256,6 @@
       }
     },
     {
-      "id": 7,
       "key": "wilderness_hunter",
       "label": "Wilderness Hunter",
       "description": "You made your living bringing in pelts, bounties, and dangerous beasts. Patience, tracking, and a steady shot kept you fed.",
@@ -311,7 +304,6 @@
       "starting_spells": []
     },
     {
-      "id": 8,
       "key": "itinerant_priest",
       "label": "Itinerant Priest",
       "description": "You wandered from village to village offering blessings, last rites, and what little protection the gods would grant through you.",

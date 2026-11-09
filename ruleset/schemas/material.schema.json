@@ -37,9 +37,6 @@
     "material": {
       "type": "object",
       "properties": {
-        "id": {
-          "$ref": "schema.json#/definitions/entryId"
-        },
         "key": {
           "type": "string",
           "pattern": "^[a-z_][a-z0-9_]*$"
