@@ -2,7 +2,6 @@
   "$schema": "../../schemas/monster.schema.json",
   "monsters": [
     {
-      "id": 6,
       "key": "skeleton",
       "base": "undead",
       "overrides": {
@@ -51,7 +50,6 @@
       }
     },
     {
-      "id": 11,
       "key": "bandit",
       "base": "humanoid",
       "overrides": {
@@ -95,7 +93,6 @@
       }
     },
     {
-      "id": 45,
       "key": "ooze",
       "base": "ooze",
       "overrides": {
@@ -120,7 +117,6 @@
       }
     },
     {
-      "id": 8,
       "key": "dire_wolf",
       "base": "beast",
       "overrides": {
@@ -166,7 +162,6 @@
       }
     },
     {
-      "id": 2,
       "key": "stone_golem",
       "base": "construct",
       "overrides": {
@@ -228,7 +223,6 @@
       }
     },
     {
-      "id": 9,
       "key": "fire_elemental",
       "base": "elemental",
       "overrides": {
@@ -283,7 +277,6 @@
       }
     },
     {
-      "id": 17,
       "key": "storm_hawk",
       "base": "beast",
       "overrides": {
@@ -314,7 +307,6 @@
       }
     },
     {
-      "id": 1,
       "key": "ember_drake",
       "base": "elemental",
       "overrides": {
@@ -381,7 +373,6 @@
       }
     },
     {
-      "id": 24,
       "key": "treant_sapling",
       "base": "plant",
       "overrides": {
@@ -412,7 +403,6 @@
       }
     },
     {
-      "id": 48,
       "key": "giant",
       "base": "humanoid",
       "overrides": {
@@ -442,7 +432,6 @@
       }
     },
     {
-      "id": 43,
       "key": "bone_colossus",
       "base": "core:monster/skeleton",
       "overrides": {
@@ -476,7 +465,6 @@
       }
     },
     {
-      "id": 23,
       "key": "bandit_captain",
       "base": "core:monster/bandit",
       "overrides": {
@@ -506,7 +494,6 @@
       }
     },
     {
-      "id": 16,
       "key": "acid_ooze",
       "base": "core:monster/ooze",
       "templates": [
@@ -519,7 +506,6 @@
       }
     },
     {
-      "id": 47,
       "key": "frost_ooze",
       "base": "core:monster/ooze",
       "templates": [
@@ -532,7 +518,6 @@
       }
     },
     {
-      "id": 46,
       "key": "fire_ooze",
       "base": "core:monster/ooze",
       "templates": [
@@ -545,7 +530,6 @@
       }
     },
     {
-      "id": 37,
       "key": "shadow_hound",
       "base": "core:monster/dire_wolf",
       "overrides": {
@@ -575,7 +559,6 @@
       }
     },
     {
-      "id": 25,
       "key": "bronze_guardian",
       "base": "core:monster/stone_golem",
       "overrides": {
@@ -606,7 +589,6 @@
       }
     },
     {
-      "id": 36,
       "key": "iron_colossus",
       "base": "core:monster/stone_golem",
       "overrides": {
@@ -637,7 +619,6 @@
       }
     },
     {
-      "id": 41,
       "key": "magma_titan",
       "base": "core:monster/fire_elemental",
       "overrides": {
@@ -665,7 +646,6 @@
       }
     },
     {
-      "id": 40,
       "key": "thunderbird",
       "base": "core:monster/storm_hawk",
       "overrides": {
@@ -693,7 +673,6 @@
       }
     },
     {
-      "id": 44,
       "key": "ancient_dragon",
       "base": "core:monster/ember_drake",
       "overrides": {
@@ -731,7 +710,6 @@
       }
     },
     {
-      "id": 38,
       "key": "elder_treant",
       "base": "core:monster/treant_sapling",
       "overrides": {
@@ -759,7 +737,6 @@
       }
     },
     {
-      "id": 31,
       "key": "storm_giant_youth",
       "base": "core:monster/giant",
       "templates": [
@@ -796,7 +773,6 @@
       }
     },
     {
-      "id": 35,
       "key": "frost_giant",
       "base": "core:monster/giant",
       "templates": [
@@ -824,7 +800,6 @@
       }
     },
     {
-      "id": 7,
       "key": "zombie",
       "base": "undead",
       "overrides": {
@@ -873,7 +848,6 @@
       }
     },
     {
-      "id": 12,
       "key": "giant_rat",
       "base": "beast",
       "overrides": {
@@ -905,7 +879,6 @@
       }
     },
     {
-      "id": 13,
       "key": "goblin_skirmisher",
       "base": "humanoid",
       "overrides": {
@@ -932,7 +905,6 @@
       }
     },
     {
-      "id": 14,
       "key": "cave_spider",
       "base": "beast",
       "overrides": {
@@ -963,7 +935,6 @@
       }
     },
     {
-      "id": 3,
       "key": "grove_stalker",
       "base": "beast",
       "overrides": {
@@ -1018,7 +989,6 @@
       }
     },
     {
-      "id": 15,
       "key": "bog_shambler",
       "base": "plant",
       "overrides": {
@@ -1049,7 +1019,6 @@
       }
     },
     {
-      "id": 4,
       "key": "frost_revenant",
       "base": "undead",
       "overrides": {
@@ -1098,7 +1067,6 @@
       }
     },
     {
-      "id": 10,
       "key": "ice_elemental",
       "base": "elemental",
       "overrides": {
@@ -1152,7 +1120,6 @@
       }
     },
     {
-      "id": 18,
       "key": "orc_raider",
       "base": "humanoid",
       "overrides": {
@@ -1179,7 +1146,6 @@
       }
     },
     {
-      "id": 19,
       "key": "ghoul",
       "base": "undead",
       "overrides": {
@@ -1210,7 +1176,6 @@
       }
     },
     {
-      "id": 5,
       "key": "iron_sentinel",
       "base": "construct",
       "overrides": {
@@ -1272,7 +1237,6 @@
       }
     },
     {
-      "id": 20,
       "key": "thunder_ram",
       "base": "beast",
       "overrides": {
@@ -1302,7 +1266,6 @@
       }
     },
     {
-      "id": 21,
       "key": "wisp",
       "base": "elemental",
       "overrides": {
@@ -1333,7 +1296,6 @@
       }
     },
     {
-      "id": 22,
       "key": "mind_leech",
       "base": "beast",
       "overrides": {
@@ -1364,7 +1326,6 @@
       }
     },
     {
-      "id": 26,
       "key": "wraith",
       "base": "undead",
       "overrides": {
@@ -1395,7 +1356,6 @@
       }
     },
     {
-      "id": 27,
       "key": "harpy",
       "base": "beast",
       "overrides": {
@@ -1434,7 +1394,6 @@
       }
     },
     {
-      "id": 28,
       "key": "salamander",
       "base": "elemental",
       "overrides": {
@@ -1465,7 +1424,6 @@
       }
     },
     {
-      "id": 29,
       "key": "troll",
       "base": "humanoid",
       "overrides": {
@@ -1496,7 +1454,6 @@
       }
     },
     {
-      "id": 30,
       "key": "basilisk",
       "base": "beast",
       "overrides": {
@@ -1526,7 +1483,6 @@
       }
     },
     {
-      "id": 32,
       "key": "lich_acolyte",
       "base": "undead",
       "overrides": {
@@ -1557,7 +1513,6 @@
       }
     },
     {
-      "id": 33,
       "key": "sand_wyrm",
       "base": "beast",
       "overrides": {
@@ -1588,7 +1543,6 @@
       }
     },
     {
-      "id": 34,
       "key": "radiant_seraph",
       "base": "elemental",
       "overrides": {
@@ -1619,7 +1573,6 @@
       }
     },
     {
-      "id": 39,
       "key": "void_horror",
       "base": "elemental",
       "overrides": {
@@ -1651,7 +1604,6 @@
       }
     },
     {
-      "id": 42,
       "key": "acid_hydra",
       "base": "beast",
       "overrides": {

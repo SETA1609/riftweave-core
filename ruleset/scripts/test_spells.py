@@ -67,10 +67,9 @@ class TestSpells(unittest.TestCase):
         levels = [row["level"] for row in spells()]
         self.assertEqual((min(levels), max(levels)), (1, 30))
 
-    def test_keys_and_ids_are_unique(self):
+    def test_keys_are_unique(self):
         rows = spells()
         self.assertEqual(len({row["key"] for row in rows}), len(rows))
-        self.assertEqual(len({row["id"] for row in rows}), len(rows))
 
     def test_every_effect_is_in_the_pool_and_allows_spells(self):
         pool = effects()

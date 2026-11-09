@@ -2,7 +2,6 @@
   "$schema": "../../schemas/equipment.schema.json",
   "equipment": [
     {
-      "id": 1,
       "key": "potion_minor_healing",
       "label": "Potion of Minor Healing",
       "description": "A red draught that knits flesh and closes wounds.",
@@ -24,7 +23,6 @@
       }
     },
     {
-      "id": 2,
       "key": "potion_invisibility",
       "label": "Potion of Invisibility",
       "description": "A shimmering vial that bends light around the drinker.",
@@ -45,7 +43,6 @@
       }
     },
     {
-      "id": 3,
       "key": "potion_fire_resistance",
       "label": "Potion of Fire Resistance",
       "description": "Tastes of ash; wards the body against flame.",
@@ -68,7 +65,6 @@
       }
     },
     {
-      "id": 4,
       "key": "poison_weakness",
       "label": "Poison of Weakness",
       "description": "A foul tincture that saps health and vigor when struck.",
@@ -95,7 +91,6 @@
       }
     },
     {
-      "id": 5,
       "key": "coating_frost",
       "label": "Frost Coating",
       "description": "A rime-blue paste that chills any blade it touches.",
@@ -117,7 +112,6 @@
       }
     },
     {
-      "id": 6,
       "key": "oil_paralysis",
       "label": "Paralytic Oil",
       "description": "A weapon oil distilled from spider venom.",
@@ -139,7 +133,6 @@
       }
     },
     {
-      "id": 7,
       "key": "ration_hearty_stew",
       "label": "Hearty Stew",
       "description": "A warm meal that restores stamina over time.",
@@ -162,7 +155,6 @@
       }
     },
     {
-      "id": 300,
       "key": "potion_healing",
       "label": "Potion of Healing",
       "description": "A deep red draught that closes serious wounds.",
@@ -184,7 +176,6 @@
       }
     },
     {
-      "id": 301,
       "key": "potion_greater_healing",
       "label": "Potion of Greater Healing",
       "description": "A thick crimson draught that can pull a fighter back from the brink.",
@@ -206,7 +197,6 @@
       }
     },
     {
-      "id": 302,
       "key": "potion_mana",
       "label": "Potion of Mana",
       "description": "A blue draught that refills a caster's reserves.",
@@ -228,7 +218,6 @@
       }
     },
     {
-      "id": 303,
       "key": "potion_stamina",
       "label": "Potion of Stamina",
       "description": "A bitter green tonic that chases off fatigue.",
@@ -250,7 +239,6 @@
       }
     },
     {
-      "id": 304,
       "key": "antidote",
       "label": "Antidote",
       "description": "A cloudy draught that neutralises most poisons.",
@@ -271,7 +259,6 @@
       }
     },
     {
-      "id": 305,
       "key": "potion_cure_disease",
       "label": "Potion of Cure Disease",
       "description": "A sharp-smelling tincture that purges sickness.",
@@ -292,7 +279,6 @@
       }
     },
     {
-      "id": 306,
       "key": "potion_strength",
       "label": "Potion of Strength",
       "description": "A murky brew that swells the muscles for a minute.",
@@ -315,7 +301,6 @@
       }
     },
     {
-      "id": 307,
       "key": "potion_featherfall",
       "label": "Potion of Featherfall",
       "description": "A pale, fizzing draught that makes the drinker light as down.",
@@ -337,7 +322,6 @@
       }
     },
     {
-      "id": 308,
       "key": "potion_haste",
       "label": "Potion of Haste",
       "description": "A sparkling draught that quickens every blow.",
@@ -359,7 +343,6 @@
       }
     },
     {
-      "id": 309,
       "key": "elixir_of_wits",
       "label": "Elixir of Wits",
       "description": "A clear elixir that sharpens the mind.",
@@ -382,7 +365,6 @@
       }
     },
     {
-      "id": 310,
       "key": "potion_frost_resistance",
       "label": "Potion of Frost Resistance",
       "description": "A warm amber draught that wards off the cold.",
@@ -405,7 +387,6 @@
       }
     },
     {
-      "id": 311,
       "key": "poison_paralytic",
       "label": "Paralytic Venom",
       "description": "Spider venom for a blade; a struck foe stiffens.",
@@ -427,7 +408,6 @@
       }
     },
     {
-      "id": 312,
       "key": "coating_blinding",
       "label": "Blinding Powder",
       "description": "A fine grit for a blade's edge that gets into the eyes.",
@@ -449,7 +429,6 @@
       }
     },
     {
-      "id": 313,
       "key": "travel_rations",
       "label": "Travel Rations",
       "description": "Hard bread, dried meat, and nuts for a day on the road.",
@@ -472,7 +451,6 @@
       }
     },
     {
-      "id": 314,
       "key": "bread_and_cheese",
       "label": "Bread and Cheese",
       "description": "A simple meal that takes the edge off hunger and pain.",

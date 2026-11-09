@@ -2,7 +2,6 @@
   "$schema": "../../schemas/spell.schema.json",
   "spells": [
     {
-      "id": 1,
       "key": "fire_bolt",
       "label": "Fire Bolt",
       "description": "Hurl a mote of fire at a target.",
@@ -20,7 +19,6 @@
       }
     },
     {
-      "id": 2,
       "key": "force_dart",
       "label": "Force Dart",
       "description": "A needle of raw force leaps from your fingertip to its target.",
@@ -38,7 +36,6 @@
       }
     },
     {
-      "id": 3,
       "key": "mend_wounds",
       "label": "Mend Wounds",
       "description": "Restore health to a creature you touch.",
@@ -57,7 +54,6 @@
       }
     },
     {
-      "id": 4,
       "key": "blessing",
       "label": "Blessing",
       "description": "Bolster an ally's prowess in battle for a short time.",
@@ -79,7 +75,6 @@
       }
     },
     {
-      "id": 5,
       "key": "ward",
       "label": "Ward",
       "description": "Raise a barrier that hardens your defenses for a moment.",
@@ -102,7 +97,6 @@
       "cooldown": 6
     },
     {
-      "id": 6,
       "key": "fire_burst",
       "label": "Fire Burst",
       "description": "Flames burst outward from a spot you choose, scorching all around it.",
@@ -122,7 +116,6 @@
       "cooldown": 4
     },
     {
-      "id": 7,
       "key": "raise_thrall",
       "label": "Raise Thrall",
       "description": "Animate a fallen corpse to fight at your side for a time.",
@@ -146,7 +139,6 @@
       "cooldown": 30
     },
     {
-      "id": 8,
       "key": "dispel_magic",
       "label": "Dispel Magic",
       "description": "Unravel the spells standing on a target, up to the dispel's level.",
@@ -164,7 +156,6 @@
       }
     },
     {
-      "id": 9,
       "key": "frost_lance",
       "label": "Frost Lance",
       "description": "A spear of ice that strikes one target.",
@@ -182,7 +173,6 @@
       }
     },
     {
-      "id": 10,
       "key": "flame_shield",
       "label": "Flame Shield",
       "description": "Wreathe yourself in flame that turns aside fire.",
@@ -203,7 +193,6 @@
       }
     },
     {
-      "id": 11,
       "key": "chain_lightning",
       "label": "Chain Lightning",
       "description": "Lightning leaps from foe to foe across the field.",
@@ -222,7 +211,6 @@
       }
     },
     {
-      "id": 12,
       "key": "ice_storm",
       "label": "Ice Storm",
       "description": "Hail and shards of ice hammer an area.",
@@ -241,7 +229,6 @@
       }
     },
     {
-      "id": 13,
       "key": "meteor",
       "label": "Meteor",
       "description": "A burning stone falls from the sky and sets the ground alight.",
@@ -267,7 +254,6 @@
       }
     },
     {
-      "id": 14,
       "key": "inferno",
       "label": "Inferno",
       "description": "A firestorm that swallows a whole battlefield.",
@@ -286,7 +272,6 @@
       }
     },
     {
-      "id": 15,
       "key": "summon_familiar",
       "label": "Summon Familiar",
       "description": "Call a small spirit-beast that scouts and fetches for you.",
@@ -306,7 +291,6 @@
       }
     },
     {
-      "id": 16,
       "key": "bound_blade",
       "label": "Bound Blade",
       "description": "Shape a longsword of conjured light in your hand.",
@@ -327,7 +311,6 @@
       }
     },
     {
-      "id": 17,
       "key": "conjured_barrier",
       "label": "Conjured Barrier",
       "description": "A shell of conjured force that takes blows meant for you.",
@@ -347,7 +330,6 @@
       }
     },
     {
-      "id": 18,
       "key": "conjured_blades",
       "label": "Conjured Blades",
       "description": "A whirl of conjured knives cuts everyone in the area.",
@@ -367,7 +349,6 @@
       }
     },
     {
-      "id": 19,
       "key": "bound_bow",
       "label": "Bound Bow",
       "description": "Shape a longbow of conjured light, strung and ready.",
@@ -388,7 +369,6 @@
       }
     },
     {
-      "id": 20,
       "key": "summon_elemental",
       "label": "Summon Elemental",
       "description": "Call an elemental to fight beside you while you hold it.",
@@ -409,7 +389,6 @@
       }
     },
     {
-      "id": 21,
       "key": "conjured_legion",
       "label": "Conjured Legion",
       "description": "Call three elementals at once.",
@@ -430,7 +409,6 @@
       }
     },
     {
-      "id": 22,
       "key": "light",
       "label": "Light",
       "description": "A floating light that follows you.",
@@ -449,7 +427,6 @@
       }
     },
     {
-      "id": 23,
       "key": "blinding_flash",
       "label": "Blinding Flash",
       "description": "A burst of false light blinds those nearby.",
@@ -469,7 +446,6 @@
       }
     },
     {
-      "id": 24,
       "key": "blur",
       "label": "Blur",
       "description": "Your outline wavers, and blows go wide.",
@@ -490,7 +466,6 @@
       }
     },
     {
-      "id": 25,
       "key": "mind_spike",
       "label": "Mind Spike",
       "description": "A pain the target believes in, and so feels.",
@@ -508,7 +483,6 @@
       }
     },
     {
-      "id": 26,
       "key": "charm_person",
       "label": "Charm Person",
       "description": "The target sees you as a friend while you hold the spell.",
@@ -528,7 +502,6 @@
       }
     },
     {
-      "id": 27,
       "key": "silence",
       "label": "Silence",
       "description": "Steal the sound from around a caster; no spell can be spoken.",
@@ -547,7 +520,6 @@
       }
     },
     {
-      "id": 28,
       "key": "veil",
       "label": "Veil",
       "description": "You fade from sight while you hold the spell.",
@@ -567,7 +539,6 @@
       }
     },
     {
-      "id": 29,
       "key": "psychic_scream",
       "label": "Psychic Scream",
       "description": "A shriek only minds can hear, that blinds those it reaches.",
@@ -593,7 +564,6 @@
       }
     },
     {
-      "id": 30,
       "key": "mass_charm",
       "label": "Mass Charm",
       "description": "A crowd sees you as its friend.",
@@ -614,7 +584,6 @@
       }
     },
     {
-      "id": 31,
       "key": "cure_poison",
       "label": "Cure Poison",
       "description": "Draw the poison out of a creature you touch.",
@@ -633,7 +602,6 @@
       }
     },
     {
-      "id": 32,
       "key": "vigor",
       "label": "Vigor",
       "description": "Restore the stamina of a creature you touch.",
@@ -652,7 +620,6 @@
       }
     },
     {
-      "id": 33,
       "key": "regeneration",
       "label": "Regeneration",
       "description": "Wounds close slowly, two points each second for twenty seconds.",
@@ -672,7 +639,6 @@
       }
     },
     {
-      "id": 34,
       "key": "purity_ward",
       "label": "Purity Ward",
       "description": "A ward of clean breath that turns poison aside.",
@@ -692,7 +658,6 @@
       }
     },
     {
-      "id": 35,
       "key": "greater_heal",
       "label": "Greater Heal",
       "description": "Restore a great deal of health to a creature you touch.",
@@ -711,7 +676,6 @@
       }
     },
     {
-      "id": 36,
       "key": "mass_heal",
       "label": "Mass Heal",
       "description": "Restore health to every ally in the area.",
@@ -731,7 +695,6 @@
       }
     },
     {
-      "id": 37,
       "key": "renewal",
       "label": "Renewal",
       "description": "Every ally in the area mends, six points each second for fifteen seconds.",
@@ -752,7 +715,6 @@
       }
     },
     {
-      "id": 38,
       "key": "feather_fall",
       "label": "Feather Fall",
       "description": "Your burden lightens and your falls slow.",
@@ -771,7 +733,6 @@
       }
     },
     {
-      "id": 39,
       "key": "corrode",
       "label": "Corrode",
       "description": "Alter what you touch into something that dissolves.",
@@ -789,7 +750,6 @@
       }
     },
     {
-      "id": 40,
       "key": "slow",
       "label": "Slow",
       "description": "The target moves as if through deep water.",
@@ -808,7 +768,6 @@
       }
     },
     {
-      "id": 41,
       "key": "stoneskin",
       "label": "Stoneskin",
       "description": "The skin of a creature you touch hardens like stone.",
@@ -828,7 +787,6 @@
       }
     },
     {
-      "id": 42,
       "key": "paralyze",
       "label": "Paralyze",
       "description": "The target's limbs lock in place.",
@@ -847,7 +805,6 @@
       }
     },
     {
-      "id": 43,
       "key": "acid_rain",
       "label": "Acid Rain",
       "description": "A rain that eats through armor and skin.",
@@ -866,7 +823,6 @@
       }
     },
     {
-      "id": 44,
       "key": "petrify",
       "label": "Petrify",
       "description": "Turn the target to stone.",
@@ -885,7 +841,6 @@
       }
     },
     {
-      "id": 45,
       "key": "unlock",
       "label": "Unlock",
       "description": "Force the tumblers of a lock of level 2 or below.",
@@ -903,7 +858,6 @@
       }
     },
     {
-      "id": 46,
       "key": "disarm_trap",
       "label": "Disarm Trap",
       "description": "Jam the works of a mechanical trap of level 4 or below from a distance.",
@@ -921,7 +875,6 @@
       }
     },
     {
-      "id": 47,
       "key": "thunderclap",
       "label": "Thunderclap",
       "description": "A clap of force and sound around you.",
@@ -940,7 +893,6 @@
       }
     },
     {
-      "id": 48,
       "key": "force_push",
       "label": "Force Push",
       "description": "A shove of force that knocks the target down.",
@@ -959,7 +911,6 @@
       }
     },
     {
-      "id": 49,
       "key": "force_wall",
       "label": "Force Wall",
       "description": "A wall of force between you and harm while you hold it.",
@@ -980,7 +931,6 @@
       }
     },
     {
-      "id": 50,
       "key": "greater_unlock",
       "label": "Greater Unlock",
       "description": "Force a lock of level 15 or below.",
@@ -998,7 +948,6 @@
       }
     },
     {
-      "id": 51,
       "key": "greater_disarm",
       "label": "Greater Disarm",
       "description": "Jam the works of a mechanical trap of level 20 or below.",
@@ -1016,7 +965,6 @@
       }
     },
     {
-      "id": 52,
       "key": "sonic_boom",
       "label": "Sonic Boom",
       "description": "A blast of thunder that throws everyone in the area down.",
@@ -1042,7 +990,6 @@
       }
     },
     {
-      "id": 53,
       "key": "telekinesis",
       "label": "Telekinesis",
       "description": "Lift and move an object at a distance.",
@@ -1061,7 +1008,6 @@
       }
     },
     {
-      "id": 54,
       "key": "sap_will",
       "label": "Sap Will",
       "description": "Drain the target's will.",
@@ -1081,7 +1027,6 @@
       }
     },
     {
-      "id": 55,
       "key": "spell_absorption",
       "label": "Spell Absorption",
       "description": "Drink a share of the hostile magic that strikes you.",
@@ -1101,7 +1046,6 @@
       }
     },
     {
-      "id": 56,
       "key": "dispel_ward",
       "label": "Dispel Ward",
       "description": "Unravel spells and arcane hazards of level 12 or below in an area.",
@@ -1120,7 +1064,6 @@
       }
     },
     {
-      "id": 57,
       "key": "mana_drain",
       "label": "Mana Drain",
       "description": "Bleed the target's mana away, three points each second.",
@@ -1140,7 +1083,6 @@
       }
     },
     {
-      "id": 58,
       "key": "greater_dispel",
       "label": "Greater Dispel",
       "description": "Unravel spells of level 25 or below on a target.",
@@ -1158,7 +1100,6 @@
       }
     },
     {
-      "id": 59,
       "key": "holy_light",
       "label": "Holy Light",
       "description": "A touch of light that burns the unholy.",
@@ -1176,7 +1117,6 @@
       }
     },
     {
-      "id": 60,
       "key": "smite",
       "label": "Smite",
       "description": "A lance of holy light.",
@@ -1194,7 +1134,6 @@
       }
     },
     {
-      "id": 61,
       "key": "holy_ward",
       "label": "Holy Ward",
       "description": "A ward that turns hostile magic aside.",
@@ -1214,7 +1153,6 @@
       }
     },
     {
-      "id": 62,
       "key": "cleanse",
       "label": "Cleanse",
       "description": "Cure a disease in a creature you touch.",
@@ -1233,7 +1171,6 @@
       }
     },
     {
-      "id": 63,
       "key": "sunburst",
       "label": "Sunburst",
       "description": "Light bursts from a point and burns all it reaches.",
@@ -1252,7 +1189,6 @@
       }
     },
     {
-      "id": 64,
       "key": "divine_shield",
       "label": "Divine Shield",
       "description": "A shield of light around an ally while you hold it.",
@@ -1273,7 +1209,6 @@
       }
     },
     {
-      "id": 65,
       "key": "drain_life",
       "label": "Drain Life",
       "description": "A cold that withers the target's flesh.",
@@ -1291,7 +1226,6 @@
       }
     },
     {
-      "id": 66,
       "key": "curse",
       "label": "Curse",
       "description": "Lay a curse on the target.",
@@ -1310,7 +1244,6 @@
       }
     },
     {
-      "id": 67,
       "key": "bone_armor",
       "label": "Bone Armor",
       "description": "Plates of bone knit over your skin.",
@@ -1330,7 +1263,6 @@
       }
     },
     {
-      "id": 68,
       "key": "wither",
       "label": "Wither",
       "description": "The target's strength drains away.",
@@ -1350,7 +1282,6 @@
       }
     },
     {
-      "id": 69,
       "key": "raise_horde",
       "label": "Raise Horde",
       "description": "Raise three of the fallen to fight for you while you hold them.",
@@ -1371,7 +1302,6 @@
       }
     },
     {
-      "id": 70,
       "key": "death_grip",
       "label": "Death Grip",
       "description": "Death's hand closes on the target and holds it still.",

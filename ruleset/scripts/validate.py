@@ -1099,7 +1099,9 @@ def compose_row(base, overrides, layers=(), entry=None):
         else:
             merged[field] = _merge_field(merged.get(field), value)
     if entry is not None:
-        merged["id"] = entry.get("id")
+        merged.pop("id", None)
+        if entry.get("id") is not None:
+            merged["id"] = entry["id"]
         merged["key"] = entry.get("key")
         if entry.get("source"):
             merged["source"] = entry["source"]
