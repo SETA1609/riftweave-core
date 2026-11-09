@@ -26,6 +26,16 @@
           "required": ["none", "light", "medium", "heavy"],
           "additionalProperties": false
         },
+        "skill_discount": {
+          "type": "object",
+          "description": "What skill takes off a spell's mana cost: min(skill / divisor, cap) (docs/core/casting.md#paid-cost).",
+          "properties": {
+            "divisor": { "type": "number", "exclusiveMinimum": 0 },
+            "cap": { "type": "number", "minimum": 0, "maximum": 1 }
+          },
+          "required": ["divisor", "cap"],
+          "additionalProperties": false
+        },
         "spell_cost": {
           "type": "object",
           "description": "The spell cost formula's coefficients (docs/modules/magic.md#cost-formula): per effect, magnitude_factor × baseCost × magnitude × duration, plus area_factor × baseCost × radius, times the target multiplier; the spell cost is the sum, rounded up.",
