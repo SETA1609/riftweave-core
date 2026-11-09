@@ -37,10 +37,10 @@ Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-03, M5-07, M5-08, M5-10,
 - Priority: medium
 - Needs: M5-02, M5-03
 - Was: RW-27
-- Do: The July review found README, AGENTS, CLAUDE, and CONTRIBUTING lagging the repo. States which of `docs/core/` and `docs/modules/` wins on conflict, and retires `plan.md`, `issues.md`, and `docs/review/` as history.
-- Files: ~10 (README.md, AGENTS.md, CONTRIBUTING.md, docs/archive/, plan.md, issues.md, docs/review/)
+- Do: The July review found README, AGENTS, CLAUDE, and CONTRIBUTING lagging the repo. States which of `docs/core/` and `docs/modules/` wins on conflict, and retires `plan.md`, `issues.md`, and `docs/review/` as history. Adds `docs/onboarding/`, with the AI rules: AI is welcome as a tool, and a human always reviews before committing. `AGENTS.md` is the only agent rules file.
+- Files: ~12 (README.md, AGENTS.md, CONTRIBUTING.md, docs/archive/, docs/onboarding/, plan.md, issues.md, docs/review/)
 - See: docs/archive/review/findings-docs-hygiene.md
-- Done when: README tree, AGENTS, and CONTRIBUTING match the repo; authority order is written down once; historical files are moved under `docs/archive/` with a note.
+- Done when: README tree, AGENTS, and CONTRIBUTING match the repo; authority order is written down once; historical files are moved under `docs/archive/` with a note; `docs/onboarding/` takes a new contributor from a clone to a pull request and states the AI rules.
 
 #### M5-09 Licensing and attribution audit, tag v1.0.0
 - Status: todo
@@ -86,6 +86,6 @@ Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-03, M5-07, M5-08, M5-10,
 - Needs: M5-03
 - Do: devops-tools ships `devops-tools fetch-docs` (url, github, list), the same downloader as `tools/fetch-docs/`, into the gitignored docs cache, pinned to a commit. Set `docs-cache-directory = "cache/docs"` in `[tool.devops-tools]`, remove `tools/fetch-docs/` and its tests, and point AGENTS, CLAUDE, and CONTRIBUTING at the new command. Split from M5-03.
 - Keys: `docs-cache-directory` in `[tool.devops-tools]`
-- Files: ~6 (tools/fetch-docs/, tools/devops/pyproject.toml, AGENTS.md, CLAUDE.md, CONTRIBUTING.md)
+- Files: ~6 (tools/fetch-docs/, tools/devops/pyproject.toml, AGENTS.md, CONTRIBUTING.md)
 - See: https://github.com/SETA1609/devops_tools (fetch-docs)
 - Done when: a cited source downloads into `cache/docs/` through `devops-tools fetch-docs`; no local fetch-docs code remains; the docs name the new command.

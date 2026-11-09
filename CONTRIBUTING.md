@@ -17,6 +17,8 @@ clearly to a human at the table as well as to a program.
 
 ## Getting set up
 
+New here? Start with [docs/onboarding/](docs/onboarding/README.md).
+
 ```bash
 pip install -r ruleset/requirements.txt
 python ruleset/scripts/validate.py        # validate every data file against its schema
@@ -144,6 +146,8 @@ vectors.
    ([order](docs/stories/README.md#order)).
 7. **Describe it for both audiences.** Say *what rule or content* changed and why, so
    programmers and game designers reviewing the PR can follow it.
+8. **AI is a tool, and a human reviews.** A person reads every change before it is
+   committed ([AI rules](docs/onboarding/ai.md)).
 
 Open pull requests are rebased onto `main` after every push to `main`
 (`.github/workflows/rebase-open-branches.yml`). Conflicts where both sides only added

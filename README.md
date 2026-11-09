@@ -17,6 +17,7 @@ and emit modifiers or events. It may not call another system's procedure.
 
 ```
 docs/
+  onboarding/         How to get started, and the AI rules
   core/               Kernel rules. Wins over docs/modules/ on a conflict.
     contract.md       Actor snapshot, modifier, event. The only shared sentence.
   modules/            Core systems in detail, and optional modules
@@ -44,7 +45,8 @@ tools/                The devops-tools pin and fetch-docs
 
 See [docs/modules/README.md](docs/modules/README.md) for how modules work and which are
 planned (crafting, alchemy, magic crafting, etc.). Scope and milestones are in
-[ROADMAP.md](ROADMAP.md).
+[ROADMAP.md](ROADMAP.md). New contributors start at
+[docs/onboarding/](docs/onboarding/README.md).
 Modules must speak the kernel contract. They must not call another system's procedure.
 
 ## Validation

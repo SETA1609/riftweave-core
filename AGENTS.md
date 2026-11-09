@@ -186,13 +186,18 @@ Dual-licensed (see `LICENSING.md`):
 
 Contributions are accepted under the same terms (inbound = outbound).
 
+## AI use
+
+AI is welcome as a tool, and a human always reviews before committing ([AI rules](docs/onboarding/ai.md)). An agent commits only when a person asks, after that person has reviewed the change.
+
 ## Personal / Local Rules
 
-`CLAUDE.md` and `.claude/` are listed in `.gitignore`. This is intentional so individuals can maintain personal overrides without committing them. The canonical, shareable rules for the project live in this `AGENTS.md`.
+`.claude/` and any personal `CLAUDE.md` are listed in `.gitignore`, so individuals can keep personal overrides without committing them. The repo's rules for every agent live in this `AGENTS.md`. Claude Code reads it by default, but a `CLAUDE.md` or `CLAUDE.local.md` in the checkout replaces it, so a personal file should start with `@AGENTS.md`.
 
 ## References
 
 - `README.md` — high-level project overview
+- `docs/onboarding/` — how to get started, and the AI rules
 - `ROADMAP.md` and `docs/stories/` — scope, milestones, and the issues to work on
 - `CONTRIBUTING.md` — contribution process and rules for changes
 - `docs/core/` — kernel rules; `docs/modules/` — core systems in detail and modules (start here before adding new mechanics)
