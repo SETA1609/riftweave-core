@@ -67,6 +67,8 @@ References a base template and provides only the fields that differ:
 
 ### Merge Rules
 
+The general order and merge rules are in [composition.md](../core/composition.md). For a monster:
+
 1. The base is either a creature type, `bases/<base>.json`, or another monster,
    `core:monster/<key>` in the same file (see [Derived monsters](#derived-monsters)).
 2. Templates, if the entry lists any, apply in order (see [Templates](#templates)).

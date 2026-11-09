@@ -100,6 +100,16 @@ Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-03, M5-07, M5-08, M5-10,
 - See: docs/core/materials.md, docs/archive/review/findings-data-oriented-design.md (it recommended this)
 - Done when: no row or schema has `appliesTo` or `modifiers` on a material; the `weapon`, `armor`, and `ingredient` values are unchanged; no doc outside `docs/archive/` and the frozen logs names either column as a material field; `validate.py` and the tests pass; the changelog fragment marks the removal **(breaking)**.
 
+#### M5-27 One way to compose a row
+- Status: review
+- Priority: high
+- Needs: —
+- Do: Monsters, equipment, and soon bound weapons and summons each build a row from a base, layers, and overrides, each in its own code. Define one composition (`compose(base, layers, overrides)`) with one set of merge rules, and use it for monsters and equipment without changing any resolved row, so M3-09 and M3-10 add layers and no new merge code.
+- Keys: `compose_row` in `validate.py`
+- Files: ~5 (docs/core/composition.md, docs/modules/monsters.md, ruleset/scripts/validate.py, ruleset/scripts/test_composition.py)
+- See: docs/modules/monsters.md#merge-rules, docs/core/overrides.md
+- Done when: monsters and equipment both use `compose_row`; every resolved row is unchanged; tests cover order, attribute merge, `$extend`, and identity.
+
 #### M5-26 References are typed by category
 - Status: review
 - Priority: high
