@@ -331,6 +331,7 @@
     },
     {
       "key": "bound_weapon",
+      "parameter_category": "weapon",
       "label": "Bound Weapon",
       "description": "Conjures a weapon of shaped energy in the caster's hand. Use 'parameter' for the weapon it copies (e.g. 'core:weapon/longsword'); the caster attacks with that weapon's skill. Magnitude is the number of weapons conjured (normally 1). The weapon vanishes when the duration ends or it leaves the caster's hand.",
       "category": "conjure",
@@ -626,6 +627,7 @@
     },
     {
       "key": "fortify_skill",
+      "parameter_category": "skill",
       "label": "Fortify Skill",
       "description": "Temporarily or permanently increases a specific skill rating (0-100 scale). Use 'parameter' to specify the skill id (e.g. 'blades', 'red_magic'). Magnitude is the bonus in skill points. When applied, use 'durationType': 'unlimited' (stackable, magnitudes add) or 'temporal' (same effect+parameter override each other; highest magnitude wins as the persistent value, typically with longest duration).",
       "category": "fortify",

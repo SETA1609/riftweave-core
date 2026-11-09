@@ -503,6 +503,40 @@ def _is_effect_registry(data):
     )
 
 
+def check_effect_parameters(data_files, module_data_files=None):
+    """Gate 2 (docs/core/integrity.md): where an effect names a parameter_category, every use of
+    that effect has a parameter that references that category."""
+    wanted = {}
+    files = list(_all_files(data_files, module_data_files))
+    loaded = [(fp, _load_json_file(fp)) for fp in files]
+    for _, data in loaded:
+        if data is not None and _is_effect_registry(data):
+            for row in data["effects"]:
+                if row.get("parameter_category"):
+                    wanted[f"core:effect/{row['key']}"] = row["parameter_category"]
+    errors = []
+
+    def walk(node, fp):
+        if isinstance(node, dict):
+            category = wanted.get(node.get("effect"))
+            if category and "parameter" in node:
+                value = node["parameter"]
+                core = isinstance(value, str) and value.startswith(f"core:{category}/")
+                module = isinstance(value, str) and re.match(rf"^module:[a-z0-9_]+/{category}/", value)
+                if not core and not module:
+                    errors.append(f"{fp}: {node['effect']} needs a {category} reference, got {value!r}")
+            for child in node.values():
+                walk(child, fp)
+        elif isinstance(node, list):
+            for child in node:
+                walk(child, fp)
+
+    for fp, data in loaded:
+        if data is not None:
+            walk(data, fp)
+    return errors
+
+
 def check_effect_usage(data_files, module_data_files=None):
     """Gate 3 (docs/core/integrity.md): every core registry effect is referenced from a file outside the
     registry, or is marked reserved; a reserved effect must not be referenced."""
@@ -1501,6 +1535,7 @@ def main():
     for label, errors in (
         ("references (every core: ref resolves)", check_all_references(data_files, module_data_files)),
         ("effects (used or reserved)", check_effect_usage(data_files, module_data_files)),
+        ("effect parameters", check_effect_parameters(data_files, module_data_files)),
     ):
         if errors:
             print(f"  \u2717  {label}")
