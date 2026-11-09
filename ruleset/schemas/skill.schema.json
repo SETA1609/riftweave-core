@@ -36,7 +36,7 @@
           "default": true
         }
       },
-      "required": ["id", "key", "label", "description", "associatedAbility", "category"],
+      "required": ["key", "label", "description", "associatedAbility", "category"],
       "additionalProperties": false
     }
   }

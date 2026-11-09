@@ -92,7 +92,7 @@
     "entryId": {
       "type": "integer",
       "minimum": 1,
-      "description": "Numeric primary identifier for an entry within a collection (effects, skills, features, races, materials, ingredients, equipment, spells, monsters, backgrounds, etc.). Used only for the entry's own 'id' field - cross-references between collections must use string keys (bare or namespaced) instead."
+      "description": "Deprecated; a row's identity is its key (docs/core/keys.md). Numeric primary identifier for an entry within a collection (effects, skills, features, races, materials, ingredients, equipment, spells, monsters, backgrounds, etc.). Used only for the entry's own 'id' field - cross-references between collections must use string keys (bare or namespaced) instead."
     },
     "appliedEffect": {
       "type": "object",

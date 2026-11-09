@@ -91,7 +91,7 @@
           "items": { "$ref": "schema.json#/definitions/skillRef" }
         }
       },
-      "required": ["id", "key", "label", "description"],
+      "required": ["key", "label", "description"],
       "additionalProperties": false
     }
   }

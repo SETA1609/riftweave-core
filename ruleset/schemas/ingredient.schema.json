@@ -39,7 +39,7 @@
         },
         "tags": { "type": "array", "items": { "type": "string" } }
       },
-      "required": ["id", "key", "label", "description", "effects"],
+      "required": ["key", "label", "description", "effects"],
       "additionalProperties": false
     }
   }

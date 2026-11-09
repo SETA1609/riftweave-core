@@ -29,7 +29,7 @@
         "skill": { "$ref": "#/definitions/skillRef", "description": "The skill that rolls." },
         "opposed_by": { "$ref": "#/definitions/skillRef", "description": "Optional: the skill the other side rolls in a contest. How the two results compare is not specified yet (docs/core/checks.md)." }
       },
-      "required": ["id", "key", "label", "description", "skill"],
+      "required": ["key", "label", "description", "skill"],
       "additionalProperties": false
     }
   }

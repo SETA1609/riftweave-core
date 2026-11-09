@@ -54,7 +54,7 @@
           "additionalProperties": false
         }
       },
-      "required": ["id", "key", "label", "description", "skill", "category", "difficulty", "inputs", "output"],
+      "required": ["key", "label", "description", "skill", "category", "difficulty", "inputs", "output"],
       "additionalProperties": false
     }
   }

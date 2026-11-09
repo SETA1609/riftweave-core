@@ -208,7 +208,7 @@
             "accessory": { "type": "object" },
             "gear": { "type": "object" }
           },
-          "required": ["id", "key", "label", "description", "type", "cost", "weight"],
+          "required": ["key", "label", "description", "type", "cost", "weight"],
           "additionalProperties": false,
           "oneOf": [
             { "required": ["weapon"] },
@@ -233,7 +233,7 @@
         },
         "overrides": { "$ref": "#/definitions/equipmentData" }
       },
-      "required": ["id", "key", "base", "overrides"],
+      "required": ["key", "base", "overrides"],
       "additionalProperties": false
     }
   }

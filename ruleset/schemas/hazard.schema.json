@@ -55,7 +55,7 @@
         "effects": { "type": "array", "items": { "$ref": "schema.json#/definitions/effectRef" }, "description": "core:effect/<key>, applied when the hazard is not avoided." },
         "source": { "$ref": "schema.json#/definitions/sourceRef" }
       },
-      "required": ["id", "key", "label", "description", "level", "kind", "nature", "trigger", "detect"],
+      "required": ["key", "label", "description", "level", "kind", "nature", "trigger", "detect"],
       "allOf": [
         {
           "if": { "properties": { "nature": { "const": "arcane" } }, "required": ["nature"] },
