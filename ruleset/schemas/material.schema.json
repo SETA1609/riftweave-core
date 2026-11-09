@@ -87,17 +87,6 @@
           "items": {
             "type": "string"
           }
-        },
-        "appliesTo": {
-          "type": "array",
-          "description": "Old guard. Not the authority.",
-          "items": {
-            "type": "string"
-          }
-        },
-        "modifiers": {
-          "type": "object",
-          "description": "Old combined column. Not the authority."
         }
       },
       "required": [
