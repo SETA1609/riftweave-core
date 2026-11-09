@@ -24,6 +24,10 @@
           "description": "Points in one level's pool; reads the var `luck_roll`.",
           "$ref": "schema.json#/definitions/formulaNode"
         },
+        "pool_roll_max": {
+          "description": "The highest hp_roll, mp_roll, or sp_roll on a level-up.",
+          "$ref": "schema.json#/definitions/formulaNode"
+        },
         "luck_roll": {
           "type": "object",
           "properties": {

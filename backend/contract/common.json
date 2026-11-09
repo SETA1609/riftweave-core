@@ -26,7 +26,16 @@
       "properties": {
         "attributes": { "$ref": "#/definitions/attributes" },
         "skills": { "$ref": "#/definitions/skills" },
-        "level": { "type": "integer", "minimum": 1 }
+        "level": { "type": "integer", "minimum": 1 },
+        "growth": {
+          "type": "object",
+          "properties": {
+            "hp": { "type": "integer", "minimum": 0 },
+            "mp": { "type": "integer", "minimum": 0 },
+            "sp": { "type": "integer", "minimum": 0 }
+          },
+          "additionalProperties": false
+        }
       },
       "additionalProperties": false
     },
