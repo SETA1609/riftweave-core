@@ -48,6 +48,17 @@
         }
       ]
     },
+    "pool_roll_max": {
+      "op": "div",
+      "args": [
+        {
+          "attr": "lck"
+        },
+        {
+          "lit": 2
+        }
+      ]
+    },
     "luck_roll": {
       "min": 0,
       "max_attr": "lck"

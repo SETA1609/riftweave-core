@@ -12,6 +12,7 @@ The numbers that turn experience into levels, skill points, and perks. They live
 | `xp_to_reach` | `450 * level * (level - 1)` | total XP needed for `level` |
 | `skill_points` | `5 + INT * 2 + luck_roll` | points in one level's pool |
 | `luck_roll` | `0` to `LCK`, inclusive | the random part of the pool, rolled by the caller |
+| `pool_roll_max` | `floor(LCK / 2)` | the highest `hp_roll`, `mp_roll`, or `sp_roll` |
 | `perks_per_level` | 1 | perks chosen on each level gained |
 | `tag_skills` | 3 | skills tagged at creation |
 | `skill_cost` | normal 2, tag 1 | points for +1 rating |
@@ -26,6 +27,10 @@ The numbers that turn experience into levels, skill points, and perks. They live
 4. **Spending.** One rating point costs `skill_cost.normal` points, or `skill_cost.tag` if the skill is tagged. A skill never goes past `skill_cap`: points that would buy rating above the cap are not spent. Points that cannot buy a whole rating point (one left over on a normal skill) stay in the pool. [A]
 5. **Tag ratio.** The ratio is 2:1 in favour of tag skills, as in `docs/modules/progression.md`. `AGENTS.md` words it as "+2 per point instead of +1", which is the same ratio on a different scale; the data uses cost, so a point is a point. [V 2026-11-02, read both]
 
+## Resource growth
+
+Each level-up after the first adds a luck roll to each resource pool, on top of its row's `per_level_flat`: HP `4 + hp_roll`, mana `2 + mp_roll`, stamina `2 + sp_roll`. Each roll is an input from 0 to `pool_roll_max`, one per pool, so a vector pins it. A roll out of range is refused. `level_up` returns each pool's `gain`. The caller adds the rolls to the actor's stored `growth`, which the derived function reads ([derived.md](derived.md)).
+
 ## Not in the data
 
-Resource growth per level (`hp`, `mp`) is the derived function ([derived.md](derived.md)). Stamina growth stays in `docs/modules/progression.md` until stamina has a derived row. XP awards are guidance to designers, not a rule.
+XP awards are guidance to designers, not a rule.

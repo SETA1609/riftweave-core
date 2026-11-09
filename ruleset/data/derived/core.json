@@ -22,6 +22,16 @@
       "unit": "points"
     },
     {
+      "key": "sp",
+      "label": "Stamina",
+      "attr": "end",
+      "base": 10,
+      "per_point": 5,
+      "per_level_attr": 0,
+      "per_level_flat": 2,
+      "unit": "points"
+    },
+    {
       "key": "ap",
       "label": "Action points",
       "attr": "agi",

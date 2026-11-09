@@ -17,6 +17,9 @@ type Input struct {
 	Experience *int64       `json:"xp"`
 	Actor      *actor.Actor `json:"actor"`
 	LuckRoll   *int64       `json:"luck_roll"`
+	HPRoll     *int64       `json:"hp_roll"`
+	MPRoll     *int64       `json:"mp_roll"`
+	SPRoll     *int64       `json:"sp_roll"`
 	Skill      *int64       `json:"skill"`
 	Tagged     *bool        `json:"tagged"`
 	Points     *int64       `json:"points"`
@@ -32,8 +35,9 @@ type levelResult struct {
 }
 
 type levelUpResult struct {
-	SkillPoints int64 `json:"skill_points"`
-	Perks       int64 `json:"perks"`
+	Gain        map[string]int64 `json:"gain"`
+	SkillPoints int64            `json:"skill_points"`
+	Perks       int64            `json:"perks"`
 }
 
 type spendResult struct {
@@ -88,7 +92,7 @@ func Run(ruleset *data.Ruleset, input Input) (any, error) {
 		}
 		return levelResult{Level: level}, nil
 	case "level_up":
-		if err := requireField(input.Operation, "actor and luck_roll", input.Actor != nil && input.LuckRoll != nil); err != nil {
+		if err := requireField(input.Operation, "actor and the four rolls", input.Actor != nil && input.LuckRoll != nil && input.HPRoll != nil && input.MPRoll != nil && input.SPRoll != nil); err != nil {
 			return nil, err
 		}
 		var attributes actor.Attributes = input.Actor.Attributes
@@ -98,11 +102,29 @@ func Run(ruleset *data.Ruleset, input Input) (any, error) {
 		if *input.LuckRoll < rules.LuckRoll.Minimum || *input.LuckRoll > attributes.Get(rules.LuckMaximumAbility) {
 			return nil, errors.New("luck_roll out of range")
 		}
+		highest, err := rules.PoolRollMaximum.Evaluate(&attributes)
+		if err != nil {
+			return nil, err
+		}
+		var gain map[string]int64 = make(map[string]int64, 3)
+		for _, pool := range []struct {
+			roll *int64
+			key  string
+		}{{input.HPRoll, "hp"}, {input.MPRoll, "mp"}, {input.SPRoll, "sp"}} {
+			if *pool.roll < 0 || *pool.roll > highest {
+				return nil, errors.New(pool.key + "_roll out of range")
+			}
+			stat, err := ruleset.Derived.Require("derived stat", pool.key)
+			if err != nil {
+				return nil, err
+			}
+			gain[pool.key] = stat.PerLevelFlat + *pool.roll
+		}
 		points, err := rules.SkillPoints.Evaluate(&attributes, formula.Variable{Name: "luck_roll", Value: *input.LuckRoll})
 		if err != nil {
 			return nil, err
 		}
-		return levelUpResult{SkillPoints: points, Perks: rules.PerksPerLevel}, nil
+		return levelUpResult{SkillPoints: points, Perks: rules.PerksPerLevel, Gain: gain}, nil
 	case "spend":
 		var allGiven bool = input.Skill != nil && input.Tagged != nil && input.Points != nil
 		if err := requireField(input.Operation, "skill, tagged and points", allGiven); err != nil {

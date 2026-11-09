@@ -1,5 +1,5 @@
 // Package derived computes the stats an actor's attributes and level set: hit points, mana,
-// action points, carry weight, initiative (docs/core/derived.md), and the action pool and
+// stamina, action points, carry weight, initiative (docs/core/derived.md), and the action pool and
 // action costs (docs/core/actions.md). Every coefficient is a row in the data.
 package derived
 
@@ -27,7 +27,8 @@ func Compute(ruleset *data.Ruleset, character actor.Actor, modifiers []modifier.
 		var attributeValue int64 = character.Attributes.Get(stat.Ability)
 		var unmodifiedValue int64 = stat.Base +
 			formula.FloorDivide(attributeValue*stat.PerPoint, stat.PerPointDivisor) +
-			level*(attributeValue*stat.PerLevelAttribute+stat.PerLevelFlat)
+			level*(attributeValue*stat.PerLevelAttribute+stat.PerLevelFlat) +
+			character.Growth[stat.Key]
 		modifiedValue, err := modifier.Value(unmodifiedValue, modifier.Target(modifiers, stat.Key), ruleset.Origins, 0, nil)
 		if err != nil {
 			return nil, err

@@ -15,5 +15,9 @@
       { "target": "hp", "op": "add", "value": 8, "source": "perk:tough" }
     ],
     "expect": { "hp": 67 }
-  }
+  },
+  {"name": "stamina: END 5 at level 1, no growth", "function": "derived", "actor": {"attributes": {"end": 5, "int": 4, "agi": 6, "str": 7, "per": 5}, "level": 1}, "modifiers": [], "expect": {"hp": 59, "mp": 34, "sp": 37, "ap": 4, "carry": 95, "initiative": 5}},
+  {"name": "growth 0 gives today's values at level 30", "function": "derived", "actor": {"attributes": {"end": 5, "int": 10}, "level": 30, "growth": {"hp": 0, "mp": 0, "sp": 0}}, "modifiers": [], "expect": {"hp": 175, "mp": 140, "sp": 95, "ap": 2, "carry": 25, "initiative": 0}},
+  {"name": "growth: the best rolls at LCK 10 add 29 x 5 by level 30", "function": "derived", "actor": {"attributes": {"end": 5, "int": 10}, "level": 30, "growth": {"hp": 145, "mp": 145, "sp": 145}}, "modifiers": [], "expect": {"hp": 320, "mp": 285, "sp": 240, "ap": 2, "carry": 25, "initiative": 0}},
+  {"name": "growth: a pool's growth reaches only that pool", "function": "derived", "actor": {"attributes": {"end": 5, "int": 4}, "level": 2, "growth": {"mp": 3}}, "modifiers": [], "expect": {"hp": 63, "mp": 39, "sp": 39, "ap": 2, "carry": 25, "initiative": 0}}
 ]

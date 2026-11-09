@@ -221,6 +221,7 @@ type Progression struct {
 	SkillCap          int64           `json:"skill_cap"`
 	ExperienceToReach formula.Program `json:"xp_to_reach"`
 	SkillPoints       formula.Program `json:"skill_points"`
+	PoolRollMaximum   formula.Program `json:"pool_roll_max"`
 	LuckRoll          struct {
 		Minimum          int64  `json:"min"`
 		MaximumAttribute string `json:"max_attr"`

@@ -182,7 +182,7 @@ Reference values for building encounters and gear. They are not rules; tune them
 | Fighter | 7 | 75 | 111 | 151 | 191 |
 | Tank | 9 | 91 | 127 | 167 | 207 |
 
-HP grows slowly with level: END and gear matter more than level. The older table here (551 HP at level 30) assumed `END × 8 + 4` per level; the data never said that.
+HP grows slowly with level: END and gear matter more than level. The older table here (551 HP at level 30) assumed `END × 8 + 4` per level; the data never said that. The table has no luck growth; each level-up can add up to `⌊LCK / 2⌋` more ([progression.md](../core/progression.md#resource-growth)).
 
 ### Damage and DR by tier
 

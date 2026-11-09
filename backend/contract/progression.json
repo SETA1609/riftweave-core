@@ -29,6 +29,15 @@
       "luck_roll": {
         "type": "integer"
       },
+      "hp_roll": {
+        "type": "integer"
+      },
+      "mp_roll": {
+        "type": "integer"
+      },
+      "sp_roll": {
+        "type": "integer"
+      },
       "skill": {
         "type": "integer"
       },
@@ -69,6 +78,26 @@
       },
       "perks": {
         "type": "integer"
+      },
+      "gain": {
+        "type": "object",
+        "properties": {
+          "hp": {
+            "type": "integer"
+          },
+          "mp": {
+            "type": "integer"
+          },
+          "sp": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "hp",
+          "mp",
+          "sp"
+        ],
+        "additionalProperties": false
       },
       "ranks": {
         "type": "integer"

@@ -16,7 +16,7 @@ skill   the row's skills[key], when written
   computed one. Rows written before this rule keep theirs, because computed HP is far above
   the balance bands: level 3 with END 4 computes 59, where `dire_wolf` is written as 33.
   [V 2026-11-10]
-- **Mana.** Computed, like every other derived stat. No monster row stores it. [V 2026-11-10]
+- **Mana and stamina.** Computed, like every other derived stat. No monster row stores them. [V 2026-11-10]
 - **A reduced skill sheet.** A row writes only the skills it fights or casts with. Any other
   skill reads as a player's starting value, from `skill_start` in `progression/core.json`.
 - **A missing attribute reads 0**, as it does in `derived`.

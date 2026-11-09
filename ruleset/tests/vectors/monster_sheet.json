@@ -20,7 +20,8 @@
       "ap": 4,
       "carry": 65,
       "initiative": 4,
-      "skills": {}
+      "skills": {},
+      "sp": 36
     }
   },
   {
@@ -44,7 +45,8 @@
       "mp": 46,
       "ap": 4,
       "carry": 65,
-      "initiative": 4
+      "initiative": 4,
+      "sp": 36
     }
   },
   {
@@ -69,7 +71,8 @@
       "ap": 4,
       "carry": 65,
       "initiative": 4,
-      "skills": {}
+      "skills": {},
+      "sp": 36
     }
   },
   {
