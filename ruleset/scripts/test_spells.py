@@ -95,6 +95,20 @@ class TestSpells(unittest.TestCase):
             with self.subTest(color=color):
                 self.assertEqual({"damage", "utility", "defensive"} - by_color[color], GAPS.get(color, set()))
 
+    def test_every_summon_names_a_group_of_existing_monsters(self):
+        monsters = {m["key"] for m in json.loads((DATA / "monsters" / "core.json").read_text())["monsters"]}
+        groups = {g["key"]: g for g in json.loads((DATA / "summons" / "core.json").read_text())["summons"]}
+        summons = [e for s in spells() for e in s["effects"] if e["effect"] == "core:effect/summon"]
+        self.assertTrue(summons)
+        for effect in summons:
+            with self.subTest(parameter=effect["parameter"]):
+                self.assertTrue(effect["parameter"].startswith("core:summon/"))
+                self.assertIn(effect["parameter"].removeprefix("core:summon/"), groups)
+        for key, group in groups.items():
+            for variant in group["variants"]:
+                with self.subTest(group=key, variant=variant):
+                    self.assertIn(variant.removeprefix("core:monster/"), monsters)
+
     def test_the_hazard_and_lock_spells_exist(self):
         rows = {row["key"]: row for row in spells()}
         expected = {"disarm_trap": "disarm_hazard", "greater_disarm": "disarm_hazard", "unlock": "unlock",
