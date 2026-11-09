@@ -81,6 +81,7 @@ func (attributes *Attributes) UnmarshalJSON(encoded []byte) error {
 type Actor struct {
 	Attributes Attributes       `json:"attributes"`
 	Skills     map[string]int64 `json:"skills"`
+	Growth     map[string]int64 `json:"growth"` // per pool, from level-up luck rolls
 	Level      *int64           `json:"level"`
 }
 

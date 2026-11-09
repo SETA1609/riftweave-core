@@ -162,6 +162,7 @@ class Replay:
         values = {
             "hp": 15 + 8 * attributes["end"] + 4 * level,
             "mp": 8 * attributes["int"] + 2 * level,
+            "sp": 10 + 5 * attributes["end"] + 2 * level,
             "ap": 2 + attributes["agi"] // 3,
             "carry": 25 + 10 * attributes["str"],
             "initiative": attributes["per"],
@@ -193,7 +194,10 @@ def vectors(all_replays):
                 "op": "level_up",
                 "actor": {"attributes": replay.final},
                 "luck_roll": sheet["luck_roll"],
-                "expect": {"skill_points": sheet["pool"], "perks": 1},
+                "hp_roll": 0,
+                "mp_roll": 0,
+                "sp_roll": 0,
+                "expect": {"skill_points": sheet["pool"], "perks": 1, "gain": {"hp": 4, "mp": 2, "sp": 2}},
             })
     return out
 

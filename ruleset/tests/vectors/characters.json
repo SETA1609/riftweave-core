@@ -19,6 +19,7 @@
     "expect": {
       "hp": 83,
       "mp": 42,
+      "sp": 52,
       "ap": 3,
       "carry": 95,
       "initiative": 5
@@ -41,9 +42,17 @@
       }
     },
     "luck_roll": 4,
+    "hp_roll": 0,
+    "mp_roll": 0,
+    "sp_roll": 0,
     "expect": {
       "skill_points": 19,
-      "perks": 1
+      "perks": 1,
+      "gain": {
+        "hp": 4,
+        "mp": 2,
+        "sp": 2
+      }
     }
   },
   {
@@ -74,6 +83,7 @@
     "expect": {
       "hp": 102,
       "mp": 44,
+      "sp": 54,
       "ap": 3,
       "carry": 95,
       "initiative": 5
@@ -96,9 +106,17 @@
       }
     },
     "luck_roll": 2,
+    "hp_roll": 0,
+    "mp_roll": 0,
+    "sp_roll": 0,
     "expect": {
       "skill_points": 17,
-      "perks": 1
+      "perks": 1,
+      "gain": {
+        "hp": 4,
+        "mp": 2,
+        "sp": 2
+      }
     }
   },
   {
@@ -129,6 +147,7 @@
     "expect": {
       "hp": 121,
       "mp": 46,
+      "sp": 56,
       "ap": 3,
       "carry": 95,
       "initiative": 5
@@ -151,9 +170,17 @@
       }
     },
     "luck_roll": 6,
+    "hp_roll": 0,
+    "mp_roll": 0,
+    "sp_roll": 0,
     "expect": {
       "skill_points": 21,
-      "perks": 1
+      "perks": 1,
+      "gain": {
+        "hp": 4,
+        "mp": 2,
+        "sp": 2
+      }
     }
   },
   {
@@ -191,6 +218,7 @@
     "expect": {
       "hp": 125,
       "mp": 48,
+      "sp": 58,
       "ap": 3,
       "carry": 120,
       "initiative": 5
@@ -213,9 +241,17 @@
       }
     },
     "luck_roll": 3,
+    "hp_roll": 0,
+    "mp_roll": 0,
+    "sp_roll": 0,
     "expect": {
       "skill_points": 18,
-      "perks": 1
+      "perks": 1,
+      "gain": {
+        "hp": 4,
+        "mp": 2,
+        "sp": 2
+      }
     }
   },
   {
@@ -253,6 +289,7 @@
     "expect": {
       "hp": 129,
       "mp": 50,
+      "sp": 60,
       "ap": 3,
       "carry": 120,
       "initiative": 5
@@ -275,9 +312,17 @@
       }
     },
     "luck_roll": 5,
+    "hp_roll": 0,
+    "mp_roll": 0,
+    "sp_roll": 0,
     "expect": {
       "skill_points": 20,
-      "perks": 1
+      "perks": 1,
+      "gain": {
+        "hp": 4,
+        "mp": 2,
+        "sp": 2
+      }
     }
   },
   {
@@ -315,6 +360,7 @@
     "expect": {
       "hp": 133,
       "mp": 52,
+      "sp": 62,
       "ap": 3,
       "carry": 120,
       "initiative": 5
@@ -337,9 +383,17 @@
       }
     },
     "luck_roll": 1,
+    "hp_roll": 0,
+    "mp_roll": 0,
+    "sp_roll": 0,
     "expect": {
       "skill_points": 16,
-      "perks": 1
+      "perks": 1,
+      "gain": {
+        "hp": 4,
+        "mp": 2,
+        "sp": 2
+      }
     }
   },
   {
@@ -377,6 +431,7 @@
     "expect": {
       "hp": 152,
       "mp": 54,
+      "sp": 64,
       "ap": 3,
       "carry": 120,
       "initiative": 5
@@ -399,9 +454,17 @@
       }
     },
     "luck_roll": 7,
+    "hp_roll": 0,
+    "mp_roll": 0,
+    "sp_roll": 0,
     "expect": {
       "skill_points": 22,
-      "perks": 1
+      "perks": 1,
+      "gain": {
+        "hp": 4,
+        "mp": 2,
+        "sp": 2
+      }
     }
   },
   {
@@ -439,6 +502,7 @@
     "expect": {
       "hp": 156,
       "mp": 56,
+      "sp": 66,
       "ap": 3,
       "carry": 120,
       "initiative": 5
@@ -461,9 +525,17 @@
       }
     },
     "luck_roll": 3,
+    "hp_roll": 0,
+    "mp_roll": 0,
+    "sp_roll": 0,
     "expect": {
       "skill_points": 18,
-      "perks": 1
+      "perks": 1,
+      "gain": {
+        "hp": 4,
+        "mp": 2,
+        "sp": 2
+      }
     }
   },
   {
@@ -501,6 +573,7 @@
     "expect": {
       "hp": 160,
       "mp": 58,
+      "sp": 68,
       "ap": 3,
       "carry": 120,
       "initiative": 5
@@ -523,9 +596,17 @@
       }
     },
     "luck_roll": 4,
+    "hp_roll": 0,
+    "mp_roll": 0,
+    "sp_roll": 0,
     "expect": {
       "skill_points": 19,
-      "perks": 1
+      "perks": 1,
+      "gain": {
+        "hp": 4,
+        "mp": 2,
+        "sp": 2
+      }
     }
   },
   {
@@ -563,6 +644,7 @@
     "expect": {
       "hp": 164,
       "mp": 60,
+      "sp": 70,
       "ap": 3,
       "carry": 120,
       "initiative": 5
@@ -585,9 +667,17 @@
       }
     },
     "luck_roll": 2,
+    "hp_roll": 0,
+    "mp_roll": 0,
+    "sp_roll": 0,
     "expect": {
       "skill_points": 17,
-      "perks": 1
+      "perks": 1,
+      "gain": {
+        "hp": 4,
+        "mp": 2,
+        "sp": 2
+      }
     }
   },
   {
@@ -610,6 +700,7 @@
     "expect": {
       "hp": 51,
       "mp": 74,
+      "sp": 32,
       "ap": 3,
       "carry": 65,
       "initiative": 5
@@ -632,9 +723,17 @@
       }
     },
     "luck_roll": 3,
+    "hp_roll": 0,
+    "mp_roll": 0,
+    "sp_roll": 0,
     "expect": {
       "skill_points": 26,
-      "perks": 1
+      "perks": 1,
+      "gain": {
+        "hp": 4,
+        "mp": 2,
+        "sp": 2
+      }
     }
   },
   {
@@ -665,6 +764,7 @@
     "expect": {
       "hp": 55,
       "mp": 86,
+      "sp": 34,
       "ap": 3,
       "carry": 65,
       "initiative": 5
@@ -687,9 +787,17 @@
       }
     },
     "luck_roll": 1,
+    "hp_roll": 0,
+    "mp_roll": 0,
+    "sp_roll": 0,
     "expect": {
       "skill_points": 24,
-      "perks": 1
+      "perks": 1,
+      "gain": {
+        "hp": 4,
+        "mp": 2,
+        "sp": 2
+      }
     }
   },
   {
@@ -720,6 +828,7 @@
     "expect": {
       "hp": 59,
       "mp": 88,
+      "sp": 36,
       "ap": 3,
       "carry": 65,
       "initiative": 5
@@ -742,9 +851,17 @@
       }
     },
     "luck_roll": 4,
+    "hp_roll": 0,
+    "mp_roll": 0,
+    "sp_roll": 0,
     "expect": {
       "skill_points": 27,
-      "perks": 1
+      "perks": 1,
+      "gain": {
+        "hp": 4,
+        "mp": 2,
+        "sp": 2
+      }
     }
   },
   {
@@ -775,6 +892,7 @@
     "expect": {
       "hp": 63,
       "mp": 90,
+      "sp": 38,
       "ap": 3,
       "carry": 65,
       "initiative": 5
@@ -797,9 +915,17 @@
       }
     },
     "luck_roll": 2,
+    "hp_roll": 0,
+    "mp_roll": 0,
+    "sp_roll": 0,
     "expect": {
       "skill_points": 25,
-      "perks": 1
+      "perks": 1,
+      "gain": {
+        "hp": 4,
+        "mp": 2,
+        "sp": 2
+      }
     }
   },
   {
@@ -830,6 +956,7 @@
     "expect": {
       "hp": 67,
       "mp": 102,
+      "sp": 40,
       "ap": 3,
       "carry": 65,
       "initiative": 5
@@ -852,9 +979,17 @@
       }
     },
     "luck_roll": 5,
+    "hp_roll": 0,
+    "mp_roll": 0,
+    "sp_roll": 0,
     "expect": {
       "skill_points": 28,
-      "perks": 1
+      "perks": 1,
+      "gain": {
+        "hp": 4,
+        "mp": 2,
+        "sp": 2
+      }
     }
   },
   {
@@ -885,6 +1020,7 @@
     "expect": {
       "hp": 71,
       "mp": 104,
+      "sp": 42,
       "ap": 3,
       "carry": 65,
       "initiative": 5
@@ -907,9 +1043,17 @@
       }
     },
     "luck_roll": 0,
+    "hp_roll": 0,
+    "mp_roll": 0,
+    "sp_roll": 0,
     "expect": {
       "skill_points": 23,
-      "perks": 1
+      "perks": 1,
+      "gain": {
+        "hp": 4,
+        "mp": 2,
+        "sp": 2
+      }
     }
   },
   {
@@ -940,6 +1084,7 @@
     "expect": {
       "hp": 75,
       "mp": 106,
+      "sp": 44,
       "ap": 3,
       "carry": 65,
       "initiative": 5
@@ -962,9 +1107,17 @@
       }
     },
     "luck_roll": 3,
+    "hp_roll": 0,
+    "mp_roll": 0,
+    "sp_roll": 0,
     "expect": {
       "skill_points": 26,
-      "perks": 1
+      "perks": 1,
+      "gain": {
+        "hp": 4,
+        "mp": 2,
+        "sp": 2
+      }
     }
   },
   {
@@ -995,6 +1148,7 @@
     "expect": {
       "hp": 79,
       "mp": 108,
+      "sp": 46,
       "ap": 3,
       "carry": 65,
       "initiative": 5
@@ -1017,9 +1171,17 @@
       }
     },
     "luck_roll": 2,
+    "hp_roll": 0,
+    "mp_roll": 0,
+    "sp_roll": 0,
     "expect": {
       "skill_points": 25,
-      "perks": 1
+      "perks": 1,
+      "gain": {
+        "hp": 4,
+        "mp": 2,
+        "sp": 2
+      }
     }
   },
   {
@@ -1050,6 +1212,7 @@
     "expect": {
       "hp": 83,
       "mp": 110,
+      "sp": 48,
       "ap": 3,
       "carry": 65,
       "initiative": 5
@@ -1072,9 +1235,17 @@
       }
     },
     "luck_roll": 4,
+    "hp_roll": 0,
+    "mp_roll": 0,
+    "sp_roll": 0,
     "expect": {
       "skill_points": 27,
-      "perks": 1
+      "perks": 1,
+      "gain": {
+        "hp": 4,
+        "mp": 2,
+        "sp": 2
+      }
     }
   },
   {
@@ -1105,6 +1276,7 @@
     "expect": {
       "hp": 87,
       "mp": 122,
+      "sp": 50,
       "ap": 3,
       "carry": 65,
       "initiative": 5
@@ -1127,9 +1299,17 @@
       }
     },
     "luck_roll": 1,
+    "hp_roll": 0,
+    "mp_roll": 0,
+    "sp_roll": 0,
     "expect": {
       "skill_points": 24,
-      "perks": 1
+      "perks": 1,
+      "gain": {
+        "hp": 4,
+        "mp": 2,
+        "sp": 2
+      }
     }
   }
 ]

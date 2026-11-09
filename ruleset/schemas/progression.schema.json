@@ -53,7 +53,7 @@
           "additionalProperties": false
         }
       },
-      "required": ["start_level", "max_level", "skill_cap", "xp_to_reach", "skill_points", "luck_roll", "perks_per_level", "tag_skills", "skill_cost"],
+      "required": ["start_level", "max_level", "skill_cap", "xp_to_reach", "skill_points", "pool_roll_max", "luck_roll", "perks_per_level", "tag_skills", "skill_cost"],
       "additionalProperties": false
     }
   }

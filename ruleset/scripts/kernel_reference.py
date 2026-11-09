@@ -194,6 +194,7 @@ def run_derived(vector):
     attributes = actor.get("attributes", {})
     level = actor.get("level", 1)
     modifiers = vector.get("modifiers", [])
+    growth = actor.get("growth", {})
     result = {}
     for stat in load_data("derived/core.json")["derived"]:
         attr = attributes.get(stat["attr"], 0)
@@ -202,6 +203,7 @@ def run_derived(vector):
             stat["base"]
             + attr_term
             + level * (attr * stat["per_level_attr"] + stat["per_level_flat"])
+            + growth.get(stat["key"], 0)
         )
         own = [m for m in modifiers if m.get("target") == stat["key"]]
         result[stat["key"]] = apply_modifiers(value, own)
@@ -481,8 +483,16 @@ def run_progression(vector):
         ceiling = attributes[rules["luck_roll"]["max_attr"]]
         if not rules["luck_roll"]["min"] <= luck_roll <= ceiling:
             return {"error": "luck_roll out of range"}
+        highest = evaluate_formula(rules["pool_roll_max"], attributes)
+        flat = {stat["key"]: stat["per_level_flat"] for stat in load_data("derived/core.json")["derived"]}
+        gain = {}
+        for pool in ("hp", "mp", "sp"):
+            roll = vector[f"{pool}_roll"]
+            if not 0 <= roll <= highest:
+                return {"error": f"{pool}_roll out of range"}
+            gain[pool] = flat[pool] + roll
         points = evaluate_formula(rules["skill_points"], attributes, {"luck_roll": luck_roll})
-        return {"skill_points": points, "perks": rules["perks_per_level"]}
+        return {"skill_points": points, "perks": rules["perks_per_level"], "gain": gain}
     if op == "spend":
         cost = rules["skill_cost"]["tag" if vector["tagged"] else "normal"]
         room = rules["skill_cap"] - vector["skill"]
