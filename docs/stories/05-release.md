@@ -101,7 +101,7 @@ Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-03, M5-07, M5-08, M5-10,
 - Done when: no row or schema has `appliesTo` or `modifiers` on a material; the `weapon`, `armor`, and `ingredient` values are unchanged; no doc outside `docs/archive/` and the frozen logs names either column as a material field; `validate.py` and the tests pass; the changelog fragment marks the removal **(breaking)**.
 
 #### M5-28 Monsters and players share one actor shape
-- Status: todo
+- Status: review
 - Priority: high
 - Needs: —
 - Do: A monster stores hand-written HP and no mana or skills, while a player's are computed, so the same idea has two shapes. A monster row becomes an actor's starting sheet: derived stats use the player function, `hitPoints` is an optional authored value that replaces computed HP, and a reduced `skills` sheet lists what it fights or casts with, with other skills reading a player's starting value. Existing rows keep their HP for now.
