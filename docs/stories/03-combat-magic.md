@@ -13,7 +13,7 @@ Roadmap: [M3](../../ROADMAP.md#where-we-are). Format and rules: [README.md](READ
 Done: M3-01, M3-03, M3-04 ([done.md](done.md#m3-combat-and-magic-playable))
 
 #### M3-08 Summon spells name defined creatures
-- Status: todo
+- Status: review
 - Priority: high
 - Needs: M3-01, M4-03
 - Do: A summon spell may exist only once what it summons is defined as data. Today `summon`'s `parameter` is a free word (`familiar`, `elemental`, `undead`), so nothing says what appears; `bound_weapon` already names a row (`core:weapon/longsword`). Add a collection of summon groups: each row has a key, a label, and `variants`, a list of `core:monster/<key>` refs (the caster picks one when casting [A]). A summon's `parameter` becomes `core:summon/<key>`, and `magnitude` stays the count. Three groups to start: familiars, elementals, and undead. Familiars have no creature yet, so add a familiar base and at least three rows (proposal: small beasts with no attacks worth a fight [A]). Elementals use the existing Fire Elemental and Ice Elemental plus variants built from the elemental base and the element templates (`storm`, `acid`, `venom`). Undead use Skeleton and Zombie. Decide whether a stronger spell needs its own group with stronger variants, or scales one group by the spell's level. Convert all five summons on `main`: Summon Familiar, Summon Elemental, Conjured Legion, Raise Thrall, and Raise Horde. They shipped with M3-02 ahead of this issue.
