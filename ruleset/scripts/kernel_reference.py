@@ -491,7 +491,30 @@ def run_progression(vector):
     raise ValueError(f"progression op {op!r} is not defined")
 
 
+def run_monster_sheet(vector):
+    """A monster's stats and skills by the player rules (docs/core/actor-sheet.md)."""
+    row = vector["monster"]
+    attributes = row.get("attributes", {})
+    result = run_derived({"actor": {"attributes": attributes, "level": row.get("level", 1)}})
+    if "hitPoints" in row:
+        result["hp"] = row["hitPoints"]
+    rule = load_data("progression/core.json")["progression"]["skill_start"]
+    governing = {s["key"]: s["associatedAbility"] for s in load_data("skills/core.json")["skills"]}
+    written = row.get("skills", {})
+    skills = {}
+    for key in vector.get("read_skills", []):
+        if key in written:
+            skills[key] = written[key]
+        elif key in governing:
+            skills[key] = evaluate_formula(rule, {}, {"attribute": attributes.get(governing[key], 0)})
+        else:
+            return {"error": f'skill "{key}" is not defined'}
+    result["skills"] = skills
+    return result
+
+
 RUNNERS = {
+    "monster_sheet": run_monster_sheet,
     "resolution": run_resolution,
     "derived": run_derived,
     "formula": run_formula,

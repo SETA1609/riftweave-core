@@ -83,20 +83,21 @@ func bind[Input, Output any](run func(*data.Ruleset, Input) (Output, error)) com
 
 // commands is the registry, keyed by the command and vector function name.
 var commands map[string]commandHandler = map[string]commandHandler{
-	"resolution":  bind(resolution.Run),
-	"derived":     bind(derived.Run),
-	"actions":     bind(derived.RunActions),
-	"formula":     bind(runFormula),
-	"modifiers":   bind(runModifiers),
-	"conditions":  bind(condition.Run),
-	"wuxing":      bind(wuxing.Run),
-	"economy":     bind(economy.Run),
-	"rest":        bind(rest.Run),
-	"combat":      bind(combat.Run),
-	"loot":        bind(loot.Run),
-	"hazard":      bind(hazard.Run),
-	"casting":     bind(casting.Run),
-	"progression": bind(progression.Run),
+	"resolution":    bind(resolution.Run),
+	"derived":       bind(derived.Run),
+	"actions":       bind(derived.RunActions),
+	"monster_sheet": bind(derived.RunMonsterSheet),
+	"formula":       bind(runFormula),
+	"modifiers":     bind(runModifiers),
+	"conditions":    bind(condition.Run),
+	"wuxing":        bind(wuxing.Run),
+	"economy":       bind(economy.Run),
+	"rest":          bind(rest.Run),
+	"combat":        bind(combat.Run),
+	"loot":          bind(loot.Run),
+	"hazard":        bind(hazard.Run),
+	"casting":       bind(casting.Run),
+	"progression":   bind(progression.Run),
 }
 
 // Core is an opened ruleset.

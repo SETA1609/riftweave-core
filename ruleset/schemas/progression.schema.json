@@ -33,6 +33,10 @@
           "required": ["min", "max_attr"],
           "additionalProperties": false
         },
+        "skill_start": {
+          "description": "A skill's starting value; reads the var `attribute`.",
+          "$ref": "schema.json#/definitions/formulaNode"
+        },
         "perks_per_level": { "type": "integer", "minimum": 0 },
         "tag_skills": { "type": "integer", "minimum": 0 },
         "skill_cost": {

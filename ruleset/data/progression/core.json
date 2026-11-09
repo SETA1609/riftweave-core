@@ -52,6 +52,25 @@
       "min": 0,
       "max_attr": "lck"
     },
+    "skill_start": {
+      "op": "add",
+      "args": [
+        {
+          "lit": 5
+        },
+        {
+          "op": "mul",
+          "args": [
+            {
+              "var": "attribute"
+            },
+            {
+              "lit": 2
+            }
+          ]
+        }
+      ]
+    },
     "perks_per_level": 1,
     "tag_skills": 3,
     "skill_cost": {

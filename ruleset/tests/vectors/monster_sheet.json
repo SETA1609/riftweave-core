@@ -1,0 +1,178 @@
+[
+  {
+    "name": "computed: the player formulas, level 3",
+    "monster": {
+      "attributes": {
+        "str": 4,
+        "per": 4,
+        "end": 4,
+        "int": 5,
+        "wil": 2,
+        "agi": 6,
+        "cha": 3,
+        "lck": 3
+      },
+      "level": 3
+    },
+    "expect": {
+      "hp": 59,
+      "mp": 46,
+      "ap": 4,
+      "carry": 65,
+      "initiative": 4,
+      "skills": {}
+    }
+  },
+  {
+    "name": "the same attributes and level as a player give the same stats",
+    "function": "derived",
+    "actor": {
+      "attributes": {
+        "str": 4,
+        "per": 4,
+        "end": 4,
+        "int": 5,
+        "wil": 2,
+        "agi": 6,
+        "cha": 3,
+        "lck": 3
+      },
+      "level": 3
+    },
+    "expect": {
+      "hp": 59,
+      "mp": 46,
+      "ap": 4,
+      "carry": 65,
+      "initiative": 4
+    }
+  },
+  {
+    "name": "authored hitPoints replaces only the computed hp",
+    "monster": {
+      "attributes": {
+        "str": 4,
+        "per": 4,
+        "end": 4,
+        "int": 5,
+        "wil": 2,
+        "agi": 6,
+        "cha": 3,
+        "lck": 3
+      },
+      "level": 3,
+      "hitPoints": 33
+    },
+    "expect": {
+      "hp": 33,
+      "mp": 46,
+      "ap": 4,
+      "carry": 65,
+      "initiative": 4,
+      "skills": {}
+    }
+  },
+  {
+    "name": "no level reads as level 1",
+    "monster": {
+      "attributes": {
+        "end": 4
+      }
+    },
+    "expect": {
+      "hp": 51,
+      "mp": 2
+    }
+  },
+  {
+    "name": "a written skill is read as written",
+    "monster": {
+      "attributes": {
+        "str": 4,
+        "per": 4,
+        "end": 4,
+        "int": 5,
+        "wil": 2,
+        "agi": 6,
+        "cha": 3,
+        "lck": 3
+      },
+      "level": 3,
+      "skills": {
+        "blades": 60
+      }
+    },
+    "read_skills": [
+      "blades"
+    ],
+    "expect": {
+      "skills": {
+        "blades": 60
+      }
+    }
+  },
+  {
+    "name": "an unwritten skill is a starting value",
+    "monster": {
+      "attributes": {
+        "str": 4,
+        "per": 4,
+        "end": 4,
+        "int": 5,
+        "wil": 2,
+        "agi": 6,
+        "cha": 3,
+        "lck": 3
+      },
+      "level": 3,
+      "skills": {
+        "blades": 60
+      }
+    },
+    "read_skills": [
+      "stealth"
+    ],
+    "expect": {
+      "skills": {
+        "stealth": 17
+      }
+    }
+  },
+  {
+    "name": "a missing attribute reads 0 for a starting value",
+    "monster": {
+      "attributes": {
+        "end": 4
+      }
+    },
+    "read_skills": [
+      "stealth"
+    ],
+    "expect": {
+      "skills": {
+        "stealth": 5
+      }
+    }
+  },
+  {
+    "name": "error: an unknown skill",
+    "monster": {
+      "attributes": {
+        "str": 4,
+        "per": 4,
+        "end": 4,
+        "int": 5,
+        "wil": 2,
+        "agi": 6,
+        "cha": 3,
+        "lck": 3
+      }
+    },
+    "read_skills": [
+      "nope"
+    ],
+    "expect": {
+      "error": "skill \"nope\" is not defined"
+    }
+  }
+]
