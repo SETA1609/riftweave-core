@@ -25,11 +25,15 @@ type Input struct {
 	Modifiers []modifier.Modifier `json:"modifiers"`
 }
 
-// Item is a stack of one item, with the material a loot row set.
+// Item is a stack of one item, with the material that landed on it and, for a sized weapon,
+// its size, its dice after the size step, and its attack change.
 type Item struct {
+	Material *string `json:"material,omitempty"`
+	Size     *string `json:"size,omitempty"`
+	Dice     *string `json:"dice,omitempty"`
+	Attack   *int64  `json:"attack,omitempty"`
 	Item     string  `json:"item"`
 	Quantity int64   `json:"quantity"`
-	Material *string `json:"material,omitempty"`
 }
 
 // Result is what dropped. A table input has `table`; a monster input has `tables`.
@@ -44,8 +48,8 @@ type Result struct {
 }
 
 type itemStack struct {
-	reference, material string
-	quantity            int64
+	reference, material, size string
+	quantity                  int64
 }
 
 type roller struct {
@@ -54,7 +58,10 @@ type roller struct {
 	items   []itemStack
 }
 
-func (roller *roller) add(reference string, quantity int64, material string) {
+// add stacks an item with what lands on it (docs/core/loot.md#what-lands-on-an-item): the
+// row's material if the item is found in it, else its first default; the row's size on a
+// weapon only.
+func (roller *roller) add(reference string, quantity int64, material, size string) {
 	item, ok := roller.ruleset.Items[reference]
 	if !ok {
 		roller.err = &data.NotDefinedError{Kind: "item", Key: reference}
@@ -63,17 +70,39 @@ func (roller *roller) add(reference string, quantity int64, material string) {
 	if !item.TakesMaterial {
 		material = ""
 	}
+	if material != "" && len(item.DefaultMaterials) > 0 &&
+		!slices.Contains(item.DefaultMaterials, material[strings.LastIndex(material, "/")+1:]) {
+		material = "core:material/" + item.DefaultMaterials[0]
+	}
+	if !item.IsWeapon || size == "normal" {
+		size = ""
+	}
 	for index := range roller.items {
-		if roller.items[index].reference == reference && roller.items[index].material == material {
-			roller.items[index].quantity += quantity
+		var stack *itemStack = &roller.items[index]
+		if stack.reference == reference && stack.material == material && stack.size == size {
+			stack.quantity += quantity
 			return
 		}
 	}
-	roller.items = append(roller.items, itemStack{reference: reference, material: material, quantity: quantity})
+	roller.items = append(roller.items, itemStack{reference: reference, material: material, size: size, quantity: quantity})
+}
+
+// sized is a weapon's dice one size step up or down the ladder, and the size's attack.
+func sized(ruleset *data.Ruleset, dice string, size data.Size) (string, error) {
+	for rung, dices := range ruleset.DiceLadder {
+		if slices.Contains(dices, dice) {
+			var target int = rung + int(size.DiceStep)
+			if target < 0 || target >= len(ruleset.DiceLadder) {
+				return "", fmt.Errorf("%s has no rung %d steps away", dice, size.DiceStep)
+			}
+			return ruleset.DiceLadder[target][0], nil
+		}
+	}
+	return "", fmt.Errorf("%s is not on the dice ladder", dice)
 }
 
 // rollTable rolls one table and returns the copper it yields; its items are added.
-func (roller *roller) rollTable(table *data.LootTable, rolls []int64, shift int64, material string) int64 {
+func (roller *roller) rollTable(table *data.LootTable, rolls []int64, shift int64, material, size string) int64 {
 	var coins int64
 	for _, roll := range rolls {
 		var entryIndex int8 = table.EntryIndexByRoll[min(max(roll+shift, 1), 100)-1]
@@ -85,21 +114,23 @@ func (roller *roller) rollTable(table *data.LootTable, rolls []int64, shift int6
 		case "coins":
 			coins += entry.CoinsCopper
 		case "item":
-			roller.add(entry.Item, entry.Quantity, material)
+			roller.add(entry.Item, entry.Quantity, material, size)
 		}
 	}
 	return coins
 }
 
 // result sorts and values the items at list price: the price formula at the item's cost,
-// the material's value factor, and 100 percent.
+// a value percent of the material's value factor times the size's percent over 100, rounded
+// down, and 100 percent.
 func (roller *roller) result(coins int64, level int64) (Result, error) {
 	if roller.err != nil {
 		return Result{}, roller.err
 	}
 	var ruleset *data.Ruleset = roller.ruleset
 	slices.SortFunc(roller.items, func(first, second itemStack) int {
-		return cmp.Or(cmp.Compare(first.reference, second.reference), cmp.Compare(first.material, second.material))
+		return cmp.Or(cmp.Compare(first.reference, second.reference), cmp.Compare(first.material, second.material),
+			cmp.Compare(first.size, second.size))
 	})
 	var result Result = Result{Items: make([]Item, 0, len(roller.items)), CoinsCopper: coins}
 	var value int64 = coins
@@ -115,6 +146,20 @@ func (roller *roller) result(coins int64, level int64) (Result, error) {
 			percent = materialPercent
 			var material string = stack.material
 			item.Material = &material
+		}
+		if stack.size != "" {
+			size, ok := ruleset.Sizes[stack.size]
+			if !ok {
+				return Result{}, &data.NotDefinedError{Kind: "size", Key: stack.size}
+			}
+			dice, err := sized(ruleset, ruleset.Items[stack.reference].Dice, size)
+			if err != nil {
+				return Result{}, err
+			}
+			percent = percent * size.ValuePercent / 100
+			var sizeKey string = stack.size
+			var attack int64 = size.Attack
+			item.Size, item.Dice, item.Attack = &sizeKey, &dice, &attack
 		}
 		price, err := economy.Price(ruleset, ruleset.Items[stack.reference].CostCopper, percent, 100)
 		if err != nil {
@@ -171,7 +216,7 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		if int64(len(input.Rolls)) != table.Rolls {
 			return Result{}, fmt.Errorf("%s takes %d rolls, got %d", table.Key, table.Rolls, len(input.Rolls))
 		}
-		var coins int64 = lootRoller.rollTable(table, input.Rolls, looter, "")
+		var coins int64 = lootRoller.rollTable(table, input.Rolls, looter, "", "")
 		result, err := lootRoller.result(coins, table.Level)
 		result.Table, result.LooterShift = &table.Key, looter
 		return result, err
@@ -212,7 +257,7 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 			if row.Quantity != nil {
 				quantity = *row.Quantity
 			}
-			lootRoller.add(row.Item, quantity, row.Material)
+			lootRoller.add(row.Item, quantity, row.Material, row.Size)
 			continue
 		}
 		var table *data.LootTable = ruleset.Loot.Tables.At(row.TableIndex)
@@ -225,7 +270,7 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		if !ok {
 			return Result{}, fmt.Errorf("%s: ran out of rolls after %d", input.Monster, used)
 		}
-		coins += lootRoller.rollTable(table, rolls, row.Shift+looter, row.Material)
+		coins += lootRoller.rollTable(table, rolls, row.Shift+looter, row.Material, row.Size)
 	}
 	if used != len(input.Rolls) {
 		return Result{}, fmt.Errorf("%s: %d rolls given, %d used", input.Monster, len(input.Rolls), used)

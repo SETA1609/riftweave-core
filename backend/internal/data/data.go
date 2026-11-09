@@ -11,6 +11,7 @@
 package data
 
 import (
+	"cmp"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -393,6 +394,7 @@ type DropRow struct {
 	Rolls      *int64 `json:"rolls"`
 	Shift      int64  `json:"shift"`
 	Material   string `json:"material"`
+	Size       string `json:"size"`
 	TableIndex int32  `json:"-"` // -1 for an item row
 }
 
@@ -409,11 +411,23 @@ type Loot struct {
 	Drops        Table[Drop]
 }
 
-// Item is what loot needs of an equipment item: its price in copper, and whether a loot row
-// may set its material.
+// Item is what loot needs of an equipment item: its price in copper, whether a loot row may
+// set its material, the materials it is found in (the first is its fallback), and for a
+// weapon its dice, which a loot row's size moves (docs/core/loot.md#what-lands-on-an-item).
 type Item struct {
-	CostCopper    int64
-	TakesMaterial bool
+	Dice             string
+	DefaultMaterials []string
+	CostCopper       int64
+	TakesMaterial    bool
+	IsWeapon         bool
+}
+
+// Size is one row of combat/dice_ladder.json's sizes: the rungs the dice move, the attack
+// change, and the value percent.
+type Size struct {
+	DiceStep     int64 `json:"dice_step"`
+	Attack       int64 `json:"attack"`
+	ValuePercent int64 `json:"value_percent"`
 }
 
 // Ruleset is everything the commands read.
@@ -441,6 +455,8 @@ type Ruleset struct {
 	LootLuck        *formula.Program
 	Items           map[string]Item  // core:<category>/<key>
 	MaterialPercent map[string]int64 // material key: valueFactor * 100
+	DiceLadder      [][]string       // combat/dice_ladder.json: rungs of equal dice, smallest first
+	Sizes           map[string]Size  // combat/dice_ladder.json: undersized, normal, oversized
 	MonsterLevel    map[string]int64 // monster key
 }
 
@@ -718,24 +734,34 @@ func (loader *rulesetLoader) loadItems(ruleset *Ruleset) {
 		{"gear", "gear", ""},
 	}
 	for _, category := range categories {
+		type itemFields struct {
+			Cost             *Cost
+			Weapon           *struct{ Damage struct{ Dice string } }
+			DefaultMaterials []string `json:"default_materials"`
+		}
 		var raw struct {
 			Equipment []struct {
+				itemFields
 				Key       string
 				Base      string
-				Cost      *Cost
-				Overrides struct{ Cost *Cost }
+				Overrides itemFields
 			}
 		}
 		loader.read("equipment/"+category.file+".json", &raw)
 		for _, row := range raw.Equipment {
-			var cost *Cost = row.Cost
-			if cost == nil {
-				cost = row.Overrides.Cost
-			}
-			if cost == nil {
-				var base struct{ Cost *Cost }
+			var base itemFields
+			if row.Base != "" {
 				loader.read(fmt.Sprintf("equipment/bases/%s/%s.json", category.baseDirectory, row.Base), &base)
-				cost = base.Cost
+			}
+			// A field is the row's own, its overrides', or its base's.
+			var cost *Cost = cmp.Or(row.Cost, row.Overrides.Cost, base.Cost)
+			var weapon *struct{ Damage struct{ Dice string } } = cmp.Or(row.Weapon, row.Overrides.Weapon, base.Weapon)
+			var defaults []string = row.DefaultMaterials
+			if defaults == nil {
+				defaults = row.Overrides.DefaultMaterials
+			}
+			if defaults == nil {
+				defaults = base.DefaultMaterials
 			}
 			if cost == nil {
 				loader.fail("equipment/%s.json: %s has no cost", category.file, row.Key)
@@ -746,12 +772,25 @@ func (loader *rulesetLoader) loadItems(ruleset *Ruleset) {
 				loader.fail("equipment/%s.json: %s: %v", category.file, row.Key, err)
 				continue
 			}
-			ruleset.Items["core:"+category.category+"/"+row.Key] = Item{
-				CostCopper:    copper,
-				TakesMaterial: category.category == "weapon" || category.category == "armor",
+			var item Item = Item{
+				CostCopper:       copper,
+				TakesMaterial:    category.category == "weapon" || category.category == "armor",
+				IsWeapon:         category.category == "weapon",
+				DefaultMaterials: defaults,
 			}
+			if weapon != nil {
+				item.Dice = weapon.Damage.Dice
+			}
+			ruleset.Items["core:"+category.category+"/"+row.Key] = item
 		}
 	}
+
+	var ladder struct {
+		DiceLadder [][]string      `json:"dice_ladder"`
+		Sizes      map[string]Size `json:"sizes"`
+	}
+	loader.read("combat/dice_ladder.json", &ladder)
+	ruleset.DiceLadder, ruleset.Sizes = ladder.DiceLadder, ladder.Sizes
 
 	var materials struct {
 		Materials []struct {

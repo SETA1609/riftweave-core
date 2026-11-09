@@ -41,7 +41,8 @@
         "item": { "$ref": "schema.json#/definitions/namespacedRef" },
         "quantity": { "type": "integer", "minimum": 1, "description": "Default 1." },
         "chance": { "type": "integer", "minimum": 1, "maximum": 99, "description": "d100 roll-under gate: the row yields only if a roll is at most this. Omitted: the row always yields and takes no chance roll." },
-        "material": { "$ref": "schema.json#/definitions/namespacedRef", "description": "core:material/<key>: the material of every weapon and armor this row yields; its valueFactor sets value_percent." }
+        "material": { "$ref": "schema.json#/definitions/namespacedRef", "description": "core:material/<key>: the material of every weapon and armor this row yields that is found in it (its default_materials); another item drops in its first default. The landed material's valueFactor sets value_percent (docs/core/loot.md#what-lands-on-an-item)." },
+        "size": { "type": "string", "enum": ["undersized", "normal", "oversized"], "default": "normal", "description": "The size of every weapon this row yields: dice one rung down or up, the size's attack, and its value_percent (combat/dice_ladder.json). Other items ignore it." }
       },
       "oneOf": [
         { "required": ["table"], "not": { "anyOf": [{ "required": ["item"] }, { "required": ["quantity"] }] } },

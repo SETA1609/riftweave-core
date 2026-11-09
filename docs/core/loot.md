@@ -27,7 +27,8 @@ A loot row is a table or a single item:
 | `shift` | table row | added to every roll on the table, capped at 100 | 0 |
 | `item`, `quantity` | item row | one namespaced item | quantity 1 |
 | `chance` | either | a d100 roll-under gate: the row yields only if a roll is at most `chance` | 100, no roll |
-| `material` | either | the material of every weapon and armor the row yields | the item's own |
+| `material` | either | the material every weapon and armor the row yields is made of, if the item is found in it (below) | the item's own |
+| `size` | either | `undersized`, `normal`, or `oversized`: the size of every weapon the row yields | `normal` |
 
 So monsters can share a table and still differ:
 
@@ -35,6 +36,15 @@ So monsters can share a table and still differ:
 - **Extras:** a second table row, or an item row (a skeleton's spear, a fire elemental's fire resistance potion).
 - **Better results:** a `shift`. Entries in a table go from the least valuable to the most, so +15 skips the bottom 15 results: a dire wolf rolls the beast den with +15, a grove stalker without. A test checks the order. [V 2026-11-06]
 - **Better versions:** a `material`. A stone golem's hoard chainmail is steel, worth twice the iron one. Only weapons and armor take a material. [A]
+- **Bigger or smaller:** a `size`. A giant's hoard weapons are oversized, a goblin's undersized. Only weapons take a size. [V 2026-11-08]
+
+## What lands on an item
+
+A loot row composes the items it yields; sized and material variants are not rows ([weapons.md](../modules/weapons.md#rows-and-composed-items)). [V 2026-11-08]
+
+- **Material.** Each equipment base lists its `default_materials`, the materials it is found and sold in (a row may list its own). A row's material lands on an item whose defaults include it. Otherwise the item drops in its first default material: the steel hoard yields a steel breastplate and an elven wood longbow, never a steel bow. Any other material is player-crafted only. A row with no material leaves the item as listed, at 100 percent. An item with no defaults keeps the row's material.
+- **Size.** A weapon from a row with a `size` moves its dice one rung of `combat/dice_ladder.json` (down for undersized, up for oversized) and its attack by the size's `attack` (+10, −10). The result names the `size`, the sized `dice`, and the `attack`. Armor and everything else ignore the size.
+- **Value.** `value_percent = material percent × size percent / 100`, rounded down: the material's `valueFactor` times 100 (100 with none) and the size's `value_percent` (75, 100, 150). An oversized elven wood longbow is 400 × 150 / 100 = 600 percent.
 
 **Roll order.** The rolls are one list, used in row order: for each row, first its `chance` roll (if `chance` is below 100), then, if it yields, the table's rolls. A failed chance uses no table rolls. Too few or too many rolls is an error. [V 2026-11-06]
 
@@ -59,7 +69,7 @@ luck         = add loot_roll ((LCK - 5) * 2), source attr:lck, origin innate    
 ```
 value of coins   = quantity * the unit's copper value          economy.md
 value of an item = price(base_cp, value_percent, percent = 100) * quantity
-                   value_percent = 100, or the row's material valueFactor * 100
+                   value_percent = material percent * size percent / 100, rounded down
 budget_cp(level) = 500 * level * level                          formula tree
 ```
 

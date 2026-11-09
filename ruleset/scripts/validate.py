@@ -1233,11 +1233,12 @@ def _resolve_equipment_bases(data, errors, fp):
         base_data = bases[base_key]
         merged = dict(base_data)
 
-        # Strip base-only fields that should not appear in merged output
-        merged.pop("default_materials", None)
 
         for k, v in overrides.items():
             merged[k] = _merge_field(merged.get(k), v)
+        # default_materials names what a base (or a row's overrides) is found and sold in
+        # (docs/core/loot.md#what-lands-on-an-item); loot reads it, the item schema does not.
+        merged.pop("default_materials", None)
 
         # Validate merged enchantment_slots is an integer
         es = merged.get("enchantment_slots")
