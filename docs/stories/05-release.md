@@ -12,15 +12,15 @@ Roadmap: [M5](../../ROADMAP.md#where-we-are). Format and rules: [README.md](READ
 
 Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-07, M5-08, M5-10, M5-11, M5-12, M5-13, M5-14, M5-15, M5-16, M5-17 ([done.md](done.md#m5-release-10))
 
-#### M5-03 Move the container runner, agent image, and fetch-docs to devops-tools
-- Status: todo
+#### M5-03 Move the container runner and agent image to devops-tools
+- Status: review
 - Priority: medium
 - Needs: M5-01
-- Do: devops-tools now ships `devops-tools container` (image, exec, shell, prune, clean, named commands), a shared base image, the agent container with a plugin start script, and `fetch-docs`. Replace the local runner in `tools/devops/`, `container/agent.Dockerfile`, and `tools/fetch-docs/` with it, configured by `[tool.devops-tools.container]`; the project Dockerfile builds `FROM ${BASE_IMAGE}`. Split into two issues if the counted files pass 20.
-- Keys: `[tool.devops-tools.container]` (image name, Dockerfile, version file, commands `validate` and `test`)
-- Files: ~20 (tools/devops/, tools/fetch-docs/, container/, .devcontainer/devcontainer.json, scripts/, AGENTS.md)
-- See: tools/devops/README.md, https://github.com/SETA1609/devops_tools (container, fetch-docs)
-- Done when: `./scripts/validate.sh`, `test.sh`, `shell.sh`, and `agent.sh` run through `devops-tools container`; no local container or fetch-docs code remains; the devcontainer builds; tooling tests pass.
+- Do: devops-tools now ships `devops-tools container` (image, exec, shell, prune, clean, named commands), a shared base image, and the agent container with a plugin start script. Replace the local runner in `tools/devops/` and `container/agent.Dockerfile` with it, configured by `[tool.devops-tools.container]`; the project Dockerfile builds `FROM ${BASE_IMAGE}`. Moving `fetch-docs` is M5-22, split off to stay under 20 counted files.
+- Keys: `[tool.devops-tools.container]` (image name, Dockerfile, version file, commands `validate`, `test`, and `python`)
+- Files: ~19 (tools/devops/, container/, .devcontainer/devcontainer.json, scripts/, AGENTS.md, CLAUDE.md)
+- See: tools/devops/README.md, https://github.com/SETA1609/devops_tools (container)
+- Done when: `./scripts/validate.sh`, `test.sh`, `shell.sh`, and `agent.sh` run through `devops-tools container`; no local container runner remains; the devcontainer's image builds; tooling tests pass.
 
 #### M5-04 Reference playthrough vector chain
 - Status: todo
@@ -98,3 +98,13 @@ Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-07, M5-08, M5-10, M5-11,
 - Files: ~7 (docs/stories/02-characters.md, 03-combat-magic.md, 04-world.md, 05-release.md, 07-backend.md, done.md, ROADMAP.md)
 - See: docs/stories/README.md#order
 - Done when: no issue whose PR is merged is still in a story file; `roadmap-order check` passes.
+
+#### M5-22 Move fetch-docs to devops-tools
+- Status: todo
+- Priority: low
+- Needs: M5-03
+- Do: devops-tools ships `devops-tools fetch-docs` (url, github, list), the same downloader as `tools/fetch-docs/`, into the gitignored docs cache, pinned to a commit. Set `docs-cache-directory = "cache/docs"` in `[tool.devops-tools]`, remove `tools/fetch-docs/` and its tests, and point AGENTS, CLAUDE, and CONTRIBUTING at the new command. Split from M5-03.
+- Keys: `docs-cache-directory` in `[tool.devops-tools]`
+- Files: ~6 (tools/fetch-docs/, tools/devops/pyproject.toml, AGENTS.md, CLAUDE.md, CONTRIBUTING.md)
+- See: https://github.com/SETA1609/devops_tools (fetch-docs)
+- Done when: a cited source downloads into `cache/docs/` through `devops-tools fetch-docs`; no local fetch-docs code remains; the docs name the new command.

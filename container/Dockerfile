@@ -1,32 +1,24 @@
-# Dev toolchain image for riftweave.
-# Python is pinned to the same version as the repo-root .toolchain-python-version.
-# At run time the repo is mounted at /src. This image holds the interpreter,
-# git, and the ruleset Python dependencies. The immutable CI image stays at
-# the repository-root Dockerfile.
+# Dev toolchain image for riftweave, on the devops-tools base image (tools/devops/README.md).
+# `devops-tools container` builds the base and passes it as BASE_IMAGE. This image adds only
+# the pinned Python and the ruleset's Python dependencies, in /opt/riftweave-venv, first on
+# PATH. The version must equal the repo-root .toolchain-python-version; the runner checks it.
+# The immutable CI image stays at the repository-root Dockerfile.
 
-ARG PYTHON_VERSION=3.13.18
-FROM python:${PYTHON_VERSION}-slim-bookworm
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
 
-ARG PYTHON_VERSION
+ARG PYTHON_VERSION=3.13.12
 
-ENV DEBIAN_FRONTEND=noninteractive \
-    PYTHON_VERSION="${PYTHON_VERSION}" \
-    PYTHONDONTWRITEBYTECODE=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1 \
-    PATH="/usr/local/bin:${PATH}"
-
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends bash ca-certificates git \
-    && rm -rf /var/lib/apt/lists/* /var/tmp/* /tmp/* \
-    && python -c "import os, sys; expected = os.environ['PYTHON_VERSION']; actual = sys.version.split()[0]; assert actual == expected, (actual, expected)"
+ENV VIRTUAL_ENV=/opt/riftweave-venv \
+    PATH="/opt/riftweave-venv/bin:${PATH}" \
+    PYTHONDONTWRITEBYTECODE=1
 
 COPY ruleset/requirements.txt /tmp/requirements.txt
-RUN pip install --no-cache-dir -r /tmp/requirements.txt \
-    && rm -f /tmp/requirements.txt
+RUN uv python install "${PYTHON_VERSION}" \
+    && uv venv --python "${PYTHON_VERSION}" /opt/riftweave-venv \
+    && uv pip install --no-cache --python /opt/riftweave-venv/bin/python -r /tmp/requirements.txt \
+    && rm -f /tmp/requirements.txt \
+    && chmod -R a+rX /opt/uv /opt/riftweave-venv \
+    && /opt/riftweave-venv/bin/python -c "import sys; v = sys.version.split()[0]; assert v == '${PYTHON_VERSION}', v"
 
-COPY container/entrypoint.sh /usr/local/bin/entrypoint
-RUN chmod 755 /usr/local/bin/entrypoint
-
-WORKDIR /src
-ENTRYPOINT ["/usr/local/bin/entrypoint"]
 CMD ["python", "ruleset/scripts/validate.py"]

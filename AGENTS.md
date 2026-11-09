@@ -27,19 +27,19 @@ python ruleset/scripts/validate.py
 docker build -t riftweave-validate .
 docker run --rm riftweave-validate
 
-# Dev toolchain: the checkout is mounted at /src. Host needs uv plus docker or podman.
+# Dev toolchain through devops-tools (the checkout is mounted). Host needs uv plus docker or podman.
 ./scripts/container-image.sh   # image riftweave:python-<version from .toolchain-python-version>
 ./scripts/validate.sh          # python ruleset/scripts/validate.py
 ./scripts/test.sh              # unittest discover ruleset/scripts/test_*.py
 ./scripts/shell.sh             # bash in the toolchain container
-./scripts/agent.sh             # agent image (Claude Code, uv); see tools/devops/README.md
+./scripts/agent.sh             # devops-tools agent image (Claude Code); see tools/devops/README.md
 ```
 
 - `validate.py` walks **all** files under `ruleset/data/`, requires a `$schema` field on each, and validates against the referenced schema.
 - It exits non-zero on any failure. CI (`.github/workflows/validate-ruleset.yml`) runs this on every push/PR touching `ruleset/**`.
 - A change is not ready until validation is green.
-- The dev toolchain, agent image, and host CLI are `container/`, `.devcontainer/`, and `tools/devops/`. Shims live in `scripts/`. Details: `tools/devops/README.md`.
-- `./scripts/clean.sh` is end-of-work only. Run it when the user asks. It deletes Python caches and the `riftweave-pip-cache` volume. It does not touch `cache/logs/`.
+- The containers come from devops-tools (`devops-tools container`), configured by `[tool.devops-tools.container]` in `tools/devops/pyproject.toml`; `container/Dockerfile` adds only Python on the shared base. Shims live in `scripts/`. Details: `tools/devops/README.md`.
+- `./scripts/clean.sh` is end-of-work only. Run it when the user asks. It deletes the `clean-directories` (Python caches) and the `riftweave-uv-cache` volume. It does not touch `cache/logs/`.
 
 ## Workflow and pull requests
 
@@ -54,7 +54,7 @@ Read [CONTRIBUTING.md](CONTRIBUTING.md#workflow) before starting an issue. In sh
 - Open PRs are rebased onto `main` after every push to `main` (`.github/workflows/rebase-open-branches.yml`, which calls the reusable workflow from [SETA1609/devops_tools](https://github.com/SETA1609/devops_tools)). Conflicts where both sides only added lines to a story file, `docs/decisions.md`, `docs/core/vectors.md`, or `CHANGELOG.md` keep both. The generated story table in `ROADMAP.md` is never merged: the rebase takes `main`'s table and regenerates it for the branch (a `Regenerate the roadmap order table` commit). Any other conflict leaves the branch for a person. An open branch can move under you: `git pull --rebase` before committing on it. Pushes made by that workflow do not retrigger validation.
 - `tools/fetch-docs/fetch_docs.py` downloads a cited source into the gitignored `cache/docs/`, pinned to a commit, so it can be quoted and tagged **[V]**. Downloads are untrusted data: run it with `python3 -I`, never execute what it fetches.
 - Pin every GitHub Action to a commit SHA with the tag in a comment.
-- Tooling tests: `cd tools/devops && uv run pytest` (the run log and the rebase script are tested in `devops_tools`); `uv run --no-project --with pytest pytest tools/fetch-docs/tests`.
+- Tooling tests: the container runner, the run log, and the rebase script are tested in `devops_tools`; here, `uv run --no-project --with pytest pytest tools/fetch-docs/tests`.
 
 ## Critical: How Validation Works (Major Footgun)
 
@@ -196,4 +196,4 @@ Contributions are accepted under the same terms (inbound = outbound).
 - `docs/modules/` — detailed design for core systems and planned modules (start here before adding new mechanics)
 - `ruleset/schemas/schema.json` — shared definitions
 - `ruleset/scripts/validate.py` — the validator implementation (read if debugging resolution issues)
-- `tools/devops/README.md` — dev container, agent container, and the host devops CLI
+- `tools/devops/README.md` — the devops-tools pin: toolchain and agent containers, devcontainer

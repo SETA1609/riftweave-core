@@ -1,52 +1,42 @@
 # devops
 
-Host-side CLI that runs the Python toolchain container (`riftweave:python-3.13.18`) and logs every run. It runs on the host, outside the container. The host needs only [uv](https://docs.astral.sh/uv/). At runtime the CLI uses the Python standard library and [devops-tools](https://github.com/SETA1609/devops_tools), the shared run log and repository workflow tools. See [Shared devops-tools](#shared-devops-tools).
+The toolchain container, the agent container, and the repository workflow tools all come from [devops-tools](https://github.com/SETA1609/devops_tools), pinned to a full commit in [`pyproject.toml`](pyproject.toml) and `uv.lock`. This directory is only that pin and its settings: no local runner code. The host needs only [uv](https://docs.astral.sh/uv/). [V 2026-11-08]
 
-The container Python version is the repo-root [`.toolchain-python-version`](../../.toolchain-python-version). It must match `ARG PYTHON_VERSION` in [`container/Dockerfile`](../../container/Dockerfile) and `BASE_IMAGE` in [`.devcontainer/devcontainer.json`](../../.devcontainer/devcontainer.json). The file is not named `.python-version`, so pyenv and uv keep using the host interpreter. `tools/devops/.python-version` is only the host CLI (any 3.13).
+The settings are `[tool.devops-tools]` (roadmap order, changelog fragments, the rebase workflow) and `[tool.devops-tools.container]` (the images and the named commands) in `pyproject.toml`; every command passes `--settings-file tools/devops/pyproject.toml`.
 
-The root `Dockerfile` and `test.sh` stay the immutable validation image: they copy the ruleset into the image. This toolchain mounts the working tree at `/src`, so it validates the checkout you have now.
+The root `Dockerfile` stays the immutable validation image: it copies the ruleset into the image. The toolchain container mounts the working tree, so it validates the checkout you have now.
+
+## Images
+
+- **`devops-tools-base`** is shipped by devops-tools: Ubuntu with git, uv, and a uv-managed Python. `devops-tools container` builds it and passes it to our build as `BASE_IMAGE`.
+- **`riftweave:python-<version>`** is [`container/Dockerfile`](../../container/Dockerfile), `FROM ${BASE_IMAGE}`: it installs the pinned Python and the ruleset requirements into `/opt/riftweave-venv`, first on `PATH`. The version is the repo-root [`.toolchain-python-version`](../../.toolchain-python-version); it must equal `ARG PYTHON_VERSION` in the Dockerfile, and the runner checks it before every build. The file is not named `.python-version`, so pyenv and uv keep using the host interpreter.
+- **`riftweave-agent:<tag>`** is devops-tools' agent image on top of ours: Node, Claude Code, and an `agent` user with the host's uid and gid. No agent Dockerfile lives here.
 
 ## Usage
 
-Use the shims in `scripts/` from the repo root. Each one runs `uv run --project tools/devops --locked --no-dev devops <subcommand>`.
+Each shim in `scripts/` is one line: `uv run --project tools/devops --locked --no-dev devops-tools container --settings-file tools/devops/pyproject.toml <action> "$@"`.
 
-| Shim | Subcommand | What it does |
+| Shim | Action | What it does |
 | --- | --- | --- |
-| `./scripts/container-image.sh` | `image` | Checks that `.toolchain-python-version` matches the Dockerfile and the devcontainer, builds the image, prunes dangling images and unused build cache, prints the image id and size. |
+| `./scripts/container-image.sh` | `image` | Checks the Python version, builds the base and our image, prunes dangling layers and build cache, prints the image id and size. |
 | `./scripts/validate.sh [args...]` | `validate` | `python ruleset/scripts/validate.py [args...]` in the container. |
-| `./scripts/test.sh [args...]` | `test` | Unit tests in the container. With no arguments: `python -m unittest discover -s ruleset/scripts -p 'test_*.py'`. Arguments are passed to `unittest`. |
+| `./scripts/test.sh [args...]` | `test` | `python -m unittest discover -s ruleset/scripts -p 'test_*.py' [args...]` in the container. |
 | `./scripts/python.sh [args...]` | `python` | `python [args...]` in the container, for example `./scripts/python.sh --version`. |
-| `./scripts/shell.sh` | `shell` | Interactive bash in the container, with the repo at `/src`. |
-| `./scripts/agent.sh [command...]` | `agent` | Runs a command (default `bash`) in the agent container, which has its own Claude login and git identity. See [Agent container](#agent-container). |
-| `./scripts/prune.sh` | `prune` | Removes dangling images and unused build cache. The tagged image and the cache volume stay. |
-| `./scripts/clean.sh` | `clean` | End of work only: removes `__pycache__/`, `.pytest_cache/`, `.ruff_cache/`, `.venv/`, and `venv/` under the repo, and the pip cache volume, then prunes. |
+| `./scripts/shell.sh` | `shell` | Interactive bash in the container. |
+| `./scripts/agent.sh [command...]` | `agent` | A command (default `bash`) in the agent container, with its own Claude login and git identity. |
+| `./scripts/prune.sh` | `prune` | Removes dangling images and unused build cache. Tagged images and volumes stay. |
+| `./scripts/clean.sh` | `clean` | End of work only: removes the `clean-directories` in `pyproject.toml` (Python caches, the local virtualenv) and the cache volume, then prunes. |
+| `./scripts/devcontainer-image.sh` | `agent true` | Builds the agent image and tags it `riftweave-agent:devcontainer` for `.devcontainer/devcontainer.json`. |
 
-`validate`, `test`, `python`, and `shell` build the image first if it is missing.
+`validate`, `test`, `python`, and `shell` build the image first if it is missing. Every run is timestamped and logged to `cache/logs/`. Run `./scripts/clean.sh` only when the user asks or says the work is finished; nothing else calls it.
 
-Run `./scripts/clean.sh` only when the user asks or says the work is finished. No other command calls it. It refuses any path outside the repo and never touches `cache/logs/`.
-
-### Pip cache
-
-Without flags, the pip cache lives in the container's throwaway home and is gone when the container exits. A leading `--keep-cache` on `validate`, `test`, `python`, or `shell` stores it in the named volume `riftweave-pip-cache`, which is kept until `clean`:
-
-```sh
-./scripts/validate.sh --keep-cache
-```
-
-Only a leading `--keep-cache` counts, so `./scripts/python.sh script.py -- --keep-cache` still passes the flag to the program.
-
-### Environment
-
-- `IMAGE` overrides the image tag.
-- `CONTAINER_AS_ROOT=1` runs the container as root instead of the host user (`--user uid:gid`).
-
-The CLI uses docker if its daemon answers, otherwise podman.
+- `--keep-cache` (leading) keeps uv's cache in the volume `riftweave-uv-cache` until `clean`.
+- `IMAGE` overrides the image tag; `CONTAINER_AS_ROOT=1` runs as root instead of the host user.
+- The container mounts the checkout at its host path, not `/src`; the devcontainer still uses `/src`.
 
 ## Agent container
 
-`container/agent.Dockerfile` builds `riftweave-agent:python-3.13.18` on top of the toolchain image. It adds Claude Code (pinned), Node 22, `uv`, and an `agent` user with the host's uid and gid, so files the agent writes under `/src` belong to the host user. `agent` builds both images if they are missing. A leading `--rebuild-image` rebuilds the agent image, and a leading `--keep-cache` works as it does for `shell`.
-
-The container's home, `/home/agent`, is the named volume `personal-agent-home`, with `CLAUDE_CONFIG_DIR=/home/agent/.claude`. The host's `~/.claude`, `~/.claude.json`, `~/.gitconfig`, and SSH keys are never mounted, so logging in inside the container leaves the host's Claude Code on its own account. The volume name is generic so other repos can mount the same home and reuse the login. `AGENT_HOME_VOLUME` picks a different volume, and `AGENT_IMAGE` a different tag.
+`./scripts/agent.sh` runs devops-tools' agent image. Its home is the named volume `personal-agent-home`, so the Claude login and git identity survive the container and never touch the host's `~/.claude`, `~/.gitconfig`, or SSH keys: the agent can commit but not push. A leading `--rebuild-image` rebuilds the agent image. On every start a script installs the marketplaces and plugins `.claude/settings.json` declares, if any are missing.
 
 One-time setup, inside `./scripts/agent.sh`:
 
@@ -56,66 +46,12 @@ git config --global user.name  "Your Name"
 git config --global user.email "personal@example.com"
 ```
 
-After that, `./scripts/agent.sh claude` starts straight away. There is no docker inside the container, so run `python ruleset/scripts/validate.py` directly instead of `scripts/*.sh`.
+There is no docker inside the container, so run `python ruleset/scripts/validate.py` directly instead of `scripts/*.sh`.
 
-### Commits and pushes
+## Devcontainer
 
-The repo is bind-mounted, so a commit made in the container is a commit in the host checkout, with the container's git identity. The container has git but no GitHub credentials and no SSH keys, so it cannot push or fetch. Push from the host with your own SSH setup. Do not forward the host's `SSH_AUTH_SOCK`: that would give the container every repo the host's key can reach.
-
-`.devcontainer/devcontainer.json` builds the same image for editors that attach to dev containers. It mounts the same home volume. `initializeCommand` builds `riftweave:python-3.13.18` when that image is missing.
+`.devcontainer/devcontainer.json` runs the agent image as a devcontainer. Its `initializeCommand` is `./scripts/devcontainer-image.sh`, which builds the agent image through devops-tools (whose tag carries a content hash) and tags it `riftweave-agent:devcontainer`, the image the devcontainer names. [V 2026-11-08]
 
 ## Shared devops-tools
 
-The run log, log pruning, and the open-PR rebase come from [SETA1609/devops_tools](https://github.com/SETA1609/devops_tools), not from code in this repo. It is a dependency in `pyproject.toml`, pinned to `v0.2.0` (commit `15c1bf1`) (full SHA in `pyproject.toml` and `uv.lock`). This package keeps only what is specific to Riftweave: the toolchain and agent containers and the cache cleanup.
-
-```sh
-uv run --project tools/devops --locked --no-dev devops-tools prune-logs --older-than-days 7
-uv run --project tools/devops --locked --no-dev devops-tools rebase-open-branches --branches RW-41-x --no-push
-```
-
-`.github/workflows/rebase-open-branches.yml` calls the shared reusable workflow from devops-tools, which runs `rebase-open-branches`. The SHA appears in three places, and they must match: `pyproject.toml`, the workflow's `uses:` ref, and its `devops-tools-version` input (`uv.lock` follows from `uv lock`). To move the pin, change all three, run `uv lock` and the tests, in a PR of its own.
-
-## Logs
-
-Every line from the container is prefixed with an ISO-8601 UTC timestamp in milliseconds and a stream tag, on the terminal and in `cache/logs/<utc-timestamp>-<subcommand>.log`:
-
-```text
-2026-10-28T21:25:07.166Z out | Python 3.13.18
-2026-10-28T21:25:07.293Z run | exit code: 0, duration: 0.412 s
-```
-
-- `out`: the child's stdout.
-- `err`: the child's stderr, or a devops error.
-- `run`: devops bookkeeping (command lines, exit codes, durations).
-
-The log ends with the command line, exit code, and duration. `shell` owns the terminal, so only its start, end, and exit code are logged. The CLI exits with the exit code of the last container command it ran. A child killed by signal N exits with 128 + N.
-
-## Layout
-
-Timestamping, log files, and running a child with logged output are `devops_tools.run_log`.
-
-```text
-src/devops/
-  cli.py           subcommands and main()
-  container.py     repo root, docker/podman detection, container command lines
-  cache_cleanup.py choosing and removing Python cache paths for `clean`
-  constants.py     constants
-  exceptions.py    exceptions
-  models.py        custom types (dataclasses, type aliases) that keep parameter lists short
-tests/             pytest
-```
-
-## Development
-
-```sh
-cd tools/devops
-uv run pytest
-uv run ruff check
-uv run ruff format --check
-```
-
-Code style:
-
-- Function names are a descriptive verb plus an object, with words spelled out and units in the name (`measure_directory_size_bytes`).
-- Docstrings put `"""` on its own line, start the text on the next line, and have no blank lines inside.
-- ruff is configured in `pyproject.toml`, with a line length of 100.
+The same pin runs the repository workflow tools: `devops-tools roadmap-order`, `changelog-fragments`, and the reusable rebase workflow (`.github/workflows/`). The workflows pin the same commit as `pyproject.toml`; bump them together in one PR. The run log and the rebase script are tested in devops-tools, not here.

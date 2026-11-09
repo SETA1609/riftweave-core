@@ -3,4 +3,4 @@
 # The tagged image riftweave:python-<version> is kept. The version is .toolchain-python-version.
 # Output is timestamped and logged to cache/logs/. Needs uv on the host.
 set -euo pipefail
-exec uv run --project "$(dirname "$0")/../tools/devops" --locked --no-dev --quiet devops image "$@"
+exec uv run --project "$(dirname "$0")/../tools/devops" --locked --no-dev --quiet devops-tools container --settings-file "$(dirname "$0")/../tools/devops/pyproject.toml" image "$@"
