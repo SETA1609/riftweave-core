@@ -40,7 +40,7 @@ ruleset/
 backend/              Reference backend in Go; it adds no rules
 changes/              Changelog fragments, one per issue
 scripts/              Dev toolchain wrappers (validate, test, shell, agent)
-tools/                The devops-tools pin and fetch-docs
+tools/                The devops-tools pin
 ```
 
 See [docs/modules/README.md](docs/modules/README.md) for how modules work and which are

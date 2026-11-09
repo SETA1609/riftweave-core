@@ -15,6 +15,7 @@ package = false
 # Read by devops-tools (roadmap-order, changelog-fragments, rebase-open-branches). Pass this file
 # with --settings-file.
 [tool.devops-tools]
+docs-cache-directory = "cache/docs"
 roadmap-file = "ROADMAP.md"
 changes-directory = "changes"
 changelog-file = "CHANGELOG.md"

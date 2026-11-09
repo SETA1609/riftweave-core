@@ -166,8 +166,8 @@ Design docs mix checked facts with intentions. Tag claims that a reader might re
 - **[U]** unverified: taken from memory or an outside source not yet checked.
 
 Check **[A]** and **[U]** before building on them. A PR that confirms one changes it to
-**[V]**. `tools/fetch-docs/` fetches a cited source, pinned to a commit, for checking
-([README](tools/fetch-docs/README.md)).
+**[V]**. `devops-tools fetch-docs` fetches a cited source, pinned to a commit, for checking
+([AGENTS.md](AGENTS.md#workflow-and-pull-requests)).
 
 ### Naming
 
