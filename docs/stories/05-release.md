@@ -140,6 +140,16 @@ Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-03, M5-07, M5-08, M5-10,
 - See: docs/core/keys.md, docs/archive/review/findings-data-oriented-design.md (DOD-17)
 - Done when: module conflicts work with no ids; no schema requires `id`; the listed data has none and is otherwise unchanged; `validate.py` and the tests pass.
 
+#### M5-30 Remove numeric row ids
+- Status: review
+- Priority: medium
+- Needs: M5-29
+- Do: Finish what M5-29 started. Drop the numeric `id` from the remaining data files and from modules, then remove the field from the schemas, so a new row cannot add one.
+- Keys: removes numeric `id` from rows **(breaking)**
+- Files: ~16 (ruleset/data/, ruleset/modules/, ruleset/schemas/, AGENTS.md, docs/core/keys.md)
+- See: docs/core/keys.md
+- Done when: no row in `ruleset/data/` or `ruleset/modules/` has a numeric `id`; a schema rejects one; `validate.py` and the tests pass.
+
 #### M5-25 Game state is a snapshot and a log
 - Status: review
 - Priority: high
