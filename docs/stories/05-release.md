@@ -10,17 +10,7 @@ Roadmap: [M5](../../ROADMAP.md#where-we-are). Format and rules: [README.md](READ
 
 **Done when:** items 3, 5, 6, 7, and 8 of the [definition of finished](../../ROADMAP.md#definition-of-finished) hold, and `v1.0.0` is tagged.
 
-Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-07, M5-08, M5-10, M5-11, M5-12, M5-13, M5-14, M5-15, M5-16, M5-17 ([done.md](done.md#m5-release-10))
-
-#### M5-03 Move the container runner and agent image to devops-tools
-- Status: review
-- Priority: medium
-- Needs: M5-01
-- Do: devops-tools now ships `devops-tools container` (image, exec, shell, prune, clean, named commands), a shared base image, and the agent container with a plugin start script. Replace the local runner in `tools/devops/` and `container/agent.Dockerfile` with it, configured by `[tool.devops-tools.container]`; the project Dockerfile builds `FROM ${BASE_IMAGE}`. Moving `fetch-docs` is M5-22, split off to stay under 20 counted files.
-- Keys: `[tool.devops-tools.container]` (image name, Dockerfile, version file, commands `validate`, `test`, and `python`)
-- Files: ~19 (tools/devops/, container/, .devcontainer/devcontainer.json, scripts/, AGENTS.md, CLAUDE.md)
-- See: tools/devops/README.md, https://github.com/SETA1609/devops_tools (container)
-- Done when: `./scripts/validate.sh`, `test.sh`, `shell.sh`, and `agent.sh` run through `devops-tools container`; no local container runner remains; the devcontainer's image builds; tooling tests pass.
+Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-03, M5-07, M5-08, M5-10, M5-11, M5-12, M5-13, M5-14, M5-15, M5-16, M5-17, M5-21 ([done.md](done.md#m5-release-10))
 
 #### M5-04 Reference playthrough vector chain
 - Status: todo
@@ -39,17 +29,17 @@ Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-07, M5-08, M5-10, M5-11,
 - Was: RW-26
 - Do: There is no 'how to play' or 'how to run' text. An SRD needs a quick start for a table.
 - Files: ~3 (docs/guide/)
-- See: issues.md section 6
+- See: docs/archive/issues.md section 6
 - Done when: quick-start of 10 pages or fewer: make a character, take a turn, run an encounter; GM section: pacing, difficulty, adjudicating unlisted actions with the one resolution function.
 
 #### M5-06 Entry docs and review archive sync
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: M5-02, M5-03
 - Was: RW-27
 - Do: The July review found README, AGENTS, CLAUDE, and CONTRIBUTING lagging the repo. States which of `docs/core/` and `docs/modules/` wins on conflict, and retires `plan.md`, `issues.md`, and `docs/review/` as history.
 - Files: ~10 (README.md, AGENTS.md, CONTRIBUTING.md, docs/archive/, plan.md, issues.md, docs/review/)
-- See: docs/review/findings-docs-hygiene.md
+- See: docs/archive/review/findings-docs-hygiene.md
 - Done when: README tree, AGENTS, and CONTRIBUTING match the repo; authority order is written down once; historical files are moved under `docs/archive/` with a note.
 
 #### M5-09 Licensing and attribution audit, tag v1.0.0
@@ -89,15 +79,6 @@ Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-07, M5-08, M5-10, M5-11,
 - Files: ~16 (ruleset/schemas/, ruleset/data/wuxing/, ruleset/modules/wuxing/, ruleset/scripts/wuxing_reference.py, ruleset/scripts/test_wuxing.py, ruleset/scripts/test_bestiary.py, ruleset/scripts/crafting_reference.py, ruleset/tests/vectors/wuxing.json, backend/internal/data/data.go, backend/internal/wuxing/, docs/modules/wuxing.md, docs/modules/magic.md, docs/modules/module-system.md, docs/core/contract.md)
 - See: docs/core/contract.md, docs/core/materials.md, docs/modules/module-system.md, ruleset/modules/factions/
 - Done when: validate, the unit tests, the vectors, and the Go tests pass with the module and without it; without it no core rule reads a phase; with it the wuxing vectors pass under Python and Go from the module's data; the change is marked breaking in the changelog; `module-system.md` walks through Wuxing step by step.
-
-#### M5-21 Move merged issues to done.md: M2, M3-01, M4-03, M5-17, APP-02
-- Status: review
-- Priority: low
-- Needs: —
-- Do: Eight issues whose pull requests are merged still said `review` in their story files: M2-01 and M2-06 (both in #90, M2-06 was stacked on M2-01), M2-03, M2-05, M3-01, M4-03, M5-17, and APP-02. Move them to `done.md` with `Status: done` and `Merged: #<PR>, <date>`, and list them on each story's `Done:` line.
-- Files: ~7 (docs/stories/02-characters.md, 03-combat-magic.md, 04-world.md, 05-release.md, 07-backend.md, done.md, ROADMAP.md)
-- See: docs/stories/README.md#order
-- Done when: no issue whose PR is merged is still in a story file; `roadmap-order check` passes.
 
 #### M5-22 Move fetch-docs to devops-tools
 - Status: todo

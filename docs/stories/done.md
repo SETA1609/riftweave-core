@@ -547,6 +547,27 @@ Tracked in Linear before this repo had a tracker, recovered from git history. Th
 - See: docs/stories/README.md#order
 - Done when: no issue whose PR is merged is still in a story file; `roadmap-order show` names a first issue in M3; `roadmap-order check` passes.
 
+#### M5-03 Move the container runner and agent image to devops-tools
+- Status: done
+- Merged: #96, 2026-11-09
+- Priority: medium
+- Needs: M5-01
+- Do: devops-tools now ships `devops-tools container` (image, exec, shell, prune, clean, named commands), a shared base image, and the agent container with a plugin start script. Replace the local runner in `tools/devops/` and `container/agent.Dockerfile` with it, configured by `[tool.devops-tools.container]`; the project Dockerfile builds `FROM ${BASE_IMAGE}`. Moving `fetch-docs` is M5-22, split off to stay under 20 counted files.
+- Keys: `[tool.devops-tools.container]` (image name, Dockerfile, version file, commands `validate`, `test`, and `python`)
+- Files: ~19 (tools/devops/, container/, .devcontainer/devcontainer.json, scripts/, AGENTS.md, CLAUDE.md)
+- See: tools/devops/README.md, https://github.com/SETA1609/devops_tools (container)
+- Done when: `./scripts/validate.sh`, `test.sh`, `shell.sh`, and `agent.sh` run through `devops-tools container`; no local container runner remains; the devcontainer's image builds; tooling tests pass.
+
+#### M5-21 Move merged issues to done.md: M2, M3-01, M4-03, M5-17, APP-02
+- Status: done
+- Merged: #94, 2026-11-08
+- Priority: low
+- Needs: —
+- Do: Eight issues whose pull requests are merged still said `review` in their story files: M2-01 and M2-06 (both in #90, M2-06 was stacked on M2-01), M2-03, M2-05, M3-01, M4-03, M5-17, and APP-02. Move them to `done.md` with `Status: done` and `Merged: #<PR>, <date>`, and list them on each story's `Done:` line.
+- Files: ~7 (docs/stories/02-characters.md, 03-combat-magic.md, 04-world.md, 05-release.md, 07-backend.md, done.md, ROADMAP.md)
+- See: docs/stories/README.md#order
+- Done when: no issue whose PR is merged is still in a story file; `roadmap-order check` passes.
+
 ## POST Post-1.0 modules
 
 #### POST-05 Factions and reputation module

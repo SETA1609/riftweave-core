@@ -24,7 +24,8 @@ python ruleset/scripts/validate.py        # validate every data file against its
 
 The validator checks **all** data files and exits non-zero on any failure. CI
 (`.github/workflows/validate-ruleset.yml`) runs it on every push/PR that touches
-`ruleset/`. A change is not ready until validation is green.
+`ruleset/`, `docs/core/`, `docs/stories/`, `docs/backend/`, `backend/`, `.github/`, or the
+`Dockerfile`. A change is not ready until validation is green.
 
 You can also run it via Docker: `docker build -t riftweave-validate . && docker run --rm riftweave-validate`.
 
@@ -52,6 +53,13 @@ See [`docs/modules/progression.md`](docs/modules/progression.md) for the full sy
 overview (classless, d100 roll-under, 8 attributes, point-buy + tagged skills, perks,
 9 color magic schools, and the shared effect pool).
 
+## Which document wins
+
+`docs/core/` wins over `docs/modules/` when they disagree; fix the loser. An
+implementation that disagrees with the golden vectors in `ruleset/tests/vectors/` is
+wrong. [ROADMAP.md](ROADMAP.md) owns scope and `docs/stories/` owns the work.
+`docs/archive/` is history and decides nothing.
+
 ## Rules for changes
 
 1. **Schema first.** Every schema sets `additionalProperties: false`. To add a new
@@ -59,11 +67,13 @@ overview (classless, d100 roll-under, 8 attributes, point-buy + tagged skills, p
    fails.
 2. **Declare `$schema`.** Each data file must have a `$schema` field with the
    relative path to its schema (files without it are skipped, not validated).
-3. **IDs are `snake_case`** matching `^[a-z_][a-z0-9_]*$` and should be stable —
-   cross-references between files are by string id and are **not** schema-validated,
-   so renaming an id can silently break links.
+3. **Keys are `snake_case`** matching `^[a-z_][a-z0-9_]*$` and should be stable.
+   Cross-references are namespaced strings (`core:<category>/<key>`). JSON Schema cannot
+   check them, so `validate.py` fails on one that does not resolve
+   ([integrity.md](docs/core/integrity.md)). A rename still breaks consumers outside
+   this repo.
 4. **Use the shared effect pool.** Spells, consumables, and ingredients reference
-   effects by id from `data/effects/core.json`; respect each effect's `channels`.
+   effects by key from `data/effects/core.json`; respect each effect's `channels`.
    Don't define effects locally in another system.
 5. **Keep the established conventions.** Magic uses color-named schools
    (`red_magic`…`black_magic`), never Elder Scrolls school names; skills are
@@ -185,7 +195,7 @@ one name.
 
 - Work on an issue branch and open a pull request against `main`.
 - Make sure `python ruleset/scripts/validate.py` passes and that any new
-  cross-references (effect ids, skill ids) resolve.
+  cross-references (effects, skills) resolve.
 
 ## Licensing of contributions
 

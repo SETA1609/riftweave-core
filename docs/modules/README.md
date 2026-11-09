@@ -6,22 +6,22 @@ The sentence a module is allowed to say is the kernel contract: [../core/contrac
 
 ## Goals
 
-- Keep the **core** minimal, stable, and focused on foundational rules (abilities, classes, races, basic equipment, spells, features).
+- Keep the **core** minimal, stable, and focused on foundational rules (abilities, races, basic equipment, spells, features).
 - Allow **optional, composable extensions** (crafting, alchemy, advanced magic item creation, psionics, vehicles, etc.).
 - Enable consuming games and tools to load only the modules they care about.
 - Support clear ownership: each module owns its data, and can extend or add to shared vocabularies (new effect types, new equipment categories, new feature types, etc.).
 
 ## Current State
 
-The module system foundation is **implemented** as of the `ft/modules-foundation` branch:
+The module system foundation is **implemented**:
 
 - A formal module directory structure exists under `ruleset/modules/`.
 - Each module is self-describing via `manifest.json` (validated by `module.manifest.schema.json`).
 - The Python module loader (`ruleset/scripts/module_loader.py`) handles discovery, validation, data loading, schema loading, and conflict detection.
-- An `example-module` demonstrates the pattern.
-- 26 unit tests cover manifest validation, discovery, loading, merging, and edge cases.
+- `example-module` demonstrates the pattern, and `factions` is the first real module.
+- Unit tests (`test_module_system.py`) cover manifest validation, discovery, loading, merging, and edge cases.
 
-The validator (`validate.py`) validates core data only — module data is merged at load time by consuming engines or test tools. See `docs/modules/module-system.md` for the full specification.
+The validator (`validate.py`) checks core data and every module's manifest and data; merging is done at load time by consuming engines or test tools. See `docs/modules/module-system.md` for the full specification.
 
 ## Philosophy (Data-Oriented)
 
@@ -49,6 +49,7 @@ ruleset/
     example-module/
       manifest.json
       data/
+    factions/
   scripts/
     module_loader.py    # Python module loader
     test_module_system.py
@@ -61,7 +62,7 @@ Modules may:
 
 Modules may not:
 - Call another system's procedure.
-- Override a core row. Duplicate ids are conflicts.
+- Override a core row without listing its key in the manifest's `overrides` ([overrides.md](../core/overrides.md)). Other duplicates are conflicts.
 - Make level-up, attack resolution, or inventory require this module to be loaded.
 
 ## Using This Directory
@@ -96,7 +97,7 @@ Start a new document in this directory when you begin designing a module (e.g. `
 - [x] Basic conflict detection (duplicate IDs across modules/core).
 - [ ] Register new `equipment.type` values or `feature.type` values from module schemas.
 - [ ] Define a stable effect type vocabulary that modules can extend.
-- [ ] Module-aware validator that validates core + selected modules together.
+- [x] Module-aware validator that validates core and modules together.
 - [ ] Add optional module loading to the README and CI examples.
 - [ ] Dependency resolution (module A requires module B).
 

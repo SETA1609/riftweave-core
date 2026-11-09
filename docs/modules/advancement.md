@@ -339,7 +339,7 @@ Players who rush every level with whatever petty cores they have on hand will ha
 - `data/wuxing/core.json` — the interaction matrix used for essence synergy.
 - `data/monsters/core.json` — source of raw phased cores.
 - `schema.json#/definitions/qualityGrade` and `#/definitions/phase` — shared vocabulary.
-- `issues.md` — high-priority gap: "Full character advancement / XP procedure".
+- `docs/archive/issues.md` — high-priority gap: "Full character advancement / XP procedure".
 
 ## Next Steps (Non-Exhaustive)
 
