@@ -107,7 +107,7 @@ Slot + layer = **16 possible equipment positions** (head/torso/hands/feet × 4 l
 
 Like weapons, armor entries are **generic base types** that materials modify.
 The base entry provides the slot, layer, and base DR. The chosen material adds
-its `modifiers.defense` to the base DR and sets the piece's phase and weight.
+its `armor.defense` to the base DR and sets the piece's phase and weight.
 
 ### Torso
 
@@ -158,18 +158,17 @@ its `modifiers.defense` to the base DR and sets the piece's phase and weight.
 
 When an armor piece is crafted from a material:
 
-- `material.modifiers.defense` adds to the piece's base DR.
+- `material.armor.defense` adds to the piece's base DR.
   - e.g. iron chainmail: base DR 2 + iron's defense 3 = **5 DR**
   - steel plate cuirass: base DR 5 + steel's defense 5 = **10 DR**
   - leather jerkin: base DR 1 + leather's defense 1 = **2 DR**
 - `material.weightFactor` multiplies the piece's base weight.
 - `material.phase` sets the piece's phase for Wuxing interactions.
-- Materials that do not include `"armor"` in their `appliesTo` cannot be used for
-  armor pieces.
+- A recipe does not refuse a material; a material with no `armor` block adds no DR.
 
 **DR formula for a single piece:**
 ```
-Piece DR = drBase + material.modifiers.defense
+Piece DR = drBase + material.armor.defense
 ```
 
 **Total character DR:**
@@ -253,7 +252,7 @@ Instead, their DR value applies only during an **active block** action
 | **Standard shield** | 2 | Normal weight (1.0). Occupies off-hand fully. −10 evasion penalty. | block |
 | **Tower shield** | 4 | Heavy (2.0 weight). Grants half cover to adjacent allies. −20 evasion penalty. Speed −1. STR 8+ required. | block |
 
-Shield DR is further modified by material (`material.modifiers.defense`) just
+Shield DR is further modified by material (`material.armor.defense`) just
 like armor pieces.
 
 ### Parry (Weapon Block)
@@ -273,7 +272,7 @@ a **parry** instead of a shield block:
 
 ### Shield Crafting
 
-- Shields can be crafted from materials that include `"armor"` in their `appliesTo`.
+- Shields follow the same rule: a material's `armor` block sets what it adds.
 - Material phase applies for Wuxing interactions (e.g. a steel shield has metal
   phase, affecting incoming phased attacks via the overcoming cycle).
 - Material weight factor multiplies the shield's base weight, affecting encumbrance.
@@ -332,11 +331,11 @@ The armor system reuses the existing material system (see
 [`materials/core.json`](../../ruleset/data/materials/core.json) and
 [`materials.md`](./materials.md)):
 
-- A material's `modifiers.defense` adds to the base DR of any armor piece crafted
+- A material's `armor.defense` adds to the base DR of any armor piece crafted
   from it.
 - A material's `phase` sets the piece's element for Wuxing interactions.
-- Armor pieces can only be crafted from materials that include `"armor"` in their
-  `appliesTo` array.
+- `default_materials` on a base names what it is found and sold in; a recipe does not
+  refuse a material.
 - Material tiers, weight factors, and value factors apply identically to armor
   as they do to weapons.
 

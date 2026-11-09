@@ -17,4 +17,4 @@ weight      multiplier on the base
 
 Copper stays one row. It is not copied into copper_fiber. Gold may be drawn into fiber and still be a bad sword because its weapon attack is 0. Granite is found as ore. A loom may still take it. The output carries granite's numbers.
 
-`appliesTo` is the old guard. It is not the authority. Phase is a tag. A recipe must not require it. The wuxing module may read it.
+Phase is a tag. A recipe must not require it. The wuxing module may read it.

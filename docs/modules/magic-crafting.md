@@ -47,7 +47,7 @@ The Magic Crafting module covers the creation and customization of permanent mag
 
 ## Integration Points
 
-- **Materials** (`data/materials/core.json`): a material's `modifiers.effectMagnitude`
+- **Materials** (`data/materials/core.json`): a material's `ingredient.effectMagnitude`
   is the magic-conduction bonus (gold, silver, elven_wood conduct best), and its
   `phase` interacts with an enchantment's element via the five-phase cycles. The base
   item's material therefore shapes how strong an enchantment lands.

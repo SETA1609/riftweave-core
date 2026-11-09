@@ -155,7 +155,7 @@ Materials (see `data/materials/core.json` and `docs/modules/materials.md`) are t
 
 When a weapon is crafted from a material:
 - Start with the base dice listed above (the "classic 3.5" profile for that weapon type).
-- Apply the material's `modifiers.attack` bonus.
+- Apply the material's `weapon.attack` bonus.
 - The material also sets the item's `phase` (for five-phase elemental interactions) and can provide other effects (weight factors, value, special tags like "brittle" or "conductive", and `effectMagnitude` for enchantments).
 - Different materials turn the *same* base weapon profile into meaningfully different tools.
 

@@ -23,8 +23,8 @@ The Crafting module adds systems for characters to create equipment, tools, and 
 The **`materials`** collection already exists (`ruleset/data/materials/core.json`,
 schema `material.schema.json`): bronze, copper, iron, steel, wood, elven_wood,
 silver, gold, obsidian, …. Each material carries a five-phase `phase` element and
-`modifiers` (`attack`, `defense`, `effectMagnitude`) it confers on a crafted weapon,
-armor, or accessory, plus `tier`, `appliesTo`, and weight/value factors. Recipes will
+`weapon`, `armor`, and `ingredient` blocks (`attack`, `defense`, `effectMagnitude`) it
+confers on what it becomes, plus `tier` and weight/value factors. Recipes will
 consume materials and read these modifiers onto the produced item.
 
 ## Open Design Questions
@@ -81,7 +81,7 @@ See `ruleset/scripts/crafting_reference.py --verbose` for a runnable demonstrati
 ## Integration Points
 
 - **Materials** (`data/materials/core.json`): the inputs a recipe consumes; their
-  `phase` and `modifiers` shape the crafted item's element, attack/defense, and
+  `phase` and stat blocks shape the crafted item's element, attack/defense, and
   enchantment magnitude.
 - **Equipment**: New items or variants produced by recipes.
 - **Features**: Crafting-related feats and class features (e.g. "Artisan", "Master Craftsman").
