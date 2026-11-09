@@ -100,6 +100,16 @@ Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-03, M5-07, M5-08, M5-10,
 - See: docs/core/materials.md, docs/archive/review/findings-data-oriented-design.md (it recommended this)
 - Done when: no row or schema has `appliesTo` or `modifiers` on a material; the `weapon`, `armor`, and `ingredient` values are unchanged; no doc outside `docs/archive/` and the frozen logs names either column as a material field; `validate.py` and the tests pass; the changelog fragment marks the removal **(breaking)**.
 
+#### M5-28 Monsters and players share one actor shape
+- Status: todo
+- Priority: high
+- Needs: —
+- Do: A monster stores hand-written HP and no mana or skills, while a player's are computed, so the same idea has two shapes. A monster row becomes an actor's starting sheet: derived stats use the player function, `hitPoints` is an optional authored value that replaces computed HP, and a reduced `skills` sheet lists what it fights or casts with, with other skills reading a player's starting value. Existing rows keep their HP for now.
+- Keys: the `monster_sheet` command; `skills` on monsters; `skill_start` in progression
+- Files: ~12 (docs/core/actor-sheet.md, docs/core/vectors.md, ruleset/schemas/monster.schema.json, ruleset/schemas/progression.schema.json, ruleset/data/progression/core.json, ruleset/scripts/kernel_reference.py, ruleset/tests/vectors/monster_sheet.json, backend/contract/monster_sheet.json, backend/core/core.go, backend/internal/data/data.go, backend/internal/derived/derived.go)
+- See: docs/core/contract.md, docs/core/derived.md, docs/modules/monsters.md
+- Done when: vectors show a monster and a player with the same attributes and level getting the same stats, authored HP replacing only HP, and written and unwritten skills; Python and Go pass them.
+
 #### M5-27 One way to compose a row
 - Status: review
 - Priority: high
