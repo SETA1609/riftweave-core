@@ -13,7 +13,7 @@
     "check": {
       "type": "object",
       "properties": {
-        "check": { "$ref": "schema.json#/definitions/namespacedRef", "description": "core:check/<key>: the check row whose skill rolls." },
+        "check": { "$ref": "schema.json#/definitions/checkRef", "description": "core:check/<key>: the check row whose skill rolls." },
         "difficulty": { "type": "integer", "minimum": -50, "maximum": 50, "description": "An add on the check's target; negative is harder. Default 0." }
       },
       "description": "A detect or disarm check. A mechanical or natural hazard names its check row; an arcane one names none and rolls <color>_magic (docs/core/hazards.md#nature).",
@@ -36,7 +36,7 @@
         "avoid": {
           "type": "object",
           "properties": {
-            "check": { "$ref": "schema.json#/definitions/namespacedRef", "description": "core:check/<key>: the check row whose skill rolls." },
+            "check": { "$ref": "schema.json#/definitions/checkRef", "description": "core:check/<key>: the check row whose skill rolls." },
             "difficulty": { "type": "integer", "minimum": -50, "maximum": 50, "description": "An add on the check's target; negative is harder. Default 0." },
             "on_avoid": { "type": "string", "enum": ["none", "half"], "description": "none: a success avoids everything. half: a success halves the damage and avoids the effects." }
           },
@@ -52,7 +52,7 @@
           "required": ["dice", "type"],
           "additionalProperties": false
         },
-        "effects": { "type": "array", "items": { "$ref": "schema.json#/definitions/namespacedRef" }, "description": "core:effect/<key>, applied when the hazard is not avoided." },
+        "effects": { "type": "array", "items": { "$ref": "schema.json#/definitions/effectRef" }, "description": "core:effect/<key>, applied when the hazard is not avoided." },
         "source": { "$ref": "schema.json#/definitions/sourceRef" }
       },
       "required": ["id", "key", "label", "description", "level", "kind", "nature", "trigger", "detect"],

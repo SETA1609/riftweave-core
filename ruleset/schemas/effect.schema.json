@@ -60,9 +60,14 @@
           "uniqueItems": true
         },
         "tags": { "type": "array", "items": { "type": "string" } },
+        "parameter_category": {
+          "type": "string",
+          "pattern": "^[a-z_]+$",
+          "description": "The category a parameter must reference, when the parameter is a reference (docs/core/integrity.md)."
+        },
         "sub_effects": {
           "type": "array",
-          "items": { "$ref": "schema.json#/definitions/namespacedRef" },
+          "items": { "$ref": "schema.json#/definitions/effectRef" },
           "description": "Other effect refs that this effect applies (recursively) when it takes hold on a target. Use namespaced format core:effect/<key>. Used by poison effects to deliver symptoms (e.g. damage, drain, control effects). A poison effect (any effect with 'poison' in its tags or delivered via poison/coating channel) MUST NOT list any other effect that has 'poison' in its tags, to prevent infinite recursion or self-poisoning."
         },
         "reserved": {
