@@ -53,7 +53,7 @@ Done: M3-01, M3-03, M3-04 ([done.md](done.md#m3-combat-and-magic-playable))
 - Done when: a crafted spell with an unknown, uncraftable, or excluded effect or parameter is rejected; learning a spell teaches exactly its craftable effects; Research teaches one effect on a passed check; a crafted mana regen is rejected and a crafted mana leech passes; every template's cost and threshold match the formula (a test); Divine Intervention, Mark, Recall, Pocket Storage, and a bound weapon spell exist as authored spells; `docs/core/casting.md` says what the `world` target reaches; vectors cover each case. Resolving a temple, a mark, or a pocket inventory is engine state (M4 and the backend), not this issue.
 
 #### M3-07 Cast cost by skill and perks
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: M3-02
 - Do: A spell's cost is its effects' (M3-02); what the caster pays differs only by skill and perks, never by level. Apply the skill discount in the cast, `<color>_magic / 200` capped at 0.45 (Daggerfall lowers spell points with skill too, `gold × (110 − skill) / 400`), and the caster's modifiers on `spell_cost` (a perk, a robe), stacked by the kernel rules; the cast spends the result, rounded up, at least 1. The cast and craft thresholds read the cost before the discount.
