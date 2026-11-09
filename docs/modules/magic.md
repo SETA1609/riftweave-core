@@ -36,11 +36,70 @@ train.
 ### The nine color schools
 
 Each color is a normal point-buy skill (`<color>_magic`, 0–100) in
-`skills/core.json`. Functional parallels are commentary only:
+`skills/core.json`. A school is defined by the kind of change its magic makes; the element
+of that change is the other axis. The word in brackets is a functional parallel,
+commentary only. Spells are listed by level, from `spells/core.json`. "Not in the data
+yet" is what the skill's description promises and no effect or spell provides.
+[V 2026-11-09]
 
-`red` (offense) · `orange` (conjuration) · `yellow` (illusion) · `green`
-(restoration) · `blue` (alteration) · `indigo` (force/levitation) · `violet`
-(mysticism) · `white` (holy) · `black` (necromancy).
+**`red` (offense).** Harms at range with raw energy: fire, frost, shock, and force. Its
+variety is shape, from one bolt to a whole battlefield, and it has no utility spell.
+- Spells: Fire Bolt, Force Dart, Frost Lance, Fire Burst, Flame Shield, Chain Lightning,
+  Ice Storm, Meteor, Inferno.
+
+**`orange` (conjuration).** Makes what was not there, for as long as the spell lasts:
+spirit creatures, elementals, weapons of light, and barriers.
+- Spells: Summon Familiar, Bound Blade, Conjured Barrier, Conjured Blades, Bound Bow,
+  Summon Elemental, Conjured Legion.
+
+**`yellow` (illusion).** Changes what others see, hear, and believe: light and darkness of
+the senses, false friendship, invisibility, and pain that exists only in the mind.
+- Spells: Light, Blinding Flash, Blur, Mind Spike, Charm Person, Silence, Veil, Psychic
+  Scream, Mass Charm.
+- Not in the data yet: calm.
+
+**`green` (restoration).** Mends the mortal body: health, stamina, poison and its cures. It
+deals no damage.
+- Spells: Mend Wounds, Cure Poison, Vigor, Regeneration, Purity Ward, Greater Heal, Mass
+  Heal, Renewal.
+
+**`blue` (alteration).** Changes the physical state of a body or thing: how heavy, how
+hard, how fast, or what it is made of. Its damage is matter altered into acid; its
+strongest spell turns flesh to stone.
+- Spells: Feather Fall, Ward, Corrode, Slow, Stoneskin, Paralyze, Acid Rain, Petrify.
+- Not in the data yet: water-walking, transmutation.
+
+**`indigo` (force).** Pushes, blocks, and shakes with unseen force and sound, and works
+locks and mechanical traps from a distance.
+- Spells: Unlock, Disarm Trap, Thunderclap, Force Push, Force Wall, Greater Unlock, Greater
+  Disarm, Sonic Boom.
+- Not in the data yet: levitation.
+
+**`violet` (mysticism).** Works on magic itself and on what magic connects: unravels and
+absorbs spells, drains mana and will, moves objects by thought.
+- Spells: Telekinesis, Dispel Magic, Sap Will, Spell Absorption, Dispel Ward, Mana Drain,
+  Greater Dispel.
+- Not in the data yet: Mark and Recall (planned effects, M3-06), soul detection and storage.
+
+**`white` (holy).** Divine power that shelters allies and burns the unholy: radiant damage,
+blessings, wards, and the cure of disease. Opposed by black.
+- Spells: Holy Light, Blessing, Smite, Holy Ward, Cleanse, Sunburst, Divine Shield.
+- Not in the data yet: banishing undead and demons, divine-grade healing, sanctify.
+
+**`black` (necromancy).** Death and what it leaves behind: necrotic damage, curses, stolen
+strength, armor of bone, and corpses raised to fight. Opposed by white.
+- Spells: Drain Life, Curse, Bone Armor, Raise Thrall, Wither, Raise Horde, Death Grip.
+- Not in the data yet: soul-corruption.
+
+Where two schools come close, this is the line between them:
+
+| Both touch | Who does what |
+| --- | --- |
+| Force | Red strikes with it (Force Dart); indigo pushes and blocks with it. |
+| Summoning | Orange calls spirits and elementals; black raises the dead. |
+| Moving things | Indigo shoves with force; violet lifts by thought. |
+| Drains | Violet takes mana and will; black takes life and strength. |
+| Cures | Green cures poison; white cures disease. |
 
 ### The five phases
 
@@ -92,6 +151,37 @@ marks a spell the caster holds. `cost`, `cooldown`, and the `custom` flag round 
 spell. `cost` is the
 authored baseline; the engine derives it (§5).
 
+### The core spell list
+
+`spells/core.json` holds at least five spells per color, 45 or more in all, from level 1 to
+30. An authored spell draws only effects on its own color or with no color, so the list
+teaches which school casts what; a crafted spell may be off-color only where a game allows it
+(§5). [V 2026-11-08]
+
+Every color has a damage, a utility, and a defensive spell, or a reason it has none:
+
+| Color | Damage | Utility | Defensive |
+| --- | --- | --- | --- |
+| red | fire, frost, shock, force | none: red is the offense school; its range is shape (bolt, burst, storm) | flame shield |
+| orange | conjured blades (bleed) | familiar, bound weapons, summoned elemental | conjured barrier |
+| yellow | psychic | light, blinding flash, charm, silence, veil | blur |
+| green | none: restoration does not harm; life taken is black's | cures, vigor | regeneration, purity ward, heals |
+| blue | acid (corrosion) | feather fall, slow, paralyze, petrify | ward, stoneskin |
+| indigo | thunder | unlock, disarm trap, force push | force wall |
+| violet | mana and will drain | dispel, dispel ward | spell absorption |
+| white | radiant | blessing, cleanse | holy ward, divine shield |
+| black | necrotic | curse, wither, raise thrall | bone armor |
+
+The damage effects `damage_radiant` (white), `damage_necrotic` (black), `damage_psychic`
+(yellow), `damage_thunder` (indigo), and `damage_acid` (blue) join the pool so that every
+color but green deals damage of its own; each matches a key in `combat/damage_types.json`.
+`disarm_hazard` and `unlock` (indigo) are the spell side of traps and locks
+([hazards.md](../core/hazards.md#spells-on-a-hazard)). `test_spells.py` checks the floor,
+the colors, the channels, and this table.
+
+Every spell, authored or crafted, costs what §5's formula gives for its effects. A spell's `level`
+(1–30) is its power band, which dispel reads; it does not set the cost.
+
 ---
 
 ## 4. Casting resolution (d100 roll-under)
@@ -140,24 +230,63 @@ casting rules.
   durations, and targets. Inventing a new effect is a content/authoring change to the
   pool, not a player action.
 
-### Reference cost formula
+- **No saves.** A crafted spell cannot carry a save: saves are for authored instant spells
+  (M3-05). A crafted spell is avoided only by a dodge or a block.
 
-These are **reference values the engine tunes**, in the spirit of the rest of the
-ruleset. Per applied effect:
+### Cost formula
+
+A spell's mana cost comes from its effects alone: what they do, for how long, and how far
+they reach. The character's level never enters it; a level-1 and a level-30 caster pay the
+same for the same spell, before their own skill and perks (below). The coefficients are in
+`ruleset/data/casting/core.json` (`spell_cost`). [V 2026-11-08]
 
 ```
-effectCost = magnitude × unitWeight(magnitudeUnit)
-           + durationSeconds × 0.1
-effectCost ×= targetMultiplier      // self 1.0, touch 1.0, ranged 1.25, area 1.5 (+0.15 per unit of radius), world 3.0
-
-spellComplexity = sum(effectCost over all effects)
-manaCost        = ceil( spellComplexity × (1 − skillDiscount) )   // skillDiscount = <color>_magic / 200, capped at 0.45
-castThreshold   = round( spellComplexity )                        // min <color>_magic to cast at all
-craftThreshold  = round( spellComplexity × 1.25 )                 // min <color>_magic to author the recipe
+per effect
+  m          = magnitude, or 1 for an effect whose magnitude is not a strength
+               (magnitudeUnit seconds, or none: a stun's strength is its duration)
+  cost       = 0.1 × baseCost × m × duration          duration in seconds, 1 = instant
+  cost      += 0.05 × baseCost × radius               area only
+  cost      ×= target multiplier                       self 1, touch 1, ranged 1.5, area 2
+spell cost   = ceil(sum over the effects)              cost.mana on the row
 ```
 
-`unitWeight` example weights: `points` 1.0, `percent` 0.5, `dice` 1.0, `count` 8.0,
-`seconds` 0.25, `level` 6.0. Higher skill lowers mana cost but never the thresholds.
+- **`baseCost`** is on each effect row: how much one point of it for one second is worth.
+  It carries the difference between a point of fire and a second of paralysis, so no unit
+  weights are needed. Light is 0.2, a point of fire 5, a second of paralysis 40.
+- **Duration** multiplies, so a pool effect is priced by its total (10 health a second for
+  10 seconds costs what 100 at once does) and a buff by how long it holds.
+- **Riders** cost what they do: a 6-second blind on a burst is priced like a blind spell.
+
+**Sources.** The shape is Morrowind's: OpenMW's `calcEffectCost` multiplies the mean
+magnitude by `0.1 × baseCost` and by the duration, adds `0.05 × area × baseCost`, and
+multiplies an effect cast on a target by 1.5; an effect with no magnitude counts it as 1
+(checked against OpenMW/openmw `apps/openmw/mwmechanics/spellutil.cpp` at `b8285cc95d19`,
+2026-11-08). The per-effect base costs follow its ratios (UESP, Morrowind:Magic Effects,
+2026-11-08: Light 0.2, Fire Damage 5, Damage Health 8, Paralyze and Silence 40), scaled to
+our magnitudes. The area multiplier is Daggerfall's: Daggerfall Unity's
+`ApplyTargetCostMultiplier` is caster and touch 1.0, single target at range 1.5, area around
+the caster 2.0, area at range 2.5; we have one area shape and take 2.0 (Interkarma/
+daggerfall-unity `Assets/Scripts/Game/Formulas/FormulaHelper.cs` at `4e78e1412b17`,
+2026-11-08). Not taken: Daggerfall's magnitude and duration that grow per caster level
+(`plus` per `perLevel` levels), Morrowind's `fEffectCostMult`, and its offset of one second
+on a player-made spell's duration. [V 2026-11-08]
+
+### The caster's side
+
+What a caster pays is the spell cost after their skill and perks, never their level.
+Daggerfall lowers spell points as the skill rises (`gold × (110 − skill) / 400`); here the
+skill discount is `<color>_magic / 200`, capped at 0.45, and perks emit modifiers on
+`spell_cost`. Applying them in the cast is M3-07; until then the cast spends `cost.mana` as
+authored. The cast threshold and the craft threshold read the spell cost before any
+discount:
+
+```
+castThreshold   = round( spell cost )           // min <color>_magic to cast at all
+craftThreshold  = round( spell cost × 1.25 )    // min <color>_magic to author the recipe
+```
+
+Uncraftable effects (Divine Intervention, Mark and Recall, M3-06) have high base costs
+in Morrowind (150, 350); here they are authored only and not priced for crafting.
 
 ---
 

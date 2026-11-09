@@ -1,7 +1,8 @@
 // Package hazard detects, disarms, and triggers one trap or environmental hazard
 // (docs/core/hazards.md). Detect, disarm, and avoid are checks: one resolution through a
-// check row, with the hazard's difficulty as an add on the target. A trigger returns one
-// packet and the effect list; the caller applies DR, resist, and conditions. Rolls are
+// check row, with the hazard's difficulty as an add on the target; an arcane hazard rolls
+// its color's magic skill. A trigger returns one packet and the effect list; the caller
+// applies DR, resist, and conditions. A spell op applies a cast that succeeded. Rolls are
 // inputs.
 package hazard
 
@@ -20,6 +21,7 @@ import (
 type Input struct {
 	Roll       *int64              `json:"roll"`
 	Hazard     string              `json:"hazard"`
+	Spell      string              `json:"spell"`
 	Operation  string              `json:"op"`
 	Modifiers  []modifier.Modifier `json:"modifiers"`
 	Actor      actor.Actor         `json:"actor"`
@@ -44,6 +46,35 @@ type TriggerResult struct {
 	Packet  *Packet  `json:"packet"`
 	Effects []string `json:"effects"`
 	Avoided bool     `json:"avoided"`
+}
+
+// SpellResult is a cast spell on a hazard: whether it undid it, and the effect that did.
+type SpellResult struct {
+	Effect   *string `json:"effect"`
+	Disarmed bool    `json:"disarmed"`
+}
+
+// undoneBy is the effect that undoes a hazard of each nature (docs/core/hazards.md). A
+// natural hazard has none.
+var undoneBy = map[string]string{"mechanical": "core:effect/disarm_hazard", "arcane": "core:effect/dispel"}
+
+// spell applies a cast that succeeded: an effect that undoes the hazard's nature, at a
+// magnitude of the hazard's level or more, disarms it.
+func spell(ruleset *data.Ruleset, input *Input, hazard *data.Hazard) (SpellResult, error) {
+	cast, err := ruleset.Spells.Require("spell", input.Spell)
+	if err != nil {
+		return SpellResult{}, err
+	}
+	wanted, ok := undoneBy[hazard.Nature]
+	if !ok {
+		return SpellResult{}, nil
+	}
+	for _, applied := range cast.Effects {
+		if applied.Effect == wanted && applied.Magnitude >= float64(hazard.Level) {
+			return SpellResult{Disarmed: true, Effect: &wanted}, nil
+		}
+	}
+	return SpellResult{}, nil
 }
 
 // check rolls one of the hazard's checks. Only the modifiers on the check's skill count,
@@ -88,6 +119,8 @@ func Run(ruleset *data.Ruleset, input Input) (any, error) {
 		return CheckResult{Result: result, Triggered: &triggered}, err
 	case "trigger":
 		return trigger(ruleset, &input, hazard)
+	case "spell":
+		return spell(ruleset, &input, hazard)
 	}
 	return nil, &data.NotDefinedError{Kind: "hazard op", Key: input.Operation}
 }

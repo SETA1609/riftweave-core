@@ -16,7 +16,7 @@
         "check": { "$ref": "schema.json#/definitions/namespacedRef", "description": "core:check/<key>: the check row whose skill rolls." },
         "difficulty": { "type": "integer", "minimum": -50, "maximum": 50, "description": "An add on the check's target; negative is harder. Default 0." }
       },
-      "required": ["check"],
+      "description": "A detect or disarm check. A mechanical or natural hazard names its check row; an arcane one names none and rolls <color>_magic (docs/core/hazards.md#nature).",
       "additionalProperties": false
     },
     "hazard": {
@@ -28,6 +28,8 @@
         "description": { "type": "string", "minLength": 1 },
         "level": { "type": "integer", "minimum": 1, "maximum": 30 },
         "kind": { "type": "string", "enum": ["trap", "environment"] },
+        "nature": { "type": "string", "enum": ["mechanical", "natural", "arcane"], "description": "What the hazard is made of: it picks the detect and disarm skill and the spell that undoes it (docs/core/hazards.md#nature)." },
+        "color": { "$ref": "schema.json#/definitions/color", "description": "Arcane only: the school the hazard was woven in; detect and disarm roll <color>_magic." },
         "trigger": { "type": "string", "enum": ["pressure_plate", "tripwire", "touch", "open", "proximity", "enter"] },
         "detect": { "$ref": "#/definitions/check" },
         "disarm": { "$ref": "#/definitions/check" },
@@ -53,8 +55,20 @@
         "effects": { "type": "array", "items": { "$ref": "schema.json#/definitions/namespacedRef" }, "description": "core:effect/<key>, applied when the hazard is not avoided." },
         "source": { "$ref": "schema.json#/definitions/sourceRef" }
       },
-      "required": ["id", "key", "label", "description", "level", "kind", "trigger", "detect"],
+      "required": ["id", "key", "label", "description", "level", "kind", "nature", "trigger", "detect"],
       "allOf": [
+        {
+          "if": { "properties": { "nature": { "const": "arcane" } }, "required": ["nature"] },
+          "then": {
+            "required": ["color"],
+            "properties": { "detect": { "not": { "required": ["check"] } }, "disarm": { "not": { "required": ["check"] } } }
+          },
+          "else": {
+            "not": { "required": ["color"] },
+            "properties": { "detect": { "required": ["check"] }, "disarm": { "required": ["check"] } }
+          }
+        },
+        { "if": { "properties": { "nature": { "const": "natural" } } }, "then": { "not": { "required": ["disarm"] } } },
         { "if": { "properties": { "kind": { "const": "environment" } } }, "then": { "not": { "required": ["disarm"] } } },
         { "if": { "properties": { "kind": { "const": "trap" } } }, "then": { "required": ["disarm"] } },
         { "anyOf": [{ "required": ["damage"] }, { "required": ["effects"] }] }

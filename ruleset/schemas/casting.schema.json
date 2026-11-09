@@ -25,9 +25,31 @@
           },
           "required": ["none", "light", "medium", "heavy"],
           "additionalProperties": false
+        },
+        "spell_cost": {
+          "type": "object",
+          "description": "The spell cost formula's coefficients (docs/modules/magic.md#cost-formula): per effect, magnitude_factor × baseCost × magnitude × duration, plus area_factor × baseCost × radius, times the target multiplier; the spell cost is the sum, rounded up.",
+          "properties": {
+            "magnitude_factor": { "type": "number", "exclusiveMinimum": 0 },
+            "area_factor": { "type": "number", "minimum": 0 },
+            "target_multiplier": {
+              "type": "object",
+              "properties": {
+                "self": { "type": "number", "exclusiveMinimum": 0 },
+                "touch": { "type": "number", "exclusiveMinimum": 0 },
+                "ranged": { "type": "number", "exclusiveMinimum": 0 },
+                "area": { "type": "number", "exclusiveMinimum": 0 },
+                "world": { "type": "number", "exclusiveMinimum": 0 }
+              },
+              "required": ["self", "touch", "ranged", "area"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["magnitude_factor", "area_factor", "target_multiplier"],
+          "additionalProperties": false
         }
       },
-      "required": ["prevented_by", "armor_penalty"],
+      "required": ["prevented_by", "armor_penalty", "spell_cost"],
       "additionalProperties": false
     }
   },

@@ -300,7 +300,10 @@ type Hazard struct {
 		Type string `json:"type"`
 	} `json:"damage"`
 	Key     string   `json:"key"`
+	Nature  string   `json:"nature"` // mechanical, natural, or arcane
+	Color   string   `json:"color"`  // arcane only: detect and disarm roll <color>_magic
 	Effects []string `json:"effects"`
+	Level   int64    `json:"level"`
 }
 
 // AppliedEffect is one entry of a spell's effects. Encoded keeps the entry as written, so
@@ -671,7 +674,8 @@ func (loader *rulesetLoader) loadConditions(ruleset *Ruleset) {
 	ruleset.Conditions = conditions
 }
 
-// loadHazards reads the hazards and resolves each check ref to the skill it rolls.
+// loadHazards reads the hazards and resolves each check ref to the skill it rolls. An arcane
+// hazard's detect and disarm name no check: they roll its color's magic skill.
 func (loader *rulesetLoader) loadHazards(ruleset *Ruleset) {
 	var checks struct {
 		Checks []struct{ Key, Skill string }
@@ -690,6 +694,10 @@ func (loader *rulesetLoader) loadHazards(ruleset *Ruleset) {
 		var hazard *Hazard = &hazards.Hazards[index]
 		for _, check := range []*HazardCheck{&hazard.Detect, hazard.Disarm, hazard.Avoid} {
 			if check == nil {
+				continue
+			}
+			if check.Check == "" && hazard.Nature == "arcane" {
+				check.Skill = hazard.Color + "_magic"
 				continue
 			}
 			skill, ok := skillByCheck[check.Check]

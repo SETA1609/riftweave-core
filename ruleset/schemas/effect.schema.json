@@ -44,6 +44,7 @@
           "enum": ["points", "percent", "dice", "count", "seconds", "level"],
           "description": "How an appliedEffect.magnitude is interpreted for this effect"
         },
+        "baseCost": { "type": "number", "exclusiveMinimum": 0, "description": "Mana worth of one point of the effect for one second, the weight in the spell cost formula (docs/modules/magic.md#cost-formula). Required on every effect a spell may draw." },
         "defaultDuration": { "type": "integer", "minimum": 1, "default": 1, "description": "Default duration in seconds when not overridden by the appliedEffect; 1 is instant (schema.json appliedEffect)." },
         "defaultDurationType": {
           "type": "string",

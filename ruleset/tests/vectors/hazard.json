@@ -20,8 +20,8 @@
     }
   },
   {
-    "name": "detect: a fire rune is -20, so 35 fails against 20",
-    "hazard": "fire_rune",
+    "name": "detect: a poison needle is -10, so 35 fails against 30",
+    "hazard": "poison_needle",
     "op": "detect",
     "actor": {
       "skills": {
@@ -34,13 +34,13 @@
     "roll": 35,
     "expect": {
       "success": false,
-      "target": 20,
+      "target": 30,
       "margin": null
     }
   },
   {
     "name": "detect: a lantern's +10 is a modifier on the target",
-    "hazard": "fire_rune",
+    "hazard": "poison_needle",
     "op": "detect",
     "actor": {
       "skills": {
@@ -61,8 +61,8 @@
     ],
     "expect": {
       "success": true,
-      "target": 30,
-      "margin": 5
+      "target": 40,
+      "margin": 15
     }
   },
   {
@@ -285,6 +285,165 @@
       "effects": [
         "core:effect/slow"
       ]
+    }
+  },
+  {
+    "name": "detect: a fire rune is arcane and red, so red magic 50 finds it against -20",
+    "hazard": "fire_rune",
+    "op": "detect",
+    "actor": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "roll": 25,
+    "expect": {
+      "success": true,
+      "target": 30,
+      "margin": 5,
+      "tags": []
+    }
+  },
+  {
+    "name": "detect: investigation does not find an arcane rune; red magic 0 against -20 fails",
+    "hazard": "fire_rune",
+    "op": "detect",
+    "actor": {
+      "skills": {
+        "red_magic": 0,
+        "investigation": 90
+      },
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "roll": 25,
+    "expect": {
+      "success": false,
+      "target": -20,
+      "margin": null
+    }
+  },
+  {
+    "name": "disarm: a fire rune is unwoven with red magic, not lockpick",
+    "hazard": "fire_rune",
+    "op": "disarm",
+    "actor": {
+      "skills": {
+        "red_magic": 60
+      },
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "roll": 30,
+    "expect": {
+      "success": true,
+      "target": 40,
+      "margin": 10,
+      "triggered": false
+    }
+  },
+  {
+    "name": "disarm: a lightning ward is violet; violet magic 50 against -20 misses 35",
+    "hazard": "lightning_ward",
+    "op": "disarm",
+    "actor": {
+      "skills": {
+        "violet_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "roll": 35,
+    "expect": {
+      "success": false,
+      "target": 30,
+      "triggered": false
+    }
+  },
+  {
+    "name": "spell: disarm trap (4) makes a level-4 swinging blade safe",
+    "hazard": "swinging_blade",
+    "op": "spell",
+    "spell": "disarm_trap",
+    "expect": {
+      "disarmed": true,
+      "effect": "core:effect/disarm_hazard"
+    }
+  },
+  {
+    "name": "spell: disarm trap does not touch an arcane rune",
+    "hazard": "fire_rune",
+    "op": "spell",
+    "spell": "disarm_trap",
+    "expect": {
+      "disarmed": false,
+      "effect": null
+    }
+  },
+  {
+    "name": "spell: greater disarm (20) reaches what disarm trap (4) cannot",
+    "hazard": "falling_rocks",
+    "op": "spell",
+    "spell": "greater_disarm",
+    "expect": {
+      "disarmed": true,
+      "effect": "core:effect/disarm_hazard"
+    }
+  },
+  {
+    "name": "spell: dispel magic (4) is too weak for a level-5 fire rune",
+    "hazard": "fire_rune",
+    "op": "spell",
+    "spell": "dispel_magic",
+    "expect": {
+      "disarmed": false,
+      "effect": null
+    }
+  },
+  {
+    "name": "spell: dispel ward (12) ends a level-5 fire rune",
+    "hazard": "fire_rune",
+    "op": "spell",
+    "spell": "dispel_ward",
+    "expect": {
+      "disarmed": true,
+      "effect": "core:effect/dispel"
+    }
+  },
+  {
+    "name": "spell: dispel does nothing to a mechanical pit",
+    "hazard": "pit_trap",
+    "op": "spell",
+    "spell": "dispel_ward",
+    "expect": {
+      "disarmed": false,
+      "effect": null
+    }
+  },
+  {
+    "name": "spell: nothing undoes a natural hazard",
+    "hazard": "thin_ice",
+    "op": "spell",
+    "spell": "dispel_ward",
+    "expect": {
+      "disarmed": false,
+      "effect": null
+    }
+  },
+  {
+    "name": "spell: a fire bolt does not disarm a pit",
+    "hazard": "pit_trap",
+    "op": "spell",
+    "spell": "fire_bolt",
+    "expect": {
+      "disarmed": false,
+      "effect": null
     }
   }
 ]

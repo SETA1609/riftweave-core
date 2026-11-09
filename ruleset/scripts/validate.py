@@ -637,7 +637,10 @@ def check_references(
                     if isinstance(param, str) and (
                         param.startswith("core:") or param.startswith("module:")
                     ):
-                        if not resolve_namespaced_ref(param, namespaced_ref_index):
+                        eq_idx = equipment_index or {"namespaced_keys": set(), "bare_keys": set()}
+                        if not resolve_namespaced_ref(param, namespaced_ref_index) and not equipment_ref_valid(
+                            param, {}, eq_idx
+                        ):
                             errors.append(
                                 f"spell '{s.get('key', '?')}': effect parameter '{param}' does not resolve"
                             )

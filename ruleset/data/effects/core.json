@@ -10,6 +10,7 @@
       "color": "red",
       "phase": "fire",
       "magnitudeUnit": "points",
+      "baseCost": 5,
       "channels": [
         "spell",
         "coating",
@@ -29,6 +30,7 @@
       "color": "red",
       "phase": "water",
       "magnitudeUnit": "points",
+      "baseCost": 5,
       "channels": [
         "spell",
         "coating",
@@ -42,7 +44,6 @@
     },
     {
       "key": "damage_shock",
-      "reserved": true,
       "label": "Damage Shock",
       "description": "Deals shock damage and drains mana.",
       "category": "damage",
@@ -50,6 +51,7 @@
       "color": "red",
       "phase": "wood",
       "magnitudeUnit": "points",
+      "baseCost": 7,
       "channels": [
         "spell",
         "coating",
@@ -69,6 +71,7 @@
       "color": "red",
       "phase": "metal",
       "magnitudeUnit": "points",
+      "baseCost": 5,
       "channels": [
         "spell"
       ],
@@ -85,6 +88,7 @@
       "color": "red",
       "phase": "wood",
       "magnitudeUnit": "points",
+      "baseCost": 8,
       "channels": [
         "spell",
         "poison",
@@ -96,6 +100,90 @@
       ]
     },
     {
+      "key": "damage_radiant",
+      "label": "Damage Radiant",
+      "description": "Deals radiant damage: holy light that burns what it touches.",
+      "category": "damage",
+      "polarity": "harmful",
+      "color": "white",
+      "magnitudeUnit": "points",
+      "baseCost": 5,
+      "channels": [
+        "spell"
+      ],
+      "tags": [
+        "holy"
+      ]
+    },
+    {
+      "key": "damage_necrotic",
+      "label": "Damage Necrotic",
+      "description": "Deals necrotic damage: the chill of death that withers living flesh.",
+      "category": "damage",
+      "polarity": "harmful",
+      "color": "black",
+      "magnitudeUnit": "points",
+      "baseCost": 6,
+      "channels": [
+        "spell"
+      ],
+      "tags": [
+        "necromancy"
+      ]
+    },
+    {
+      "key": "damage_psychic",
+      "label": "Damage Psychic",
+      "description": "Deals psychic damage: pain the mind believes, felt as real.",
+      "category": "damage",
+      "polarity": "harmful",
+      "color": "yellow",
+      "magnitudeUnit": "points",
+      "baseCost": 6,
+      "channels": [
+        "spell"
+      ],
+      "tags": [
+        "illusion",
+        "mind"
+      ]
+    },
+    {
+      "key": "damage_thunder",
+      "label": "Damage Thunder",
+      "description": "Deals thunder damage: a shock of force and sound.",
+      "category": "damage",
+      "polarity": "harmful",
+      "color": "indigo",
+      "magnitudeUnit": "points",
+      "baseCost": 5,
+      "channels": [
+        "spell"
+      ],
+      "tags": [
+        "force",
+        "sound"
+      ]
+    },
+    {
+      "key": "damage_acid",
+      "label": "Damage Acid",
+      "description": "Deals acid damage: flesh and metal altered into something that dissolves.",
+      "category": "damage",
+      "polarity": "harmful",
+      "color": "blue",
+      "phase": "earth",
+      "magnitudeUnit": "points",
+      "baseCost": 5,
+      "channels": [
+        "spell"
+      ],
+      "tags": [
+        "alteration",
+        "acid"
+      ]
+    },
+    {
       "key": "damage_stamina",
       "label": "Damage Stamina",
       "description": "Saps the target's stamina.",
@@ -104,6 +192,7 @@
       "color": "red",
       "phase": "earth",
       "magnitudeUnit": "points",
+      "baseCost": 2,
       "channels": [
         "spell",
         "poison",
@@ -117,6 +206,7 @@
       "category": "restore",
       "polarity": "beneficial",
       "magnitudeUnit": "points",
+      "baseCost": 5,
       "channels": [
         "spell",
         "potion",
@@ -137,6 +227,7 @@
       "polarity": "beneficial",
       "color": "yellow",
       "magnitudeUnit": "seconds",
+      "baseCost": 8,
       "defaultDuration": 30,
       "channels": [
         "spell",
@@ -149,13 +240,13 @@
     },
     {
       "key": "light",
-      "reserved": true,
       "label": "Light",
       "description": "Conjures light around the subject or a point.",
       "category": "utility",
       "polarity": "neutral",
       "color": "yellow",
       "magnitudeUnit": "seconds",
+      "baseCost": 0.2,
       "defaultDuration": 120,
       "channels": [
         "spell"
@@ -172,6 +263,7 @@
       "polarity": "beneficial",
       "color": "blue",
       "magnitudeUnit": "points",
+      "baseCost": 0.02,
       "defaultDuration": 120,
       "channels": [
         "spell",
@@ -191,6 +283,7 @@
       "color": "blue",
       "phase": "earth",
       "magnitudeUnit": "seconds",
+      "baseCost": 40,
       "defaultDuration": 4,
       "channels": [
         "spell",
@@ -203,13 +296,13 @@
     },
     {
       "key": "telekinesis",
-      "reserved": true,
       "label": "Telekinesis",
       "description": "Manipulate distant objects at range.",
       "category": "control",
       "polarity": "neutral",
       "color": "violet",
       "magnitudeUnit": "seconds",
+      "baseCost": 1,
       "defaultDuration": 20,
       "channels": [
         "spell"
@@ -224,8 +317,8 @@
       "description": "Conjures or animates a creature/servant to fight for or assist the caster. Use 'parameter' to specify the type or category (e.g. 'undead'). Magnitude is typically a count or power rating; duration controls persistence. Generalizes former summon_* effects.",
       "category": "conjure",
       "polarity": "harmful",
-      "color": "black",
       "magnitudeUnit": "count",
+      "baseCost": 2,
       "defaultDuration": 120,
       "channels": [
         "spell"
@@ -238,13 +331,13 @@
     },
     {
       "key": "bound_weapon",
-      "reserved": true,
       "label": "Bound Weapon",
       "description": "Conjures a weapon of shaped energy in the caster's hand. Use 'parameter' for the weapon it copies (e.g. 'core:weapon/longsword'); the caster attacks with that weapon's skill. Magnitude is the number of weapons conjured (normally 1). The weapon vanishes when the duration ends or it leaves the caster's hand.",
       "category": "conjure",
       "polarity": "beneficial",
       "color": "orange",
       "magnitudeUnit": "count",
+      "baseCost": 2,
       "defaultDuration": 60,
       "channels": [
         "spell"
@@ -346,6 +439,7 @@
       "category": "resist",
       "polarity": "beneficial",
       "magnitudeUnit": "percent",
+      "baseCost": 0.1,
       "defaultDuration": 60,
       "channels": [
         "innate",
@@ -364,6 +458,7 @@
       "description": "Removes active conditions, poisons, or afflictions. Use 'parameter' to specify the condition (e.g. 'poison'). Generalizes specific cure_* effects.",
       "category": "cure",
       "polarity": "beneficial",
+      "baseCost": 20,
       "channels": [
         "spell",
         "potion",
@@ -380,6 +475,7 @@
       "category": "utility",
       "polarity": "beneficial",
       "magnitudeUnit": "percent",
+      "baseCost": 0.2,
       "channels": [
         "innate",
         "spell"
@@ -498,6 +594,7 @@
       "category": "utility",
       "polarity": "beneficial",
       "magnitudeUnit": "percent",
+      "baseCost": 0.1,
       "channels": [
         "innate",
         "spell",
@@ -515,6 +612,7 @@
       "category": "fortify",
       "polarity": "beneficial",
       "magnitudeUnit": "percent",
+      "baseCost": 0.5,
       "channels": [
         "innate",
         "spell",
@@ -533,6 +631,7 @@
       "category": "fortify",
       "polarity": "beneficial",
       "magnitudeUnit": "points",
+      "baseCost": 0.2,
       "defaultDurationType": "unlimited",
       "channels": [
         "innate",
@@ -552,6 +651,7 @@
       "category": "fortify",
       "polarity": "beneficial",
       "magnitudeUnit": "points",
+      "baseCost": 2,
       "defaultDurationType": "unlimited",
       "channels": [
         "innate",
@@ -573,6 +673,7 @@
       "category": "fortify",
       "polarity": "beneficial",
       "magnitudeUnit": "points",
+      "baseCost": 0.2,
       "defaultDurationType": "unlimited",
       "channels": [
         "innate",
@@ -593,6 +694,7 @@
       "category": "drain",
       "polarity": "harmful",
       "magnitudeUnit": "points",
+      "baseCost": 0.2,
       "channels": [
         "innate",
         "spell",
@@ -607,12 +709,12 @@
     },
     {
       "key": "drain_attribute",
-      "reserved": true,
       "label": "Drain Attribute",
       "description": "Reduces a specific attribute (temporary drain). Parameter specifies the ability id. Magnitude is the amount drained (can go below normal min temporarily).",
       "category": "drain",
       "polarity": "harmful",
       "magnitudeUnit": "points",
+      "baseCost": 1,
       "channels": [
         "innate",
         "spell",
@@ -632,6 +734,7 @@
       "category": "damage",
       "polarity": "harmful",
       "magnitudeUnit": "points",
+      "baseCost": 10,
       "channels": [
         "innate",
         "spell",
@@ -651,6 +754,7 @@
       "category": "damage",
       "polarity": "harmful",
       "magnitudeUnit": "points",
+      "baseCost": 1,
       "channels": [
         "innate",
         "spell",
@@ -665,12 +769,12 @@
     },
     {
       "key": "drain_resource",
-      "reserved": true,
       "label": "Drain Resource",
       "description": "Drains a resource pool (temporary reduction to current or max). Parameter: 'health', 'stamina', 'mana', etc. Magnitude is the amount drained.",
       "category": "drain",
       "polarity": "harmful",
       "magnitudeUnit": "points",
+      "baseCost": 3,
       "channels": [
         "innate",
         "spell",
@@ -690,6 +794,7 @@
       "category": "damage",
       "polarity": "harmful",
       "magnitudeUnit": "points",
+      "baseCost": 8,
       "channels": [
         "innate",
         "spell",
@@ -709,6 +814,7 @@
       "polarity": "harmful",
       "phase": "wood",
       "magnitudeUnit": "points",
+      "baseCost": 1,
       "defaultDuration": 86400,
       "channels": [
         "innate",
@@ -840,6 +946,7 @@
       "polarity": "harmful",
       "color": "yellow",
       "magnitudeUnit": "seconds",
+      "baseCost": 10,
       "defaultDuration": 30,
       "channels": [
         "spell",
@@ -860,6 +967,7 @@
       "polarity": "harmful",
       "color": "yellow",
       "magnitudeUnit": "seconds",
+      "baseCost": 3,
       "defaultDuration": 60,
       "channels": [
         "spell",
@@ -878,6 +986,7 @@
       "polarity": "harmful",
       "color": "yellow",
       "magnitudeUnit": "seconds",
+      "baseCost": 5,
       "defaultDuration": 30,
       "channels": [
         "spell",
@@ -895,6 +1004,7 @@
       "category": "control",
       "polarity": "harmful",
       "magnitudeUnit": "seconds",
+      "baseCost": 20,
       "defaultDuration": 10,
       "channels": [
         "spell",
@@ -913,6 +1023,7 @@
       "polarity": "harmful",
       "color": "blue",
       "magnitudeUnit": "seconds",
+      "baseCost": 30,
       "defaultDuration": 10,
       "channels": [
         "spell",
@@ -933,6 +1044,7 @@
       "color": "blue",
       "phase": "earth",
       "magnitudeUnit": "seconds",
+      "baseCost": 50,
       "defaultDuration": 120,
       "channels": [
         "spell",
@@ -950,6 +1062,7 @@
       "category": "control",
       "polarity": "harmful",
       "magnitudeUnit": "seconds",
+      "baseCost": 20,
       "defaultDuration": 5,
       "channels": [
         "spell",
@@ -970,6 +1083,7 @@
       "color": "blue",
       "phase": "wood",
       "magnitudeUnit": "seconds",
+      "baseCost": 15,
       "defaultDuration": 20,
       "channels": [
         "spell",
@@ -989,6 +1103,7 @@
       "polarity": "harmful",
       "color": "blue",
       "magnitudeUnit": "seconds",
+      "baseCost": 30,
       "defaultDuration": 4,
       "channels": [
         "spell",
@@ -1008,6 +1123,7 @@
       "polarity": "harmful",
       "color": "blue",
       "magnitudeUnit": "seconds",
+      "baseCost": 40,
       "defaultDuration": 60,
       "channels": [
         "spell",
@@ -1028,6 +1144,7 @@
       "color": "red",
       "phase": "fire",
       "magnitudeUnit": "points",
+      "baseCost": 5,
       "defaultDuration": 10,
       "channels": [
         "spell",
@@ -1050,6 +1167,7 @@
       "polarity": "harmful",
       "phase": "wood",
       "magnitudeUnit": "points",
+      "baseCost": 5,
       "defaultDuration": 15,
       "channels": [
         "spell",
@@ -1071,6 +1189,7 @@
       "color": "blue",
       "phase": "water",
       "magnitudeUnit": "seconds",
+      "baseCost": 10,
       "defaultDuration": 15,
       "channels": [
         "spell",
@@ -1091,6 +1210,7 @@
       "polarity": "harmful",
       "color": "yellow",
       "magnitudeUnit": "seconds",
+      "baseCost": 40,
       "defaultDuration": 10,
       "channels": [
         "spell",
@@ -1110,6 +1230,7 @@
       "polarity": "neutral",
       "color": "violet",
       "magnitudeUnit": "level",
+      "baseCost": 20,
       "channels": [
         "spell"
       ],
@@ -1125,6 +1246,7 @@
       "polarity": "harmful",
       "color": "black",
       "magnitudeUnit": "seconds",
+      "baseCost": 3,
       "defaultDuration": 60,
       "channels": [
         "spell",
@@ -1143,6 +1265,7 @@
       "polarity": "harmful",
       "color": "indigo",
       "magnitudeUnit": "seconds",
+      "baseCost": 5,
       "defaultDuration": 10,
       "channels": [
         "spell",
@@ -1162,6 +1285,7 @@
       "polarity": "harmful",
       "color": "yellow",
       "magnitudeUnit": "seconds",
+      "baseCost": 5,
       "defaultDuration": 8,
       "channels": [
         "spell",
@@ -1180,6 +1304,7 @@
       "polarity": "harmful",
       "color": "blue",
       "magnitudeUnit": "seconds",
+      "baseCost": 10,
       "defaultDuration": 4,
       "channels": [
         "spell",
@@ -1199,6 +1324,7 @@
       "category": "control",
       "polarity": "harmful",
       "magnitudeUnit": "percent",
+      "baseCost": 0.5,
       "defaultDuration": 1,
       "channels": [
         "enchantment",
@@ -1220,6 +1346,7 @@
       "category": "control",
       "polarity": "harmful",
       "magnitudeUnit": "points",
+      "baseCost": 2,
       "defaultDuration": 10,
       "channels": [
         "enchantment",
@@ -1241,6 +1368,7 @@
       "category": "damage",
       "polarity": "harmful",
       "magnitudeUnit": "points",
+      "baseCost": 5,
       "defaultDuration": 12,
       "channels": [
         "enchantment",
@@ -1262,6 +1390,7 @@
       "category": "control",
       "polarity": "harmful",
       "magnitudeUnit": "points",
+      "baseCost": 2,
       "defaultDuration": 8,
       "channels": [
         "enchantment",
@@ -1284,6 +1413,7 @@
       "category": "fortify",
       "polarity": "beneficial",
       "magnitudeUnit": "points",
+      "baseCost": 1,
       "defaultDuration": 60,
       "channels": [
         "enchantment",
@@ -1303,6 +1433,7 @@
       "category": "fortify",
       "polarity": "beneficial",
       "magnitudeUnit": "percent",
+      "baseCost": 0.5,
       "defaultDuration": 15,
       "channels": [
         "enchantment",
@@ -1323,6 +1454,7 @@
       "category": "fortify",
       "polarity": "beneficial",
       "magnitudeUnit": "points",
+      "baseCost": 1,
       "defaultDuration": 60,
       "channels": [
         "enchantment",
@@ -1338,12 +1470,12 @@
     },
     {
       "key": "fortify_defense",
-      "reserved": true,
       "label": "Fortify Defense",
       "description": "Increases the target's effective armor DR or evasion. Magnitude is the bonus to DR (if parameter is 'armor') or evasion (if parameter is 'evasion').",
       "category": "fortify",
       "polarity": "beneficial",
       "magnitudeUnit": "points",
+      "baseCost": 2,
       "defaultDuration": 30,
       "channels": [
         "enchantment",
@@ -1365,6 +1497,7 @@
       "category": "restore",
       "polarity": "beneficial",
       "magnitudeUnit": "percent",
+      "baseCost": 0.5,
       "defaultDuration": 1,
       "channels": [
         "enchantment",
@@ -1385,6 +1518,7 @@
       "category": "restore",
       "polarity": "beneficial",
       "magnitudeUnit": "percent",
+      "baseCost": 0.5,
       "defaultDuration": 1,
       "channels": [
         "enchantment",
@@ -1404,6 +1538,7 @@
       "category": "control",
       "polarity": "harmful",
       "magnitudeUnit": "percent",
+      "baseCost": 0.5,
       "defaultDuration": 8,
       "channels": [
         "enchantment",
@@ -1444,6 +1579,7 @@
       "category": "control",
       "polarity": "harmful",
       "magnitudeUnit": "points",
+      "baseCost": 10,
       "defaultDuration": 1,
       "channels": [
         "enchantment",
@@ -1455,6 +1591,40 @@
         "combat",
         "control",
         "interrupt"
+      ]
+    },
+    {
+      "key": "disarm_hazard",
+      "label": "Disarm Hazard",
+      "description": "Makes a mechanical trap of level magnitude or below safe (docs/core/hazards.md#spells-on-a-hazard). An arcane hazard needs a dispel; a natural one cannot be undone.",
+      "category": "utility",
+      "polarity": "neutral",
+      "color": "indigo",
+      "magnitudeUnit": "level",
+      "baseCost": 20,
+      "channels": [
+        "spell"
+      ],
+      "tags": [
+        "trap",
+        "force"
+      ]
+    },
+    {
+      "key": "unlock",
+      "label": "Unlock",
+      "description": "Opens a lock of level magnitude or below (docs/core/hazards.md#spells-on-a-hazard).",
+      "category": "utility",
+      "polarity": "neutral",
+      "color": "indigo",
+      "magnitudeUnit": "level",
+      "baseCost": 20,
+      "channels": [
+        "spell"
+      ],
+      "tags": [
+        "lock",
+        "force"
       ]
     }
   ]

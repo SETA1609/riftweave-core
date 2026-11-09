@@ -12,7 +12,7 @@
     { "id": 9, "key": "necrotic", "label": "Necrotic", "description": "Life-draining death magic. Governed by Black magic.", "category": "energy", "tags": ["bypasses_armor", "phase_water", "life_drain"] },
     { "id": 10, "key": "radiant", "label": "Radiant", "description": "Holy purifying light. Governed by White magic.", "category": "energy", "tags": ["bypasses_armor", "phase_fire", "anti_undead"] },
     { "id": 11, "key": "psychic", "label": "Psychic", "description": "Mental and soul damage. Bypasses physical protection.", "category": "energy", "tags": ["bypasses_armor", "mental", "wil_resist"] },
-    { "id": 12, "key": "force", "label": "Force", "description": "Raw magical energy. Governed by Indigo magic. Unerring.", "category": "energy", "tags": ["bypasses_armor", "unerring"] },
+    { "id": 12, "key": "force", "label": "Force", "description": "Raw magical energy. Governed by Red magic. Unerring.", "category": "energy", "tags": ["bypasses_armor", "unerring"] },
     { "id": 13, "key": "thunder", "label": "Thunder", "description": "Sonic concussive damage. Governed by Indigo magic.", "category": "energy", "tags": ["bypasses_armor", "sonic", "aoe"] }
   ]
 }

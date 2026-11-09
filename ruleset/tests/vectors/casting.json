@@ -1,6 +1,6 @@
 [
   {
-    "name": "cast: fire bolt on red magic 50, roll 30, costs 5 mana",
+    "name": "cast: fire bolt on red magic 50, roll 30, costs 6 mana",
     "spell": "fire_bolt",
     "caster": {
       "skills": {
@@ -14,7 +14,7 @@
     "roll": 30,
     "expect": {
       "outcome": "cast",
-      "mana": 15,
+      "mana": 14,
       "consumed": [],
       "check": {
         "target": 50,
@@ -49,7 +49,7 @@
     "roll": 70,
     "expect": {
       "outcome": "failed",
-      "mana": 15,
+      "mana": 14,
       "check": {
         "target": 50,
         "success": false,
@@ -63,7 +63,7 @@
     }
   },
   {
-    "name": "no mana: fire burst costs 25, the caster has 20, nothing is spent or rolled",
+    "name": "no mana: fire burst costs 30, the caster has 20, nothing is spent or rolled",
     "spell": "fire_burst",
     "caster": {
       "skills": {
@@ -146,7 +146,7 @@
     "roll": 20,
     "expect": {
       "outcome": "cast",
-      "mana": 10,
+      "mana": 4,
       "consumed": [
         "core:ingredient/nightshade"
       ],
@@ -176,7 +176,7 @@
     "roll": 90,
     "expect": {
       "outcome": "failed",
-      "mana": 10,
+      "mana": 4,
       "consumed": [
         "core:ingredient/nightshade"
       ],
@@ -199,7 +199,7 @@
     "roll": 30,
     "expect": {
       "outcome": "failed",
-      "mana": 15,
+      "mana": 14,
       "check": {
         "target": 25,
         "success": false,
@@ -293,7 +293,7 @@
     ],
     "expect": {
       "outcome": "failed",
-      "mana": 15,
+      "mana": 14,
       "check": {
         "target": 120,
         "success": false,
@@ -365,7 +365,7 @@
     "roll": 20,
     "expect": {
       "outcome": "cast",
-      "mana": 22,
+      "mana": 25,
       "concentration": "ward",
       "ended": "blessing"
     }
@@ -386,7 +386,7 @@
     "roll": 80,
     "expect": {
       "outcome": "failed",
-      "mana": 22,
+      "mana": 25,
       "concentration": "blessing",
       "ended": null
     }
@@ -540,6 +540,41 @@
     ],
     "expect": {
       "error": "spell \"nope\" is not defined"
+    }
+  },
+  {
+    "name": "cast: unlock (2) on indigo magic 40 emits unlock of level 2 for the consumer to compare with the lock",
+    "spell": "unlock",
+    "caster": {
+      "skills": {
+        "indigo_magic": 40
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 20
+    },
+    "roll": 20,
+    "expect": {
+      "outcome": "cast",
+      "mana": 16,
+      "consumed": [],
+      "check": {
+        "target": 40,
+        "success": true,
+        "margin": 20,
+        "tags": []
+      },
+      "effects": [
+        {
+          "effect": "core:effect/unlock",
+          "magnitude": 2,
+          "target": "touch"
+        }
+      ],
+      "concentration": null,
+      "ended": null,
+      "dispelled": []
     }
   }
 ]
