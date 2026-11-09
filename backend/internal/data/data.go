@@ -353,8 +353,15 @@ type Spell struct {
 // Casting is casting/core.json: the caster flags that block a cast, and the cast penalty by
 // the heaviest armor category worn.
 type Casting struct {
-	ArmorPenalty map[string]int64 `json:"armor_penalty"`
-	PreventedBy  []string         `json:"prevented_by"`
+	ArmorPenalty  map[string]int64 `json:"armor_penalty"`
+	PreventedBy   []string         `json:"prevented_by"`
+	SkillDiscount SkillDiscount    `json:"skill_discount"`
+}
+
+// SkillDiscount is what skill takes off a spell's mana cost: min(skill / Divisor, Cap).
+type SkillDiscount struct {
+	Divisor float64 `json:"divisor"`
+	Cap     float64 `json:"cap"`
 }
 
 // Condition is one row of conditions/core.json.

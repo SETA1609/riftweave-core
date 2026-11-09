@@ -59,7 +59,7 @@
           "additionalProperties": false
         }
       },
-      "required": ["prevented_by", "armor_penalty", "spell_cost"],
+      "required": ["prevented_by", "armor_penalty", "skill_discount", "spell_cost"],
       "additionalProperties": false
     }
   },

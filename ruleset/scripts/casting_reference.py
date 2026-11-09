@@ -38,6 +38,17 @@ def spell_cost(spell):
     return math.ceil(round(total, 6))
 
 
+def paid_cost(authored, skill, modifiers, rules):
+    """What the caster pays (docs/core/casting.md#paid-cost): the skill discount, rounded up,
+    then the modifiers on spell_cost by the kernel rules, at least 1."""
+    from kernel_reference import apply_modifiers  # kernel_reference imports this module
+
+    discount = min(skill / rules["skill_discount"]["divisor"], rules["skill_discount"]["cap"])
+    base = math.ceil(round(authored * (1 - discount), 6))
+    own = [m for m in modifiers if m["target"] == "spell_cost"]
+    return max(1, apply_modifiers(base, own))
+
+
 def spell_row(spells, key):
     for spell in spells:
         if spell["key"] == key:
@@ -76,13 +87,14 @@ def run_casting(vector):
     reagents = list(caster.get("reagents", []))
     if any(flag in rules["prevented_by"] for flag in caster.get("flags", [])):
         return {**result, "outcome": "prevented"}
-    if mana < cost.get("mana", 0):
+    paid = paid_cost(cost.get("mana", 0), caster["skills"][skill], vector.get("modifiers", []), rules)
+    if mana < paid:
         return {**result, "outcome": "no_mana"}
     for ref in cost.get("reagents", []):
         if ref not in reagents:
             return {**result, "outcome": "no_reagents"}
         reagents.remove(ref)
-    result["mana"] = mana - cost.get("mana", 0)
+    result["mana"] = mana - paid
     result["consumed"] = list(cost.get("reagents", []))
 
     modifiers = [m for m in vector.get("modifiers", []) if m["target"] == skill]

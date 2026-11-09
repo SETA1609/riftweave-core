@@ -5,6 +5,7 @@ package casting
 
 import (
 	"encoding/json"
+	"math"
 	"slices"
 
 	"github.com/SETA1609/riftweave-core/backend/internal/actor"
@@ -82,7 +83,11 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 			return result, nil
 		}
 	}
-	if caster.Mana < spell.Cost.Mana {
+	paid, err := paidCost(ruleset, spell.Cost.Mana, skillValue, input.Modifiers)
+	if err != nil {
+		return Result{}, err
+	}
+	if caster.Mana < paid {
 		result.Outcome = "no_mana"
 		return result, nil
 	}
@@ -95,7 +100,7 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		}
 		carried = slices.Delete(carried, index, index+1)
 	}
-	result.Mana = caster.Mana - spell.Cost.Mana
+	result.Mana = caster.Mana - paid
 	result.Consumed = append(result.Consumed, spell.Cost.Reagents...)
 
 	check, err := castCheck(ruleset, &input, skill, skillValue)
@@ -131,6 +136,20 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		}
 	}
 	return result, nil
+}
+
+// paidCost is what the caster pays (docs/core/casting.md#paid-cost): the skill discount,
+// rounded up, then the modifiers on spell_cost by the kernel rules, at least 1.
+func paidCost(ruleset *data.Ruleset, authored int64, skill int64, modifiers []modifier.Modifier) (int64, error) {
+	var rule *data.SkillDiscount = &ruleset.Casting.SkillDiscount
+	var discount float64 = min(float64(skill)/rule.Divisor, rule.Cap)
+	var discounted float64 = float64(authored) * (1 - discount)
+	var base int64 = int64(math.Ceil(math.Round(discounted*1e6) / 1e6))
+	value, err := modifier.Value(base, modifier.Target(modifiers, "spell_cost"), ruleset.Origins, 0, nil)
+	if err != nil {
+		return 0, err
+	}
+	return max(1, value), nil
 }
 
 // castCheck is step 5: the modifiers on the spell's skill, plus the armor penalty as one more
