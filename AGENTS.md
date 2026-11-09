@@ -200,6 +200,7 @@ AI is welcome as a tool, and a human always reviews before committing ([AI rules
 - `docs/onboarding/` — how to get started, and the AI rules
 - `ROADMAP.md` and `docs/stories/` — scope, milestones, and the issues to work on
 - `CONTRIBUTING.md` — contribution process and rules for changes
+- `docs/core/data-model.md` — the shape of the data; `docs/theory/data-models.md` — why
 - `docs/core/` — kernel rules; `docs/modules/` — core systems in detail and modules (start here before adding new mechanics)
 - `ruleset/schemas/schema.json` — shared definitions
 - `ruleset/scripts/validate.py` — the validator implementation (read if debugging resolution issues)

@@ -99,3 +99,13 @@ Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-03, M5-07, M5-08, M5-10,
 - Files: ~9 (ruleset/data/materials/core.json, ruleset/schemas/material.schema.json, ruleset/schemas/crafted_item.schema.json, docs/core/materials.md, docs/modules/materials.md, docs/modules/armor.md, docs/modules/weapons.md, docs/modules/crafting.md, docs/modules/magic-crafting.md)
 - See: docs/core/materials.md, docs/archive/review/findings-data-oriented-design.md (it recommended this)
 - Done when: no row or schema has `appliesTo` or `modifiers` on a material; the `weapon`, `armor`, and `ingredient` values are unchanged; no doc outside `docs/archive/` and the frozen logs names either column as a material field; `validate.py` and the tests pass; the changelog fragment marks the removal **(breaking)**.
+
+#### M5-24 Define the data model
+- Status: review
+- Priority: medium
+- Needs: —
+- Do: The repo calls itself data-oriented, but no document says what that means; the pieces are spread across `contract.md`, `keys.md`, and the backend's `data.go`. Write one page that states what a data model is, the common types, and which type ours is: relational in its logical design (tables, keys, references, one fact in one place), stored as JSON documents with some nested lists (a spell's effects), and loaded by the backend into dense in-memory tables. Say what it is not: not ECS today, and not an inheritance tree (base + template + overrides is composition). List its parts (rows, schemas, references, shared pools, composition, stored versus computed, the one modifier shape, formulas as data, vectors), why we chose it, what it costs us, and the known exceptions (authored monster HP). Link to the documents that own each part instead of repeating their rules. A second page, `docs/theory/data-models.md`, holds what a data model is, the types, and why ours is shaped as it is.
+- Keys: none
+- Files: ~5 (docs/core/data-model.md, docs/theory/data-models.md, docs/onboarding/README.md, AGENTS.md, README.md)
+- See: docs/core/contract.md, docs/core/keys.md, docs/core/integrity.md, backend/internal/data/data.go, docs/archive/review/findings-data-oriented-design.md
+- Done when: `docs/core/data-model.md` and `docs/theory/data-models.md` cover all of the above, every claim about the repo is tagged **[V]** with a date or **[A]**, and the onboarding reading list links it.

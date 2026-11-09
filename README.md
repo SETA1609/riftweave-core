@@ -25,6 +25,7 @@ docs/
   decisions/          One decision file per issue
   backend/            The reference backend and its CLI
   combat/             Worked combat examples
+  theory/             Background: data models and why ours is shaped as it is
   archive/            Retired plans and the July 2026 review
 ruleset/
   schemas/            JSON Schema (draft-07)
