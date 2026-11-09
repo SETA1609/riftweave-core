@@ -628,5 +628,22 @@ class TestEdgeCases(unittest.TestCase):
         self.assertEqual(modules, [])
 
 
+class TestIdentityIsTheKey(unittest.TestCase):
+    def module(self, name, rows):
+        mod = ModuleInfo({"id": name, "version": "1.0.0", "description": "d"}, Path("."))
+        mod.data = {"features": rows}
+        return mod
+
+    def test_two_rows_with_one_key_conflict_without_any_id(self):
+        merged, conflicts = merge_data({"features": [{"key": "a"}]}, [self.module("m", [{"key": "a"}])])
+        self.assertEqual(conflicts, [("features", "a", "core", "m")])
+        self.assertEqual(len(merged["features"]), 1)
+
+    def test_a_new_key_is_added_without_any_id(self):
+        merged, conflicts = merge_data({"features": [{"key": "a"}]}, [self.module("m", [{"key": "b"}])])
+        self.assertEqual(conflicts, [])
+        self.assertEqual(len(merged["features"]), 2)
+
+
 if __name__ == "__main__":
     unittest.main()
