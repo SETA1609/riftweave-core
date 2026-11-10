@@ -1,0 +1,302 @@
+[
+  {
+    "name": "create: a level-1 character's pools come from the player formulas",
+    "function": "derived",
+    "actor": {
+      "attributes": {
+        "str": 6,
+        "per": 5,
+        "end": 6,
+        "int": 5,
+        "wil": 4,
+        "agi": 5,
+        "cha": 4,
+        "lck": 5
+      },
+      "level": 1
+    },
+    "expect": {
+      "hp": 67,
+      "mp": 42,
+      "ap": 3,
+      "sp": 42
+    }
+  },
+  {
+    "name": "buy: a shortsword at the general store",
+    "function": "economy",
+    "op": "trade",
+    "side": "buy",
+    "merchant": "general_store",
+    "item_cost": {
+      "quantity": 10,
+      "unit": "gp"
+    },
+    "expect": {
+      "base_cp": 1000,
+      "percent": 125,
+      "price_cp": 1250
+    }
+  },
+  {
+    "name": "fight: a hit on a zombie",
+    "function": "combat",
+    "attacker": {
+      "skill": 40,
+      "roll": 25,
+      "attributes": {
+        "lck": 5
+      }
+    },
+    "defender": {
+      "evasion_skill": 10,
+      "armor_dr": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "target": 40,
+      "margin": 15,
+      "crit": false,
+      "damage": 8,
+      "hp": 22
+    }
+  },
+  {
+    "name": "fight: the zombie's slam lands on the character",
+    "function": "combat",
+    "attacker": {
+      "skill": 30,
+      "roll": 20,
+      "attributes": {
+        "lck": 1
+      }
+    },
+    "defender": {
+      "evasion_skill": 15,
+      "armor_dr": 1,
+      "hp": 67
+    },
+    "damage": {
+      "roll": 12,
+      "type": "bludgeoning"
+    },
+    "expect": {
+      "outcome": "hit",
+      "target": 30,
+      "crit": false,
+      "damage": 11,
+      "hp": 56
+    }
+  },
+  {
+    "name": "fight: a crit drops the zombie",
+    "function": "combat",
+    "attacker": {
+      "skill": 40,
+      "roll": 2,
+      "attributes": {
+        "lck": 5
+      }
+    },
+    "defender": {
+      "evasion_skill": 10,
+      "armor_dr": 0,
+      "hp": 22
+    },
+    "damage": {
+      "roll": 11,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "crit": true,
+      "damage": 22,
+      "hp": 0
+    }
+  },
+  {
+    "name": "loot: the zombie's grave goods give 2 sp",
+    "function": "loot",
+    "monster": "core:monster/zombie",
+    "rolls": [
+      75
+    ],
+    "actor": {
+      "attributes": {
+        "lck": 5
+      }
+    },
+    "expect": {
+      "tables": [
+        "grave_goods"
+      ],
+      "coins_cp": 20,
+      "looter_shift": 0
+    }
+  },
+  {
+    "name": "rest: a short rest restores the lost hit points",
+    "function": "rest",
+    "occasion": "short_rest",
+    "actor": {
+      "attributes": {
+        "str": 6,
+        "per": 5,
+        "end": 6,
+        "int": 5,
+        "wil": 4,
+        "agi": 5,
+        "cha": 4,
+        "lck": 5
+      },
+      "level": 1
+    },
+    "current": {
+      "hp": 56,
+      "mp": 42,
+      "stamina": 10,
+      "ap": 0
+    },
+    "max": {
+      "stamina": 57
+    },
+    "expect": {
+      "hp": 67,
+      "mp": 42,
+      "stamina": 57,
+      "ap": 3
+    }
+  },
+  {
+    "name": "level: 900 XP reaches level 2",
+    "function": "progression",
+    "op": "level",
+    "xp": 900,
+    "expect": {
+      "level": 2
+    }
+  },
+  {
+    "name": "level: the level-up pool",
+    "function": "progression",
+    "op": "level_up",
+    "actor": {
+      "attributes": {
+        "str": 6,
+        "per": 5,
+        "end": 6,
+        "int": 5,
+        "wil": 4,
+        "agi": 5,
+        "cha": 4,
+        "lck": 5
+      }
+    },
+    "luck_roll": 3,
+    "hp_roll": 2,
+    "mp_roll": 2,
+    "sp_roll": 2,
+    "expect": {
+      "skill_points": 18,
+      "perks": 1,
+      "gain": {
+        "hp": 6,
+        "mp": 4,
+        "sp": 4
+      }
+    }
+  },
+  {
+    "name": "cast: Fire Bolt spends mana",
+    "function": "casting",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 5
+      },
+      "mana": 42
+    },
+    "roll": 30,
+    "expect": {
+      "outcome": "cast",
+      "mana": 37,
+      "effects": [
+        {
+          "effect": "core:effect/damage_fire",
+          "magnitude": 8,
+          "target": "ranged"
+        }
+      ]
+    }
+  },
+  {
+    "name": "condition: a blinding effect sets blinded",
+    "function": "conditions",
+    "events": [
+      {
+        "effect": "core:effect/blind"
+      }
+    ],
+    "expect": {
+      "conditions": {
+        "blinded": 1
+      },
+      "flags": [
+        "blinded"
+      ]
+    }
+  },
+  {
+    "name": "recover: a long rest clears the condition and refills the pools",
+    "function": "rest",
+    "occasion": "long_rest",
+    "actor": {
+      "attributes": {
+        "str": 6,
+        "per": 5,
+        "end": 6,
+        "int": 5,
+        "wil": 4,
+        "agi": 5,
+        "cha": 4,
+        "lck": 5
+      },
+      "level": 2,
+      "growth": {
+        "hp": 2,
+        "mp": 2,
+        "sp": 2
+      }
+    },
+    "current": {
+      "hp": 67,
+      "mp": 37,
+      "stamina": 57,
+      "ap": 3
+    },
+    "max": {
+      "stamina": 57
+    },
+    "conditions": [
+      {
+        "key": "blinded",
+        "duration": "turns"
+      }
+    ],
+    "expect": {
+      "hp": 73,
+      "mp": 46,
+      "stamina": 57,
+      "ap": 3,
+      "conditions": []
+    }
+  }
+]

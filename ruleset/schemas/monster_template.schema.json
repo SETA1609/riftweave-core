@@ -30,7 +30,7 @@
         },
         "tags": { "type": "array", "items": { "type": "string" }, "description": "Appended to the monster's tags, skipping any it has." }
       },
-      "required": ["key", "label", "description", "label_prefix", "phase", "damage_type"],
+      "required": ["key", "label", "description", "label_prefix", "damage_type"],
       "additionalProperties": false
     }
   }

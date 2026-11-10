@@ -30,7 +30,7 @@ A gem carries a `phase` (its element). When an item is engraved, the **dominant 
 > element becomes **Fire**.
 
 The new element then resolves through the five-phase cycles in
-[`data/wuxing/core.json`](../../ruleset/data/wuxing/core.json) exactly like any other
+[`modules/wuxing/data/wuxing.json`](../../ruleset/modules/wuxing/data/wuxing.json) exactly like any other
 phased thing (see [`magic.md`](./magic.md) § Elemental interaction). Re-elementing a
 weapon is how you turn it from weak-into-a-foe (overcome) to strong-against-it.
 
@@ -103,7 +103,7 @@ any of these stones can turn up at any quality from petty to legendary.
 | Rarity numbers | `tier.schema.json` | `data/tiers/core.json` |
 | Quality ladder | `schema.json#/definitions/qualityGrade` | — |
 | Element vocabulary | `schema.json#/definitions/phase` | — |
-| Interaction cycles | `wuxing.schema.json` | `data/wuxing/core.json` |
+| Interaction cycles | `wuxing.schema.json` | `modules/wuxing/data/wuxing.json` |
 
 ## Open items
 

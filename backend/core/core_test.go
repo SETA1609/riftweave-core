@@ -38,8 +38,64 @@ func readJSON(t *testing.T, path string) any {
 	return value
 }
 
-func TestEveryVector(t *testing.T) {
+// coreOnly opens the ruleset with no module.
+func coreOnly(t *testing.T) *Core {
+	t.Helper()
+	opened, err := New(os.DirFS(filepath.Join(repo, "ruleset", "data")))
+	if err != nil {
+		t.Fatal(err)
+	}
+	return opened
+}
+
+func TestEveryVectorWithoutModules(t *testing.T) {
+	runCoreVectors(t, coreOnly(t))
+}
+
+func TestAModuleCommandNeedsItsModule(t *testing.T) {
+	if _, err := coreOnly(t).Run("wuxing", []byte(`{"actor_phase":"fire","recipient_phase":"wood"}`)); err == nil {
+		t.Errorf("wuxing with no module: want an error, got %v", err)
+	}
+}
+
+func TestWuxingVectorsFromTheModule(t *testing.T) {
 	opened := open(t)
+	vectors := readJSON(t, filepath.Join(repo, "ruleset", "modules", "wuxing", "tests", "vectors.json")).([]any)
+	if len(vectors) == 0 {
+		t.Fatal("no wuxing vectors")
+	}
+	for _, raw := range vectors {
+		var vector map[string]any = raw.(map[string]any)
+		expect := vector["expect"].(map[string]any)
+		input := map[string]any{}
+		for key, value := range vector {
+			if key != "name" && key != "function" && key != "expect" {
+				input[key] = value
+			}
+		}
+		body, _ := json.Marshal(input)
+		out, err := opened.Run("wuxing", body)
+		if err != nil {
+			t.Fatalf("%s: %v", vector["name"], err)
+		}
+		var result map[string]any
+		if err := json.Unmarshal(out, &result); err != nil {
+			t.Fatal(err)
+		}
+		for field, want := range expect {
+			if !reflect.DeepEqual(result[field], want) {
+				t.Errorf("%s: field %q: got %v, want %v", vector["name"], field, result[field], want)
+			}
+		}
+	}
+}
+
+func TestEveryVector(t *testing.T) {
+	runCoreVectors(t, open(t))
+}
+
+func runCoreVectors(t *testing.T, opened *Core) {
+	t.Helper()
 	files, err := filepath.Glob(filepath.Join(repo, "ruleset", "tests", "vectors", "*.json"))
 	if err != nil || len(files) == 0 {
 		t.Fatalf("no vector files: %v", err)

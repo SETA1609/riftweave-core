@@ -13,7 +13,6 @@ from pathlib import Path
 from casting_reference import run_casting
 from hazard_reference import run_hazard
 from loot_reference import run_loot
-from wuxing_reference import get_interaction
 
 RULESET = Path(__file__).resolve().parent.parent
 DATA_DIR = RULESET / "data"
@@ -257,18 +256,6 @@ def run_actions(vector):
         for key in vector.get("actions", [])
     )
     return {"pool": pool, "cost": cost}
-
-
-def run_wuxing(vector):
-    cycles = load_data("wuxing/core.json")["cycles"]
-    cycle_id, interaction, multiplier, affects = get_interaction(
-        cycles,
-        vector["actor_phase"],
-        vector["recipient_phase"],
-        vector.get("actor_magnitude"),
-        vector.get("recipient_magnitude"),
-    )
-    return {"cycle": cycle_id, "interaction": interaction, "multiplier": multiplier, "affects": affects}
 
 
 def run_rest(vector):
@@ -549,7 +536,6 @@ RUNNERS = {
     "modifiers": run_modifiers,
     "conditions": run_conditions,
     "actions": run_actions,
-    "wuxing": run_wuxing,
     "rest": run_rest,
     "stored_actor": run_stored_actor,
     "economy": run_economy,

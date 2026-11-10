@@ -230,7 +230,7 @@ adds **+floor(LCK/2)%** to every check at resolution time.
 
 Your race's **`phase`** (`wood` / `fire` / `earth` / `metal` / `water`) is your
 character's **foundation element**. It feeds the five-phase interaction cycles in
-[`data/wuxing/core.json`](../../ruleset/data/wuxing/core.json): incoming phased
+[`modules/wuxing/data/wuxing.json`](../../ruleset/modules/wuxing/data/wuxing.json): incoming phased
 effects resolve against it via Generating / Overcoming / Weakening / Insulting (see
 [`magic.md`](./magic.md) § Elemental interaction). It also determines phase synergy
 when you later offer cores or elixirs during breakthroughs (see `advancement.md`).
@@ -371,7 +371,7 @@ Spells by level 10: `fire_bolt`, `ward`, `force_dart`, `fire_burst`.
 | Perks (level-up / creation / racial) | `data/features/core.json` | `feature.schema.json` |
 | Spells | `data/spells/core.json` | `spell.schema.json` |
 | Equipment | `data/equipment/*.json` | `equipment.schema.json` |
-| Element cycles & breakthrough affinities | `data/wuxing/core.json` | `wuxing.schema.json` |
+| Element cycles & breakthrough affinities | `modules/wuxing/data/wuxing.json` | `wuxing.schema.json` |
 
 ## Open items
 

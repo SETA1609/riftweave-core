@@ -14,6 +14,9 @@ import (
 	"slices"
 	"strings"
 
+	tea "github.com/charmbracelet/bubbletea"
+
+	"github.com/SETA1609/riftweave-core/backend/cmd/riftweave/play"
 	"github.com/SETA1609/riftweave-core/backend/contract"
 	"github.com/SETA1609/riftweave-core/backend/core"
 )
@@ -29,6 +32,7 @@ const (
 const usage = `usage: riftweave [--data <dir>] <command> [file]
        riftweave list
        riftweave describe <command>
+       riftweave play
 
 A command reads one JSON object from the file, or from stdin, and writes its result to
 stdout. Errors are JSON on stderr. Exit 0 ok, 1 rule error, 2 bad input, 3 no ruleset.
@@ -73,7 +77,36 @@ func run(args []string, stdin io.Reader, stdout, stderr io.Writer, getenv func(s
 		_, _ = stdout.Write(content)
 		return exitOK
 	}
+	if args[0] == "play" {
+		return interactive(dataFlag, stdin, stdout, stderr, getenv)
+	}
 	return command(args, dataFlag, stdin, stdout, stderr, getenv)
+}
+
+// isTerminal reports whether the file is a character device, so play never waits on a pipe.
+func isTerminal(file *os.File) bool {
+	info, err := file.Stat()
+	return err == nil && info.Mode()&os.ModeCharDevice != 0
+}
+
+// interactive runs the human CLI (docs/backend/cli.md#human-mode).
+func interactive(dataFlag string, stdin io.Reader, stdout, stderr io.Writer, getenv func(string) string) int {
+	if file, isFile := stdin.(*os.File); !isFile || !isTerminal(file) {
+		return fail(stderr, exitInput, "play needs a terminal; agents call a command directly")
+	}
+	directory, err := rulesetDirectory(dataFlag, getenv)
+	if err != nil {
+		return fail(stderr, exitRuleset, "%v", err)
+	}
+	opened, err := core.Open(directory)
+	if err != nil {
+		return fail(stderr, exitRuleset, "loading %s: %v", directory, err)
+	}
+	var program *tea.Program = tea.NewProgram(play.New(opened.Run), tea.WithInput(stdin), tea.WithOutput(stdout))
+	if _, err := program.Run(); err != nil {
+		return fail(stderr, exitInput, "play needs a terminal: %v", err)
+	}
+	return exitOK
 }
 
 // list prints every command with the summary from its contract file.

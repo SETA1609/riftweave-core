@@ -6,6 +6,11 @@ the cycle edges. A directed pair is found in exactly one cycle, so there is no r
 lookup: a pair the matrix does not list is `unrelated`.
 """
 
+import json
+from pathlib import Path
+
+WUXING_FILE = Path(__file__).resolve().parent.parent / "modules" / "wuxing" / "data" / "wuxing.json"
+
 
 def _edge_cycle(cycles, from_phase, to_phase):
     for cycle in cycles:
@@ -35,3 +40,20 @@ def get_interaction(cycles, actor_phase, recipient_phase, actor_magnitude=None, 
             affects = "actor" if fallback["affects"] == "recipient" else "recipient"
             return (fallback["id"], fallback["interaction"], fallback["magnitudeMultiplier"], affects)
     return (cycle["id"], cycle["interaction"], cycle["magnitudeMultiplier"], cycle["affects"])
+
+
+def load_wuxing():
+    """The module's phases and cycles (ruleset/modules/wuxing/data/wuxing.json)."""
+    return json.loads(WUXING_FILE.read_text())
+
+
+def run_wuxing(vector):
+    cycles = load_wuxing()["cycles"]
+    cycle_id, interaction, multiplier, affects = get_interaction(
+        cycles,
+        vector["actor_phase"],
+        vector["recipient_phase"],
+        vector.get("actor_magnitude"),
+        vector.get("recipient_magnitude"),
+    )
+    return {"cycle": cycle_id, "interaction": interaction, "multiplier": multiplier, "affects": affects}
