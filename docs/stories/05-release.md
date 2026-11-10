@@ -13,7 +13,7 @@ Roadmap: [M5](../../ROADMAP.md#where-we-are). Format and rules: [README.md](READ
 Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-03, M5-07, M5-08, M5-10, M5-11, M5-12, M5-13, M5-14, M5-15, M5-16, M5-17, M5-21 ([done.md](done.md#m5-release-10))
 
 #### M5-04 Reference playthrough vector chain
-- Status: todo
+- Status: doing
 - Priority: high
 - Needs: M1-02, M1-03, M1-04, M1-05, M3-01, M4-01, M4-02
 - Was: RW-25
