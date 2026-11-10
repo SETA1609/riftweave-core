@@ -48,10 +48,10 @@ class TestLineageSchema(unittest.TestCase):
         self.assertTrue(self.valid(race("elf", "parent", **FULL)))
         self.assertFalse(self.valid(race("elf", "parent", phase="wood", speed=30)))
 
-    def test_subrace_needs_a_parent_and_a_phase_and_may_inherit_speed_and_size(self):
+    def test_subrace_needs_a_parent_and_may_inherit_speed_and_size(self):
         self.assertTrue(self.valid(race("green_elf", "subrace", parent="core:race/elf", phase="wood")))
         self.assertFalse(self.valid(race("green_elf", "subrace", phase="wood")))
-        self.assertFalse(self.valid(race("green_elf", "subrace", parent="core:race/elf")))
+        self.assertTrue(self.valid(race("green_elf", "subrace", parent="core:race/elf")))
 
     def test_template_needs_none_of_phase_speed_and_size(self):
         self.assertTrue(self.valid(race("beastman", "template")))

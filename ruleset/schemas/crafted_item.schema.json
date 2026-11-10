@@ -36,7 +36,7 @@
             "gem_key": { "$ref": "schema.json#/definitions/gemRef", "description": "Key of the gem in data/gems/core.json." },
             "phase": { "$ref": "schema.json#/definitions/phase", "description": "Gem's phase, which becomes the item's effective phase." }
           },
-          "required": ["gem_key", "phase"],
+          "required": ["gem_key"],
           "additionalProperties": false
         },
         "enchantments": {
@@ -63,7 +63,7 @@
           }
         }
       },
-      "required": ["key", "label", "description", "base_key", "material_key", "phase"],
+      "required": ["key", "label", "description", "base_key", "material_key"],
       "additionalProperties": false
     }
   }
