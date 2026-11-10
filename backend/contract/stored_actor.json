@@ -1,0 +1,30 @@
+{
+  "$schema": "./command.schema.json",
+  "name": "stored_actor",
+  "summary": "Check a stored actor and return it unchanged, so a save round-trips.",
+  "doc": "docs/core/state.md",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "actor": {
+        "$ref": "common.json#/definitions/stored_actor"
+      }
+    },
+    "required": [
+      "actor"
+    ],
+    "additionalProperties": false
+  },
+  "result_schema": {
+    "type": "object",
+    "properties": {
+      "actor": {
+        "$ref": "common.json#/definitions/stored_actor"
+      }
+    },
+    "required": [
+      "actor"
+    ],
+    "additionalProperties": false
+  }
+}
