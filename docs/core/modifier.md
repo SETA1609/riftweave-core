@@ -23,6 +23,7 @@ The source says *which* thing made a modifier (`effect:fortify_strength`). The o
 
 - **`highest`**: modifiers of this origin on one target and op do not stack with each other. The strongest bonus counts, and the strongest penalty counts. A Potion of Fortify Strength (+10) and a Potion of Giant Strength (+5) give +10, in any order.
 - **`add`**: modifiers of this origin stack, one per source, as if they had no origin. Two perks, two armor pieces, or two conditions add.
+- **`replace`**: a new source of this origin removes every running modifier and tick of the origin first, even effects the new source lacks. Fries, then a hot dog: only the hot dog counts.
 
 Different origins always stack: a Fortify Strength potion (alchemy, +10) and a Fortify Strength spell (arcane, +10) give +20, though both carry the same effect.
 
@@ -40,8 +41,21 @@ Different origins always stack: a Fortify Strength potion (alchemy, +10) and a F
 | `trained` | add | perks, features, backgrounds | feature, background |
 | `innate` | add | ancestry and natural traits | race, monster |
 | `condition` | add | status conditions | condition |
+| `food` | replace | dishes and rations | food |
 
 The emitter stamps the origin when it turns a row into modifiers: the row's own `origin` if it names one (an `appliedEffect` may), else the default for its category. A modifier with no origin stacks by source alone, the same as an `add` origin. [A] The White school is not mapped to `divine`; a white spell that should be divine names the origin itself. [U]
+
+## Effects over time
+
+An applied effect's `duration` is seconds, and 1 (the default) is instant. One effect serves both: there is no separate instant and over-time effect. [V 2026-11-07, owner decision, M2-05]
+
+- A **pool effect** (`restore_resource`) applies `magnitude` at once when instant. Over time it adds `magnitude` for each second that passes, so its total is magnitude times duration. A pool stays between 0 and its maximum.
+- Any **other effect** holds its `magnitude` for `duration` seconds as a modifier: `resist` on its parameter, `add` on its parameter or its own key, and a `grant` when it has no magnitude.
+- **Turns.** One turn is `seconds_per_turn` seconds (5, `actions/core.json`). A turn advances effects by that many seconds, so a tick covers magnitude times the seconds that remain, and the total is the same in both modes. [V 2026-11-11, `consume` vectors]
+- **Same source.** Using the same item again replaces its own running effects, so the effect restarts and does not stack. [A]
+- **What can be used.** Only an item with `delivery` `drink` or `eat`. Food (`type: food`) is refused in combat, and it is always over time. A dish is one source, `food:<key>`; any other item is `item:<key>`. A dish's effects are the combined effects of its ingredients, written on the row; cooking is crafting.
+
+`burn` and `poison_health_drain` stay effects that run under this rule, with `duration` as their length. They are not conditions; the `burning` condition is its own row. [A]
 
 ## Target
 

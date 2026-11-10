@@ -13,7 +13,7 @@ Roadmap: [M2](../../ROADMAP.md#where-we-are). Format and rules: [README.md](READ
 Done: M2-01, M2-02, M2-03, M2-04, M2-05, M2-06 ([done.md](done.md#m2-characters))
 
 #### M2-07 Effects over time and food
-- Status: todo
+- Status: doing
 - Priority: medium
 - Needs: M1-04, M1-05, M2-05
 - Do: An applied effect's `duration` is seconds, and 1 (the default) is instant; its `magnitude` is per second, so a pool effect (restore, damage, drain) totals magnitude times duration and a stat effect holds its magnitude that long (`schema.json`, since M2-05). One effect serves both: no separate instant and over-time effects. Write the tick rule in the kernel, and fix the seconds per turn for turn-based play (`contract.md` and `modifier.md` say turns). `burn` and `poison_health_drain` are over-time effects with rules of their own; decide whether they become conditions that apply a ticking `damage_*`. Food (`type: food`) is always over time; a potion may be either. Food can be eaten at any time except in combat. Add a `food` origin with a new stacking policy `replace`: a new dish removes every modifier and running tick of the previous dish, even effects the new dish lacks (fries, then a hot dog: only the hot dog counts). Each dish is one source, `food:<key>`. A dish's effects are the combined effects of its ingredients, written on the row; cooking a dish from ingredients is crafting (POST-01).
