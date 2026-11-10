@@ -590,6 +590,18 @@ def run_consume(vector):
         else:
             advance(event["advance"])
     return {**pools, "ticks": ticks, "modifiers": held, "refused": refused}
+def run_stored_actor(vector):
+    """A stored actor comes back unchanged, if it is consistent (docs/core/state.md)."""
+    actor = vector["actor"]
+    seen = set()
+    for item in actor["inventory"]:
+        if item["id"] in seen:
+            return {"error": f"inventory: id {item['id']} is used twice"}
+        seen.add(item["id"])
+    for slot, item_id in sorted(actor["equipped"].items()):
+        if item_id not in seen:
+            return {"error": f"equipped {slot}: no inventory item {item_id}"}
+    return {"actor": actor}
 
 
 RUNNERS = {
@@ -603,6 +615,7 @@ RUNNERS = {
     "wuxing": run_wuxing,
     "rest": run_rest,
     "consume": run_consume,
+    "stored_actor": run_stored_actor,
     "economy": run_economy,
     "combat": run_combat,
     "loot": run_loot,

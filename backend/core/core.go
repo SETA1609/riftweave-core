@@ -31,6 +31,7 @@ import (
 	"github.com/SETA1609/riftweave-core/backend/internal/progression"
 	"github.com/SETA1609/riftweave-core/backend/internal/resolution"
 	"github.com/SETA1609/riftweave-core/backend/internal/rest"
+	"github.com/SETA1609/riftweave-core/backend/internal/stored"
 	"github.com/SETA1609/riftweave-core/backend/internal/wuxing"
 )
 
@@ -95,6 +96,7 @@ var commands map[string]commandHandler = map[string]commandHandler{
 	"economy":       bind(economy.Run),
 	"rest":          bind(rest.Run),
 	"consume":       bind(consume.Run),
+	"stored_actor":  bind(stored.Run),
 	"combat":        bind(combat.Run),
 	"loot":          bind(loot.Run),
 	"hazard":        bind(hazard.Run),
