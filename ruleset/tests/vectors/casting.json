@@ -1,6 +1,6 @@
 [
   {
-    "name": "cast: fire bolt on red magic 50, roll 30, costs 6 mana",
+    "name": "cast: fire bolt (6) on red magic 50, roll 30, pays 5 after the skill discount",
     "spell": "fire_bolt",
     "caster": {
       "skills": {
@@ -14,7 +14,7 @@
     "roll": 30,
     "expect": {
       "outcome": "cast",
-      "mana": 14,
+      "mana": 15,
       "consumed": [],
       "check": {
         "target": 50,
@@ -49,7 +49,7 @@
     "roll": 70,
     "expect": {
       "outcome": "failed",
-      "mana": 14,
+      "mana": 15,
       "check": {
         "target": 50,
         "success": false,
@@ -63,7 +63,7 @@
     }
   },
   {
-    "name": "no mana: fire burst costs 30, the caster has 20, nothing is spent or rolled",
+    "name": "no mana: fire burst pays 23 at red magic 50, the caster has 20, nothing is spent",
     "spell": "fire_burst",
     "caster": {
       "skills": {
@@ -146,7 +146,7 @@
     "roll": 20,
     "expect": {
       "outcome": "cast",
-      "mana": 4,
+      "mana": 14,
       "consumed": [
         "core:ingredient/nightshade"
       ],
@@ -176,7 +176,7 @@
     "roll": 90,
     "expect": {
       "outcome": "failed",
-      "mana": 4,
+      "mana": 14,
       "consumed": [
         "core:ingredient/nightshade"
       ],
@@ -199,7 +199,7 @@
     "roll": 30,
     "expect": {
       "outcome": "failed",
-      "mana": 14,
+      "mana": 15,
       "check": {
         "target": 25,
         "success": false,
@@ -229,7 +229,8 @@
         "success": true,
         "margin": 20,
         "tags": []
-      }
+      },
+      "mana": 15
     }
   },
   {
@@ -267,7 +268,8 @@
         "success": true,
         "margin": 5,
         "tags": []
-      }
+      },
+      "mana": 15
     }
   },
   {
@@ -293,7 +295,7 @@
     ],
     "expect": {
       "outcome": "failed",
-      "mana": 14,
+      "mana": 15,
       "check": {
         "target": 120,
         "success": false,
@@ -326,7 +328,8 @@
         "tags": [
           "crit"
         ]
-      }
+      },
+      "mana": 15
     }
   },
   {
@@ -344,7 +347,7 @@
     "roll": 10,
     "expect": {
       "outcome": "cast",
-      "mana": 18,
+      "mana": 21,
       "concentration": "blessing",
       "ended": null
     }
@@ -365,7 +368,7 @@
     "roll": 20,
     "expect": {
       "outcome": "cast",
-      "mana": 25,
+      "mana": 26,
       "concentration": "ward",
       "ended": "blessing"
     }
@@ -386,7 +389,7 @@
     "roll": 80,
     "expect": {
       "outcome": "failed",
-      "mana": 25,
+      "mana": 26,
       "concentration": "blessing",
       "ended": null
     }
@@ -408,7 +411,8 @@
     "expect": {
       "outcome": "cast",
       "concentration": "blessing",
-      "ended": null
+      "ended": null,
+      "mana": 15
     }
   },
   {
@@ -428,7 +432,8 @@
     "expect": {
       "outcome": "cast",
       "concentration": "blessing",
-      "ended": null
+      "ended": null,
+      "mana": 21
     }
   },
   {
@@ -451,7 +456,7 @@
     ],
     "expect": {
       "outcome": "cast",
-      "mana": 8,
+      "mana": 11,
       "effects": [
         {
           "effect": "core:effect/dispel",
@@ -484,7 +489,7 @@
     ],
     "expect": {
       "outcome": "failed",
-      "mana": 8,
+      "mana": 11,
       "dispelled": []
     }
   },
@@ -570,6 +575,317 @@
           "effect": "core:effect/unlock",
           "magnitude": 2,
           "target": "touch"
+        }
+      ],
+      "concentration": null,
+      "ended": null,
+      "dispelled": []
+    }
+  },
+  {
+    "name": "paid cost: fire burst (30) at red magic 40 pays 24",
+    "spell": "fire_burst",
+    "caster": {
+      "skills": {
+        "red_magic": 40
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100
+    },
+    "roll": 30,
+    "expect": {
+      "outcome": "cast",
+      "mana": 76,
+      "consumed": [],
+      "check": {
+        "target": 40,
+        "success": true,
+        "margin": 10,
+        "tags": []
+      },
+      "effects": [
+        {
+          "effect": "core:effect/damage_fire",
+          "magnitude": 28,
+          "target": "area",
+          "radius": 4
+        }
+      ],
+      "concentration": null,
+      "ended": null,
+      "dispelled": []
+    }
+  },
+  {
+    "name": "paid cost: fire burst (30) at red magic 80 pays 18",
+    "spell": "fire_burst",
+    "caster": {
+      "skills": {
+        "red_magic": 80
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100
+    },
+    "roll": 30,
+    "expect": {
+      "outcome": "cast",
+      "mana": 82,
+      "consumed": [],
+      "check": {
+        "target": 80,
+        "success": true,
+        "margin": 50,
+        "tags": []
+      },
+      "effects": [
+        {
+          "effect": "core:effect/damage_fire",
+          "magnitude": 28,
+          "target": "area",
+          "radius": 4
+        }
+      ],
+      "concentration": null,
+      "ended": null,
+      "dispelled": []
+    }
+  },
+  {
+    "name": "paid cost: a perk's add on spell_cost takes 18 to 15",
+    "spell": "fire_burst",
+    "caster": {
+      "skills": {
+        "red_magic": 80
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100
+    },
+    "roll": 30,
+    "modifiers": [
+      {
+        "target": "spell_cost",
+        "op": "add",
+        "value": -3,
+        "source": "feature:thrifty"
+      }
+    ],
+    "expect": {
+      "outcome": "cast",
+      "mana": 85,
+      "consumed": [],
+      "check": {
+        "target": 80,
+        "success": true,
+        "margin": 50,
+        "tags": []
+      },
+      "effects": [
+        {
+          "effect": "core:effect/damage_fire",
+          "magnitude": 28,
+          "target": "area",
+          "radius": 4
+        }
+      ],
+      "concentration": null,
+      "ended": null,
+      "dispelled": []
+    }
+  },
+  {
+    "name": "paid cost: a robe's mul on spell_cost takes 18 to 14, floored",
+    "spell": "fire_burst",
+    "caster": {
+      "skills": {
+        "red_magic": 80
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100
+    },
+    "roll": 30,
+    "modifiers": [
+      {
+        "target": "spell_cost",
+        "op": "mul",
+        "value": 0.8,
+        "source": "item:robe"
+      }
+    ],
+    "expect": {
+      "outcome": "cast",
+      "mana": 86,
+      "consumed": [],
+      "check": {
+        "target": 80,
+        "success": true,
+        "margin": 50,
+        "tags": []
+      },
+      "effects": [
+        {
+          "effect": "core:effect/damage_fire",
+          "magnitude": 28,
+          "target": "area",
+          "radius": 4
+        }
+      ],
+      "concentration": null,
+      "ended": null,
+      "dispelled": []
+    }
+  },
+  {
+    "name": "paid cost: the discount caps at 0.45, so red magic 90 pays 17",
+    "spell": "fire_burst",
+    "caster": {
+      "skills": {
+        "red_magic": 90
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100
+    },
+    "roll": 30,
+    "expect": {
+      "outcome": "cast",
+      "mana": 83,
+      "consumed": [],
+      "check": {
+        "target": 90,
+        "success": true,
+        "margin": 60,
+        "tags": []
+      },
+      "effects": [
+        {
+          "effect": "core:effect/damage_fire",
+          "magnitude": 28,
+          "target": "area",
+          "radius": 4
+        }
+      ],
+      "concentration": null,
+      "ended": null,
+      "dispelled": []
+    }
+  },
+  {
+    "name": "paid cost: red magic 95 is past the cap and still pays 17",
+    "spell": "fire_burst",
+    "caster": {
+      "skills": {
+        "red_magic": 95
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100
+    },
+    "roll": 30,
+    "expect": {
+      "outcome": "cast",
+      "mana": 83,
+      "consumed": [],
+      "check": {
+        "target": 95,
+        "success": true,
+        "margin": 65,
+        "tags": []
+      },
+      "effects": [
+        {
+          "effect": "core:effect/damage_fire",
+          "magnitude": 28,
+          "target": "area",
+          "radius": 4
+        }
+      ],
+      "concentration": null,
+      "ended": null,
+      "dispelled": []
+    }
+  },
+  {
+    "name": "paid cost: never below 1, however large the perk",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 20
+    },
+    "roll": 30,
+    "modifiers": [
+      {
+        "target": "spell_cost",
+        "op": "add",
+        "value": -100,
+        "source": "feature:thrifty"
+      }
+    ],
+    "expect": {
+      "outcome": "cast",
+      "mana": 19,
+      "consumed": [],
+      "check": {
+        "target": 50,
+        "success": true,
+        "margin": 20,
+        "tags": []
+      },
+      "effects": [
+        {
+          "effect": "core:effect/damage_fire",
+          "magnitude": 8,
+          "target": "ranged"
+        }
+      ],
+      "concentration": null,
+      "ended": null,
+      "dispelled": []
+    }
+  },
+  {
+    "name": "paid cost: the cast takes no level, so a level 1 and a level 30 caster with red magic 40 both pay 24",
+    "spell": "fire_burst",
+    "caster": {
+      "skills": {
+        "red_magic": 40
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 200
+    },
+    "roll": 30,
+    "expect": {
+      "outcome": "cast",
+      "mana": 176,
+      "consumed": [],
+      "check": {
+        "target": 40,
+        "success": true,
+        "margin": 10,
+        "tags": []
+      },
+      "effects": [
+        {
+          "effect": "core:effect/damage_fire",
+          "magnitude": 28,
+          "target": "area",
+          "radius": 4
         }
       ],
       "concentration": null,
