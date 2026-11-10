@@ -124,7 +124,7 @@
       "effects": [
         {
           "effect": "core:effect/summon",
-          "parameter": "undead",
+          "parameter": "core:summon/undead",
           "magnitude": 1,
           "duration": 120,
           "target": "ranged"
@@ -280,7 +280,7 @@
       "effects": [
         {
           "effect": "core:effect/summon",
-          "parameter": "familiar",
+          "parameter": "core:summon/familiar",
           "magnitude": 1,
           "duration": 60,
           "target": "ranged"
@@ -378,7 +378,7 @@
       "effects": [
         {
           "effect": "core:effect/summon",
-          "parameter": "elemental",
+          "parameter": "core:summon/elemental",
           "magnitude": 1,
           "duration": 120,
           "target": "ranged"
@@ -398,7 +398,7 @@
       "effects": [
         {
           "effect": "core:effect/summon",
-          "parameter": "elemental",
+          "parameter": "core:summon/elemental",
           "magnitude": 3,
           "duration": 120,
           "target": "ranged"
@@ -1291,7 +1291,7 @@
       "effects": [
         {
           "effect": "core:effect/summon",
-          "parameter": "undead",
+          "parameter": "core:summon/undead",
           "magnitude": 3,
           "duration": 120,
           "target": "ranged"

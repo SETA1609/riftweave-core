@@ -1,0 +1,39 @@
+{
+  "key": "familiar",
+  "label": "Familiar Base",
+  "description": "Base template for familiars: small spirit-beasts bound to a caster. They are quick and watchful, and weak in a fight. They never drop spirit cores.",
+  "phase": "wood",
+  "size": "tiny",
+  "level": 1,
+  "attributes": {
+    "str": 1,
+    "end": 2,
+    "agi": 6,
+    "per": 6,
+    "wil": 3
+  },
+  "hitPoints": 8,
+  "tags": [
+    "familiar"
+  ],
+  "growth": {
+    "attributes": {
+      "str": {
+        "perLevel": 0.1
+      },
+      "end": {
+        "perLevel": 0.2
+      },
+      "agi": {
+        "perLevel": 0.4
+      },
+      "per": {
+        "perLevel": 0.4
+      },
+      "wil": {
+        "perLevel": 0.2
+      }
+    },
+    "hitPointsPerLevel": 2
+  }
+}

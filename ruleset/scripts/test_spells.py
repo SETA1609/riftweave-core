@@ -14,6 +14,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from casting_reference import spell_cost  # noqa: E402
+import validate  # noqa: E402  (base + override resolution)
 
 DATA = Path(__file__).resolve().parent.parent / "data"
 COLORS = ("red", "orange", "yellow", "green", "blue", "indigo", "violet", "white", "black")
@@ -94,6 +95,41 @@ class TestSpells(unittest.TestCase):
         for color in COLORS:
             with self.subTest(color=color):
                 self.assertEqual({"damage", "utility", "defensive"} - by_color[color], GAPS.get(color, set()))
+
+    def test_every_summon_names_a_group_of_existing_monsters(self):
+        monsters = {m["key"] for m in json.loads((DATA / "monsters" / "core.json").read_text())["monsters"]}
+        groups = {g["key"]: g for g in json.loads((DATA / "summons" / "core.json").read_text())["summons"]}
+        summons = [e for s in spells() for e in s["effects"] if e["effect"] == "core:effect/summon"]
+        self.assertTrue(summons)
+        for effect in summons:
+            with self.subTest(parameter=effect["parameter"]):
+                self.assertTrue(effect["parameter"].startswith("core:summon/"))
+                self.assertIn(effect["parameter"].removeprefix("core:summon/"), groups)
+        for key, group in groups.items():
+            for variant in group["variants"]:
+                with self.subTest(group=key, variant=variant):
+                    self.assertIn(variant.removeprefix("core:monster/"), monsters)
+
+    def test_a_summon_appears_at_its_casters_level(self):
+        raw = json.loads((DATA / "monsters" / "core.json").read_text())["monsters"]
+        groups = json.loads((DATA / "summons" / "core.json").read_text())["summons"]
+        variants = sorted({v.removeprefix("core:monster/") for g in groups for v in g["variants"]})
+        caster_level = 20
+        summoned = [{"key": f"summoned_{key}", "base": f"core:monster/{key}", "overrides": {"level": caster_level}}
+                    for key in variants]
+        errors = []
+        data = {"monsters": json.loads(json.dumps(raw)) + summoned}
+        validate._resolve_monster_bases(data, errors)
+        self.assertEqual(errors, [])
+        rows = {row["key"]: row for row in data["monsters"]}
+        for key in variants:
+            with self.subTest(variant=key):
+                row, creature = rows[key], rows[f"summoned_{key}"]
+                self.assertEqual(creature["level"], caster_level)
+                self.assertGreater(creature["hitPoints"], row["hitPoints"])
+        # The row still sets the stats: at the same level the zombie keeps its lead over the skeleton.
+        self.assertEqual(rows["summoned_zombie"]["hitPoints"] - rows["summoned_skeleton"]["hitPoints"],
+                         rows["zombie"]["hitPoints"] - rows["skeleton"]["hitPoints"])
 
     def test_the_hazard_and_lock_spells_exist(self):
         rows = {row["key"]: row for row in spells()}

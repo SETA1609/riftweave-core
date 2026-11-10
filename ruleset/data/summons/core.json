@@ -1,0 +1,36 @@
+{
+  "$schema": "../../schemas/summon.schema.json",
+  "summons": [
+    {
+      "key": "familiar",
+      "label": "Familiar",
+      "description": "A small spirit-beast that scouts and fetches for its caster.",
+      "variants": [
+        "core:monster/owl_familiar",
+        "core:monster/cat_familiar",
+        "core:monster/raven_familiar"
+      ]
+    },
+    {
+      "key": "elemental",
+      "label": "Elemental",
+      "description": "A being of one element, called to fight beside its caster.",
+      "variants": [
+        "core:monster/fire_elemental",
+        "core:monster/ice_elemental",
+        "core:monster/storm_elemental",
+        "core:monster/acid_elemental",
+        "core:monster/venom_elemental"
+      ]
+    },
+    {
+      "key": "undead",
+      "label": "Undead",
+      "description": "A corpse raised to fight for its caster.",
+      "variants": [
+        "core:monster/skeleton",
+        "core:monster/zombie"
+      ]
+    }
+  ]
+}
