@@ -1,0 +1,388 @@
+[
+  {
+    "name": "round trip: a condition, a timed modifier, and an equipped item",
+    "actor": {
+      "attributes": {
+        "str": 6,
+        "per": 5,
+        "end": 5,
+        "int": 4,
+        "wil": 5,
+        "agi": 7,
+        "cha": 3,
+        "lck": 5
+      },
+      "level": 3,
+      "xp": 450,
+      "skills": {
+        "blades": 34,
+        "evasion": 28
+      },
+      "tags": [
+        "blades"
+      ],
+      "growth": {
+        "hp": 4,
+        "mp": 2,
+        "sp": 3
+      },
+      "resources": {
+        "hp": 41,
+        "mp": 20,
+        "sp": 30,
+        "ap": 4
+      },
+      "conditions": [
+        {
+          "key": "burning",
+          "stacks": 1
+        }
+      ],
+      "modifiers": [
+        {
+          "modifier": {
+            "target": "str",
+            "op": "add",
+            "value": 2,
+            "source": "item:potion_strength",
+            "origin": "core:origin/alchemy",
+            "duration": "turns",
+            "turns": 12
+          },
+          "turns_elapsed": 3
+        }
+      ],
+      "flags": [
+        "prone"
+      ],
+      "inventory": [
+        {
+          "id": 1,
+          "base": "core:weapon/longsword",
+          "material": "core:material/steel",
+          "mods": [
+            {
+              "effect": "core:effect/damage_fire",
+              "magnitude": 2,
+              "target": "touch"
+            }
+          ],
+          "quantity": 1
+        },
+        {
+          "id": 2,
+          "base": "core:consumable/potion_healing",
+          "mods": [],
+          "quantity": 3
+        }
+      ],
+      "equipped": {
+        "main_hand": 1
+      }
+    },
+    "expect": {
+      "actor": {
+        "attributes": {
+          "str": 6,
+          "per": 5,
+          "end": 5,
+          "int": 4,
+          "wil": 5,
+          "agi": 7,
+          "cha": 3,
+          "lck": 5
+        },
+        "level": 3,
+        "xp": 450,
+        "skills": {
+          "blades": 34,
+          "evasion": 28
+        },
+        "tags": [
+          "blades"
+        ],
+        "growth": {
+          "hp": 4,
+          "mp": 2,
+          "sp": 3
+        },
+        "resources": {
+          "hp": 41,
+          "mp": 20,
+          "sp": 30,
+          "ap": 4
+        },
+        "conditions": [
+          {
+            "key": "burning",
+            "stacks": 1
+          }
+        ],
+        "modifiers": [
+          {
+            "modifier": {
+              "target": "str",
+              "op": "add",
+              "value": 2,
+              "source": "item:potion_strength",
+              "origin": "core:origin/alchemy",
+              "duration": "turns",
+              "turns": 12
+            },
+            "turns_elapsed": 3
+          }
+        ],
+        "flags": [
+          "prone"
+        ],
+        "inventory": [
+          {
+            "id": 1,
+            "base": "core:weapon/longsword",
+            "material": "core:material/steel",
+            "mods": [
+              {
+                "effect": "core:effect/damage_fire",
+                "magnitude": 2,
+                "target": "touch"
+              }
+            ],
+            "quantity": 1
+          },
+          {
+            "id": 2,
+            "base": "core:consumable/potion_healing",
+            "mods": [],
+            "quantity": 3
+          }
+        ],
+        "equipped": {
+          "main_hand": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "round trip: an actor with empty lists and zero pools keeps them",
+    "actor": {
+      "attributes": {
+        "str": 5
+      },
+      "level": 1,
+      "xp": 0,
+      "skills": {},
+      "tags": [],
+      "growth": {
+        "hp": 0,
+        "mp": 0,
+        "sp": 0
+      },
+      "resources": {
+        "hp": 0,
+        "mp": 0,
+        "sp": 0,
+        "ap": 0
+      },
+      "conditions": [],
+      "modifiers": [],
+      "flags": [],
+      "inventory": [],
+      "equipped": {}
+    },
+    "expect": {
+      "actor": {
+        "attributes": {
+          "str": 5
+        },
+        "level": 1,
+        "xp": 0,
+        "skills": {},
+        "tags": [],
+        "growth": {
+          "hp": 0,
+          "mp": 0,
+          "sp": 0
+        },
+        "resources": {
+          "hp": 0,
+          "mp": 0,
+          "sp": 0,
+          "ap": 0
+        },
+        "conditions": [],
+        "modifiers": [],
+        "flags": [],
+        "inventory": [],
+        "equipped": {}
+      }
+    }
+  },
+  {
+    "name": "equipped names an item the actor does not hold",
+    "actor": {
+      "attributes": {
+        "str": 6,
+        "per": 5,
+        "end": 5,
+        "int": 4,
+        "wil": 5,
+        "agi": 7,
+        "cha": 3,
+        "lck": 5
+      },
+      "level": 3,
+      "xp": 450,
+      "skills": {
+        "blades": 34,
+        "evasion": 28
+      },
+      "tags": [
+        "blades"
+      ],
+      "growth": {
+        "hp": 4,
+        "mp": 2,
+        "sp": 3
+      },
+      "resources": {
+        "hp": 41,
+        "mp": 20,
+        "sp": 30,
+        "ap": 4
+      },
+      "conditions": [
+        {
+          "key": "burning",
+          "stacks": 1
+        }
+      ],
+      "modifiers": [
+        {
+          "modifier": {
+            "target": "str",
+            "op": "add",
+            "value": 2,
+            "source": "item:potion_strength",
+            "origin": "core:origin/alchemy",
+            "duration": "turns",
+            "turns": 12
+          },
+          "turns_elapsed": 3
+        }
+      ],
+      "flags": [
+        "prone"
+      ],
+      "inventory": [
+        {
+          "id": 1,
+          "base": "core:weapon/longsword",
+          "material": "core:material/steel",
+          "mods": [
+            {
+              "effect": "core:effect/damage_fire",
+              "magnitude": 2,
+              "target": "touch"
+            }
+          ],
+          "quantity": 1
+        },
+        {
+          "id": 2,
+          "base": "core:consumable/potion_healing",
+          "mods": [],
+          "quantity": 3
+        }
+      ],
+      "equipped": {
+        "main_hand": 9
+      }
+    },
+    "expect": {
+      "error": "equipped main_hand: no inventory item 9"
+    }
+  },
+  {
+    "name": "two inventory items may not share an id",
+    "actor": {
+      "attributes": {
+        "str": 6,
+        "per": 5,
+        "end": 5,
+        "int": 4,
+        "wil": 5,
+        "agi": 7,
+        "cha": 3,
+        "lck": 5
+      },
+      "level": 3,
+      "xp": 450,
+      "skills": {
+        "blades": 34,
+        "evasion": 28
+      },
+      "tags": [
+        "blades"
+      ],
+      "growth": {
+        "hp": 4,
+        "mp": 2,
+        "sp": 3
+      },
+      "resources": {
+        "hp": 41,
+        "mp": 20,
+        "sp": 30,
+        "ap": 4
+      },
+      "conditions": [
+        {
+          "key": "burning",
+          "stacks": 1
+        }
+      ],
+      "modifiers": [
+        {
+          "modifier": {
+            "target": "str",
+            "op": "add",
+            "value": 2,
+            "source": "item:potion_strength",
+            "origin": "core:origin/alchemy",
+            "duration": "turns",
+            "turns": 12
+          },
+          "turns_elapsed": 3
+        }
+      ],
+      "flags": [
+        "prone"
+      ],
+      "inventory": [
+        {
+          "id": 1,
+          "base": "core:weapon/longsword",
+          "material": "core:material/steel",
+          "mods": [
+            {
+              "effect": "core:effect/damage_fire",
+              "magnitude": 2,
+              "target": "touch"
+            }
+          ],
+          "quantity": 1
+        },
+        {
+          "id": 1,
+          "base": "core:consumable/potion_healing",
+          "mods": [],
+          "quantity": 3
+        }
+      ],
+      "equipped": {}
+    },
+    "expect": {
+      "error": "inventory: id 1 is used twice"
+    }
+  }
+]
