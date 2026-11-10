@@ -523,6 +523,75 @@ def run_monster_sheet(vector):
     return result
 
 
+POOL_OF_PARAMETER = {"health": "hp", "mana": "mp", "stamina": "stamina"}
+USED_BY_CONSUMING = ("drink", "eat")
+
+
+def _origin_of(item, effect):
+    """The effect's own origin, else the default for food or for a consumable."""
+    if "origin" in effect:
+        return effect["origin"]
+    emitter = "food" if item["type"] == "food" else "consumable"
+    row = next(o for o in load_data("origins/core.json")["origins"] if emitter in o.get("defaultFor", []))
+    return f"core:origin/{row['key']}"
+
+
+def run_consume(vector):
+    """Use items and let time pass (docs/core/modifier.md#effects-over-time)."""
+    items = {row["key"]: row for row in load_data("equipment/consumables.json")["equipment"]}
+    policies = origin_policies()
+    seconds_per_turn = load_data("actions/core.json")["seconds_per_turn"]
+    pools = dict(vector["current"])
+    maximum = vector["max"]
+    ticks, held, refused = [], [], []
+
+    def advance(seconds):
+        for tick in ticks:
+            pool = tick["pool"]
+            pools[pool] = min(pools[pool] + tick["magnitude"] * min(seconds, tick["seconds_left"]), maximum[pool])
+            tick["seconds_left"] -= seconds
+        for row in held:
+            row["seconds_left"] -= seconds
+        ticks[:] = [tick for tick in ticks if tick["seconds_left"] > 0]
+        held[:] = [row for row in held if row["seconds_left"] > 0]
+
+    def consume(event):
+        item = items[event["item"]]
+        food = item["type"] == "food"
+        if item["consumable"]["delivery"] not in USED_BY_CONSUMING or (food and event.get("in_combat")):
+            refused.append(event["item"])
+            return
+        source = f"{'food' if food else 'item'}:{event['item']}"
+        effects = item["consumable"]["effects"]
+        gone = {_origin_of(item, e) for e in effects if policies[_origin_of(item, e)] == "replace"}
+        ticks[:] = [t for t in ticks if t["origin"] not in gone and t["source"] != source]
+        held[:] = [m for m in held if m["origin"] not in gone and m["source"] != source]
+        for effect in effects:
+            key = effect["effect"].rsplit("/", 1)[-1]
+            duration = effect.get("duration", 1)
+            origin = _origin_of(item, effect)
+            if key == "restore_resource":
+                pool = POOL_OF_PARAMETER[effect["parameter"]]
+                if duration == 1:
+                    pools[pool] = min(pools[pool] + effect["magnitude"], maximum[pool])
+                else:
+                    ticks.append({"source": source, "origin": origin, "pool": pool,
+                                  "magnitude": effect["magnitude"], "seconds_left": duration})
+            elif duration > 1:
+                op = "resist" if key == "resist" else "add" if "magnitude" in effect else "grant"
+                held.append({"source": source, "origin": origin, "target": effect.get("parameter", key), "op": op,
+                             "value": effect.get("magnitude", 1), "seconds_left": duration})
+
+    for event in vector["events"]:
+        if "item" in event:
+            consume(event)
+        elif "turns" in event:
+            advance(event["turns"] * seconds_per_turn)
+        else:
+            advance(event["advance"])
+    return {**pools, "ticks": ticks, "modifiers": held, "refused": refused}
+
+
 RUNNERS = {
     "monster_sheet": run_monster_sheet,
     "resolution": run_resolution,
@@ -533,6 +602,7 @@ RUNNERS = {
     "actions": run_actions,
     "wuxing": run_wuxing,
     "rest": run_rest,
+    "consume": run_consume,
     "economy": run_economy,
     "combat": run_combat,
     "loot": run_loot,

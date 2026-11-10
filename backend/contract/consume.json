@@ -1,0 +1,159 @@
+{
+  "$schema": "./command.schema.json",
+  "name": "consume",
+  "summary": "Use items and let time pass: instant and over-time effects, and food replacing food.",
+  "doc": "docs/core/modifier.md",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "current": {
+        "type": "object",
+        "properties": {
+          "hp": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "mp": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "stamina": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "additionalProperties": false
+      },
+      "max": {
+        "type": "object",
+        "properties": {
+          "hp": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "mp": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "stamina": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "additionalProperties": false
+      },
+      "events": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "item": {
+              "$ref": "common.json#/definitions/key",
+              "description": "A consumable key."
+            },
+            "in_combat": {
+              "type": "boolean"
+            },
+            "advance": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Seconds that pass."
+            },
+            "turns": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Turns that pass, each seconds_per_turn long."
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "current",
+      "max",
+      "events"
+    ]
+  },
+  "result_schema": {
+    "type": "object",
+    "properties": {
+      "hp": {
+        "type": "integer"
+      },
+      "mp": {
+        "type": "integer"
+      },
+      "stamina": {
+        "type": "integer"
+      },
+      "ticks": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "source": {
+              "type": "string"
+            },
+            "origin": {
+              "type": "string"
+            },
+            "pool": {
+              "type": "string"
+            },
+            "magnitude": {
+              "type": "integer"
+            },
+            "seconds_left": {
+              "type": "integer"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "modifiers": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "source": {
+              "type": "string"
+            },
+            "origin": {
+              "type": "string"
+            },
+            "target": {
+              "type": "string"
+            },
+            "op": {
+              "type": "string"
+            },
+            "value": {
+              "type": "integer"
+            },
+            "seconds_left": {
+              "type": "integer"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "refused": {
+        "type": "array",
+        "items": {
+          "$ref": "common.json#/definitions/key"
+        }
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "hp",
+      "mp",
+      "stamina",
+      "ticks",
+      "modifiers",
+      "refused"
+    ]
+  }
+}

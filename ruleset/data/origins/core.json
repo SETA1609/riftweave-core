@@ -12,6 +12,7 @@
     { "key": "equipment", "label": "Equipment", "stack": "add", "defaultFor": ["item_stat"], "description": "An item's own numbers: armor DR per slot, weapon damage. Every item counts." },
     { "key": "trained", "label": "Trained", "stack": "add", "defaultFor": ["feature", "background"], "description": "Perks, features, and backgrounds. Every perk counts." },
     { "key": "innate", "label": "Innate", "stack": "add", "defaultFor": ["race", "monster"], "description": "Ancestry and natural traits. Every trait counts." },
-    { "key": "condition", "label": "Condition", "stack": "add", "defaultFor": ["condition"], "description": "Status conditions. Different conditions add; one condition is one source and counts once." }
+    { "key": "condition", "label": "Condition", "stack": "add", "defaultFor": ["condition"], "description": "Status conditions. Different conditions add; one condition is one source and counts once." },
+    { "key": "food", "label": "Food", "stack": "replace", "defaultFor": ["food"], "description": "Dishes and rations. A new dish removes every running effect of the last one." }
   ]
 }
