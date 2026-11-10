@@ -33,6 +33,9 @@
     {"key": "spiked_gauntlet", "base": "spiked_gauntlet", "overrides": {}},
     {"key": "flintlock_pistol", "base": "flintlock_pistol", "overrides": {}},
     {"key": "arquebus", "base": "arquebus", "overrides": {}},
-    {"key": "blunderbuss", "base": "blunderbuss", "overrides": {}}
+    {"key": "blunderbuss", "base": "blunderbuss", "overrides": {}},
+    {"key": "repeating_crossbow", "base": "repeating_crossbow", "overrides": {}},
+    {"key": "throwing_hammer", "base": "throwing_hammer", "overrides": {}},
+    {"key": "thrown_rock", "base": "thrown_rock", "overrides": {}}
   ]
 }

@@ -471,14 +471,15 @@ type Ruleset struct {
 	Conditions  Conditions
 	Loot        Loot
 
-	Formulas        map[string]*formula.Program // formulas/<name>.json by name
-	Price           *formula.Program
-	LootLuck        *formula.Program
-	Items           map[string]Item  // core:<category>/<key>
-	MaterialPercent map[string]int64 // material key: valueFactor * 100
-	DiceLadder      [][]string       // combat/dice_ladder.json: rungs of equal dice, smallest first
-	Sizes           map[string]Size  // combat/dice_ladder.json: undersized, normal, oversized
-	MonsterLevel    map[string]int64 // monster key
+	Formulas          map[string]*formula.Program // formulas/<name>.json by name
+	AttributeModifier *formula.Program            // formulas/attribute_modifier.json
+	Price             *formula.Program
+	LootLuck          *formula.Program
+	Items             map[string]Item  // core:<category>/<key>
+	MaterialPercent   map[string]int64 // material key: valueFactor * 100
+	DiceLadder        [][]string       // combat/dice_ladder.json: rungs of equal dice, smallest first
+	Sizes             map[string]Size  // combat/dice_ladder.json: undersized, normal, oversized
+	MonsterLevel      map[string]int64 // monster key
 }
 
 // rulesetLoader reads every file even after one fails, and joins every error, so one run
@@ -753,8 +754,9 @@ func (loader *rulesetLoader) loadFormulas(ruleset *Ruleset) {
 		ruleset.Formulas[strings.TrimSuffix(file.Name(), ".json")] = &raw.Expression
 	}
 	ruleset.Price, ruleset.LootLuck = ruleset.Formulas["price"], ruleset.Formulas["loot_luck"]
-	if ruleset.Price == nil || ruleset.LootLuck == nil {
-		loader.fail("formulas: price.json and loot_luck.json are required")
+	ruleset.AttributeModifier = ruleset.Formulas["attribute_modifier"]
+	if ruleset.Price == nil || ruleset.LootLuck == nil || ruleset.AttributeModifier == nil {
+		loader.fail("formulas: price.json, loot_luck.json, and attribute_modifier.json are required")
 	}
 }
 

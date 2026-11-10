@@ -50,6 +50,21 @@ class TestEquipmentFloor(unittest.TestCase):
                 self.assertGreaterEqual(len(by_skill.get(skill, [])), 3)
                 self.assertGreaterEqual(len(set(by_skill[skill])), 2, "all in one tier")
 
+    def test_every_ranged_weapon_names_the_attribute_it_uses(self):
+        for key, weapon in resolved_weapons():
+            if weapon["weapon"]["range"] == "ranged":
+                with self.subTest(weapon=key):
+                    self.assertIn(weapon["weapon"].get("ability"), ("str", "per", "agi"))
+
+    def test_slow_weapons_read_per_quick_ones_agi_and_heavy_throws_str(self):
+        by_key = {key: weapon["weapon"].get("ability") for key, weapon in resolved_weapons()}
+        for key, ability in (("arquebus", "per"), ("crossbow", "per"), ("light_crossbow", "per"), ("longbow", "per"),
+                             ("flintlock_pistol", "agi"), ("hand_crossbow", "agi"), ("repeating_crossbow", "agi"),
+                             ("shortbow", "agi"), ("composite_bow", "agi"),
+                             ("javelin", "str"), ("throwing_axe", "str"), ("throwing_hammer", "str"), ("thrown_rock", "str")):
+            with self.subTest(weapon=key):
+                self.assertEqual(by_key[key], ability)
+
     def test_twelve_accessories_and_twenty_consumables(self):
         self.assertGreaterEqual(len(rows("accessories")), 12)
         self.assertGreaterEqual(len(rows("consumables")), 20)
