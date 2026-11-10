@@ -41,3 +41,12 @@ Rolls are inputs, as everywhere in the core. The CLI does not draw rolls; drawin
 ## Checks
 
 `go test ./cmd/riftweave` runs every vector in `ruleset/tests/vectors/` through the CLI, as a process would see it (arguments, stdin, stdout, stderr, exit code), and compares the JSON with `core.Run`; it checks `list` against the contract, `describe`, and that bad input exits 2 with a JSON error. [V 2026-11-08]
+
+## Human mode
+
+`riftweave play` is the interactive mode of the same binary (APP-05): a terminal UI built with Bubble Tea, Bubbles, and Lip Gloss. It holds no rule. It prompts for inputs, builds the same JSON the agent CLI reads, calls `core.Run`, and shows the result as a table with a short log of the rolls.
+
+- **Create a character:** eight attributes and a level, run through `derived`.
+- **Resolve an attack:** the rolls and the two sides, run through `combat`. The LCK defaults to the character's.
+
+Rolls stay inputs: you type each one, so a result matches the agent CLI for the same inputs and rolls. It needs a terminal. Charm is imported only by `backend/cmd/riftweave/play`, and `backend/core` and `backend/internal/` stay free of it.

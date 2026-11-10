@@ -33,7 +33,7 @@ Done: APP-01, APP-02 ([done.md](done.md#app-reference-backend))
 - Done when: a chain of the commands that exist (at least derived, combat, rest, progression) runs as backend calls and matches their vectors; a saved session replays to the same result.
 
 #### APP-05 Human CLI
-- Status: todo
+- Status: doing
 - Priority: low
 - Needs: APP-03
 - Do: A readable, interactive mode of the same binary, built as a terminal UI with the Charm libraries (Bubble Tea for the program loop, Bubbles for inputs and tables, Lip Gloss for styling): prompts for inputs, tables for results, a short log of the rolls. It calls the same core as the agent CLI; it holds no rule. The agent CLI path imports none of it, so its start stays fast, and `backend/core` and `backend/internal/` stay free of Charm.
