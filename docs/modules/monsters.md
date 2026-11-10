@@ -200,7 +200,8 @@ an elder treant is the treant sapling at level 22.
 A summon spell names a group in `summons/core.json`, and each group lists monster rows
 ([magic.md](./magic.md#summon-groups)). Familiars have their own base, `bases/familiar.json`.
 The storm, acid, and venom elementals derive from Fire Elemental and apply an element
-template.
+template. A summoned creature is its row at the caster's level, resolved as a
+[derived monster](#derived-monsters).
 
 ### Names
 

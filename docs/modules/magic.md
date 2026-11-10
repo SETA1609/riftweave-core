@@ -187,7 +187,7 @@ Every spell, authored or crafted, costs what §5's formula gives for its effects
 A summon spell may exist only once what it summons is data. A `summon` effect's `parameter`
 is a group, `core:summon/<key>`, from `summons/core.json`. A group lists its `variants` as
 `core:monster/<key>` refs, and the caster picks one when casting [A]. `magnitude` is how many
-appear. The creatures are ordinary monster rows ([monsters.md](./monsters.md#summoned-creatures)).
+appear, a count the spell states. The creatures are ordinary monster rows ([monsters.md](./monsters.md#summoned-creatures)).
 
 | Group | Spells | Variants |
 | --- | --- | --- |
@@ -195,9 +195,12 @@ appear. The creatures are ordinary monster rows ([monsters.md](./monsters.md#sum
 | `elemental` | Summon Elemental, Conjured Legion | fire, ice, storm, acid, venom |
 | `undead` | Raise Thrall, Raise Horde | skeleton, zombie |
 
-A stronger spell summons more for longer; it does not summon a stronger creature. The
-creature's stats are its row's, at the row's level [A]. `validate.py` refuses a summon whose
-`parameter` is not a group, and `test_spells.py` fails on a group or variant that does not exist. [V 2026-11-09]
+A creature appears at its caster's level, whatever the spell's level. The row is the base of a
+[derived monster](./monsters.md#derived-monsters) at that level, so its attributes and HP move by
+its creature type's growth. The row still sets the stats: of two creatures at the same level, the
+weaker row stays weaker. Templates go on top in order: the element, then the caster's power tier,
+then the caster's nature. `validate.py` refuses a summon whose `parameter` is not a group, and
+`test_spells.py` fails on a group or variant that does not exist. [V 2026-11-10]
 
 ---
 
