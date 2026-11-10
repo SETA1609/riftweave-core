@@ -2452,5 +2452,269 @@
       "evaded": false,
       "damage": 10
     }
+  },
+  {
+    "name": "attribute modifier: str 10 adds 5 to a melee attack",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0,
+        "str": 10
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing",
+      "ability": "str"
+    },
+    "expect": {
+      "outcome": "hit",
+      "damage": 13,
+      "hp": 17
+    }
+  },
+  {
+    "name": "attribute modifier: str 5 adds 0",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0,
+        "str": 5
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing",
+      "ability": "str"
+    },
+    "expect": {
+      "outcome": "hit",
+      "damage": 8,
+      "hp": 22
+    }
+  },
+  {
+    "name": "attribute modifier: str 1 subtracts 4",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0,
+        "str": 1
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing",
+      "ability": "str"
+    },
+    "expect": {
+      "outcome": "hit",
+      "damage": 4,
+      "hp": 26
+    }
+  },
+  {
+    "name": "attribute modifier: a finesse attack reads agi, not str",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0,
+        "str": 1,
+        "agi": 9
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing",
+      "ability": "agi"
+    },
+    "expect": {
+      "outcome": "hit",
+      "damage": 12,
+      "hp": 18
+    }
+  },
+  {
+    "name": "attribute modifier: a pistol reads agi",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0,
+        "agi": 7,
+        "per": 3
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing",
+      "ability": "agi"
+    },
+    "expect": {
+      "outcome": "hit",
+      "damage": 10,
+      "hp": 20
+    }
+  },
+  {
+    "name": "attribute modifier: an arquebus reads per",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0,
+        "agi": 3,
+        "per": 8
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing",
+      "ability": "per"
+    },
+    "expect": {
+      "outcome": "hit",
+      "damage": 11,
+      "hp": 19
+    }
+  },
+  {
+    "name": "attribute modifier: a crit doubles the modifier too",
+    "attacker": {
+      "skill": 72,
+      "roll": 2,
+      "attributes": {
+        "lck": 0,
+        "str": 10
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing",
+      "ability": "str"
+    },
+    "expect": {
+      "outcome": "hit",
+      "crit": true,
+      "damage": 26,
+      "hp": 4
+    }
+  },
+  {
+    "name": "attribute modifier: a called shot multiplies the modifier too",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0,
+        "str": 9
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing",
+      "ability": "str"
+    },
+    "called_shot": "arms",
+    "expect": {
+      "outcome": "hit",
+      "damage": 9,
+      "hp": 21
+    }
+  },
+  {
+    "name": "attribute modifier: a penalty stops damage at zero",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0,
+        "str": 1
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 3,
+      "type": "piercing",
+      "ability": "str"
+    },
+    "expect": {
+      "outcome": "hit",
+      "damage": 0,
+      "hp": 30
+    }
+  },
+  {
+    "name": "attribute modifier: no ability named, the roll stands alone",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0,
+        "str": 10
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "damage": 8,
+      "hp": 22
+    }
   }
 ]

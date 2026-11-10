@@ -46,10 +46,12 @@ type Defender struct {
 	Modifiers []modifier.Modifier `json:"modifiers"`
 }
 
-// Damage is the damage roll and its type.
+// Damage is the damage roll, its type, and the attribute that modifies it.
 type Damage struct {
 	Roll int64  `json:"roll"`
 	Type string `json:"type"`
+	// Ability names the attacker's attribute whose modifier adds to the roll, if any.
+	Ability string `json:"ability"`
 }
 
 // Input is the `combat` command's input.
@@ -235,6 +237,18 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	result.Outcome = "hit"
 
 	var amount int64 = input.Damage.Roll
+	if input.Damage.Ability != "" {
+		ability, known := actor.ByKey(input.Damage.Ability)
+		if !known {
+			return Result{}, &data.NotDefinedError{Kind: "ability", Key: input.Damage.Ability}
+		}
+		var attribute int64 = input.Attacker.Attributes.Get(ability)
+		modifier, err := ruleset.AttributeModifier.Evaluate(nil, formula.Variable{Name: "attribute", Value: attribute})
+		if err != nil {
+			return Result{}, err
+		}
+		amount = max(amount+modifier, 0)
+	}
 	if calledShot != nil {
 		amount = int64(math.Floor(float64(amount) * calledShot.DamageMultiplier))
 	}

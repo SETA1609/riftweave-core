@@ -139,7 +139,8 @@
           },
           "type": {
             "$ref": "common.json#/definitions/key"
-          }
+          },
+          "ability": { "$ref": "../../ruleset/schemas/schema.json#/definitions/ability", "description": "The attacker attribute whose modifier adds to the roll." }
         },
         "additionalProperties": false,
         "required": [
