@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""The three integrity gates of docs/core/integrity.md.
+"""The four integrity gates of docs/core/integrity.md.
 
 Run with:
     python -m unittest ruleset/scripts/test_integrity.py
@@ -194,6 +194,97 @@ class TestEffectsAreUsedOrReserved(unittest.TestCase):
             )
             errors = validate.check_effect_usage([effects])
             self.assertEqual(len(errors), 2, errors)
+
+
+def modifier(target, op="add", value=1):
+    return {"target": target, "op": op, "value": value, "source": "feature:x"}
+
+
+def target_row(key, kind="number", **extra):
+    return {"key": key, "label": key, "kind": kind, "description": "x", **extra}
+
+
+class TestModifierTargetsNameOneRow(unittest.TestCase):
+    """Gate 4: every modifier target names one row, and the op fits its kind."""
+
+    def tables(self, root, targets=()):
+        return [
+            write_json(root / "abilities" / "core.json", {"abilities": [{"id": "str", "label": "Strength"}]}),
+            write_json(root / "skills" / "core.json", {"skills": [{"key": "persuasion"}, {"key": "block"}, {"key": "piercing"}]}),
+            write_json(root / "derived" / "core.json", {"derived": [{"key": "hp"}]}),
+            write_json(root / "actions" / "core.json", {"actions": [{"key": "dodge", "cost": 3}, {"key": "block", "cost": 2}]}),
+            write_json(root / "conditions" / "core.json", {"conditions": [{"key": "prone"}]}),
+            write_json(root / "combat" / "damage_types.json", {"damage_types": [{"key": "fire"}, {"key": "piercing"}]}),
+            write_json(root / "modifier_targets" / "core.json", {"modifier_targets": list(targets)}),
+        ]
+
+    def check(self, root, modifiers, targets=(), vectors=None):
+        files = self.tables(root, targets)
+        files.append(write_json(root / "features" / "core.json", {"features": [{"key": "x", "modifiers": modifiers}]}))
+        vector_files = [write_json(root / "vectors" / "v.json", vectors)] if vectors is not None else []
+        return validate.check_modifier_targets(files, vector_files=vector_files)
+
+    def test_the_real_data_passes(self):
+        data_files = list(validate.collect_data_files())
+        modules = list(validate.collect_module_data_files())
+        self.assertEqual(validate.check_modifier_targets(data_files, modules, validate.collect_vector_files()), [])
+
+    def test_a_target_in_each_table_passes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            mods = [modifier("str"), modifier("persuasion"), modifier("hp", "mul", 1.5), modifier("dodge", value=-1),
+                    modifier("prone", "grant"), modifier("fire", "resist", 5), modifier("crit_window")]
+            self.assertEqual(self.check(Path(tmp), mods, [target_row("crit_window", pending=True)]), [])
+
+    def test_an_unknown_target_is_reported(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            errors = self.check(Path(tmp), [modifier("persuasoin")])
+            self.assertEqual(len(errors), 1, errors)
+            self.assertIn("persuasoin", errors[0])
+
+    def test_an_op_that_does_not_fit_the_kind_is_reported(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            mods = [modifier("persuasion", "grant"), modifier("prone", "add"), modifier("hp", "resist"),
+                    modifier("darkvision", "add")]
+            errors = self.check(Path(tmp), mods, [target_row("darkvision", "flag", pending=True)])
+            self.assertEqual(len(errors), 4, errors)
+
+    def test_a_key_in_two_tables_is_ambiguous_only_where_both_fit_the_op(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            errors = self.check(Path(tmp), [modifier("block"), modifier("piercing"), modifier("piercing", "resist")])
+            self.assertEqual(len(errors), 1, errors)
+            self.assertIn("block", errors[0])
+
+    def test_an_unused_target_row_is_reported(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            errors = self.check(Path(tmp), [], [target_row("idle", pending=True)])
+            self.assertEqual(len(errors), 1, errors)
+            self.assertIn("idle", errors[0])
+
+    def test_a_target_row_may_not_repeat_another_table(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            errors = self.check(Path(tmp), [modifier("persuasion")], [target_row("persuasion", pending=True)])
+            self.assertEqual(len(errors), 1, errors)
+            self.assertIn("skills", errors[0])
+
+    def test_pending_must_match_the_vectors(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            vectors = [{"modifiers": [modifier("loot_roll")]}]
+            mods = [modifier("loot_roll"), modifier("crit_window")]
+            errors = self.check(Path(tmp), mods, [target_row("loot_roll", pending=True), target_row("crit_window")], vectors)
+            self.assertEqual(len(errors), 2, errors)
+            self.assertTrue(any("loot_roll" in e and "vector" in e for e in errors), errors)
+            self.assertTrue(any("crit_window" in e and "pending" in e for e in errors), errors)
+
+    def test_a_module_adds_its_own_targets(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            files = self.tables(root)
+            module = write_json(
+                root / "mod" / "data.json",
+                {"modifier_targets": [target_row("guild_member", "flag", pending=True)],
+                 "factions": [{"key": "guild", "modifiers": [modifier("guild_member", "grant")]}]},
+            )
+            self.assertEqual(validate.check_modifier_targets(files, [(module, root / "mod")], []), [])
 
 
 if __name__ == "__main__":
