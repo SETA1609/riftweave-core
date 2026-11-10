@@ -109,6 +109,9 @@ class TestKernelChecklist(unittest.TestCase):
             vector_function(path, vector) for path, vector in discover_vectors(VECTOR_DIR)
         }
 
+    def test_the_kernel_reads_no_module_function(self):
+        self.assertNotIn("wuxing", RUNNERS)
+
     def test_checklist_names_the_kernel_functions(self):
         for function in ("resolution", "derived", "formula", "modifiers", "actions", "progression"):
             self.assertIn(function, self.checklist)

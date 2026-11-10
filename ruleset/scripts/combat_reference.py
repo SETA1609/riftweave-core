@@ -62,7 +62,7 @@ class CombatResolver:
         self.crafted_items = load_json("data/crafting/crafted_items.json")[
             "crafted_items"
         ]
-        self.wuxing = load_json("data/wuxing/core.json")
+        self.wuxing = load_json("modules/wuxing/data/wuxing.json")
         self.cycles = self.wuxing["cycles"]
         self.conditions_data = load_json("data/conditions/core.json")["conditions"]
 

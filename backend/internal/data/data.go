@@ -135,7 +135,7 @@ type Cycle struct {
 // Has reports whether the cycle holds the edge from -> to (phase indexes).
 func (cycle *Cycle) Has(from, to int) bool { return cycle.NextPhasesMask[from]&(1<<to) != 0 }
 
-// Wuxing is wuxing/core.json.
+// Wuxing is the wuxing module's data (ruleset/modules/wuxing/).
 type Wuxing struct {
 	Phases []string
 	Cycles []Cycle
@@ -474,6 +474,7 @@ type Ruleset struct {
 	Skills         Table[Skill]
 	Actions        Actions
 	Wuxing         Wuxing
+	Modules        []string // ids of the loaded modules
 	Rest           Table[Occasion]
 	Economy        Economy
 	Progression    Progression
@@ -528,7 +529,7 @@ func (loader *rulesetLoader) fail(format string, arguments ...any) {
 
 // Load reads the ruleset from the data directory held by fileSystem. The error, if any,
 // joins one error per broken file or row.
-func Load(fileSystem fs.FS) (*Ruleset, error) {
+func Load(fileSystem fs.FS, modules ...fs.FS) (*Ruleset, error) {
 	var loader *rulesetLoader = &rulesetLoader{fileSystem: fileSystem}
 	var ruleset *Ruleset = &Ruleset{}
 
@@ -563,8 +564,6 @@ func Load(fileSystem fs.FS) (*Ruleset, error) {
 	}
 	ruleset.SecondsPerTurn = actions.SecondsPerTurn
 	ruleset.Actions = Actions{Pool: actions.Pool, Actions: newTable(actions.Actions, func(action *Action) string { return action.Key })}
-
-	loader.loadWuxing(ruleset)
 
 	var rest struct{ Rest []Occasion }
 	loader.read("rest/core.json", &rest)
@@ -669,6 +668,9 @@ func Load(fileSystem fs.FS) (*Ruleset, error) {
 	} else {
 		loader.fail("equipment and loot: not loaded, because economy/core.json did not load")
 	}
+	for _, module := range modules {
+		loader.loadModule(ruleset, module)
+	}
 	return ruleset, errors.Join(loader.errs...)
 }
 
@@ -680,18 +682,38 @@ func (loader *rulesetLoader) ability(file, key string) actor.Ability {
 	return ability
 }
 
-func (loader *rulesetLoader) loadWuxing(ruleset *Ruleset) {
+// loadModule reads one module's manifest and the data of the modules the core reads.
+func (loader *rulesetLoader) loadModule(ruleset *Ruleset, module fs.FS) {
+	var core fs.FS = loader.fileSystem
+	loader.fileSystem = module
+	defer func() { loader.fileSystem = core }()
+	var manifest struct {
+		Identifier string `json:"id"`
+		Data       []string
+	}
+	if !loader.read("manifest.json", &manifest) {
+		return
+	}
+	ruleset.Modules = append(ruleset.Modules, manifest.Identifier)
+	if manifest.Identifier == "wuxing" {
+		for _, file := range manifest.Data {
+			loader.loadWuxing(ruleset, file)
+		}
+	}
+}
+
+func (loader *rulesetLoader) loadWuxing(ruleset *Ruleset, file string) {
 	var raw struct {
 		Phases []struct {
 			Identifier string `json:"id"`
 		}
 		Cycles []Cycle
 	}
-	if !loader.read("wuxing/core.json", &raw) {
+	if !loader.read(file, &raw) {
 		return
 	}
 	if len(raw.Phases) > 8 {
-		loader.fail("wuxing/core.json: at most 8 phases")
+		loader.fail("%s: at most 8 phases", file)
 		return
 	}
 	for _, phase := range raw.Phases {
@@ -703,7 +725,7 @@ func (loader *rulesetLoader) loadWuxing(ruleset *Ruleset) {
 		for _, edge := range cycle.Edges {
 			var from, to int = ruleset.Wuxing.Phase(edge.From), ruleset.Wuxing.Phase(edge.To)
 			if from < 0 || to < 0 {
-				loader.fail("wuxing/core.json: cycle %s edge %s -> %s names an unknown phase", cycle.Identifier, edge.From, edge.To)
+				loader.fail("%s: cycle %s edge %s -> %s names an unknown phase", file, cycle.Identifier, edge.From, edge.To)
 				continue
 			}
 			cycle.NextPhasesMask[from] |= 1 << to

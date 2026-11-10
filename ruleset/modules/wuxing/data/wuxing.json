@@ -1,5 +1,5 @@
 {
-  "$schema": "../../schemas/wuxing.schema.json",
+  "$schema": "../../../schemas/wuxing.schema.json",
   "phases": [
     { "id": "wood", "name": "Wood", "description": "Growth and life. Healing, nature, poison/blight, and lightning. Fed by Water, feeds Fire; parts Earth, is cut by Metal." },
     { "id": "fire", "name": "Fire", "description": "Heat and combustion. Fed by Wood, feeds Earth (ash); melts Metal, is quenched by Water." },

@@ -127,7 +127,7 @@ A `kin` performs **no** such merge — it is read exactly as written. A `parent`
 Each playable race has exactly one `phase` — `wood`, `fire`, `earth`, `metal`, or
 `water`. This is the **same five-phase vocabulary** as effects and monsters, so a
 character's race plugs directly into the interaction cycles in
-[`data/wuxing/core.json`](../../ruleset/data/wuxing/core.json): incoming phased
+[`modules/wuxing/data/wuxing.json`](../../ruleset/modules/wuxing/data/wuxing.json): incoming phased
 effects resolve against the character's element via Generating (amplify), Overcoming
 (suppress), Weakening (drain), and Insulting (backlash). See
 [`magic.md`](./magic.md) § Elemental interaction for the full matrix.
@@ -258,7 +258,7 @@ in full. It owes nothing to catman or wolfman beyond also being beastfolk.
 | Racial traits (`type: racial_trait`) | `feature.schema.json` | `data/features/core.json` |
 | Attribute ids (`abilityModifiers` keys) | `schema.json#/definitions/ability` | `data/abilities/core.json` |
 | Element vocabulary (`phase`) | `schema.json#/definitions/phase` | — |
-| Interaction cycles | `wuxing.schema.json` | `data/wuxing/core.json` |
+| Interaction cycles | `wuxing.schema.json` | `modules/wuxing/data/wuxing.json` |
 
 ---
 

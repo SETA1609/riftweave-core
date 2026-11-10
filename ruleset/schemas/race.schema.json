@@ -46,7 +46,7 @@
         "lineage": { "$ref": "#/definitions/lineage" },
         "phase": {
           "$ref": "schema.json#/definitions/phase",
-          "description": "The race's innate element (Wuxing five-phase). Required for playable races (standalone, parent, subrace, kin); omitted on templates, whose kin each declare their own. A subrace may inherit its parent's phase or override it. Drives elemental affinity via the cycles in data/wuxing."
+          "description": "The race's innate element (Wuxing five-phase). Optional tag for playable races (standalone, parent, subrace, kin); omitted on templates, whose kin each declare their own. A subrace may inherit its parent's phase or override it. Drives elemental affinity via the cycles in data/wuxing."
         },
         "abilityModifiers": {
           "type": "object",
@@ -81,14 +81,6 @@
       "required": ["key", "label", "description", "lineage"],
       "additionalProperties": false,
       "allOf": [
-        {
-          "description": "Playable races (standalone/parent/subrace/kin) must declare a phase; templates may omit it.",
-          "if": {
-            "properties": { "lineage": { "properties": { "role": { "enum": ["standalone", "parent", "subrace", "kin"] } }, "required": ["role"] } },
-            "required": ["lineage"]
-          },
-          "then": { "required": ["phase"] }
-        },
         {
           "description": "Self-contained races (standalone/parent/kin) must declare speed and size; subraces may inherit them from the parent, templates omit them.",
           "if": {

@@ -38,7 +38,6 @@ The other fields are the input the function reads. They are listed per function 
 | `modifiers` | `value` of `target`, `modifiers`, optional `elapsed_turns`, `removed_sources`, `packet` (`amount`, `tag`) | `value`, `flags`, `packet` (the amount after resist) |
 | `conditions` | optional `base` (target values), `modifiers` (the actor's own), `conditions` (active key and stacks), `events` (`effect` refs or `remove` refs, in order) | `conditions` (key and stacks), `flags`, `values` (one per `base` target) |
 | `actions` | `actor.attributes`, `actions` (a list of action keys) | `pool`, `cost` |
-| `wuxing` | `actor_phase`, `recipient_phase` (null for none), optional `actor_magnitude` and `recipient_magnitude` | `cycle`, `interaction`, `multiplier`, `affects` |
 | `economy` | `op`: `convert` (`cost`) or `trade` (`side` buy or sell, `merchant`, `item_cost`, optional `value_percent`, optional `barter` with `skill_value` and `roll`) | `cp`; or `base_cp`, `shift`, `percent`, `price_cp` |
 | `rest` | `occasion` (a key in `ruleset/data/rest/core.json`), `actor.attributes`, `actor.level`, `modifiers`, `current` (hp, mp, stamina, ap), `max.stamina`, `conditions` (key and duration) | the four resources after the rest, and `conditions` (the keys left) |
 | `loot` | `table` (a key) or `monster` (a ref), `rolls` (one d100 per chance roll and per table roll, in row order), optional looter `actor.attributes.lck` and `modifiers` (on `loot_roll`) | `table` (a table input) or `tables` (the tables a monster rolled), `items` (item, quantity, and `material` if a row set one), `coins_cp`, `value_cp` (coins plus items at list price), `budget_cp` (at the table's or the monster's level), `looter_shift`, or `error` |
@@ -60,6 +59,8 @@ Notes on the reference, for a second implementation to check against:
 - `formula` evaluates `lit`, `attr`, and the ops `add`, `sub`, `mul`, `div`. `div` is integer floor division, the `floor` rounding named in `ap.json`. [A] Other ops raise an error.
 - `actions` pool is `base + attr * per_point / per_point_divisor` from `ruleset/data/actions/core.json`; cost is the sum of the named actions' costs, so `attack` plus `aimed` is 5. The turn cap and carry are not checked yet. [A]
 
+Module functions are not kernel functions. The `wuxing` function's vectors are in `ruleset/modules/wuxing/tests/vectors.json`, and `test_wuxing.py` and the Go tests run them from the module's data.
+
 ## Checklist
 
 Every kernel function and the vector file that covers it. The test reads this table: a `covered` row with no vector fails, a `pending` row that gained a vector fails until the row says `covered`, and a vector whose function is not in the table fails.
@@ -73,7 +74,6 @@ Every kernel function and the vector file that covers it. The test reads this ta
 | `modifiers` | `modifiers.json` | covered |
 | `conditions` | `conditions.json` | covered |
 | `actions` | `actions.json` | covered |
-| `wuxing` | `wuxing.json` | covered |
 | `economy` | `economy.json` | covered |
 | `rest` | `rest.json` | covered |
 | `combat` | `combat.json` | covered |

@@ -57,8 +57,8 @@ request.** [V 2026-11-06, run in this change: 256 of 256 vectors pass in Go]
 
 **Human CLI.** The interactive mode (APP-05) is a terminal UI built with Charm: Bubble Tea, Bubbles, and Lip Gloss. It lives in `backend/cmd/` as an adapter and calls `core.Run` like every other adapter, so it holds no rule and the core and `internal/` never import Charm. The agent CLI must not import it either, so a script that calls the binary thousands of times pays no TUI start cost. [A: owner decision 2026-11-06; the exact libraries and whether `cmd/` needs its own `go.mod` to keep the core dependency-free are settled in APP-05]
 
-Not in the Go core yet: module data (`ruleset/modules/`), which the Python kernel does not
-read either. [U]
+Modules: `core.Open` loads each module beside `ruleset/data`, and `internal/wuxing` reads the
+Wuxing module's data. Other modules load their manifest only. [V 2026-11-11]
 
 ## Commands
 
