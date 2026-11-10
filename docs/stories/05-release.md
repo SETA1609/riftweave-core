@@ -169,3 +169,113 @@ Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-03, M5-07, M5-08, M5-10,
 - Files: ~5 (docs/core/data-model.md, docs/theory/data-models.md, docs/onboarding/README.md, AGENTS.md, README.md)
 - See: docs/core/contract.md, docs/core/keys.md, docs/core/integrity.md, backend/internal/data/data.go, docs/archive/review/findings-data-oriented-design.md
 - Done when: `docs/core/data-model.md` and `docs/theory/data-models.md` cover all of the above, every claim about the repo is tagged **[V]** with a date or **[A]**, and the onboarding reading list links it.
+
+#### M5-31 File the data model review
+- Status: review
+- Priority: medium
+- Needs: —
+- Do: A review of the data against `docs/core/data-model.md` on 2026-11-10 found places where the data does not follow its own model, all of which pass `validate.py`. File each one as an issue (M5-32 to M5-41) so it can be ordered and worked, and record the review in a decision file.
+- Keys: none
+- Files: ~4 (docs/stories/05-release.md, docs/stories/07-backend.md, docs/decisions/M5-31.md, ROADMAP.md)
+- See: docs/core/data-model.md, docs/archive/review/findings-data-oriented-design.md
+- Done when: every finding has an issue with `Needs`, `Files`, and a checkable `Done when`, and the roadmap table is regenerated.
+
+#### M5-32 Modifier targets are rows
+- Status: todo
+- Priority: high
+- Needs: —
+- Do: The modifier is the only shared sentence, but its `target` is free text: the data names 145 targets, and 92 of them are a key in no table. A typo is a valid target, and nothing says whether a target is a number or a flag, or whether any rule reads it. A target names a row: an attribute, a skill, a derived stat, an action (its AP cost), a condition, a damage type, or a row of a new `modifier_targets` table for everything else (rule parameters such as `crit_window`, flags such as `darkvision`). Each `modifier_targets` row says its kind (`number` or `flag`) and what it changes, and is marked `pending` while no golden vector applies a modifier to it. Add a gate: every target resolves to one row, `grant` names a flag, `add`, `mul`, and `set` name a number, `resist` names a damage type, every `modifier_targets` row is used, and `pending` matches the vectors in both directions, so the flag cannot go stale. Register the targets used today without renaming any; renames are M5-33 and M5-37.
+- Keys: `modifier_targets` collection, `modifier_target.schema.json`, `pending`
+- Files: ~9 (docs/core/modifier.md, docs/core/integrity.md, docs/core/data-model.md, ruleset/schemas/modifier_target.schema.json, ruleset/data/modifier_targets/core.json, ruleset/modules/factions/, ruleset/scripts/validate.py, ruleset/scripts/test_integrity.py)
+- See: docs/core/contract.md, docs/core/modifier.md, docs/core/integrity.md
+- Done when: an unknown target, a `grant` on a number, an unused `modifier_targets` row, or a stale `pending` fails `validate.py`; every target in `ruleset/data/` and `ruleset/modules/` resolves; the tests pass.
+
+#### M5-33 Percentages are `mul`, and distances are units
+- Status: todo
+- Priority: medium
+- Needs: M5-32
+- Do: 29 `add` modifiers carry a percentage in the target's name (`melee_damage_percent`, `mana_cost_percent`) instead of using `mul` on the base target, so there are two ways to scale a value. Distances in metres break the rule that every distance is in units (`docs/core/contract.md#distance`): `safe_fall_meters` says so in its name, and `darkvision_range` holds metres under a units description (`night_eyes` adds 9 for "6 units", `elf_darkvision` 18 for "12 units"). Rewrite each as `mul` on the target it scales (+10% is `mul 1.1`), or, where nothing to scale exists yet, as a target with a unit in its description, convert every distance to units, and remove the old `modifier_targets` rows. Renaming a target breaks consumers.
+- Keys: removes the `*_percent` targets and `safe_fall_meters` **(breaking)**
+- Files: ~6 (ruleset/data/features/core.json, ruleset/data/targets/core.json, docs/core/modifier.md, docs/modules/progression.md)
+- See: docs/core/modifier.md, docs/core/contract.md#distance
+- Done when: no target ends in `_percent` or names a unit other than units; `darkvision_range` values match their descriptions in units; each rewritten perk gives the same number at its listed rank, shown by a test or vector; `validate.py` and the tests pass.
+
+#### M5-34 Retire the legacy combat table
+- Status: todo
+- Priority: high
+- Needs: —
+- Do: `ruleset/data/combat/base_resolution.json` still holds a second copy of the crit and fumble windows (`critical`), the AP pool and action costs (`actionEconomy`), and a `videoGame` column the contract forbids. `ruleset/scripts/combat_reference.py` reads it, and on a crit it rolls a second d100 to confirm, which `docs/core/resolution.md` and the Go backend do not do. No test runs that script. Move what still has no owner (`defense`, `hitQuality`, `calledShots`) to its owner or drop it, delete the copies and the `videoGame` block, and remove `combat_reference.py` or make it read the kernel tables and drop the confirmation roll.
+- Keys: removes `combat/base_resolution.json` or most of it **(breaking)**
+- Files: ~8 (ruleset/data/combat/, ruleset/schemas/combat.schema.json, ruleset/scripts/combat_reference.py, docs/core/resolution.md, docs/modules/combat.md, docs/combat/)
+- See: docs/archive/review/findings-data-oriented-design.md (DOD-02, DOD-03, DOD-06), docs/decisions.md (the `base_resolution.json` risk)
+- Done when: the crit window, fumble, crit damage, and AP pool each live in one table; no file has a `videoGame` key; no code rolls to confirm a crit; `validate.py` and the tests pass.
+
+#### M5-35 A feature's bonus is written once
+- Status: todo
+- Priority: medium
+- Needs: M5-32
+- Do: A feature can state a bonus twice: in `effects` (a `target` and `value` for people) and in `modifiers` (the rows the rules apply). 14 features have both, and their targets differ (`hp_max` against `hp`, `melee_damage` against `melee_damage_percent`). 10 creation traits (`gifted`, `genius`, the phobias and allergies) have only `effects`, which name a shared effect and a value but often not what it applies to: `gifted` gives `fortify_attribute` 1 without naming an attribute, so the rule exists only in the description. Make `modifiers` the one statement of a feature's mechanics: give those 10 their modifiers (or applied effects with a `parameter`), and reduce `effects` to text, or drop it where `description` already says the same.
+- Keys: `effects` on features **(breaking)**
+- Files: ~4 (ruleset/data/features/core.json, ruleset/schemas/feature.schema.json, ruleset/scripts/validate.py, docs/modules/progression.md)
+- See: docs/archive/review/findings-data-oriented-design.md (DOD-11), ROADMAP.md (definition of finished, item 1)
+- Done when: no feature states a numeric bonus outside `modifiers`; every feature with a mechanical bonus has modifiers; `validate.py` and the tests pass.
+
+#### M5-36 Composition bases are typed references
+- Status: todo
+- Priority: medium
+- Needs: —
+- Do: A monster's `base` is a bare creature-type name (`undead`) or a reference (`core:monster/skeleton`) in the same field, and an equipment row's `base` is a bare file name. A base's `default_materials` lists bare material keys. None of them is checked by the reference gate. Give creature types and equipment bases a category each, write every `base` and `default_materials` entry as a typed reference, and let `compose_row` take references.
+- Keys: `core:creature_type/<key>`, `core:weapon_base/<key>`, `core:armor_base/<key>`, `core:accessory_base/<key>` [A] **(breaking)**
+- Files: ~12 (ruleset/data/monsters/, ruleset/data/equipment/, ruleset/schemas/schema.json, ruleset/schemas/monster.schema.json, ruleset/schemas/equipment.schema.json, ruleset/scripts/validate.py, docs/core/keys.md, docs/core/integrity.md, docs/core/composition.md)
+- See: docs/core/keys.md, docs/core/composition.md, docs/archive/review/findings-data-oriented-design.md (DOD-15)
+- Done when: every `base` and every `default_materials` entry is a typed reference that the gate resolves; every composed row is unchanged; `validate.py` and the tests pass.
+
+#### M5-37 One word per concept
+- Status: todo
+- Priority: low
+- Needs: M5-34, M5-35
+- Do: Some words mean two things. `abilities` is the eight attributes (`schema.json`, a feature's `prerequisite.abilities`) and also a monster's list of applied effects. `sp` is stamina (`derived`, `growth`) and silver pieces (`economy`). Called shots are `calledShots` in one file and `called_shots` in another (M5-34 removes one). The modifier target `attack` is the attack action's AP cost (`docs/core/actions.md`) and also a bonus on the attack roll (cover and called shots in `combat/situations.json`), and `block` is both a skill and an action, so a modifier on either is ambiguous (M5-32 rejects `block` until it is renamed). Rename the monster field, one of the two `sp`, the attack-roll target, and one `block`, in data, schemas, docs, and the backend.
+- Keys: renames monster `abilities`, one `sp`, the attack-roll `attack` target, and one `block` **(breaking)**
+- Files: ~12 (ruleset/data/monsters/, ruleset/schemas/monster.schema.json, ruleset/data/economy/core.json or ruleset/data/derived/core.json, ruleset/data/combat/situations.json, ruleset/tests/vectors/, backend/, docs/)
+- See: CONTRIBUTING.md#naming ("one concept, one word")
+- Done when: each word names one concept in data, schemas, docs, and code; `validate.py`, the tests, and `go test ./...` pass.
+
+#### M5-38 The stored actor has a schema
+- Status: todo
+- Priority: high
+- Needs: M5-25
+- Do: `docs/core/state.md` says a session holds an actor snapshot, and `contract.md` lists what an actor has: resources, flags, inventory. The actor the backend reads (`backend/contract/common.json`) has only attributes, skills, level, and growth. Before APP-04 stores sessions, define the stored actor: what is stored (attributes, level, skills and tags, growth, current HP, MP, SP, and XP, active conditions with their stacks, active modifiers with source, origin, and turns elapsed, flags, inventory as item instances of base, material, and mods, what is equipped) and what is computed (maximum pools and every derived stat). A row in `ruleset/data/` is a definition; the actor holds instances that point at rows.
+- Keys: the stored actor in `backend/contract/common.json`
+- Files: ~5 (docs/core/state.md, docs/core/contract.md, backend/contract/common.json, ruleset/tests/vectors/)
+- See: docs/core/state.md, docs/core/contract.md, docs/stories/07-backend.md (APP-04)
+- Done when: one schema says what an actor stores; a vector round-trips a stored actor with a condition, a timed modifier, and an equipped item; `contract.md`'s actor matches it.
+
+#### M5-39 Core docs match the data
+- Status: todo
+- Priority: medium
+- Needs: —
+- Do: `docs/core/contract.md` still writes a modifier `source` as `perk:12 | item:44`, numeric ids that `keys.md` rejects; still forbids a module to override a core row, which `overrides.md` allows; and lists durations without `while_applied`. `docs/core/data-model.md` lists numeric row ids as a known exception, but M5-30 removed them; it does not list authored HP growth on creature types (`growth.hitPointsPerLevel`). Fix both docs against the data.
+- Keys: none
+- Files: ~3 (docs/core/contract.md, docs/core/data-model.md)
+- See: docs/archive/review/findings-data-oriented-design.md (DOD-08, DOD-09), docs/core/keys.md, docs/core/overrides.md
+- Done when: every claim in the two docs about the data is tagged **[V]** with a date and true; no core doc contradicts another on sources, overrides, or durations.
+
+#### M5-40 One property casing
+- Status: todo
+- Priority: low
+- Needs: M5-37
+- Do: The data mixes 72 `camelCase` property names (`hitPoints`, `appliedBy`) with 85 `snake_case` ones (`enchantment_slots`, `crit_window`), sometimes inside one schema. `CONTRIBUTING.md` defers unifying them to an issue of its own because it renames keys. Pick one casing, rename every property in data, schemas, reference code, the backend's JSON tags, and docs, and fail validation on the other.
+- Keys: every property in the other casing **(breaking)**
+- Files: ~20, splits by collection (ruleset/schemas/, ruleset/data/, ruleset/scripts/, backend/, docs/)
+- See: CONTRIBUTING.md#naming, docs/archive/review/findings-data-oriented-design.md (DOD-20)
+- Done when: every property in data and schemas uses one casing; a test fails on the other; `validate.py`, the tests, and `go test ./...` pass.
+
+#### M5-41 A base with no changes is its own row
+- Status: todo
+- Priority: low
+- Needs: M5-36
+- Do: 31 of 33 weapon rows and 23 of 24 armor rows are `{ key, base, overrides: {} }` with the same key as their base, so every such key is written twice. Let a base be an item row itself, so a row exists only where it changes something, and keep every resolved row as it is.
+- Keys: none
+- Files: ~6 (ruleset/data/equipment/, ruleset/scripts/validate.py, docs/core/composition.md, docs/modules/equipment.md)
+- See: docs/core/composition.md
+- Done when: no equipment row has empty overrides; every resolved item is unchanged; `validate.py` and the tests pass.
