@@ -23,7 +23,7 @@ Done: M4-01, M4-02, M4-03, M4-04, M4-05, M4-06 ([done.md](done.md#m4-world))
 - Done when: vectors cover a row material inside an item's defaults (kept), outside them (the steel hoard yields a steel sword and a wooden bow, each valued by its own material), an item that takes no material (a potion), a row with `size: oversized` yielding a longbow at 1d10, −10 attack, and 150% value (and with a material, both factors), and a sized row yielding armor (size ignored); the Python reference and Go pass them; the treasure budget check still passes.
 
 #### M4-08 Drops live on the monster, with defaults from the creature type
-- Status: doing
+- Status: review
 - Priority: medium
 - Needs: M4-03, M4-07
 - Do: Today `loot/core.json` has one drop row per monster, so every new monster is a second edit in another file, a derived monster cannot inherit its parent's drop, and most rows repeat the same few tables. Move drops onto the bestiary. Each creature type in `monsters/bases/` declares a default `loot` list (undead roll `grave_goods`, and so on); a monster row writes `loot` only when it differs; a derived monster inherits its base monster's, and a template may add rows (a fire template's essence). The rolls scale with level: a table row's `rolls` defaults to a count read from the level band (a formula tree next to `budget_cp`), so a level-30 boss does not list `hoard_major` three times by hand. `loot/core.json` keeps the tables and the budget, and an optional `drops` section that, for a monster it names, replaces the resolved loot: a module changes a monster's loot there without overriding the whole monster row, which is why drops were put in the loot file in M4-02. Core ships no `drops` rows unless a monster needs one the bestiary cannot express.
