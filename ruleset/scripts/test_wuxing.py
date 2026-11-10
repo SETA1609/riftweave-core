@@ -8,6 +8,7 @@ Run with:
 """
 
 import itertools
+import json
 import sys
 import unittest
 from pathlib import Path
@@ -16,6 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from kernel_reference import load_data  # noqa: E402
 
+MODULE_VECTORS = Path(__file__).resolve().parent.parent / "modules" / "wuxing" / "tests" / "vectors.json"
 PHASES = ["wood", "fire", "earth", "metal", "water"]
 
 
@@ -38,6 +40,17 @@ class TestWuxingMatrix(unittest.TestCase):
         for cycle in cycles:
             if "gate" in cycle:
                 self.assertIn(cycle["gate"]["otherwise_cycle"], ids)
+
+
+class TestModuleVectors(unittest.TestCase):
+    def test_every_vector_matches_the_module_data(self):
+        from wuxing_reference import run_wuxing
+
+        for vector in json.loads(MODULE_VECTORS.read_text()):
+            with self.subTest(vector=vector["name"]):
+                result = run_wuxing(vector)
+                for field, expected in vector["expect"].items():
+                    self.assertEqual(result[field], expected, field)
 
 
 if __name__ == "__main__":
