@@ -195,6 +195,14 @@ Fire Ooze is an ooze with the fire template:
 A family member that is not an element change is a derived monster with overrides only:
 an elder treant is the treant sapling at level 22.
 
+### Loot
+
+Each creature type declares a default `loot` list in `bases/`: undead and oozes roll
+`grave_goods`, humanoids `bandit_purse`, beasts and plants `beast_den`, constructs and
+elementals `hoard_minor`, and familiars `grave_goods`. A monster row writes `loot` only when it
+differs, a derived monster inherits its base monster's, and a template may add rows. The rules
+are in [loot.md](../core/loot.md#drops).
+
 ### Summoned creatures
 
 A summon spell names a group in `summons/core.json`, and each group lists monster rows
