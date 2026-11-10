@@ -563,6 +563,102 @@ def check_effect_usage(data_files, module_data_files=None):
     return errors
 
 
+# Gate 4 (docs/core/integrity.md, docs/core/modifier.md#target): where a modifier target's row may
+# live, keyed by collection. A table's rows are keyed by "key", the abilities by "id".
+MODIFIER_TARGET_TABLES = {
+    "abilities": ("id", "number"),
+    "skills": ("key", "number"),
+    "derived": ("key", "number"),
+    "actions": ("key", "number"),
+    "conditions": ("key", "flag"),
+    "damage_types": ("key", "damage_type"),
+}
+MODIFIER_OPS = {"add": "number", "mul": "number", "set": "number", "grant": "flag", "resist": "damage_type"}
+
+
+def collect_vector_files():
+    """The golden vectors: ruleset/tests/vectors/ and each module's tests/."""
+    files = sorted((ROOT / "tests" / "vectors").glob("*.json"))
+    if MODULES_DIR.exists():
+        files.extend(sorted(MODULES_DIR.glob("*/tests/*.json")))
+    return files
+
+
+def _walk_modifiers(node):
+    """Yield every modifier: an object with a known op and a string target."""
+    if isinstance(node, dict):
+        if node.get("op") in MODIFIER_OPS and isinstance(node.get("target"), str):
+            yield node
+        for value in node.values():
+            yield from _walk_modifiers(value)
+    elif isinstance(node, list):
+        for value in node:
+            yield from _walk_modifiers(value)
+
+
+def check_modifier_targets(data_files, module_data_files=None, vector_files=()):
+    """Gate 4: every modifier target names one row of the kind its op needs; every modifier_targets
+    row is named by a modifier, repeats no other table, and is pending exactly when no vector uses it."""
+    errors = []
+    loaded = [(fp, _load_json_file(fp)) for fp in _all_files(data_files, module_data_files)]
+    meanings = {}  # key -> [(kind, where)]
+    target_rows = []  # (row, where)
+    for fp, data in loaded:
+        if not isinstance(data, dict):
+            continue
+        for collection, (identity, kind) in MODIFIER_TARGET_TABLES.items():
+            for row in data.get(collection) or []:
+                if isinstance(row, dict) and isinstance(row.get(identity), str):
+                    meanings.setdefault(row[identity], []).append((kind, collection))
+        for row in data.get("modifier_targets") or []:
+            if isinstance(row, dict) and isinstance(row.get("key"), str):
+                target_rows.append((row, _rel(fp, ROOT)))
+
+    rows_by_key = {}
+    for row, where in target_rows:
+        key = row["key"]
+        if key in meanings:
+            tables = ", ".join(sorted({collection for _, collection in meanings[key]}))
+            errors.append(f"{where}: modifier target {key} repeats a key of {tables}; a modifier names that row")
+        elif key in rows_by_key:
+            errors.append(f"{where}: modifier target {key} is defined twice")
+        else:
+            rows_by_key[key] = row
+    for key, row in rows_by_key.items():
+        meanings.setdefault(key, []).append((row.get("kind"), "modifier_targets"))
+
+    named = set()
+    for fp, data in loaded:
+        if data is None:
+            continue
+        for mod in _walk_modifiers(data):
+            target, op = mod["target"], mod["op"]
+            named.add(target)
+            if target not in meanings:
+                errors.append(f"{_rel(fp, ROOT)}: modifier target {target} names no row")
+                continue
+            fitting = sorted({collection for kind, collection in meanings[target] if kind == MODIFIER_OPS[op]})
+            if not fitting:
+                kinds = ", ".join(sorted({kind for kind, _ in meanings[target]}))
+                errors.append(f"{_rel(fp, ROOT)}: {op} on {target} needs a {MODIFIER_OPS[op]}, but {target} is a {kinds}")
+            elif len(fitting) > 1:
+                errors.append(f"{_rel(fp, ROOT)}: {op} on {target} is ambiguous: it is a key of {', '.join(fitting)}")
+
+    in_vectors = set()
+    for fp in vector_files:
+        data = _load_json_file(fp)
+        if data is not None:
+            in_vectors.update(mod["target"] for mod in _walk_modifiers(data))
+    for key, row in rows_by_key.items():
+        if key not in named:
+            errors.append(f"modifier target {key} is named by no modifier; use it or remove the row")
+        if row.get("pending") and key in in_vectors:
+            errors.append(f"modifier target {key} is pending but a golden vector uses it; remove the flag")
+        elif not row.get("pending") and key not in in_vectors:
+            errors.append(f"modifier target {key} is used by no golden vector; mark it pending")
+    return errors
+
+
 def check_references(
     data,
     coll_name,
@@ -1536,6 +1632,7 @@ def main():
         ("references (every core: ref resolves)", check_all_references(data_files, module_data_files)),
         ("effects (used or reserved)", check_effect_usage(data_files, module_data_files)),
         ("effect parameters", check_effect_parameters(data_files, module_data_files)),
+        ("modifier targets (each names one row)", check_modifier_targets(data_files, module_data_files, collect_vector_files())),
     ):
         if errors:
             print(f"  \u2717  {label}")
