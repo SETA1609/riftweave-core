@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Modifier target",
+  "description": "A key a modifier's target may name when no other table holds it: a rule's number (crit_window, loot_roll) or a flag (darkvision). Attributes, skills, derived stats, actions, conditions, and damage types are targets from their own tables and are not repeated here. Rules: docs/core/modifier.md#target; gate: docs/core/integrity.md (gate 4).",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "modifier_targets": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/modifierTarget" }
+    }
+  },
+  "required": ["modifier_targets"],
+  "additionalProperties": false,
+  "definitions": {
+    "modifierTarget": {
+      "type": "object",
+      "properties": {
+        "key": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$", "description": "The string a modifier's target holds." },
+        "label": { "type": "string", "minLength": 1 },
+        "kind": {
+          "type": "string",
+          "enum": ["number", "flag"],
+          "description": "number: add, mul, and set change it. flag: grant sets it, and its value is ignored."
+        },
+        "description": { "type": "string", "minLength": 1, "description": "What a modifier on this target changes, and in what unit." },
+        "pending": {
+          "type": "boolean",
+          "enum": [true],
+          "description": "No golden vector applies a modifier to this target yet, so no implementation is held to a rule for it. validate.py fails the flag when a vector uses the target, and its absence when none does."
+        },
+        "source": { "$ref": "schema.json#/definitions/sourceRef" }
+      },
+      "required": ["key", "label", "kind", "description"],
+      "additionalProperties": false
+    }
+  }
+}

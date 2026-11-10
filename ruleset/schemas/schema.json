@@ -171,7 +171,9 @@
       "description": "One opcode on one target. Order for a target, expiry, origins, and conditions: docs/core/modifier.md. Same origin, source, target, and op does not stack (the strongest wins); different sources add unless they share a highest origin; add, then mul (floored), then set; grant adds a flag; resist subtracts from a packet with the matching tag.",
       "properties": {
         "target": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "description": "A key naming one row: an attribute, a skill, a derived stat, an action (its AP cost), a condition (its flag), a damage type (for resist), or a row of modifier_targets. validate.py checks that it resolves and that the op fits its kind (docs/core/modifier.md#target)."
         },
         "op": {
           "type": "string",

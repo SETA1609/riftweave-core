@@ -5,7 +5,7 @@ Author: SETA1609
 One payload. Conditions, features, and applied effects emit this row. They do not invent a second shape.
 
 ```
-target     skill, attribute, ap, dr, a flag, a damage tag
+target     a key naming one row: attribute, skill, derived stat, action, condition, damage type, or modifier target (see Target)
 op         add | mul | set | grant | resist
 value      number
 source     perk:quick, condition:blinded
@@ -42,6 +42,26 @@ Different origins always stack: a Fortify Strength potion (alchemy, +10) and a F
 | `condition` | add | status conditions | condition |
 
 The emitter stamps the origin when it turns a row into modifiers: the row's own `origin` if it names one (an `appliedEffect` may), else the default for its category. A modifier with no origin stacks by source alone, the same as an `add` origin. [A] The White school is not mapped to `divine`; a white spell that should be divine names the origin itself. [U]
+
+## Target
+
+A modifier's `target` is a key, and the key names one row. Where the row lives says what the target is:
+
+| Row in | Kind | What a modifier changes |
+| --- | --- | --- |
+| `abilities/core.json` | number | an attribute (`str`) |
+| `skills/core.json` | number | a skill (`persuasion`) |
+| `derived/core.json` | number | a derived stat (`hp`, `ap`) |
+| `actions/core.json` | number | the action's AP cost (`dodge`, [actions.md](actions.md)) |
+| `conditions/core.json` | flag | the condition's flag (`prone`) |
+| `combat/damage_types.json` | damage type | a packet of that type, for `resist` (`fire`) |
+| `modifier_targets/core.json` | its `kind` | anything else: a rule's number (`crit_window`, `loot_roll`) or a flag (`darkvision`) |
+
+- **The op fits the kind.** `grant` names a flag. `add`, `mul`, and `set` name a number. `resist` names a damage type. [V 2026-11-10]
+- **One row per target.** A `modifier_targets` row may not reuse a key from the other tables; it would hide that row. A key in two of the other tables is ambiguous for an op that both fit: `block` is a skill and an action, so a numeric modifier on it is refused until one is renamed (M5-37). `piercing` is a skill and a damage type, which is not ambiguous: `add` reads the skill and `resist` the damage type. [V 2026-11-10]
+- **A modifier_targets row is used.** A row no modifier names is dead and fails, as an unreferenced effect does. A module adds its own rows in its own `modifier_targets` file, for the targets only it names (a faction's membership flags).
+- **`pending`.** A row whose target no golden vector applies a modifier to is marked `pending: true`: data may name it, but no implementation is yet held to a rule for it. The flag is checked against `ruleset/tests/vectors/` and each module's `tests/` in both directions, so it cannot go stale: a pending target that a vector uses fails, and so does a target without the flag that no vector uses. [V 2026-11-10]
+- **What this does not settle.** The table records what the data names today, including names that break other rules: a percentage carried in the name (`melee_damage_percent`) where `mul` is the op, and distances in metres (`safe_fall_meters`). Those are renamed in M5-33. The target `attack` is the attack action's AP cost here, but `combat/situations.json` uses it for a bonus on the attack roll; M5-37 splits them. [V 2026-11-10]
 
 ## Order for one numeric target
 

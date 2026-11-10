@@ -1,0 +1,13 @@
+{
+  "$schema": "../../../schemas/modifier_target.schema.json",
+  "modifier_targets": [
+    {"key": "ashen_circle_hostile", "label": "Ashen Circle: Hostile", "kind": "flag", "description": "Granted at Hostile standing with the Ashen Circle.", "pending": true},
+    {"key": "ashen_circle_member", "label": "Ashen Circle: Member", "kind": "flag", "description": "Granted by every rank of the Ashen Circle.", "pending": true},
+    {"key": "gilded_ledger_credit", "label": "Gilded Ledger: Credit", "kind": "flag", "description": "Granted at Honored standing with the Gilded Ledger.", "pending": true},
+    {"key": "gilded_ledger_hostile", "label": "Gilded Ledger: Hostile", "kind": "flag", "description": "Granted at Hostile standing with the Gilded Ledger.", "pending": true},
+    {"key": "gilded_ledger_member", "label": "Gilded Ledger: Member", "kind": "flag", "description": "Granted by every rank of the Gilded Ledger.", "pending": true},
+    {"key": "lantern_wardens_hostile", "label": "Lantern Wardens: Hostile", "kind": "flag", "description": "Granted at Hostile standing with the Lantern Wardens.", "pending": true},
+    {"key": "lantern_wardens_member", "label": "Lantern Wardens: Member", "kind": "flag", "description": "Granted by every rank of the Lantern Wardens."},
+    {"key": "lantern_wardens_safe_passage", "label": "Lantern Wardens: Safe Passage", "kind": "flag", "description": "Granted at Honored standing with the Lantern Wardens.", "pending": true}
+  ]
+}

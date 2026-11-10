@@ -7,11 +7,13 @@
   "requires": [],
   "extends": {
     "collections": [
-      "factions"
+      "factions",
+      "modifier_targets"
     ]
   },
   "data": [
-    "data/factions.json"
+    "data/factions.json",
+    "data/modifier_targets.json"
   ],
   "schemas": []
 }
