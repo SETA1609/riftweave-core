@@ -290,6 +290,28 @@ The test suite covers (36 tests):
 
 ---
 
+## Worked Example: Wuxing
+
+Wuxing is the reference for a module that adds a collection, reads tags on core rows, and emits
+modifiers. Follow the same steps for a new cross-cutting module.
+
+1. **Keep core independent.** Core rows may carry a tag the module reads (`phase`), but the tag is
+   optional in the schema and no core rule reads it.
+2. **Make the directory.** `ruleset/modules/wuxing/` holds `manifest.json`, `data/wuxing.json`, and
+   `tests/vectors.json`.
+3. **Write the manifest.** `id`, `version`, the collections it adds under `extends.collections`
+   (`phases`, `cycles`), and its files under `data`.
+4. **Point `$schema` home.** A data file names its schema relatively:
+   `../../../schemas/wuxing.schema.json`. `validate.py` then checks it with core.
+5. **Read tags, never call systems.** `wuxing_reference.py` reads the module's data. A consumer
+   emits the result as a modifier through the [contract](../core/contract.md).
+6. **Add vectors in the module.** `test_wuxing.py` runs `tests/vectors.json` through the reference.
+7. **Teach the backend.** `data.Load` takes module directories and reads each one's manifest, and
+   `internal/wuxing` reads the module's data. `core.Open` loads every module beside `ruleset/data`;
+   `core.New` loads only the modules it is given. A command whose module is off returns a
+   rule error.
+8. **Check both ways.** Core vectors must pass with and without the module.
+
 ## Known Limitations (v1 Foundation)
 
 - **No dependency resolution** — `requires` is declared but not enforced. Modules are loaded in discovery order only.

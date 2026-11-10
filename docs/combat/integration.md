@@ -121,7 +121,7 @@ Armor DR (`drBase + material.modifiers.defense`) provides the primary physical d
 - **Evasion penalties** from armor reduce the character's effective evasion skill.
 - **Speed penalties** reduce movement speed (units per move; a real-time client scales speed by the same share).
 
-Material phase on armor (e.g. steel = `metal`) interacts with incoming phased effects through the Wuxing cycles — see `data/wuxing/core.json` and `docs/modules/magic.md`.
+Material phase on armor (e.g. steel = `metal`) interacts with incoming phased effects through the Wuxing cycles — see `modules/wuxing/data/wuxing.json` and `docs/modules/magic.md`.
 
 ---
 

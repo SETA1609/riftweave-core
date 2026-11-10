@@ -216,7 +216,7 @@ Conditions themselves are **not phased** — they are binary states. However, th
   `"wood"`) for conditional resistance to elemental conditions.
 
 In practice: check the applying effect's `phase` against the target's race, armor
-material, or active buff phases. The cycles in `data/wuxing/core.json` determine
+material, or active buff phases. The cycles in `modules/wuxing/data/wuxing.json` determine
 whether the condition is amplified, weakened, or unaffected.
 
 ---

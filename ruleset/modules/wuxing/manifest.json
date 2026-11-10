@@ -1,0 +1,18 @@
+{
+  "$schema": "../../schemas/module.manifest.schema.json",
+  "id": "wuxing",
+  "version": "1.0.0",
+  "description": "The five-phase interaction layer: the cycles and multipliers that read the optional phase tag on core rows. See docs/modules/wuxing.md.",
+  "author": "Riftweave Core Team",
+  "requires": [],
+  "extends": {
+    "collections": [
+      "phases",
+      "cycles"
+    ]
+  },
+  "data": [
+    "data/wuxing.json"
+  ],
+  "schemas": []
+}

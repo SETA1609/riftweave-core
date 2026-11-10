@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Monster",
-  "description": "A creature/enemy. Each monster has exactly one element (Wuxing five-phase) that governs how phased effects interact with it via data/wuxing. Its attacks and innate abilities are drawn from the shared effect registry through schema.json#/definitions/appliedEffect, exactly like spells and consumables. Certain monsters with living spiritual or elemental essence can also drop spirit cores (see coreDrop); undead and humanoids must never have coreDrop.\n\nSupports a Base + Override pattern: entries may either be flat monsters (all fields inline) or reference a base template and provide only overrides. Base templates live in bases/*.json and are resolved at validation/load time.",
+  "description": "A creature/enemy. A monster may carry one element (Wuxing five-phase), a tag the Wuxing module reads. Its attacks and innate abilities are drawn from the shared effect registry through schema.json#/definitions/appliedEffect, exactly like spells and consumables. Certain monsters with living spiritual or elemental essence can also drop spirit cores (see coreDrop); undead and humanoids must never have coreDrop.\n\nSupports a Base + Override pattern: entries may either be flat monsters (all fields inline) or reference a base template and provide only overrides. Base templates live in bases/*.json and are resolved at validation/load time.",
   "type": "object",
   "properties": {
     "$schema": { "type": "string" },
@@ -47,7 +47,7 @@
         "source": { "$ref": "schema.json#/definitions/sourceRef" },
         "phase": {
           "$ref": "schema.json#/definitions/phase",
-          "description": "The monster's element. Required — every monster has exactly one. Determines elemental affinity: incoming phased effects resolve against it through the generating/overcoming/weakening/insulting cycles in data/wuxing."
+          "description": "The monster's element, an optional tag the Wuxing module reads. A monster has at most one. Determines elemental affinity: incoming phased effects resolve against it through the generating/overcoming/weakening/insulting cycles in data/wuxing."
         },
         "size": {
           "type": "string",
@@ -142,7 +142,7 @@
         "tags": { "type": "array", "items": { "type": "string" } },
         "coreDrop": { "$ref": "#/definitions/coreDropShape" }
       },
-      "required": ["key", "label", "description", "phase", "size"],
+      "required": ["key", "label", "description", "size"],
       "additionalProperties": false
     },
     "monsterWithBase": {

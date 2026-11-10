@@ -104,7 +104,7 @@ This is the most important thing to understand before editing schemas or data:
   - `universal` — always available
 - **Magic**: 9 color schools. Spells are compositions of effects from the shared pool, tagged with a `color`. The governing skill is `<color>_magic`.
 - **Five-phase (Wuxing) system** (orthogonal to color): `wood` / `fire` / `earth` / `metal` / `water`.
-  - Defined in `data/wuxing/core.json` (4 cycles: generating, overcoming, weakening, insulting with multipliers).
+  - Defined in `modules/wuxing/data/wuxing.json` (4 cycles: generating, overcoming, weakening, insulting with multipliers).
   - Races, materials, equipment base templates, and (optionally) effects carry a `phase`.
   - Phase drives **interaction** between effects via the cycles; color drives which skill governs the effect.
   - Equipment base templates assign a default phase per weapon/armor type. Material overrides in the overrides object can change the phase on a per-item basis.
@@ -144,7 +144,6 @@ Each data file names its schema in `$schema`:
 - `ingredients`, `materials`, `gems`, `tiers`, `crafting` (recipes and crafted items)
 - kernel and world tables: `actions`, `casting`, `checks`, `combat`, `derived`, `formulas`, `progression`, `resolution`, `rest`, `economy`, `loot`, `hazards`, `balance`
 - `examples` (worked characters and the play loop)
-- `wuxing` (the interaction matrix — single source of truth for cycles)
 - `origins` (the kinds of modifier source and their stacking policy, `highest` or `add`)
 - `modifier_targets` (the modifier targets no other table holds: a rule's number or a flag; `docs/core/modifier.md#target`)
 
@@ -158,7 +157,7 @@ Equipment (weapons, armors, accessories) and monsters use a **Base + Override** 
 
 ## Modules
 
-`ruleset/modules/` holds optional modules, each a directory with a `manifest.json` (`factions` and `example-module` today); `validate.py` checks them along with core data.
+`ruleset/modules/` holds optional modules, each a directory with a `manifest.json` (`factions`, `wuxing`, and `example-module` today); `validate.py` checks them along with core data.
 
 `docs/modules/` documents core systems and modules. `docs/core/` wins over it on a conflict ([which document wins](CONTRIBUTING.md#which-document-wins)). For modules not built yet (crafting, alchemy, magic crafting, and the rest), its documents are **design specs** — write data against the contracts described there before implementing new top-level collections or extension points.
 

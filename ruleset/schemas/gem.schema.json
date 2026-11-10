@@ -31,7 +31,7 @@
         },
         "tags": { "type": "array", "items": { "type": "string" } }
       },
-      "required": ["key", "label", "description", "phase", "tier"],
+      "required": ["key", "label", "description", "tier"],
       "additionalProperties": false
     }
   }

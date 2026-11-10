@@ -227,6 +227,6 @@ All entries live in `ruleset/data/equipment/weapons.json`. The schema only enfor
 - **Skills**: See `data/skills/core.json` and `docs/modules/progression.md`.
 - **Materials**: `data/materials/core.json`, `docs/modules/materials.md`.
 - **Crafting & Magic Crafting**: `docs/modules/crafting.md`, `docs/modules/magic-crafting.md` (these modules will consume weapon types + materials to produce actual items).
-- **Five-Phase Interactions**: Material phase + weapon damage type interact via `data/wuxing/core.json`.
+- **Five-Phase Interactions**: Material phase + weapon damage type interact via `modules/wuxing/data/wuxing.json`.
 
 This design keeps the core data clean and declarative while giving the crafting systems rich, explainable ways to generate weapon variations.
