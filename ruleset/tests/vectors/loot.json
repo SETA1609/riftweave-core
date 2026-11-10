@@ -883,7 +883,7 @@
       1
     ],
     "expect": {
-      "error": "core:monster/thunderbird: ran out of rolls after 2"
+      "error": "core:monster/thunderbird: ran out of rolls after 0"
     }
   },
   {
