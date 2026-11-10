@@ -1,6 +1,6 @@
 # Integrity gates
 
-What `python ruleset/scripts/validate.py` refuses to pass. JSON Schema alone cannot check that a reference points at something, so the validator adds three gates on top of it. They close the open items of the data review (`docs/archive/review/findings-data-schemas.md` M3 and M6) and are tested in `ruleset/scripts/test_integrity.py`.
+What `python ruleset/scripts/validate.py` refuses to pass. JSON Schema alone cannot check that a reference points at something, so the validator adds four gates on top of it. They close the open items of the data review (`docs/archive/review/findings-data-schemas.md` M3 and M6) and are tested in `ruleset/scripts/test_integrity.py`.
 
 ## 1. Every reference resolves
 
@@ -19,6 +19,10 @@ Free text stays free where it is not a key: a modifier `target` (`hp_max`, `mele
 ## 3. Effects are used or reserved
 
 Every entry in `effects/core.json` is referenced from some other data file or module, or carries `"reserved": true`. A reserved effect is one the registry defines for content that does not exist yet (the weapon-combat cluster, for example). The check fails in both directions: an unreferenced effect that is not reserved, and a reserved effect that something now references. So the flag cannot go stale. A reference from another effect (`sub_effects`) does not count as use, because the composite itself may be unused. [A]
+
+## 4. Every modifier target names one row
+
+A modifier's `target` is a key, not a `core:` reference, so gate 1 does not see it. Every modifier in `ruleset/data/` and in a module's data (an object with an `op` and a `target`) must name one row of the kind its op needs, as [modifier.md](modifier.md#target) lists: an attribute, a skill, a derived stat, an action, a condition, a damage type, or a row of `modifier_targets`. The gate also fails a `modifier_targets` row that no modifier names, a row whose key repeats a key of another target table, and a `pending` flag that disagrees with the golden vectors. Vectors are inputs, so their own modifiers are not checked against the table. [V 2026-11-10]
 
 ## Not covered
 
