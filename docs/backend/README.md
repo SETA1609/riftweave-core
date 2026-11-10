@@ -16,7 +16,7 @@ The contract is language-neutral, so the Go core, both CLIs, the OpenAPI documen
 
 ## Go core
 
-`backend/` is one Go module, standard library only. The only door is `backend/core`:
+`backend/` is one Go module. The core is standard library only; the human CLI alone uses Charm. The only door is `backend/core`:
 `core.Open("ruleset/data")`, then `Run(name, json) (json, error)`. A rule error comes back as
 `{"error": "..."}` and an error that wraps `core.ErrRule`; bad input wraps `ErrInput` (inputs
 decode strictly, as the contract says); an unknown command wraps `ErrUnknownCommand`. An adapter maps these to an
