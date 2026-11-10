@@ -112,6 +112,7 @@ COLLECTION_CATEGORIES = {
     "materials": "material",
     "gems": "gem",
     "monsters": "monster",
+    "summons": "summon",
     "backgrounds": "background",
     "recipes": "recipe",
     "crafted_items": "crafted_item",

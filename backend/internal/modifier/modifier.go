@@ -37,6 +37,9 @@ func (operation *Operation) UnmarshalText(encoded []byte) error {
 	return fmt.Errorf("modifier op %q is not defined", encoded)
 }
 
+// MarshalText writes the operation name, so a stored modifier round-trips.
+func (operation Operation) MarshalText() ([]byte, error) { return []byte(operation.String()), nil }
+
 func (operation Operation) String() string { return operationNames[operation] }
 
 // Modifier is one opcode on one target (ruleset/schemas/schema.json, "modifier").

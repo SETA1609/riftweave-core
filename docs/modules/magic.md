@@ -182,6 +182,26 @@ the colors, the channels, and this table.
 Every spell, authored or crafted, costs what §5's formula gives for its effects. A spell's `level`
 (1–30) is its power band, which dispel reads; it does not set the cost.
 
+### Summon groups
+
+A summon spell may exist only once what it summons is data. A `summon` effect's `parameter`
+is a group, `core:summon/<key>`, from `summons/core.json`. A group lists its `variants` as
+`core:monster/<key>` refs, and the caster picks one when casting [A]. `magnitude` is how many
+appear, a count the spell states. The creatures are ordinary monster rows ([monsters.md](./monsters.md#summoned-creatures)).
+
+| Group | Spells | Variants |
+| --- | --- | --- |
+| `familiar` | Summon Familiar | owl, cat, raven |
+| `elemental` | Summon Elemental, Conjured Legion | fire, ice, storm, acid, venom |
+| `undead` | Raise Thrall, Raise Horde | skeleton, zombie |
+
+A creature appears at its caster's level, whatever the spell's level. The row is the base of a
+[derived monster](./monsters.md#derived-monsters) at that level, so its attributes and HP move by
+its creature type's growth. The row still sets the stats: of two creatures at the same level, the
+weaker row stays weaker. Templates go on top in order: the element, then the caster's power tier,
+then the caster's nature. `validate.py` refuses a summon whose `parameter` is not a group, and
+`test_spells.py` fails on a group or variant that does not exist. [V 2026-11-10]
+
 ---
 
 ## 4. Casting resolution (d100 roll-under)
@@ -276,8 +296,7 @@ on a player-made spell's duration. [V 2026-11-08]
 What a caster pays is the spell cost after their skill and perks, never their level.
 Daggerfall lowers spell points as the skill rises (`gold × (110 − skill) / 400`); here the
 skill discount is `<color>_magic / 200`, capped at 0.45, and perks emit modifiers on
-`spell_cost`. Applying them in the cast is M3-07; until then the cast spends `cost.mana` as
-authored. The cast threshold and the craft threshold read the spell cost before any
+`spell_cost` ([paid cost](../core/casting.md#paid-cost)). The cast threshold and the craft threshold read the spell cost before any
 discount:
 
 ```

@@ -241,7 +241,7 @@ Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-03, M5-07, M5-08, M5-10,
 - Done when: each word names one concept in data, schemas, docs, and code; `validate.py`, the tests, and `go test ./...` pass.
 
 #### M5-38 The stored actor has a schema
-- Status: todo
+- Status: review
 - Priority: high
 - Needs: M5-25
 - Do: `docs/core/state.md` says a session holds an actor snapshot, and `contract.md` lists what an actor has: resources, flags, inventory. The actor the backend reads (`backend/contract/common.json`) has only attributes, skills, level, and growth. Before APP-04 stores sessions, define the stored actor: what is stored (attributes, level, skills and tags, growth, current HP, MP, SP, and XP, active conditions with their stacks, active modifiers with source, origin, and turns elapsed, flags, inventory as item instances of base, material, and mods, what is equipped) and what is computed (maximum pools and every derived stat). A row in `ruleset/data/` is a definition; the actor holds instances that point at rows.

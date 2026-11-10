@@ -619,6 +619,120 @@
       }
     },
     {
+      "key": "storm_elemental",
+      "base": "core:monster/fire_elemental",
+      "templates": [
+        "storm"
+      ],
+      "overrides": {
+        "label": "Storm Elemental",
+        "description": "A knot of wind and lightning that leaps between its foes.",
+        "level": 5,
+        "abilities": [
+          {
+            "effect": "core:effect/damage_shock",
+            "magnitude": 7,
+            "target": "ranged"
+          }
+        ],
+        "attacks": [
+          {
+            "key": "arc_strike",
+            "label": "Arc Strike",
+            "damage": {
+              "amount": 7,
+              "type": "shock"
+            },
+            "phase": "metal"
+          }
+        ],
+        "resist": {
+          "shock": 20,
+          "poison": 20
+        },
+        "tags": [
+          "elemental",
+          "storm"
+        ]
+      }
+    },
+    {
+      "key": "acid_elemental",
+      "base": "core:monster/fire_elemental",
+      "templates": [
+        "acid"
+      ],
+      "overrides": {
+        "label": "Acid Elemental",
+        "description": "A slumping mass of living acid that eats what it touches.",
+        "level": 5,
+        "abilities": [
+          {
+            "effect": "core:effect/damage_acid",
+            "magnitude": 7,
+            "target": "touch"
+          }
+        ],
+        "attacks": [
+          {
+            "key": "caustic_slam",
+            "label": "Caustic Slam",
+            "damage": {
+              "amount": 7,
+              "type": "acid"
+            },
+            "phase": "earth"
+          }
+        ],
+        "resist": {
+          "acid": 20,
+          "poison": 20
+        },
+        "tags": [
+          "elemental",
+          "acid"
+        ]
+      }
+    },
+    {
+      "key": "venom_elemental",
+      "base": "core:monster/fire_elemental",
+      "templates": [
+        "venom"
+      ],
+      "overrides": {
+        "label": "Venom Elemental",
+        "description": "A coiling haze of poison in a body that will not hold still.",
+        "level": 5,
+        "abilities": [
+          {
+            "effect": "core:effect/poison",
+            "magnitude": 1,
+            "duration": 25,
+            "target": "touch"
+          }
+        ],
+        "attacks": [
+          {
+            "key": "toxic_lash",
+            "label": "Toxic Lash",
+            "damage": {
+              "amount": 7,
+              "type": "poison"
+            },
+            "phase": "wood"
+          }
+        ],
+        "resist": {
+          "poison": 20
+        },
+        "tags": [
+          "elemental",
+          "venom"
+        ]
+      }
+    },
+    {
       "key": "magma_titan",
       "base": "core:monster/fire_elemental",
       "overrides": {
@@ -901,6 +1015,105 @@
         "tags": [
           "humanoid",
           "goblin"
+        ]
+      }
+    },
+    {
+      "key": "owl_familiar",
+      "base": "familiar",
+      "overrides": {
+        "label": "Owl Familiar",
+        "description": "A silent spirit-owl that watches the dark for its caster.",
+        "phase": "wood",
+        "size": "tiny",
+        "level": 1,
+        "role": "minion",
+        "attributes": {
+          "str": 1,
+          "agi": 6,
+          "per": 8
+        },
+        "hitPoints": 8,
+        "attacks": [
+          {
+            "key": "talons",
+            "label": "Talons",
+            "damage": {
+              "amount": 4,
+              "type": "piercing"
+            },
+            "phase": "wood"
+          }
+        ],
+        "tags": [
+          "familiar",
+          "beast"
+        ]
+      }
+    },
+    {
+      "key": "cat_familiar",
+      "base": "familiar",
+      "overrides": {
+        "label": "Cat Familiar",
+        "description": "A sleek spirit-cat that slips through gaps and fetches small things.",
+        "phase": "wood",
+        "size": "tiny",
+        "level": 1,
+        "role": "minion",
+        "attributes": {
+          "str": 1,
+          "agi": 8,
+          "per": 6
+        },
+        "hitPoints": 8,
+        "attacks": [
+          {
+            "key": "claws",
+            "label": "Claws",
+            "damage": {
+              "amount": 4,
+              "type": "slashing"
+            },
+            "phase": "wood"
+          }
+        ],
+        "tags": [
+          "familiar",
+          "beast"
+        ]
+      }
+    },
+    {
+      "key": "raven_familiar",
+      "base": "familiar",
+      "overrides": {
+        "label": "Raven Familiar",
+        "description": "A sharp-eyed spirit-raven that carries a word or a trinket.",
+        "phase": "wood",
+        "size": "tiny",
+        "level": 1,
+        "role": "minion",
+        "attributes": {
+          "str": 1,
+          "agi": 7,
+          "per": 7
+        },
+        "hitPoints": 8,
+        "attacks": [
+          {
+            "key": "peck",
+            "label": "Peck",
+            "damage": {
+              "amount": 4,
+              "type": "piercing"
+            },
+            "phase": "wood"
+          }
+        ],
+        "tags": [
+          "familiar",
+          "beast"
         ]
       }
     },
