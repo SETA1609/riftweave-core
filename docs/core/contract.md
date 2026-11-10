@@ -15,14 +15,18 @@ Fallout stores primaries and lets the engine recompute derived stats. Morrowind 
 Read-only to everyone but the actor's owner. Current values are base plus modifiers. Derived stats (HP, MP, AP, carry, initiative, speed) are functions of this snapshot, not stored truth. That function lives in a later change; this document only names the fields.
 
 ```
-Actor
-  id
-  attrs[8]          STR PER END INT WIL AGI CHA LCK
+Actor             stored_actor in backend/contract/common.json; see state.md
+  attributes[8]     STR PER END INT WIL AGI CHA LCK
                     current = base + sum(mods)
-  skills[id]        points, tag
-  resources         hp, mp, stamina, ap
+  level, xp
+  skills[key]       value; tags[] names the tag skills
+  growth            hp, mp, sp from level-up rolls
+  resources         hp, mp, sp, ap
+  conditions[]      key, stacks
+  modifiers[]       an active modifier and its turns_elapsed
   flags[]           prone, grappled, ...
-  inventory[]       item instances (base + material + mods)
+  inventory[]       item instances (id, base, material, mods)
+  equipped[slot]    an inventory id
 ```
 
 ## Modifier

@@ -36,5 +36,28 @@ Session
 What this gives: a save file, a replay, a bug report that reproduces, and a way to turn a real
 run into vectors, all from one mechanism.
 
+## The stored actor
+
 The stored actor follows the [contract](contract.md): primary facts only, with derived stats
-computed. The session's JSON schema and commands are in the backend's contract.
+computed. A row in `ruleset/data/` is a definition; the actor holds instances that point at
+rows. One schema says what an actor stores: `stored_actor` in `backend/contract/common.json`.
+
+| Stored | Field |
+| --- | --- |
+| Attributes, level, and experience | `attributes`, `level`, `xp` |
+| Skills and tag skills | `skills` (value by key), `tags` (skill keys) |
+| Growth from level-up rolls | `growth` (`hp`, `mp`, `sp`) |
+| Current pools | `resources` (`hp`, `mp`, `sp`, `ap`) |
+| Active conditions | `conditions` (`key`, `stacks`) |
+| Active modifiers | `modifiers` (`modifier`, with its source and origin, and `turns_elapsed`) |
+| Flags | `flags` (keys) |
+| Item instances | `inventory` (`id`, `base`, optional `material` and `size`, `mods`, `quantity`) |
+| What is equipped | `equipped` (an inventory `id` by slot) |
+
+Computed, never stored: maximum pools and every derived stat, from the snapshot and the data
+([derived.md](derived.md)). An `id` is unique in the inventory, and `equipped` names only ids
+that exist. Pools use the derived keys, so stamina is `sp`. There is no actor `id`: a session
+holds one actor. [A] The `stored_actor` vectors round-trip it through Python and Go.
+[V 2026-11-11]
+
+The session's JSON schema and commands are in the backend's contract.
