@@ -104,7 +104,7 @@ Where two schools come close, this is the line between them:
 ### The five phases
 
 `wood · fire · earth · metal · water` — defined in `schema.json#/definitions/phase`,
-related through the cycles in [`data/wuxing/core.json`](../../ruleset/data/wuxing/core.json).
+related through the cycles in [`modules/wuxing/data/wuxing.json`](../../ruleset/modules/wuxing/data/wuxing.json).
 `phase` is **optional** on effects: non-elemental effects (invisibility,
 telekinesis, summons, pure attribute buffs) carry none and sit out the cycles.
 
@@ -314,7 +314,7 @@ in Morrowind (150, 350); here they are authored only and not priced for crafting
 This layer is the Wuxing module ([wuxing.md](./wuxing.md)); with the module off, phases are inert tags.
 
 This is the part that makes effects "interact with each other." It is fully defined
-in [`data/wuxing/core.json`](../../ruleset/data/wuxing/core.json) (the single source
+in [`modules/wuxing/data/wuxing.json`](../../ruleset/modules/wuxing/data/wuxing.json) (the single source
 of truth) and summarised in [`progression.md`](./progression.md) § Elemental
 interaction. When a **phased** effect resolves, the engine compares its phase against
 the relevant other phase and applies the matching cycle's multiplier:
@@ -367,7 +367,7 @@ The "other phase" can come from three places:
 | Atomic effects (+ `phase`) | `effect.schema.json` | `data/effects/core.json` |
 | Spells (+ spellmaking `custom`) | `spell.schema.json` | `data/spells/core.json` |
 | Phase vocabulary | `schema.json#/definitions/phase` | — |
-| Interaction matrix | `wuxing.schema.json` | `data/wuxing/core.json` |
+| Interaction matrix | `wuxing.schema.json` | `modules/wuxing/data/wuxing.json` |
 | Monster elements | `monster.schema.json` | `data/monsters/core.json` |
 | Race elements | `race.schema.json` | `data/races/core.json` |
 | Color skills | `skill.schema.json` | `data/skills/core.json` |

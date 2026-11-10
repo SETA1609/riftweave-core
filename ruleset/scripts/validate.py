@@ -1207,12 +1207,14 @@ def compose_row(base, overrides, layers=(), entry=None):
 
 def _apply_monster_template(merged, template):
     """Apply one template (docs/modules/monsters.md#templates) to a merged entry in place."""
-    merged["phase"] = template["phase"]
+    if "phase" in template:
+        merged["phase"] = template["phase"]
     attacks = []
     for attack in merged.get("attacks", []) or []:
         attack = json.loads(json.dumps(attack))
         attack.setdefault("damage", {})["type"] = template["damage_type"]
-        attack["phase"] = template["phase"]
+        if "phase" in template:
+            attack["phase"] = template["phase"]
         attacks.append(attack)
     if attacks:
         merged["attacks"] = attacks

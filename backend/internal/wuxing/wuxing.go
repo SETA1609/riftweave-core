@@ -5,6 +5,7 @@ package wuxing
 
 import (
 	"fmt"
+	"slices"
 
 	"github.com/SETA1609/riftweave-core/backend/internal/data"
 )
@@ -29,6 +30,9 @@ var unrelated Result = Result{Cycle: "unrelated", Interaction: "none", Multiplie
 
 // Run is the `wuxing` command.
 func Run(ruleset *data.Ruleset, input Input) (Result, error) {
+	if !slices.Contains(ruleset.Modules, "wuxing") {
+		return Result{}, &data.NotDefinedError{Kind: "module", Key: "wuxing"}
+	}
 	if input.ActorPhase == nil || input.RecipientPhase == nil || *input.ActorPhase == "" || *input.RecipientPhase == "" {
 		return unrelated, nil
 	}

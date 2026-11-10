@@ -163,7 +163,7 @@ This table is the recommended starting point when authoring or balancing monster
      - **Resource pools** (HP, Mana, or Stamina): the normal level-up growth for that resource is rolled first. Then a second "growth of a level" roll is performed for the breakthrough (using the same growth formula as a normal level for that resource). The higher of the two rolls is used for the final growth applied at this level-up.
      - Wuxing cycle interactions can further amplify or reduce the final bonus value.
    - On failure: no bonus is granted from this item.
-   - Final bonuses from all successful items are granted as permanent increases on top of the normal level-up package. Wuxing interactions from `data/wuxing/core.json` are applied across the offered items and (optionally) the character's current "foundation phase" or dominant attributes/race phase (Generating ×1.5, Overcoming/Weakening reduced, Insulting backlash possible).
+   - Final bonuses from all successful items are granted as permanent increases on top of the normal level-up package. Wuxing interactions from `modules/wuxing/data/wuxing.json` are applied across the offered items and (optionally) the character's current "foundation phase" or dominant attributes/race phase (Generating ×1.5, Overcoming/Weakening reduced, Insulting backlash possible).
 5. The level (or "realm") is gained. Future levels continue to use the improved foundation.
 
 ### Phase → Growth Affinity (Suggested Mapping)
@@ -266,7 +266,7 @@ A single core or elixir is tied to one chosen target from its phase's governed o
 
 ### Wuxing Interaction During Breakthrough
 
-The same cycles defined in `data/wuxing/core.json` that govern spell/poison interactions and material–effect resonance now also govern essence refinement and breakthrough potency:
+The same cycles defined in `modules/wuxing/data/wuxing.json` that govern spell/poison interactions and material–effect resonance now also govern essence refinement and breakthrough potency:
 
 - Using a generating-phase elixir with a core (or with the cultivator's current foundation) **amplifies** the granted bonuses.
 - Clashing phases may require an Alchemy "harmonizing" step or a high-skill check, or they simply deliver reduced value.
@@ -336,7 +336,7 @@ Players who rush every level with whatever petty cores they have on hand will ha
 - `docs/modules/progression.md` — base level-up, skill points, perks, derived stats.
 - `docs/modules/attributes.md` — detailed attribute and resource formulas.
 - `docs/modules/alchemy.md` — brewing model; will be extended for refining.
-- `data/wuxing/core.json` — the interaction matrix used for essence synergy.
+- `modules/wuxing/data/wuxing.json` — the interaction matrix used for essence synergy.
 - `data/monsters/core.json` — source of raw phased cores.
 - `schema.json#/definitions/qualityGrade` and `#/definitions/phase` — shared vocabulary.
 - `docs/archive/issues.md` — high-priority gap: "Full character advancement / XP procedure".

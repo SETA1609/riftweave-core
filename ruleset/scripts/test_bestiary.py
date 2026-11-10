@@ -17,7 +17,6 @@ sys.path.insert(0, str(_SCRIPTS))
 import validate  # noqa: E402  (base + override resolution)
 
 DATA = _SCRIPTS.parent / "data"
-PHASES = ("wood", "fire", "earth", "metal", "water")
 # Product identity of other games (docs/modules/monsters.md#names): never a monster name.
 PROTECTED_NAMES = (
     "beholder", "mind flayer", "illithid", "displacer", "owlbear", "umber hulk", "carrion crawler",
@@ -67,15 +66,6 @@ class TestBestiary(unittest.TestCase):
             low, high = tier["levels"]
             with self.subTest(tier=tier["key"]):
                 self.assertGreaterEqual(sum(low <= level <= high for level in levels), 5)
-
-    def test_every_phase_defends_and_attacks(self):
-        rows = monsters()
-        defending = {row["phase"] for row in rows}
-        attacking = {attack["phase"] for row in rows for attack in row.get("attacks", []) if "phase" in attack}
-        for phase in PHASES:
-            with self.subTest(phase=phase):
-                self.assertIn(phase, defending, "no monster has this phase")
-                self.assertIn(phase, attacking, "no attack carries this phase")
 
     def test_every_damage_type_is_an_attack_and_a_resistance(self):
         rows = monsters()

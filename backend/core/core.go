@@ -14,6 +14,7 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
+	"path/filepath"
 	"slices"
 
 	"github.com/SETA1609/riftweave-core/backend/internal/actor"
@@ -105,17 +106,32 @@ var commands map[string]commandHandler = map[string]commandHandler{
 // Core is an opened ruleset.
 type Core struct{ rules *data.Ruleset }
 
-// New loads the ruleset from the data directory held by fileSystem.
-func New(fileSystem fs.FS) (*Core, error) {
-	ruleset, err := data.Load(fileSystem)
+// New loads the ruleset from the data directory held by fileSystem, and only the modules given.
+func New(fileSystem fs.FS, modules ...fs.FS) (*Core, error) {
+	ruleset, err := data.Load(fileSystem, modules...)
 	if err != nil {
 		return nil, err
 	}
 	return &Core{ruleset}, nil
 }
 
-// Open loads the ruleset from a directory such as ruleset/data.
-func Open(directory string) (*Core, error) { return New(os.DirFS(directory)) }
+// Open loads the ruleset from a directory such as ruleset/data, with every module in the
+// modules directory beside it.
+func Open(directory string) (*Core, error) {
+	var modules []fs.FS
+	var parent string = filepath.Join(directory, "..", "modules")
+	entries, err := os.ReadDir(parent)
+	if err != nil && !errors.Is(err, fs.ErrNotExist) {
+		return nil, err
+	}
+	for _, entry := range entries {
+		var module string = filepath.Join(parent, entry.Name())
+		if _, statError := os.Stat(filepath.Join(module, "manifest.json")); entry.IsDir() && statError == nil {
+			modules = append(modules, os.DirFS(module))
+		}
+	}
+	return New(os.DirFS(directory), modules...)
+}
 
 // Commands lists the command names, sorted.
 func Commands() []string {

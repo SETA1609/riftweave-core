@@ -44,7 +44,7 @@ class CraftingResolver:
         self.verbose = verbose
         self.materials = load_json("data/materials/core.json")["materials"]
         self.gems = load_json("data/gems/core.json")["gems"]
-        self.wuxing = load_json("data/wuxing/core.json")
+        self.wuxing = load_json("modules/wuxing/data/wuxing.json")
         self.cycles = self.wuxing["cycles"]
         self.effects = load_json("data/effects/core.json")["effects"]
         self.crafted_items = load_json("data/crafting/crafted_items.json")[

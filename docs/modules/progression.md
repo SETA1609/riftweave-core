@@ -287,7 +287,7 @@ narrative downtime activity tied to the level-up.
        - **Attributes**: +1 (only if eligible; max +1 total this level from breakthroughs).
        - **Skills**: bonus in the 0–10 range using the reference tables in `advancement.md` (grade sets floor and ceiling; e.g. petty 0–2, greater 6–8, grand/legendary 8–10). Higher grades also improve success chance on the luck roll.
        - **Resources** (HP, Mana, or Stamina): the normal level-up growth for that resource is rolled first. A second "growth of a level" roll is performed for the breakthrough (same growth formula). The higher of the two rolls is used for the final growth at this level-up.
-     - Wuxing cycle interactions (from `data/wuxing/core.json`) may amplify or reduce results across multiple items.
+     - Wuxing cycle interactions (from `modules/wuxing/data/wuxing.json`) may amplify or reduce results across multiple items.
    - Apply any resulting **extra permanent bonuses** (to the selected targets) on top of the base package. See `docs/modules/advancement.md` for full resolution details.
 
 5. **Update Derived Statistics**
@@ -423,7 +423,7 @@ shared effect table for the whole game.
 
 Layered **on top of** the color schools (it does not replace them) is a five-phase
 interaction system modeled on the Wuxing five-element cycle, defined in
-`ruleset/data/wuxing/core.json` (schema `wuxing.schema.json`). The two axes are
+`ruleset/modules/wuxing/data/wuxing.json` (schema `wuxing.schema.json`). The two axes are
 **orthogonal**:
 
 - **Color** picks the governing `<color>_magic` skill — what you train, the
