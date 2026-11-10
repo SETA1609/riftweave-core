@@ -93,6 +93,7 @@ nothing stores it. [A]
 ## What a later module is forbidden to do
 
 - Call another system's procedure. Alchemy does not call advancement. Magic does not call defense.
+- Read a phase in a core rule. `phase` on a core row is an optional tag, and the Wuxing module reads it ([wuxing.md](../modules/wuxing.md)).
 - Require another module to be loaded for a core action to resolve. Level-up must work with no ingredients directory. An attack must resolve with no phase table.
 - Store a derived stat as authority. HP is a function of END plus modifiers.
 - Define a second resolution function, a second stacking rule, or a TTRPG-versus-video column inside the kernel.

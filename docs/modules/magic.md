@@ -311,6 +311,8 @@ in Morrowind (150, 350); here they are authored only and not priced for crafting
 
 ## 6. Elemental interaction — the five-phase layer
 
+This layer is the Wuxing module ([wuxing.md](./wuxing.md)); with the module off, phases are inert tags.
+
 This is the part that makes effects "interact with each other." It is fully defined
 in [`data/wuxing/core.json`](../../ruleset/data/wuxing/core.json) (the single source
 of truth) and summarised in [`progression.md`](./progression.md) § Elemental
