@@ -181,7 +181,7 @@ Done: RW-1, RW-2, RW-39, RW-40, RW-41, M5-01, M5-02, M5-03, M5-07, M5-08, M5-10,
 - Done when: every finding has an issue with `Needs`, `Files`, and a checkable `Done when`, and the roadmap table is regenerated.
 
 #### M5-32 Modifier targets are rows
-- Status: doing
+- Status: review
 - Priority: high
 - Needs: —
 - Do: The modifier is the only shared sentence, but its `target` is free text: the data names 145 targets, and 92 of them are a key in no table. A typo is a valid target, and nothing says whether a target is a number or a flag, or whether any rule reads it. A target names a row: an attribute, a skill, a derived stat, an action (its AP cost), a condition, a damage type, or a row of a new `modifier_targets` table for everything else (rule parameters such as `crit_window`, flags such as `darkvision`). Each `modifier_targets` row says its kind (`number` or `flag`) and what it changes, and is marked `pending` while no golden vector applies a modifier to it. Add a gate: every target resolves to one row, `grant` names a flag, `add`, `mul`, and `set` name a number, `resist` names a damage type, every `modifier_targets` row is used, and `pending` matches the vectors in both directions, so the flag cannot go stale. Register the targets used today without renaming any; renames are M5-33 and M5-37.

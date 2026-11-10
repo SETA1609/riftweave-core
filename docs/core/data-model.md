@@ -26,6 +26,7 @@ in-memory tables. It is a hybrid, and each layer has its own type. [V 2026-11-10
 | Composition | A row is a base, plus templates, plus overrides, merged into one flat row. | [monsters.md](../modules/monsters.md), [overrides.md](overrides.md) |
 | Stored and computed | Store the primary facts. Derived stats are functions of them. | [contract.md](contract.md), [derived.md](derived.md) |
 | One way to change a value | A modifier, with one stacking rule. | [contract.md](contract.md), [modifier.md](modifier.md) |
+| Modifier targets | A modifier's `target` is a key naming one row, of the kind its op needs; targets no other table holds are rows of `modifier_targets`. | [modifier.md](modifier.md#target), [integrity.md](integrity.md) |
 | Formulas as data | Math is a tree in JSON, compiled by the backend to a flat program. | [formula.md](formula.md) |
 | Rolls as inputs | The rules never roll. A roll is an input, so a result can be repeated. | [resolution.md](resolution.md) |
 | Vectors | An input and its exact expected result. An implementation that disagrees is wrong. | [vectors.md](vectors.md) |
