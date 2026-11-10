@@ -6,7 +6,12 @@ docs/core/economy.md, so treasure and prices are one scale.
 """
 
 import json
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+import validate  # noqa: E402  (base + override resolution)
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 EQUIPMENT = {
@@ -177,6 +182,24 @@ def row_expected_value_cp(loot, row):
     return expected_value_cp(table, row.get("shift", 0), material, row.get("rolls"), size) * chance
 
 
+def resolved_drops(loot):
+    """Every monster's loot from the bestiary, with a `drops` row replacing it and each
+    table row's rolls filled from rolls_by_level (docs/core/loot.md#drops)."""
+    errors = []
+    data = {"monsters": load_data("monsters/core.json")["monsters"]}
+    validate._resolve_monster_bases(data, errors)
+    if errors:
+        raise ValueError(errors)
+    replaced = {drop["monster"]: drop["loot"] for drop in loot.get("drops", [])}
+    drops = []
+    for row in data["monsters"]:
+        ref = f"core:monster/{row['key']}"
+        rows = replaced.get(ref, row.get("loot", []))
+        count = evaluate(loot["rolls_by_level"], {"level": row["level"]})
+        drops.append({"monster": ref, "loot": [{"rolls": count, **r} if "table" in r else r for r in rows]})
+    return drops
+
+
 def monster_expected_value_cp(loot, drop):
     return sum(row_expected_value_cp(loot, row) for row in drop["loot"])
 
@@ -250,7 +273,7 @@ def run_loot(vector):
         return {"table": table["key"], **_result(loot, items, coins_cp, table["level"]), "looter_shift": looter}
 
     monster = vector["monster"]
-    drop = next(d for d in loot["drops"] if d["monster"] == monster)
+    drop = next(d for d in resolved_drops(loot) if d["monster"] == monster)
     queue, used, coins_cp, tables = list(rolls), 0, 0, []
 
     def take(n):

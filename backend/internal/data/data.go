@@ -475,11 +475,12 @@ type Ruleset struct {
 	Formulas        map[string]*formula.Program // formulas/<name>.json by name
 	Price           *formula.Program
 	LootLuck        *formula.Program
-	Items           map[string]Item  // core:<category>/<key>
-	MaterialPercent map[string]int64 // material key: valueFactor * 100
-	DiceLadder      [][]string       // combat/dice_ladder.json: rungs of equal dice, smallest first
-	Sizes           map[string]Size  // combat/dice_ladder.json: undersized, normal, oversized
-	MonsterLevel    map[string]int64 // monster key
+	Items           map[string]Item      // core:<category>/<key>
+	MaterialPercent map[string]int64     // material key: valueFactor * 100
+	DiceLadder      [][]string           // combat/dice_ladder.json: rungs of equal dice, smallest first
+	Sizes           map[string]Size      // combat/dice_ladder.json: undersized, normal, oversized
+	MonsterLevel    map[string]int64     // monster key
+	MonsterLoot     map[string][]DropRow // monster key: its resolved loot rows
 }
 
 // rulesetLoader reads every file even after one fails, and joins every error, so one run
@@ -866,12 +867,29 @@ func (loader *rulesetLoader) loadItems(ruleset *Ruleset) {
 			Key       string
 			Base      string
 			Level     *int64
-			Overrides struct{ Level *int64 }
+			Templates []string
+			Overrides struct {
+				Level *int64
+				Loot  []DropRow
+			}
 		}
 	}
 	loader.read("monsters/core.json", &monsters)
+	var templates struct {
+		Templates []struct {
+			Key  string
+			Loot []DropRow
+		} `json:"monster_templates"`
+	}
+	loader.read("monsters/templates.json", &templates)
+	var templateLoot map[string][]DropRow = map[string][]DropRow{}
+	for _, template := range templates.Templates {
+		templateLoot[template.Key] = template.Loot
+	}
 	ruleset.MonsterLevel = map[string]int64{}
-	for _, monster := range monsters.Monsters {
+	var byKey = make(map[string]int, len(monsters.Monsters))
+	for index, monster := range monsters.Monsters {
+		byKey[monster.Key] = index
 		var level *int64 = monster.Overrides.Level
 		if level == nil {
 			level = monster.Level
@@ -885,11 +903,46 @@ func (loader *rulesetLoader) loadItems(ruleset *Ruleset) {
 		}
 		ruleset.MonsterLevel[monster.Key] = *level
 	}
+
+	// A monster's loot: its type's or base monster's, then its templates', then its own.
+	ruleset.MonsterLoot = map[string][]DropRow{}
+	var resolve func(key string, seen map[string]bool) []DropRow
+	resolve = func(key string, seen map[string]bool) []DropRow {
+		if loot, done := ruleset.MonsterLoot[key]; done {
+			return loot
+		}
+		index, known := byKey[key]
+		if !known || seen[key] {
+			return nil
+		}
+		seen[key] = true
+		var monster = monsters.Monsters[index]
+		var loot []DropRow
+		if parent, derived := strings.CutPrefix(monster.Base, "core:monster/"); derived {
+			loot = slices.Clone(resolve(parent, seen))
+		} else {
+			var base struct{ Loot []DropRow }
+			loader.read("monsters/bases/"+monster.Base+".json", &base)
+			loot = base.Loot
+		}
+		for _, template := range monster.Templates {
+			loot = append(slices.Clone(loot), templateLoot[template]...)
+		}
+		if monster.Overrides.Loot != nil {
+			loot = monster.Overrides.Loot
+		}
+		ruleset.MonsterLoot[key] = loot
+		return loot
+	}
+	for _, monster := range monsters.Monsters {
+		resolve(monster.Key, map[string]bool{})
+	}
 }
 
 func (loader *rulesetLoader) loadLoot(ruleset *Ruleset) {
 	var raw struct {
 		BudgetCopper formula.Program `json:"budget_cp"`
+		RollsByLevel formula.Program `json:"rolls_by_level"`
 		Tables       []LootTable
 		Drops        []Drop
 	}
@@ -916,6 +969,18 @@ func (loader *rulesetLoader) loadLoot(ruleset *Ruleset) {
 			}
 		}
 	}
+	// A `drops` row replaces the bestiary's loot for its monster.
+	var replaced map[string]bool = map[string]bool{}
+	for _, drop := range raw.Drops {
+		replaced[drop.Monster] = true
+	}
+	for key, rows := range ruleset.MonsterLoot {
+		var monster string = "core:monster/" + key
+		if !replaced[monster] {
+			raw.Drops = append(raw.Drops, Drop{Monster: monster, Loot: slices.Clone(rows)})
+		}
+	}
+	slices.SortFunc(raw.Drops, func(first, second Drop) int { return strings.Compare(first.Monster, second.Monster) })
 	ruleset.Loot = Loot{
 		BudgetCopper: raw.BudgetCopper,
 		Tables:       newTable(raw.Tables, func(table *LootTable) string { return table.Key }),
@@ -923,8 +988,17 @@ func (loader *rulesetLoader) loadLoot(ruleset *Ruleset) {
 	}
 	for dropIndex := range raw.Drops {
 		var drop *Drop = &raw.Drops[dropIndex]
+		level, levelKnown := ruleset.MonsterLevel[drop.Monster[strings.LastIndex(drop.Monster, "/")+1:]]
 		for rowIndex := range drop.Loot {
 			var row *DropRow = &drop.Loot[rowIndex]
+			if row.Table != "" && row.Rolls == nil && levelKnown {
+				count, err := raw.RollsByLevel.Evaluate(nil, formula.Variable{Name: "level", Value: level})
+				if err != nil {
+					loader.fail("loot/core.json: rolls_by_level: %v", err)
+					continue
+				}
+				row.Rolls = &count
+			}
 			row.TableIndex = -1
 			if row.Table == "" && row.Item == "" {
 				loader.fail("loot/core.json: %s has a loot row with neither table nor item", drop.Monster)
