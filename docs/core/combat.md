@@ -15,7 +15,7 @@ One attack, in order, from the roll to the HP lost. Every step reads the actor s
               hit           otherwise; tag crit if roll <= window
 2. reaction   on a hit, the defender may take one reaction: evade or block, not both
               delivery single: evade or block      delivery area: evade or block
-              delivery instant: none (a save, M3-05)
+              delivery instant: none (a save, casting.md)
    evade      evade roll through resolution.md, target = evasion_skill + defender mods on evasion
               evaded if the evade succeeds and evade margin >= attack margin
               single: no damage, stop        area: damage halved at step 5
@@ -44,7 +44,7 @@ Each subtraction stops at zero before the next step: a step never raises damage.
 ## Reading the steps
 
 - **Evasion** is a defender reaction after the attack hits, contested like block: the defender's evade margin must reach the attacker's margin, ties go to the defender. It replaces the earlier passive penalty on the attacker's target, so the attack roll reads only the attacker's numbers and "dodged" is its own outcome (`evaded`), apart from "missed". This is the defense-tree reading of [`modules/combat.md`](../modules/combat.md) (layer 1, "chance to avoid entirely") and its video-game auto-dodge; the TTRPG passive-penalty variant is dropped. The evade target is the raw `evasion` skill, the same way block reads the block skill, so points bought in Evasion buy dodges; AGI counts once, through the skill's base value. Armor and encumbrance evasion penalties are modifiers on that target; they are not in the vectors yet. [U] The earlier tree `10 + evasion_skill * 0.15 + AGI * 2` is dropped: skill points barely moved it and it topped out at 45. [V 2026-11-04, owner decision]
-- **Delivery, not damage type, decides the dodge.** `single` is one target: a sword cut, an arrow, a fire bolt, a touch spell. A full evade avoids it. `area` is a radius or a cone: a fireball, a breath weapon, a thrown bomb. An evade halves the damage (rounded down) instead of avoiding it. `instant` cannot be dodged or blocked: the effect lands, and a save roll on a skill or attribute the spell names decides how it behaves (M3-05). Physical and magic attacks follow the same rule. [V 2026-11-04, owner decision] A spell effect's `target` shape maps to it: `touch` and `ranged` are `single`, `area` is `area`; `instant` is a new marker for spells, added in M3-05. [A]
+- **Delivery, not damage type, decides the dodge.** `single` is one target: a sword cut, an arrow, a fire bolt, a touch spell. A full evade avoids it. `area` is a radius or a cone: a fireball, a breath weapon, a thrown bomb. An evade halves the damage (rounded down) instead of avoiding it. `instant` cannot be dodged or blocked: the effect lands, and a save roll on a skill or attribute the spell names decides how it behaves ([casting.md](casting.md#delivery-and-saves)). Physical and magic attacks follow the same rule. [V 2026-11-04, owner decision] A spell effect's `target` shape maps to it: `touch` and `ranged` are `single`, `area` is `area`; `instant` is a new marker for spells, added in M3-05. [A]
 - **Balance between evade and block.** At equal skill an evade avoids all damage and a block only subtracts shield DR, so the raw skill alone favours evading. The balance is not in this pipeline: perks gate stronger dodges and blocks, armor penalties land on evasion, area attacks are only halved, and instant spells skip the dodge for a save. The perk rows come with their own issues. [A]
 - **One reaction per attack.** The defender declares evade or block before the attack roll, as `modules/combat.md` has it for block, and rolls it only if the attack hits; the input has a single `reaction`. A failed evade does not allow a block. [A]
 - **Reaction rolls use the one d100 function.** Evade and block go through [resolution.md](resolution.md) with the defender's skill and LCK, exactly like the attack roll: a 100 fumbles and fails, and a roll inside the defender's crit window is tagged `crit` (`reaction_tags`). A crit reaction has no extra effect yet; perks may read the tag later. [V 2026-11-04, owner decision]
@@ -68,7 +68,7 @@ The defender's perks reach the pipeline as `defender.modifiers`, stacked by [mod
 | Dodge | Armored Evasion | `add evasion 10` | offsets the armor penalties on the evade target |
 | Dodge | Riposte | `grant riposte` | a crit evade of a `single` attack sets `counter`: the defender may make one attack at no AP cost; the caller runs it as its own attack |
 
-- **Instant stays out.** An `instant` attack takes no reaction, so no perk blocks or evades it; its defense is the save (M3-05). [V 2026-11-06, owner rule in M2-06]
+- **Instant stays out.** An `instant` attack takes no reaction, so no perk blocks or evades it; its defense is the save ([casting.md](casting.md#delivery-and-saves)). [V 2026-11-06, owner rule in M2-06]
 - **The block scales with the shield.** Spell Ward subtracts half the shield DR, not a general `resist`, so it does not stack with the armor DR and resist steps. [A]
 - **A negated hit is still a hit.** Bulwark leaves `outcome` hit and `blocked` true with 0 damage, so the called shot's riders are still listed. [A]
 
