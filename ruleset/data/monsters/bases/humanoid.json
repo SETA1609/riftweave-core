@@ -5,6 +5,7 @@
   "phase": "wood",
   "size": "medium",
   "level": 3,
+  "loot": [{ "table": "bandit_purse" }],
   "attributes": { "str": 4, "end": 4, "agi": 4, "per": 4, "wil": 4 },
   "hitPoints": 35,
   "tags": ["humanoid"],

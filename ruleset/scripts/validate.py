@@ -1223,6 +1223,8 @@ def _apply_monster_template(merged, template):
         for kind, amount in template["resist"].items():
             resist[kind] = resist.get(kind, 0) + amount
         merged["resist"] = resist
+    if template.get("loot"):
+        merged["loot"] = list(merged.get("loot") or []) + template["loot"]
     tags = list(merged.get("tags") or [])
     tags += [tag for tag in template.get("tags", []) if tag not in tags]
     if tags:

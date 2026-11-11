@@ -9,6 +9,10 @@
       "description": "Treasure budget in copper for one encounter. Reads var `level`.",
       "$ref": "schema.json#/definitions/formulaNode"
     },
+    "rolls_by_level": {
+      "description": "How many times a monster rolls a table row that sets no rolls; reads var level (docs/core/loot.md#drops).",
+      "$ref": "schema.json#/definitions/formulaNode"
+    },
     "tables": {
       "type": "array",
       "minItems": 1,
@@ -28,7 +32,7 @@
       }
     }
   },
-  "required": ["budget_cp", "tables", "drops"],
+  "required": ["budget_cp", "tables"],
   "additionalProperties": false,
   "definitions": {
     "lootRow": {

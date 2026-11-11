@@ -5,6 +5,7 @@
   "phase": "earth",
   "size": "large",
   "level": 5,
+  "loot": [{ "table": "hoard_minor" }],
   "attributes": { "str": 7, "end": 8, "agi": 2, "wil": 3 },
   "hitPoints": 80,
   "tags": ["construct"],

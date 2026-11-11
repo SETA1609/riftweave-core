@@ -5,6 +5,7 @@
   "phase": "wood",
   "size": "tiny",
   "level": 1,
+  "loot": [{ "table": "grave_goods" }],
   "attributes": {
     "str": 1,
     "end": 2,
