@@ -25,7 +25,8 @@ Python packages on your machine, use the dev toolchain, which mounts your checko
 
 ## 2. Read, in this order
 
-1. [README.md](../../README.md): what the project is and how it is laid out.
+1. [README.md](../../README.md): what the project is and how it is laid out, with the
+   [one-page design](../gdd.md).
 2. [ROADMAP.md](../../ROADMAP.md): what is in scope and what "finished" means.
 3. [docs/core/contract.md](../core/contract.md): the one rule every system follows.
 4. [docs/core/data-model.md](../core/data-model.md): how the information is shaped, with the
