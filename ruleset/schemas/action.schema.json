@@ -5,6 +5,7 @@
   "type": "object",
   "properties": {
     "$schema": { "type": "string" },
+    "seconds_per_turn": { "type": "integer", "minimum": 1, "description": "How many seconds one turn covers (docs/core/modifier.md#effects-over-time)." },
     "pool": { "$ref": "#/definitions/pool" },
     "actions": {
       "type": "array",

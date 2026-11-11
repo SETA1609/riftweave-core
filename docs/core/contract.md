@@ -38,7 +38,7 @@ Modifier
   target            attr | skill | resource | flag | damage_tag
   op                add | mul | set | grant | resist
   value             number
-  duration          turns | uses | while_equipped | permanent
+  duration          turns | seconds | uses | while_equipped | permanent
   source            perk:12 | item:44 | effect:19
   origin            core:origin/alchemy (optional; the kind of source)
 ```
@@ -54,7 +54,7 @@ Stacking, written once:
 
 The order of these steps for one target, expiry, and how a condition is applied and removed are in [modifier.md](modifier.md).
 
-The origins (arcane, divine, alchemy, trained, ...) are one short table in data, each with one policy, `highest` or `add`; [modifier.md](modifier.md#origin) lists them. There is no per-chapter exception. No dodge-stacks-except-circumstance. A perk that wants a second copy uses a different source id.
+The origins (arcane, divine, alchemy, trained, ...) are one short table in data, each with one policy, `highest`, `add`, or `replace`; [modifier.md](modifier.md#origin) lists them. There is no per-chapter exception. No dodge-stacks-except-circumstance. A perk that wants a second copy uses a different source id.
 
 ## Event
 
