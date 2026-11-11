@@ -12,7 +12,7 @@ Fallout stores primaries and lets the engine recompute derived stats. Morrowind 
 
 ## Actor snapshot
 
-Read-only to everyone but the actor's owner. Current values are base plus modifiers. Derived stats (HP, MP, AP, carry, initiative, speed) are functions of this snapshot, not stored truth. That function lives in a later change; this document only names the fields.
+Read-only to everyone but the actor's owner. Current values are base plus modifiers. Derived stats (`hp`, `mp`, `sp`, `ap`, `carry`, `initiative`) are functions of this snapshot, not stored truth; [derived.md](derived.md) has the function. [V 2026-11-11]
 
 ```
 Actor             stored_actor in backend/contract/common.json; see state.md
@@ -35,11 +35,11 @@ The only shared sentence.
 
 ```
 Modifier
-  target            attr | skill | resource | flag | damage_tag
+  target            a key naming one row (modifier.md#target)
   op                add | mul | set | grant | resist
   value             number
-  duration          turns | seconds | uses | while_equipped | permanent
-  source            perk:12 | item:44 | effect:19
+  duration          turns | uses | while_equipped | while_applied | permanent
+  source            feature:toughness | item:lockpicks | condition:blinded (a kind and a key, never a number)
   origin            core:origin/alchemy (optional; the kind of source)
 ```
 
@@ -52,7 +52,7 @@ Stacking, written once:
 - `grant` adds a flag or a tag. It does not add a number.
 - `resist` subtracts from a packet whose tag matches `target`.
 
-The order of these steps for one target, expiry, and how a condition is applied and removed are in [modifier.md](modifier.md).
+The target, op, and duration values are the `modifier` definition in `schema.json`, and no modifier in the data has a numeric source. [V 2026-11-11] The order of these steps for one target, expiry, and how a condition is applied and removed are in [modifier.md](modifier.md).
 
 The origins (arcane, divine, alchemy, trained, ...) are one short table in data, each with one policy, `highest`, `add`, or `replace`; [modifier.md](modifier.md#origin) lists them. There is no per-chapter exception. No dodge-stacks-except-circumstance. A perk that wants a second copy uses a different source id.
 
@@ -67,14 +67,14 @@ packet            { amount, tags[], source }
 spawn_item        { base, material, mods[] }
 ```
 
-Resolution is one function, named here so nobody writes a second one: `d100 <= target`, `margin = target - roll`. Crit and fumble are tags on `roll_result`, not a second roll system. The windows live in data, in a later change.
+Resolution is one function, named here so nobody writes a second one: `d100 <= target`, `margin = target - roll`. Crit and fumble are tags on `roll_result`, not a second roll system. The windows live in `ruleset/data/resolution/core.json`. [V 2026-11-11]
 
 ```
 cast(actor, spell):
   require resource(actor, spell.cost)
   result = resolution.roll(actor, spell.skill)
-  if result.margin >= 0:
-    effects.apply(spell.effects, result.margin)
+  if result.success:
+    effects.apply(spell.effects)
   # magic does not know DR, alchemy, or factions
 ```
 
@@ -83,8 +83,8 @@ cast(actor, spell):
 Every distance in the data and the docs is in **units**. One unit is one square of a grid.
 Walking speed (`speed`, units per round), weapon range (`rangeNormal`, `rangeLong`), melee
 reach (`attackReach`), area radius (`radius`), and distances in descriptions (darkvision,
-falls, rope) all count squares. No definition uses feet or metres. [V 2026-11-07, owner
-decision]
+falls, rope) all count squares. No definition is meant to use feet or metres; the exceptions left are listed in
+[data-model.md](data-model.md#known-exceptions). [V 2026-11-11]
 
 For tabletop play a square is 1.5 m by 1.5 m: a human walks 6 units (9 m) a round, and a
 longbow reaches 30 units (45 m) at normal range. That conversion is for reading aloud only;
@@ -97,7 +97,7 @@ nothing stores it. [A]
 - Require another module to be loaded for a core action to resolve. Level-up must work with no ingredients directory. An attack must resolve with no phase table.
 - Store a derived stat as authority. HP is a function of END plus modifiers.
 - Define a second resolution function, a second stacking rule, or a TTRPG-versus-video column inside the kernel.
-- Override a core row. Modules add rows. Duplicate ids are conflicts, not patches.
+- Override a core row without listing its key in `overrides` ([overrides.md](overrides.md)). A duplicate key with no such entry is a conflict, not a patch.
 - Invent a private effect language. A condition is a named bundle of modifiers plus flags. A spell is a skill roll plus an effect list. A brew is a crafting profile whose output emits the same modifiers.
 
 Unknown opcodes are ignored by a consumer. They are not rejected by this contract. Extending the opcode table is a later change; until then, new modules still speak only the ops listed above.
