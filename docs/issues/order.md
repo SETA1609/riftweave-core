@@ -9,8 +9,8 @@ the tool needs a file to write it to. To see what can start now, run `roadmap-or
 | Wave | Story | Keyword | Blocked by | Open issues |
 |---|---|---|---|---|
 | 0 | M2 | ready | — | 1 |
-| 0 | M3 | first (1), ready | — | 5 |
-| 0 | M5 | ready, critical | APP, M3 | 12 |
+| 0 | M3 | first (1), ready | — | 6 |
+| 0 | M5 | ready, critical | APP, M3 | 8 |
 | 5 | POST | blocked, critical | M5 | 8 |
 | 0 | APP | ready, critical | — | 5 |
 

@@ -48,7 +48,6 @@ Places where the data does not yet follow the model:
 - **Authored monster HP.** 50 of the 54 monster rows store `hitPoints` instead of computing it. [V 2026-11-11]
 - **Authored HP growth.** Each creature type in `monsters/bases/` authors `growth.hitPointsPerLevel`, so a monster's HP does not come from the player formula. [V 2026-11-11]
 - **Formulas have no schema.** The four files in `formulas/` name no `$schema`, so `validate.py` skips them with a warning. [V 2026-11-11]
-- **Distances in metres.** `safe_fall_meters` and `darkvision_range` still hold metres; M5-33 converts them. [V 2026-11-11]
 - **JSON Schema cannot check references.** `validate.py` and tests do that on top of it, and a
   free-text field such as `parameter` is only checked where a test says so. [V 2026-11-11]
 - **Module overrides.** `module_loader.merge_data()` does not read `overrides` yet.
