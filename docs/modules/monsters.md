@@ -52,7 +52,7 @@ References a base template and provides only the fields that differ:
 {
   "id": 4,
   "key": "frost_revenant",
-  "base": "undead",
+  "base": "core:creature_type/undead",
   "overrides": {
     "label": "Frost Revenant",
     "description": "The risen dead of those who froze in the high passes...",
@@ -83,7 +83,7 @@ To **append** to the base array instead, use the `$extend` wrapper:
 
 ```json
 {
-  "base": "elemental",
+  "base": "core:creature_type/elemental",
   "overrides": {
     "abilities": {
       "$extend": [
@@ -136,7 +136,7 @@ from the growth curve. Missing attributes are filled in automatically:
 ```json
 {
   "key": "dire_wolf",
-  "base": "beast",
+  "base": "core:creature_type/beast",
   "overrides": {
     "level": 3,
     "attributes": { "str": 6, "per": 6 }

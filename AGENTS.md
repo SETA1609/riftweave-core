@@ -150,7 +150,7 @@ Each data file names its schema in `$schema`:
 Equipment (weapons, armors, accessories) and monsters use a **Base + Override** pattern:
 - Base templates live in `bases/<category>/` subdirectories (e.g., `equipment/bases/weapons/`, `monsters/bases/`).
 - These directories are automatically skipped during file collection; base files are **not** validated standalone.
-- Override entries reference a `base` key and provide an `overrides` object with only the differing fields.
+- Override entries name a `base` as a typed reference (`core:creature_type/undead`, `core:weapon_base/dagger`, or `core:monster/skeleton`) and provide an `overrides` object with only the differing fields.
 - Resolution happens at validation time in `_resolve_equipment_bases()` and `_resolve_monster_bases()`.
 
 `features` is the **single** perk table. Do not create separate trait/class/race tables.

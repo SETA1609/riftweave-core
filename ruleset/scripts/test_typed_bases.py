@@ -40,6 +40,13 @@ class TestTypedBases(unittest.TestCase):
                 with self.subTest(base=path.stem, entry=entry):
                     self.assertRegex(entry, r"^core:material/[a-z0-9_]+$")
 
+    def test_a_row_that_lists_its_own_default_materials_uses_references(self):
+        for name in EQUIPMENT:
+            for row in load(DATA / "equipment" / f"{name}.json")["equipment"]:
+                for entry in row.get("overrides", {}).get("default_materials", []):
+                    with self.subTest(item=row["key"], entry=entry):
+                        self.assertRegex(entry, r"^core:material/[a-z0-9_]+$")
+
     def test_the_gate_knows_every_base_and_refuses_a_missing_one(self):
         known = validate.build_base_refs()
         self.assertIn("core:creature_type/undead", known)

@@ -3,7 +3,7 @@
   "monsters": [
     {
       "key": "skeleton",
-      "base": "undead",
+      "base": "core:creature_type/undead",
       "overrides": {
         "label": "Skeleton",
         "description": "The animated bones of a long-dead warrior, raised by dark magic. Its attacks chip away at armor and expose weaknesses.",
@@ -51,7 +51,7 @@
     },
     {
       "key": "bandit",
-      "base": "humanoid",
+      "base": "core:creature_type/humanoid",
       "overrides": {
         "label": "Bandit",
         "description": "A desperate outlaw who preys on travellers. Uses dirty tricks like leg sweeps to knock foes off balance.",
@@ -94,7 +94,7 @@
     },
     {
       "key": "ooze",
-      "base": "ooze",
+      "base": "core:creature_type/ooze",
       "overrides": {
         "label": "Ooze",
         "description": "A blind, quivering mass that flows over the cave floor and engulfs whatever it touches.",
@@ -118,7 +118,7 @@
     },
     {
       "key": "dire_wolf",
-      "base": "beast",
+      "base": "core:creature_type/beast",
       "overrides": {
         "label": "Dire Wolf",
         "description": "A massive wolf the size of a horse, alpha of its pack. Its bite causes deep bleeding and its bulk knocks prey prone.",
@@ -163,7 +163,7 @@
     },
     {
       "key": "stone_golem",
-      "base": "construct",
+      "base": "core:creature_type/construct",
       "overrides": {
         "label": "Stone Golem",
         "description": "A lumbering construct hewn from bedrock, slow but nearly unstoppable. Its fists shatter bone and leave victims stunned.",
@@ -224,7 +224,7 @@
     },
     {
       "key": "fire_elemental",
-      "base": "elemental",
+      "base": "core:creature_type/elemental",
       "overrides": {
         "label": "Fire Elemental",
         "description": "A roiling mass of living flame that scorches everything in its path and leaves its victims burning.",
@@ -278,7 +278,7 @@
     },
     {
       "key": "storm_hawk",
-      "base": "beast",
+      "base": "core:creature_type/beast",
       "overrides": {
         "label": "Storm Hawk",
         "description": "A grey hawk that rides thunderheads and strikes with a crackle of lightning.",
@@ -308,7 +308,7 @@
     },
     {
       "key": "ember_drake",
-      "base": "elemental",
+      "base": "core:creature_type/elemental",
       "overrides": {
         "label": "Ember Drake",
         "description": "A lesser dragon wreathed in living flame. Its breath sets the air alight and its touch leaves lingering burns.",
@@ -374,7 +374,7 @@
     },
     {
       "key": "treant_sapling",
-      "base": "plant",
+      "base": "core:creature_type/plant",
       "overrides": {
         "label": "Treant Sapling",
         "description": "A young tree-guardian, slow to anger and slow to fall.",
@@ -404,7 +404,7 @@
     },
     {
       "key": "giant",
-      "base": "humanoid",
+      "base": "core:creature_type/humanoid",
       "overrides": {
         "label": "Giant",
         "description": "A towering brute of the high moors who uproots trees for clubs and boulders to throw.",
@@ -915,7 +915,7 @@
     },
     {
       "key": "zombie",
-      "base": "undead",
+      "base": "core:creature_type/undead",
       "overrides": {
         "label": "Zombie",
         "description": "A shambling corpse animated by necromantic will. Its rotting touch spreads poison through the victim's veins.",
@@ -963,7 +963,7 @@
     },
     {
       "key": "giant_rat",
-      "base": "beast",
+      "base": "core:creature_type/beast",
       "overrides": {
         "label": "Giant Rat",
         "description": "A dog-sized rat from the sewers. Alone it is a nuisance; in a pack it is a danger.",
@@ -994,7 +994,7 @@
     },
     {
       "key": "goblin_skirmisher",
-      "base": "humanoid",
+      "base": "core:creature_type/humanoid",
       "overrides": {
         "label": "Goblin Skirmisher",
         "description": "A quick, cowardly raider that jabs from behind its friends.",
@@ -1020,7 +1020,7 @@
     },
     {
       "key": "owl_familiar",
-      "base": "familiar",
+      "base": "core:creature_type/familiar",
       "overrides": {
         "label": "Owl Familiar",
         "description": "A silent spirit-owl that watches the dark for its caster.",
@@ -1053,7 +1053,7 @@
     },
     {
       "key": "cat_familiar",
-      "base": "familiar",
+      "base": "core:creature_type/familiar",
       "overrides": {
         "label": "Cat Familiar",
         "description": "A sleek spirit-cat that slips through gaps and fetches small things.",
@@ -1086,7 +1086,7 @@
     },
     {
       "key": "raven_familiar",
-      "base": "familiar",
+      "base": "core:creature_type/familiar",
       "overrides": {
         "label": "Raven Familiar",
         "description": "A sharp-eyed spirit-raven that carries a word or a trinket.",
@@ -1119,7 +1119,7 @@
     },
     {
       "key": "cave_spider",
-      "base": "beast",
+      "base": "core:creature_type/beast",
       "overrides": {
         "label": "Cave Spider",
         "description": "A pale spider the size of a shield that hunts in the dark under the hills.",
@@ -1149,7 +1149,7 @@
     },
     {
       "key": "grove_stalker",
-      "base": "beast",
+      "base": "core:creature_type/beast",
       "overrides": {
         "label": "Grove Stalker",
         "description": "A thorn-skinned predator of the deep wood, its claws weep venomous sap that poisons its prey.",
@@ -1203,7 +1203,7 @@
     },
     {
       "key": "bog_shambler",
-      "base": "plant",
+      "base": "core:creature_type/plant",
       "overrides": {
         "label": "Bog Shambler",
         "description": "A heap of rotting reeds and mud that lurches out of the marsh.",
@@ -1233,7 +1233,7 @@
     },
     {
       "key": "frost_revenant",
-      "base": "undead",
+      "base": "core:creature_type/undead",
       "overrides": {
         "label": "Frost Revenant",
         "description": "The risen dead of those who froze in the high passes, exhaling killing cold that numbs the living.",
@@ -1281,7 +1281,7 @@
     },
     {
       "key": "ice_elemental",
-      "base": "elemental",
+      "base": "core:creature_type/elemental",
       "overrides": {
         "label": "Ice Elemental",
         "description": "A frigid being of living ice that freezes the air around it and slows those who draw near.",
@@ -1334,7 +1334,7 @@
     },
     {
       "key": "orc_raider",
-      "base": "humanoid",
+      "base": "core:creature_type/humanoid",
       "overrides": {
         "label": "Orc Raider",
         "description": "A scarred warrior who fights for plunder and the joy of it.",
@@ -1360,7 +1360,7 @@
     },
     {
       "key": "ghoul",
-      "base": "undead",
+      "base": "core:creature_type/undead",
       "overrides": {
         "label": "Ghoul",
         "description": "A corpse-eater whose touch carries the chill of the grave.",
@@ -1390,7 +1390,7 @@
     },
     {
       "key": "iron_sentinel",
-      "base": "construct",
+      "base": "core:creature_type/construct",
       "overrides": {
         "label": "Iron Sentinel",
         "description": "An animated suit of war-plate that guards forgotten vaults, striking with crushing force that staggers its foes.",
@@ -1451,7 +1451,7 @@
     },
     {
       "key": "thunder_ram",
-      "base": "beast",
+      "base": "core:creature_type/beast",
       "overrides": {
         "label": "Thunder Ram",
         "description": "A mountain ram whose charge lands with a clap like thunder.",
@@ -1480,7 +1480,7 @@
     },
     {
       "key": "wisp",
-      "base": "elemental",
+      "base": "core:creature_type/elemental",
       "overrides": {
         "label": "Wisp",
         "description": "A drifting mote of light that lures travellers off the path and burns them.",
@@ -1510,7 +1510,7 @@
     },
     {
       "key": "mind_leech",
-      "base": "beast",
+      "base": "core:creature_type/beast",
       "overrides": {
         "label": "Mind Leech",
         "description": "A slick cave grub that feeds on thoughts and leaves its prey dazed.",
@@ -1540,7 +1540,7 @@
     },
     {
       "key": "wraith",
-      "base": "undead",
+      "base": "core:creature_type/undead",
       "overrides": {
         "label": "Wraith",
         "description": "A shade of hate that drinks the warmth from the living.",
@@ -1570,7 +1570,7 @@
     },
     {
       "key": "harpy",
-      "base": "beast",
+      "base": "core:creature_type/beast",
       "overrides": {
         "label": "Harpy",
         "description": "A shrieking bird-woman whose cry rattles the bones.",
@@ -1608,7 +1608,7 @@
     },
     {
       "key": "salamander",
-      "base": "elemental",
+      "base": "core:creature_type/elemental",
       "overrides": {
         "label": "Salamander",
         "description": "A serpent-bodied warrior of the burning deep.",
@@ -1638,7 +1638,7 @@
     },
     {
       "key": "troll",
-      "base": "humanoid",
+      "base": "core:creature_type/humanoid",
       "overrides": {
         "label": "Troll",
         "description": "A towering brute whose wounds close almost as fast as they open.",
@@ -1668,7 +1668,7 @@
     },
     {
       "key": "basilisk",
-      "base": "beast",
+      "base": "core:creature_type/beast",
       "overrides": {
         "label": "Basilisk",
         "description": "An eight-legged lizard whose stare turns flesh to stone.",
@@ -1697,7 +1697,7 @@
     },
     {
       "key": "lich_acolyte",
-      "base": "undead",
+      "base": "core:creature_type/undead",
       "overrides": {
         "label": "Lich Acolyte",
         "description": "A dead mage bound to a greater master, still casting what it learned in life.",
@@ -1727,7 +1727,7 @@
     },
     {
       "key": "sand_wyrm",
-      "base": "beast",
+      "base": "core:creature_type/beast",
       "overrides": {
         "label": "Sand Wyrm",
         "description": "A burrowing serpent that rises out of the dunes beneath its prey.",
@@ -1757,7 +1757,7 @@
     },
     {
       "key": "radiant_seraph",
-      "base": "elemental",
+      "base": "core:creature_type/elemental",
       "overrides": {
         "label": "Radiant Seraph",
         "description": "A winged herald of a forgotten court, terrible in its certainty.",
@@ -1787,7 +1787,7 @@
     },
     {
       "key": "void_horror",
-      "base": "elemental",
+      "base": "core:creature_type/elemental",
       "overrides": {
         "label": "Void Horror",
         "description": "A thing from between the stars that unmakes minds by looking at them.",
@@ -1818,7 +1818,7 @@
     },
     {
       "key": "acid_hydra",
-      "base": "beast",
+      "base": "core:creature_type/beast",
       "overrides": {
         "label": "Acid Hydra",
         "description": "A many-headed swamp serpent that spits caustic venom.",

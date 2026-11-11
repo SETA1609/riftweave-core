@@ -63,7 +63,7 @@ def item_field(ref, field):
     row = next(r for r in rows if r["key"] == key)
     value = row.get(field, row.get("overrides", {}).get(field))
     if value is None and "base" in row:
-        value = load_data(f"equipment/bases/{base_dir}/{row['base']}.json").get(field)
+        value = load_data(f"equipment/bases/{base_dir}/{row['base'].rsplit('/', 1)[-1]}.json").get(field)
     return value
 
 
@@ -79,10 +79,9 @@ def landed_material(ref, material):
     if material is None or not takes_material(ref):
         return None
     defaults = item_field(ref, "default_materials") or []
-    key = material.rsplit("/", 1)[-1]
-    if not defaults or key in defaults:
+    if not defaults or material in defaults:
         return material
-    return f"core:material/{defaults[0]}"
+    return defaults[0]
 
 
 def is_weapon(ref):
@@ -161,7 +160,7 @@ def monster_level(ref):
         return row["overrides"]["level"]
     if "level" in row:
         return row["level"]
-    return load_data(f"monsters/bases/{row['base']}.json")["level"]
+    return load_data(f"monsters/bases/{row['base'].rsplit('/', 1)[-1]}.json")["level"]
 
 
 def expected_value_cp(table, shift=0, material=None, rolls=None, size=None):

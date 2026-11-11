@@ -70,9 +70,8 @@ func (roller *roller) add(reference string, quantity int64, material, size strin
 	if !item.TakesMaterial {
 		material = ""
 	}
-	if material != "" && len(item.DefaultMaterials) > 0 &&
-		!slices.Contains(item.DefaultMaterials, material[strings.LastIndex(material, "/")+1:]) {
-		material = "core:material/" + item.DefaultMaterials[0]
+	if material != "" && len(item.DefaultMaterials) > 0 && !slices.Contains(item.DefaultMaterials, material) {
+		material = item.DefaultMaterials[0]
 	}
 	if !item.IsWeapon || size == "normal" {
 		size = ""
