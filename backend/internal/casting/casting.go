@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"math"
 	"slices"
+	"strings"
 
 	"github.com/SETA1609/riftweave-core/backend/internal/actor"
 	"github.com/SETA1609/riftweave-core/backend/internal/data"
@@ -28,11 +29,25 @@ type Caster struct {
 	Mana          int64            `json:"mana"`
 }
 
+// Target is the defender of an instant spell.
+type Target struct {
+	Attributes actor.Attributes `json:"attributes"`
+	Skills     map[string]int64 `json:"skills"`
+	Roll       int64            `json:"roll"`
+}
+
+// Save is the defender's roll against an instant spell, and what it decided.
+type Save struct {
+	resolution.Result
+	Outcome string `json:"result"`
+}
+
 // Input is the `casting` command's input.
 type Input struct {
 	Spell     string              `json:"spell"`
 	Modifiers []modifier.Modifier `json:"modifiers"`
 	Standing  []string            `json:"standing"` // spell keys on the target, for dispel
+	Target    *Target             `json:"target"`   // the defender, for an instant spell's save
 	Caster    Caster              `json:"caster"`
 	Roll      int64               `json:"roll"`
 }
@@ -40,6 +55,7 @@ type Input struct {
 // Result is one cast. Check is nil when nothing was rolled.
 type Result struct {
 	Check         *resolution.Result `json:"check"`
+	Save          *Save              `json:"save"`
 	Concentration *string            `json:"concentration"`
 	Ended         *string            `json:"ended"`
 	Outcome       string             `json:"outcome"`
@@ -47,6 +63,50 @@ type Result struct {
 	Effects       []json.RawMessage  `json:"effects"`
 	Dispelled     []string           `json:"dispelled"`
 	Mana          int64              `json:"mana"`
+}
+
+// rollSave rolls the defender's save and leaves in result the effects that land.
+func rollSave(ruleset *data.Ruleset, spell *data.Spell, target *Target, result *Result) error {
+	var rules *data.CastingSave = &ruleset.Casting.Save
+	var value int64
+	if spell.Save.Skill != "" {
+		value = target.Skills[spell.Save.Skill[strings.LastIndex(spell.Save.Skill, "/")+1:]]
+	} else {
+		ability, known := actor.ByKey(spell.Save.Attribute)
+		if !known {
+			return &data.NotDefinedError{Kind: "ability", Key: spell.Save.Attribute}
+		}
+		value = target.Attributes.Get(ability) * rules.AttributeMultiplier
+	}
+	var check resolution.Result = resolution.Check(&ruleset.Resolution, value, target.Attributes.Get(actor.Luck), 0, target.Roll)
+	var save Save = Save{Result: check, Outcome: "failed"}
+	result.Save = &save
+	if !check.Success {
+		return nil
+	}
+	if slices.Contains(check.Tags, "crit") || *check.Margin >= rules.FullMargin {
+		save.Outcome = "full"
+		result.Effects = []json.RawMessage{}
+		return nil
+	}
+	save.Outcome = "partial"
+	for index, encoded := range result.Effects {
+		var effect map[string]any
+		if err := json.Unmarshal(encoded, &effect); err != nil {
+			return err
+		}
+		for _, field := range []string{"magnitude", "duration"} {
+			if amount, present := effect[field].(float64); present {
+				effect[field] = max(1, int64(math.Floor(amount*float64(rules.PartialPercent)/100)))
+			}
+		}
+		scaled, err := json.Marshal(effect)
+		if err != nil {
+			return err
+		}
+		result.Effects[index] = scaled
+	}
+	return nil
 }
 
 // Run is the `casting` command.
@@ -116,6 +176,11 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	result.Outcome = "cast"
 	for _, applied := range spell.Effects {
 		result.Effects = append(result.Effects, applied.Encoded)
+	}
+	if spell.Delivery == "instant" && input.Target != nil {
+		if err := rollSave(ruleset, spell, input.Target, &result); err != nil {
+			return Result{}, err
+		}
 	}
 	if spell.Concentration {
 		var held *string = caster.Concentration

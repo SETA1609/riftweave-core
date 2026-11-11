@@ -251,7 +251,7 @@ casting rules.
   pool, not a player action.
 
 - **No saves.** A crafted spell cannot carry a save: saves are for authored instant spells
-  (M3-05). A crafted spell is avoided only by a dodge or a block.
+  ([casting.md](../core/casting.md#delivery-and-saves)). A crafted spell is avoided only by a dodge or a block.
 
 ### Cost formula
 

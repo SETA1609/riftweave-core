@@ -26,6 +26,17 @@
           "required": ["none", "light", "medium", "heavy"],
           "additionalProperties": false
         },
+        "save": {
+          "type": "object",
+          "description": "How an instant spell's save picks its outcome (docs/core/casting.md#delivery-and-saves).",
+          "properties": {
+            "attribute_multiplier": { "type": "integer", "minimum": 1 },
+            "full_margin": { "type": "integer", "minimum": 0 },
+            "partial_percent": { "type": "integer", "minimum": 1, "maximum": 100 }
+          },
+          "required": ["attribute_multiplier", "full_margin", "partial_percent"],
+          "additionalProperties": false
+        },
         "skill_discount": {
           "type": "object",
           "description": "What skill takes off a spell's mana cost: min(skill / divisor, cap), and the least a cast can cost (docs/core/casting.md#paid-cost).",

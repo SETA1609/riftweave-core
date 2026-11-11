@@ -6,7 +6,7 @@
       "label": "Fire Bolt",
       "description": "Hurl a mote of fire at a target.",
       "color": "red",
-      "level": 1,
+      "level": 1, "delivery": "single",
       "effects": [
         {
           "effect": "core:effect/damage_fire",
@@ -23,7 +23,7 @@
       "label": "Force Dart",
       "description": "A needle of raw force leaps from your fingertip to its target.",
       "color": "red",
-      "level": 2,
+      "level": 2, "delivery": "single",
       "effects": [
         {
           "effect": "core:effect/damage_force",
@@ -101,7 +101,7 @@
       "label": "Fire Burst",
       "description": "Flames burst outward from a spot you choose, scorching all around it.",
       "color": "red",
-      "level": 6,
+      "level": 6, "delivery": "area",
       "effects": [
         {
           "effect": "core:effect/damage_fire",
@@ -160,7 +160,7 @@
       "label": "Frost Lance",
       "description": "A spear of ice that strikes one target.",
       "color": "red",
-      "level": 4,
+      "level": 4, "delivery": "single",
       "effects": [
         {
           "effect": "core:effect/damage_frost",
@@ -197,7 +197,7 @@
       "label": "Chain Lightning",
       "description": "Lightning leaps from foe to foe across the field.",
       "color": "red",
-      "level": 12,
+      "level": 12, "delivery": "area",
       "effects": [
         {
           "effect": "core:effect/damage_shock",
@@ -215,7 +215,7 @@
       "label": "Ice Storm",
       "description": "Hail and shards of ice hammer an area.",
       "color": "red",
-      "level": 18,
+      "level": 18, "delivery": "area",
       "effects": [
         {
           "effect": "core:effect/damage_frost",
@@ -233,7 +233,7 @@
       "label": "Meteor",
       "description": "A burning stone falls from the sky and sets the ground alight.",
       "color": "red",
-      "level": 24,
+      "level": 24, "delivery": "area",
       "effects": [
         {
           "effect": "core:effect/damage_fire",
@@ -258,7 +258,7 @@
       "label": "Inferno",
       "description": "A firestorm that swallows a whole battlefield.",
       "color": "red",
-      "level": 30,
+      "level": 30, "delivery": "area",
       "effects": [
         {
           "effect": "core:effect/damage_fire",
@@ -334,7 +334,7 @@
       "label": "Conjured Blades",
       "description": "A whirl of conjured knives cuts everyone in the area.",
       "color": "orange",
-      "level": 9,
+      "level": 9, "delivery": "area",
       "effects": [
         {
           "effect": "core:effect/bleed",
@@ -431,7 +431,7 @@
       "label": "Blinding Flash",
       "description": "A burst of false light blinds those nearby.",
       "color": "yellow",
-      "level": 3,
+      "level": 3, "delivery": "area",
       "effects": [
         {
           "effect": "core:effect/blind",
@@ -470,7 +470,7 @@
       "label": "Mind Spike",
       "description": "A pain the target believes in, and so feels.",
       "color": "yellow",
-      "level": 5,
+      "level": 5, "delivery": "instant", "save": {"attribute": "wil"},
       "effects": [
         {
           "effect": "core:effect/damage_psychic",
@@ -487,7 +487,7 @@
       "label": "Charm Person",
       "description": "The target sees you as a friend while you hold the spell.",
       "color": "yellow",
-      "level": 7,
+      "level": 7, "delivery": "instant", "save": {"skill": "core:skill/insight"},
       "concentration": true,
       "effects": [
         {
@@ -506,7 +506,7 @@
       "label": "Silence",
       "description": "Steal the sound from around a caster; no spell can be spoken.",
       "color": "yellow",
-      "level": 10,
+      "level": 10, "delivery": "instant", "save": {"attribute": "wil"},
       "effects": [
         {
           "effect": "core:effect/silence",
@@ -543,7 +543,7 @@
       "label": "Psychic Scream",
       "description": "A shriek only minds can hear, that blinds those it reaches.",
       "color": "yellow",
-      "level": 18,
+      "level": 18, "delivery": "instant", "save": {"attribute": "wil"},
       "effects": [
         {
           "effect": "core:effect/damage_psychic",
@@ -568,7 +568,7 @@
       "label": "Mass Charm",
       "description": "A crowd sees you as its friend.",
       "color": "yellow",
-      "level": 22,
+      "level": 22, "delivery": "instant", "save": {"skill": "core:skill/insight"},
       "concentration": true,
       "effects": [
         {
@@ -737,7 +737,7 @@
       "label": "Corrode",
       "description": "Alter what you touch into something that dissolves.",
       "color": "blue",
-      "level": 4,
+      "level": 4, "delivery": "single",
       "effects": [
         {
           "effect": "core:effect/damage_acid",
@@ -754,7 +754,7 @@
       "label": "Slow",
       "description": "The target moves as if through deep water.",
       "color": "blue",
-      "level": 5,
+      "level": 5, "delivery": "single",
       "effects": [
         {
           "effect": "core:effect/slow",
@@ -791,7 +791,7 @@
       "label": "Paralyze",
       "description": "The target's limbs lock in place.",
       "color": "blue",
-      "level": 11,
+      "level": 11, "delivery": "instant", "save": {"attribute": "end"},
       "effects": [
         {
           "effect": "core:effect/paralyze",
@@ -809,7 +809,7 @@
       "label": "Acid Rain",
       "description": "A rain that eats through armor and skin.",
       "color": "blue",
-      "level": 17,
+      "level": 17, "delivery": "area",
       "effects": [
         {
           "effect": "core:effect/damage_acid",
@@ -827,7 +827,7 @@
       "label": "Petrify",
       "description": "Turn the target to stone.",
       "color": "blue",
-      "level": 26,
+      "level": 26, "delivery": "instant", "save": {"attribute": "end"},
       "effects": [
         {
           "effect": "core:effect/petrify",
@@ -879,7 +879,7 @@
       "label": "Thunderclap",
       "description": "A clap of force and sound around you.",
       "color": "indigo",
-      "level": 5,
+      "level": 5, "delivery": "area",
       "effects": [
         {
           "effect": "core:effect/damage_thunder",
@@ -897,7 +897,7 @@
       "label": "Force Push",
       "description": "A shove of force that knocks the target down.",
       "color": "indigo",
-      "level": 6,
+      "level": 6, "delivery": "single",
       "effects": [
         {
           "effect": "core:effect/knockdown",
@@ -969,7 +969,7 @@
       "label": "Sonic Boom",
       "description": "A blast of thunder that throws everyone in the area down.",
       "color": "indigo",
-      "level": 24,
+      "level": 24, "delivery": "area",
       "effects": [
         {
           "effect": "core:effect/damage_thunder",
@@ -1012,7 +1012,7 @@
       "label": "Sap Will",
       "description": "Drain the target's will.",
       "color": "violet",
-      "level": 6,
+      "level": 6, "delivery": "instant", "save": {"attribute": "wil"},
       "effects": [
         {
           "effect": "core:effect/drain_attribute",
@@ -1068,7 +1068,7 @@
       "label": "Mana Drain",
       "description": "Bleed the target's mana away, three points each second.",
       "color": "violet",
-      "level": 16,
+      "level": 16, "delivery": "instant", "save": {"attribute": "wil"},
       "effects": [
         {
           "effect": "core:effect/drain_resource",
@@ -1104,7 +1104,7 @@
       "label": "Holy Light",
       "description": "A touch of light that burns the unholy.",
       "color": "white",
-      "level": 1,
+      "level": 1, "delivery": "single",
       "effects": [
         {
           "effect": "core:effect/damage_radiant",
@@ -1121,7 +1121,7 @@
       "label": "Smite",
       "description": "A lance of holy light.",
       "color": "white",
-      "level": 5,
+      "level": 5, "delivery": "single",
       "effects": [
         {
           "effect": "core:effect/damage_radiant",
@@ -1175,7 +1175,7 @@
       "label": "Sunburst",
       "description": "Light bursts from a point and burns all it reaches.",
       "color": "white",
-      "level": 18,
+      "level": 18, "delivery": "area",
       "effects": [
         {
           "effect": "core:effect/damage_radiant",
@@ -1213,7 +1213,7 @@
       "label": "Drain Life",
       "description": "A cold that withers the target's flesh.",
       "color": "black",
-      "level": 3,
+      "level": 3, "delivery": "single",
       "effects": [
         {
           "effect": "core:effect/damage_necrotic",
@@ -1230,7 +1230,7 @@
       "label": "Curse",
       "description": "Lay a curse on the target.",
       "color": "black",
-      "level": 5,
+      "level": 5, "delivery": "instant", "save": {"attribute": "wil"},
       "effects": [
         {
           "effect": "core:effect/curse",
@@ -1267,7 +1267,7 @@
       "label": "Wither",
       "description": "The target's strength drains away.",
       "color": "black",
-      "level": 10,
+      "level": 10, "delivery": "instant", "save": {"attribute": "end"},
       "effects": [
         {
           "effect": "core:effect/drain_attribute",
@@ -1306,7 +1306,7 @@
       "label": "Death Grip",
       "description": "Death's hand closes on the target and holds it still.",
       "color": "black",
-      "level": 28,
+      "level": 28, "delivery": "single",
       "effects": [
         {
           "effect": "core:effect/damage_necrotic",

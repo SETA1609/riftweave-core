@@ -22,6 +22,8 @@
         "source": { "$ref": "schema.json#/definitions/sourceRef" },
         "color": { "$ref": "schema.json#/definitions/color" },
         "level": { "type": "integer", "minimum": 1, "maximum": 30, "description": "The spell's place on the level scale; a dispel of magnitude N ends standing spells of level N or below (docs/core/casting.md)." },
+        "delivery": { "type": "string", "enum": ["single", "area", "instant"], "description": "How an offensive spell reaches its target, which decides the defense (docs/core/casting.md#delivery-and-saves)." },
+        "save": { "description": "What an instant spell's target rolls: an attribute or a skill.", "oneOf": [ { "type": "object", "properties": { "attribute": { "$ref": "schema.json#/definitions/ability" } }, "required": ["attribute"], "additionalProperties": false }, { "type": "object", "properties": { "skill": { "$ref": "schema.json#/definitions/skillRef" } }, "required": ["skill"], "additionalProperties": false } ] },
         "concentration": { "type": "boolean", "description": "True if the caster holds the spell; a caster holds one, and a new one ends the old (docs/core/casting.md)." },
         "effects": {
           "type": "array",

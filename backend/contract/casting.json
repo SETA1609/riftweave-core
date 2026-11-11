@@ -72,6 +72,25 @@
           "$ref": "common.json#/definitions/key"
         },
         "description": "Spell keys standing on the target, for dispel."
+      },
+      "target": {
+        "type": "object",
+        "description": "The defender, for an instant spell's save.",
+        "properties": {
+          "attributes": {
+            "$ref": "common.json#/definitions/attributes"
+          },
+          "skills": {
+            "$ref": "common.json#/definitions/skills"
+          },
+          "roll": {
+            "$ref": "common.json#/definitions/d100"
+          }
+        },
+        "required": [
+          "roll"
+        ],
+        "additionalProperties": false
       }
     },
     "required": [
@@ -169,6 +188,49 @@
         "items": {
           "$ref": "common.json#/definitions/key"
         }
+      },
+      "save": {
+        "oneOf": [
+          {
+            "type": "null"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "target": {
+                "type": "integer"
+              },
+              "success": {
+                "type": "boolean"
+              },
+              "margin": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "tags": {
+                "$ref": "common.json#/definitions/tags"
+              },
+              "result": {
+                "type": "string",
+                "enum": [
+                  "failed",
+                  "partial",
+                  "full"
+                ]
+              }
+            },
+            "required": [
+              "target",
+              "success",
+              "margin",
+              "tags",
+              "result"
+            ],
+            "additionalProperties": false
+          }
+        ]
       }
     },
     "additionalProperties": false

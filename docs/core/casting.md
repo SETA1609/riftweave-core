@@ -37,6 +37,22 @@ spell   = the row named by `spell`; skill = <color>_magic
 - A dispelled spell's modifiers carry the source `spell:<key>`; the consumer removes them through the removed sources of [modifier.md](modifier.md). The cast returns only the keys. [A]
 - The AP cost of a cast is the `cast` row in [actions.md](actions.md); this function does not spend AP.
 
+## Delivery and saves
+
+Every offensive spell names a `delivery`, which decides the defense ([combat.md](combat.md)): `single` for one target and `area` for a radius, and both can be dodged or blocked. An `instant` spell reaches the mind, body, or soul with nothing to dodge, so its defense is a `save`, and it must name one: an `attribute` or a `skill`. [A]
+
+```
+save target = the skill's value, or attribute x attribute_multiplier       10
+              (a missing skill or attribute reads 0)
+save        = one resolution on that target, with the defender's LCK and the defender's roll
+failed      the save fails or fumbles: the effects land as authored
+partial     the save succeeds with margin < full_margin (30):
+            each magnitude and duration x partial_percent (50), rounded down, at least 1
+full        margin >= full_margin, or the save is a crit: no effects land
+```
+
+The cast must succeed first; a failed cast rolls no save. The `target` input carries the defender's `attributes`, `skills`, and `roll`. An instant spell cast with no `target` returns its effects as authored and a null `save`, so a consumer can roll the save itself. Any other delivery ignores `target`. A crafted spell carries no save ([magic.md](../modules/magic.md)). [V 2026-11-11, `casting` vectors] The values are in `casting/core.json` under `save`. [A]
+
 ## Paid cost
 
 What the caster pays depends on skill and modifiers, never on level:
@@ -62,4 +78,5 @@ effects        the spell's applied effects on a cast, else []
 concentration  the spell key the caster holds after the cast, or null
 ended          the concentration spell the cast ended, or null
 dispelled      the standing spell keys the cast ended, in input order
+save           { target, success, margin, tags, result }, or null when no save was rolled
 ```
