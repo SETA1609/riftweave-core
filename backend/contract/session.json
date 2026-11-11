@@ -6,7 +6,7 @@
   "input_schema": {
     "type": "object",
     "properties": {
-      "op": {
+      "operation": {
         "type": "string",
         "enum": [
           "start",
@@ -25,7 +25,7 @@
       }
     },
     "required": [
-      "op"
+      "operation"
     ],
     "additionalProperties": false
   },

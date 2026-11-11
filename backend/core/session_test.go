@@ -46,7 +46,7 @@ func without(section map[string]any, fields ...string) {
 func runChain(t *testing.T, opened *Core) map[string]any {
 	t.Helper()
 	vectors := readJSON(t, filepath.Join(repo, "ruleset", "tests", "vectors", "playthrough.json")).([]any)
-	var session any = sessionCall(t, opened, map[string]any{"op": "start", "start": startingActor()})["session"]
+	var session any = sessionCall(t, opened, map[string]any{"operation": "start", "start": startingActor()})["session"]
 	for _, raw := range vectors {
 		var vector map[string]any = raw.(map[string]any)
 		name := vector["name"].(string)
@@ -74,7 +74,7 @@ func runChain(t *testing.T, opened *Core) map[string]any {
 		case strings.HasPrefix(name, "cast"):
 			without(input["caster"].(map[string]any), "mana", "attributes", "skills")
 		}
-		answer := sessionCall(t, opened, map[string]any{"op": "step", "session": session, "step": step})
+		answer := sessionCall(t, opened, map[string]any{"operation": "step", "session": session, "step": step})
 		session = answer["session"]
 		result := answer["result"].(map[string]any)
 		for field, want := range expect {
@@ -112,7 +112,7 @@ func TestASavedSessionReplaysToTheSameResult(t *testing.T) {
 	if err := json.Unmarshal(saved, &loaded); err != nil {
 		t.Fatal(err)
 	}
-	answer := sessionCall(t, opened, map[string]any{"op": "replay", "session": loaded})
+	answer := sessionCall(t, opened, map[string]any{"operation": "replay", "session": loaded})
 	if answer["matches"] != true || !reflect.DeepEqual(answer["session"], session) {
 		t.Errorf("replay differs: matches %v", answer["matches"])
 	}
@@ -122,7 +122,7 @@ func TestAReplayNoticesAnActorThatDisagreesWithTheLog(t *testing.T) {
 	opened := open(t)
 	session := runChain(t, opened)
 	session["actor"].(map[string]any)["xp"] = 5
-	answer := sessionCall(t, opened, map[string]any{"op": "replay", "session": session})
+	answer := sessionCall(t, opened, map[string]any{"operation": "replay", "session": session})
 	if answer["matches"] != false {
 		t.Error("a changed actor should not match")
 	}
@@ -133,8 +133,8 @@ func TestAReplayNoticesAnActorThatDisagreesWithTheLog(t *testing.T) {
 
 func TestAFailedStepChangesNothing(t *testing.T) {
 	opened := open(t)
-	session := sessionCall(t, opened, map[string]any{"op": "start", "start": startingActor()})["session"]
-	body, _ := json.Marshal(map[string]any{"op": "step", "session": session, "step": map[string]any{"command": "casting", "input": map[string]any{"spell": "no_such_spell", "roll": 1}}})
+	session := sessionCall(t, opened, map[string]any{"operation": "start", "start": startingActor()})["session"]
+	body, _ := json.Marshal(map[string]any{"operation": "step", "session": session, "step": map[string]any{"command": "casting", "input": map[string]any{"spell": "no_such_spell", "roll": 1}}})
 	if _, err := opened.Run("session", body); !errors.Is(err, ErrRule) {
 		t.Errorf("want a rule error, got %v", err)
 	}

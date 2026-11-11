@@ -10,7 +10,7 @@ Session
   actor     the current stored actor
 ```
 
-| `op` | Input | Result |
+| `operation` | Input | Result |
 | --- | --- | --- |
 | `start` | `start` (a stored actor) | a new `session` |
 | `step` | `session`, `step` (`command`, `input`, optional `as`) | the new `session`, and the command's `result` |

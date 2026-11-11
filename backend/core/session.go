@@ -33,10 +33,10 @@ type Session struct {
 }
 
 type sessionInput struct {
-	Op      string        `json:"op"`
-	Start   *stored.Actor `json:"start"`
-	Session *Session      `json:"session"`
-	Step    *SessionStep  `json:"step"`
+	Operation string        `json:"operation"`
+	Start     *stored.Actor `json:"start"`
+	Session   *Session      `json:"session"`
+	Step      *SessionStep  `json:"step"`
 }
 
 type sessionResult struct {
@@ -49,7 +49,7 @@ func init() { commands["session"] = bind(runSession) }
 
 // runSession is the `session` command (docs/backend/sessions.md). It holds no rule.
 func runSession(ruleset *data.Ruleset, input sessionInput) (sessionResult, error) {
-	switch input.Op {
+	switch input.Operation {
 	case "start":
 		if input.Start == nil {
 			return sessionResult{}, errors.New("session start needs a start actor")
@@ -95,7 +95,7 @@ func runSession(ruleset *data.Ruleset, input sessionInput) (sessionResult, error
 		session.Actor = actor
 		return sessionResult{Session: session, Matches: &matches}, nil
 	}
-	return sessionResult{}, &data.NotDefinedError{Kind: "session op", Key: input.Op}
+	return sessionResult{}, &data.NotDefinedError{Kind: "session operation", Key: input.Operation}
 }
 
 func encodedValue(value any) any {
