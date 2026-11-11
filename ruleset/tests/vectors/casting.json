@@ -892,5 +892,408 @@
       "ended": null,
       "dispelled": []
     }
+  },
+  {
+    "name": "save: a failed save takes the spell in full",
+    "spell": "mind_spike",
+    "caster": {
+      "skills": {
+        "yellow_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100
+    },
+    "roll": 30,
+    "target": {
+      "attributes": {
+        "wil": 6,
+        "lck": 0
+      },
+      "roll": 90
+    },
+    "expect": {
+      "outcome": "cast",
+      "effects": [
+        {
+          "effect": "core:effect/damage_psychic",
+          "magnitude": 12,
+          "target": "ranged"
+        }
+      ],
+      "save": {
+        "target": 60,
+        "success": false,
+        "margin": null,
+        "tags": [],
+        "result": "failed"
+      }
+    }
+  },
+  {
+    "name": "save: a partial save halves the magnitude",
+    "spell": "mind_spike",
+    "caster": {
+      "skills": {
+        "yellow_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100
+    },
+    "roll": 30,
+    "target": {
+      "attributes": {
+        "wil": 6,
+        "lck": 0
+      },
+      "roll": 50
+    },
+    "expect": {
+      "effects": [
+        {
+          "effect": "core:effect/damage_psychic",
+          "magnitude": 6,
+          "target": "ranged"
+        }
+      ],
+      "save": {
+        "target": 60,
+        "success": true,
+        "margin": 10,
+        "tags": [],
+        "result": "partial"
+      }
+    }
+  },
+  {
+    "name": "save: margin just under the full margin is partial",
+    "spell": "mind_spike",
+    "caster": {
+      "skills": {
+        "yellow_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100
+    },
+    "roll": 30,
+    "target": {
+      "attributes": {
+        "wil": 6,
+        "lck": 0
+      },
+      "roll": 31
+    },
+    "expect": {
+      "effects": [
+        {
+          "effect": "core:effect/damage_psychic",
+          "magnitude": 6,
+          "target": "ranged"
+        }
+      ],
+      "save": {
+        "target": 60,
+        "success": true,
+        "margin": 29,
+        "tags": [],
+        "result": "partial"
+      }
+    }
+  },
+  {
+    "name": "save: a full save at the full margin stops the effects",
+    "spell": "mind_spike",
+    "caster": {
+      "skills": {
+        "yellow_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100
+    },
+    "roll": 30,
+    "target": {
+      "attributes": {
+        "wil": 6,
+        "lck": 0
+      },
+      "roll": 30
+    },
+    "expect": {
+      "effects": [],
+      "save": {
+        "target": 60,
+        "success": true,
+        "margin": 30,
+        "tags": [],
+        "result": "full"
+      }
+    }
+  },
+  {
+    "name": "save: a crit is a full save at any margin",
+    "spell": "mind_spike",
+    "caster": {
+      "skills": {
+        "yellow_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100
+    },
+    "roll": 30,
+    "target": {
+      "attributes": {
+        "wil": 1,
+        "lck": 0
+      },
+      "roll": 3
+    },
+    "expect": {
+      "effects": [],
+      "save": {
+        "target": 10,
+        "success": true,
+        "margin": 7,
+        "tags": [
+          "crit"
+        ],
+        "result": "full"
+      }
+    }
+  },
+  {
+    "name": "save: a fumble is a failed save",
+    "spell": "mind_spike",
+    "caster": {
+      "skills": {
+        "yellow_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100
+    },
+    "roll": 30,
+    "target": {
+      "attributes": {
+        "wil": 10,
+        "lck": 0
+      },
+      "roll": 100
+    },
+    "expect": {
+      "effects": [
+        {
+          "effect": "core:effect/damage_psychic",
+          "magnitude": 12,
+          "target": "ranged"
+        }
+      ],
+      "save": {
+        "target": 100,
+        "success": false,
+        "margin": null,
+        "tags": [
+          "fumble"
+        ],
+        "result": "failed"
+      }
+    }
+  },
+  {
+    "name": "save: a partial save halves the duration and keeps a magnitude of at least 1",
+    "spell": "curse",
+    "caster": {
+      "skills": {
+        "black_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100
+    },
+    "roll": 30,
+    "target": {
+      "attributes": {
+        "wil": 6,
+        "lck": 0
+      },
+      "roll": 50
+    },
+    "expect": {
+      "effects": [
+        {
+          "effect": "core:effect/curse",
+          "magnitude": 1,
+          "duration": 30,
+          "target": "ranged"
+        }
+      ],
+      "save": {
+        "target": 60,
+        "success": true,
+        "margin": 10,
+        "tags": [],
+        "result": "partial"
+      }
+    }
+  },
+  {
+    "name": "save: a skill save reads the skill",
+    "spell": "charm_person",
+    "caster": {
+      "skills": {
+        "yellow_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100
+    },
+    "roll": 30,
+    "target": {
+      "skills": {
+        "insight": 45
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "roll": 40
+    },
+    "expect": {
+      "effects": [
+        {
+          "effect": "core:effect/charm",
+          "magnitude": 1,
+          "duration": 30,
+          "target": "ranged"
+        }
+      ],
+      "save": {
+        "target": 45,
+        "success": true,
+        "margin": 5,
+        "tags": [],
+        "result": "partial"
+      }
+    }
+  },
+  {
+    "name": "save: a missing skill reads 0, so the save fails",
+    "spell": "charm_person",
+    "caster": {
+      "skills": {
+        "yellow_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100
+    },
+    "roll": 30,
+    "target": {
+      "attributes": {
+        "lck": 0
+      },
+      "roll": 40
+    },
+    "expect": {
+      "save": {
+        "target": 0,
+        "success": false,
+        "margin": null,
+        "tags": [],
+        "result": "failed"
+      }
+    }
+  },
+  {
+    "name": "save: no target returns the effects and no save",
+    "spell": "mind_spike",
+    "caster": {
+      "skills": {
+        "yellow_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100
+    },
+    "roll": 30,
+    "expect": {
+      "effects": [
+        {
+          "effect": "core:effect/damage_psychic",
+          "magnitude": 12,
+          "target": "ranged"
+        }
+      ],
+      "save": null
+    }
+  },
+  {
+    "name": "save: a dodged spell has no save, and ignores a target",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100
+    },
+    "roll": 30,
+    "target": {
+      "attributes": {
+        "wil": 6,
+        "lck": 0
+      },
+      "roll": 20
+    },
+    "expect": {
+      "effects": [
+        {
+          "effect": "core:effect/damage_fire",
+          "magnitude": 8,
+          "target": "ranged"
+        }
+      ],
+      "save": null
+    }
+  },
+  {
+    "name": "save: a failed cast rolls no save",
+    "spell": "mind_spike",
+    "caster": {
+      "skills": {
+        "yellow_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100
+    },
+    "roll": 90,
+    "target": {
+      "attributes": {
+        "wil": 6,
+        "lck": 0
+      },
+      "roll": 20
+    },
+    "expect": {
+      "outcome": "failed",
+      "effects": [],
+      "save": null
+    }
   }
 ]

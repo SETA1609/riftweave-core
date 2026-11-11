@@ -131,6 +131,32 @@ class TestSpells(unittest.TestCase):
         self.assertEqual(rows["summoned_zombie"]["hitPoints"] - rows["summoned_skeleton"]["hitPoints"],
                          rows["zombie"]["hitPoints"] - rows["skeleton"]["hitPoints"])
 
+    def offensive(self):
+        pool = effects()
+        return [s for s in spells() if any(
+            pool[e["effect"].rsplit("/", 1)[-1]].get("polarity") == "harmful"
+            and pool[e["effect"].rsplit("/", 1)[-1]]["category"] != "conjure"
+            and e["target"] != "self" for e in s["effects"])]
+
+    def test_every_offensive_spell_has_a_delivery(self):
+        offensive = self.offensive()
+        self.assertTrue(offensive)
+        for spell in offensive:
+            with self.subTest(spell=spell["key"]):
+                self.assertIn(spell.get("delivery"), ("single", "area", "instant"))
+
+    def test_a_delivery_matches_the_effects_shape(self):
+        for spell in spells():
+            if spell.get("delivery") in ("single", "area"):
+                with self.subTest(spell=spell["key"]):
+                    area = any(e["target"] == "area" for e in spell["effects"])
+                    self.assertEqual(spell["delivery"], "area" if area else "single")
+
+    def test_every_instant_spell_names_a_save_and_no_other_does(self):
+        for spell in spells():
+            with self.subTest(spell=spell["key"]):
+                self.assertEqual("save" in spell, spell.get("delivery") == "instant")
+
     def test_the_hazard_and_lock_spells_exist(self):
         rows = {row["key"]: row for row in spells()}
         expected = {"disarm_trap": "disarm_hazard", "greater_disarm": "disarm_hazard", "unlock": "unlock",
