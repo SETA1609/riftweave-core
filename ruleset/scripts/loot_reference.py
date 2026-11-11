@@ -58,8 +58,7 @@ def item_field(ref, field):
     """An equipment item's field: its own, its overrides', or its base's (None if none)."""
     category, key = ref.split(":", 1)[1].split("/", 1)
     file_name, base_dir = EQUIPMENT[category]
-    collection = load_data(f"equipment/{file_name}")
-    rows = next(value for value in collection.values() if isinstance(value, list))
+    rows = validate.equipment_rows(DATA_DIR / "equipment" / file_name)
     row = next(r for r in rows if r["key"] == key)
     value = row.get(field, row.get("overrides", {}).get(field))
     if value is None and "base" in row:

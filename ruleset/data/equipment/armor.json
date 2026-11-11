@@ -1,29 +1,6 @@
 {
   "$schema": "../../schemas/equipment.schema.json",
   "equipment": [
-    { "key": "padded_tunic",            "base": "core:armor_base/padded_tunic",            "overrides": {} },
-    { "key": "cloth_robe",              "base": "core:armor_base/cloth_robe",              "overrides": {} },
-    { "key": "leather_jerkin",          "base": "core:armor_base/leather_jerkin",          "overrides": {} },
-    { "key": "studded_leather_jerkin",  "base": "core:armor_base/studded_leather_jerkin",  "overrides": {} },
-    { "key": "chainmail",               "base": "core:armor_base/chainmail",               "overrides": {} },
-    { "key": "scale_shirt",             "base": "core:armor_base/scale_shirt",             "overrides": {} },
-    { "key": "standard_shield",         "base": "core:armor_base/standard_shield",         "overrides": {} },
-    { "key": "buckler",                 "base": "core:armor_base/buckler",                 "overrides": {} },
-    { "key": "tower_shield",            "base": "core:armor_base/tower_shield",            "overrides": {} },
-    { "key": "brigandine",              "base": "core:armor_base/brigandine",              "overrides": {} },
-    { "key": "breastplate",             "base": "core:armor_base/breastplate",             "overrides": {} },
-    { "key": "plate_cuirass",           "base": "core:armor_base/plate_cuirass",           "overrides": {} },
-    { "key": "full_plate",              "base": "core:armor_base/full_plate",              "overrides": {} },
-    { "key": "cap_hood",                "base": "core:armor_base/cap_hood",                "overrides": {} },
-    { "key": "coif",                    "base": "core:armor_base/coif",                    "overrides": {} },
-    { "key": "helmet",                  "base": "core:armor_base/helmet",                  "overrides": {} },
-    { "key": "gloves",                  "base": "core:armor_base/gloves",                  "overrides": {} },
-    { "key": "gauntlets",               "base": "core:armor_base/gauntlets",               "overrides": {} },
-    { "key": "shoes",                   "base": "core:armor_base/shoes",                   "overrides": {} },
-    { "key": "boots",                   "base": "core:armor_base/boots",                   "overrides": {} },
-    { "key": "greaves",                 "base": "core:armor_base/greaves",                 "overrides": {} },
-    { "key": "cloak",                   "base": "core:armor_base/cloak",                   "overrides": {} },
-    { "key": "backpack",                "base": "core:armor_base/backpack",                "overrides": {} },
     { "key": "steel_chainmail",        "base": "core:armor_base/chainmail",               "overrides": { "enchantment_slots": 2, "phase": "metal", "effect_magnitude_mult": 1.0, "cost": { "quantity": 100, "unit": "gp" } } }
   ]
 }

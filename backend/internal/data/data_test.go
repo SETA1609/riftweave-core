@@ -66,3 +66,27 @@ func TestABrokenEconomySkipsItemsAndLootOnce(t *testing.T) {
 		t.Fatalf("want the economy error and one note that items and loot were skipped, got:\n%v", err)
 	}
 }
+
+// docs/core/composition.md#a-base-that-is-an-item
+func TestAnItemBaseIsTheItemOfItsKey(t *testing.T) {
+	ruleset, err := Load(copyOfTheRuleset(t))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if dagger, ok := ruleset.Items["core:weapon/dagger"]; !ok || dagger.Dice != "1d4" {
+		t.Errorf("core:weapon/dagger = %+v, %v; want the dagger base's 1d4", dagger, ok)
+	}
+	for _, ref := range []string{"core:weapon/bow", "core:accessory/ring_base", "core:armor/plate"} {
+		if _, ok := ruleset.Items[ref]; ok {
+			t.Errorf("%s loaded; its base is a shape only", ref)
+		}
+	}
+}
+
+func TestABaseWithoutIsItemIsReported(t *testing.T) {
+	var files fstest.MapFS = copyOfTheRuleset(t)
+	files["equipment/bases/weapons/dagger.json"] = &fstest.MapFile{Data: []byte(`{"key":"dagger"}`)}
+	if _, err := Load(files); err == nil || !strings.Contains(err.Error(), "is_item") {
+		t.Errorf("error = %v; want one naming is_item", err)
+	}
+}

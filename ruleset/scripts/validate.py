@@ -175,7 +175,7 @@ def _iter_equipment_entries(data_files, module_data_files=None, rel_base=ROOT):
             data = json.loads(fp.read_text())
         except (json.JSONDecodeError, OSError):
             continue
-        equipment = data.get("equipment")
+        equipment = equipment_rows(fp, equipment=data.get("equipment"))
         if not isinstance(equipment, list):
             continue
         rel = fp.relative_to(rel_base)
@@ -1373,6 +1373,41 @@ EQUIPMENT_BASES_DIRS = {
 }
 
 
+def equipment_rows(fp, errors=None, equipment=None):
+    """An equipment file's rows: each base beside it with `is_item: true` as a row of its own key
+    with no overrides, in file-name order, then the file's own rows
+    (docs/core/composition.md#a-base-that-is-an-item).
+
+    `equipment` is the file's row list when the caller has read it already. A base that does not
+    state `is_item`, or a row that repeats an item base's key, is reported in `errors`.
+    """
+    if equipment is None:
+        equipment = json.loads(fp.read_text()).get("equipment")
+    if not isinstance(equipment, list):
+        return equipment
+    category = EQUIPMENT_BASE_CATEGORIES.get(fp.name)
+    base_dir = fp.parent / "bases" / fp.stem
+    if not category or not base_dir.is_dir():
+        return equipment
+    report = errors.append if errors is not None else (lambda _message: None)
+    items = []
+    for path in sorted(base_dir.glob("*.json")):
+        try:
+            base = json.loads(path.read_text())
+        except (json.JSONDecodeError, OSError):
+            continue
+        is_item = base.get("is_item") if isinstance(base, dict) else None
+        if not isinstance(is_item, bool):
+            report(f"bases/{fp.stem}/{path.name}: is_item must be true or false")
+        elif is_item:
+            items.append({"key": path.stem, "base": f"core:{category}/{path.stem}", "overrides": {}})
+    item_keys = {row["key"] for row in items}
+    for row in equipment:
+        if isinstance(row, dict) and row.get("key") in item_keys:
+            report(f"{fp.name}: '{row['key']}' is a duplicate: bases/{fp.stem}/{row['key']}.json is already that item")
+    return items + equipment
+
+
 def _resolve_equipment_bases(data, errors, fp):
     """Mutate data in-place: replace base+override equipment entries with merged flat entries.
 
@@ -1416,6 +1451,8 @@ def _resolve_equipment_bases(data, errors, fp):
         # default_materials names what a base (or a row's overrides) is found and sold in
         # (docs/core/loot.md#what-lands-on-an-item); loot reads it, the item schema does not.
         merged.pop("default_materials", None)
+        # is_item says whether the base is also an item (docs/core/composition.md#a-base-that-is-an-item).
+        merged.pop("is_item", None)
 
         # Validate merged enchantment_slots is an integer
         es = merged.get("enchantment_slots")
@@ -1454,6 +1491,8 @@ def _validate_single_data_file(
     # This merges base templates with override data and replaces
     # base+override entries with flat entries in-place.
     errors = []
+    if isinstance(data, dict) and isinstance(data.get("equipment"), list):
+        data["equipment"] = equipment_rows(fp, errors, data["equipment"])
     _resolve_monster_bases(data, errors)
     _resolve_equipment_bases(data, errors, fp)
     if errors:

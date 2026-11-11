@@ -12,6 +12,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from balance_report import sized_dice  # noqa: E402
+from validate import equipment_rows  # noqa: E402
 
 DATA = Path(__file__).resolve().parent.parent / "data"
 EQUIPMENT = DATA / "equipment"
@@ -20,7 +21,7 @@ TIER_BOUNDS_GP = (5, 25)  # tier 1 under 5 gp, tier 2 under 25 gp, tier 3 from 2
 
 
 def rows(name):
-    return json.loads((EQUIPMENT / f"{name}.json").read_text())["equipment"]
+    return equipment_rows(EQUIPMENT / f"{name}.json")
 
 
 def to_copper(cost):

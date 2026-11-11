@@ -26,6 +26,20 @@ layer knows only how to change a row, so adding a kind of layer adds no merge ru
 merges into one flat row; there is no inheritance at run time, and a consumer reads the flat
 row. `ruleset/scripts/validate.py` holds the function, `compose_row`. [V 2026-11-10]
 
+## A base that is an item
+
+An equipment base (`equipment/bases/<category>/`) states `is_item`. When it is `true`, the base
+is also the item of the same key, with no overrides: `bases/weapons/dagger.json` is
+`core:weapon/dagger`, and `weapons.json` holds no row for it. A row in the item file exists only
+where it changes something (`cursed_iron_longsword` on the `longsword` base). When it is
+`false`, the base is a shape only and no item of its key exists (`ring_base`, `plate`). A row
+whose key is an item base's key is a duplicate and fails validation. `is_item`, like
+`default_materials`, is read from the base and is not a field of the resolved item.
+
+Every reader of equipment (the validator, the loot and economy references, the Go loader) reads
+the item base rows first, in file-name order, then the file's rows, through one helper:
+`equipment_rows` in `validate.py`, `equipmentRows` in `backend/internal/data`. [V 2026-11-11]
+
 The rules specific to each kind of row stay with it: monsters in
 [monsters.md](../modules/monsters.md), and module overrides of a whole row in
 [overrides.md](overrides.md).
