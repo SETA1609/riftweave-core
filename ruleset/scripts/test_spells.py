@@ -205,5 +205,54 @@ class TestSpells(unittest.TestCase):
         bolt = lambda target: {"effects": [{"effect": "core:effect/damage_fire", "magnitude": 20, "target": target}]}
         self.assertEqual((spell_cost(bolt("touch")), spell_cost(bolt("ranged"))), (10, 15))
 
+# docs/modules/magic.md#template-spells: one template per target shape.
+TEMPLATES = {"bolt": ("fire_bolt", "ranged"), "touch": ("holy_light", "touch"), "burst": ("fire_burst", "area"),
+             "ward": ("ward", "self"), "mend": ("mend_wounds", "touch")}
+# docs/modules/magic.md#uncraftable-effects
+UNCRAFTABLE = {"teleport", "mark", "recall", "storage", "bound_weapon", "summon"}
+STAY_CRAFTABLE = {"spell_absorption", "life_steal", "mana_leech", "drain_skill", "drain_attribute", "drain_resource",
+                  "damage_resource"}
+
+
+class TestSpellKnowledge(unittest.TestCase):
+    def test_the_templates_are_one_per_shape_and_no_other_spell_is_one(self):
+        rows = {row["key"]: row for row in spells()}
+        self.assertEqual({key for key, row in rows.items() if row.get("template")}, {key for key, _ in TEMPLATES.values()})
+        for shape, (key, target) in TEMPLATES.items():
+            with self.subTest(shape=shape):
+                row = rows[key]
+                self.assertEqual([applied["target"] for applied in row["effects"]], [target])
+                self.assertNotIn("reagents", row["cost"])
+                self.assertFalse(row.get("save") or row.get("concentration"))
+
+    def test_a_template_costs_and_thresholds_what_crafting_it_does(self):
+        from casting_reference import run_spellcraft  # noqa: E402
+        rows = {row["key"]: row for row in spells()}
+        for key, _ in TEMPLATES.values():
+            with self.subTest(template=key):
+                row = rows[key]
+                crafted = run_spellcraft({"op": "craft", "spell": {"color": row["color"], "effects": row["effects"]},
+                                          "caster": {"known": [a["effect"] for a in row["effects"]], "skills": {}}})
+                self.assertEqual((crafted["cost"], crafted["cast_threshold"]), (row["cost"]["mana"], row["cost"]["mana"]))
+
+    def test_the_uncraftable_effects_and_the_excluded_mana(self):
+        pool = effects()
+        self.assertEqual({key for key, effect in pool.items() if effect.get("craftable") is False}, UNCRAFTABLE)
+        self.assertEqual(pool["restore_resource"]["uncraftable_parameters"], ["mana"])
+        for key in STAY_CRAFTABLE:
+            with self.subTest(effect=key):
+                self.assertNotEqual(pool[key].get("craftable"), False)
+                self.assertNotIn("uncraftable_parameters", pool[key])
+
+    def test_the_authored_only_spells_exist(self):
+        rows = {row["key"]: row for row in spells()}
+        wanted = {"divine_intervention": ("teleport", "world"), "mark": ("mark", "self"), "recall": ("recall", "world"),
+                  "pocket_storage": ("storage", "self"), "bound_blade": ("bound_weapon", "self")}
+        for key, (effect, target) in wanted.items():
+            with self.subTest(spell=key):
+                applied = rows[key]["effects"][0]
+                self.assertEqual((applied["effect"], applied["target"]), (f"core:effect/{effect}", target))
+
+
 if __name__ == "__main__":
     unittest.main()

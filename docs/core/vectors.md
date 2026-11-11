@@ -82,6 +82,7 @@ Every kernel function and the vector file that covers it. The test reads this ta
 | `progression` | `progression.json` | covered |
 | `hazard` | `hazard.json` | covered |
 | `casting` | `casting.json` | covered |
+| `spellcraft` | `spellcraft.json` | covered |
 | `consume` | `consume.json` | covered |
 | `stored_actor` | `stored_actor.json` | covered |
 
