@@ -105,9 +105,9 @@
       ],
       "modifiers": [
         {
-          "target": "melee_damage_percent",
-          "op": "add",
-          "value": 25,
+          "target": "melee_damage",
+          "op": "mul",
+          "value": 1.25,
           "source": "feature:power_attack",
           "origin": "core:origin/trained"
         }
@@ -191,9 +191,9 @@
       ],
       "modifiers": [
         {
-          "target": "block_percent",
-          "op": "add",
-          "value": 15,
+          "target": "block_reduction",
+          "op": "mul",
+          "value": 1.15,
           "source": "feature:shield_wall",
           "origin": "core:origin/trained"
         }
@@ -226,9 +226,9 @@
       ],
       "modifiers": [
         {
-          "target": "red_magic_magnitude_percent",
-          "op": "add",
-          "value": 15,
+          "target": "red_magic_magnitude",
+          "op": "mul",
+          "value": 1.15,
           "source": "feature:pyromancer",
           "origin": "core:origin/trained"
         }
@@ -264,9 +264,9 @@
       ],
       "modifiers": [
         {
-          "target": "detection_percent",
-          "op": "add",
-          "value": -25,
+          "target": "detection_chance",
+          "op": "mul",
+          "value": 0.75,
           "source": "feature:ghost",
           "origin": "core:origin/trained"
         }
@@ -315,7 +315,7 @@
           "origin": "core:origin/trained"
         },
         {
-          "target": "barter_percent",
+          "target": "barter_shift",
           "op": "add",
           "value": 10,
           "source": "feature:silver_tongue",
@@ -350,9 +350,9 @@
       ],
       "modifiers": [
         {
-          "target": "medicine_healing_percent",
-          "op": "add",
-          "value": 50,
+          "target": "medicine_healing",
+          "op": "mul",
+          "value": 1.5,
           "source": "feature:field_medic",
           "origin": "core:origin/trained"
         }
@@ -677,9 +677,9 @@
       ],
       "modifiers": [
         {
-          "target": "heavy_armor_surcharge_percent",
-          "op": "add",
-          "value": -50,
+          "target": "heavy_armor_surcharge",
+          "op": "mul",
+          "value": 0.5,
           "source": "feature:heavy_armor_expert",
           "origin": "core:origin/trained"
         }
@@ -786,9 +786,9 @@
       ],
       "modifiers": [
         {
-          "target": "dodge_stamina_percent",
-          "op": "add",
-          "value": -25,
+          "target": "dodge_stamina",
+          "op": "mul",
+          "value": 0.75,
           "source": "feature:acrobat",
           "origin": "core:origin/trained"
         }
@@ -979,9 +979,9 @@
       "ranks": 1,
       "modifiers": [
         {
-          "target": "unarmed_damage_percent",
-          "op": "add",
-          "value": 50,
+          "target": "unarmed_strike_damage",
+          "op": "mul",
+          "value": 1.5,
           "source": "feature:iron_fist",
           "origin": "core:origin/trained"
         }
@@ -1084,9 +1084,9 @@
       "ranks": 1,
       "modifiers": [
         {
-          "target": "ranged_range_penalty_percent",
-          "op": "add",
-          "value": -50,
+          "target": "ranged_range_penalty",
+          "op": "mul",
+          "value": 0.5,
           "source": "feature:sniper",
           "origin": "core:origin/trained"
         }
@@ -1203,9 +1203,9 @@
       "ranks": 1,
       "modifiers": [
         {
-          "target": "damage_percent_below_half_hp",
-          "op": "add",
-          "value": 20,
+          "target": "damage_below_half_hp",
+          "op": "mul",
+          "value": 1.2,
           "source": "feature:berserker",
           "origin": "core:origin/trained"
         },
@@ -1236,9 +1236,9 @@
       "ranks": 1,
       "modifiers": [
         {
-          "target": "crit_damage_percent",
-          "op": "add",
-          "value": 50,
+          "target": "crit_damage",
+          "op": "mul",
+          "value": 1.5,
           "source": "feature:executioner",
           "origin": "core:origin/trained"
         }
@@ -1376,9 +1376,9 @@
       "ranks": 1,
       "modifiers": [
         {
-          "target": "mp_regen_percent",
-          "op": "add",
-          "value": 25,
+          "target": "mp_regen",
+          "op": "mul",
+          "value": 1.25,
           "source": "feature:mana_flow",
           "origin": "core:origin/trained"
         }
@@ -1401,9 +1401,9 @@
       "ranks": 1,
       "modifiers": [
         {
-          "target": "armor_cast_penalty_percent",
-          "op": "add",
-          "value": -50,
+          "target": "armor_cast_penalty",
+          "op": "mul",
+          "value": 0.5,
           "source": "feature:battle_mage",
           "origin": "core:origin/trained"
         }
@@ -1478,9 +1478,9 @@
       "ranks": 2,
       "modifiers": [
         {
-          "target": "green_magic_magnitude_percent",
-          "op": "add",
-          "value": 15,
+          "target": "green_magic_magnitude",
+          "op": "mul",
+          "value": 1.15,
           "source": "feature:healer",
           "origin": "core:origin/trained"
         }
@@ -1506,9 +1506,9 @@
       "ranks": 1,
       "modifiers": [
         {
-          "target": "yellow_magic_duration_percent",
-          "op": "add",
-          "value": 25,
+          "target": "yellow_magic_duration",
+          "op": "mul",
+          "value": 1.25,
           "source": "feature:illusionist",
           "origin": "core:origin/trained"
         }
@@ -1534,9 +1534,9 @@
       "ranks": 1,
       "modifiers": [
         {
-          "target": "summon_duration_percent",
-          "op": "add",
-          "value": 50,
+          "target": "summon_duration",
+          "op": "mul",
+          "value": 1.5,
           "source": "feature:conjurer",
           "origin": "core:origin/trained"
         }
@@ -1562,9 +1562,9 @@
       "ranks": 1,
       "modifiers": [
         {
-          "target": "blue_magic_duration_percent",
-          "op": "add",
-          "value": 25,
+          "target": "blue_magic_duration",
+          "op": "mul",
+          "value": 1.25,
           "source": "feature:transmuter",
           "origin": "core:origin/trained"
         }
@@ -1590,9 +1590,9 @@
       "ranks": 1,
       "modifiers": [
         {
-          "target": "indigo_magic_range_percent",
-          "op": "add",
-          "value": 50,
+          "target": "indigo_magic_range",
+          "op": "mul",
+          "value": 1.5,
           "source": "feature:telekinetic",
           "origin": "core:origin/trained"
         }
@@ -1649,9 +1649,9 @@
       "ranks": 2,
       "modifiers": [
         {
-          "target": "white_magic_magnitude_percent",
-          "op": "add",
-          "value": 15,
+          "target": "white_magic_magnitude",
+          "op": "mul",
+          "value": 1.15,
           "source": "feature:zealot",
           "origin": "core:origin/trained"
         }
@@ -1752,9 +1752,9 @@
       "ranks": 1,
       "modifiers": [
         {
-          "target": "mana_cost_percent",
-          "op": "add",
-          "value": -20,
+          "target": "spell_cost",
+          "op": "mul",
+          "value": 0.8,
           "source": "feature:archmage",
           "origin": "core:origin/trained"
         }
@@ -1782,7 +1782,7 @@
       "ranks": 1,
       "modifiers": [
         {
-          "target": "barter_percent",
+          "target": "barter_shift",
           "op": "add",
           "value": 5,
           "source": "feature:haggler",
@@ -1953,7 +1953,7 @@
       "ranks": 1,
       "modifiers": [
         {
-          "target": "fence_percent",
+          "target": "fence_shift",
           "op": "add",
           "value": 10,
           "source": "feature:streetwise",
@@ -2107,9 +2107,9 @@
       "ranks": 1,
       "modifiers": [
         {
-          "target": "sneak_attack_damage_percent",
-          "op": "add",
-          "value": 50,
+          "target": "sneak_attack_damage",
+          "op": "mul",
+          "value": 1.5,
           "source": "feature:backstab",
           "origin": "core:origin/trained"
         }
@@ -2302,14 +2302,14 @@
       "ranks": 1,
       "modifiers": [
         {
-          "target": "poison_resistance_percent",
+          "target": "poison_resistance",
           "op": "add",
           "value": 25,
           "source": "feature:iron_stomach",
           "origin": "core:origin/trained"
         },
         {
-          "target": "disease_resistance_percent",
+          "target": "disease_resistance",
           "op": "add",
           "value": 25,
           "source": "feature:iron_stomach",
@@ -2417,9 +2417,9 @@
       "ranks": 1,
       "modifiers": [
         {
-          "target": "potion_magnitude_percent",
-          "op": "add",
-          "value": 25,
+          "target": "potion_magnitude",
+          "op": "mul",
+          "value": 1.25,
           "source": "feature:master_alchemist",
           "origin": "core:origin/trained"
         }
@@ -2545,9 +2545,9 @@
       "ranks": 1,
       "modifiers": [
         {
-          "target": "rest_mp_percent",
-          "op": "add",
-          "value": 50,
+          "target": "rest_mp",
+          "op": "mul",
+          "value": 1.5,
           "source": "feature:meditative",
           "origin": "core:origin/trained"
         }
@@ -2578,7 +2578,7 @@
         {
           "target": "darkvision_range",
           "op": "add",
-          "value": 9,
+          "value": 6,
           "source": "feature:night_eyes",
           "origin": "core:origin/trained"
         }
@@ -2844,7 +2844,7 @@
         {
           "target": "darkvision_range",
           "op": "add",
-          "value": 18,
+          "value": 12,
           "source": "feature:elf_darkvision",
           "origin": "core:origin/innate"
         }
@@ -2911,7 +2911,7 @@
         {
           "target": "darkvision_range",
           "op": "add",
-          "value": 18,
+          "value": 12,
           "source": "feature:black_elf_sunless_sight",
           "origin": "core:origin/innate"
         },
@@ -2955,7 +2955,7 @@
         {
           "target": "darkvision_range",
           "op": "add",
-          "value": 18,
+          "value": 12,
           "source": "feature:dwarf_darkvision",
           "origin": "core:origin/innate"
         }
@@ -2968,14 +2968,14 @@
       "type": "racial_trait",
       "modifiers": [
         {
-          "target": "poison_resistance_percent",
+          "target": "poison_resistance",
           "op": "add",
           "value": 25,
           "source": "feature:dwarf_resilience",
           "origin": "core:origin/innate"
         },
         {
-          "target": "disease_resistance_percent",
+          "target": "disease_resistance",
           "op": "add",
           "value": 25,
           "source": "feature:dwarf_resilience",
@@ -3083,9 +3083,9 @@
       "type": "racial_trait",
       "modifiers": [
         {
-          "target": "safe_fall_meters",
+          "target": "safe_fall",
           "op": "add",
-          "value": 6,
+          "value": 4,
           "source": "feature:catman_landing",
           "origin": "core:origin/innate"
         },
