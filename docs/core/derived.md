@@ -22,6 +22,7 @@ Division is integer division. `per_point_divisor` defaults to 1. `attr` is the c
 | ap | AGI | `2 + floor(AGI / 3)` |
 | carry | STR | `25 + STR * 10` [weight units](contract.md#weight) |
 | initiative | PER | `PER` |
+| toxicity_limit | END | `20 + END * 5` [A], the most toxicity before an overdose ([modifier.md](modifier.md#toxicity)) |
 
 These closed forms are the ones already printed under Derived statistics in `docs/modules/progression.md`. That table is now a copy. The JSON is the authority. The level-up bullets (`END × 8 + 4` and so on) are the grant procedure, not a second max. Stamina stays in that prose. XP, skill points, and perk cadence are data too: [progression.md](progression.md). This file does not own a second action economy.
 
@@ -38,6 +39,7 @@ sp         = 10 + 5 * 5 + 1 * 2  = 37
 ap         = 2 + floor(6 / 3)    = 4
 carry      = 25 + 7 * 10         = 95 weight units
 initiative = 5
+toxicity_limit = 20 + 5 * 5   = 45
 ```
 
 A perk `source: perk:tough` with `add hp 8` makes HP 67. It does not change `per_point`. Two copies of the same perk do not stack.
