@@ -13,6 +13,8 @@ The shared sentence between systems is the kernel contract:
 [docs/core/contract.md](docs/core/contract.md). A system may read an actor snapshot
 and emit modifiers or events. It may not call another system's procedure.
 
+To play at a table, start with the [Player and GM guide](docs/guide/README.md).
+
 ## Project structure
 
 ```
