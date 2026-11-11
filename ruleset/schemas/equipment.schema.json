@@ -84,6 +84,7 @@
               "additionalProperties": false
             },
             "properties": { "type": "array", "items": { "type": "string" } },
+            "ability": { "$ref": "schema.json#/definitions/ability", "description": "The attribute whose modifier adds to this weapon's damage. Every ranged weapon names one (docs/modules/attributes.md#the-attribute-modifier); a melee weapon reads str, or agi with the finesse property." },
             "rangeNormal": { "type": "integer", "minimum": 1, "description": "Normal range in units (grid squares, docs/core/contract.md#distance)." },
             "rangeLong": { "type": "integer", "minimum": 1, "description": "Long range in units (grid squares)." },
             "on_hit_effects": {

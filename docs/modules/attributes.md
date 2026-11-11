@@ -81,6 +81,27 @@ The **Seeds skills** lines match `associatedAbility` in `skills/core.json`
 consumes each skill (weapon, armor, spell color, check, perk) is in
 [`docs/core/checks.md`](../core/checks.md).
 
+### The attribute modifier
+
+An attribute's modifier is `attribute − 5` for every actor: +5 at 10, 0 at 5, −4 at 1. A rule
+that names an attribute takes this modifier, and what the action does decides which attribute.
+The formula is `formulas/attribute_modifier.json`. Weapon damage is the weapon's dice plus the
+modifier ([combat.md](../core/combat.md)). [A]
+
+| Weapon | Attribute |
+| --- | --- |
+| Melee | `str` |
+| `finesse` property | `agi` |
+| Ranged | the weapon's own `ability` |
+
+A ranged weapon depends on how quick or heavy it is, so each one names its attribute. Slow
+weapons use `per`: arquebus, crossbow, light crossbow, longbow, and blunderbuss [A]. Quick
+weapons use `agi`: flintlock pistol, hand crossbow, repeating crossbow, shortbow, composite
+bow, and bow, improvised bow, sling, and throwing knife [A]. Heavy thrown weapons use `str`:
+javelin, throwing axe, throwing hammer, and a thrown rock.
+
+Ten is the cap on a player's attributes at character creation; racial and perk bonuses can pass it.
+
 ### Strength (STR)
 - **Governs:** melee damage, carrying capacity, Strength-gated equipment.
 - **Seeds skills:** `blades`, `blunt`, `heavy_armor`, `athletics`, `blacksmithing`, `building`.
