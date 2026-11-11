@@ -146,8 +146,7 @@ Data in `conditions/core.json` (24 entries). Each entry:
 
 ### Active Tracking (Reference Implementation)
 
-In `combat_reference.py`, conditions are tracked in a `self.active_conditions` dict keyed by
-condition key. Each entry stores:
+A runtime tracks conditions in a table keyed by condition key. Each entry stores:
 
 ```python
 {
@@ -238,12 +237,8 @@ To add a new condition:
 
 ## 8. Reference Implementation
 
-The reference condition system lives in `combat_reference.py` and is exercised
-via `demo_condition_interactions()` when run with `--verbose`:
-
-```bash
-python ruleset/scripts/combat_reference.py --verbose
-```
+The reference is the `conditions` function in `ruleset/scripts/kernel_reference.py`, checked by the
+vectors in `ruleset/tests/vectors/conditions.json`. The lifecycle below is the shape a runtime follows.
 
 ### Lifecycle
 
@@ -316,8 +311,7 @@ Coating: Paralytic Poison (mag 4, uses 3)
 
 Condition combat mechanics are **fully data-driven**. Each condition in
 `conditions/core.json` that has a `combat` object contributes its modifiers.
-The resolver (`combat_reference.py`) reads these at startup via
-`_build_combat_modifiers()` and never hardcodes a condition key or value.
+A resolver reads these and never hardcodes a condition key or value.
 
 ### Combat Object Reference
 

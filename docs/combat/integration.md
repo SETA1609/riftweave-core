@@ -131,8 +131,7 @@ Conditions (`data/conditions/core.json`) are the "envelope" for combat status ef
 
 ### Combat Impact of Conditions
 
-In the reference resolver (`combat_reference.py`), conditions now directly affect
-combat resolution:
+Conditions directly affect combat resolution:
 
 | Condition | Attack Penalty | Defense Bonus to Foe | Blocks Action? | Auto-Crit Target? |
 |-----------|---------------|---------------------|----------------|-------------------|

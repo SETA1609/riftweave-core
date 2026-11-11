@@ -56,4 +56,4 @@ Roll 100 against a target of 120 is still a fumble and a failure. The extra 20 o
 
 ## What this file is not
 
-Defense, cover, called shots, and action costs stay in `docs/modules/combat.md` and `ruleset/data/combat/base_resolution.json`. Damage dice stay on the weapon. A crit tag does not itself double damage. Doubling is a consumer of the tag, not a second roll. The buy cap of 100 stays in `docs/modules/progression.md`.
+Defense stays in [combat.md](combat.md), cover and called shots in `ruleset/data/combat/situations.json`, and action costs in `ruleset/data/actions/core.json`. Damage dice stay on the weapon. A crit tag does not itself double damage. Doubling is a consumer of the tag, not a second roll. The buy cap of 100 stays in `docs/modules/progression.md`.
