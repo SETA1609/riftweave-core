@@ -346,13 +346,26 @@ type Spell struct {
 		Reagents []string `json:"reagents"`
 		Mana     int64    `json:"mana"`
 	} `json:"cost"`
-	Level         int64 `json:"level"`
-	Concentration bool  `json:"concentration"`
+	Level         int64  `json:"level"`
+	Concentration bool   `json:"concentration"`
+	Delivery      string `json:"delivery"`
+	Save          struct {
+		Attribute string `json:"attribute"`
+		Skill     string `json:"skill"`
+	} `json:"save"`
+}
+
+// CastingSave is how an instant spell's save picks its outcome.
+type CastingSave struct {
+	AttributeMultiplier int64 `json:"attribute_multiplier"`
+	FullMargin          int64 `json:"full_margin"`
+	PartialPercent      int64 `json:"partial_percent"`
 }
 
 // Casting is casting/core.json: the caster flags that block a cast, and the cast penalty by
 // the heaviest armor category worn.
 type Casting struct {
+	Save          CastingSave      `json:"save"`
 	ArmorPenalty  map[string]int64 `json:"armor_penalty"`
 	PreventedBy   []string         `json:"prevented_by"`
 	SkillDiscount SkillDiscount    `json:"skill_discount"`

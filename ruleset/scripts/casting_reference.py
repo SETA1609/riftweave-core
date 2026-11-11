@@ -56,6 +56,33 @@ def spell_row(spells, key):
     raise LookupError(f'spell "{key}" is not defined')
 
 
+def roll_save(spell, effects, defender, rules):
+    """An instant spell's save and the effects that land (docs/core/casting.md#delivery-and-saves)."""
+    from kernel_reference import run_resolution  # kernel_reference imports this module
+
+    attributes = defender.get("attributes", {})
+    named = spell["save"]
+    if "skill" in named:
+        value = defender.get("skills", {}).get(named["skill"].rsplit("/", 1)[-1], 0)
+    else:
+        value = attributes.get(named["attribute"], 0) * rules["attribute_multiplier"]
+    check = run_resolution(
+        {"actor": {"skills": {"save": value}, "attributes": attributes}, "skill": "save", "modifiers": [], "roll": defender["roll"]}
+    )
+    if not check["success"]:
+        return {**check, "result": "failed"}, effects
+    if "crit" in check["tags"] or check["margin"] >= rules["full_margin"]:
+        return {**check, "result": "full"}, []
+    scaled = []
+    for effect in effects:
+        effect = dict(effect)
+        for field in ("magnitude", "duration"):
+            if field in effect:
+                effect[field] = max(1, math.floor(effect[field] * rules["partial_percent"] / 100))
+        scaled.append(effect)
+    return {**check, "result": "partial"}, scaled
+
+
 def run_casting(vector):
     from kernel_reference import run_resolution  # kernel_reference imports this module
 
@@ -82,6 +109,7 @@ def run_casting(vector):
         "concentration": held,
         "ended": None,
         "dispelled": [],
+        "save": None,
     }
     cost = spell.get("cost", {})
     reagents = list(caster.get("reagents", []))
@@ -117,6 +145,8 @@ def run_casting(vector):
 
     result["outcome"] = "cast"
     result["effects"] = [dict(effect) for effect in spell["effects"]]
+    if spell.get("delivery") == "instant" and "target" in vector:
+        result["save"], result["effects"] = roll_save(spell, result["effects"], vector["target"], rules["save"])
     if spell.get("concentration"):
         result["concentration"] = spell["key"]
         if held is not None and held != spell["key"]:

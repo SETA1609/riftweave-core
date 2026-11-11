@@ -3,6 +3,7 @@
   "casting": {
     "prevented_by": ["silenced"],
     "armor_penalty": { "none": 0, "light": 0, "medium": -10, "heavy": -25 },
+    "save": { "attribute_multiplier": 10, "full_margin": 30, "partial_percent": 50 },
     "skill_discount": { "divisor": 200, "cap": 0.45, "minimum_paid": 1 },
     "spell_cost": {
       "magnitude_factor": 0.1,
