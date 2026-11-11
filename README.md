@@ -5,6 +5,8 @@ Riftweave — A data-driven, open-source cRPG ruleset for games and TTRPGs.
 All game data is defined as JSON files, validated against JSON Schemas. The data
 and schemas live under `ruleset/`.
 
+The one-page design is [docs/gdd.md](docs/gdd.md).
+
 It is a **classless**, **d100 roll-under** system: characters are defined by eight
 attributes, point-buy skills with tagging, and perks. See
 [docs/modules/progression.md](docs/modules/progression.md) for the system overview.
