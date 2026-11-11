@@ -480,13 +480,41 @@ def _rel(fp, rel_base):
         return fp.name
 
 
+def _base_directories():
+    """Each directory of base templates and the category that names its files."""
+    return {
+        MONSTERS_BASES_DIR: "creature_type",
+        DATA_DIR / "equipment" / "bases" / "weapons": "weapon_base",
+        DATA_DIR / "equipment" / "bases" / "armor": "armor_base",
+        DATA_DIR / "equipment" / "bases" / "accessories": "accessory_base",
+    }
+
+
+def build_base_refs():
+    """Every composition base as a reference (docs/core/keys.md): a base file is a row."""
+    return {
+        f"core:{category}/{path.stem}"
+        for directory, category in _base_directories().items()
+        if directory.exists()
+        for path in directory.glob("*.json")
+    }
+
+
+def _base_files():
+    return [path for directory in _base_directories() if directory.exists() for path in sorted(directory.glob("*.json"))]
+
+
 def check_all_references(data_files, module_data_files=None, rel_base=ROOT):
     """Gate 1 (docs/core/integrity.md): every core:<category>/<key> string in any data or module
     file names an entry that exists. Walks every string, so no field escapes the check."""
     known = build_namespaced_ref_index(data_files, module_data_files)
     known |= build_equipment_index(data_files, module_data_files, rel_base=rel_base)["namespaced_keys"]
+    # The base templates are the shipped ones, so a check of another tree leaves them out.
+    base_files = _base_files() if rel_base == ROOT else []
+    if base_files:
+        known |= build_base_refs()
     errors = []
-    for fp in _all_files(data_files, module_data_files):
+    for fp in [*_all_files(data_files, module_data_files), *base_files]:
         data = _load_json_file(fp)
         if data is None:
             continue
@@ -1170,6 +1198,7 @@ def _merge_field(base_val, override_val):
 
 
 MONSTER_REF_PREFIX = "core:monster/"
+CREATURE_TYPE_REF_PREFIX = "core:creature_type/"
 MONSTER_TEMPLATES_FILE = DATA_DIR / "monsters" / "templates.json"
 _MONSTER_TEMPLATES = None
 
@@ -1298,10 +1327,11 @@ def _resolve_monster_bases(data, errors):
                 if "hitPointsPerLevel" in growth and "hitPoints" in merged:
                     merged["hitPoints"] = max(1, round(merged["hitPoints"] + growth["hitPointsPerLevel"] * delta))
         else:
-            if base_key not in _BASE_CACHE:
+            type_name = base_key.removeprefix(CREATURE_TYPE_REF_PREFIX)
+            if not base_key.startswith(CREATURE_TYPE_REF_PREFIX) or type_name not in _BASE_CACHE:
                 errors.append(f"monster '{key}': base '{base_key}' not found in bases/")
                 return None
-            type_data = _BASE_CACHE[base_key]
+            type_data = _BASE_CACHE[type_name]
             merged = dict(type_data)
             merged.pop("growth", None)
             level = overrides.get("level") or type_data.get("level", 1)
@@ -1331,6 +1361,9 @@ def _resolve_monster_bases(data, errors):
         if result is not None:
             monsters[i] = result[0]
 
+
+# The reference category of each equipment file's bases (docs/core/keys.md).
+EQUIPMENT_BASE_CATEGORIES = {"weapons.json": "weapon_base", "armor.json": "armor_base", "accessories.json": "accessory_base"}
 
 # Maps equipment data files to their bases/ subdirectories.
 EQUIPMENT_BASES_DIRS = {
@@ -1371,14 +1404,15 @@ def _resolve_equipment_bases(data, errors, fp):
         if not isinstance(overrides, dict):
             errors.append(f"equipment[{i}]: base '{base_key}' has no overrides object")
             continue
-        if base_key not in bases:
+        base_name = base_key.rsplit("/", 1)[-1]
+        if not base_key.startswith(f"core:{EQUIPMENT_BASE_CATEGORIES[fp.name]}/") or base_name not in bases:
             cat = fp.name.replace(".json", "")
             errors.append(
                 f"equipment[{i}]: base '{base_key}' not found in bases/{cat}/"
             )
             continue
 
-        merged = compose_row(bases[base_key], overrides, entry=entry)
+        merged = compose_row(bases[base_name], overrides, entry=entry)
         # default_materials names what a base (or a row's overrides) is found and sold in
         # (docs/core/loot.md#what-lands-on-an-item); loot reads it, the item schema does not.
         merged.pop("default_materials", None)

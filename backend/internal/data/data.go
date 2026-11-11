@@ -816,6 +816,9 @@ func (loader *rulesetLoader) loadFormulas(ruleset *Ruleset) {
 	}
 }
 
+// baseName is the file a typed base reference names (docs/core/keys.md).
+func baseName(ref string) string { return ref[strings.LastIndex(ref, "/")+1:] }
+
 // loadItems prices every equipment item and material, and reads every monster's level.
 func (loader *rulesetLoader) loadItems(ruleset *Ruleset) {
 	ruleset.Items = map[string]Item{}
@@ -846,7 +849,7 @@ func (loader *rulesetLoader) loadItems(ruleset *Ruleset) {
 		for _, row := range raw.Equipment {
 			var base itemFields
 			if row.Base != "" {
-				loader.read(fmt.Sprintf("equipment/bases/%s/%s.json", category.baseDirectory, row.Base), &base)
+				loader.read(fmt.Sprintf("equipment/bases/%s/%s.json", category.baseDirectory, baseName(row.Base)), &base)
 			}
 			// A field is the row's own, its overrides', or its base's.
 			var cost *Cost = cmp.Or(row.Cost, row.Overrides.Cost, base.Cost)
@@ -935,7 +938,7 @@ func (loader *rulesetLoader) loadItems(ruleset *Ruleset) {
 		}
 		if level == nil {
 			var base struct{ Level int64 }
-			if !loader.read("monsters/bases/"+monster.Base+".json", &base) {
+			if !loader.read("monsters/bases/"+baseName(monster.Base)+".json", &base) {
 				continue
 			}
 			level = &base.Level
@@ -961,7 +964,7 @@ func (loader *rulesetLoader) loadItems(ruleset *Ruleset) {
 			loot = slices.Clone(resolve(parent, seen))
 		} else {
 			var base struct{ Loot []DropRow }
-			loader.read("monsters/bases/"+monster.Base+".json", &base)
+			loader.read("monsters/bases/"+baseName(monster.Base)+".json", &base)
 			loot = base.Loot
 		}
 		for _, template := range monster.Templates {

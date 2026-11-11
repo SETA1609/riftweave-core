@@ -6,7 +6,7 @@ What `python ruleset/scripts/validate.py` refuses to pass. JSON Schema alone can
 
 Every string in `ruleset/data/` and `ruleset/modules/` that is a namespaced reference, `core:<category>/<key>`, must name an entry that exists. The check walks every string value in every data file, so a reference in a field nobody wrote a per-collection check for is still caught. The per-collection checks stay for what the walk cannot know (which field must hold which category, effect `channels`). `module:` references are accepted without a lookup, as before. [A]
 
-Categories (singular, as in `docs/core/keys.md`): `weapon`, `armor`, `accessory`, `consumable` (from `equipment/`), and `effect`, `spell`, `background`, `condition`, `ingredient`, `material`, `gem`, `skill`, `feature`, `race`, `monster`, `recipe`, `crafted_item`. A reference to any other category is an error. [V 2026-11-02, 161 references in the data resolve at the start of this change]
+Base files count: the check also walks `monsters/bases/` and `equipment/bases/`, and `creature_type`, `weapon_base`, `armor_base`, and `accessory_base` name them. Categories (singular, as in `docs/core/keys.md`): `weapon`, `armor`, `accessory`, `consumable` (from `equipment/`), and `effect`, `spell`, `background`, `condition`, `ingredient`, `material`, `gem`, `skill`, `feature`, `race`, `monster`, `recipe`, `crafted_item`. A reference to any other category is an error. [V 2026-11-02, 161 references in the data resolve at the start of this change]
 
 ## 2. No bare string where a key is required
 

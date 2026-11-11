@@ -122,7 +122,7 @@ class TestBestiary(unittest.TestCase):
 
     def test_a_template_sets_phase_attacks_resist_tags_and_label(self):
         merged = resolve([
-            {"id": 1, "key": "blob", "base": "ooze", "overrides": {
+            {"id": 1, "key": "blob", "base": "core:creature_type/ooze", "overrides": {
                 "label": "Blob", "level": 2, "resist": {"fire": 2, "acid": 5}, "tags": ["ooze"],
                 "attacks": [{"key": "slam", "label": "Slam", "damage": {"amount": 5, "type": "bludgeoning"}}]}},
             {"id": 2, "key": "fire_blob", "base": "core:monster/blob", "templates": ["fire"], "overrides": {"level": 2}},
@@ -138,7 +138,7 @@ class TestBestiary(unittest.TestCase):
 
     def test_a_derived_monster_moves_by_its_types_growth(self):
         rows = resolve([
-            {"id": 1, "key": "blob", "base": "ooze", "overrides": {"level": 2}},
+            {"id": 1, "key": "blob", "base": "core:creature_type/ooze", "overrides": {"level": 2}},
             {"id": 2, "key": "big_blob", "base": "core:monster/blob", "overrides": {"level": 6, "label": "Big Blob"}},
         ])
         base = json.loads((DATA / "monsters" / "bases" / "ooze.json").read_text())
@@ -154,8 +154,8 @@ class TestBestiary(unittest.TestCase):
             "missing": [{"id": 1, "key": "a", "base": "core:monster/nobody", "overrides": {"level": 1}}],
             "cycle": [{"id": 1, "key": "a", "base": "core:monster/b", "overrides": {"level": 1}},
                       {"id": 2, "key": "b", "base": "core:monster/a", "overrides": {"level": 1}}],
-            "template": [{"id": 1, "key": "a", "base": "ooze", "templates": ["glitter"], "overrides": {}}],
-            "no level": [{"id": 1, "key": "a", "base": "ooze", "overrides": {}},
+            "template": [{"id": 1, "key": "a", "base": "core:creature_type/ooze", "templates": ["glitter"], "overrides": {}}],
+            "no level": [{"id": 1, "key": "a", "base": "core:creature_type/ooze", "overrides": {}},
                          {"id": 2, "key": "b", "base": "core:monster/a", "overrides": {}}],
         }
         for name, rows in cases.items():

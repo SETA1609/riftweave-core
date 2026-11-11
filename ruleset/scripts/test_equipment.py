@@ -30,7 +30,7 @@ def to_copper(cost):
 
 def resolved_weapons():
     for row in rows("weapons"):
-        base = json.loads((EQUIPMENT / "bases" / "weapons" / f"{row['base']}.json").read_text())
+        base = json.loads((EQUIPMENT / "bases" / "weapons" / f"{row['base'].rsplit('/', 1)[-1]}.json").read_text())
         yield row["key"], {**base, **row["overrides"]}
 
 

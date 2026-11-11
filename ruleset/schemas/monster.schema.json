@@ -154,9 +154,8 @@
         "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "Symbolic snake_case key." },
         "source": { "$ref": "schema.json#/definitions/sourceRef" },
         "base": {
-          "type": "string",
-          "pattern": "^([a-z_][a-z0-9_]*|core:monster/[a-z_][a-z0-9_]*)$",
-          "description": "The base: a creature type in bases/<name>.json (a bare name, without .json), or another monster in the same file as core:monster/<key>, which this one derives from (docs/modules/monsters.md#derived-monsters). A derived monster states its level in overrides."
+          "description": "The base: a creature type, or another monster in the same file (docs/core/composition.md).",
+          "oneOf": [ { "$ref": "schema.json#/definitions/creatureTypeRef" }, { "$ref": "schema.json#/definitions/monsterRef" } ]
         },
         "templates": {
           "type": "array",

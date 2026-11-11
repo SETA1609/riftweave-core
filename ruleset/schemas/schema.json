@@ -278,6 +278,16 @@
       "pattern": "^(core:material/[a-z0-9_]+|module:[a-z0-9_]+/material/[a-z0-9_]+)$",
       "description": "A reference to a material row (docs/core/integrity.md)."
     },
+    "creatureTypeRef": {
+      "type": "string",
+      "pattern": "^(core:creature_type/[a-z0-9_]+|module:[a-z0-9_]+/creature_type/[a-z0-9_]+)$",
+      "description": "A reference to a creature type in monsters/bases/ (docs/core/keys.md)."
+    },
+    "equipmentBaseRef": {
+      "type": "string",
+      "pattern": "^(core:(weapon|armor|accessory)_base/[a-z0-9_]+|module:[a-z0-9_]+/(weapon|armor|accessory)_base/[a-z0-9_]+)$",
+      "description": "A reference to a base template in equipment/bases/ (docs/core/keys.md)."
+    },
     "monsterRef": {
       "type": "string",
       "pattern": "^(core:monster/[a-z0-9_]+|module:[a-z0-9_]+/monster/[a-z0-9_]+)$",

@@ -226,10 +226,7 @@
       "properties": {
         "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "Symbolic snake_case key." },
         "source": { "$ref": "schema.json#/definitions/sourceRef" },
-        "base": {
-          "type": "string",
-          "description": "Name of the base template in bases/<category>/<base>.json (without .json suffix). Base templates provide default values; overrides replace them."
-        },
+        "base": { "$ref": "schema.json#/definitions/equipmentBaseRef", "description": "The base template, in equipment/bases/<category>/ (docs/core/keys.md)." },
         "overrides": { "$ref": "#/definitions/equipmentData" }
       },
       "required": ["key", "base", "overrides"],
