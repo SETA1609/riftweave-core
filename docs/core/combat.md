@@ -26,6 +26,7 @@ One attack, in order, from the roll to the HP lost. Every step reads the actor s
               shield_dr = the reaction's shield_dr + defender mods on shield_dr;
               halved (rounded down) against a type without armor_dr_applies
 3. damage     damage = the caller's rolled damage dice
+              if the attack names an ability: damage = max(damage + attribute_modifier, 0)
               if a called shot: damage = floor(damage * the location's damage_mul)
 4. crit       if crit: damage = crit_damage(damage)                 formula tree
 5. reduce     if evaded an area attack: damage = area_evade_damage(damage)   formula tree
@@ -47,6 +48,7 @@ Each subtraction stops at zero before the next step: a step never raises damage.
 - **Balance between evade and block.** At equal skill an evade avoids all damage and a block only subtracts shield DR, so the raw skill alone favours evading. The balance is not in this pipeline: perks gate stronger dodges and blocks, armor penalties land on evasion, area attacks are only halved, and instant spells skip the dodge for a save. The perk rows come with their own issues. [A]
 - **One reaction per attack.** The defender declares evade or block before the attack roll, as `modules/combat.md` has it for block, and rolls it only if the attack hits; the input has a single `reaction`. A failed evade does not allow a block. [A]
 - **Reaction rolls use the one d100 function.** Evade and block go through [resolution.md](resolution.md) with the defender's skill and LCK, exactly like the attack roll: a 100 fumbles and fails, and a roll inside the defender's crit window is tagged `crit` (`reaction_tags`). A crit reaction has no extra effect yet; perks may read the tag later. [V 2026-11-04, owner decision]
+- **Attribute modifier.** An attribute's modifier is `attribute − 5` (`formulas/attribute_modifier.json`): +5 at 10, 0 at 5, −4 at 1. `damage.ability` names the attribute the attack uses, read from `attacker.attributes`; with no `ability` the roll stands alone. The modifier adds before the called-shot multiplier and the crit, so both multiply it [A], and a penalty stops at zero. Which attribute a weapon uses is in [attributes.md](../modules/attributes.md#the-attribute-modifier). [V 2026-11-11, vectors in `combat.json`]
 - **Crit** multiplies damage by 2 (`critDamageMultiplier`). It is a consumer of the `crit` tag, not a second roll. Crit multiplies before any reduction. [A]
 - **Block** compares margins as the TTRPG prose does: the blocker's margin must reach the attacker's. It is the other reaction (step 2) and reduces damage instead of avoiding it. The video-game input-timed block is a client mapping of the same numbers. Block applies only to types with `armor_dr_applies`: a shield does not stop fire. Evade applies to any type the delivery allows. [A]
 - **Armor DR** is the sum of worn pieces ([armor.md](../modules/armor.md)); the pipeline takes the sum as an input. Types tagged `bypasses_armor` or `bypasses_physical_armor` carry no `armor_dr_applies`, so DR skips them. A piercing hit halves DR, rounded down. [A]

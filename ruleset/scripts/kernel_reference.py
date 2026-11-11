@@ -420,6 +420,10 @@ def run_combat(vector):
     result["outcome"] = "hit"
 
     amount = damage["roll"]
+    if "ability" in damage:
+        attribute = vector["attacker"].get("attributes", {}).get(damage["ability"], 0)
+        modifier = evaluate_formula(load_data("formulas/attribute_modifier.json")["expr"], {}, {"attribute": attribute})
+        amount = max(amount + modifier, 0)
     if called is not None:
         amount = math.floor(amount * called["damage_mul"])
     if crit:

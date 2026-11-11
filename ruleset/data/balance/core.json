@@ -16,6 +16,7 @@
     { "key": "monster_hits_to_kill", "mode": "gate", "description": "A monster takes the hits of its role's band (standard 4 to 6, boss 8 to 12, minion 1 to 2) of its tier's damage." }
   ],
   "accepted": [
+    { "check": "weapon_dice", "subject": "thrown_rock", "reason": "An improvised throw: free and always to hand; its 1d4 is meant to sit below the band." },
     { "check": "weapon_dice", "subject": "dagger", "reason": "A light weapon: cheap, concealable, and fast; its 1d4 is meant to sit below the band." },
     { "check": "weapon_dice", "subject": "sling", "reason": "A light weapon: cheap ammunition and no proficiency cost; its 1d4 is meant to sit below the band." },
     { "check": "weapon_dice", "subject": "throwing_knife", "reason": "A light weapon: cheap, carried by the handful, and thrown in volleys; its 1d4 is meant to sit below the band." },
