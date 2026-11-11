@@ -48,9 +48,8 @@
         },
         "appliedBy": {
           "type": "array",
-          "description": "Effect refs that can apply this condition. Use namespaced format core:effect/<key>.",
-          "items": { "$ref": "schema.json#/definitions/effectRef" },
-          "minItems": 1
+          "description": "Effect refs that can apply this condition. Use namespaced format core:effect/<key>. Empty only for a condition a rule applies, such as overdosed (docs/core/modifier.md#toxicity).",
+          "items": { "$ref": "schema.json#/definitions/effectRef" }
         },
         "removedBy": {
           "type": "array",
