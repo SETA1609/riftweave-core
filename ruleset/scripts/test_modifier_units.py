@@ -51,7 +51,8 @@ class TestModifierUnits(unittest.TestCase):
         for row in json.loads((DATA / "modifier_targets" / "core.json").read_text())["modifier_targets"]:
             with self.subTest(target=row["key"]):
                 self.assertNotIn("percent", row["key"])
-                self.assertNotRegex(row["key"], r"(_meters|_metres|_feet|_ft)$")
+                if row["key"] != "lands_on_feet":  # a flag about landing, not a distance in feet
+                    self.assertNotRegex(row["key"], r"(_meters|_metres|_feet|_ft)$")
 
     def test_each_rewritten_perk_gives_the_same_number_at_its_listed_rank(self):
         rows = features()
