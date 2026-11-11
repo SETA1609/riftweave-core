@@ -21,8 +21,8 @@
         "description": { "type": "string", "minLength": 1 },
         "stack": {
           "type": "string",
-          "enum": ["highest", "add"],
-          "description": "highest: on one target and op, only the strongest bonus and the strongest penalty of this origin count. add: every source of this origin counts, as with no origin."
+          "enum": ["highest", "add", "replace"],
+          "description": "highest: on one target and op, only the strongest bonus and the strongest penalty of this origin count. add: every source of this origin counts, as with no origin. replace: a new source removes every running modifier and tick of this origin first."
         },
         "defaultFor": {
           "type": "array",
@@ -30,7 +30,7 @@
           "description": "Emitters whose modifiers carry this origin when the row names none. item_effect is an applied effect on a weapon, armor, accessory, or crafted item; item_stat is the item's own numbers (DR, damage). Each emitter is the default of at most one origin.",
           "items": {
             "type": "string",
-            "enum": ["spell", "consumable", "ingredient", "item_effect", "item_stat", "gem", "feature", "background", "race", "monster", "condition"]
+            "enum": ["spell", "consumable", "ingredient", "item_effect", "item_stat", "gem", "food", "feature", "background", "race", "monster", "condition"]
           }
         },
         "source": { "$ref": "schema.json#/definitions/sourceRef" }

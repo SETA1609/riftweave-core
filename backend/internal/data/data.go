@@ -440,6 +440,23 @@ type Item struct {
 	CostCopper       int64
 	TakesMaterial    bool
 	IsWeapon         bool
+	Type             string
+	Consumable       *Consumable
+}
+
+// Consumable is how an item is used and the effects it applies.
+type Consumable struct {
+	Delivery string
+	Effects  []ConsumableEffect
+}
+
+// ConsumableEffect is one applied effect on a consumable; Magnitude is nil when it has none.
+type ConsumableEffect struct {
+	Effect    string
+	Parameter string
+	Magnitude *int64
+	Duration  int64
+	Origin    string
 }
 
 // Size is one row of combat/dice_ladder.json's sizes: the rungs the dice move, the attack
@@ -452,25 +469,28 @@ type Size struct {
 
 // Ruleset is everything the commands read.
 type Ruleset struct {
-	Resolution  Resolution
-	Derived     Table[DerivedStat]
-	Skills      Table[Skill]
-	Actions     Actions
-	Wuxing      Wuxing
-	Modules     []string // ids of the loaded modules
-	Rest        Table[Occasion]
-	Economy     Economy
-	Progression Progression
-	Pipeline    Pipeline
-	DamageTypes Table[DamageType]
-	Situations  Table[Situation]
-	CalledShots Table[CalledShot]
-	Hazards     Table[Hazard]
-	Spells      Table[Spell]
-	Casting     Casting
-	Origins     modifier.OriginPolicies
-	Conditions  Conditions
-	Loot        Loot
+	Resolution     Resolution
+	Derived        Table[DerivedStat]
+	Skills         Table[Skill]
+	Actions        Actions
+	Wuxing         Wuxing
+	Modules        []string // ids of the loaded modules
+	Rest           Table[Occasion]
+	Economy        Economy
+	Progression    Progression
+	Pipeline       Pipeline
+	DamageTypes    Table[DamageType]
+	Situations     Table[Situation]
+	CalledShots    Table[CalledShot]
+	Hazards        Table[Hazard]
+	Spells         Table[Spell]
+	Casting        Casting
+	Origins        modifier.OriginPolicies
+	OriginReplaces map[string]bool   // origin ref: its policy is `replace`
+	OriginFor      map[string]string // emitter: the origin ref it defaults to
+	SecondsPerTurn int64             // actions/core.json
+	Conditions     Conditions
+	Loot           Loot
 
 	Formulas          map[string]*formula.Program // formulas/<name>.json by name
 	AttributeModifier *formula.Program            // formulas/attribute_modifier.json
@@ -534,8 +554,9 @@ func Load(fileSystem fs.FS, modules ...fs.FS) (*Ruleset, error) {
 	ruleset.Derived = newTable(derived.Derived, func(stat *DerivedStat) string { return stat.Key })
 
 	var actions struct {
-		Pool    ActionPool
-		Actions []Action
+		Pool           ActionPool
+		SecondsPerTurn int64 `json:"seconds_per_turn"`
+		Actions        []Action
 	}
 	if loader.read("actions/core.json", &actions) {
 		actions.Pool.Ability = loader.ability("actions/core.json", actions.Pool.Attribute)
@@ -543,6 +564,7 @@ func Load(fileSystem fs.FS, modules ...fs.FS) (*Ruleset, error) {
 			loader.fail("actions/core.json: per_point_divisor must be positive")
 		}
 	}
+	ruleset.SecondsPerTurn = actions.SecondsPerTurn
 	ruleset.Actions = Actions{Pool: actions.Pool, Actions: newTable(actions.Actions, func(action *Action) string { return action.Key })}
 
 	var rest struct{ Rest []Occasion }
@@ -612,11 +634,22 @@ func Load(fileSystem fs.FS, modules ...fs.FS) (*Ruleset, error) {
 	ruleset.Situations = newTable(situations.Situations, func(situation *Situation) string { return situation.Key })
 	ruleset.CalledShots = newTable(situations.CalledShots, func(calledShot *CalledShot) string { return calledShot.Key })
 
-	var origins struct{ Origins []struct{ Key, Stack string } }
+	var origins struct {
+		Origins []struct {
+			Key, Stack string
+			DefaultFor []string `json:"defaultFor"`
+		}
+	}
 	loader.read("origins/core.json", &origins)
 	ruleset.Origins = modifier.OriginPolicies{}
+	ruleset.OriginReplaces, ruleset.OriginFor = map[string]bool{}, map[string]string{}
 	for _, origin := range origins.Origins {
-		ruleset.Origins["core:origin/"+origin.Key] = origin.Stack == "highest"
+		var ref string = "core:origin/" + origin.Key
+		ruleset.Origins[ref] = origin.Stack == "highest"
+		ruleset.OriginReplaces[ref] = origin.Stack == "replace"
+		for _, emitter := range origin.DefaultFor {
+			ruleset.OriginFor[emitter] = ref
+		}
 	}
 
 	loader.loadConditions(ruleset)
@@ -798,6 +831,8 @@ func (loader *rulesetLoader) loadItems(ruleset *Ruleset) {
 			Cost             *Cost
 			Weapon           *struct{ Damage struct{ Dice string } }
 			DefaultMaterials []string `json:"default_materials"`
+			Type             string
+			Consumable       *Consumable
 		}
 		var raw struct {
 			Equipment []struct {
@@ -837,6 +872,8 @@ func (loader *rulesetLoader) loadItems(ruleset *Ruleset) {
 				TakesMaterial:    category.category == "weapon" || category.category == "armor",
 				IsWeapon:         category.category == "weapon",
 				DefaultMaterials: defaults,
+				Type:             row.Type,
+				Consumable:       row.Consumable,
 			}
 			if weapon != nil {
 				item.Dice = weapon.Damage.Dice

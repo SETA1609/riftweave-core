@@ -21,6 +21,7 @@ import (
 	"github.com/SETA1609/riftweave-core/backend/internal/casting"
 	"github.com/SETA1609/riftweave-core/backend/internal/combat"
 	"github.com/SETA1609/riftweave-core/backend/internal/condition"
+	"github.com/SETA1609/riftweave-core/backend/internal/consume"
 	"github.com/SETA1609/riftweave-core/backend/internal/data"
 	"github.com/SETA1609/riftweave-core/backend/internal/derived"
 	"github.com/SETA1609/riftweave-core/backend/internal/economy"
@@ -95,6 +96,7 @@ var commands map[string]commandHandler = map[string]commandHandler{
 	"wuxing":        bind(wuxing.Run),
 	"economy":       bind(economy.Run),
 	"rest":          bind(rest.Run),
+	"consume":       bind(consume.Run),
 	"stored_actor":  bind(stored.Run),
 	"combat":        bind(combat.Run),
 	"loot":          bind(loot.Run),

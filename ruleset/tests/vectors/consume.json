@@ -1,0 +1,419 @@
+[
+  {
+    "current": {
+      "hp": 10,
+      "mp": 0,
+      "stamina": 0
+    },
+    "max": {
+      "hp": 100,
+      "mp": 50,
+      "stamina": 100
+    },
+    "events": [
+      {
+        "item": "potion_minor_healing"
+      }
+    ],
+    "name": "instant restore: a potion applies its magnitude at once",
+    "expect": {
+      "hp": 30,
+      "ticks": [],
+      "refused": []
+    }
+  },
+  {
+    "current": {
+      "hp": 10,
+      "mp": 0,
+      "stamina": 0
+    },
+    "max": {
+      "hp": 100,
+      "mp": 50,
+      "stamina": 100
+    },
+    "events": [
+      {
+        "item": "ration_hearty_stew"
+      },
+      {
+        "advance": 60
+      }
+    ],
+    "name": "over time: a restore adds its magnitude each second, for 60 in total",
+    "expect": {
+      "stamina": 60,
+      "ticks": []
+    }
+  },
+  {
+    "current": {
+      "hp": 10,
+      "mp": 0,
+      "stamina": 0
+    },
+    "max": {
+      "hp": 100,
+      "mp": 50,
+      "stamina": 100
+    },
+    "events": [
+      {
+        "item": "ration_hearty_stew"
+      },
+      {
+        "advance": 10
+      }
+    ],
+    "name": "over time: a running tick keeps its remaining seconds",
+    "expect": {
+      "stamina": 10,
+      "ticks": [
+        {
+          "source": "food:ration_hearty_stew",
+          "origin": "core:origin/food",
+          "pool": "stamina",
+          "magnitude": 1,
+          "seconds_left": 50
+        }
+      ]
+    }
+  },
+  {
+    "current": {
+      "hp": 10,
+      "mp": 0,
+      "stamina": 0
+    },
+    "max": {
+      "hp": 100,
+      "mp": 50,
+      "stamina": 100
+    },
+    "events": [
+      {
+        "item": "ration_hearty_stew"
+      },
+      {
+        "turns": 2
+      }
+    ],
+    "name": "turns: one turn is five seconds",
+    "expect": {
+      "stamina": 10,
+      "ticks": [
+        {
+          "source": "food:ration_hearty_stew",
+          "origin": "core:origin/food",
+          "pool": "stamina",
+          "magnitude": 1,
+          "seconds_left": 50
+        }
+      ]
+    }
+  },
+  {
+    "current": {
+      "hp": 10,
+      "mp": 0,
+      "stamina": 0
+    },
+    "max": {
+      "hp": 100,
+      "mp": 50,
+      "stamina": 100
+    },
+    "events": [
+      {
+        "item": "travel_rations"
+      },
+      {
+        "turns": 5
+      }
+    ],
+    "name": "turns: the total matches real time when a turn outlasts the effect",
+    "expect": {
+      "stamina": 20,
+      "ticks": []
+    }
+  },
+  {
+    "current": {
+      "hp": 10,
+      "mp": 0,
+      "stamina": 0
+    },
+    "max": {
+      "hp": 100,
+      "mp": 50,
+      "stamina": 5
+    },
+    "events": [
+      {
+        "item": "ration_hearty_stew"
+      },
+      {
+        "advance": 60
+      }
+    ],
+    "name": "a pool stops at its maximum",
+    "expect": {
+      "stamina": 5
+    }
+  },
+  {
+    "current": {
+      "hp": 10,
+      "mp": 0,
+      "stamina": 0
+    },
+    "max": {
+      "hp": 100,
+      "mp": 50,
+      "stamina": 100
+    },
+    "events": [
+      {
+        "item": "ration_hearty_stew"
+      },
+      {
+        "advance": 10
+      },
+      {
+        "item": "bread_and_cheese"
+      },
+      {
+        "advance": 10
+      }
+    ],
+    "name": "food: a second dish replaces the first, even an effect only the first had",
+    "expect": {
+      "stamina": 10,
+      "hp": 20,
+      "ticks": []
+    }
+  },
+  {
+    "current": {
+      "hp": 10,
+      "mp": 0,
+      "stamina": 0
+    },
+    "max": {
+      "hp": 100,
+      "mp": 50,
+      "stamina": 100
+    },
+    "events": [
+      {
+        "item": "ration_hearty_stew"
+      },
+      {
+        "advance": 10
+      },
+      {
+        "item": "bread_and_cheese"
+      }
+    ],
+    "name": "food: the replaced dish stops ticking at once",
+    "expect": {
+      "stamina": 10,
+      "hp": 10,
+      "ticks": [
+        {
+          "source": "food:bread_and_cheese",
+          "origin": "core:origin/food",
+          "pool": "hp",
+          "magnitude": 1,
+          "seconds_left": 10
+        }
+      ]
+    }
+  },
+  {
+    "current": {
+      "hp": 10,
+      "mp": 0,
+      "stamina": 0
+    },
+    "max": {
+      "hp": 100,
+      "mp": 50,
+      "stamina": 100
+    },
+    "events": [
+      {
+        "item": "potion_strength"
+      },
+      {
+        "item": "ration_hearty_stew"
+      },
+      {
+        "advance": 5
+      },
+      {
+        "item": "bread_and_cheese"
+      }
+    ],
+    "name": "a potion and a dish stack, and a new dish leaves the potion",
+    "expect": {
+      "stamina": 5,
+      "ticks": [
+        {
+          "source": "food:bread_and_cheese",
+          "origin": "core:origin/food",
+          "pool": "hp",
+          "magnitude": 1,
+          "seconds_left": 10
+        }
+      ],
+      "modifiers": [
+        {
+          "source": "item:potion_strength",
+          "origin": "core:origin/alchemy",
+          "target": "str",
+          "op": "add",
+          "value": 2,
+          "seconds_left": 55
+        }
+      ]
+    }
+  },
+  {
+    "current": {
+      "hp": 10,
+      "mp": 0,
+      "stamina": 0
+    },
+    "max": {
+      "hp": 100,
+      "mp": 50,
+      "stamina": 100
+    },
+    "events": [
+      {
+        "item": "ration_hearty_stew",
+        "in_combat": true
+      },
+      {
+        "advance": 10
+      }
+    ],
+    "name": "food: eating is refused in combat",
+    "expect": {
+      "stamina": 0,
+      "ticks": [],
+      "refused": [
+        "ration_hearty_stew"
+      ]
+    }
+  },
+  {
+    "current": {
+      "hp": 10,
+      "mp": 0,
+      "stamina": 0
+    },
+    "max": {
+      "hp": 100,
+      "mp": 50,
+      "stamina": 100
+    },
+    "events": [
+      {
+        "item": "potion_stamina",
+        "in_combat": true
+      }
+    ],
+    "name": "a potion can be drunk in combat",
+    "expect": {
+      "stamina": 30,
+      "refused": []
+    }
+  },
+  {
+    "current": {
+      "hp": 10,
+      "mp": 0,
+      "stamina": 0
+    },
+    "max": {
+      "hp": 100,
+      "mp": 50,
+      "stamina": 100
+    },
+    "events": [
+      {
+        "item": "potion_strength"
+      },
+      {
+        "advance": 10
+      },
+      {
+        "item": "potion_strength"
+      }
+    ],
+    "name": "the same item again restarts its own effect",
+    "expect": {
+      "modifiers": [
+        {
+          "source": "item:potion_strength",
+          "origin": "core:origin/alchemy",
+          "target": "str",
+          "op": "add",
+          "value": 2,
+          "seconds_left": 60
+        }
+      ]
+    }
+  },
+  {
+    "current": {
+      "hp": 10,
+      "mp": 0,
+      "stamina": 0
+    },
+    "max": {
+      "hp": 100,
+      "mp": 50,
+      "stamina": 100
+    },
+    "events": [
+      {
+        "item": "potion_strength"
+      },
+      {
+        "advance": 60
+      }
+    ],
+    "name": "a held effect ends with its duration",
+    "expect": {
+      "modifiers": []
+    }
+  },
+  {
+    "current": {
+      "hp": 10,
+      "mp": 0,
+      "stamina": 0
+    },
+    "max": {
+      "hp": 100,
+      "mp": 50,
+      "stamina": 100
+    },
+    "events": [
+      {
+        "item": "coating_frost"
+      }
+    ],
+    "name": "an item for a weapon cannot be drunk",
+    "expect": {
+      "refused": [
+        "coating_frost"
+      ],
+      "hp": 10
+    }
+  }
+]
