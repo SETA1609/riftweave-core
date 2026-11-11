@@ -105,7 +105,7 @@ Ten is the cap on a player's attributes at character creation; racial and perk b
 ### Strength (STR)
 - **Governs:** melee damage, carrying capacity, Strength-gated equipment.
 - **Seeds skills:** `blades`, `blunt`, `heavy_armor`, `athletics`, `blacksmithing`, `building`.
-- **Feeds:** Carry weight `25 + STR × 10`.
+- **Feeds:** Carry weight `25 + STR × 10`, in [weight units](../core/contract.md#weight).
 
 ### Perception (PER)
 - **Governs:** ranged accuracy, detection, initiative order.
@@ -188,7 +188,7 @@ to sustain longer fights and weather enemy spells. See [`magic.md`](./magic.md).
 | Mana / Stamina regen (WIL) | scales with WIL |
 | Stamina pool (END, action combat) | `15 + END × 5 + level × 2` |
 | Action Points (AGI, turn-based) | `2 + floor(AGI / 3)` per turn |
-| Carry weight (STR) | `25 + STR × 10` |
+| Carry weight (STR) | `25 + STR × 10` weight units |
 | Critical chance (LCK) | `1% + LCK%` |
 | Initiative (PER) | `PER` |
 | Every check (LCK) | `+floor(LCK / 2)%` to the target |

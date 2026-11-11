@@ -201,7 +201,7 @@ From your final attributes (`progression.md` § Derived statistics), at `level =
 These systems make END and certain creation choices (race, perks) matter for survival and exploration, not just combat. Full resolution (d100 under resistance vs potency/DC from effect magnitude) and Wuxing interactions are detailed in `attributes.md`. Add your final resistance values to the character sheet as part of derived stats. 
 
 (The other 3 points in character creation — full derived stats formulas beyond the basics above, encumbrance rules, and light/vision systems — will be expanded after these three systems are complete, per your direction.)
-| Carry weight | `25 + STR × 10` | — |
+| Carry weight | `25 + STR × 10` [weight units](../core/contract.md#weight) | — |
 | Critical chance | `1% + LCK%` | — |
 | Initiative | `PER` | — |
 

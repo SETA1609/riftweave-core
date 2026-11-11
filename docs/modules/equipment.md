@@ -5,7 +5,8 @@ What a character can buy, wear, carry, and use up. The rows are in
 base in `bases/` plus overrides, consumables and gear as full rows. A base with
 `is_item: true` is its own item, so a row is written only where it changes the base
 ([composition.md](../core/composition.md#a-base-that-is-an-item)). Weapons are in
-[weapons.md](weapons.md), armor in [armor.md](armor.md).
+[weapons.md](weapons.md), armor in [armor.md](armor.md). Every `weight` is in
+[weight units](../core/contract.md#weight), 0.5 kg each when read aloud.
 
 ## The floor
 
