@@ -207,7 +207,7 @@ class TestSpells(unittest.TestCase):
 
 # docs/modules/magic.md#template-spells: one template per target shape.
 TEMPLATES = {"bolt": ("fire_bolt", "ranged"), "touch": ("holy_light", "touch"), "burst": ("fire_burst", "area"),
-             "ward": ("ward", "self"), "mend": ("mend_wounds", "touch")}
+             "ward": ("conjured_barrier", "self"), "mend": ("mend_wounds", "touch")}
 # docs/modules/magic.md#uncraftable-effects
 UNCRAFTABLE = {"teleport", "mark", "recall", "storage", "bound_weapon", "summon"}
 STAY_CRAFTABLE = {"spell_absorption", "life_steal", "mana_leech", "drain_skill", "drain_attribute", "drain_resource",

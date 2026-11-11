@@ -305,7 +305,7 @@ target shape: [A]
 | bolt | Fire Bolt | `ranged` |
 | touch | Holy Light | `touch` |
 | burst | Fire Burst | `area` |
-| ward | Ward | `self` |
+| ward | Conjured Barrier | `self` |
 | mend | Mend Wounds | `touch`, a heal |
 
 ### Cost formula
