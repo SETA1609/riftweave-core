@@ -9,5 +9,3 @@ Roadmap: [M1](../../ROADMAP.md#where-we-are). Format and rules: [README.md](READ
 **Spec:** `docs/core/` for kernel rules, `docs/modules/` for module rules.
 
 **Done when:** items 1 and 2 of the [definition of finished](../../ROADMAP.md#definition-of-finished) hold.
-
-Done: M1-01, M1-02, M1-03, M1-04, M1-05, M1-06, M1-07, M1-08 ([done.md](done.md#m1-kernel-closed))

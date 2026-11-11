@@ -9,7 +9,8 @@ story's issues when it is next in line, not before; the design will have moved b
 
 ## Files
 
-One file per milestone. Issues inside a file are in the order they should be done.
+One file per milestone, holding its goal, spec, and done-when. The issues themselves are one
+file each in [docs/issues/](../issues/README.md).
 
 | File | Story |
 | --- | --- |
@@ -20,7 +21,6 @@ One file per milestone. Issues inside a file are in the order they should be don
 | [05-release.md](05-release.md) | M5 Release 1.0, plus repo process and tooling |
 | [06-modules.md](06-modules.md) | Post-1.0 modules |
 | [07-backend.md](07-backend.md) | APP Reference backend: CLIs, API server, Angular frontend |
-| [done.md](done.md) | Issues whose PR is merged, with the PR number and merge date (M0 is here) |
 
 ## Order
 
@@ -42,9 +42,9 @@ Run these from the repo root (`DT` is `uv run --project tools/devops --locked --
 - `$DT roadmap-order --settings-file tools/devops/pyproject.toml show` prints the issue view:
   first, ready, the critical path, and the blocked waves with their blockers. It changes
   nothing, so open PRs never conflict on it.
-- `$DT roadmap-order --settings-file tools/devops/pyproject.toml write` regenerates the story
-  table in [ROADMAP.md](../../ROADMAP.md#story-order). A PR that changes a `Status` or
-  `Needs` runs it; CI fails while the table is stale.
+- [docs/issues/order.md](../issues/order.md) is a generated table.
+  [close-merged-issue.yml](../../.github/workflows/close-merged-issue.yml) regenerates it after
+  each merge; pull requests do not touch it.
 - Two ready issues that list the same paths under `Files:` will conflict; run them one after
   the other, or add a `Needs` edge.
 
@@ -53,16 +53,16 @@ Run these from the repo root (`DT` is `uv run --project tools/devops --locked --
 - **Story ID:** the milestone in the story heading: `M1` to `M5`, `POST` for post-1.0
   modules, and `APP` for the reference backend.
 - **Issue ID:** story ID plus a two-digit number: `M1-01`, `POST-03`. Next id = highest
-  number in that story (open or in [done.md](done.md)), plus one. Numbers are never reused;
-  a dropped issue stays in its file marked `dropped` with a one-line reason.
+  number in that story (in [open/ or done/](../issues/README.md)), plus one. Numbers are never reused;
+  a dropped issue keeps its file in `docs/issues/open`, marked `dropped` with a one-line reason.
 - **Older ids:** `SET-NN` (tracked in Linear) and `RW-NN` (this tracker until M5-01) keep
-  their ids in [done.md](done.md). An open issue that was renumbered says so in `Was:`.
+  their ids in [docs/issues/done/](../issues/done/). An open issue that was renumbered says so in `Was:`.
 - **Branch:** `<issue-id>-<slug>`, for people and agents alike (no `agent/<name>/` prefix),
   for example `M1-07-one-test-runs-every-vector-file`. The slug is the issue title
   in lowercase kebab-case, shortened if long. An issue split by area over the 20-file limit
   uses `<issue-id>-ruleset-<slug>` and `<issue-id>-backend-<slug>`, the ruleset one first
   ([CONTRIBUTING](../../CONTRIBUTING.md#pull-request-rules)). No branch without an issue; if
-  work has none, add one to the story file first.
+  work has none, add its file to `docs/issues/open/` first.
 - **PR title:** `<issue-id> <issue title>`.
 
 ## Workflow
@@ -70,16 +70,17 @@ Run these from the repo root (`DT` is `uv run --project tools/devops --locked --
 The five steps (spec, schema, vector, data, review) and the pull request rules are in
 [CONTRIBUTING.md](../../CONTRIBUTING.md#workflow). In short:
 
-1. **File:** add the issue to its story file, `Status: todo`. Optionally create the Linear
+1. **File:** add `docs/issues/open/<issue-id>.md`, `Status: todo`. Optionally create the Linear
    issue with a link to the story anchor and add `Linear:` to the issue.
-2. **Work:** set `Status: doing` in the issue's first PR commit.
+2. **Work:** set `Status: doing` in the issue's file, in its first PR commit.
 3. **Review:** set `Status: review` when the PR is opened. Add the issue's changelog
    fragment, `changes/<issue-id>.md` ([rules](../../changes/README.md)), in the same PR. Do
    not edit [CHANGELOG.md](../../CHANGELOG.md); the owner releases the fragments into it.
-4. **Move done issues:** after the PR is merged, the next PR that touches that story file
-   moves the issue to [done.md](done.md) with its full text, `Status: done`, and
-   `Merged: #<PR>, <date>`, and adds its id to the `Done:` line under the story heading.
-   Story files list only open work.
+4. **Merged issues close themselves:** after the PR is merged, the
+   [close-merged-issue](../issues/README.md#how-an-issue-closes) workflow moves an issue in
+   `review` to `docs/issues/done/` with `Status: done` and `Merged: #<PR>, <date>`. A PR
+   never moves an issue file itself. A PR that finishes only part of an issue leaves its
+   status at `doing` or `todo`.
 
 Design questions that need a spec go to `docs/core/` or `docs/modules/` before the issue
 starts. Decisions go to `docs/decisions/<issue-id>.md`, one file per issue ([format](../decisions/README.md)).
@@ -91,9 +92,9 @@ starts. Decisions go to `docs/decisions/<issue-id>.md`, one file per issue ([for
 **Goal:** <what exists afterwards>
 **Spec:** <where the rules are specified>
 **Done when:** <checkable result for the whole story>
-
-Done: <ids moved to done.md>
 ```
+
+An issue is its own file, `docs/issues/open/<issue-id>.md`:
 
 ```
 #### <Issue ID> <Title, imperative>

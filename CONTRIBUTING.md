@@ -26,7 +26,7 @@ python ruleset/scripts/validate.py        # validate every data file against its
 
 The validator checks **all** data files and exits non-zero on any failure. CI
 (`.github/workflows/validate-ruleset.yml`) runs it on every push/PR that touches
-`ruleset/`, `docs/core/`, `docs/stories/`, `docs/backend/`, `backend/`, `.github/`, or the
+`ruleset/`, `docs/core/`, `docs/stories/`, `docs/issues/`, `docs/backend/`, `backend/`, `.github/`, or the
 `Dockerfile`. A change is not ready until validation is green.
 
 You can also run it via Docker: `docker build -t riftweave-validate . && docker run --rm riftweave-validate`.
@@ -116,7 +116,7 @@ vectors.
 ### Pull request rules
 
 1. **One issue, one PR.** The PR does what the issue says and nothing else. No branch
-   without an issue; if work has none, add it to its story file first ([docs/stories/](docs/stories/README.md)).
+   without an issue; if work has none, add its file first ([docs/issues/](docs/issues/README.md)).
 2. **At most 20 changed files** per PR, as `git diff --stat` counts them. A file with 5 or
    fewer changed lines does not count. If the counted files grow past 20, split the issue.
    Content-floor issues (perks, spells, monsters) split by color, level band, or skill.
@@ -131,12 +131,12 @@ vectors.
 4. **Docs in the same PR.** A change to a rule, a decision, or a tag updates the matching
    doc. Record decisions in `docs/decisions/<issue-id>.md`, one file per issue
    ([format](docs/decisions/README.md)); `docs/decisions.md` is the frozen log before 2026-11-04.
-5. **Status and changelog.** Set the issue's `Status` in its story file in the PR that
+5. **Status and changelog.** Set the issue's `Status` in its file in the PR that
    changes it. The issue's PR adds a changelog fragment, `changes/<issue-id>.md`
    ([rules](changes/README.md)), and does not edit [CHANGELOG.md](CHANGELOG.md); CI checks
    that the branch's issue has one. The owner moves the fragments into the changelog at a
-   release. After merge, the next PR that touches the story file moves the issue to
-   [done.md](docs/stories/done.md) ([how](docs/stories/README.md#workflow)).
+   release. After merge, a workflow moves an issue in `review` to `docs/issues/done/`
+   ([how](docs/issues/README.md#how-an-issue-closes)).
 6. **Names.** Branch `<issue-id>-<slug>`, e.g. `M1-07-<slug>` (the issue title in lowercase
    kebab-case, shortened if long), or `<issue-id>-ruleset-<slug>` and `<issue-id>-backend-<slug>`
    for a split issue (rule 2); the issue id always comes first, because the changelog check
@@ -152,8 +152,8 @@ vectors.
 Open pull requests are rebased onto `main` after every push to `main`
 (`.github/workflows/rebase-open-branches.yml`). Conflicts where both sides only added
 lines to a story file, `docs/decisions.md`, `docs/core/vectors.md`, or `CHANGELOG.md` keep
-both, the branch's lines first. The generated story table in `ROADMAP.md` is not merged: the
-rebase takes `main`'s table and regenerates it from the branch's story files. Any other
+both, the branch's lines first. Pull requests do not touch the generated `docs/issues/order.md`;
+`close-merged-issue.yml` regenerates it after each merge. Any other
 conflict leaves the branch for a person. Because of it, an open branch can move under you: run `git pull --rebase` before committing on it.
 
 ### Verification tags

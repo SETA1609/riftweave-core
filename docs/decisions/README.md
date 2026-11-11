@@ -15,7 +15,7 @@ Date: 2026-11-04
 - **Risk:** what could go wrong, if anything.
 ```
 
-- **File name:** the issue id plus `.md`, spelled as in the story file (`M1-05.md`).
+- **File name:** the issue id plus `.md`, spelled as in its issue file (`M1-05.md`).
 - **First line:** `# <issue-id> <issue title>`.
 - **Date:** the day of the decision, `YYYY-MM-DD`.
 - Bullets as in the old log; tag claims **[V date]**, **[A]**, or **[U]** ([CONTRIBUTING](../../CONTRIBUTING.md#verification-tags)).

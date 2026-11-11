@@ -11,9 +11,9 @@ dependencies = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "devops-tools", git = "https://github.com/SETA1609/devops_tools?rev=f7aca2eaf932f1a9b1f8f38721eaee378262c6ef" }]
+requires-dist = [{ name = "devops-tools", git = "https://github.com/SETA1609/devops_tools?rev=5458d06de23067e53e41a7b883bd3f483bc62a92" }]
 
 [[package]]
 name = "devops-tools"
 version = "0.3.0"
-source = { git = "https://github.com/SETA1609/devops_tools?rev=f7aca2eaf932f1a9b1f8f38721eaee378262c6ef#f7aca2eaf932f1a9b1f8f38721eaee378262c6ef" }
+source = { git = "https://github.com/SETA1609/devops_tools?rev=5458d06de23067e53e41a7b883bd3f483bc62a92#5458d06de23067e53e41a7b883bd3f483bc62a92" }

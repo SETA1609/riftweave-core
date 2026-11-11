@@ -6,7 +6,7 @@ requires-python = ">=3.13"
 # No local code: everything runs through devops-tools (README.md). The host needs nothing but
 # uv. Pin devops-tools to a full commit SHA; bump it in its own PR.
 dependencies = [
-    "devops-tools @ git+https://github.com/SETA1609/devops_tools@f7aca2eaf932f1a9b1f8f38721eaee378262c6ef",
+    "devops-tools @ git+https://github.com/SETA1609/devops_tools@5458d06de23067e53e41a7b883bd3f483bc62a92",
 ]
 
 [tool.uv]
@@ -16,12 +16,14 @@ package = false
 # with --settings-file.
 [tool.devops-tools]
 docs-cache-directory = "cache/docs"
-roadmap-file = "ROADMAP.md"
+roadmap-file = "docs/issues/order.md"
 changes-directory = "changes"
 changelog-file = "CHANGELOG.md"
 keep-both-added-lines = ["docs/stories/*.md", "docs/decisions.md", "docs/core/vectors.md"]
-# The rebase takes main's generated story table in ROADMAP.md and regenerates it after each branch.
-regenerate-roadmap-on-rebase = true
+# One file per issue in docs/issues/open and docs/issues/done. close-merged-issue.yml moves an issue
+# to done after its pull request merges and regenerates the table in roadmap-file. The tool needs a
+# file with the markers, so the table lives there and not in ROADMAP.md.
+issues-directory = "docs/issues"
 
 # Read by `devops-tools container` (README.md#usage).
 [tool.devops-tools.container]

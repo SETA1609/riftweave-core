@@ -39,14 +39,14 @@ Python packages on your machine, use the dev toolchain, which mounts your checko
 
 ## 3. Pick an issue
 
-Work comes from [docs/stories/](../stories/README.md). This command lists what can start now:
+Work comes from [docs/issues/open/](../issues/README.md), grouped by the [stories](../stories/README.md). This command lists what can start now:
 
 ```bash
 uv run --project tools/devops --locked --no-dev devops-tools roadmap-order --settings-file tools/devops/pyproject.toml show
 ```
 
 Take one from `first`, or from `ready` if you have a reason to. If your idea has no issue, add
-one to its story file first.
+its file to `docs/issues/open/` first.
 
 ## 4. Do the work
 
