@@ -13,8 +13,6 @@ To check one by hand, run its vector through the reference:
 python -m unittest ruleset/scripts/test_vectors.py
 ```
 
-`ruleset/scripts/combat_reference.py` is the older crafted-item simulator. It is not the vector reference, and its output is not an authority.
-
 ## Data shapes
 
 ### A weapon with an on-hit effect
