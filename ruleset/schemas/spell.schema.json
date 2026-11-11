@@ -41,6 +41,7 @@
           "additionalProperties": false
         },
         "cooldown": { "type": "number", "minimum": 0, "description": "Cooldown in seconds" },
+        "template": { "type": "boolean", "default": false, "description": "True for a plain learnable spell, one per target shape, whose mana cost and cast threshold are exactly the cost formula's (docs/modules/magic.md#template-spells)." },
         "custom": { "type": "boolean", "description": "True for player-made (spellmaking) spells; false or omitted for authored content" }
       },
       "required": ["key", "label", "description", "color", "level", "effects"],

@@ -69,6 +69,18 @@
           "items": { "$ref": "schema.json#/definitions/effectRef" },
           "description": "Other effect refs that this effect applies (recursively) when it takes hold on a target. Use namespaced format core:effect/<key>. Used by poison effects to deliver symptoms (e.g. damage, drain, control effects). A poison effect (any effect with 'poison' in its tags or delivered via poison/coating channel) MUST NOT list any other effect that has 'poison' in its tags, to prevent infinite recursion or self-poisoning."
         },
+        "craftable": {
+          "type": "boolean",
+          "default": true,
+          "description": "false when only an authored spell carries the effect: no recipe, Research, or learned spell teaches it (docs/modules/magic.md#uncraftable-effects)."
+        },
+        "uncraftable_parameters": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "minItems": 1,
+          "uniqueItems": true,
+          "description": "The parameters a crafted spell may not give this otherwise craftable effect, such as mana on restore_resource (docs/modules/magic.md#uncraftable-effects)."
+        },
         "reserved": {
           "type": "boolean",
           "description": "true when no data references this effect yet and it is kept for planned content (docs/core/integrity.md gate 3). validate.py fails if a reserved effect is referenced, so the flag cannot go stale."
