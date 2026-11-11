@@ -30,6 +30,6 @@ A field the step names wins; the session fills only what is missing. [A]
 | `casting` | `caster.skills`, `caster.attributes`, `caster.mana` | MP |
 | `progression` | `actor` for `level_up` | `level` sets XP and level; `level_up` adds its rolls to `growth` |
 | `consume` | `current`, `max` | HP, MP, SP |
-| `conditions` | nothing | the conditions and flags |
+| `conditions` | `conditions` | the conditions and flags |
 
 Other commands run and are logged, and change nothing on the actor. The stored actor has no coins, and loot does not add to the inventory yet. [U]
