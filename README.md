@@ -75,7 +75,7 @@ The dev toolchain mounts this checkout instead. It needs [uv](https://docs.astra
 `./scripts/shell.sh` opens a shell in that image. `./scripts/agent.sh` runs the agent image (Claude Code and uv, with its own login). See [tools/devops/README.md](tools/devops/README.md).
 
 CI runs automatically via `.github/workflows/validate-ruleset.yml` on every push
-or PR that touches `ruleset/`, `docs/core/`, `docs/stories/`, `docs/backend/`, `backend/`,
+or PR that touches `ruleset/`, `docs/core/`, `docs/stories/`, `docs/issues/`, `docs/backend/`, `backend/`,
 `.github/`, or the `Dockerfile`.
 
 ## License

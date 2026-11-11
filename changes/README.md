@@ -11,7 +11,7 @@ changelog. The owner moves the fragments into the changelog at a release.
 - Changed: each pull request adds `changes/<issue-id>.md`; the owner releases them into `CHANGELOG.md`.
 ```
 
-- **File name:** the issue id plus `.md`, spelled as in the story file: `M1-07.md`,
+- **File name:** the issue id plus `.md`, spelled as in its issue file: `M1-07.md`,
   `POST-05.md`. One fragment per issue. An issue split into a ruleset and a backend pull
   request has one fragment: the ruleset one adds it, the backend one adds a bullet to it.
 - **First line:** `### <issue-id> <issue title>`, with the same id as the file name. No
@@ -20,10 +20,10 @@ changelog. The owner moves the fragments into the changelog at a release.
   [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) category: `Added:`, `Changed:`,
   `Deprecated:`, `Removed:`, `Fixed:`, or `Security:`. A renamed or removed key breaks
   consumers, so add **(breaking)** to that bullet.
-- **No other headings**, no `Status:` line (status lives in the story file), and no
+- **No other headings**, no `Status:` line (status lives in the issue file), and no
   `Last updated:` line (a release sets it).
 - End the file with a newline.
-- Work with no issue gets no fragment: add the issue to its story file first.
+- Work with no issue gets no fragment: add its file to `docs/issues/open/` first.
 
 This README is not a fragment; the check skips it.
 

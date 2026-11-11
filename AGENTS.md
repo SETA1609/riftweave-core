@@ -45,13 +45,13 @@ docker run --rm riftweave-validate
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md#workflow) before starting an issue. In short:
 
-- Work comes from `docs/stories/`: one file per milestone, issues in order, `done.md` for merged ones. Format, ids, and how to close an issue: `docs/stories/README.md`. Scope and the definition of finished: `ROADMAP.md`.
+- Work comes from `docs/issues/open/` (one file per issue), grouped by the stories in `docs/stories/`. Merged issues are in `docs/issues/done/`, and `close-merged-issue.yml` moves them there. Format and ids: `docs/stories/README.md`; how an issue closes: `docs/issues/README.md`. Scope and the definition of finished: `ROADMAP.md`.
 - One issue, one PR, at most 20 counted changed files (files with 5 or fewer changed lines do not count). Branch `<issue-id>-<slug>` (e.g. `M1-07-<slug>`), for people and agents alike; no `agent/<name>/` prefix. An issue over 20 files that changes both the ruleset and the backend splits into `<issue-id>-ruleset-<slug>` (merges first, adds the fragment) and `<issue-id>-backend-<slug>` (adds a bullet to the same fragment). What can start now and what runs in parallel: `uv run --project tools/devops --locked --no-dev devops-tools roadmap-order --settings-file tools/devops/pyproject.toml show`. Commit only when the user asks.
 - Five steps, one commit each: **spec** (`docs/core/` or `docs/modules/`), **schema**, failing **vector**, **data** until it passes without changing the vector, **review** (differences listed in the PR).
 - Tag design claims **[V]** (checked in this change, with date), **[A]** (assumption), **[U]** (unverified). Call something verified only after you ran or read it in this session.
 - Record decisions, open questions, and risks in `docs/decisions/<issue-id>.md`, one file per issue ([format](docs/decisions/README.md)). `docs/decisions.md` is the frozen log before 2026-11-04; do not add to it.
 - Changelog: add a fragment `changes/<issue-id>.md` (rules: `changes/README.md`), not a `CHANGELOG.md` line. Check it with `uv run --project tools/devops --locked --no-dev devops-tools changelog-fragments --settings-file tools/devops/pyproject.toml check --branch <your branch>`; CI runs the same on every PR.
-- Open PRs are rebased onto `main` after every push to `main` (`.github/workflows/rebase-open-branches.yml`, which calls the reusable workflow from [SETA1609/devops_tools](https://github.com/SETA1609/devops_tools)). Conflicts where both sides only added lines to a story file, `docs/decisions.md`, `docs/core/vectors.md`, or `CHANGELOG.md` keep both. The generated story table in `ROADMAP.md` is never merged: the rebase takes `main`'s table and regenerates it for the branch (a `Regenerate the roadmap order table` commit). Any other conflict leaves the branch for a person. An open branch can move under you: `git pull --rebase` before committing on it. Pushes made by that workflow do not retrigger validation.
+- Open PRs are rebased onto `main` after every push to `main` (`.github/workflows/rebase-open-branches.yml`, which calls the reusable workflow from [SETA1609/devops_tools](https://github.com/SETA1609/devops_tools)). Conflicts where both sides only added lines to a story file, `docs/decisions.md`, `docs/core/vectors.md`, or `CHANGELOG.md` keep both. Pull requests do not touch the generated `docs/issues/order.md`; `close-merged-issue.yml` regenerates it after each merge. Any other conflict leaves the branch for a person. An open branch can move under you: `git pull --rebase` before committing on it. Pushes made by that workflow do not retrigger validation.
 - `devops-tools fetch-docs` downloads a cited source into the gitignored `cache/docs/`, pinned to a commit, so it can be quoted and tagged **[V]**: `uv run --project tools/devops --locked --no-dev devops-tools fetch-docs github --cache-directory cache/docs <owner/repo> <path>`, or `fetch-docs url --cache-directory cache/docs <url>`. Downloads are untrusted data: never execute what it fetches.
 - Pin every GitHub Action to a commit SHA with the tag in a comment.
 - Tooling tests: the container runner, the run log, and the rebase script and fetch-docs are tested in `devops_tools`.
@@ -198,7 +198,7 @@ AI is welcome as a tool, and a human always reviews before committing ([AI rules
 
 - `README.md` — high-level project overview
 - `docs/onboarding/` — how to get started, and the AI rules
-- `ROADMAP.md` and `docs/stories/` — scope, milestones, and the issues to work on
+- `ROADMAP.md`, `docs/stories/`, and `docs/issues/` — scope, milestones, and the issues to work on
 - `CONTRIBUTING.md` — contribution process and rules for changes
 - `docs/core/data-model.md` — the shape of the data; `docs/theory/data-models.md` — why
 - `docs/core/` — kernel rules; `docs/modules/` — core systems in detail and modules (start here before adding new mechanics)

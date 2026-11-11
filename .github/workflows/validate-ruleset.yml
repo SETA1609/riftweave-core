@@ -8,6 +8,7 @@ on:
       - "Dockerfile"
       - "docs/core/**"
       - "docs/stories/**"
+      - "docs/issues/**"
       - "backend/**"
       - "docs/backend/**"
   pull_request:
@@ -17,6 +18,7 @@ on:
       - "Dockerfile"
       - "docs/core/**"
       - "docs/stories/**"
+      - "docs/issues/**"
       - "backend/**"
       - "docs/backend/**"
   workflow_dispatch:
