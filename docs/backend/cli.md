@@ -11,10 +11,12 @@ riftweave list                      every command, with its summary
 riftweave describe <command>        the command's contract file (backend/contract/<command>.json)
 riftweave <command> [file]          run a command on JSON from the file, or from stdin
 riftweave help                      usage, on stdout
+riftweave --dev dev <operation> [file]   change a session's actor for testing ([dev-mode.md](dev-mode.md))
 ```
 
 - **Input** is one JSON object, the command's `input_schema`: a vector without `name`, `function`, and `expect`. `-` as the file means stdin.
 - **Output** is the result, one line of JSON on stdout, then a newline. Nothing else is written to stdout.
+- `--dev` turns on dev mode for this call; without it the `dev` command is refused. `--dev` and `--data` come before the command, in any order.
 - `list` prints `[{"name": ..., "summary": ...}]`, sorted by name; `describe` prints the contract file as it is. Both read the contract built into the binary, so they need no ruleset.
 
 ## The ruleset
