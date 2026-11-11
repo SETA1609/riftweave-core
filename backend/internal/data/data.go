@@ -832,6 +832,42 @@ func (loader *rulesetLoader) loadFormulas(ruleset *Ruleset) {
 // baseName is the file a typed base reference names (docs/core/keys.md).
 func baseName(ref string) string { return ref[strings.LastIndex(ref, "/")+1:] }
 
+// itemBases lists, in file-name order, the keys of the bases in equipment/bases/<directory>
+// that state is_item: true. Each is the item of its own key with no overrides
+// (docs/core/composition.md#a-base-that-is-an-item).
+func (loader *rulesetLoader) itemBases(directory string) []string {
+	if directory == "" {
+		return nil
+	}
+	var path string = "equipment/bases/" + directory
+	entries, err := fs.ReadDir(loader.fileSystem, path)
+	if err != nil {
+		loader.fail("%s: %v", path, err)
+		return nil
+	}
+	var keys []string
+	for _, entry := range entries {
+		var name string = entry.Name()
+		if entry.IsDir() || !strings.HasSuffix(name, ".json") {
+			continue
+		}
+		var base struct {
+			IsItem *bool `json:"is_item"`
+		}
+		if !loader.read(path+"/"+name, &base) {
+			continue
+		}
+		if base.IsItem == nil {
+			loader.fail("%s/%s: is_item must be true or false", path, name)
+			continue
+		}
+		if *base.IsItem {
+			keys = append(keys, strings.TrimSuffix(name, ".json"))
+		}
+	}
+	return keys
+}
+
 // loadItems prices every equipment item and material, and reads every monster's level.
 func (loader *rulesetLoader) loadItems(ruleset *Ruleset) {
 	ruleset.Items = map[string]Item{}
@@ -850,16 +886,20 @@ func (loader *rulesetLoader) loadItems(ruleset *Ruleset) {
 			Type             string
 			Consumable       *Consumable
 		}
-		var raw struct {
-			Equipment []struct {
-				itemFields
-				Key       string
-				Base      string
-				Overrides itemFields
-			}
+		type itemRow struct {
+			itemFields
+			Key       string
+			Base      string
+			Overrides itemFields
 		}
+		var raw struct{ Equipment []itemRow }
 		loader.read("equipment/"+category.file+".json", &raw)
-		for _, row := range raw.Equipment {
+		var rows []itemRow
+		for _, key := range loader.itemBases(category.baseDirectory) {
+			rows = append(rows, itemRow{Key: key, Base: "core:" + category.category + "_base/" + key})
+		}
+		rows = append(rows, raw.Equipment...)
+		for _, row := range rows {
 			var base itemFields
 			if row.Base != "" {
 				loader.read(fmt.Sprintf("equipment/bases/%s/%s.json", category.baseDirectory, baseName(row.Base)), &base)

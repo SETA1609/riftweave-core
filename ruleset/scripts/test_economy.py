@@ -11,7 +11,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from kernel_reference import load_data  # noqa: E402
+from kernel_reference import DATA_DIR, load_data  # noqa: E402
+from validate import equipment_rows  # noqa: E402
 
 ITEM_FILES = {
     "weapon": "equipment/weapons.json",
@@ -44,7 +45,7 @@ class TestEconomyData(unittest.TestCase):
                     namespace, rest = entry["item"].split(":", 1)
                     category, key = rest.split("/", 1)
                     self.assertEqual(namespace, "core")
-                    keys = {e["key"] for e in load_data(ITEM_FILES[category])["equipment"]}
+                    keys = {e["key"] for e in equipment_rows(DATA_DIR / ITEM_FILES[category])}
                     self.assertIn(key, keys)
 
     def test_barter_skill_exists(self):
