@@ -320,21 +320,42 @@ type Hazard struct {
 type AppliedEffect struct {
 	Encoded   json.RawMessage
 	Effect    string
+	Parameter string
+	Target    string
 	Magnitude float64
+	Duration  float64 // seconds; 0 when the entry names none, read as 1 (instant)
+	Radius    float64
 }
 
-// UnmarshalJSON keeps the entry and reads its effect ref and magnitude.
+// UnmarshalJSON keeps the entry and reads the fields dispel and the spell cost read.
 func (applied *AppliedEffect) UnmarshalJSON(encoded []byte) error {
 	var fields struct {
 		Effect    string  `json:"effect"`
+		Parameter string  `json:"parameter"`
+		Target    string  `json:"target"`
 		Magnitude float64 `json:"magnitude"`
+		Duration  float64 `json:"duration"`
+		Radius    float64 `json:"radius"`
 	}
 	if err := json.Unmarshal(encoded, &fields); err != nil {
 		return err
 	}
 	applied.Encoded = append(json.RawMessage{}, encoded...)
-	applied.Effect, applied.Magnitude = fields.Effect, fields.Magnitude
+	applied.Effect, applied.Parameter, applied.Target = fields.Effect, fields.Parameter, fields.Target
+	applied.Magnitude, applied.Duration, applied.Radius = fields.Magnitude, fields.Duration, fields.Radius
 	return nil
+}
+
+// Effect is what spellcraft needs of one row of effects/core.json
+// (docs/modules/magic.md#uncraftable-effects).
+type Effect struct {
+	Craftable             *bool    `json:"craftable"` // nil reads true
+	Key                   string   `json:"key"`
+	Color                 string   `json:"color"`
+	MagnitudeUnit         string   `json:"magnitudeUnit"`
+	Channels              []string `json:"channels"`
+	UncraftableParameters []string `json:"uncraftable_parameters"`
+	BaseCost              float64  `json:"baseCost"`
 }
 
 // Spell is what a cast needs of one row of spells/core.json (docs/core/casting.md).
@@ -369,6 +390,21 @@ type Casting struct {
 	ArmorPenalty  map[string]int64 `json:"armor_penalty"`
 	PreventedBy   []string         `json:"prevented_by"`
 	SkillDiscount SkillDiscount    `json:"skill_discount"`
+	SpellCost     SpellCost        `json:"spell_cost"`
+	Research      Research         `json:"research"`
+}
+
+// SpellCost holds the spell cost formula's coefficients (docs/modules/magic.md#cost-formula).
+type SpellCost struct {
+	TargetMultiplier map[string]float64 `json:"target_multiplier"`
+	MagnitudeFactor  float64            `json:"magnitude_factor"`
+	AreaFactor       float64            `json:"area_factor"`
+}
+
+// Research is what one attempt to research an effect takes (docs/modules/magic.md#spell-knowledge).
+type Research struct {
+	Cost Cost  `json:"cost"`
+	Days int64 `json:"days"`
 }
 
 // SkillDiscount is what skill takes off a spell's mana cost: min(skill / Divisor, Cap).
@@ -498,6 +534,7 @@ type Ruleset struct {
 	CalledShots    Table[CalledShot]
 	Hazards        Table[Hazard]
 	Spells         Table[Spell]
+	Effects        Table[Effect] // by ref, core:effect/<key>
 	Casting        Casting
 	Origins        modifier.OriginPolicies
 	OriginReplaces map[string]bool   // origin ref: its policy is `replace`
@@ -687,6 +724,9 @@ func Load(fileSystem fs.FS, modules ...fs.FS) (*Ruleset, error) {
 	var spells struct{ Spells []Spell }
 	loader.read("spells/core.json", &spells)
 	ruleset.Spells = newTable(spells.Spells, func(spell *Spell) string { return spell.Key })
+	var effects struct{ Effects []Effect }
+	loader.read("effects/core.json", &effects)
+	ruleset.Effects = newTable(effects.Effects, func(effect *Effect) string { return "core:effect/" + effect.Key })
 	var casting struct{ Casting Casting }
 	loader.read("casting/core.json", &casting)
 	ruleset.Casting = casting.Casting

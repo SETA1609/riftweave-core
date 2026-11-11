@@ -10,7 +10,7 @@ import json
 import math
 from pathlib import Path
 
-from casting_reference import run_casting
+from casting_reference import run_casting, run_spellcraft
 from hazard_reference import run_hazard
 from loot_reference import run_loot
 
@@ -623,6 +623,7 @@ RUNNERS = {
     "loot": run_loot,
     "hazard": run_hazard,
     "casting": run_casting,
+    "spellcraft": run_spellcraft,
     "progression": run_progression,
 }
 
