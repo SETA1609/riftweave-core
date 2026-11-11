@@ -1,7 +1,7 @@
 {
   "$schema": "./command.schema.json",
   "name": "derived",
-  "summary": "HP, MP, SP, AP, carry, and initiative from attributes, level, and modifiers.",
+  "summary": "HP, MP, SP, AP, carry, initiative, and the toxicity limit from attributes, level, and modifiers.",
   "doc": "docs/core/derived.md",
   "input_schema": {
     "type": "object",
@@ -38,6 +38,9 @@
       },
       "initiative": {
         "type": "integer"
+      },
+      "toxicity_limit": {
+        "type": "integer"
       }
     },
     "additionalProperties": false,
@@ -47,7 +50,8 @@
       "sp",
       "ap",
       "carry",
-      "initiative"
+      "initiative",
+      "toxicity_limit"
     ]
   }
 }

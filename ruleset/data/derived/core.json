@@ -61,6 +61,16 @@
       "per_level_attr": 0,
       "per_level_flat": 0,
       "unit": "points"
+    },
+    {
+      "key": "toxicity_limit",
+      "label": "Toxicity limit",
+      "attr": "end",
+      "base": 20,
+      "per_point": 5,
+      "per_level_attr": 0,
+      "per_level_flat": 0,
+      "unit": "points"
     }
   ]
 }

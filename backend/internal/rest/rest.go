@@ -18,12 +18,13 @@ type Condition struct {
 	Duration string `json:"duration"`
 }
 
-// Resources are the four numbers a rest changes.
+// Resources are the numbers a rest changes. Toxicity is nil when the input names none.
 type Resources struct {
-	HitPoints    int64 `json:"hp"`
-	ManaPoints   int64 `json:"mp"`
-	Stamina      int64 `json:"stamina"`
-	ActionPoints int64 `json:"ap"`
+	Toxicity     *int64 `json:"toxicity,omitempty"`
+	HitPoints    int64  `json:"hp"`
+	ManaPoints   int64  `json:"mp"`
+	Stamina      int64  `json:"stamina"`
+	ActionPoints int64  `json:"ap"`
 }
 
 // Input is the `rest` command's input.
@@ -72,6 +73,14 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 				conditions = slices.DeleteFunc(slices.Clone(conditions), func(condition Condition) bool {
 					return slices.Contains(recovery.Durations, condition.Duration)
 				})
+			}
+			continue
+		}
+		if recovery.Resource == "toxicity" {
+			// empty sets stored toxicity to 0 (docs/core/modifier.md#toxicity).
+			if recovery.Mode == "empty" && result.Toxicity != nil {
+				var cleared int64
+				result.Toxicity = &cleared
 			}
 			continue
 		}

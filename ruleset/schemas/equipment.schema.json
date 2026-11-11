@@ -146,6 +146,9 @@
             "toxicity": { "type": "integer", "minimum": 0, "description": "What drinking it adds to the drinker's toxicity; every drink row states it, 0 allowed (docs/core/modifier.md#toxicity)." }
           },
           "required": ["delivery", "effects"],
+          "if": { "properties": { "delivery": { "const": "drink" } }, "required": ["delivery"] },
+          "then": { "required": ["toxicity"] },
+          "else": { "not": { "required": ["toxicity"] } },
           "additionalProperties": false
         },
         "accessory": {
