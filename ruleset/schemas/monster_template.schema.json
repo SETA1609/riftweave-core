@@ -21,6 +21,7 @@
         "description": { "type": "string" },
         "label_prefix": { "type": "string", "description": "Put before the monster's label, with a space, unless the row's overrides give a label." },
         "phase": { "$ref": "schema.json#/definitions/phase", "description": "The monster's phase, and the phase of every attack." },
+        "loot": { "type": "array", "minItems": 1, "description": "Rows added to the monster's loot.", "items": { "$ref": "loot.schema.json#/definitions/lootRow" } },
         "damage_type": { "$ref": "schema.json#/definitions/damageType", "description": "Every attack's damage type." },
         "resist": {
           "type": "object",

@@ -840,5 +840,62 @@
       "value_cp": 150,
       "budget_cp": 2000
     }
+  },
+  {
+    "name": "rolls by level: a level-25 thunderbird rolls the major hoard three times with no rolls on its row",
+    "monster": "core:monster/thunderbird",
+    "rolls": [
+      1,
+      1,
+      1
+    ],
+    "expect": {
+      "tables": [
+        "hoard_major"
+      ]
+    }
+  },
+  {
+    "name": "rolls by level: a level-30 dragon rolls the major and minor hoards four times each",
+    "monster": "core:monster/ancient_dragon",
+    "rolls": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "expect": {
+      "tables": [
+        "hoard_major",
+        "hoard_minor"
+      ]
+    }
+  },
+  {
+    "name": "rolls by level: too few rolls for the level is an error",
+    "monster": "core:monster/thunderbird",
+    "rolls": [
+      1,
+      1
+    ],
+    "expect": {
+      "error": "core:monster/thunderbird: ran out of rolls after 0"
+    }
+  },
+  {
+    "name": "a variant with no loot of its own drops what its base monster drops",
+    "monster": "core:monster/frost_ooze",
+    "rolls": [
+      1
+    ],
+    "expect": {
+      "tables": [
+        "grave_goods"
+      ]
+    }
   }
 ]

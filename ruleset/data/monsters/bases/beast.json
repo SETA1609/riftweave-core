@@ -5,6 +5,7 @@
   "phase": "wood",
   "size": "medium",
   "level": 2,
+  "loot": [{ "table": "beast_den" }],
   "attributes": { "str": 4, "end": 4, "agi": 5, "per": 4, "wil": 2 },
   "hitPoints": 28,
   "tags": ["beast"],

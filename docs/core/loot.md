@@ -16,14 +16,21 @@ The ranges of one table cover 1 to 100 exactly once, so every roll lands on one 
 
 ## Drops
 
-`drops` gives each monster (`core:monster/<key>`) a `loot` list: the rows it rolls when defeated, in order. Every core monster has exactly one drop row. A monster's own row does not name its loot, so a module can give a monster other loot, or add a row, without touching the bestiary. [A]
+A monster's `loot` is a list of rows it rolls when defeated, in order, and it lives on the bestiary so a new monster is one edit. It is resolved in this order (docs: [monsters.md](../modules/monsters.md#loot)):
+
+1. The creature type's `loot` (`monsters/bases/`), or a base monster's resolved `loot` for a derived monster.
+2. Each template's `loot` rows, added after.
+3. The row's own `loot`, which replaces everything above.
+4. A `drops` row in a loot file, which replaces the result. A module changes a monster's loot this way without overriding the whole monster row. Core ships no `drops` rows.
+
+A table row with no `rolls` takes the count from `rolls_by_level`, a formula next to `budget_cp`: `1 + level / 10`, rounded down, so 1 up to level 9, 2 at 10, 3 at 20, and 4 at 30. A table's own `rolls` counts only when the table is rolled directly. [V 2026-11-11, `loot` vectors]
 
 A loot row is a table or a single item:
 
 | field | on | meaning | default |
 | --- | --- | --- | --- |
 | `table` | table row | key of a table in this file | — |
-| `rolls` | table row | how many times this monster rolls the table | the table's `rolls` |
+| `rolls` | table row | how many times this monster rolls the table | `rolls_by_level` at the monster's level |
 | `shift` | table row | added to every roll on the table, capped at 100 | 0 |
 | `item`, `quantity` | item row | one namespaced item | quantity 1 |
 | `chance` | either | a d100 roll-under gate: the row yields only if a roll is at most `chance` | 100, no roll |

@@ -5,6 +5,7 @@
   "phase": "fire",
   "size": "medium",
   "level": 4,
+  "loot": [{ "table": "hoard_minor" }],
   "attributes": { "str": 5, "end": 5, "agi": 5, "per": 5, "wil": 5 },
   "hitPoints": 50,
   "tags": ["elemental"],
