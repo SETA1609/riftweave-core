@@ -198,3 +198,28 @@ func TestTheRulesetFromTheEnvironment(t *testing.T) {
 		t.Fatalf("exit %d, stderr %q", code, stderr.String())
 	}
 }
+
+// docs/backend/dev-mode.md: the agent CLI refuses dev without --dev and runs it with it.
+func TestDevNeedsTheDevFlag(t *testing.T) {
+	var session string = `{"session":{"ruleset":{"modules":[]},"log":[],` +
+		`"start":{"attributes":{"end":5},"level":1,"xp":0,"skills":{},"tags":[],"growth":{"hp":0,"mp":0,"sp":0},"resources":{"hp":10,"mp":0,"sp":0,"ap":0},"conditions":[],"modifiers":[],"flags":[],"inventory":[],"equipped":{}},` +
+		`"actor":{"attributes":{"end":5},"level":1,"xp":0,"skills":{},"tags":[],"growth":{"hp":0,"mp":0,"sp":0},"resources":{"hp":10,"mp":0,"sp":0,"ap":0},"conditions":[],"modifiers":[],"flags":[],"inventory":[],"equipped":{}}},` +
+		`"pool":"hp","set":3}`
+	code, _, stderr := call(t, session, "--data", dataDirectory, "dev", "resource")
+	if code != exitRule || !strings.Contains(stderr, "dev mode is off") {
+		t.Errorf("without --dev: exit %d, stderr %q", code, stderr)
+	}
+	code, stdout, stderr := call(t, session, "--dev", "--data", dataDirectory, "dev", "resource")
+	if code != exitOK {
+		t.Fatalf("with --dev: exit %d, stderr %q", code, stderr)
+	}
+	var result struct {
+		Session struct {
+			Dev   bool
+			Actor struct{ Resources struct{ HP int64 } }
+		}
+	}
+	if err := json.Unmarshal([]byte(stdout), &result); err != nil || !result.Session.Dev || result.Session.Actor.Resources.HP != 3 {
+		t.Errorf("stdout %s", stdout)
+	}
+}

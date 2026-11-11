@@ -30,6 +30,7 @@ type Session struct {
 	Start   stored.Actor   `json:"start"`
 	Log     []SessionStep  `json:"log"`
 	Actor   stored.Actor   `json:"actor"`
+	Dev     bool           `json:"dev,omitempty"` // a dev operation ran (docs/backend/dev-mode.md)
 }
 
 // sessionOperation is what a `session` call does. It decodes from its name, so an unknown
@@ -103,6 +104,7 @@ func runSession(ruleset *data.Ruleset, input sessionInput) (sessionResult, error
 		}
 		session.Actor = actor
 		session.Log = append(slices.Clone(session.Log), *input.Step)
+		session.Dev = session.Dev || input.Step.Command == "dev"
 		return sessionResult{Session: session, Result: output}, nil
 	case operationReplay:
 		if input.Session == nil {
@@ -336,6 +338,16 @@ func number(value any) int64 {
 
 // applyStep runs one step on a copy of the actor, so a step that fails changes nothing.
 func applyStep(ruleset *data.Ruleset, current stored.Actor, step SessionStep) (stored.Actor, json.RawMessage, error) {
+	if step.Command == "dev" {
+		actor, err := copyActor(current)
+		if err != nil {
+			return stored.Actor{}, nil, err
+		}
+		if err := applyDev(ruleset, &actor, step.Input); err != nil {
+			return stored.Actor{}, nil, err
+		}
+		return actor, json.RawMessage(`{}`), nil
+	}
 	handler, known := commands[step.Command]
 	if !known || step.Command == "session" {
 		return stored.Actor{}, nil, fmt.Errorf("session step: unknown command %q", step.Command)

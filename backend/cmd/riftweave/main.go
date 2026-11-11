@@ -30,6 +30,7 @@ const (
 )
 
 const usage = `usage: riftweave [--data <dir>] <command> [file]
+       riftweave --dev dev [<operation>] [file]
        riftweave list
        riftweave describe <command>
        riftweave play
@@ -52,10 +53,17 @@ func fail(stderr io.Writer, code int, format string, args ...any) int {
 // run is the whole CLI, with its process boundaries as arguments so a test can drive it.
 func run(args []string, stdin io.Reader, stdout, stderr io.Writer, getenv func(string) string) int {
 	var dataFlag string
-	if len(args) > 0 && strings.HasPrefix(args[0], "--data=") {
-		dataFlag, args = strings.TrimPrefix(args[0], "--data="), args[1:]
-	} else if len(args) > 1 && args[0] == "--data" {
-		dataFlag, args = args[1], args[2:]
+	var devFlag bool
+	for len(args) > 0 {
+		if strings.HasPrefix(args[0], "--data=") {
+			dataFlag, args = strings.TrimPrefix(args[0], "--data="), args[1:]
+		} else if len(args) > 1 && args[0] == "--data" {
+			dataFlag, args = args[1], args[2:]
+		} else if args[0] == "--dev" {
+			devFlag, args = true, args[1:]
+		} else {
+			break
+		}
 	}
 	if len(args) == 0 {
 		return fail(stderr, exitInput, "no command; run `riftweave help`")
@@ -80,7 +88,20 @@ func run(args []string, stdin io.Reader, stdout, stderr io.Writer, getenv func(s
 	if args[0] == "play" {
 		return interactive(dataFlag, stdin, stdout, stderr, getenv)
 	}
-	return command(args, dataFlag, stdin, stdout, stderr, getenv)
+	return command(args, dataFlag, devFlag, stdin, stdout, stderr, getenv)
+}
+
+// devOperations are the names `riftweave dev <operation>` takes (docs/backend/dev-mode.md).
+var devOperations = []string{"resource", "xp", "level", "attribute", "skill", "condition", "effect", "item", "turns"}
+
+// withDevOperation puts the operation named on the command line into the JSON input.
+func withDevOperation(input []byte, operation string) ([]byte, error) {
+	var fields map[string]any
+	if err := json.Unmarshal(input, &fields); err != nil {
+		return nil, err
+	}
+	fields["operation"] = operation
+	return json.Marshal(fields)
 }
 
 // isTerminal reports whether the file is a character device, so play never waits on a pipe.
@@ -133,10 +154,14 @@ func list(stdout, stderr io.Writer) int {
 }
 
 // command runs one core command on the input from a file or stdin.
-func command(args []string, dataFlag string, stdin io.Reader, stdout, stderr io.Writer, getenv func(string) string) int {
+func command(args []string, dataFlag string, devFlag bool, stdin io.Reader, stdout, stderr io.Writer, getenv func(string) string) int {
 	var name string = args[0]
 	if !slices.Contains(core.Commands(), name) {
 		return fail(stderr, exitInput, "unknown command %q", name)
+	}
+	var devOperation string
+	if name == "dev" && len(args) > 1 && slices.Contains(devOperations, args[1]) {
+		devOperation, args = args[1], append([]string{name}, args[2:]...)
 	}
 	if len(args) > 2 {
 		return fail(stderr, exitInput, "%s takes at most one input file", name)
@@ -151,6 +176,11 @@ func command(args []string, dataFlag string, stdin io.Reader, stdout, stderr io.
 	if err != nil {
 		return fail(stderr, exitInput, "reading the input: %v", err)
 	}
+	if devOperation != "" {
+		if input, err = withDevOperation(input, devOperation); err != nil {
+			return fail(stderr, exitInput, "reading the input: %v", err)
+		}
+	}
 	directory, err := rulesetDirectory(dataFlag, getenv)
 	if err != nil {
 		return fail(stderr, exitRuleset, "%v", err)
@@ -158,6 +188,9 @@ func command(args []string, dataFlag string, stdin io.Reader, stdout, stderr io.
 	opened, err := core.Open(directory)
 	if err != nil {
 		return fail(stderr, exitRuleset, "loading %s: %v", directory, err)
+	}
+	if devFlag {
+		opened.EnableDev()
 	}
 	output, err := opened.Run(name, input)
 	switch {

@@ -515,6 +515,12 @@ type Ruleset struct {
 	Sizes             map[string]Size      // combat/dice_ladder.json: undersized, normal, oversized
 	MonsterLevel      map[string]int64     // monster key
 	MonsterLoot       map[string][]DropRow // monster key: its resolved loot rows
+
+	// EffectRefs is every ref in effects/core.json, for the refs a dev operation names.
+	EffectRefs map[string]bool
+	// DevMode is set by the binary's --dev flag, never by data or input
+	// (docs/backend/dev-mode.md).
+	DevMode bool
 }
 
 // rulesetLoader reads every file even after one fails, and joins every error, so one run
@@ -665,6 +671,7 @@ func Load(fileSystem fs.FS, modules ...fs.FS) (*Ruleset, error) {
 		}
 	}
 
+	loader.loadEffectRefs(ruleset)
 	loader.loadConditions(ruleset)
 	loader.loadHazards(ruleset)
 
@@ -1108,5 +1115,15 @@ func (loader *rulesetLoader) loadLoot(ruleset *Ruleset) {
 				row.TableIndex = tableIndex
 			}
 		}
+	}
+}
+
+// loadEffectRefs indexes the effect registry by ref.
+func (loader *rulesetLoader) loadEffectRefs(ruleset *Ruleset) {
+	var effects struct{ Effects []struct{ Key string } }
+	loader.read("effects/core.json", &effects)
+	ruleset.EffectRefs = make(map[string]bool, len(effects.Effects))
+	for _, effect := range effects.Effects {
+		ruleset.EffectRefs["core:effect/"+effect.Key] = true
 	}
 }

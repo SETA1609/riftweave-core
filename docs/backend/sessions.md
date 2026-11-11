@@ -8,6 +8,7 @@ Session
   start     a stored actor
   log[]     { command, input, as? }
   actor     the current stored actor
+  dev?      true once a dev operation ran ([dev-mode.md](dev-mode.md))
 ```
 
 | `operation` | Input | Result |
@@ -31,5 +32,6 @@ A field the step names wins; the session fills only what is missing. [A]
 | `progression` | `actor` for `level_up` | `level` sets XP and level; `level_up` adds its rolls to `growth` |
 | `consume` | `current`, `max` | HP, MP, SP |
 | `conditions` | `conditions` | the conditions and flags |
+| `dev` | nothing | what the operation names ([dev-mode.md](dev-mode.md)); only with `--dev` |
 
 Each row is one entry in `sessionAdapters` in `backend/core/session.go`, so adding a command to sessions is one entry. Other commands run and are logged, and change nothing on the actor. The stored actor has no coins, and loot does not add to the inventory yet. [U]

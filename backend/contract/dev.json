@@ -1,0 +1,112 @@
+{
+  "$schema": "./command.schema.json",
+  "name": "dev",
+  "summary": "Dev mode only (--dev): change a session's actor directly for testing, log the operation, and mark the session dev.",
+  "doc": "docs/backend/dev-mode.md",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "operation": {
+        "type": "string",
+        "enum": [
+          "resource",
+          "xp",
+          "level",
+          "attribute",
+          "skill",
+          "condition",
+          "effect",
+          "item",
+          "turns"
+        ]
+      },
+      "session": {
+        "$ref": "common.json#/definitions/session"
+      },
+      "pool": {
+        "type": "string",
+        "enum": [
+          "hp",
+          "mp",
+          "sp",
+          "ap"
+        ],
+        "description": "resource: the pool."
+      },
+      "set": {
+        "type": "integer",
+        "description": "The new value; exclusive with add."
+      },
+      "add": {
+        "type": "integer",
+        "description": "The change; exclusive with set."
+      },
+      "key": {
+        "$ref": "common.json#/definitions/key",
+        "description": "attribute, skill, or condition: its key."
+      },
+      "stacks": {
+        "type": "integer",
+        "minimum": 0,
+        "description": "condition: its stacks; 0 clears it."
+      },
+      "effect": {
+        "$ref": "common.json#/definitions/ref",
+        "description": "effect: a ref in the effect registry."
+      },
+      "magnitude": {
+        "type": "integer"
+      },
+      "parameter": {
+        "type": "string",
+        "description": "effect: the target it changes; its own key when omitted."
+      },
+      "origin": {
+        "$ref": "common.json#/definitions/ref",
+        "description": "effect: an origin ref, so it stacks by that origin's policy."
+      },
+      "turns": {
+        "type": "integer",
+        "minimum": 0,
+        "description": "effect: how many turns it holds; turns: how many pass."
+      },
+      "clear": {
+        "type": "boolean",
+        "description": "effect: remove the dev effect."
+      },
+      "base": {
+        "$ref": "common.json#/definitions/ref",
+        "description": "item: the item ref."
+      },
+      "quantity": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "material": {
+        "$ref": "common.json#/definitions/ref"
+      },
+      "remove": {
+        "type": "integer",
+        "minimum": 1,
+        "description": "item: the inventory id to remove."
+      }
+    },
+    "required": [
+      "operation",
+      "session"
+    ],
+    "additionalProperties": false
+  },
+  "result_schema": {
+    "type": "object",
+    "properties": {
+      "session": {
+        "$ref": "common.json#/definitions/session"
+      }
+    },
+    "required": [
+      "session"
+    ],
+    "additionalProperties": false
+  }
+}
