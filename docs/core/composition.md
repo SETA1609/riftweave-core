@@ -21,7 +21,7 @@ row = compose(base, layers, overrides)
 | `{ "$extend": [...] }` on a list | Appends to the field |
 | `attributes` | Merged per attribute; attributes it does not name keep their value |
 
-A base is what the row starts from: a creature type, another monster, or an equipment base. A
+A base is what the row starts from: a creature type, another monster, or an equipment base, named by a typed reference ([keys.md](keys.md)). A
 layer knows only how to change a row, so adding a kind of layer adds no merge rule. Composition
 merges into one flat row; there is no inheritance at run time, and a consumer reads the flat
 row. `ruleset/scripts/validate.py` holds the function, `compose_row`. [V 2026-11-10]
