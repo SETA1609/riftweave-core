@@ -117,5 +117,27 @@ class TestEquipmentFloor(unittest.TestCase):
                     self.assertEqual(modifier["origin"], "core:origin/equipment")
 
 
+# docs/modules/equipment.md#toxicity
+TOXICITY = {"antidote": 0, "potion_cure_disease": 0, "potion_minor_healing": 10, "potion_featherfall": 10,
+            "potion_healing": 20, "potion_mana": 20, "potion_stamina": 20, "potion_invisibility": 20,
+            "potion_fire_resistance": 20, "potion_frost_resistance": 20, "potion_strength": 20,
+            "elixir_of_wits": 20, "potion_greater_healing": 35, "potion_haste": 35}
+
+
+class TestToxicity(unittest.TestCase):
+    def test_every_drink_states_its_toxicity_and_nothing_else_does(self):
+        for row in rows("consumables"):
+            with self.subTest(item=row["key"]):
+                consumable = row["consumable"]
+                if consumable["delivery"] == "drink":
+                    self.assertEqual(consumable.get("toxicity"), TOXICITY[row["key"]])
+                else:
+                    self.assertNotIn("toxicity", consumable)
+
+    def test_overdosed_is_a_condition(self):
+        conditions = {c["key"]: c for c in json.loads((DATA / "conditions" / "core.json").read_text())["conditions"]}
+        self.assertIn("overdosed", conditions)
+
+
 if __name__ == "__main__":
     unittest.main()
