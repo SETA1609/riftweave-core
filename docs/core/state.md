@@ -60,4 +60,4 @@ that exist. Pools use the derived keys, so stamina is `sp`. There is no actor `i
 holds one actor. [A] The `stored_actor` vectors round-trip it through Python and Go.
 [V 2026-11-11]
 
-The session's JSON schema and commands are in the backend's contract.
+The session's JSON schema is `session` in the backend's contract, and its command is in [sessions.md](../backend/sessions.md).
