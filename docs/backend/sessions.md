@@ -32,4 +32,4 @@ A field the step names wins; the session fills only what is missing. [A]
 | `consume` | `current`, `max` | HP, MP, SP |
 | `conditions` | `conditions` | the conditions and flags |
 
-Other commands run and are logged, and change nothing on the actor. The stored actor has no coins, and loot does not add to the inventory yet. [U]
+Each row is one entry in `sessionAdapters` in `backend/core/session.go`, so adding a command to sessions is one entry. Other commands run and are logged, and change nothing on the actor. The stored actor has no coins, and loot does not add to the inventory yet. [U]

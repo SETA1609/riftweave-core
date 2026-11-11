@@ -139,3 +139,17 @@ func TestAFailedStepChangesNothing(t *testing.T) {
 		t.Errorf("want a rule error, got %v", err)
 	}
 }
+
+func TestAnUnknownOperationIsBadInput(t *testing.T) {
+	if _, err := open(t).Run("session", []byte(`{"operation":"rewind"}`)); !errors.Is(err, ErrInput) {
+		t.Errorf("want bad input, got %v", err)
+	}
+}
+
+func TestEveryAdaptedCommandExists(t *testing.T) {
+	for name := range sessionAdapters {
+		if _, known := commands[name]; !known {
+			t.Errorf("session adapter for unknown command %q", name)
+		}
+	}
+}
