@@ -1,0 +1,52 @@
+{
+  "$schema": "./command.schema.json",
+  "name": "session",
+  "summary": "Start, advance, or replay a run: a stored actor and a log of commands.",
+  "doc": "docs/backend/sessions.md",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "operation": {
+        "type": "string",
+        "enum": [
+          "start",
+          "step",
+          "replay"
+        ]
+      },
+      "start": {
+        "$ref": "common.json#/definitions/stored_actor"
+      },
+      "session": {
+        "$ref": "common.json#/definitions/session"
+      },
+      "step": {
+        "$ref": "common.json#/definitions/session_step"
+      }
+    },
+    "required": [
+      "operation"
+    ],
+    "additionalProperties": false
+  },
+  "result_schema": {
+    "type": "object",
+    "properties": {
+      "session": {
+        "$ref": "common.json#/definitions/session"
+      },
+      "result": {
+        "type": "object",
+        "description": "The step's command result."
+      },
+      "matches": {
+        "type": "boolean",
+        "description": "On replay: whether the rebuilt actor equals the saved one."
+      }
+    },
+    "required": [
+      "session"
+    ],
+    "additionalProperties": false
+  }
+}

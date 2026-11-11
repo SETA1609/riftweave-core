@@ -60,6 +60,8 @@ request.** [V 2026-11-06, run in this change: 256 of 256 vectors pass in Go]
 Modules: `core.Open` loads each module beside `ruleset/data`, and `internal/wuxing` reads the
 Wuxing module's data. Other modules load their manifest only. [V 2026-11-11]
 
+Sessions: the `session` command runs a chain of commands on one stored actor ([sessions.md](sessions.md)).
+
 ## Commands
 
 A command is one kernel or module function, named like its vector function (`combat`, `resolution`, `loot`, ...). `backend/contract/<name>.json` holds:
