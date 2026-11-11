@@ -142,7 +142,7 @@ more applied effects**:
 
 Each entry under `effects` is a `schema.json#/definitions/appliedEffect`: an effect
 id plus its `magnitude`, `duration`, `target` shape (`self`/`touch`/`ranged`/`area`/
-`world`), and `radius` for areas. A spell's **phase(s)** are read from its composed
+`world`, [casting.md](../core/casting.md#the-world-target)), and `radius` for areas. A spell's **phase(s)** are read from its composed
 effects — there is no separate phase field on the spell. A multi-effect spell can
 therefore carry multiple phases.
 
@@ -252,6 +252,61 @@ casting rules.
 
 - **No saves.** A crafted spell cannot carry a save: saves are for authored instant spells
   ([casting.md](../core/casting.md#delivery-and-saves)). A crafted spell is avoided only by a dodge or a block.
+- **Known effects only.** A crafted spell composes only effects the character knows. The
+  `spellcraft` function checks a recipe ([casting.md](../core/casting.md#spellcraft)). [A]
+
+### Spell knowledge
+
+A character knows a set of effects, kept as refs (`core:effect/<key>`). Knowledge comes two ways:
+
+- **Learning a spell** (a scroll, a trainer, a perk) teaches every craftable effect in it. It
+  does not teach the target shape: shapes are free and priced by the target multiplier, so
+  learning Fire Bolt lets you craft a fire burst. A spell whose effects are all uncraftable
+  (Bound Blade, Raise Thrall) teaches nothing for crafting; the spell itself is still known
+  and castable. [A]
+- **Research**, a downtime action, teaches one craftable effect without a spell: 7 days and
+  50 gp at a library or guild, then one `<color>_magic` check on the effect's color (or a color
+  the researcher names, for an effect with none). Research is refused when the skill is below
+  the effect's craft threshold, the threshold of the cheapest spell that carries it
+  (magnitude 1, instant, touch). It is the only downtime activity until M4. The numbers are in
+  `casting/core.json` under `research`. [A]
+
+### Uncraftable effects
+
+An effect has `craftable` (default `true`). `false` means only an authored spell carries it, so
+no recipe, Research, or learned spell teaches it. Where an effect is craftable for some
+parameters only, `uncraftable_parameters` lists the others. [A]
+
+| Effect | Why it is authored only |
+| --- | --- |
+| `teleport` | Divine Intervention sends the caster to the nearest temple of a deity. |
+| `mark`, `recall` | A fixed return point is a world rule, not a recipe. |
+| `storage` | Pocket Storage, a pocket inventory, is engine state. |
+| `bound_weapon` | Bound weapons are rows a perk ladder upgrades (M3-09). |
+| `summon` | Summons are static rows a GM or dev adds (M3-08). |
+| `restore_resource` with `mana` | No crafted spell restores mana, instant or over time, so mana cannot pay for itself. |
+
+Absorb and drain effects (`spell_absorption`, `life_steal`, `mana_leech`, the `drain_*`
+effects, `damage_resource`) stay craftable: they take from a target, not from nothing. The
+regen family (health and stamina over time) uses `duration` with magnitude per second (M2-05).
+
+Morrowind gives Divine Intervention, Mark, and Recall high base costs (150, 350) and lets them
+be spellmade; here they are authored only, and their base costs only price the authored rows.
+
+### Template spells
+
+A spell has `template` (default `false`). A template is a plain, learnable spell with one
+effect, no reagents, no save, and no concentration, whose mana cost and cast threshold are
+exactly the cost formula's, so a crafted spell reads as a template with other effects. One per
+target shape: [A]
+
+| Shape | Template | Target |
+| --- | --- | --- |
+| bolt | Fire Bolt | `ranged` |
+| touch | Holy Light | `touch` |
+| burst | Fire Burst | `area` |
+| ward | Ward | `self` |
+| mend | Mend Wounds | `touch`, a heal |
 
 ### Cost formula
 
@@ -304,8 +359,8 @@ castThreshold   = round( spell cost )           // min <color>_magic to cast at 
 craftThreshold  = round( spell cost × 1.25 )    // min <color>_magic to author the recipe
 ```
 
-Uncraftable effects (Divine Intervention, Mark and Recall, M3-06) have high base costs
-in Morrowind (150, 350); here they are authored only and not priced for crafting.
+Uncraftable effects ([above](#uncraftable-effects)) are priced only for their authored
+spells.
 
 ---
 

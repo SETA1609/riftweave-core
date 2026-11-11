@@ -53,6 +53,49 @@ full        margin >= full_margin, or the save is a crit: no effects land
 
 The cast must succeed first; a failed cast rolls no save. The `target` input carries the defender's `attributes`, `skills`, and `roll`. An instant spell cast with no `target` returns its effects as authored and a null `save`, so a consumer can roll the save itself. Any other delivery ignores `target`. A crafted spell carries no save ([magic.md](../modules/magic.md)). [V 2026-11-11, `casting` vectors] The values are in `casting/core.json` under `save`. [A]
 
+## The world target
+
+`world` reaches a place, not a creature: somewhere the caster is sent or something is kept,
+anywhere in the world, with no line of sight and no range. Its cost multiplier is 3.0
+(`spell_cost.target_multiplier`). Recall (to the caster's mark) and Divine Intervention (to the
+nearest temple) use it. Mark and Pocket Storage are `self`: Mark records where the caster
+stands, and the pocket opens at hand. Resolving a temple, a mark, or a pocket is engine state
+(M4 and the backend), not this function. A crafted spell cannot use `world`: every effect that
+reaches it is uncraftable. [A]
+
+## Spellcraft
+
+`spellcraft` checks spell knowledge ([magic.md](../modules/magic.md#spell-knowledge)), by `op`:
+
+```
+craft     caster.known (effect refs), caster.skills, spell { color, effects }
+          per effect, the first that fails:
+            channel             the effect does not list "spell"
+            uncraftable         craftable is false
+            excluded_parameter  its parameter is in uncraftable_parameters
+            unknown             the ref is not in caster.known
+            off_color           the effect has a color other than the spell's
+          cost             spell cost of the effects (magic.md#cost-formula), or null if any failed
+          cast_threshold   round(cost); craft_threshold round(cost x 1.25)
+          skill_ok         <color>_magic >= craft_threshold
+          valid            no effect failed and skill_ok
+learn     caster.known, spell (a key)
+          taught = the spell's craftable effects not known yet, in spell order
+          known  = caster.known + taught, sorted
+research  caster.known, caster.skills, caster.attributes.lck, effect (a ref), optional color,
+          modifiers, roll
+          refused  uncraftable (as craft), known, no_color, or skill (skill < the effect's
+                   craft threshold at magnitude 1, instant, touch); nothing rolled
+          check    one resolution on <color>_magic with the modifiers on it (resolution.md)
+          learned  the check succeeds: known gains the effect; failed otherwise
+          outcome  learned, failed, or refused (with reason); known after it
+          days, cost  research.days and research.cost once rolled, spent whatever the roll;
+                   0 and null when refused
+```
+
+The color is the effect's own, or `color` when the effect has none. The vectors are in
+`ruleset/tests/vectors/spellcraft.json`. [A]
+
 ## Paid cost
 
 What the caster pays depends on skill and modifiers, never on level:
