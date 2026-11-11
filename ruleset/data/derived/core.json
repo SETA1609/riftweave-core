@@ -50,7 +50,7 @@
       "per_point": 10,
       "per_level_attr": 0,
       "per_level_flat": 0,
-      "unit": "lb"
+      "unit": "weight_units"
     },
     {
       "key": "initiative",
