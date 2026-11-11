@@ -75,8 +75,8 @@ craft     caster.known (effect refs), caster.skills, spell { color, effects }
             excluded_parameter  its parameter is in uncraftable_parameters
             unknown             the ref is not in caster.known
             off_color           the effect has a color other than the spell's
-          cost             spell cost of the effects (magic.md#cost-formula), or null if any failed
-          cast_threshold   round(cost); craft_threshold round(cost x 1.25)
+          mana             spell cost of the effects (magic.md#cost-formula), or null if any failed
+          cast_threshold   round(mana); craft_threshold round(mana x 1.25), a half rounding up
           skill_ok         <color>_magic >= craft_threshold
           valid            no effect failed and skill_ok
 learn     caster.known, spell (a key)

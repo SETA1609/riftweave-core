@@ -233,7 +233,7 @@ class TestSpellKnowledge(unittest.TestCase):
                 row = rows[key]
                 crafted = run_spellcraft({"op": "craft", "spell": {"color": row["color"], "effects": row["effects"]},
                                           "caster": {"known": [a["effect"] for a in row["effects"]], "skills": {}}})
-                self.assertEqual((crafted["cost"], crafted["cast_threshold"]), (row["cost"]["mana"], row["cost"]["mana"]))
+                self.assertEqual((crafted["mana"], crafted["cast_threshold"]), (row["cost"]["mana"], row["cost"]["mana"]))
 
     def test_the_uncraftable_effects_and_the_excluded_mana(self):
         pool = effects()

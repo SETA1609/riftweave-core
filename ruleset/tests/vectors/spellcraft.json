@@ -4,14 +4,14 @@
     "op": "craft",
     "caster": { "known": ["core:effect/damage_fire"], "skills": { "red_magic": 40 } },
     "spell": { "color": "red", "effects": [ { "effect": "core:effect/damage_fire", "magnitude": 28, "target": "area", "radius": 4 } ] },
-    "expect": { "valid": true, "rejected": [], "cost": 30, "cast_threshold": 30, "craft_threshold": 38, "skill_ok": true }
+    "expect": { "valid": true, "rejected": [], "mana": 30, "cast_threshold": 30, "craft_threshold": 38, "skill_ok": true }
   },
   {
     "name": "craft_rejects_an_unknown_effect",
     "op": "craft",
     "caster": { "known": ["core:effect/damage_fire"], "skills": { "red_magic": 40 } },
     "spell": { "color": "red", "effects": [ { "effect": "core:effect/damage_frost", "magnitude": 8, "target": "ranged" } ] },
-    "expect": { "valid": false, "rejected": [ { "effect": "core:effect/damage_frost", "reason": "unknown" } ], "cost": null, "cast_threshold": null, "craft_threshold": null }
+    "expect": { "valid": false, "rejected": [ { "effect": "core:effect/damage_frost", "reason": "unknown" } ], "mana": null, "cast_threshold": null, "craft_threshold": null }
   },
   {
     "name": "craft_rejects_an_uncraftable_effect_even_when_known",
@@ -25,21 +25,21 @@
     "op": "craft",
     "caster": { "known": ["core:effect/restore_resource"], "skills": { "green_magic": 60 } },
     "spell": { "color": "green", "effects": [ { "effect": "core:effect/restore_resource", "parameter": "mana", "magnitude": 2, "duration": 10, "target": "self" } ] },
-    "expect": { "valid": false, "rejected": [ { "effect": "core:effect/restore_resource", "reason": "excluded_parameter" } ], "cost": null }
+    "expect": { "valid": false, "rejected": [ { "effect": "core:effect/restore_resource", "reason": "excluded_parameter" } ], "mana": null }
   },
   {
     "name": "craft_allows_a_health_regen",
     "op": "craft",
     "caster": { "known": ["core:effect/restore_resource"], "skills": { "green_magic": 30 } },
     "spell": { "color": "green", "effects": [ { "effect": "core:effect/restore_resource", "parameter": "health", "magnitude": 2, "duration": 20, "target": "touch" } ] },
-    "expect": { "valid": true, "rejected": [], "cost": 20, "cast_threshold": 20, "craft_threshold": 25, "skill_ok": true }
+    "expect": { "valid": true, "rejected": [], "mana": 20, "cast_threshold": 20, "craft_threshold": 25, "skill_ok": true }
   },
   {
     "name": "craft_allows_a_mana_leech",
     "op": "craft",
     "caster": { "known": ["core:effect/mana_leech"], "skills": { "violet_magic": 10 } },
     "spell": { "color": "violet", "effects": [ { "effect": "core:effect/mana_leech", "magnitude": 5, "duration": 10, "target": "ranged" } ] },
-    "expect": { "valid": true, "rejected": [], "cost": 4, "cast_threshold": 4, "craft_threshold": 5, "skill_ok": true }
+    "expect": { "valid": true, "rejected": [], "mana": 4, "cast_threshold": 4, "craft_threshold": 5, "skill_ok": true }
   },
   {
     "name": "craft_rejects_an_effect_of_another_color",
@@ -64,7 +64,7 @@
     "op": "craft",
     "caster": { "known": ["core:effect/damage_fire"], "skills": { "red_magic": 37 } },
     "spell": { "color": "red", "effects": [ { "effect": "core:effect/damage_fire", "magnitude": 28, "target": "area", "radius": 4 } ] },
-    "expect": { "valid": false, "rejected": [], "cost": 30, "craft_threshold": 38, "skill_ok": false }
+    "expect": { "valid": false, "rejected": [], "mana": 30, "craft_threshold": 38, "skill_ok": false }
   },
   {
     "name": "learning_fire_bolt_teaches_its_fire",
