@@ -1,5 +1,5 @@
 #### APP-06 HTTP API server
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: APP-02, APP-04
 - Do: Serve the core over HTTP for consumers: one endpoint per command, session endpoints, and an OpenAPI document generated from `backend/contract/`, not written by hand. Stateless calls need no session.
