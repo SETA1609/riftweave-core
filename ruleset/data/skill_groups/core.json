@@ -1,0 +1,209 @@
+{
+  "$schema": "../../schemas/skill_group.schema.json",
+  "skill_groups": [
+    {
+      "key": "melee",
+      "label": "Melee",
+      "description": "Hand-to-hand weapons and fists.",
+      "skills": [
+        "core:skill/blades",
+        "core:skill/blunt",
+        "core:skill/piercing",
+        "core:skill/unarmed"
+      ],
+      "is_tracked": true
+    },
+    {
+      "key": "ranged",
+      "label": "Ranged",
+      "description": "Bows, crossbows, guns, and thrown weapons.",
+      "skills": [
+        "core:skill/bows",
+        "core:skill/crossbows",
+        "core:skill/guns",
+        "core:skill/throwing_weapons"
+      ],
+      "is_tracked": true
+    },
+    {
+      "key": "defense",
+      "label": "Defense",
+      "description": "Getting out of the way, or taking the blow on a shield.",
+      "skills": [
+        "core:skill/evasion",
+        "core:skill/block"
+      ],
+      "is_tracked": true
+    },
+    {
+      "key": "red_magic",
+      "label": "Red Magic",
+      "description": "The red school, its own group so a table plays only the colors it uses.",
+      "skills": [
+        "core:skill/red_magic"
+      ],
+      "is_tracked": true
+    },
+    {
+      "key": "orange_magic",
+      "label": "Orange Magic",
+      "description": "The orange school, its own group so a table plays only the colors it uses.",
+      "skills": [
+        "core:skill/orange_magic"
+      ],
+      "is_tracked": true
+    },
+    {
+      "key": "yellow_magic",
+      "label": "Yellow Magic",
+      "description": "The yellow school, its own group so a table plays only the colors it uses.",
+      "skills": [
+        "core:skill/yellow_magic"
+      ],
+      "is_tracked": true
+    },
+    {
+      "key": "green_magic",
+      "label": "Green Magic",
+      "description": "The green school, its own group so a table plays only the colors it uses.",
+      "skills": [
+        "core:skill/green_magic"
+      ],
+      "is_tracked": true
+    },
+    {
+      "key": "blue_magic",
+      "label": "Blue Magic",
+      "description": "The blue school, its own group so a table plays only the colors it uses.",
+      "skills": [
+        "core:skill/blue_magic"
+      ],
+      "is_tracked": true
+    },
+    {
+      "key": "indigo_magic",
+      "label": "Indigo Magic",
+      "description": "The indigo school, its own group so a table plays only the colors it uses.",
+      "skills": [
+        "core:skill/indigo_magic"
+      ],
+      "is_tracked": true
+    },
+    {
+      "key": "violet_magic",
+      "label": "Violet Magic",
+      "description": "The violet school, its own group so a table plays only the colors it uses.",
+      "skills": [
+        "core:skill/violet_magic"
+      ],
+      "is_tracked": true
+    },
+    {
+      "key": "white_magic",
+      "label": "White Magic",
+      "description": "The white school, its own group so a table plays only the colors it uses.",
+      "skills": [
+        "core:skill/white_magic"
+      ],
+      "is_tracked": true
+    },
+    {
+      "key": "black_magic",
+      "label": "Black Magic",
+      "description": "The black school, its own group so a table plays only the colors it uses.",
+      "skills": [
+        "core:skill/black_magic"
+      ],
+      "is_tracked": true
+    },
+    {
+      "key": "stealth",
+      "label": "Stealth",
+      "description": "Moving unseen, opening locks, and quick hands.",
+      "skills": [
+        "core:skill/stealth",
+        "core:skill/lockpick",
+        "core:skill/sleight_of_hand"
+      ],
+      "is_tracked": true
+    },
+    {
+      "key": "social",
+      "label": "Social",
+      "description": "Talking people round, fooling them, or scaring them.",
+      "skills": [
+        "core:skill/persuasion",
+        "core:skill/deception",
+        "core:skill/intimidation"
+      ],
+      "is_tracked": true
+    },
+    {
+      "key": "knowledge",
+      "label": "Knowledge",
+      "description": "What you know and what you notice in people and places.",
+      "skills": [
+        "core:skill/lore",
+        "core:skill/investigation",
+        "core:skill/insight"
+      ],
+      "is_tracked": true
+    },
+    {
+      "key": "wilds",
+      "label": "Wilds",
+      "description": "Living off the land, with animals, and from it.",
+      "skills": [
+        "core:skill/survival",
+        "core:skill/animal_handling",
+        "core:skill/farming"
+      ],
+      "is_tracked": true
+    },
+    {
+      "key": "craft",
+      "label": "Craft",
+      "description": "Making and mending things.",
+      "skills": [
+        "core:skill/alchemy",
+        "core:skill/blacksmithing",
+        "core:skill/crafting",
+        "core:skill/enchanting",
+        "core:skill/engineering",
+        "core:skill/building",
+        "core:skill/repair"
+      ],
+      "is_tracked": true
+    },
+    {
+      "key": "athletics",
+      "label": "Athletics",
+      "description": "Climbing, swimming, jumping, and running.",
+      "skills": [
+        "core:skill/athletics"
+      ],
+      "is_tracked": true
+    },
+    {
+      "key": "medicine",
+      "label": "Medicine",
+      "description": "Healing wounds and treating sickness.",
+      "skills": [
+        "core:skill/medicine"
+      ],
+      "is_tracked": true
+    },
+    {
+      "key": "armor",
+      "label": "Armor",
+      "description": "Fighting in armor or without it. Untracked on a grouped sheet: each reads its starting value.",
+      "skills": [
+        "core:skill/light_armor",
+        "core:skill/medium_armor",
+        "core:skill/heavy_armor",
+        "core:skill/unarmored"
+      ],
+      "is_tracked": false
+    }
+  ]
+}

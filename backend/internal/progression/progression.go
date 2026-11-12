@@ -1,9 +1,11 @@
-// Package progression is XP, level, the skill points of a level-up, and spending them on a
-// skill (docs/core/progression.md). The curve, the caps, and the costs are in the data.
+// Package progression is XP, level, the skill points of a level-up, spending them on a skill
+// or a skill group, and reading a skill off a sheet (docs/core/progression.md). The curve, the
+// caps, and the costs are in the data.
 package progression
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/SETA1609/riftweave-core/backend/internal/actor"
 	"github.com/SETA1609/riftweave-core/backend/internal/data"
@@ -23,6 +25,15 @@ type Input struct {
 	Skill      *int64       `json:"skill"`
 	Tagged     *bool        `json:"tagged"`
 	Points     *int64       `json:"points"`
+	Group      *string      `json:"group"`
+	Read       *string      `json:"read"`
+	// Groups is a grouped sheet: the ranks of each tracked skill group. Nil is a full sheet.
+	Groups map[string]int64 `json:"groups"`
+}
+
+type readResult struct {
+	Value    int64  `json:"value"`
+	ReadFrom string `json:"read_from"`
 }
 
 type experienceResult struct {
@@ -134,8 +145,53 @@ func Run(ruleset *data.Ruleset, input Input) (any, error) {
 		if *input.Tagged {
 			cost = rules.SkillCost.Tag
 		}
+		if input.Group != nil {
+			group, err := ruleset.SkillGroups.Require("skill group", *input.Group)
+			if err != nil {
+				return nil, err
+			}
+			if !group.IsTracked {
+				return nil, fmt.Errorf("skill group %q is not tracked", group.Key)
+			}
+			var members int64 = int64(len(group.SkillKeys()))
+			var step int64 = rules.SkillGroupCost.MembersPerStep
+			cost *= (members + step - 1) / step
+		}
 		var ranks int64 = min(*input.Points/cost, max(rules.SkillCap-*input.Skill, 0))
 		return spendResult{Ranks: ranks, Spent: ranks * cost, Left: *input.Points - ranks*cost}, nil
+	case "read_skill":
+		if err := requireField(input.Operation, "actor and read", input.Actor != nil && input.Read != nil); err != nil {
+			return nil, err
+		}
+		return readSkill(ruleset, input.Actor, *input.Read, input.Groups)
 	}
 	return nil, &data.NotDefinedError{Kind: "progression op", Key: input.Operation}
+}
+
+// readSkill reads one skill off a sheet (docs/core/progression.md#two-sheets-one-rule-set). A
+// full sheet reads the written value, else the skill's start; a grouped sheet reads the start
+// plus the member's group ranks, or the start alone for an untracked group.
+func readSkill(ruleset *data.Ruleset, sheet *actor.Actor, key string, groups map[string]int64) (readResult, error) {
+	skill, err := ruleset.Skills.Require("skill", key)
+	if err != nil {
+		return readResult{}, err
+	}
+	start, err := ruleset.Progression.SkillStart.Evaluate(&sheet.Attributes, formula.Variable{Name: "attribute", Value: sheet.Attributes.Get(skill.Ability)})
+	if err != nil {
+		return readResult{}, err
+	}
+	if groups == nil {
+		if written, ok := sheet.Skills[key]; ok {
+			return readResult{Value: written, ReadFrom: "sheet"}, nil
+		}
+		return readResult{Value: start, ReadFrom: "start"}, nil
+	}
+	group, ok := ruleset.GroupOfSkill[key]
+	if !ok {
+		return readResult{}, &data.NotDefinedError{Kind: "skill group of skill", Key: key}
+	}
+	if !group.IsTracked {
+		return readResult{Value: start, ReadFrom: "start"}, nil
+	}
+	return readResult{Value: start + groups[group.Key], ReadFrom: "group"}, nil
 }

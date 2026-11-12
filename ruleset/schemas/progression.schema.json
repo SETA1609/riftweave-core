@@ -51,6 +51,15 @@
           },
           "required": ["normal", "tag"],
           "additionalProperties": false
+        },
+        "skill_group_cost": {
+          "type": "object",
+          "description": "The price of one group rank on a grouped sheet: the skill cost (normal or tag) times ceil(members / members_per_step) (docs/core/progression.md#the-grouped-sheet-variant).",
+          "properties": {
+            "members_per_step": { "type": "integer", "minimum": 1 }
+          },
+          "required": ["members_per_step"],
+          "additionalProperties": false
         }
       },
       "required": ["start_level", "max_level", "skill_cap", "xp_to_reach", "skill_points", "pool_roll_max", "luck_roll", "perks_per_level", "tag_skills", "skill_cost"],

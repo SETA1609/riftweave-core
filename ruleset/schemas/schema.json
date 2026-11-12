@@ -313,6 +313,11 @@
       "pattern": "^(core:race/[a-z0-9_]+|module:[a-z0-9_]+/race/[a-z0-9_]+)$",
       "description": "A reference to a race row (docs/core/integrity.md)."
     },
+    "skillGroupRef": {
+      "type": "string",
+      "pattern": "^(core:skill_group/[a-z0-9_]+|module:[a-z0-9_]+/skill_group/[a-z0-9_]+)$",
+      "description": "A reference to a skill group row, for the grouped sheet (docs/core/progression.md#the-grouped-sheet-variant)."
+    },
     "skillRef": {
       "type": "string",
       "pattern": "^(core:skill/[a-z0-9_]+|module:[a-z0-9_]+/skill/[a-z0-9_]+)$",

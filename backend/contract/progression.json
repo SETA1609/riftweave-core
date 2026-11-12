@@ -1,7 +1,7 @@
 {
   "$schema": "./command.schema.json",
   "name": "progression",
-  "summary": "XP and level, a level-up pool, and spending points on a skill.",
+  "summary": "XP and level, a level-up pool, spending points on a skill or a skill group, and reading a skill off a sheet.",
   "doc": "docs/core/progression.md",
   "input_schema": {
     "type": "object",
@@ -12,7 +12,8 @@
           "xp",
           "level",
           "level_up",
-          "spend"
+          "spend",
+          "read_skill"
         ]
       },
       "level": {
@@ -47,6 +48,22 @@
       "points": {
         "type": "integer",
         "minimum": 0
+      },
+      "group": {
+        "type": "string",
+        "description": "With spend: a skill group key (skill_groups/core.json); one rank costs the group cost, and `skill` is the highest member's value."
+      },
+      "read": {
+        "type": "string",
+        "description": "With read_skill: the skill key to read."
+      },
+      "groups": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "description": "With read_skill: a grouped sheet, the ranks of each tracked group by key. Without it the sheet is a full one and reads actor.skills."
       }
     },
     "additionalProperties": false,
@@ -107,6 +124,17 @@
       },
       "left": {
         "type": "integer"
+      },
+      "value": {
+        "type": "integer"
+      },
+      "read_from": {
+        "type": "string",
+        "enum": [
+          "sheet",
+          "group",
+          "start"
+        ]
       }
     },
     "additionalProperties": false,

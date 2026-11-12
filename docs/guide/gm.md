@@ -56,6 +56,10 @@ If no skill fits, use an attribute: its value × 10 is the target.
 
 **What happens at 0 HP.** The core rules leave this to you. A simple default: at 0 HP a character is down and out of the fight, and an ally can bring them round with healing or a short rest. Decide before the first fight, and tell the players.
 
+## A lighter sheet at the table
+
+Newcomers do not need all 44 skills on paper. Ask for only the skills a character has raised; any other skill is `5 + its attribute × 2`. For a table that wants fewer choices still, offer the grouped sheet ([progression](../core/progression.md#the-grouped-sheet-variant)): about a dozen groups, each raising all of its skills together, with the armor skills left at their starting values. Pick one sheet per campaign. The numbers are the same rules either way, so a monster or an NPC needs no change.
+
 ## Being fair
 
 - **Roll in the open** when you can. Rolls are inputs to the rules, so everyone can check a result.

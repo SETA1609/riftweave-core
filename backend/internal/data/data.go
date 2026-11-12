@@ -234,7 +234,22 @@ type Progression struct {
 		Normal int64 `json:"normal"`
 		Tag    int64 `json:"tag"`
 	} `json:"skill_cost"`
+	SkillGroupCost struct {
+		MembersPerStep int64 `json:"members_per_step"`
+	} `json:"skill_group_cost"`
 }
+
+// SkillGroup is one row of skill_groups/core.json, the grouped sheet
+// (docs/core/progression.md#the-grouped-sheet-variant).
+type SkillGroup struct {
+	Key        string   `json:"key"`
+	Skills     []string `json:"skills"` // core:skill/<key> refs
+	IsTracked  bool     `json:"is_tracked"`
+	skillsKeys []string
+}
+
+// SkillKeys are the group's member skills as bare keys.
+func (group *SkillGroup) SkillKeys() []string { return group.skillsKeys }
 
 // Pipeline is combat/pipeline.json.
 type Pipeline struct {
@@ -527,9 +542,12 @@ type Size struct {
 
 // Ruleset is everything the commands read.
 type Ruleset struct {
-	Resolution     Resolution
-	Derived        Table[DerivedStat]
-	Skills         Table[Skill]
+	Resolution  Resolution
+	Derived     Table[DerivedStat]
+	Skills      Table[Skill]
+	SkillGroups Table[SkillGroup]
+	// GroupOfSkill is the skill group each skill belongs to, by skill key.
+	GroupOfSkill   map[string]*SkillGroup
 	Actions        Actions
 	Wuxing         Wuxing
 	Modules        []string // ids of the loaded modules
@@ -679,12 +697,34 @@ func Load(fileSystem fs.FS, modules ...fs.FS) (*Ruleset, error) {
 	}
 	ruleset.Skills = newTable(skills.Skills, func(skill *Skill) string { return skill.Key })
 
+	var skillGroups struct {
+		SkillGroups []SkillGroup `json:"skill_groups"`
+	}
+	loader.read("skill_groups/core.json", &skillGroups)
+	for index := range skillGroups.SkillGroups {
+		var group *SkillGroup = &skillGroups.SkillGroups[index]
+		for _, ref := range group.Skills {
+			group.skillsKeys = append(group.skillsKeys, ref[strings.LastIndex(ref, "/")+1:])
+		}
+	}
+	ruleset.SkillGroups = newTable(skillGroups.SkillGroups, func(group *SkillGroup) string { return group.Key })
+	ruleset.GroupOfSkill = make(map[string]*SkillGroup)
+	for index := range ruleset.SkillGroups.rows {
+		var group *SkillGroup = &ruleset.SkillGroups.rows[index]
+		for _, key := range group.skillsKeys {
+			ruleset.GroupOfSkill[key] = group
+		}
+	}
+
 	var progression struct{ Progression Progression }
 	if loader.read("progression/core.json", &progression) {
 		var rules *Progression = &progression.Progression
 		rules.LuckMaximumAbility = loader.ability("progression/core.json", rules.LuckRoll.MaximumAttribute)
 		if rules.SkillCost.Normal <= 0 || rules.SkillCost.Tag <= 0 {
 			loader.fail("progression/core.json: skill costs must be positive")
+		}
+		if rules.SkillGroupCost.MembersPerStep <= 0 {
+			loader.fail("progression/core.json: skill_group_cost members_per_step must be positive")
 		}
 	}
 	ruleset.Progression = progression.Progression

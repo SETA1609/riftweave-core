@@ -16,6 +16,8 @@ The numbers that turn experience into levels, skill points, and perks. They live
 | `perks_per_level` | 1 | perks chosen on each level gained |
 | `tag_skills` | 3 | skills tagged at creation |
 | `skill_cost` | normal 2, tag 1 | points for +1 rating |
+| `skill_start` | `5 + attribute * 2` | a skill's value before any point is spent on it |
+| `skill_group_cost` | `members_per_step` 2 | a group point's price on a grouped sheet (below) |
 
 `450` is the normal-difficulty constant. A campaign tunes it by overriding the row, not by changing the formula. [A]
 
@@ -26,6 +28,42 @@ The numbers that turn experience into levels, skill points, and perks. They live
 3. **The pool.** `skill_points` is a formula tree ([formula.md](formula.md)). The one random term is the `luck_roll`, an input, so a vector pins it. The reference does not roll.
 4. **Spending.** One rating point costs `skill_cost.normal` points, or `skill_cost.tag` if the skill is tagged. A skill never goes past `skill_cap`: points that would buy rating above the cap are not spent. Points that cannot buy a whole rating point (one left over on a normal skill) stay in the pool. [A]
 5. **Tag ratio.** The ratio is 2:1 in favour of tag skills, as in `docs/modules/progression.md`. `AGENTS.md` words it as "+2 per point instead of +1", which is the same ratio on a different scale; the data uses cost, so a point is a point. [V 2026-11-02, read both]
+
+## Two sheets, one rule set
+
+A sheet is how a character's skills are written down. Both sheets below read the same
+`skill_start`, the same costs, and the same cap; neither is a second rule set. (M5-49)
+
+### Track only what you raise
+
+A sheet writes only the skills the character has raised. Any other skill reads its starting
+value, `skill_start` of its `associatedAbility`, as a monster's unwritten skill already does
+([actor-sheet.md](actor-sheet.md)). A written skill reads what is written. So a newcomer's sheet
+holds their tag skills and the few they spend on, and a game that tracks all 44 skills gets the
+same numbers. [V 2026-11-12, `progression` vectors, op `read_skill`]
+
+### The grouped sheet (variant)
+
+A table may play with fewer, broader skills. The `skill_groups` collection
+(`ruleset/data/skill_groups/core.json`) puts every skill in exactly one group. A tracked group
+(Melee, Ranged, Defense, one group per magic color, Stealth, Social, Knowledge, Wilds, Craft,
+Athletics, Medicine) holds the ranks the character bought for it. An untracked group (Armor:
+the four armor skills) holds none.
+
+1. **Reading.** On a grouped sheet a member skill reads its own `skill_start` plus its group's
+   ranks. A skill in an untracked group reads its `skill_start` alone. Each member keeps its own
+   attribute, so a Melee rank raises blades (STR) and piercing (AGI) by the same point. [V 2026-11-12, `progression` vectors, op `read_skill`]
+2. **Spending.** One rank of a group costs the skill cost, `normal` or `tag`, times
+   `ceil(members / members_per_step)`. With `members_per_step` 2, a one- or two-skill group costs what one
+   skill does, Melee (4) costs twice that, and Craft (7) four times. A group point buys
+   several skills at once and none of them alone, so the price stays below the members' sum. [A]
+   Tagging works on groups: a grouped sheet tags 3 groups.
+3. **The cap.** A group rank is not bought when it would take its highest member past
+   `skill_cap`; the caller passes that member's value as `skill`. [V 2026-11-12, `progression` vectors, op `spend` with `group`]
+4. **An untracked group cannot be bought.** Spending on one is refused. [V 2026-11-12]
+
+A character moves from a grouped sheet to a full one by writing each tracked member's current
+value as its own skill. [A]
 
 ## Resource growth
 
