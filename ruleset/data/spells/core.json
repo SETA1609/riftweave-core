@@ -7,6 +7,7 @@
       "description": "Hurl a mote of fire at a target.",
       "color": "red",
       "level": 1, "delivery": "single",
+      "template": true,
       "effects": [
         {
           "effect": "core:effect/damage_fire",
@@ -41,6 +42,7 @@
       "description": "Restore health to a creature you touch.",
       "color": "green",
       "level": 1,
+      "template": true,
       "effects": [
         {
           "effect": "core:effect/restore_resource",
@@ -102,6 +104,7 @@
       "description": "Flames burst outward from a spot you choose, scorching all around it.",
       "color": "red",
       "level": 6, "delivery": "area",
+      "template": true,
       "effects": [
         {
           "effect": "core:effect/damage_fire",
@@ -316,6 +319,7 @@
       "description": "A shell of conjured force that takes blows meant for you.",
       "color": "orange",
       "level": 6,
+      "template": true,
       "effects": [
         {
           "effect": "core:effect/fortify_defense",
@@ -1105,6 +1109,7 @@
       "description": "A touch of light that burns the unholy.",
       "color": "white",
       "level": 1, "delivery": "single",
+      "template": true,
       "effects": [
         {
           "effect": "core:effect/damage_radiant",
@@ -1322,6 +1327,74 @@
       ],
       "cost": {
         "mana": 63
+      }
+    },
+    {
+      "key": "divine_intervention",
+      "label": "Divine Intervention",
+      "description": "Call on your deity to carry you to its nearest temple. A game with deities writes one row per deity, its parameter that deity's faction.",
+      "color": "white",
+      "level": 10,
+      "effects": [
+        {
+          "effect": "core:effect/teleport",
+          "magnitude": 1,
+          "target": "world"
+        }
+      ],
+      "cost": {
+        "mana": 30
+      }
+    },
+    {
+      "key": "mark",
+      "label": "Mark",
+      "description": "Fix the spot where you stand in your memory, so Recall can bring you back to it.",
+      "color": "violet",
+      "level": 8,
+      "effects": [
+        {
+          "effect": "core:effect/mark",
+          "magnitude": 1,
+          "target": "self"
+        }
+      ],
+      "cost": {
+        "mana": 5
+      }
+    },
+    {
+      "key": "recall",
+      "label": "Recall",
+      "description": "Fold the world and step back onto your mark, wherever it lies.",
+      "color": "violet",
+      "level": 10,
+      "effects": [
+        {
+          "effect": "core:effect/recall",
+          "magnitude": 1,
+          "target": "world"
+        }
+      ],
+      "cost": {
+        "mana": 30
+      }
+    },
+    {
+      "key": "pocket_storage",
+      "label": "Pocket Storage",
+      "description": "Open a pocket of space only you can reach, and put things in or take them out.",
+      "color": "orange",
+      "level": 6,
+      "effects": [
+        {
+          "effect": "core:effect/storage",
+          "magnitude": 1,
+          "target": "self"
+        }
+      ],
+      "cost": {
+        "mana": 4
       }
     }
   ]

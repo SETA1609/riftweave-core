@@ -157,3 +157,101 @@ def run_casting(vector):
                 if row["level"] <= effect["magnitude"] and row["key"] not in result["dispelled"]:
                     result["dispelled"].append(row["key"])
     return result
+
+
+# Spellcraft (docs/core/casting.md#spellcraft, docs/modules/magic.md#spell-knowledge).
+
+def round_half_up(value):
+    """Round to the nearest integer, a half away from zero, as Go's math.Round does."""
+    return math.floor(round(value, 6) + 0.5)
+
+
+def craft_reason(effect, applied, color, known):
+    """Why one applied effect cannot go into a crafted spell of `color`, or None."""
+    if "spell" not in effect["channels"]:
+        return "channel"
+    if effect.get("craftable") is False:
+        return "uncraftable"
+    if applied.get("parameter") in effect.get("uncraftable_parameters", []):
+        return "excluded_parameter"
+    if applied["effect"] not in known:
+        return "unknown"
+    if effect.get("color") not in (None, color):
+        return "off_color"
+    return None
+
+
+def effect_threshold(effect_ref):
+    """An effect's craft threshold: that of the cheapest spell carrying it (magnitude 1, instant, touch)."""
+    cost = spell_cost({"effects": [{"effect": effect_ref, "magnitude": 1, "target": "touch"}]})
+    return round_half_up(cost * 1.25)
+
+
+def craftable(effect):
+    return "spell" in effect["channels"] and effect.get("craftable") is not False
+
+
+def run_spellcraft(vector):
+    effects = {f"core:effect/{e['key']}": e for e in load_data("effects/core.json")["effects"]}
+    caster = vector["caster"]
+    known = caster.get("known", [])
+    op = vector["op"]
+    if op == "craft":
+        spell = vector["spell"]
+        rejected = []
+        for applied in spell["effects"]:
+            if applied["effect"] not in effects:
+                return {"error": f'effect "{applied["effect"]}" is not defined'}
+            reason = craft_reason(effects[applied["effect"]], applied, spell["color"], known)
+            if reason:
+                rejected.append({"effect": applied["effect"], "reason": reason})
+        if rejected:
+            return {"valid": False, "rejected": rejected, "mana": None, "cast_threshold": None,
+                    "craft_threshold": None, "skill_ok": False}
+        mana = spell_cost(spell)
+        craft_threshold = round_half_up(mana * 1.25)
+        skill_ok = caster.get("skills", {}).get(f"{spell['color']}_magic", 0) >= craft_threshold
+        return {"valid": skill_ok, "rejected": [], "mana": mana, "cast_threshold": mana,
+                "craft_threshold": craft_threshold, "skill_ok": skill_ok}
+    if op == "learn":
+        try:
+            spell = spell_row(load_data("spells/core.json")["spells"], vector["spell"])
+        except LookupError as error:
+            return {"error": str(error)}
+        taught = []
+        for applied in spell["effects"]:
+            ref = applied["effect"]
+            if craftable(effects[ref]) and ref not in known and ref not in taught:
+                taught.append(ref)
+        return {"taught": taught, "known": sorted(set(known) | set(taught))}
+    if op == "research":
+        from kernel_reference import run_resolution  # kernel_reference imports this module
+
+        ref = vector["effect"]
+        if ref not in effects:
+            return {"error": f'effect "{ref}" is not defined'}
+        effect = effects[ref]
+        refused = {"outcome": "refused", "check": None, "known": sorted(known), "days": 0, "cost": None}
+        if not craftable(effect):
+            return {**refused, "reason": "uncraftable"}
+        if ref in known:
+            return {**refused, "reason": "known"}
+        color = effect.get("color") or vector.get("color")
+        if not color:
+            return {**refused, "reason": "no_color"}
+        skill = f"{color}_magic"
+        value = caster.get("skills", {}).get(skill, 0)
+        if value < effect_threshold(ref):
+            return {**refused, "reason": "skill"}
+        check = run_resolution({
+            "actor": {"skills": {skill: value}, "attributes": caster.get("attributes", {})},
+            "skill": skill,
+            "modifiers": [m for m in vector.get("modifiers", []) if m["target"] == skill],
+            "roll": vector["roll"],
+        })
+        research = load_data("casting/core.json")["casting"]["research"]
+        learned = check["success"]
+        return {"outcome": "learned" if learned else "failed", "reason": None, "check": check,
+                "known": sorted(set(known) | ({ref} if learned else set())),
+                "days": research["days"], "cost": dict(research["cost"])}
+    return {"error": f'spellcraft op "{op}" is not defined'}

@@ -207,6 +207,9 @@
       "polarity": "beneficial",
       "magnitudeUnit": "points",
       "baseCost": 5,
+      "uncraftable_parameters": [
+        "mana"
+      ],
       "channels": [
         "spell",
         "potion",
@@ -321,6 +324,7 @@
       "magnitudeUnit": "count",
       "baseCost": 2,
       "defaultDuration": 120,
+      "craftable": false,
       "channels": [
         "spell"
       ],
@@ -341,12 +345,82 @@
       "magnitudeUnit": "count",
       "baseCost": 2,
       "defaultDuration": 60,
+      "craftable": false,
       "channels": [
         "spell"
       ],
       "tags": [
         "conjure",
         "bound"
+      ]
+    },
+    {
+      "key": "teleport",
+      "parameter_category": "faction",
+      "label": "Teleport",
+      "description": "Sends the caster to the nearest temple of a deity. Use 'parameter' for the deity's faction (a faction ref) where a game defines deities; with none, the engine reads the caster's patron. Finding the temple is engine state (docs/core/casting.md#the-world-target).",
+      "category": "movement",
+      "polarity": "beneficial",
+      "color": "white",
+      "baseCost": 100,
+      "craftable": false,
+      "channels": [
+        "spell"
+      ],
+      "tags": [
+        "divine",
+        "teleport"
+      ]
+    },
+    {
+      "key": "mark",
+      "label": "Mark",
+      "description": "Records where the caster stands as their return point, replacing the one before. Recall sends the caster back to it. Keeping the mark is engine state.",
+      "category": "movement",
+      "polarity": "neutral",
+      "color": "violet",
+      "baseCost": 50,
+      "craftable": false,
+      "channels": [
+        "spell"
+      ],
+      "tags": [
+        "mysticism",
+        "teleport"
+      ]
+    },
+    {
+      "key": "recall",
+      "label": "Recall",
+      "description": "Sends the caster to their mark (see Mark), anywhere in the world. With no mark, nothing happens.",
+      "category": "movement",
+      "polarity": "beneficial",
+      "color": "violet",
+      "baseCost": 100,
+      "craftable": false,
+      "channels": [
+        "spell"
+      ],
+      "tags": [
+        "mysticism",
+        "teleport"
+      ]
+    },
+    {
+      "key": "storage",
+      "label": "Storage",
+      "description": "Opens the caster's pocket inventory, a store only they can reach. What it holds and how much is engine state.",
+      "category": "utility",
+      "polarity": "neutral",
+      "color": "orange",
+      "baseCost": 40,
+      "craftable": false,
+      "channels": [
+        "spell"
+      ],
+      "tags": [
+        "conjure",
+        "storage"
       ]
     },
     {

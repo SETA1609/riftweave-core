@@ -69,6 +69,24 @@
           },
           "required": ["magnitude_factor", "area_factor", "target_multiplier"],
           "additionalProperties": false
+        },
+        "research": {
+          "type": "object",
+          "description": "The Research downtime action: what one attempt to learn an effect takes, spent whatever the roll (docs/modules/magic.md#spell-knowledge).",
+          "properties": {
+            "days": { "type": "integer", "minimum": 1 },
+            "cost": {
+              "type": "object",
+              "properties": {
+                "quantity": { "type": "integer", "minimum": 0 },
+                "unit": { "type": "string", "enum": ["cp", "sp", "gp", "pp"] }
+              },
+              "required": ["quantity", "unit"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["days", "cost"],
+          "additionalProperties": false
         }
       },
       "required": ["prevented_by", "armor_penalty", "skill_discount", "spell_cost"],
