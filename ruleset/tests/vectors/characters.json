@@ -28,7 +28,7 @@
   {
     "name": "Borin level 1: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 7,
@@ -92,7 +92,7 @@
   {
     "name": "Borin level 2: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 7,
@@ -156,7 +156,7 @@
   {
     "name": "Borin level 3: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 7,
@@ -227,7 +227,7 @@
   {
     "name": "Borin level 4: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 7,
@@ -298,7 +298,7 @@
   {
     "name": "Borin level 5: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 7,
@@ -369,7 +369,7 @@
   {
     "name": "Borin level 6: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 7,
@@ -440,7 +440,7 @@
   {
     "name": "Borin level 7: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 7,
@@ -511,7 +511,7 @@
   {
     "name": "Borin level 8: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 7,
@@ -582,7 +582,7 @@
   {
     "name": "Borin level 9: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 7,
@@ -653,7 +653,7 @@
   {
     "name": "Borin level 10: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 7,
@@ -709,7 +709,7 @@
   {
     "name": "Sefa level 1: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 4,
@@ -773,7 +773,7 @@
   {
     "name": "Sefa level 2: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 4,
@@ -837,7 +837,7 @@
   {
     "name": "Sefa level 3: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 4,
@@ -901,7 +901,7 @@
   {
     "name": "Sefa level 4: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 4,
@@ -965,7 +965,7 @@
   {
     "name": "Sefa level 5: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 4,
@@ -1029,7 +1029,7 @@
   {
     "name": "Sefa level 6: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 4,
@@ -1093,7 +1093,7 @@
   {
     "name": "Sefa level 7: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 4,
@@ -1157,7 +1157,7 @@
   {
     "name": "Sefa level 8: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 4,
@@ -1221,7 +1221,7 @@
   {
     "name": "Sefa level 9: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 4,
@@ -1285,7 +1285,7 @@
   {
     "name": "Sefa level 10: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 4,

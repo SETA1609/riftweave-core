@@ -60,7 +60,7 @@
           "id": 1,
           "base": "core:weapon/longsword",
           "material": "core:material/steel",
-          "mods": [
+          "added_effects": [
             {
               "effect": "core:effect/damage_fire",
               "magnitude": 2,
@@ -72,7 +72,7 @@
         {
           "id": 2,
           "base": "core:consumable/potion_healing",
-          "mods": [],
+          "added_effects": [],
           "quantity": 3
         }
       ],
@@ -140,7 +140,7 @@
             "id": 1,
             "base": "core:weapon/longsword",
             "material": "core:material/steel",
-            "mods": [
+            "added_effects": [
               {
                 "effect": "core:effect/damage_fire",
                 "magnitude": 2,
@@ -152,7 +152,7 @@
           {
             "id": 2,
             "base": "core:consumable/potion_healing",
-            "mods": [],
+            "added_effects": [],
             "quantity": 3
           }
         ],
@@ -278,7 +278,7 @@
           "id": 1,
           "base": "core:weapon/longsword",
           "material": "core:material/steel",
-          "mods": [
+          "added_effects": [
             {
               "effect": "core:effect/damage_fire",
               "magnitude": 2,
@@ -290,7 +290,7 @@
         {
           "id": 2,
           "base": "core:consumable/potion_healing",
-          "mods": [],
+          "added_effects": [],
           "quantity": 3
         }
       ],
@@ -363,7 +363,7 @@
           "id": 1,
           "base": "core:weapon/longsword",
           "material": "core:material/steel",
-          "mods": [
+          "added_effects": [
             {
               "effect": "core:effect/damage_fire",
               "magnitude": 2,
@@ -375,7 +375,7 @@
         {
           "id": 1,
           "base": "core:consumable/potion_healing",
-          "mods": [],
+          "added_effects": [],
           "quantity": 3
         }
       ],
@@ -446,7 +446,7 @@
           "id": 1,
           "base": "core:weapon/longsword",
           "material": "core:material/steel",
-          "mods": [
+          "added_effects": [
             {
               "effect": "core:effect/damage_fire",
               "magnitude": 2,
@@ -458,7 +458,7 @@
         {
           "id": 2,
           "base": "core:consumable/potion_healing",
-          "mods": [],
+          "added_effects": [],
           "quantity": 3
         }
       ],
@@ -536,7 +536,7 @@
             "id": 1,
             "base": "core:weapon/longsword",
             "material": "core:material/steel",
-            "mods": [
+            "added_effects": [
               {
                 "effect": "core:effect/damage_fire",
                 "magnitude": 2,
@@ -548,7 +548,7 @@
           {
             "id": 2,
             "base": "core:consumable/potion_healing",
-            "mods": [],
+            "added_effects": [],
             "quantity": 3
           }
         ],

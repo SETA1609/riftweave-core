@@ -2,7 +2,7 @@
   {
     "name": "detect: a dart trap, Search on investigation 40, roll 35",
     "hazard": "dart_trap",
-    "op": "detect",
+    "operation": "detect",
     "actor": {
       "skills": {
         "investigation": 40
@@ -22,7 +22,7 @@
   {
     "name": "detect: a poison needle is -10, so 35 fails against 30",
     "hazard": "poison_needle",
-    "op": "detect",
+    "operation": "detect",
     "actor": {
       "skills": {
         "investigation": 40
@@ -41,7 +41,7 @@
   {
     "name": "detect: a lantern's +10 is a modifier on the target",
     "hazard": "poison_needle",
-    "op": "detect",
+    "operation": "detect",
     "actor": {
       "skills": {
         "investigation": 40
@@ -68,7 +68,7 @@
   {
     "name": "disarm: a dart trap is +10, lockpick 30 against 38 succeeds",
     "hazard": "dart_trap",
-    "op": "disarm",
+    "operation": "disarm",
     "actor": {
       "skills": {
         "lockpick": 30
@@ -88,7 +88,7 @@
   {
     "name": "disarm: a failure leaves the trap armed",
     "hazard": "dart_trap",
-    "op": "disarm",
+    "operation": "disarm",
     "actor": {
       "skills": {
         "lockpick": 30
@@ -106,7 +106,7 @@
   {
     "name": "disarm: a fumble triggers the trap",
     "hazard": "dart_trap",
-    "op": "disarm",
+    "operation": "disarm",
     "actor": {
       "skills": {
         "lockpick": 90
@@ -127,7 +127,7 @@
   {
     "name": "disarm: thin ice is an environment hazard and cannot be disarmed",
     "hazard": "thin_ice",
-    "op": "disarm",
+    "operation": "disarm",
     "actor": {
       "skills": {
         "lockpick": 50
@@ -144,7 +144,7 @@
   {
     "name": "trigger: a failed dodge takes the dart and its poison",
     "hazard": "dart_trap",
-    "op": "trigger",
+    "operation": "trigger",
     "actor": {
       "skills": {
         "evasion": 30
@@ -169,7 +169,7 @@
   {
     "name": "trigger: a dodge avoids a dart trap whole",
     "hazard": "dart_trap",
-    "op": "trigger",
+    "operation": "trigger",
     "actor": {
       "skills": {
         "evasion": 30
@@ -189,7 +189,7 @@
   {
     "name": "trigger: no avoid roll, the victim had no chance",
     "hazard": "dart_trap",
-    "op": "trigger",
+    "operation": "trigger",
     "damage_roll": 3,
     "expect": {
       "avoided": false,
@@ -205,7 +205,7 @@
   {
     "name": "trigger: a dodge halves a fire rune, rounded down, and avoids the burn",
     "hazard": "fire_rune",
-    "op": "trigger",
+    "operation": "trigger",
     "actor": {
       "skills": {
         "evasion": 30
@@ -228,7 +228,7 @@
   {
     "name": "trigger: a failed dodge takes the whole fire rune and the burn",
     "hazard": "fire_rune",
-    "op": "trigger",
+    "operation": "trigger",
     "actor": {
       "skills": {
         "evasion": 30
@@ -253,7 +253,7 @@
   {
     "name": "trigger: a net has no damage, only the restrain",
     "hazard": "net_trap",
-    "op": "trigger",
+    "operation": "trigger",
     "actor": {
       "skills": {
         "evasion": 30
@@ -274,7 +274,7 @@
   {
     "name": "trigger: thin ice has no avoid; it always lands",
     "hazard": "thin_ice",
-    "op": "trigger",
+    "operation": "trigger",
     "damage_roll": 4,
     "expect": {
       "avoided": false,
@@ -290,7 +290,7 @@
   {
     "name": "detect: a fire rune is arcane and red, so red magic 50 finds it against -20",
     "hazard": "fire_rune",
-    "op": "detect",
+    "operation": "detect",
     "actor": {
       "skills": {
         "red_magic": 50
@@ -310,7 +310,7 @@
   {
     "name": "detect: investigation does not find an arcane rune; red magic 0 against -20 fails",
     "hazard": "fire_rune",
-    "op": "detect",
+    "operation": "detect",
     "actor": {
       "skills": {
         "red_magic": 0,
@@ -330,7 +330,7 @@
   {
     "name": "disarm: a fire rune is unwoven with red magic, not lockpick",
     "hazard": "fire_rune",
-    "op": "disarm",
+    "operation": "disarm",
     "actor": {
       "skills": {
         "red_magic": 60
@@ -350,7 +350,7 @@
   {
     "name": "disarm: a lightning ward is violet; violet magic 50 against -20 misses 35",
     "hazard": "lightning_ward",
-    "op": "disarm",
+    "operation": "disarm",
     "actor": {
       "skills": {
         "violet_magic": 50
@@ -369,7 +369,7 @@
   {
     "name": "spell: disarm trap (4) makes a level-4 swinging blade safe",
     "hazard": "swinging_blade",
-    "op": "spell",
+    "operation": "spell",
     "spell": "disarm_trap",
     "expect": {
       "disarmed": true,
@@ -379,7 +379,7 @@
   {
     "name": "spell: disarm trap does not touch an arcane rune",
     "hazard": "fire_rune",
-    "op": "spell",
+    "operation": "spell",
     "spell": "disarm_trap",
     "expect": {
       "disarmed": false,
@@ -389,7 +389,7 @@
   {
     "name": "spell: greater disarm (20) reaches what disarm trap (4) cannot",
     "hazard": "falling_rocks",
-    "op": "spell",
+    "operation": "spell",
     "spell": "greater_disarm",
     "expect": {
       "disarmed": true,
@@ -399,7 +399,7 @@
   {
     "name": "spell: dispel magic (4) is too weak for a level-5 fire rune",
     "hazard": "fire_rune",
-    "op": "spell",
+    "operation": "spell",
     "spell": "dispel_magic",
     "expect": {
       "disarmed": false,
@@ -409,7 +409,7 @@
   {
     "name": "spell: dispel ward (12) ends a level-5 fire rune",
     "hazard": "fire_rune",
-    "op": "spell",
+    "operation": "spell",
     "spell": "dispel_ward",
     "expect": {
       "disarmed": true,
@@ -419,7 +419,7 @@
   {
     "name": "spell: dispel does nothing to a mechanical pit",
     "hazard": "pit_trap",
-    "op": "spell",
+    "operation": "spell",
     "spell": "dispel_ward",
     "expect": {
       "disarmed": false,
@@ -429,7 +429,7 @@
   {
     "name": "spell: nothing undoes a natural hazard",
     "hazard": "thin_ice",
-    "op": "spell",
+    "operation": "spell",
     "spell": "dispel_ward",
     "expect": {
       "disarmed": false,
@@ -439,7 +439,7 @@
   {
     "name": "spell: a fire bolt does not disarm a pit",
     "hazard": "pit_trap",
-    "op": "spell",
+    "operation": "spell",
     "spell": "fire_bolt",
     "expect": {
       "disarmed": false,

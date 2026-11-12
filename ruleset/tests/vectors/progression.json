@@ -1,7 +1,7 @@
 [
   {
     "name": "xp to reach level 1",
-    "op": "xp",
+    "operation": "xp",
     "level": 1,
     "expect": {
       "xp_total": 0,
@@ -10,7 +10,7 @@
   },
   {
     "name": "xp to reach level 2",
-    "op": "xp",
+    "operation": "xp",
     "level": 2,
     "expect": {
       "xp_total": 900,
@@ -19,7 +19,7 @@
   },
   {
     "name": "xp to reach level 10",
-    "op": "xp",
+    "operation": "xp",
     "level": 10,
     "expect": {
       "xp_total": 40500,
@@ -28,7 +28,7 @@
   },
   {
     "name": "xp to reach level 30",
-    "op": "xp",
+    "operation": "xp",
     "level": 30,
     "expect": {
       "xp_total": 391500,
@@ -37,7 +37,7 @@
   },
   {
     "name": "level from xp: just below level 2",
-    "op": "level",
+    "operation": "level",
     "xp": 899,
     "expect": {
       "level": 1
@@ -45,7 +45,7 @@
   },
   {
     "name": "level from xp: exactly level 2",
-    "op": "level",
+    "operation": "level",
     "xp": 900,
     "expect": {
       "level": 2
@@ -53,7 +53,7 @@
   },
   {
     "name": "level from xp: capped at 30",
-    "op": "level",
+    "operation": "level",
     "xp": 10000000,
     "expect": {
       "level": 30
@@ -61,7 +61,7 @@
   },
   {
     "name": "level-up pool: int 5, luck roll 0",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "int": 5,
@@ -84,7 +84,7 @@
   },
   {
     "name": "level-up pool: luck roll at the LCK ceiling",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "int": 5,
@@ -107,7 +107,7 @@
   },
   {
     "name": "level-up pool: luck roll above LCK is rejected",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "int": 5,
@@ -124,7 +124,7 @@
   },
   {
     "name": "spend on a normal skill: 2 points per rating",
-    "op": "spend",
+    "operation": "spend",
     "skill": 40,
     "tagged": false,
     "points": 10,
@@ -136,7 +136,7 @@
   },
   {
     "name": "spend on a normal skill: odd point stays",
-    "op": "spend",
+    "operation": "spend",
     "skill": 40,
     "tagged": false,
     "points": 9,
@@ -148,7 +148,7 @@
   },
   {
     "name": "spend on a tag skill: 1 point per rating",
-    "op": "spend",
+    "operation": "spend",
     "skill": 40,
     "tagged": true,
     "points": 10,
@@ -160,7 +160,7 @@
   },
   {
     "name": "tag skill stops at the cap of 100",
-    "op": "spend",
+    "operation": "spend",
     "skill": 97,
     "tagged": true,
     "points": 10,
@@ -172,7 +172,7 @@
   },
   {
     "name": "normal skill stops at the cap of 100",
-    "op": "spend",
+    "operation": "spend",
     "skill": 99,
     "tagged": false,
     "points": 10,
@@ -184,7 +184,7 @@
   },
   {
     "name": "skill already at the cap buys nothing",
-    "op": "spend",
+    "operation": "spend",
     "skill": 100,
     "tagged": true,
     "points": 5,
@@ -196,7 +196,7 @@
   },
   {
     "name": "pool growth: LCK 10, the best rolls of 5 each",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "int": 5,
@@ -219,7 +219,7 @@
   },
   {
     "name": "pool growth: one roll for each pool, each its own",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "int": 5,
@@ -242,7 +242,7 @@
   },
   {
     "name": "pool growth: LCK 5 floors to a highest roll of 2",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "int": 5,
@@ -265,7 +265,7 @@
   },
   {
     "name": "pool growth: LCK 5 refuses an mp_roll of 3",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "int": 5,
@@ -282,7 +282,7 @@
   },
   {
     "name": "pool growth: LCK 10 refuses an hp_roll of 6",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "int": 5,
@@ -299,7 +299,7 @@
   },
   {
     "name": "pool growth: LCK 1 caps every roll at 0",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "int": 5,
@@ -322,7 +322,7 @@
   },
   {
     "name": "pool growth: LCK 1 refuses an sp_roll of 1",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "int": 5,
@@ -339,7 +339,7 @@
   },
   {
     "name": "pool growth: a negative roll is refused",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "int": 5,
@@ -356,7 +356,7 @@
   },
   {
     "name": "read skill: a full sheet reads a written skill",
-    "op": "read_skill",
+    "operation": "read_skill",
     "actor": {
       "attributes": {
         "str": 6,
@@ -380,7 +380,7 @@
   },
   {
     "name": "read skill: a full sheet reads an unwritten skill as its start, 5 + INT 6 x 2",
-    "op": "read_skill",
+    "operation": "read_skill",
     "actor": {
       "attributes": {
         "str": 6,
@@ -404,7 +404,7 @@
   },
   {
     "name": "read skill: a grouped sheet reads blades as STR 6 start plus 10 Melee ranks",
-    "op": "read_skill",
+    "operation": "read_skill",
     "actor": {
       "attributes": {
         "str": 6,
@@ -428,7 +428,7 @@
   },
   {
     "name": "read skill: piercing shares the Melee ranks on its own AGI 4 start",
-    "op": "read_skill",
+    "operation": "read_skill",
     "actor": {
       "attributes": {
         "str": 6,
@@ -452,7 +452,7 @@
   },
   {
     "name": "read skill: a tracked group with no ranks written reads 0 ranks",
-    "op": "read_skill",
+    "operation": "read_skill",
     "actor": {
       "attributes": {
         "str": 6,
@@ -476,7 +476,7 @@
   },
   {
     "name": "read skill: an untracked armor skill reads its start on a grouped sheet",
-    "op": "read_skill",
+    "operation": "read_skill",
     "actor": {
       "attributes": {
         "str": 6,
@@ -500,7 +500,7 @@
   },
   {
     "name": "read skill: a grouped sheet ignores written skills",
-    "op": "read_skill",
+    "operation": "read_skill",
     "actor": {
       "attributes": {
         "str": 6,
@@ -527,7 +527,7 @@
   },
   {
     "name": "read skill: an unknown skill is refused",
-    "op": "read_skill",
+    "operation": "read_skill",
     "actor": {
       "attributes": {
         "str": 6,
@@ -547,7 +547,7 @@
   },
   {
     "name": "group spend: a Melee rank (4 skills) costs 2 x 2, so 10 points buy 2",
-    "op": "spend",
+    "operation": "spend",
     "group": "melee",
     "skill": 30,
     "tagged": false,
@@ -560,7 +560,7 @@
   },
   {
     "name": "group spend: a tagged Craft rank (7 skills) costs 1 x 4, so 9 points buy 2",
-    "op": "spend",
+    "operation": "spend",
     "group": "craft",
     "skill": 30,
     "tagged": true,
@@ -573,7 +573,7 @@
   },
   {
     "name": "group spend: a one-skill group costs what one skill does",
-    "op": "spend",
+    "operation": "spend",
     "group": "medicine",
     "skill": 30,
     "tagged": false,
@@ -586,7 +586,7 @@
   },
   {
     "name": "group spend: a two-skill group costs what one skill does",
-    "op": "spend",
+    "operation": "spend",
     "group": "defense",
     "skill": 30,
     "tagged": false,
@@ -599,7 +599,7 @@
   },
   {
     "name": "group spend: the highest member at 99 leaves room for one rank",
-    "op": "spend",
+    "operation": "spend",
     "group": "melee",
     "skill": 99,
     "tagged": false,
@@ -612,7 +612,7 @@
   },
   {
     "name": "group spend: an untracked group is refused",
-    "op": "spend",
+    "operation": "spend",
     "group": "armor",
     "skill": 20,
     "tagged": false,
@@ -623,7 +623,7 @@
   },
   {
     "name": "group spend: an unknown group is refused",
-    "op": "spend",
+    "operation": "spend",
     "group": "nope",
     "skill": 20,
     "tagged": false,
