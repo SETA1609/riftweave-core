@@ -16,8 +16,10 @@ ruleset/data/monsters/
 │   ├── ooze.json         # Mindless jellies, high END, almost no AGI or senses
 │   ├── plant.json        # Rooted/fungal creatures, vulnerable to fire
 │   └── undead.json       # Risen dead, high WIL, immune to poison
-├── templates.json        # Element templates a row applies (fire, frost, storm, acid, venom)
+├── templates.json        # Templates a row applies: element, power, and nature
 └── core.json             # Concrete monster entries (flat or base+override)
+ruleset/data/natural_weapons/
+└── core.json             # Bite, claw, slam, and the other natural attacks, with their dice
 ```
 
 ## How It Works
@@ -124,11 +126,19 @@ scale with level:
 
 The growth formula is:
 ```
-computed = min(10, max(1, round(base_attr + perLevel * (level - base_level))))
+computed = max(1, round(base_attr + perLevel * (level - base_level)))
 ```
 
-An attribute stays in its 1 to 10 range, as a character's does, so a level-30 monster
-built on a level-4 base tops out at 10 instead of passing the schema's cap. [V 2026-11-06]
+A monster's attribute has no maximum. 10 is a player's cap at character creation only, and a
+player's perks and bonuses pass it too, so a level-30 monster built on a level-4 base keeps
+growing. The minimum of 1 stays. [V 2026-11-12, `test_bestiary.py`]
+
+`growth` also holds `damagePerLevel`, 0.25 for every creature type [A]. A monster above its
+row's level adds `round(damagePerLevel × Δlevel)` to each attack's damage (`damage.bonus`) and
+to the magnitude of each `damage_*` ability, as `hitPointsPerLevel` adds HP. A summoned or
+derived creature is where this shows: a fire elemental summoned at level 25 hits 5 harder than
+its level-5 row. [V 2026-11-12, `test_bestiary.py`] Whether 0.25 keeps every row in its damage
+band at every level is not checked yet. [U]
 
 Individual monster overrides only need to specify attributes that **differ**
 from the growth curve. Missing attributes are filled in automatically:
@@ -159,8 +169,9 @@ differs. The creature type is the root's: a derived monster cannot change it. [V
 
 - **Level.** A derived monster always states its `level` in `overrides`, so a reader of one
   row (the loot budget, the Go loader) never walks the chain. When it differs from the
-  base monster's, attributes and HP move by the type's growth for the difference:
-  `round(base_attr + perLevel × Δlevel)`, within 1 to 10, and `base_hp + hitPointsPerLevel × Δlevel`.
+  base monster's, attributes, HP, and damage move by the type's growth for the difference:
+  `round(base_attr + perLevel × Δlevel)`, at least 1, `base_hp + hitPointsPerLevel × Δlevel`,
+  and `round(damagePerLevel × Δlevel)` on damage.
 - **Order.** `core.json` lists the base monsters first (those another row derives from), then
   their variants, family by family, then the one-off monsters, each group by level.
 - **Chains** may be longer than one step; a cycle, or a base monster that does not exist, is
@@ -169,31 +180,72 @@ differs. The creature type is the root's: a derived monster cannot change it. [V
 ### Templates
 
 A template is a reusable change, written once in `monsters/templates.json`, that any monster
-row applies with `"templates": ["fire"]`. The five element templates are one per phase:
+row applies with `"templates": ["fire"]`. Each template has a `slot`, and a row holds at most
+one template per slot, its own and its base monster's together. The slots apply in a fixed
+order, whatever order the row lists them in: `element`, then `power`, then `nature`.
+[V 2026-11-12, `test_bestiary.py`]
 
-| Template | Phase | Damage type | Label |
-| --- | --- | --- | --- |
-| `fire` | fire | fire | Fire … |
-| `frost` | water | frost | Frost … |
-| `storm` | metal | shock | Storm … |
-| `acid` | earth | acid | Acid … |
-| `venom` | wood | poison | Venom … |
+| Slot | Templates | What it is |
+| --- | --- | --- |
+| `element` | `fire`, `frost`, `storm`, `acid`, `venom` | The creature's element: one per phase. |
+| `power` | `dire`, `elder`, `ancient` | How far past its kind the creature has grown. |
+| `nature` | `demonic`, `angelic`, `otherworldly` | What the creature is touched by. |
 
-A template sets the monster's `phase`; turns every attack into its damage type and gives it
-the template's phase; adds its `resist` to the monster's, per damage type; appends its
-`tags`; and puts its label prefix before the label, unless `overrides` gives a label.
-Templates apply after the base and before `overrides`, so a row can still correct any of
-it. [V 2026-11-08]
+A template may carry any of these. Each is optional except `slot`, `label_prefix`, and, for
+an element, `phase` and `damage_type`:
+
+- `phase` sets the monster's phase and the phase of every attack.
+- `damage_type` sets the damage type of every attack that does not name its own, and turns
+  each elemental `damage_*` ability (fire, frost, shock, acid, poison) into the template's
+  element. An attack that names its type keeps it, so an elemental's slam stays physical
+  under any element. [A]
+- `attributes` are added to the monster's, a missing attribute counting 0. An END add moves
+  an authored `hitPoints` by the `hp` row's `per_point` (END +1 is +8 HP); mana is computed
+  from INT, so an INT add moves it with no step of its own. [A]
+- `resist` is added to the monster's, per damage type.
+- `spells` are appended to the monster's `spells`, so a creature with a spell list casts as
+  a player does, from mana the `mp` row gives it.
+- `tags` are appended, skipping any it has, and `loot` rows are added.
+- `label_prefix` goes before the label, unless `overrides` gives a label.
+
+Templates apply after the base and before `overrides`, so a row can still correct any of it.
+A template never changes the creature type: an undead horse has the `undead` base, not
+`beast`, so there is no `undead` template. [V 2026-11-12]
 
 Fire Ooze is an ooze with the fire template:
 
 ```json
-{ "id": 46, "key": "fire_ooze", "base": "core:monster/ooze", "templates": ["fire"],
+{ "key": "fire_ooze", "base": "core:monster/ooze", "templates": ["fire"],
   "overrides": { "level": 5, "hitPoints": 32 } }
 ```
 
-A family member that is not an element change is a derived monster with overrides only:
+A family member that is not a template change is a derived monster with overrides only:
 an elder treant is the treant sapling at level 22.
+
+### Generated monsters
+
+Any row plus a power and a nature is a monster, with no row written for the combination. A
+generated monster is named by its row ref and the two template keys,
+`{ "monster": "core:monster/ember_drake", "power": "ancient", "nature": "otherworldly" }` [A],
+and composes as a derived monster of that row with those templates at the row's level or a
+level the caller gives. A slot the row already fills keeps the row's template, so a dire wolf
+never becomes dire twice. [A] [V 2026-11-12, `test_bestiary.py`]
+
+Only rows kept as examples are written out. They are worked examples of the player formulas
+on a monster: their `hitPoints` is what `derived` gives at average rolls, the `hp` row plus
+`(level − 1) × ⌊⌊LCK / 2⌋ / 2⌋` of growth, and their mana is the `mp` row, never stored.
+
+| Row | Built from | Level |
+| --- | --- | --- |
+| `dog`, `wolf` | the beast type | 3 |
+| `dire_wolf` | `wolf` + `dire` | 3 |
+| `elder_wolf` | `wolf` + `elder` | 12 |
+| `demonic_hound` | `dog` + `demonic` | 6 |
+| `undead_horse` | the undead type | 4 |
+
+The player formulas put these rows above the hits-to-kill band of `balance/core.json`, as
+[actor-sheet.md](../core/actor-sheet.md) found for every monster; the balance file accepts
+them by name until the balance pass. [V 2026-11-12, `balance_report.py`]
 
 ### Loot
 
@@ -209,7 +261,22 @@ A summon spell names a group in `summons/core.json`, and each group lists monste
 ([magic.md](./magic.md#summon-groups)). Familiars have their own base, `bases/familiar.json`.
 The storm, acid, and venom elementals derive from Fire Elemental and apply an element
 template. A summoned creature is its row at the caster's level, resolved as a
-[derived monster](#derived-monsters).
+[derived monster](#derived-monsters), then the caster's power and nature as a
+[generated monster](#generated-monsters). The row sets the stats: a summoned dog stays
+weaker than a summoned wolf at the same level, whatever goes on top. Summons stay static and
+uncraftable: a spell names rows, and only a GM or dev adds a new type.
+
+**Power and nature come from perks.** A perk names what it unlocks in `unlocks`, a list of
+refs (`core:monster_template/dire`), because a modifier holds only a number.
+
+- **Power is a ladder.** `summon_dire`, then `summon_elder` (needs `summon_dire`), then
+  `summon_ancient` (needs `summon_elder`), by ordinary perk prerequisites. The latest one
+  bought replaces the one before, so the caster holds one power.
+- **Nature is one at a time.** `summon_demonic`, `summon_angelic`, and `summon_otherworldly`
+  need no other nature, and the latest bought replaces the one before; only it is tracked.
+  Whether a game locks nature as a one-time choice is left for later. [A]
+
+[V 2026-11-12, `test_bestiary.py`]
 
 ### Names
 
@@ -226,14 +293,55 @@ names (troll, ghoul, basilisk, hydra, harpy, golem, wraith) are free to use. [V 
 A monster fights with the same numbers as a character ([core/combat.md](../core/combat.md)).
 [V 2026-11-06]
 
-- **`attacks`** — what it hits with: a `key`, a `label`, a `damage` of an `amount` (the
-  authored average, the caller's damage roll) and a `type` (a key in
-  `combat/damage_types.json`), a `delivery` (`single`, the default, `area`, or `instant`),
-  and an optional `phase` that the attack carries into the five-phase cycles. `abilities`
-  stay the effects it applies (conditions, drains).
+- **`attacks`** — what it hits with. An attack has a `key`, a `label`, and a `weapon`: a
+  natural weapon, `core:natural_weapon/<key>`, or, for a creature that carries one, a
+  weapon, `core:weapon/<key>`. It rolls that row's dice plus the attribute modifier of M3-12
+  (`attribute − 5`, `formulas/attribute_modifier.json`), with no upper limit. `ability` names
+  the attribute and defaults to `str`, so a jaguar's claw uses `agi`, as a finesse weapon
+  does, and an elephant's stomp uses `str`. `damage.type` is the weapon's unless the attack
+  names one; `damage.bonus` is what level growth adds. `delivery` (`single`, the default,
+  `area`, or `instant`) and an optional `phase` stay as before. An attack has no `amount`.
+  [V 2026-11-12, `test_bestiary.py`]
+- **`abilities`** — the effects it applies, from the shared pool. A damaging ability is a
+  spell-like ability, below.
+- **`spells`** — spells it casts as a player does, `core:spell/<key>`.
 - **`resist`** — a flat number per damage type, the combat pipeline's `defender.resist`.
 - **`role`** — `standard` (the default), `boss`, or `minion`: which hits-to-kill band of
   `balance/core.json` the monster's HP is checked against.
+- **`skills`** — only the skills it fights or casts with; any other reads as a player's
+  starting value, `5 + attribute × 2` ([actor-sheet.md](../core/actor-sheet.md)).
+
+### Natural weapons
+
+`natural_weapons/core.json` holds each natural attack: `bite`, `claw`, `gore`, `slam`,
+`talons`, `sting`, `peck`, `hoof`, `tail`, `tentacle`. A row gives the dice for a medium
+creature and a damage type. The dice move along the dice ladder (`combat/dice_ladder.json`)
+with the creature's size: tiny −2, small −1, medium 0, large +1, huge +2 steps, stopping at
+the ends [A]. A large wolf's bite rolls one step above a medium wolf's. Natural weapons are
+not equipment: they cannot be bought, looted, or enchanted, and no loot table names one.
+A carried weapon rolls its own row's dice, sized by the weapon's own `size`, not the
+creature's [A]. [V 2026-11-12, `test_bestiary.py`]
+
+### Spell-like abilities
+
+An attack that is neither natural nor carried, such as a breath, a bolt, or an ooze's
+touch, is a spell-like ability: an entry in `abilities` whose effect deals damage. It pays as
+a cast does: mana by the spell cost formula on its effect ([magic.md](./magic.md#cost-formula)),
+and at a table the `cast` action's AP. With too little mana it is not cast. A creature whose
+only attack is a spell-like ability, such as an ooze, pays the AP and no mana, so it never runs
+out of attacks [A]. A spell-like ability takes no attribute modifier, since none names an
+attribute yet [A].
+
+- **Oozes** have no weapon: an ooze fights with a touch-target acid ability, and the element
+  templates turn it to fire or frost.
+- **Elementals** have a physical attack, a `slam` that deals bludgeoning damage, plus two
+  spell-like abilities of their element: a bolt (target `ranged`) and a touch (target
+  `touch`). The elemental type has INT 5, growing 0.4 a level, so it has mana for them. A
+  venom elemental's bolt and touch use `damage_poison`, which has the spell channel.
+  This holds for the five elementals of the `elemental` summon group. [V 2026-11-12, `test_bestiary.py`]
+
+`balance_report.py` reads a monster's damage as the dice mean plus the modifier plus the bonus,
+and a damaging ability's magnitude. [V 2026-11-12]
 
 The phase is two-sided. A monster's own `phase` is how incoming phased effects land on it
 (its resistance side, through the cycles); an attack's `phase` is how its blows land on
@@ -243,6 +351,7 @@ others (its attack side). [A]
 
 At least 40 monsters span levels 1 to 30; every phase is a monster's phase and an attack's
 phase at least once, and every damage type is an attack and a resistance at least once.
+Every monster has an attack or a damaging ability.
 Each monster is a base plus overrides. `ruleset/scripts/test_bestiary.py` checks it, and the
 balance gate checks each monster's strongest attack and its HP against its tier and role
 ([core/balance.md](../core/balance.md)). [V 2026-11-06]
