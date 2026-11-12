@@ -50,12 +50,42 @@ Every `drink` row states `toxicity` ([modifier.md](../core/modifier.md#toxicity)
 character cannot drink without limit and food keeps a use: it is preparation before a fight and
 cheap recovery after one, and it adds none. [A]
 
+**The formula.** Toxicity has a formula, `formulas/toxicity.json`: the mana the spell cost
+formula gives for the drink's effects on the drinker (target `self`), with an over-time pool
+restore counting half ([magic.md](magic.md#cost-formula)).
+
+```
+toxicity = instant_cost + floor(over_time_cost / 2)
+instant_cost     the spell cost of its instant effects and held buffs
+over_time_cost   the spell cost of its pool restores with a duration
+```
+
+So 40 HP at once costs 20 toxicity, and 2 HP a second for 20 seconds, the same 40, costs 10:
+instant is always the more toxic. A crafted potion (the alchemy module) takes the formula's
+value. A stock potion (bought, looted, or authored) and a tabletop table keep a static
+`toxicity` on the row, at most 5 from the formula (`balance/core.json`), so a table never has
+to compute it. [V 2026-11-12, `formula` vectors and `balance_report.py`]
+
 | Strength | Toxicity | Rows |
 | --- | --- | --- |
 | none | 0 | `antidote`, `potion_cure_disease`: a cure is never blocked by the potions that came before it |
+| light | 8 | `potion_mana`: 15 mana by the formula |
 | minor | 10 | `potion_minor_healing`, `potion_featherfall` |
-| standard | 20 | `potion_healing`, `potion_mana`, `potion_stamina`, `potion_invisibility`, the resistance potions, `potion_strength`, `elixir_of_wits` |
+| standard | 20 | `potion_healing`, `potion_stamina`, `potion_invisibility`, the resistance potions (50% for 40 seconds), `potion_strength`, `elixir_of_wits` |
 | greater | 35 | `potion_greater_healing`, `potion_haste` |
+
+**Stock potions are weaker than magic.** At a magic skill of 50, a Potion of Mana spent on the
+best spell for the task restores more per point of toxicity than any stock potion for that
+task: 15 mana at 8 toxicity, spent on healing at 2.67 HP a mana (Regeneration, 25% off at skill
+50), is 5 HP a point, where a healing potion gives 2. A task no spell does (restoring mana) is
+not compared. The alchemy module's crafted potions may beat stock ones. [V 2026-11-12, `balance_report.py`]
+
+### Scrolls
+
+A scroll (`type: scroll`, `delivery: read`) casts one stock spell, named by `consumable.spell`,
+once. It costs only gold: it adds no toxicity and spends no mana, so its price is its only
+limit. A stock scroll costs at least `scroll_gp_per_mana` (5) gold per mana of its spell.
+`scroll_fire_bolt` (6 mana) costs 40 gp. [V 2026-11-12, `balance_report.py`]
 
 At END 5 the limit is 45: two standard potions at once, then about one every four turns as
 toxicity falls 5 a turn. At END 1 it is 25, at END 10 it is 70. **Overdosed**

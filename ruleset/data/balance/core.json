@@ -8,12 +8,19 @@
   ],
   "weapon_dice": [3.5, 11],
   "hits_to_kill": { "standard": [4, 6], "boss": [8, 12], "minion": [1, 2] },
+  "toxicity": { "tolerance": 5 },
+  "magic_skill": 50,
+  "scroll_gp_per_mana": 5,
   "checks": [
     { "key": "weapon_dice", "mode": "gate", "description": "A weapon's dice mean is between 1d6 and 2d10." },
     { "key": "armor_piece_dr", "mode": "gate", "description": "No armor piece passes the highest worn-set DR of its category." },
     { "key": "worn_set_dr", "mode": "warn", "description": "The best set per category lands in its worn-set band. Warning until the armor DR pass." },
     { "key": "monster_damage", "mode": "gate", "description": "A monster's strongest attack or damage ability is within its tier's expected damage." },
-    { "key": "monster_hits_to_kill", "mode": "gate", "description": "A monster takes the hits of its role's band (standard 4 to 6, boss 8 to 12, minion 1 to 2) of its tier's damage." }
+    { "key": "monster_hits_to_kill", "mode": "gate", "description": "A monster takes the hits of its role's band (standard 4 to 6, boss 8 to 12, minion 1 to 2) of its tier's damage." },
+    { "key": "toxicity_formula", "mode": "gate", "description": "A stock drink's static toxicity is within the tolerance of formulas/toxicity.json." },
+    { "key": "instant_toxicity_above_over_time", "mode": "gate", "description": "The toxicity formula gives an instant total more toxicity than the same total over time." },
+    { "key": "stock_potion_below_magic", "mode": "gate", "description": "At magic_skill, a Potion of Mana spent on the best spell for a pool restores more per toxicity than any stock drink for that pool." },
+    { "key": "scroll_price", "mode": "gate", "description": "A stock scroll costs at least scroll_gp_per_mana gold per mana of its spell." }
   ],
   "accepted": [
     { "check": "weapon_dice", "subject": "thrown_rock", "reason": "An improvised throw: free and always to hand; its 1d4 is meant to sit below the band." },

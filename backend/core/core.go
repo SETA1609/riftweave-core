@@ -172,6 +172,7 @@ type formulaInput struct {
 	Expression *formula.Program `json:"expr"`
 	Formula    string           `json:"formula"`
 	Actor      actor.Actor      `json:"actor"`
+	Variables  map[string]int64 `json:"variables"` // named inputs, such as instant_cost in formulas/toxicity.json
 }
 
 func runFormula(ruleset *data.Ruleset, input formulaInput) (map[string]int64, error) {
@@ -183,7 +184,11 @@ func runFormula(ruleset *data.Ruleset, input formulaInput) (map[string]int64, er
 		}
 	}
 	var attributes actor.Attributes = input.Actor.Attributes
-	value, err := program.Evaluate(&attributes)
+	var variables []formula.Variable = make([]formula.Variable, 0, len(input.Variables))
+	for name, value := range input.Variables {
+		variables = append(variables, formula.Variable{Name: name, Value: value})
+	}
+	value, err := program.Evaluate(&attributes, variables...)
 	return map[string]int64{"value": value}, err
 }
 

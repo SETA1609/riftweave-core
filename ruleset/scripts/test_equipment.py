@@ -119,7 +119,7 @@ class TestEquipmentFloor(unittest.TestCase):
 
 # docs/modules/equipment.md#toxicity
 TOXICITY = {"antidote": 0, "potion_cure_disease": 0, "potion_minor_healing": 10, "potion_featherfall": 10,
-            "potion_healing": 20, "potion_mana": 20, "potion_stamina": 20, "potion_invisibility": 20,
+            "potion_healing": 20, "potion_mana": 8, "potion_stamina": 20, "potion_invisibility": 20,
             "potion_fire_resistance": 20, "potion_frost_resistance": 20, "potion_strength": 20,
             "elixir_of_wits": 20, "potion_greater_healing": 35, "potion_haste": 35}
 

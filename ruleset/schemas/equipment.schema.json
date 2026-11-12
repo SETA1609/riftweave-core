@@ -27,7 +27,7 @@
         "source": { "$ref": "schema.json#/definitions/sourceRef" },
         "type": {
           "type": "string",
-          "enum": ["weapon", "armor", "shield", "accessory", "potion", "poison", "coating", "oil", "food", "wand", "tool", "adventuring_gear", "ammunition"]
+          "enum": ["weapon", "armor", "shield", "accessory", "potion", "poison", "coating", "oil", "food", "scroll", "wand", "tool", "adventuring_gear", "ammunition"]
         },
         "cost": {
           "type": "object",
@@ -130,13 +130,14 @@
         },
         "consumable": {
           "type": "object",
-          "description": "A consumable or applied item (potion, poison, coating, oil, food) whose effects are drawn from the shared effect registry.",
+          "description": "A consumable or applied item (potion, poison, coating, oil, food, scroll) whose effects are drawn from the shared effect registry, or, for a scroll, the stock spell it casts.",
           "properties": {
             "delivery": {
               "type": "string",
-              "enum": ["drink", "eat", "apply_weapon", "throw"],
-              "description": "How the item is used: drink/eat (self), apply_weapon (poisons/coatings/oils), throw (bombs)"
+              "enum": ["drink", "eat", "apply_weapon", "throw", "read"],
+              "description": "How the item is used: drink/eat (self), apply_weapon (poisons/coatings/oils), throw (bombs), read (a scroll casts its spell)"
             },
+            "spell": { "$ref": "schema.json#/definitions/spellRef", "description": "The stock spell a scroll casts once, for gold alone: no toxicity and no mana (docs/modules/equipment.md#scrolls)." },
             "effects": {
               "type": "array",
               "minItems": 1,
@@ -145,10 +146,19 @@
             "uses": { "type": "integer", "minimum": 1, "description": "Number of applications/charges; e.g. a weapon coating may last several hits" },
             "toxicity": { "type": "integer", "minimum": 0, "description": "What drinking it adds to the drinker's toxicity; every drink row states it, 0 allowed (docs/core/modifier.md#toxicity)." }
           },
-          "required": ["delivery", "effects"],
-          "if": { "properties": { "delivery": { "const": "drink" } }, "required": ["delivery"] },
-          "then": { "required": ["toxicity"] },
-          "else": { "not": { "required": ["toxicity"] } },
+          "required": ["delivery"],
+          "allOf": [
+            {
+              "if": { "properties": { "delivery": { "const": "drink" } }, "required": ["delivery"] },
+              "then": { "required": ["toxicity"] },
+              "else": { "not": { "required": ["toxicity"] } }
+            },
+            {
+              "if": { "properties": { "delivery": { "const": "read" } }, "required": ["delivery"] },
+              "then": { "required": ["spell"], "not": { "required": ["effects"] } },
+              "else": { "required": ["effects"], "not": { "required": ["spell"] } }
+            }
+          ],
           "additionalProperties": false
         },
         "accessory": {
@@ -191,7 +201,7 @@
             "label": { "type": "string" },
             "description": { "type": "string" },
             "source": { "$ref": "schema.json#/definitions/sourceRef" },
-            "type": { "type": "string", "enum": ["weapon", "armor", "shield", "accessory", "potion", "poison", "coating", "oil", "food", "wand", "tool", "adventuring_gear", "ammunition"] },
+            "type": { "type": "string", "enum": ["weapon", "armor", "shield", "accessory", "potion", "poison", "coating", "oil", "food", "scroll", "wand", "tool", "adventuring_gear", "ammunition"] },
             "cost": {
               "type": "object",
               "properties": {

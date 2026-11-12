@@ -62,7 +62,7 @@
             "effect": "core:effect/resist",
             "parameter": "fire",
             "magnitude": 50,
-            "duration": 120
+            "duration": 40
           }
         ]
       }
@@ -213,7 +213,7 @@
       "weight": 0.5,
       "consumable": {
         "delivery": "drink",
-        "toxicity": 20,
+        "toxicity": 8,
         "effects": [
           {
             "effect": "core:effect/restore_resource",
@@ -395,7 +395,7 @@
             "effect": "core:effect/resist",
             "parameter": "frost",
             "magnitude": 50,
-            "duration": 120
+            "duration": 40
           }
         ]
       }
@@ -484,6 +484,21 @@
             "duration": 10
           }
         ]
+      }
+    },
+    {
+      "key": "scroll_fire_bolt",
+      "label": "Scroll of Fire Bolt",
+      "description": "A brittle page that hurls a Fire Bolt once when read aloud, for no mana and no toxicity.",
+      "type": "scroll",
+      "cost": {
+        "quantity": 40,
+        "unit": "gp"
+      },
+      "weight": 0.1,
+      "consumable": {
+        "delivery": "read",
+        "spell": "core:spell/fire_bolt"
       }
     }
   ]

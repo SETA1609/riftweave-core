@@ -90,6 +90,61 @@ class TestChecks(unittest.TestCase):
         self.assertEqual(subjects(findings, "monster_hits_to_kill"), ["golem", "rat"])
 
 
+def drink(key, toxicity, effects, cost=(25, "gp")):
+    return {"key": key, "type": "potion", "cost": {"quantity": cost[0], "unit": cost[1]},
+            "consumable": {"delivery": "drink", "toxicity": toxicity, "effects": effects}}
+
+
+def heal(amount, duration=1):
+    effect = {"effect": "core:effect/restore_resource", "parameter": "health", "magnitude": amount}
+    if duration > 1:
+        effect["duration"] = duration
+    return effect
+
+
+MANA_POTION = drink("potion_mana", 8, [{"effect": "core:effect/restore_resource", "parameter": "mana", "magnitude": 15}], (40, "gp"))
+HEAL_SPELL = {"key": "mend", "color": "green", "level": 1, "cost": {"mana": 6},
+              "effects": [{"effect": "core:effect/restore_resource", "parameter": "health", "magnitude": 12, "target": "touch"}]}
+FIRE_BOLT = {"key": "fire_bolt", "color": "red", "level": 1, "cost": {"mana": 6},
+             "effects": [{"effect": "core:effect/damage_fire", "magnitude": 8, "target": "ranged"}]}
+POTION_BANDS = {**BANDS, "toxicity": {"tolerance": 5}, "magic_skill": 50, "scroll_gp_per_mana": 5, "checks": [
+    {"key": "toxicity_formula", "mode": "gate", "description": "d"},
+    {"key": "instant_toxicity_above_over_time", "mode": "gate", "description": "d"},
+    {"key": "stock_potion_below_magic", "mode": "gate", "description": "d"},
+    {"key": "scroll_price", "mode": "gate", "description": "d"},
+], "accepted": []}
+
+
+def scroll(key, gold, spell="core:spell/fire_bolt"):
+    return {"key": key, "type": "scroll", "cost": {"quantity": gold, "unit": "gp"},
+            "consumable": {"delivery": "read", "spell": spell}}
+
+
+class TestPotionsAndScrolls(unittest.TestCase):
+    """The M5-48 checks: the toxicity formula, instant above over time, stock potions below magic, scroll prices."""
+
+    def findings(self, consumables, spells=(HEAL_SPELL, FIRE_BOLT)):
+        return report(POTION_BANDS, [], [], [], consumables=list(consumables), spells=list(spells))
+
+    def test_a_static_toxicity_far_from_the_formula_is_a_finding(self):
+        findings = self.findings([MANA_POTION, drink("good", 12, [heal(20)]), drink("bad", 30, [heal(20)])])
+        self.assertEqual(subjects(findings, "toxicity_formula"), ["bad"])
+
+    def test_the_real_formula_puts_instant_above_over_time(self):
+        self.assertEqual(subjects(self.findings([MANA_POTION]), "instant_toxicity_above_over_time"), [])
+
+    def test_a_stock_potion_that_beats_the_spell_route_is_a_finding(self):
+        findings = self.findings([MANA_POTION, drink("healing", 20, [heal(40)]), drink("cheat", 5, [heal(100)])])
+        self.assertEqual(subjects(findings, "stock_potion_below_magic"), ["cheat"])
+
+    def test_a_pool_no_spell_restores_is_not_compared(self):
+        self.assertEqual(subjects(self.findings([MANA_POTION]), "stock_potion_below_magic"), [])
+
+    def test_a_scroll_below_its_spells_gold_per_mana_is_a_finding(self):
+        findings = self.findings([MANA_POTION, scroll("cheap", 10), scroll("fair", 40)])
+        self.assertEqual(subjects(findings, "scroll_price"), ["cheap"])
+
+
 class TestRealData(unittest.TestCase):
     def test_no_gate_check_has_an_unaccepted_finding(self):
         bands, weapons, armor_rows, monsters = load_all()

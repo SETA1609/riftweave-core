@@ -34,7 +34,7 @@ The other fields are the input the function reads. They are listed per function 
 | --- | --- | --- |
 | `resolution` | `actor.skills` (one skill, or `skill` names it), `actor.attributes.lck`, `modifiers`, `roll` | `target`, `success`, `margin` (null on a failure), `tags` |
 | `derived` | `actor.attributes`, `actor.level`, `modifiers` | one field per derived key (`hp`, `mp`, `ap`, `carry`, `initiative`, `toxicity_limit`) |
-| `formula` | `formula` (a key in `ruleset/data/formulas/`) or `expr` (an inline tree), `actor.attributes` | `value` |
+| `formula` | `formula` (a key in `ruleset/data/formulas/`) or `expr` (an inline tree), `actor.attributes`, optional `variables` (named integer inputs) | `value` |
 | `modifiers` | `value` of `target`, `modifiers`, optional `elapsed_turns`, `removed_sources`, `packet` (`amount`, `tag`) | `value`, `flags`, `packet` (the amount after resist) |
 | `conditions` | optional `base` (target values), `modifiers` (the actor's own), `conditions` (active key and stacks), `events` (`effect` refs or `remove` refs, in order) | `conditions` (key and stacks), `flags`, `values` (one per `base` target) |
 | `actions` | `actor.attributes`, `actions` (a list of action keys) | `pool`, `cost` |

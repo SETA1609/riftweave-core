@@ -72,7 +72,7 @@
         "item": "potion_minor_healing"
       },
       {
-        "item": "potion_mana"
+        "item": "potion_healing"
       }
     ],
     "expect": {
