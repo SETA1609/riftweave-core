@@ -14,14 +14,6 @@
         "perks": []
       },
       "ranks": 3,
-      "effects": [
-        {
-          "type": "bonus",
-          "description": "+15 maximum hit points per rank",
-          "target": "hp_max",
-          "value": 15
-        }
-      ],
       "modifiers": [
         {
           "target": "hp",
@@ -45,19 +37,6 @@
         "perks": []
       },
       "ranks": 1,
-      "effects": [
-        {
-          "type": "bonus",
-          "description": "+10 to initiative",
-          "target": "initiative",
-          "value": 10
-        },
-        {
-          "type": "immunity",
-          "description": "Cannot be surprised while conscious",
-          "target": "surprise"
-        }
-      ],
       "modifiers": [
         {
           "target": "initiative",
@@ -95,14 +74,6 @@
         "perks": []
       },
       "ranks": 1,
-      "effects": [
-        {
-          "type": "bonus",
-          "description": "+25% melee weapon damage",
-          "target": "melee_damage",
-          "value": 0.25
-        }
-      ],
       "modifiers": [
         {
           "target": "melee_damage",
@@ -143,14 +114,6 @@
         "perks": []
       },
       "ranks": 1,
-      "effects": [
-        {
-          "type": "bonus",
-          "description": "+10% ranged critical chance",
-          "target": "ranged_crit_chance",
-          "value": 10
-        }
-      ],
       "modifiers": [
         {
           "target": "ranged_crit_window",
@@ -181,14 +144,6 @@
         "perks": []
       },
       "ranks": 1,
-      "effects": [
-        {
-          "type": "bonus",
-          "description": "+15% damage blocked",
-          "target": "block_amount",
-          "value": 0.15
-        }
-      ],
       "modifiers": [
         {
           "target": "block_reduction",
@@ -216,14 +171,6 @@
         "perks": []
       },
       "ranks": 2,
-      "effects": [
-        {
-          "type": "bonus",
-          "description": "+15% Red Magic effect magnitude per rank",
-          "target": "red_magic_magnitude",
-          "value": 0.15
-        }
-      ],
       "modifiers": [
         {
           "target": "red_magic_magnitude",
@@ -254,14 +201,6 @@
         "perks": []
       },
       "ranks": 1,
-      "effects": [
-        {
-          "type": "bonus",
-          "description": "-25% chance to be detected while sneaking",
-          "target": "detection_chance",
-          "value": -0.25
-        }
-      ],
       "modifiers": [
         {
           "target": "detection_chance",
@@ -292,20 +231,6 @@
         "perks": []
       },
       "ranks": 1,
-      "effects": [
-        {
-          "type": "bonus",
-          "description": "+10 to persuasion checks",
-          "target": "persuasion",
-          "value": 10
-        },
-        {
-          "type": "bonus",
-          "description": "10% better barter prices",
-          "target": "barter_prices",
-          "value": 0.1
-        }
-      ],
       "modifiers": [
         {
           "target": "persuasion",
@@ -340,14 +265,6 @@
         "perks": []
       },
       "ranks": 1,
-      "effects": [
-        {
-          "type": "bonus",
-          "description": "+50% healing from Medicine",
-          "target": "medicine_healing",
-          "value": 0.5
-        }
-      ],
       "modifiers": [
         {
           "target": "medicine_healing",
@@ -361,289 +278,328 @@
     {
       "key": "gifted",
       "label": "Gifted",
-      "description": "You are exceptionally talented, but lean on raw aptitude over study. Chosen at character creation.",
+      "description": "You are exceptionally talented, but lean on raw aptitude over study: +1 to every attribute, and each level-up's skill-point pool is 10% smaller. Chosen at character creation.",
       "type": "creation",
       "category": "general",
-      "effects": [
+      "modifiers": [
         {
-          "type": "bonus",
-          "description": "+1 to every attribute",
-          "target": "core:effect/fortify_attribute",
-          "parameter": "all",
+          "target": "str",
+          "op": "add",
           "value": 1,
-          "durationType": "unlimited"
+          "source": "feature:gifted",
+          "origin": "core:origin/trained"
         },
         {
-          "type": "penalty",
-          "description": "-10% skill points per level",
-          "target": "core:effect/skill_points_modifier",
-          "parameter": "per_level",
-          "value": -0.1
+          "target": "per",
+          "op": "add",
+          "value": 1,
+          "source": "feature:gifted",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "end",
+          "op": "add",
+          "value": 1,
+          "source": "feature:gifted",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "int",
+          "op": "add",
+          "value": 1,
+          "source": "feature:gifted",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "wil",
+          "op": "add",
+          "value": 1,
+          "source": "feature:gifted",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "agi",
+          "op": "add",
+          "value": 1,
+          "source": "feature:gifted",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "cha",
+          "op": "add",
+          "value": 1,
+          "source": "feature:gifted",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "lck",
+          "op": "add",
+          "value": 1,
+          "source": "feature:gifted",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "skill_point_pool",
+          "op": "mul",
+          "value": 0.9,
+          "source": "feature:gifted",
+          "origin": "core:origin/trained"
         }
       ]
     },
     {
       "key": "fast_shot",
       "label": "Fast Shot",
-      "description": "You attack quickly but recklessly. Chosen at character creation.",
+      "description": "You attack quickly but recklessly: your ranged attacks are 20% faster, and you cannot make aimed shots. Chosen at character creation.",
       "type": "creation",
       "category": "combat",
-      "effects": [
+      "modifiers": [
         {
-          "type": "bonus",
-          "description": "Ranged attacks are 20% faster",
-          "target": "core:effect/attack_speed",
-          "value": 0.2
+          "target": "ranged_attack_speed",
+          "op": "mul",
+          "value": 1.2,
+          "source": "feature:fast_shot",
+          "origin": "core:origin/trained"
         },
         {
-          "type": "penalty",
-          "description": "You cannot make aimed (targeted) shots",
-          "target": "core:effect/aimed_shots_restriction",
-          "value": 1
+          "target": "cannot_aim",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:fast_shot",
+          "origin": "core:origin/trained"
         }
       ]
     },
     {
       "key": "small_frame",
       "label": "Small Frame",
-      "description": "You are slight of build: nimble, but you cannot carry as much. Chosen at character creation.",
+      "description": "You are slight of build: +1 Agility, but you carry 25% less. Chosen at character creation.",
       "type": "creation",
       "category": "general",
-      "effects": [
+      "modifiers": [
         {
-          "type": "bonus",
-          "description": "+1 Agility",
-          "target": "core:effect/fortify_attribute",
-          "parameter": "agi",
+          "target": "agi",
+          "op": "add",
           "value": 1,
-          "durationType": "unlimited"
+          "source": "feature:small_frame",
+          "origin": "core:origin/trained"
         },
         {
-          "type": "penalty",
-          "description": "-25% carrying capacity",
-          "target": "core:effect/carry_capacity_modifier",
-          "value": -0.25
+          "target": "carry",
+          "op": "mul",
+          "value": 0.75,
+          "source": "feature:small_frame",
+          "origin": "core:origin/trained"
         }
       ]
     },
     {
       "key": "genius",
       "label": "Genius",
-      "description": "A quick study with room for one more focus, at the cost of breadth. Chosen at character creation.",
+      "description": "A quick study with room for one more focus, at the cost of breadth: one more tag skill, and 15 fewer starting skill points. Chosen at character creation.",
       "type": "creation",
       "category": "knowledge",
-      "effects": [
+      "modifiers": [
         {
-          "type": "bonus",
-          "description": "+1 tag skill",
-          "target": "core:effect/tag_skills_increase",
-          "value": 1
+          "target": "tag_skills",
+          "op": "add",
+          "value": 1,
+          "source": "feature:genius",
+          "origin": "core:origin/trained"
         },
         {
-          "type": "penalty",
-          "description": "-15 starting skill points",
-          "target": "core:effect/skill_points_modifier",
-          "parameter": "starting",
-          "value": -15
+          "target": "starting_skill_points",
+          "op": "add",
+          "value": -15,
+          "source": "feature:genius",
+          "origin": "core:origin/trained"
         }
       ]
     },
     {
       "key": "undead_phobia",
       "label": "Undead Phobia",
-      "description": "The walking dead fill you with primal terror. Skeletons, zombies, and wraiths shake your resolve.",
+      "description": "The walking dead fill you with primal terror: you are frightened while an undead is in sight. Facing that fear has hardened you: +2 Willpower, and 25% less taken from undead, poison, and disease. Chosen at character creation.",
       "type": "creation",
       "category": "general",
-      "effects": [
+      "modifiers": [
         {
-          "type": "penalty",
-          "description": "Significant combat penalties against the undead",
-          "target": "core:effect/phobia",
-          "parameter": "undead",
-          "value": 1
+          "target": "afraid_of_undead",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:undead_phobia",
+          "origin": "core:origin/trained"
         },
         {
-          "type": "bonus",
-          "description": "+2 Willpower",
-          "target": "core:effect/fortify_attribute",
-          "parameter": "wil",
+          "target": "wil",
+          "op": "add",
           "value": 2,
-          "durationType": "unlimited"
+          "source": "feature:undead_phobia",
+          "origin": "core:origin/trained"
         },
         {
-          "type": "bonus",
-          "description": "Reduces damage and effects from undead",
-          "target": "core:effect/resist",
-          "parameter": "undead",
-          "value": 0.25
+          "target": "undead_resistance",
+          "op": "add",
+          "value": 25,
+          "source": "feature:undead_phobia",
+          "origin": "core:origin/trained"
         },
         {
-          "type": "bonus",
-          "description": "25% resistance to poison and disease",
-          "target": "core:effect/resist",
-          "parameter": "poison",
-          "value": 0.25,
-          "durationType": "unlimited"
+          "target": "poison_resistance",
+          "op": "add",
+          "value": 25,
+          "source": "feature:undead_phobia",
+          "origin": "core:origin/trained"
         },
         {
-          "type": "bonus",
-          "description": "25% resistance to poison and disease",
-          "target": "core:effect/resist",
-          "parameter": "disease",
-          "value": 0.25,
-          "durationType": "unlimited"
+          "target": "disease_resistance",
+          "op": "add",
+          "value": 25,
+          "source": "feature:undead_phobia",
+          "origin": "core:origin/trained"
         }
       ]
     },
     {
       "key": "beast_phobia",
       "label": "Beast Phobia",
-      "description": "You have a deep fear of wild beasts and monstrous animals. Fighting them is a nightmare.",
+      "description": "You have a deep fear of wild beasts and monstrous animals: you are frightened while a beast is in sight. Living around them taught you their ways: +1 Strength and +10 Animal Handling. Chosen at character creation.",
       "type": "creation",
       "category": "general",
-      "effects": [
+      "modifiers": [
         {
-          "type": "penalty",
-          "description": "Combat and survival penalties when fighting beasts",
-          "target": "core:effect/phobia",
-          "parameter": "beast",
-          "value": 1
-        },
-        {
-          "type": "bonus",
-          "description": "+1 Strength",
-          "target": "core:effect/fortify_attribute",
-          "parameter": "str",
+          "target": "afraid_of_beasts",
+          "op": "grant",
           "value": 1,
-          "durationType": "unlimited"
+          "source": "feature:beast_phobia",
+          "origin": "core:origin/trained"
         },
         {
-          "type": "bonus",
-          "description": "+10 starting ranks in Animal Handling",
-          "target": "core:effect/fortify_skill",
-          "parameter": "animal_handling",
+          "target": "str",
+          "op": "add",
+          "value": 1,
+          "source": "feature:beast_phobia",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "animal_handling",
+          "op": "add",
           "value": 10,
-          "durationType": "unlimited"
+          "source": "feature:beast_phobia",
+          "origin": "core:origin/trained"
         }
       ]
     },
     {
       "key": "leather_allergy",
       "label": "Leather Allergy",
-      "description": "You suffer painful rashes and breathing difficulty from leather and animal hides. Most common light armor is off-limits.",
+      "description": "Leather and animal hides bring painful rashes and breathing trouble: you gain nothing from leather or hide items, so most common light armor is off-limits. +1 Endurance. Chosen at character creation.",
       "type": "creation",
       "category": "general",
-      "effects": [
+      "modifiers": [
         {
-          "type": "penalty",
-          "description": "Cannot equip or benefit from leather/hide items",
-          "target": "core:effect/allergy",
-          "parameter": "leather",
-          "value": 1
+          "target": "allergic_to_leather",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:leather_allergy",
+          "origin": "core:origin/trained"
         },
         {
-          "type": "bonus",
-          "description": "+1 Endurance",
-          "target": "core:effect/fortify_attribute",
-          "parameter": "end",
+          "target": "end",
+          "op": "add",
           "value": 1,
-          "durationType": "unlimited"
-        },
-        {
-          "type": "bonus",
-          "description": "Improved defense and comfort in metal armor",
-          "target": "core:effect/fortify_attribute",
-          "parameter": "end",
-          "value": 1,
-          "durationType": "unlimited"
+          "source": "feature:leather_allergy",
+          "origin": "core:origin/trained"
         }
       ]
     },
     {
       "key": "iron_allergy",
       "label": "Iron Allergy",
-      "description": "Common iron and steel burn your flesh and interfere with your magic. You must seek rarer materials.",
+      "description": "Common iron and steel burn your flesh and interfere with your magic: you gain no full benefit from iron or steel items, and must seek rarer materials. +1 Intelligence, and an affinity for exotic materials (silver, elven wood). Chosen at character creation.",
       "type": "creation",
       "category": "general",
-      "effects": [
+      "modifiers": [
         {
-          "type": "penalty",
-          "description": "Reduced effectiveness with iron or steel weapons and armor",
-          "target": "core:effect/allergy",
-          "parameter": "iron",
-          "value": 1
-        },
-        {
-          "type": "bonus",
-          "description": "+10% magnitude on magical effects",
-          "target": "core:effect/fortify_attribute",
-          "parameter": "int",
+          "target": "allergic_to_iron",
+          "op": "grant",
           "value": 1,
-          "durationType": "unlimited"
+          "source": "feature:iron_allergy",
+          "origin": "core:origin/trained"
         },
         {
-          "type": "bonus",
-          "description": "Affinity with exotic materials (silver, elven wood, etc.)",
-          "target": "core:effect/exotic_material_affinity",
-          "value": 1
+          "target": "int",
+          "op": "add",
+          "value": 1,
+          "source": "feature:iron_allergy",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "exotic_material_affinity",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:iron_allergy",
+          "origin": "core:origin/trained"
         }
       ]
     },
     {
       "key": "silver_sensitivity",
       "label": "Silver Sensitivity",
-      "description": "Silver weapons and objects are toxic to your body. You avoid them at all costs.",
+      "description": "Silver is toxic to your body: you gain nothing from silver items. Something in your blood answers the unholy: 30% less taken from undead, and a 10% chance to absorb a hostile spell as mana. Chosen at character creation.",
       "type": "creation",
       "category": "general",
-      "effects": [
+      "modifiers": [
         {
-          "type": "penalty",
-          "description": "Extra damage from silver; cannot benefit from silver equipment",
-          "target": "core:effect/allergy",
-          "parameter": "silver",
-          "value": 1
+          "target": "allergic_to_silver",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:silver_sensitivity",
+          "origin": "core:origin/trained"
         },
         {
-          "type": "bonus",
-          "description": "Strong resistance to undead and unholy effects",
-          "target": "core:effect/resist",
-          "parameter": "undead",
-          "value": 0.3
+          "target": "undead_resistance",
+          "op": "add",
+          "value": 30,
+          "source": "feature:silver_sensitivity",
+          "origin": "core:origin/trained"
         },
         {
-          "type": "bonus",
-          "description": "Chance to absorb incoming hostile magic as mana",
-          "target": "core:effect/spell_absorption",
-          "value": 0.1
+          "target": "spell_absorption_chance",
+          "op": "add",
+          "value": 10,
+          "source": "feature:silver_sensitivity",
+          "origin": "core:origin/trained"
         }
       ]
     },
     {
       "key": "arcane_phobia",
       "label": "Arcane Phobia",
-      "description": "Magic and magically-created beings (constructs, golems, summoned creatures) terrify you.",
+      "description": "Magic and magically made beings terrify you: you are frightened while a construct is in sight. Your mind clenches against spells: 20% less taken from hostile magic, and a 15% chance to absorb a hostile spell as mana. Chosen at character creation.",
       "type": "creation",
       "category": "general",
-      "effects": [
+      "modifiers": [
         {
-          "type": "penalty",
-          "description": "Reduced effectiveness against constructs and magically animated beings",
-          "target": "core:effect/phobia",
-          "parameter": "construct",
-          "value": 1
+          "target": "afraid_of_constructs",
+          "op": "grant",
+          "value": 1,
+          "source": "feature:arcane_phobia",
+          "origin": "core:origin/trained"
         },
         {
-          "type": "bonus",
-          "description": "Resistance to hostile magic",
-          "target": "core:effect/resist",
-          "parameter": "magic",
-          "value": 0.2
+          "target": "magic_resistance",
+          "op": "add",
+          "value": 20,
+          "source": "feature:arcane_phobia",
+          "origin": "core:origin/trained"
         },
         {
-          "type": "bonus",
-          "description": "Chance to absorb a portion of incoming spell damage as mana",
-          "target": "core:effect/spell_absorption",
-          "value": 0.15
+          "target": "spell_absorption_chance",
+          "op": "add",
+          "value": 15,
+          "source": "feature:arcane_phobia",
+          "origin": "core:origin/trained"
         }
       ]
     },
@@ -667,14 +623,6 @@
         "perks": []
       },
       "ranks": 1,
-      "effects": [
-        {
-          "type": "bonus",
-          "description": "Halve heavy armor action cost surcharges",
-          "target": "heavy_armor_surcharge",
-          "value": 0.5
-        }
-      ],
       "modifiers": [
         {
           "target": "heavy_armor_surcharge",
@@ -705,14 +653,6 @@
         "perks": []
       },
       "ranks": 1,
-      "effects": [
-        {
-          "type": "bonus",
-          "description": "Ignore medium armor action cost surcharges",
-          "target": "medium_armor_surcharge",
-          "value": 1.0
-        }
-      ],
       "modifiers": [
         {
           "target": "medium_armor_surcharge_ignored",
@@ -738,14 +678,6 @@
         ]
       },
       "ranks": 1,
-      "effects": [
-        {
-          "type": "bonus",
-          "description": "Power attacks in heavy armor cost light attack stamina (no heavy surcharge)",
-          "target": "brutal_charge_surcharge",
-          "value": 1
-        }
-      ],
       "modifiers": [
         {
           "target": "heavy_power_attack_surcharge_ignored",
@@ -776,14 +708,6 @@
         "perks": []
       },
       "ranks": 1,
-      "effects": [
-        {
-          "type": "bonus",
-          "description": "-25% dodge roll stamina cost",
-          "target": "dodge_stamina_cost",
-          "value": -0.25
-        }
-      ],
       "modifiers": [
         {
           "target": "dodge_stamina",
@@ -807,14 +731,6 @@
         "perks": []
       },
       "ranks": 2,
-      "effects": [
-        {
-          "type": "bonus",
-          "description": "+10 to loot rolls per rank (docs/core/loot.md#looter)",
-          "target": "loot_roll",
-          "value": 10
-        }
-      ],
       "modifiers": [
         {
           "target": "loot_roll",

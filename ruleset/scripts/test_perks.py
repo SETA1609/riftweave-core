@@ -17,6 +17,14 @@ def perks():
     return [f for f in json.loads(FEATURES.read_text())["features"] if f["type"] == "perk"]
 
 
+def features():
+    return json.loads(FEATURES.read_text())["features"]
+
+
+def creation_traits():
+    return [f for f in features() if f["type"] == "creation"]
+
+
 def level(perk):
     return perk.get("prerequisite", {}).get("level", 1)
 
@@ -74,6 +82,42 @@ class TestPerkCatalogue(unittest.TestCase):
             with self.subTest(perk=perk["key"]):
                 self.assertNotIn(key, seen, f"same level and targets as {seen.get(key)}")
             seen[key] = perk["key"]
+
+
+class TestOneStatementOfAFeature(unittest.TestCase):
+    """M5-35: a feature states its mechanics once, in `modifiers` (docs/modules/progression.md#what-a-perk-emits)."""
+
+    def test_no_feature_has_an_effects_list(self):
+        for feature in features():
+            with self.subTest(feature=feature["key"]):
+                self.assertNotIn("effects", feature)
+
+    def test_every_creation_trait_emits_trained_modifiers_from_itself(self):
+        self.assertGreaterEqual(len(creation_traits()), 10)
+        for trait in creation_traits():
+            with self.subTest(trait=trait["key"]):
+                self.assertTrue(trait.get("modifiers"), "a creation trait emits modifiers")
+                for modifier in trait["modifiers"]:
+                    self.assertEqual(modifier["source"], f"feature:{trait['key']}")
+                    self.assertEqual(modifier["origin"], "core:origin/trained")
+
+    def test_every_creation_trait_has_an_upside_and_a_downside(self):
+        """A trait is a tradeoff: at least one modifier helps and one hinders or restricts."""
+        for trait in creation_traits():
+            with self.subTest(trait=trait["key"]):
+                self.assertGreaterEqual(len(trait["modifiers"]), 2)
+
+    def test_gifted_adds_one_to_every_attribute(self):
+        gifted = next(f for f in features() if f["key"] == "gifted")
+        adds = {m["target"]: m["value"] for m in gifted["modifiers"] if m["op"] == "add"}
+        self.assertEqual({ability: adds.get(ability) for ability in ABILITIES}, dict.fromkeys(ABILITIES, 1))
+
+    def test_a_phobia_grants_a_flag_that_frightens(self):
+        for key, flag in (("undead_phobia", "afraid_of_undead"), ("beast_phobia", "afraid_of_beasts"),
+                          ("arcane_phobia", "afraid_of_constructs")):
+            trait = next(f for f in features() if f["key"] == key)
+            with self.subTest(trait=key):
+                self.assertIn((flag, "grant"), emitted(trait))
 
 
 if __name__ == "__main__":

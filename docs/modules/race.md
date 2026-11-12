@@ -176,13 +176,12 @@ Rules, checked by `validate.py`:
 - Perks of type `perk`, `creation`, or `universal` are not listed in a race's
   `traits`; a race grants only racial traits **[V 2026-11-02]**.
 
-Most racial traits are still prose today. Because they are features, they can carry
-`effects[]` like any perk, so a trait can compose through the shared effect pool
-without a schema change **[V 2026-11-02]** (`feature.schema.json` `effects`).
+A racial trait states its mechanics as a perk does, once, in `modifiers` (origin
+`core:origin/innate`); features have no `effects` list (M5-35) **[V 2026-11-12]**.
 
 **Why `features` and not a traits table.** The project rule is one perk table
 (`AGENTS.md`), and `feature.schema.json` already had the `racial_trait` type for this.
-A separate table duplicated the row shape, had no `effects`, and would have added a
+A separate table duplicated the row shape and would have added a
 second ref category (`core:trait/`) for the same concept. Keeping one table means one
 ref format, one prerequisite and effect shape, and one place an engine looks for
 "what does this character have" **[A]**.

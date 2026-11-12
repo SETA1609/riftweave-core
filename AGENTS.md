@@ -125,7 +125,6 @@ Cross-file references (effect IDs, skill IDs, perk prerequisites, `parentRace`, 
 - Recipe skill, inputs, and output `crafted_item_key`
 - Equipment `weapon.skill` (after base resolution)
 - Spell effect `parameter` refs (when namespaced)
-- Feature effect `target` refs (when namespaced)
 - Effect `sub_effects`
 - All effect refs in spells, consumables, features, ingredients, monsters, conditions
 - Perk and skill prerequisites in features

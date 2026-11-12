@@ -767,17 +767,6 @@ def check_references(
                                 sss, namespaced_ref_index
                             ):
                                 errors.append(f"prereq skill {sss} does not exist")
-            # Validate feature effect target refs (when they are namespaced)
-            for eff in f.get("effects", []):
-                if isinstance(eff, dict):
-                    target = eff.get("target")
-                    if isinstance(target, str) and (
-                        target.startswith("core:") or target.startswith("module:")
-                    ):
-                        if not resolve_namespaced_ref(target, namespaced_ref_index):
-                            errors.append(
-                                f"feature '{f.get('key', '?')}': effect target '{target}' does not resolve"
-                            )
 
     elif coll_name == "effects":
         for e in data.get("effects", []):

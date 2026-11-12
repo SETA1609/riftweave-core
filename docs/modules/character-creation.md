@@ -98,16 +98,21 @@ Currently available:
 
 | Creation perk | Upside | Downside |
 | --- | --- | --- |
-| **Gifted** | +1 to every attribute | −10% skill points per level |
-| **Fast Shot** | ranged attacks 20% faster | no aimed/targeted shots |
-| **Small Frame** | +1 Agility | −25% carrying capacity |
+| **Gifted** | +1 to every attribute | ×0.9 skill points per level-up pool |
+| **Fast Shot** | ranged attacks ×1.2 faster | no aimed shots (flag) |
+| **Small Frame** | +1 AGI | ×0.75 carry |
 | **Genius** | +1 tag skill | −15 starting skill points |
-| **Undead Phobia** | +2 WIL + 25% disease/poison resistance (via innate `resist` effects) | −20% attack & damage vs undead |
-| **Beast Phobia** | +1 STR + 10 starting ranks in Animal Handling | Major combat & survival penalties vs beasts |
-| **Leather Allergy** | +1 END + 15% defense when wearing metal armor | Cannot equip leather/hide armor (or severe penalties) |
-| **Iron Allergy** | +10% magic effect magnitude + strong exotic material affinity | −25% effectiveness with iron/steel weapons & armor |
-| **Silver Sensitivity** | +30% resistance to undead/unholy + chance to absorb hostile magic (via `resist` + `spell_absorption`) | Extra damage from silver weapons; cannot benefit from silver gear |
-| **Arcane Phobia** | +20% resistance to hostile magic + improved spell absorption (via `resist` + `spell_absorption`) | −15% effectiveness vs constructs and magically-animated beings |
+| **Undead Phobia** | +2 WIL; 25% less from undead, poison, and disease | frightened while an undead is in sight |
+| **Beast Phobia** | +1 STR; +10 Animal Handling | frightened while a beast is in sight |
+| **Leather Allergy** | +1 END | no benefit from leather or hide items (flag) |
+| **Iron Allergy** | +1 INT; exotic material affinity (flag) | no full benefit from iron or steel items (flag) |
+| **Silver Sensitivity** | 30% less from undead; 10% chance to absorb hostile magic | no benefit from silver items (flag) |
+| **Arcane Phobia** | 20% less from hostile magic; 15% chance to absorb it | frightened while a construct is in sight |
+
+Every number in the table is a modifier on the trait's row in `features/core.json`, source
+`feature:<key>`, origin `core:origin/trained`, as a perk's are
+([progression.md](progression.md#what-a-perk-emits)). A flag is a `grant` whose rule is
+written once in its `modifier_targets` row. [A] (M5-35)
 
 Take **0–2** (suggested cap: 2). Their attribute bonuses apply now, alongside the
 racial modifiers, and may exceed the normal caps. (*Genius* adds to your tag-skill
@@ -115,7 +120,7 @@ count in step 5 and reduces the pool in step 6.)
 
 Some of these traits include hard restrictions (e.g. "cannot equip leather"). The engine or GM is expected to enforce these. They are balanced by strong, synergistic upsides that reward playing into the drawback (e.g. Leather Allergy pushes you toward metal armor playstyles).
 
-The mechanical effects for these traits (resistances, phobias, allergies, magic absorption, etc.) are now defined as first-class entries in the central effect registry (`data/effects/core.json`) using the new `innate` channel. The creation trait entries reference them by ID in their effect `target` fields for better data consistency and potential reuse elsewhere. See `features/core.json` and the new innate effects for details.
+The traits do not name shared effects: their modifiers are the rule, and their descriptions say it in words (M5-35).
 
 ---
 
