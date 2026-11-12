@@ -1,6 +1,7 @@
 {
   "$schema": "../../schemas/action.schema.json",
   "seconds_per_turn": 5,
+  "stamina_per_ap": 5,
   "pool": {
     "base": 2,
     "per_point": 1,

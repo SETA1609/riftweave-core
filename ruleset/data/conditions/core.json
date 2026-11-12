@@ -4,11 +4,7 @@
     {
       "key": "blinded",
       "label": "Blinded",
-      "description": "Cannot see. Vision-dependent checks auto-fail.",
-      "effects": {
-        "ttrpg": "-20 on PER-based checks, auto-fail sight-dependent rolls. Attacks against you have +10.",
-        "video_game": "-20% accuracy, enemy attacks +10% crit chance against you."
-      },
+      "description": "Cannot see: checks that need sight fail, −20 on PER checks, and attacks against it have +10.",
       "appliedBy": [
         "core:effect/blind"
       ],
@@ -25,17 +21,20 @@
           "value": 1,
           "duration": "while_applied",
           "source": "condition:blinded"
+        },
+        {
+          "target": "perception_checks",
+          "op": "add",
+          "value": -20,
+          "duration": "while_applied",
+          "source": "condition:blinded"
         }
       ]
     },
     {
       "key": "charmed",
       "label": "Charmed",
-      "description": "Cannot attack the charmer. The charmer has leverage over you.",
-      "effects": {
-        "ttrpg": "Cannot attack the charmer. The charmer has +20 on social checks against you. Damage from the charmer breaks the effect.",
-        "video_game": "Cannot target the charmer. Taking damage from the charmer removes the condition."
-      },
+      "description": "Cannot attack the charmer, and the charmer has +20 on social checks against it. Damage from the charmer ends it.",
       "appliedBy": [
         "core:effect/charm"
       ],
@@ -49,17 +48,20 @@
           "value": 1,
           "duration": "while_applied",
           "source": "condition:charmed"
+        },
+        {
+          "target": "social_defense",
+          "op": "add",
+          "value": -20,
+          "duration": "while_applied",
+          "source": "condition:charmed"
         }
       ]
     },
     {
       "key": "deafened",
       "label": "Deafened",
-      "description": "Cannot hear. Audio-dependent checks auto-fail.",
-      "effects": {
-        "ttrpg": "-10 on initiative. Auto-fail PER checks reliant on hearing.",
-        "video_game": "-10% detect range. No audio cues from the environment."
-      },
+      "description": "Cannot hear: checks that need hearing fail, and −10 on initiative.",
       "appliedBy": [
         "core:effect/deafen"
       ],
@@ -73,17 +75,20 @@
           "value": 1,
           "duration": "while_applied",
           "source": "condition:deafened"
+        },
+        {
+          "target": "initiative",
+          "op": "add",
+          "value": -10,
+          "duration": "while_applied",
+          "source": "condition:deafened"
         }
       ]
     },
     {
       "key": "frightened",
       "label": "Frightened",
-      "description": "Terrified of the source. Cannot approach it and suffer penalties while it is in sight.",
-      "effects": {
-        "ttrpg": "-10 on attack rolls and skill checks while the source is in line of sight. Cannot move closer to the source.",
-        "video_game": "-10% damage dealt. Forced to retreat if source closes within melee range. Breaks on line-of-sight loss."
-      },
+      "description": "−10 on attacks and checks while the source is in sight, and cannot move closer to it. Losing sight of it ends it.",
       "appliedBy": [
         "core:effect/phobia"
       ],
@@ -100,17 +105,20 @@
           "value": 1,
           "duration": "while_applied",
           "source": "condition:frightened"
+        },
+        {
+          "target": "checks",
+          "op": "add",
+          "value": -10,
+          "duration": "while_applied",
+          "source": "condition:frightened"
         }
       ]
     },
     {
       "key": "grappled",
       "label": "Grappled",
-      "description": "Held in place by an opponent. Movement and agility are heavily restricted.",
-      "effects": {
-        "ttrpg": "Speed becomes 0. -10 on all attack rolls and AGI-based skills. Escapable via contested athletics check.",
-        "video_game": "Immobilized. -10% attack rating. Mash or use escape skill to break free."
-      },
+      "description": "Held: speed 0, −10 on attacks and AGI checks. An athletics check against the grappler breaks free.",
       "appliedBy": [
         "core:effect/grapple"
       ],
@@ -124,17 +132,30 @@
           "value": 1,
           "duration": "while_applied",
           "source": "condition:grappled"
+        },
+        {
+          "target": "speed",
+          "op": "set",
+          "value": 0,
+          "duration": "while_applied",
+          "source": "condition:grappled"
+        },
+        {
+          "target": "agility_checks",
+          "op": "add",
+          "value": -10,
+          "duration": "while_applied",
+          "source": "condition:grappled"
         }
-      ]
+      ],
+      "combat": {
+        "attack_penalty": -10
+      }
     },
     {
       "key": "incapacitated",
       "label": "Incapacitated",
-      "description": "Cannot take actions of any kind.",
-      "effects": {
-        "ttrpg": "Cannot spend AP or take a reaction. No concentration possible.",
-        "video_game": "Cannot act, use abilities, or move. Duration varies by source."
-      },
+      "description": "Cannot spend AP, react, or concentrate.",
       "appliedBy": [
         "core:effect/incapacitate"
       ],
@@ -151,17 +172,20 @@
           "value": 1,
           "duration": "while_applied",
           "source": "condition:incapacitated"
+        },
+        {
+          "target": "ap",
+          "op": "set",
+          "value": 0,
+          "duration": "while_applied",
+          "source": "condition:incapacitated"
         }
       ]
     },
     {
       "key": "invisible",
       "label": "Invisible",
-      "description": "Cannot be seen normally. Greatly advantaged in combat and stealth.",
-      "effects": {
-        "ttrpg": "Cannot be seen. Attacks against you have -20. You have +10 on attack rolls. Advantage on stealth.",
-        "video_game": "Fully stealthed. Cannot be targeted directly. Attacking or taking damage breaks invisibility."
-      },
+      "description": "Cannot be seen: attacks against it have −20 and its own attacks +10. Attacking or taking damage ends it.",
       "appliedBy": [
         "core:effect/invisibility"
       ],
@@ -176,16 +200,16 @@
           "duration": "while_applied",
           "source": "condition:invisible"
         }
-      ]
+      ],
+      "combat": {
+        "attack_penalty": 10,
+        "defense_bonus": -20
+      }
     },
     {
       "key": "paralyzed",
       "label": "Paralyzed",
-      "description": "Frozen in place. Unable to move or act.",
-      "effects": {
-        "ttrpg": "Incapacitated + cannot move. STR and AGI checks auto-fail. Melee attacks from within 1 unit auto-crit.",
-        "video_game": "Fully immobilized and defenseless. Melee attacks against you are guaranteed hits. Duration in seconds."
-      },
+      "description": "Cannot move or act: STR and AGI checks fail, and a melee hit from within 1 unit is a crit.",
       "appliedBy": [
         "core:effect/paralyze",
         "core:effect/poison_paralytic"
@@ -217,11 +241,7 @@
     {
       "key": "petrified",
       "label": "Petrified",
-      "description": "Turned to stone. Incapacitated and nearly invulnerable.",
-      "effects": {
-        "ttrpg": "Incapacitated. DR 20 vs all damage. Immune to poison and disease. Cannot be targeted by beneficial effects.",
-        "video_game": "Incapacitated. Damage reduction +90%. Cannot be healed or buffed. Requires greater magic to reverse."
-      },
+      "description": "Turned to stone: cannot act, resists 20 of every damage type, is immune to poison and disease, and beneficial effects do not land.",
       "appliedBy": [
         "core:effect/petrify"
       ],
@@ -238,17 +258,125 @@
           "value": 1,
           "duration": "while_applied",
           "source": "condition:petrified"
+        },
+        {
+          "target": "ap",
+          "op": "set",
+          "value": 0,
+          "duration": "while_applied",
+          "source": "condition:petrified"
+        },
+        {
+          "target": "bludgeoning",
+          "op": "resist",
+          "value": 20,
+          "duration": "while_applied",
+          "source": "condition:petrified"
+        },
+        {
+          "target": "piercing",
+          "op": "resist",
+          "value": 20,
+          "duration": "while_applied",
+          "source": "condition:petrified"
+        },
+        {
+          "target": "slashing",
+          "op": "resist",
+          "value": 20,
+          "duration": "while_applied",
+          "source": "condition:petrified"
+        },
+        {
+          "target": "fire",
+          "op": "resist",
+          "value": 20,
+          "duration": "while_applied",
+          "source": "condition:petrified"
+        },
+        {
+          "target": "frost",
+          "op": "resist",
+          "value": 20,
+          "duration": "while_applied",
+          "source": "condition:petrified"
+        },
+        {
+          "target": "shock",
+          "op": "resist",
+          "value": 20,
+          "duration": "while_applied",
+          "source": "condition:petrified"
+        },
+        {
+          "target": "acid",
+          "op": "resist",
+          "value": 20,
+          "duration": "while_applied",
+          "source": "condition:petrified"
+        },
+        {
+          "target": "poison",
+          "op": "resist",
+          "value": 20,
+          "duration": "while_applied",
+          "source": "condition:petrified"
+        },
+        {
+          "target": "necrotic",
+          "op": "resist",
+          "value": 20,
+          "duration": "while_applied",
+          "source": "condition:petrified"
+        },
+        {
+          "target": "radiant",
+          "op": "resist",
+          "value": 20,
+          "duration": "while_applied",
+          "source": "condition:petrified"
+        },
+        {
+          "target": "psychic",
+          "op": "resist",
+          "value": 20,
+          "duration": "while_applied",
+          "source": "condition:petrified"
+        },
+        {
+          "target": "force",
+          "op": "resist",
+          "value": 20,
+          "duration": "while_applied",
+          "source": "condition:petrified"
+        },
+        {
+          "target": "thunder",
+          "op": "resist",
+          "value": 20,
+          "duration": "while_applied",
+          "source": "condition:petrified"
+        },
+        {
+          "target": "poison_resistance",
+          "op": "add",
+          "value": 100,
+          "duration": "while_applied",
+          "source": "condition:petrified"
+        },
+        {
+          "target": "disease_resistance",
+          "op": "add",
+          "value": 100,
+          "duration": "while_applied",
+          "source": "condition:petrified"
         }
       ]
     },
     {
       "key": "poisoned",
       "label": "Poisoned",
-      "description": "Under the effect of a poison. The poison's sub_effects carry the actual symptoms.",
-      "effects": {
-        "ttrpg": "The poison applies its sub_effects (damage, drain, control) as symptoms. Resistance (via resist effect with parameter 'poison') may reduce magnitude or duration. The poisoned condition itself is the delivery envelope.",
-        "video_game": "The poison effect delivers its sub_effects automatically (DoT, debuffs, control). The poisoned condition tracks the overall state; the sub_effects handle the mechanics."
-      },
+      "description": "The poison's sub_effects are its symptoms; a poison resistance lessens them.",
       "appliedBy": [
         "core:effect/poison"
       ],
@@ -269,11 +397,7 @@
     {
       "key": "prone",
       "label": "Prone",
-      "description": "Knocked to the ground. Vulnerable in melee but harder to hit at range.",
-      "effects": {
-        "ttrpg": "-20 on melee attack rolls. Ranged attacks against you have +10. Spend half your movement to stand up.",
-        "video_game": "Knockdown state. -20% melee damage. Ranged attacks against you have +15% accuracy. Spend 1s to stand."
-      },
+      "description": "On the ground: −20 on melee attacks, and ranged attacks against it have +10. Standing costs the stand_up action.",
       "appliedBy": [
         "core:effect/knockdown"
       ],
@@ -295,11 +419,7 @@
     {
       "key": "restrained",
       "label": "Restrained",
-      "description": "Tied, bound, or entangled. Movement is impossible and attacks are hampered.",
-      "effects": {
-        "ttrpg": "Speed 0. -20 on attack rolls and AGI-based skills. Attacks against you have +10. Escape via STR check or teleport.",
-        "video_game": "Immobilized. -20% attack rating. Incoming attacks have +15% damage. Break via STR check or escape skill."
-      },
+      "description": "Bound: speed 0, −20 on attacks and AGI checks, and attacks against it have +10. A STR check or a teleport frees it.",
       "appliedBy": [
         "core:effect/restrain"
       ],
@@ -317,17 +437,27 @@
           "value": 1,
           "duration": "while_applied",
           "source": "condition:restrained"
+        },
+        {
+          "target": "speed",
+          "op": "set",
+          "value": 0,
+          "duration": "while_applied",
+          "source": "condition:restrained"
+        },
+        {
+          "target": "agility_checks",
+          "op": "add",
+          "value": -20,
+          "duration": "while_applied",
+          "source": "condition:restrained"
         }
       ]
     },
     {
       "key": "stunned",
       "label": "Stunned",
-      "description": "Reeling from a powerful blow or effect. Cannot act and is vulnerable.",
-      "effects": {
-        "ttrpg": "Incapacitated + cannot move. -20 on all checks. Attacks against you have +10.",
-        "video_game": "Staggered for 1-3 seconds. Cannot act. Incoming damage increased by +25%."
-      },
+      "description": "Cannot act, −20 on every check, and attacks against it have +10.",
       "appliedBy": [
         "core:effect/stun"
       ],
@@ -345,17 +475,27 @@
           "value": 1,
           "duration": "while_applied",
           "source": "condition:stunned"
+        },
+        {
+          "target": "ap",
+          "op": "set",
+          "value": 0,
+          "duration": "while_applied",
+          "source": "condition:stunned"
+        },
+        {
+          "target": "checks",
+          "op": "add",
+          "value": -20,
+          "duration": "while_applied",
+          "source": "condition:stunned"
         }
       ]
     },
     {
       "key": "unconscious",
       "label": "Unconscious",
-      "description": "Knocked out or asleep. Completely unaware and helpless.",
-      "effects": {
-        "ttrpg": "Incapacitated + prone. Cannot maintain concentration. Auto-fail STR and AGI checks. Melee attacks from within 1 unit auto-crit. Restored by healing or time.",
-        "video_game": "Knocked out (0 HP). Cannot act. Revived when healed above 0 HP or after a timer."
-      },
+      "description": "Out cold: cannot act, lies prone, STR and AGI checks fail, and a melee hit from within 1 unit is a crit. Healing above 0 HP or time wakes it.",
       "appliedBy": [
         "core:effect/unconsciousness"
       ],
@@ -373,17 +513,20 @@
           "value": 1,
           "duration": "while_applied",
           "source": "condition:unconscious"
+        },
+        {
+          "target": "ap",
+          "op": "set",
+          "value": 0,
+          "duration": "while_applied",
+          "source": "condition:unconscious"
         }
       ]
     },
     {
       "key": "exhaustion",
       "label": "Exhaustion",
-      "description": "Accumulated fatigue or debilitating sickness. Stacks in severity.",
-      "effects": {
-        "ttrpg": "Stacking condition (6 levels). Level 1: -10 on skill checks. Level 3: -20, speed halved. Level 5: speed 0. Level 6: death. One level removed per full rest.",
-        "video_game": "Stacking debuff (6 levels). Level 1: -10% skill effectiveness. Level 3: -20%, speed -50%. Level 5: immobile. Level 6: death. Cured by rest or cure effect."
-      },
+      "description": "Stacks to 6: −10 on checks for each level; at 3 speed is halved, at 5 speed is 0, at 6 the actor dies. A full rest removes one level.",
       "appliedBy": [
         "core:effect/blight",
         "core:effect/fever",
@@ -404,17 +547,20 @@
           "value": 1,
           "duration": "while_applied",
           "source": "condition:exhaustion"
+        },
+        {
+          "target": "checks",
+          "op": "add",
+          "value": -10,
+          "duration": "while_applied",
+          "source": "condition:exhaustion"
         }
       ]
     },
     {
       "key": "burning",
       "label": "Burning",
-      "description": "On fire. Takes fire damage over time until extinguished.",
-      "effects": {
-        "ttrpg": "Takes 1d4 fire damage per round at start of turn. Can use an action to extinguish (AGI check DC 10 or drop-and-roll). Water or cure effect ends it immediately.",
-        "video_game": "Fire DoT tick every 2 seconds. Duration refreshed on reapplication. Extinguished by water, rolling, or cure effect."
-      },
+      "description": "On fire: the burn effect deals its fire damage each second until it ends. Water, frost, or a cure puts it out.",
       "appliedBy": [
         "core:effect/burn"
       ],
@@ -435,11 +581,7 @@
     {
       "key": "bleeding",
       "label": "Bleeding",
-      "description": "A wound that bleeds, dealing health damage over time.",
-      "effects": {
-        "ttrpg": "Takes 1 HP damage per round at start of turn. DC 10 Medicine check or bandage (use object) stops the bleed. Some attacks cause severe bleeding (2 HP/round).",
-        "video_game": "Health DoT tick every 2 seconds. Severity stacks (1-3). Stopped by bandage, healing spell, or out-of-combat rest."
-      },
+      "description": "The bleed effect deals its damage each second until a bandage, healing, or a Medicine check stops it.",
       "appliedBy": [
         "core:effect/bleed"
       ],
@@ -460,11 +602,7 @@
     {
       "key": "slowed",
       "label": "Slowed",
-      "description": "Movement speed and action economy are impaired.",
-      "effects": {
-        "ttrpg": "Speed halved (rounded down). -10 on AGI-based skills. +1 AP cost on all actions.",
-        "video_game": "Movement speed -30%. Attack speed -20%. Dodge chance -10%. Duration in seconds."
-      },
+      "description": "Speed halved, −10 on AGI checks, and every action costs 1 AP more (5 stamina in real time).",
       "appliedBy": [
         "core:effect/slow"
       ],
@@ -479,17 +617,34 @@
           "value": 1,
           "duration": "while_applied",
           "source": "condition:slowed"
+        },
+        {
+          "target": "speed",
+          "op": "mul",
+          "value": 0.5,
+          "duration": "while_applied",
+          "source": "condition:slowed"
+        },
+        {
+          "target": "agility_checks",
+          "op": "add",
+          "value": -10,
+          "duration": "while_applied",
+          "source": "condition:slowed"
+        },
+        {
+          "target": "action_cost",
+          "op": "add",
+          "value": 1,
+          "duration": "while_applied",
+          "source": "condition:slowed"
         }
       ]
     },
     {
       "key": "silenced",
       "label": "Silenced",
-      "description": "Cannot speak or make verbal sounds, and cannot cast spells (docs/core/casting.md).",
-      "effects": {
-        "ttrpg": "Cannot cast spells. -20 on social checks that rely on speaking.",
-        "video_game": "Spellcasting disabled. Duration in seconds."
-      },
+      "description": "Cannot cast spells, and −20 on social checks that need speech.",
       "appliedBy": [
         "core:effect/silence"
       ],
@@ -503,17 +658,34 @@
           "value": 1,
           "duration": "while_applied",
           "source": "condition:silenced"
+        },
+        {
+          "target": "persuasion",
+          "op": "add",
+          "value": -20,
+          "duration": "while_applied",
+          "source": "condition:silenced"
+        },
+        {
+          "target": "deception",
+          "op": "add",
+          "value": -20,
+          "duration": "while_applied",
+          "source": "condition:silenced"
+        },
+        {
+          "target": "intimidation",
+          "op": "add",
+          "value": -20,
+          "duration": "while_applied",
+          "source": "condition:silenced"
         }
       ]
     },
     {
       "key": "diseased",
       "label": "Diseased",
-      "description": "Afflicted by a disease effect. Symptoms vary by source.",
-      "effects": {
-        "ttrpg": "The disease effect (blight, fever, plague) applies its symptoms. Resistance via END reduces severity. Cured via cure effect with parameter 'disease' or specific antidote.",
-        "video_game": "Disease debuff with periodic stat drains and health damage. Persistent until cured. May worsen over time if untreated."
-      },
+      "description": "The disease effect's symptoms apply; END resists them, and a cure with parameter disease ends it.",
       "appliedBy": [
         "core:effect/blight",
         "core:effect/fever",
@@ -535,11 +707,7 @@
     {
       "key": "cursed",
       "label": "Cursed",
-      "description": "Under a hex. All attributes or specific ones are reduced.",
-      "effects": {
-        "ttrpg": "-2 to all attributes (or specific ones per source). Removed by remove curse spell, cure effect with parameter 'curse', or special ritual. Cannot be removed by rest.",
-        "video_game": "-X to all relevant stats. Displayed as a red debuff icon. Requires specialized cure item or quest reward to remove."
-      },
+      "description": "−2 on every attribute; a rest does not end it.",
       "appliedBy": [
         "core:effect/curse"
       ],
@@ -553,17 +721,69 @@
           "value": 1,
           "duration": "while_applied",
           "source": "condition:cursed"
+        },
+        {
+          "target": "str",
+          "op": "add",
+          "value": -2,
+          "duration": "while_applied",
+          "source": "condition:cursed"
+        },
+        {
+          "target": "per",
+          "op": "add",
+          "value": -2,
+          "duration": "while_applied",
+          "source": "condition:cursed"
+        },
+        {
+          "target": "end",
+          "op": "add",
+          "value": -2,
+          "duration": "while_applied",
+          "source": "condition:cursed"
+        },
+        {
+          "target": "int",
+          "op": "add",
+          "value": -2,
+          "duration": "while_applied",
+          "source": "condition:cursed"
+        },
+        {
+          "target": "wil",
+          "op": "add",
+          "value": -2,
+          "duration": "while_applied",
+          "source": "condition:cursed"
+        },
+        {
+          "target": "agi",
+          "op": "add",
+          "value": -2,
+          "duration": "while_applied",
+          "source": "condition:cursed"
+        },
+        {
+          "target": "cha",
+          "op": "add",
+          "value": -2,
+          "duration": "while_applied",
+          "source": "condition:cursed"
+        },
+        {
+          "target": "lck",
+          "op": "add",
+          "value": -2,
+          "duration": "while_applied",
+          "source": "condition:cursed"
         }
       ]
     },
     {
       "key": "exposed",
       "label": "Exposed",
-      "description": "Defenses are compromised. Takes extra damage from all sources.",
-      "effects": {
-        "ttrpg": "-10 on evasion and block checks. Armor DR halved. Incoming damage multiplied by x1.25.",
-        "video_game": "Evasion -15%. Damage resistance -20%. Incoming damage +X%. Duration in seconds."
-      },
+      "description": "Defenses down: −10 evasion, armor DR halved, and damage taken ×1.25.",
       "appliedBy": [
         "core:effect/expose"
       ],
@@ -577,17 +797,34 @@
           "value": 1,
           "duration": "while_applied",
           "source": "condition:exposed"
+        },
+        {
+          "target": "evasion",
+          "op": "add",
+          "value": -10,
+          "duration": "while_applied",
+          "source": "condition:exposed"
+        },
+        {
+          "target": "armor_dr",
+          "op": "mul",
+          "value": 0.5,
+          "duration": "while_applied",
+          "source": "condition:exposed"
+        },
+        {
+          "target": "incoming_damage",
+          "op": "mul",
+          "value": 1.25,
+          "duration": "while_applied",
+          "source": "condition:exposed"
         }
       ]
     },
     {
       "key": "taunted",
       "label": "Taunted",
-      "description": "Forced to focus on the taunter. Attacks against other targets are penalized.",
-      "effects": {
-        "ttrpg": "-20 on attack rolls against anyone other than the taunter. Cannot willingly move away from the taunter. Effects break if the taunter attacks an ally or moves out of line of sight.",
-        "video_game": "Forced aggro on the taunter. -20% damage against non-taunter targets. Taunt immunity after 3 applications (diminishing returns)."
-      },
+      "description": "−20 on attacks against anyone but the taunter, and cannot willingly move away from it.",
       "appliedBy": [
         "core:effect/taunt"
       ],
@@ -610,11 +847,7 @@
     {
       "key": "staggered",
       "label": "Staggered",
-      "description": "Knocked off-balance. Cannot react and suffers a penalty to the next action.",
-      "effects": {
-        "ttrpg": "Cannot declare a reaction until its next turn. -10 on the next action taken. Removed at end of next turn or when taking damage.",
-        "video_game": "Stagger animation plays. Cannot block or dodge for 1-2 seconds. Recovery roll animation plays on exit."
-      },
+      "description": "Cannot react until its next turn, and −10 on the next action.",
       "appliedBy": [
         "core:effect/stagger"
       ],
@@ -638,10 +871,6 @@
       "key": "overdosed",
       "label": "Overdosed",
       "description": "Toxicity above the drinker's limit. Lasts while toxicity stays above it and lifts on its own as toxicity falls (docs/core/modifier.md#toxicity).",
-      "effects": {
-        "ttrpg": "Potions work at half strength and speed is 1 lower while toxicity is above the limit. It falls 5 a turn; a long rest clears it.",
-        "video_game": "Potions heal and buff at half strength and movement slows while toxicity is above the limit. It falls 1 a second; sleeping clears it."
-      },
       "appliedBy": [],
       "removedBy": [],
       "modifiers": [

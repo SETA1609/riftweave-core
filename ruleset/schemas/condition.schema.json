@@ -22,7 +22,7 @@
         "source": { "$ref": "schema.json#/definitions/sourceRef" },
         "modifiers": {
           "type": "array",
-          "description": "Authority for this condition. A named bundle of contract modifiers plus flags. Prose in effects is not the authority.",
+          "description": "Authority for this condition: a named bundle of contract modifiers plus flags, the same at a table and in real time (docs/modules/conditions.md).",
           "items": {
             "type": "object",
             "properties": {
@@ -36,16 +36,7 @@
             "additionalProperties": false
           }
         },
-        "effects": {
-          "type": "object",
-          "description": "Retired by M3-11: a condition has one rule for every client, its description and modifiers. The data step removes it.",
-          "properties": {
-            "ttrpg": { "type": "string", "description": "Mechanical effect in TTRPG/turn-based mode." },
-            "video_game": { "type": "string", "description": "Mechanical effect in video game/action-combat mode." }
-          },
-          "required": ["ttrpg", "video_game"],
-          "additionalProperties": false
-        },
+        
         "appliedBy": {
           "type": "array",
           "description": "Effect refs that can apply this condition. Use namespaced format core:effect/<key>. Empty only for a condition a rule applies, such as overdosed (docs/core/modifier.md#toxicity).",
@@ -94,7 +85,7 @@
           "additionalProperties": false
         }
       },
-      "required": ["key", "label", "description", "effects", "appliedBy", "removedBy"],
+      "required": ["key", "label", "description", "appliedBy", "removedBy"],
       "additionalProperties": false
     }
   }
