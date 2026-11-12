@@ -13,7 +13,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from kernel_reference import load_data  # noqa: E402
 
-RESOURCES = {"hp", "mp", "stamina", "ap", "toxicity", "conditions"}
+RESOURCES = {"hp", "mp", "stamina", "ap", "toxicity", "conditions", "food"}
 
 
 class TestRestData(unittest.TestCase):
