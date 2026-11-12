@@ -1,0 +1,673 @@
+{
+  "builds": {
+    "caster_black_orange": {
+      "attacks": {
+        "monster": {
+          "fumble": 1,
+          "hit": 73,
+          "miss": 179
+        },
+        "monster_damage": 294,
+        "player": {
+          "cast": 244,
+          "failed": 2,
+          "hit": 12,
+          "miss": 12
+        },
+        "player_damage": 2129
+      },
+      "capped_at": {
+        "black_magic": 6,
+        "evasion": 10,
+        "orange_magic": 8
+      },
+      "fights": {
+        "fled": 13,
+        "lost": 0,
+        "rounds": 270,
+        "won": 17
+      },
+      "findings": {
+        "dev:learn": 13,
+        "dev:perk": 23,
+        "dev:skill": 34,
+        "fought level gap +0": 9,
+        "fought level gap +1": 4,
+        "fought level gap +2": 1,
+        "fought level gap -1": 12,
+        "fought level gap -2": 4,
+        "no eligible perk at a level-up": 6,
+        "spell damage applied by the driver, not a command": 244
+      },
+      "label": "Black and orange mage",
+      "level": 30,
+      "perks": {
+        "arcane_reservoir": 3,
+        "archmage": 1,
+        "battle_mage": 1,
+        "conjurer": 1,
+        "elemental_harmony": 1,
+        "mana_flow": 1,
+        "meditative": 1,
+        "necromancer": 1,
+        "polyglot": 1,
+        "quick_learner": 1,
+        "spell_penetration": 1,
+        "summon_ancient": 1,
+        "summon_angelic": 1,
+        "summon_demonic": 1,
+        "summon_dire": 1,
+        "summon_elder": 1,
+        "summon_otherworldly": 1,
+        "survivor": 1,
+        "toughness": 3
+      },
+      "replay_matches": true,
+      "skills": {
+        "black_magic": 100,
+        "evasion": 100,
+        "orange_magic": 100
+      },
+      "spells": [
+        "summon_familiar",
+        "bound_blade",
+        "drain_life",
+        "curse",
+        "conjured_barrier",
+        "pocket_storage",
+        "bone_armor",
+        "raise_thrall",
+        "conjured_blades",
+        "wither",
+        "bound_bow",
+        "summon_elemental",
+        "death_grip"
+      ],
+      "steps": 976
+    },
+    "caster_blue_green": {
+      "attacks": {
+        "monster": {
+          "fumble": 1,
+          "hit": 46,
+          "miss": 140
+        },
+        "monster_damage": 204,
+        "player": {
+          "cast": 170,
+          "failed": 2,
+          "hit": 24,
+          "miss": 14
+        },
+        "player_damage": 2647
+      },
+      "capped_at": {
+        "blue_magic": 5,
+        "evasion": 10,
+        "green_magic": 8
+      },
+      "fights": {
+        "fled": 7,
+        "lost": 0,
+        "rounds": 210,
+        "won": 23
+      },
+      "findings": {
+        "dev:learn": 16,
+        "dev:perk": 18,
+        "dev:skill": 34,
+        "fought level gap +0": 9,
+        "fought level gap +1": 8,
+        "fought level gap +2": 6,
+        "fought level gap -1": 3,
+        "fought level gap -2": 4,
+        "no eligible perk at a level-up": 11,
+        "spell damage applied by the driver, not a command": 170
+      },
+      "label": "Blue and green mage",
+      "level": 30,
+      "perks": {
+        "arcane_reservoir": 3,
+        "archmage": 1,
+        "battle_mage": 1,
+        "elemental_harmony": 1,
+        "healer": 2,
+        "mana_flow": 1,
+        "meditative": 1,
+        "polyglot": 1,
+        "quick_learner": 1,
+        "spell_penetration": 1,
+        "survivor": 1,
+        "toughness": 3,
+        "transmuter": 1
+      },
+      "replay_matches": true,
+      "skills": {
+        "blue_magic": 100,
+        "evasion": 100,
+        "green_magic": 100
+      },
+      "spells": [
+        "mend_wounds",
+        "feather_fall",
+        "ward",
+        "cure_poison",
+        "vigor",
+        "corrode",
+        "regeneration",
+        "slow",
+        "purity_ward",
+        "stoneskin",
+        "paralyze",
+        "greater_heal",
+        "acid_rain",
+        "mass_heal",
+        "petrify",
+        "renewal"
+      ],
+      "steps": 849
+    },
+    "caster_red": {
+      "attacks": {
+        "monster": {
+          "hit": 38,
+          "miss": 89
+        },
+        "monster_damage": 234,
+        "player": {
+          "cast": 108,
+          "failed": 13,
+          "fumble": 1,
+          "hit": 30
+        },
+        "player_damage": 2494
+      },
+      "capped_at": {
+        "evasion": 8,
+        "lore": 10,
+        "red_magic": 6
+      },
+      "fights": {
+        "fled": 5,
+        "lost": 0,
+        "rounds": 152,
+        "won": 25
+      },
+      "findings": {
+        "dev:learn": 9,
+        "dev:perk": 16,
+        "dev:skill": 34,
+        "fought level gap +0": 9,
+        "fought level gap +1": 4,
+        "fought level gap +2": 2,
+        "fought level gap -1": 6,
+        "fought level gap -2": 9,
+        "no eligible perk at a level-up": 13,
+        "spell damage applied by the driver, not a command": 108
+      },
+      "label": "Red mage",
+      "level": 30,
+      "perks": {
+        "arcane_reservoir": 3,
+        "archmage": 1,
+        "elemental_harmony": 1,
+        "mana_flow": 1,
+        "meditative": 1,
+        "polyglot": 1,
+        "pyromancer": 2,
+        "quick_learner": 1,
+        "scholar": 1,
+        "spell_penetration": 1,
+        "toughness": 3
+      },
+      "replay_matches": true,
+      "skills": {
+        "evasion": 100,
+        "lore": 100,
+        "red_magic": 100
+      },
+      "spells": [
+        "fire_bolt",
+        "force_dart",
+        "frost_lance",
+        "fire_burst",
+        "flame_shield",
+        "chain_lightning",
+        "ice_storm",
+        "meteor",
+        "inferno"
+      ],
+      "steps": 720
+    },
+    "caster_white_violet": {
+      "attacks": {
+        "monster": {
+          "fumble": 1,
+          "hit": 42,
+          "miss": 118
+        },
+        "monster_damage": 154,
+        "player": {
+          "cast": 164,
+          "failed": 23,
+          "hit": 2
+        },
+        "player_damage": 2712
+      },
+      "capped_at": {
+        "evasion": 11,
+        "violet_magic": 9,
+        "white_magic": 6
+      },
+      "fights": {
+        "fled": 2,
+        "lost": 0,
+        "rounds": 189,
+        "won": 28
+      },
+      "findings": {
+        "dev:learn": 17,
+        "dev:perk": 19,
+        "dev:skill": 37,
+        "fought level gap +0": 6,
+        "fought level gap +1": 6,
+        "fought level gap +2": 7,
+        "fought level gap -1": 5,
+        "fought level gap -2": 6,
+        "no eligible perk at a level-up": 10,
+        "spell damage applied by the driver, not a command": 164
+      },
+      "label": "White and violet mage",
+      "level": 30,
+      "perks": {
+        "arcane_reservoir": 3,
+        "battle_mage": 1,
+        "elemental_harmony": 1,
+        "iron_will": 1,
+        "mana_flow": 1,
+        "meditative": 1,
+        "polyglot": 1,
+        "quick_learner": 1,
+        "spell_penetration": 1,
+        "survivor": 1,
+        "toughness": 3,
+        "unraveler": 1,
+        "warded_mind": 1,
+        "zealot": 2
+      },
+      "replay_matches": true,
+      "skills": {
+        "evasion": 100,
+        "violet_magic": 100,
+        "white_magic": 100
+      },
+      "spells": [
+        "holy_light",
+        "blessing",
+        "telekinesis",
+        "dispel_magic",
+        "smite",
+        "sap_will",
+        "holy_ward",
+        "mark",
+        "spell_absorption",
+        "cleanse",
+        "divine_intervention",
+        "recall",
+        "dispel_ward",
+        "mana_drain",
+        "sunburst",
+        "greater_dispel",
+        "divine_shield"
+      ],
+      "steps": 799
+    },
+    "caster_yellow_indigo": {
+      "attacks": {
+        "monster": {
+          "fumble": 2,
+          "hit": 50,
+          "miss": 140
+        },
+        "monster_damage": 202,
+        "player": {
+          "cast": 144,
+          "hit": 43,
+          "miss": 25
+        },
+        "player_damage": 1914
+      },
+      "capped_at": {
+        "evasion": 10,
+        "indigo_magic": 8,
+        "yellow_magic": 5
+      },
+      "fights": {
+        "fled": 10,
+        "lost": 0,
+        "rounds": 212,
+        "won": 20
+      },
+      "findings": {
+        "dev:learn": 17,
+        "dev:perk": 17,
+        "dev:skill": 34,
+        "fought level gap +0": 7,
+        "fought level gap +1": 5,
+        "fought level gap +2": 8,
+        "fought level gap -1": 2,
+        "fought level gap -2": 8,
+        "no eligible perk at a level-up": 12,
+        "spell damage applied by the driver, not a command": 144
+      },
+      "label": "Yellow and indigo mage",
+      "level": 30,
+      "perks": {
+        "arcane_reservoir": 3,
+        "archmage": 1,
+        "elemental_harmony": 1,
+        "illusionist": 1,
+        "iron_will": 1,
+        "mana_flow": 1,
+        "meditative": 1,
+        "polyglot": 1,
+        "quick_learner": 1,
+        "spell_penetration": 1,
+        "telekinetic": 1,
+        "toughness": 3,
+        "warded_mind": 1
+      },
+      "replay_matches": true,
+      "skills": {
+        "evasion": 100,
+        "indigo_magic": 100,
+        "yellow_magic": 100
+      },
+      "spells": [
+        "light",
+        "unlock",
+        "blinding_flash",
+        "blur",
+        "disarm_trap",
+        "mind_spike",
+        "thunderclap",
+        "force_push",
+        "charm_person",
+        "silence",
+        "force_wall",
+        "veil",
+        "greater_unlock",
+        "psychic_scream",
+        "greater_disarm",
+        "mass_charm",
+        "sonic_boom"
+      ],
+      "steps": 856
+    },
+    "hybrid_blades_red": {
+      "attacks": {
+        "monster": {
+          "fumble": 5,
+          "hit": 83,
+          "miss": 223
+        },
+        "monster_damage": 327,
+        "player": {
+          "fumble": 3,
+          "hit": 300,
+          "miss": 18
+        },
+        "player_damage": 1481
+      },
+      "capped_at": {
+        "blades": 7,
+        "evasion": 13,
+        "medium_armor": 22,
+        "red_magic": 10
+      },
+      "fights": {
+        "fled": 20,
+        "lost": 0,
+        "rounds": 321,
+        "won": 10
+      },
+      "findings": {
+        "dev:learn": 9,
+        "dev:perk": 14,
+        "dev:skill": 67,
+        "fought level gap +0": 7,
+        "fought level gap +1": 4,
+        "fought level gap +2": 7,
+        "fought level gap -1": 7,
+        "fought level gap -2": 5,
+        "no eligible perk at a level-up": 15
+      },
+      "label": "Spellblade",
+      "level": 30,
+      "perks": {
+        "arcane_reservoir": 3,
+        "battle_mage": 1,
+        "cleave": 1,
+        "polyglot": 1,
+        "power_attack": 1,
+        "pyromancer": 2,
+        "quick_learner": 1,
+        "spell_penetration": 1,
+        "toughness": 3
+      },
+      "replay_matches": true,
+      "skills": {
+        "blades": 100,
+        "evasion": 100,
+        "medium_armor": 100,
+        "red_magic": 100
+      },
+      "spells": [
+        "fire_bolt",
+        "force_dart",
+        "frost_lance",
+        "fire_burst",
+        "flame_shield",
+        "chain_lightning",
+        "ice_storm",
+        "meteor",
+        "inferno"
+      ],
+      "steps": 1128
+    },
+    "melee_blades": {
+      "attacks": {
+        "monster": {
+          "fumble": 3,
+          "hit": 76,
+          "miss": 232
+        },
+        "monster_damage": 273,
+        "player": {
+          "fumble": 2,
+          "hit": 286,
+          "miss": 33
+        },
+        "player_damage": 1724
+      },
+      "capped_at": {
+        "athletics": 29,
+        "blades": 8,
+        "evasion": 13,
+        "heavy_armor": 17
+      },
+      "fights": {
+        "fled": 20,
+        "lost": 0,
+        "rounds": 321,
+        "won": 10
+      },
+      "findings": {
+        "dev:perk": 13,
+        "dev:skill": 89,
+        "fought level gap +0": 6,
+        "fought level gap +1": 3,
+        "fought level gap +2": 7,
+        "fought level gap -1": 8,
+        "fought level gap -2": 6,
+        "no eligible perk at a level-up": 16
+      },
+      "label": "Blades fighter",
+      "level": 30,
+      "perks": {
+        "armored_evasion": 1,
+        "berserker": 1,
+        "cleave": 1,
+        "iron_stomach": 1,
+        "pack_mule": 2,
+        "power_attack": 1,
+        "quick_draw": 1,
+        "second_wind": 1,
+        "sidestep": 1,
+        "toughness": 3
+      },
+      "replay_matches": true,
+      "skills": {
+        "athletics": 100,
+        "blades": 100,
+        "evasion": 100,
+        "heavy_armor": 100
+      },
+      "spells": [],
+      "steps": 1092
+    },
+    "ranged_bows": {
+      "attacks": {
+        "monster": {
+          "fumble": 3,
+          "hit": 94,
+          "miss": 197
+        },
+        "monster_damage": 323,
+        "player": {
+          "fumble": 2,
+          "hit": 280,
+          "miss": 25
+        },
+        "player_damage": 1605
+      },
+      "capped_at": {
+        "bows": 8,
+        "evasion": 13,
+        "light_armor": 29,
+        "stealth": 17
+      },
+      "fights": {
+        "fled": 17,
+        "lost": 0,
+        "rounds": 307,
+        "won": 13
+      },
+      "findings": {
+        "dev:perk": 18,
+        "dev:skill": 90,
+        "fought level gap +0": 11,
+        "fought level gap +1": 6,
+        "fought level gap +2": 4,
+        "fought level gap -1": 3,
+        "fought level gap -2": 6,
+        "no eligible perk at a level-up": 11
+      },
+      "label": "Archer",
+      "level": 30,
+      "perks": {
+        "acrobat": 1,
+        "alert": 1,
+        "armored_evasion": 1,
+        "assassin": 1,
+        "backstab": 1,
+        "deadeye": 1,
+        "fleet_footed": 1,
+        "ghost": 1,
+        "light_foot": 1,
+        "night_eyes": 1,
+        "quick_draw": 1,
+        "riposte": 1,
+        "sidestep": 1,
+        "sniper": 1,
+        "steady_aim": 1,
+        "toughness": 3
+      },
+      "replay_matches": true,
+      "skills": {
+        "bows": 100,
+        "evasion": 100,
+        "light_armor": 100,
+        "stealth": 100
+      },
+      "spells": [],
+      "steps": 1082
+    }
+  },
+  "calls": 7766,
+  "findings": {
+    "dev:learn": 81,
+    "dev:perk": 138,
+    "dev:skill": 419,
+    "fought level gap +0": 64,
+    "fought level gap +1": 40,
+    "fought level gap +2": 42,
+    "fought level gap -1": 46,
+    "fought level gap -2": 48,
+    "no eligible perk at a level-up": 94,
+    "spell damage applied by the driver, not a command": 830
+  },
+  "perks_taken": {
+    "acrobat": 1,
+    "alert": 1,
+    "arcane_reservoir": 18,
+    "archmage": 4,
+    "armored_evasion": 2,
+    "assassin": 1,
+    "backstab": 1,
+    "battle_mage": 4,
+    "berserker": 1,
+    "cleave": 2,
+    "conjurer": 1,
+    "deadeye": 1,
+    "elemental_harmony": 5,
+    "fleet_footed": 1,
+    "ghost": 1,
+    "healer": 2,
+    "illusionist": 1,
+    "iron_stomach": 1,
+    "iron_will": 2,
+    "light_foot": 1,
+    "mana_flow": 5,
+    "meditative": 5,
+    "necromancer": 1,
+    "night_eyes": 1,
+    "pack_mule": 2,
+    "polyglot": 6,
+    "power_attack": 2,
+    "pyromancer": 4,
+    "quick_draw": 2,
+    "quick_learner": 6,
+    "riposte": 1,
+    "scholar": 1,
+    "second_wind": 1,
+    "sidestep": 2,
+    "sniper": 1,
+    "spell_penetration": 6,
+    "steady_aim": 1,
+    "summon_ancient": 1,
+    "summon_angelic": 1,
+    "summon_demonic": 1,
+    "summon_dire": 1,
+    "summon_elder": 1,
+    "summon_otherworldly": 1,
+    "survivor": 3,
+    "telekinetic": 1,
+    "toughness": 24,
+    "transmuter": 1,
+    "unraveler": 1,
+    "warded_mind": 2,
+    "zealot": 2
+  },
+  "seed": "m5-18"
+}
