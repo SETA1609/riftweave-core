@@ -1543,6 +1543,196 @@
       ]
     },
     {
+      "key": "summon_dire",
+      "label": "Dire Summons",
+      "description": "What you call comes bigger and fiercer: your summons gain the dire template, and your Orange Magic +5.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 8,
+        "skills": [
+          {
+            "id": "core:skill/orange_magic",
+            "label": "Orange Magic",
+            "min": 40
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:monster_template/dire"
+      ],
+      "modifiers": [
+        {
+          "target": "orange_magic",
+          "op": "add",
+          "value": 5,
+          "source": "feature:summon_dire",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "summon_elder",
+      "label": "Elder Summons",
+      "description": "What you call comes old and seasoned: your summons gain the elder template in place of dire, and your Orange Magic +5.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 16,
+        "skills": [
+          {
+            "id": "core:skill/orange_magic",
+            "label": "Orange Magic",
+            "min": 60
+          }
+        ],
+        "perks": [
+          "core:feature/summon_dire"
+        ]
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:monster_template/elder"
+      ],
+      "modifiers": [
+        {
+          "target": "orange_magic",
+          "op": "add",
+          "value": 5,
+          "source": "feature:summon_elder",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "summon_ancient",
+      "label": "Ancient Summons",
+      "description": "What you call is older than the realm: your summons gain the ancient template in place of elder, and your Orange Magic +5.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 24,
+        "skills": [
+          {
+            "id": "core:skill/orange_magic",
+            "label": "Orange Magic",
+            "min": 80
+          }
+        ],
+        "perks": [
+          "core:feature/summon_elder"
+        ]
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:monster_template/ancient"
+      ],
+      "modifiers": [
+        {
+          "target": "orange_magic",
+          "op": "add",
+          "value": 5,
+          "source": "feature:summon_ancient",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "summon_demonic",
+      "label": "Demonic Pact",
+      "description": "What you call is touched by the fiends: your summons gain the demonic template, in place of any other nature, and you resist fire 5.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 12,
+        "skills": [
+          {
+            "id": "core:skill/orange_magic",
+            "label": "Orange Magic",
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:monster_template/demonic"
+      ],
+      "modifiers": [
+        {
+          "target": "fire",
+          "op": "resist",
+          "value": 5,
+          "source": "feature:summon_demonic",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "summon_angelic",
+      "label": "Angelic Covenant",
+      "description": "What you call is touched by the heavens: your summons gain the angelic template, in place of any other nature, and you resist radiant 5.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 12,
+        "skills": [
+          {
+            "id": "core:skill/orange_magic",
+            "label": "Orange Magic",
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:monster_template/angelic"
+      ],
+      "modifiers": [
+        {
+          "target": "radiant",
+          "op": "resist",
+          "value": 5,
+          "source": "feature:summon_angelic",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "summon_otherworldly",
+      "label": "Otherworldly Call",
+      "description": "What you call is touched by somewhere else: your summons gain the otherworldly template, in place of any other nature, and you resist psychic 5.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 12,
+        "skills": [
+          {
+            "id": "core:skill/orange_magic",
+            "label": "Orange Magic",
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:monster_template/otherworldly"
+      ],
+      "modifiers": [
+        {
+          "target": "psychic",
+          "op": "resist",
+          "value": 5,
+          "source": "feature:summon_otherworldly",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
       "key": "transmuter",
       "label": "Transmuter",
       "description": "Your alterations hold: +25% Blue Magic duration.",

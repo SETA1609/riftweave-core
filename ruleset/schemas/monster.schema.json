@@ -32,7 +32,6 @@
         "damage": {
           "type": "object",
           "properties": {
-            "amount": { "type": "integer", "minimum": 0, "description": "Retired: the authored average before natural weapons. The data step removes it." },
             "type": { "$ref": "schema.json#/definitions/damageType", "description": "The damage type, when it is not the weapon's. An element template does not change a type the attack names." },
             "bonus": { "type": "integer", "description": "Added to the roll: what damagePerLevel gives a creature above its row's level." }
           },
@@ -41,7 +40,7 @@
         "delivery": { "type": "string", "enum": ["single", "area", "instant"], "description": "Which reactions the attack allows (docs/core/combat.md); default single." },
         "phase": { "$ref": "schema.json#/definitions/phase", "description": "The phase the attack carries into the five-phase cycles." }
       },
-      "required": ["key", "label"],
+      "required": ["key", "label", "weapon"],
       "additionalProperties": false
     },
     "monsterData": {

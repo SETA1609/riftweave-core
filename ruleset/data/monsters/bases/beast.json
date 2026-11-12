@@ -17,6 +17,7 @@
       "per": { "perLevel": 0.3 },
       "wil": { "perLevel": 0.2 }
     },
-    "hitPointsPerLevel": 6
+    "hitPointsPerLevel": 6,
+    "damagePerLevel": 0.25
   }
 }

@@ -119,6 +119,8 @@ COLLECTION_CATEGORIES = {
     "origins": "origin",
     "hazards": "hazard",
     "checks": "check",
+    "natural_weapons": "natural_weapon",
+    "monster_templates": "monster_template",
 }
 
 
@@ -1145,7 +1147,8 @@ def _apply_growth(base, level):
     the base template's growth rules.
 
     Growth is defined per ability as a perLevel rate. The formula:
-      attr = round(base_attr + perLevel * (level - base_level)), within 1 to 10
+      attr = round(base_attr + perLevel * (level - base_level)), at least 1 and with no maximum
+      (docs/modules/monsters.md#attribute-growth--level-scaling)
 
     Returns a dict of ability -> int, or None if base has no growth section.
     """
@@ -1162,7 +1165,7 @@ def _apply_growth(base, level):
     for ability in attr_growth:
         base_val = base_attrs.get(ability, 1)
         per = attr_growth[ability].get("perLevel", 0)
-        computed[ability] = min(10, max(1, round(base_val + per * delta)))
+        computed[ability] = max(1, round(base_val + per * delta))
     return computed
 
 
@@ -1201,6 +1204,10 @@ MONSTER_REF_PREFIX = "core:monster/"
 CREATURE_TYPE_REF_PREFIX = "core:creature_type/"
 MONSTER_TEMPLATES_FILE = DATA_DIR / "monsters" / "templates.json"
 _MONSTER_TEMPLATES = None
+# The order the slots apply in, whatever order a row lists its templates (docs/modules/monsters.md#templates).
+TEMPLATE_SLOTS = ("element", "power", "nature")
+# The damage effects an element template turns into its own element.
+ELEMENT_DAMAGE_EFFECTS = {f"core:effect/damage_{kind}" for kind in ("fire", "frost", "shock", "acid", "poison")}
 
 
 def _monster_templates():
@@ -1212,6 +1219,34 @@ def _monster_templates():
             for template in json.loads(MONSTER_TEMPLATES_FILE.read_text()).get("monster_templates", []):
                 _MONSTER_TEMPLATES[template["key"]] = template
     return _MONSTER_TEMPLATES
+
+
+def _hp_per_end():
+    """HP per point of END, the hp row's per_point (derived/core.json)."""
+    rows = json.loads((DATA_DIR / "derived" / "core.json").read_text())["derived"]
+    return next(row["per_point"] for row in rows if row["key"] == "hp")
+
+
+def _grow_damage(merged, step):
+    """Add a damage growth step to every attack's bonus and every damage_* ability's magnitude."""
+    if not step:
+        return
+    attacks = []
+    for attack in merged.get("attacks", []) or []:
+        attack = json.loads(json.dumps(attack))
+        damage = attack.setdefault("damage", {})
+        damage["bonus"] = damage.get("bonus", 0) + step
+        attacks.append(attack)
+    if attacks:
+        merged["attacks"] = attacks
+    abilities = []
+    for ability in merged.get("abilities", []) or []:
+        ability = dict(ability)
+        if str(ability.get("effect", "")).rsplit("/", 1)[-1].startswith("damage_") and "magnitude" in ability:
+            ability["magnitude"] += step
+        abilities.append(ability)
+    if abilities:
+        merged["abilities"] = abilities
 
 
 def compose_row(base, overrides, layers=(), entry=None):
@@ -1241,17 +1276,37 @@ def _apply_monster_template(merged, template):
     attacks = []
     for attack in merged.get("attacks", []) or []:
         attack = json.loads(json.dumps(attack))
-        attack.setdefault("damage", {})["type"] = template["damage_type"]
+        if "damage_type" in template and "type" not in attack.get("damage", {}):
+            attack.setdefault("damage", {})["type"] = template["damage_type"]
         if "phase" in template:
             attack["phase"] = template["phase"]
         attacks.append(attack)
     if attacks:
         merged["attacks"] = attacks
+    if "damage_type" in template:
+        element = f"core:effect/damage_{template['damage_type']}"
+        abilities = []
+        for ability in merged.get("abilities", []) or []:
+            if ability.get("effect") in ELEMENT_DAMAGE_EFFECTS:
+                ability = {**ability, "effect": element}
+            abilities.append(ability)
+        if abilities:
+            merged["abilities"] = abilities
+    if template.get("attributes"):
+        attributes = dict(merged.get("attributes") or {})
+        for ability, add in template["attributes"].items():
+            attributes[ability] = max(1, attributes.get(ability, 0) + add)
+        merged["attributes"] = attributes
+        if "end" in template["attributes"] and "hitPoints" in merged:
+            merged["hitPoints"] = max(1, merged["hitPoints"] + template["attributes"]["end"] * _hp_per_end())
     if template.get("resist"):
         resist = dict(merged.get("resist") or {})
         for kind, amount in template["resist"].items():
             resist[kind] = resist.get(kind, 0) + amount
         merged["resist"] = resist
+    if template.get("spells"):
+        spells = list(merged.get("spells") or [])
+        merged["spells"] = spells + [spell for spell in template["spells"] if spell not in spells]
     if template.get("loot"):
         merged["loot"] = list(merged.get("loot") or []) + template["loot"]
     tags = list(merged.get("tags") or [])
@@ -1260,6 +1315,26 @@ def _apply_monster_template(merged, template):
         merged["tags"] = tags
     if merged.get("label"):
         merged["label"] = f"{template['label_prefix']} {merged['label']}"
+
+
+def _template_layers(key, template_keys, filled, errors):
+    """The layers for a row's templates in slot order, and the slots they fill; None after an error.
+
+    `filled` maps each slot the row's base monster already fills to its template key."""
+    templates = _monster_templates()
+    by_slot = {}
+    for template_key in template_keys or []:
+        if template_key not in templates:
+            errors.append(f"monster '{key}': template '{template_key}' not found in monsters/templates.json")
+            return None
+        slot = templates[template_key].get("slot", "element")
+        if slot in by_slot or slot in filled:
+            other = by_slot.get(slot) or filled[slot]
+            errors.append(f"monster '{key}': templates '{other}' and '{template_key}' are both in the {slot} slot")
+            return None
+        by_slot[slot] = template_key
+    layers = [partial(_apply_monster_template, template=templates[by_slot[slot]]) for slot in TEMPLATE_SLOTS if slot in by_slot]
+    return layers, {**filled, **by_slot}
 
 
 def _resolve_monster_bases(data, errors):
@@ -1291,7 +1366,7 @@ def _resolve_monster_bases(data, errors):
             return resolved[key]
         base_key = entry.get("base")
         if not base_key:
-            resolved[key] = (entry, None)
+            resolved[key] = (entry, None, {})
             return resolved[key]
         overrides = entry.get("overrides")
         if not isinstance(overrides, dict):
@@ -1312,7 +1387,7 @@ def _resolve_monster_bases(data, errors):
             parent = resolve(rows[parent_key], chain + [parent_key])
             if parent is None:
                 return None
-            parent_entry, type_data = parent
+            parent_entry, type_data, filled = parent
             merged = json.loads(json.dumps(parent_entry))
             for field in ("id", "key", "source"):
                 merged.pop(field, None)
@@ -1322,16 +1397,19 @@ def _resolve_monster_bases(data, errors):
                 attributes = dict(merged.get("attributes") or {})
                 for ability, rule in (growth.get("attributes") or {}).items():
                     if ability in attributes:
-                        attributes[ability] = min(10, max(1, round(attributes[ability] + rule.get("perLevel", 0) * delta)))
+                        attributes[ability] = max(1, round(attributes[ability] + rule.get("perLevel", 0) * delta))
                 merged["attributes"] = attributes
                 if "hitPointsPerLevel" in growth and "hitPoints" in merged:
                     merged["hitPoints"] = max(1, round(merged["hitPoints"] + growth["hitPointsPerLevel"] * delta))
+                if delta > 0:
+                    _grow_damage(merged, round(growth.get("damagePerLevel", 0) * delta))
         else:
             type_name = base_key.removeprefix(CREATURE_TYPE_REF_PREFIX)
             if not base_key.startswith(CREATURE_TYPE_REF_PREFIX) or type_name not in _BASE_CACHE:
                 errors.append(f"monster '{key}': base '{base_key}' not found in bases/")
                 return None
             type_data = _BASE_CACHE[type_name]
+            filled = {}
             merged = dict(type_data)
             merged.pop("growth", None)
             level = overrides.get("level") or type_data.get("level", 1)
@@ -1342,16 +1420,13 @@ def _resolve_monster_bases(data, errors):
             if computed_hp is not None:
                 merged["hitPoints"] = computed_hp
 
-        templates = _monster_templates()
-        layers = []
-        for template_key in entry.get("templates", []) or []:
-            if template_key not in templates:
-                errors.append(f"monster '{key}': template '{template_key}' not found in monsters/templates.json")
-                return None
-            layers.append(partial(_apply_monster_template, template=templates[template_key]))
+        planned = _template_layers(key, entry.get("templates"), filled, errors)
+        if planned is None:
+            return None
+        layers, filled = planned
 
         merged = compose_row(merged, overrides, layers=layers, entry=entry)
-        resolved[key] = (merged, type_data)
+        resolved[key] = (merged, type_data, filled)
         return resolved[key]
 
     for i, entry in enumerate(monsters):

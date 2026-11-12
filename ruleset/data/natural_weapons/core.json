@@ -1,0 +1,16 @@
+{
+  "$schema": "../../schemas/natural_weapon.schema.json",
+  "size_steps": { "tiny": -2, "small": -1, "medium": 0, "large": 1, "huge": 2 },
+  "natural_weapons": [
+    { "key": "bite", "label": "Bite", "description": "Jaws and teeth.", "dice": "1d6", "damage_type": "piercing" },
+    { "key": "claw", "label": "Claw", "description": "Raking claws or nails.", "dice": "1d6", "damage_type": "slashing" },
+    { "key": "gore", "label": "Gore", "description": "Horns or tusks driven home.", "dice": "1d8", "damage_type": "piercing" },
+    { "key": "slam", "label": "Slam", "description": "A fist, a limb, or a body thrown into the target.", "dice": "1d6", "damage_type": "bludgeoning" },
+    { "key": "talons", "label": "Talons", "description": "A bird of prey's hooked feet.", "dice": "1d6", "damage_type": "piercing" },
+    { "key": "sting", "label": "Sting", "description": "A barbed stinger.", "dice": "1d4", "damage_type": "piercing" },
+    { "key": "peck", "label": "Peck", "description": "A hard beak.", "dice": "1d4", "damage_type": "piercing" },
+    { "key": "hoof", "label": "Hoof", "description": "A kick or a stomp.", "dice": "1d6", "damage_type": "bludgeoning" },
+    { "key": "tail", "label": "Tail", "description": "A heavy tail swept or lashed.", "dice": "1d8", "damage_type": "bludgeoning" },
+    { "key": "tentacle", "label": "Tentacle", "description": "A grasping, lashing limb.", "dice": "1d6", "damage_type": "bludgeoning" }
+  ]
+}

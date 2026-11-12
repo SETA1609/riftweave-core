@@ -6,7 +6,7 @@
   "size": "medium",
   "level": 4,
   "loot": [{ "table": "hoard_minor" }],
-  "attributes": { "str": 5, "end": 5, "agi": 5, "per": 5, "wil": 5 },
+  "attributes": { "str": 5, "end": 5, "agi": 5, "per": 5, "wil": 5, "int": 5 },
   "hitPoints": 50,
   "tags": ["elemental"],
   "growth": {
@@ -15,8 +15,10 @@
       "end": { "perLevel": 0.4 },
       "agi": { "perLevel": 0.4 },
       "per": { "perLevel": 0.4 },
-      "wil": { "perLevel": 0.4 }
+      "wil": { "perLevel": 0.4 },
+      "int": { "perLevel": 0.4 }
     },
-    "hitPointsPerLevel": 9
+    "hitPointsPerLevel": 9,
+    "damagePerLevel": 0.25
   }
 }

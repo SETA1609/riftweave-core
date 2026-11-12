@@ -27,6 +27,12 @@
     { "check": "weapon_dice", "subject": "dagger", "reason": "A light weapon: cheap, concealable, and fast; its 1d4 is meant to sit below the band." },
     { "check": "weapon_dice", "subject": "sling", "reason": "A light weapon: cheap ammunition and no proficiency cost; its 1d4 is meant to sit below the band." },
     { "check": "weapon_dice", "subject": "throwing_knife", "reason": "A light weapon: cheap, carried by the handful, and thrown in volleys; its 1d4 is meant to sit below the band." },
-    { "check": "weapon_dice", "subject": "brass_knuckles", "reason": "A light weapon: a fist's own damage with a metal grip, cheap and hidden in a pocket; its 1d4 is meant to sit below the band." }
+    { "check": "weapon_dice", "subject": "brass_knuckles", "reason": "A light weapon: a fist's own damage with a metal grip, cheap and hidden in a pocket; its 1d4 is meant to sit below the band." },
+    { "check": "monster_hits_to_kill", "subject": "wolf", "reason": "An example row of the player formulas on a monster (docs/modules/monsters.md#generated-monsters): computed HP sits above the band until the balance pass." },
+    { "check": "monster_hits_to_kill", "subject": "dog", "reason": "An example row of the player formulas on a monster (docs/modules/monsters.md#generated-monsters): computed HP sits above the band until the balance pass." },
+    { "check": "monster_hits_to_kill", "subject": "dire_wolf", "reason": "An example row of the player formulas on a monster (docs/modules/monsters.md#generated-monsters): computed HP sits above the band until the balance pass." },
+    { "check": "monster_hits_to_kill", "subject": "elder_wolf", "reason": "An example row of the player formulas on a monster (docs/modules/monsters.md#generated-monsters): computed HP sits above the band until the balance pass." },
+    { "check": "monster_hits_to_kill", "subject": "demonic_hound", "reason": "An example row of the player formulas on a monster (docs/modules/monsters.md#generated-monsters): computed HP sits above the band until the balance pass." },
+    { "check": "monster_hits_to_kill", "subject": "undead_horse", "reason": "An example row of the player formulas on a monster (docs/modules/monsters.md#generated-monsters): computed HP sits above the band until the balance pass." }
   ]
 }
