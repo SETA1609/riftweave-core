@@ -146,7 +146,7 @@ func TestPlayDevCommandsMatchTheAgentCLI(t *testing.T) {
 	} {
 		model = devLine(model, line)
 	}
-	var human map[string]any = decode(t, string(model.(play.Model).Session()))
+	var human map[string]any = decode(t, string(model.(play.Model).Session())).(map[string]any)
 	if human["dev"] != true {
 		t.Fatalf("the panel's session is not marked dev: %v", human)
 	}
@@ -155,7 +155,7 @@ func TestPlayDevCommandsMatchTheAgentCLI(t *testing.T) {
 	if code != exitOK {
 		t.Fatalf("session start: exit %d: %s", code, stderr)
 	}
-	var session any = decode(t, stdout)["session"]
+	var session any = decode(t, stdout).(map[string]any)["session"]
 	for _, operation := range []map[string]any{
 		{"operation": "item", "base": "core:consumable/potion_healing", "quantity": 2},
 		{"operation": "condition", "key": "blinded", "stacks": 1},
@@ -168,7 +168,7 @@ func TestPlayDevCommandsMatchTheAgentCLI(t *testing.T) {
 		if code != exitOK {
 			t.Fatalf("dev %v: exit %d: %s", operation["operation"], code, stderr)
 		}
-		session = decode(t, stdout)["session"]
+		session = decode(t, stdout).(map[string]any)["session"]
 	}
 	if !reflect.DeepEqual(human, session) {
 		t.Errorf("human CLI session %v\nagent CLI session %v", human, session)
