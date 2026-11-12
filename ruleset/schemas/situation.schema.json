@@ -71,12 +71,10 @@
         "key": { "$ref": "#/definitions/key" },
         "label": { "type": "string", "minLength": 1 },
         "attack": { "type": "integer", "maximum": 0, "description": "An add on the attack target." },
-        "damage_mul": { "type": "number", "exclusiveMinimum": 0, "description": "Multiplies the damage dice before the crit; rounded down." },
-        "damage_multiplier": { "type": "number", "exclusiveMinimum": 0, "description": "Multiplies the damage dice before the crit; rounded down (M5-46; was damage_mul)." },
+        "damage_multiplier": { "type": "number", "exclusiveMinimum": 0, "description": "Multiplies the damage dice before the crit; rounded down." },
         "riders": { "type": "array", "items": { "$ref": "#/definitions/rider" } }
       },
-      "required": ["key", "label", "attack"],
-      "oneOf": [{ "required": ["damage_multiplier"] }, { "required": ["damage_mul"] }],
+      "required": ["key", "label", "attack", "damage_multiplier"],
       "additionalProperties": false
     }
   }

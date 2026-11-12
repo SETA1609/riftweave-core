@@ -2,7 +2,7 @@
   "$schema": "../../schemas/equipment.schema.json",
   "equipment": [
     { "key": "gold_necklace",          "base": "core:accessory_base/necklace_base", "overrides": { "label": "Gold Necklace" } },
-    { "key": "silver_ring",            "base": "core:accessory_base/ring_base",    "overrides": { "enchantment_slots": 3, "phase": "metal", "effect_magnitude_mult": 1.15, "cost": { "quantity": 50, "unit": "gp" } } },
+    { "key": "silver_ring",            "base": "core:accessory_base/ring_base",    "overrides": { "enchantment_slots": 3, "phase": "metal", "effect_magnitude_multiplier": 1.15, "cost": { "quantity": 50, "unit": "gp" } } },
     { "key": "cursed_iron_necklace",   "base": "core:accessory_base/necklace_base","overrides": { "enchantment_slots": -1, "phase": "earth", "cost": { "quantity": 3, "unit": "gp" } } },
     {"key": "ring_of_strength", "base": "core:accessory_base/ring_base", "overrides": {"label": "Ring of Strength", "description": "A heavy iron band that lends its wearer brawn.", "cost": {"quantity": 150, "unit": "gp"}, "accessory": {"accessoryType": "ring", "effects": [{"effect": "core:effect/fortify_attribute", "magnitude": 1, "parameter": "str"}]}}},
     {"key": "ring_of_fire_ward", "base": "core:accessory_base/ring_base", "overrides": {"label": "Ring of Fire Ward", "description": "A ring of red-veined stone, cool to the touch even near flame.", "cost": {"quantity": 120, "unit": "gp"}, "accessory": {"accessoryType": "ring", "effects": [{"effect": "core:effect/resist", "magnitude": 25, "parameter": "fire"}]}}},

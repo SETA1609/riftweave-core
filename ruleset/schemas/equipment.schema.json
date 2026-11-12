@@ -44,11 +44,6 @@
           "description": "Maximum number of enchantments this item can hold. Negative values mean the item cannot receive enchantments. Set on base templates; material overrides may modify (including negative)."
         },
         "phase": { "$ref": "schema.json#/definitions/phase" },
-        "effect_magnitude_mult": {
-          "type": "number",
-          "minimum": 0,
-          "description": "Retired name of effect_magnitude_multiplier (M5-46); the data step removes it."
-        },
         "effect_magnitude_multiplier": {
           "type": "number",
           "minimum": 0,
@@ -219,7 +214,6 @@
             "weight": { "type": "number", "minimum": 0, "description": "In weight units (docs/core/contract.md#weight), read as 0.5 kg each." },
             "enchantment_slots": { "type": "integer" },
             "phase": { "$ref": "schema.json#/definitions/phase" },
-            "effect_magnitude_mult": { "type": "number", "minimum": 0 },
             "effect_magnitude_multiplier": { "type": "number", "minimum": 0 },
             "size": { "type": "string", "enum": ["undersized", "normal", "oversized"], "default": "normal" },
             "weapon": { "type": "object" },

@@ -186,7 +186,7 @@ func TestTypedRuleErrors(t *testing.T) {
 	if !errors.Is(err, ErrRule) || !errors.As(err, &notDefined) || notDefined.Kind != "table" || notDefined.Key != "no_such_table" {
 		t.Errorf("unknown table: want a NotDefinedError for table no_such_table, got %v", err)
 	}
-	_, err = opened.Run("economy", []byte(`{"op":"convert"}`))
+	_, err = opened.Run("economy", []byte(`{"operation":"convert"}`))
 	var missing *MissingInputError
 	if !errors.Is(err, ErrRule) || !errors.As(err, &missing) || missing.Needs != "cost" {
 		t.Errorf("convert without cost: want a MissingInputError for cost, got %v", err)

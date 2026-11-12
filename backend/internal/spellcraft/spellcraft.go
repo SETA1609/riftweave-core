@@ -30,7 +30,7 @@ type Recipe struct {
 
 // Input is the `spellcraft` command's input. Spell is a key for learn and a recipe for craft.
 type Input struct {
-	Op        string              `json:"op"`
+	Operation string              `json:"operation"`
 	Spell     json.RawMessage     `json:"spell"`
 	Effect    string              `json:"effect"`
 	Color     string              `json:"color"`
@@ -73,7 +73,7 @@ type ResearchResult struct {
 
 // Run is the `spellcraft` command.
 func Run(ruleset *data.Ruleset, input Input) (any, error) {
-	switch input.Op {
+	switch input.Operation {
 	case "craft":
 		var recipe Recipe
 		if err := json.Unmarshal(input.Spell, &recipe); err != nil {
@@ -89,7 +89,7 @@ func Run(ruleset *data.Ruleset, input Input) (any, error) {
 	case "research":
 		return research(ruleset, &input)
 	}
-	return nil, &data.NotDefinedError{Kind: "spellcraft op", Key: input.Op}
+	return nil, &data.NotDefinedError{Kind: "spellcraft operation", Key: input.Operation}
 }
 
 // roundHalfUp rounds to the nearest integer, a half away from zero.

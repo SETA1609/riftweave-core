@@ -30,10 +30,10 @@
       "ranged": [{ "target": "attack", "operation": "add", "value": -10, "source": "situation:shooting_into_melee" }] }
   ],
   "called_shots": [
-    { "key": "torso", "label": "Torso", "attack": 0, "damage_mul": 1, "riders": [] },
-    { "key": "head", "label": "Head", "attack": -20, "damage_mul": 1.5, "riders": [{ "condition": "core:condition/staggered" }] },
-    { "key": "arms", "label": "Arms", "attack": -15, "damage_mul": 0.75, "riders": [{ "event": "disarm", "check": "str" }] },
-    { "key": "legs", "label": "Legs", "attack": -15, "damage_mul": 0.75, "riders": [{ "condition": "core:condition/slowed", "turns": 2 }] },
-    { "key": "groin_eyes", "label": "Groin or eyes", "attack": -30, "damage_mul": 2, "riders": [{ "condition": "core:condition/staggered" }, { "condition": "core:condition/stunned", "check": "end", "turns": 1 }] }
+    { "key": "torso", "label": "Torso", "attack": 0, "damage_multiplier": 1, "riders": [] },
+    { "key": "head", "label": "Head", "attack": -20, "damage_multiplier": 1.5, "riders": [{ "condition": "core:condition/staggered" }] },
+    { "key": "arms", "label": "Arms", "attack": -15, "damage_multiplier": 0.75, "riders": [{ "event": "disarm", "check": "str" }] },
+    { "key": "legs", "label": "Legs", "attack": -15, "damage_multiplier": 0.75, "riders": [{ "condition": "core:condition/slowed", "turns": 2 }] },
+    { "key": "groin_eyes", "label": "Groin or eyes", "attack": -30, "damage_multiplier": 2, "riders": [{ "condition": "core:condition/staggered" }, { "condition": "core:condition/stunned", "check": "end", "turns": 1 }] }
   ]
 }

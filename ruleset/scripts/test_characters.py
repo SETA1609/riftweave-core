@@ -191,7 +191,7 @@ def vectors(all_replays):
             out.append({
                 "name": f"{name} level {sheet['level']}: skill points",
                 "function": "progression",
-                "op": "level_up",
+                "operation": "level_up",
                 "actor": {"attributes": replay.final},
                 "luck_roll": sheet["luck_roll"],
                 "hp_roll": 0,

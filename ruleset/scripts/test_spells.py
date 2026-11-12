@@ -231,7 +231,7 @@ class TestSpellKnowledge(unittest.TestCase):
         for key, _ in TEMPLATES.values():
             with self.subTest(template=key):
                 row = rows[key]
-                crafted = run_spellcraft({"op": "craft", "spell": {"color": row["color"], "effects": row["effects"]},
+                crafted = run_spellcraft({"operation": "craft", "spell": {"color": row["color"], "effects": row["effects"]},
                                           "caster": {"known": [a["effect"] for a in row["effects"]], "skills": {}}})
                 self.assertEqual((crafted["mana"], crafted["cast_threshold"]), (row["cost"]["mana"], row["cost"]["mana"]))
 

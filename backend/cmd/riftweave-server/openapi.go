@@ -20,11 +20,11 @@ const (
 
 // commandFile is the part of a contract file the document reads.
 type commandFile struct {
-	Name         string `json:"name"`
-	Summary      string `json:"summary"`
-	Doc          string `json:"doc"`
-	InputSchema  any    `json:"input_schema"`
-	ResultSchema any    `json:"result_schema"`
+	Name          string `json:"name"`
+	Summary       string `json:"summary"`
+	Documentation string `json:"documentation"`
+	InputSchema   any    `json:"input_schema"`
+	ResultSchema  any    `json:"result_schema"`
 }
 
 // commandFiles reads every served command's contract file, sorted by name.
@@ -181,7 +181,7 @@ func buildOpenAPI(schemaPath string) ([]byte, error) {
 			return nil, fmt.Errorf("%s result: %w", file.Name, err)
 		}
 		var operation map[string]any = post(file.Name, file.Summary, input, result)
-		operation["post"].(map[string]any)["description"] = "The rules are in " + file.Doc + "."
+		operation["post"].(map[string]any)["description"] = "The rules are in " + file.Documentation + "."
 		paths["/v1/commands/"+file.Name] = operation
 		if file.Name == "session" {
 			sessionResult = result

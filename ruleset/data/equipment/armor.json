@@ -1,6 +1,6 @@
 {
   "$schema": "../../schemas/equipment.schema.json",
   "equipment": [
-    { "key": "steel_chainmail",        "base": "core:armor_base/chainmail",               "overrides": { "enchantment_slots": 2, "phase": "metal", "effect_magnitude_mult": 1.0, "cost": { "quantity": 100, "unit": "gp" } } }
+    { "key": "steel_chainmail",        "base": "core:armor_base/chainmail",               "overrides": { "enchantment_slots": 2, "phase": "metal", "effect_magnitude_multiplier": 1.0, "cost": { "quantity": 100, "unit": "gp" } } }
   ]
 }

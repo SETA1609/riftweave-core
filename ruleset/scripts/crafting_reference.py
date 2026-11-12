@@ -108,7 +108,7 @@ class CraftingResolver:
         # Bonuses
         attack_bonus = item.get("attack_bonus", 0)
         defense_bonus = item.get("defense_bonus", 0)
-        eff_mag_mult = item.get("effect_magnitude_mult", 1.0)
+        eff_mag_mult = item.get("effect_magnitude_multiplier", 1.0)
 
         self.log(f"  Attack bonus: +{attack_bonus}")
         self.log(f"  Defense bonus: +{defense_bonus}")
@@ -125,7 +125,7 @@ class CraftingResolver:
                 dur = ae.get("duration", 0)
 
                 # Apply material effectMagnitude multiplier
-                mag_mult = item["effect_magnitude_mult"]
+                mag_mult = item["effect_magnitude_multiplier"]
                 modified_mag = mag * mag_mult if mag else 0
 
                 # Wuxing interaction: item phase vs effect phase

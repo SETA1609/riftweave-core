@@ -195,7 +195,7 @@ def run_spellcraft(vector):
     effects = {f"core:effect/{e['key']}": e for e in load_data("effects/core.json")["effects"]}
     caster = vector["caster"]
     known = caster.get("known", [])
-    op = vector["op"]
+    op = vector["operation"]
     if op == "craft":
         spell = vector["spell"]
         rejected = []

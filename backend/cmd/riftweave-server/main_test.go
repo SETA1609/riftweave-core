@@ -122,7 +122,7 @@ func TestStatusCodes(t *testing.T) {
 		{"bad input", http.MethodPost, "/v1/commands/resolution", `{"actor":{"attributes":{"str":1}},"roll":5,"extra":1}`, http.StatusBadRequest},
 		{"not JSON", http.MethodPost, "/v1/commands/resolution", `{`, http.StatusBadRequest},
 		{"an unknown key", http.MethodPost, "/v1/commands/loot", `{"table":"no_such_table","rolls":[1]}`, http.StatusNotFound},
-		{"a missing input", http.MethodPost, "/v1/commands/economy", `{"op":"convert"}`, http.StatusBadRequest},
+		{"a missing input", http.MethodPost, "/v1/commands/economy", `{"operation":"convert"}`, http.StatusBadRequest},
 		{"a rule refuses", http.MethodPost, "/v1/commands/loot", `{"table":"hoard_minor","rolls":[1]}`, http.StatusUnprocessableEntity},
 		{"wrong method", http.MethodGet, "/v1/commands/formula", ``, http.StatusMethodNotAllowed},
 		{"dev is not served", http.MethodPost, "/v1/commands/dev", `{"operation":"xp","add":1,"session":{}}`, http.StatusNotFound},

@@ -14,7 +14,7 @@ import (
 
 // Input is the `progression` command's input; `op` says which fields it reads.
 type Input struct {
-	Operation  string       `json:"op"`
+	Operation  string       `json:"operation"`
 	Level      *int64       `json:"level"`
 	Experience *int64       `json:"xp"`
 	Actor      *actor.Actor `json:"actor"`
@@ -165,7 +165,7 @@ func Run(ruleset *data.Ruleset, input Input) (any, error) {
 		}
 		return readSkill(ruleset, input.Actor, *input.Read, input.Groups)
 	}
-	return nil, &data.NotDefinedError{Kind: "progression op", Key: input.Operation}
+	return nil, &data.NotDefinedError{Kind: "progression operation", Key: input.Operation}
 }
 
 // readSkill reads one skill off a sheet (docs/core/progression.md#two-sheets-one-rule-set). A

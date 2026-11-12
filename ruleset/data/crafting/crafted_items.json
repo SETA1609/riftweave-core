@@ -10,7 +10,7 @@
       "phase": "metal",
       "attack_bonus": 5,
       "defense_bonus": 0,
-      "effect_magnitude_mult": 1.0,
+      "effect_magnitude_multiplier": 1.0,
       "enchantments": [],
       "coatings": []
     },
@@ -23,7 +23,7 @@
       "phase": "metal",
       "attack_bonus": 0,
       "defense_bonus": 3,
-      "effect_magnitude_mult": 1.0,
+      "effect_magnitude_multiplier": 1.0,
       "enchantments": [],
       "coatings": []
     },
@@ -36,7 +36,7 @@
       "phase": "fire",
       "attack_bonus": 5,
       "defense_bonus": 0,
-      "effect_magnitude_mult": 1.0,
+      "effect_magnitude_multiplier": 1.0,
       "engraving_jewel": { "gem_key": "core:gem/ruby", "phase": "fire" },
       "enchantments": [
         { "effect": "core:effect/burn", "magnitude": 3, "duration": 10 }
@@ -52,7 +52,7 @@
       "phase": "water",
       "attack_bonus": 3,
       "defense_bonus": 0,
-      "effect_magnitude_mult": 1.2,
+      "effect_magnitude_multiplier": 1.2,
       "engraving_jewel": { "gem_key": "core:gem/sapphire", "phase": "water" },
       "enchantments": [
         { "effect": "core:effect/damage_frost", "magnitude": 6, "duration": 1 }
@@ -68,7 +68,7 @@
       "phase": "fire",
       "attack_bonus": 6,
       "defense_bonus": 0,
-      "effect_magnitude_mult": 1.0,
+      "effect_magnitude_multiplier": 1.0,
       "enchantments": [
         { "effect": "core:effect/burn", "magnitude": 3, "duration": 10 }
       ],
@@ -86,7 +86,7 @@
       "phase": "metal",
       "attack_bonus": 0,
       "defense_bonus": 0,
-      "effect_magnitude_mult": 1.3,
+      "effect_magnitude_multiplier": 1.3,
       "engraving_jewel": { "gem_key": "core:gem/diamond", "phase": "metal" },
       "enchantments": [
         { "effect": "core:effect/resist", "magnitude": 25, "parameter": "magic" }

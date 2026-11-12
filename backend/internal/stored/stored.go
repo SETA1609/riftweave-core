@@ -41,12 +41,12 @@ type ActiveModifier struct {
 
 // ItemInstance is one item the actor holds, pointing at a row.
 type ItemInstance struct {
-	ID       int64             `json:"id"`
-	Base     string            `json:"base"`
-	Material string            `json:"material,omitempty"`
-	Size     string            `json:"size,omitempty"`
-	Mods     []json.RawMessage `json:"mods"`
-	Quantity int64             `json:"quantity"`
+	ID           int64             `json:"id"`
+	Base         string            `json:"base"`
+	Material     string            `json:"material,omitempty"`
+	Size         string            `json:"size,omitempty"`
+	AddedEffects []json.RawMessage `json:"added_effects"`
+	Quantity     int64             `json:"quantity"`
 }
 
 // Actor is the stored actor.

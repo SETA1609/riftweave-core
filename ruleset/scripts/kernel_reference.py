@@ -324,11 +324,11 @@ def to_copper(economy, cost):
 def run_economy(vector):
     """`convert` a cost to copper, or price one `trade` (buy or sell) with an optional barter check."""
     economy = load_data("economy/core.json")
-    op = vector["op"]
+    op = vector["operation"]
     if op == "convert":
         return {"cp": to_copper(economy, vector["cost"])}
     if op != "trade":
-        raise ValueError(f"economy op {op!r} is not defined")
+        raise ValueError(f"economy operation {op!r} is not defined")
     rules = economy["barter"]
     merchant = next(m for m in economy["merchants"] if m["key"] == vector["merchant"])
     buying = vector["side"] == "buy"
@@ -462,7 +462,7 @@ def run_combat(vector):
         modifier = evaluate_formula(load_data("formulas/attribute_modifier.json")["expression"], {}, {"attribute": attribute})
         amount = max(amount + modifier, 0)
     if called is not None:
-        amount = math.floor(amount * called["damage_mul"])
+        amount = math.floor(amount * called["damage_multiplier"])
     if crit:
         amount = evaluate_formula(pipeline["crit_damage"], {}, {"damage": amount})
     if result["evaded"]:
@@ -489,7 +489,7 @@ def run_combat(vector):
 def run_progression(vector):
     """XP and level, one level-up pool, and spending a pool on one skill; `op` picks which."""
     rules = load_data("progression/core.json")["progression"]
-    op = vector["op"]
+    op = vector["operation"]
     if op == "xp":
         level = vector["level"]
         total = evaluate_formula(rules["xp_to_reach"], {}, {"level": level})
@@ -536,7 +536,7 @@ def run_progression(vector):
         return {"ranks": ranks, "spent": ranks * cost, "left": vector["points"] - ranks * cost}
     if op == "read_skill":
         return read_skill(vector["actor"], vector["read"], vector.get("groups"))
-    raise ValueError(f"progression op {op!r} is not defined")
+    raise ValueError(f"progression operation {op!r} is not defined")
 
 
 def read_skill(actor, key, groups=None):
