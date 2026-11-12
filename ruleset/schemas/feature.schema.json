@@ -89,6 +89,8 @@
         },
         "effects": {
           "type": "array",
+          "deprecated": true,
+          "description": "Retired by M5-35: a feature states its mechanics once, in `modifiers`, and its `description` says them in words. The data step removes this list and the property.",
           "items": {
             "type": "object",
             "properties": {
@@ -115,7 +117,7 @@
         },
         "modifiers": {
           "type": "array",
-          "description": "Contract modifiers this feature emits (docs/core/modifier.md). Racial traits use source feature:<key> and origin core:origin/innate (docs/modules/race.md#5a-what-a-race-emits).",
+          "description": "The one statement of what this feature does: the contract modifiers it emits (docs/core/modifier.md, M5-35). A perk or creation trait uses source feature:<key> and origin core:origin/trained; racial traits use origin core:origin/innate (docs/modules/race.md#5a-what-a-race-emits).",
           "items": { "$ref": "schema.json#/definitions/modifier" }
         },
         "unlocks": { "type": "array", "items": { "oneOf": [ { "$ref": "schema.json#/definitions/monsterTemplateRef" }, { "$ref": "schema.json#/definitions/materialRef" } ] }, "uniqueItems": true, "minItems": 1, "description": "What the perk unlocks beyond a number a modifier holds: a summon power or nature (core:monster_template/<key>), or a bound weapon's material (docs/modules/monsters.md#summoned-creatures). Each ref must resolve." },
