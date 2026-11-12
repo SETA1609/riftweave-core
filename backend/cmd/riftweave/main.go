@@ -33,7 +33,7 @@ const usage = `usage: riftweave [--data <dir>] <command> [file]
        riftweave --dev dev [<operation>] [file]
        riftweave list
        riftweave describe <command>
-       riftweave play
+       riftweave [--dev] play
 
 A command reads one JSON object from the file, or from stdin, and writes its result to
 stdout. Errors are JSON on stderr. Exit 0 ok, 1 rule error, 2 bad input, 3 no ruleset.
@@ -86,7 +86,7 @@ func run(args []string, stdin io.Reader, stdout, stderr io.Writer, getenv func(s
 		return exitOK
 	}
 	if args[0] == "play" {
-		return interactive(dataFlag, stdin, stdout, stderr, getenv)
+		return interactive(dataFlag, devFlag, stdin, stdout, stderr, getenv)
 	}
 	return command(args, dataFlag, devFlag, stdin, stdout, stderr, getenv)
 }
@@ -111,7 +111,7 @@ func isTerminal(file *os.File) bool {
 }
 
 // interactive runs the human CLI (docs/backend/cli.md#human-mode).
-func interactive(dataFlag string, stdin io.Reader, stdout, stderr io.Writer, getenv func(string) string) int {
+func interactive(dataFlag string, devFlag bool, stdin io.Reader, stdout, stderr io.Writer, getenv func(string) string) int {
 	if file, isFile := stdin.(*os.File); !isFile || !isTerminal(file) {
 		return fail(stderr, exitInput, "play needs a terminal; agents call a command directly")
 	}
@@ -123,7 +123,12 @@ func interactive(dataFlag string, stdin io.Reader, stdout, stderr io.Writer, get
 	if err != nil {
 		return fail(stderr, exitRuleset, "loading %s: %v", directory, err)
 	}
-	var program *tea.Program = tea.NewProgram(play.New(opened.Run), tea.WithInput(stdin), tea.WithOutput(stdout))
+	var model play.Model = play.New(opened.Run)
+	if devFlag {
+		opened.EnableDev()
+		model = play.NewDev(opened.Run)
+	}
+	var program *tea.Program = tea.NewProgram(model, tea.WithInput(stdin), tea.WithOutput(stdout))
 	if _, err := program.Run(); err != nil {
 		return fail(stderr, exitInput, "play needs a terminal: %v", err)
 	}
