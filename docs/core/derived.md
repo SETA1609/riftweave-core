@@ -12,7 +12,7 @@ value = base + attribute_term + level * (attribute * per_level_attribute + per_l
 final = apply(modifiers, value)
 ```
 
-Division is integer division. `per_point_divisor` defaults to 1. `attribute` is the current attribute after its own modifiers. Derived modifiers apply after the function. Stacking is the kernel contract: same source does not stack, different sources add unless they share a `highest` origin ([modifier.md](modifier.md#origin)), `mul` after `add`.
+Division is integer division. `per_point_divisor` defaults to 1. `attribute` is the current attribute after its own modifiers. Derived modifiers apply after the function. Stacking is the kernel contract: same source does not stack, different sources add unless they share a `highest` origin ([modifier.md](modifier.md#origin)), `multiply` after `add`.
 
 | key | attribute | formula |
 | --- | --- | --- |

@@ -52,7 +52,7 @@ Each subtraction stops at zero before the next step: a step never raises damage.
 - **Crit** multiplies damage by 2 (`crit_damage` in `pipeline.json`). It is a consumer of the `crit` tag, not a second roll. Crit multiplies before any reduction. [A]
 - **Block** compares margins as the TTRPG prose does: the blocker's margin must reach the attacker's. It is the other reaction (step 2) and reduces damage instead of avoiding it. The video-game input-timed block is a client mapping of the same numbers. Block applies only to types with `armor_dr_applies`: a shield does not stop fire. Evade applies to any type the delivery allows. [A]
 - **Armor DR** is the sum of worn pieces ([armor.md](../modules/armor.md)); the pipeline takes the sum as an input. Types tagged `bypasses_armor` or `bypasses_physical_armor` carry no `armor_dr_applies`, so DR skips them. A piercing hit halves DR, rounded down. [A]
-- **Resist** is the contract's `resist` op: a flat subtraction from a packet whose tag matches the damage type. [V 2026-11-02, read contract.md]
+- **Resist** is the contract's `resist` operation: a flat subtraction from a packet whose tag matches the damage type. [V 2026-11-02, read contract.md]
 - **HP** floors at 0. What happens at 0 (down, dead) is not in this file. [U]
 
 ## Block and dodge perks

@@ -348,7 +348,7 @@ Racial features may also be authored inline on a race in `races/core.json`.
 A perk reaches the character only as contract modifiers ([modifier.md](../core/modifier.md)),
 in its `modifiers` list: source `feature:<key>`, origin `core:origin/trained`, so every
 perk counts and two perks never cancel. A ranked perk's values are per rank: rank 2
-emits each `add` at twice its value, and a `mul` of `m` at `1 + (m − 1) × rank`, so +15% per rank is
+emits each `add` at twice its value, and a `multiply` of `m` at `1 + (m − 1) × rank`, so +15% per rank is
 1.15, then 1.30. [A]
 
 A feature states its mechanics once, in `modifiers`, and its `description` says the same
@@ -366,7 +366,7 @@ Targets are a skill key (`lockpick`, `persuasion`), a derived stat (`hp`, `mp`,
 `carry`, `initiative`), an action key for its AP cost (`cast`, `aimed`), a target that
 a kernel function reads (`attack`, `crit_window`, `loot_roll`), or a named target a
 consumer reads (`sneak_attack_damage`, `thrall_limit`); a `grant` names a
-flag. A share of something is a `mul` on that target: +25% is `mul 1.25`. A target with nothing to
+flag. A share of something is a `multiply` on that target: +25% is `multiply 1.25`. A target with nothing to
 scale yet states its unit in its description.
 
 ### The catalogue

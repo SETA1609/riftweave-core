@@ -113,11 +113,11 @@ Data in `conditions/core.json` (25 entries). Each entry:
 | 15 | exhaustion | Stacks to 6: −10 on checks for each level; at 3 speed is halved, at 5 speed is 0, at 6 the actor dies. A full rest removes one level. | `add checks -10` |
 | 16 | burning | On fire: the burn effect deals its fire damage each second until it ends. Water, frost, or a cure puts it out. | — |
 | 17 | bleeding | The bleed effect deals its damage each second until a bandage, healing, or a Medicine check stops it. | — |
-| 18 | slowed | Speed halved, −10 on AGI checks, and every action costs 1 AP more (5 stamina in real time). | `mul speed 0.5`, `add agility_checks -10`, `add action_cost 1` |
+| 18 | slowed | Speed halved, −10 on AGI checks, and every action costs 1 AP more (5 stamina in real time). | `multiply speed 0.5`, `add agility_checks -10`, `add action_cost 1` |
 | 19 | silenced | Cannot cast spells, and −20 on social checks that need speech. | `add persuasion -20`, `add deception -20`, `add intimidation -20` |
 | 20 | diseased | The disease effect's symptoms apply; END resists them, and a cure with parameter disease ends it. | — |
 | 21 | cursed | −2 on every attribute; a rest does not end it. | `add str -2`, `add per -2`, `add end -2`, `add int -2`, `add wil -2`, `add agi -2`, `add cha -2`, `add lck -2` |
-| 22 | exposed | Defenses down: −10 evasion, armor DR halved, and damage taken ×1.25. | `add evasion -10`, `mul armor_dr 0.5`, `mul incoming_damage 1.25` |
+| 22 | exposed | Defenses down: −10 evasion, armor DR halved, and damage taken ×1.25. | `add evasion -10`, `multiply armor_dr 0.5`, `multiply incoming_damage 1.25` |
 | 23 | taunted | −20 on attacks against anyone but the taunter, and cannot willingly move away from it. | — |
 | 24 | staggered | Cannot react until its next turn, and −10 on the next action. | — |
 

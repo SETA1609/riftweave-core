@@ -4,7 +4,7 @@ Author: SETA1609
 
 Optional tag reader, and a module: `ruleset/modules/wuxing/` holds the matrix. Core rows keep `phase` as an optional tag, and no core rule reads it. With the module off, nothing changes. [V 2026-11-11, core vectors pass in Python and Go with and without it]
 
-The module's effect on an attack or a cast is a modifier through the [contract](../core/contract.md): the consumer asks the interaction function and emits `mul` on the magnitude, with source `module:wuxing`. Combat and casting never call this module. [A]
+The module's effect on an attack or a cast is a modifier through the [contract](../core/contract.md): the consumer asks the interaction function and emits `multiply` on the magnitude, with source `module:wuxing`. Combat and casting never call this module. [A]
 
 A fire bolt is an effect list. A phase is a tag. This module may read it. Core must resolve an attack and a level-up with this module unloaded. Unknown phase tags are ignored.
 
