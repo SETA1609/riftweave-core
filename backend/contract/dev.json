@@ -2,7 +2,7 @@
   "$schema": "./command.schema.json",
   "name": "dev",
   "summary": "Dev mode only (--dev): change a session's actor directly for testing, log the operation, and mark the session dev.",
-  "doc": "docs/backend/dev-mode.md",
+  "documentation": "docs/backend/dev-mode.md",
   "input_schema": {
     "type": "object",
     "properties": {

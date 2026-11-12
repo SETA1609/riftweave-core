@@ -2,7 +2,7 @@
   "$schema": "./command.schema.json",
   "name": "actions",
   "summary": "The AP pool and the cost of a list of actions, in AP and in real-time stamina.",
-  "doc": "docs/core/actions.md",
+  "documentation": "docs/core/actions.md",
   "input_schema": {
     "type": "object",
     "properties": {

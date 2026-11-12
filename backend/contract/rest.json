@@ -2,7 +2,7 @@
   "$schema": "./command.schema.json",
   "name": "rest",
   "summary": "Recover resources and clear conditions for one rest occasion.",
-  "doc": "docs/core/rest.md",
+  "documentation": "docs/core/rest.md",
   "input_schema": {
     "type": "object",
     "properties": {

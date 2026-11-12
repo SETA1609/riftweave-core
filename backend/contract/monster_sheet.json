@@ -2,7 +2,7 @@
   "$schema": "./command.schema.json",
   "name": "monster_sheet",
   "summary": "A monster's derived stats and the skills asked for, by the same rules as a player.",
-  "doc": "docs/core/actor-sheet.md",
+  "documentation": "docs/core/actor-sheet.md",
   "input_schema": {
     "type": "object",
     "properties": {

@@ -2,7 +2,7 @@
   "$schema": "./command.schema.json",
   "name": "wuxing",
   "summary": "The cycle that fires when two phased participants meet.",
-  "doc": "docs/modules/wuxing.md",
+  "documentation": "docs/modules/wuxing.md",
   "input_schema": {
     "type": "object",
     "properties": {

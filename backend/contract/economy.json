@@ -2,11 +2,11 @@
   "$schema": "./command.schema.json",
   "name": "economy",
   "summary": "Convert a cost to copper, or price a purchase or sale with an optional barter check.",
-  "doc": "docs/core/economy.md",
+  "documentation": "docs/core/economy.md",
   "input_schema": {
     "type": "object",
     "properties": {
-      "op": {
+      "operation": {
         "type": "string",
         "enum": [
           "convert",
@@ -52,13 +52,13 @@
     },
     "additionalProperties": false,
     "required": [
-      "op"
+      "operation"
     ],
     "allOf": [
       {
         "if": {
           "properties": {
-            "op": {
+            "operation": {
               "const": "convert"
             }
           }
@@ -72,7 +72,7 @@
       {
         "if": {
           "properties": {
-            "op": {
+            "operation": {
               "const": "trade"
             }
           }

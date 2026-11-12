@@ -28,7 +28,8 @@
         },
         "attack_bonus": { "type": "number", "description": "Derived from material.weapon.attack. Added to the base weapon's damage or attack." },
         "defense_bonus": { "type": "number", "description": "Derived from material.armor.defense. Added to armor DR." },
-        "effect_magnitude_mult": { "type": "number", "minimum": 0, "default": 1.0, "description": "Multiplier to enchantment/coating magnitudes. Base 1.0; material.ingredient.effectMagnitude adds to this." },
+        "effect_magnitude_mult": { "type": "number", "minimum": 0, "description": "Retired name of effect_magnitude_multiplier (M5-46); the data step removes it." },
+        "effect_magnitude_multiplier": { "type": "number", "minimum": 0, "default": 1.0, "description": "Multiplier to enchantment/coating magnitudes. Base 1.0; material.ingredient.effectMagnitude adds to this." },
         "engraving_jewel": {
           "type": "object",
           "description": "Optional jewel engraved into the item. Overwrites the item's effective phase with the jewel's phase. In v1, this is the entire engraving mechanic — no additional effects.",

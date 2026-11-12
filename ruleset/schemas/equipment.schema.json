@@ -47,6 +47,11 @@
         "effect_magnitude_mult": {
           "type": "number",
           "minimum": 0,
+          "description": "Retired name of effect_magnitude_multiplier (M5-46); the data step removes it."
+        },
+        "effect_magnitude_multiplier": {
+          "type": "number",
+          "minimum": 0,
           "description": "Fractional multiplier applied to enchantment effect magnitudes. e.g. 1.25 = +25%. Provided by material overrides."
         },
         "size": {
@@ -215,6 +220,7 @@
             "enchantment_slots": { "type": "integer" },
             "phase": { "$ref": "schema.json#/definitions/phase" },
             "effect_magnitude_mult": { "type": "number", "minimum": 0 },
+            "effect_magnitude_multiplier": { "type": "number", "minimum": 0 },
             "size": { "type": "string", "enum": ["undersized", "normal", "oversized"], "default": "normal" },
             "weapon": { "type": "object" },
             "armor": { "type": "object" },
