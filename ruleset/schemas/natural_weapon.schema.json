@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Natural weapon",
+  "description": "A monster's natural attack: a bite, a claw, a slam (docs/modules/monsters.md#natural-weapons). Not equipment: it cannot be bought, looted, or enchanted. The dice are a medium creature's; size_steps moves them along the dice ladder.",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "natural_weapons": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/naturalWeapon" }
+    },
+    "size_steps": {
+      "type": "object",
+      "description": "Dice ladder steps (combat/dice_ladder.json) by creature size, stopping at the ladder's ends.",
+      "properties": {
+        "tiny": { "type": "integer" },
+        "small": { "type": "integer" },
+        "medium": { "type": "integer" },
+        "large": { "type": "integer" },
+        "huge": { "type": "integer" }
+      },
+      "required": ["tiny", "small", "medium", "large", "huge"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["natural_weapons", "size_steps"],
+  "additionalProperties": false,
+  "definitions": {
+    "naturalWeapon": {
+      "type": "object",
+      "properties": {
+        "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
+        "label": { "type": "string", "minLength": 1 },
+        "description": { "type": "string" },
+        "dice": { "$ref": "schema.json#/definitions/diceExpression", "description": "A medium creature's dice." },
+        "damage_type": { "$ref": "schema.json#/definitions/damageType" }
+      },
+      "required": ["key", "label", "description", "dice", "damage_type"],
+      "additionalProperties": false
+    }
+  }
+}

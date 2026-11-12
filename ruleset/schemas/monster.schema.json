@@ -20,22 +20,28 @@
   "definitions": {
     "attack": {
       "type": "object",
+      "description": "A natural or carried weapon attack: the weapon's dice plus the attribute modifier of ability (docs/modules/monsters.md#attacks-resistances-and-role).",
       "properties": {
         "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
         "label": { "type": "string", "minLength": 1 },
+        "weapon": {
+          "description": "What the attack rolls: a natural weapon (core:natural_weapon/<key>), sized by the creature, or a carried weapon (core:weapon/<key>).",
+          "oneOf": [ { "$ref": "schema.json#/definitions/naturalWeaponRef" }, { "$ref": "schema.json#/definitions/itemRef" } ]
+        },
+        "ability": { "$ref": "schema.json#/definitions/ability", "description": "The attribute whose modifier adds to the damage; default str." },
         "damage": {
           "type": "object",
           "properties": {
-            "amount": { "type": "integer", "minimum": 0, "description": "The authored average; the caller's damage roll." },
-            "type": { "$ref": "schema.json#/definitions/damageType" }
+            "amount": { "type": "integer", "minimum": 0, "description": "Retired: the authored average before natural weapons. The data step removes it." },
+            "type": { "$ref": "schema.json#/definitions/damageType", "description": "The damage type, when it is not the weapon's. An element template does not change a type the attack names." },
+            "bonus": { "type": "integer", "description": "Added to the roll: what damagePerLevel gives a creature above its row's level." }
           },
-          "required": ["amount", "type"],
           "additionalProperties": false
         },
         "delivery": { "type": "string", "enum": ["single", "area", "instant"], "description": "Which reactions the attack allows (docs/core/combat.md); default single." },
         "phase": { "$ref": "schema.json#/definitions/phase", "description": "The phase the attack carries into the five-phase cycles." }
       },
-      "required": ["key", "label", "damage"],
+      "required": ["key", "label"],
       "additionalProperties": false
     },
     "monsterData": {
@@ -56,9 +62,9 @@
         "level": { "type": "integer", "minimum": 1, "description": "Encounter/threat level." },
         "attributes": {
           "type": "object",
-          "description": "The eight attributes (1-10), keyed by ability id. Optional; engines derive missing values from level.",
+          "description": "The eight attributes, keyed by ability id: at least 1 and no maximum, since 10 is only a player's cap at character creation. Optional; engines derive missing values from level.",
           "propertyNames": { "$ref": "schema.json#/definitions/ability" },
-          "additionalProperties": { "type": "integer", "minimum": 1, "maximum": 10 }
+          "additionalProperties": { "type": "integer", "minimum": 1 }
         },
         "hitPoints": { "type": "integer", "minimum": 1, "description": "Optional authored HP; it replaces the computed value (docs/core/actor-sheet.md)." },
         "skills": { "type": "object", "description": "Only the skills this monster fights or casts with; any other reads as a starting value (docs/core/actor-sheet.md).", "propertyNames": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" }, "additionalProperties": { "type": "integer", "minimum": 0, "maximum": 100 } },
@@ -67,6 +73,7 @@
           "description": "The monster's attacks and innate powers, drawn from the shared effect registry (data/effects). A monster typically wields effects of its own phase, but need not.",
           "items": { "$ref": "schema.json#/definitions/appliedEffect" }
         },
+        "spells": { "type": "array", "items": { "$ref": "schema.json#/definitions/spellRef" }, "uniqueItems": true, "description": "Spells it casts as a player does, from the mana of the mp row (docs/modules/monsters.md#templates)." },
         "loot": { "type": "array", "minItems": 1, "description": "The rows this monster rolls when defeated (docs/core/loot.md#drops). Replaces what it inherits.", "items": { "$ref": "loot.schema.json#/definitions/lootRow" } },
         "role": { "type": "string", "enum": ["standard", "boss", "minion"], "description": "Which hits-to-kill band of balance/core.json the HP is checked against; default standard." },
         "attacks": { "type": "array", "items": { "$ref": "#/definitions/attack" }, "description": "What the monster hits with, as combat attacks (docs/modules/monsters.md#attacks-resistances-and-role)." },
@@ -95,6 +102,11 @@
         "hitPointsPerLevel": {
           "type": "number",
           "description": "HP increase per level beyond the template's base level."
+        },
+        "damagePerLevel": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Added per level above a row's level, rounded, to each attack's damage and each damage_* ability's magnitude (docs/modules/monsters.md#attribute-growth--level-scaling)."
         }
       },
       "additionalProperties": false
@@ -126,9 +138,9 @@
         "level": { "type": "integer", "minimum": 1, "description": "Encounter/threat level." },
         "attributes": {
           "type": "object",
-          "description": "The eight attributes (1-10), keyed by ability id.",
+          "description": "The eight attributes, keyed by ability id: at least 1, no maximum.",
           "propertyNames": { "$ref": "schema.json#/definitions/ability" },
-          "additionalProperties": { "type": "integer", "minimum": 1, "maximum": 10 }
+          "additionalProperties": { "type": "integer", "minimum": 1 }
         },
         "hitPoints": { "type": "integer", "minimum": 1, "description": "Optional authored HP; it replaces the computed value (docs/core/actor-sheet.md)." },
         "skills": { "type": "object", "description": "Only the skills this monster fights or casts with; any other reads as a starting value (docs/core/actor-sheet.md).", "propertyNames": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" }, "additionalProperties": { "type": "integer", "minimum": 0, "maximum": 100 } },
@@ -137,6 +149,7 @@
           "description": "The monster's attacks and innate powers.",
           "items": { "$ref": "schema.json#/definitions/appliedEffect" }
         },
+        "spells": { "type": "array", "items": { "$ref": "schema.json#/definitions/spellRef" }, "uniqueItems": true, "description": "Spells it casts as a player does, from the mana of the mp row (docs/modules/monsters.md#templates)." },
         "loot": { "type": "array", "minItems": 1, "description": "The rows this monster rolls when defeated (docs/core/loot.md#drops). Replaces what it inherits.", "items": { "$ref": "loot.schema.json#/definitions/lootRow" } },
         "role": { "type": "string", "enum": ["standard", "boss", "minion"], "description": "Which hits-to-kill band of balance/core.json the HP is checked against; default standard." },
         "attacks": { "type": "array", "items": { "$ref": "#/definitions/attack" }, "description": "What the monster hits with, as combat attacks (docs/modules/monsters.md#attacks-resistances-and-role)." },
@@ -161,7 +174,7 @@
           "type": "array",
           "items": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
           "uniqueItems": true,
-          "description": "Keys in monsters/templates.json, applied in order after the base and before overrides (docs/modules/monsters.md#templates)."
+          "description": "Keys in monsters/templates.json, at most one per slot, applied element, power, then nature, after the base and before overrides (docs/modules/monsters.md#templates)."
         },
         "overrides": { "$ref": "#/definitions/monsterData" }
       },

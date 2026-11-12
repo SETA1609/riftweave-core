@@ -1,10 +1,10 @@
 {
   "$schema": "../../schemas/monster_template.schema.json",
   "monster_templates": [
-    { "key": "fire", "label": "Fire", "description": "Burning: its blows scorch, and flame washes off it.", "label_prefix": "Fire", "phase": "fire", "damage_type": "fire", "resist": { "fire": 10 }, "tags": ["fire"] },
-    { "key": "frost", "label": "Frost", "description": "Frozen: its blows numb with cold, and ice rimes its body.", "label_prefix": "Frost", "phase": "water", "damage_type": "frost", "resist": { "frost": 10 }, "tags": ["frost"] },
-    { "key": "storm", "label": "Storm", "description": "Charged: its blows crackle with lightning.", "label_prefix": "Storm", "phase": "metal", "damage_type": "shock", "resist": { "shock": 10 }, "tags": ["storm"] },
-    { "key": "acid", "label": "Acid", "description": "Caustic: its blows dissolve flesh and metal alike.", "label_prefix": "Acid", "phase": "earth", "damage_type": "acid", "resist": { "acid": 10 }, "tags": ["acid"] },
-    { "key": "venom", "label": "Venom", "description": "Venomous: its blows carry poison.", "label_prefix": "Venom", "phase": "wood", "damage_type": "poison", "resist": { "poison": 10 }, "tags": ["venom"] }
+    { "key": "fire", "label": "Fire", "description": "Burning: its blows scorch, and flame washes off it.", "slot": "element", "label_prefix": "Fire", "phase": "fire", "damage_type": "fire", "resist": { "fire": 10 }, "tags": ["fire"] },
+    { "key": "frost", "label": "Frost", "description": "Frozen: its blows numb with cold, and ice rimes its body.", "slot": "element", "label_prefix": "Frost", "phase": "water", "damage_type": "frost", "resist": { "frost": 10 }, "tags": ["frost"] },
+    { "key": "storm", "label": "Storm", "description": "Charged: its blows crackle with lightning.", "slot": "element", "label_prefix": "Storm", "phase": "metal", "damage_type": "shock", "resist": { "shock": 10 }, "tags": ["storm"] },
+    { "key": "acid", "label": "Acid", "description": "Caustic: its blows dissolve flesh and metal alike.", "slot": "element", "label_prefix": "Acid", "phase": "earth", "damage_type": "acid", "resist": { "acid": 10 }, "tags": ["acid"] },
+    { "key": "venom", "label": "Venom", "description": "Venomous: its blows carry poison.", "slot": "element", "label_prefix": "Venom", "phase": "wood", "damage_type": "poison", "resist": { "poison": 10 }, "tags": ["venom"] }
   ]
 }
