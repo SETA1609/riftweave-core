@@ -1,42 +1,170 @@
 [
   {
     "name": "agi 6, one attack",
-    "actor": { "attributes": { "agi": 6 } },
-    "actions": ["attack"],
-    "expect": { "pool": 4, "cost": 3 }
+    "actor": {
+      "attributes": {
+        "agi": 6
+      }
+    },
+    "actions": [
+      "attack"
+    ],
+    "expect": {
+      "pool": 4,
+      "cost": 3
+    }
   },
   {
     "name": "agi 9, aimed attack adds 2",
-    "actor": { "attributes": { "agi": 9 } },
-    "actions": ["attack", "aimed"],
-    "expect": { "pool": 5, "cost": 5 }
+    "actor": {
+      "attributes": {
+        "agi": 9
+      }
+    },
+    "actions": [
+      "attack",
+      "aimed"
+    ],
+    "expect": {
+      "pool": 5,
+      "cost": 5
+    }
   },
   {
     "name": "agi 3, double move is two moves",
-    "actor": { "attributes": { "agi": 3 } },
-    "actions": ["move", "move"],
-    "expect": { "pool": 3, "cost": 2 }
+    "actor": {
+      "attributes": {
+        "agi": 3
+      }
+    },
+    "actions": [
+      "move",
+      "move"
+    ],
+    "expect": {
+      "pool": 3,
+      "cost": 2
+    }
   },
-  { "name": "standing up from prone costs 2", "actor": { "attributes": { "agi": 6 } }, "actions": ["stand_up"], "expect": { "pool": 4, "cost": 2 } },
+  {
+    "name": "standing up from prone costs 2",
+    "actor": {
+      "attributes": {
+        "agi": 6
+      }
+    },
+    "actions": [
+      "stand_up"
+    ],
+    "expect": {
+      "pool": 4,
+      "cost": 2
+    }
+  },
   {
     "name": "sidestep: a dodge costs 1 AP less",
-    "actor": { "attributes": { "agi": 6 } },
-    "actions": ["dodge"],
-    "modifiers": [{ "target": "dodge", "op": "add", "value": -1, "source": "feature:sidestep", "origin": "core:origin/trained" }],
-    "expect": { "pool": 4, "cost": 2 }
+    "actor": {
+      "attributes": {
+        "agi": 6
+      }
+    },
+    "actions": [
+      "dodge"
+    ],
+    "modifiers": [
+      {
+        "target": "dodge",
+        "op": "add",
+        "value": -1,
+        "source": "feature:sidestep",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "pool": 4,
+      "cost": 2
+    }
   },
   {
     "name": "sidestep: an attack and a dodge cost 3 and 2",
-    "actor": { "attributes": { "agi": 6 } },
-    "actions": ["attack", "dodge"],
-    "modifiers": [{ "target": "dodge", "op": "add", "value": -1, "source": "feature:sidestep", "origin": "core:origin/trained" }],
-    "expect": { "pool": 4, "cost": 5 }
+    "actor": {
+      "attributes": {
+        "agi": 6
+      }
+    },
+    "actions": [
+      "attack",
+      "dodge"
+    ],
+    "modifiers": [
+      {
+        "target": "dodge",
+        "op": "add",
+        "value": -1,
+        "source": "feature:sidestep",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "pool": 4,
+      "cost": 5
+    }
   },
   {
     "name": "a cost never falls below 0",
-    "actor": { "attributes": { "agi": 6 } },
-    "actions": ["move"],
-    "modifiers": [{ "target": "move", "op": "add", "value": -3, "source": "feature:example", "origin": "core:origin/trained" }],
-    "expect": { "pool": 4, "cost": 0 }
+    "actor": {
+      "attributes": {
+        "agi": 6
+      }
+    },
+    "actions": [
+      "move"
+    ],
+    "modifiers": [
+      {
+        "target": "move",
+        "op": "add",
+        "value": -3,
+        "source": "feature:example",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "pool": 4,
+      "cost": 0
+    }
+  },
+  {
+    "name": "real time: an attack costs its 3 AP times stamina_per_ap, 15 stamina",
+    "actor": {
+      "attributes": {
+        "agi": 6
+      }
+    },
+    "actions": [
+      "attack"
+    ],
+    "expect": {
+      "pool": 4,
+      "cost": 3,
+      "stamina": 15
+    }
+  },
+  {
+    "name": "real time: a move and a dodge cost 4 AP, 20 stamina",
+    "actor": {
+      "attributes": {
+        "agi": 3
+      }
+    },
+    "actions": [
+      "move",
+      "dodge"
+    ],
+    "expect": {
+      "pool": 3,
+      "cost": 4,
+      "stamina": 20
+    }
   }
 ]

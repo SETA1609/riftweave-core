@@ -255,7 +255,8 @@ def run_actions(vector):
         max(apply_modifiers(costs[key], [m for m in modifiers if m["target"] == key]), 0)
         for key in vector.get("actions", [])
     )
-    return {"pool": pool, "cost": cost}
+    # One cost on two clocks: a real-time client pays AP times stamina_per_ap (docs/core/actions.md).
+    return {"pool": pool, "cost": cost, "stamina": cost * data["stamina_per_ap"]}
 
 
 def run_rest(vector):
@@ -561,10 +562,24 @@ def run_consume(vector):
     """Use items and let time pass (docs/core/modifier.md#effects-over-time)."""
     items = {row["key"]: row for row in load_data("equipment/consumables.json")["equipment"]}
     policies = origin_policies()
-    seconds_per_turn = load_data("actions/core.json")["seconds_per_turn"]
+    actions = load_data("actions/core.json")
+    seconds_per_turn = actions["seconds_per_turn"]
+    # At a table a stamina restore is AP that arrives next turn (docs/core/actions.md#one-rule-set-two-clocks).
+    at_table = vector.get("at_table", False)
+    stamina_per_ap, ap_cap = actions["stamina_per_ap"], actions["pool"]["cap"]
+    table = {"ap": vector["current"].get("ap", 0), "pending_ap": 0, "stamina": 0}
     decay = load_data("rest/core.json")["toxicity_decay"]["per_second"]
     pools = dict(vector["current"])
     toxicity = pools.pop("toxicity", 0)
+    pools.pop("ap", None)
+
+    def restore(pool, amount):
+        if at_table and pool == "stamina":
+            table["stamina"] += amount
+            table["pending_ap"] += table["stamina"] // stamina_per_ap
+            table["stamina"] %= stamina_per_ap
+        else:
+            pools[pool] = min(pools[pool] + amount, maximum[pool])
     maximum = vector["max"]
     ticks, held, refused = [], [], []
 
@@ -573,7 +588,7 @@ def run_consume(vector):
         toxicity = max(0, toxicity - decay * seconds)
         for tick in ticks:
             pool = tick["pool"]
-            pools[pool] = min(pools[pool] + tick["magnitude"] * min(seconds, tick["seconds_left"]), maximum[pool])
+            restore(pool, tick["magnitude"] * min(seconds, tick["seconds_left"]))
             tick["seconds_left"] -= seconds
         for row in held:
             row["seconds_left"] -= seconds
@@ -600,7 +615,7 @@ def run_consume(vector):
             if key == "restore_resource":
                 pool = POOL_OF_PARAMETER[effect["parameter"]]
                 if duration == 1:
-                    pools[pool] = min(pools[pool] + effect["magnitude"], maximum[pool])
+                    restore(pool, effect["magnitude"])
                 else:
                     ticks.append({"source": source, "origin": origin, "pool": pool,
                                   "magnitude": effect["magnitude"], "seconds_left": duration})
@@ -613,13 +628,20 @@ def run_consume(vector):
         if "item" in event:
             consume(event)
         elif "turns" in event:
-            advance(event["turns"] * seconds_per_turn)
+            for _ in range(event["turns"]):
+                # The AP restored last turn arrives at the start of this one, up to the pool cap.
+                table["ap"] = min(table["ap"] + table["pending_ap"], ap_cap)
+                table["pending_ap"] = 0
+                advance(seconds_per_turn)
         else:
             advance(event["advance"])
     # Overdosed while toxicity stays above the limit (docs/core/modifier.md#toxicity).
     limit = maximum.get("toxicity")
     conditions = ["core:condition/overdosed"] if limit is not None and toxicity > limit else []
-    return {**pools, "toxicity": toxicity, "conditions": conditions, "ticks": ticks, "modifiers": held, "refused": refused}
+    result = {**pools, "toxicity": toxicity, "conditions": conditions, "ticks": ticks, "modifiers": held, "refused": refused}
+    if at_table:
+        result.update(ap=table["ap"], pending_ap=table["pending_ap"])
+    return result
 def run_stored_actor(vector):
     """A stored actor comes back unchanged, if it is consistent (docs/core/state.md)."""
     actor = vector["actor"]

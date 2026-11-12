@@ -32,10 +32,9 @@
         },
         "cost": {
           "type": "object",
-          "description": "Casting cost. Derived in-engine from the sum of effects; stored here as the authored baseline.",
+          "description": "Casting cost: mana, and any reagents. Magic is paid in mana at a table and in real time alike; no spell costs stamina (docs/core/actions.md#one-rule-set-two-clocks). Derived in-engine from the sum of effects; stored here as the authored baseline.",
           "properties": {
             "mana": { "type": "integer", "minimum": 0 },
-            "stamina": { "type": "integer", "minimum": 0 },
             "reagents": { "type": "array", "items": { "$ref": "schema.json#/definitions/ingredientRef" }, "description": "Ingredient refs (namespaced core:ingredient/<key>) used as reagents for this spell" }
           },
           "additionalProperties": false

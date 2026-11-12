@@ -58,10 +58,11 @@ type ActionsInput struct {
 	Modifiers []modifier.Modifier `json:"modifiers"` // adds on an action's key change its cost
 }
 
-// ActionsResult is the pool and the cost of the named actions.
+// ActionsResult is the pool and the cost of the named actions, in AP and in real-time stamina.
 type ActionsResult struct {
-	Pool int64 `json:"pool"`
-	Cost int64 `json:"cost"`
+	Pool    int64 `json:"pool"`
+	Cost    int64 `json:"cost"`
+	Stamina int64 `json:"stamina"` // Cost times stamina_per_ap (docs/core/actions.md#one-rule-set-two-clocks)
 }
 
 // RunActions is the `actions` command: the pool is base + attribute * per_point / divisor.
@@ -83,6 +84,7 @@ func RunActions(ruleset *data.Ruleset, input ActionsInput) (ActionsResult, error
 		}
 		result.Cost += max(cost, 0)
 	}
+	result.Stamina = result.Cost * ruleset.StaminaPerAP
 	return result, nil
 }
 

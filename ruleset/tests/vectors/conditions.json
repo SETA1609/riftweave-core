@@ -936,5 +936,70 @@
         "prone": 1
       }
     }
+  },
+  {
+    "name": "slowed: every action costs 1 AP more, speed halves, and AGI checks take 10",
+    "base": {
+      "action_cost": 0,
+      "speed": 6,
+      "agility_checks": 0
+    },
+    "events": [
+      {
+        "effect": "core:effect/slow"
+      }
+    ],
+    "expect": {
+      "conditions": {
+        "slowed": 1
+      },
+      "values": {
+        "action_cost": 1,
+        "speed": 3,
+        "agility_checks": -10
+      }
+    }
+  },
+  {
+    "name": "cursed: every attribute takes 2",
+    "base": {
+      "str": 5,
+      "lck": 7
+    },
+    "events": [
+      {
+        "effect": "core:effect/curse"
+      }
+    ],
+    "expect": {
+      "conditions": {
+        "cursed": 1
+      },
+      "values": {
+        "str": 3,
+        "lck": 5
+      }
+    }
+  },
+  {
+    "name": "stunned: no AP and 20 off every check",
+    "base": {
+      "ap": 5,
+      "checks": 0
+    },
+    "events": [
+      {
+        "effect": "core:effect/stun"
+      }
+    ],
+    "expect": {
+      "conditions": {
+        "stunned": 1
+      },
+      "values": {
+        "ap": 0,
+        "checks": -20
+      }
+    }
   }
 ]

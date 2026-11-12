@@ -7,9 +7,10 @@ Authority is the `modifiers` bundle in `ruleset/data/conditions/core.json`. A co
 Conditions are **binary state containers** that are applied and removed by effects from
 the shared effect registry ([`data/effects/core.json`](../../ruleset/data/effects/core.json)).
 Each condition is an envelope — it does not define its own mechanics inline; instead it
-references the effect refs that apply or remove it. The actual penalties and gameplay
-consequences are described in the condition entry's `effects` fields (one for TTRPG,
-one for video game) and implemented by the consuming engine or GM.
+references the effect refs that apply or remove it. Its penalties are its `modifiers` and its
+`combat` block, one rule for a table and a real-time client alike: a table counts the duration
+in turns, `ceil(seconds / 5)`, and a client in seconds ([actions.md](../core/actions.md#one-rule-set-two-clocks)).
+There is no per-mode text (M3-11).
 
 Data lives in [`ruleset/data/conditions/core.json`](../../ruleset/data/conditions/core.json),
 governed by `condition.schema.json`.
@@ -22,7 +23,7 @@ governed by `condition.schema.json`.
 effect (e.g. paralyze core:effect/paralyze)
   → lands on target
     → applies condition (e.g. "paralyzed")
-      → condition's mechanical effects take hold (per TTRPG or video_game mode)
+      → its modifiers and combat block take hold
         → removed when the applying effect expires, or when a cure effect (core:effect/cure) fires
 ```
 
@@ -30,7 +31,7 @@ effect (e.g. paralyze core:effect/paralyze)
 - A condition entry declares which **effect(s)** apply it via `appliedBy` (array of effect refs).
 - The `cure` effect (core:effect/cure) is the primary remover. Its `parameter` specifies which condition to cure.
 - Conditions can also be removed by rest, taking damage (charm breaks), or special actions (stand from prone).
-- A condition's mechanical effects are described in `effects.ttrpg` and `effects.video_game` — these are narrative/descriptive; the actual implementation is the engine's or GM's responsibility.
+- A condition's rules are its `description` in words and its `modifiers` and `combat` block in numbers; a rule with no modifier target yet is described only, and the GM or engine applies it.
 - Stacking conditions (like `exhaustion`) have `stacking: true` and `maxStacks`; each additional application increments the stack up to the max.
 
 **Why effects-driven?**
@@ -68,68 +69,62 @@ This allows conditions to interact naturally — applying a frost enchantment do
 
 ---
 
-## 2. Resolution Modes
+## 2. One rule set
 
-### TTRPG (turn-based)
-- Conditions are binary states with explicit duration tracked by the GM (in rounds or real time).
-- Applied when the corresponding effect successfully lands on a target (the caster/attacker makes their skill check, the defender fails their resist check).
-- Cured via rest, specific spells, or `cure` effects (core:effect/cure).
-- The GM adjudicates edge cases (e.g. "can a blinded character still sense the invisible enemy?").
-- Stacking conditions are tracked as counters (e.g. exhaustion at level 3/6).
-
-### Video game (action-combat)
-- Conditions are timed debuff/buff states. Applied automatically when an effect procs.
-- Duration tracked by the engine in seconds or game ticks.
-- Visual and audio indicators replace GM adjudication (screen flash, icon in HUD, sound cue).
-- Stacking conditions show an intensity counter (e.g. "Exhaustion III").
-- Immunity and resistance are computed from stats and active effects before the condition is applied.
+A table and a real-time client run the same condition: the same modifiers, the same `combat`
+block, the same duration in seconds. A table rounds the duration up to whole turns; a client
+counts seconds and shows the state as an icon. A table's GM still rules on edge cases the data
+does not cover, such as whether a blinded character hears an invisible foe. [V 2026-11-12]
 
 ---
 
 ## 3. Complete Condition Catalog
 
-Data in `conditions/core.json` (24 entries). Each entry:
+Data in `conditions/core.json` (25 entries). Each entry:
 
 | Field | Meaning |
 |-------|---------|
-| `id` | Numeric primary key |
 | `key` | Stable snake_case identifier |
 | `label` | Human-readable name |
-| `description` | Brief summary |
-| `effects.ttrpg` | Mechanical effect in TTRPG/turn-based mode |
-| `effects.video_game` | Mechanical effect in video game/action-combat mode |
-| `appliedBy` | Effect IDs that can apply this condition |
-| `removedBy` | Effect IDs that can remove this condition |
+| `description` | The rule in words, the same for every client |
+| `modifiers` | The rule in numbers: a flag named after the condition, and any modifiers |
+| `appliedBy` | Effect refs that can apply this condition |
+| `removedBy` | Effect refs that can remove this condition |
 | `stacking` | Whether multiple instances stack |
 | `maxStacks` | Maximum stack count |
 | `combat` | Optional object describing mechanical combat impact. See §9.1 (Combat Object Reference) for all fields, defaults, and examples. Omit for conditions with no direct combat modifiers. |
 
-| # | Key | TTRPG Effect | Video Game Effect | appliedBy (effect keys) |
-|---|-----|-------------|-------------------|----------------------|
-| 1 | blinded | −20 PER checks, auto-fail sight- dependent rolls, +10 to attackers | -20 accuracy, +10 enemy crit | 47* |
-| 2 | charmed | Cannot attack charmer; charmer +20 social; damage breaks | Cannot target charmer; damage from charmer breaks | 48* |
-| 3 | deafened | −10 initiative, auto-fail hearing PER | -10 detect range, no audio cues | 49* |
-| 4 | frightened | −10 attack/checks while source in LoS, cannot approach | -10 damage, forced retreat if source closes | 22 (phobia) |
-| 5 | grappled | Speed 0, −10 attacks/AGI, contested athletics to escape | Immobilized, -10 attack, escape via skill | 50* |
-| 6 | incapacitated | Spends no AP, takes no reaction | Cannot act or use abilities | 51* |
-| 7 | invisible | Cannot be seen; −20 enemy attacks, +10 your attacks | Stealthed; attacks break stealth | 8 (invisibility) |
-| 8 | paralyzed | Incapacitated + immobile; auto-fail STR/AGI; melee auto-crit | Immobilized + defenseless; melee hits guaranteed | 11, 43 |
-| 9 | petrified | Incapacitated; DR 20 vs all; immune poison/disease | DR +90, cannot act, no HP regen | 52* |
-| 10 | poisoned | Sub_effects of the source poison apply as symptoms; resist reduces | DoT/debuff from poison's sub_effects; automated | 46 (poison) |
-| 11 | prone | −20 melee attack, +10 vs ranged, half speed to stand | Knockdown; 1s to stand, ranged +15 vs you | 53* |
-| 12 | restrained | Speed 0, −20 attacks/AGI, +10 attacker | Immobilized, -20 attack, incoming +15 damage | 54* |
-| 13 | stunned | Incapacitated + immobile, −20 all, +10 attacker | Staggered (1-3s), cannot act, incoming +25 | 55* |
-| 14 | unconscious | Incapacitated + prone; auto-fail STR/AGI; melee auto-crit | KO state; 0 HP, revive with healing | 56* |
-| 15 | exhaustion | Stacking (6 levels). L1: −10 checks. L3: −20, speed halved. L5: speed 0. L6: death | Stacking debuff with diminishing stats. L6: death | 40, 41, 42 |
-| 16 | burning | 1d4 fire/round; action to extinguish (AGI check, difficulty 10) | Fire DoT every 2s; extinguished by water/cure | 57 |
-| 17 | bleeding | 1 HP/round; Medicine check (difficulty 10) or bandage stops | Health DoT every 2s; severity 1–3 | 58 |
-| 18 | slowed | Speed halved; −10 AGI; no Dash; +1 AP cost | Speed -30; attack speed -20; dodge -10 | 59 |
-| 19 | silenced | No spellcasting; −20 social speech | Spellcasting disabled | 60 |
-| 20 | diseased | Symptoms from disease effect (blight/fever/plague) | Periodic stat drain; worsens if untreated | 40, 41, 42 |
-| 21 | cursed | −2 all stats; needs remove curse or ritual | −X stats; requires specialized cure | 61 |
-| 22 | exposed | −10 evasion/block; DR halved; ×1.25 damage | Evasion -15; resist -20; incoming +X | 62 |
-| 23 | taunted | −20 attacks vs non-taunter; cannot flee | Forced aggro; -20 damage to others | 63 |
-| 24 | staggered | No reaction until its next turn; −10 next action; ends next turn | Cannot block/dodge 1–2s | 64 |
+| # | Key | Rule | Modifiers beside its flag |
+|---|-----|------|-----------|
+| 1 | blinded | Cannot see: checks that need sight fail, −20 on PER checks, and attacks against it have +10. | `add perception_checks -20` |
+| 2 | charmed | Cannot attack the charmer, and the charmer has +20 on social checks against it. Damage from the charmer ends it. | `add social_defense -20` |
+| 3 | deafened | Cannot hear: checks that need hearing fail, and −10 on initiative. | `add initiative -10` |
+| 4 | frightened | −10 on attacks and checks while the source is in sight, and cannot move closer to it. Losing sight of it ends it. | `add checks -10` |
+| 5 | grappled | Held: speed 0, −10 on attacks and AGI checks. An athletics check against the grappler breaks free. | `set speed 0`, `add agility_checks -10` |
+| 6 | incapacitated | Cannot spend AP, react, or concentrate. | `set ap 0` |
+| 7 | invisible | Cannot be seen: attacks against it have −20 and its own attacks +10. Attacking or taking damage ends it. | — |
+| 8 | paralyzed | Cannot move or act: STR and AGI checks fail, and a melee hit from within 1 unit is a crit. | — |
+| 9 | petrified | Turned to stone: cannot act, resists 20 of every damage type, is immune to poison and disease, and beneficial effects do not land. | `set ap 0`, `resist bludgeoning 20`, `resist piercing 20`, `resist slashing 20`, `resist fire 20`, `resist frost 20`, `resist shock 20`, `resist acid 20`, `resist poison 20`, `resist necrotic 20`, `resist radiant 20`, `resist psychic 20`, `resist force 20`, `resist thunder 20`, `add poison_resistance 100`, `add disease_resistance 100` |
+| 10 | poisoned | The poison's sub_effects are its symptoms; a poison resistance lessens them. | — |
+| 11 | prone | On the ground: −20 on melee attacks, and ranged attacks against it have +10. Standing costs the stand_up action. | — |
+| 12 | restrained | Bound: speed 0, −20 on attacks and AGI checks, and attacks against it have +10. A STR check or a teleport frees it. | `set speed 0`, `add agility_checks -20` |
+| 13 | stunned | Cannot act, −20 on every check, and attacks against it have +10. | `set ap 0`, `add checks -20` |
+| 14 | unconscious | Out cold: cannot act, lies prone, STR and AGI checks fail, and a melee hit from within 1 unit is a crit. Healing above 0 HP or time wakes it. | `set ap 0` |
+| 15 | exhaustion | Stacks to 6: −10 on checks for each level; at 3 speed is halved, at 5 speed is 0, at 6 the actor dies. A full rest removes one level. | `add checks -10` |
+| 16 | burning | On fire: the burn effect deals its fire damage each second until it ends. Water, frost, or a cure puts it out. | — |
+| 17 | bleeding | The bleed effect deals its damage each second until a bandage, healing, or a Medicine check stops it. | — |
+| 18 | slowed | Speed halved, −10 on AGI checks, and every action costs 1 AP more (5 stamina in real time). | `mul speed 0.5`, `add agility_checks -10`, `add action_cost 1` |
+| 19 | silenced | Cannot cast spells, and −20 on social checks that need speech. | `add persuasion -20`, `add deception -20`, `add intimidation -20` |
+| 20 | diseased | The disease effect's symptoms apply; END resists them, and a cure with parameter disease ends it. | — |
+| 21 | cursed | −2 on every attribute; a rest does not end it. | `add str -2`, `add per -2`, `add end -2`, `add int -2`, `add wil -2`, `add agi -2`, `add cha -2`, `add lck -2` |
+| 22 | exposed | Defenses down: −10 evasion, armor DR halved, and damage taken ×1.25. | `add evasion -10`, `mul armor_dr 0.5`, `mul incoming_damage 1.25` |
+| 23 | taunted | −20 on attacks against anyone but the taunter, and cannot willingly move away from it. | — |
+| 24 | staggered | Cannot react until its next turn, and −10 on the next action. | — |
+
+`overdosed` is the 25th, applied by a rule rather than an effect ([modifier.md](../core/modifier.md#toxicity)).
+The new targets (`checks`, `perception_checks`, `agility_checks`, `social_defense`,
+`incoming_damage`, `armor_dr`, `action_cost`) are `modifier_targets` rows marked pending until a
+rule reads them. [V 2026-11-12]
 
 ---
 
@@ -195,7 +190,7 @@ Some conditions (notably **exhaustion**) are designed to stack:
 |----------|----------|
 | `stacking: true` | Multiple applications increment the stack counter |
 | `maxStacks` | Hard cap (exhaustion caps at 6 — death) |
-| Stack effects | Each level has cumulative penalties described in the condition's `effects` field |
+| Stack effects | Each level has cumulative penalties described in the condition's `description` |
 | Removal | Rest removes 1 level per full rest. `cure` with `parameter` can remove all levels or 1 level depending on implementation |
 
 Non-stacking conditions (blinded, paralyzed, etc.) simply refresh their duration on
@@ -229,7 +224,7 @@ To add a new condition:
    or a new one (if new, add the effect entry first).
 3. Assign a `removedBy` — typically `cure` (core:effect/cure) with the appropriate `parameter`.
    Optionally add opposite-effect dispels (e.g., healing for bleeding, frost for burn).
-4. Write the `effects.ttrpg` and `effects.video_game` strings.
+4. Write the rule once in `description`, and its numbers as `modifiers` (add a `modifier_targets` row if no table holds the target).
 5. Set `stacking` and `maxStacks` as appropriate.
 6. Run `validate.py`.
 

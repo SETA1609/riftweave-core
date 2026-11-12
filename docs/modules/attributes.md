@@ -48,22 +48,20 @@ which grow every level. They are the slow-moving frame; skills are the dial.
 
 ## The three resources
 
-Every character runs on **three pools**. The first two are universal; the **third
-changes shape with the combat mode**:
+Every character runs on these pools, the same at a table and in real time:
 
 | Resource | Pool (max) | Regenerates via | Governing attribute |
 | --- | --- | --- | --- |
 | **Health Points (HP)** | `15 + END × 8 + level × 4` | rest / healing | **END** |
 | **Mana Points (MP)** | `INT × 8 + level × 2` | **WIL** | **INT** (pool) |
-| **Action Points (AP)** — *turn-based / TTRPG* | Max 10. Pool carries from turn to turn but cannot exceed 10. (Typical starting value 2 + floor(AGI / 3) or as determined at the start of an encounter.) | carries over (capped at 10) | **AGI** |
-| **Stamina (SP)** — *action combat* | `15 + END × 5 + level × 2` | **WIL** | **END** |
+| **Action Points (AP)** | `2 + floor(AGI / 3)` per turn, pool capped at 10 and carried from turn to turn | carries over (capped at 10) | **AGI** |
+| **Stamina (SP)** | `10 + END × 5 + level × 2` | **WIL** | **END** |
 
-The third row is one resource with two faces. In **turn-based (TTRPG)** mode the
-character has an **Action Point** pool (max 10) that carries over from turn to turn
-but cannot exceed 10; this governs how many discrete actions can be taken. In
-**action-combat** mode a **Stamina** pool is used for movement, blocking, and power
-moves (an END/fatigue quantity). **Willpower regenerates both Mana and Stamina.** A
-game picks one mode; the rest of the system is identical.
+AP and stamina pay for the same actions on two clocks. At a table an action spends its AP; in
+real time it spends its AP times `stamina_per_ap` (5) in stamina, and a stamina restore at a table
+gives AP on the next turn ([actions.md](../core/actions.md#one-rule-set-two-clocks)). Mana pays for
+magic in both. **Willpower regenerates both Mana and Stamina.** There is one rule set; only the
+clock differs.
 
 > **Magic strength is INT, not WIL.** INT sets the size of the mana pool *and* the
 > power of every spell. Willpower's job in magic is purely to **regenerate** mana (and
@@ -116,8 +114,7 @@ Ten is the cap on a player's attributes at character creation; racial and perk b
 - **Governs:** hit points, fatigue, resistance to poison and disease.
 - **Seeds skills:** `block`, `medium_armor`, `farming`.
 - **Feeds:** **Hit points** `15 + END × 8 + level × 4`; **Stamina** pool
-  `15 + END × 5 + level × 2` (action-combat mode). END is the single biggest lever on
-  survivability.
+  `10 + END × 5 + level × 2`. END is the single biggest lever on survivability.
 
 ### Intelligence (INT)
 - **Governs:** the **skill-point gain rate**, the **mana pool**, the **power of all
@@ -142,8 +139,8 @@ Ten is the cap on a player's attributes at character creation; racial and perk b
 ### Agility (AGI)
 - **Governs:** action economy, stealth, and dexterous skills.
 - **Seeds skills:** `piercing`, `unarmed`, `light_armor`, `unarmored`, `evasion`, `stealth`, `lockpick`, `sleight_of_hand`.
-- **Feeds:** **Action Points** `2 + floor(AGI / 3)` per turn (turn-based mode);
-  movement/attack speed in action combat.
+- **Feeds:** **Action Points** `2 + floor(AGI / 3)` per turn, which a real-time client spends
+  as stamina at `stamina_per_ap` to the point.
 
 ### Charisma (CHA)
 - **Governs:** persuasion, barter prices, leadership.
@@ -186,8 +183,8 @@ to sustain longer fights and weather enemy spells. See [`magic.md`](./magic.md).
 | Hit points (END) | `15 + END × 8 + level × 4` |
 | Mana pool (INT) | `INT × 8 + level × 2` |
 | Mana / Stamina regen (WIL) | scales with WIL |
-| Stamina pool (END, action combat) | `15 + END × 5 + level × 2` |
-| Action Points (AGI, turn-based) | `2 + floor(AGI / 3)` per turn |
+| Stamina pool (END) | `10 + END × 5 + level × 2` |
+| Action Points (AGI) | `2 + floor(AGI / 3)` per turn |
 | Carry weight (STR) | `25 + STR × 10` weight units |
 | Critical chance (LCK) | `1% + LCK%` |
 | Initiative (PER) | `PER` |
@@ -203,12 +200,11 @@ to sustain longer fights and weather enemy spells. See [`magic.md`](./magic.md).
 These are computed from attributes, race, equipment, perks, and effects. They are the "surface" numbers an engine or character sheet uses in play. Many can be further modified by the shared effect system (see `effects/core.json` and `magic.md`).
 
 ### Movement Speed
-Racial base speed in abstract units is the foundation. Combat movement depends on mode.
+Racial base speed in abstract units is the foundation, the same at a table and in real time.
 
 - **Base**: Race `speed` in units (e.g. human 6, dwarf ~5).
 - **Exploration**: Base speed in units. Modifiers from AGI (+1 unit per 2 AGI above 4?), encumbrance (see Carry weight), heavy armor (penalties via equipment properties), effects/perks (e.g. Woodland Stride ignores plant difficult terrain).
-- **Turn-based combat movement**: Units per turn = base speed (units) + floor(AGI / 3) – encumbrance penalties. Typical human: 6 units.
-- **Action-combat movement**: Speed rating (derived from AGI and base speed) that affects positioning, dodge chance, and how quickly you close distance or escape. High speed can grant "free" movement or reduce enemy attack opportunities.
+- **Combat movement**: units per `move` action = base speed (units) + floor(AGI / 3) – encumbrance penalties. Typical human: 6 units. A real-time client moves the same distance per `move` it pays for in stamina.
 - **Modifiers**: AGI primary; STR/END for carrying load; racial traits; effects (e.g. feather for carry, haste-like effects).
 
 Races declare the base. Equipment and effects apply deltas or multipliers.
@@ -217,10 +213,9 @@ Races declare the base. Equipment and effects apply deltas or multipliers.
 Governs how frequently or quickly attacks resolve.
 
 - **Base**: Primarily from AGI (finesse/speed) and weapon properties (light weapons faster than heavy).
-- **Turn-based**: May reduce "recovery" time between attacks or grant extra attacks when high (e.g. via AP economy or specific perks). Fast Shot perk gives +20% ranged speed.
-- **Action combat**: Directly affects attack recovery, combo windows, or number of attacks in a flurry. Higher speed = more actions before opponent reacts.
+- **Rule**: attacks are paid from the AP pool (stamina in real time), so a larger pool or a cheaper attack (perks) is more attacks. Fast Shot perk gives +20% ranged speed. A real-time client may show the same proportion as recovery time.
 - **Modifiers**: AGI, perks (Fast Shot), effects (haste/slow), weapon category/length, encumbrance.
-- Reference: AGI "movement/attack speed in action combat." Can be expressed as a percentage multiplier on base recovery.
+- Reference: AGI sets the AP pool, which a real-time client spends as stamina; a client may show it as a multiplier on recovery.
 
 ### Magic Resistance
 Reduces incoming hostile magic (damage, duration, success chance).
@@ -367,9 +362,6 @@ See the sample effects in `effects/core.json` and the resist/cure generalized ef
 
 ## Open items
 
-- **Combat mode picks the third resource.** Turn-based → Action Points (AGI);
-  action-combat → Stamina (END). The AP-per-turn and Stamina formulas above are
-  reference values; the mode itself is a per-game choice (`progression.md` open items).
 - **INT load.** With all magic, the skill-point rate, the mana pool, and eight
   knowledge and craft skills riding on INT, it is by far the strongest attribute for a caster.
   A game wanting flatter builds may redistribute some knowledge skills or cap INT's

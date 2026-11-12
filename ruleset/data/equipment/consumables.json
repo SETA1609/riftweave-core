@@ -500,6 +500,28 @@
         "delivery": "read",
         "spell": "core:spell/fire_bolt"
       }
+    },
+    {
+      "key": "fresh_apple",
+      "label": "Fresh Apple",
+      "description": "A crisp apple eaten on the road: a little strength back over a few breaths.",
+      "type": "food",
+      "cost": {
+        "quantity": 1,
+        "unit": "sp"
+      },
+      "weight": 0.5,
+      "consumable": {
+        "delivery": "eat",
+        "effects": [
+          {
+            "effect": "core:effect/restore_resource",
+            "parameter": "health",
+            "magnitude": 1,
+            "duration": 12
+          }
+        ]
+      }
     }
   ]
 }

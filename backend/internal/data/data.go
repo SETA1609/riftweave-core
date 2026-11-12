@@ -100,6 +100,7 @@ type ActionPool struct {
 	PerPoint        int64         `json:"per_point"`
 	PerPointDivisor int64         `json:"per_point_divisor"`
 	Attribute       string        `json:"attr"`
+	Cap             int64         `json:"cap"`
 	Ability         actor.Ability `json:"-"`
 }
 
@@ -548,6 +549,7 @@ type Ruleset struct {
 	OriginReplaces map[string]bool   // origin ref: its policy is `replace`
 	OriginFor      map[string]string // emitter: the origin ref it defaults to
 	SecondsPerTurn int64             // actions/core.json
+	StaminaPerAP   int64             // actions/core.json: stamina one AP is worth (docs/core/actions.md)
 	// ToxicityDecayPerSecond is how fast stored toxicity falls (rest/core.json).
 	ToxicityDecayPerSecond int64
 	Conditions             Conditions
@@ -623,6 +625,7 @@ func Load(fileSystem fs.FS, modules ...fs.FS) (*Ruleset, error) {
 	var actions struct {
 		Pool           ActionPool
 		SecondsPerTurn int64 `json:"seconds_per_turn"`
+		StaminaPerAP   int64 `json:"stamina_per_ap"`
 		Actions        []Action
 	}
 	if loader.read("actions/core.json", &actions) {
@@ -632,6 +635,7 @@ func Load(fileSystem fs.FS, modules ...fs.FS) (*Ruleset, error) {
 		}
 	}
 	ruleset.SecondsPerTurn = actions.SecondsPerTurn
+	ruleset.StaminaPerAP = actions.StaminaPerAP
 	ruleset.Actions = Actions{Pool: actions.Pool, Actions: newTable(actions.Actions, func(action *Action) string { return action.Key })}
 
 	var rest struct {

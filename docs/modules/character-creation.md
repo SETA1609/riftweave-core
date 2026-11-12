@@ -183,8 +183,8 @@ From your final attributes (`progression.md` § Derived statistics), at `level =
 | --- | --- | --- |
 | Hit points | `15 + END × 8 + level × 4` | `19 + END × 8` |
 | Mana | `INT × 8 + level × 2` (regen via WIL) | `2 + INT × 8` |
-| Stamina *(action combat)* | `15 + END × 5 + level × 2` (regen via WIL) | `17 + END × 5` |
-| Action Points *(turn-based)* | Max 10 pool; carries over between turns but cannot exceed 10. Starting pool is typically 2 + floor(AGI / 3) or set by the GM at the start of play. | — |
+| Stamina | `10 + END × 5 + level × 2` (regen via WIL) | `12 + END × 5` |
+| Action Points | `2 + floor(AGI / 3)` per turn; the pool carries over between turns but cannot exceed 10. | `2 + floor(AGI / 3)` |
 
 **Resistance, Disease & Poison (new full systems — see `attributes.md` for complete rules):**
 
@@ -205,8 +205,8 @@ These systems make END and certain creation choices (race, perks) matter for sur
 | Critical chance | `1% + LCK%` | — |
 | Initiative | `PER` | — |
 
-These are your **three resources** — HP, Mana, and a third that depends on combat
-mode (Action Points in turn-based play, a Stamina pool in action combat). Luck also
+These are your resources: HP, Mana, Stamina, and AP, the same at a table and in real time (an
+action spends AP at a table and AP × 5 stamina in real time). Luck also
 adds **+floor(LCK/2)%** to every check at resolution time.
 
 ---
@@ -267,8 +267,8 @@ A "deliberate cultivator" often prioritizes LCK and a clear phase identity at cr
    `5 + 5×2 + random(0…7)` → say a roll of 4 = **19 points**, all on tagged skills
    (1:1): blunt +8 → **27**, block +6 → **39**, athletics +5 → **24**.
 6. **Perks** — none (not human).
-7. **Derived** — HP `15 + 8×8 + 4` = **83**; Mana `5×8 + 2` = **42**; third resource:
-   Stamina `15 + 8×5 + 2` = **57** (action combat) *or* Action Points pool (max 10, carries over, typical start 2 + floor(AGI/3) or GM-set at start of play); Carry `25 + 7×10` = **95**; Crit `1 + 7` = **8%**;
+7. **Derived** — HP `15 + 8×8 + 4` = **83**; Mana `5×8 + 2` = **42**;
+   Stamina `10 + 8×5 + 2` = **52**; Action Points `2 + floor(4 / 3)` = **3** a turn, capped at 10; Carry `25 + 7×10` = **95**; Crit `1 + 7` = **8%**;
    Initiative **5**.
 8. **Spells / gear** — no color skill tagged → no spells. Background already gave chain shirt + shield + longsword + mace. Starting wealth 100 + 25 = 125 gp. Adds basic kit (~20 gp) and a few extra rations or a backup dagger. Plenty left for sundries.
 9. **Element** — **metal**: strong against Wood-phase foes (Metal overcomes Wood),

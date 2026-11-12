@@ -185,7 +185,7 @@ XP to reach level N from level N-1 is always **900 × (N-1)** under the normal c
 
 These values are guidance for quest designers and GMs. With the strict "only the very first monster kill grants direct combat XP" rule, the vast majority of experience should come from event-driven sources (including meaningful skill challenges) rather than grinding or repetitive crafting. Crafting does not award experience.
 
-On every normal level the character also receives the base gains package described in the "Base Gains on a Normal Level" section below (1 perk, skill points, resource growth, and TTRPG Action Point rules).
+On every normal level the character also receives the base gains package described in the "Base Gains on a Normal Level" section below (1 perk, skill points, and resource growth).
 
 | Event Type                              | Recommended XP | Notes |
 |-----------------------------------------|----------------|-------|
@@ -222,10 +222,8 @@ character receives the following base package:
 - **Resource growth** (added to maximums). Closed form is [`ruleset/data/derived/core.json`](../../ruleset/data/derived/core.json). These bullets are the grant, not a second formula.
   - Hit Points: `4 + hp_roll`
   - Mana (MP): `2 + mp_roll`
-  - Stamina (SP, action-combat mode): `2 + sp_roll`
+  - Stamina (SP): `2 + sp_roll`
   - Each roll is from 0 to `⌊LCK / 2⌋`, one per pool.
-- In **TTRPG / turn-based** mode: Action Point pool rules (maximum 10; the pool
-  carries over from turn to turn but cannot exceed 10).
 
 These base gains always occur. A breakthrough (see `advancement.md`) can provide
 additional permanent bonuses on top when the player chooses to offer cores or
@@ -263,9 +261,8 @@ narrative downtime activity tied to the level-up.
    - Apply **resource growth** (added to current maximums):
      - Hit Points: `+ (4 + hp_roll)`
      - Mana (MP): `+ (2 + mp_roll)`
-     - Stamina (SP, if using action-combat mode): `+ (2 + sp_roll)`
+     - Stamina (SP): `+ (2 + sp_roll)`
      - Each roll is from 0 to `⌊LCK / 2⌋`, one per pool.
-   - In **TTRPG / turn-based** mode: Update the Action Point pool (maximum 10; the pool carries over from turn to turn but cannot exceed 10).
 
 3. **Allocate Skill Points**
    - Spend the skill point pool to increase skill ratings.
@@ -292,7 +289,7 @@ narrative downtime activity tied to the level-up.
 
 5. **Update Derived Statistics**
    - Recalculate all derived stats based on the new level, any breakthrough bonuses, and current attributes (HP, Mana, Stamina, carry weight, etc.).
-   - In TTRPG mode, note the current Action Point pool (capped at 10).
+   - Note the Action Point pool, `2 + floor(AGI / 3)`, capped at 10.
 
 6. **Record and Narrate**
    - Update the character sheet.
@@ -310,7 +307,7 @@ narrative downtime activity tied to the level-up.
   - Skills: 0–10 range bonus using the reference tables in `advancement.md` (grade sets floor and ceiling; e.g. petty 0–2, greater 6–8, grand/legendary 8–10). Higher grades also improve success chance.
   - Resources: second level-growth roll; take the higher of the normal growth and the breakthrough growth.
   (Wuxing may modify across items) → apply extras.
-- [ ] Update all derived stats and current pools (especially AP in TTRPG mode).
+- [ ] Update all derived stats and current pools, AP included.
 - [ ] Note any new capabilities or story implications.
 
 ### GM / Engine Notes
@@ -463,17 +460,16 @@ The function and one numeric example are in
 [`docs/core/derived.md`](../core/derived.md). The table below is a copy.
 A module emits a modifier on the result. It does not write a second max.
 
-A character runs on **three resources**. The third changes shape with the combat
-mode: a turn-based (TTRPG) game uses **Action Points** (a shared pool), while an
-action-combat game drains a **Stamina** pool. See `attributes.md` § The three
-resources. Stamina is not in the derived data file.
+A character runs on HP, mana, stamina, and AP, the same at a table and in real time: an action
+spends AP at a table and AP times `stamina_per_ap` in stamina in real time
+([actions.md](../core/actions.md#one-rule-set-two-clocks)). Stamina is the derived `sp` row.
 
 | Stat | Formula / Rule |
 | --- | --- |
 | Hit points | `15 + END × 8 + level × 4` (gains `END × 8 + 4` per level after 1st) |
 | Mana (MP) | `INT × 8 + level × 2` (gains `INT × 8 + 2` per level after 1st; regen scales with WIL) |
-| Stamina (SP, action combat) | `15 + END × 5 + level × 2` (gains `END × 5 + 2` per level after 1st; regen scales with WIL) |
-| Action Points (TTRPG / turn-based) | Max 10 per turn. The pool carries over from turn to turn but cannot exceed 10. Starting pool at the beginning of combat or after a full rest is typically 2 + floor(AGI / 3) or as set by the table. |
+| Stamina (SP) | `10 + END × 5 + level × 2` (gains `2 + sp_roll` per level after 1st; regen scales with WIL) |
+| Action Points | `2 + floor(AGI / 3)` per turn; the pool carries over from turn to turn but cannot exceed 10. |
 | Carry weight | `25 + STR × 10` |
 | Critical chance | `1% + LCK%` (+ perks) |
 | Initiative | `PER` (+ perks such as *Alert*) |
@@ -497,9 +493,8 @@ delivered through the shared **effect system**.
 
 ## Open items / follow-ups
 
-- **Combat mode** — fully specified in [`combat.md`](./combat.md) with dual-resolution
-  (TTRPG turn-based and video game action-combat). Turn-based uses Action Points from AGI;
-  action-combat uses a Stamina pool from END. Initiative varies by mode.
+- **Combat** — one rule set in [`combat.md`](./combat.md); a table counts AP and a real-time
+  client stamina, at the rate in [actions.md](../core/actions.md#one-rule-set-two-clocks).
 - **Cultivation-style breakthroughs** — see the new `docs/modules/advancement.md`.
   Base level-up (skill points, resource scaling, perks) is described here. The
   optional item-boosted "breakthrough" system (monster cores + refined elixirs,

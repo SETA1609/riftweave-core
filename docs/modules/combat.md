@@ -216,7 +216,7 @@ Total worn DR is roughly 3–8 light, 8–18 medium, 14–28 heavy. A fighter at
 
 A real-time game runs the same functions. These notes are presentation, not rules: a client that disagrees with a vector is wrong.
 
-- **Time instead of turns.** AP costs become cooldowns or stamina costs in the same proportion (an attack costs three times a move). Initiative is not needed when everyone acts at once; aggro decides who an enemy targets.
+- **Time instead of turns.** An action costs its AP times `stamina_per_ap` in stamina, and a duration is its seconds; [actions.md](../core/actions.md#one-rule-set-two-clocks) has the conversion. A client may show the cost as a cooldown in the same proportion (an attack costs three times a move). Initiative is not needed when everyone acts at once; aggro decides who an enemy targets.
 - **Reactions.** "Declared before the attack" becomes holding the block or dodge input when the hit lands. The block and evade rolls are still d100 checks against the same skills and margins; input timing may decide whether the reaction is declared, not whether it succeeds. **[A]** A narrower parry window for the parry perks (M2-06).
 - **Dodge feedback.** A successful evade plays a dodge animation; an area dodge plays a stumble and shows the halved number.
 - **Damage popups.** Show the pipeline: `16 − 2 (DR) = 14`. Colours: white physical, orange crit, blue magic, green healing, red damage over time, grey fully absorbed.
