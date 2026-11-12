@@ -1,5 +1,5 @@
 #### APP-08 Dev mode: inflict state on a session for testing
-- Status: doing
+- Status: review
 - Priority: medium
 - Needs: APP-03, APP-04
 - Do: A dev mode in both CLIs, off unless the binary runs with `--dev`, that changes a session's actor directly so a tester can reach a state without playing to it. Operations: set or adjust a resource (HP, MP, stamina, AP); grant XP or set the level; set an attribute or skill; grant or remove a perk; learn a spell or an effect; add or remove an item or gold; inflict or clear a condition or an effect (any effect from the registry, with magnitude, duration, and an origin from `origins/core.json`, so it stacks by the real rule); advance time in turns or rests; fix the next rolls (a d100 sequence) or the seed. Each operation runs through the same core and checks its refs like any command; it holds no rule. Agent CLI: `riftweave dev <operation>` with JSON in and out. Human CLI: a dev panel and short commands (`:give`, `:inflict`, `:level`, `:roll`). The HTTP API does not serve dev operations. Each operation is logged in the session, which is marked `dev: true`, so a replay repeats it and a dev run is never taken for a played one.
