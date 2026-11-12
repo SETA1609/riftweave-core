@@ -7,14 +7,14 @@ Derived stats are functions of the actor snapshot. They are not fields a module 
 ## Function
 
 ```
-attr_term = (attr * per_point) / per_point_divisor
-value = base + attr_term + level * (attr * per_level_attr + per_level_flat) + growth[key]
+attribute_term = (attribute * per_point) / per_point_divisor
+value = base + attribute_term + level * (attribute * per_level_attribute + per_level_flat) + growth[key]
 final = apply(modifiers, value)
 ```
 
-Division is integer division. `per_point_divisor` defaults to 1. `attr` is the current attribute after its own modifiers. Derived modifiers apply after the function. Stacking is the kernel contract: same source does not stack, different sources add unless they share a `highest` origin ([modifier.md](modifier.md#origin)), `mul` after `add`.
+Division is integer division. `per_point_divisor` defaults to 1. `attribute` is the current attribute after its own modifiers. Derived modifiers apply after the function. Stacking is the kernel contract: same source does not stack, different sources add unless they share a `highest` origin ([modifier.md](modifier.md#origin)), `mul` after `add`.
 
-| key | attr | formula |
+| key | attribute | formula |
 | --- | --- | --- |
 | hp | END | `15 + END * 8 + level * 4` |
 | mp | INT | `INT * 8 + level * 2` |
