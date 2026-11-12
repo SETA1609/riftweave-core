@@ -275,6 +275,8 @@ refs (`core:monster_template/dire`), because a modifier holds only a number.
 - **Nature is one at a time.** `summon_demonic`, `summon_angelic`, and `summon_otherworldly`
   need no other nature, and the latest bought replaces the one before; only it is tracked.
   Whether a game locks nature as a one-time choice is left for later. [A]
+- **Charisma adds last.** A caster with a summon bonus perk adds `CHA − 5`, never below 0, to the
+  attributes of the bonus's group after the power and nature ([magic.md](./magic.md#summon-groups)).
 
 [V 2026-11-12, `test_bestiary.py`]
 

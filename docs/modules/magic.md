@@ -205,6 +205,16 @@ then the caster's nature. The caster's power and nature are perks with `unlocks`
 the caster holds ([monsters.md](./monsters.md#summoned-creatures)). [V 2026-11-12] `validate.py` refuses a summon whose `parameter` is not a group, and
 `test_spells.py` fails on a group or variant that does not exist. [V 2026-11-10]
 
+**Charisma strengthens summons through a perk.** `commanding_summons_magic` and
+`commanding_summons_physical` each name a summon bonus, `core:summon_bonus/<key>`, from
+`summons/bonuses.json`: `magic` adds to INT and WIL, `physical` to STR, END, and AGI. When the
+caster summons, each bonus the caster holds adds the caster's CHA modifier, `CHA − 5`
+([attributes.md](./attributes.md#the-attribute-modifier)), to every attribute of its group, after
+the power and nature, through the same merge as a template's `attributes`, so END moves an authored
+`hitPoints` and the creature's mana and damage follow its new attributes. A CHA of 5 or below adds
+nothing; there is no penalty. Without a bonus perk, CHA changes nothing. A caster takes one group
+with one perk; the second perk adds the other group. [V 2026-11-12, `test_spells.py`]
+
 ---
 
 ## 4. Casting resolution (d100 roll-under)
