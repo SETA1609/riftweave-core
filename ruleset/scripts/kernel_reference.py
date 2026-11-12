@@ -241,7 +241,7 @@ def run_formula(vector):
     else:
         expr = load_data(f"formulas/{vector['formula']}.json")["expr"]
     attributes = vector.get("actor", {}).get("attributes", {})
-    return {"value": evaluate_formula(expr, attributes)}
+    return {"value": evaluate_formula(expr, attributes, vector.get("variables"))}
 
 
 def run_actions(vector):

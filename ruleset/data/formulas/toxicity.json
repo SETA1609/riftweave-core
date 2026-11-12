@@ -1,0 +1,11 @@
+{
+  "key": "toxicity",
+  "round": "floor",
+  "expr": {
+    "op": "add",
+    "args": [
+      { "var": "instant_cost" },
+      { "op": "div", "args": [{ "var": "over_time_cost" }, { "lit": 2 }] }
+    ]
+  }
+}

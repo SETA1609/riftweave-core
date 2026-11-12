@@ -106,7 +106,109 @@ def _monster_hits_to_kill(bands, _weapons, _armor, monsters):
             yield _finding("monster_hits_to_kill", row["key"], hits, band, f"level {row['level']}, {role}, {row['hitPoints']} HP")
 
 
+def _json(rel):
+    return json.loads((DATA_DIR / rel).read_text())
+
+
+RESTORE = "core:effect/restore_resource"
+
+
+def _over_time(effect):
+    return effect["effect"] == RESTORE and effect.get("duration", 1) > 1
+
+
+def toxicity_of(effects):
+    """formulas/toxicity.json on a drink's effects: the spell cost on the drinker of its instant
+    effects and held buffs, plus half the spell cost of its over-time pool restores."""
+    import kernel_reference
+    from casting_reference import spell_cost
+
+    def cost(part):
+        return spell_cost({"effects": [{**e, "target": "self"} for e in part]}) if part else 0
+
+    variables = {"instant_cost": cost([e for e in effects if not _over_time(e)]),
+                 "over_time_cost": cost([e for e in effects if _over_time(e)])}
+    return kernel_reference.evaluate_formula(_json("formulas/toxicity.json")["expr"], {}, variables)
+
+
+def _drinks(consumables):
+    return [row for row in consumables if row.get("consumable", {}).get("delivery") == "drink"]
+
+
+def _toxicity_formula(bands, _weapons, _armor, _monsters, consumables, _spells):
+    tolerance = bands["toxicity"]["tolerance"]
+    for row in _drinks(consumables):
+        static, formula = row["consumable"]["toxicity"], toxicity_of(row["consumable"]["effects"])
+        if abs(static - formula) > tolerance:
+            yield _finding("toxicity_formula", row["key"], static, [formula - tolerance, formula + tolerance],
+                           f"formula gives {formula}")
+
+
+def _instant_toxicity_above_over_time(_bands, _weapons, _armor, _monsters, _consumables, _spells):
+    import kernel_reference
+
+    expr = _json("formulas/toxicity.json")["expr"]
+    instant = kernel_reference.evaluate_formula(expr, {}, {"instant_cost": 20, "over_time_cost": 0})
+    over_time = kernel_reference.evaluate_formula(expr, {}, {"instant_cost": 0, "over_time_cost": 20})
+    if instant <= over_time:
+        yield _finding("instant_toxicity_above_over_time", "formulas/toxicity.json", instant, [over_time + 1, instant],
+                       f"20 at once gives {instant}, over time {over_time}")
+
+
+def _restored(effects):
+    """Each pool an effect list restores, and its total (magnitude times duration)."""
+    totals = {}
+    for e in effects:
+        if e["effect"] == RESTORE:
+            totals[e["parameter"]] = totals.get(e["parameter"], 0) + e["magnitude"] * e.get("duration", 1)
+    return totals
+
+
+def _stock_potion_below_magic(bands, _weapons, _armor, _monsters, consumables, spells):
+    from casting_reference import paid_cost
+
+    rules = _json("casting/core.json")["casting"]
+    skill = bands["magic_skill"]
+    mana_per_toxicity = max((_restored(r["consumable"]["effects"]).get("mana", 0) / r["consumable"]["toxicity"]
+                             for r in _drinks(consumables) if r["consumable"]["toxicity"] > 0), default=0)
+    best = {}
+    for spell in spells:
+        mana = paid_cost(spell["cost"]["mana"], skill, [], rules)
+        for pool, total in _restored(spell["effects"]).items():
+            best[pool] = max(best.get(pool, 0), total / mana)
+    for row in _drinks(consumables):
+        toxicity = row["consumable"]["toxicity"]
+        for pool, total in _restored(row["consumable"]["effects"]).items():
+            if pool not in best or toxicity == 0:
+                continue
+            route = round(best[pool] * mana_per_toxicity, 2)
+            rate = round(total / toxicity, 2)
+            if rate >= route:
+                yield _finding("stock_potion_below_magic", row["key"], rate, [0, route],
+                               f"{pool} per toxicity; a Potion of Mana on the best spell gives {route} at skill {skill}")
+
+
+def _scroll_price(bands, _weapons, _armor, _monsters, consumables, spells):
+    import kernel_reference
+
+    economy = _json("economy/core.json")
+    gold = kernel_reference.to_copper(economy, {"quantity": 1, "unit": "gp"})
+    by_ref = {f"core:spell/{s['key']}": s for s in spells}
+    for row in consumables:
+        spell = by_ref.get(row.get("consumable", {}).get("spell"))
+        if row.get("type") != "scroll" or spell is None:
+            continue
+        least = bands["scroll_gp_per_mana"] * spell["cost"]["mana"]
+        price = kernel_reference.to_copper(economy, row["cost"]) / gold
+        if price < least:
+            yield _finding("scroll_price", row["key"], price, [least, None], f"{spell['key']} costs {spell['cost']['mana']} mana")
+
+
 CHECKS = {
+    "toxicity_formula": _toxicity_formula,
+    "instant_toxicity_above_over_time": _instant_toxicity_above_over_time,
+    "stock_potion_below_magic": _stock_potion_below_magic,
+    "scroll_price": _scroll_price,
     "weapon_dice": _weapon_dice,
     "armor_piece_dr": _armor_piece_dr,
     "worn_set_dr": _worn_set_dr,
@@ -115,12 +217,24 @@ CHECKS = {
 }
 
 
-def report(bands, weapons, armor, monsters):
-    """Every finding, with its check's mode and whether the owner accepted it."""
+CONSUMABLE_CHECKS = {"toxicity_formula", "instant_toxicity_above_over_time", "stock_potion_below_magic", "scroll_price"}
+
+
+def report(bands, weapons, armor, monsters, consumables=None, spells=None):
+    """Every finding, with its check's mode and whether the owner accepted it. The consumable
+    checks read consumables and spells, from the data unless given."""
     accepted = {(a["check"], a["subject"]) for a in bands["accepted"]}
+    if consumables is None:
+        consumables = _json("equipment/consumables.json")["equipment"]
+    if spells is None:
+        spells = _json("spells/core.json")["spells"]
     findings = []
     for check in bands["checks"]:
-        for finding in CHECKS[check["key"]](bands, weapons, armor, monsters):
+        if check["key"] in CONSUMABLE_CHECKS:
+            found = CHECKS[check["key"]](bands, weapons, armor, monsters, consumables, spells)
+        else:
+            found = CHECKS[check["key"]](bands, weapons, armor, monsters)
+        for finding in found:
             finding.update(mode=check["mode"], accepted=(finding["check"], finding["subject"]) in accepted)
             findings.append(finding)
     return findings
