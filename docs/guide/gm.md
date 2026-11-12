@@ -4,7 +4,8 @@
 
 - **Keep it moving.** A turn is a few AP and one roll. If a player is stuck, ask what they want to happen, then name the action that does it.
 - **Time in turns only when it matters.** One turn is 5 seconds. Outside a fight, count minutes, hours, or days.
-- **Rests are a choice with a cost.** A short rest is an hour and a long rest a night. Let the world move while the party sleeps.
+- **Rests are a choice with a cost.** A short rest is an hour and a long rest a night. Let the world move while the party sleeps. A rest also ends a meal's buff unless someone eats during it, so a camp costs rations.
+- **Food buffs after a fight.** A buff from a meal eaten before the fight runs on after it. When no other encounter is near, or whenever you choose, settle what is left of it at once instead of counting seconds ([rest.md](../core/rest.md#food-at-rest)).
 - **Hand out levels by story or by XP.** XP awards are guidance and not a rule. Level 2 takes 900 XP, and each level after takes more.
 
 ## Choosing opponents
