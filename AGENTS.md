@@ -144,6 +144,7 @@ Each data file names its schema in `$schema`:
 - `ingredients`, `materials`, `gems`, `tiers`, `crafting` (recipes and crafted items)
 - kernel and world tables: `actions`, `casting`, `checks`, `combat`, `derived`, `formulas`, `progression`, `resolution`, `rest`, `economy`, `loot`, `hazards`, `balance`
 - `examples` (worked characters and the play loop)
+- `skill_groups` (the optional grouped sheet: every skill in one group; `docs/core/progression.md#the-grouped-sheet-variant`)
 - `origins` (the kinds of modifier source and their stacking policy, `highest` or `add`)
 - `modifier_targets` (the modifier targets no other table holds: a rule's number or a flag; `docs/core/modifier.md#target`)
 
