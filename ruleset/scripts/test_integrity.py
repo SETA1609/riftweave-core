@@ -213,7 +213,7 @@ class TestEffectsAreUsedOrReserved(unittest.TestCase):
 
 
 def modifier(target, op="add", value=1):
-    return {"target": target, "op": op, "value": value, "source": "feature:x"}
+    return {"target": target, "operation": op, "value": value, "source": "feature:x"}
 
 
 def target_row(key, kind="number", **extra):
@@ -247,7 +247,7 @@ class TestModifierTargetsNameOneRow(unittest.TestCase):
 
     def test_a_target_in_each_table_passes(self):
         with tempfile.TemporaryDirectory() as tmp:
-            mods = [modifier("str"), modifier("persuasion"), modifier("hp", "mul", 1.5), modifier("dodge", value=-1),
+            mods = [modifier("str"), modifier("persuasion"), modifier("hp", "multiply", 1.5), modifier("dodge", value=-1),
                     modifier("prone", "grant"), modifier("fire", "resist", 5), modifier("crit_window")]
             self.assertEqual(self.check(Path(tmp), mods, [target_row("crit_window", pending=True)]), [])
 

@@ -68,7 +68,7 @@ class Replay:
             self.fail("the point-buy starts every attribute at 4 and distributes 10")
         final = dict(assigned)
         for modifier in race_modifiers(key_of(self.character["race"])):
-            if modifier["target"] in final and modifier["op"] == "add":
+            if modifier["target"] in final and modifier["operation"] == "add":
                 final[modifier["target"]] += modifier["value"]
         return final
 
@@ -153,7 +153,7 @@ class Replay:
         modifiers = []
         for key, rank in ranks.items():
             for modifier in self.features[key].get("modifiers", []):
-                if modifier["target"] in DERIVED and modifier["op"] == "add":
+                if modifier["target"] in DERIVED and modifier["operation"] == "add":
                     modifiers.append({**modifier, "value": modifier["value"] * rank})
         return modifiers
 

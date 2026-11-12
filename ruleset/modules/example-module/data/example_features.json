@@ -10,7 +10,7 @@
       "prerequisite": { "abilities": { "str": 5 } },
       "ranks": 1,
       "modifiers": [
-        { "target": "melee_damage", "op": "mul", "value": 1.05, "source": "feature:module_demo_perk", "origin": "core:origin/trained" }
+        { "target": "melee_damage", "operation": "multiply", "value": 1.05, "source": "feature:module_demo_perk", "origin": "core:origin/trained" }
       ]
     }
   ]

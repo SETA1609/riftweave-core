@@ -8,6 +8,7 @@
 package modifier
 
 import (
+	"encoding/json"
 	"fmt"
 	"math"
 	"slices"
@@ -26,6 +27,10 @@ const (
 
 var operationNames = [...]string{"add", "mul", "set", "grant", "resist"}
 
+// shortOperationNames are the names a vector still uses until M5-46's vector part renames
+// them; the data spells them out.
+var shortOperationNames = map[string]Operation{"multiply": Multiply}
+
 // UnmarshalText reads an operation name.
 func (operation *Operation) UnmarshalText(encoded []byte) error {
 	for index, name := range operationNames {
@@ -34,7 +39,11 @@ func (operation *Operation) UnmarshalText(encoded []byte) error {
 			return nil
 		}
 	}
-	return fmt.Errorf("modifier op %q is not defined", encoded)
+	if spelled, ok := shortOperationNames[string(encoded)]; ok {
+		*operation = spelled
+		return nil
+	}
+	return fmt.Errorf("modifier operation %q is not defined", encoded)
 }
 
 // MarshalText writes the operation name, so a stored modifier round-trips.
@@ -52,6 +61,24 @@ type Modifier struct {
 	Duration  string    `json:"duration,omitempty"`
 	Turns     int64     `json:"turns,omitempty"`
 	Stack     string    `json:"stack,omitempty"`
+}
+
+// UnmarshalJSON reads `operation`, as the data writes it, or the short `op` a vector still
+// uses until M5-46's vector part renames it.
+func (modifier *Modifier) UnmarshalJSON(encoded []byte) error {
+	type plain Modifier
+	var read struct {
+		plain
+		SpelledOperation *Operation `json:"operation"`
+	}
+	if err := json.Unmarshal(encoded, &read); err != nil {
+		return err
+	}
+	*modifier = Modifier(read.plain)
+	if read.SpelledOperation != nil {
+		modifier.Operation = *read.SpelledOperation
+	}
+	return nil
 }
 
 // OriginPolicies maps an origin ref to whether its policy is `highest`. An origin that is

@@ -73,7 +73,7 @@ def find(modifiers, source, target):
 class TestAncestryModifiers(unittest.TestCase):
     def test_ability_modifiers_are_innate_adds_with_the_race_as_source(self):
         mods = ancestry_modifiers("human")
-        self.assertEqual(find(mods, "race:human", "cha"), [{"target": "cha", "op": "add", "value": 1, "source": "race:human", "origin": "core:origin/innate"}])
+        self.assertEqual(find(mods, "race:human", "cha"), [{"target": "cha", "operation": "add", "value": 1, "source": "race:human", "origin": "core:origin/innate"}])
 
     def test_a_subrace_stacks_its_parents_modifiers_and_traits_with_its_own(self):
         mods = ancestry_modifiers("green_elf")
@@ -96,11 +96,11 @@ class TestAncestryModifiers(unittest.TestCase):
 
     def test_trait_modifiers_carry_the_feature_source_and_the_innate_origin(self):
         mods = find(ancestry_modifiers("dwarf"), "feature:dwarf_stoneworker", "repair")
-        self.assertEqual(mods, [{"target": "repair", "op": "add", "value": 10, "source": "feature:dwarf_stoneworker", "origin": "core:origin/innate"}])
+        self.assertEqual(mods, [{"target": "repair", "operation": "add", "value": 10, "source": "feature:dwarf_stoneworker", "origin": "core:origin/innate"}])
 
     def test_background_skill_bonuses_are_trained_adds(self):
         mods = find(ancestry_modifiers("human", "scout"), "background:scout", "survival")
-        self.assertEqual(mods, [{"target": "survival", "op": "add", "value": 12, "source": "background:scout", "origin": "core:origin/trained"}])
+        self.assertEqual(mods, [{"target": "survival", "operation": "add", "value": 12, "source": "background:scout", "origin": "core:origin/trained"}])
 
     def test_race_and_background_stack_on_one_skill(self):
         mods = [m for m in ancestry_modifiers("black_elf", "street_urchin") if m["target"] == "stealth"]
