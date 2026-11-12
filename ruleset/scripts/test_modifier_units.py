@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
-"""A percentage is a `mul`, and a distance is in units (docs/core/modifier.md, docs/core/contract.md#distance).
+"""A percentage is a `mul`, a distance is in units, and a weight is in weight units
+(docs/core/modifier.md, docs/core/contract.md#distance, docs/core/contract.md#weight).
 
 Run with:
     python -m unittest ruleset/scripts/test_modifier_units.py
 """
 
 import json
+import re
 import unittest
 from pathlib import Path
 
 DATA = Path(__file__).resolve().parent.parent / "data"
+SCHEMAS = DATA.parent / "schemas"
+POUNDS = r"(?i)\b(pounds?|lbs?)\b"
 
 # Perk: (new target, the percent per rank it gave as an `add`, its listed ranks).
 SCALED = {
@@ -74,6 +78,20 @@ class TestModifierUnits(unittest.TestCase):
         for key, (target, value) in UNITS.items():
             with self.subTest(perk=key):
                 self.assertEqual(modifier(rows[key], target)["value"], value)
+
+    def test_carry_is_in_weight_units(self):
+        rows = {row["key"]: row for row in json.loads((DATA / "derived" / "core.json").read_text())["derived"]}
+        self.assertEqual(rows["carry"]["unit"], "weight_units")
+
+    def test_no_schema_names_pounds(self):
+        for path in sorted(SCHEMAS.glob("*.json")):
+            with self.subTest(schema=path.name):
+                self.assertIsNone(re.search(POUNDS, path.read_text()))
+
+    def test_no_data_row_names_pounds(self):
+        for path in sorted(DATA.rglob("*.json")):
+            with self.subTest(file=str(path.relative_to(DATA))):
+                self.assertIsNone(re.search(POUNDS, path.read_text()))
 
 
 if __name__ == "__main__":

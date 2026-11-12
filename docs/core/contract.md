@@ -90,6 +90,18 @@ For tabletop play a square is 1.5 m by 1.5 m: a human walks 6 units (9 m) a roun
 longbow reaches 30 units (45 m) at normal range. That conversion is for reading aloud only;
 nothing stores it. [A]
 
+## Weight
+
+Every weight in the data and the docs is in **weight units**: an item's `weight`, a
+material's `weightFactor` applied to it, the `carry` limit (`derived/core.json`), and the
+encumbrance thresholds ([armor.md](../modules/armor.md#9-encumbrance)). No definition is
+meant to use pounds or kilograms. [V 2026-11-11]
+
+For tabletop play one weight unit is 0.5 kg (500 g): a longsword of 3 weighs 1.5 kg, and a
+character with STR 7 carries 95 units (47.5 kg) before encumbrance. That conversion is for
+reading aloud only; nothing stores it. Today's numbers were written as pounds (0.454 kg), so
+reading them as weight units moves them by about 10% and changes no row. [A]
+
 ## What a later module is forbidden to do
 
 - Call another system's procedure. Alchemy does not call advancement. Magic does not call defense.

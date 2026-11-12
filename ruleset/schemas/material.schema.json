@@ -73,7 +73,8 @@
         },
         "weightFactor": {
           "type": "number",
-          "minimum": 0
+          "minimum": 0,
+          "description": "Multiplies the base's weight; the result is in weight units (docs/core/contract.md#weight)."
         },
         "valueFactor": {
           "type": "number",

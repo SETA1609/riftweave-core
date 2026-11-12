@@ -185,8 +185,10 @@ one name.
   `durationType`), newer ones `snake_case` (`base_key`, `enchantment_slots`). A new property
   follows the schema it extends. Unifying them renames keys, so it is a breaking change for
   its own issue.
-- **Units in the name** where a number has one: `duration_rounds`, `range_meters`,
-  `weight_kilograms`.
+- **Units in the name** only when a number is not in the neutral unit for its kind. The
+  neutral units are units (distance, one square), seconds (time), and weight units
+  ([contract.md](docs/core/contract.md#distance)), so `range`, `duration`, and `weight` carry
+  no suffix; a number in another unit says so, as `duration_turns`.
 - **Booleans read as questions:** `is_ranged`, `has_reach`, `requires_concentration`.
 - **No vague names:** not `data`, `info`, `misc`, `common`, `other`, `extra`, `stuff`.
 - **Python** (scripts, tools) follows PEP 8 casing and the same rules: verb + object

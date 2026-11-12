@@ -20,7 +20,7 @@ Division is integer division. `per_point_divisor` defaults to 1. `attr` is the c
 | mp | INT | `INT * 8 + level * 2` |
 | sp | END | `10 + END * 5 + level * 2` [A] |
 | ap | AGI | `2 + floor(AGI / 3)` |
-| carry | STR | `25 + STR * 10` pounds |
+| carry | STR | `25 + STR * 10` [weight units](contract.md#weight) |
 | initiative | PER | `PER` |
 
 These closed forms are the ones already printed under Derived statistics in `docs/modules/progression.md`. That table is now a copy. The JSON is the authority. The level-up bullets (`END × 8 + 4` and so on) are the grant procedure, not a second max. Stamina stays in that prose. XP, skill points, and perk cadence are data too: [progression.md](progression.md). This file does not own a second action economy.
@@ -36,7 +36,7 @@ hp         = 15 + 5 * 8 + 1 * 4 = 59
 mp         = 4 * 8 + 1 * 2       = 34
 sp         = 10 + 5 * 5 + 1 * 2  = 37
 ap         = 2 + floor(6 / 3)    = 4
-carry      = 25 + 7 * 10         = 95 lb
+carry      = 25 + 7 * 10         = 95 weight units
 initiative = 5
 ```
 

@@ -350,7 +350,7 @@ Obsidian is weapon-only (too brittle).
 
 Total encumbrance = sum of (base weight × material.weightFactor) for all worn items.
 
-| Total Weight (lbs) | Effect |
+| Total weight ([weight units](../core/contract.md#weight)) | Effect |
 |--------------------|--------|
 | ≤ STR × 10 | Unencumbered — normal speed and evasion |
 | > STR × 10 | Encumbered — speed −1, evasion penalty doubled |

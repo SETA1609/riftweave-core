@@ -38,7 +38,7 @@ There are no classes. A character is eight attributes, a set of skills, and the 
 | Mana (MP) | `INT × 8 + level × 2` |
 | Stamina (SP) | `10 + END × 5 + level × 2` |
 | Action points (AP) | `2 + AGI ÷ 3`, rounded down |
-| Carry | `25 + STR × 10` |
+| Carry | `25 + STR × 10` [weight units](../core/contract.md#weight) |
 | Initiative | `PER` |
 
 8. **Take your gear and spells** from your background, and buy more if you have money ([equipment](../modules/equipment.md), [magic](../modules/magic.md)).
