@@ -121,6 +121,7 @@ COLLECTION_CATEGORIES = {
     "checks": "check",
     "natural_weapons": "natural_weapon",
     "monster_templates": "monster_template",
+    "skill_groups": "skill_group",
 }
 
 
@@ -566,6 +567,29 @@ def check_effect_parameters(data_files, module_data_files=None):
     for fp, data in loaded:
         if data is not None:
             walk(data, fp)
+    return errors
+
+
+def check_skill_groups(data_files):
+    """The grouped sheet (docs/core/progression.md#the-grouped-sheet-variant): every core skill is a
+    member of exactly one core skill group."""
+    skills, membership, errors = set(), {}, []
+    for fp in data_files:
+        data = _load_json_file(fp)
+        if not isinstance(data, dict):
+            continue
+        for row in data.get("skills", []) if isinstance(data.get("skills"), list) else []:
+            if isinstance(row, dict) and "key" in row:
+                skills.add(row["key"])
+        for group in data.get("skill_groups", []) or []:
+            for ref in group.get("skills", []):
+                key = ref.rsplit("/", 1)[-1]
+                if key in membership:
+                    errors.append(f"skill {key} is in skill groups {membership[key]} and {group['key']}")
+                membership.setdefault(key, group["key"])
+    if membership:
+        for key in sorted(skills - set(membership)):
+            errors.append(f"skill {key} is in no skill group")
     return errors
 
 
@@ -1784,6 +1808,7 @@ def main():
     for label, errors in (
         ("references (every core: ref resolves)", check_all_references(data_files, module_data_files)),
         ("effects (used or reserved)", check_effect_usage(data_files, module_data_files)),
+        ("skill groups (every skill in one)", check_skill_groups(data_files)),
         ("effect parameters", check_effect_parameters(data_files, module_data_files)),
         ("modifier targets (each names one row)", check_modifier_targets(data_files, module_data_files, collect_vector_files())),
     ):

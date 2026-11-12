@@ -517,10 +517,40 @@ def run_progression(vector):
         return {"skill_points": points, "perks": rules["perks_per_level"], "gain": gain}
     if op == "spend":
         cost = rules["skill_cost"]["tag" if vector["tagged"] else "normal"]
+        if "group" in vector:
+            group = next((g for g in load_data("skill_groups/core.json")["skill_groups"] if g["key"] == vector["group"]), None)
+            if group is None:
+                return {"error": f'skill group "{vector["group"]}" is not defined'}
+            if not group["is_tracked"]:
+                return {"error": f'skill group "{vector["group"]}" is not tracked'}
+            step = rules["skill_group_cost"]["members_per_step"]
+            cost *= -(-len(group["skills"]) // step)
         room = rules["skill_cap"] - vector["skill"]
         ranks = min(vector["points"] // cost, max(room, 0))
         return {"ranks": ranks, "spent": ranks * cost, "left": vector["points"] - ranks * cost}
+    if op == "read_skill":
+        return read_skill(vector["actor"], vector["read"], vector.get("groups"))
     raise ValueError(f"progression op {op!r} is not defined")
+
+
+def read_skill(actor, key, groups=None):
+    """One skill off a sheet (docs/core/progression.md#two-sheets-one-rule-set). A full sheet reads the
+    written value, else the skill's start; a grouped sheet (`groups` given) reads the start plus the
+    member's group ranks, or the start alone for an untracked group."""
+    governing = {s["key"]: s["associatedAbility"] for s in load_data("skills/core.json")["skills"]}
+    if key not in governing:
+        return {"error": f'skill "{key}" is not defined'}
+    rule = load_data("progression/core.json")["progression"]["skill_start"]
+    start = evaluate_formula(rule, {}, {"attribute": actor.get("attributes", {}).get(governing[key], 0)})
+    if groups is None:
+        written = actor.get("skills", {})
+        if key in written:
+            return {"value": written[key], "read_from": "sheet"}
+        return {"value": start, "read_from": "start"}
+    group = next(g for g in load_data("skill_groups/core.json")["skill_groups"] if f"core:skill/{key}" in g["skills"])
+    if not group["is_tracked"]:
+        return {"value": start, "read_from": "start"}
+    return {"value": start + groups.get(group["key"], 0), "read_from": "group"}
 
 
 def run_monster_sheet(vector):

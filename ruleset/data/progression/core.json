@@ -87,6 +87,9 @@
     "skill_cost": {
       "normal": 2,
       "tag": 1
+    },
+    "skill_group_cost": {
+      "members_per_step": 2
     }
   }
 }
