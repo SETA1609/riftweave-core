@@ -1,0 +1,19 @@
+{
+  "$schema": "../../schemas/summon_bonus.schema.json",
+  "summon_bonuses": [
+    {
+      "key": "magic",
+      "label": "Magic",
+      "description": "The caster's force of will steadies a summoned creature's mind: CHA - 5, never below 0, on its INT and WIL.",
+      "attribute": "cha",
+      "attributes": ["int", "wil"]
+    },
+    {
+      "key": "physical",
+      "label": "Physical",
+      "description": "The caster's presence drives a summoned creature's body: CHA - 5, never below 0, on its STR, END, and AGI.",
+      "attribute": "cha",
+      "attributes": ["str", "end", "agi"]
+    }
+  ]
+}

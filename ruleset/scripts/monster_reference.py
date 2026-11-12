@@ -211,6 +211,31 @@ def generate(ref, power=None, nature=None, level=None):
     return data["monsters"][-1]
 
 
+def summon(ref, caster):
+    """A summoned creature (docs/modules/magic.md#summon-groups): the row at the caster's level with
+    the caster's power and nature, then each summon bonus the caster's perks grant adds the
+    caster's attribute modifier, never below 0, to its group, through a template's attribute merge."""
+    from kernel_reference import evaluate_formula
+
+    held = held_templates(caster.get("perks", []))
+    creature = generate(ref, held["power"], held["nature"], caster["level"])
+    bonuses = {row["key"]: row for row in _load("summons/bonuses.json")["summon_bonuses"]}
+    rule = _modifier_rule()
+    adds = {}
+    for perk in caster.get("perks", []):
+        granted = _features().get(perk.removeprefix(FEATURE_PREFIX), {}).get("summon_bonus")
+        if granted is None:
+            continue
+        bonus = bonuses[granted.rsplit("/", 1)[-1]]
+        modifier = evaluate_formula(rule, {}, {"attribute": caster["attributes"].get(bonus["attribute"], 0)})
+        for attribute in bonus["attributes"]:
+            adds[attribute] = adds.get(attribute, 0) + max(modifier, 0)
+    adds = {attribute: add for attribute, add in adds.items() if add}
+    if adds:
+        validate._apply_monster_template(creature, {"attributes": adds})
+    return creature
+
+
 def example_hp(row):
     """An example row's HP by the player formulas at average rolls: the derived hp plus
     (level - 1) x floor(floor(LCK / 2) / 2) of growth (docs/modules/monsters.md#generated-monsters)."""
