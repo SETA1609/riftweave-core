@@ -188,7 +188,7 @@ func TestPlayRollQueueFillsTheNextRollPrompts(t *testing.T) {
 	if !strings.Contains(string(input), `"roll":77`) {
 		t.Errorf("first attack after :roll 77 3: %s", input)
 	}
-	model = press(model, "enter", "down", "enter")
+	model = press(model, "enter", "enter") // back to the menu, where the cursor is still on the attack
 	for range 8 {
 		model = press(model, "enter")
 	}
