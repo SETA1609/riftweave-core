@@ -19,6 +19,9 @@ skill   the row's skills[key], when written
 - **Mana and stamina.** Computed, like every other derived stat. No monster row stores them. [V 2026-11-10]
 - **A reduced skill sheet.** A row writes only the skills it fights or casts with. Any other
   skill reads as a player's starting value, from `skill_start` in `progression/core.json`.
+  A player's sheet follows the same rule: it writes only the skills the character has raised
+  ([progression.md](progression.md#track-only-what-you-raise)), or, on the grouped variant,
+  its groups' ranks.
 - **A missing attribute reads 0**, as it does in `derived`.
 
 The input is the flat row, so a consumer composes first. The vectors are in

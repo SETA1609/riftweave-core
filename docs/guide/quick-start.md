@@ -30,6 +30,10 @@ There are no classes. A character is eight attributes, a set of skills, and the 
 4. **Take creation perks if you want them.** They are optional and come with a tradeoff.
 5. **Pick 3 tag skills.** They cost 1 point per rank, where other skills cost 2.
 6. **Set your skills.** Every skill starts at `5 + its attribute × 2`, plus your background's bonus. Then spend a pool of `5 + INT × 2 + a luck roll` points, where the luck roll is any number you roll from 0 up to your LCK. Skills stop at 100.
+
+   **Write down only what you raise.** Your sheet lists your tag skills, your background's skills, and any skill you spend points on. Every other skill is its starting value, `5 + its attribute × 2`, worked out when you need it. A first character usually raises one weapon skill (blades, blunt, piercing, bows, or a magic color), evasion or block, one armor skill, and one or two of stealth, persuasion, survival, lore, or medicine.
+
+   **Grouped sheet (optional).** If your table plays the grouped sheet, you buy ranks in about a dozen groups instead (Melee, Ranged, Defense, a magic color, Stealth, Social, Knowledge, Wilds, Craft, Athletics, Medicine), and every skill in a group adds its group's ranks to its starting value. A group rank costs more than a skill rank when the group is large ([progression](../core/progression.md#the-grouped-sheet-variant)).
 7. **Work out your numbers.**
 
 | Stat | Formula |
