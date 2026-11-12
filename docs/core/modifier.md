@@ -57,7 +57,7 @@ An applied effect's `duration` is seconds, and 1 (the default) is instant. One e
 
 ### Toxicity
 
-Drinking adds the item's `toxicity` to a stored `toxicity` on the actor. It falls by
+Drinking adds the item's `toxicity` to a stored `toxicity` on the actor. A stock row states it; `formulas/toxicity.json` is the rule it stays within 5 of, and the rule a crafted potion uses ([equipment.md](../modules/equipment.md#toxicity)). It falls by
 `toxicity_decay.per_second` (1, `rest/core.json`) for each second that passes, by the same tick
 as a pool effect, and never below 0. A short or long rest clears it: an hour of decay would empty it anyway, and a table does not count seconds between fights. The limit is the derived row
 `toxicity_limit`, `20 + END × 5` ([derived.md](derived.md)), passed in as `max.toxicity`. A drink
