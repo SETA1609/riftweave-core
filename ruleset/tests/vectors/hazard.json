@@ -54,7 +54,7 @@
     "modifiers": [
       {
         "target": "investigation",
-        "op": "add",
+        "operation": "add",
         "value": 10,
         "source": "item:lantern"
       }

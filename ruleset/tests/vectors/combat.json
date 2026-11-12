@@ -154,7 +154,7 @@
     "modifiers": [
       {
         "target": "attack",
-        "op": "add",
+        "operation": "add",
         "value": 10,
         "source": "perk:test"
       }
@@ -1868,7 +1868,7 @@
       "modifiers": [
         {
           "target": "shield_dr",
-          "op": "add",
+          "operation": "add",
           "value": 2,
           "source": "feature:shield_training",
           "origin": "core:origin/trained"
@@ -1911,7 +1911,7 @@
       "modifiers": [
         {
           "target": "block_magic",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:spell_ward",
           "origin": "core:origin/trained"
@@ -1988,14 +1988,14 @@
       "modifiers": [
         {
           "target": "shield_dr",
-          "op": "add",
+          "operation": "add",
           "value": 2,
           "source": "feature:shield_training",
           "origin": "core:origin/trained"
         },
         {
           "target": "block_magic",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:spell_ward",
           "origin": "core:origin/trained"
@@ -2038,7 +2038,7 @@
       "modifiers": [
         {
           "target": "block_magic",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:spell_ward",
           "origin": "core:origin/trained"
@@ -2081,7 +2081,7 @@
       "modifiers": [
         {
           "target": "bulwark",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:bulwark",
           "origin": "core:origin/trained"
@@ -2127,7 +2127,7 @@
       "modifiers": [
         {
           "target": "bulwark",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:bulwark",
           "origin": "core:origin/trained"
@@ -2171,21 +2171,21 @@
       "modifiers": [
         {
           "target": "shield_dr",
-          "op": "add",
+          "operation": "add",
           "value": 2,
           "source": "feature:shield_training",
           "origin": "core:origin/trained"
         },
         {
           "target": "block_magic",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:spell_ward",
           "origin": "core:origin/trained"
         },
         {
           "target": "bulwark",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:bulwark",
           "origin": "core:origin/trained"
@@ -2229,14 +2229,14 @@
       "modifiers": [
         {
           "target": "evasion",
-          "op": "add",
+          "operation": "add",
           "value": 10,
           "source": "feature:armored_evasion",
           "origin": "core:origin/trained"
         },
         {
           "target": "riposte",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:riposte",
           "origin": "core:origin/trained"
@@ -2279,7 +2279,7 @@
       "modifiers": [
         {
           "target": "riposte",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:riposte",
           "origin": "core:origin/trained"
@@ -2323,7 +2323,7 @@
       "modifiers": [
         {
           "target": "riposte",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:riposte",
           "origin": "core:origin/trained"
@@ -2363,7 +2363,7 @@
       "modifiers": [
         {
           "target": "riposte",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:riposte",
           "origin": "core:origin/trained"
@@ -2406,7 +2406,7 @@
       "modifiers": [
         {
           "target": "evasion",
-          "op": "add",
+          "operation": "add",
           "value": 10,
           "source": "feature:armored_evasion",
           "origin": "core:origin/trained"

@@ -755,7 +755,7 @@
     "modifiers": [
       {
         "target": "ap",
-        "op": "add",
+        "operation": "add",
         "value": 2,
         "source": "perk:quick"
       }
@@ -782,7 +782,7 @@
     "modifiers": [
       {
         "target": "ap",
-        "op": "add",
+        "operation": "add",
         "value": 2,
         "source": "perk:quick"
       }

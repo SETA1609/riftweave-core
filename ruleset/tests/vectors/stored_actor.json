@@ -42,7 +42,7 @@
         {
           "modifier": {
             "target": "str",
-            "op": "add",
+            "operation": "add",
             "value": 2,
             "source": "item:potion_strength",
             "origin": "core:origin/alchemy",
@@ -122,7 +122,7 @@
           {
             "modifier": {
               "target": "str",
-              "op": "add",
+              "operation": "add",
               "value": 2,
               "source": "item:potion_strength",
               "origin": "core:origin/alchemy",
@@ -260,7 +260,7 @@
         {
           "modifier": {
             "target": "str",
-            "op": "add",
+            "operation": "add",
             "value": 2,
             "source": "item:potion_strength",
             "origin": "core:origin/alchemy",
@@ -345,7 +345,7 @@
         {
           "modifier": {
             "target": "str",
-            "op": "add",
+            "operation": "add",
             "value": 2,
             "source": "item:potion_strength",
             "origin": "core:origin/alchemy",
@@ -428,7 +428,7 @@
         {
           "modifier": {
             "target": "str",
-            "op": "add",
+            "operation": "add",
             "value": 2,
             "source": "item:potion_strength",
             "origin": "core:origin/alchemy",
@@ -518,7 +518,7 @@
           {
             "modifier": {
               "target": "str",
-              "op": "add",
+              "operation": "add",
               "value": 2,
               "source": "item:potion_strength",
               "origin": "core:origin/alchemy",

@@ -11,8 +11,8 @@
     "function": "derived",
     "actor": { "attributes": { "end": 5 }, "level": 1 },
     "modifiers": [
-      { "target": "hp", "op": "add", "value": 8, "source": "perk:tough" },
-      { "target": "hp", "op": "add", "value": 8, "source": "perk:tough" }
+      { "target": "hp", "operation": "add", "value": 8, "source": "perk:tough" },
+      { "target": "hp", "operation": "add", "value": 8, "source": "perk:tough" }
     ],
     "expect": { "hp": 67 }
   },

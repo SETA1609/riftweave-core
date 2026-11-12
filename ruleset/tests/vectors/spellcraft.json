@@ -115,7 +115,7 @@
     "op": "research",
     "caster": { "known": [], "skills": { "red_magic": 50 }, "attributes": { "lck": 5 } },
     "effect": "core:effect/damage_frost",
-    "modifiers": [ { "target": "red_magic", "op": "add", "value": 20, "source": "item:tome" } ],
+    "modifiers": [ { "target": "red_magic", "operation": "add", "value": 20, "source": "item:tome" } ],
     "roll": 65,
     "expect": { "outcome": "learned", "known": ["core:effect/damage_frost"] }
   },
