@@ -17,6 +17,15 @@
       "required": ["standard", "boss", "minion"],
       "additionalProperties": false
     },
+    "toxicity": {
+      "type": "object",
+      "description": "How far a stock drink's static toxicity may stray from formulas/toxicity.json (docs/modules/equipment.md#toxicity).",
+      "properties": { "tolerance": { "type": "integer", "minimum": 0 } },
+      "required": ["tolerance"],
+      "additionalProperties": false
+    },
+    "magic_skill": { "type": "integer", "minimum": 0, "maximum": 100, "description": "The magic skill at which the spell route must beat a stock potion (stock_potion_below_magic)." },
+    "scroll_gp_per_mana": { "type": "number", "minimum": 0, "description": "The least gold a stock scroll costs per mana of its spell (scroll_price)." },
     "checks": { "type": "array", "minItems": 1, "items": { "$ref": "#/definitions/check" } },
     "accepted": { "type": "array", "items": { "$ref": "#/definitions/accepted" } }
   },
@@ -53,7 +62,7 @@
     "check": {
       "type": "object",
       "properties": {
-        "key": { "type": "string", "enum": ["weapon_dice", "armor_piece_dr", "worn_set_dr", "monster_damage", "monster_hits_to_kill"] },
+        "key": { "type": "string", "enum": ["weapon_dice", "armor_piece_dr", "worn_set_dr", "monster_damage", "monster_hits_to_kill", "toxicity_formula", "instant_toxicity_above_over_time", "stock_potion_below_magic", "scroll_price"] },
         "mode": { "type": "string", "enum": ["warn", "gate"] },
         "description": { "type": "string", "minLength": 1 }
       },
