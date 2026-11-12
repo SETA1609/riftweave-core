@@ -141,9 +141,9 @@
     },
     "expect": {
       "modifiers": [
-        { "target": "persuasion", "op": "add", "value": 5, "duration": "while_applied", "source": "faction_standing:lantern_wardens" },
-        { "target": "lantern_wardens_member", "op": "grant", "value": 1, "duration": "while_applied", "source": "faction_rank:lantern_wardens" },
-        { "target": "deception", "op": "add", "value": -5, "duration": "while_applied", "source": "faction_standing:ashen_circle" }
+        { "target": "persuasion", "operation": "add", "value": 5, "duration": "while_applied", "source": "faction_standing:lantern_wardens" },
+        { "target": "lantern_wardens_member", "operation": "grant", "value": 1, "duration": "while_applied", "source": "faction_rank:lantern_wardens" },
+        { "target": "deception", "operation": "add", "value": -5, "duration": "while_applied", "source": "faction_standing:ashen_circle" }
       ],
       "suspended_ranks": []
     }
@@ -157,7 +157,7 @@
     },
     "expect": {
       "modifiers": [
-        { "target": "persuasion", "op": "add", "value": 5, "duration": "while_applied", "source": "faction_standing:lantern_wardens" }
+        { "target": "persuasion", "operation": "add", "value": 5, "duration": "while_applied", "source": "faction_standing:lantern_wardens" }
       ],
       "suspended_ranks": ["module:factions/faction/lantern_wardens"]
     }

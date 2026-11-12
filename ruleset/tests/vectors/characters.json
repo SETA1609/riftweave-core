@@ -74,7 +74,7 @@
     "modifiers": [
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 15,
         "source": "feature:toughness",
         "origin": "core:origin/trained"
@@ -138,7 +138,7 @@
     "modifiers": [
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 30,
         "source": "feature:toughness",
         "origin": "core:origin/trained"
@@ -202,14 +202,14 @@
     "modifiers": [
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 30,
         "source": "feature:toughness",
         "origin": "core:origin/trained"
       },
       {
         "target": "carry",
-        "op": "add",
+        "operation": "add",
         "value": 25,
         "source": "feature:pack_mule",
         "origin": "core:origin/trained"
@@ -273,14 +273,14 @@
     "modifiers": [
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 30,
         "source": "feature:toughness",
         "origin": "core:origin/trained"
       },
       {
         "target": "carry",
-        "op": "add",
+        "operation": "add",
         "value": 25,
         "source": "feature:pack_mule",
         "origin": "core:origin/trained"
@@ -344,14 +344,14 @@
     "modifiers": [
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 30,
         "source": "feature:toughness",
         "origin": "core:origin/trained"
       },
       {
         "target": "carry",
-        "op": "add",
+        "operation": "add",
         "value": 25,
         "source": "feature:pack_mule",
         "origin": "core:origin/trained"
@@ -415,14 +415,14 @@
     "modifiers": [
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 45,
         "source": "feature:toughness",
         "origin": "core:origin/trained"
       },
       {
         "target": "carry",
-        "op": "add",
+        "operation": "add",
         "value": 25,
         "source": "feature:pack_mule",
         "origin": "core:origin/trained"
@@ -486,14 +486,14 @@
     "modifiers": [
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 45,
         "source": "feature:toughness",
         "origin": "core:origin/trained"
       },
       {
         "target": "carry",
-        "op": "add",
+        "operation": "add",
         "value": 25,
         "source": "feature:pack_mule",
         "origin": "core:origin/trained"
@@ -557,14 +557,14 @@
     "modifiers": [
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 45,
         "source": "feature:toughness",
         "origin": "core:origin/trained"
       },
       {
         "target": "carry",
-        "op": "add",
+        "operation": "add",
         "value": 25,
         "source": "feature:pack_mule",
         "origin": "core:origin/trained"
@@ -628,14 +628,14 @@
     "modifiers": [
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 45,
         "source": "feature:toughness",
         "origin": "core:origin/trained"
       },
       {
         "target": "carry",
-        "op": "add",
+        "operation": "add",
         "value": 25,
         "source": "feature:pack_mule",
         "origin": "core:origin/trained"
@@ -755,7 +755,7 @@
     "modifiers": [
       {
         "target": "mp",
-        "op": "add",
+        "operation": "add",
         "value": 10,
         "source": "feature:arcane_reservoir",
         "origin": "core:origin/trained"
@@ -819,7 +819,7 @@
     "modifiers": [
       {
         "target": "mp",
-        "op": "add",
+        "operation": "add",
         "value": 10,
         "source": "feature:arcane_reservoir",
         "origin": "core:origin/trained"
@@ -883,7 +883,7 @@
     "modifiers": [
       {
         "target": "mp",
-        "op": "add",
+        "operation": "add",
         "value": 10,
         "source": "feature:arcane_reservoir",
         "origin": "core:origin/trained"
@@ -947,7 +947,7 @@
     "modifiers": [
       {
         "target": "mp",
-        "op": "add",
+        "operation": "add",
         "value": 20,
         "source": "feature:arcane_reservoir",
         "origin": "core:origin/trained"
@@ -1011,7 +1011,7 @@
     "modifiers": [
       {
         "target": "mp",
-        "op": "add",
+        "operation": "add",
         "value": 20,
         "source": "feature:arcane_reservoir",
         "origin": "core:origin/trained"
@@ -1075,7 +1075,7 @@
     "modifiers": [
       {
         "target": "mp",
-        "op": "add",
+        "operation": "add",
         "value": 20,
         "source": "feature:arcane_reservoir",
         "origin": "core:origin/trained"
@@ -1139,7 +1139,7 @@
     "modifiers": [
       {
         "target": "mp",
-        "op": "add",
+        "operation": "add",
         "value": 20,
         "source": "feature:arcane_reservoir",
         "origin": "core:origin/trained"
@@ -1203,7 +1203,7 @@
     "modifiers": [
       {
         "target": "mp",
-        "op": "add",
+        "operation": "add",
         "value": 20,
         "source": "feature:arcane_reservoir",
         "origin": "core:origin/trained"
@@ -1267,7 +1267,7 @@
     "modifiers": [
       {
         "target": "mp",
-        "op": "add",
+        "operation": "add",
         "value": 30,
         "source": "feature:arcane_reservoir",
         "origin": "core:origin/trained"
