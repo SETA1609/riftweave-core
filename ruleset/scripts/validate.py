@@ -122,6 +122,7 @@ COLLECTION_CATEGORIES = {
     "natural_weapons": "natural_weapon",
     "monster_templates": "monster_template",
     "skill_groups": "skill_group",
+    "summon_bonuses": "summon_bonus",
 }
 
 
