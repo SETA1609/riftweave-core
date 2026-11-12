@@ -25,6 +25,11 @@
             "type": "integer",
             "minimum": 0,
             "description": "Stored toxicity; missing reads 0 (docs/core/modifier.md#toxicity)."
+          },
+          "ap": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "AP in the pool, read with at_table (docs/core/actions.md#one-rule-set-two-clocks)."
           }
         },
         "additionalProperties": false
@@ -77,6 +82,10 @@
           },
           "additionalProperties": false
         }
+      },
+      "at_table": {
+        "type": "boolean",
+        "description": "At a table a stamina restore becomes AP, stamina_per_ap to the point, that arrives at the start of the next turn and stops at the pool cap."
       }
     },
     "additionalProperties": false,
@@ -165,6 +174,16 @@
           "$ref": "common.json#/definitions/ref"
         },
         "description": "core:condition/overdosed while toxicity is above max.toxicity."
+      },
+      "ap": {
+        "type": "integer",
+        "minimum": 0,
+        "description": "AP in the pool, with at_table."
+      },
+      "pending_ap": {
+        "type": "integer",
+        "minimum": 0,
+        "description": "AP restored this turn, arriving at the start of the next, with at_table."
       }
     },
     "additionalProperties": false,

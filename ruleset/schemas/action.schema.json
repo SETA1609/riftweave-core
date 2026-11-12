@@ -1,11 +1,12 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Actions",
-  "description": "One AP budget. Cast AP is static. A spell also spends its mana cost.",
+  "description": "One AP budget, spent as AP at a table and as AP times stamina_per_ap in stamina in real time. Cast AP is static. A spell also spends its mana cost.",
   "type": "object",
   "properties": {
     "$schema": { "type": "string" },
     "seconds_per_turn": { "type": "integer", "minimum": 1, "description": "How many seconds one turn covers (docs/core/modifier.md#effects-over-time)." },
+    "stamina_per_ap": { "type": "integer", "minimum": 1, "description": "Stamina one AP is worth: a real-time action costs its AP times this, and stamina restored at a table gives AP at this rate (docs/core/actions.md#one-rule-set-two-clocks)." },
     "pool": { "$ref": "#/definitions/pool" },
     "actions": {
       "type": "array",

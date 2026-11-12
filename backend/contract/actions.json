@@ -1,7 +1,7 @@
 {
   "$schema": "./command.schema.json",
   "name": "actions",
-  "summary": "The AP pool and the cost of a list of actions.",
+  "summary": "The AP pool and the cost of a list of actions, in AP and in real-time stamina.",
   "doc": "docs/core/actions.md",
   "input_schema": {
     "type": "object",
@@ -32,6 +32,10 @@
       },
       "cost": {
         "type": "integer"
+      },
+      "stamina": {
+        "type": "integer",
+        "description": "The cost in stamina for a real-time client: AP times stamina_per_ap."
       }
     },
     "additionalProperties": false,

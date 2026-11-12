@@ -38,7 +38,7 @@
         },
         "effects": {
           "type": "object",
-          "description": "Narrative/descriptive effects of this condition in each resolution mode.",
+          "description": "Retired by M3-11: a condition has one rule for every client, its description and modifiers. The data step removes it.",
           "properties": {
             "ttrpg": { "type": "string", "description": "Mechanical effect in TTRPG/turn-based mode." },
             "video_game": { "type": "string", "description": "Mechanical effect in video game/action-combat mode." }
