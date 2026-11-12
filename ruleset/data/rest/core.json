@@ -33,6 +33,10 @@
         {
           "resource": "conditions",
           "mode": "none"
+        },
+        {
+          "resource": "food",
+          "mode": "clear"
         }
       ]
     },
@@ -68,6 +72,10 @@
             "turns",
             "uses"
           ]
+        },
+        {
+          "resource": "food",
+          "mode": "clear"
         }
       ]
     },
@@ -98,6 +106,10 @@
         },
         {
           "resource": "conditions",
+          "mode": "none"
+        },
+        {
+          "resource": "food",
           "mode": "none"
         }
       ]

@@ -91,6 +91,16 @@
           },
           "required": ["resource", "mode"],
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "clear ends every running food effect (origin core:origin/food); none keeps them (docs/core/rest.md#food-at-rest).",
+          "properties": {
+            "resource": { "type": "string", "const": "food" },
+            "mode": { "type": "string", "enum": ["clear", "none"] }
+          },
+          "required": ["resource", "mode"],
+          "additionalProperties": false
         }
       ]
     }

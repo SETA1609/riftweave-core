@@ -273,13 +273,40 @@ def run_rest(vector):
         elif resource == "toxicity":
             if mode == "empty" and "toxicity" in result:
                 result["toxicity"] = 0
+        elif resource == "food":
+            continue  # read below, after the pools
         elif mode == "full":
             result[resource] = maxima[resource]
         elif mode == "fraction":
             gain = maxima[resource] * row["numerator"] // row["denominator"]
             result[resource] = min(maxima[resource], result[resource] + gain)
     result["conditions"] = [c["key"] for c in conditions]
+    # Food at rest (docs/core/rest.md#food-at-rest): the occasion's food row, then the meal.
+    running = vector.get("running", {})
+    ticks, held = list(running.get("ticks", [])), list(running.get("modifiers", []))
+    food = next((row["mode"] for row in occasion["recovery"] if row["resource"] == "food"), "none")
+    if food == "clear":
+        ticks = [t for t in ticks if t["origin"] != FOOD_ORIGIN]
+        held = [m for m in held if m["origin"] != FOOD_ORIGIN]
+    refused = []
+    if "meal" in vector:
+        items = {row["key"]: row for row in load_data("equipment/consumables.json")["equipment"]}
+        meal = items.get(vector["meal"])
+        if meal is None or meal["type"] != "food":
+            refused.append(vector["meal"])
+        else:
+            pools = ("hp", "mp", "stamina")
+            eaten = run_consume({"current": {p: result[p] for p in pools}, "max": {p: maxima[p] for p in pools},
+                                 "events": [{"item": vector["meal"]}]})
+            result.update({p: eaten[p] for p in pools})
+            ticks = [t for t in ticks if t["origin"] != FOOD_ORIGIN] + eaten["ticks"]
+            held = [m for m in held if m["origin"] != FOOD_ORIGIN] + eaten["modifiers"]
+    result["running"] = {"ticks": ticks, "modifiers": held}
+    result["refused"] = refused
     return result
+
+
+FOOD_ORIGIN = "core:origin/food"
 
 
 def to_copper(economy, cost):

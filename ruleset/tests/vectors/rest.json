@@ -2,50 +2,513 @@
   {
     "name": "short rest: a quarter of hp and mp, full stamina and ap, conditions stay",
     "occasion": "short_rest",
-    "actor": { "attributes": { "end": 6, "int": 5, "agi": 6 }, "level": 1 },
-    "current": { "hp": 20, "mp": 10, "stamina": 3, "ap": 0 },
-    "max": { "stamina": 57 },
-    "conditions": [{ "key": "poisoned", "duration": "turns" }],
-    "expect": { "hp": 36, "mp": 20, "stamina": 57, "ap": 4, "conditions": ["poisoned"] }
+    "actor": {
+      "attributes": {
+        "end": 6,
+        "int": 5,
+        "agi": 6
+      },
+      "level": 1
+    },
+    "current": {
+      "hp": 20,
+      "mp": 10,
+      "stamina": 3,
+      "ap": 0
+    },
+    "max": {
+      "stamina": 57
+    },
+    "conditions": [
+      {
+        "key": "poisoned",
+        "duration": "turns"
+      }
+    ],
+    "expect": {
+      "hp": 36,
+      "mp": 20,
+      "stamina": 57,
+      "ap": 4,
+      "conditions": [
+        "poisoned"
+      ]
+    }
   },
   {
     "name": "short rest stops at the maximum",
     "occasion": "short_rest",
-    "actor": { "attributes": { "end": 6, "int": 5, "agi": 6 }, "level": 1 },
-    "current": { "hp": 60, "mp": 42, "stamina": 57, "ap": 4 },
-    "max": { "stamina": 57 },
-    "expect": { "hp": 67, "mp": 42, "stamina": 57, "ap": 4, "conditions": [] }
+    "actor": {
+      "attributes": {
+        "end": 6,
+        "int": 5,
+        "agi": 6
+      },
+      "level": 1
+    },
+    "current": {
+      "hp": 60,
+      "mp": 42,
+      "stamina": 57,
+      "ap": 4
+    },
+    "max": {
+      "stamina": 57
+    },
+    "expect": {
+      "hp": 67,
+      "mp": 42,
+      "stamina": 57,
+      "ap": 4,
+      "conditions": []
+    }
   },
   {
     "name": "short rest: a derived modifier raises the maximum and so the recovery",
     "occasion": "short_rest",
-    "actor": { "attributes": { "end": 6, "int": 5, "agi": 6 }, "level": 1 },
-    "modifiers": [{ "target": "hp", "op": "add", "value": 10, "source": "perk:test" }],
-    "current": { "hp": 50, "mp": 42, "stamina": 57, "ap": 4 },
-    "max": { "stamina": 57 },
-    "expect": { "hp": 69 }
+    "actor": {
+      "attributes": {
+        "end": 6,
+        "int": 5,
+        "agi": 6
+      },
+      "level": 1
+    },
+    "modifiers": [
+      {
+        "target": "hp",
+        "op": "add",
+        "value": 10,
+        "source": "perk:test"
+      }
+    ],
+    "current": {
+      "hp": 50,
+      "mp": 42,
+      "stamina": 57,
+      "ap": 4
+    },
+    "max": {
+      "stamina": 57
+    },
+    "expect": {
+      "hp": 69
+    }
   },
   {
     "name": "long rest: everything full, timed conditions clear, permanent and worn stay",
     "occasion": "long_rest",
-    "actor": { "attributes": { "end": 6, "int": 5, "agi": 6 }, "level": 1 },
-    "current": { "hp": 1, "mp": 0, "stamina": 0, "ap": 1 },
-    "max": { "stamina": 57 },
+    "actor": {
+      "attributes": {
+        "end": 6,
+        "int": 5,
+        "agi": 6
+      },
+      "level": 1
+    },
+    "current": {
+      "hp": 1,
+      "mp": 0,
+      "stamina": 0,
+      "ap": 1
+    },
+    "max": {
+      "stamina": 57
+    },
     "conditions": [
-      { "key": "poisoned", "duration": "turns" },
-      { "key": "cursed", "duration": "permanent" },
-      { "key": "blessed", "duration": "uses" },
-      { "key": "ring_of_warding", "duration": "while_equipped" }
+      {
+        "key": "poisoned",
+        "duration": "turns"
+      },
+      {
+        "key": "cursed",
+        "duration": "permanent"
+      },
+      {
+        "key": "blessed",
+        "duration": "uses"
+      },
+      {
+        "key": "ring_of_warding",
+        "duration": "while_equipped"
+      }
     ],
-    "expect": { "hp": 67, "mp": 42, "stamina": 57, "ap": 4, "conditions": ["cursed", "ring_of_warding"] }
+    "expect": {
+      "hp": 67,
+      "mp": 42,
+      "stamina": 57,
+      "ap": 4,
+      "conditions": [
+        "cursed",
+        "ring_of_warding"
+      ]
+    }
   },
   {
     "name": "end of combat: stamina and ap refill, hp, mp and conditions do not change",
     "occasion": "end_of_combat",
-    "actor": { "attributes": { "end": 6, "int": 5, "agi": 6 }, "level": 1 },
-    "current": { "hp": 20, "mp": 10, "stamina": 3, "ap": 0 },
-    "max": { "stamina": 57 },
-    "conditions": [{ "key": "poisoned", "duration": "turns" }],
-    "expect": { "hp": 20, "mp": 10, "stamina": 57, "ap": 4, "conditions": ["poisoned"] }
+    "actor": {
+      "attributes": {
+        "end": 6,
+        "int": 5,
+        "agi": 6
+      },
+      "level": 1
+    },
+    "current": {
+      "hp": 20,
+      "mp": 10,
+      "stamina": 3,
+      "ap": 0
+    },
+    "max": {
+      "stamina": 57
+    },
+    "conditions": [
+      {
+        "key": "poisoned",
+        "duration": "turns"
+      }
+    ],
+    "expect": {
+      "hp": 20,
+      "mp": 10,
+      "stamina": 57,
+      "ap": 4,
+      "conditions": [
+        "poisoned"
+      ]
+    }
+  },
+  {
+    "name": "food at rest: a short rest ends a running food effect",
+    "occasion": "short_rest",
+    "actor": {
+      "attributes": {
+        "end": 6,
+        "int": 5,
+        "agi": 6
+      },
+      "level": 1
+    },
+    "current": {
+      "hp": 20,
+      "mp": 10,
+      "stamina": 3,
+      "ap": 0
+    },
+    "max": {
+      "stamina": 57
+    },
+    "conditions": [],
+    "running": {
+      "ticks": [
+        {
+          "source": "food:ration_hearty_stew",
+          "origin": "core:origin/food",
+          "pool": "stamina",
+          "magnitude": 1,
+          "seconds_left": 40
+        }
+      ],
+      "modifiers": []
+    },
+    "expect": {
+      "running": {
+        "ticks": [],
+        "modifiers": []
+      }
+    }
+  },
+  {
+    "name": "food at rest: a long rest ends a running food effect",
+    "occasion": "long_rest",
+    "actor": {
+      "attributes": {
+        "end": 6,
+        "int": 5,
+        "agi": 6
+      },
+      "level": 1
+    },
+    "current": {
+      "hp": 20,
+      "mp": 10,
+      "stamina": 3,
+      "ap": 0
+    },
+    "max": {
+      "stamina": 57
+    },
+    "conditions": [],
+    "running": {
+      "ticks": [
+        {
+          "source": "food:ration_hearty_stew",
+          "origin": "core:origin/food",
+          "pool": "stamina",
+          "magnitude": 1,
+          "seconds_left": 40
+        }
+      ],
+      "modifiers": []
+    },
+    "expect": {
+      "running": {
+        "ticks": [],
+        "modifiers": []
+      }
+    }
+  },
+  {
+    "name": "food at rest: a potion's effect is not food and stays through a rest",
+    "occasion": "short_rest",
+    "actor": {
+      "attributes": {
+        "end": 6,
+        "int": 5,
+        "agi": 6
+      },
+      "level": 1
+    },
+    "current": {
+      "hp": 20,
+      "mp": 10,
+      "stamina": 3,
+      "ap": 0
+    },
+    "max": {
+      "stamina": 57
+    },
+    "conditions": [],
+    "running": {
+      "ticks": [
+        {
+          "source": "food:ration_hearty_stew",
+          "origin": "core:origin/food",
+          "pool": "stamina",
+          "magnitude": 1,
+          "seconds_left": 40
+        }
+      ],
+      "modifiers": [
+        {
+          "source": "item:potion_strength",
+          "origin": "core:origin/alchemy",
+          "target": "str",
+          "op": "add",
+          "value": 2,
+          "seconds_left": 55
+        }
+      ]
+    },
+    "expect": {
+      "running": {
+        "ticks": [],
+        "modifiers": [
+          {
+            "source": "item:potion_strength",
+            "origin": "core:origin/alchemy",
+            "target": "str",
+            "op": "add",
+            "value": 2,
+            "seconds_left": 55
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "food at rest: a meal eaten at rest runs from the end of the rest",
+    "occasion": "long_rest",
+    "actor": {
+      "attributes": {
+        "end": 6,
+        "int": 5,
+        "agi": 6
+      },
+      "level": 1
+    },
+    "current": {
+      "hp": 20,
+      "mp": 10,
+      "stamina": 3,
+      "ap": 0
+    },
+    "max": {
+      "stamina": 57
+    },
+    "conditions": [],
+    "running": {
+      "ticks": [],
+      "modifiers": []
+    },
+    "meal": "ration_hearty_stew",
+    "expect": {
+      "running": {
+        "ticks": [
+          {
+            "source": "food:ration_hearty_stew",
+            "origin": "core:origin/food",
+            "pool": "stamina",
+            "magnitude": 1,
+            "seconds_left": 60
+          }
+        ],
+        "modifiers": []
+      },
+      "refused": []
+    }
+  },
+  {
+    "name": "food at rest: the same dish again keeps the buff, fresh, once",
+    "occasion": "short_rest",
+    "actor": {
+      "attributes": {
+        "end": 6,
+        "int": 5,
+        "agi": 6
+      },
+      "level": 1
+    },
+    "current": {
+      "hp": 20,
+      "mp": 10,
+      "stamina": 3,
+      "ap": 0
+    },
+    "max": {
+      "stamina": 57
+    },
+    "conditions": [],
+    "running": {
+      "ticks": [
+        {
+          "source": "food:ration_hearty_stew",
+          "origin": "core:origin/food",
+          "pool": "stamina",
+          "magnitude": 1,
+          "seconds_left": 40
+        }
+      ],
+      "modifiers": []
+    },
+    "meal": "ration_hearty_stew",
+    "expect": {
+      "running": {
+        "ticks": [
+          {
+            "source": "food:ration_hearty_stew",
+            "origin": "core:origin/food",
+            "pool": "stamina",
+            "magnitude": 1,
+            "seconds_left": 60
+          }
+        ],
+        "modifiers": []
+      }
+    }
+  },
+  {
+    "name": "food at rest: end of combat keeps a food effect eaten before the fight",
+    "occasion": "end_of_combat",
+    "actor": {
+      "attributes": {
+        "end": 6,
+        "int": 5,
+        "agi": 6
+      },
+      "level": 1
+    },
+    "current": {
+      "hp": 20,
+      "mp": 10,
+      "stamina": 3,
+      "ap": 0
+    },
+    "max": {
+      "stamina": 57
+    },
+    "conditions": [],
+    "running": {
+      "ticks": [
+        {
+          "source": "food:ration_hearty_stew",
+          "origin": "core:origin/food",
+          "pool": "stamina",
+          "magnitude": 1,
+          "seconds_left": 40
+        }
+      ],
+      "modifiers": [
+        {
+          "source": "item:potion_strength",
+          "origin": "core:origin/alchemy",
+          "target": "str",
+          "op": "add",
+          "value": 2,
+          "seconds_left": 55
+        }
+      ]
+    },
+    "expect": {
+      "running": {
+        "ticks": [
+          {
+            "source": "food:ration_hearty_stew",
+            "origin": "core:origin/food",
+            "pool": "stamina",
+            "magnitude": 1,
+            "seconds_left": 40
+          }
+        ],
+        "modifiers": [
+          {
+            "source": "item:potion_strength",
+            "origin": "core:origin/alchemy",
+            "target": "str",
+            "op": "add",
+            "value": 2,
+            "seconds_left": 55
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "food at rest: a potion is not a meal and is refused",
+    "occasion": "short_rest",
+    "actor": {
+      "attributes": {
+        "end": 6,
+        "int": 5,
+        "agi": 6
+      },
+      "level": 1
+    },
+    "current": {
+      "hp": 20,
+      "mp": 10,
+      "stamina": 3,
+      "ap": 0
+    },
+    "max": {
+      "stamina": 57
+    },
+    "conditions": [],
+    "running": {
+      "ticks": [],
+      "modifiers": []
+    },
+    "meal": "potion_stamina",
+    "expect": {
+      "running": {
+        "ticks": [],
+        "modifiers": []
+      },
+      "refused": [
+        "potion_stamina"
+      ]
+    }
   }
 ]

@@ -53,6 +53,7 @@ An applied effect's `duration` is seconds, and 1 (the default) is instant. One e
 - Any **other effect** holds its `magnitude` for `duration` seconds as a modifier: `resist` on its parameter, `add` on its parameter or its own key, and a `grant` when it has no magnitude.
 - **Turns.** One turn is `seconds_per_turn` seconds (5, `actions/core.json`). A turn advances effects by that many seconds, so a tick covers magnitude times the seconds that remain, and the total is the same in both modes. [V 2026-11-11, `consume` vectors]
 - **Same source.** Using the same item again replaces its own running effects, so the effect restarts and does not stack. [A]
+- **Rest.** A short or long rest ends every running food effect, and a meal eaten during the rest starts fresh; end of combat leaves them ([rest.md](rest.md#food-at-rest)). [V 2026-11-12]
 - **What can be used.** Only an item with `delivery` `drink` or `eat`. Food (`type: food`) is refused in combat, and it is always over time. A dish is one source, `food:<key>`; any other item is `item:<key>`. A dish's effects are the combined effects of its ingredients, written on the row; cooking is crafting.
 
 ### Toxicity
