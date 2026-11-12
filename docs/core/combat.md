@@ -27,7 +27,7 @@ One attack, in order, from the roll to the HP lost. Every step reads the actor s
               halved (rounded down) against a type without armor_dr_applies
 3. damage     damage = the caller's rolled damage dice
               if the attack names an ability: damage = max(damage + attribute_modifier, 0)
-              if a called shot: damage = floor(damage * the location's damage_mul)
+              if a called shot: damage = floor(damage * the location's damage_multiplier)
 4. crit       if crit: damage = crit_damage(damage)                 formula tree
 5. reduce     if evaded an area attack: damage = area_evade_damage(damage)   formula tree
               if blocked: damage = damage - shield_dr
@@ -80,7 +80,7 @@ Cover, flanking, prone, unseen, and shooting into melee are rows in `ruleset/dat
 - **Explicit or flag.** Cover, flanking, and shooting into melee are named by the caller (`situations`), since positions are the caller's. Prone, blinded, and invisible come from flags (`grant` modifiers of the conditions): a row with `when` applies when the attacker or the defender has that flag. [A]
 - **Forbidden.** Full cover forbids ranged attacks, and a prone attacker cannot shoot. The pipeline returns an error; the caller picks another action. [A]
 - **Unseen.** A blinded attacker and an invisible target share the source `situation:unseen`, so both together are still −20. Area attacks ignore it (`deliveries`). [A]
-- **Called shots.** The location's `attack` is an `add` on the attack target; `damage_mul` multiplies the damage dice before the crit doubles it (a head crit is ×1.5, then ×2), rounded down. Its `riders` (staggered, slowed, a disarm on a failed STR check, a stun on a failed END check) are listed on a hit; the caller rolls the checks and applies the conditions. [A]
+- **Called shots.** The location's `attack` is an `add` on the attack target; `damage_multiplier` multiplies the damage dice before the crit doubles it (a head crit is ×1.5, then ×2), rounded down. Its `riders` (staggered, slowed, a disarm on a failed STR check, a stun on a failed END check) are listed on a hit; the caller rolls the checks and applies the conditions. [A]
 
 ## Not covered
 

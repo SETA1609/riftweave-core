@@ -65,7 +65,7 @@ reaches it is uncraftable. [A]
 
 ## Spellcraft
 
-`spellcraft` checks spell knowledge ([magic.md](../modules/magic.md#spell-knowledge)), by `op`:
+`spellcraft` checks spell knowledge ([magic.md](../modules/magic.md#spell-knowledge)), by `operation`:
 
 ```
 craft     caster.known (effect refs), caster.skills, spell { color, effects }

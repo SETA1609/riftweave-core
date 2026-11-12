@@ -25,7 +25,7 @@ Actor             stored_actor in backend/contract/common.json; see state.md
   conditions[]      key, stacks
   modifiers[]       an active modifier and its turns_elapsed
   flags[]           prone, grappled, ...
-  inventory[]       item instances (id, base, material, mods)
+  inventory[]       item instances (id, base, material, added_effects)
   equipped[slot]    an inventory id
 ```
 
@@ -61,10 +61,10 @@ The origins (arcane, divine, alchemy, trained, ...) are one short table in data,
 The only shared verb. A producer emits one. A consumer reads the result. Neither imports the other's formula.
 
 ```
-roll_request      { skill, mods[] }
+roll_request      { skill, modifiers[] }
 roll_result       { roll, target, margin, tags[] }
 packet            { amount, tags[], source }
-spawn_item        { base, material, mods[] }
+spawn_item        { base, material, added_effects[] }
 ```
 
 Resolution is one function, named here so nobody writes a second one: `d100 <= target`, `margin = target - roll`. Crit and fumble are tags on `roll_result`, not a second roll system. The windows live in `ruleset/data/resolution/core.json`. [V 2026-11-11]
