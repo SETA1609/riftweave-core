@@ -415,5 +415,226 @@
       ],
       "hp": 10
     }
+  },
+  {
+    "current": {
+      "hp": 10,
+      "mp": 0,
+      "stamina": 0
+    },
+    "max": {
+      "hp": 100,
+      "mp": 50,
+      "stamina": 100
+    },
+    "events": [
+      {
+        "item": "bread_and_cheese"
+      },
+      {
+        "advance": 12
+      }
+    ],
+    "name": "parity: a 12-second effect gives its total in seconds",
+    "expect": {
+      "hp": 22,
+      "ticks": []
+    }
+  },
+  {
+    "current": {
+      "hp": 10,
+      "mp": 0,
+      "stamina": 0
+    },
+    "max": {
+      "hp": 100,
+      "mp": 50,
+      "stamina": 100
+    },
+    "events": [
+      {
+        "item": "bread_and_cheese"
+      },
+      {
+        "turns": 3
+      }
+    ],
+    "name": "parity: the same 12 seconds over ceil(12 / 5) = 3 turns gives the same total",
+    "expect": {
+      "hp": 22,
+      "ticks": []
+    }
+  },
+  {
+    "current": {
+      "hp": 10,
+      "mp": 0,
+      "stamina": 0
+    },
+    "max": {
+      "hp": 100,
+      "mp": 50,
+      "stamina": 100
+    },
+    "events": [
+      {
+        "item": "bread_and_cheese"
+      },
+      {
+        "turns": 2
+      }
+    ],
+    "name": "parity: after 2 turns the 12-second effect still runs its last 2 seconds",
+    "expect": {
+      "hp": 20,
+      "ticks": [
+        {
+          "source": "food:bread_and_cheese",
+          "origin": "core:origin/food",
+          "pool": "hp",
+          "magnitude": 1,
+          "seconds_left": 2
+        }
+      ]
+    }
+  },
+  {
+    "current": {
+      "hp": 10,
+      "mp": 0,
+      "stamina": 0,
+      "ap": 1
+    },
+    "max": {
+      "hp": 100,
+      "mp": 50,
+      "stamina": 100
+    },
+    "at_table": true,
+    "events": [
+      {
+        "item": "potion_stamina",
+        "in_combat": true
+      }
+    ],
+    "name": "at a table: a Stamina Potion's 30 stamina is 6 AP that does not arrive this turn",
+    "expect": {
+      "ap": 1,
+      "pending_ap": 6,
+      "stamina": 0
+    }
+  },
+  {
+    "current": {
+      "hp": 10,
+      "mp": 0,
+      "stamina": 0,
+      "ap": 1
+    },
+    "max": {
+      "hp": 100,
+      "mp": 50,
+      "stamina": 100
+    },
+    "at_table": true,
+    "events": [
+      {
+        "item": "potion_stamina",
+        "in_combat": true
+      },
+      {
+        "turns": 1
+      }
+    ],
+    "name": "at a table: the potion's AP arrives at the start of the next turn",
+    "expect": {
+      "ap": 7,
+      "pending_ap": 0
+    }
+  },
+  {
+    "current": {
+      "hp": 10,
+      "mp": 0,
+      "stamina": 0,
+      "ap": 8
+    },
+    "max": {
+      "hp": 100,
+      "mp": 50,
+      "stamina": 100
+    },
+    "at_table": true,
+    "events": [
+      {
+        "item": "potion_stamina",
+        "in_combat": true
+      },
+      {
+        "turns": 1
+      }
+    ],
+    "name": "at a table: restored AP stops at the pool cap of 10",
+    "expect": {
+      "ap": 10,
+      "pending_ap": 0
+    }
+  },
+  {
+    "current": {
+      "hp": 10,
+      "mp": 0,
+      "stamina": 0,
+      "ap": 0
+    },
+    "max": {
+      "hp": 100,
+      "mp": 50,
+      "stamina": 100
+    },
+    "at_table": true,
+    "events": [
+      {
+        "item": "travel_rations"
+      },
+      {
+        "turns": 5
+      }
+    ],
+    "name": "at a table: food's 20 stamina over 20 seconds is 4 AP, each a turn after its stamina",
+    "expect": {
+      "ap": 4,
+      "pending_ap": 0,
+      "stamina": 0
+    }
+  },
+  {
+    "current": {
+      "hp": 10,
+      "mp": 0,
+      "stamina": 0,
+      "ap": 0
+    },
+    "max": {
+      "hp": 100,
+      "mp": 50,
+      "stamina": 100
+    },
+    "at_table": true,
+    "events": [
+      {
+        "item": "travel_rations"
+      },
+      {
+        "advance": 7
+      }
+    ],
+    "name": "at a table: 7 stamina is 1 AP waiting and 2 stamina toward the next",
+    "expect": {
+      "ap": 0,
+      "pending_ap": 1,
+      "stamina": 0
+    }
   }
 ]

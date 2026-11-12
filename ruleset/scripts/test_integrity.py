@@ -126,6 +126,22 @@ class TestReferencesAreTyped(unittest.TestCase):
 
 
 class TestEveryReferenceResolves(unittest.TestCase):
+    def test_no_schema_or_core_data_file_has_a_per_mode_field(self):
+        """One rule set (docs/core/actions.md#one-rule-set-two-clocks): no ttrpg or video_game field."""
+        def keys(node):
+            if isinstance(node, dict):
+                for key, value in node.items():
+                    yield key
+                    yield from keys(value)
+            elif isinstance(node, list):
+                for value in node:
+                    yield from keys(value)
+        paths = sorted(validate.SCHEMA_DIR.glob("*.json")) + sorted(validate.DATA_DIR.rglob("*.json"))
+        for path in paths:
+            with self.subTest(file=path.name):
+                found = {key for key in keys(json.loads(path.read_text())) if key in ("ttrpg", "video_game")}
+                self.assertFalse(found)
+
     def test_the_real_data_has_no_dangling_reference(self):
         data_files = list(validate.collect_data_files())
         modules = list(validate.collect_module_data_files())
