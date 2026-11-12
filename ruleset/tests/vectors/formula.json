@@ -2,25 +2,88 @@
   {
     "name": "ap tree, agi 6",
     "formula": "ap",
-    "actor": { "attributes": { "agi": 6 } },
-    "expect": { "value": 4 }
+    "actor": {
+      "attributes": {
+        "agi": 6
+      }
+    },
+    "expect": {
+      "value": 4
+    }
   },
   {
     "name": "ap tree, agi 5, div floors",
     "formula": "ap",
-    "actor": { "attributes": { "agi": 5 } },
-    "expect": { "value": 3 }
+    "actor": {
+      "attributes": {
+        "agi": 5
+      }
+    },
+    "expect": {
+      "value": 3
+    }
   },
   {
     "name": "inline tree, str 7 times 10 minus 5",
     "expr": {
       "op": "sub",
       "args": [
-        { "op": "mul", "args": [{ "attr": "str" }, { "lit": 10 }] },
-        { "lit": 5 }
+        {
+          "op": "mul",
+          "args": [
+            {
+              "attr": "str"
+            },
+            {
+              "lit": 10
+            }
+          ]
+        },
+        {
+          "lit": 5
+        }
       ]
     },
-    "actor": { "attributes": { "str": 7 } },
-    "expect": { "value": 65 }
+    "actor": {
+      "attributes": {
+        "str": 7
+      }
+    },
+    "expect": {
+      "value": 65
+    }
+  },
+  {
+    "name": "toxicity: 40 HP at once is 20 mana of spell cost, 20 toxicity",
+    "formula": "toxicity",
+    "variables": {
+      "instant_cost": 20,
+      "over_time_cost": 0
+    },
+    "expect": {
+      "value": 20
+    }
+  },
+  {
+    "name": "toxicity: the same 40 HP over 20 seconds is 20 mana over time, 10 toxicity",
+    "formula": "toxicity",
+    "variables": {
+      "instant_cost": 0,
+      "over_time_cost": 20
+    },
+    "expect": {
+      "value": 10
+    }
+  },
+  {
+    "name": "toxicity: a buff and a restore over time add, the over-time half rounded down",
+    "formula": "toxicity",
+    "variables": {
+      "instant_cost": 10,
+      "over_time_cost": 15
+    },
+    "expect": {
+      "value": 17
+    }
   }
 ]
