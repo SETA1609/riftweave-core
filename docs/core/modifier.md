@@ -59,7 +59,7 @@ An applied effect's `duration` is seconds, and 1 (the default) is instant. One e
 
 Drinking adds the item's `toxicity` to a stored `toxicity` on the actor. It falls by
 `toxicity_decay.per_second` (1, `rest/core.json`) for each second that passes, by the same tick
-as a pool effect, and never below 0. A long rest clears it. The limit is the derived row
+as a pool effect, and never below 0. A short or long rest clears it: an hour of decay would empty it anyway, and a table does not count seconds between fights. The limit is the derived row
 `toxicity_limit`, `20 + END × 5` ([derived.md](derived.md)), passed in as `max.toxicity`. A drink
 that takes toxicity above the limit is not refused: its effects land, and the actor gains
 `core:condition/overdosed` while toxicity stays above the limit. Food adds none and does not

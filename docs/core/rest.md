@@ -35,7 +35,7 @@ The maximum of `hp`, `mp`, and `ap` is the derived stat of the same key ([derive
 | mp | 1/4 of max | full | none |
 | stamina | full | full | full |
 | ap | full | full | full |
-| toxicity | none | empty | none |
+| toxicity | empty | empty | none |
 | conditions | none | clear `turns`, `uses` | none |
 
 AP is the one value already recorded elsewhere: a short rest refills the pool ([actions.md](actions.md)). Every other number in the table is a first choice, not a measured one. [U] Playtests may move them; the vectors in `ruleset/tests/vectors/rest.json` change with them.

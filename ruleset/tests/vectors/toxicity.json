@@ -334,7 +334,7 @@
     }
   },
   {
-    "name": "a short rest keeps toxicity",
+    "name": "a short rest clears toxicity",
     "function": "rest",
     "occasion": "short_rest",
     "actor": {
@@ -357,7 +357,7 @@
     },
     "conditions": [],
     "expect": {
-      "toxicity": 38
+      "toxicity": 0
     }
   }
 ]

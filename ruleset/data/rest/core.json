@@ -28,7 +28,7 @@
         },
         {
           "resource": "toxicity",
-          "mode": "none"
+          "mode": "empty"
         },
         {
           "resource": "conditions",
