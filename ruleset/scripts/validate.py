@@ -629,14 +629,9 @@ MODIFIER_TARGET_TABLES = {
     "damage_types": ("key", "damage_type"),
 }
 MODIFIER_OPERATIONS = {"add": "number", "multiply": "number", "set": "number", "grant": "flag", "resist": "damage_type"}
-# The short names a vector still uses until M5-46's vector part renames them.
-SHORT_OPERATIONS = {"mul": "multiply"}
-
-
 def modifier_operation(node):
-    """A modifier's operation, spelled out, whether it names `operation` or the short `op`."""
-    operation = node.get("operation", node.get("op"))
-    return SHORT_OPERATIONS.get(operation, operation)
+    """A modifier's operation (docs/core/modifier.md)."""
+    return node.get("operation")
 
 
 def collect_vector_files():

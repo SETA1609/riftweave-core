@@ -39,14 +39,9 @@ def origin_policies():
     return {f"core:origin/{row['key']}": row["stack"] for row in load_data("origins/core.json")["origins"]}
 
 
-# The short names a vector still uses until M5-46's vector part renames them.
-SHORT_OPERATIONS = {"mul": "multiply"}
-
-
 def operation_of(modifier):
-    """A modifier's operation, spelled out, whether it names `operation` or the short `op`."""
-    operation = modifier.get("operation", modifier.get("op"))
-    return SHORT_OPERATIONS.get(operation, operation)
+    """A modifier's operation (docs/core/modifier.md)."""
+    return modifier["operation"]
 
 
 def strongest(group):
@@ -384,7 +379,7 @@ def situation_modifiers(vector, delivery):
     if "called_shot" in vector:
         called = next(c for c in data["called_shots"] if c["key"] == vector["called_shot"])
         if called["attack"]:
-            modifiers.append({"target": "attack", "op": "add", "value": called["attack"], "source": f"called_shot:{called['key']}"})
+            modifiers.append({"target": "attack", "operation": "add", "value": called["attack"], "source": f"called_shot:{called['key']}"})
     return modifiers, called
 
 
@@ -661,8 +656,8 @@ def run_consume(vector):
                     ticks.append({"source": source, "origin": origin, "pool": pool,
                                   "magnitude": effect["magnitude"], "seconds_left": duration})
             elif duration > 1:
-                op = "resist" if key == "resist" else "add" if "magnitude" in effect else "grant"
-                held.append({"source": source, "origin": origin, "target": effect.get("parameter", key), "op": op,
+                operation = "resist" if key == "resist" else "add" if "magnitude" in effect else "grant"
+                held.append({"source": source, "origin": origin, "target": effect.get("parameter", key), "operation": operation,
                              "value": effect.get("magnitude", 1), "seconds_left": duration})
 
     for event in vector["events"]:

@@ -45,7 +45,7 @@ def run_check(spec, vector, hazard=None):
     actor = vector["actor"]
     modifiers = [m for m in vector.get("modifiers", []) if m["target"] == skill]
     if spec.get("difficulty"):
-        modifiers.append({"target": skill, "op": "add", "value": spec["difficulty"], "source": f"hazard:{vector['hazard']}"})
+        modifiers.append({"target": skill, "operation": "add", "value": spec["difficulty"], "source": f"hazard:{vector['hazard']}"})
     return run_resolution(
         {
             "actor": {"skills": {skill: actor["skills"][skill]}, "attributes": actor.get("attributes", {})},

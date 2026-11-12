@@ -1,14 +1,13 @@
 // Package modifier is the kernel's one stacking function (docs/core/modifier.md).
 //
 // The order is fixed: drop expired and removed modifiers; same origin, source, target, and
-// op keeps the strongest; a `highest` origin keeps its strongest bonus and penalty per
-// target and op; then add, mul (floored), set. grant makes a flag and resist reduces a
+// operation keeps the strongest; a `highest` origin keeps its strongest bonus and penalty per
+// target and operation; then add, multiply (floored), set. grant makes a flag and resist reduces a
 // packet. Nothing here reads the ruleset: the caller passes the origin policies, so the
 // package is a pure function over a modifier list.
 package modifier
 
 import (
-	"encoding/json"
 	"fmt"
 	"math"
 	"slices"
@@ -25,11 +24,7 @@ const (
 	Resist
 )
 
-var operationNames = [...]string{"add", "mul", "set", "grant", "resist"}
-
-// shortOperationNames are the names a vector still uses until M5-46's vector part renames
-// them; the data spells them out.
-var shortOperationNames = map[string]Operation{"multiply": Multiply}
+var operationNames = [...]string{"add", "multiply", "set", "grant", "resist"}
 
 // UnmarshalText reads an operation name.
 func (operation *Operation) UnmarshalText(encoded []byte) error {
@@ -38,10 +33,6 @@ func (operation *Operation) UnmarshalText(encoded []byte) error {
 			*operation = Operation(index)
 			return nil
 		}
-	}
-	if spelled, ok := shortOperationNames[string(encoded)]; ok {
-		*operation = spelled
-		return nil
 	}
 	return fmt.Errorf("modifier operation %q is not defined", encoded)
 }
@@ -54,31 +45,13 @@ func (operation Operation) String() string { return operationNames[operation] }
 // Modifier is one opcode on one target (ruleset/schemas/schema.json, "modifier").
 type Modifier struct {
 	Target    string    `json:"target"`
-	Operation Operation `json:"op"`
+	Operation Operation `json:"operation"`
 	Value     float64   `json:"value"`
 	Source    string    `json:"source"`
 	Origin    string    `json:"origin,omitempty"`
 	Duration  string    `json:"duration,omitempty"`
 	Turns     int64     `json:"turns,omitempty"`
 	Stack     string    `json:"stack,omitempty"`
-}
-
-// UnmarshalJSON reads `operation`, as the data writes it, or the short `op` a vector still
-// uses until M5-46's vector part renames it.
-func (modifier *Modifier) UnmarshalJSON(encoded []byte) error {
-	type plain Modifier
-	var read struct {
-		plain
-		SpelledOperation *Operation `json:"operation"`
-	}
-	if err := json.Unmarshal(encoded, &read); err != nil {
-		return err
-	}
-	*modifier = Modifier(read.plain)
-	if read.SpelledOperation != nil {
-		modifier.Operation = *read.SpelledOperation
-	}
-	return nil
 }
 
 // OriginPolicies maps an origin ref to whether its policy is `highest`. An origin that is

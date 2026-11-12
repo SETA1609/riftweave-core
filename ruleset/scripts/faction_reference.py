@@ -138,9 +138,8 @@ def emit_modifiers(actor):
 
 
 def operation_of(modifier):
-    """A modifier's operation, spelled out, whether it names `operation` or the short `op` (M5-46)."""
-    operation = modifier.get("operation", modifier.get("op"))
-    return {"mul": "multiply"}.get(operation, operation)
+    """A modifier's operation (docs/core/modifier.md)."""
+    return modifier["operation"]
 
 
 def apply_modifiers(base, modifiers):
