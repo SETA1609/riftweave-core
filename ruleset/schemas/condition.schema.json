@@ -27,14 +27,12 @@
             "type": "object",
             "properties": {
               "target": { "type": "string" },
-              "op": { "type": "string", "enum": ["add", "mul", "set", "grant", "resist"] },
               "operation": { "type": "string", "enum": ["add", "multiply", "set", "grant", "resist"] },
               "value": { "type": "number" },
               "duration": { "type": "string" },
               "source": { "type": "string" }
             },
-            "required": ["target", "source"],
-            "oneOf": [{ "required": ["operation"] }, { "required": ["op"] }],
+            "required": ["target", "operation", "source"],
             "additionalProperties": false
           }
         },

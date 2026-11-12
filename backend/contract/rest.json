@@ -119,7 +119,7 @@
                 "target": {
                   "type": "string"
                 },
-                "op": {
+                "operation": {
                   "type": "string"
                 },
                 "value": {
@@ -214,7 +214,7 @@
                 "target": {
                   "type": "string"
                 },
-                "op": {
+                "operation": {
                   "type": "string"
                 },
                 "value": {
