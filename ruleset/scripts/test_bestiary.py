@@ -212,7 +212,7 @@ class TestTemplatesAndGeneratedMonsters(unittest.TestCase):
         perks = features()
         self.assertIn("core:feature/summon_dire", perks["summon_elder"]["prerequisite"]["perks"])
         self.assertIn("core:feature/summon_elder", perks["summon_ancient"]["prerequisite"]["perks"])
-        self.assertNotIn("perks", perks["summon_dire"].get("prerequisite", {}))
+        self.assertFalse(perks["summon_dire"].get("prerequisite", {}).get("perks"))
 
     def test_each_power_and_nature_perk_unlocks_its_template(self):
         perks = features()
@@ -354,16 +354,20 @@ class TestAttacksAndAbilities(unittest.TestCase):
     def test_every_summoned_elemental_has_a_physical_attack_a_bolt_and_a_touch(self):
         rows = {r["key"]: r for r in monsters()}
         physical = {"bludgeoning", "piercing", "slashing"}
+        # An element's damage effect, by its template's damage type (shock is a wood effect in the pool,
+        # while the storm template is metal, so the phase does not name the element).
+        element = {"fire_elemental": "fire", "ice_elemental": "frost", "storm_elemental": "shock",
+                   "acid_elemental": "acid", "venom_elemental": "poison"}
+        self.assertEqual(sorted(summon_group("elemental")), sorted(element))
         for key in summon_group("elemental"):
             row = rows[key]
-            element = row["phase"]
             with self.subTest(monster=key):
                 self.assertTrue(any(ref().attack_type(a) in physical for a in row["attacks"]))
                 abilities = ref().damaging_abilities(row)
                 for target in ("ranged", "touch"):
                     hits = [a for a in abilities if a["target"] == target]
                     self.assertTrue(hits, target)
-                    self.assertTrue(all(ref().effect_phase(a["effect"]) == element for a in hits), (target, hits))
+                    self.assertEqual({a["effect"] for a in hits}, {f"core:effect/damage_{element[key]}"}, target)
 
     def test_a_spell_like_ability_spends_its_mana_and_the_cast_ap(self):
         from kernel_reference import run_monster_sheet
