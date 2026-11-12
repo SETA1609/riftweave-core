@@ -254,5 +254,63 @@ class TestSpellKnowledge(unittest.TestCase):
                 self.assertEqual((applied["effect"], applied["target"]), (f"core:effect/{effect}", target))
 
 
+class TestCharismaStrengthensSummons(unittest.TestCase):
+    """M3-13 (docs/modules/magic.md#summon-groups): a Commanding Summons perk adds the caster's
+    CHA - 5, never below 0, to its group of the summoned creature's attributes."""
+
+    REF = "core:monster/fire_elemental"
+    MAGIC, PHYSICAL = ("int", "wil"), ("str", "end", "agi")
+
+    def summon(self, cha, *perks):
+        import monster_reference
+
+        caster = {"level": 20, "attributes": {"cha": cha}, "perks": [f"core:feature/{p}" for p in perks]}
+        return monster_reference.summon(self.REF, caster)
+
+    def plain(self):
+        import monster_reference
+
+        return monster_reference.generate(self.REF, level=20)
+
+    def gains(self, summoned):
+        before, after = self.plain()["attributes"], summoned["attributes"]
+        return {a: after.get(a, 0) - before.get(a, 0) for a in self.MAGIC + self.PHYSICAL}
+
+    def test_the_magic_perk_adds_three_to_int_and_wil_at_cha_8(self):
+        gains = self.gains(self.summon(8, "commanding_summons_magic"))
+        self.assertEqual(gains, {"int": 3, "wil": 3, "str": 0, "end": 0, "agi": 0})
+
+    def test_the_physical_perk_adds_three_to_str_end_and_agi_at_cha_8(self):
+        summoned = self.summon(8, "commanding_summons_physical")
+        self.assertEqual(self.gains(summoned), {"int": 0, "wil": 0, "str": 3, "end": 3, "agi": 3})
+
+    def test_an_end_gain_moves_authored_hit_points_by_the_hp_rows_per_point(self):
+        plain, summoned = self.plain(), self.summon(8, "commanding_summons_physical")
+        if "hitPoints" in plain:
+            self.assertEqual(summoned["hitPoints"] - plain["hitPoints"], 3 * validate._hp_per_end())
+
+    def test_both_perks_add_to_both_groups(self):
+        gains = self.gains(self.summon(8, "commanding_summons_magic", "commanding_summons_physical"))
+        self.assertEqual(set(gains.values()), {3})
+
+    def test_without_the_perk_charisma_changes_nothing(self):
+        self.assertEqual(self.summon(10)["attributes"], self.plain()["attributes"])
+
+    def test_charisma_five_or_below_adds_nothing_and_takes_nothing(self):
+        for cha in (5, 3, 1):
+            with self.subTest(cha=cha):
+                summoned = self.summon(cha, "commanding_summons_magic", "commanding_summons_physical")
+                self.assertEqual(summoned["attributes"], self.plain()["attributes"])
+
+    def test_each_perk_names_one_bonus_and_the_bonuses_are_the_two_groups(self):
+        features = {f["key"]: f for f in json.loads((DATA / "features" / "core.json").read_text())["features"]}
+        bonuses = {b["key"]: b for b in json.loads((DATA / "summons" / "bonuses.json").read_text())["summon_bonuses"]}
+        self.assertEqual(features["commanding_summons_magic"]["summon_bonus"], "core:summon_bonus/magic")
+        self.assertEqual(features["commanding_summons_physical"]["summon_bonus"], "core:summon_bonus/physical")
+        self.assertEqual(tuple(bonuses["magic"]["attributes"]), self.MAGIC)
+        self.assertEqual(tuple(bonuses["physical"]["attributes"]), self.PHYSICAL)
+        self.assertEqual({b["attribute"] for b in bonuses.values()}, {"cha"})
+
+
 if __name__ == "__main__":
     unittest.main()
