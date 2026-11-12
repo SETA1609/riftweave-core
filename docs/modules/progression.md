@@ -349,8 +349,18 @@ A perk reaches the character only as contract modifiers ([modifier.md](../core/m
 in its `modifiers` list: source `feature:<key>`, origin `core:origin/trained`, so every
 perk counts and two perks never cancel. A ranked perk's values are per rank: rank 2
 emits each `add` at twice its value, and a `mul` of `m` at `1 + (m − 1) × rank`, so +15% per rank is
-1.15, then 1.30. [A] The older `effects` list on a few perks is prose
-for readers; the modifiers are the rule. [V 2026-11-06]
+1.15, then 1.30. [A]
+
+A feature states its mechanics once, in `modifiers`, and its `description` says the same
+in words for a reader. There is no second list: the older `effects` list, which restated a
+bonus with its own target names (`hp_max` beside the modifier's `hp`) and let a creation
+trait name a shared effect without saying what it changes (*Gifted* gave
+`fortify_attribute` 1 and named no attribute), is gone (M5-35). A creation trait emits
+modifiers the same way, with the same source and origin. A restriction with no number yet
+(a phobia, an allergy, no aimed shots) is a `grant` of a flag in `modifier_targets`, and
+the flag's description says the rule: a phobia's flag means the actor gains
+[`core:condition/frightened`](../core/modifier.md#conditions) while a creature of that type is
+in sight. [A]
 
 Targets are a skill key (`lockpick`, `persuasion`), a derived stat (`hp`, `mp`,
 `carry`, `initiative`), an action key for its AP cost (`cast`, `aimed`), a target that
