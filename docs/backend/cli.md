@@ -38,7 +38,7 @@ An error is one line of JSON on stderr, `{"error": "..."}`, the sentence the cor
 
 ## Rolls
 
-Rolls are inputs, as everywhere in the core. The CLI does not draw rolls; drawing them from a seed comes with sessions (APP-04). [A]
+Rolls are inputs, as everywhere in the core. The CLI does not draw rolls, and there is no seed: a logged input holds every roll. In dev mode the human CLI can queue its next roll prompts ([dev-mode.md](dev-mode.md#rolls-and-the-seed)).
 
 ## Checks
 
@@ -51,4 +51,4 @@ Rolls are inputs, as everywhere in the core. The CLI does not draw rolls; drawin
 - **Create a character:** eight attributes and a level, run through `derived`.
 - **Resolve an attack:** the rolls and the two sides, run through `combat`. The LCK defaults to the character's.
 
-Rolls stay inputs: you type each one, so a result matches the agent CLI for the same inputs and rolls. It needs a terminal. Charm is imported only by `backend/cmd/riftweave/play`, and `backend/core` and `backend/internal/` stay free of it.
+Rolls stay inputs: you type each one, so a result matches the agent CLI for the same inputs and rolls. With `--dev`, a dev panel and short commands change a session's actor ([dev-mode.md](dev-mode.md#the-human-cli)). It needs a terminal. Charm is imported only by `backend/cmd/riftweave/play`, and `backend/core` and `backend/internal/` stay free of it.

@@ -51,6 +51,9 @@ rows. One schema says what an actor stores: `stored_actor` in `backend/contract/
 | Active conditions | `conditions` (`key`, `stacks`) |
 | Active modifiers | `modifiers` (`modifier`, with its source and origin, and `turns_elapsed`) |
 | Flags | `flags` (keys) |
+| Perks | `perks` (rank by feature key) |
+| Known spells and effects | `spells`, `known_effects` (keys) |
+| Coins | `coins` (copper) |
 | Item instances | `inventory` (`id`, `base`, optional `material` and `size`, `mods`, `quantity`) |
 | What is equipped | `equipped` (an inventory `id` by slot) |
 

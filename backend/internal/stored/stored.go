@@ -61,8 +61,13 @@ type Actor struct {
 	Conditions []Condition      `json:"conditions"`
 	Modifiers  []ActiveModifier `json:"modifiers"`
 	Flags      []string         `json:"flags"`
-	Inventory  []ItemInstance   `json:"inventory"`
-	Equipped   map[string]int64 `json:"equipped"`
+	// Perks, known spells and effects, and coins (copper) are left out when empty.
+	Perks        map[string]int64 `json:"perks,omitempty"`
+	Spells       []string         `json:"spells,omitempty"`
+	KnownEffects []string         `json:"known_effects,omitempty"`
+	Coins        int64            `json:"coins,omitempty"`
+	Inventory    []ItemInstance   `json:"inventory"`
+	Equipped     map[string]int64 `json:"equipped"`
 }
 
 // Input is the `stored_actor` command's input.

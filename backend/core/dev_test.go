@@ -3,6 +3,7 @@ package core
 import (
 	"encoding/json"
 	"errors"
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -55,7 +56,7 @@ func actorOf(result map[string]any) map[string]any {
 func TestWithoutDevEveryOperationIsRefused(t *testing.T) {
 	var opened *Core = open(t)
 	var session any = startedSession(t, opened)
-	for _, operation := range []string{"resource", "xp", "level", "attribute", "skill", "condition", "effect", "item", "turns"} {
+	for _, operation := range []string{"resource", "xp", "level", "attribute", "skill", "condition", "effect", "item", "turns", "rest", "perk", "learn", "gold"} {
 		out := devRefused(t, opened, session, map[string]any{"operation": operation})
 		if !strings.Contains(out, "dev mode is off") {
 			t.Errorf("%s: %s; want the dev mode error", operation, out)
@@ -200,5 +201,88 @@ func TestADevSessionReplaysAndStaysMarked(t *testing.T) {
 	body, _ := json.Marshal(map[string]any{"operation": "replay", "session": result["session"]})
 	if out, err := open(t).Run("session", body); err == nil || !strings.Contains(string(out), "dev mode is off") {
 		t.Errorf("a dev session replayed without --dev: %v %s", err, out)
+	}
+}
+
+func TestARestRunsTheRestCommand(t *testing.T) {
+	var opened *Core = devCore(t)
+	var hurt any = dev(t, opened, startedSession(t, opened), map[string]any{"operation": "resource", "pool": "hp", "set": 1})["session"]
+	var rested map[string]any = dev(t, opened, hurt, map[string]any{"operation": "rest", "key": "long_rest"})
+	var stepped map[string]any = sessionCall(t, opened, map[string]any{"operation": "step", "session": hurt,
+		"step": map[string]any{"command": "rest", "input": map[string]any{"occasion": "long_rest"}}})
+	if got, want := actorOf(rested)["resources"], actorOf(stepped)["resources"]; !reflect.DeepEqual(got, want) {
+		t.Errorf("dev rest gives %v; the rest step gives %v", got, want)
+	}
+	if actorOf(rested)["resources"].(map[string]any)["hp"] == 1.0 {
+		t.Error("a long rest left HP at 1")
+	}
+	devRefused(t, opened, hurt, map[string]any{"operation": "rest", "key": "nap"})
+}
+
+func TestAPerkIsGrantedUpToItsRanksAndRemoved(t *testing.T) {
+	var opened *Core = devCore(t)
+	var session any = startedSession(t, opened)
+	for rank := 1; rank <= 3; rank++ {
+		session = dev(t, opened, session, map[string]any{"operation": "perk", "key": "toughness"})["session"]
+		if got := session.(map[string]any)["actor"].(map[string]any)["perks"].(map[string]any)["toughness"]; got != float64(rank) {
+			t.Fatalf("rank %d: perks.toughness = %v", rank, got)
+		}
+	}
+	if out := devRefused(t, opened, session, map[string]any{"operation": "perk", "key": "toughness"}); !strings.Contains(out, "rank") {
+		t.Errorf("a fourth rank of a 3-rank perk: %s", out)
+	}
+	var removed map[string]any = dev(t, opened, session, map[string]any{"operation": "perk", "key": "toughness", "remove": 1})
+	if perks, _ := actorOf(removed)["perks"].(map[string]any); perks["toughness"] != nil {
+		t.Errorf("removed perk still held: %v", perks)
+	}
+	devRefused(t, opened, session, map[string]any{"operation": "perk", "key": "no_such_perk"})
+	devRefused(t, opened, session, map[string]any{"operation": "perk", "key": "human_versatility"})
+}
+
+func TestASpellAndAnEffectAreLearnedOnceAndForgotten(t *testing.T) {
+	var opened *Core = devCore(t)
+	var session any = startedSession(t, opened)
+	for range 2 {
+		session = dev(t, opened, session, map[string]any{"operation": "learn", "spell": "core:spell/fire_bolt"})["session"]
+	}
+	session = dev(t, opened, session, map[string]any{"operation": "learn", "effect": "core:effect/damage_fire"})["session"]
+	var actor map[string]any = session.(map[string]any)["actor"].(map[string]any)
+	if !reflect.DeepEqual(actor["spells"], []any{"fire_bolt"}) || !reflect.DeepEqual(actor["known_effects"], []any{"damage_fire"}) {
+		t.Errorf("spells %v, known_effects %v; want each once", actor["spells"], actor["known_effects"])
+	}
+	var forgot map[string]any = dev(t, opened, session, map[string]any{"operation": "learn", "spell": "core:spell/fire_bolt", "clear": true})
+	if spells, _ := actorOf(forgot)["spells"].([]any); len(spells) != 0 {
+		t.Errorf("forgotten spell still known: %v", spells)
+	}
+	devRefused(t, opened, session, map[string]any{"operation": "learn", "spell": "core:spell/no_such_spell"})
+	devRefused(t, opened, session, map[string]any{"operation": "learn", "effect": "core:effect/no_such_effect"})
+	devRefused(t, opened, session, map[string]any{"operation": "learn", "spell": "core:spell/fire_bolt", "effect": "core:effect/damage_fire"})
+	devRefused(t, opened, session, map[string]any{"operation": "learn"})
+}
+
+func TestGoldIsSetOrAddedInCopperAndNeverBelowZero(t *testing.T) {
+	var opened *Core = devCore(t)
+	var result map[string]any = dev(t, opened, startedSession(t, opened), map[string]any{"operation": "gold", "set": 500})
+	if actorOf(result)["coins"] != 500.0 {
+		t.Errorf("coins = %v; want 500", actorOf(result)["coins"])
+	}
+	result = dev(t, opened, result["session"], map[string]any{"operation": "gold", "add": -1000})
+	if coins, _ := actorOf(result)["coins"].(float64); coins != 0 {
+		t.Errorf("coins = %v; want 0", coins)
+	}
+}
+
+func TestThePartTwoOperationsReplay(t *testing.T) {
+	var opened *Core = devCore(t)
+	var session any = startedSession(t, opened)
+	for _, operation := range []map[string]any{
+		{"operation": "perk", "key": "toughness"}, {"operation": "learn", "spell": "core:spell/fire_bolt"},
+		{"operation": "gold", "set": 250}, {"operation": "rest", "key": "short_rest"},
+	} {
+		session = dev(t, opened, session, operation)["session"]
+	}
+	var replayed map[string]any = sessionCall(t, opened, map[string]any{"operation": "replay", "session": session})
+	if replayed["matches"] != true || replayed["session"].(map[string]any)["dev"] != true {
+		t.Errorf("replay: matches %v, dev %v", replayed["matches"], replayed["session"].(map[string]any)["dev"])
 	}
 }

@@ -17,7 +17,11 @@
           "condition",
           "effect",
           "item",
-          "turns"
+          "turns",
+          "rest",
+          "perk",
+          "learn",
+          "gold"
         ]
       },
       "session": {
@@ -35,7 +39,7 @@
       },
       "set": {
         "type": "integer",
-        "description": "The new value; exclusive with add."
+        "description": "The new value; exclusive with add. gold: in copper."
       },
       "add": {
         "type": "integer",
@@ -43,7 +47,7 @@
       },
       "key": {
         "$ref": "common.json#/definitions/key",
-        "description": "attribute, skill, or condition: its key."
+        "description": "attribute, skill, condition, rest (an occasion), or perk: its key."
       },
       "stacks": {
         "type": "integer",
@@ -52,7 +56,7 @@
       },
       "effect": {
         "$ref": "common.json#/definitions/ref",
-        "description": "effect: a ref in the effect registry."
+        "description": "effect: a ref in the effect registry; learn: an effect to know."
       },
       "magnitude": {
         "type": "integer"
@@ -72,7 +76,7 @@
       },
       "clear": {
         "type": "boolean",
-        "description": "effect: remove the dev effect."
+        "description": "effect: remove the dev effect; learn: forget the spell or effect."
       },
       "base": {
         "$ref": "common.json#/definitions/ref",
@@ -88,7 +92,11 @@
       "remove": {
         "type": "integer",
         "minimum": 1,
-        "description": "item: the inventory id to remove."
+        "description": "item: the inventory id to remove; perk: 1 removes the perk."
+      },
+      "spell": {
+        "$ref": "common.json#/definitions/ref",
+        "description": "learn: a spell ref."
       }
     },
     "required": [

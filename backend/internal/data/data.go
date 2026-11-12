@@ -358,6 +358,13 @@ type Effect struct {
 	BaseCost              float64  `json:"baseCost"`
 }
 
+// Feature is what a dev operation needs of one row of features/core.json: its kind and ranks.
+type Feature struct {
+	Key   string `json:"key"`
+	Type  string `json:"type"`
+	Ranks int64  `json:"ranks"`
+}
+
 // Spell is what a cast needs of one row of spells/core.json (docs/core/casting.md).
 type Spell struct {
 	Key     string          `json:"key"`
@@ -534,7 +541,8 @@ type Ruleset struct {
 	CalledShots    Table[CalledShot]
 	Hazards        Table[Hazard]
 	Spells         Table[Spell]
-	Effects        Table[Effect] // by ref, core:effect/<key>
+	Features       Table[Feature] // features/core.json, for dev perks (docs/backend/dev-mode.md)
+	Effects        Table[Effect]  // by ref, core:effect/<key>
 	Casting        Casting
 	Origins        modifier.OriginPolicies
 	OriginReplaces map[string]bool   // origin ref: its policy is `replace`
@@ -724,6 +732,9 @@ func Load(fileSystem fs.FS, modules ...fs.FS) (*Ruleset, error) {
 	var spells struct{ Spells []Spell }
 	loader.read("spells/core.json", &spells)
 	ruleset.Spells = newTable(spells.Spells, func(spell *Spell) string { return spell.Key })
+	var features struct{ Features []Feature }
+	loader.read("features/core.json", &features)
+	ruleset.Features = newTable(features.Features, func(feature *Feature) string { return feature.Key })
 	var effects struct{ Effects []Effect }
 	loader.read("effects/core.json", &effects)
 	ruleset.Effects = newTable(effects.Effects, func(effect *Effect) string { return "core:effect/" + effect.Key })

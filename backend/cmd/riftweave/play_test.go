@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"os/exec"
 	"reflect"
 	"strings"
@@ -117,5 +118,91 @@ func TestCharmStaysOutOfTheCore(t *testing.T) {
 	}
 	if strings.Contains(string(output), "charmbracelet") {
 		t.Error("the core imports Charm")
+	}
+}
+
+func startedDev(t *testing.T) tea.Model {
+	t.Helper()
+	opened, err := core.Open(dataDirectory)
+	if err != nil {
+		t.Fatal(err)
+	}
+	opened.EnableDev()
+	return play.NewDev(opened.Run)
+}
+
+// devLine opens the command line with ":", types the command, and runs it.
+func devLine(model tea.Model, line string) tea.Model {
+	return press(model, ":", line, "enter")
+}
+
+func TestPlayDevCommandsMatchTheAgentCLI(t *testing.T) {
+	var model tea.Model = startedDev(t)
+	for _, line := range []string{
+		"give core:consumable/potion_healing 2",
+		"inflict blinded 1",
+		"inflict core:effect/fortify_attribute 2 core:origin/arcane 3",
+		"level 4",
+	} {
+		model = devLine(model, line)
+	}
+	var human map[string]any = decode(t, string(model.(play.Model).Session())).(map[string]any)
+	if human["dev"] != true {
+		t.Fatalf("the panel's session is not marked dev: %v", human)
+	}
+	start, _ := json.Marshal(map[string]any{"operation": "start", "start": human["start"]})
+	code, stdout, stderr := call(t, string(start), "--data", dataDirectory, "session")
+	if code != exitOK {
+		t.Fatalf("session start: exit %d: %s", code, stderr)
+	}
+	var session any = decode(t, stdout).(map[string]any)["session"]
+	for _, operation := range []map[string]any{
+		{"operation": "item", "base": "core:consumable/potion_healing", "quantity": 2},
+		{"operation": "condition", "key": "blinded", "stacks": 1},
+		{"operation": "effect", "effect": "core:effect/fortify_attribute", "magnitude": 2, "origin": "core:origin/arcane", "turns": 3},
+		{"operation": "level", "set": 4},
+	} {
+		operation["session"] = session
+		body, _ := json.Marshal(operation)
+		code, stdout, stderr = call(t, string(body), "--data", dataDirectory, "--dev", "dev")
+		if code != exitOK {
+			t.Fatalf("dev %v: exit %d: %s", operation["operation"], code, stderr)
+		}
+		session = decode(t, stdout).(map[string]any)["session"]
+	}
+	if !reflect.DeepEqual(human, session) {
+		t.Errorf("human CLI session %v\nagent CLI session %v", human, session)
+	}
+	if view := model.View(); !strings.Contains(view, "Dev") || !strings.Contains(view, "level 4") {
+		t.Errorf("no dev panel with the level: %s", view)
+	}
+}
+
+func TestPlayRollQueueFillsTheNextRollPrompts(t *testing.T) {
+	var model tea.Model = devLine(startedDev(t), "roll 77 3")
+	model = press(model, "down", "enter")
+	for range 8 {
+		model = press(model, "enter")
+	}
+	input, _ := model.(play.Model).LastCall()
+	if !strings.Contains(string(input), `"roll":77`) {
+		t.Errorf("first attack after :roll 77 3: %s", input)
+	}
+	model = press(model, "enter", "enter") // back to the menu, where the cursor is still on the attack
+	for range 8 {
+		model = press(model, "enter")
+	}
+	if input, _ = model.(play.Model).LastCall(); !strings.Contains(string(input), `"roll":3`) {
+		t.Errorf("second attack takes the second queued roll: %s", input)
+	}
+}
+
+func TestPlayDevRefusesABadCommandAndHasNoPanelWithoutDev(t *testing.T) {
+	var model tea.Model = devLine(startedDev(t), "inflict no_such_condition 1")
+	if !strings.Contains(model.View(), "condition") {
+		t.Errorf("no refusal shown: %s", model.View())
+	}
+	if view := press(started(t), ":").View(); strings.Contains(view, "Dev") {
+		t.Errorf("a dev panel without --dev: %s", view)
 	}
 }
