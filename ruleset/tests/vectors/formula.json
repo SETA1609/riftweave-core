@@ -25,22 +25,22 @@
   },
   {
     "name": "inline tree, str 7 times 10 minus 5",
-    "expr": {
-      "op": "sub",
-      "args": [
+    "expression": {
+      "operation": "subtract",
+      "arguments": [
         {
-          "op": "mul",
-          "args": [
+          "operation": "multiply",
+          "arguments": [
             {
-              "attr": "str"
+              "attribute": "str"
             },
             {
-              "lit": 10
+              "literal": 10
             }
           ]
         },
         {
-          "lit": 5
+          "literal": 5
         }
       ]
     },
