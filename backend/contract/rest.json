@@ -76,6 +76,68 @@
             "duration"
           ]
         }
+      },
+      "running": {
+        "type": "object",
+        "description": "The effects running on the actor, as consume returns them.",
+        "properties": {
+          "ticks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "source": {
+                  "type": "string"
+                },
+                "origin": {
+                  "type": "string"
+                },
+                "pool": {
+                  "type": "string"
+                },
+                "magnitude": {
+                  "type": "integer"
+                },
+                "seconds_left": {
+                  "type": "integer"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "modifiers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "source": {
+                  "type": "string"
+                },
+                "origin": {
+                  "type": "string"
+                },
+                "target": {
+                  "type": "string"
+                },
+                "op": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "integer"
+                },
+                "seconds_left": {
+                  "type": "integer"
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "meal": {
+        "$ref": "common.json#/definitions/key",
+        "description": "A food eaten during the rest; its effects start when the rest ends (docs/core/rest.md#food-at-rest)."
       }
     },
     "additionalProperties": false,
@@ -109,6 +171,71 @@
       "toxicity": {
         "type": "integer",
         "minimum": 0
+      },
+      "running": {
+        "type": "object",
+        "description": "The running effects after the rest: food cleared by the occasion's food row, then the meal's.",
+        "properties": {
+          "ticks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "source": {
+                  "type": "string"
+                },
+                "origin": {
+                  "type": "string"
+                },
+                "pool": {
+                  "type": "string"
+                },
+                "magnitude": {
+                  "type": "integer"
+                },
+                "seconds_left": {
+                  "type": "integer"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "modifiers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "source": {
+                  "type": "string"
+                },
+                "origin": {
+                  "type": "string"
+                },
+                "target": {
+                  "type": "string"
+                },
+                "op": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "integer"
+                },
+                "seconds_left": {
+                  "type": "integer"
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "refused": {
+        "type": "array",
+        "items": {
+          "$ref": "common.json#/definitions/key"
+        },
+        "description": "A meal that is not food."
       }
     },
     "additionalProperties": false,
