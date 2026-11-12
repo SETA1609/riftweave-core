@@ -34,6 +34,7 @@ type devOperation struct {
 	Parameter string `json:"parameter"`
 	Origin    string `json:"origin"`
 	Base      string `json:"base"`
+	Spell     string `json:"spell"`
 	Material  string `json:"material"`
 	Turns     int64  `json:"turns"`
 	Clear     bool   `json:"clear"`
@@ -144,6 +145,16 @@ func applyDev(ruleset *data.Ruleset, target *stored.Actor, encoded json.RawMessa
 		return devItem(ruleset, target, &operation)
 	case "turns":
 		return devTurns(target, &operation)
+	case "rest":
+		return devRest(ruleset, target, &operation)
+	case "perk":
+		return devPerk(ruleset, target, &operation)
+	case "learn":
+		return devLearn(ruleset, target, &operation)
+	case "gold":
+		value, err := setOrAdd(&operation, target.Coins)
+		target.Coins = max(0, value)
+		return err
 	}
 	return &data.NotDefinedError{Kind: "dev operation", Key: operation.Operation}
 }
@@ -282,5 +293,68 @@ func devTurns(target *stored.Actor, operation *devOperation) error {
 		kept = append(kept, held)
 	}
 	target.Modifiers = kept
+	return nil
+}
+
+// devRest runs the rest command on the actor through the session's rest adapter.
+func devRest(ruleset *data.Ruleset, target *stored.Actor, operation *devOperation) error {
+	if _, known := ruleset.Rest.Get(operation.Key); !known {
+		return &data.NotDefinedError{Kind: "rest occasion", Key: operation.Key}
+	}
+	input, _ := json.Marshal(map[string]string{"occasion": operation.Key})
+	rested, _, err := applyStep(ruleset, *target, SessionStep{Command: "rest", Input: input})
+	if err == nil {
+		*target = rested
+	}
+	return err
+}
+
+// devPerk adds a rank of a perk, up to its ranks, or removes it; prerequisites are not checked.
+func devPerk(ruleset *data.Ruleset, target *stored.Actor, operation *devOperation) error {
+	feature, known := ruleset.Features.Get(operation.Key)
+	if !known || feature.Type != "perk" {
+		return &data.NotDefinedError{Kind: "perk", Key: operation.Key}
+	}
+	if operation.Remove != nil {
+		delete(target.Perks, operation.Key)
+		return nil
+	}
+	var ranks int64 = max(feature.Ranks, 1)
+	if target.Perks[operation.Key] >= ranks {
+		return fmt.Errorf("dev perk: %s has no rank left (%d of %d)", operation.Key, target.Perks[operation.Key], ranks)
+	}
+	if target.Perks == nil {
+		target.Perks = map[string]int64{}
+	}
+	target.Perks[operation.Key]++
+	return nil
+}
+
+// devLearn adds a known spell or effect once, or forgets it with clear.
+func devLearn(ruleset *data.Ruleset, target *stored.Actor, operation *devOperation) error {
+	var known *[]string
+	var key string
+	switch {
+	case operation.Spell != "" && operation.Effect != "":
+		return fmt.Errorf("dev learn takes spell or effect, not both")
+	case operation.Spell != "":
+		key = operation.Spell[strings.LastIndex(operation.Spell, "/")+1:]
+		if _, exists := ruleset.Spells.Get(key); !exists || operation.Spell != "core:spell/"+key {
+			return &data.NotDefinedError{Kind: "spell", Key: operation.Spell}
+		}
+		known = &target.Spells
+	case operation.Effect != "":
+		if !ruleset.EffectRefs[operation.Effect] {
+			return &data.NotDefinedError{Kind: "effect", Key: operation.Effect}
+		}
+		key = operation.Effect[strings.LastIndex(operation.Effect, "/")+1:]
+		known = &target.KnownEffects
+	default:
+		return &data.MissingInputError{Subject: "dev learn", Needs: "spell or effect"}
+	}
+	*known = slices.DeleteFunc(slices.Clone(*known), func(held string) bool { return held == key })
+	if !operation.Clear {
+		*known = append(*known, key)
+	}
 	return nil
 }
