@@ -47,7 +47,8 @@ hand. Each command is one path, `/v1/commands/<name>`, with its `input_schema` a
 body and its `result_schema` as the 200 response. The definitions of `common.json` and of
 `ruleset/schemas/schema.json` become `components.schemas`, the shared ones prefixed `ruleset_`,
 and every `$ref` is rewritten to point inside the document, so it stands alone. A test checks
-that every command has its path and that every `$ref` resolves. [V 2026-11-12]
+that every command has its path and that every `$ref` resolves, and the document validated
+as OpenAPI 3.1 with `openapi-spec-validator` when it was written. [V 2026-11-12]
 
 ## Not covered
 
