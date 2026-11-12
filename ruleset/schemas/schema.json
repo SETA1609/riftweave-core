@@ -293,6 +293,16 @@
       "pattern": "^(core:monster/[a-z0-9_]+|module:[a-z0-9_]+/monster/[a-z0-9_]+)$",
       "description": "A reference to a monster row (docs/core/integrity.md)."
     },
+    "monsterTemplateRef": {
+      "type": "string",
+      "pattern": "^(core:monster_template/[a-z0-9_]+|module:[a-z0-9_]+/monster_template/[a-z0-9_]+)$",
+      "description": "A reference to a monster template in monsters/templates.json (docs/modules/monsters.md#templates)."
+    },
+    "naturalWeaponRef": {
+      "type": "string",
+      "pattern": "^(core:natural_weapon/[a-z0-9_]+|module:[a-z0-9_]+/natural_weapon/[a-z0-9_]+)$",
+      "description": "A reference to a natural weapon in natural_weapons/core.json (docs/modules/monsters.md#natural-weapons). Not equipment."
+    },
     "originRef": {
       "type": "string",
       "pattern": "^(core:origin/[a-z0-9_]+|module:[a-z0-9_]+/origin/[a-z0-9_]+)$",

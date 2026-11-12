@@ -83,8 +83,12 @@ def _worn_set_dr(bands, _weapons, armor, _monsters):
 
 
 def _damage(monster):
+    """The strongest hit: a damaging ability's magnitude, or an attack's dice mean plus its attribute
+    modifier plus its growth bonus (docs/modules/monsters.md#attacks-resistances-and-role)."""
+    import monster_reference  # it imports this module's helpers lazily
+
     hits = [a["magnitude"] for a in monster.get("abilities", []) if a["effect"].rsplit("/", 1)[-1].startswith("damage_")]
-    hits += [a["damage"]["amount"] for a in monster.get("attacks", [])]
+    hits += [monster_reference.attack_mean(monster, a) for a in monster.get("attacks", [])]
     return max(hits) if hits else None
 
 

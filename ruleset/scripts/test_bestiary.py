@@ -16,6 +16,12 @@ sys.path.insert(0, str(_SCRIPTS))
 
 import validate  # noqa: E402  (base + override resolution)
 
+
+def ref():
+    """The monster reference (docs/modules/monsters.md); imported per test so one missing helper fails only its tests."""
+    import monster_reference
+    return monster_reference
+
 DATA = _SCRIPTS.parent / "data"
 # Product identity of other games (docs/modules/monsters.md#names): never a monster name.
 PROTECTED_NAMES = (
@@ -69,7 +75,7 @@ class TestBestiary(unittest.TestCase):
 
     def test_every_damage_type_is_an_attack_and_a_resistance(self):
         rows = monsters()
-        attacks = {attack["damage"]["type"] for row in rows for attack in row.get("attacks", [])}
+        attacks = {ref().attack_type(attack) for row in rows for attack in row.get("attacks", [])}
         resisted = {kind for row in rows for kind in row.get("resist", {})}
         for kind in damage_types():
             with self.subTest(damage_type=kind):
@@ -82,10 +88,10 @@ class TestBestiary(unittest.TestCase):
                 self.assertIn("base", row)
                 self.assertIn("overrides", row)
 
-    def test_every_monster_attacks(self):
+    def test_every_monster_attacks_or_has_a_damaging_ability(self):
         for row in monsters():
             with self.subTest(monster=row["key"]):
-                self.assertTrue(row.get("attacks"))
+                self.assertTrue(row.get("attacks") or ref().damaging_abilities(row))
 
     def test_families_derive_from_a_base_monster(self):
         rows = {row["key"]: row for row in raw_monsters()}
@@ -98,6 +104,8 @@ class TestBestiary(unittest.TestCase):
             "bandit": ["bandit_captain"],
             "ember_drake": ["ancient_dragon"],
             "skeleton": ["bone_colossus"],
+            "wolf": ["dire_wolf", "elder_wolf"],
+            "dog": ["demonic_hound"],
             "dire_wolf": ["shadow_hound"],
             "storm_hawk": ["thunderbird"],
         }
@@ -124,7 +132,7 @@ class TestBestiary(unittest.TestCase):
         merged = resolve([
             {"id": 1, "key": "blob", "base": "core:creature_type/ooze", "overrides": {
                 "label": "Blob", "level": 2, "resist": {"fire": 2, "acid": 5}, "tags": ["ooze"],
-                "attacks": [{"key": "slam", "label": "Slam", "damage": {"amount": 5, "type": "bludgeoning"}}]}},
+                "attacks": [{"key": "slam", "label": "Slam", "weapon": "core:natural_weapon/slam"}]}},
             {"id": 2, "key": "fire_blob", "base": "core:monster/blob", "templates": ["fire"], "overrides": {"level": 2}},
         ])["fire_blob"]
         self.assertEqual(merged["label"], "Fire Blob")
@@ -146,7 +154,7 @@ class TestBestiary(unittest.TestCase):
         self.assertEqual(rows["big_blob"]["hitPoints"], rows["blob"]["hitPoints"] + 4 * growth["hitPointsPerLevel"])
         for ability, rule in growth["attributes"].items():
             with self.subTest(ability=ability):
-                expected = min(10, max(1, round(rows["blob"]["attributes"][ability] + 4 * rule["perLevel"])))
+                expected = max(1, round(rows["blob"]["attributes"][ability] + 4 * rule["perLevel"]))
                 self.assertEqual(rows["big_blob"]["attributes"][ability], expected)
 
     def test_a_missing_or_cyclic_base_monster_or_template_fails(self):
@@ -176,6 +184,206 @@ class TestBestiary(unittest.TestCase):
             for name in PROTECTED_NAMES:
                 with self.subTest(monster=row["key"], name=name):
                     self.assertIsNone(re.search(rf"\b{re.escape(name)}\b", text))
+
+
+
+def features():
+    return {f["key"]: f for f in json.loads((DATA / "features" / "core.json").read_text())["features"]}
+
+
+def summon_group(key):
+    groups = json.loads((DATA / "summons" / "core.json").read_text())["summons"]
+    return [v.removeprefix("core:monster/") for g in groups if g["key"] == key for v in g["variants"]]
+
+
+class TestTemplatesAndGeneratedMonsters(unittest.TestCase):
+    """Power and nature templates, generated monsters, and the example rows (M3-10)."""
+
+    def test_a_dog_stays_weaker_than_a_wolf_with_the_same_template(self):
+        dog = ref().generate("core:monster/dog", power="dire", level=3)
+        wolf = ref().generate("core:monster/wolf", power="dire", level=3)
+        self.assertLess(sum(dog["attributes"].values()), sum(wolf["attributes"].values()))
+        self.assertLess(dog["hitPoints"], wolf["hitPoints"])
+        for ability, value in dog["attributes"].items():
+            with self.subTest(ability=ability):
+                self.assertLessEqual(value, wolf["attributes"].get(ability, 0))
+
+    def test_the_power_ladder_needs_the_rung_before(self):
+        perks = features()
+        self.assertIn("core:feature/summon_dire", perks["summon_elder"]["prerequisite"]["perks"])
+        self.assertIn("core:feature/summon_elder", perks["summon_ancient"]["prerequisite"]["perks"])
+        self.assertFalse(perks["summon_dire"].get("prerequisite", {}).get("perks"))
+
+    def test_each_power_and_nature_perk_unlocks_its_template(self):
+        perks = features()
+        for key in ("dire", "elder", "ancient", "demonic", "angelic", "otherworldly"):
+            with self.subTest(template=key):
+                self.assertEqual(perks[f"summon_{key}"]["unlocks"], [f"core:monster_template/{key}"])
+
+    def test_the_latest_power_and_nature_bought_replace_the_earlier(self):
+        bought = ["core:feature/summon_dire", "core:feature/summon_demonic", "core:feature/summon_elder",
+                  "core:feature/summon_angelic"]
+        self.assertEqual(ref().held_templates(bought), {"power": "elder", "nature": "angelic"})
+        self.assertEqual(ref().held_templates([]), {"power": None, "nature": None})
+
+    def test_two_templates_in_one_slot_fail(self):
+        cases = {
+            "one row": [{"key": "a", "base": "core:creature_type/ooze", "templates": ["fire", "frost"], "overrides": {"level": 2}}],
+            "a chain": [{"key": "a", "base": "core:creature_type/beast", "templates": ["dire"], "overrides": {"level": 2}},
+                        {"key": "b", "base": "core:monster/a", "templates": ["elder"], "overrides": {"level": 2}}],
+        }
+        for name, rows in cases.items():
+            with self.subTest(case=name):
+                errors = []
+                validate._resolve_monster_bases({"monsters": rows}, errors)
+                self.assertTrue(errors)
+
+    def test_slots_apply_element_power_then_nature_whatever_the_order_listed(self):
+        rows = resolve([{"key": "hound", "base": "core:creature_type/beast", "templates": ["demonic", "dire", "fire"],
+                         "overrides": {"label": "Hound", "level": 3}}])
+        self.assertEqual(rows["hound"]["label"], "Hound")
+        generated = ref().generate("core:monster/dog", power="dire", nature="demonic")
+        self.assertEqual(generated["label"], "Demonic Dire Dog")
+
+    def test_a_generated_monster_composes_with_no_row_written_for_it(self):
+        self.assertNotIn("ancient_otherworldly_ember_drake", {row["key"] for row in raw_monsters()})
+        drake = ref().generate("core:monster/ember_drake", power="ancient", nature="otherworldly")
+        plain = {row["key"]: row for row in monsters()}["ember_drake"]
+        self.assertEqual(drake["label"], "Otherworldly Ancient Ember Drake")
+        self.assertEqual(drake["level"], plain["level"])
+        self.assertGreater(drake["attributes"]["str"], plain["attributes"]["str"])
+        self.assertIn("otherworldly", drake["tags"])
+
+    def test_a_slot_the_row_fills_keeps_the_rows_template(self):
+        dire = ref().generate("core:monster/dire_wolf", power="elder")
+        self.assertEqual(dire["label"], "Dire Wolf")
+
+    def test_no_template_changes_the_creature_type(self):
+        types = {path.stem for path in (DATA / "monsters" / "bases").glob("*.json")}
+        templates = json.loads((DATA / "monsters" / "templates.json").read_text())["monster_templates"]
+        self.assertFalse(types & {t["key"] for t in templates})
+        for template in templates:
+            with self.subTest(template=template["key"]):
+                self.assertNotIn("base", template)
+        self.assertEqual(ref().creature_type("core:monster/undead_horse"), "undead")
+        self.assertEqual(ref().creature_type("core:monster/demonic_hound"), "beast")
+
+    def test_dire_wolf_is_wolf_plus_dire(self):
+        row = {row["key"]: row for row in raw_monsters()}["dire_wolf"]
+        self.assertEqual((row["base"], row["templates"]), ("core:monster/wolf", ["dire"]))
+
+    def test_the_example_rows_take_hp_and_mana_from_the_player_formulas(self):
+        from kernel_reference import run_derived, run_monster_sheet
+        rows = {row["key"]: row for row in monsters()}
+        for key in ("dog", "wolf", "dire_wolf", "elder_wolf", "demonic_hound", "undead_horse"):
+            with self.subTest(monster=key):
+                row = rows[key]
+                self.assertEqual(row["hitPoints"], ref().example_hp(row))
+                derived = run_derived({"actor": {"attributes": row["attributes"], "level": row["level"]}})
+                self.assertEqual(run_monster_sheet({"monster": row})["mp"], derived["mp"])
+
+    def test_a_skill_missing_from_the_sheet_reads_the_starting_value(self):
+        from kernel_reference import run_monster_sheet
+        wolf = {row["key"]: row for row in monsters()}["wolf"]
+        sheet = run_monster_sheet({"monster": wolf, "read_skills": ["stealth"]})
+        self.assertEqual(sheet["skills"]["stealth"], 5 + wolf["attributes"]["agi"] * 2)
+
+    def test_monster_attributes_pass_ten_and_growth_is_not_clamped(self):
+        rows = resolve([{"key": "brute", "base": "core:creature_type/beast", "overrides": {"level": 30}}])
+        self.assertGreater(rows["brute"]["attributes"]["str"], 10)
+        store = validate.load_store()
+        schema_uri = (validate.SCHEMA_DIR / "monster.schema.json").resolve().as_uri()
+        resolver = validate.RefResolver(base_uri=schema_uri, referrer=store[schema_uri], store=store)
+        validate.validate({"monsters": [rows["brute"]]}, store[schema_uri], resolver=resolver)
+
+
+class TestAttacksAndAbilities(unittest.TestCase):
+    """Natural and carried weapons, the attribute modifier, damage growth, and spell-like abilities (M3-10)."""
+
+    def test_no_attack_has_an_amount_and_every_weapon_exists(self):
+        natural = ref().natural_weapons()
+        for row in monsters():
+            for attack in row.get("attacks", []):
+                with self.subTest(monster=row["key"], attack=attack["key"]):
+                    self.assertNotIn("amount", attack.get("damage", {}))
+                    weapon = attack["weapon"]
+                    if weapon.startswith("core:natural_weapon/"):
+                        self.assertIn(weapon.removeprefix("core:natural_weapon/"), natural)
+                    else:
+                        self.assertTrue(weapon.startswith("core:weapon/"))
+                        self.assertIsNotNone(ref().weapon_row(weapon))
+                    self.assertRegex(ref().attack_dice(row, attack), r"^\d+d\d+$")
+
+    def test_a_large_creatures_natural_weapon_rolls_one_step_above_a_medium_ones(self):
+        bite = {"key": "bite", "label": "Bite", "weapon": "core:natural_weapon/bite"}
+        ladder = [rung for rungs in json.loads((DATA / "combat" / "dice_ladder.json").read_text())["dice_ladder"] for rung in [rungs]]
+        rung = {dice: i for i, rungs in enumerate(ladder) for dice in rungs}
+        medium = ref().attack_dice({"size": "medium"}, bite)
+        large = ref().attack_dice({"size": "large"}, bite)
+        self.assertEqual(rung[large], rung[medium] + 1)
+        self.assertEqual(rung[ref().attack_dice({"size": "tiny"}, bite)], rung[medium] - 2)
+
+    def test_an_attack_takes_the_modifier_of_its_own_attribute(self):
+        claw = {"key": "claw", "label": "Claw", "weapon": "core:natural_weapon/claw", "ability": "agi"}
+        stomp = {"key": "stomp", "label": "Stomp", "weapon": "core:natural_weapon/hoof"}
+        for strength, agility, claw_modifier, stomp_modifier in ((10, 5, 0, 5), (5, 10, 5, 0), (3, 2, -3, -2)):
+            row = {"size": "medium", "attributes": {"str": strength, "agi": agility}}
+            with self.subTest(str=strength, agi=agility):
+                self.assertEqual(ref().attack_modifier(row, claw), claw_modifier)
+                self.assertEqual(ref().attack_modifier(row, stomp), stomp_modifier)
+
+    def test_a_creature_above_its_rows_level_hits_by_damage_per_level(self):
+        row = {r["key"]: r for r in monsters()}["fire_elemental"]
+        summoned = ref().generate("core:monster/fire_elemental", level=row["level"] + 20)
+        growth = json.loads((DATA / "monsters" / "bases" / "elemental.json").read_text())["growth"]["damagePerLevel"]
+        step = round(growth * 20)
+        self.assertGreater(step, 0)
+        for before, after in zip(row["attacks"], summoned["attacks"]):
+            self.assertEqual(after.get("damage", {}).get("bonus", 0), before.get("damage", {}).get("bonus", 0) + step)
+        for before, after in zip(ref().damaging_abilities(row), ref().damaging_abilities(summoned)):
+            self.assertEqual(after["magnitude"], before["magnitude"] + step)
+
+    def test_an_ooze_fights_with_a_touch_ability(self):
+        rows = {r["key"]: r for r in monsters()}
+        for key, effect in (("ooze", "damage_acid"), ("acid_ooze", "damage_acid"), ("fire_ooze", "damage_fire"), ("frost_ooze", "damage_frost")):
+            with self.subTest(monster=key):
+                self.assertFalse(rows[key].get("attacks"))
+                touches = [a for a in ref().damaging_abilities(rows[key]) if a["target"] == "touch"]
+                self.assertEqual([a["effect"] for a in touches], [f"core:effect/{effect}"])
+
+    def test_every_summoned_elemental_has_a_physical_attack_a_bolt_and_a_touch(self):
+        rows = {r["key"]: r for r in monsters()}
+        physical = {"bludgeoning", "piercing", "slashing"}
+        # An element's damage effect, by its template's damage type (shock is a wood effect in the pool,
+        # while the storm template is metal, so the phase does not name the element).
+        element = {"fire_elemental": "fire", "ice_elemental": "frost", "storm_elemental": "shock",
+                   "acid_elemental": "acid", "venom_elemental": "poison"}
+        self.assertEqual(sorted(summon_group("elemental")), sorted(element))
+        for key in summon_group("elemental"):
+            row = rows[key]
+            with self.subTest(monster=key):
+                self.assertTrue(any(ref().attack_type(a) in physical for a in row["attacks"]))
+                abilities = ref().damaging_abilities(row)
+                for target in ("ranged", "touch"):
+                    hits = [a for a in abilities if a["target"] == target]
+                    self.assertTrue(hits, target)
+                    self.assertEqual({a["effect"] for a in hits}, {f"core:effect/damage_{element[key]}"}, target)
+
+    def test_a_spell_like_ability_spends_its_mana_and_the_cast_ap(self):
+        from kernel_reference import run_monster_sheet
+        row = {r["key"]: r for r in monsters()}["fire_elemental"]
+        bolt = next(a for a in ref().damaging_abilities(row) if a["target"] == "ranged")
+        cost = ref().ability_cost(bolt)
+        self.assertGreater(cost, 0)
+        mana = run_monster_sheet({"monster": row})["mp"]
+        self.assertGreaterEqual(mana, cost)
+        self.assertEqual(ref().use_ability(row, bolt, mana), {"mp": mana - cost, "ap": 3})
+        self.assertEqual(ref().use_ability(row, bolt, cost - 1), {"refused": "mana"})
+
+    def test_a_creature_whose_only_attack_is_an_ability_pays_no_mana(self):
+        row = {r["key"]: r for r in monsters()}["ooze"]
+        touch = ref().damaging_abilities(row)[0]
+        self.assertEqual(ref().use_ability(row, touch, 0), {"mp": 0, "ap": 3})
 
 
 if __name__ == "__main__":

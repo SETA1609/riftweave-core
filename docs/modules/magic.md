@@ -199,7 +199,10 @@ A creature appears at its caster's level, whatever the spell's level. The row is
 [derived monster](./monsters.md#derived-monsters) at that level, so its attributes and HP move by
 its creature type's growth. The row still sets the stats: of two creatures at the same level, the
 weaker row stays weaker. Templates go on top in order: the element, then the caster's power tier,
-then the caster's nature. `validate.py` refuses a summon whose `parameter` is not a group, and
+then the caster's nature. The caster's power and nature are perks with `unlocks`: the power ladder
+`summon_dire`, `summon_elder`, `summon_ancient`, each needing the one before, and the natures
+`summon_demonic`, `summon_angelic`, `summon_otherworldly`. The latest bought in each slot is the one
+the caster holds ([monsters.md](./monsters.md#summoned-creatures)). [V 2026-11-12] `validate.py` refuses a summon whose `parameter` is not a group, and
 `test_spells.py` fails on a group or variant that does not exist. [V 2026-11-10]
 
 ---

@@ -35,6 +35,7 @@
         "perLevel": 0.2
       }
     },
-    "hitPointsPerLevel": 2
+    "hitPointsPerLevel": 2,
+    "damagePerLevel": 0.25
   }
 }

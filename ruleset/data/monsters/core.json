@@ -9,7 +9,16 @@
         "description": "The animated bones of a long-dead warrior, raised by dark magic. Its attacks chip away at armor and expose weaknesses.",
         "phase": "water",
         "size": "medium",
-        "level": 1, "loot": [{"table": "grave_goods"}, {"item": "core:weapon/spear", "chance": 20}],
+        "level": 1,
+        "loot": [
+          {
+            "table": "grave_goods"
+          },
+          {
+            "item": "core:weapon/spear",
+            "chance": 20
+          }
+        ],
         "attributes": {
           "str": 3,
           "agi": 4,
@@ -37,10 +46,7 @@
           {
             "key": "rusty_blade",
             "label": "Rusty Blade",
-            "damage": {
-              "amount": 5,
-              "type": "slashing"
-            }
+            "weapon": "core:weapon/shortsword"
           }
         ],
         "resist": {
@@ -84,10 +90,7 @@
           {
             "key": "short_sword",
             "label": "Short Sword",
-            "damage": {
-              "amount": 5,
-              "type": "slashing"
-            }
+            "weapon": "core:weapon/shortsword"
           }
         ]
       }
@@ -103,34 +106,99 @@
           "slashing": 3,
           "piercing": 3
         },
+        "abilities": [
+          {
+            "effect": "core:effect/damage_acid",
+            "magnitude": 6,
+            "target": "touch"
+          }
+        ]
+      }
+    },
+    {
+      "key": "wolf",
+      "base": "core:creature_type/beast",
+      "overrides": {
+        "label": "Wolf",
+        "description": "A grey hunter of the forests that runs in packs and drags down prey by the legs.",
+        "phase": "wood",
+        "size": "medium",
+        "level": 3,
+        "attributes": {
+          "str": 6,
+          "agi": 5,
+          "per": 6
+        },
+        "hitPoints": 59,
+        "abilities": [
+          {
+            "effect": "core:effect/bleed",
+            "magnitude": 2,
+            "duration": 12,
+            "target": "touch"
+          }
+        ],
+        "tags": [
+          "beast",
+          "wolf"
+        ],
         "attacks": [
           {
-            "key": "pseudopod",
-            "label": "Pseudopod",
-            "damage": {
-              "amount": 6,
-              "type": "bludgeoning"
-            },
-            "phase": "earth"
+            "key": "bite",
+            "label": "Bite",
+            "weapon": "core:natural_weapon/bite",
+            "phase": "wood"
+          }
+        ]
+      }
+    },
+    {
+      "key": "dog",
+      "base": "core:creature_type/beast",
+      "overrides": {
+        "label": "Dog",
+        "description": "A big farm dog or hunting hound, loyal and loud, with a bite worse than its bark.",
+        "phase": "wood",
+        "size": "medium",
+        "level": 3,
+        "attributes": {
+          "str": 6,
+          "end": 3,
+          "agi": 5,
+          "per": 5
+        },
+        "hitPoints": 51,
+        "tags": [
+          "beast",
+          "dog"
+        ],
+        "attacks": [
+          {
+            "key": "bite",
+            "label": "Bite",
+            "weapon": "core:natural_weapon/bite",
+            "phase": "wood"
           }
         ]
       }
     },
     {
       "key": "dire_wolf",
-      "base": "core:creature_type/beast",
+      "base": "core:monster/wolf",
+      "templates": [
+        "dire"
+      ],
       "overrides": {
-        "label": "Dire Wolf",
         "description": "A massive wolf the size of a horse, alpha of its pack. Its bite causes deep bleeding and its bulk knocks prey prone.",
-        "phase": "wood",
         "size": "large",
-        "level": 3, "loot": [{"table": "beast_den", "shift": 15}],
-        "attributes": {
-          "str": 6,
-          "agi": 6,
-          "per": 6
-        },
-        "hitPoints": 33,
+        "level": 3,
+        "loot": [
+          {
+            "table": "beast_den",
+            "shift": 15
+          }
+        ],
+        "hitPoints": 67,
         "abilities": [
           {
             "effect": "core:effect/bleed",
@@ -144,20 +212,6 @@
             "duration": 3,
             "target": "touch"
           }
-        ],
-        "tags": [
-          "beast"
-        ],
-        "attacks": [
-          {
-            "key": "bite",
-            "label": "Bite",
-            "damage": {
-              "amount": 6,
-              "type": "piercing"
-            },
-            "phase": "wood"
-          }
         ]
       }
     },
@@ -169,9 +223,16 @@
         "description": "A lumbering construct hewn from bedrock, slow but nearly unstoppable. Its fists shatter bone and leave victims stunned.",
         "phase": "earth",
         "size": "large",
-        "level": 5, "loot": [{"table": "hoard_minor", "material": "core:material/steel", "rolls": 2}],
+        "level": 5,
+        "loot": [
+          {
+            "table": "hoard_minor",
+            "material": "core:material/steel",
+            "rolls": 2
+          }
+        ],
         "attributes": {
-          "str": 8,
+          "str": 7,
           "end": 9,
           "agi": 2
         },
@@ -208,10 +269,7 @@
           {
             "key": "slam",
             "label": "Slam",
-            "damage": {
-              "amount": 7,
-              "type": "bludgeoning"
-            },
+            "weapon": "core:natural_weapon/slam",
             "phase": "earth"
           }
         ],
@@ -230,7 +288,17 @@
         "description": "A roiling mass of living flame that scorches everything in its path and leaves its victims burning.",
         "phase": "fire",
         "size": "medium",
-        "level": 5, "loot": [{"table": "hoard_minor", "rolls": 2}, {"item": "core:consumable/potion_fire_resistance", "chance": 30}],
+        "level": 5,
+        "loot": [
+          {
+            "table": "hoard_minor",
+            "rolls": 2
+          },
+          {
+            "item": "core:consumable/potion_fire_resistance",
+            "chance": 30
+          }
+        ],
         "attributes": {
           "str": 7,
           "agi": 6,
@@ -241,6 +309,11 @@
           {
             "effect": "core:effect/damage_fire",
             "magnitude": 7,
+            "target": "ranged"
+          },
+          {
+            "effect": "core:effect/damage_fire",
+            "magnitude": 6,
             "target": "touch"
           },
           {
@@ -261,11 +334,11 @@
         },
         "attacks": [
           {
-            "key": "burning_fist",
-            "label": "Burning Fist",
+            "key": "slam",
+            "label": "Slam",
+            "weapon": "core:natural_weapon/slam",
             "damage": {
-              "amount": 7,
-              "type": "fire"
+              "type": "bludgeoning"
             },
             "phase": "fire"
           }
@@ -285,13 +358,17 @@
         "phase": "metal",
         "size": "small",
         "level": 5,
+        "attributes": {
+          "agi": 8
+        },
         "hitPoints": 28,
         "attacks": [
           {
             "key": "lightning_dive",
             "label": "Lightning Dive",
+            "weapon": "core:natural_weapon/talons",
+            "ability": "agi",
             "damage": {
-              "amount": 7,
               "type": "shock"
             },
             "phase": "metal"
@@ -314,7 +391,15 @@
         "description": "A lesser dragon wreathed in living flame. Its breath sets the air alight and its touch leaves lingering burns.",
         "phase": "fire",
         "size": "large",
-        "level": 6, "loot": [{"table": "hoard_major"}, {"table": "hoard_minor"}],
+        "level": 6,
+        "loot": [
+          {
+            "table": "hoard_major"
+          },
+          {
+            "table": "hoard_minor"
+          }
+        ],
         "attributes": {
           "str": 7,
           "agi": 6,
@@ -350,20 +435,7 @@
           {
             "key": "claw",
             "label": "Claw",
-            "damage": {
-              "amount": 10,
-              "type": "slashing"
-            },
-            "phase": "fire"
-          },
-          {
-            "key": "flame_breath",
-            "label": "Flame Breath",
-            "damage": {
-              "amount": 12,
-              "type": "fire"
-            },
-            "delivery": "area",
+            "weapon": "core:natural_weapon/claw",
             "phase": "fire"
           }
         ],
@@ -380,16 +452,22 @@
         "description": "A young tree-guardian, slow to anger and slow to fall.",
         "phase": "wood",
         "size": "large",
-        "level": 9, "loot": [{"table": "hoard_minor", "rolls": 2}],
+        "level": 9,
+        "attributes": {
+          "str": 9
+        },
+        "loot": [
+          {
+            "table": "hoard_minor",
+            "rolls": 2
+          }
+        ],
         "hitPoints": 55,
         "attacks": [
           {
             "key": "branch_slam",
             "label": "Branch Slam",
-            "damage": {
-              "amount": 11,
-              "type": "bludgeoning"
-            },
+            "weapon": "core:natural_weapon/slam",
             "phase": "wood"
           }
         ],
@@ -410,7 +488,13 @@
         "description": "A towering brute of the high moors who uproots trees for clubs and boulders to throw.",
         "phase": "earth",
         "size": "huge",
-        "level": 13, "loot": [{"table": "hoard_major", "size": "oversized"}],
+        "level": 13,
+        "loot": [
+          {
+            "table": "hoard_major",
+            "size": "oversized"
+          }
+        ],
         "hitPoints": 55,
         "tags": [
           "giant"
@@ -422,10 +506,7 @@
           {
             "key": "tree_club",
             "label": "Tree Club",
-            "damage": {
-              "amount": 11,
-              "type": "bludgeoning"
-            },
+            "weapon": "core:weapon/warhammer",
             "phase": "earth"
           }
         ]
@@ -435,13 +516,19 @@
       "key": "bone_colossus",
       "base": "core:monster/skeleton",
       "overrides": {
-        "level": 28, "loot": [{"table": "hoard_major"}],
+        "level": 28,
+        "loot": [
+          {
+            "table": "hoard_major"
+          }
+        ],
         "label": "Bone Colossus",
         "description": "A giant knit from the bones of a battlefield.",
         "phase": "earth",
         "size": "huge",
         "attributes": {
-          "agi": 8
+          "agi": 8,
+          "str": 15
         },
         "hitPoints": 105,
         "tags": [
@@ -451,10 +538,7 @@
           {
             "key": "bone_slam",
             "label": "Bone Slam",
-            "damage": {
-              "amount": 21,
-              "type": "bludgeoning"
-            },
+            "weapon": "core:natural_weapon/slam",
             "phase": "earth"
           }
         ],
@@ -468,7 +552,15 @@
       "key": "bandit_captain",
       "base": "core:monster/bandit",
       "overrides": {
-        "level": 8, "loot": [{"table": "hoard_major"}, {"table": "bandit_purse"}],
+        "level": 8,
+        "loot": [
+          {
+            "table": "hoard_major"
+          },
+          {
+            "table": "bandit_purse"
+          }
+        ],
         "label": "Bandit Captain",
         "description": "The one the others fear: quick with a blade and quicker with a threat.",
         "phase": "metal",
@@ -484,10 +576,8 @@
           {
             "key": "rapier",
             "label": "Rapier",
-            "damage": {
-              "amount": 10,
-              "type": "piercing"
-            },
+            "weapon": "core:weapon/rapier",
+            "ability": "agi",
             "phase": "metal"
           }
         ]
@@ -533,7 +623,15 @@
       "key": "shadow_hound",
       "base": "core:monster/dire_wolf",
       "overrides": {
-        "level": 21, "loot": [{"table": "hoard_major"}],
+        "level": 21,
+        "attributes": {
+          "str": 16
+        },
+        "loot": [
+          {
+            "table": "hoard_major"
+          }
+        ],
         "label": "Shadow Hound",
         "description": "A hound of living darkness that hunts by the fear it smells.",
         "phase": "water",
@@ -547,8 +645,8 @@
           {
             "key": "shadow_bite",
             "label": "Shadow Bite",
+            "weapon": "core:natural_weapon/bite",
             "damage": {
-              "amount": 16,
               "type": "necrotic"
             }
           }
@@ -562,7 +660,12 @@
       "key": "bronze_guardian",
       "base": "core:monster/stone_golem",
       "overrides": {
-        "level": 10, "loot": [{"table": "hoard_major"}],
+        "level": 10,
+        "loot": [
+          {
+            "table": "hoard_major"
+          }
+        ],
         "label": "Bronze Guardian",
         "description": "A temple statue that walks when its doors are forced.",
         "phase": "metal",
@@ -574,10 +677,7 @@
           {
             "key": "bronze_fist",
             "label": "Bronze Fist",
-            "damage": {
-              "amount": 11,
-              "type": "bludgeoning"
-            },
+            "weapon": "core:natural_weapon/slam",
             "phase": "metal"
           }
         ],
@@ -592,7 +692,17 @@
       "key": "iron_colossus",
       "base": "core:monster/stone_golem",
       "overrides": {
-        "level": 20, "loot": [{"table": "hoard_major", "material": "core:material/steel", "rolls": 2}],
+        "level": 20,
+        "attributes": {
+          "str": 15
+        },
+        "loot": [
+          {
+            "table": "hoard_major",
+            "material": "core:material/steel",
+            "rolls": 2
+          }
+        ],
         "label": "Iron Colossus",
         "description": "A war engine of riveted iron, built to break walls.",
         "phase": "metal",
@@ -605,10 +715,7 @@
           {
             "key": "crushing_fist",
             "label": "Crushing Fist",
-            "damage": {
-              "amount": 16,
-              "type": "bludgeoning"
-            }
+            "weapon": "core:natural_weapon/slam"
           }
         ],
         "resist": {
@@ -627,23 +734,27 @@
       "overrides": {
         "label": "Storm Elemental",
         "description": "A knot of wind and lightning that leaps between its foes.",
-        "level": 5, "loot": [{"table": "hoard_minor", "rolls": 2}, {"item": "core:consumable/potion_minor_healing", "chance": 30}],
+        "level": 5,
+        "loot": [
+          {
+            "table": "hoard_minor",
+            "rolls": 2
+          },
+          {
+            "item": "core:consumable/potion_minor_healing",
+            "chance": 30
+          }
+        ],
         "abilities": [
           {
             "effect": "core:effect/damage_shock",
             "magnitude": 7,
             "target": "ranged"
-          }
-        ],
-        "attacks": [
+          },
           {
-            "key": "arc_strike",
-            "label": "Arc Strike",
-            "damage": {
-              "amount": 7,
-              "type": "shock"
-            },
-            "phase": "metal"
+            "effect": "core:effect/damage_shock",
+            "magnitude": 6,
+            "target": "touch"
           }
         ],
         "resist": {
@@ -665,23 +776,27 @@
       "overrides": {
         "label": "Acid Elemental",
         "description": "A slumping mass of living acid that eats what it touches.",
-        "level": 5, "loot": [{"table": "hoard_minor", "rolls": 2}, {"item": "core:consumable/potion_minor_healing", "chance": 30}],
+        "level": 5,
+        "loot": [
+          {
+            "table": "hoard_minor",
+            "rolls": 2
+          },
+          {
+            "item": "core:consumable/potion_minor_healing",
+            "chance": 30
+          }
+        ],
         "abilities": [
           {
             "effect": "core:effect/damage_acid",
             "magnitude": 7,
-            "target": "touch"
-          }
-        ],
-        "attacks": [
+            "target": "ranged"
+          },
           {
-            "key": "caustic_slam",
-            "label": "Caustic Slam",
-            "damage": {
-              "amount": 7,
-              "type": "acid"
-            },
-            "phase": "earth"
+            "effect": "core:effect/damage_acid",
+            "magnitude": 6,
+            "target": "touch"
           }
         ],
         "resist": {
@@ -703,24 +818,33 @@
       "overrides": {
         "label": "Venom Elemental",
         "description": "A coiling haze of poison in a body that will not hold still.",
-        "level": 5, "loot": [{"table": "hoard_minor", "rolls": 2}, {"item": "core:consumable/potion_minor_healing", "chance": 30}],
+        "level": 5,
+        "loot": [
+          {
+            "table": "hoard_minor",
+            "rolls": 2
+          },
+          {
+            "item": "core:consumable/potion_minor_healing",
+            "chance": 30
+          }
+        ],
         "abilities": [
+          {
+            "effect": "core:effect/damage_poison",
+            "magnitude": 7,
+            "target": "ranged"
+          },
+          {
+            "effect": "core:effect/damage_poison",
+            "magnitude": 6,
+            "target": "touch"
+          },
           {
             "effect": "core:effect/poison",
             "magnitude": 1,
             "duration": 25,
             "target": "touch"
-          }
-        ],
-        "attacks": [
-          {
-            "key": "toxic_lash",
-            "label": "Toxic Lash",
-            "damage": {
-              "amount": 7,
-              "type": "poison"
-            },
-            "phase": "wood"
           }
         ],
         "resist": {
@@ -736,7 +860,15 @@
       "key": "magma_titan",
       "base": "core:monster/fire_elemental",
       "overrides": {
-        "level": 26, "loot": [{"table": "hoard_major"}, {"table": "hoard_minor"}],
+        "level": 26,
+        "loot": [
+          {
+            "table": "hoard_major"
+          },
+          {
+            "table": "hoard_minor"
+          }
+        ],
         "label": "Magma Titan",
         "description": "A walking mountain of molten rock.",
         "size": "huge",
@@ -746,8 +878,8 @@
           {
             "key": "magma_fist",
             "label": "Magma Fist",
+            "weapon": "core:natural_weapon/slam",
             "damage": {
-              "amount": 20,
               "type": "fire"
             },
             "phase": "fire"
@@ -763,7 +895,12 @@
       "key": "thunderbird",
       "base": "core:monster/storm_hawk",
       "overrides": {
-        "level": 25, "loot": [{"table": "hoard_major"}],
+        "level": 25,
+        "loot": [
+          {
+            "table": "hoard_major"
+          }
+        ],
         "label": "Thunderbird",
         "description": "A storm-sized bird whose wingbeats are thunder.",
         "size": "huge",
@@ -772,8 +909,8 @@
           {
             "key": "thunderclap",
             "label": "Thunderclap",
+            "weapon": "core:natural_weapon/talons",
             "damage": {
-              "amount": 18,
               "type": "thunder"
             },
             "delivery": "area",
@@ -790,7 +927,15 @@
       "key": "ancient_dragon",
       "base": "core:monster/ember_drake",
       "overrides": {
-        "level": 30, "loot": [{"table": "hoard_major"}, {"table": "hoard_minor"}],
+        "level": 30,
+        "loot": [
+          {
+            "table": "hoard_major"
+          },
+          {
+            "table": "hoard_minor"
+          }
+        ],
         "label": "Ancient Dragon",
         "description": "The oldest of the drakes, whose breath ends armies.",
         "size": "huge",
@@ -799,20 +944,7 @@
           {
             "key": "bite",
             "label": "Bite",
-            "damage": {
-              "amount": 22,
-              "type": "piercing"
-            },
-            "phase": "fire"
-          },
-          {
-            "key": "dragon_fire",
-            "label": "Dragon Fire",
-            "damage": {
-              "amount": 20,
-              "type": "fire"
-            },
-            "delivery": "area",
+            "weapon": "core:natural_weapon/bite",
             "phase": "fire"
           }
         ],
@@ -827,7 +959,18 @@
       "key": "elder_treant",
       "base": "core:monster/treant_sapling",
       "overrides": {
-        "level": 22, "loot": [{"table": "hoard_major"}, {"table": "hoard_minor"}],
+        "level": 22,
+        "attributes": {
+          "str": 14
+        },
+        "loot": [
+          {
+            "table": "hoard_major"
+          },
+          {
+            "table": "hoard_minor"
+          }
+        ],
         "label": "Elder Treant",
         "description": "An ancient tree-lord whose anger shakes the forest floor.",
         "size": "huge",
@@ -837,10 +980,7 @@
           {
             "key": "root_slam",
             "label": "Root Slam",
-            "damage": {
-              "amount": 18,
-              "type": "bludgeoning"
-            },
+            "weapon": "core:natural_weapon/slam",
             "delivery": "area",
             "phase": "wood"
           }
@@ -857,12 +997,17 @@
         "storm"
       ],
       "overrides": {
-        "level": 15, "loot": [{"table": "hoard_major"}],
+        "level": 15,
+        "loot": [
+          {
+            "table": "hoard_major"
+          }
+        ],
         "label": "Storm Giant Youth",
         "description": "A giant still learning to call the storm, and already dangerous with it.",
         "size": "large",
         "attributes": {
-          "str": 8,
+          "str": 10,
           "end": 8,
           "agi": 8,
           "per": 8,
@@ -873,10 +1018,7 @@
           {
             "key": "lightning_strike",
             "label": "Lightning Strike",
-            "damage": {
-              "amount": 14,
-              "type": "shock"
-            },
+            "weapon": "core:weapon/warhammer",
             "phase": "metal"
           }
         ],
@@ -893,7 +1035,17 @@
         "frost"
       ],
       "overrides": {
-        "level": 19, "loot": [{"table": "hoard_major", "size": "oversized", "material": "core:material/steel"}, {"table": "hoard_minor"}],
+        "level": 19,
+        "loot": [
+          {
+            "table": "hoard_major",
+            "size": "oversized",
+            "material": "core:material/steel"
+          },
+          {
+            "table": "hoard_minor"
+          }
+        ],
         "description": "A giant of the glaciers who wears the ice as armor.",
         "hitPoints": 140,
         "role": "boss",
@@ -901,16 +1053,38 @@
           {
             "key": "maul",
             "label": "Maul",
-            "damage": {
-              "amount": 16,
-              "type": "frost"
-            },
+            "weapon": "core:weapon/warhammer",
             "phase": "water"
           }
         ],
         "resist": {
           "frost": 30
         }
+      }
+    },
+    {
+      "key": "elder_wolf",
+      "base": "core:monster/wolf",
+      "templates": [
+        "elder"
+      ],
+      "overrides": {
+        "description": "A wolf that has led its pack through a dozen hard winters: scarred, grey at the muzzle, and wise to every trap.",
+        "level": 12,
+        "hitPoints": 151
+      }
+    },
+    {
+      "key": "demonic_hound",
+      "base": "core:monster/dog",
+      "templates": [
+        "demonic"
+      ],
+      "overrides": {
+        "label": "Demonic Hound",
+        "description": "A hound that has drunk from a fiend's bowl: its eyes smoulder and its bark carries hellfire.",
+        "level": 6,
+        "hitPoints": 71
       }
     },
     {
@@ -949,10 +1123,7 @@
           {
             "key": "slam",
             "label": "Slam",
-            "damage": {
-              "amount": 5,
-              "type": "bludgeoning"
-            }
+            "weapon": "core:natural_weapon/slam"
           }
         ],
         "resist": {
@@ -969,17 +1140,23 @@
         "description": "A dog-sized rat from the sewers. Alone it is a nuisance; in a pack it is a danger.",
         "phase": "wood",
         "size": "small",
-        "level": 1, "loot": [{"table": "grave_goods"}],
+        "level": 1,
+        "attributes": {
+          "agi": 7
+        },
+        "loot": [
+          {
+            "table": "grave_goods"
+          }
+        ],
         "role": "minion",
         "hitPoints": 8,
         "attacks": [
           {
             "key": "bite",
             "label": "Bite",
-            "damage": {
-              "amount": 4,
-              "type": "piercing"
-            },
+            "weapon": "core:natural_weapon/bite",
+            "ability": "agi",
             "phase": "wood"
           }
         ],
@@ -1000,16 +1177,23 @@
         "description": "A quick, cowardly raider that jabs from behind its friends.",
         "phase": "wood",
         "size": "small",
-        "level": 2, "loot": [{"table": "bandit_purse", "size": "undersized"}],
+        "level": 2,
+        "attributes": {
+          "agi": 6
+        },
+        "loot": [
+          {
+            "table": "bandit_purse",
+            "size": "undersized"
+          }
+        ],
         "hitPoints": 24,
         "attacks": [
           {
             "key": "spear",
             "label": "Spear",
-            "damage": {
-              "amount": 5,
-              "type": "piercing"
-            }
+            "weapon": "core:weapon/spear",
+            "ability": "agi"
           }
         ],
         "tags": [
@@ -1030,7 +1214,7 @@
         "role": "minion",
         "attributes": {
           "str": 1,
-          "agi": 6,
+          "agi": 7,
           "per": 8
         },
         "hitPoints": 8,
@@ -1038,10 +1222,8 @@
           {
             "key": "talons",
             "label": "Talons",
-            "damage": {
-              "amount": 4,
-              "type": "piercing"
-            },
+            "weapon": "core:natural_weapon/talons",
+            "ability": "agi",
             "phase": "wood"
           }
         ],
@@ -1071,10 +1253,8 @@
           {
             "key": "claws",
             "label": "Claws",
-            "damage": {
-              "amount": 4,
-              "type": "slashing"
-            },
+            "weapon": "core:natural_weapon/claw",
+            "ability": "agi",
             "phase": "wood"
           }
         ],
@@ -1096,7 +1276,7 @@
         "role": "minion",
         "attributes": {
           "str": 1,
-          "agi": 7,
+          "agi": 8,
           "per": 7
         },
         "hitPoints": 8,
@@ -1104,10 +1284,8 @@
           {
             "key": "peck",
             "label": "Peck",
-            "damage": {
-              "amount": 4,
-              "type": "piercing"
-            },
+            "weapon": "core:natural_weapon/peck",
+            "ability": "agi",
             "phase": "wood"
           }
         ],
@@ -1125,14 +1303,23 @@
         "description": "A pale spider the size of a shield that hunts in the dark under the hills.",
         "phase": "earth",
         "size": "medium",
-        "level": 2, "loot": [{"table": "grave_goods"}],
+        "level": 2,
+        "attributes": {
+          "agi": 6
+        },
+        "loot": [
+          {
+            "table": "grave_goods"
+          }
+        ],
         "hitPoints": 26,
         "attacks": [
           {
             "key": "venom_bite",
             "label": "Venom Bite",
+            "weapon": "core:natural_weapon/bite",
+            "ability": "agi",
             "damage": {
-              "amount": 5,
               "type": "poison"
             },
             "phase": "earth"
@@ -1189,10 +1376,8 @@
           {
             "key": "claws",
             "label": "Claws",
-            "damage": {
-              "amount": 6,
-              "type": "slashing"
-            },
+            "weapon": "core:natural_weapon/claw",
+            "ability": "agi",
             "phase": "wood"
           }
         ],
@@ -1210,15 +1395,15 @@
         "phase": "water",
         "size": "medium",
         "level": 3,
+        "attributes": {
+          "str": 6
+        },
         "hitPoints": 30,
         "attacks": [
           {
             "key": "slam",
             "label": "Slam",
-            "damage": {
-              "amount": 6,
-              "type": "bludgeoning"
-            },
+            "weapon": "core:natural_weapon/slam",
             "phase": "water"
           }
         ],
@@ -1239,7 +1424,17 @@
         "description": "The risen dead of those who froze in the high passes, exhaling killing cold that numbs the living.",
         "phase": "water",
         "size": "medium",
-        "level": 4, "loot": [{"table": "hoard_minor", "rolls": 2}, {"item": "core:consumable/coating_frost", "chance": 20}],
+        "level": 4,
+        "loot": [
+          {
+            "table": "hoard_minor",
+            "rolls": 2
+          },
+          {
+            "item": "core:consumable/coating_frost",
+            "chance": 20
+          }
+        ],
         "attributes": {
           "str": 5,
           "end": 6,
@@ -1266,8 +1461,8 @@
           {
             "key": "frost_touch",
             "label": "Frost Touch",
+            "weapon": "core:natural_weapon/claw",
             "damage": {
-              "amount": 7,
               "type": "frost"
             },
             "phase": "water"
@@ -1287,7 +1482,16 @@
         "description": "A frigid being of living ice that freezes the air around it and slows those who draw near.",
         "phase": "water",
         "size": "medium",
-        "level": 4, "loot": [{"table": "hoard_minor"}, {"item": "core:consumable/coating_frost", "chance": 40}],
+        "level": 4,
+        "loot": [
+          {
+            "table": "hoard_minor"
+          },
+          {
+            "item": "core:consumable/coating_frost",
+            "chance": 40
+          }
+        ],
         "attributes": {
           "str": 6,
           "agi": 4,
@@ -1299,6 +1503,11 @@
             "effect": "core:effect/damage_frost",
             "magnitude": 7,
             "target": "ranged"
+          },
+          {
+            "effect": "core:effect/damage_frost",
+            "magnitude": 6,
+            "target": "touch"
           },
           {
             "effect": "core:effect/slow",
@@ -1318,11 +1527,11 @@
         },
         "attacks": [
           {
-            "key": "ice_shard",
-            "label": "Ice Shard",
+            "key": "slam",
+            "label": "Slam",
+            "weapon": "core:natural_weapon/slam",
             "damage": {
-              "amount": 6,
-              "type": "frost"
+              "type": "bludgeoning"
             },
             "phase": "water"
           }
@@ -1333,6 +1542,35 @@
       }
     },
     {
+      "key": "undead_horse",
+      "base": "core:creature_type/undead",
+      "overrides": {
+        "label": "Undead Horse",
+        "description": "A warhorse raised from the battlefield it fell on, all bone and torn hide, that never tires.",
+        "phase": "water",
+        "size": "large",
+        "level": 4,
+        "attributes": {
+          "str": 6,
+          "end": 5,
+          "agi": 4,
+          "per": 3
+        },
+        "hitPoints": 71,
+        "tags": [
+          "undead",
+          "horse"
+        ],
+        "attacks": [
+          {
+            "key": "hoof",
+            "label": "Hoof",
+            "weapon": "core:natural_weapon/hoof"
+          }
+        ]
+      }
+    },
+    {
       "key": "orc_raider",
       "base": "core:creature_type/humanoid",
       "overrides": {
@@ -1340,16 +1578,22 @@
         "description": "A scarred warrior who fights for plunder and the joy of it.",
         "phase": "fire",
         "size": "medium",
-        "level": 6, "loot": [{"table": "hoard_minor", "rolls": 2}],
+        "level": 6,
+        "attributes": {
+          "str": 8
+        },
+        "loot": [
+          {
+            "table": "hoard_minor",
+            "rolls": 2
+          }
+        ],
         "hitPoints": 45,
         "attacks": [
           {
             "key": "great_axe",
             "label": "Great Axe",
-            "damage": {
-              "amount": 9,
-              "type": "slashing"
-            }
+            "weapon": "core:weapon/battleaxe"
           }
         ],
         "tags": [
@@ -1366,14 +1610,25 @@
         "description": "A corpse-eater whose touch carries the chill of the grave.",
         "phase": "water",
         "size": "medium",
-        "level": 6, "loot": [{"table": "grave_goods"}, {"table": "hoard_minor"}],
+        "level": 6,
+        "attributes": {
+          "str": 9
+        },
+        "loot": [
+          {
+            "table": "grave_goods"
+          },
+          {
+            "table": "hoard_minor"
+          }
+        ],
         "hitPoints": 42,
         "attacks": [
           {
             "key": "rotting_claws",
             "label": "Rotting Claws",
+            "weapon": "core:natural_weapon/claw",
             "damage": {
-              "amount": 8,
               "type": "necrotic"
             },
             "phase": "water"
@@ -1396,7 +1651,13 @@
         "description": "An animated suit of war-plate that guards forgotten vaults, striking with crushing force that staggers its foes.",
         "phase": "metal",
         "size": "large",
-        "level": 7, "loot": [{"table": "hoard_major", "rolls": 2}],
+        "level": 7,
+        "loot": [
+          {
+            "table": "hoard_major",
+            "rolls": 2
+          }
+        ],
         "attributes": {
           "str": 9,
           "end": 8,
@@ -1436,10 +1697,7 @@
           {
             "key": "halberd",
             "label": "Halberd",
-            "damage": {
-              "amount": 11,
-              "type": "slashing"
-            },
+            "weapon": "core:weapon/halberd",
             "phase": "metal"
           }
         ],
@@ -1457,14 +1715,23 @@
         "description": "A mountain ram whose charge lands with a clap like thunder.",
         "phase": "earth",
         "size": "large",
-        "level": 7, "loot": [{"table": "beast_den", "shift": 15}],
+        "level": 7,
+        "attributes": {
+          "str": 7
+        },
+        "loot": [
+          {
+            "table": "beast_den",
+            "shift": 15
+          }
+        ],
         "hitPoints": 50,
         "attacks": [
           {
             "key": "charge",
             "label": "Charge",
+            "weapon": "core:natural_weapon/gore",
             "damage": {
-              "amount": 10,
               "type": "thunder"
             },
             "phase": "earth"
@@ -1489,22 +1756,18 @@
         "level": 7,
         "role": "minion",
         "hitPoints": 15,
-        "attacks": [
-          {
-            "key": "searing_light",
-            "label": "Searing Light",
-            "damage": {
-              "amount": 8,
-              "type": "radiant"
-            },
-            "phase": "fire"
-          }
-        ],
         "resist": {
           "radiant": 15
         },
         "tags": [
           "elemental"
+        ],
+        "abilities": [
+          {
+            "effect": "core:effect/damage_radiant",
+            "magnitude": 8,
+            "target": "ranged"
+          }
         ]
       }
     },
@@ -1516,14 +1779,24 @@
         "description": "A slick cave grub that feeds on thoughts and leaves its prey dazed.",
         "phase": "water",
         "size": "small",
-        "level": 8, "loot": [{"table": "hoard_minor", "rolls": 2}],
+        "level": 8,
+        "attributes": {
+          "agi": 10
+        },
+        "loot": [
+          {
+            "table": "hoard_minor",
+            "rolls": 2
+          }
+        ],
         "hitPoints": 40,
         "attacks": [
           {
             "key": "psychic_lash",
             "label": "Psychic Lash",
+            "weapon": "core:natural_weapon/tentacle",
+            "ability": "agi",
             "damage": {
-              "amount": 9,
               "type": "psychic"
             },
             "delivery": "instant",
@@ -1546,25 +1819,26 @@
         "description": "A shade of hate that drinks the warmth from the living.",
         "phase": "water",
         "size": "medium",
-        "level": 11, "loot": [{"table": "hoard_major"}],
-        "hitPoints": 48,
-        "attacks": [
+        "level": 11,
+        "loot": [
           {
-            "key": "draining_touch",
-            "label": "Draining Touch",
-            "damage": {
-              "amount": 11,
-              "type": "necrotic"
-            },
-            "phase": "water"
+            "table": "hoard_major"
           }
         ],
+        "hitPoints": 48,
         "resist": {
           "necrotic": 20,
           "frost": 10
         },
         "tags": [
           "undead"
+        ],
+        "abilities": [
+          {
+            "effect": "core:effect/damage_necrotic",
+            "magnitude": 11,
+            "target": "touch"
+          }
         ]
       }
     },
@@ -1576,25 +1850,21 @@
         "description": "A shrieking bird-woman whose cry rattles the bones.",
         "phase": "metal",
         "size": "medium",
-        "level": 11, "loot": [{"table": "hoard_major"}],
+        "level": 11,
+        "loot": [
+          {
+            "table": "hoard_major"
+          }
+        ],
         "hitPoints": 44,
         "attacks": [
           {
             "key": "talons",
             "label": "Talons",
+            "weapon": "core:natural_weapon/talons",
             "damage": {
-              "amount": 10,
               "type": "slashing"
             }
-          },
-          {
-            "key": "screech",
-            "label": "Screech",
-            "damage": {
-              "amount": 8,
-              "type": "thunder"
-            },
-            "delivery": "area"
           }
         ],
         "resist": {
@@ -1603,6 +1873,14 @@
         "tags": [
           "beast",
           "monstrosity"
+        ],
+        "abilities": [
+          {
+            "effect": "core:effect/damage_thunder",
+            "magnitude": 8,
+            "target": "area",
+            "radius": 2
+          }
         ]
       }
     },
@@ -1614,14 +1892,26 @@
         "description": "A serpent-bodied warrior of the burning deep.",
         "phase": "fire",
         "size": "medium",
-        "level": 12, "loot": [{"table": "hoard_major"}, {"item": "core:consumable/potion_fire_resistance", "chance": 30}],
+        "level": 12,
+        "attributes": {
+          "str": 9
+        },
+        "loot": [
+          {
+            "table": "hoard_major"
+          },
+          {
+            "item": "core:consumable/potion_fire_resistance",
+            "chance": 30
+          }
+        ],
         "hitPoints": 50,
         "attacks": [
           {
             "key": "fire_spear",
             "label": "Fire Spear",
+            "weapon": "core:weapon/spear",
             "damage": {
-              "amount": 12,
               "type": "fire"
             },
             "phase": "fire"
@@ -1644,17 +1934,22 @@
         "description": "A towering brute whose wounds close almost as fast as they open.",
         "phase": "wood",
         "size": "large",
-        "level": 13, "loot": [{"table": "hoard_major"}, {"table": "hoard_minor"}],
+        "level": 13,
+        "loot": [
+          {
+            "table": "hoard_major"
+          },
+          {
+            "table": "hoard_minor"
+          }
+        ],
         "role": "boss",
         "hitPoints": 100,
         "attacks": [
           {
             "key": "claws",
             "label": "Claws",
-            "damage": {
-              "amount": 12,
-              "type": "slashing"
-            },
+            "weapon": "core:natural_weapon/claw",
             "phase": "wood"
           }
         ],
@@ -1674,16 +1969,18 @@
         "description": "An eight-legged lizard whose stare turns flesh to stone.",
         "phase": "earth",
         "size": "medium",
-        "level": 14, "loot": [{"table": "hoard_major"}],
+        "level": 14,
+        "loot": [
+          {
+            "table": "hoard_major"
+          }
+        ],
         "hitPoints": 56,
         "attacks": [
           {
             "key": "bite",
             "label": "Bite",
-            "damage": {
-              "amount": 12,
-              "type": "piercing"
-            },
+            "weapon": "core:natural_weapon/bite",
             "phase": "earth"
           }
         ],
@@ -1703,14 +2000,19 @@
         "description": "A dead mage bound to a greater master, still casting what it learned in life.",
         "phase": "water",
         "size": "medium",
-        "level": 16, "loot": [{"table": "hoard_major"}],
+        "level": 16,
+        "loot": [
+          {
+            "table": "hoard_major"
+          }
+        ],
         "hitPoints": 60,
         "attacks": [
           {
-            "key": "force_bolt",
-            "label": "Force Bolt",
+            "key": "staff",
+            "label": "Staff",
+            "weapon": "core:weapon/quarterstaff",
             "damage": {
-              "amount": 14,
               "type": "force"
             }
           }
@@ -1722,6 +2024,13 @@
         "tags": [
           "undead",
           "caster"
+        ],
+        "abilities": [
+          {
+            "effect": "core:effect/damage_force",
+            "magnitude": 14,
+            "target": "ranged"
+          }
         ]
       }
     },
@@ -1733,16 +2042,18 @@
         "description": "A burrowing serpent that rises out of the dunes beneath its prey.",
         "phase": "earth",
         "size": "huge",
-        "level": 17, "loot": [{"table": "hoard_major"}],
+        "level": 17,
+        "loot": [
+          {
+            "table": "hoard_major"
+          }
+        ],
         "hitPoints": 75,
         "attacks": [
           {
             "key": "bite",
             "label": "Bite",
-            "damage": {
-              "amount": 15,
-              "type": "piercing"
-            },
+            "weapon": "core:natural_weapon/bite",
             "phase": "earth"
           }
         ],
@@ -1763,14 +2074,22 @@
         "description": "A winged herald of a forgotten court, terrible in its certainty.",
         "phase": "metal",
         "size": "medium",
-        "level": 18, "loot": [{"table": "hoard_major"}],
+        "level": 18,
+        "attributes": {
+          "str": 12
+        },
+        "loot": [
+          {
+            "table": "hoard_major"
+          }
+        ],
         "hitPoints": 65,
         "attacks": [
           {
             "key": "radiant_spear",
             "label": "Radiant Spear",
+            "weapon": "core:weapon/spear",
             "damage": {
-              "amount": 15,
               "type": "radiant"
             },
             "phase": "metal"
@@ -1793,14 +2112,22 @@
         "description": "A thing from between the stars that unmakes minds by looking at them.",
         "phase": "water",
         "size": "large",
-        "level": 24, "loot": [{"table": "hoard_major"}],
+        "level": 24,
+        "attributes": {
+          "str": 15
+        },
+        "loot": [
+          {
+            "table": "hoard_major"
+          }
+        ],
         "hitPoints": 95,
         "attacks": [
           {
             "key": "mind_rend",
             "label": "Mind Rend",
+            "weapon": "core:natural_weapon/tentacle",
             "damage": {
-              "amount": 18,
               "type": "psychic"
             },
             "delivery": "instant",
@@ -1824,15 +2151,23 @@
         "description": "A many-headed swamp serpent that spits caustic venom.",
         "phase": "water",
         "size": "huge",
-        "level": 27, "loot": [{"table": "hoard_major"}, {"table": "hoard_minor"}],
+        "level": 27,
+        "loot": [
+          {
+            "table": "hoard_major"
+          },
+          {
+            "table": "hoard_minor"
+          }
+        ],
         "role": "boss",
         "hitPoints": 190,
         "attacks": [
           {
             "key": "acid_bite",
             "label": "Acid Bite",
+            "weapon": "core:natural_weapon/bite",
             "damage": {
-              "amount": 20,
               "type": "acid"
             },
             "phase": "water"

@@ -14,7 +14,7 @@ skill   the row's skills[key], when written
 
 - **Hit points.** `hitPoints` on a monster is an optional authored value that replaces the
   computed one. Rows written before this rule keep theirs, because computed HP is far above
-  the balance bands: level 3 with END 4 computes 59, where `dire_wolf` is written as 33.
+  the balance bands: level 3 with END 4 computes 59, where `grove_stalker` is written as 30. The example rows of [monsters.md](../modules/monsters.md#generated-monsters) use the computed value.
   [V 2026-11-10]
 - **Mana and stamina.** Computed, like every other derived stat. No monster row stores them. [V 2026-11-10]
 - **A reduced skill sheet.** A row writes only the skills it fights or casts with. Any other

@@ -118,6 +118,7 @@
           "description": "Contract modifiers this feature emits (docs/core/modifier.md). Racial traits use source feature:<key> and origin core:origin/innate (docs/modules/race.md#5a-what-a-race-emits).",
           "items": { "$ref": "schema.json#/definitions/modifier" }
         },
+        "unlocks": { "type": "array", "items": { "oneOf": [ { "$ref": "schema.json#/definitions/monsterTemplateRef" }, { "$ref": "schema.json#/definitions/materialRef" } ] }, "uniqueItems": true, "minItems": 1, "description": "What the perk unlocks beyond a number a modifier holds: a summon power or nature (core:monster_template/<key>), or a bound weapon's material (docs/modules/monsters.md#summoned-creatures). Each ref must resolve." },
         "natural_weapon": {
           "type": "object",
           "description": "A natural weapon this feature gives, rolled with the unarmed skill.",

@@ -16,6 +16,7 @@
       "agi": { "perLevel": 0.2 },
       "wil": { "perLevel": 0.1 }
     },
-    "hitPointsPerLevel": 12
+    "hitPointsPerLevel": 12,
+    "damagePerLevel": 0.25
   }
 }

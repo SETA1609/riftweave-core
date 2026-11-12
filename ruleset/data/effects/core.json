@@ -184,6 +184,24 @@
       ]
     },
     {
+      "key": "damage_poison",
+      "label": "Damage Poison",
+      "description": "Deals poison damage at once, as a bolt or a touch: venom made a spell. The poison effect stays the delivery of drunk and coated poisons.",
+      "category": "damage",
+      "polarity": "harmful",
+      "color": "green",
+      "phase": "wood",
+      "magnitudeUnit": "points",
+      "baseCost": 5,
+      "channels": [
+        "spell"
+      ],
+      "tags": [
+        "elemental",
+        "poison"
+      ]
+    },
+    {
       "key": "damage_stamina",
       "label": "Damage Stamina",
       "description": "Saps the target's stamina.",

@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Monster template",
-  "description": "A reusable change a monster row applies with templates: [...] (docs/modules/monsters.md#templates). Applied after the base and before the row's overrides.",
+  "description": "A reusable change a monster row applies with templates: [...] (docs/modules/monsters.md#templates). Each template fills one slot, a row holds at most one per slot, and the slots apply element, power, then nature, after the base and before the row's overrides.",
   "type": "object",
   "properties": {
     "$schema": { "type": "string" },
@@ -19,20 +19,30 @@
         "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
         "label": { "type": "string" },
         "description": { "type": "string" },
+        "slot": { "type": "string", "enum": ["element", "power", "nature"], "description": "Which slot the template fills: element (the five phases), power (dire, elder, ancient), or nature (demonic, angelic, otherworldly)." },
         "label_prefix": { "type": "string", "description": "Put before the monster's label, with a space, unless the row's overrides give a label." },
         "phase": { "$ref": "schema.json#/definitions/phase", "description": "The monster's phase, and the phase of every attack." },
         "loot": { "type": "array", "minItems": 1, "description": "Rows added to the monster's loot.", "items": { "$ref": "loot.schema.json#/definitions/lootRow" } },
-        "damage_type": { "$ref": "schema.json#/definitions/damageType", "description": "Every attack's damage type." },
+        "damage_type": { "$ref": "schema.json#/definitions/damageType", "description": "The damage type of every attack that does not name its own, and the element each elemental damage_* ability turns into." },
+        "attributes": {
+          "type": "object",
+          "description": "Added to the monster's attributes, a missing one counting 0. An END add moves an authored hitPoints by the hp row's per_point.",
+          "propertyNames": { "$ref": "schema.json#/definitions/ability" },
+          "additionalProperties": { "type": "integer" }
+        },
         "resist": {
           "type": "object",
           "description": "Added to the monster's resist, per damage type.",
           "propertyNames": { "$ref": "schema.json#/definitions/damageType" },
           "additionalProperties": { "type": "integer", "minimum": 0 }
         },
+        "spells": { "type": "array", "items": { "$ref": "schema.json#/definitions/spellRef" }, "uniqueItems": true, "description": "Appended to the monster's spells, skipping any it has." },
         "tags": { "type": "array", "items": { "type": "string" }, "description": "Appended to the monster's tags, skipping any it has." }
       },
-      "required": ["key", "label", "description", "label_prefix", "damage_type"],
-      "additionalProperties": false
+      "required": ["key", "label", "description", "slot", "label_prefix"],
+      "additionalProperties": false,
+      "if": { "properties": { "slot": { "const": "element" } } },
+      "then": { "required": ["phase", "damage_type"] }
     }
   }
 }

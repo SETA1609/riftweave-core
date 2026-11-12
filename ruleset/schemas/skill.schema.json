@@ -22,7 +22,7 @@
         "source": { "$ref": "schema.json#/definitions/sourceRef" },
         "associatedAbility": {
           "$ref": "schema.json#/definitions/ability",
-          "description": "Attribute that seeds this skill's starting rating: base = 2 + attr*2 + Luck/2"
+          "description": "Attribute that seeds this skill's starting rating: skill_start in progression/core.json, 5 + attribute x 2"
         },
         "category": {
           "type": "string",
