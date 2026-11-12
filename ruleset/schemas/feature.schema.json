@@ -87,34 +87,6 @@
           "minimum": 1,
           "description": "Maximum number of times this perk can be taken (1 = single-rank)"
         },
-        "effects": {
-          "type": "array",
-          "deprecated": true,
-          "description": "Retired by M5-35: a feature states its mechanics once, in `modifiers`, and its `description` says them in words. The data step removes this list and the property.",
-          "items": {
-            "type": "object",
-            "properties": {
-              "type": { "type": "string" },
-              "description": { "type": "string" },
-              "target": {
-                "description": "Reference to the target of this effect. Use namespaced ref (core:effect/<key>) or ad-hoc string key (hp_max, melee_damage, etc.).",
-                "type": "string"
-              },
-              "value": {},
-              "parameter": {
-                "type": "string",
-                "description": "For generic parameterized effects (e.g. 'resist', 'restore_resource', 'fortify_attribute', 'phobia', 'allergy', 'cure'), specifies the subject. Use string key (bare or namespaced) when referencing another collection's key (skill, material, etc.); vocabulary for built-in values."
-              },
-              "durationType": {
-                "type": "string",
-                "enum": ["temporal", "unlimited"],
-                "description": "For fortify effects on skills/attributes/resources: 'unlimited' are stackable (additive magnitudes for permanent traits). 'temporal' override with the highest magnitude."
-              }
-            },
-            "required": ["type", "description"],
-            "additionalProperties": false
-          }
-        },
         "modifiers": {
           "type": "array",
           "description": "The one statement of what this feature does: the contract modifiers it emits (docs/core/modifier.md, M5-35). A perk or creation trait uses source feature:<key> and origin core:origin/trained; racial traits use origin core:origin/innate (docs/modules/race.md#5a-what-a-race-emits).",

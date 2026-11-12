@@ -9,8 +9,8 @@
       "category": "combat",
       "prerequisite": { "abilities": { "str": 5 } },
       "ranks": 1,
-      "effects": [
-        { "type": "bonus", "description": "+5% melee weapon damage (module perk)", "target": "melee_damage", "value": 0.05 }
+      "modifiers": [
+        { "target": "melee_damage", "op": "mul", "value": 1.05, "source": "feature:module_demo_perk", "origin": "core:origin/trained" }
       ]
     }
   ]

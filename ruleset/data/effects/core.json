@@ -594,93 +594,6 @@
       ]
     },
     {
-      "key": "allergy",
-      "label": "Allergy",
-      "description": "Severe adverse reaction to a specific material (referenced by its id from materials/core.json, e.g. 'leather', 'iron', 'silver'). Prevents proper use or equipping of items primarily made from that material, or imposes significant penalties. The 'parameter' field on the applying trait specifies the material id.",
-      "category": "utility",
-      "polarity": "harmful",
-      "channels": [
-        "innate"
-      ],
-      "tags": [
-        "allergy",
-        "material",
-        "restriction"
-      ]
-    },
-    {
-      "key": "exotic_material_affinity",
-      "label": "Exotic Material Affinity",
-      "description": "Better results and comfort when using or wearing items made from silver, elven wood, and other rare materials.",
-      "category": "utility",
-      "polarity": "beneficial",
-      "channels": [
-        "innate"
-      ],
-      "tags": [
-        "material",
-        "exotic"
-      ]
-    },
-    {
-      "key": "skill_points_modifier",
-      "label": "Skill Points Modifier",
-      "description": "Modifies skill points gained per level (when parameter is 'per_level') or at character creation (when parameter is 'starting'). Negative values are penalties.",
-      "category": "utility",
-      "polarity": "beneficial",
-      "channels": [
-        "innate"
-      ],
-      "tags": [
-        "skill",
-        "permanent"
-      ]
-    },
-    {
-      "key": "aimed_shots_restriction",
-      "label": "Aimed Shots Restriction",
-      "description": "Prevents the character from making aimed or targeted shots.",
-      "category": "control",
-      "polarity": "harmful",
-      "channels": [
-        "innate"
-      ],
-      "tags": [
-        "restriction",
-        "combat"
-      ]
-    },
-    {
-      "key": "carry_capacity_modifier",
-      "label": "Carry Capacity Modifier",
-      "description": "Modifies the character's carrying capacity. Negative values reduce it.",
-      "category": "utility",
-      "polarity": "beneficial",
-      "magnitudeUnit": "percent",
-      "channels": [
-        "innate"
-      ],
-      "tags": [
-        "carry",
-        "permanent"
-      ]
-    },
-    {
-      "key": "tag_skills_increase",
-      "label": "Tag Skills Increase",
-      "description": "Grants additional tag skills at character creation.",
-      "category": "utility",
-      "polarity": "beneficial",
-      "channels": [
-        "innate"
-      ],
-      "tags": [
-        "skill",
-        "tag",
-        "creation"
-      ]
-    },
-    {
       "key": "movement_speed",
       "reserved": true,
       "label": "Movement Speed",
@@ -696,25 +609,6 @@
       ],
       "tags": [
         "movement",
-        "speed"
-      ]
-    },
-    {
-      "key": "attack_speed",
-      "label": "Attack Speed",
-      "description": "Increases or decreases attack frequency/recovery (ranged or melee). Higher values allow more attacks or faster action resolution. Affects action combat directly and turn-based recovery.",
-      "category": "fortify",
-      "polarity": "beneficial",
-      "magnitudeUnit": "percent",
-      "baseCost": 0.5,
-      "channels": [
-        "innate",
-        "spell",
-        "potion"
-      ],
-      "tags": [
-        "combat",
-        "attack",
         "speed"
       ]
     },
@@ -1524,7 +1418,7 @@
     {
       "key": "haste_attack",
       "label": "Haste Attack",
-      "description": "Increases attack speed and reduces recovery time. Magnitude is the percentage reduction in recovery. Stacks with attack_speed (id 30).",
+      "description": "Increases attack speed and reduces recovery time. Magnitude is the percentage reduction in recovery.",
       "category": "fortify",
       "polarity": "beneficial",
       "magnitudeUnit": "percent",
