@@ -9,6 +9,13 @@
       "type": "array",
       "minItems": 1,
       "items": { "$ref": "#/definitions/occasion" }
+    },
+    "toxicity_decay": {
+      "type": "object",
+      "description": "How fast stored toxicity falls between rests (docs/core/modifier.md#toxicity).",
+      "properties": { "per_second": { "type": "integer", "minimum": 0 } },
+      "required": ["per_second"],
+      "additionalProperties": false
     }
   },
   "required": ["rest"],
@@ -73,6 +80,16 @@
             }
           },
           "required": ["resource", "mode", "durations"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "empty sets toxicity to 0; none keeps it (docs/core/rest.md).",
+          "properties": {
+            "resource": { "type": "string", "const": "toxicity" },
+            "mode": { "type": "string", "enum": ["empty", "none"] }
+          },
+          "required": ["resource", "mode"],
           "additionalProperties": false
         }
       ]

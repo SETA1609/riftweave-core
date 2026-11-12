@@ -55,6 +55,17 @@ An applied effect's `duration` is seconds, and 1 (the default) is instant. One e
 - **Same source.** Using the same item again replaces its own running effects, so the effect restarts and does not stack. [A]
 - **What can be used.** Only an item with `delivery` `drink` or `eat`. Food (`type: food`) is refused in combat, and it is always over time. A dish is one source, `food:<key>`; any other item is `item:<key>`. A dish's effects are the combined effects of its ingredients, written on the row; cooking is crafting.
 
+### Toxicity
+
+Drinking adds the item's `toxicity` to a stored `toxicity` on the actor. It falls by
+`toxicity_decay.per_second` (1, `rest/core.json`) for each second that passes, by the same tick
+as a pool effect, and never below 0. A short or long rest clears it: an hour of decay would empty it anyway, and a table does not count seconds between fights. The limit is the derived row
+`toxicity_limit`, `20 + END × 5` ([derived.md](derived.md)), passed in as `max.toxicity`. A drink
+that takes toxicity above the limit is not refused: its effects land, and the actor gains
+`core:condition/overdosed` while toxicity stays above the limit. Food adds none and does not
+speed the fall. A real-time client and a turn-based table read the same numbers, since a turn
+is 5 seconds of decay. [A]
+
 `burn` and `poison_health_drain` stay effects that run under this rule, with `duration` as their length. They are not conditions; the `burning` condition is its own row. [A]
 
 ## Target

@@ -44,6 +44,24 @@ the same effect takes either duration. [V 2026-11-07, owner decision]
   not have. Nothing enforces either yet: M2-07 adds the `food` origin with a `replace`
   stacking policy, the tick rule, and the combat check. [U]
 
+### Toxicity
+
+Every `drink` row states `toxicity` ([modifier.md](../core/modifier.md#toxicity)), so a
+character cannot drink without limit and food keeps a use: it is preparation before a fight and
+cheap recovery after one, and it adds none. [A]
+
+| Strength | Toxicity | Rows |
+| --- | --- | --- |
+| none | 0 | `antidote`, `potion_cure_disease`: a cure is never blocked by the potions that came before it |
+| minor | 10 | `potion_minor_healing`, `potion_featherfall` |
+| standard | 20 | `potion_healing`, `potion_mana`, `potion_stamina`, `potion_invisibility`, the resistance potions, `potion_strength`, `elixir_of_wits` |
+| greater | 35 | `potion_greater_healing`, `potion_haste` |
+
+At END 5 the limit is 45: two standard potions at once, then about one every four turns as
+toxicity falls 5 a turn. At END 1 it is 25, at END 10 it is 70. **Overdosed**
+(`core:condition/overdosed`) halves potion magnitude and costs 1 speed while toxicity is above
+the limit; it lifts on its own as toxicity falls. [A]
+
 ## Gear and tools
 
 A row of `type: tool` or `adventuring_gear` carries a `gear` block. A tool emits contract

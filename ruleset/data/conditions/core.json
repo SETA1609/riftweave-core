@@ -633,6 +633,40 @@
           "source": "condition:staggered"
         }
       ]
+    },
+    {
+      "key": "overdosed",
+      "label": "Overdosed",
+      "description": "Toxicity above the drinker's limit. Lasts while toxicity stays above it and lifts on its own as toxicity falls (docs/core/modifier.md#toxicity).",
+      "effects": {
+        "ttrpg": "Potions work at half strength and speed is 1 lower while toxicity is above the limit. It falls 5 a turn; a long rest clears it.",
+        "video_game": "Potions heal and buff at half strength and movement slows while toxicity is above the limit. It falls 1 a second; sleeping clears it."
+      },
+      "appliedBy": [],
+      "removedBy": [],
+      "modifiers": [
+        {
+          "target": "overdosed",
+          "op": "grant",
+          "value": 1,
+          "duration": "while_applied",
+          "source": "condition:overdosed"
+        },
+        {
+          "target": "potion_magnitude",
+          "op": "mul",
+          "value": 0.5,
+          "duration": "while_applied",
+          "source": "condition:overdosed"
+        },
+        {
+          "target": "speed",
+          "op": "add",
+          "value": -1,
+          "duration": "while_applied",
+          "source": "condition:overdosed"
+        }
+      ]
     }
   ]
 }

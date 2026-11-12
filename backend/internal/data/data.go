@@ -461,6 +461,7 @@ type Item struct {
 type Consumable struct {
 	Delivery string
 	Effects  []ConsumableEffect
+	Toxicity int64 // what drinking it adds (docs/core/modifier.md#toxicity)
 }
 
 // ConsumableEffect is one applied effect on a consumable; Magnitude is nil when it has none.
@@ -502,8 +503,10 @@ type Ruleset struct {
 	OriginReplaces map[string]bool   // origin ref: its policy is `replace`
 	OriginFor      map[string]string // emitter: the origin ref it defaults to
 	SecondsPerTurn int64             // actions/core.json
-	Conditions     Conditions
-	Loot           Loot
+	// ToxicityDecayPerSecond is how fast stored toxicity falls (rest/core.json).
+	ToxicityDecayPerSecond int64
+	Conditions             Conditions
+	Loot                   Loot
 
 	Formulas          map[string]*formula.Program // formulas/<name>.json by name
 	AttributeModifier *formula.Program            // formulas/attribute_modifier.json
@@ -586,8 +589,14 @@ func Load(fileSystem fs.FS, modules ...fs.FS) (*Ruleset, error) {
 	ruleset.SecondsPerTurn = actions.SecondsPerTurn
 	ruleset.Actions = Actions{Pool: actions.Pool, Actions: newTable(actions.Actions, func(action *Action) string { return action.Key })}
 
-	var rest struct{ Rest []Occasion }
+	var rest struct {
+		Rest          []Occasion
+		ToxicityDecay struct {
+			PerSecond int64 `json:"per_second"`
+		} `json:"toxicity_decay"`
+	}
 	loader.read("rest/core.json", &rest)
+	ruleset.ToxicityDecayPerSecond = rest.ToxicityDecay.PerSecond
 	for _, occasion := range rest.Rest {
 		for _, recovery := range occasion.Recovery {
 			if recovery.Mode == "fraction" && recovery.Denominator <= 0 {

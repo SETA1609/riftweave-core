@@ -270,6 +270,9 @@ def run_rest(vector):
         if resource == "conditions":
             if mode == "clear":
                 conditions = [c for c in conditions if c["duration"] not in row["durations"]]
+        elif resource == "toxicity":
+            if mode == "empty" and "toxicity" in result:
+                result["toxicity"] = 0
         elif mode == "full":
             result[resource] = maxima[resource]
         elif mode == "fraction":
@@ -532,11 +535,15 @@ def run_consume(vector):
     items = {row["key"]: row for row in load_data("equipment/consumables.json")["equipment"]}
     policies = origin_policies()
     seconds_per_turn = load_data("actions/core.json")["seconds_per_turn"]
+    decay = load_data("rest/core.json")["toxicity_decay"]["per_second"]
     pools = dict(vector["current"])
+    toxicity = pools.pop("toxicity", 0)
     maximum = vector["max"]
     ticks, held, refused = [], [], []
 
     def advance(seconds):
+        nonlocal toxicity
+        toxicity = max(0, toxicity - decay * seconds)
         for tick in ticks:
             pool = tick["pool"]
             pools[pool] = min(pools[pool] + tick["magnitude"] * min(seconds, tick["seconds_left"]), maximum[pool])
@@ -552,6 +559,8 @@ def run_consume(vector):
         if item["consumable"]["delivery"] not in USED_BY_CONSUMING or (food and event.get("in_combat")):
             refused.append(event["item"])
             return
+        nonlocal toxicity
+        toxicity += item["consumable"].get("toxicity", 0)
         source = f"{'food' if food else 'item'}:{event['item']}"
         effects = item["consumable"]["effects"]
         gone = {_origin_of(item, e) for e in effects if policies[_origin_of(item, e)] == "replace"}
@@ -580,7 +589,10 @@ def run_consume(vector):
             advance(event["turns"] * seconds_per_turn)
         else:
             advance(event["advance"])
-    return {**pools, "ticks": ticks, "modifiers": held, "refused": refused}
+    # Overdosed while toxicity stays above the limit (docs/core/modifier.md#toxicity).
+    limit = maximum.get("toxicity")
+    conditions = ["core:condition/overdosed"] if limit is not None and toxicity > limit else []
+    return {**pools, "toxicity": toxicity, "conditions": conditions, "ticks": ticks, "modifiers": held, "refused": refused}
 def run_stored_actor(vector):
     """A stored actor comes back unchanged, if it is consistent (docs/core/state.md)."""
     actor = vector["actor"]

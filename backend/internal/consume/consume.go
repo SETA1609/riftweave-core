@@ -25,12 +25,27 @@ type Event struct {
 	Turns    int64  `json:"turns"`
 }
 
+// Current is the pools before the events and the stored toxicity (0 when not named).
+type Current struct {
+	Pools
+	Toxicity int64 `json:"toxicity"`
+}
+
+// Maximum is each pool's limit and the toxicity limit (nil when not named: no overdose).
+type Maximum struct {
+	Pools
+	Toxicity *int64 `json:"toxicity"`
+}
+
 // Input is the `consume` command's input.
 type Input struct {
-	Current Pools   `json:"current"`
-	Maximum Pools   `json:"max"`
+	Current Current `json:"current"`
+	Maximum Maximum `json:"max"`
 	Events  []Event `json:"events"`
 }
+
+// overdosed is the condition held while toxicity is above the limit.
+const overdosed = "core:condition/overdosed"
 
 // Tick is a running pool effect.
 type Tick struct {
@@ -54,9 +69,11 @@ type Held struct {
 // Result is the pools after the events and what is still running.
 type Result struct {
 	Pools
-	Ticks     []Tick   `json:"ticks"`
-	Modifiers []Held   `json:"modifiers"`
-	Refused   []string `json:"refused"`
+	Ticks      []Tick   `json:"ticks"`
+	Conditions []string `json:"conditions"` // overdosed while toxicity is above the limit
+	Toxicity   int64    `json:"toxicity"`
+	Modifiers  []Held   `json:"modifiers"`
+	Refused    []string `json:"refused"`
 }
 
 var poolOfParameter = map[string]string{"health": "hp", "mana": "mp", "stamina": "stamina"}
@@ -82,7 +99,8 @@ func (running *state) add(pool string, amount int64) {
 	*value = min(*value+amount, *pointer(&running.maximum, pool))
 }
 
-func (running *state) advance(seconds int64) {
+func (running *state) advance(ruleset *data.Ruleset, seconds int64) {
+	running.result.Toxicity = max(0, running.result.Toxicity-ruleset.ToxicityDecayPerSecond*seconds)
 	for index := range running.result.Ticks {
 		var tick *Tick = &running.result.Ticks[index]
 		running.add(tick.Pool, tick.Magnitude*min(seconds, tick.SecondsLeft))
@@ -116,6 +134,7 @@ func (running *state) use(ruleset *data.Ruleset, event Event) error {
 		running.result.Refused = append(running.result.Refused, event.Item)
 		return nil
 	}
+	running.result.Toxicity += item.Consumable.Toxicity
 	var source string = "item:" + event.Item
 	if food {
 		source = "food:" + event.Item
@@ -170,8 +189,11 @@ func (running *state) use(ruleset *data.Ruleset, event Event) error {
 // Run is the `consume` command.
 func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	var running state = state{
-		result:  Result{Pools: input.Current, Ticks: []Tick{}, Modifiers: []Held{}, Refused: []string{}},
-		maximum: input.Maximum,
+		result: Result{
+			Pools: input.Current.Pools, Toxicity: input.Current.Toxicity,
+			Ticks: []Tick{}, Modifiers: []Held{}, Refused: []string{}, Conditions: []string{},
+		},
+		maximum: input.Maximum.Pools,
 	}
 	for _, event := range input.Events {
 		switch {
@@ -180,10 +202,13 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 				return Result{}, err
 			}
 		case event.Turns > 0:
-			running.advance(event.Turns * ruleset.SecondsPerTurn)
+			running.advance(ruleset, event.Turns*ruleset.SecondsPerTurn)
 		default:
-			running.advance(event.Advance)
+			running.advance(ruleset, event.Advance)
 		}
+	}
+	if input.Maximum.Toxicity != nil && running.result.Toxicity > *input.Maximum.Toxicity {
+		running.result.Conditions = append(running.result.Conditions, overdosed)
 	}
 	return running.result, nil
 }

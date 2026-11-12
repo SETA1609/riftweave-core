@@ -13,6 +13,7 @@
       "weight": 0.5,
       "consumable": {
         "delivery": "drink",
+        "toxicity": 10,
         "effects": [
           {
             "effect": "core:effect/restore_resource",
@@ -34,6 +35,7 @@
       "weight": 0.5,
       "consumable": {
         "delivery": "drink",
+        "toxicity": 20,
         "effects": [
           {
             "effect": "core:effect/invisibility",
@@ -54,6 +56,7 @@
       "weight": 0.5,
       "consumable": {
         "delivery": "drink",
+        "toxicity": 20,
         "effects": [
           {
             "effect": "core:effect/resist",
@@ -166,6 +169,7 @@
       "weight": 0.5,
       "consumable": {
         "delivery": "drink",
+        "toxicity": 20,
         "effects": [
           {
             "effect": "core:effect/restore_resource",
@@ -187,6 +191,7 @@
       "weight": 0.5,
       "consumable": {
         "delivery": "drink",
+        "toxicity": 35,
         "effects": [
           {
             "effect": "core:effect/restore_resource",
@@ -208,6 +213,7 @@
       "weight": 0.5,
       "consumable": {
         "delivery": "drink",
+        "toxicity": 20,
         "effects": [
           {
             "effect": "core:effect/restore_resource",
@@ -229,6 +235,7 @@
       "weight": 0.5,
       "consumable": {
         "delivery": "drink",
+        "toxicity": 20,
         "effects": [
           {
             "effect": "core:effect/restore_resource",
@@ -250,6 +257,7 @@
       "weight": 0.5,
       "consumable": {
         "delivery": "drink",
+        "toxicity": 0,
         "effects": [
           {
             "effect": "core:effect/cure",
@@ -270,6 +278,7 @@
       "weight": 0.5,
       "consumable": {
         "delivery": "drink",
+        "toxicity": 0,
         "effects": [
           {
             "effect": "core:effect/cure",
@@ -290,6 +299,7 @@
       "weight": 0.5,
       "consumable": {
         "delivery": "drink",
+        "toxicity": 20,
         "effects": [
           {
             "effect": "core:effect/fortify_attribute",
@@ -312,6 +322,7 @@
       "weight": 0.5,
       "consumable": {
         "delivery": "drink",
+        "toxicity": 10,
         "effects": [
           {
             "effect": "core:effect/feather",
@@ -333,6 +344,7 @@
       "weight": 0.5,
       "consumable": {
         "delivery": "drink",
+        "toxicity": 35,
         "effects": [
           {
             "effect": "core:effect/haste_attack",
@@ -354,6 +366,7 @@
       "weight": 0.5,
       "consumable": {
         "delivery": "drink",
+        "toxicity": 20,
         "effects": [
           {
             "effect": "core:effect/fortify_attribute",
@@ -376,6 +389,7 @@
       "weight": 0.5,
       "consumable": {
         "delivery": "drink",
+        "toxicity": 20,
         "effects": [
           {
             "effect": "core:effect/resist",

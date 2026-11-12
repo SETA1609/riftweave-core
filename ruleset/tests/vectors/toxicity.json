@@ -1,0 +1,363 @@
+[
+  {
+    "name": "the toxicity limit at END 1 is 25",
+    "function": "derived",
+    "actor": {
+      "attributes": {
+        "end": 1
+      },
+      "level": 1
+    },
+    "expect": {
+      "toxicity_limit": 25
+    }
+  },
+  {
+    "name": "the toxicity limit at END 10 is 70",
+    "function": "derived",
+    "actor": {
+      "attributes": {
+        "end": 10
+      },
+      "level": 1
+    },
+    "expect": {
+      "toxicity_limit": 70
+    }
+  },
+  {
+    "name": "a drink raises toxicity by its row's value",
+    "function": "consume",
+    "current": {
+      "hp": 10,
+      "mp": 0,
+      "stamina": 0,
+      "toxicity": 0
+    },
+    "max": {
+      "hp": 100,
+      "mp": 50,
+      "stamina": 100,
+      "toxicity": 45
+    },
+    "events": [
+      {
+        "item": "potion_healing"
+      }
+    ],
+    "expect": {
+      "hp": 50,
+      "toxicity": 20,
+      "conditions": [],
+      "refused": []
+    }
+  },
+  {
+    "name": "drinks add up",
+    "function": "consume",
+    "current": {
+      "hp": 10,
+      "mp": 0,
+      "stamina": 0,
+      "toxicity": 0
+    },
+    "max": {
+      "hp": 100,
+      "mp": 50,
+      "stamina": 100,
+      "toxicity": 45
+    },
+    "events": [
+      {
+        "item": "potion_minor_healing"
+      },
+      {
+        "item": "potion_mana"
+      }
+    ],
+    "expect": {
+      "toxicity": 30,
+      "conditions": []
+    }
+  },
+  {
+    "name": "toxicity falls a point a second",
+    "function": "consume",
+    "current": {
+      "hp": 10,
+      "mp": 0,
+      "stamina": 0,
+      "toxicity": 20
+    },
+    "max": {
+      "hp": 100,
+      "mp": 50,
+      "stamina": 100,
+      "toxicity": 45
+    },
+    "events": [
+      {
+        "advance": 7
+      }
+    ],
+    "expect": {
+      "toxicity": 13
+    }
+  },
+  {
+    "name": "a turn is five seconds of decay",
+    "function": "consume",
+    "current": {
+      "hp": 10,
+      "mp": 0,
+      "stamina": 0,
+      "toxicity": 20
+    },
+    "max": {
+      "hp": 100,
+      "mp": 50,
+      "stamina": 100,
+      "toxicity": 45
+    },
+    "events": [
+      {
+        "turns": 2
+      }
+    ],
+    "expect": {
+      "toxicity": 10
+    }
+  },
+  {
+    "name": "toxicity stops at 0",
+    "function": "consume",
+    "current": {
+      "hp": 10,
+      "mp": 0,
+      "stamina": 0,
+      "toxicity": 5
+    },
+    "max": {
+      "hp": 100,
+      "mp": 50,
+      "stamina": 100,
+      "toxicity": 45
+    },
+    "events": [
+      {
+        "advance": 30
+      }
+    ],
+    "expect": {
+      "toxicity": 0
+    }
+  },
+  {
+    "name": "a drink over the limit lands and overdoses",
+    "function": "consume",
+    "current": {
+      "hp": 10,
+      "mp": 0,
+      "stamina": 0,
+      "toxicity": 30
+    },
+    "max": {
+      "hp": 100,
+      "mp": 50,
+      "stamina": 100,
+      "toxicity": 45
+    },
+    "events": [
+      {
+        "item": "potion_healing"
+      }
+    ],
+    "expect": {
+      "hp": 50,
+      "toxicity": 50,
+      "conditions": [
+        "core:condition/overdosed"
+      ],
+      "refused": []
+    }
+  },
+  {
+    "name": "exactly at the limit is no overdose",
+    "function": "consume",
+    "current": {
+      "hp": 10,
+      "mp": 0,
+      "stamina": 0,
+      "toxicity": 25
+    },
+    "max": {
+      "hp": 100,
+      "mp": 50,
+      "stamina": 100,
+      "toxicity": 45
+    },
+    "events": [
+      {
+        "item": "potion_healing"
+      }
+    ],
+    "expect": {
+      "toxicity": 45,
+      "conditions": []
+    }
+  },
+  {
+    "name": "an overdose lifts as toxicity falls to the limit",
+    "function": "consume",
+    "current": {
+      "hp": 10,
+      "mp": 0,
+      "stamina": 0,
+      "toxicity": 30
+    },
+    "max": {
+      "hp": 100,
+      "mp": 50,
+      "stamina": 100,
+      "toxicity": 45
+    },
+    "events": [
+      {
+        "item": "potion_healing"
+      },
+      {
+        "advance": 5
+      }
+    ],
+    "expect": {
+      "toxicity": 45,
+      "conditions": []
+    }
+  },
+  {
+    "name": "a cure adds no toxicity",
+    "function": "consume",
+    "current": {
+      "hp": 10,
+      "mp": 0,
+      "stamina": 0,
+      "toxicity": 44
+    },
+    "max": {
+      "hp": 100,
+      "mp": 50,
+      "stamina": 100,
+      "toxicity": 45
+    },
+    "events": [
+      {
+        "item": "antidote"
+      }
+    ],
+    "expect": {
+      "toxicity": 44,
+      "conditions": []
+    }
+  },
+  {
+    "name": "a dish adds no toxicity",
+    "function": "consume",
+    "current": {
+      "hp": 10,
+      "mp": 0,
+      "stamina": 0,
+      "toxicity": 12
+    },
+    "max": {
+      "hp": 100,
+      "mp": 50,
+      "stamina": 100,
+      "toxicity": 45
+    },
+    "events": [
+      {
+        "item": "bread_and_cheese"
+      }
+    ],
+    "expect": {
+      "toxicity": 12,
+      "conditions": []
+    }
+  },
+  {
+    "name": "no toxicity named reads 0",
+    "function": "consume",
+    "current": {
+      "hp": 10,
+      "mp": 0,
+      "stamina": 0
+    },
+    "max": {
+      "hp": 100,
+      "mp": 50,
+      "stamina": 100
+    },
+    "events": [
+      {
+        "item": "potion_minor_healing"
+      }
+    ],
+    "expect": {
+      "toxicity": 10
+    }
+  },
+  {
+    "name": "a long rest clears toxicity",
+    "function": "rest",
+    "occasion": "long_rest",
+    "actor": {
+      "attributes": {
+        "end": 6,
+        "int": 5,
+        "agi": 6
+      },
+      "level": 1
+    },
+    "current": {
+      "hp": 20,
+      "mp": 10,
+      "stamina": 3,
+      "ap": 0,
+      "toxicity": 38
+    },
+    "max": {
+      "stamina": 57
+    },
+    "conditions": [],
+    "expect": {
+      "toxicity": 0
+    }
+  },
+  {
+    "name": "a short rest clears toxicity",
+    "function": "rest",
+    "occasion": "short_rest",
+    "actor": {
+      "attributes": {
+        "end": 6,
+        "int": 5,
+        "agi": 6
+      },
+      "level": 1
+    },
+    "current": {
+      "hp": 20,
+      "mp": 10,
+      "stamina": 3,
+      "ap": 0,
+      "toxicity": 38
+    },
+    "max": {
+      "stamina": 57
+    },
+    "conditions": [],
+    "expect": {
+      "toxicity": 0
+    }
+  }
+]
