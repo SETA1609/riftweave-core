@@ -32,11 +32,9 @@
           "type": "object",
           "properties": {
             "min": { "type": "integer", "minimum": 0 },
-            "max_attr": { "$ref": "schema.json#/definitions/ability" },
             "max_attribute": { "$ref": "schema.json#/definitions/ability" }
           },
-          "required": ["min"],
-          "anyOf": [{ "required": ["max_attribute"] }, { "required": ["max_attr"] }],
+          "required": ["min", "max_attribute"],
           "additionalProperties": false
         },
         "skill_start": {

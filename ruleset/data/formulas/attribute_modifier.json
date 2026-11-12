@@ -1,8 +1,8 @@
 {
   "key": "attribute_modifier",
   "round": "floor",
-  "expr": {
-    "op": "sub",
-    "args": [{ "var": "attribute" }, { "lit": 5 }]
+  "expression": {
+    "operation": "subtract",
+    "arguments": [{ "variable": "attribute" }, { "literal": 5 }]
   }
 }

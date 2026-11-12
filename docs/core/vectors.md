@@ -57,7 +57,7 @@ Notes on the reference, for a second implementation to check against:
 - `resolution` adds the `add` modifiers to the target after the stacking of [modifier.md](modifier.md): same source keeps the strongest, one `highest` origin keeps its strongest bonus and penalty. Resolution sees bonuses and penalties as one signed list. [V 2026-11-06]
 - `modifiers` and `conditions` follow the order in [modifier.md](modifier.md): expire, dedupe by origin, source, target, and op (strongest wins), keep the strongest bonus and penalty of each `highest` origin, then add, mul (floored), set; `grant` makes flags and `resist` reduces a packet. [V 2026-11-06]
 - `derived` and `resolution` read a missing attribute as 0, and `derived` a missing level as 1. [A] Each vector names every value its `expect` fields depend on.
-- `formula` evaluates `lit`, `attr`, and the ops `add`, `sub`, `mul`, `div`. `div` is integer floor division, the `floor` rounding named in `ap.json`. [A] Other ops raise an error.
+- `formula` evaluates `literal`, `attribute`, `variable`, and the operations `add`, `subtract`, `multiply`, `divide`. `divide` is integer floor division, the `floor` rounding named in `ap.json`. [A] Other operations raise an error.
 - `actions` pool is `base + attr * per_point / per_point_divisor` from `ruleset/data/actions/core.json`; cost is the sum of the named actions' costs, so `attack` plus `aimed` is 5. The turn cap and carry are not checked yet. [A]
 
 Module functions are not kernel functions. The `wuxing` function's vectors are in `ruleset/modules/wuxing/tests/vectors.json`, and `test_wuxing.py` and the Go tests run them from the module's data.

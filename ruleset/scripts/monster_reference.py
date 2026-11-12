@@ -87,7 +87,7 @@ def attack_type(attack):
 
 @lru_cache(maxsize=None)
 def _modifier_rule():
-    return _load("formulas/attribute_modifier.json")["expr"]
+    return _load("formulas/attribute_modifier.json")["expression"]
 
 
 def attack_modifier(monster, attack):

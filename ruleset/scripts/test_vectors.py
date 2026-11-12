@@ -64,11 +64,11 @@ class TestVectorDiscovery(unittest.TestCase):
     def test_a_new_vector_file_is_discovered_without_a_test_edit(self):
         with tempfile.TemporaryDirectory() as tmp:
             Path(tmp, "formula.json").write_text(
-                json.dumps({"name": "lit", "expr": {"lit": 3}, "expect": {"value": 3}})
+                json.dumps({"name": "lit", "expression": {"literal": 3}, "expect": {"value": 3}})
             )
             Path(tmp, "extra_formulas.json").write_text(
                 json.dumps(
-                    [{"name": "lit 4", "function": "formula", "expr": {"lit": 4}, "expect": {"value": 4}}]
+                    [{"name": "lit 4", "function": "formula", "expression": {"literal": 4}, "expect": {"value": 4}}]
                 )
             )
             pairs = discover_vectors(tmp)

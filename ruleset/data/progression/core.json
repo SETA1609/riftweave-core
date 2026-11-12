@@ -5,78 +5,78 @@
     "max_level": 30,
     "skill_cap": 100,
     "xp_to_reach": {
-      "op": "mul",
-      "args": [
+      "operation": "multiply",
+      "arguments": [
         {
-          "lit": 450
+          "literal": 450
         },
         {
-          "var": "level"
+          "variable": "level"
         },
         {
-          "op": "sub",
-          "args": [
+          "operation": "subtract",
+          "arguments": [
             {
-              "var": "level"
+              "variable": "level"
             },
             {
-              "lit": 1
+              "literal": 1
             }
           ]
         }
       ]
     },
     "skill_points": {
-      "op": "add",
-      "args": [
+      "operation": "add",
+      "arguments": [
         {
-          "lit": 5
+          "literal": 5
         },
         {
-          "op": "mul",
-          "args": [
+          "operation": "multiply",
+          "arguments": [
             {
-              "attr": "int"
+              "attribute": "int"
             },
             {
-              "lit": 2
+              "literal": 2
             }
           ]
         },
         {
-          "var": "luck_roll"
+          "variable": "luck_roll"
         }
       ]
     },
     "pool_roll_max": {
-      "op": "div",
-      "args": [
+      "operation": "divide",
+      "arguments": [
         {
-          "attr": "lck"
+          "attribute": "lck"
         },
         {
-          "lit": 2
+          "literal": 2
         }
       ]
     },
     "luck_roll": {
       "min": 0,
-      "max_attr": "lck"
+      "max_attribute": "lck"
     },
     "skill_start": {
-      "op": "add",
-      "args": [
+      "operation": "add",
+      "arguments": [
         {
-          "lit": 5
+          "literal": 5
         },
         {
-          "op": "mul",
-          "args": [
+          "operation": "multiply",
+          "arguments": [
             {
-              "var": "attribute"
+              "variable": "attribute"
             },
             {
-              "lit": 2
+              "literal": 2
             }
           ]
         }

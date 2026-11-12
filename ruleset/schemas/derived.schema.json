@@ -22,14 +22,10 @@
           "pattern": "^[a-z_][a-z0-9_]*$"
         },
         "label": { "type": "string" },
-        "attr": {
-          "type": "string",
-          "enum": ["str", "per", "end", "int", "wil", "agi", "cha", "lck"]
-        },
         "attribute": {
           "type": "string",
           "enum": ["str", "per", "end", "int", "wil", "agi", "cha", "lck"],
-          "description": "The attribute the stat reads (M5-46; was attr)."
+          "description": "The attribute the stat reads."
         },
         "base": { "type": "number" },
         "per_point": { "type": "number" },
@@ -38,16 +34,11 @@
           "minimum": 1,
           "description": "Divide attribute * per_point by this, integer division, before adding. Default 1. Action points use 3."
         },
-        "per_level_attr": { "type": "number" },
-        "per_level_attribute": { "type": "number", "description": "Per level, this times the attribute is added (M5-46; was per_level_attr)." },
+        "per_level_attribute": { "type": "number", "description": "Per level, this times the attribute is added." },
         "per_level_flat": { "type": "number" },
         "unit": { "type": "string" }
       },
-      "required": ["key", "label", "base", "per_point", "per_level_flat"],
-      "allOf": [
-        { "anyOf": [{ "required": ["attribute"] }, { "required": ["attr"] }] },
-        { "anyOf": [{ "required": ["per_level_attribute"] }, { "required": ["per_level_attr"] }] }
-      ],
+      "required": ["key", "label", "attribute", "base", "per_point", "per_level_attribute", "per_level_flat"],
       "additionalProperties": false
     }
   }

@@ -169,7 +169,7 @@ func (core *Core) Run(name string, input []byte) ([]byte, error) {
 }
 
 type formulaInput struct {
-	Expression *formula.Program `json:"expr"`
+	Expression *formula.Program `json:"expression"`
 	Formula    string           `json:"formula"`
 	Actor      actor.Actor      `json:"actor"`
 	Variables  map[string]int64 `json:"variables"` // named inputs, such as instant_cost in formulas/toxicity.json

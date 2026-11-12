@@ -9,7 +9,7 @@
       "formula": {
         "$ref": "common.json#/definitions/key"
       },
-      "expr": {
+      "expression": {
         "$ref": "../../ruleset/schemas/schema.json#/definitions/formulaNode"
       },
       "actor": {
@@ -21,9 +21,6 @@
         "additionalProperties": {
           "type": "integer"
         }
-      },
-      "expression": {
-        "$ref": "../../ruleset/schemas/schema.json#/definitions/formulaNode"
       }
     },
     "additionalProperties": false,
@@ -31,11 +28,6 @@
       {
         "required": [
           "formula"
-        ]
-      },
-      {
-        "required": [
-          "expr"
         ]
       },
       {
