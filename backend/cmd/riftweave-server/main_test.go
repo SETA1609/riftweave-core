@@ -125,6 +125,7 @@ func TestStatusCodes(t *testing.T) {
 		{"a missing input", http.MethodPost, "/v1/commands/economy", `{"op":"convert"}`, http.StatusBadRequest},
 		{"a rule refuses", http.MethodPost, "/v1/commands/loot", `{"table":"hoard_minor","rolls":[1]}`, http.StatusUnprocessableEntity},
 		{"wrong method", http.MethodGet, "/v1/commands/formula", ``, http.StatusMethodNotAllowed},
+		{"dev without --dev", http.MethodPost, "/v1/commands/dev", `{"operation":"xp","add":1,"session":{}}`, http.StatusUnprocessableEntity},
 	}
 	for _, testCase := range cases {
 		t.Run(testCase.name, func(t *testing.T) {

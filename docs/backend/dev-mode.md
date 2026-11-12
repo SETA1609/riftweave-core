@@ -45,7 +45,8 @@ unknown operation, or a missing field is a rule error, and the session is unchan
   is never taken for a played one. A replay keeps the mark.
 - **Agent CLI.** `riftweave --dev dev <operation> [file]` reads the rest of the input from the file
   or stdin; the operation may also be in the JSON.
-- **HTTP API.** It does not serve `dev` (APP-06).
+- **HTTP API.** `riftweave-server --dev` serves it at `POST /v1/commands/dev`; without the flag the
+  call returns the same error as the CLI, with status 422 ([api.md](api.md)).
 
 ## Rolls and the seed
 
