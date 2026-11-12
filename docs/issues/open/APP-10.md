@@ -1,0 +1,18 @@
+#### APP-10 Spell authoring in the backend and frontend, with JSON export
+- Status: todo
+- Priority: low
+- Needs: APP-06, APP-07, M3-06
+- Do: Owner request, 2026-11-12: an author builds spells in the backend and the frontend and exports them as JSON the ruleset accepts, instead of writing the rows by hand. This is a content tool for authors, not player spellcrafting, so it may use effects that are not `craftable` (M3-06): an authored spell is a stock spell, the kind a wondrous item may hold.
+  - **Backend:** an `author` command in the contract, with `spell` as its first kind [V owner 2026-11-12: one command with kinds, so other collections can follow]. It takes a draft spell (key, label, color, level, effects with parameter, magnitude, duration, target, and radius, cost, and `template`). It returns the finished row, its problems, and the mana cost and cast threshold the spellcraft formula gives for it. An authored cost may differ from the formula; the result shows the difference as a warning, not an error [V owner 2026-11-12]. The problems are the ones `validate.py` would report: the schema, refs that do not resolve, effect channels, and parameters an effect does not allow. The command adds no rule; it calls the same schema and the spellcraft function the vectors pin.
+  - **Export:** the command writes a whole data file, with `$schema`, the wrapper, and one or more spells, in one of two shapes. **Core** writes rows for `ruleset/data/spells/core.json`, keyed `core:spell/<key>`. **Module** writes rows for a module's data under its own namespace, `module:<name>/spell/<key>`, with the manifest lines it needs. The exported file passes `validate.py` with no edits.
+  - **Frontend:** a spell editor page. You pick effects from the shared pool, filtered by the chosen color and each effect's channels. You set magnitude, duration, target, and radius. The page shows the formula's cost and threshold live, and the problems as you type. It can load an existing spell to edit or copy, and it downloads the export.
+  - **Later:** the same pattern for other collections (consumables, wondrous item recipes, monsters), each its own issue.
+- Keys: contract command `author` (kind `spell`), export shapes `core` and `module`
+- Files: ~12 (backend/contract/author.json, backend/core/author.go and its test, backend/internal/data/, frontend/ spell editor, docs/backend/authoring.md, docs/backend/cli.md, docs/backend/api.md)
+- See: docs/backend/README.md, docs/issues/open/M3-06.md (spellcraft, `craftable`, templates), docs/core/casting.md, docs/core/integrity.md, docs/modules/README.md
+- Done when:
+  - Authoring every spell in `spells/core.json` from its own fields returns the same row with no problems.
+  - A spell with a broken ref, a wrong channel, or a bad parameter returns each as a problem.
+  - A core export and a module export each pass `validate.py` unchanged.
+  - The agent CLI, the API, and the frontend give the same result for the same draft.
+  - The Go and frontend tests pass in CI.
