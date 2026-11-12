@@ -429,7 +429,7 @@
     },
     "events": [
       {
-        "item": "bread_and_cheese"
+        "item": "fresh_apple"
       },
       {
         "advance": 12
@@ -454,7 +454,7 @@
     },
     "events": [
       {
-        "item": "bread_and_cheese"
+        "item": "fresh_apple"
       },
       {
         "turns": 3
@@ -479,7 +479,7 @@
     },
     "events": [
       {
-        "item": "bread_and_cheese"
+        "item": "fresh_apple"
       },
       {
         "turns": 2
@@ -490,7 +490,7 @@
       "hp": 20,
       "ticks": [
         {
-          "source": "food:bread_and_cheese",
+          "source": "food:fresh_apple",
           "origin": "core:origin/food",
           "pool": "hp",
           "magnitude": 1,
