@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Skill Group",
+  "description": "The grouped sheet, an optional variant for a lighter tabletop sheet (docs/core/progression.md#the-grouped-sheet-variant). Every skill is a member of exactly one group. On a grouped sheet a member skill reads its own skill_start plus its group's ranks; a skill in an untracked group reads its skill_start alone. A full sheet ignores this collection.",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "skill_groups": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/skill_group" }
+    }
+  },
+  "required": ["skill_groups"],
+  "additionalProperties": false,
+  "definitions": {
+    "skill_group": {
+      "type": "object",
+      "properties": {
+        "key": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "label": { "type": "string", "minLength": 1 },
+        "description": { "type": "string", "minLength": 1 },
+        "skills": {
+          "type": "array",
+          "items": { "$ref": "schema.json#/definitions/skillRef" },
+          "minItems": 1,
+          "uniqueItems": true,
+          "description": "The member skills, as core:skill/<key> refs. validate.py checks that every core skill is in exactly one core group."
+        },
+        "is_tracked": {
+          "type": "boolean",
+          "description": "Whether a grouped sheet holds ranks for this group. An untracked group (the armor skills) cannot be bought; its members read their skill_start."
+        },
+        "source": { "$ref": "schema.json#/definitions/sourceRef" }
+      },
+      "required": ["key", "label", "description", "skills", "is_tracked"],
+      "additionalProperties": false
+    }
+  }
+}
