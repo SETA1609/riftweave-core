@@ -185,6 +185,17 @@
             "resist"
           ]
         },
+        "operation": {
+          "type": "string",
+          "enum": [
+            "add",
+            "multiply",
+            "set",
+            "grant",
+            "resist"
+          ],
+          "description": "What the modifier does to its target (docs/core/modifier.md). The short `op` with `mul` is accepted until M5-46's vector and contract part drops it."
+        },
         "value": {
           "type": "number"
         },
@@ -222,11 +233,22 @@
       },
       "required": [
         "target",
-        "op",
         "value",
         "source"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "oneOf": [
+        {
+          "required": [
+            "operation"
+          ]
+        },
+        {
+          "required": [
+            "op"
+          ]
+        }
+      ]
     },
     "namespacedRef": {
       "type": "string",
