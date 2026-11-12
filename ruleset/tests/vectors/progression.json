@@ -353,5 +353,283 @@
     "expect": {
       "error": "hp_roll out of range"
     }
+  },
+  {
+    "name": "read skill: a full sheet reads a written skill",
+    "op": "read_skill",
+    "actor": {
+      "attributes": {
+        "str": 6,
+        "per": 5,
+        "end": 5,
+        "int": 6,
+        "wil": 5,
+        "agi": 4,
+        "cha": 5,
+        "lck": 5
+      },
+      "skills": {
+        "blades": 40
+      }
+    },
+    "read": "blades",
+    "expect": {
+      "value": 40,
+      "read_from": "sheet"
+    }
+  },
+  {
+    "name": "read skill: a full sheet reads an unwritten skill as its start, 5 + INT 6 x 2",
+    "op": "read_skill",
+    "actor": {
+      "attributes": {
+        "str": 6,
+        "per": 5,
+        "end": 5,
+        "int": 6,
+        "wil": 5,
+        "agi": 4,
+        "cha": 5,
+        "lck": 5
+      },
+      "skills": {
+        "blades": 40
+      }
+    },
+    "read": "lore",
+    "expect": {
+      "value": 17,
+      "read_from": "start"
+    }
+  },
+  {
+    "name": "read skill: a grouped sheet reads blades as STR 6 start plus 10 Melee ranks",
+    "op": "read_skill",
+    "actor": {
+      "attributes": {
+        "str": 6,
+        "per": 5,
+        "end": 5,
+        "int": 6,
+        "wil": 5,
+        "agi": 4,
+        "cha": 5,
+        "lck": 5
+      }
+    },
+    "groups": {
+      "melee": 10
+    },
+    "read": "blades",
+    "expect": {
+      "value": 27,
+      "read_from": "group"
+    }
+  },
+  {
+    "name": "read skill: piercing shares the Melee ranks on its own AGI 4 start",
+    "op": "read_skill",
+    "actor": {
+      "attributes": {
+        "str": 6,
+        "per": 5,
+        "end": 5,
+        "int": 6,
+        "wil": 5,
+        "agi": 4,
+        "cha": 5,
+        "lck": 5
+      }
+    },
+    "groups": {
+      "melee": 10
+    },
+    "read": "piercing",
+    "expect": {
+      "value": 23,
+      "read_from": "group"
+    }
+  },
+  {
+    "name": "read skill: a tracked group with no ranks written reads 0 ranks",
+    "op": "read_skill",
+    "actor": {
+      "attributes": {
+        "str": 6,
+        "per": 5,
+        "end": 5,
+        "int": 6,
+        "wil": 5,
+        "agi": 4,
+        "cha": 5,
+        "lck": 5
+      }
+    },
+    "groups": {
+      "melee": 10
+    },
+    "read": "bows",
+    "expect": {
+      "value": 15,
+      "read_from": "group"
+    }
+  },
+  {
+    "name": "read skill: an untracked armor skill reads its start on a grouped sheet",
+    "op": "read_skill",
+    "actor": {
+      "attributes": {
+        "str": 6,
+        "per": 5,
+        "end": 5,
+        "int": 6,
+        "wil": 5,
+        "agi": 4,
+        "cha": 5,
+        "lck": 5
+      }
+    },
+    "groups": {
+      "melee": 10
+    },
+    "read": "light_armor",
+    "expect": {
+      "value": 13,
+      "read_from": "start"
+    }
+  },
+  {
+    "name": "read skill: a grouped sheet ignores written skills",
+    "op": "read_skill",
+    "actor": {
+      "attributes": {
+        "str": 6,
+        "per": 5,
+        "end": 5,
+        "int": 6,
+        "wil": 5,
+        "agi": 4,
+        "cha": 5,
+        "lck": 5
+      },
+      "skills": {
+        "blades": 40
+      }
+    },
+    "groups": {
+      "melee": 10
+    },
+    "read": "blades",
+    "expect": {
+      "value": 27,
+      "read_from": "group"
+    }
+  },
+  {
+    "name": "read skill: an unknown skill is refused",
+    "op": "read_skill",
+    "actor": {
+      "attributes": {
+        "str": 6,
+        "per": 5,
+        "end": 5,
+        "int": 6,
+        "wil": 5,
+        "agi": 4,
+        "cha": 5,
+        "lck": 5
+      }
+    },
+    "read": "nope",
+    "expect": {
+      "error": "skill \"nope\" is not defined"
+    }
+  },
+  {
+    "name": "group spend: a Melee rank (4 skills) costs 2 x 2, so 10 points buy 2",
+    "op": "spend",
+    "group": "melee",
+    "skill": 30,
+    "tagged": false,
+    "points": 10,
+    "expect": {
+      "ranks": 2,
+      "spent": 8,
+      "left": 2
+    }
+  },
+  {
+    "name": "group spend: a tagged Craft rank (7 skills) costs 1 x 4, so 9 points buy 2",
+    "op": "spend",
+    "group": "craft",
+    "skill": 30,
+    "tagged": true,
+    "points": 9,
+    "expect": {
+      "ranks": 2,
+      "spent": 8,
+      "left": 1
+    }
+  },
+  {
+    "name": "group spend: a one-skill group costs what one skill does",
+    "op": "spend",
+    "group": "medicine",
+    "skill": 30,
+    "tagged": false,
+    "points": 5,
+    "expect": {
+      "ranks": 2,
+      "spent": 4,
+      "left": 1
+    }
+  },
+  {
+    "name": "group spend: a two-skill group costs what one skill does",
+    "op": "spend",
+    "group": "defense",
+    "skill": 30,
+    "tagged": false,
+    "points": 4,
+    "expect": {
+      "ranks": 2,
+      "spent": 4,
+      "left": 0
+    }
+  },
+  {
+    "name": "group spend: the highest member at 99 leaves room for one rank",
+    "op": "spend",
+    "group": "melee",
+    "skill": 99,
+    "tagged": false,
+    "points": 12,
+    "expect": {
+      "ranks": 1,
+      "spent": 4,
+      "left": 8
+    }
+  },
+  {
+    "name": "group spend: an untracked group is refused",
+    "op": "spend",
+    "group": "armor",
+    "skill": 20,
+    "tagged": false,
+    "points": 10,
+    "expect": {
+      "error": "skill group \"armor\" is not tracked"
+    }
+  },
+  {
+    "name": "group spend: an unknown group is refused",
+    "op": "spend",
+    "group": "nope",
+    "skill": 20,
+    "tagged": false,
+    "points": 10,
+    "expect": {
+      "error": "skill group \"nope\" is not defined"
+    }
   }
 ]
