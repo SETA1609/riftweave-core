@@ -223,3 +223,22 @@ func TestDevNeedsTheDevFlag(t *testing.T) {
 		t.Errorf("stdout %s", stdout)
 	}
 }
+
+func TestMCPServesOnStdio(t *testing.T) {
+	var lines string = `{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18"}}
+{"jsonrpc":"2.0","method":"notifications/initialized"}
+{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"derived","arguments":{"actor":{"attributes":{"end":5,"int":5,"agi":6,"str":5,"per":5},"level":1}}}}
+`
+	code, stdout, stderr := call(t, lines, "--data", dataDirectory, "mcp")
+	if code != 0 || stderr != "" {
+		t.Fatalf("exit %d, stderr %q", code, stderr)
+	}
+	var answers []string = strings.Split(strings.TrimSpace(stdout), "\n")
+	if len(answers) != 2 {
+		t.Fatalf("want two answers (the notification gets none), got %q", stdout)
+	}
+	var result map[string]any = decode(t, answers[1]).(map[string]any)["result"].(map[string]any)
+	if result["isError"] != false || result["structuredContent"].(map[string]any)["hp"] == nil {
+		t.Fatalf("derived through mcp: %v", result)
+	}
+}

@@ -19,6 +19,7 @@ import (
 	"github.com/SETA1609/riftweave-core/backend/cmd/riftweave/play"
 	"github.com/SETA1609/riftweave-core/backend/contract"
 	"github.com/SETA1609/riftweave-core/backend/core"
+	"github.com/SETA1609/riftweave-core/backend/mcp"
 )
 
 // Exit codes (docs/backend/cli.md#errors-and-exit-codes).
@@ -34,6 +35,7 @@ const usage = `usage: riftweave [--data <dir>] <command> [file]
        riftweave list
        riftweave describe <command>
        riftweave [--dev] play
+       riftweave [--dev] mcp
 
 A command reads one JSON object from the file, or from stdin, and writes its result to
 stdout. Errors are JSON on stderr. Exit 0 ok, 1 rule error, 2 bad input, 3 no ruleset.
@@ -88,6 +90,9 @@ func run(args []string, stdin io.Reader, stdout, stderr io.Writer, getenv func(s
 	if args[0] == "play" {
 		return interactive(dataFlag, devFlag, stdin, stdout, stderr, getenv)
 	}
+	if args[0] == "mcp" {
+		return serveMCP(dataFlag, devFlag, stdin, stdout, stderr, getenv)
+	}
 	return command(args, dataFlag, devFlag, stdin, stdout, stderr, getenv)
 }
 
@@ -131,6 +136,29 @@ func interactive(dataFlag string, devFlag bool, stdin io.Reader, stdout, stderr 
 	var program *tea.Program = tea.NewProgram(model, tea.WithInput(stdin), tea.WithOutput(stdout))
 	if _, err := program.Run(); err != nil {
 		return fail(stderr, exitInput, "play needs a terminal: %v", err)
+	}
+	return exitOK
+}
+
+// serveMCP runs the MCP server on stdio until stdin ends (docs/backend/mcp.md).
+func serveMCP(dataFlag string, devFlag bool, stdin io.Reader, stdout, stderr io.Writer, getenv func(string) string) int {
+	directory, err := rulesetDirectory(dataFlag, getenv)
+	if err != nil {
+		return fail(stderr, exitRuleset, "%v", err)
+	}
+	opened, err := core.Open(directory)
+	if err != nil {
+		return fail(stderr, exitRuleset, "loading %s: %v", directory, err)
+	}
+	if devFlag {
+		opened.EnableDev()
+	}
+	server, err := mcp.New(opened.Run, filepath.Join(directory, "..", "schemas", "schema.json"), devFlag)
+	if err != nil {
+		return fail(stderr, exitRuleset, "building the tools: %v", err)
+	}
+	if err := server.Serve(stdin, stdout); err != nil {
+		return fail(stderr, exitInput, "mcp: %v", err)
 	}
 	return exitOK
 }
