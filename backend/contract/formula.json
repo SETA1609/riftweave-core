@@ -21,6 +21,9 @@
         "additionalProperties": {
           "type": "integer"
         }
+      },
+      "expression": {
+        "$ref": "../../ruleset/schemas/schema.json#/definitions/formulaNode"
       }
     },
     "additionalProperties": false,
@@ -33,6 +36,11 @@
       {
         "required": [
           "expr"
+        ]
+      },
+      {
+        "required": [
+          "expression"
         ]
       }
     ]

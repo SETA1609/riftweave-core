@@ -329,8 +329,71 @@
       "description": "A reference to an equipment row of any category (docs/core/integrity.md)."
     },
     "formulaNode": {
-      "description": "A formula tree node (docs/core/formula.md): a leaf (lit, attr, var) or an op over args. Integer only.",
+      "description": "A formula tree node (docs/core/formula.md): a leaf (literal, attribute, variable) or an operation over arguments. Integer only. The short names (lit, attr, var, op, args; sub, mul, div) are accepted until the M5-46 data step removes them.",
       "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "literal": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "literal"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "attribute": {
+              "$ref": "#/definitions/ability"
+            }
+          },
+          "required": [
+            "attribute"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "variable": {
+              "type": "string",
+              "pattern": "^[a-z_][a-z0-9_]*$"
+            }
+          },
+          "required": [
+            "variable"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "type": "string",
+              "enum": [
+                "add",
+                "subtract",
+                "multiply",
+                "divide"
+              ]
+            },
+            "arguments": {
+              "type": "array",
+              "minItems": 2,
+              "items": {
+                "$ref": "#/definitions/formulaNode"
+              }
+            }
+          },
+          "required": [
+            "operation",
+            "arguments"
+          ],
+          "additionalProperties": false
+        },
         {
           "type": "object",
           "properties": {

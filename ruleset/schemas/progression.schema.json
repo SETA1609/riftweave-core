@@ -21,7 +21,7 @@
           "$ref": "schema.json#/definitions/formulaNode"
         },
         "skill_points": {
-          "description": "Points in one level's pool; reads the var `luck_roll`.",
+          "description": "Points in one level's pool; reads the variable `luck_roll`.",
           "$ref": "schema.json#/definitions/formulaNode"
         },
         "pool_roll_max": {
@@ -32,13 +32,15 @@
           "type": "object",
           "properties": {
             "min": { "type": "integer", "minimum": 0 },
-            "max_attr": { "$ref": "schema.json#/definitions/ability" }
+            "max_attr": { "$ref": "schema.json#/definitions/ability" },
+            "max_attribute": { "$ref": "schema.json#/definitions/ability" }
           },
-          "required": ["min", "max_attr"],
+          "required": ["min"],
+          "anyOf": [{ "required": ["max_attribute"] }, { "required": ["max_attr"] }],
           "additionalProperties": false
         },
         "skill_start": {
-          "description": "A skill's starting value; reads the var `attribute`.",
+          "description": "A skill's starting value; reads the variable `attribute`.",
           "$ref": "schema.json#/definitions/formulaNode"
         },
         "perks_per_level": { "type": "integer", "minimum": 0 },

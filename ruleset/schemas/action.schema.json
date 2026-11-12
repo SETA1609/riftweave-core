@@ -24,11 +24,13 @@
         "per_point": { "type": "integer" },
         "per_point_divisor": { "type": "integer", "minimum": 1 },
         "attr": { "type": "string" },
+        "attribute": { "type": "string", "description": "The attribute the pool reads (M5-46; was attr)." },
         "cap": { "type": "integer", "minimum": 1 },
         "carry": { "type": "string" },
         "rest": { "type": "string" }
       },
-      "required": ["base", "per_point", "per_point_divisor", "attr", "cap", "carry", "rest"],
+      "required": ["base", "per_point", "per_point_divisor", "cap", "carry", "rest"],
+      "anyOf": [{ "required": ["attribute"] }, { "required": ["attr"] }],
       "additionalProperties": false
     },
     "action": {
