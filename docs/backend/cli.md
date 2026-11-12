@@ -12,6 +12,7 @@ riftweave describe <command>        the command's contract file (backend/contrac
 riftweave <command> [file]          run a command on JSON from the file, or from stdin
 riftweave help                      usage, on stdout
 riftweave --dev dev <operation> [file]   change a session's actor for testing ([dev-mode.md](dev-mode.md))
+riftweave [--dev] mcp               serve the commands as MCP tools on stdio ([mcp.md](mcp.md))
 ```
 
 - **Input** is one JSON object, the command's `input_schema`: a vector without `name`, `function`, and `expect`. `-` as the file means stdin.
