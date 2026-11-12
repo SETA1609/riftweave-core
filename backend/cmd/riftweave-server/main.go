@@ -14,6 +14,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"time"
 
@@ -24,12 +25,25 @@ import (
 // maxBody is the largest request body the server reads.
 const maxBody = 1 << 20
 
+// notServed are the commands the HTTP API never serves: dev operations are for the CLIs only
+// (docs/backend/dev-mode.md).
+var notServed = []string{"dev"}
+
+// servedCommands is every core command the HTTP API serves, sorted.
+func servedCommands() []string {
+	var served []string
+	for _, name := range core.Commands() {
+		if !slices.Contains(notServed, name) {
+			served = append(served, name)
+		}
+	}
+	return served
+}
+
 func main() {
 	var dataFlag, address string
-	var devFlag bool
 	flag.StringVar(&dataFlag, "data", "", "the ruleset data directory (default: RIFTWEAVE_DATA, then ruleset/data above the working directory)")
 	flag.StringVar(&address, "addr", "127.0.0.1:8080", "the address to listen on")
-	flag.BoolVar(&devFlag, "dev", false, "turn on dev mode (docs/backend/dev-mode.md)")
 	flag.Parse()
 	directory, err := rulesetDirectory(dataFlag, os.Getenv)
 	if err != nil {
@@ -38,9 +52,6 @@ func main() {
 	opened, err := core.Open(directory)
 	if err != nil {
 		log.Fatalf("loading %s: %v", directory, err)
-	}
-	if devFlag {
-		opened.EnableDev()
 	}
 	handler, err := newHandler(opened, filepath.Join(directory, "..", "schemas", "schema.json"))
 	if err != nil {
@@ -94,7 +105,7 @@ func newHandler(opened *core.Core, schemaPath string) (http.Handler, error) {
 		Summary string `json:"summary"`
 	}
 	var entries []entry = []entry{}
-	for _, name := range core.Commands() {
+	for _, name := range servedCommands() {
 		var file struct {
 			Summary string `json:"summary"`
 		}
@@ -132,8 +143,13 @@ func (server *api) ServeHTTP(writer http.ResponseWriter, request *http.Request) 
 		if !allowed(writer, request, http.MethodPost) {
 			return
 		}
+		var name string = strings.TrimPrefix(path, "/v1/commands/")
+		if slices.Contains(notServed, name) {
+			fail(writer, http.StatusNotFound, fmt.Sprintf("%s is not served over HTTP; use the CLI with --dev", name))
+			return
+		}
 		if body, ok := readBody(writer, request); ok {
-			server.run(writer, strings.TrimPrefix(path, "/v1/commands/"), body)
+			server.run(writer, name, body)
 		}
 	case sessionPaths[path] != "":
 		if !allowed(writer, request, http.MethodPost) {

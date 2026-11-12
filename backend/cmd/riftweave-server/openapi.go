@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/SETA1609/riftweave-core/backend/contract"
-	"github.com/SETA1609/riftweave-core/backend/core"
 )
 
 // The OpenAPI document is built from backend/contract/ at start-up, never written by hand
@@ -28,10 +27,10 @@ type commandFile struct {
 	ResultSchema any    `json:"result_schema"`
 }
 
-// commandFiles reads every command's contract file, sorted by name, as core.Commands lists them.
+// commandFiles reads every served command's contract file, sorted by name.
 func commandFiles() ([]commandFile, error) {
 	var files []commandFile
-	for _, name := range core.Commands() {
+	for _, name := range servedCommands() {
 		content, err := fs.ReadFile(contract.Files, name+".json")
 		if err != nil {
 			return nil, fmt.Errorf("contract for %s: %w", name, err)

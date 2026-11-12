@@ -125,7 +125,7 @@ func TestStatusCodes(t *testing.T) {
 		{"a missing input", http.MethodPost, "/v1/commands/economy", `{"op":"convert"}`, http.StatusBadRequest},
 		{"a rule refuses", http.MethodPost, "/v1/commands/loot", `{"table":"hoard_minor","rolls":[1]}`, http.StatusUnprocessableEntity},
 		{"wrong method", http.MethodGet, "/v1/commands/formula", ``, http.StatusMethodNotAllowed},
-		{"dev without --dev", http.MethodPost, "/v1/commands/dev", `{"operation":"xp","add":1,"session":{}}`, http.StatusUnprocessableEntity},
+		{"dev is not served", http.MethodPost, "/v1/commands/dev", `{"operation":"xp","add":1,"session":{}}`, http.StatusNotFound},
 	}
 	for _, testCase := range cases {
 		t.Run(testCase.name, func(t *testing.T) {
@@ -167,8 +167,11 @@ func TestTheCommandListIsTheCore(t *testing.T) {
 			t.Errorf("%s has no summary", entry.Name)
 		}
 	}
-	if !slices.Equal(names, core.Commands()) {
-		t.Errorf("listed %v, core has %v", names, core.Commands())
+	if !slices.Equal(names, servedCommands()) || slices.Contains(names, "dev") {
+		t.Errorf("listed %v, served %v; dev is never served", names, servedCommands())
+	}
+	if len(names) != len(core.Commands())-1 {
+		t.Errorf("listed %d commands, the core has %d and only dev is left out", len(names), len(core.Commands()))
 	}
 }
 
@@ -239,7 +242,10 @@ func TestTheOpenAPIDocumentListsEveryCommandAndStandsAlone(t *testing.T) {
 		t.Errorf("openapi %v, want 3.1.0", document["openapi"])
 	}
 	paths := document["paths"].(map[string]any)
-	for _, name := range core.Commands() {
+	if paths["/v1/commands/dev"] != nil {
+		t.Error("the document lists dev, which is not served")
+	}
+	for _, name := range servedCommands() {
 		operation, ok := paths["/v1/commands/"+name].(map[string]any)["post"].(map[string]any)
 		if !ok {
 			t.Errorf("no POST /v1/commands/%s", name)

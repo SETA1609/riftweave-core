@@ -6,19 +6,19 @@ no state, so a call needs no session and two calls never share anything but the 
 [V 2026-11-12, `go test ./cmd/riftweave-server`]
 
 ```
-riftweave-server [--data <dir>] [--addr <host:port>] [--dev]
+riftweave-server [--data <dir>] [--addr <host:port>]
 ```
 
 - `--data` is the ruleset data directory, found as the agent CLI finds it ([cli.md](cli.md)):
   the flag, then `RIFTWEAVE_DATA`, then `ruleset/data` above the working directory.
 - `--addr` defaults to `127.0.0.1:8080`, so the server is local unless told otherwise.
-- `--dev` turns on dev mode, as the CLI flag does ([dev-mode.md](dev-mode.md)).
+- Dev mode is CLI-only: the server does not serve `dev` and has no `--dev` flag ([dev-mode.md](dev-mode.md)).
 
 ## Endpoints
 
 | Method and path | Body | Result |
 | --- | --- | --- |
-| `POST /v1/commands/{command}` | the command's input ([README.md](README.md#commands)) | the command's result |
+| `POST /v1/commands/{command}` | the command's input ([README.md](README.md#commands)) | the command's result; every command but `dev` |
 | `GET /v1/commands` | none | every command with its contract summary, sorted by name |
 | `POST /v1/sessions` | `{ "start": <stored actor> }` | the `session` command's `start` |
 | `POST /v1/sessions/step` | `{ "session", "step" }` | the `session` command's `step` |
@@ -35,7 +35,7 @@ calls ([sessions.md](sessions.md)).
 | --- | --- | --- |
 | 200 | the command ran | the result |
 | 400 | the body is not the command's input (`core.ErrInput`), or a rule needs an input it was not given (`MissingInputError`) | `{ "error": "..." }` |
-| 404 | no such command or path, or the input names a key that does not exist (`NotDefinedError`) | `{ "error": "..." }` |
+| 404 | no such command or path, `dev`, or the input names a key that does not exist (`NotDefinedError`) | `{ "error": "..." }` |
 | 405 | the method is not the one the path takes | `{ "error": "..." }` |
 | 413 | the body is over 1 MiB | `{ "error": "..." }` |
 | 422 | the command refused for any other rule reason (`core.ErrRule`) | `{ "error": "..." }`, the same bytes the CLI prints |
