@@ -303,5 +303,29 @@ class TestModifierTargetsNameOneRow(unittest.TestCase):
             self.assertEqual(validate.check_modifier_targets(files, [(module, root / "mod")], []), [])
 
 
+class TestModifiersNameTheirOperation(unittest.TestCase):
+    """M5-46: a modifier in the data spells out `operation`, and `multiply` (CONTRIBUTING.md#naming)."""
+
+    def test_no_data_modifier_uses_op_or_mul(self):
+        ruleset = _SCRIPTS.parent
+        files = [f for f in (ruleset / "data").rglob("*.json")]
+        files += [f for f in (ruleset / "modules").rglob("*.json") if "tests" not in f.parts]
+        found = []
+
+        def walk(node, path):
+            if isinstance(node, dict):
+                if "target" in node and ("op" in node or node.get("operation") == "mul"):
+                    found.append(f"{path.relative_to(ruleset)}: {node['target']}")
+                for value in node.values():
+                    walk(value, path)
+            elif isinstance(node, list):
+                for value in node:
+                    walk(value, path)
+
+        for path in files:
+            walk(json.loads(path.read_text()), path)
+        self.assertEqual(found, [])
+
+
 if __name__ == "__main__":
     unittest.main()
