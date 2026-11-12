@@ -51,7 +51,8 @@ An applied effect's `duration` is seconds, and 1 (the default) is instant. One e
 
 - A **pool effect** (`restore_resource`) applies `magnitude` at once when instant. Over time it adds `magnitude` for each second that passes, so its total is magnitude times duration. A pool stays between 0 and its maximum.
 - Any **other effect** holds its `magnitude` for `duration` seconds as a modifier: `resist` on its parameter, `add` on its parameter or its own key, and a `grant` when it has no magnitude.
-- **Turns.** One turn is `seconds_per_turn` seconds (5, `actions/core.json`). A turn advances effects by that many seconds, so a tick covers magnitude times the seconds that remain, and the total is the same in both modes. [V 2026-11-11, `consume` vectors]
+- **Turns.** One turn is `seconds_per_turn` seconds (5, `actions/core.json`), so an effect lasts `ceil(duration / seconds_per_turn)` turns. A turn advances effects by that many seconds, so a tick covers magnitude times the seconds that remain, and the total is the same in both modes, even for a duration that does not divide by 5. [V 2026-11-12, `consume` vectors]
+- **Stamina at a table.** With `at_table`, a stamina restore becomes AP, `stamina_per_ap` stamina to the point, that arrives at the start of the next turn and stops at the pool's cap ([actions.md](actions.md#one-rule-set-two-clocks)). [V 2026-11-12, `consume` vectors]
 - **Same source.** Using the same item again replaces its own running effects, so the effect restarts and does not stack. [A]
 - **Rest.** A short or long rest ends every running food effect, and a meal eaten during the rest starts fresh; end of combat leaves them ([rest.md](rest.md#food-at-rest)). [V 2026-11-12]
 - **What can be used.** Only an item with `delivery` `drink` or `eat`. Food (`type: food`) is refused in combat, and it is always over time. A dish is one source, `food:<key>`; any other item is `item:<key>`. A dish's effects are the combined effects of its ingredients, written on the row; cooking is crafting.
@@ -121,4 +122,4 @@ A condition is a row in `ruleset/data/conditions/core.json`: a named bundle of m
 4. **A remove event** (`remove: <key>`) ends a condition with no removing effect: `prone` ends when the actor stands up, an action the caller resolves. [A]
 5. The actor's values are then the base values with every live condition's modifiers, in the order above.
 
-The `combat` and `effects` fields on a condition row (defense bonus, TTRPG and video-game prose) are not modifiers yet; they are read by nobody and are left to the issues that turn them into rows (M1-01, M3-03). [U]
+A condition's rules are its `modifiers` and its `combat` block, the same in both modes; it has no per-mode prose (M3-11). The `combat` fields are not modifiers yet and are left to the issue that turns them into rows (M3-03). [V 2026-11-12]
