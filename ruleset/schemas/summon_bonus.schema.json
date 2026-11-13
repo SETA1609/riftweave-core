@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Summon bonus",
+  "description": "A group of a summoned creature's attributes that a caster's attribute modifier adds to, granted by a perk that names it (docs/modules/magic.md#summon-groups). The modifier is formulas/attribute_modifier.json on the caster's `attribute`, never below 0.",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "summon_bonuses": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/summon_bonus" }
+    }
+  },
+  "required": ["summon_bonuses"],
+  "additionalProperties": false,
+  "definitions": {
+    "summon_bonus": {
+      "type": "object",
+      "properties": {
+        "key": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "label": { "type": "string", "minLength": 1 },
+        "description": { "type": "string", "minLength": 1 },
+        "attribute": { "$ref": "schema.json#/definitions/ability", "description": "The caster's attribute whose modifier adds." },
+        "attributes": {
+          "type": "array",
+          "items": { "$ref": "schema.json#/definitions/ability" },
+          "minItems": 1,
+          "uniqueItems": true,
+          "description": "The summoned creature's attributes that gain the modifier."
+        },
+        "source": { "$ref": "schema.json#/definitions/sourceRef" }
+      },
+      "required": ["key", "label", "description", "attribute", "attributes"],
+      "additionalProperties": false
+    }
+  }
+}

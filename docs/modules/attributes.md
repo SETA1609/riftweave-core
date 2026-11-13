@@ -145,8 +145,8 @@ Ten is the cap on a player's attributes at character creation; racial and perk b
 ### Charisma (CHA)
 - **Governs:** persuasion, barter prices, leadership.
 - **Seeds skills:** `persuasion`, `deception`, `intimidation`.
-- **Feeds:** social outcomes and prices (no single combat formula; it is the social
-  pillar's attribute).
+- **Feeds:** social outcomes and prices, and, through the Commanding Summons perks, the
+  attributes of the creatures a caster summons ([magic.md](./magic.md#summon-groups)).
 
 ### Luck (LCK)
 - **Governs:** fortune across the board. Deliberately **diffuse** — it always helps

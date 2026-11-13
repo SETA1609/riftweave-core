@@ -93,6 +93,7 @@
           "items": { "$ref": "schema.json#/definitions/modifier" }
         },
         "unlocks": { "type": "array", "items": { "oneOf": [ { "$ref": "schema.json#/definitions/monsterTemplateRef" }, { "$ref": "schema.json#/definitions/materialRef" } ] }, "uniqueItems": true, "minItems": 1, "description": "What the perk unlocks beyond a number a modifier holds: a summon power or nature (core:monster_template/<key>), or a bound weapon's material (docs/modules/monsters.md#summoned-creatures). Each ref must resolve." },
+        "summon_bonus": { "$ref": "schema.json#/definitions/summonBonusRef", "description": "A summon bonus this perk grants: the caster's attribute modifier adds to that group of a summoned creature's attributes (docs/modules/magic.md#summon-groups). The ref must resolve." },
         "natural_weapon": {
           "type": "object",
           "description": "A natural weapon this feature gives, rolled with the unarmed skill.",

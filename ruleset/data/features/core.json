@@ -1556,6 +1556,82 @@
       ]
     },
     {
+      "key": "commanding_summons_magic",
+      "label": "Commanding Summons: Magic",
+      "description": "Your will reaches into what you call: each creature you summon adds your CHA modifier (CHA - 5, never below 0) to its INT and WIL, and your Persuasion +5. Take Commanding Summons: Physical as well for its body.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 6,
+        "abilities": {
+          "cha": 6
+        },
+        "skills": [
+          {
+            "id": [
+              "core:skill/orange_magic",
+              "core:skill/black_magic"
+            ],
+            "label": [
+              "Orange Magic",
+              "Black Magic"
+            ],
+            "min": 30
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "summon_bonus": "core:summon_bonus/magic",
+      "modifiers": [
+        {
+          "target": "persuasion",
+          "op": "add",
+          "value": 5,
+          "source": "feature:commanding_summons_magic",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "commanding_summons_physical",
+      "label": "Commanding Summons: Physical",
+      "description": "Your presence drives what you call: each creature you summon adds your CHA modifier (CHA - 5, never below 0) to its STR, END, and AGI, and your Intimidation +5. Take Commanding Summons: Magic as well for its mind.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 6,
+        "abilities": {
+          "cha": 6
+        },
+        "skills": [
+          {
+            "id": [
+              "core:skill/orange_magic",
+              "core:skill/black_magic"
+            ],
+            "label": [
+              "Orange Magic",
+              "Black Magic"
+            ],
+            "min": 30
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "summon_bonus": "core:summon_bonus/physical",
+      "modifiers": [
+        {
+          "target": "intimidation",
+          "op": "add",
+          "value": 5,
+          "source": "feature:commanding_summons_physical",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
       "key": "summon_demonic",
       "label": "Demonic Pact",
       "description": "What you call is touched by the fiends: your summons gain the demonic template, in place of any other nature, and you resist fire 5.",

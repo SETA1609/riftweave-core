@@ -122,6 +122,7 @@ COLLECTION_CATEGORIES = {
     "natural_weapons": "natural_weapon",
     "monster_templates": "monster_template",
     "skill_groups": "skill_group",
+    "summon_bonuses": "summon_bonus",
 }
 
 
@@ -1329,7 +1330,7 @@ def _apply_monster_template(merged, template):
     tags += [tag for tag in template.get("tags", []) if tag not in tags]
     if tags:
         merged["tags"] = tags
-    if merged.get("label"):
+    if merged.get("label") and template.get("label_prefix"):  # a summon bonus has no prefix
         merged["label"] = f"{template['label_prefix']} {merged['label']}"
 
 
