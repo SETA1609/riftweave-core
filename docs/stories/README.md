@@ -21,6 +21,7 @@ file each in [docs/issues/](../issues/README.md).
 | [05-release.md](05-release.md) | M5 Release 1.0, plus repo process and tooling |
 | [06-modules.md](06-modules.md) | Post-1.0 modules |
 | [07-backend.md](07-backend.md) | APP Reference backend: CLIs, API server, Angular frontend |
+| [08-content.md](08-content.md) | M6 Content parity: post-1.0 content and tabletop play |
 
 ## Order
 
@@ -50,7 +51,7 @@ Run these from the repo root (`DT` is `uv run --project tools/devops --locked --
 
 ## IDs
 
-- **Story ID:** the milestone in the story heading: `M1` to `M5`, `POST` for post-1.0
+- **Story ID:** the milestone in the story heading: `M1` to `M6`, `POST` for post-1.0
   modules, and `APP` for the reference backend.
 - **Issue ID:** story ID plus a two-digit number: `M1-01`, `POST-03`. Next id = highest
   number in that story (in [open/ or done/](../issues/README.md)), plus one. Numbers are never reused;

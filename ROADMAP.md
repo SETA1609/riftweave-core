@@ -66,6 +66,7 @@ Foundations are done. Milestone M0 below is complete and archived in
 | M3 Combat and magic playable | In progress |
 | M4 World | In progress |
 | M5 Release 1.0 | In progress |
+| M6 Content parity | Not started: after `v1.0.0` |
 | APP Reference backend | In progress |
 
 Content today, for scale: 110 features, 70 spells, 48 monsters, 3 recipes, 13 accessories,
@@ -107,6 +108,12 @@ Issues, in order: [docs/stories/04-world.md](docs/stories/04-world.md).
 **Exit:** items 3, 5, 6, 7, and 8 of the definition hold, and `v1.0.0` is tagged.
 
 Issues, in order: [docs/stories/05-release.md](docs/stories/05-release.md).
+
+## M6 Content parity
+
+**Exit:** after `v1.0.0`, core content reaches the size of the D&D SRD 5.2, counted the way Riftweave builds content from parts, and the rules run well at a table: about 220 perks, about 200 spells over about 150 effects, about 150 base monsters, about 100 named items, encounter budgets, travel, pre-built characters, and a logged tabletop playtest. Not a 1.0 gate.
+
+Issues, in order: [docs/stories/08-content.md](docs/stories/08-content.md).
 
 ## APP Reference backend
 
