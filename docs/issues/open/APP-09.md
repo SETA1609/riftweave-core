@@ -1,5 +1,5 @@
 #### APP-09 MCP server over the command contract
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: APP-03, APP-04
 - Do: A third front end in the same binary, `riftweave mcp`, serving the Model Context Protocol over stdio for agents in an MCP client. Each command is one tool, generated from `backend/contract/` (name, description, input schema) as the OpenAPI document is in APP-06, never written by hand. The server holds the open session between calls, so an agent plays a run without passing the session back each time; tools to open, save, and load a session wrap APP-04. The dev operations (APP-08) are tools only when the server starts with `--dev`. It calls the same core as the agent CLI and holds no rule. Not a 1.0 gate.

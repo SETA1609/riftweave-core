@@ -1,0 +1,2 @@
+### APP-09 MCP server over the command contract
+- Added: `riftweave mcp`, a Model Context Protocol server on stdio: one tool per contract command, generated from `backend/contract/` with a standalone input schema; `session_start`, `session_step`, `session_save`, `session_load`, and `session_replay`, which hold the open session between calls; and, only with `--dev`, the `dev` and `session_dev` tools.
