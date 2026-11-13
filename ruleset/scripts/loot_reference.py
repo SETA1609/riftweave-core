@@ -235,7 +235,7 @@ def looter_shift(vector):
     if actor is not None:
         expression = load_data("formulas/loot_luck.json")["expression"]
         luck = evaluate_formula(expression, {"lck": actor.get("attributes", {}).get("lck", 0)})
-        modifiers.insert(0, {"target": "loot_roll", "op": "add", "value": luck, "source": "attr:lck", "origin": "core:origin/innate"})
+        modifiers.insert(0, {"target": "loot_roll", "operation": "add", "value": luck, "source": "attr:lck", "origin": "core:origin/innate"})
     return apply_modifiers(0, modifiers)
 
 

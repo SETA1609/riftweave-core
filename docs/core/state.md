@@ -54,7 +54,7 @@ rows. One schema says what an actor stores: `stored_actor` in `backend/contract/
 | Perks | `perks` (rank by feature key) |
 | Known spells and effects | `spells`, `known_effects` (keys) |
 | Coins | `coins` (copper) |
-| Item instances | `inventory` (`id`, `base`, optional `material` and `size`, `mods`, `quantity`) |
+| Item instances | `inventory` (`id`, `base`, optional `material` and `size`, `added_effects`, `quantity`) |
 | What is equipped | `equipped` (an inventory `id` by slot) |
 
 Computed, never stored: maximum pools and every derived stat, from the snapshot and the data

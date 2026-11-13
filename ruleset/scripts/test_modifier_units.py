@@ -64,14 +64,14 @@ class TestModifierUnits(unittest.TestCase):
             for rank in range(1, ranks + 1):
                 with self.subTest(perk=key, rank=rank):
                     row = modifier(rows[key], target)
-                    self.assertEqual(row["op"], "mul")
+                    self.assertEqual(row["operation"], "multiply")
                     self.assertAlmostEqual(1 + (row["value"] - 1) * rank, 1 + percent * rank / 100)
 
     def test_a_target_with_nothing_to_scale_keeps_its_points(self):
         rows = features()
         for key, (target, value) in POINTS.items():
             with self.subTest(perk=key):
-                self.assertEqual((modifier(rows[key], target)["op"], modifier(rows[key], target)["value"]), ("add", value))
+                self.assertEqual((modifier(rows[key], target)["operation"], modifier(rows[key], target)["value"]), ("add", value))
 
     def test_distances_are_in_units(self):
         rows = features()

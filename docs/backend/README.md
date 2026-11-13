@@ -71,7 +71,7 @@ A command is one kernel or module function, named like its vector function (`com
 | --- | --- |
 | `name` | the command and vector function name |
 | `summary` | one line for `list` and the OpenAPI document |
-| `doc` | the `docs/` file that owns the rule |
+| `documentation` | the `docs/` file that owns the rule |
 | `input_schema` | JSON Schema of the input: the vector's fields without `name`, `function`, and `expect` |
 | `result_schema` | JSON Schema of a successful result |
 

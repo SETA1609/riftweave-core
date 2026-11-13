@@ -28,7 +28,7 @@
   {
     "name": "Borin level 1: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 7,
@@ -74,7 +74,7 @@
     "modifiers": [
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 15,
         "source": "feature:toughness",
         "origin": "core:origin/trained"
@@ -92,7 +92,7 @@
   {
     "name": "Borin level 2: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 7,
@@ -138,7 +138,7 @@
     "modifiers": [
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 30,
         "source": "feature:toughness",
         "origin": "core:origin/trained"
@@ -156,7 +156,7 @@
   {
     "name": "Borin level 3: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 7,
@@ -202,14 +202,14 @@
     "modifiers": [
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 30,
         "source": "feature:toughness",
         "origin": "core:origin/trained"
       },
       {
         "target": "carry",
-        "op": "add",
+        "operation": "add",
         "value": 25,
         "source": "feature:pack_mule",
         "origin": "core:origin/trained"
@@ -227,7 +227,7 @@
   {
     "name": "Borin level 4: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 7,
@@ -273,14 +273,14 @@
     "modifiers": [
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 30,
         "source": "feature:toughness",
         "origin": "core:origin/trained"
       },
       {
         "target": "carry",
-        "op": "add",
+        "operation": "add",
         "value": 25,
         "source": "feature:pack_mule",
         "origin": "core:origin/trained"
@@ -298,7 +298,7 @@
   {
     "name": "Borin level 5: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 7,
@@ -344,14 +344,14 @@
     "modifiers": [
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 30,
         "source": "feature:toughness",
         "origin": "core:origin/trained"
       },
       {
         "target": "carry",
-        "op": "add",
+        "operation": "add",
         "value": 25,
         "source": "feature:pack_mule",
         "origin": "core:origin/trained"
@@ -369,7 +369,7 @@
   {
     "name": "Borin level 6: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 7,
@@ -415,14 +415,14 @@
     "modifiers": [
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 45,
         "source": "feature:toughness",
         "origin": "core:origin/trained"
       },
       {
         "target": "carry",
-        "op": "add",
+        "operation": "add",
         "value": 25,
         "source": "feature:pack_mule",
         "origin": "core:origin/trained"
@@ -440,7 +440,7 @@
   {
     "name": "Borin level 7: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 7,
@@ -486,14 +486,14 @@
     "modifiers": [
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 45,
         "source": "feature:toughness",
         "origin": "core:origin/trained"
       },
       {
         "target": "carry",
-        "op": "add",
+        "operation": "add",
         "value": 25,
         "source": "feature:pack_mule",
         "origin": "core:origin/trained"
@@ -511,7 +511,7 @@
   {
     "name": "Borin level 8: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 7,
@@ -557,14 +557,14 @@
     "modifiers": [
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 45,
         "source": "feature:toughness",
         "origin": "core:origin/trained"
       },
       {
         "target": "carry",
-        "op": "add",
+        "operation": "add",
         "value": 25,
         "source": "feature:pack_mule",
         "origin": "core:origin/trained"
@@ -582,7 +582,7 @@
   {
     "name": "Borin level 9: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 7,
@@ -628,14 +628,14 @@
     "modifiers": [
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 45,
         "source": "feature:toughness",
         "origin": "core:origin/trained"
       },
       {
         "target": "carry",
-        "op": "add",
+        "operation": "add",
         "value": 25,
         "source": "feature:pack_mule",
         "origin": "core:origin/trained"
@@ -653,7 +653,7 @@
   {
     "name": "Borin level 10: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 7,
@@ -709,7 +709,7 @@
   {
     "name": "Sefa level 1: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 4,
@@ -755,7 +755,7 @@
     "modifiers": [
       {
         "target": "mp",
-        "op": "add",
+        "operation": "add",
         "value": 10,
         "source": "feature:arcane_reservoir",
         "origin": "core:origin/trained"
@@ -773,7 +773,7 @@
   {
     "name": "Sefa level 2: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 4,
@@ -819,7 +819,7 @@
     "modifiers": [
       {
         "target": "mp",
-        "op": "add",
+        "operation": "add",
         "value": 10,
         "source": "feature:arcane_reservoir",
         "origin": "core:origin/trained"
@@ -837,7 +837,7 @@
   {
     "name": "Sefa level 3: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 4,
@@ -883,7 +883,7 @@
     "modifiers": [
       {
         "target": "mp",
-        "op": "add",
+        "operation": "add",
         "value": 10,
         "source": "feature:arcane_reservoir",
         "origin": "core:origin/trained"
@@ -901,7 +901,7 @@
   {
     "name": "Sefa level 4: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 4,
@@ -947,7 +947,7 @@
     "modifiers": [
       {
         "target": "mp",
-        "op": "add",
+        "operation": "add",
         "value": 20,
         "source": "feature:arcane_reservoir",
         "origin": "core:origin/trained"
@@ -965,7 +965,7 @@
   {
     "name": "Sefa level 5: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 4,
@@ -1011,7 +1011,7 @@
     "modifiers": [
       {
         "target": "mp",
-        "op": "add",
+        "operation": "add",
         "value": 20,
         "source": "feature:arcane_reservoir",
         "origin": "core:origin/trained"
@@ -1029,7 +1029,7 @@
   {
     "name": "Sefa level 6: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 4,
@@ -1075,7 +1075,7 @@
     "modifiers": [
       {
         "target": "mp",
-        "op": "add",
+        "operation": "add",
         "value": 20,
         "source": "feature:arcane_reservoir",
         "origin": "core:origin/trained"
@@ -1093,7 +1093,7 @@
   {
     "name": "Sefa level 7: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 4,
@@ -1139,7 +1139,7 @@
     "modifiers": [
       {
         "target": "mp",
-        "op": "add",
+        "operation": "add",
         "value": 20,
         "source": "feature:arcane_reservoir",
         "origin": "core:origin/trained"
@@ -1157,7 +1157,7 @@
   {
     "name": "Sefa level 8: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 4,
@@ -1203,7 +1203,7 @@
     "modifiers": [
       {
         "target": "mp",
-        "op": "add",
+        "operation": "add",
         "value": 20,
         "source": "feature:arcane_reservoir",
         "origin": "core:origin/trained"
@@ -1221,7 +1221,7 @@
   {
     "name": "Sefa level 9: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 4,
@@ -1267,7 +1267,7 @@
     "modifiers": [
       {
         "target": "mp",
-        "op": "add",
+        "operation": "add",
         "value": 30,
         "source": "feature:arcane_reservoir",
         "origin": "core:origin/trained"
@@ -1285,7 +1285,7 @@
   {
     "name": "Sefa level 10: skill points",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 4,

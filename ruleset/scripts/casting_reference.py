@@ -130,7 +130,7 @@ def run_casting(vector):
     if armor not in rules["armor_penalty"]:
         return {"error": f'armor category "{armor}" is not defined'}
     if rules["armor_penalty"][armor]:
-        modifiers.append({"target": skill, "op": "add", "value": rules["armor_penalty"][armor], "source": f"armor:{armor}"})
+        modifiers.append({"target": skill, "operation": "add", "value": rules["armor_penalty"][armor], "source": f"armor:{armor}"})
     check = run_resolution(
         {
             "actor": {"skills": {skill: caster["skills"][skill]}, "attributes": caster.get("attributes", {})},
@@ -195,7 +195,7 @@ def run_spellcraft(vector):
     effects = {f"core:effect/{e['key']}": e for e in load_data("effects/core.json")["effects"]}
     caster = vector["caster"]
     known = caster.get("known", [])
-    op = vector["op"]
+    op = vector["operation"]
     if op == "craft":
         spell = vector["spell"]
         rejected = []

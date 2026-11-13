@@ -304,7 +304,7 @@ type CalledShot struct {
 	Key              string  `json:"key"`
 	Riders           []Rider `json:"riders"`
 	Attack           int64   `json:"attack"`
-	DamageMultiplier float64 `json:"damage_mul"`
+	DamageMultiplier float64 `json:"damage_multiplier"`
 }
 
 // HazardCheck is a check a hazard asks for: a row of checks/core.json, and the hazard's

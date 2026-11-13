@@ -5,13 +5,13 @@
     "modifiers": [
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 8,
         "source": "perk:tough"
       },
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 2,
         "source": "item:ring"
       }
@@ -26,13 +26,13 @@
     "modifiers": [
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 8,
         "source": "perk:tough"
       },
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 8,
         "source": "perk:tough"
       }
@@ -47,13 +47,13 @@
     "modifiers": [
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 4,
         "source": "perk:tough"
       },
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 8,
         "source": "perk:tough"
       }
@@ -68,13 +68,13 @@
     "modifiers": [
       {
         "target": "hp",
-        "op": "mul",
+        "operation": "multiply",
         "value": 2,
         "source": "effect:fortify"
       },
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 5,
         "source": "perk:tough"
       }
@@ -90,13 +90,13 @@
     "modifiers": [
       {
         "target": "ap",
-        "op": "add",
+        "operation": "add",
         "value": 2,
         "source": "perk:quick"
       },
       {
         "target": "ap",
-        "op": "set",
+        "operation": "set",
         "value": 0,
         "source": "condition:paralyzed"
       }
@@ -112,19 +112,19 @@
     "modifiers": [
       {
         "target": "ap",
-        "op": "set",
+        "operation": "set",
         "value": 0,
         "source": "condition:paralyzed"
       },
       {
         "target": "ap",
-        "op": "add",
+        "operation": "add",
         "value": 2,
         "source": "perk:quick"
       },
       {
         "target": "ap",
-        "op": "mul",
+        "operation": "multiply",
         "value": 2,
         "source": "effect:haste"
       }
@@ -140,13 +140,13 @@
     "modifiers": [
       {
         "target": "ap",
-        "op": "set",
+        "operation": "set",
         "value": 3,
         "source": "effect:a"
       },
       {
         "target": "ap",
-        "op": "set",
+        "operation": "set",
         "value": 1,
         "source": "effect:b"
       }
@@ -162,13 +162,13 @@
     "modifiers": [
       {
         "target": "hp",
-        "op": "mul",
+        "operation": "multiply",
         "value": 2,
         "source": "effect:a"
       },
       {
         "target": "hp",
-        "op": "mul",
+        "operation": "multiply",
         "value": 3,
         "source": "effect:b"
       }
@@ -184,7 +184,7 @@
     "modifiers": [
       {
         "target": "hp",
-        "op": "mul",
+        "operation": "multiply",
         "value": 1.5,
         "source": "effect:a"
       }
@@ -200,19 +200,19 @@
     "modifiers": [
       {
         "target": "hp",
-        "op": "mul",
+        "operation": "multiply",
         "value": 2,
         "source": "effect:c"
       },
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 4,
         "source": "perk:a"
       },
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 2,
         "source": "item:b"
       }
@@ -228,13 +228,13 @@
     "modifiers": [
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 3,
         "source": "perk:x"
       },
       {
         "target": "mp",
-        "op": "add",
+        "operation": "add",
         "value": 5,
         "source": "perk:x"
       }
@@ -250,13 +250,13 @@
     "modifiers": [
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 5,
         "source": "perk:x"
       },
       {
         "target": "hp",
-        "op": "mul",
+        "operation": "multiply",
         "value": 2,
         "source": "perk:x"
       }
@@ -272,7 +272,7 @@
     "modifiers": [
       {
         "target": "prone",
-        "op": "grant",
+        "operation": "grant",
         "value": 1,
         "source": "condition:prone"
       }
@@ -294,13 +294,13 @@
     "modifiers": [
       {
         "target": "prone",
-        "op": "grant",
+        "operation": "grant",
         "value": 1,
         "source": "effect:knockdown"
       },
       {
         "target": "prone",
-        "op": "grant",
+        "operation": "grant",
         "value": 1,
         "source": "perk:clumsy"
       }
@@ -321,7 +321,7 @@
     "modifiers": [
       {
         "target": "prone",
-        "op": "grant",
+        "operation": "grant",
         "value": 1,
         "source": "condition:prone"
       }
@@ -341,19 +341,19 @@
     "modifiers": [
       {
         "target": "fire",
-        "op": "resist",
+        "operation": "resist",
         "value": 4,
         "source": "item:ring"
       },
       {
         "target": "fire",
-        "op": "resist",
+        "operation": "resist",
         "value": 3,
         "source": "perk:salamander"
       },
       {
         "target": "frost",
-        "op": "resist",
+        "operation": "resist",
         "value": 5,
         "source": "item:cloak"
       }
@@ -373,13 +373,13 @@
     "modifiers": [
       {
         "target": "fire",
-        "op": "resist",
+        "operation": "resist",
         "value": 4,
         "source": "item:ring"
       },
       {
         "target": "fire",
-        "op": "resist",
+        "operation": "resist",
         "value": 6,
         "source": "item:ring"
       }
@@ -399,7 +399,7 @@
     "modifiers": [
       {
         "target": "fire",
-        "op": "resist",
+        "operation": "resist",
         "value": 5,
         "source": "item:ring"
       }
@@ -416,7 +416,7 @@
     "modifiers": [
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 5,
         "source": "effect:bless",
         "duration": "turns",
@@ -435,7 +435,7 @@
     "modifiers": [
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 5,
         "source": "effect:bless",
         "duration": "turns",
@@ -454,7 +454,7 @@
     "modifiers": [
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 5,
         "source": "perk:tough",
         "duration": "permanent"
@@ -474,14 +474,14 @@
     "modifiers": [
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 5,
         "source": "perk:tough",
         "duration": "while_applied"
       },
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 2,
         "source": "item:ring",
         "duration": "while_equipped"
@@ -499,7 +499,7 @@
     "modifiers": [
       {
         "target": "ap",
-        "op": "set",
+        "operation": "set",
         "value": 0,
         "source": "effect:stun",
         "duration": "turns",
@@ -507,7 +507,7 @@
       },
       {
         "target": "ap",
-        "op": "add",
+        "operation": "add",
         "value": 2,
         "source": "perk:quick"
       }
@@ -522,13 +522,13 @@
     "modifiers": [
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 8,
         "source": "perk:tough"
       },
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 4,
         "source": "perk:tough"
       }
@@ -544,14 +544,14 @@
     "modifiers": [
       {
         "target": "str",
-        "op": "add",
+        "operation": "add",
         "value": 10,
         "source": "effect:fortify_strength",
         "origin": "core:origin/alchemy"
       },
       {
         "target": "str",
-        "op": "add",
+        "operation": "add",
         "value": 10,
         "source": "effect:fortify_strength",
         "origin": "core:origin/arcane"
@@ -568,14 +568,14 @@
     "modifiers": [
       {
         "target": "str",
-        "op": "add",
+        "operation": "add",
         "value": 10,
         "source": "effect:fortify_strength",
         "origin": "core:origin/alchemy"
       },
       {
         "target": "str",
-        "op": "add",
+        "operation": "add",
         "value": 5,
         "source": "effect:giant_strength",
         "origin": "core:origin/alchemy"
@@ -592,14 +592,14 @@
     "modifiers": [
       {
         "target": "str",
-        "op": "add",
+        "operation": "add",
         "value": 5,
         "source": "effect:giant_strength",
         "origin": "core:origin/alchemy"
       },
       {
         "target": "str",
-        "op": "add",
+        "operation": "add",
         "value": 10,
         "source": "effect:fortify_strength",
         "origin": "core:origin/alchemy"
@@ -616,14 +616,14 @@
     "modifiers": [
       {
         "target": "str",
-        "op": "add",
+        "operation": "add",
         "value": -3,
         "source": "effect:weakness",
         "origin": "core:origin/alchemy"
       },
       {
         "target": "str",
-        "op": "add",
+        "operation": "add",
         "value": -5,
         "source": "effect:poison_str",
         "origin": "core:origin/alchemy"
@@ -640,21 +640,21 @@
     "modifiers": [
       {
         "target": "str",
-        "op": "add",
+        "operation": "add",
         "value": 10,
         "source": "effect:fortify_strength",
         "origin": "core:origin/alchemy"
       },
       {
         "target": "str",
-        "op": "add",
+        "operation": "add",
         "value": -3,
         "source": "effect:weakness",
         "origin": "core:origin/alchemy"
       },
       {
         "target": "str",
-        "op": "add",
+        "operation": "add",
         "value": 5,
         "source": "effect:giant_strength",
         "origin": "core:origin/alchemy"
@@ -671,14 +671,14 @@
     "modifiers": [
       {
         "target": "str",
-        "op": "mul",
+        "operation": "multiply",
         "value": 1.5,
         "source": "spell:might",
         "origin": "core:origin/arcane"
       },
       {
         "target": "str",
-        "op": "mul",
+        "operation": "multiply",
         "value": 2,
         "source": "spell:titan",
         "origin": "core:origin/arcane"
@@ -695,14 +695,14 @@
     "modifiers": [
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 8,
         "source": "perk:tough",
         "origin": "core:origin/trained"
       },
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 2,
         "source": "perk:hardy",
         "origin": "core:origin/trained"
@@ -719,13 +719,13 @@
     "modifiers": [
       {
         "target": "str",
-        "op": "add",
+        "operation": "add",
         "value": 10,
         "source": "effect:fortify_strength"
       },
       {
         "target": "str",
-        "op": "add",
+        "operation": "add",
         "value": 5,
         "source": "effect:giant_strength"
       }
@@ -745,14 +745,14 @@
     "modifiers": [
       {
         "target": "fire",
-        "op": "resist",
+        "operation": "resist",
         "value": 4,
         "source": "item:ring_a",
         "origin": "core:origin/enchantment"
       },
       {
         "target": "fire",
-        "op": "resist",
+        "operation": "resist",
         "value": 6,
         "source": "item:ring_b",
         "origin": "core:origin/enchantment"
@@ -769,14 +769,14 @@
     "modifiers": [
       {
         "target": "str",
-        "op": "add",
+        "operation": "add",
         "value": 10,
         "source": "effect:fortify_strength",
         "origin": "core:origin/alchemy"
       },
       {
         "target": "end",
-        "op": "add",
+        "operation": "add",
         "value": 10,
         "source": "effect:fortify_endurance",
         "origin": "core:origin/alchemy"

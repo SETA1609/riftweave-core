@@ -45,7 +45,7 @@ def run_check(spec, vector, hazard=None):
     actor = vector["actor"]
     modifiers = [m for m in vector.get("modifiers", []) if m["target"] == skill]
     if spec.get("difficulty"):
-        modifiers.append({"target": skill, "op": "add", "value": spec["difficulty"], "source": f"hazard:{vector['hazard']}"})
+        modifiers.append({"target": skill, "operation": "add", "value": spec["difficulty"], "source": f"hazard:{vector['hazard']}"})
     return run_resolution(
         {
             "actor": {"skills": {skill: actor["skills"][skill]}, "attributes": actor.get("attributes", {})},
@@ -58,7 +58,7 @@ def run_check(spec, vector, hazard=None):
 
 def run_hazard(vector):
     hazard = hazard_row(vector["hazard"])
-    op = vector["op"]
+    op = vector["operation"]
     if op == "detect":
         return run_check(hazard["detect"], vector, hazard)
     if op == "disarm":
@@ -69,7 +69,7 @@ def run_hazard(vector):
     if op == "spell":
         return run_spell(hazard, vector["spell"])
     if op != "trigger":
-        return {"error": f"op {op!r} is not defined"}
+        return {"error": f"operation {op!r} is not defined"}
 
     avoided, half = False, False
     if "avoid" in hazard and "roll" in vector:

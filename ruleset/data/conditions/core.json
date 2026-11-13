@@ -17,14 +17,14 @@
       "modifiers": [
         {
           "target": "blinded",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "duration": "while_applied",
           "source": "condition:blinded"
         },
         {
           "target": "perception_checks",
-          "op": "add",
+          "operation": "add",
           "value": -20,
           "duration": "while_applied",
           "source": "condition:blinded"
@@ -44,14 +44,14 @@
       "modifiers": [
         {
           "target": "charmed",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "duration": "while_applied",
           "source": "condition:charmed"
         },
         {
           "target": "social_defense",
-          "op": "add",
+          "operation": "add",
           "value": -20,
           "duration": "while_applied",
           "source": "condition:charmed"
@@ -71,14 +71,14 @@
       "modifiers": [
         {
           "target": "deafened",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "duration": "while_applied",
           "source": "condition:deafened"
         },
         {
           "target": "initiative",
-          "op": "add",
+          "operation": "add",
           "value": -10,
           "duration": "while_applied",
           "source": "condition:deafened"
@@ -101,14 +101,14 @@
       "modifiers": [
         {
           "target": "frightened",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "duration": "while_applied",
           "source": "condition:frightened"
         },
         {
           "target": "checks",
-          "op": "add",
+          "operation": "add",
           "value": -10,
           "duration": "while_applied",
           "source": "condition:frightened"
@@ -128,21 +128,21 @@
       "modifiers": [
         {
           "target": "grappled",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "duration": "while_applied",
           "source": "condition:grappled"
         },
         {
           "target": "speed",
-          "op": "set",
+          "operation": "set",
           "value": 0,
           "duration": "while_applied",
           "source": "condition:grappled"
         },
         {
           "target": "agility_checks",
-          "op": "add",
+          "operation": "add",
           "value": -10,
           "duration": "while_applied",
           "source": "condition:grappled"
@@ -168,14 +168,14 @@
       "modifiers": [
         {
           "target": "incapacitated",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "duration": "while_applied",
           "source": "condition:incapacitated"
         },
         {
           "target": "ap",
-          "op": "set",
+          "operation": "set",
           "value": 0,
           "duration": "while_applied",
           "source": "condition:incapacitated"
@@ -195,7 +195,7 @@
       "modifiers": [
         {
           "target": "invisible",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "duration": "while_applied",
           "source": "condition:invisible"
@@ -224,14 +224,14 @@
       "modifiers": [
         {
           "target": "ap",
-          "op": "set",
+          "operation": "set",
           "value": 0,
           "duration": "while_applied",
           "source": "condition:paralyzed"
         },
         {
           "target": "paralyzed",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "duration": "while_applied",
           "source": "condition:paralyzed"
@@ -254,119 +254,119 @@
       "modifiers": [
         {
           "target": "petrified",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "duration": "while_applied",
           "source": "condition:petrified"
         },
         {
           "target": "ap",
-          "op": "set",
+          "operation": "set",
           "value": 0,
           "duration": "while_applied",
           "source": "condition:petrified"
         },
         {
           "target": "bludgeoning",
-          "op": "resist",
+          "operation": "resist",
           "value": 20,
           "duration": "while_applied",
           "source": "condition:petrified"
         },
         {
           "target": "piercing",
-          "op": "resist",
+          "operation": "resist",
           "value": 20,
           "duration": "while_applied",
           "source": "condition:petrified"
         },
         {
           "target": "slashing",
-          "op": "resist",
+          "operation": "resist",
           "value": 20,
           "duration": "while_applied",
           "source": "condition:petrified"
         },
         {
           "target": "fire",
-          "op": "resist",
+          "operation": "resist",
           "value": 20,
           "duration": "while_applied",
           "source": "condition:petrified"
         },
         {
           "target": "frost",
-          "op": "resist",
+          "operation": "resist",
           "value": 20,
           "duration": "while_applied",
           "source": "condition:petrified"
         },
         {
           "target": "shock",
-          "op": "resist",
+          "operation": "resist",
           "value": 20,
           "duration": "while_applied",
           "source": "condition:petrified"
         },
         {
           "target": "acid",
-          "op": "resist",
+          "operation": "resist",
           "value": 20,
           "duration": "while_applied",
           "source": "condition:petrified"
         },
         {
           "target": "poison",
-          "op": "resist",
+          "operation": "resist",
           "value": 20,
           "duration": "while_applied",
           "source": "condition:petrified"
         },
         {
           "target": "necrotic",
-          "op": "resist",
+          "operation": "resist",
           "value": 20,
           "duration": "while_applied",
           "source": "condition:petrified"
         },
         {
           "target": "radiant",
-          "op": "resist",
+          "operation": "resist",
           "value": 20,
           "duration": "while_applied",
           "source": "condition:petrified"
         },
         {
           "target": "psychic",
-          "op": "resist",
+          "operation": "resist",
           "value": 20,
           "duration": "while_applied",
           "source": "condition:petrified"
         },
         {
           "target": "force",
-          "op": "resist",
+          "operation": "resist",
           "value": 20,
           "duration": "while_applied",
           "source": "condition:petrified"
         },
         {
           "target": "thunder",
-          "op": "resist",
+          "operation": "resist",
           "value": 20,
           "duration": "while_applied",
           "source": "condition:petrified"
         },
         {
           "target": "poison_resistance",
-          "op": "add",
+          "operation": "add",
           "value": 100,
           "duration": "while_applied",
           "source": "condition:petrified"
         },
         {
           "target": "disease_resistance",
-          "op": "add",
+          "operation": "add",
           "value": 100,
           "duration": "while_applied",
           "source": "condition:petrified"
@@ -387,7 +387,7 @@
       "modifiers": [
         {
           "target": "poisoned",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "duration": "while_applied",
           "source": "condition:poisoned"
@@ -409,7 +409,7 @@
       "modifiers": [
         {
           "target": "prone",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "duration": "while_applied",
           "source": "condition:prone"
@@ -433,21 +433,21 @@
       "modifiers": [
         {
           "target": "restrained",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "duration": "while_applied",
           "source": "condition:restrained"
         },
         {
           "target": "speed",
-          "op": "set",
+          "operation": "set",
           "value": 0,
           "duration": "while_applied",
           "source": "condition:restrained"
         },
         {
           "target": "agility_checks",
-          "op": "add",
+          "operation": "add",
           "value": -20,
           "duration": "while_applied",
           "source": "condition:restrained"
@@ -471,21 +471,21 @@
       "modifiers": [
         {
           "target": "stunned",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "duration": "while_applied",
           "source": "condition:stunned"
         },
         {
           "target": "ap",
-          "op": "set",
+          "operation": "set",
           "value": 0,
           "duration": "while_applied",
           "source": "condition:stunned"
         },
         {
           "target": "checks",
-          "op": "add",
+          "operation": "add",
           "value": -20,
           "duration": "while_applied",
           "source": "condition:stunned"
@@ -509,14 +509,14 @@
       "modifiers": [
         {
           "target": "unconscious",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "duration": "while_applied",
           "source": "condition:unconscious"
         },
         {
           "target": "ap",
-          "op": "set",
+          "operation": "set",
           "value": 0,
           "duration": "while_applied",
           "source": "condition:unconscious"
@@ -543,14 +543,14 @@
       "modifiers": [
         {
           "target": "exhaustion",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "duration": "while_applied",
           "source": "condition:exhaustion"
         },
         {
           "target": "checks",
-          "op": "add",
+          "operation": "add",
           "value": -10,
           "duration": "while_applied",
           "source": "condition:exhaustion"
@@ -571,7 +571,7 @@
       "modifiers": [
         {
           "target": "burning",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "duration": "while_applied",
           "source": "condition:burning"
@@ -592,7 +592,7 @@
       "modifiers": [
         {
           "target": "bleeding",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "duration": "while_applied",
           "source": "condition:bleeding"
@@ -613,28 +613,28 @@
       "modifiers": [
         {
           "target": "slowed",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "duration": "while_applied",
           "source": "condition:slowed"
         },
         {
           "target": "speed",
-          "op": "mul",
+          "operation": "multiply",
           "value": 0.5,
           "duration": "while_applied",
           "source": "condition:slowed"
         },
         {
           "target": "agility_checks",
-          "op": "add",
+          "operation": "add",
           "value": -10,
           "duration": "while_applied",
           "source": "condition:slowed"
         },
         {
           "target": "action_cost",
-          "op": "add",
+          "operation": "add",
           "value": 1,
           "duration": "while_applied",
           "source": "condition:slowed"
@@ -654,28 +654,28 @@
       "modifiers": [
         {
           "target": "silenced",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "duration": "while_applied",
           "source": "condition:silenced"
         },
         {
           "target": "persuasion",
-          "op": "add",
+          "operation": "add",
           "value": -20,
           "duration": "while_applied",
           "source": "condition:silenced"
         },
         {
           "target": "deception",
-          "op": "add",
+          "operation": "add",
           "value": -20,
           "duration": "while_applied",
           "source": "condition:silenced"
         },
         {
           "target": "intimidation",
-          "op": "add",
+          "operation": "add",
           "value": -20,
           "duration": "while_applied",
           "source": "condition:silenced"
@@ -697,7 +697,7 @@
       "modifiers": [
         {
           "target": "diseased",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "duration": "while_applied",
           "source": "condition:diseased"
@@ -717,63 +717,63 @@
       "modifiers": [
         {
           "target": "cursed",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "duration": "while_applied",
           "source": "condition:cursed"
         },
         {
           "target": "str",
-          "op": "add",
+          "operation": "add",
           "value": -2,
           "duration": "while_applied",
           "source": "condition:cursed"
         },
         {
           "target": "per",
-          "op": "add",
+          "operation": "add",
           "value": -2,
           "duration": "while_applied",
           "source": "condition:cursed"
         },
         {
           "target": "end",
-          "op": "add",
+          "operation": "add",
           "value": -2,
           "duration": "while_applied",
           "source": "condition:cursed"
         },
         {
           "target": "int",
-          "op": "add",
+          "operation": "add",
           "value": -2,
           "duration": "while_applied",
           "source": "condition:cursed"
         },
         {
           "target": "wil",
-          "op": "add",
+          "operation": "add",
           "value": -2,
           "duration": "while_applied",
           "source": "condition:cursed"
         },
         {
           "target": "agi",
-          "op": "add",
+          "operation": "add",
           "value": -2,
           "duration": "while_applied",
           "source": "condition:cursed"
         },
         {
           "target": "cha",
-          "op": "add",
+          "operation": "add",
           "value": -2,
           "duration": "while_applied",
           "source": "condition:cursed"
         },
         {
           "target": "lck",
-          "op": "add",
+          "operation": "add",
           "value": -2,
           "duration": "while_applied",
           "source": "condition:cursed"
@@ -793,28 +793,28 @@
       "modifiers": [
         {
           "target": "exposed",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "duration": "while_applied",
           "source": "condition:exposed"
         },
         {
           "target": "evasion",
-          "op": "add",
+          "operation": "add",
           "value": -10,
           "duration": "while_applied",
           "source": "condition:exposed"
         },
         {
           "target": "armor_dr",
-          "op": "mul",
+          "operation": "multiply",
           "value": 0.5,
           "duration": "while_applied",
           "source": "condition:exposed"
         },
         {
           "target": "incoming_damage",
-          "op": "mul",
+          "operation": "multiply",
           "value": 1.25,
           "duration": "while_applied",
           "source": "condition:exposed"
@@ -837,7 +837,7 @@
       "modifiers": [
         {
           "target": "taunted",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "duration": "while_applied",
           "source": "condition:taunted"
@@ -860,7 +860,7 @@
       "modifiers": [
         {
           "target": "staggered",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "duration": "while_applied",
           "source": "condition:staggered"
@@ -876,21 +876,21 @@
       "modifiers": [
         {
           "target": "overdosed",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "duration": "while_applied",
           "source": "condition:overdosed"
         },
         {
           "target": "potion_magnitude",
-          "op": "mul",
+          "operation": "multiply",
           "value": 0.5,
           "duration": "while_applied",
           "source": "condition:overdosed"
         },
         {
           "target": "speed",
-          "op": "add",
+          "operation": "add",
           "value": -1,
           "duration": "while_applied",
           "source": "condition:overdosed"

@@ -18,7 +18,7 @@ type Barter struct {
 
 // Input is the `economy` command's input; `op` says which fields it reads.
 type Input struct {
-	Operation    string     `json:"op"`
+	Operation    string     `json:"operation"`
 	Cost         *data.Cost `json:"cost"`
 	Side         string     `json:"side"`
 	Merchant     string     `json:"merchant"`
@@ -57,7 +57,7 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	case "trade":
 		return trade(ruleset, input)
 	}
-	return Result{}, &data.NotDefinedError{Kind: "economy op", Key: input.Operation}
+	return Result{}, &data.NotDefinedError{Kind: "economy operation", Key: input.Operation}
 }
 
 func trade(ruleset *data.Ruleset, input Input) (Result, error) {

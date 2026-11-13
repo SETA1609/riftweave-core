@@ -30,8 +30,8 @@ def level(perk):
 
 
 def emitted(perk):
-    """The (target, op) pairs a perk's modifiers name."""
-    return frozenset((m["target"], m["op"]) for m in perk.get("modifiers", []))
+    """The (target, operation) pairs a perk's modifiers name."""
+    return frozenset((m["target"], m["operation"]) for m in perk.get("modifiers", []))
 
 
 class TestPerkCatalogue(unittest.TestCase):
@@ -109,7 +109,7 @@ class TestOneStatementOfAFeature(unittest.TestCase):
 
     def test_gifted_adds_one_to_every_attribute(self):
         gifted = next(f for f in features() if f["key"] == "gifted")
-        adds = {m["target"]: m["value"] for m in gifted["modifiers"] if m["op"] == "add"}
+        adds = {m["target"]: m["value"] for m in gifted["modifiers"] if m["operation"] == "add"}
         self.assertEqual({ability: adds.get(ability) for ability in ABILITIES}, dict.fromkeys(ABILITIES, 1))
 
     def test_a_phobia_grants_a_flag_that_frightens(self):

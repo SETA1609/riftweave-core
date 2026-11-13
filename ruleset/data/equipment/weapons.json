@@ -2,6 +2,6 @@
   "$schema": "../../schemas/equipment.schema.json",
   "equipment": [
     { "key": "cursed_iron_longsword", "base": "core:weapon_base/longsword", "overrides": { "enchantment_slots": -1, "phase": "earth", "cost": { "quantity": 8, "unit": "gp" } } },
-    { "key": "elven_wood_longbow",    "base": "core:weapon_base/longbow",  "overrides": { "enchantment_slots": 2, "phase": "wood", "effect_magnitude_mult": 1.2, "cost": { "quantity": 200, "unit": "gp" }, "default_materials": ["core:material/elven_wood"] } }
+    { "key": "elven_wood_longbow",    "base": "core:weapon_base/longbow",  "overrides": { "enchantment_slots": 2, "phase": "wood", "effect_magnitude_multiplier": 1.2, "cost": { "quantity": 200, "unit": "gp" }, "default_materials": ["core:material/elven_wood"] } }
   ]
 }

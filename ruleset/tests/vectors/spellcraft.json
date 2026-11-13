@@ -1,56 +1,56 @@
 [
   {
     "name": "craft_a_fire_burst_from_what_fire_bolt_taught",
-    "op": "craft",
+    "operation": "craft",
     "caster": { "known": ["core:effect/damage_fire"], "skills": { "red_magic": 40 } },
     "spell": { "color": "red", "effects": [ { "effect": "core:effect/damage_fire", "magnitude": 28, "target": "area", "radius": 4 } ] },
     "expect": { "valid": true, "rejected": [], "mana": 30, "cast_threshold": 30, "craft_threshold": 38, "skill_ok": true }
   },
   {
     "name": "craft_rejects_an_unknown_effect",
-    "op": "craft",
+    "operation": "craft",
     "caster": { "known": ["core:effect/damage_fire"], "skills": { "red_magic": 40 } },
     "spell": { "color": "red", "effects": [ { "effect": "core:effect/damage_frost", "magnitude": 8, "target": "ranged" } ] },
     "expect": { "valid": false, "rejected": [ { "effect": "core:effect/damage_frost", "reason": "unknown" } ], "mana": null, "cast_threshold": null, "craft_threshold": null }
   },
   {
     "name": "craft_rejects_an_uncraftable_effect_even_when_known",
-    "op": "craft",
+    "operation": "craft",
     "caster": { "known": ["core:effect/bound_weapon"], "skills": { "orange_magic": 60 } },
     "spell": { "color": "orange", "effects": [ { "effect": "core:effect/bound_weapon", "parameter": "core:weapon/longsword", "magnitude": 1, "duration": 60, "target": "self" } ] },
     "expect": { "valid": false, "rejected": [ { "effect": "core:effect/bound_weapon", "reason": "uncraftable" } ] }
   },
   {
     "name": "craft_rejects_a_mana_regen",
-    "op": "craft",
+    "operation": "craft",
     "caster": { "known": ["core:effect/restore_resource"], "skills": { "green_magic": 60 } },
     "spell": { "color": "green", "effects": [ { "effect": "core:effect/restore_resource", "parameter": "mana", "magnitude": 2, "duration": 10, "target": "self" } ] },
     "expect": { "valid": false, "rejected": [ { "effect": "core:effect/restore_resource", "reason": "excluded_parameter" } ], "mana": null }
   },
   {
     "name": "craft_allows_a_health_regen",
-    "op": "craft",
+    "operation": "craft",
     "caster": { "known": ["core:effect/restore_resource"], "skills": { "green_magic": 30 } },
     "spell": { "color": "green", "effects": [ { "effect": "core:effect/restore_resource", "parameter": "health", "magnitude": 2, "duration": 20, "target": "touch" } ] },
     "expect": { "valid": true, "rejected": [], "mana": 20, "cast_threshold": 20, "craft_threshold": 25, "skill_ok": true }
   },
   {
     "name": "craft_allows_a_mana_leech",
-    "op": "craft",
+    "operation": "craft",
     "caster": { "known": ["core:effect/mana_leech"], "skills": { "violet_magic": 10 } },
     "spell": { "color": "violet", "effects": [ { "effect": "core:effect/mana_leech", "magnitude": 5, "duration": 10, "target": "ranged" } ] },
     "expect": { "valid": true, "rejected": [], "mana": 4, "cast_threshold": 4, "craft_threshold": 5, "skill_ok": true }
   },
   {
     "name": "craft_rejects_an_effect_of_another_color",
-    "op": "craft",
+    "operation": "craft",
     "caster": { "known": ["core:effect/damage_fire"], "skills": { "blue_magic": 60 } },
     "spell": { "color": "blue", "effects": [ { "effect": "core:effect/damage_fire", "magnitude": 8, "target": "ranged" } ] },
     "expect": { "valid": false, "rejected": [ { "effect": "core:effect/damage_fire", "reason": "off_color" } ] }
   },
   {
     "name": "craft_reports_each_failing_effect_once_in_order",
-    "op": "craft",
+    "operation": "craft",
     "caster": { "known": ["core:effect/damage_fire", "core:effect/summon"], "skills": { "red_magic": 60 } },
     "spell": { "color": "red", "effects": [
       { "effect": "core:effect/damage_fire", "magnitude": 8, "target": "ranged" },
@@ -61,42 +61,42 @@
   },
   {
     "name": "craft_below_the_craft_threshold_is_not_valid",
-    "op": "craft",
+    "operation": "craft",
     "caster": { "known": ["core:effect/damage_fire"], "skills": { "red_magic": 37 } },
     "spell": { "color": "red", "effects": [ { "effect": "core:effect/damage_fire", "magnitude": 28, "target": "area", "radius": 4 } ] },
     "expect": { "valid": false, "rejected": [], "mana": 30, "craft_threshold": 38, "skill_ok": false }
   },
   {
     "name": "learning_fire_bolt_teaches_its_fire",
-    "op": "learn",
+    "operation": "learn",
     "caster": { "known": [] },
     "spell": "fire_bolt",
     "expect": { "taught": ["core:effect/damage_fire"], "known": ["core:effect/damage_fire"] }
   },
   {
     "name": "learning_mend_wounds_teaches_restore_resource",
-    "op": "learn",
+    "operation": "learn",
     "caster": { "known": ["core:effect/damage_fire"] },
     "spell": "mend_wounds",
     "expect": { "taught": ["core:effect/restore_resource"], "known": ["core:effect/damage_fire", "core:effect/restore_resource"] }
   },
   {
     "name": "learning_bound_blade_teaches_nothing_to_craft",
-    "op": "learn",
+    "operation": "learn",
     "caster": { "known": ["core:effect/damage_fire"] },
     "spell": "bound_blade",
     "expect": { "taught": [], "known": ["core:effect/damage_fire"] }
   },
   {
     "name": "learning_a_known_effect_teaches_nothing_new",
-    "op": "learn",
+    "operation": "learn",
     "caster": { "known": ["core:effect/damage_fire"] },
     "spell": "fire_burst",
     "expect": { "taught": [], "known": ["core:effect/damage_fire"] }
   },
   {
     "name": "research_on_a_passed_check_teaches_one_effect",
-    "op": "research",
+    "operation": "research",
     "caster": { "known": ["core:effect/damage_fire"], "skills": { "red_magic": 50 }, "attributes": { "lck": 5 } },
     "effect": "core:effect/damage_frost",
     "roll": 20,
@@ -104,7 +104,7 @@
   },
   {
     "name": "research_on_a_failed_check_spends_the_time_and_teaches_nothing",
-    "op": "research",
+    "operation": "research",
     "caster": { "known": [], "skills": { "red_magic": 50 }, "attributes": { "lck": 5 } },
     "effect": "core:effect/damage_frost",
     "roll": 80,
@@ -112,16 +112,16 @@
   },
   {
     "name": "research_reads_the_modifiers_on_the_skill",
-    "op": "research",
+    "operation": "research",
     "caster": { "known": [], "skills": { "red_magic": 50 }, "attributes": { "lck": 5 } },
     "effect": "core:effect/damage_frost",
-    "modifiers": [ { "target": "red_magic", "op": "add", "value": 20, "source": "item:tome" } ],
+    "modifiers": [ { "target": "red_magic", "operation": "add", "value": 20, "source": "item:tome" } ],
     "roll": 65,
     "expect": { "outcome": "learned", "known": ["core:effect/damage_frost"] }
   },
   {
     "name": "research_refuses_an_uncraftable_effect",
-    "op": "research",
+    "operation": "research",
     "caster": { "known": [], "skills": { "orange_magic": 90 }, "attributes": { "lck": 5 } },
     "effect": "core:effect/summon",
     "color": "orange",
@@ -130,7 +130,7 @@
   },
   {
     "name": "research_refuses_below_the_effects_craft_threshold",
-    "op": "research",
+    "operation": "research",
     "caster": { "known": [], "skills": { "blue_magic": 4 }, "attributes": { "lck": 5 } },
     "effect": "core:effect/paralyze",
     "roll": 1,
@@ -138,7 +138,7 @@
   },
   {
     "name": "research_refuses_a_known_effect",
-    "op": "research",
+    "operation": "research",
     "caster": { "known": ["core:effect/damage_fire"], "skills": { "red_magic": 50 }, "attributes": { "lck": 5 } },
     "effect": "core:effect/damage_fire",
     "roll": 20,
@@ -146,7 +146,7 @@
   },
   {
     "name": "research_of_a_colorless_effect_needs_a_color",
-    "op": "research",
+    "operation": "research",
     "caster": { "known": [], "skills": { "green_magic": 50 }, "attributes": { "lck": 5 } },
     "effect": "core:effect/restore_resource",
     "roll": 20,
@@ -154,7 +154,7 @@
   },
   {
     "name": "research_of_a_colorless_effect_rolls_the_named_color",
-    "op": "research",
+    "operation": "research",
     "caster": { "known": [], "skills": { "green_magic": 50 }, "attributes": { "lck": 5 } },
     "effect": "core:effect/restore_resource",
     "color": "green",

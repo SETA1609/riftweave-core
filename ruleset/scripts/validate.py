@@ -628,7 +628,10 @@ MODIFIER_TARGET_TABLES = {
     "conditions": ("key", "flag"),
     "damage_types": ("key", "damage_type"),
 }
-MODIFIER_OPS = {"add": "number", "mul": "number", "set": "number", "grant": "flag", "resist": "damage_type"}
+MODIFIER_OPERATIONS = {"add": "number", "multiply": "number", "set": "number", "grant": "flag", "resist": "damage_type"}
+def modifier_operation(node):
+    """A modifier's operation (docs/core/modifier.md)."""
+    return node.get("operation")
 
 
 def collect_vector_files():
@@ -640,9 +643,9 @@ def collect_vector_files():
 
 
 def _walk_modifiers(node):
-    """Yield every modifier: an object with a known op and a string target."""
+    """Yield every modifier: an object with a known operation and a string target."""
     if isinstance(node, dict):
-        if node.get("op") in MODIFIER_OPS and isinstance(node.get("target"), str):
+        if modifier_operation(node) in MODIFIER_OPERATIONS and isinstance(node.get("target"), str):
             yield node
         for value in node.values():
             yield from _walk_modifiers(value)
@@ -687,15 +690,15 @@ def check_modifier_targets(data_files, module_data_files=None, vector_files=()):
         if data is None:
             continue
         for mod in _walk_modifiers(data):
-            target, op = mod["target"], mod["op"]
+            target, op = mod["target"], modifier_operation(mod)
             named.add(target)
             if target not in meanings:
                 errors.append(f"{_rel(fp, ROOT)}: modifier target {target} names no row")
                 continue
-            fitting = sorted({collection for kind, collection in meanings[target] if kind == MODIFIER_OPS[op]})
+            fitting = sorted({collection for kind, collection in meanings[target] if kind == MODIFIER_OPERATIONS[op]})
             if not fitting:
                 kinds = ", ".join(sorted({kind for kind, _ in meanings[target]}))
-                errors.append(f"{_rel(fp, ROOT)}: {op} on {target} needs a {MODIFIER_OPS[op]}, but {target} is a {kinds}")
+                errors.append(f"{_rel(fp, ROOT)}: {op} on {target} needs a {MODIFIER_OPERATIONS[op]}, but {target} is a {kinds}")
             elif len(fitting) > 1:
                 errors.append(f"{_rel(fp, ROOT)}: {op} on {target} is ambiguous: it is a key of {', '.join(fitting)}")
 

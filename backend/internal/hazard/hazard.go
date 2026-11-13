@@ -22,7 +22,7 @@ type Input struct {
 	Roll       *int64              `json:"roll"`
 	Hazard     string              `json:"hazard"`
 	Spell      string              `json:"spell"`
-	Operation  string              `json:"op"`
+	Operation  string              `json:"operation"`
 	Modifiers  []modifier.Modifier `json:"modifiers"`
 	Actor      actor.Actor         `json:"actor"`
 	DamageRoll int64               `json:"damage_roll"`
@@ -122,7 +122,7 @@ func Run(ruleset *data.Ruleset, input Input) (any, error) {
 	case "spell":
 		return spell(ruleset, &input, hazard)
 	}
-	return nil, &data.NotDefinedError{Kind: "hazard op", Key: input.Operation}
+	return nil, &data.NotDefinedError{Kind: "hazard operation", Key: input.Operation}
 }
 
 // trigger is a hazard going off. Without an avoid check, or without a roll for it, the

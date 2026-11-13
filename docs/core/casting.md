@@ -65,7 +65,7 @@ reaches it is uncraftable. [A]
 
 ## Spellcraft
 
-`spellcraft` checks spell knowledge ([magic.md](../modules/magic.md#spell-knowledge)), by `op`:
+`spellcraft` checks spell knowledge ([magic.md](../modules/magic.md#spell-knowledge)), by `operation`:
 
 ```
 craft     caster.known (effect refs), caster.skills, spell { color, effects }
@@ -107,7 +107,7 @@ paid      = max( minimum_paid, base with the modifiers on spell_cost applied )  
 ```
 
 - The discount reads the caster's own skill, before the armor penalty and the modifiers on the skill. [A]
-- The modifiers on `spell_cost` (a perk, a robe) stack by [modifier.md](modifier.md), so a `mul` floors. [A]
+- The modifiers on `spell_cost` (a perk, a robe) stack by [modifier.md](modifier.md), so a `multiply` floors. [A]
 - The cast and craft thresholds read the cost before the discount ([magic.md](../modules/magic.md#the-casters-side)).
 
 ## Result

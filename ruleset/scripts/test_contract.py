@@ -76,7 +76,7 @@ class TestContract(unittest.TestCase):
                 # A command whose rule lands in another pull request has no vectors or doc
                 # yet; its doc is checked once its vectors exist.
                 if name in self.live:
-                    self.assertTrue((REPO_ROOT / contract["doc"]).is_file(), contract["doc"])
+                    self.assertTrue((REPO_ROOT / contract["documentation"]).is_file(), contract["documentation"])
 
     def test_every_vector_function_has_a_contract(self):
         functions = {vector_function(p, v) for p, v in discover_vectors(VECTOR_DIR)}

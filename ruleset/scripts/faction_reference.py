@@ -137,19 +137,24 @@ def emit_modifiers(actor):
     return modifiers, suspended
 
 
+def operation_of(modifier):
+    """A modifier's operation (docs/core/modifier.md)."""
+    return modifier["operation"]
+
+
 def apply_modifiers(base, modifiers):
     """Kernel stacking (docs/core/contract.md): same source does not stack, the
-    latest wins; different sources add; mul after add; set replaces."""
+    latest wins; different sources add; multiply after add; set replaces."""
     by_source = {}
     for m in modifiers:
-        by_source[(m["source"], m["op"])] = m
+        by_source[(m["source"], operation_of(m))] = m
     kept = list(by_source.values())
-    value = base + sum(m["value"] for m in kept if m["op"] == "add")
+    value = base + sum(m["value"] for m in kept if operation_of(m) == "add")
     for m in kept:
-        if m["op"] == "mul":
+        if operation_of(m) == "multiply":
             value = value * m["value"]
     for m in kept:
-        if m["op"] == "set":
+        if operation_of(m) == "set":
             value = m["value"]
     return value
 

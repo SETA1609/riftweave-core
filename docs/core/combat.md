@@ -27,7 +27,7 @@ One attack, in order, from the roll to the HP lost. Every step reads the actor s
               halved (rounded down) against a type without armor_dr_applies
 3. damage     damage = the caller's rolled damage dice
               if the attack names an ability: damage = max(damage + attribute_modifier, 0)
-              if a called shot: damage = floor(damage * the location's damage_mul)
+              if a called shot: damage = floor(damage * the location's damage_multiplier)
 4. crit       if crit: damage = crit_damage(damage)                 formula tree
 5. reduce     if evaded an area attack: damage = area_evade_damage(damage)   formula tree
               if blocked: damage = damage - shield_dr
@@ -52,7 +52,7 @@ Each subtraction stops at zero before the next step: a step never raises damage.
 - **Crit** multiplies damage by 2 (`crit_damage` in `pipeline.json`). It is a consumer of the `crit` tag, not a second roll. Crit multiplies before any reduction. [A]
 - **Block** compares margins as the TTRPG prose does: the blocker's margin must reach the attacker's. It is the other reaction (step 2) and reduces damage instead of avoiding it. The video-game input-timed block is a client mapping of the same numbers. Block applies only to types with `armor_dr_applies`: a shield does not stop fire. Evade applies to any type the delivery allows. [A]
 - **Armor DR** is the sum of worn pieces ([armor.md](../modules/armor.md)); the pipeline takes the sum as an input. Types tagged `bypasses_armor` or `bypasses_physical_armor` carry no `armor_dr_applies`, so DR skips them. A piercing hit halves DR, rounded down. [A]
-- **Resist** is the contract's `resist` op: a flat subtraction from a packet whose tag matches the damage type. [V 2026-11-02, read contract.md]
+- **Resist** is the contract's `resist` operation: a flat subtraction from a packet whose tag matches the damage type. [V 2026-11-02, read contract.md]
 - **HP** floors at 0. What happens at 0 (down, dead) is not in this file. [U]
 
 ## Block and dodge perks
@@ -80,7 +80,7 @@ Cover, flanking, prone, unseen, and shooting into melee are rows in `ruleset/dat
 - **Explicit or flag.** Cover, flanking, and shooting into melee are named by the caller (`situations`), since positions are the caller's. Prone, blinded, and invisible come from flags (`grant` modifiers of the conditions): a row with `when` applies when the attacker or the defender has that flag. [A]
 - **Forbidden.** Full cover forbids ranged attacks, and a prone attacker cannot shoot. The pipeline returns an error; the caller picks another action. [A]
 - **Unseen.** A blinded attacker and an invisible target share the source `situation:unseen`, so both together are still −20. Area attacks ignore it (`deliveries`). [A]
-- **Called shots.** The location's `attack` is an `add` on the attack target; `damage_mul` multiplies the damage dice before the crit doubles it (a head crit is ×1.5, then ×2), rounded down. Its `riders` (staggered, slowed, a disarm on a failed STR check, a stun on a failed END check) are listed on a hit; the caller rolls the checks and applies the conditions. [A]
+- **Called shots.** The location's `attack` is an `add` on the attack target; `damage_multiplier` multiplies the damage dice before the crit doubles it (a head crit is ×1.5, then ×2), rounded down. Its `riders` (staggered, slowed, a disarm on a failed STR check, a stun on a failed END check) are listed on a hit; the caller rolls the checks and applies the conditions. [A]
 
 ## Not covered
 

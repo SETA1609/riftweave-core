@@ -17,7 +17,7 @@
       "modifiers": [
         {
           "target": "hp",
-          "op": "add",
+          "operation": "add",
           "value": 15,
           "source": "feature:toughness",
           "origin": "core:origin/trained"
@@ -40,14 +40,14 @@
       "modifiers": [
         {
           "target": "initiative",
-          "op": "add",
+          "operation": "add",
           "value": 10,
           "source": "feature:alert",
           "origin": "core:origin/trained"
         },
         {
           "target": "surprise_immune",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:alert",
           "origin": "core:origin/trained"
@@ -77,7 +77,7 @@
       "modifiers": [
         {
           "target": "melee_damage",
-          "op": "mul",
+          "operation": "multiply",
           "value": 1.25,
           "source": "feature:power_attack",
           "origin": "core:origin/trained"
@@ -117,7 +117,7 @@
       "modifiers": [
         {
           "target": "ranged_crit_window",
-          "op": "add",
+          "operation": "add",
           "value": 10,
           "source": "feature:deadeye",
           "origin": "core:origin/trained"
@@ -147,7 +147,7 @@
       "modifiers": [
         {
           "target": "block_reduction",
-          "op": "mul",
+          "operation": "multiply",
           "value": 1.15,
           "source": "feature:shield_wall",
           "origin": "core:origin/trained"
@@ -174,7 +174,7 @@
       "modifiers": [
         {
           "target": "red_magic_magnitude",
-          "op": "mul",
+          "operation": "multiply",
           "value": 1.15,
           "source": "feature:pyromancer",
           "origin": "core:origin/trained"
@@ -204,7 +204,7 @@
       "modifiers": [
         {
           "target": "detection_chance",
-          "op": "mul",
+          "operation": "multiply",
           "value": 0.75,
           "source": "feature:ghost",
           "origin": "core:origin/trained"
@@ -234,14 +234,14 @@
       "modifiers": [
         {
           "target": "persuasion",
-          "op": "add",
+          "operation": "add",
           "value": 10,
           "source": "feature:silver_tongue",
           "origin": "core:origin/trained"
         },
         {
           "target": "barter_shift",
-          "op": "add",
+          "operation": "add",
           "value": 10,
           "source": "feature:silver_tongue",
           "origin": "core:origin/trained"
@@ -268,7 +268,7 @@
       "modifiers": [
         {
           "target": "medicine_healing",
-          "op": "mul",
+          "operation": "multiply",
           "value": 1.5,
           "source": "feature:field_medic",
           "origin": "core:origin/trained"
@@ -284,63 +284,63 @@
       "modifiers": [
         {
           "target": "str",
-          "op": "add",
+          "operation": "add",
           "value": 1,
           "source": "feature:gifted",
           "origin": "core:origin/trained"
         },
         {
           "target": "per",
-          "op": "add",
+          "operation": "add",
           "value": 1,
           "source": "feature:gifted",
           "origin": "core:origin/trained"
         },
         {
           "target": "end",
-          "op": "add",
+          "operation": "add",
           "value": 1,
           "source": "feature:gifted",
           "origin": "core:origin/trained"
         },
         {
           "target": "int",
-          "op": "add",
+          "operation": "add",
           "value": 1,
           "source": "feature:gifted",
           "origin": "core:origin/trained"
         },
         {
           "target": "wil",
-          "op": "add",
+          "operation": "add",
           "value": 1,
           "source": "feature:gifted",
           "origin": "core:origin/trained"
         },
         {
           "target": "agi",
-          "op": "add",
+          "operation": "add",
           "value": 1,
           "source": "feature:gifted",
           "origin": "core:origin/trained"
         },
         {
           "target": "cha",
-          "op": "add",
+          "operation": "add",
           "value": 1,
           "source": "feature:gifted",
           "origin": "core:origin/trained"
         },
         {
           "target": "lck",
-          "op": "add",
+          "operation": "add",
           "value": 1,
           "source": "feature:gifted",
           "origin": "core:origin/trained"
         },
         {
           "target": "skill_point_pool",
-          "op": "mul",
+          "operation": "multiply",
           "value": 0.9,
           "source": "feature:gifted",
           "origin": "core:origin/trained"
@@ -356,14 +356,14 @@
       "modifiers": [
         {
           "target": "ranged_attack_speed",
-          "op": "mul",
+          "operation": "multiply",
           "value": 1.2,
           "source": "feature:fast_shot",
           "origin": "core:origin/trained"
         },
         {
           "target": "cannot_aim",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:fast_shot",
           "origin": "core:origin/trained"
@@ -379,14 +379,14 @@
       "modifiers": [
         {
           "target": "agi",
-          "op": "add",
+          "operation": "add",
           "value": 1,
           "source": "feature:small_frame",
           "origin": "core:origin/trained"
         },
         {
           "target": "carry",
-          "op": "mul",
+          "operation": "multiply",
           "value": 0.75,
           "source": "feature:small_frame",
           "origin": "core:origin/trained"
@@ -402,14 +402,14 @@
       "modifiers": [
         {
           "target": "tag_skills",
-          "op": "add",
+          "operation": "add",
           "value": 1,
           "source": "feature:genius",
           "origin": "core:origin/trained"
         },
         {
           "target": "starting_skill_points",
-          "op": "add",
+          "operation": "add",
           "value": -15,
           "source": "feature:genius",
           "origin": "core:origin/trained"
@@ -425,35 +425,35 @@
       "modifiers": [
         {
           "target": "afraid_of_undead",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:undead_phobia",
           "origin": "core:origin/trained"
         },
         {
           "target": "wil",
-          "op": "add",
+          "operation": "add",
           "value": 2,
           "source": "feature:undead_phobia",
           "origin": "core:origin/trained"
         },
         {
           "target": "undead_resistance",
-          "op": "add",
+          "operation": "add",
           "value": 25,
           "source": "feature:undead_phobia",
           "origin": "core:origin/trained"
         },
         {
           "target": "poison_resistance",
-          "op": "add",
+          "operation": "add",
           "value": 25,
           "source": "feature:undead_phobia",
           "origin": "core:origin/trained"
         },
         {
           "target": "disease_resistance",
-          "op": "add",
+          "operation": "add",
           "value": 25,
           "source": "feature:undead_phobia",
           "origin": "core:origin/trained"
@@ -469,21 +469,21 @@
       "modifiers": [
         {
           "target": "afraid_of_beasts",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:beast_phobia",
           "origin": "core:origin/trained"
         },
         {
           "target": "str",
-          "op": "add",
+          "operation": "add",
           "value": 1,
           "source": "feature:beast_phobia",
           "origin": "core:origin/trained"
         },
         {
           "target": "animal_handling",
-          "op": "add",
+          "operation": "add",
           "value": 10,
           "source": "feature:beast_phobia",
           "origin": "core:origin/trained"
@@ -499,14 +499,14 @@
       "modifiers": [
         {
           "target": "allergic_to_leather",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:leather_allergy",
           "origin": "core:origin/trained"
         },
         {
           "target": "end",
-          "op": "add",
+          "operation": "add",
           "value": 1,
           "source": "feature:leather_allergy",
           "origin": "core:origin/trained"
@@ -522,21 +522,21 @@
       "modifiers": [
         {
           "target": "allergic_to_iron",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:iron_allergy",
           "origin": "core:origin/trained"
         },
         {
           "target": "int",
-          "op": "add",
+          "operation": "add",
           "value": 1,
           "source": "feature:iron_allergy",
           "origin": "core:origin/trained"
         },
         {
           "target": "exotic_material_affinity",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:iron_allergy",
           "origin": "core:origin/trained"
@@ -552,21 +552,21 @@
       "modifiers": [
         {
           "target": "allergic_to_silver",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:silver_sensitivity",
           "origin": "core:origin/trained"
         },
         {
           "target": "undead_resistance",
-          "op": "add",
+          "operation": "add",
           "value": 30,
           "source": "feature:silver_sensitivity",
           "origin": "core:origin/trained"
         },
         {
           "target": "spell_absorption_chance",
-          "op": "add",
+          "operation": "add",
           "value": 10,
           "source": "feature:silver_sensitivity",
           "origin": "core:origin/trained"
@@ -582,21 +582,21 @@
       "modifiers": [
         {
           "target": "afraid_of_constructs",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:arcane_phobia",
           "origin": "core:origin/trained"
         },
         {
           "target": "magic_resistance",
-          "op": "add",
+          "operation": "add",
           "value": 20,
           "source": "feature:arcane_phobia",
           "origin": "core:origin/trained"
         },
         {
           "target": "spell_absorption_chance",
-          "op": "add",
+          "operation": "add",
           "value": 15,
           "source": "feature:arcane_phobia",
           "origin": "core:origin/trained"
@@ -626,7 +626,7 @@
       "modifiers": [
         {
           "target": "heavy_armor_surcharge",
-          "op": "mul",
+          "operation": "multiply",
           "value": 0.5,
           "source": "feature:heavy_armor_expert",
           "origin": "core:origin/trained"
@@ -656,7 +656,7 @@
       "modifiers": [
         {
           "target": "medium_armor_surcharge_ignored",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:light_foot",
           "origin": "core:origin/trained"
@@ -681,7 +681,7 @@
       "modifiers": [
         {
           "target": "heavy_power_attack_surcharge_ignored",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:brutal_charge",
           "origin": "core:origin/trained"
@@ -711,7 +711,7 @@
       "modifiers": [
         {
           "target": "dodge_stamina",
-          "op": "mul",
+          "operation": "multiply",
           "value": 0.75,
           "source": "feature:acrobat",
           "origin": "core:origin/trained"
@@ -734,7 +734,7 @@
       "modifiers": [
         {
           "target": "loot_roll",
-          "op": "add",
+          "operation": "add",
           "value": 10,
           "source": "feature:scavenger",
           "origin": "core:origin/trained"
@@ -771,7 +771,7 @@
       "modifiers": [
         {
           "target": "cleave_on_kill",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:cleave",
           "origin": "core:origin/trained"
@@ -802,7 +802,7 @@
       "modifiers": [
         {
           "target": "ignore_armor_dr",
-          "op": "add",
+          "operation": "add",
           "value": 2,
           "source": "feature:crushing_blow",
           "origin": "core:origin/trained"
@@ -833,7 +833,7 @@
       "modifiers": [
         {
           "target": "piercing_crit_window",
-          "op": "add",
+          "operation": "add",
           "value": 5,
           "source": "feature:precise_thrust",
           "origin": "core:origin/trained"
@@ -863,7 +863,7 @@
       "modifiers": [
         {
           "target": "unarmed_damage",
-          "op": "add",
+          "operation": "add",
           "value": 2,
           "source": "feature:brawler",
           "origin": "core:origin/trained"
@@ -896,7 +896,7 @@
       "modifiers": [
         {
           "target": "unarmed_strike_damage",
-          "op": "mul",
+          "operation": "multiply",
           "value": 1.5,
           "source": "feature:iron_fist",
           "origin": "core:origin/trained"
@@ -919,7 +919,7 @@
       "modifiers": [
         {
           "target": "swap_cost",
-          "op": "add",
+          "operation": "add",
           "value": -1,
           "source": "feature:quick_draw",
           "origin": "core:origin/trained"
@@ -960,7 +960,7 @@
       "modifiers": [
         {
           "target": "aimed",
-          "op": "add",
+          "operation": "add",
           "value": -1,
           "source": "feature:steady_aim",
           "origin": "core:origin/trained"
@@ -1001,7 +1001,7 @@
       "modifiers": [
         {
           "target": "ranged_range_penalty",
-          "op": "mul",
+          "operation": "multiply",
           "value": 0.5,
           "source": "feature:sniper",
           "origin": "core:origin/trained"
@@ -1032,7 +1032,7 @@
       "modifiers": [
         {
           "target": "attack_single_opponent",
-          "op": "add",
+          "operation": "add",
           "value": 10,
           "source": "feature:duelist",
           "origin": "core:origin/trained"
@@ -1056,14 +1056,14 @@
       "modifiers": [
         {
           "target": "second_wind",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:second_wind",
           "origin": "core:origin/trained"
         },
         {
           "target": "second_wind_hp",
-          "op": "add",
+          "operation": "add",
           "value": 20,
           "source": "feature:second_wind",
           "origin": "core:origin/trained"
@@ -1096,7 +1096,7 @@
       "modifiers": [
         {
           "target": "staggered_immune",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:unstoppable",
           "origin": "core:origin/trained"
@@ -1120,14 +1120,14 @@
       "modifiers": [
         {
           "target": "damage_below_half_hp",
-          "op": "mul",
+          "operation": "multiply",
           "value": 1.2,
           "source": "feature:berserker",
           "origin": "core:origin/trained"
         },
         {
           "target": "evasion",
-          "op": "add",
+          "operation": "add",
           "value": -10,
           "source": "feature:berserker",
           "origin": "core:origin/trained"
@@ -1153,7 +1153,7 @@
       "modifiers": [
         {
           "target": "crit_damage",
-          "op": "mul",
+          "operation": "multiply",
           "value": 1.5,
           "source": "feature:executioner",
           "origin": "core:origin/trained"
@@ -1184,7 +1184,7 @@
       "modifiers": [
         {
           "target": "throwing_weapons_damage",
-          "op": "add",
+          "operation": "add",
           "value": 2,
           "source": "feature:thrown_mastery",
           "origin": "core:origin/trained"
@@ -1215,7 +1215,7 @@
       "modifiers": [
         {
           "target": "reload_cost",
-          "op": "add",
+          "operation": "add",
           "value": -1,
           "source": "feature:fast_reload",
           "origin": "core:origin/trained"
@@ -1246,7 +1246,7 @@
       "modifiers": [
         {
           "target": "guns_crit_window",
-          "op": "add",
+          "operation": "add",
           "value": 5,
           "source": "feature:gunslinger",
           "origin": "core:origin/trained"
@@ -1269,7 +1269,7 @@
       "modifiers": [
         {
           "target": "mp",
-          "op": "add",
+          "operation": "add",
           "value": 10,
           "source": "feature:arcane_reservoir",
           "origin": "core:origin/trained"
@@ -1293,7 +1293,7 @@
       "modifiers": [
         {
           "target": "mp_regen",
-          "op": "mul",
+          "operation": "multiply",
           "value": 1.25,
           "source": "feature:mana_flow",
           "origin": "core:origin/trained"
@@ -1318,7 +1318,7 @@
       "modifiers": [
         {
           "target": "armor_cast_penalty",
-          "op": "mul",
+          "operation": "multiply",
           "value": 0.5,
           "source": "feature:battle_mage",
           "origin": "core:origin/trained"
@@ -1342,7 +1342,7 @@
       "modifiers": [
         {
           "target": "ignore_spell_resist",
-          "op": "add",
+          "operation": "add",
           "value": 5,
           "source": "feature:spell_penetration",
           "origin": "core:origin/trained"
@@ -1367,7 +1367,7 @@
       "modifiers": [
         {
           "target": "generating_multiplier",
-          "op": "add",
+          "operation": "add",
           "value": 0.25,
           "source": "feature:elemental_harmony",
           "origin": "core:origin/trained"
@@ -1395,7 +1395,7 @@
       "modifiers": [
         {
           "target": "green_magic_magnitude",
-          "op": "mul",
+          "operation": "multiply",
           "value": 1.15,
           "source": "feature:healer",
           "origin": "core:origin/trained"
@@ -1423,7 +1423,7 @@
       "modifiers": [
         {
           "target": "yellow_magic_duration",
-          "op": "mul",
+          "operation": "multiply",
           "value": 1.25,
           "source": "feature:illusionist",
           "origin": "core:origin/trained"
@@ -1451,7 +1451,7 @@
       "modifiers": [
         {
           "target": "summon_duration",
-          "op": "mul",
+          "operation": "multiply",
           "value": 1.5,
           "source": "feature:conjurer",
           "origin": "core:origin/trained"
@@ -1482,7 +1482,7 @@
       "modifiers": [
         {
           "target": "orange_magic",
-          "op": "add",
+          "operation": "add",
           "value": 5,
           "source": "feature:summon_dire",
           "origin": "core:origin/trained"
@@ -1515,7 +1515,7 @@
       "modifiers": [
         {
           "target": "orange_magic",
-          "op": "add",
+          "operation": "add",
           "value": 5,
           "source": "feature:summon_elder",
           "origin": "core:origin/trained"
@@ -1548,7 +1548,7 @@
       "modifiers": [
         {
           "target": "orange_magic",
-          "op": "add",
+          "operation": "add",
           "value": 5,
           "source": "feature:summon_ancient",
           "origin": "core:origin/trained"
@@ -1579,7 +1579,7 @@
       "modifiers": [
         {
           "target": "fire",
-          "op": "resist",
+          "operation": "resist",
           "value": 5,
           "source": "feature:summon_demonic",
           "origin": "core:origin/trained"
@@ -1610,7 +1610,7 @@
       "modifiers": [
         {
           "target": "radiant",
-          "op": "resist",
+          "operation": "resist",
           "value": 5,
           "source": "feature:summon_angelic",
           "origin": "core:origin/trained"
@@ -1641,7 +1641,7 @@
       "modifiers": [
         {
           "target": "psychic",
-          "op": "resist",
+          "operation": "resist",
           "value": 5,
           "source": "feature:summon_otherworldly",
           "origin": "core:origin/trained"
@@ -1669,7 +1669,7 @@
       "modifiers": [
         {
           "target": "blue_magic_duration",
-          "op": "mul",
+          "operation": "multiply",
           "value": 1.25,
           "source": "feature:transmuter",
           "origin": "core:origin/trained"
@@ -1697,7 +1697,7 @@
       "modifiers": [
         {
           "target": "indigo_magic_range",
-          "op": "mul",
+          "operation": "multiply",
           "value": 1.5,
           "source": "feature:telekinetic",
           "origin": "core:origin/trained"
@@ -1725,7 +1725,7 @@
       "modifiers": [
         {
           "target": "dispel_level",
-          "op": "add",
+          "operation": "add",
           "value": 1,
           "source": "feature:unraveler",
           "origin": "core:origin/trained"
@@ -1756,7 +1756,7 @@
       "modifiers": [
         {
           "target": "white_magic_magnitude",
-          "op": "mul",
+          "operation": "multiply",
           "value": 1.15,
           "source": "feature:zealot",
           "origin": "core:origin/trained"
@@ -1784,7 +1784,7 @@
       "modifiers": [
         {
           "target": "thrall_limit",
-          "op": "add",
+          "operation": "add",
           "value": 1,
           "source": "feature:necromancer",
           "origin": "core:origin/trained"
@@ -1808,7 +1808,7 @@
       "modifiers": [
         {
           "target": "mental_resist",
-          "op": "add",
+          "operation": "add",
           "value": 10,
           "source": "feature:warded_mind",
           "origin": "core:origin/trained"
@@ -1833,7 +1833,7 @@
       "modifiers": [
         {
           "target": "cast",
-          "op": "add",
+          "operation": "add",
           "value": -1,
           "source": "feature:quick_caster",
           "origin": "core:origin/trained"
@@ -1859,7 +1859,7 @@
       "modifiers": [
         {
           "target": "spell_cost",
-          "op": "mul",
+          "operation": "multiply",
           "value": 0.8,
           "source": "feature:archmage",
           "origin": "core:origin/trained"
@@ -1889,7 +1889,7 @@
       "modifiers": [
         {
           "target": "barter_shift",
-          "op": "add",
+          "operation": "add",
           "value": 5,
           "source": "feature:haggler",
           "origin": "core:origin/trained"
@@ -1919,7 +1919,7 @@
       "modifiers": [
         {
           "target": "intimidation",
-          "op": "add",
+          "operation": "add",
           "value": 10,
           "source": "feature:intimidating_presence",
           "origin": "core:origin/trained"
@@ -1949,7 +1949,7 @@
       "modifiers": [
         {
           "target": "deception",
-          "op": "add",
+          "operation": "add",
           "value": 10,
           "source": "feature:smooth_liar",
           "origin": "core:origin/trained"
@@ -1979,7 +1979,7 @@
       "modifiers": [
         {
           "target": "insight",
-          "op": "add",
+          "operation": "add",
           "value": 10,
           "source": "feature:empath",
           "origin": "core:origin/trained"
@@ -2003,7 +2003,7 @@
       "modifiers": [
         {
           "target": "aura_ally_attack",
-          "op": "add",
+          "operation": "add",
           "value": 5,
           "source": "feature:leader",
           "origin": "core:origin/trained"
@@ -2036,7 +2036,7 @@
       "modifiers": [
         {
           "target": "hostile_parley",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:diplomat",
           "origin": "core:origin/trained"
@@ -2060,7 +2060,7 @@
       "modifiers": [
         {
           "target": "fence_shift",
-          "op": "add",
+          "operation": "add",
           "value": 10,
           "source": "feature:streetwise",
           "origin": "core:origin/trained"
@@ -2093,7 +2093,7 @@
       "modifiers": [
         {
           "target": "frighten_on_crit",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:menacing",
           "origin": "core:origin/trained"
@@ -2123,7 +2123,7 @@
       "modifiers": [
         {
           "target": "trap_detect",
-          "op": "add",
+          "operation": "add",
           "value": 15,
           "source": "feature:trap_sense",
           "origin": "core:origin/trained"
@@ -2153,7 +2153,7 @@
       "modifiers": [
         {
           "target": "sleight_of_hand",
-          "op": "add",
+          "operation": "add",
           "value": 10,
           "source": "feature:light_fingers",
           "origin": "core:origin/trained"
@@ -2183,7 +2183,7 @@
       "modifiers": [
         {
           "target": "lockpick",
-          "op": "add",
+          "operation": "add",
           "value": 10,
           "source": "feature:locksmith",
           "origin": "core:origin/trained"
@@ -2214,7 +2214,7 @@
       "modifiers": [
         {
           "target": "sneak_attack_damage",
-          "op": "mul",
+          "operation": "multiply",
           "value": 1.5,
           "source": "feature:backstab",
           "origin": "core:origin/trained"
@@ -2248,7 +2248,7 @@
       "modifiers": [
         {
           "target": "sneak_attack_crit",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:assassin",
           "origin": "core:origin/trained"
@@ -2278,7 +2278,7 @@
       "modifiers": [
         {
           "target": "lore",
-          "op": "add",
+          "operation": "add",
           "value": 10,
           "source": "feature:scholar",
           "origin": "core:origin/trained"
@@ -2302,7 +2302,7 @@
       "modifiers": [
         {
           "target": "languages",
-          "op": "add",
+          "operation": "add",
           "value": 2,
           "source": "feature:polyglot",
           "origin": "core:origin/trained"
@@ -2325,7 +2325,7 @@
       "modifiers": [
         {
           "target": "skill_points_per_level",
-          "op": "add",
+          "operation": "add",
           "value": 2,
           "source": "feature:quick_learner",
           "origin": "core:origin/trained"
@@ -2355,7 +2355,7 @@
       "modifiers": [
         {
           "target": "survival",
-          "op": "add",
+          "operation": "add",
           "value": 10,
           "source": "feature:tracker",
           "origin": "core:origin/trained"
@@ -2385,7 +2385,7 @@
       "modifiers": [
         {
           "target": "animal_handling",
-          "op": "add",
+          "operation": "add",
           "value": 10,
           "source": "feature:beast_friend",
           "origin": "core:origin/trained"
@@ -2409,14 +2409,14 @@
       "modifiers": [
         {
           "target": "poison_resistance",
-          "op": "add",
+          "operation": "add",
           "value": 25,
           "source": "feature:iron_stomach",
           "origin": "core:origin/trained"
         },
         {
           "target": "disease_resistance",
-          "op": "add",
+          "operation": "add",
           "value": 25,
           "source": "feature:iron_stomach",
           "origin": "core:origin/trained"
@@ -2439,7 +2439,7 @@
       "modifiers": [
         {
           "target": "carry",
-          "op": "add",
+          "operation": "add",
           "value": 25,
           "source": "feature:pack_mule",
           "origin": "core:origin/trained"
@@ -2463,7 +2463,7 @@
       "modifiers": [
         {
           "target": "speed",
-          "op": "add",
+          "operation": "add",
           "value": 1,
           "source": "feature:fleet_footed",
           "origin": "core:origin/trained"
@@ -2493,7 +2493,7 @@
       "modifiers": [
         {
           "target": "repair",
-          "op": "add",
+          "operation": "add",
           "value": 10,
           "source": "feature:tinkerer",
           "origin": "core:origin/trained"
@@ -2524,7 +2524,7 @@
       "modifiers": [
         {
           "target": "potion_magnitude",
-          "op": "mul",
+          "operation": "multiply",
           "value": 1.25,
           "source": "feature:master_alchemist",
           "origin": "core:origin/trained"
@@ -2555,7 +2555,7 @@
       "modifiers": [
         {
           "target": "crafted_quality",
-          "op": "add",
+          "operation": "add",
           "value": 1,
           "source": "feature:master_smith",
           "origin": "core:origin/trained"
@@ -2578,7 +2578,7 @@
       "modifiers": [
         {
           "target": "reroll_per_rest",
-          "op": "add",
+          "operation": "add",
           "value": 1,
           "source": "feature:lucky",
           "origin": "core:origin/trained"
@@ -2604,7 +2604,7 @@
       "modifiers": [
         {
           "target": "crit_window",
-          "op": "add",
+          "operation": "add",
           "value": 3,
           "source": "feature:fortune_favored",
           "origin": "core:origin/trained"
@@ -2628,7 +2628,7 @@
       "modifiers": [
         {
           "target": "frightened_immune",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:iron_will",
           "origin": "core:origin/trained"
@@ -2652,7 +2652,7 @@
       "modifiers": [
         {
           "target": "rest_mp",
-          "op": "mul",
+          "operation": "multiply",
           "value": 1.5,
           "source": "feature:meditative",
           "origin": "core:origin/trained"
@@ -2676,14 +2676,14 @@
       "modifiers": [
         {
           "target": "darkvision",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:night_eyes",
           "origin": "core:origin/trained"
         },
         {
           "target": "darkvision_range",
-          "op": "add",
+          "operation": "add",
           "value": 6,
           "source": "feature:night_eyes",
           "origin": "core:origin/trained"
@@ -2708,7 +2708,7 @@
       "modifiers": [
         {
           "target": "last_stand",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:survivor",
           "origin": "core:origin/trained"
@@ -2738,7 +2738,7 @@
       "modifiers": [
         {
           "target": "shield_dr",
-          "op": "add",
+          "operation": "add",
           "value": 2,
           "source": "feature:shield_training",
           "origin": "core:origin/trained"
@@ -2771,7 +2771,7 @@
       "modifiers": [
         {
           "target": "block_magic",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:spell_ward",
           "origin": "core:origin/trained"
@@ -2804,7 +2804,7 @@
       "modifiers": [
         {
           "target": "bulwark",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:bulwark",
           "origin": "core:origin/trained"
@@ -2834,7 +2834,7 @@
       "modifiers": [
         {
           "target": "dodge",
-          "op": "add",
+          "operation": "add",
           "value": -1,
           "source": "feature:sidestep",
           "origin": "core:origin/trained"
@@ -2864,7 +2864,7 @@
       "modifiers": [
         {
           "target": "evasion",
-          "op": "add",
+          "operation": "add",
           "value": 10,
           "source": "feature:armored_evasion",
           "origin": "core:origin/trained"
@@ -2897,7 +2897,7 @@
       "modifiers": [
         {
           "target": "riposte",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:riposte",
           "origin": "core:origin/trained"
@@ -2912,7 +2912,7 @@
       "modifiers": [
         {
           "target": "tag_skills",
-          "op": "add",
+          "operation": "add",
           "value": 1,
           "source": "feature:human_versatility",
           "origin": "core:origin/innate"
@@ -2927,7 +2927,7 @@
       "modifiers": [
         {
           "target": "creation_perks",
-          "op": "add",
+          "operation": "add",
           "value": 1,
           "source": "feature:human_ambition",
           "origin": "core:origin/innate"
@@ -2942,14 +2942,14 @@
       "modifiers": [
         {
           "target": "darkvision",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:elf_darkvision",
           "origin": "core:origin/innate"
         },
         {
           "target": "darkvision_range",
-          "op": "add",
+          "operation": "add",
           "value": 12,
           "source": "feature:elf_darkvision",
           "origin": "core:origin/innate"
@@ -2964,14 +2964,14 @@
       "modifiers": [
         {
           "target": "charm_resistant",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:elf_fey_ancestry",
           "origin": "core:origin/innate"
         },
         {
           "target": "magical_sleep_immune",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:elf_fey_ancestry",
           "origin": "core:origin/innate"
@@ -2986,7 +2986,7 @@
       "modifiers": [
         {
           "target": "investigation",
-          "op": "add",
+          "operation": "add",
           "value": 10,
           "source": "feature:elf_keen_senses",
           "origin": "core:origin/innate"
@@ -3001,7 +3001,7 @@
       "modifiers": [
         {
           "target": "woodland_stride",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:green_elf_woodland_stride",
           "origin": "core:origin/innate"
@@ -3016,14 +3016,14 @@
       "modifiers": [
         {
           "target": "darkvision_range",
-          "op": "add",
+          "operation": "add",
           "value": 12,
           "source": "feature:black_elf_sunless_sight",
           "origin": "core:origin/innate"
         },
         {
           "target": "sunlight_sensitive",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:black_elf_sunless_sight",
           "origin": "core:origin/innate"
@@ -3038,7 +3038,7 @@
       "modifiers": [
         {
           "target": "stealth_in_darkness",
-          "op": "add",
+          "operation": "add",
           "value": 10,
           "source": "feature:black_elf_shadowmeld",
           "origin": "core:origin/innate"
@@ -3053,14 +3053,14 @@
       "modifiers": [
         {
           "target": "darkvision",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:dwarf_darkvision",
           "origin": "core:origin/innate"
         },
         {
           "target": "darkvision_range",
-          "op": "add",
+          "operation": "add",
           "value": 12,
           "source": "feature:dwarf_darkvision",
           "origin": "core:origin/innate"
@@ -3075,14 +3075,14 @@
       "modifiers": [
         {
           "target": "poison_resistance",
-          "op": "add",
+          "operation": "add",
           "value": 25,
           "source": "feature:dwarf_resilience",
           "origin": "core:origin/innate"
         },
         {
           "target": "disease_resistance",
-          "op": "add",
+          "operation": "add",
           "value": 25,
           "source": "feature:dwarf_resilience",
           "origin": "core:origin/innate"
@@ -3097,14 +3097,14 @@
       "modifiers": [
         {
           "target": "repair",
-          "op": "add",
+          "operation": "add",
           "value": 10,
           "source": "feature:dwarf_stoneworker",
           "origin": "core:origin/innate"
         },
         {
           "target": "crafting",
-          "op": "add",
+          "operation": "add",
           "value": 10,
           "source": "feature:dwarf_stoneworker",
           "origin": "core:origin/innate"
@@ -3119,7 +3119,7 @@
       "modifiers": [
         {
           "target": "hp_per_level",
-          "op": "add",
+          "operation": "add",
           "value": 1,
           "source": "feature:hill_dwarf_toughness",
           "origin": "core:origin/innate"
@@ -3134,14 +3134,14 @@
       "modifiers": [
         {
           "target": "proficient_light_armor",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:mountain_dwarf_armor_training",
           "origin": "core:origin/innate"
         },
         {
           "target": "proficient_medium_armor",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:mountain_dwarf_armor_training",
           "origin": "core:origin/innate"
@@ -3156,7 +3156,7 @@
       "modifiers": [
         {
           "target": "beastfolk",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:beastfolk_kinship",
           "origin": "core:origin/innate"
@@ -3171,7 +3171,7 @@
       "modifiers": [
         {
           "target": "natural_weapon",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:catman_claws",
           "origin": "core:origin/innate"
@@ -3190,14 +3190,14 @@
       "modifiers": [
         {
           "target": "safe_fall",
-          "op": "add",
+          "operation": "add",
           "value": 4,
           "source": "feature:catman_landing",
           "origin": "core:origin/innate"
         },
         {
           "target": "lands_on_feet",
-          "op": "grant",
+          "operation": "grant",
           "value": 1,
           "source": "feature:catman_landing",
           "origin": "core:origin/innate"
@@ -3212,7 +3212,7 @@
       "modifiers": [
         {
           "target": "attack_with_ally_engaged",
-          "op": "add",
+          "operation": "add",
           "value": 10,
           "source": "feature:wolfman_pack_tactics",
           "origin": "core:origin/innate"
@@ -3227,7 +3227,7 @@
       "modifiers": [
         {
           "target": "investigation_by_scent",
-          "op": "add",
+          "operation": "add",
           "value": 10,
           "source": "feature:wolfman_keen_smell",
           "origin": "core:origin/innate"

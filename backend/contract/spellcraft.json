@@ -2,11 +2,11 @@
   "$schema": "./command.schema.json",
   "name": "spellcraft",
   "summary": "Spell knowledge: check a crafted spell against the effects the caster knows, learn a spell's craftable effects, or research one effect.",
-  "doc": "docs/core/casting.md",
+  "documentation": "docs/core/casting.md",
   "input_schema": {
     "type": "object",
     "properties": {
-      "op": {
+      "operation": {
         "type": "string",
         "enum": [
           "craft",
@@ -103,7 +103,7 @@
       }
     },
     "required": [
-      "op",
+      "operation",
       "caster"
     ],
     "additionalProperties": false

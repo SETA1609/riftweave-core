@@ -77,7 +77,7 @@
     "modifiers": [
       {
         "target": "hp",
-        "op": "add",
+        "operation": "add",
         "value": 10,
         "source": "perk:test"
       }
@@ -296,7 +296,7 @@
           "source": "item:potion_strength",
           "origin": "core:origin/alchemy",
           "target": "str",
-          "op": "add",
+          "operation": "add",
           "value": 2,
           "seconds_left": 55
         }
@@ -310,7 +310,7 @@
             "source": "item:potion_strength",
             "origin": "core:origin/alchemy",
             "target": "str",
-            "op": "add",
+            "operation": "add",
             "value": 2,
             "seconds_left": 55
           }
@@ -445,7 +445,7 @@
           "source": "item:potion_strength",
           "origin": "core:origin/alchemy",
           "target": "str",
-          "op": "add",
+          "operation": "add",
           "value": 2,
           "seconds_left": 55
         }
@@ -467,7 +467,7 @@
             "source": "item:potion_strength",
             "origin": "core:origin/alchemy",
             "target": "str",
-            "op": "add",
+            "operation": "add",
             "value": 2,
             "seconds_left": 55
           }

@@ -1,8 +1,8 @@
 // Package modifier is the kernel's one stacking function (docs/core/modifier.md).
 //
 // The order is fixed: drop expired and removed modifiers; same origin, source, target, and
-// op keeps the strongest; a `highest` origin keeps its strongest bonus and penalty per
-// target and op; then add, mul (floored), set. grant makes a flag and resist reduces a
+// operation keeps the strongest; a `highest` origin keeps its strongest bonus and penalty per
+// target and operation; then add, multiply (floored), set. grant makes a flag and resist reduces a
 // packet. Nothing here reads the ruleset: the caller passes the origin policies, so the
 // package is a pure function over a modifier list.
 package modifier
@@ -24,7 +24,7 @@ const (
 	Resist
 )
 
-var operationNames = [...]string{"add", "mul", "set", "grant", "resist"}
+var operationNames = [...]string{"add", "multiply", "set", "grant", "resist"}
 
 // UnmarshalText reads an operation name.
 func (operation *Operation) UnmarshalText(encoded []byte) error {
@@ -34,7 +34,7 @@ func (operation *Operation) UnmarshalText(encoded []byte) error {
 			return nil
 		}
 	}
-	return fmt.Errorf("modifier op %q is not defined", encoded)
+	return fmt.Errorf("modifier operation %q is not defined", encoded)
 }
 
 // MarshalText writes the operation name, so a stored modifier round-trips.
@@ -45,7 +45,7 @@ func (operation Operation) String() string { return operationNames[operation] }
 // Modifier is one opcode on one target (ruleset/schemas/schema.json, "modifier").
 type Modifier struct {
 	Target    string    `json:"target"`
-	Operation Operation `json:"op"`
+	Operation Operation `json:"operation"`
 	Value     float64   `json:"value"`
 	Source    string    `json:"source"`
 	Origin    string    `json:"origin,omitempty"`

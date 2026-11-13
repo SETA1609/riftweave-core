@@ -139,7 +139,7 @@ func valueOf(t *testing.T, opened *Core, actor map[string]any, target string, ba
 func TestAnInflictedEffectStacksByItsOrigin(t *testing.T) {
 	var opened *Core = devCore(t)
 	var start map[string]any = startingActor()
-	start["modifiers"] = []any{map[string]any{"modifier": map[string]any{"target": "str", "op": "add", "value": 2, "source": "spell:bulls_strength", "origin": "core:origin/arcane"}, "turns_elapsed": 0}}
+	start["modifiers"] = []any{map[string]any{"modifier": map[string]any{"target": "str", "operation": "add", "value": 2, "source": "spell:bulls_strength", "origin": "core:origin/arcane"}, "turns_elapsed": 0}}
 	var session any = sessionCall(t, opened, map[string]any{"operation": "start", "start": start})["session"]
 	var arcane map[string]any = dev(t, opened, session, map[string]any{"operation": "effect", "effect": "core:effect/fortify_attribute", "parameter": "str", "magnitude": 3, "origin": "core:origin/arcane"})
 	if value := valueOf(t, opened, actorOf(arcane), "str", 5); value != 8 {

@@ -26,7 +26,7 @@ def _own(race, features):
     """One race row's own modifiers: its abilityModifiers, then its traits'."""
     source = f"race:{race['key']}"
     mods = [
-        {"target": attr, "op": "add", "value": value, "source": source, "origin": INNATE}
+        {"target": attr, "operation": "add", "value": value, "source": source, "origin": INNATE}
         for attr, value in race.get("abilityModifiers", {}).items()
     ]
     for trait in race.get("traits", []):
@@ -51,7 +51,7 @@ def background_modifiers(key):
     background = _rows("backgrounds/core.json", "backgrounds")[key]
     source = f"background:{key}"
     return [
-        {"target": b["skill"].rsplit("/", 1)[-1], "op": "add", "value": b["bonus"], "source": source, "origin": TRAINED}
+        {"target": b["skill"].rsplit("/", 1)[-1], "operation": "add", "value": b["bonus"], "source": source, "origin": TRAINED}
         for b in background.get("skill_bonuses", [])
     ]
 

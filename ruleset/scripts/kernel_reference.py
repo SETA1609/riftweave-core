@@ -39,15 +39,20 @@ def origin_policies():
     return {f"core:origin/{row['key']}": row["stack"] for row in load_data("origins/core.json")["origins"]}
 
 
+def operation_of(modifier):
+    """A modifier's operation (docs/core/modifier.md)."""
+    return modifier["operation"]
+
+
 def strongest(group):
     """The strongest bonus and the strongest penalty of one group, in list order.
 
-    A group is (index, modifier) pairs with one op. `set` is not ranked: the latest wins.
-    For add and resist the neutral value is 0; for mul it is 1.
+    A group is (index, modifier) pairs with one operation. `set` is not ranked: the latest wins.
+    For add and resist the neutral value is 0; for multiply it is 1.
     """
-    if group[0][1]["op"] == "set":
+    if operation_of(group[0][1]) == "set":
         return [group[-1]]
-    neutral = 1 if group[0][1]["op"] == "mul" else 0
+    neutral = 1 if operation_of(group[0][1]) == "multiply" else 0
     bonuses = [pair for pair in group if pair[1]["value"] > neutral]
     penalties = [pair for pair in group if pair[1]["value"] < neutral]
     kept = []
@@ -66,37 +71,37 @@ def _keep_strongest(pairs, key):
 
 
 def dedupe_modifiers(modifiers):
-    """Steps 2 and 3: same origin, source, target, and op keeps the strongest; then, for a
-    `highest` origin, same origin, target, and op keeps the strongest bonus and penalty."""
+    """Steps 2 and 3: same origin, source, target, and operation keeps the strongest; then, for a
+    `highest` origin, same origin, target, and operation keeps the strongest bonus and penalty."""
     policies = origin_policies()
     pairs = _keep_strongest(
         list(enumerate(modifiers)),
-        lambda m: (m.get("origin"), m["source"], m["target"], m["op"]),
+        lambda m: (m.get("origin"), m["source"], m["target"], operation_of(m)),
     )
     highest = [pair for pair in pairs if "origin" in pair[1] and policies[pair[1]["origin"]] == "highest"]
     rest = [pair for pair in pairs if pair not in highest]
-    highest = _keep_strongest(highest, lambda m: (m["origin"], m["target"], m["op"]))
+    highest = _keep_strongest(highest, lambda m: (m["origin"], m["target"], operation_of(m)))
     return [m for _, m in sorted(rest + highest, key=lambda pair: pair[0])]
 
 
 def apply_modifiers(value, modifiers, elapsed_turns=0, removed_sources=()):
-    """Steps 1 to 6 for one numeric target: expire, dedupe, origin, add, mul (floored), set.
+    """Steps 1 to 6 for one numeric target: expire, dedupe, origin, add, multiply (floored), set.
 
     The caller passes the modifiers of one target; grant and resist carry no number here.
     """
     numeric = [
         m
         for m in dedupe_modifiers(live_modifiers(modifiers, elapsed_turns, removed_sources))
-        if m["op"] in ("add", "mul", "set")
+        if operation_of(m) in ("add", "multiply", "set")
     ]
-    value += sum(m["value"] for m in numeric if m["op"] == "add")
+    value += sum(m["value"] for m in numeric if operation_of(m) == "add")
     factor = 1
     for m in numeric:
-        if m["op"] == "mul":
+        if operation_of(m) == "multiply":
             factor *= m["value"]
     if factor != 1:
         value = math.floor(value * factor)
-    sets = [m["value"] for m in numeric if m["op"] == "set"]
+    sets = [m["value"] for m in numeric if operation_of(m) == "set"]
     if sets:
         value = sets[-1]
     return value
@@ -105,13 +110,13 @@ def apply_modifiers(value, modifiers, elapsed_turns=0, removed_sources=()):
 def granted_flags(modifiers, elapsed_turns=0, removed_sources=()):
     """Flags that at least one live grant names."""
     live = live_modifiers(modifiers, elapsed_turns, removed_sources)
-    return sorted({m["target"] for m in live if m["op"] == "grant"})
+    return sorted({m["target"] for m in live if operation_of(m) == "grant"})
 
 
 def apply_resist(amount, tag, modifiers, elapsed_turns=0, removed_sources=()):
     """A packet's amount after every live resist on its tag, never below zero."""
     live = dedupe_modifiers(live_modifiers(modifiers, elapsed_turns, removed_sources))
-    resist = sum(m["value"] for m in live if m["op"] == "resist" and m["target"] == tag)
+    resist = sum(m["value"] for m in live if operation_of(m) == "resist" and m["target"] == tag)
     return max(amount - resist, 0)
 
 
@@ -166,7 +171,7 @@ def run_resolution(vector):
         if len(skills) != 1:
             raise ValueError("actor has several skills; name one with `skill`")
         (skill,) = skills
-    bonus = apply_modifiers(0, [m for m in vector.get("modifiers", []) if m["op"] == "add"])
+    bonus = apply_modifiers(0, [m for m in vector.get("modifiers", []) if operation_of(m) == "add"])
     target = skills[skill] + bonus
     if rules["target_cap"] is not None:
         target = min(target, rules["target_cap"])
@@ -319,11 +324,11 @@ def to_copper(economy, cost):
 def run_economy(vector):
     """`convert` a cost to copper, or price one `trade` (buy or sell) with an optional barter check."""
     economy = load_data("economy/core.json")
-    op = vector["op"]
+    op = vector["operation"]
     if op == "convert":
         return {"cp": to_copper(economy, vector["cost"])}
     if op != "trade":
-        raise ValueError(f"economy op {op!r} is not defined")
+        raise ValueError(f"economy operation {op!r} is not defined")
     rules = economy["barter"]
     merchant = next(m for m in economy["merchants"] if m["key"] == vector["merchant"])
     buying = vector["side"] == "buy"
@@ -374,7 +379,7 @@ def situation_modifiers(vector, delivery):
     if "called_shot" in vector:
         called = next(c for c in data["called_shots"] if c["key"] == vector["called_shot"])
         if called["attack"]:
-            modifiers.append({"target": "attack", "op": "add", "value": called["attack"], "source": f"called_shot:{called['key']}"})
+            modifiers.append({"target": "attack", "operation": "add", "value": called["attack"], "source": f"called_shot:{called['key']}"})
     return modifiers, called
 
 
@@ -457,7 +462,7 @@ def run_combat(vector):
         modifier = evaluate_formula(load_data("formulas/attribute_modifier.json")["expression"], {}, {"attribute": attribute})
         amount = max(amount + modifier, 0)
     if called is not None:
-        amount = math.floor(amount * called["damage_mul"])
+        amount = math.floor(amount * called["damage_multiplier"])
     if crit:
         amount = evaluate_formula(pipeline["crit_damage"], {}, {"damage": amount})
     if result["evaded"]:
@@ -484,7 +489,7 @@ def run_combat(vector):
 def run_progression(vector):
     """XP and level, one level-up pool, and spending a pool on one skill; `op` picks which."""
     rules = load_data("progression/core.json")["progression"]
-    op = vector["op"]
+    op = vector["operation"]
     if op == "xp":
         level = vector["level"]
         total = evaluate_formula(rules["xp_to_reach"], {}, {"level": level})
@@ -531,7 +536,7 @@ def run_progression(vector):
         return {"ranks": ranks, "spent": ranks * cost, "left": vector["points"] - ranks * cost}
     if op == "read_skill":
         return read_skill(vector["actor"], vector["read"], vector.get("groups"))
-    raise ValueError(f"progression op {op!r} is not defined")
+    raise ValueError(f"progression operation {op!r} is not defined")
 
 
 def read_skill(actor, key, groups=None):
@@ -651,8 +656,8 @@ def run_consume(vector):
                     ticks.append({"source": source, "origin": origin, "pool": pool,
                                   "magnitude": effect["magnitude"], "seconds_left": duration})
             elif duration > 1:
-                op = "resist" if key == "resist" else "add" if "magnitude" in effect else "grant"
-                held.append({"source": source, "origin": origin, "target": effect.get("parameter", key), "op": op,
+                operation = "resist" if key == "resist" else "add" if "magnitude" in effect else "grant"
+                held.append({"source": source, "origin": origin, "target": effect.get("parameter", key), "operation": operation,
                              "value": effect.get("magnitude", 1), "seconds_left": duration})
 
     for event in vector["events"]:

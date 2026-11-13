@@ -25,7 +25,7 @@ Actor             stored_actor in backend/contract/common.json; see state.md
   conditions[]      key, stacks
   modifiers[]       an active modifier and its turns_elapsed
   flags[]           prone, grappled, ...
-  inventory[]       item instances (id, base, material, mods)
+  inventory[]       item instances (id, base, material, added_effects)
   equipped[slot]    an inventory id
 ```
 
@@ -36,7 +36,7 @@ The only shared sentence.
 ```
 Modifier
   target            a key naming one row (modifier.md#target)
-  op                add | mul | set | grant | resist
+  operation         add | multiply | set | grant | resist
   value             number
   duration          turns | uses | while_equipped | while_applied | permanent
   source            feature:toughness | item:lockpicks | condition:blinded (a kind and a key, never a number)
@@ -47,12 +47,12 @@ Stacking, written once:
 
 - Same `source` does not stack. The strongest application wins.
 - Different sources add, unless they share an `origin` whose policy is `highest`: then the strongest bonus and the strongest penalty of that origin count.
-- `mul` applies after `add`.
+- `multiply` applies after `add`.
 - `set` replaces the current value for that source's duration.
 - `grant` adds a flag or a tag. It does not add a number.
 - `resist` subtracts from a packet whose tag matches `target`.
 
-The target, op, and duration values are the `modifier` definition in `schema.json`, and no modifier in the data has a numeric source. [V 2026-11-11] The order of these steps for one target, expiry, and how a condition is applied and removed are in [modifier.md](modifier.md).
+The target, operation, and duration values are the `modifier` definition in `schema.json`, and no modifier in the data has a numeric source. [V 2026-11-11] The order of these steps for one target, expiry, and how a condition is applied and removed are in [modifier.md](modifier.md).
 
 The origins (arcane, divine, alchemy, trained, ...) are one short table in data, each with one policy, `highest`, `add`, or `replace`; [modifier.md](modifier.md#origin) lists them. There is no per-chapter exception. No dodge-stacks-except-circumstance. A perk that wants a second copy uses a different source id.
 
@@ -61,10 +61,10 @@ The origins (arcane, divine, alchemy, trained, ...) are one short table in data,
 The only shared verb. A producer emits one. A consumer reads the result. Neither imports the other's formula.
 
 ```
-roll_request      { skill, mods[] }
+roll_request      { skill, modifiers[] }
 roll_result       { roll, target, margin, tags[] }
 packet            { amount, tags[], source }
-spawn_item        { base, material, mods[] }
+spawn_item        { base, material, added_effects[] }
 ```
 
 Resolution is one function, named here so nobody writes a second one: `d100 <= target`, `margin = target - roll`. Crit and fumble are tags on `roll_result`, not a second roll system. The windows live in `ruleset/data/resolution/core.json`. [V 2026-11-11]
@@ -112,7 +112,7 @@ reading them as weight units moves them by about 10% and changes no row. [A]
 - Override a core row without listing its key in `overrides` ([overrides.md](overrides.md)). A duplicate key with no such entry is a conflict, not a patch.
 - Invent a private effect language. A condition is a named bundle of modifiers plus flags. A spell is a skill roll plus an effect list. A brew is a crafting profile whose output emits the same modifiers.
 
-Unknown opcodes are ignored by a consumer. They are not rejected by this contract. Extending the opcode table is a later change; until then, new modules still speak only the ops listed above.
+Unknown opcodes are ignored by a consumer. They are not rejected by this contract. Extending the opcode table is a later change; until then, new modules still speak only the operations listed above.
 
 ## Out of scope for this document
 

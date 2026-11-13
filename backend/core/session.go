@@ -270,14 +270,14 @@ func writeCasting(actor *stored.Actor, _ *SessionStep, _, result map[string]any)
 }
 
 func fillProgression(_ *data.Ruleset, actor *stored.Actor, _ *SessionStep, input map[string]any) error {
-	if input["op"] == "level_up" {
+	if input["operation"] == "level_up" {
 		setDefault(input, "actor", map[string]any{"attributes": actor.Attributes})
 	}
 	return nil
 }
 
 func writeProgression(actor *stored.Actor, _ *SessionStep, input, result map[string]any) {
-	switch input["op"] {
+	switch input["operation"] {
 	case "level":
 		actor.XP, actor.Level = number(input["xp"]), number(result["level"])
 	case "level_up":

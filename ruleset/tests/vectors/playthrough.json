@@ -25,7 +25,7 @@
   {
     "name": "buy: a shortsword at the general store",
     "function": "economy",
-    "op": "trade",
+    "operation": "trade",
     "side": "buy",
     "merchant": "general_store",
     "item_cost": {
@@ -175,7 +175,7 @@
   {
     "name": "level: 900 XP reaches level 2",
     "function": "progression",
-    "op": "level",
+    "operation": "level",
     "xp": 900,
     "expect": {
       "level": 2
@@ -184,7 +184,7 @@
   {
     "name": "level: the level-up pool",
     "function": "progression",
-    "op": "level_up",
+    "operation": "level_up",
     "actor": {
       "attributes": {
         "str": 6,

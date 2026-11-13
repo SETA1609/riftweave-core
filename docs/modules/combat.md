@@ -67,7 +67,7 @@ Not yet rows, **[A]** until M2-06:
 
 ### Armor DR and resist
 
-Armor DR is the sum of all worn pieces ([armor.md](./armor.md)) and applies only to damage types tagged `armor_dr_applies`; a piercing hit halves it. Resist is the contract's `resist` op: a flat subtraction from damage of the matching type. Both stop at zero.
+Armor DR is the sum of all worn pieces ([armor.md](./armor.md)) and applies only to damage types tagged `armor_dr_applies`; a piercing hit halves it. Resist is the contract's `resist` operation: a flat subtraction from damage of the matching type. Both stop at zero.
 
 ### Magic
 

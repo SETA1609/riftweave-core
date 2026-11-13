@@ -185,7 +185,7 @@ func devLevel(ruleset *data.Ruleset, target *stored.Actor, operation *devOperati
 	if operation.Set == nil || operation.Add != nil {
 		return &data.MissingInputError{Subject: "dev " + operation.Operation, Needs: "set"}
 	}
-	body, _ := json.Marshal(map[string]any{"op": "xp", "level": *operation.Set})
+	body, _ := json.Marshal(map[string]any{"operation": "xp", "level": *operation.Set})
 	output, err := commands["progression"](ruleset, body)
 	if err != nil {
 		return err
@@ -275,7 +275,7 @@ func devItem(ruleset *data.Ruleset, target *stored.Actor, operation *devOperatio
 	if operation.Quantity != nil {
 		quantity = *operation.Quantity
 	}
-	target.Inventory = append(target.Inventory, stored.ItemInstance{ID: id, Base: operation.Base, Material: operation.Material, Mods: []json.RawMessage{}, Quantity: quantity})
+	target.Inventory = append(target.Inventory, stored.ItemInstance{ID: id, Base: operation.Base, Material: operation.Material, AddedEffects: []json.RawMessage{}, Quantity: quantity})
 	return nil
 }
 

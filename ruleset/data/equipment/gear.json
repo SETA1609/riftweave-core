@@ -15,7 +15,7 @@
         "modifiers": [
           {
             "target": "lockpick",
-            "op": "add",
+            "operation": "add",
             "value": 10,
             "source": "item:thieves_tools",
             "origin": "core:origin/equipment"
@@ -37,7 +37,7 @@
         "modifiers": [
           {
             "target": "medicine",
-            "op": "add",
+            "operation": "add",
             "value": 10,
             "source": "item:healers_kit",
             "origin": "core:origin/equipment"
@@ -60,7 +60,7 @@
         "modifiers": [
           {
             "target": "athletics",
-            "op": "add",
+            "operation": "add",
             "value": 10,
             "source": "item:climbing_kit",
             "origin": "core:origin/equipment"
@@ -82,7 +82,7 @@
         "modifiers": [
           {
             "target": "alchemy",
-            "op": "add",
+            "operation": "add",
             "value": 10,
             "source": "item:alchemy_kit",
             "origin": "core:origin/equipment"
@@ -104,7 +104,7 @@
         "modifiers": [
           {
             "target": "blacksmithing",
-            "op": "add",
+            "operation": "add",
             "value": 10,
             "source": "item:smiths_tools",
             "origin": "core:origin/equipment"
@@ -126,7 +126,7 @@
         "modifiers": [
           {
             "target": "repair",
-            "op": "add",
+            "operation": "add",
             "value": 10,
             "source": "item:tinkers_tools",
             "origin": "core:origin/equipment"
@@ -148,7 +148,7 @@
         "modifiers": [
           {
             "target": "survival",
-            "op": "add",
+            "operation": "add",
             "value": 5,
             "source": "item:navigators_tools",
             "origin": "core:origin/equipment"
@@ -170,7 +170,7 @@
         "modifiers": [
           {
             "target": "deception",
-            "op": "add",
+            "operation": "add",
             "value": 10,
             "source": "item:disguise_kit",
             "origin": "core:origin/equipment"

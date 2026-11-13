@@ -2,7 +2,7 @@
   "$schema": "./command.schema.json",
   "name": "loot",
   "summary": "Roll a loot table by key, or a monster's loot rows, with the looter's Luck and modifiers, and value it on the price scale.",
-  "doc": "docs/core/loot.md",
+  "documentation": "docs/core/loot.md",
   "input_schema": {
     "type": "object",
     "properties": {

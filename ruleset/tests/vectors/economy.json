@@ -1,7 +1,7 @@
 [
   {
     "name": "convert: 3 silver is 30 copper",
-    "op": "convert",
+    "operation": "convert",
     "cost": {
       "quantity": 3,
       "unit": "sp"
@@ -12,7 +12,7 @@
   },
   {
     "name": "convert: 2 gold is 200 copper",
-    "op": "convert",
+    "operation": "convert",
     "cost": {
       "quantity": 2,
       "unit": "gp"
@@ -23,7 +23,7 @@
   },
   {
     "name": "convert: 1 platinum is 1000 copper",
-    "op": "convert",
+    "operation": "convert",
     "cost": {
       "quantity": 1,
       "unit": "pp"
@@ -34,7 +34,7 @@
   },
   {
     "name": "buy a 2 gp dagger at the general store, no barter",
-    "op": "trade",
+    "operation": "trade",
     "side": "buy",
     "merchant": "general_store",
     "item_cost": {
@@ -50,7 +50,7 @@
   },
   {
     "name": "buy at the smithy: a different spread",
-    "op": "trade",
+    "operation": "trade",
     "side": "buy",
     "merchant": "smithy",
     "item_cost": {
@@ -64,7 +64,7 @@
   },
   {
     "name": "buy a steel dagger: material valueFactor 2.0 doubles the price",
-    "op": "trade",
+    "operation": "trade",
     "side": "buy",
     "merchant": "general_store",
     "item_cost": {
@@ -78,7 +78,7 @@
   },
   {
     "name": "buy a steel longsword, 15 gp base",
-    "op": "trade",
+    "operation": "trade",
     "side": "buy",
     "merchant": "general_store",
     "item_cost": {
@@ -93,7 +93,7 @@
   },
   {
     "name": "buy with a successful barter: margin 35 shifts 7 points",
-    "op": "trade",
+    "operation": "trade",
     "side": "buy",
     "merchant": "general_store",
     "item_cost": {
@@ -112,7 +112,7 @@
   },
   {
     "name": "buy with barter: the shift stops at max_shift 20",
-    "op": "trade",
+    "operation": "trade",
     "side": "buy",
     "merchant": "general_store",
     "item_cost": {
@@ -131,7 +131,7 @@
   },
   {
     "name": "buy with a failed barter: no shift",
-    "op": "trade",
+    "operation": "trade",
     "side": "buy",
     "merchant": "general_store",
     "item_cost": {
@@ -150,7 +150,7 @@
   },
   {
     "name": "buy with a fumbled barter: the player pays 10 points more",
-    "op": "trade",
+    "operation": "trade",
     "side": "buy",
     "merchant": "general_store",
     "item_cost": {
@@ -169,7 +169,7 @@
   },
   {
     "name": "sell the dagger: the merchant pays 40 percent",
-    "op": "trade",
+    "operation": "trade",
     "side": "sell",
     "merchant": "general_store",
     "item_cost": {
@@ -183,7 +183,7 @@
   },
   {
     "name": "sell at the smithy: 50 percent",
-    "op": "trade",
+    "operation": "trade",
     "side": "sell",
     "merchant": "smithy",
     "item_cost": {
@@ -196,7 +196,7 @@
   },
   {
     "name": "sell with a successful barter: 40 plus 7",
-    "op": "trade",
+    "operation": "trade",
     "side": "sell",
     "merchant": "general_store",
     "item_cost": {
@@ -215,7 +215,7 @@
   },
   {
     "name": "sell with a fumbled barter: 40 minus 10",
-    "op": "trade",
+    "operation": "trade",
     "side": "sell",
     "merchant": "general_store",
     "item_cost": {
@@ -234,7 +234,7 @@
   },
   {
     "name": "a price rounds down: 1 cp sold at 40 percent is 0",
-    "op": "trade",
+    "operation": "trade",
     "side": "sell",
     "merchant": "general_store",
     "item_cost": {

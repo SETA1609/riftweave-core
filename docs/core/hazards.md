@@ -41,7 +41,7 @@ An arcane hazard names no check row for detect and disarm: it rolls its `color`'
 
 ## Spells on a hazard
 
-`op: spell` applies a cast that succeeded (the cast itself is [casting.md](casting.md)) to one hazard. The input names the `spell`; the result is `{ disarmed, effect }`, the effect that undid it, or `null`. [V 2026-11-08]
+`operation: spell` applies a cast that succeeded (the cast itself is [casting.md](casting.md)) to one hazard. The input names the `spell`; the result is `{ disarmed, effect }`, the effect that undid it, or `null`. [V 2026-11-08]
 
 - A `disarm_hazard` effect of magnitude N makes a mechanical trap of level N or below safe.
 - A `dispel` effect of magnitude N ends an arcane hazard of level N or below; an area dispel reaches every arcane hazard in its radius, the caller giving one call each.

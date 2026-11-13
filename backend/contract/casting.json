@@ -2,7 +2,7 @@
   "$schema": "./command.schema.json",
   "name": "casting",
   "summary": "Cast one spell: the gate, the mana and reagent cost, one resolution on the spell's color skill with the armor penalty, then the effects, concentration, and dispel.",
-  "doc": "docs/core/casting.md",
+  "documentation": "docs/core/casting.md",
   "input_schema": {
     "type": "object",
     "properties": {

@@ -527,7 +527,7 @@
     "modifiers": [
       {
         "target": "loot_roll",
-        "op": "add",
+        "operation": "add",
         "value": 10,
         "source": "perk:scavenger",
         "origin": "core:origin/trained"
@@ -552,21 +552,21 @@
     "modifiers": [
       {
         "target": "loot_roll",
-        "op": "add",
+        "operation": "add",
         "value": 10,
         "source": "effect:fortune",
         "origin": "core:origin/alchemy"
       },
       {
         "target": "loot_roll",
-        "op": "add",
+        "operation": "add",
         "value": 5,
         "source": "effect:lucky_draught",
         "origin": "core:origin/alchemy"
       },
       {
         "target": "loot_roll",
-        "op": "add",
+        "operation": "add",
         "value": 10,
         "source": "perk:scavenger",
         "origin": "core:origin/trained"
@@ -591,7 +591,7 @@
     "modifiers": [
       {
         "target": "loot_roll",
-        "op": "add",
+        "operation": "add",
         "value": -30,
         "source": "effect:curse"
       }
@@ -656,7 +656,7 @@
     "modifiers": [
       {
         "target": "loot_roll",
-        "op": "add",
+        "operation": "add",
         "value": 90,
         "source": "effect:blessing_of_plenty"
       }
@@ -684,7 +684,7 @@
     "modifiers": [
       {
         "target": "loot_roll",
-        "op": "add",
+        "operation": "add",
         "value": 90,
         "source": "effect:blessing_of_plenty"
       }
@@ -708,7 +708,7 @@
     "modifiers": [
       {
         "target": "loot_roll",
-        "op": "add",
+        "operation": "add",
         "value": -50,
         "source": "effect:curse"
       }

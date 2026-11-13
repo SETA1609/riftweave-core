@@ -2,7 +2,7 @@
   "$schema": "./command.schema.json",
   "name": "consume",
   "summary": "Use items and let time pass: instant and over-time effects, and food replacing food.",
-  "doc": "docs/core/modifier.md",
+  "documentation": "docs/core/modifier.md",
   "input_schema": {
     "type": "object",
     "properties": {
@@ -145,7 +145,7 @@
             "target": {
               "type": "string"
             },
-            "op": {
+            "operation": {
               "type": "string"
             },
             "value": {

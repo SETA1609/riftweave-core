@@ -250,13 +250,13 @@
     "modifiers": [
       {
         "target": "red_magic",
-        "op": "add",
+        "operation": "add",
         "value": 5,
         "source": "feature:spell_focus"
       },
       {
         "target": "blue_magic",
-        "op": "add",
+        "operation": "add",
         "value": 20,
         "source": "feature:blue_focus"
       }
@@ -288,7 +288,7 @@
     "modifiers": [
       {
         "target": "red_magic",
-        "op": "add",
+        "operation": "add",
         "value": 70,
         "source": "feature:spell_focus"
       }
@@ -670,7 +670,7 @@
     "modifiers": [
       {
         "target": "spell_cost",
-        "op": "add",
+        "operation": "add",
         "value": -3,
         "source": "feature:thrifty"
       }
@@ -714,7 +714,7 @@
     "modifiers": [
       {
         "target": "spell_cost",
-        "op": "mul",
+        "operation": "multiply",
         "value": 0.8,
         "source": "item:robe"
       }
@@ -830,7 +830,7 @@
     "modifiers": [
       {
         "target": "spell_cost",
-        "op": "add",
+        "operation": "add",
         "value": -100,
         "source": "feature:thrifty"
       }

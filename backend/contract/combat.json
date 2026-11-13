@@ -2,7 +2,7 @@
   "$schema": "./command.schema.json",
   "name": "combat",
   "summary": "One attack from the roll to the HP lost, with one defender reaction.",
-  "doc": "docs/core/combat.md",
+  "documentation": "docs/core/combat.md",
   "input_schema": {
     "type": "object",
     "properties": {

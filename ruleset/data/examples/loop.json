@@ -6,7 +6,7 @@
     "material": "iron",
     "perk_modifier": {
       "target": "blades",
-      "op": "add",
+      "operation": "add",
       "value": 5,
       "source": "perk:example"
     },

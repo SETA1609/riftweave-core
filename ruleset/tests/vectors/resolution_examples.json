@@ -12,8 +12,8 @@
     "function": "resolution",
     "actor": { "skills": { "blades": 80 }, "attributes": { "lck": 4 } },
     "modifiers": [
-      { "target": "blades", "op": "add", "value": 40, "source": "effect:bonus" },
-      { "target": "blades", "op": "add", "value": -30, "source": "condition:penalty" }
+      { "target": "blades", "operation": "add", "value": 40, "source": "effect:bonus" },
+      { "target": "blades", "operation": "add", "value": -30, "source": "condition:penalty" }
     ],
     "roll": 100,
     "expect": { "target": 90, "margin": null, "success": false, "tags": ["fumble"] }
@@ -23,7 +23,7 @@
     "function": "resolution",
     "actor": { "skills": { "blades": 80 }, "attributes": { "lck": 4 } },
     "modifiers": [
-      { "target": "blades", "op": "add", "value": 40, "source": "effect:bonus" }
+      { "target": "blades", "operation": "add", "value": 40, "source": "effect:bonus" }
     ],
     "roll": 40,
     "expect": { "target": 120, "margin": 80, "success": true, "tags": [] }
@@ -33,7 +33,7 @@
     "function": "resolution",
     "actor": { "skills": { "blades": 80 }, "attributes": { "lck": 4 } },
     "modifiers": [
-      { "target": "blades", "op": "add", "value": 40, "source": "effect:bonus" }
+      { "target": "blades", "operation": "add", "value": 40, "source": "effect:bonus" }
     ],
     "roll": 100,
     "expect": { "target": 120, "margin": null, "success": false, "tags": ["fumble"] }

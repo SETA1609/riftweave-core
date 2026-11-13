@@ -65,7 +65,7 @@ type Held struct {
 	Source      string `json:"source"`
 	Origin      string `json:"origin"`
 	Target      string `json:"target"`
-	Operation   string `json:"op"`
+	Operation   string `json:"operation"`
 	Value       int64  `json:"value"`
 	SecondsLeft int64  `json:"seconds_left"`
 }

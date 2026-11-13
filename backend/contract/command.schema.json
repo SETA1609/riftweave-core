@@ -7,10 +7,10 @@
     "$schema": { "type": "string" },
     "name": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "The command and vector function name." },
     "summary": { "type": "string", "minLength": 1, "description": "One line for `list` and the OpenAPI document." },
-    "doc": { "type": "string", "pattern": "^docs/.+\\.md$", "description": "The docs/ file that owns the rule." },
+    "documentation": { "type": "string", "pattern": "^docs/.+\\.md$", "description": "The docs/ file that owns the rule." },
     "input_schema": { "type": "object", "description": "JSON Schema of the input." },
     "result_schema": { "type": "object", "description": "JSON Schema of a successful result." }
   },
-  "required": ["name", "summary", "doc", "input_schema", "result_schema"],
+  "required": ["name", "summary", "documentation", "input_schema", "result_schema"],
   "additionalProperties": false
 }
