@@ -79,11 +79,11 @@ type Resolution struct {
 // DerivedStat is one row of derived/core.json.
 type DerivedStat struct {
 	Key               string        `json:"key"`
-	Attribute         string        `json:"attr"`
+	Attribute         string        `json:"attribute"`
 	Base              int64         `json:"base"`
 	PerPoint          int64         `json:"per_point"`
 	PerPointDivisor   int64         `json:"per_point_divisor"`
-	PerLevelAttribute int64         `json:"per_level_attr"`
+	PerLevelAttribute int64         `json:"per_level_attribute"`
 	PerLevelFlat      int64         `json:"per_level_flat"`
 	Ability           actor.Ability `json:"-"`
 }
@@ -99,7 +99,7 @@ type ActionPool struct {
 	Base            int64         `json:"base"`
 	PerPoint        int64         `json:"per_point"`
 	PerPointDivisor int64         `json:"per_point_divisor"`
-	Attribute       string        `json:"attr"`
+	Attribute       string        `json:"attribute"`
 	Cap             int64         `json:"cap"`
 	Ability         actor.Ability `json:"-"`
 }
@@ -225,7 +225,7 @@ type Progression struct {
 	PoolRollMaximum   formula.Program `json:"pool_roll_max"`
 	LuckRoll          struct {
 		Minimum          int64  `json:"min"`
-		MaximumAttribute string `json:"max_attr"`
+		MaximumAttribute string `json:"max_attribute"`
 	} `json:"luck_roll"`
 	LuckMaximumAbility actor.Ability   `json:"-"`
 	SkillStart         formula.Program `json:"skill_start"`
@@ -928,7 +928,7 @@ func (loader *rulesetLoader) loadFormulas(ruleset *Ruleset) {
 	}
 	for _, file := range files {
 		var raw struct {
-			Expression formula.Program `json:"expr"`
+			Expression formula.Program `json:"expression"`
 		}
 		loader.read(path.Join("formulas", file.Name()), &raw)
 		ruleset.Formulas[strings.TrimSuffix(file.Name(), ".json")] = &raw.Expression

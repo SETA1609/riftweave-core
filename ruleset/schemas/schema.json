@@ -334,58 +334,58 @@
       "description": "A reference to an equipment row of any category (docs/core/integrity.md)."
     },
     "formulaNode": {
-      "description": "A formula tree node (docs/core/formula.md): a leaf (lit, attr, var) or an op over args. Integer only.",
+      "description": "A formula tree node (docs/core/formula.md): a leaf (literal, attribute, variable) or an operation over arguments. Integer only.",
       "oneOf": [
         {
           "type": "object",
           "properties": {
-            "lit": {
+            "literal": {
               "type": "integer"
             }
           },
           "required": [
-            "lit"
+            "literal"
           ],
           "additionalProperties": false
         },
         {
           "type": "object",
           "properties": {
-            "attr": {
+            "attribute": {
               "$ref": "#/definitions/ability"
             }
           },
           "required": [
-            "attr"
+            "attribute"
           ],
           "additionalProperties": false
         },
         {
           "type": "object",
           "properties": {
-            "var": {
+            "variable": {
               "type": "string",
               "pattern": "^[a-z_][a-z0-9_]*$"
             }
           },
           "required": [
-            "var"
+            "variable"
           ],
           "additionalProperties": false
         },
         {
           "type": "object",
           "properties": {
-            "op": {
+            "operation": {
               "type": "string",
               "enum": [
                 "add",
-                "sub",
-                "mul",
-                "div"
+                "subtract",
+                "multiply",
+                "divide"
               ]
             },
-            "args": {
+            "arguments": {
               "type": "array",
               "minItems": 2,
               "items": {
@@ -394,8 +394,8 @@
             }
           },
           "required": [
-            "op",
-            "args"
+            "operation",
+            "arguments"
           ],
           "additionalProperties": false
         }

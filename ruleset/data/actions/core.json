@@ -6,7 +6,7 @@
     "base": 2,
     "per_point": 1,
     "per_point_divisor": 3,
-    "attr": "agi",
+    "attribute": "agi",
     "cap": 10,
     "carry": "min(unspent, cap)",
     "rest": "refill"

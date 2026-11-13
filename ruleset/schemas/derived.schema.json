@@ -22,22 +22,23 @@
           "pattern": "^[a-z_][a-z0-9_]*$"
         },
         "label": { "type": "string" },
-        "attr": {
+        "attribute": {
           "type": "string",
-          "enum": ["str", "per", "end", "int", "wil", "agi", "cha", "lck"]
+          "enum": ["str", "per", "end", "int", "wil", "agi", "cha", "lck"],
+          "description": "The attribute the stat reads."
         },
         "base": { "type": "number" },
         "per_point": { "type": "number" },
         "per_point_divisor": {
           "type": "integer",
           "minimum": 1,
-          "description": "Divide attr * per_point by this, integer division, before adding. Default 1. Action points use 3."
+          "description": "Divide attribute * per_point by this, integer division, before adding. Default 1. Action points use 3."
         },
-        "per_level_attr": { "type": "number" },
+        "per_level_attribute": { "type": "number", "description": "Per level, this times the attribute is added." },
         "per_level_flat": { "type": "number" },
         "unit": { "type": "string" }
       },
-      "required": ["key", "label", "attr", "base", "per_point", "per_level_attr", "per_level_flat"],
+      "required": ["key", "label", "attribute", "base", "per_point", "per_level_attribute", "per_level_flat"],
       "additionalProperties": false
     }
   }

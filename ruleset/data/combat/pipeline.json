@@ -2,35 +2,35 @@
   "$schema": "../../schemas/combat.schema.json",
   "pipeline": {
     "crit_damage": {
-      "op": "mul",
-      "args": [
+      "operation": "multiply",
+      "arguments": [
         {
-          "var": "damage"
+          "variable": "damage"
         },
         {
-          "lit": 2
+          "literal": 2
         }
       ]
     },
     "area_evade_damage": {
-      "op": "div",
-      "args": [
+      "operation": "divide",
+      "arguments": [
         {
-          "var": "damage"
+          "variable": "damage"
         },
         {
-          "lit": 2
+          "literal": 2
         }
       ]
     },
     "pierce_dr": {
-      "op": "div",
-      "args": [
+      "operation": "divide",
+      "arguments": [
         {
-          "var": "dr"
+          "variable": "dr"
         },
         {
-          "lit": 2
+          "literal": 2
         }
       ]
     },

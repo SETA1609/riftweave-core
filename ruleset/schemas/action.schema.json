@@ -23,12 +23,12 @@
         "base": { "type": "integer" },
         "per_point": { "type": "integer" },
         "per_point_divisor": { "type": "integer", "minimum": 1 },
-        "attr": { "type": "string" },
+        "attribute": { "type": "string", "description": "The attribute the pool reads." },
         "cap": { "type": "integer", "minimum": 1 },
         "carry": { "type": "string" },
         "rest": { "type": "string" }
       },
-      "required": ["base", "per_point", "per_point_divisor", "attr", "cap", "carry", "rest"],
+      "required": ["base", "per_point", "per_point_divisor", "attribute", "cap", "carry", "rest"],
       "additionalProperties": false
     },
     "action": {

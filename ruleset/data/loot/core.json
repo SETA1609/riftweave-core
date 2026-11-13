@@ -1,20 +1,20 @@
 {
   "$schema": "../../schemas/loot.schema.json",
   "budget_cp": {
-    "op": "mul",
-    "args": [
+    "operation": "multiply",
+    "arguments": [
       {
-        "lit": 500
+        "literal": 500
       },
       {
-        "var": "level"
+        "variable": "level"
       },
       {
-        "var": "level"
+        "variable": "level"
       }
     ]
   },
-  "rolls_by_level": { "op": "add", "args": [{ "lit": 1 }, { "op": "div", "args": [{ "var": "level" }, { "lit": 10 }] }] },
+  "rolls_by_level": { "operation": "add", "arguments": [{ "literal": 1 }, { "operation": "divide", "arguments": [{ "variable": "level" }, { "literal": 10 }] }] },
   "tables": [
     {
       "key": "bandit_purse",

@@ -196,12 +196,12 @@ def run_derived(vector):
     growth = actor.get("growth", {})
     result = {}
     for stat in load_data("derived/core.json")["derived"]:
-        attr = attributes.get(stat["attr"], 0)
-        attr_term = (attr * stat["per_point"]) // stat.get("per_point_divisor", 1)
+        attribute = attributes.get(stat["attribute"], 0)
+        attribute_term = (attribute * stat["per_point"]) // stat.get("per_point_divisor", 1)
         value = (
             stat["base"]
-            + attr_term
-            + level * (attr * stat["per_level_attr"] + stat["per_level_flat"])
+            + attribute_term
+            + level * (attribute * stat["per_level_attribute"] + stat["per_level_flat"])
             + growth.get(stat["key"], 0)
         )
         own = [m for m in modifiers if m.get("target") == stat["key"]]
@@ -210,46 +210,47 @@ def run_derived(vector):
 
 
 def evaluate_formula(node, attributes, variables=None):
-    """Evaluate a formula tree: lit, attr, var, and the ops add, sub, mul, div (floor)."""
-    if "lit" in node:
-        return node["lit"]
-    if "attr" in node:
-        return attributes[node["attr"]]
-    if "var" in node:
-        return (variables or {})[node["var"]]
-    op = node["op"]
-    args = [evaluate_formula(arg, attributes, variables) for arg in node["args"]]
-    if op == "add":
-        return sum(args)
-    if op == "sub":
-        first, *rest = args
+    """Evaluate a formula tree: literal, attribute, variable, and the operations add, subtract,
+    multiply, divide (floor)."""
+    if "literal" in node:
+        return node["literal"]
+    if "attribute" in node:
+        return attributes[node["attribute"]]
+    if "variable" in node:
+        return (variables or {})[node["variable"]]
+    operation = node["operation"]
+    arguments = [evaluate_formula(argument, attributes, variables) for argument in node["arguments"]]
+    if operation == "add":
+        return sum(arguments)
+    if operation == "subtract":
+        first, *rest = arguments
         return first - sum(rest)
-    if op == "mul":
+    if operation == "multiply":
         product = 1
-        for arg in args:
-            product *= arg
+        for argument in arguments:
+            product *= argument
         return product
-    if op == "div":
-        numerator, denominator = args
+    if operation == "divide":
+        numerator, denominator = arguments
         return numerator // denominator
-    raise NotImplementedError(f"formula op {op!r} has no reference")
+    raise NotImplementedError(f"formula operation {operation!r} has no reference")
 
 
 def run_formula(vector):
-    if "expr" in vector:
-        expr = vector["expr"]
+    if "expression" in vector:
+        expression = vector["expression"]
     else:
-        expr = load_data(f"formulas/{vector['formula']}.json")["expr"]
+        expression = load_data(f"formulas/{vector['formula']}.json")["expression"]
     attributes = vector.get("actor", {}).get("attributes", {})
-    return {"value": evaluate_formula(expr, attributes, vector.get("variables"))}
+    return {"value": evaluate_formula(expression, attributes, vector.get("variables"))}
 
 
 def run_actions(vector):
     data = load_data("actions/core.json")
     pool_rules = data["pool"]
     costs = {action["key"]: action["cost"] for action in data["actions"]}
-    attr = vector["actor"]["attributes"][pool_rules["attr"]]
-    pool = pool_rules["base"] + (attr * pool_rules["per_point"]) // pool_rules["per_point_divisor"]
+    attribute = vector["actor"]["attributes"][pool_rules["attribute"]]
+    pool = pool_rules["base"] + (attribute * pool_rules["per_point"]) // pool_rules["per_point_divisor"]
     modifiers = vector.get("modifiers", [])
     cost = sum(
         max(apply_modifiers(costs[key], [m for m in modifiers if m["target"] == key]), 0)
@@ -341,7 +342,7 @@ def run_economy(vector):
     percent = merchant["buy_percent"] - shift if buying else merchant["sell_percent"] + shift
     base_cp = to_copper(economy, vector["item_cost"])
     price = evaluate_formula(
-        load_data("formulas/price.json")["expr"],
+        load_data("formulas/price.json")["expression"],
         {},
         {"base_cp": base_cp, "value_percent": vector.get("value_percent", 100), "percent": percent},
     )
@@ -453,7 +454,7 @@ def run_combat(vector):
     amount = damage["roll"]
     if "ability" in damage:
         attribute = vector["attacker"].get("attributes", {}).get(damage["ability"], 0)
-        modifier = evaluate_formula(load_data("formulas/attribute_modifier.json")["expr"], {}, {"attribute": attribute})
+        modifier = evaluate_formula(load_data("formulas/attribute_modifier.json")["expression"], {}, {"attribute": attribute})
         amount = max(amount + modifier, 0)
     if called is not None:
         amount = math.floor(amount * called["damage_mul"])
@@ -502,7 +503,7 @@ def run_progression(vector):
     if op == "level_up":
         attributes = vector["actor"]["attributes"]
         luck_roll = vector["luck_roll"]
-        ceiling = attributes[rules["luck_roll"]["max_attr"]]
+        ceiling = attributes[rules["luck_roll"]["max_attribute"]]
         if not rules["luck_roll"]["min"] <= luck_roll <= ceiling:
             return {"error": "luck_roll out of range"}
         highest = evaluate_formula(rules["pool_roll_max"], attributes)

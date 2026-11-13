@@ -28,25 +28,26 @@ def load_data(rel_path):
 
 
 def evaluate(node, variables):
-    """The formula tree for the vars-only trees loot reads (lit, var, add, sub, mul, div)."""
-    if "lit" in node:
-        return node["lit"]
-    if "var" in node:
-        return variables[node["var"]]
-    args = [evaluate(arg, variables) for arg in node["args"]]
-    op = node["op"]
-    if op == "add":
-        return sum(args)
-    if op == "sub":
-        return args[0] - sum(args[1:])
-    if op == "mul":
+    """The formula tree for the variables-only trees loot reads (literal, variable, add, subtract,
+    multiply, divide)."""
+    if "literal" in node:
+        return node["literal"]
+    if "variable" in node:
+        return variables[node["variable"]]
+    arguments = [evaluate(argument, variables) for argument in node["arguments"]]
+    operation = node["operation"]
+    if operation == "add":
+        return sum(arguments)
+    if operation == "subtract":
+        return arguments[0] - sum(arguments[1:])
+    if operation == "multiply":
         product = 1
-        for arg in args:
-            product *= arg
+        for argument in arguments:
+            product *= argument
         return product
-    if op == "div":
-        return args[0] // args[1]
-    raise NotImplementedError(f"formula op {op!r} has no reference")
+    if operation == "divide":
+        return arguments[0] // arguments[1]
+    raise NotImplementedError(f"formula operation {operation!r} has no reference")
 
 
 def to_copper(cost):
@@ -121,7 +122,7 @@ def value_percent(material):
 def item_value_cp(ref, material=None, size=None):
     """List price at value_percent = material percent x size percent / 100, rounded down. The
     material and size are the ones that landed (landed_material, item_size)."""
-    price = load_data("formulas/price.json")["expr"]
+    price = load_data("formulas/price.json")["expression"]
     percent = value_percent(material)
     if size is not None:
         percent = percent * load_data("combat/dice_ladder.json")["sizes"][size]["value_percent"] // 100
@@ -232,8 +233,8 @@ def looter_shift(vector):
     modifiers = [m for m in vector.get("modifiers", []) if m["target"] == "loot_roll"]
     actor = vector.get("actor")
     if actor is not None:
-        expr = load_data("formulas/loot_luck.json")["expr"]
-        luck = evaluate_formula(expr, {"lck": actor.get("attributes", {}).get("lck", 0)})
+        expression = load_data("formulas/loot_luck.json")["expression"]
+        luck = evaluate_formula(expression, {"lck": actor.get("attributes", {}).get("lck", 0)})
         modifiers.insert(0, {"target": "loot_roll", "op": "add", "value": luck, "source": "attr:lck", "origin": "core:origin/innate"})
     return apply_modifiers(0, modifiers)
 

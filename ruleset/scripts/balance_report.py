@@ -132,7 +132,7 @@ def toxicity_of(effects):
 
     variables = {"instant_cost": cost([e for e in effects if not _over_time(e)]),
                  "over_time_cost": cost([e for e in effects if _over_time(e)])}
-    return kernel_reference.evaluate_formula(_json("formulas/toxicity.json")["expr"], {}, variables)
+    return kernel_reference.evaluate_formula(_json("formulas/toxicity.json")["expression"], {}, variables)
 
 
 def _drinks(consumables):
@@ -151,9 +151,9 @@ def _toxicity_formula(bands, _weapons, _armor, _monsters, consumables, _spells):
 def _instant_toxicity_above_over_time(_bands, _weapons, _armor, _monsters, _consumables, _spells):
     import kernel_reference
 
-    expr = _json("formulas/toxicity.json")["expr"]
-    instant = kernel_reference.evaluate_formula(expr, {}, {"instant_cost": 20, "over_time_cost": 0})
-    over_time = kernel_reference.evaluate_formula(expr, {}, {"instant_cost": 0, "over_time_cost": 20})
+    expression = _json("formulas/toxicity.json")["expression"]
+    instant = kernel_reference.evaluate_formula(expression, {}, {"instant_cost": 20, "over_time_cost": 0})
+    over_time = kernel_reference.evaluate_formula(expression, {}, {"instant_cost": 0, "over_time_cost": 20})
     if instant <= over_time:
         yield _finding("instant_toxicity_above_over_time", "formulas/toxicity.json", instant, [over_time + 1, instant],
                        f"20 at once gives {instant}, over time {over_time}")

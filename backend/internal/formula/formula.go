@@ -3,7 +3,7 @@
 //
 // The tree in the data is for people; the program is for the machine: one slice of
 // instructions in postfix order, no pointers, no allocation while evaluating. Integer math
-// only, and `div` is floor division.
+// only, and `divide` is floor division.
 package formula
 
 import (
@@ -47,11 +47,11 @@ type Variable struct {
 }
 
 type node struct {
-	Literal   *int64  `json:"lit"`
-	Attribute *string `json:"attr"`
-	Variable  *string `json:"var"`
-	Operation string  `json:"op"`
-	Arguments []node  `json:"args"`
+	Literal   *int64  `json:"literal"`
+	Attribute *string `json:"attribute"`
+	Variable  *string `json:"variable"`
+	Operation string  `json:"operation"`
+	Arguments []node  `json:"arguments"`
 }
 
 // UnmarshalJSON compiles the tree it reads, so a data struct can hold a Program directly.
@@ -104,20 +104,20 @@ func (program *Program) emit(tree node) (int, error) {
 	switch tree.Operation {
 	case "add":
 		operation = opcodeAdd
-	case "sub":
+	case "subtract":
 		operation = opcodeSubtract
-	case "mul":
+	case "multiply":
 		operation = opcodeMultiply
-	case "div":
+	case "divide":
 		operation = opcodeDivide
 		if len(tree.Arguments) != 2 {
-			return 0, errors.New("div takes two arguments")
+			return 0, errors.New("divide takes two arguments")
 		}
 	default:
-		return 0, fmt.Errorf("formula op %q has no implementation", tree.Operation)
+		return 0, fmt.Errorf("formula operation %q has no implementation", tree.Operation)
 	}
 	if operation == opcodeSubtract && len(tree.Arguments) == 0 {
-		return 0, errors.New("sub takes at least one argument")
+		return 0, errors.New("subtract takes at least one argument")
 	}
 	var depth int = 0
 	for index, argument := range tree.Arguments {
