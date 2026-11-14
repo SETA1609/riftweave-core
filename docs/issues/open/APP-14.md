@@ -1,0 +1,9 @@
+#### APP-14 The core runs in the browser as WebAssembly
+- Status: todo
+- Priority: medium
+- Needs: APP-07
+- Do: Owner request, 2026-11-14: the frontend should run with no server, so it can be served as a static site (APP-15). Build the Go core to WebAssembly (`GOOS=js GOARCH=wasm`, or TinyGo if the standard build is too large and TinyGo supports what the core uses [U]) and expose one function, `run(command, input)`, the same entry point as the CLI, the HTTP API, and MCP (`core.Run`). The ruleset data is bundled beside it and read through the loader's `fs.FS`, so the core and the data come from one commit. `frontend/src/app/api.ts` gains a second transport: HTTP when an API base URL is set, WebAssembly otherwise; the screens do not change, and the OpenAPI types still describe inputs and results, since both follow the contract. The app's specs run through both transports, so the browser core is checked against the same vectors. A rule in the browser is still a bug: only the Go core holds rules. Measure the download size and show a loading state while the core starts [A].
+- Keys: `backend/cmd/riftweave-wasm` (the WebAssembly entry point) [A]; a transport choice in `api.ts`
+- Files: ~8 (backend/cmd/riftweave-wasm/, frontend/src/app/api.ts, frontend/src/app/wasm.ts, frontend/src/app/api.spec.ts, frontend/angular.json, .github/workflows/frontend.yml, docs/backend/frontend.md, docs/backend/README.md)
+- See: docs/backend/frontend.md, docs/backend/README.md (the contract), backend/core (`Run`), backend/internal/data (`Load` on an `fs.FS`)
+- Done when: the frontend builds with no API URL and creates a character, resolves an attack, and runs the playthrough in the browser; the API specs pass through both the HTTP and the WebAssembly transport; the WebAssembly file's size is written in the docs; `go test ./...` and the frontend CI pass.
