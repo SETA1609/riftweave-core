@@ -9,6 +9,10 @@
       "type": "array",
       "items": { "$ref": "#/definitions/naturalWeapon" }
     },
+    "skill": {
+      "$ref": "schema.json#/definitions/skillRef",
+      "description": "The skill every natural weapon rolls to hit with: core:skill/unarmed, so the unarmed perks apply (docs/modules/monsters.md#natural-weapons)."
+    },
     "size_steps": {
       "type": "object",
       "description": "Dice ladder steps (combat/dice_ladder.json) by creature size, stopping at the ladder's ends.",
