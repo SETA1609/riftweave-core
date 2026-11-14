@@ -31,7 +31,7 @@ skill   the row's skills[key], when written
   every `<color>_magic`) reads `start + per_level × (level − 1)`, capped at `skill_cap` (100),
   as a bought skill is. `per_level` is 17: an average actor's pool (INT 5, LCK 5:
   `5 + 5 × 2 + 2.5` on an average luck roll) spent on one tag skill at 1 point a rating, rounded
-  down, so a monster keeps pace with a player's main skill [A]. Other skills (stealth, social,
+  down, so a monster keeps pace with a player's main skill: within 15 points at every level from 1 to 30. [V 2026-11-14, `monster_sheet` vectors in Python and Go, `test_bestiary.py`] Other skills (stealth, social,
   knowledge, and the rest) stay at `start`: a monster does not train its lockpicking by
   fighting. A written skill is the author's value and does not grow. Before this rule a
   monster fought at `start` at every level, about 25 to 35, while a player's main skill
