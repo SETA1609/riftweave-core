@@ -120,5 +120,17 @@ class TestOneStatementOfAFeature(unittest.TestCase):
                 self.assertIn((flag, "grant"), emitted(trait))
 
 
+class TestSummonLimitPerks(unittest.TestCase):
+    """M3-20: Retinue and Host raise the number of active summons (docs/core/casting.md#summons)."""
+
+    def test_retinue_at_14_and_host_at_28_each_add_one_summon_and_host_needs_retinue(self):
+        rows = {perk["key"]: perk for perk in perks()}
+        retinue, host = rows["summon_retinue"], rows["summon_host"]
+        self.assertEqual((retinue["prerequisite"]["level"], host["prerequisite"]["level"]), (14, 28))
+        self.assertIn("core:feature/summon_retinue", host["prerequisite"]["perks"])
+        for perk in (retinue, host):
+            self.assertIn(("summon_limit", "add", 1), {(m["target"], m["operation"], m["value"]) for m in perk["modifiers"]})
+
+
 if __name__ == "__main__":
     unittest.main()
