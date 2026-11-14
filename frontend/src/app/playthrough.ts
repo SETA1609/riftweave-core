@@ -2,27 +2,18 @@
 import { Component, inject, signal } from '@angular/core';
 import { JsonPipe } from '@angular/common';
 import playthrough from '../../../ruleset/tests/vectors/playthrough.json';
-import { API } from './app';
-import type { Session } from './api';
+import { API, type Session } from './api';
+import { Alert } from './ui/alert';
+import { Card } from './ui/card';
 
 type Vector = { name: string; function: string; expect: Record<string, unknown> } & Record<string, unknown>;
 type Row = { name: string; input: Record<string, unknown>; result: Record<string, unknown>; matches: boolean };
 
 @Component({
   selector: 'rw-playthrough',
-  imports: [JsonPipe],
-  template: `
-    <h2>Playthrough</h2>
-    <button (click)="run()">Run the playthrough</button>
-    @if (error()) { <p class="error">{{ error() }}</p> }
-    <ol>
-      @for (row of rows(); track row.name) {
-        <li [class.mismatch]="!row.matches"><b>{{ row.name }}</b> {{ row.matches ? 'matches its vector' : 'differs from its vector' }}
-          <details><summary>input and result</summary><pre>{{ row.input | json }}</pre><pre>{{ row.result | json }}</pre></details></li>
-      }
-    </ol>
-    @if (replayed() !== null) { <p>Replay {{ replayed() ? 'matches' : 'does not match' }} the session.</p> }
-  `,
+  imports: [JsonPipe, Alert, Card],
+  templateUrl: './playthrough.html',
+  styleUrl: './playthrough.css',
 })
 export class Playthrough {
   private readonly api = inject(API);

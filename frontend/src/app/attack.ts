@@ -1,84 +1,72 @@
 // The attack resolver: every combat input is a field, every roll an input, and the result is shown
 // in pipeline order (docs/core/combat.md).
-import { Component, inject, signal } from '@angular/core';
-import { API } from './app';
-import type { CombatInput, CombatResult } from './api';
+import { Component, computed, inject, signal } from '@angular/core';
+import { API, type CombatInput, type CombatResult } from './api';
+import { Alert } from './ui/alert';
+import { Card } from './ui/card';
+import { KeyValueList } from './ui/key-value-list';
+import { NumberField } from './ui/number-field';
+import type { Option } from './ui/select-field';
+import { SelectField } from './ui/select-field';
+import { TextField } from './ui/text-field';
 
 const STEPS = ['outcome', 'target', 'margin', 'crit', 'evaded', 'blocked', 'reaction_tags', 'damage', 'hp', 'counter'] as const;
 
 @Component({
   selector: 'rw-attack',
-  template: `
-    <h2>Attack</h2>
-    <fieldset><legend>Attacker</legend>
-      <label>skill <input type="number" [value]="form.attackerSkill" (input)="form.attackerSkill = +$any($event.target).value" /></label>
-      <label>d100 <input type="number" min="1" max="100" [value]="form.attackerRoll" (input)="form.attackerRoll = +$any($event.target).value" /></label>
-      <button (click)="form.attackerRoll = d100()">roll</button>
-      <label>LCK <input type="number" [value]="form.luck" (input)="form.luck = +$any($event.target).value" /></label>
-    </fieldset>
-    <fieldset><legend>Defender</legend>
-      <label>evasion <input type="number" [value]="form.evasion" (input)="form.evasion = +$any($event.target).value" /></label>
-      <label>armor DR <input type="number" [value]="form.armor" (input)="form.armor = +$any($event.target).value" /></label>
-      <label>HP <input type="number" [value]="form.hp" (input)="form.hp = +$any($event.target).value" /></label>
-      <label>reaction
-        <select (change)="form.reaction = $any($event.target).value">
-          <option value="">none</option><option value="evade">evade</option><option value="block">block</option>
-        </select>
-      </label>
-      <label>reaction d100 <input type="number" [value]="form.reactionRoll" (input)="form.reactionRoll = +$any($event.target).value" /></label>
-    </fieldset>
-    <fieldset><legend>Damage</legend>
-      <label>roll <input type="number" [value]="form.damageRoll" (input)="form.damageRoll = +$any($event.target).value" /></label>
-      <label>type <input [value]="form.damageType" (input)="form.damageType = $any($event.target).value" /></label>
-      <label>delivery
-        <select (change)="form.delivery = $any($event.target).value">
-          <option value="single">single</option><option value="area">area</option><option value="instant">instant</option>
-        </select>
-      </label>
-    </fieldset>
-    <button (click)="resolve()">Resolve</button>
-    @if (error()) { <p class="error">{{ error() }}</p> }
-    @if (result(); as shown) {
-      <ol>@for (step of steps; track step) { @if (has(shown, step)) { <li><b>{{ step }}</b> {{ value(shown, step) }}</li> } }</ol>
-    }
-  `,
+  imports: [Alert, Card, KeyValueList, NumberField, SelectField, TextField],
+  templateUrl: './attack.html',
+  styleUrl: './attack.css',
 })
 export class Attack {
   private readonly api = inject(API);
-  readonly steps = STEPS;
-  readonly form = { attackerSkill: 72, attackerRoll: 47, luck: 0, evasion: 25, armor: 2, hp: 30, reaction: '', reactionRoll: 50, damageRoll: 8, damageType: 'slashing', delivery: 'single' };
+  readonly reactions: readonly Option[] = [{ value: '', label: 'none' }, { value: 'evade', label: 'evade' }, { value: 'block', label: 'block' }];
+  readonly deliveries: readonly Option[] = [{ value: 'single', label: 'single' }, { value: 'area', label: 'area' }, { value: 'instant', label: 'instant' }];
+
+  readonly attackerSkill = signal(72);
+  readonly attackerRoll = signal(47);
+  readonly luck = signal(0);
+  readonly evasion = signal(25);
+  readonly armor = signal(2);
+  readonly hp = signal(30);
+  readonly reaction = signal('');
+  readonly reactionRoll = signal(50);
+  readonly damageRoll = signal(8);
+  readonly damageType = signal('slashing');
+  readonly delivery = signal('single');
+
   readonly result = signal<CombatResult | null>(null);
   readonly error = signal('');
+  /** The result's fields in pipeline order, the ones it has. */
+  readonly steps = computed(() => {
+    const shown = this.result() as Record<string, unknown> | null;
+    return shown ? Object.fromEntries(STEPS.filter((step) => step in shown).map((step) => [step, shown[step]])) : null;
+  });
 
-  d100(): number {
-    return 1 + Math.floor(Math.random() * 100);
+  rollAttack(): void {
+    this.attackerRoll.set(1 + Math.floor(Math.random() * 100));
   }
 
   /** The `combat` input the form describes; a field the form leaves out is left out. */
   input(): CombatInput {
-    const f = this.form;
-    const defender: CombatInput['defender'] = { evasion_skill: f.evasion, armor_dr: f.armor, hp: f.hp };
-    if (f.reaction) {
-      defender.reaction = { kind: f.reaction as 'evade' | 'block', roll: f.reactionRoll };
+    const defender: CombatInput['defender'] = { evasion_skill: this.evasion(), armor_dr: this.armor(), hp: this.hp() };
+    if (this.reaction()) {
+      defender.reaction = { kind: this.reaction() as 'evade' | 'block', roll: this.reactionRoll() };
     }
     return {
-      attacker: { skill: f.attackerSkill, roll: f.attackerRoll, attributes: { lck: f.luck } },
+      attacker: { skill: this.attackerSkill(), roll: this.attackerRoll(), attributes: { lck: this.luck() } },
       defender,
-      damage: { roll: f.damageRoll, type: f.damageType },
-      delivery: f.delivery as CombatInput['delivery'],
+      damage: { roll: this.damageRoll(), type: this.damageType() },
+      delivery: this.delivery() as CombatInput['delivery'],
     } as CombatInput;
-  }
-
-  has(shown: CombatResult, step: string): boolean {
-    return step in (shown as object);
-  }
-
-  value(shown: CombatResult, step: string): string {
-    return JSON.stringify((shown as Record<string, unknown>)[step]);
   }
 
   async resolve(): Promise<void> {
     this.error.set('');
-    try { this.result.set(await this.api.combat(this.input())); } catch (failure) { this.error.set(String(failure)); }
+    try {
+      this.result.set(await this.api.combat(this.input()));
+    } catch (failure) {
+      this.error.set(String(failure));
+    }
   }
 }

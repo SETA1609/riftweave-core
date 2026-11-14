@@ -1,5 +1,6 @@
 // The app's one door to the HTTP API (docs/backend/frontend.md#the-client). Every type comes from
 // the server's OpenAPI document (src/api/openapi.d.ts, `npm run generate`); nothing here is a rule.
+import { InjectionToken } from '@angular/core';
 import createClient from 'openapi-fetch';
 import type { components, paths } from '../api/openapi';
 
@@ -55,3 +56,6 @@ export function createApi(baseUrl: string) {
 }
 
 export type Api = ReturnType<typeof createApi>;
+
+/** The API the screens share; the app talks to it through the dev proxy, so its base URL is the page's own. */
+export const API = new InjectionToken<Api>('riftweave API', { providedIn: 'root', factory: () => createApi('') });

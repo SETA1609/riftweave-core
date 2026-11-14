@@ -1,0 +1,4 @@
+ol { padding-left: var(--space-4); }
+li { margin: var(--space-1) 0; }
+.mismatch { color: var(--danger); }
+pre { overflow-x: auto; }

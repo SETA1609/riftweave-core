@@ -179,6 +179,10 @@ See `docs/modules/README.md` for the philosophy and current state.
    - Accessory base template files use a `_base` suffix (e.g. `ring_base.json`) to distinguish them from their entries, while weapon and armor bases do not. New base templates should always specify `default_materials`, `enchantment_slots`, and `phase`.
    - **Leather** and **Studded Leather** are materials, not base armor types. They apply to bases like `padded`, `brigandine`, or generic armor bases via the `material` field in overrides.
 
+## Frontend
+
+Changes to `frontend/` follow the conventions in [docs/backend/frontend.md](docs/backend/frontend.md#conventions): Angular 22, signals before RxJS, standalone components split into `.ts`, `.html`, and `.css`, Bootstrap's look in our own CSS, small reusable components, Vitest for unit tests, and Playwright for end-to-end tests.
+
 ## Licensing
 
 Dual-licensed (see `LICENSING.md`):

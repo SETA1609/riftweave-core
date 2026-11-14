@@ -53,6 +53,30 @@ The toolchain is Node 24.15 or later (the Angular 22 CLI's minimum; CI pins 24.2
 11.21.1 for installs: the npm that ships with Node 24.7 fails to resolve Vitest's optional peers.
 npm 11.21.1 keeps install scripts blocked, its default. [V 2026-11-14]
 
+## Conventions
+
+Every change to `frontend/` follows these (owner, 2026-11-14):
+
+- **Angular 22, standalone components.** No NgModules.
+- **Signals first.** State, derived values, inputs, outputs, and two-way bindings are signals
+  (`signal`, `computed`, `input`, `output`, `model`). RxJS only where signals do not fit: streams,
+  cancellation, debouncing, a Realtime or WebSocket feed.
+- **Three files per component.** `name.ts`, `name.html`, `name.css`, joined with `templateUrl` and
+  `styleUrl`. No inline `template` or `styles`.
+- **Bootstrap's look, in our own CSS.** No Bootstrap package, CDN, or script. `src/styles.css` holds
+  the design tokens (custom properties: colors, spacing, radius, font) and the few shared classes
+  (`.btn`, `.btn-primary`, `.btn-outline`, `.form-control`, `.card`, `.alert`, `.table`, `.nav`); a
+  component's own layout is in its own `.css`.
+- **Small reusable components, built up.** Fields, cards, alerts, and lists live in `src/app/ui/`
+  and take their values as signal inputs and models; a screen is a composition of them. Add a new
+  `ui/` component when a second screen needs the same piece, rather than repeating markup.
+- **Tests.** Unit and API specs run on Vitest (`npm test`, through `@angular/build:unit-test`),
+  beside what they test (`name.spec.ts`; `app.spec.ts` covers the ui components and the screens).
+  End-to-end tests run on Playwright (`npm run e2e`,
+  `e2e/*.spec.ts`): a real browser on the built app, the app's proxy, and a real server.
+- **Layout.** `src/app/api.ts` is the API and its `API` token, `src/app/ui/` the shared components,
+  and each screen its three files in `src/app/` (`sheet`, `attack`, `playthrough`). [A]
+
 ## Not covered
 
 Styling past a readable layout, a saved list of characters, and the human CLI's level-up flow.

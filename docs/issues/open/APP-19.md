@@ -1,0 +1,8 @@
+#### APP-19 The frontend follows its conventions: split files, reusable components, a Bootstrap look in raw CSS
+- Status: review
+- Priority: medium
+- Needs: APP-07
+- Do: Owner rules for every frontend change, 2026-11-14: Angular 22; signals wherever they fit, RxJS only where they do not; standalone components; every component split into `.ts`, `.html`, and `.css`; Bootstrap's look written as raw CSS of our own, with no Bootstrap package; and screens built from small reusable components. APP-07 used inline templates and one component per screen. Write the rules in `docs/backend/frontend.md` (and point to them from `AGENTS.md`), add the reusable components (a number field, a text field, a select, a card, an alert, and a key-value list) under `src/app/ui/`, rebuild the three screens from them, and move the shared styles into design tokens and a few Bootstrap-like classes in `styles.css`. Unit tests stay on Vitest; the Playwright end-to-end tests the conventions name are APP-20, filed apart so each pull request stays under the file limit. Behavior does not change: the API specs pass unchanged.
+- Files: ~20 counted; most `ui/` files are under 5 lines (frontend/src/app/ui/, frontend/src/app/sheet.*, frontend/src/app/attack.*, frontend/src/app/playthrough.*, frontend/src/app/app.*, frontend/src/app/app.spec.ts, frontend/src/styles.css, docs/backend/frontend.md, AGENTS.md)
+- See: docs/backend/frontend.md, docs/issues/done/APP-07.md
+- Done when: no component has an inline `template` or `styles`; each screen uses the shared field components; no Bootstrap package is installed; the component specs and the 14 API specs pass on Vitest; the build passes.

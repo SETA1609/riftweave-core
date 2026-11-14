@@ -1,0 +1,15 @@
+<header>
+  <h1>Riftweave</h1>
+  <nav class="nav">
+    @for (tab of tabs; track tab) {
+      <button type="button" class="nav-link" [class.active]="tab === current()" (click)="current.set(tab)">{{ tab }}</button>
+    }
+  </nav>
+</header>
+<main>
+  @switch (current()) {
+    @case ('sheet') { <rw-sheet /> }
+    @case ('attack') { <rw-attack /> }
+    @case ('playthrough') { <rw-playthrough /> }
+  }
+</main>
