@@ -7,6 +7,7 @@ import (
 	"reflect"
 	"slices"
 	"sort"
+	"strings"
 
 	"github.com/SETA1609/riftweave-core/backend/internal/data"
 	"github.com/SETA1609/riftweave-core/backend/internal/stored"
@@ -197,6 +198,7 @@ var sessionAdapters = map[string]sessionAdapter{
 	"progression": {fill: fillProgression, write: writeProgression},
 	"consume":     {fill: fillConsume, write: writeConsume},
 	"conditions":  {fill: fillConditions, write: writeConditions},
+	"spellcraft":  {fill: fillSpellcraft, write: writeSpellcraft},
 }
 
 func fillDerived(_ *data.Ruleset, actor *stored.Actor, _ *SessionStep, input map[string]any) error {
@@ -269,9 +271,35 @@ func writeCasting(actor *stored.Actor, _ *SessionStep, _, result map[string]any)
 	actor.Resources.ManaPoints = number(result["mana"])
 }
 
-func fillProgression(_ *data.Ruleset, actor *stored.Actor, _ *SessionStep, input map[string]any) error {
-	if input["operation"] == "level_up" {
+func fillProgression(ruleset *data.Ruleset, actor *stored.Actor, _ *SessionStep, input map[string]any) error {
+	switch input["operation"] {
+	case "level_up":
 		setDefault(input, "actor", map[string]any{"attributes": actor.Attributes})
+	case "spend":
+		key, named := input["key"].(string)
+		if !named {
+			return nil
+		}
+		if _, present := input["skill"]; !present {
+			body, err := json.Marshal(map[string]any{"operation": "read_skill", "actor": characterOf(actor), "read": key})
+			if err != nil {
+				return err
+			}
+			output, err := commands["progression"](ruleset, body)
+			if err != nil {
+				return err
+			}
+			read, _ := encodedValue(output).(map[string]any)
+			input["skill"] = read["value"]
+		}
+		setDefault(input, "tagged", slices.Contains(actor.Tags, key))
+	case "take_perk":
+		setDefault(input, "actor", characterOf(actor))
+		perks := map[string]any{}
+		for key, rank := range actor.Perks {
+			perks[key] = rank
+		}
+		setDefault(input, "perks", perks)
 	}
 	return nil
 }
@@ -284,6 +312,55 @@ func writeProgression(actor *stored.Actor, _ *SessionStep, input, result map[str
 		actor.Growth.HitPoints += number(input["hp_roll"])
 		actor.Growth.ManaPoints += number(input["mp_roll"])
 		actor.Growth.Stamina += number(input["sp_roll"])
+	case "spend":
+		key, named := input["key"].(string)
+		if !named || number(result["ranks"]) == 0 {
+			return
+		}
+		if actor.Skills == nil {
+			actor.Skills = map[string]int64{}
+		}
+		actor.Skills[key] = number(input["skill"]) + number(result["ranks"])
+	case "take_perk":
+		if result["taken"] != true {
+			return
+		}
+		if actor.Perks == nil {
+			actor.Perks = map[string]int64{}
+		}
+		actor.Perks[result["perk"].(string)] = number(result["rank"])
+	}
+}
+
+// effectRefPrefix is how a stored actor's known effect key reads as a ref.
+const effectRefPrefix = "core:effect/"
+
+func fillSpellcraft(_ *data.Ruleset, actor *stored.Actor, _ *SessionStep, input map[string]any) error {
+	if input["operation"] != "learn" {
+		return nil
+	}
+	known := make([]any, 0, len(actor.KnownEffects))
+	for _, key := range actor.KnownEffects {
+		known = append(known, effectRefPrefix+key)
+	}
+	setDefault(section(input, "caster"), "known", known)
+	return nil
+}
+
+func writeSpellcraft(actor *stored.Actor, _ *SessionStep, input, result map[string]any) {
+	if input["operation"] != "learn" {
+		return
+	}
+	spell, _ := input["spell"].(string)
+	spell = spell[strings.LastIndex(spell, "/")+1:]
+	if !slices.Contains(actor.Spells, spell) {
+		actor.Spells = append(actor.Spells, spell)
+	}
+	known, _ := result["known"].([]any)
+	actor.KnownEffects = make([]string, 0, len(known))
+	for _, ref := range known {
+		text, _ := ref.(string)
+		actor.KnownEffects = append(actor.KnownEffects, text[strings.LastIndex(text, "/")+1:])
 	}
 }
 

@@ -153,3 +153,57 @@ func TestEveryAdaptedCommandExists(t *testing.T) {
 		}
 	}
 }
+
+// step runs one session step and returns the new session and the step's result.
+func step(t *testing.T, opened *Core, session any, command string, input map[string]any) (map[string]any, map[string]any) {
+	t.Helper()
+	answer := sessionCall(t, opened, map[string]any{"operation": "step", "session": session, "step": map[string]any{"command": command, "input": input}})
+	result, _ := answer["result"].(map[string]any)
+	return answer["session"].(map[string]any), result
+}
+
+// APP-12: a level-up's choices are session steps, so a played run needs no dev step.
+func TestALevelUpsChoicesAreWrittenWithNoDevStep(t *testing.T) {
+	opened := open(t)
+	start := startingActor()
+	start["tags"] = []any{"blades"}
+	var session map[string]any = sessionCall(t, opened, map[string]any{"operation": "start", "start": start})["session"].(map[string]any)
+
+	session, spent := step(t, opened, session, "progression", map[string]any{"operation": "spend", "key": "blades", "points": 10})
+	if spent["ranks"] != float64(10) {
+		t.Fatalf("a tag skill buys 10 ranks for 10 points: %v", spent)
+	}
+	session, _ = step(t, opened, session, "progression", map[string]any{"operation": "spend", "key": "evasion", "points": 7})
+	skills := session["actor"].(map[string]any)["skills"].(map[string]any)
+	if skills["blades"] != float64(27) || skills["evasion"] != float64(18) {
+		t.Errorf("blades 17 + 10 and evasion 15 + 3 written: %v", skills)
+	}
+
+	session, _ = step(t, opened, session, "progression", map[string]any{"operation": "take_perk", "perk": "toughness"})
+	session, _ = step(t, opened, session, "progression", map[string]any{"operation": "take_perk", "perk": "toughness"})
+	session, refused := step(t, opened, session, "progression", map[string]any{"operation": "take_perk", "perk": "power_attack"})
+	if refused["taken"] != false {
+		t.Errorf("power_attack needs blades 40: %v", refused)
+	}
+	perks := session["actor"].(map[string]any)["perks"].(map[string]any)
+	if !reflect.DeepEqual(perks, map[string]any{"toughness": float64(2)}) {
+		t.Errorf("toughness at rank 2 and nothing else: %v", perks)
+	}
+
+	session, _ = step(t, opened, session, "spellcraft", map[string]any{"operation": "learn", "spell": "fire_bolt"})
+	actor := session["actor"].(map[string]any)
+	if !reflect.DeepEqual(actor["spells"], []any{"fire_bolt"}) || !reflect.DeepEqual(actor["known_effects"], []any{"damage_fire"}) {
+		t.Errorf("fire_bolt and its fire learned: %v %v", actor["spells"], actor["known_effects"])
+	}
+
+	if session["dev"] == true {
+		t.Error("no dev step ran")
+	}
+	if len(session["log"].([]any)) != 6 {
+		t.Errorf("six steps logged, the refused perk too: %d", len(session["log"].([]any)))
+	}
+	answer := sessionCall(t, opened, map[string]any{"operation": "replay", "session": session})
+	if answer["matches"] != true {
+		t.Error("the session replays to the same actor")
+	}
+}

@@ -1,7 +1,7 @@
 {
   "$schema": "./command.schema.json",
   "name": "progression",
-  "summary": "XP and level, a level-up pool, spending points on a skill or a skill group, and reading a skill off a sheet.",
+  "summary": "XP and level, a level-up pool, spending points on a skill or a skill group, reading a skill off a sheet, and taking a perk.",
   "documentation": "docs/core/progression.md",
   "input_schema": {
     "type": "object",
@@ -13,7 +13,8 @@
           "level",
           "level_up",
           "spend",
-          "read_skill"
+          "read_skill",
+          "take_perk"
         ]
       },
       "level": {
@@ -64,6 +65,22 @@
           "minimum": 0
         },
         "description": "With read_skill: a grouped sheet, the ranks of each tracked group by key. Without it the sheet is a full one and reads actor.skills."
+      },
+      "key": {
+        "$ref": "common.json#/definitions/key",
+        "description": "With spend: the skill bought. The command does not read it; a session fills `skill` and `tagged` from this skill and adds the ranks to it (docs/backend/sessions.md)."
+      },
+      "perks": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "description": "With take_perk: the perks held, key to rank."
+      },
+      "perk": {
+        "$ref": "common.json#/definitions/key",
+        "description": "With take_perk: the perk to take, a key in features/core.json."
       }
     },
     "additionalProperties": false,
@@ -135,6 +152,62 @@
           "group",
           "start"
         ]
+      },
+      "taken": {
+        "type": "boolean"
+      },
+      "perk": {
+        "type": "string",
+        "description": "With take_perk: the perk checked."
+      },
+      "rank": {
+        "type": "integer",
+        "minimum": 0,
+        "description": "With take_perk: the new rank when taken, else the rank held (0 when not held)."
+      },
+      "unmet": {
+        "type": "array",
+        "description": "With take_perk: each requirement that fails, empty when taken.",
+        "items": {
+          "type": "object",
+          "properties": {
+            "needs": {
+              "type": "string",
+              "enum": [
+                "rank",
+                "level",
+                "attribute",
+                "skill",
+                "perk"
+              ]
+            },
+            "key": {
+              "type": "string",
+              "description": "The attribute or perk key."
+            },
+            "keys": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "The skills of a skill requirement; one of them must reach min."
+            },
+            "min": {
+              "type": "integer"
+            },
+            "max": {
+              "type": "integer",
+              "description": "A rank requirement: the perk's ranks."
+            },
+            "has": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "needs"
+          ],
+          "additionalProperties": false
+        }
       }
     },
     "additionalProperties": false,
