@@ -1459,6 +1459,78 @@
       ]
     },
     {
+      "key": "summon_retinue",
+      "label": "Retinue",
+      "description": "What you call does not come alone: you keep two summons at once.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 14,
+        "skills": [
+          {
+            "id": [
+              "core:skill/orange_magic",
+              "core:skill/black_magic"
+            ],
+            "label": [
+              "Orange Magic",
+              "Black Magic"
+            ],
+            "min": 60
+          }
+        ],
+        "perks": [
+          "core:feature/conjurer"
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "summon_limit",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:summon_retinue",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "summon_host",
+      "label": "Host",
+      "description": "A small army answers you: you keep three summons at once.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 28,
+        "skills": [
+          {
+            "id": [
+              "core:skill/orange_magic",
+              "core:skill/black_magic"
+            ],
+            "label": [
+              "Orange Magic",
+              "Black Magic"
+            ],
+            "min": 90
+          }
+        ],
+        "perks": [
+          "core:feature/summon_retinue"
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "summon_limit",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:summon_host",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
       "key": "summon_dire",
       "label": "Dire Summons",
       "description": "What you call comes bigger and fiercer: your summons gain the dire template, and your Orange Magic +5.",

@@ -27,7 +27,11 @@ type Caster struct {
 	Reagents      []string         `json:"reagents"`
 	Attributes    actor.Attributes `json:"attributes"`
 	Mana          int64            `json:"mana"`
+	Summons       []string         `json:"summons"` // active summons, oldest first: a group ref each
 }
+
+// summonEffect calls creatures: its parameter is the group, its magnitude how many.
+const summonEffect = "core:effect/summon"
 
 // Target is the defender of an instant spell.
 type Target struct {
@@ -62,6 +66,8 @@ type Result struct {
 	Consumed      []string           `json:"consumed"`
 	Effects       []json.RawMessage  `json:"effects"`
 	Dispelled     []string           `json:"dispelled"`
+	Summons       []string           `json:"summons"`
+	Dismissed     []string           `json:"dismissed"`
 	Mana          int64              `json:"mana"`
 }
 
@@ -136,6 +142,8 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		Effects:       []json.RawMessage{},
 		Concentration: caster.Concentration,
 		Dispelled:     []string{},
+		Summons:       append([]string{}, caster.Summons...),
+		Dismissed:     []string{},
 	}
 	for _, flag := range caster.Flags {
 		if slices.Contains(ruleset.Casting.PreventedBy, flag) {
@@ -189,6 +197,25 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		if held != nil && *held != spell.Key {
 			result.Ended = held
 		}
+	}
+	var summoned []string
+	for _, applied := range spell.Effects {
+		if applied.Effect == summonEffect {
+			for range int(max(applied.Magnitude, 1)) {
+				summoned = append(summoned, applied.Parameter)
+			}
+		}
+	}
+	if len(summoned) > 0 {
+		// The newest join; past the limit the oldest are dismissed (docs/core/casting.md#summons).
+		limit, err := modifier.Value(ruleset.Casting.SummonLimit, modifier.Target(input.Modifiers, "summon_limit"), ruleset.Origins, 0, nil)
+		if err != nil {
+			return Result{}, err
+		}
+		var summons []string = append(result.Summons, summoned...)
+		var past int = max(len(summons)-int(limit), 0)
+		result.Dismissed = append([]string{}, summons[:past]...)
+		result.Summons = summons[past:]
 	}
 	for _, applied := range spell.Effects {
 		if applied.Effect != dispelEffect {
