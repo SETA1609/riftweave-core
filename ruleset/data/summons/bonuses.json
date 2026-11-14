@@ -4,16 +4,18 @@
     {
       "key": "magic",
       "label": "Magic",
-      "description": "The caster's force of will steadies a summoned creature's mind: CHA - 5, never below 0, on its INT and WIL.",
+      "description": "The caster's force of will steadies a summoned creature's mind: CHA - 5, never below 0, on its INT and WIL: half at rank 1, all at rank 2.",
       "attribute": "cha",
-      "attributes": ["int", "wil"]
+      "attributes": ["int", "wil"],
+      "rank_share": [0.5, 1]
     },
     {
       "key": "physical",
       "label": "Physical",
-      "description": "The caster's presence drives a summoned creature's body: CHA - 5, never below 0, on its STR, END, and AGI.",
+      "description": "The caster's presence drives a summoned creature's body: CHA - 5, never below 0, on its STR, END, and AGI: half at rank 1, all at rank 2.",
       "attribute": "cha",
-      "attributes": ["str", "end", "agi"]
+      "attributes": ["str", "end", "agi"],
+      "rank_share": [0.5, 1]
     }
   ]
 }

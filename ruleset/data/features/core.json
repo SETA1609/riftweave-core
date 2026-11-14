@@ -1581,7 +1581,7 @@
         ],
         "perks": []
       },
-      "ranks": 1,
+      "ranks": 2,
       "summon_bonus": "core:summon_bonus/magic",
       "modifiers": [
         {
@@ -1619,7 +1619,7 @@
         ],
         "perks": []
       },
-      "ranks": 1,
+      "ranks": 2,
       "summon_bonus": "core:summon_bonus/physical",
       "modifiers": [
         {
