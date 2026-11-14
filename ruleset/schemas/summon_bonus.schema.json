@@ -27,6 +27,7 @@
           "uniqueItems": true,
           "description": "The summoned creature's attributes that gain the modifier."
         },
+        "rank_share": { "type": "array", "items": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 }, "minItems": 1, "description": "The share of the modifier each rank of the perk adds, rank 1 first; the add is rounded down (M3-19)." },
         "source": { "$ref": "schema.json#/definitions/sourceRef" }
       },
       "required": ["key", "label", "description", "attribute", "attributes"],
