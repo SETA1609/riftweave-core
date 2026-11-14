@@ -310,6 +310,15 @@ A monster fights with the same numbers as a character ([core/combat.md](../core/
 - **`resist`** — a flat number per damage type, the combat pipeline's `defender.resist`.
 - **`role`** — `standard` (the default), `boss`, or `minion`: which hits-to-kill band of
   `balance/core.json` the monster's HP is checked against.
+- **`perks`** — feats from the one `features` table (M3-15): `{ "perk": "core:feature/<key>",
+  "rank": 2 }`, the rank 1 when left out and at most the perk's `ranks`. Players and monsters are
+  one actor shape, so a monster's perks emit their modifiers at their rank as a player's do (an
+  `add` times the rank, a `multiply` of `m` at `1 + (m − 1) × rank`), and `monster_sheet` applies
+  them to its derived stats, its authored `hitPoints` included, and its skills. A template's perks
+  add to the row's as its spells do, the higher rank kept when both name one; `dire` grants
+  Toughness and `elder` Second Wind. Prerequisites are not checked on a monster: an author or a GM
+  places a perk on purpose. A perk of the `social` or `utility` category means little on a monster,
+  so `validate.py` warns but does not fail. [A]
 - **`skills`** — only the skills it fights or casts with; any other reads as a player's
   starting value, `5 + attribute × 2`, and an unwritten combat or magic skill grows by 17 per
   level above 1, up to 100, so a level-matched monster hits about as often as a player

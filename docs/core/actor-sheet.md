@@ -37,6 +37,10 @@ skill   the row's skills[key], when written
   monster fought at `start` at every level, about 25 to 35, while a player's main skill
   reaches 100 by level 5 to 8; the M5-18 agent runs lost none of 240 fights
   ([M5-18](../decisions/M5-18.md)). [A]
+- **Perks.** A row's `perks` (M3-15) emit their modifiers at their rank, as a player's do
+  ([progression.md](../modules/progression.md#perks-and-traits)), and the sheet applies them: each
+  derived stat, the authored `hitPoints` included, takes the modifiers on its key, and each skill
+  read takes the modifiers on its key after its start and growth. [A]
 - **A missing attribute reads 0**, as it does in `derived`.
 
 The input is the flat row, so a consumer composes first. The vectors are in
