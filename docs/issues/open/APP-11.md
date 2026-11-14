@@ -1,5 +1,5 @@
 #### APP-11 Printouts generated from the data
-- Status: doing
+- Status: review
 - Priority: high
 - Needs: APP-04, M5-49
 - Do: Every printout should match the rules, so make them from the data: a backend command renders a character sheet (only the raised skills, as M5-49 allows, each with its target number printed so a player only checks roll <= number), spell cards, monster stat blocks with to-hit and DR worked out, and condition cards. Output is printable HTML or PDF [A]. A rule change is then a rebuild, not an errata pass.
