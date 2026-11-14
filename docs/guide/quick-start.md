@@ -78,7 +78,7 @@ Unspent AP carries over, up to 10. There is no bonus action and no reaction slot
 
 Spells work the same way on the matching magic skill: spend the mana first, then roll. Some spells land with no chance to dodge, and those allow a save instead.
 
-A summoned creature appears at your level. If you took a Commanding Summons perk, add your CHA − 5 (never below 0) to the creature's INT and WIL (magic) or STR, END, and AGI (physical), whichever the perk names, before you work out its HP and damage. With CHA 8 that is +3 on each.
+A summoned creature appears at your level. If you took a Commanding Summons perk, add half your CHA − 5 at rank 1, rounded down, or all of it at rank 2 (never below 0) to the creature's INT and WIL (magic) or STR, END, and AGI (physical), whichever the perk names, before you work out its HP and damage. With CHA 8 that is +3 on each.
 
 ## After the fight
 

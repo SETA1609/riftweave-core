@@ -220,6 +220,11 @@ the power and nature, through the same merge as a template's `attributes`, so EN
 nothing; there is no penalty. Without a bonus perk, CHA changes nothing. A caster takes one group
 with one perk; the second perk adds the other group. [V 2026-11-12, `test_spells.py`]
 
+Each Commanding Summons perk has two ranks (M3-19). Rank 1 adds half the modifier, rank 2 the
+full modifier: the bonus row's `rank_share` is `[0.5, 1]`, and a rank adds
+`floor(max(CHA − 5, 0) × rank_share[rank − 1])`. At CHA 8 that is +1, then +3; at CHA 10, +2, then
++5. The caster's perks are refs at rank 1, or `{ "perk": ref, "rank": n }`. [A]
+
 ---
 
 ## 4. Casting resolution (d100 roll-under)
