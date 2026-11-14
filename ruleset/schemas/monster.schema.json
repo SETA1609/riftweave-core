@@ -73,6 +73,7 @@
           "items": { "$ref": "schema.json#/definitions/appliedEffect" }
         },
         "spells": { "type": "array", "items": { "$ref": "schema.json#/definitions/spellRef" }, "uniqueItems": true, "description": "Spells it casts as a player does, from the mana of the mp row (docs/modules/monsters.md#templates)." },
+        "perks": { "type": "array", "items": { "$ref": "schema.json#/definitions/heldPerk" }, "description": "Perks it holds, from the features table, each at a rank (docs/modules/monsters.md#templates, M3-15)." },
         "loot": { "type": "array", "minItems": 1, "description": "The rows this monster rolls when defeated (docs/core/loot.md#drops). Replaces what it inherits.", "items": { "$ref": "loot.schema.json#/definitions/lootRow" } },
         "role": { "type": "string", "enum": ["standard", "boss", "minion"], "description": "Which hits-to-kill band of balance/core.json the HP is checked against; default standard." },
         "attacks": { "type": "array", "items": { "$ref": "#/definitions/attack" }, "description": "What the monster hits with, as combat attacks (docs/modules/monsters.md#attacks-resistances-and-role)." },
@@ -149,6 +150,7 @@
           "items": { "$ref": "schema.json#/definitions/appliedEffect" }
         },
         "spells": { "type": "array", "items": { "$ref": "schema.json#/definitions/spellRef" }, "uniqueItems": true, "description": "Spells it casts as a player does, from the mana of the mp row (docs/modules/monsters.md#templates)." },
+        "perks": { "type": "array", "items": { "$ref": "schema.json#/definitions/heldPerk" }, "description": "Perks it holds, from the features table, each at a rank (docs/modules/monsters.md#templates, M3-15)." },
         "loot": { "type": "array", "minItems": 1, "description": "The rows this monster rolls when defeated (docs/core/loot.md#drops). Replaces what it inherits.", "items": { "$ref": "loot.schema.json#/definitions/lootRow" } },
         "role": { "type": "string", "enum": ["standard", "boss", "minion"], "description": "Which hits-to-kill band of balance/core.json the HP is checked against; default standard." },
         "attacks": { "type": "array", "items": { "$ref": "#/definitions/attack" }, "description": "What the monster hits with, as combat attacks (docs/modules/monsters.md#attacks-resistances-and-role)." },

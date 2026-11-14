@@ -22,6 +22,26 @@
           "hitPoints": {
             "type": "integer",
             "minimum": 1
+          },
+          "perks": {
+            "type": "array",
+            "description": "The row's perks, each at a rank (M3-15); their modifiers reach the stats and skills.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "perk": {
+                  "$ref": "common.json#/definitions/ref"
+                },
+                "rank": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              },
+              "required": [
+                "perk"
+              ],
+              "additionalProperties": false
+            }
           }
         }
       },
