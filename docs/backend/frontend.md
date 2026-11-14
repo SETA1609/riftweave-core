@@ -52,6 +52,7 @@ The specs act as a player: fill the character sheet and create a character, fill
 with the first `combat.json` vector's inputs and read the shown result against its `expect`, and run
 the playthrough to a matching replay. They find elements by label and role, not by CSS class, so a
 restyle does not break them. A first run installs the browser: `npx playwright install chromium`.
+[V 2026-11-14, `npm run e2e` locally: 3 specs pass, both servers started and stopped by Playwright]
 
 CI (`.github/workflows/frontend.yml`) builds the server, starts it, and runs `npm ci`, the build,
 and the tests on every change under `frontend/`, `backend/`, or `ruleset/`. [V 2026-11-14, the
