@@ -1,5 +1,5 @@
 #### APP-12 Sessions record skill purchases, perks, and learned spells
-- Status: todo
+- Status: doing
 - Priority: high
 - Needs: APP-04
 - Do: Found by the M5-18 agent runs: a session cannot record a level-up's choices. `progression spend` returns ranks but writes nothing back, and no command takes a perk or learns a spell, so all eight runs bought every skill rank and took every perk through dev mode (419 `dev skill`, 138 `dev perk`, and 81 `dev learn` steps), which marks a played run as a dev run. Add session adapters, or commands, that write a bought rank to `skills`, a perk to `perks` (checking prerequisites and `ranks`, as the human CLI would), and a learned spell to `spells`, so a run to level 30 needs no dev step.

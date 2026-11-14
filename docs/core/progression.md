@@ -28,7 +28,15 @@ The numbers that turn experience into levels, skill points, and perks. They live
 2. **Level-up.** Each level gained, `start_level + 1` to `max_level`, grants one skill-point pool and `perks_per_level` perks. A new character also gets a pool at `start_level`; with the cap at 30 that is 30 pools in a career. [A]
 3. **The pool.** `skill_points` is a formula tree ([formula.md](formula.md)). The one random term is the `luck_roll`, an input, so a vector pins it. The reference does not roll.
 4. **Spending.** One rating point costs `skill_cost.normal` points, or `skill_cost.tag` if the skill is tagged. A skill never goes past `skill_cap`: points that would buy rating above the cap are not spent. Points that cannot buy a whole rating point (one left over on a normal skill) stay in the pool. [A]
-5. **Tag ratio.** The ratio is 2:1 in favour of tag skills, as in `docs/modules/progression.md`. `AGENTS.md` words it as "+2 per point instead of +1", which is the same ratio on a different scale; the data uses cost, so a point is a point. [V 2026-11-02, read both]
+5. **Taking a perk.** A level-up's perk is checked against the perk's row in `features/core.json`, with `take_perk` (`actor`, `perks` held as key to rank, `perk` a key). The row must be `type: perk`; a creation trait, a racial trait, or a universal feature is not taken on a level-up, and an unknown key is an error. The perk is taken, at the next rank, when every requirement holds; otherwise `unmet` lists each one that fails and nothing is taken:
+   - **rank:** the held rank is below `ranks` (1 when the row has none);
+   - **level:** `actor.level` is at least `prerequisite.level`;
+   - **attribute:** each attribute in `prerequisite.abilities` is at least its value (a missing attribute reads 0);
+   - **skill:** for each entry of `prerequisite.skills`, one of its skills reads at least `min`, each read as `read_skill` reads it on a full sheet (a written value, else its start);
+   - **perk:** each perk in `prerequisite.perks` is held at rank 1 or more.
+
+   How many perks a level grants (`perks_per_level`) is counted by the caller, as the skill-point pool is. [A]
+6. **Tag ratio.** The ratio is 2:1 in favour of tag skills, as in `docs/modules/progression.md`. `AGENTS.md` words it as "+2 per point instead of +1", which is the same ratio on a different scale; the data uses cost, so a point is a point. [V 2026-11-02, read both]
 
 ## Two sheets, one rule set
 

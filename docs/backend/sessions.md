@@ -29,9 +29,12 @@ A field the step names wins; the session fills only what is missing. [A]
 | `combat` | `attacker.attributes`, or with `as: defender` `defender.hp` and `defender.attributes` | with `as: defender`, HP |
 | `rest` | `actor`, `current`, `max.stamina` | HP, MP, SP, AP, and any condition the rest cleared |
 | `casting` | `caster.skills`, `caster.attributes`, `caster.mana` | MP |
-| `progression` | `actor` for `level_up` | `level` sets XP and level; `level_up` adds its rolls to `growth` |
+| `progression` | `actor` for `level_up`; for `spend` with `key`, `skill` (the skill's value, as `read_skill` reads it) and `tagged` (whether `key` is a tag); for `take_perk`, `actor` and `perks` | `level` sets XP and level; `level_up` adds its rolls to `growth`; `spend` with `key` adds the bought `ranks` to that skill; `take_perk` sets the perk to its new `rank` when `taken` |
+| `spellcraft` | for `learn`, `caster.known` (the effects the actor knows) | `learn` adds the spell to `spells` and sets `known_effects` to `known` |
 | `consume` | `current`, `max` | HP, MP, SP |
 | `conditions` | `conditions` | the conditions and flags |
 | `dev` | nothing | what the operation names ([dev-mode.md](dev-mode.md)); only with `--dev` |
+
+A level-up therefore plays with no dev step: `progression` `level_up` for the pool, `spend` with each skill's `key`, `take_perk`, and `spellcraft` `learn` for each new spell, all logged and replayed as any other step. A perk whose requirements fail is logged with `taken: false` and changes nothing. The session does not count the pool or the perks a level grants; the caller does. [A]
 
 Each row is one entry in `sessionAdapters` in `backend/core/session.go`, so adding a command to sessions is one entry. Other commands run and are logged, and change nothing on the actor. The stored actor has no coins, and loot does not add to the inventory yet. [U]
