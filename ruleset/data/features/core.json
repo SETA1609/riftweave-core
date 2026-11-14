@@ -1586,7 +1586,7 @@
       "modifiers": [
         {
           "target": "persuasion",
-          "op": "add",
+          "operation": "add",
           "value": 5,
           "source": "feature:commanding_summons_magic",
           "origin": "core:origin/trained"
@@ -1624,7 +1624,7 @@
       "modifiers": [
         {
           "target": "intimidation",
-          "op": "add",
+          "operation": "add",
           "value": 5,
           "source": "feature:commanding_summons_physical",
           "origin": "core:origin/trained"
