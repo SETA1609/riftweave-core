@@ -387,6 +387,9 @@ type Feature struct {
 	Type         string       `json:"type"`
 	Ranks        int64        `json:"ranks"`
 	Prerequisite Prerequisite `json:"prerequisite"`
+	// Modifiers are the feature's own, as written; a session emits them at the held rank
+	// (docs/backend/sessions.md#what-the-actor-brings-to-a-step-app-13).
+	Modifiers []map[string]any `json:"modifiers"`
 }
 
 // Prerequisite is what a perk needs before it is taken (docs/core/progression.md).
@@ -556,6 +559,10 @@ type Item struct {
 	IsWeapon         bool
 	Type             string
 	Consumable       *Consumable
+	// WeaponSkill is a weapon's skill key; ArmorDRBase is an armor piece's drBase, nil for an
+	// item that is not armor (docs/modules/armor.md).
+	WeaponSkill string
+	ArmorDRBase *int64
 }
 
 // Consumable is how an item is used and the effects it applies.
@@ -621,6 +628,7 @@ type Ruleset struct {
 	LootLuck          *formula.Program
 	Items             map[string]Item      // core:<category>/<key>
 	MaterialPercent   map[string]int64     // material key: valueFactor * 100
+	MaterialDefense   map[string]int64     // a material ref: its armor.defense, added to an armor piece's drBase
 	DiceLadder        [][]string           // combat/dice_ladder.json: rungs of equal dice, smallest first
 	Sizes             map[string]Size      // combat/dice_ladder.json: undersized, normal, oversized
 	MonsterLevel      map[string]int64     // monster key
@@ -1094,6 +1102,12 @@ func (loader *rulesetLoader) itemBases(directory string) []string {
 	return keys
 }
 
+// weaponFields is what an item row says of its weapon: its dice and its skill ref.
+type weaponFields struct {
+	Damage struct{ Dice string }
+	Skill  string
+}
+
 // loadItems prices every equipment item and material, and reads every monster's level.
 func (loader *rulesetLoader) loadItems(ruleset *Ruleset) {
 	ruleset.Items = map[string]Item{}
@@ -1106,8 +1120,11 @@ func (loader *rulesetLoader) loadItems(ruleset *Ruleset) {
 	}
 	for _, category := range categories {
 		type itemFields struct {
-			Cost             *Cost
-			Weapon           *struct{ Damage struct{ Dice string } }
+			Cost   *Cost
+			Weapon *weaponFields
+			Armor  *struct {
+				DRBase int64 `json:"drBase"`
+			}
 			DefaultMaterials []string `json:"default_materials"`
 			Type             string
 			Consumable       *Consumable
@@ -1132,7 +1149,8 @@ func (loader *rulesetLoader) loadItems(ruleset *Ruleset) {
 			}
 			// A field is the row's own, its overrides', or its base's.
 			var cost *Cost = cmp.Or(row.Cost, row.Overrides.Cost, base.Cost)
-			var weapon *struct{ Damage struct{ Dice string } } = cmp.Or(row.Weapon, row.Overrides.Weapon, base.Weapon)
+			var weapon *weaponFields = cmp.Or(row.Weapon, row.Overrides.Weapon, base.Weapon)
+			var armor = cmp.Or(row.Armor, row.Overrides.Armor, base.Armor)
 			var defaults []string = row.DefaultMaterials
 			if defaults == nil {
 				defaults = row.Overrides.DefaultMaterials
@@ -1159,6 +1177,11 @@ func (loader *rulesetLoader) loadItems(ruleset *Ruleset) {
 			}
 			if weapon != nil {
 				item.Dice = weapon.Damage.Dice
+				item.WeaponSkill = baseName(weapon.Skill)
+			}
+			if armor != nil && category.category == "armor" {
+				var dr int64 = armor.DRBase
+				item.ArmorDRBase = &dr
 			}
 			ruleset.Items["core:"+category.category+"/"+row.Key] = item
 		}
@@ -1175,12 +1198,15 @@ func (loader *rulesetLoader) loadItems(ruleset *Ruleset) {
 		Materials []struct {
 			Key         string
 			ValueFactor float64
+			Armor       struct{ Defense int64 }
 		}
 	}
 	loader.read("materials/core.json", &materials)
 	ruleset.MaterialPercent = map[string]int64{}
+	ruleset.MaterialDefense = map[string]int64{}
 	for _, material := range materials.Materials {
 		ruleset.MaterialPercent[material.Key] = int64(math.RoundToEven(material.ValueFactor * 100))
+		ruleset.MaterialDefense["core:material/"+material.Key] = material.Armor.Defense
 	}
 
 	var monsters struct {

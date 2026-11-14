@@ -201,19 +201,139 @@ var sessionAdapters = map[string]sessionAdapter{
 	"spellcraft":  {fill: fillSpellcraft, write: writeSpellcraft},
 }
 
-func fillDerived(_ *data.Ruleset, actor *stored.Actor, _ *SessionStep, input map[string]any) error {
+func fillDerived(ruleset *data.Ruleset, actor *stored.Actor, _ *SessionStep, input map[string]any) error {
 	setDefault(input, "actor", characterOf(actor))
+	setDefault(input, "modifiers", actorModifiers(ruleset, actor))
 	return nil
 }
 
-func fillCombat(_ *data.Ruleset, actor *stored.Actor, step *SessionStep, input map[string]any) error {
+// actorModifiers are the actor's perks at their rank, then its held modifiers
+// (docs/backend/sessions.md#what-the-actor-brings-to-a-step-app-13). A perk at rank r emits an
+// add at value × r and a multiply of m at 1 + (m − 1) × r; a grant or a set once.
+func actorModifiers(ruleset *data.Ruleset, actor *stored.Actor) []any {
+	var keys []string = make([]string, 0, len(actor.Perks))
+	for key := range actor.Perks {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
+	var modifiers []any = []any{}
+	for _, key := range keys {
+		feature, exists := ruleset.Features.Get(key)
+		if !exists {
+			continue
+		}
+		var rank float64 = float64(actor.Perks[key])
+		for _, written := range feature.Modifiers {
+			var emitted map[string]any = make(map[string]any, len(written))
+			for field, value := range written {
+				emitted[field] = value
+			}
+			if value, isNumber := written["value"].(float64); isNumber {
+				switch written["operation"] {
+				case "add":
+					emitted["value"] = value * rank
+				case "multiply":
+					emitted["value"] = 1 + (value-1)*rank
+				}
+			}
+			modifiers = append(modifiers, emitted)
+		}
+	}
+	for _, held := range actor.Modifiers {
+		modifiers = append(modifiers, encodedValue(held.Modifier))
+	}
+	return modifiers
+}
+
+// readSkillValue reads one of the actor's skills as `progression read_skill` does.
+func readSkillValue(ruleset *data.Ruleset, actor *stored.Actor, key string) (any, error) {
+	body, err := json.Marshal(map[string]any{"operation": "read_skill", "actor": characterOf(actor), "read": key})
+	if err != nil {
+		return nil, err
+	}
+	output, err := commands["progression"](ruleset, body)
+	if err != nil {
+		return nil, err
+	}
+	read, _ := encodedValue(output).(map[string]any)
+	return read["value"], nil
+}
+
+// equippedItems are the actor's equipped inventory items, by slot name.
+func equippedItems(actor *stored.Actor) []stored.ItemInstance {
+	var slots []string = make([]string, 0, len(actor.Equipped))
+	for slot := range actor.Equipped {
+		slots = append(slots, slot)
+	}
+	sort.Strings(slots)
+	var items []stored.ItemInstance
+	for _, slot := range slots {
+		for _, item := range actor.Inventory {
+			if item.ID == actor.Equipped[slot] {
+				items = append(items, item)
+			}
+		}
+	}
+	return items
+}
+
+// attackSkill is the skill of the first equipped weapon, by slot name, else unarmed.
+func attackSkill(ruleset *data.Ruleset, actor *stored.Actor) string {
+	for _, item := range equippedItems(actor) {
+		if row, known := ruleset.Items[item.Base]; known && row.IsWeapon && row.WeaponSkill != "" {
+			return row.WeaponSkill
+		}
+	}
+	return "unarmed"
+}
+
+// armorDR is the sum over equipped armor of drBase plus the material's armor defense; a piece
+// with no material takes the first of its default materials (docs/modules/armor.md).
+func armorDR(ruleset *data.Ruleset, actor *stored.Actor) int64 {
+	var total int64
+	for _, item := range equippedItems(actor) {
+		row, known := ruleset.Items[item.Base]
+		if !known || row.ArmorDRBase == nil {
+			continue
+		}
+		var material string = item.Material
+		if material == "" && len(row.DefaultMaterials) > 0 {
+			material = row.DefaultMaterials[0]
+		}
+		total += *row.ArmorDRBase + ruleset.MaterialDefense[material]
+	}
+	return total
+}
+
+func fillCombat(ruleset *data.Ruleset, actor *stored.Actor, step *SessionStep, input map[string]any) error {
 	if step.As == "defender" {
 		defender := section(input, "defender")
 		setDefault(defender, "hp", actor.Resources.HitPoints)
 		setDefault(defender, "attributes", actor.Attributes)
+		setDefault(defender, "armor_dr", armorDR(ruleset, actor))
+		setDefault(defender, "modifiers", actorModifiers(ruleset, actor))
 		return nil
 	}
-	setDefault(section(input, "attacker"), "attributes", actor.Attributes)
+	attacker := section(input, "attacker")
+	setDefault(attacker, "attributes", actor.Attributes)
+	var skill string = attackSkill(ruleset, actor)
+	if _, named := attacker["skill"]; !named {
+		value, err := readSkillValue(ruleset, actor, skill)
+		if err != nil {
+			return err
+		}
+		attacker["skill"] = value
+	}
+	// The attacker's modifiers all count on the attack, so only those on its skill go in.
+	if _, named := input["modifiers"]; !named {
+		var onSkill []any = []any{}
+		for _, raw := range actorModifiers(ruleset, actor) {
+			if modifier, _ := raw.(map[string]any); modifier["target"] == skill {
+				onSkill = append(onSkill, modifier)
+			}
+		}
+		input["modifiers"] = onSkill
+	}
 	return nil
 }
 
@@ -259,7 +379,8 @@ func writeRest(actor *stored.Actor, _ *SessionStep, input, result map[string]any
 	}
 }
 
-func fillCasting(_ *data.Ruleset, actor *stored.Actor, _ *SessionStep, input map[string]any) error {
+func fillCasting(ruleset *data.Ruleset, actor *stored.Actor, _ *SessionStep, input map[string]any) error {
+	setDefault(input, "modifiers", actorModifiers(ruleset, actor))
 	caster := section(input, "caster")
 	setDefault(caster, "skills", actor.Skills)
 	setDefault(caster, "attributes", actor.Attributes)
@@ -281,16 +402,11 @@ func fillProgression(ruleset *data.Ruleset, actor *stored.Actor, _ *SessionStep,
 			return nil
 		}
 		if _, present := input["skill"]; !present {
-			body, err := json.Marshal(map[string]any{"operation": "read_skill", "actor": characterOf(actor), "read": key})
+			value, err := readSkillValue(ruleset, actor, key)
 			if err != nil {
 				return err
 			}
-			output, err := commands["progression"](ruleset, body)
-			if err != nil {
-				return err
-			}
-			read, _ := encodedValue(output).(map[string]any)
-			input["skill"] = read["value"]
+			input["skill"] = value
 		}
 		setDefault(input, "tagged", slices.Contains(actor.Tags, key))
 	case "take_perk":
