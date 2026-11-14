@@ -58,6 +58,9 @@ command's result without the caller restating it. A field the step names still w
 - **Not filled:** the stored actor has no race or background, so their modifiers are not added;
   a caller passes them. [A]
 
+[V 2026-11-14, the playthrough vectors through `go test ./core`: Toughness at rank 2 adds 30 HP,
+the attack reads the shortsword's Blades (17), and the iron breastplate gives DR 7]
+
 A level-up therefore plays with no dev step: `progression` `level_up` for the pool, `spend` with each skill's `key`, `take_perk`, and `spellcraft` `learn` for each new spell, all logged and replayed as any other step. A perk whose requirements fail is logged with `taken: false` and changes nothing. The session does not count the pool or the perks a level grants; the caller does. [A] The playtest driver plays all eight M5-18 builds to level 30 this way, with the binary run without `--dev`, and each session replays to the same actor. [V 2026-11-14, `go test ./core`, `playtest_driver.py`]
 
 Each row is one entry in `sessionAdapters` in `backend/core/session.go`, so adding a command to sessions is one entry. Other commands run and are logged, and change nothing on the actor. The stored actor has no coins, and loot does not add to the inventory yet. [U]
