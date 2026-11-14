@@ -386,5 +386,24 @@ class TestAttacksAndAbilities(unittest.TestCase):
         self.assertEqual(ref().use_ability(row, touch, 0), {"mp": 0, "ap": 3})
 
 
+class TestMonsterSkillsKeepPace(unittest.TestCase):
+    """M3-17: a level-matched monster's fighting skill stays near a player's main skill (docs/core/actor-sheet.md)."""
+
+    def test_a_monster_attack_skill_is_within_15_of_a_player_main_skill_at_every_level(self):
+        import kernel_reference
+        progression = kernel_reference.load_data("progression/core.json")["progression"]
+        average = {"int": 5, "lck": 5, "agi": 5}
+        # An average player: INT 5, LCK 5, every level's pool on one tag skill, an average luck roll.
+        pool = kernel_reference.evaluate_formula(
+            progression["skill_points"], average, {"luck_roll": average["lck"] / 2})
+        start = kernel_reference.evaluate_formula(progression["skill_start"], {}, {"attribute": average["agi"]})
+        for level in range(1, progression["max_level"] + 1):
+            with self.subTest(level=level):
+                player = min(progression["skill_cap"], start + pool / progression["skill_cost"]["tag"] * (level - 1))
+                monster = kernel_reference.run_monster_sheet(
+                    {"monster": {"attributes": average, "level": level}, "read_skills": ["evasion"]})
+                self.assertLessEqual(abs(player - monster["skills"]["evasion"]), 15)
+
+
 if __name__ == "__main__":
     unittest.main()
