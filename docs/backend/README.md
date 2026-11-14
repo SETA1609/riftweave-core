@@ -61,7 +61,7 @@ request.** [V 2026-11-06, run in this change: 256 of 256 vectors pass in Go]
 Modules: `core.Open` loads each module beside `ruleset/data`, and `internal/wuxing` reads the
 Wuxing module's data. Other modules load their manifest only. [V 2026-11-11]
 
-Sessions: the `session` command runs a chain of commands on one stored actor ([sessions.md](sessions.md)). Dev mode changes a session's actor directly for testing, only with `--dev` ([dev-mode.md](dev-mode.md)).
+Sessions: the `session` command runs a chain of commands on one stored actor ([sessions.md](sessions.md)). Printouts: the `print` command renders a character sheet, a spell card, a monster stat block, or a condition card as printable HTML from those commands' results ([print.md](print.md)). Dev mode changes a session's actor directly for testing, only with `--dev` ([dev-mode.md](dev-mode.md)).
 
 ## Commands
 
