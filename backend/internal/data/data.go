@@ -451,6 +451,7 @@ type CastingSave struct {
 // Casting is casting/core.json: the caster flags that block a cast, and the cast penalty by
 // the heaviest armor category worn.
 type Casting struct {
+	SummonLimit   int64            `json:"summon_limit"` // active summons before perks (docs/core/casting.md#summons)
 	Save          CastingSave      `json:"save"`
 	ArmorPenalty  map[string]int64 `json:"armor_penalty"`
 	PreventedBy   []string         `json:"prevented_by"`

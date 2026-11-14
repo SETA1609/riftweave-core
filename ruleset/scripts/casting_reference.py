@@ -21,6 +21,8 @@ def load_data(rel_path):
     return json.loads((DATA_DIR / rel_path).read_text())
 
 
+SUMMON_EFFECT = "core:effect/summon"
+
 # A magnitude in these units is not a strength: the effect counts it as 1 (magic.md#cost-formula).
 UNPRICED_MAGNITUDE_UNITS = (None, "seconds")
 
@@ -114,6 +116,8 @@ def run_casting(vector):
         "ended": None,
         "dispelled": [],
         "save": None,
+        "summons": list(caster.get("summons", [])),
+        "dismissed": [],
     }
     cost = spell.get("cost", {})
     reagents = list(caster.get("reagents", []))
@@ -155,6 +159,15 @@ def run_casting(vector):
         result["concentration"] = spell["key"]
         if held is not None and held != spell["key"]:
             result["ended"] = held
+    summoned = [e["parameter"] for e in spell["effects"] if e["effect"] == SUMMON_EFFECT for _ in range(int(e.get("magnitude", 1)))]
+    if summoned:
+        # The newest join; past the limit the oldest are dismissed (docs/core/casting.md#summons).
+        from kernel_reference import apply_modifiers  # kernel_reference imports this module
+
+        limit = apply_modifiers(rules["summon_limit"], [m for m in vector.get("modifiers", []) if m["target"] == "summon_limit"])
+        summons = result["summons"] + summoned
+        result["dismissed"] = summons[: max(len(summons) - limit, 0)]
+        result["summons"] = summons[len(result["dismissed"]):]
     for effect in spell["effects"]:
         if effect["effect"] == "core:effect/dispel":
             for row in standing:
