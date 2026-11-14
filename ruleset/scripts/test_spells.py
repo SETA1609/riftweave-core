@@ -312,5 +312,56 @@ class TestCharismaStrengthensSummons(unittest.TestCase):
         self.assertEqual({b["attribute"] for b in bonuses.values()}, {"cha"})
 
 
+class TestSpellsComposeFromABaseSpell(unittest.TestCase):
+    """M3-26: a spell built on a spell (docs/core/composition.md#a-spell-built-on-a-spell)."""
+
+    BASE = {"key": "raise_thrall", "label": "Raise Thrall", "description": "A base.", "color": "black", "level": 8,
+            "effects": [{"effect": "core:effect/summon", "parameter": "core:summon/undead", "magnitude": 1, "target": "ranged"}],
+            "cost": {"mana": 36, "reagents": ["core:ingredient/nightshade"]}, "save": {"attribute": "wil", "skill": "lore"}}
+
+    def resolve(self, rows):
+        import validate
+        errors = []
+        data = {"spells": json.loads(json.dumps(rows))}
+        validate.resolve_spell_bases(data, errors)
+        return data["spells"], errors
+
+    def test_a_composed_spell_is_its_base_plus_its_overrides_with_its_own_identity(self):
+        row = {"key": "raise_lord", "label": "Raise Lord", "description": "Its own words.", "base": "core:spell/raise_thrall",
+               "overrides": {"level": 20, "cost": {"mana": 60}}}
+        rows, errors = self.resolve([self.BASE, row])
+        self.assertEqual(errors, [])
+        composed = rows[1]
+        self.assertEqual((composed["key"], composed["label"], composed["description"]), ("raise_lord", "Raise Lord", "Its own words."))
+        self.assertEqual(composed["level"], 20)
+        self.assertEqual(composed["color"], "black")
+        self.assertEqual(composed["effects"], self.BASE["effects"])
+        self.assertNotIn("base", composed)
+        self.assertNotIn("overrides", composed)
+        self.assertEqual(rows[0], self.BASE, "the base stays a castable spell, unchanged")
+
+    def test_an_override_of_one_field_of_a_block_keeps_the_blocks_other_fields(self):
+        row = {"key": "raise_lord", "label": "Raise Lord", "base": "core:spell/raise_thrall",
+               "overrides": {"cost": {"mana": 60}, "save": {"skill": "insight"}}}
+        composed = self.resolve([self.BASE, row])[0][1]
+        self.assertEqual(composed["cost"], {"mana": 60, "reagents": ["core:ingredient/nightshade"]})
+        self.assertEqual(composed["save"], {"attribute": "wil", "skill": "insight"})
+
+    def test_a_base_that_does_not_resolve_or_names_a_base_fails(self):
+        missing = {"key": "a", "label": "A", "base": "core:spell/nope", "overrides": {}}
+        self.assertTrue(any("nope" in e for e in self.resolve([missing])[1]))
+        first = {"key": "b", "label": "B", "base": "core:spell/raise_thrall", "overrides": {}}
+        second = {"key": "c", "label": "C", "base": "core:spell/b", "overrides": {}}
+        self.assertTrue(any("'c'" in e and "base" in e for e in self.resolve([self.BASE, first, second])[1]))
+
+    def test_greater_unlock_is_unlock_plus_its_overrides(self):
+        raw = {row["key"]: row for row in json.loads((DATA / "spells" / "core.json").read_text())["spells"]}
+        self.assertEqual(raw["greater_unlock"].get("base"), "core:spell/unlock")
+        composed = {row["key"]: row for row in self.resolve(list(raw.values()))[0]}["greater_unlock"]
+        self.assertEqual(composed, {"key": "greater_unlock", "label": "Greater Unlock", "description": "Force a lock of level 15 or below.",
+                                    "color": "indigo", "level": 15, "effects": [{"effect": "core:effect/unlock", "magnitude": 15, "target": "touch"}],
+                                    "cost": {"mana": 30}})
+
+
 if __name__ == "__main__":
     unittest.main()
