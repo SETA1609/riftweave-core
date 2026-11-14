@@ -222,20 +222,7 @@ func actorModifiers(ruleset *data.Ruleset, actor *stored.Actor) []any {
 		if !exists {
 			continue
 		}
-		var rank float64 = float64(actor.Perks[key])
-		for _, written := range feature.Modifiers {
-			var emitted map[string]any = make(map[string]any, len(written))
-			for field, value := range written {
-				emitted[field] = value
-			}
-			if value, isNumber := written["value"].(float64); isNumber {
-				switch written["operation"] {
-				case "add":
-					emitted["value"] = value * rank
-				case "multiply":
-					emitted["value"] = 1 + (value-1)*rank
-				}
-			}
+		for _, emitted := range feature.EmitAt(actor.Perks[key]) {
 			modifiers = append(modifiers, emitted)
 		}
 	}

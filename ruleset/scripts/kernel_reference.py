@@ -598,13 +598,37 @@ def read_skill(actor, key, groups=None):
     return {"value": start + groups.get(group["key"], 0), "read_from": "group"}
 
 
+def emit_perk(feature, rank):
+    """A perk's modifiers at a rank (docs/modules/progression.md#perks-and-traits): an add at
+    value x rank, a multiply of m at 1 + (m - 1) x rank, a grant or a set once."""
+    emitted = []
+    for modifier in feature.get("modifiers", []):
+        modifier = dict(modifier)
+        if operation_of(modifier) == "add":
+            modifier["value"] = modifier["value"] * rank
+        elif operation_of(modifier) == "multiply":
+            modifier["value"] = 1 + (modifier["value"] - 1) * rank
+        emitted.append(modifier)
+    return emitted
+
+
+def held_perk_modifiers(perks):
+    """The modifiers of perks held as {perk, rank} (M3-15), in list order."""
+    features = {row["key"]: row for row in load_data("features/core.json")["features"]}
+    modifiers = []
+    for held in perks:
+        modifiers += emit_perk(features[held["perk"].rsplit("/", 1)[-1]], held.get("rank", 1))
+    return modifiers
+
+
 def run_monster_sheet(vector):
     """A monster's stats and skills by the player rules (docs/core/actor-sheet.md)."""
     row = vector["monster"]
     attributes = row.get("attributes", {})
-    result = run_derived({"actor": {"attributes": attributes, "level": row.get("level", 1)}})
+    perk_modifiers = held_perk_modifiers(row.get("perks", []))
+    result = run_derived({"actor": {"attributes": attributes, "level": row.get("level", 1)}, "modifiers": perk_modifiers})
     if "hitPoints" in row:
-        result["hp"] = row["hitPoints"]
+        result["hp"] = apply_modifiers(row["hitPoints"], [m for m in perk_modifiers if m["target"] == "hp"])
     progression = load_data("progression/core.json")["progression"]
     rows = {s["key"]: s for s in load_data("skills/core.json")["skills"]}
     growth = progression.get("monster_skill_growth", {"per_level": 0, "categories": []})
@@ -619,6 +643,8 @@ def run_monster_sheet(vector):
             if rows[key]["category"] in growth["categories"]:
                 start = min(progression["skill_cap"], start + growth["per_level"] * (level - 1))
             skills[key] = start
+        if key in skills:
+            skills[key] = apply_modifiers(skills[key], [m for m in perk_modifiers if m["target"] == key])
         else:
             return {"error": f'skill "{key}" is not defined'}
     result["skills"] = skills

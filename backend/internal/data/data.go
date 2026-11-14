@@ -392,6 +392,29 @@ type Feature struct {
 	Modifiers []map[string]any `json:"modifiers"`
 }
 
+// EmitAt is the feature's modifiers at a rank (docs/modules/progression.md#perks-and-traits): an
+// add at value × rank, a multiply of m at 1 + (m − 1) × rank, a grant or a set once. Players and
+// monsters emit a perk the same way (APP-13, M3-15).
+func (feature *Feature) EmitAt(rank int64) []map[string]any {
+	var emitted []map[string]any = make([]map[string]any, 0, len(feature.Modifiers))
+	for _, written := range feature.Modifiers {
+		var modifier map[string]any = make(map[string]any, len(written))
+		for field, value := range written {
+			modifier[field] = value
+		}
+		if value, isNumber := written["value"].(float64); isNumber {
+			switch written["operation"] {
+			case "add":
+				modifier["value"] = value * float64(rank)
+			case "multiply":
+				modifier["value"] = 1 + (value-1)*float64(rank)
+			}
+		}
+		emitted = append(emitted, modifier)
+	}
+	return emitted
+}
+
 // Prerequisite is what a perk needs before it is taken (docs/core/progression.md).
 type Prerequisite struct {
 	Level     int64              `json:"level"`
