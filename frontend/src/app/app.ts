@@ -1,26 +1,14 @@
-// The shell: the API the screens share, and the three screens (docs/backend/frontend.md#screens).
-import { Component, InjectionToken, signal } from '@angular/core';
-import { createApi, type Api } from './api';
+// The shell: the three screens (docs/backend/frontend.md#screens) behind a tab bar.
+import { Component, signal } from '@angular/core';
 import { Attack } from './attack';
 import { Playthrough } from './playthrough';
 import { Sheet } from './sheet';
 
-/** The API; the app talks to it through the dev proxy, so its base URL is the page's own. */
-export const API = new InjectionToken<Api>('riftweave API', { providedIn: 'root', factory: () => createApi('') });
-
 @Component({
   selector: 'rw-root',
   imports: [Sheet, Attack, Playthrough],
-  template: `
-    <header><h1>Riftweave</h1>
-      <nav>@for (tab of tabs; track tab) { <button [class.active]="tab === current()" (click)="current.set(tab)">{{ tab }}</button> }</nav>
-    </header>
-    @switch (current()) {
-      @case ('sheet') { <rw-sheet /> }
-      @case ('attack') { <rw-attack /> }
-      @case ('playthrough') { <rw-playthrough /> }
-    }
-  `,
+  templateUrl: './app.html',
+  styleUrl: './app.css',
 })
 export class App {
   readonly tabs = ['sheet', 'attack', 'playthrough'] as const;

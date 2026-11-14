@@ -1,0 +1,5 @@
+<table class="table">
+  @for (row of rows(); track row[0]) {
+    <tr><th scope="row">{{ row[0] }}</th><td>{{ shown(row[1]) }}</td></tr>
+  }
+</table>

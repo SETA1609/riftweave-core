@@ -1,0 +1,15 @@
+<rw-card title="Playthrough">
+  <button type="button" class="btn btn-primary" (click)="run()">Run the playthrough</button>
+  <rw-alert [message]="error()" />
+  <ol>
+    @for (row of rows(); track row.name) {
+      <li [class.mismatch]="!row.matches">
+        <b>{{ row.name }}</b> {{ row.matches ? 'matches its vector' : 'differs from its vector' }}
+        <details><summary>input and result</summary><pre>{{ row.input | json }}</pre><pre>{{ row.result | json }}</pre></details>
+      </li>
+    }
+  </ol>
+  @if (replayed() !== null) {
+    <rw-alert [kind]="replayed() ? 'success' : 'danger'" [message]="replayed() ? 'The replay matches the session.' : 'The replay does not match the session.'" />
+  }
+</rw-card>

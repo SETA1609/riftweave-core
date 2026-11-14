@@ -1,30 +1,20 @@
 // The character sheet: attributes and level in, every derived stat out, and a session to play.
 import { Component, inject, signal } from '@angular/core';
 import { JsonPipe } from '@angular/common';
-import { API } from './app';
-import type { Attributes, Session } from './api';
+import { API, type Attributes, type Session } from './api';
+import { Alert } from './ui/alert';
+import { Card } from './ui/card';
+import { KeyValueList } from './ui/key-value-list';
+import { NumberField } from './ui/number-field';
 
 const KEYS = ['str', 'per', 'end', 'int', 'wil', 'agi', 'cha', 'lck'] as const;
+type Key = (typeof KEYS)[number];
 
 @Component({
   selector: 'rw-sheet',
-  imports: [JsonPipe],
-  template: `
-    <h2>Character sheet</h2>
-    <div class="row">
-      @for (key of keys; track key) {
-        <label>{{ key }} <input type="number" min="1" [value]="attributes()[key]" (input)="set(key, $event)" /></label>
-      }
-      <label>level <input type="number" min="1" [value]="level()" (input)="level.set(+$any($event.target).value)" /></label>
-    </div>
-    <button (click)="compute()">Compute stats</button>
-    <button (click)="create()">Create character</button>
-    @if (error()) { <p class="error">{{ error() }}</p> }
-    @if (stats(); as values) {
-      <table>@for (stat of entries(values); track stat[0]) { <tr><th>{{ stat[0] }}</th><td>{{ stat[1] }}</td></tr> }</table>
-    }
-    @if (session(); as created) { <h3>Stored actor</h3><pre>{{ created.actor | json }}</pre> }
-  `,
+  imports: [JsonPipe, Alert, Card, KeyValueList, NumberField],
+  templateUrl: './sheet.html',
+  styleUrl: './sheet.css',
 })
 export class Sheet {
   private readonly api = inject(API);
@@ -35,12 +25,8 @@ export class Sheet {
   readonly session = signal<Session | null>(null);
   readonly error = signal('');
 
-  set(key: (typeof KEYS)[number], event: Event): void {
-    this.attributes.update((current) => ({ ...current, [key]: +(event.target as HTMLInputElement).value }));
-  }
-
-  entries(values: Record<string, unknown>): [string, unknown][] {
-    return Object.entries(values);
+  set(key: Key, value: number): void {
+    this.attributes.update((current) => ({ ...current, [key]: value }));
   }
 
   async compute(): Promise<void> {
@@ -53,6 +39,10 @@ export class Sheet {
 
   private async run(call: () => Promise<void>): Promise<void> {
     this.error.set('');
-    try { await call(); } catch (failure) { this.error.set(String(failure)); }
+    try {
+      await call();
+    } catch (failure) {
+      this.error.set(String(failure));
+    }
   }
 }

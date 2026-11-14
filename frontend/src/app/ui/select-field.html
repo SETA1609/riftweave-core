@@ -1,0 +1,8 @@
+<label class="field">
+  <span class="form-label">{{ label() }}</span>
+  <select class="form-control" (change)="read($event)">
+    @for (option of options(); track option.value) {
+      <option [value]="option.value" [selected]="option.value === value()">{{ option.label }}</option>
+    }
+  </select>
+</label>

@@ -1,0 +1,19 @@
+<rw-card title="Character sheet">
+  <div class="fields">
+    @for (key of keys; track key) {
+      <rw-number-field [label]="key" [min]="1" [value]="attributes()[key]" (valueChange)="set(key, $event)" />
+    }
+    <rw-number-field label="level" [min]="1" [(value)]="level" />
+  </div>
+  <div class="actions">
+    <button type="button" class="btn btn-primary" (click)="compute()">Compute stats</button>
+    <button type="button" class="btn btn-outline" (click)="create()">Create character</button>
+  </div>
+  <rw-alert [message]="error()" />
+</rw-card>
+@if (stats(); as values) {
+  <rw-card title="Derived stats"><rw-key-value-list [entries]="values" /></rw-card>
+}
+@if (session(); as created) {
+  <rw-card title="Stored actor"><pre>{{ created.actor | json }}</pre></rw-card>
+}

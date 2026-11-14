@@ -1,0 +1,28 @@
+<rw-card title="Attack">
+  <fieldset>
+    <legend>Attacker</legend>
+    <rw-number-field label="skill" [(value)]="attackerSkill" />
+    <rw-number-field label="d100" [min]="1" [max]="100" [(value)]="attackerRoll" />
+    <button type="button" class="btn btn-outline btn-sm" (click)="rollAttack()">roll</button>
+    <rw-number-field label="LCK" [(value)]="luck" />
+  </fieldset>
+  <fieldset>
+    <legend>Defender</legend>
+    <rw-number-field label="evasion" [(value)]="evasion" />
+    <rw-number-field label="armor DR" [(value)]="armor" />
+    <rw-number-field label="HP" [(value)]="hp" />
+    <rw-select-field label="reaction" [options]="reactions" [(value)]="reaction" />
+    <rw-number-field label="reaction d100" [min]="1" [max]="100" [(value)]="reactionRoll" />
+  </fieldset>
+  <fieldset>
+    <legend>Damage</legend>
+    <rw-number-field label="roll" [(value)]="damageRoll" />
+    <rw-text-field label="type" [(value)]="damageType" />
+    <rw-select-field label="delivery" [options]="deliveries" [(value)]="delivery" />
+  </fieldset>
+  <button type="button" class="btn btn-primary" (click)="resolve()">Resolve</button>
+  <rw-alert [message]="error()" />
+</rw-card>
+@if (steps(); as shown) {
+  <rw-card title="Result"><rw-key-value-list [entries]="shown" /></rw-card>
+}
