@@ -1,5 +1,6 @@
 {
   "$schema": "../../schemas/natural_weapon.schema.json",
+  "skill": "core:skill/unarmed",
   "size_steps": { "tiny": -2, "small": -1, "medium": 0, "large": 1, "huge": 2 },
   "natural_weapons": [
     { "key": "bite", "label": "Bite", "description": "Jaws and teeth.", "dice": "1d6", "damage_type": "piercing" },

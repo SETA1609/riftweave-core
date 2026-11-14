@@ -405,5 +405,52 @@ class TestMonsterSkillsKeepPace(unittest.TestCase):
                 self.assertLessEqual(abs(player - monster["skills"]["evasion"]), 15)
 
 
+class TestNaturalWeaponsAreUnarmed(unittest.TestCase):
+    """M3-16: a natural weapon is an unarmed attack (docs/modules/monsters.md#natural-weapons)."""
+
+    CLAW = {"key": "claw", "label": "Claw", "weapon": "core:natural_weapon/claw", "ability": "agi"}
+
+    def test_the_natural_weapons_file_names_unarmed(self):
+        self.assertEqual(json.loads((DATA / "natural_weapons" / "core.json").read_text())["skill"], "core:skill/unarmed")
+
+    def test_every_natural_attack_rolls_unarmed_and_a_carried_one_its_weapons_skill(self):
+        for row in monsters():
+            for attack in row.get("attacks", []):
+                with self.subTest(monster=row["key"], attack=attack["key"]):
+                    if attack["weapon"].startswith("core:natural_weapon/"):
+                        self.assertEqual(ref().attack_skill(attack), "unarmed")
+                    else:
+                        self.assertEqual(ref().attack_skill(attack), ref().weapon_row(attack["weapon"])["weapon"]["skill"].rsplit("/", 1)[-1])
+
+    def test_an_unarmed_perk_changes_a_natural_weapons_damage(self):
+        features = {f["key"]: f for f in json.loads((DATA / "features" / "core.json").read_text())["features"]}
+        jaguar = {"size": "medium", "attributes": {"agi": 8}}
+        # A claw roll of 4, plus AGI 8's modifier of 3.
+        self.assertEqual(ref().attack_damage(jaguar, self.CLAW, 4, []), 7)
+        self.assertEqual(ref().attack_damage(jaguar, self.CLAW, 4, features["brawler"]["modifiers"]), 9)
+        self.assertEqual(ref().attack_damage(jaguar, self.CLAW, 4, features["brawler"]["modifiers"] + features["iron_fist"]["modifiers"]), 13)
+        sword = {"key": "rusty_blade", "label": "Rusty Blade", "weapon": "core:weapon/shortsword"}
+        self.assertEqual(ref().attack_damage({"attributes": {"str": 5}}, sword, 4, features["brawler"]["modifiers"]), 4)
+
+    def test_a_creature_with_no_attack_slams(self):
+        self.assertEqual(ref().monster_attacks({"attributes": {"str": 6}}),
+                         [{"key": "slam", "label": "Slam", "weapon": "core:natural_weapon/slam", "ability": "str"}])
+        wolf = {r["key"]: r for r in monsters()}["wolf"]
+        self.assertEqual(ref().monster_attacks(wolf), wolf["attacks"])
+
+    def test_catman_claws_names_the_claw_row_and_rolls_its_dice(self):
+        features = {f["key"]: f for f in json.loads((DATA / "features" / "core.json").read_text())["features"]}
+        claws = features["catman_claws"]
+        self.assertEqual(claws["natural_weapon"], "core:natural_weapon/claw")
+        self.assertEqual(ref().feature_attack_dice(claws, "medium"), ref().natural_weapons()["claw"]["dice"])
+        self.assertEqual(ref().feature_attack_dice(claws, "large"), ref().attack_dice({"size": "large"}, self.CLAW))
+
+    def test_no_feature_writes_its_own_natural_weapon_dice(self):
+        for feature in json.loads((DATA / "features" / "core.json").read_text())["features"]:
+            if "natural_weapon" in feature:
+                with self.subTest(feature=feature["key"]):
+                    self.assertIsInstance(feature["natural_weapon"], str)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -95,14 +95,8 @@
         "unlocks": { "type": "array", "items": { "oneOf": [ { "$ref": "schema.json#/definitions/monsterTemplateRef" }, { "$ref": "schema.json#/definitions/materialRef" } ] }, "uniqueItems": true, "minItems": 1, "description": "What the perk unlocks beyond a number a modifier holds: a summon power or nature (core:monster_template/<key>), or a bound weapon's material (docs/modules/monsters.md#summoned-creatures). Each ref must resolve." },
         "summon_bonus": { "$ref": "schema.json#/definitions/summonBonusRef", "description": "A summon bonus this perk grants: the caster's attribute modifier adds to that group of a summoned creature's attributes (docs/modules/magic.md#summon-groups). The ref must resolve." },
         "natural_weapon": {
-          "type": "object",
-          "description": "A natural weapon this feature gives, rolled with the unarmed skill.",
-          "properties": {
-            "dice": { "$ref": "schema.json#/definitions/diceExpression" },
-            "type": { "type": "string", "pattern": "^[a-z_]+$", "description": "A key in ruleset/data/combat/damage_types.json." }
-          },
-          "required": ["dice", "type"],
-          "additionalProperties": false
+          "$ref": "schema.json#/definitions/naturalWeaponRef",
+          "description": "The natural weapon this feature gives: a row of natural_weapons/core.json, rolled with the unarmed skill and sized by the actor's size (docs/modules/monsters.md#natural-weapons). The ref must resolve."
         }
       },
       "required": ["key", "label", "description", "type"],
