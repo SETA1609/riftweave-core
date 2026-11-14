@@ -28,6 +28,7 @@ spell   = the row named by `spell`; skill = <color>_magic
 7  success     outcome cast: the spell's effects, as authored
                concentration spell: hold it; the one held before, if another, ends
                dispel N: every standing spell of level <= N is dispelled
+               summon: its creatures join caster.summons; past the limit, the oldest are dismissed
 ```
 
 - The cost is spent before the roll, so a failed cast still costs its mana and reagents, as `magic.md` says. [A]
@@ -110,6 +111,17 @@ paid      = max( minimum_paid, base with the modifiers on spell_cost applied )  
 - The modifiers on `spell_cost` (a perk, a robe) stack by [modifier.md](modifier.md), so a `multiply` floors. [A]
 - The cast and craft thresholds read the cost before the discount ([magic.md](../modules/magic.md#the-casters-side)).
 
+## Summons
+
+The caster's active summons are an input, `caster.summons`, oldest first: one entry per
+creature, the summon group ref it came from (`core:summon/elemental`). A cast of a spell with a
+`summon` effect adds `magnitude` entries of that effect's group. A caster holds at most
+`summon_limit` (`casting/core.json`, 1) plus the `summon_limit` modifiers on it, stacked by
+[modifier.md](modifier.md); past the limit the oldest are dismissed, as a new concentration spell
+ends the old one. Perks raise the limit: two summons from level 14 and three from level 28
+([magic.md](../modules/magic.md#summon-groups)). A failed cast summons and dismisses nothing.
+Minions (M3-25) will not count toward the limit. [A]
+
 ## Result
 
 ```
@@ -121,5 +133,7 @@ effects        the spell's applied effects on a cast, else []
 concentration  the spell key the caster holds after the cast, or null
 ended          the concentration spell the cast ended, or null
 dispelled      the standing spell keys the cast ended, in input order
+summons        the caster's active summons after the cast, oldest first
+dismissed      the summons the cast sent away to stay within the limit, oldest first
 save           { target, success, margin, tags, result }, or null when no save was rolled
 ```
