@@ -120,7 +120,7 @@ creature, the summon group ref it came from (`core:summon/elemental`). A cast of
 [modifier.md](modifier.md); past the limit the oldest are dismissed, as a new concentration spell
 ends the old one. Perks raise the limit: two summons from level 14 and three from level 28
 ([magic.md](../modules/magic.md#summon-groups)). A failed cast summons and dismisses nothing.
-Minions (M3-25) will not count toward the limit. [A]
+Minions (M3-25) will not count toward the limit. [A] [V 2026-11-14, `casting` vectors in Python and Go: no perk, Retinue, Retinue and Host, the oldest dismissed, a failed cast]
 
 ## Result
 
