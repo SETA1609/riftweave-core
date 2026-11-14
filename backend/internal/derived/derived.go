@@ -4,6 +4,8 @@
 package derived
 
 import (
+	"slices"
+
 	"github.com/SETA1609/riftweave-core/backend/internal/actor"
 	"github.com/SETA1609/riftweave-core/backend/internal/data"
 	"github.com/SETA1609/riftweave-core/backend/internal/formula"
@@ -130,6 +132,14 @@ func RunMonsterSheet(ruleset *data.Ruleset, input MonsterSheetInput) (map[string
 		start, err := ruleset.Progression.SkillStart.Evaluate(&row.Attributes, formula.Variable{Name: "attribute", Value: row.Attributes.Get(skill.Ability)})
 		if err != nil {
 			return nil, err
+		}
+		var growth = &ruleset.Progression.MonsterSkillGrowth
+		if slices.Contains(growth.Categories, skill.Category) {
+			var level int64 = 1
+			if row.Level != nil {
+				level = *row.Level
+			}
+			start = min(ruleset.Progression.SkillCap, start+growth.PerLevel*(level-1))
 		}
 		skills[key] = start
 	}

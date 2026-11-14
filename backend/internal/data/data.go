@@ -212,6 +212,7 @@ func (economy *Economy) ToCopper(cost Cost) (int64, error) {
 type Skill struct {
 	Key               string        `json:"key"`
 	AssociatedAbility string        `json:"associatedAbility"`
+	Category          string        `json:"category"`
 	Ability           actor.Ability `json:"-"`
 }
 
@@ -237,6 +238,12 @@ type Progression struct {
 	SkillGroupCost struct {
 		MembersPerStep int64 `json:"members_per_step"`
 	} `json:"skill_group_cost"`
+	// MonsterSkillGrowth is what a monster's unwritten fighting skills gain per level above 1
+	// (docs/core/actor-sheet.md).
+	MonsterSkillGrowth struct {
+		PerLevel   int64    `json:"per_level"`
+		Categories []string `json:"categories"`
+	} `json:"monster_skill_growth"`
 }
 
 // SkillGroup is one row of skill_groups/core.json, the grouped sheet

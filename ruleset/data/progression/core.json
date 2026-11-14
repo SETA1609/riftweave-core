@@ -90,6 +90,10 @@
     },
     "skill_group_cost": {
       "members_per_step": 2
+    },
+    "monster_skill_growth": {
+      "per_level": 17,
+      "categories": ["combat", "magic"]
     }
   }
 }
