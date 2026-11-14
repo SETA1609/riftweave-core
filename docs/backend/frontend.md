@@ -16,6 +16,8 @@ src/app/api.ts     openapi-fetch over those types: one function per call the app
 
 The generated file is checked in, so the app builds without a server; `npm run generate` refreshes
 it after a contract change, and a stale file fails the type check where a field moved. [A]
+`npm run generate` runs `openapi-typescript` 7.13.0 through `npx`, not as a dependency: it pins
+TypeScript 5 as a peer, and Angular 22 needs TypeScript 6. [V 2026-11-14]
 `api.ts` takes the API's base URL, so the tests point it at a server and the app at the dev
 proxy. The server sends no CORS headers (api.md, Not covered), so `ng serve` proxies `/v1` and
 `/openapi.json` to `127.0.0.1:8080` (`proxy.conf.json`).
@@ -30,7 +32,8 @@ proxy. The server sends no CORS headers (api.md, Not covered), so `ng serve` pro
 
 Every roll is an input field, as in the vectors: the app rolls nothing unless asked, and a rolled
 value is written into the field before the call, so a result can be read back against a vector.
-[A]
+The playthrough runner sends each vector's input as a session step, as given, and all twelve
+steps match their vectors and the replay matches. [V 2026-11-14, by hand against the server]
 
 ## Tests
 
@@ -43,7 +46,12 @@ value is written into the field before the call, so a result can be read back ag
   app's attack call, and each result matches the vector's `expect`.
 
 CI (`.github/workflows/frontend.yml`) builds the server, starts it, and runs `npm ci`, the build,
-and the tests on every change under `frontend/`, `backend/`, or `ruleset/`.
+and the tests on every change under `frontend/`, `backend/`, or `ruleset/`. [V 2026-11-14, the
+workflow's steps run by hand: 14 specs pass]
+
+The toolchain is Node 24.15 or later (the Angular 22 CLI's minimum; CI pins 24.22.1) and npm
+11.21.1 for installs: the npm that ships with Node 24.7 fails to resolve Vitest's optional peers.
+npm 11.21.1 keeps install scripts blocked, its default. [V 2026-11-14]
 
 ## Not covered
 
