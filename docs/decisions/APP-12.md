@@ -1,0 +1,12 @@
+# APP-12 Sessions record skill purchases, perks, and learned spells
+
+Date: 2026-11-14
+
+- **Decision:** taking a perk is a rule, so it is a kernel operation, `progression take_perk`, with vectors in Python and Go, and the session only fills and writes it. Before, the prerequisite check lived only in the playtest driver, and dev mode skips it on purpose. The result lists each failing requirement as data (`unmet`: rank, level, attribute, skill, perk) rather than an error, so a client can show why a perk is not available, and a refused step is logged with `taken: false` and changes nothing. [V 2026-11-14, `progression` vectors]
+- **Decision:** only `type: perk` rows are taken on a level-up; a creation trait, a racial trait, or a universal feature is an error. A skill requirement reads each skill as `read_skill` does on a full sheet (written, else its start), and one skill of a list is enough, as `feature.schema.json` says. [V 2026-11-14]
+- **Decision:** `spend` takes an optional `key`, the skill bought. The command does not read it; a session fills `skill` and `tagged` from that skill and adds the ranks to it. A field the step names still wins, as for every adapter. Spending on a skill group in a session is not written back, since the stored actor has no group ranks. [A]
+- **Decision:** `spellcraft learn` in a session adds the spell to `spells` and sets `known_effects` to the command's `known`. `craft` and `research` change nothing on the actor yet. [A]
+- **Decision:** the driver asks `take_perk` outside the session (not logged) which perk would be taken, so it holds no prerequisite rule of its own, and it rests after a lost fight in place of `dev resource`. Rerun on the M5-18 seed, all eight builds reach level 30, replay, take exactly the perks and reach exactly the skills of the M5-18 runs, and run no dev step. The saved sessions and report in `docs/playtests/` are M5-18's record and are not regenerated here. [V 2026-11-14]
+- **Why:** found by the M5-18 agent runs: 419 `dev skill`, 138 `dev perk`, and 81 `dev learn` steps marked every played run as a dev run.
+- **Open:** the session does not count how many perks or skill points a level grants (`perks_per_level`, the pool); the caller does, as the human CLI and the driver do. A later issue could track the unspent pool on the stored actor. [A]
+- **Risk:** a perk's modifiers are still not applied to a session's commands (APP-13), so taking one changes the actor's `perks` and nothing else yet.
