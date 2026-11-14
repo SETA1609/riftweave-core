@@ -14,6 +14,10 @@ DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 
 
 def load_data(rel_path):
+    if rel_path == "spells/core.json":
+        import validate  # spell bases resolve before anything reads a spell (docs/core/composition.md)
+
+        return validate.load_spells(DATA_DIR / rel_path)
     return json.loads((DATA_DIR / rel_path).read_text())
 
 

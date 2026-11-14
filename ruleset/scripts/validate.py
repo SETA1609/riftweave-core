@@ -1286,6 +1286,53 @@ def compose_row(base, overrides, layers=(), entry=None):
     return merged
 
 
+SPELL_REF_PREFIX = "core:spell/"
+SPELL_IDENTITY = ("label", "description", "source")  # key comes from compose_row
+
+
+def resolve_spell_bases(data, errors):
+    """Mutate data in place: a spell with `base` and `overrides` becomes its flat row
+    (docs/core/composition.md#a-spell-built-on-a-spell). An object field of the overrides merges
+    per field into the base's; the row keeps its own key, label, description, and source. One
+    level: a base may not itself name a base."""
+    spells = data.get("spells")
+    if not isinstance(spells, list):
+        return
+    rows = {row.get("key"): row for row in spells if isinstance(row, dict)}
+    for index, entry in enumerate(spells):
+        if not isinstance(entry, dict) or "base" not in entry:
+            continue
+        key, base_ref = entry.get("key"), entry["base"]
+        base = rows.get(base_ref.removeprefix(SPELL_REF_PREFIX)) if base_ref.startswith(SPELL_REF_PREFIX) else None
+        if base is None:
+            errors.append(f"spell '{key}': base spell '{base_ref}' does not exist")
+            continue
+        if "base" in base:
+            errors.append(f"spell '{key}': base spell '{base_ref}' names a base itself; a spell composes one level")
+            continue
+        overrides = {}
+        for field, value in (entry.get("overrides") or {}).items():
+            if isinstance(value, dict) and isinstance(base.get(field), dict):
+                value = {**base[field], **value}
+            overrides[field] = value
+        merged = compose_row(base, overrides, entry=entry)
+        for field in SPELL_IDENTITY:
+            merged.pop(field, None)
+            if field in entry:
+                merged[field] = entry[field]
+        spells[index] = merged
+
+
+def load_spells(path):
+    """spells/core.json (or a module's spell file) with its spell bases resolved."""
+    data = json.loads(Path(path).read_text())
+    errors = []
+    resolve_spell_bases(data, errors)
+    if errors:
+        raise ValueError(f"{path}: {errors}")
+    return data
+
+
 def _apply_monster_template(merged, template):
     """Apply one template (docs/modules/monsters.md#templates) to a merged entry in place."""
     if "phase" in template:
@@ -1587,6 +1634,7 @@ def _validate_single_data_file(
         data["equipment"] = equipment_rows(fp, errors, data["equipment"])
     _resolve_monster_bases(data, errors)
     _resolve_equipment_bases(data, errors, fp)
+    resolve_spell_bases(data, errors)
     if errors:
         return False, errors, rel
 

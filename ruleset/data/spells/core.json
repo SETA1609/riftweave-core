@@ -938,17 +938,19 @@
       "key": "greater_unlock",
       "label": "Greater Unlock",
       "description": "Force a lock of level 15 or below.",
-      "color": "indigo",
-      "level": 15,
-      "effects": [
-        {
-          "effect": "core:effect/unlock",
-          "magnitude": 15,
-          "target": "touch"
+      "base": "core:spell/unlock",
+      "overrides": {
+        "level": 15,
+        "effects": [
+          {
+            "effect": "core:effect/unlock",
+            "magnitude": 15,
+            "target": "touch"
+          }
+        ],
+        "cost": {
+          "mana": 30
         }
-      ],
-      "cost": {
-        "mana": 30
       }
     },
     {

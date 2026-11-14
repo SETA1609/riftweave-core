@@ -111,6 +111,8 @@ def _monster_hits_to_kill(bands, _weapons, _armor, monsters):
 
 
 def _json(rel):
+    if rel == "spells/core.json":
+        return validate.load_spells(DATA_DIR / rel)  # spell bases resolved (docs/core/composition.md)
     return json.loads((DATA_DIR / rel).read_text())
 
 

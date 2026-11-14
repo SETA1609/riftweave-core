@@ -1,9 +1,11 @@
 package data
 
 import (
+	"encoding/json"
 	"errors"
 	"io/fs"
 	"os"
+	"reflect"
 	"strings"
 	"testing"
 	"testing/fstest"
@@ -88,5 +90,60 @@ func TestABaseWithoutIsItemIsReported(t *testing.T) {
 	files["equipment/bases/weapons/dagger.json"] = &fstest.MapFile{Data: []byte(`{"key":"dagger"}`)}
 	if _, err := Load(files); err == nil || !strings.Contains(err.Error(), "is_item") {
 		t.Errorf("error = %v; want one naming is_item", err)
+	}
+}
+
+// docs/core/composition.md#a-spell-built-on-a-spell (M3-26)
+func TestASpellBuiltOnASpellLoadsAsItsFlatRow(t *testing.T) {
+	var files fstest.MapFS = copyOfTheRuleset(t)
+	var spells map[string]any
+	if err := json.Unmarshal(files["spells/core.json"].Data, &spells); err != nil {
+		t.Fatal(err)
+	}
+	var rows []any = spells["spells"].([]any)
+	rows = append(rows, map[string]any{
+		"key": "raise_lord", "label": "Raise Lord", "base": "core:spell/raise_thrall",
+		"overrides": map[string]any{"level": 20, "cost": map[string]any{"mana": 60}},
+	})
+	spells["spells"] = rows
+	encoded, _ := json.Marshal(spells)
+	files["spells/core.json"] = &fstest.MapFile{Data: encoded}
+
+	ruleset, err := Load(files)
+	if err != nil {
+		t.Fatal(err)
+	}
+	lord, exists := ruleset.Spells.Get("raise_lord")
+	base, _ := ruleset.Spells.Get("raise_thrall")
+	if !exists {
+		t.Fatal("raise_lord is not loaded")
+	}
+	if lord.Level != 20 || lord.Cost.Mana != 60 || lord.Color != base.Color {
+		t.Errorf("level 20, mana 60, and the base's color: %+v", lord)
+	}
+	if !reflect.DeepEqual(lord.Cost.Reagents, base.Cost.Reagents) || len(base.Cost.Reagents) == 0 {
+		t.Errorf("an override of cost.mana keeps the base's reagents: %v", lord.Cost.Reagents)
+	}
+	if !reflect.DeepEqual(lord.Effects, base.Effects) {
+		t.Errorf("the base's effects: %v", lord.Effects)
+	}
+	if base.Level != 8 || base.Cost.Mana != 36 {
+		t.Errorf("the base is unchanged: %+v", base)
+	}
+}
+
+func TestASpellBaseThatNamesABaseIsReported(t *testing.T) {
+	var files fstest.MapFS = copyOfTheRuleset(t)
+	var spells map[string]any
+	_ = json.Unmarshal(files["spells/core.json"].Data, &spells)
+	spells["spells"] = append(spells["spells"].([]any),
+		map[string]any{"key": "first", "label": "First", "base": "core:spell/unlock", "overrides": map[string]any{}},
+		map[string]any{"key": "second", "label": "Second", "base": "core:spell/first", "overrides": map[string]any{}},
+		map[string]any{"key": "third", "label": "Third", "base": "core:spell/nope", "overrides": map[string]any{}})
+	encoded, _ := json.Marshal(spells)
+	files["spells/core.json"] = &fstest.MapFile{Data: encoded}
+	_, err := Load(files)
+	if err == nil || !strings.Contains(err.Error(), "second") || !strings.Contains(err.Error(), "nope") {
+		t.Fatalf("want errors for second (a base that names a base) and third (nope), got %v", err)
 	}
 }
