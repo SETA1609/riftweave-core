@@ -631,5 +631,256 @@
     "expect": {
       "error": "skill group \"nope\" is not defined"
     }
+  },
+  {
+    "name": "take perk: every requirement met takes rank 1",
+    "operation": "take_perk",
+    "actor": {
+      "attributes": {
+        "str": 7,
+        "per": 6,
+        "end": 6,
+        "int": 5,
+        "wil": 4,
+        "agi": 5,
+        "cha": 4,
+        "lck": 5
+      },
+      "level": 12,
+      "skills": {
+        "unarmed": 65
+      }
+    },
+    "perks": {
+      "brawler": 1
+    },
+    "perk": "iron_fist",
+    "expect": {
+      "taken": true,
+      "perk": "iron_fist",
+      "rank": 1,
+      "unmet": []
+    }
+  },
+  {
+    "name": "take perk: a held ranked perk goes to its next rank",
+    "operation": "take_perk",
+    "actor": {
+      "attributes": {
+        "str": 7,
+        "per": 6,
+        "end": 6,
+        "int": 5,
+        "wil": 4,
+        "agi": 5,
+        "cha": 4,
+        "lck": 5
+      },
+      "level": 3,
+      "skills": {}
+    },
+    "perks": {
+      "toughness": 1
+    },
+    "perk": "toughness",
+    "expect": {
+      "taken": true,
+      "perk": "toughness",
+      "rank": 2,
+      "unmet": []
+    }
+  },
+  {
+    "name": "take perk: a perk at its last rank is refused",
+    "operation": "take_perk",
+    "actor": {
+      "attributes": {
+        "str": 7,
+        "per": 6,
+        "end": 6,
+        "int": 5,
+        "wil": 4,
+        "agi": 5,
+        "cha": 4,
+        "lck": 5
+      },
+      "level": 3,
+      "skills": {}
+    },
+    "perks": {
+      "toughness": 3
+    },
+    "perk": "toughness",
+    "expect": {
+      "taken": false,
+      "perk": "toughness",
+      "rank": 3,
+      "unmet": [
+        {
+          "needs": "rank",
+          "max": 3,
+          "has": 3
+        }
+      ]
+    }
+  },
+  {
+    "name": "take perk: unmet level, skill, and perk are each listed",
+    "operation": "take_perk",
+    "actor": {
+      "attributes": {
+        "str": 7,
+        "per": 6,
+        "end": 6,
+        "int": 5,
+        "wil": 4,
+        "agi": 5,
+        "cha": 4,
+        "lck": 5
+      },
+      "level": 10,
+      "skills": {}
+    },
+    "perks": {},
+    "perk": "iron_fist",
+    "expect": {
+      "taken": false,
+      "perk": "iron_fist",
+      "rank": 0,
+      "unmet": [
+        {
+          "needs": "level",
+          "min": 12,
+          "has": 10
+        },
+        {
+          "needs": "skill",
+          "keys": [
+            "unarmed"
+          ],
+          "min": 60,
+          "has": 15
+        },
+        {
+          "needs": "perk",
+          "key": "brawler"
+        }
+      ]
+    }
+  },
+  {
+    "name": "take perk: an attribute below its minimum, and an unwritten skill read at its start",
+    "operation": "take_perk",
+    "actor": {
+      "attributes": {
+        "str": 5,
+        "per": 6,
+        "end": 6,
+        "int": 5,
+        "wil": 4,
+        "agi": 5,
+        "cha": 4,
+        "lck": 5
+      },
+      "level": 5,
+      "skills": {}
+    },
+    "perks": {},
+    "perk": "power_attack",
+    "expect": {
+      "taken": false,
+      "perk": "power_attack",
+      "rank": 0,
+      "unmet": [
+        {
+          "needs": "attribute",
+          "key": "str",
+          "min": 6,
+          "has": 5
+        },
+        {
+          "needs": "skill",
+          "keys": [
+            "blades"
+          ],
+          "min": 40,
+          "has": 15
+        }
+      ]
+    }
+  },
+  {
+    "name": "take perk: one skill of a list meets the requirement",
+    "operation": "take_perk",
+    "actor": {
+      "attributes": {
+        "str": 7,
+        "per": 6,
+        "end": 6,
+        "int": 5,
+        "wil": 4,
+        "agi": 5,
+        "cha": 4,
+        "lck": 5
+      },
+      "level": 5,
+      "skills": {
+        "crossbows": 45
+      }
+    },
+    "perks": {},
+    "perk": "deadeye",
+    "expect": {
+      "taken": true,
+      "perk": "deadeye",
+      "rank": 1,
+      "unmet": []
+    }
+  },
+  {
+    "name": "take perk error: a creation trait is not taken on a level-up",
+    "operation": "take_perk",
+    "actor": {
+      "attributes": {
+        "str": 7,
+        "per": 6,
+        "end": 6,
+        "int": 5,
+        "wil": 4,
+        "agi": 5,
+        "cha": 4,
+        "lck": 5
+      },
+      "level": 5,
+      "skills": {}
+    },
+    "perks": {},
+    "perk": "gifted",
+    "expect": {
+      "error": "feature \"gifted\" is not a perk"
+    }
+  },
+  {
+    "name": "take perk error: an unknown perk",
+    "operation": "take_perk",
+    "actor": {
+      "attributes": {
+        "str": 7,
+        "per": 6,
+        "end": 6,
+        "int": 5,
+        "wil": 4,
+        "agi": 5,
+        "cha": 4,
+        "lck": 5
+      },
+      "level": 5,
+      "skills": {}
+    },
+    "perks": {},
+    "perk": "nope",
+    "expect": {
+      "error": "perk \"nope\" is not defined"
+    }
   }
 ]
