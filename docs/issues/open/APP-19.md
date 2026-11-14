@@ -1,5 +1,5 @@
 #### APP-19 The frontend follows its conventions: split files, reusable components, a Bootstrap look in raw CSS
-- Status: doing
+- Status: review
 - Priority: medium
 - Needs: APP-07
 - Do: Owner rules for every frontend change, 2026-11-14: Angular 22; signals wherever they fit, RxJS only where they do not; standalone components; every component split into `.ts`, `.html`, and `.css`; Bootstrap's look written as raw CSS of our own, with no Bootstrap package; and screens built from small reusable components. APP-07 used inline templates and one component per screen. Write the rules in `docs/backend/frontend.md` (and point to them from `AGENTS.md`), add the reusable components (a number field, a text field, a select, a card, an alert, and a key-value list) under `src/app/ui/`, rebuild the three screens from them, and move the shared styles into design tokens and a few Bootstrap-like classes in `styles.css`. Unit tests stay on Vitest; the Playwright end-to-end tests the conventions name are APP-20, filed apart so each pull request stays under the file limit. Behavior does not change: the API specs pass unchanged.
