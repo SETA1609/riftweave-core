@@ -428,10 +428,12 @@ func (requirement *SkillRequirement) UnmarshalJSON(encoded []byte) error {
 
 // Spell is what a cast needs of one row of spells/core.json (docs/core/casting.md).
 type Spell struct {
-	Key     string          `json:"key"`
-	Color   string          `json:"color"`
-	Effects []AppliedEffect `json:"effects"`
-	Cost    struct {
+	Key         string          `json:"key"`
+	Label       string          `json:"label"`
+	Description string          `json:"description"`
+	Color       string          `json:"color"`
+	Effects     []AppliedEffect `json:"effects"`
+	Cost        struct {
 		Reagents []string `json:"reagents"`
 		Mana     int64    `json:"mana"`
 	} `json:"cost"`
@@ -485,6 +487,8 @@ type SkillDiscount struct {
 // Condition is one row of conditions/core.json.
 type Condition struct {
 	Key           string              `json:"key"`
+	Label         string              `json:"label"`
+	Description   string              `json:"description"`
 	AppliedBy     []string            `json:"appliedBy"`
 	RemovedBy     []string            `json:"removedBy"`
 	Stacking      bool                `json:"stacking"`
