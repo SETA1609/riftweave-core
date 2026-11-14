@@ -43,15 +43,16 @@ the item base rows first, in file-name order, then the file's rows, through one 
 
 ## A spell built on a spell
 
-A spell row may name `base`, another spell (`core:spell/<key>`, or a module's), and `overrides`,
-the fields that differ (M3-26). It composes as any row does: a copy of the base spell, then the
+A spell row may name `base`, another spell in the same file (`core:spell/<key>`), and
+`overrides`, the fields that differ (M3-26). It composes as any row does: a copy of the base spell, then the
 overrides, with an object field merged per field (the table above), so an override of
 `cost.mana` keeps the base's `cost.reagents`. The row's own `key`, `label`, `description`, and
 `source` are its identity; the base's are never kept. The base is an ordinary spell and stays
 castable. A base may not itself name a base, so there is one level and no cycle, and a base that
-does not resolve is a validation error [A]. Python (`validate.py`, `resolve_spell_bases`) and
+does not resolve is a validation error. Python (`validate.py`, `resolve_spell_bases`) and
 the Go loader resolve spell bases before anything reads a spell, so every check, reference, and
-command reads the flat row.
+command reads the flat row. [V 2026-11-14, `test_spells.py`, `go test ./internal/data`, the
+`greater_unlock` casting vector] A module's spell built on a core spell is not resolved yet. [A]
 
 The rules specific to each kind of row stay with it: monsters in
 [monsters.md](../modules/monsters.md), and module overrides of a whole row in

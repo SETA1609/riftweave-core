@@ -154,7 +154,7 @@ authored baseline; the engine derives it (§5).
 A spell can be written as another spell plus what changes (`base` and `overrides`,
 [composition.md](../core/composition.md#a-spell-built-on-a-spell)): `greater_unlock` is
 `unlock` at level 15 with a higher mana cost and magnitude. A GM's or a module's custom spell
-builds on a core one the same way. [A]
+builds on a core one the same way once a module's spell file can name a core base. [V 2026-11-14 for `greater_unlock`; A for modules]
 
 ### The core spell list
 
