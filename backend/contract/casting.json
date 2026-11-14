@@ -52,6 +52,13 @@
                 "$ref": "common.json#/definitions/key"
               }
             ]
+          },
+          "summons": {
+            "type": "array",
+            "items": {
+              "$ref": "common.json#/definitions/ref"
+            },
+            "description": "The caster's active summons, oldest first: one summon group ref per creature (docs/core/casting.md#summons)."
           }
         },
         "required": [
@@ -231,6 +238,20 @@
             "additionalProperties": false
           }
         ]
+      },
+      "summons": {
+        "type": "array",
+        "items": {
+          "$ref": "common.json#/definitions/ref"
+        },
+        "description": "The active summons after the cast, oldest first."
+      },
+      "dismissed": {
+        "type": "array",
+        "items": {
+          "$ref": "common.json#/definitions/ref"
+        },
+        "description": "The summons the cast dismissed to stay within the limit, oldest first."
       }
     },
     "additionalProperties": false
