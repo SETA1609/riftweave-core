@@ -566,15 +566,20 @@ def run_monster_sheet(vector):
     result = run_derived({"actor": {"attributes": attributes, "level": row.get("level", 1)}})
     if "hitPoints" in row:
         result["hp"] = row["hitPoints"]
-    rule = load_data("progression/core.json")["progression"]["skill_start"]
-    governing = {s["key"]: s["associatedAbility"] for s in load_data("skills/core.json")["skills"]}
+    progression = load_data("progression/core.json")["progression"]
+    rows = {s["key"]: s for s in load_data("skills/core.json")["skills"]}
+    growth = progression.get("monster_skill_growth", {"per_level": 0, "categories": []})
+    level = row.get("level", 1)
     written = row.get("skills", {})
     skills = {}
     for key in vector.get("read_skills", []):
         if key in written:
             skills[key] = written[key]
-        elif key in governing:
-            skills[key] = evaluate_formula(rule, {}, {"attribute": attributes.get(governing[key], 0)})
+        elif key in rows:
+            start = evaluate_formula(progression["skill_start"], {}, {"attribute": attributes.get(rows[key]["associatedAbility"], 0)})
+            if rows[key]["category"] in growth["categories"]:
+                start = min(progression["skill_cap"], start + growth["per_level"] * (level - 1))
+            skills[key] = start
         else:
             return {"error": f'skill "{key}" is not defined'}
     result["skills"] = skills

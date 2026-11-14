@@ -158,6 +158,117 @@
     }
   },
   {
+    "name": "growth: at level 1 a fighting skill is its starting value",
+    "monster": {
+      "attributes": {
+        "str": 6,
+        "per": 4,
+        "end": 4,
+        "int": 5,
+        "wil": 2,
+        "agi": 5,
+        "cha": 3,
+        "lck": 3
+      },
+      "level": 1
+    },
+    "read_skills": [
+      "evasion",
+      "blades"
+    ],
+    "expect": {
+      "skills": {
+        "evasion": 15,
+        "blades": 17
+      }
+    }
+  },
+  {
+    "name": "growth: at level 5 combat and magic skills gain 17 per level, stealth stays at its start",
+    "monster": {
+      "attributes": {
+        "str": 6,
+        "per": 4,
+        "end": 4,
+        "int": 5,
+        "wil": 2,
+        "agi": 5,
+        "cha": 3,
+        "lck": 3
+      },
+      "level": 5
+    },
+    "read_skills": [
+      "evasion",
+      "blades",
+      "red_magic",
+      "stealth"
+    ],
+    "expect": {
+      "skills": {
+        "evasion": 83,
+        "blades": 85,
+        "red_magic": 83,
+        "stealth": 15
+      }
+    }
+  },
+  {
+    "name": "growth: a grown skill stops at the skill cap of 100",
+    "monster": {
+      "attributes": {
+        "str": 6,
+        "per": 4,
+        "end": 4,
+        "int": 5,
+        "wil": 2,
+        "agi": 5,
+        "cha": 3,
+        "lck": 3
+      },
+      "level": 8
+    },
+    "read_skills": [
+      "evasion",
+      "blades"
+    ],
+    "expect": {
+      "skills": {
+        "evasion": 100,
+        "blades": 100
+      }
+    }
+  },
+  {
+    "name": "growth: a written skill does not grow",
+    "monster": {
+      "attributes": {
+        "str": 6,
+        "per": 4,
+        "end": 4,
+        "int": 5,
+        "wil": 2,
+        "agi": 5,
+        "cha": 3,
+        "lck": 3
+      },
+      "level": 10,
+      "skills": {
+        "blades": 40
+      }
+    },
+    "read_skills": [
+      "blades",
+      "evasion"
+    ],
+    "expect": {
+      "skills": {
+        "blades": 40,
+        "evasion": 100
+      }
+    }
+  },
+  {
     "name": "error: an unknown skill",
     "monster": {
       "attributes": {

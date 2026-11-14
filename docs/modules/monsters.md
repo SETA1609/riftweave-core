@@ -311,7 +311,9 @@ A monster fights with the same numbers as a character ([core/combat.md](../core/
 - **`role`** — `standard` (the default), `boss`, or `minion`: which hits-to-kill band of
   `balance/core.json` the monster's HP is checked against.
 - **`skills`** — only the skills it fights or casts with; any other reads as a player's
-  starting value, `5 + attribute × 2` ([actor-sheet.md](../core/actor-sheet.md)).
+  starting value, `5 + attribute × 2`, and an unwritten combat or magic skill grows by 17 per
+  level above 1, up to 100, so a level-matched monster hits about as often as a player
+  ([actor-sheet.md](../core/actor-sheet.md)). A written skill does not grow.
 
 ### Natural weapons
 

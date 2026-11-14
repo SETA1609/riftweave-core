@@ -60,6 +60,22 @@
           },
           "required": ["members_per_step"],
           "additionalProperties": false
+        },
+        "monster_skill_growth": {
+          "type": "object",
+          "description": "What a monster's unwritten fighting skills gain per level above 1, capped at skill_cap; a skill whose category is not listed stays at skill_start (docs/core/actor-sheet.md).",
+          "properties": {
+            "per_level": { "type": "integer", "minimum": 0 },
+            "categories": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
+              "description": "Skill categories (skills/core.json `category`) that grow."
+            }
+          },
+          "required": ["per_level", "categories"],
+          "additionalProperties": false
         }
       },
       "required": ["start_level", "max_level", "skill_cap", "xp_to_reach", "skill_points", "pool_roll_max", "luck_roll", "perks_per_level", "tag_skills", "skill_cost"],
