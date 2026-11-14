@@ -45,6 +45,14 @@ steps match their vectors and the replay matches. [V 2026-11-14, by hand against
 - **Resolve an attack:** the first vectors of `ruleset/tests/vectors/combat.json` go through the
   app's attack call, and each result matches the vector's `expect`.
 
+`npm run e2e` runs the end-to-end specs (`e2e/*.spec.ts`, Playwright, Chromium) against the app
+served by `ng serve` and its proxy, with a real `riftweave-server` behind it; both are started by
+`playwright.config.ts` unless one is already running, so `./scripts/app.sh` and CI reuse theirs.
+The specs act as a player: fill the character sheet and create a character, fill the attack form
+with the first `combat.json` vector's inputs and read the shown result against its `expect`, and run
+the playthrough to a matching replay. They find elements by label and role, not by CSS class, so a
+restyle does not break them. A first run installs the browser: `npx playwright install chromium`.
+
 CI (`.github/workflows/frontend.yml`) builds the server, starts it, and runs `npm ci`, the build,
 and the tests on every change under `frontend/`, `backend/`, or `ruleset/`. [V 2026-11-14, the
 workflow's steps run by hand: 14 specs pass]
