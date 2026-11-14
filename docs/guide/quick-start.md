@@ -95,3 +95,16 @@ Experience comes from the GM. You reach a level at `450 × level × (level − 1
 3. **Roll or read initiative**, highest first.
 4. **Play turns** until one side falls, flees, or talks.
 5. **Give the loot.** Each monster rolls on its own tables.
+
+## Print your sheet
+
+The backend prints a sheet from your saved character, with each raised skill's target worked out, so
+at the table you only check that a d100 roll is at or under the printed number. It prints spell
+cards, monster stat blocks, and condition cards the same way. Save the page and print it, or print it
+to PDF from the browser:
+
+```
+riftweave print sheet.json > sheet-page.json   # {"kind": "sheet", "actor": <your stored actor>}
+```
+
+The page is the `html` field of the result ([print.md](../backend/print.md)).

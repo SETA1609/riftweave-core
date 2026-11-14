@@ -23,3 +23,9 @@ skill's value with the modifiers on that skill, the same stacking any command us
 number carries a `data-` attribute naming what it is (`data-target="blades"`, `data-stat="hp"`,
 `data-to-hit="bite"`), so a test reads the page and compares it with the command that computes
 the number. PDF is the browser's print: the page sets `@page` and print CSS. [A]
+
+[V 2026-11-14, `go test ./core`: a sheet's targets and derived stats, a stat block's to-hit and
+evasion, and a spell and a condition card each match the command that computes them]
+
+A natural weapon's dice are not printed: they move with the creature's size, a rule the Go core
+does not hold yet, so the stat block names the weapon and its type and leaves the dice to the row. [A]
