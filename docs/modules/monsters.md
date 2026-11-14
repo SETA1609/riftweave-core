@@ -318,7 +318,8 @@ A monster fights with the same numbers as a character ([core/combat.md](../core/
   add to the row's as its spells do, the higher rank kept when both name one; `dire` grants
   Toughness and `elder` Second Wind. Prerequisites are not checked on a monster: an author or a GM
   places a perk on purpose. A perk of the `social` or `utility` category means little on a monster,
-  so `validate.py` warns but does not fail. [A]
+  so `validate.py` warns but does not fail. [V 2026-11-14, `monster_sheet` vectors in Python and Go,
+  `test_bestiary.py`]
 - **`skills`** — only the skills it fights or casts with; any other reads as a player's
   starting value, `5 + attribute × 2`, and an unwritten combat or magic skill grows by 17 per
   level above 1, up to 100, so a level-matched monster hits about as often as a player

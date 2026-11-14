@@ -40,7 +40,8 @@ skill   the row's skills[key], when written
 - **Perks.** A row's `perks` (M3-15) emit their modifiers at their rank, as a player's do
   ([progression.md](../modules/progression.md#perks-and-traits)), and the sheet applies them: each
   derived stat, the authored `hitPoints` included, takes the modifiers on its key, and each skill
-  read takes the modifiers on its key after its start and growth. [A]
+  read takes the modifiers on its key after its start and growth, a written skill too. [V 2026-11-14,
+  `monster_sheet` vectors]
 - **A missing attribute reads 0**, as it does in `derived`.
 
 The input is the flat row, so a consumer composes first. The vectors are in
