@@ -27,7 +27,7 @@
       "additionalProperties": false
     }
   },
-  "required": ["natural_weapons", "size_steps"],
+  "required": ["natural_weapons", "skill", "size_steps"],
   "additionalProperties": false,
   "definitions": {
     "naturalWeapon": {

@@ -74,6 +74,45 @@ def attack_dice(monster, attack):
     return balance_report.sized_dice(weapon_row(weapon))
 
 
+def attack_skill(attack):
+    """The skill an attack rolls to hit with: `unarmed` for a natural weapon (the file's `skill`),
+    else the carried weapon's own skill (docs/modules/monsters.md#natural-weapons)."""
+    weapon = attack["weapon"]
+    ref = _natural_file()["skill"] if weapon.startswith(NATURAL_PREFIX) else weapon_row(weapon)["weapon"]["skill"]
+    return ref.rsplit("/", 1)[-1]
+
+
+UNARMED_TARGETS = ("unarmed_damage", "unarmed_strike_damage")
+
+
+def attack_damage(actor, attack, roll, modifiers):
+    """One hit's damage before the combat pipeline: the dice roll, the attribute modifier, and the
+    growth bonus; on an unarmed attack the unarmed perks then add (`unarmed_damage`) and multiply
+    (`unarmed_strike_damage`), floored, through the kernel's modifier steps."""
+    from kernel_reference import apply_modifiers
+
+    damage = roll + attack_modifier(actor, attack) + attack.get("damage", {}).get("bonus", 0)
+    if attack_skill(attack) == "unarmed":
+        for target in UNARMED_TARGETS:
+            damage = apply_modifiers(damage, [m for m in modifiers if m["target"] == target])
+    return damage
+
+
+SLAM = {"key": "slam", "label": "Slam", "weapon": NATURAL_PREFIX + "slam", "ability": "str"}
+
+
+def monster_attacks(monster):
+    """A row's attacks; a row with none and no damaging ability slams."""
+    if monster.get("attacks"):
+        return monster["attacks"]
+    return [] if damaging_abilities(monster) else [dict(SLAM)]
+
+
+def feature_attack_dice(feature, size):
+    """A feature's natural weapon dice, moved by the actor's size as a creature's are."""
+    return attack_dice({"size": size}, {"weapon": feature["natural_weapon"]})
+
+
 def attack_type(attack):
     """The attack's damage type: its own, else its weapon's."""
     named = attack.get("damage", {}).get("type")

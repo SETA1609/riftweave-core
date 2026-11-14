@@ -3242,7 +3242,7 @@
     {
       "key": "catman_claws",
       "label": "Retractable Claws",
-      "description": "Your claws are natural weapons dealing 1d6 slashing damage.",
+      "description": "Your claws are natural weapons: the claw row, 1d6 slashing at medium size, rolled with Unarmed.",
       "type": "racial_trait",
       "modifiers": [
         {
@@ -3253,10 +3253,7 @@
           "origin": "core:origin/innate"
         }
       ],
-      "natural_weapon": {
-        "dice": "1d6",
-        "type": "slashing"
-      }
+      "natural_weapon": "core:natural_weapon/claw"
     },
     {
       "key": "catman_landing",
