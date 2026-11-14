@@ -536,7 +536,46 @@ def run_progression(vector):
         return {"ranks": ranks, "spent": ranks * cost, "left": vector["points"] - ranks * cost}
     if op == "read_skill":
         return read_skill(vector["actor"], vector["read"], vector.get("groups"))
+    if op == "take_perk":
+        return take_perk(vector["actor"], vector.get("perks") or {}, vector["perk"])
     raise ValueError(f"progression operation {op!r} is not defined")
+
+
+def take_perk(actor, held, key):
+    """One perk checked against a sheet (docs/core/progression.md, rule 5): rank, level,
+    attributes, skills, and perks, in that order; the next rank is taken only when none fails."""
+    features = {row["key"]: row for row in load_data("features/core.json")["features"]}
+    if key not in features:
+        return {"error": f'perk "{key}" is not defined'}
+    feature = features[key]
+    if feature["type"] != "perk":
+        return {"error": f'feature "{key}" is not a perk'}
+    ranks = feature.get("ranks") or 1
+    rank = held.get(key, 0)
+    need = feature.get("prerequisite") or {}
+    unmet = []
+    if rank >= ranks:
+        unmet.append({"needs": "rank", "max": ranks, "has": rank})
+    level = actor.get("level", 1)
+    if need.get("level", 0) > level:
+        unmet.append({"needs": "level", "min": need["level"], "has": level})
+    attributes = actor.get("attributes", {})
+    for ability in sorted(need.get("abilities", {})):
+        has = attributes.get(ability, 0)
+        if has < need["abilities"][ability]:
+            unmet.append({"needs": "attribute", "key": ability, "min": need["abilities"][ability], "has": has})
+    for requirement in need.get("skills", []):
+        refs = requirement["id"] if isinstance(requirement["id"], list) else [requirement["id"]]
+        keys = [ref.rsplit("/", 1)[-1] for ref in refs]
+        best = max(read_skill(actor, skill)["value"] for skill in keys)
+        if best < requirement["min"]:
+            unmet.append({"needs": "skill", "keys": keys, "min": requirement["min"], "has": best})
+    for ref in need.get("perks", []):
+        if held.get(ref.rsplit("/", 1)[-1], 0) < 1:
+            unmet.append({"needs": "perk", "key": ref.rsplit("/", 1)[-1]})
+    if unmet:
+        return {"taken": False, "perk": key, "rank": rank, "unmet": unmet}
+    return {"taken": True, "perk": key, "rank": rank + 1, "unmet": []}
 
 
 def read_skill(actor, key, groups=None):

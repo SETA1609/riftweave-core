@@ -5,8 +5,9 @@ Every step goes through the `session` command of the `riftweave` binary, so the 
 real run of the core and replays to the same actor (docs/backend/sessions.md). The driver holds no
 rule: it picks the choices a player would make (a perk, where skill points go, which spell to cast,
 which monster to fight), draws the rolls from a seeded generator, and puts each roll in the step's
-input. What a session cannot do yet (buy skill ranks, take a perk, learn a spell, damage a monster
-with a spell) it does through dev mode, and it records each such step as a finding.
+input. A level-up's choices are session steps (APP-12): `progression spend` with the skill's key,
+`progression take_perk`, and `spellcraft learn`, so a run needs no dev step. What a session cannot
+do yet (damage a monster with a spell) the driver works out itself and records as a finding.
 
 Usage (from the repository root, with the binary built):
     (cd backend && go build -o ../cache/riftweave ./cmd/riftweave)
@@ -129,14 +130,9 @@ class Run:
         step = {"command": command, "input": input}
         if as_:
             step["as"] = as_
-        out = self.cli.run("session", {"operation": "step", "session": self.session, "step": step}, dev=True)
+        out = self.cli.run("session", {"operation": "step", "session": self.session, "step": step})
         self.session = out["session"]
         return out.get("result")
-
-    def dev(self, operation, **fields):
-        self.findings[f"dev:{operation}"] += 1
-        out = self.cli.run("dev", {"operation": operation, "session": self.session, **fields}, dev=True)
-        self.session = out["session"]
 
     @property
     def actor(self):
@@ -174,10 +170,8 @@ class Run:
             key = order[index % len(order)]
             index += 1
             share = max(points // 2, 1) if index <= len(order) else points
-            spent = self.step("progression", {self.cli.operation: "spend", "skill": self.skill(key),
-                                              "tagged": key in self.actor["tags"], "points": share})
+            spent = self.step("progression", {self.cli.operation: "spend", "key": key, "points": share})
             if spent["ranks"]:
-                self.dev("skill", key=key, add=spent["ranks"])
                 points -= spent["spent"]
                 if self.skill(key) >= 100:
                     self.capped_at.setdefault(key, self.actor["level"])
@@ -185,28 +179,22 @@ class Run:
                 continue
 
     def eligible(self, key):
+        """Whether the rule would take the perk now: `take_perk` outside the session, so nothing is logged."""
         perk = self.features.get(key)
         if perk is None or perk["type"] != "perk":
             return False
-        if self.actor.get("perks", {}).get(key, 0) >= perk.get("ranks", 1):
-            return False
-        need = perk.get("prerequisite", {})
-        if self.actor["level"] < need.get("level", 1):
-            return False
-        if any(self.actor["attributes"][a] < m for a, m in need.get("abilities", {}).items()):
-            return False
-        for requirement in need.get("skills", []):
-            ids = requirement["id"] if isinstance(requirement["id"], list) else [requirement["id"]]
-            if not any(self.skill(key_of(i)) >= requirement["min"] for i in ids if key_of(i) in self.skills):
-                return False
-        return all(key_of(p) in self.actor.get("perks", {}) for p in need.get("perks", []))
+        check = self.cli.run("progression", {self.cli.operation: "take_perk", "perk": key,
+                                             "actor": {"attributes": self.actor["attributes"], "level": self.actor["level"],
+                                                       "skills": self.actor["skills"]},
+                                             "perks": self.actor.get("perks", {})})
+        return check["taken"]
 
     def take_perk(self):
         order = list(self.build["perk_order"])
         rest = sorted(k for k, f in self.features.items() if f["type"] == "perk")
         for key in order + [k for k in rest if k not in order]:
             if self.eligible(key):
-                self.dev("perk", key=key)
+                self.step("progression", {self.cli.operation: "take_perk", "perk": key})
                 self.taken[key] += 1
                 return key
         self.findings["no eligible perk at a level-up"] += 1
@@ -218,7 +206,7 @@ class Run:
             if spell["color"] not in self.build["colors"] or spell["key"] in known:
                 continue
             if spell["level"] <= self.actor["level"] and self.skill(f"{spell['color']}_magic") >= spell["cost"].get("mana", 0):
-                self.dev("learn", spell=f"core:spell/{spell['key']}")
+                self.step("spellcraft", {"operation": "learn", "spell": spell["key"]})
 
     def level_up(self):
         level = self.actor["level"] + 1
@@ -305,7 +293,7 @@ class Run:
             self.attacks["monster_damage"] += back.get("damage", 0) if back["outcome"] == "hit" else 0
             if back["hp"] == 0:
                 self.fights["lost"] += 1
-                self.dev("resource", pool="hp", set=1)
+                self.rest()
                 return
         self.fights["fled"] += 1
 
@@ -321,7 +309,7 @@ class Run:
             if self.actor["level"] >= MAX_LEVEL:
                 break
             self.level_up()
-        replay = self.cli.run("session", {"operation": "replay", "session": self.session}, dev=True)
+        replay = self.cli.run("session", {"operation": "replay", "session": self.session})
         return replay["matches"]
 
 

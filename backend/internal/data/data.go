@@ -383,9 +383,44 @@ type Effect struct {
 
 // Feature is what a dev operation needs of one row of features/core.json: its kind and ranks.
 type Feature struct {
-	Key   string `json:"key"`
-	Type  string `json:"type"`
-	Ranks int64  `json:"ranks"`
+	Key          string       `json:"key"`
+	Type         string       `json:"type"`
+	Ranks        int64        `json:"ranks"`
+	Prerequisite Prerequisite `json:"prerequisite"`
+}
+
+// Prerequisite is what a perk needs before it is taken (docs/core/progression.md).
+type Prerequisite struct {
+	Level     int64              `json:"level"`
+	Abilities map[string]int64   `json:"abilities"`
+	Skills    []SkillRequirement `json:"skills"`
+	Perks     []string           `json:"perks"`
+}
+
+// SkillRequirement is met when one of its skills reads at least Minimum. Its `id` is one
+// skill ref or a list of them.
+type SkillRequirement struct {
+	Skills  []string
+	Minimum int64
+}
+
+// UnmarshalJSON reads `id` as a ref or a list of refs.
+func (requirement *SkillRequirement) UnmarshalJSON(encoded []byte) error {
+	var read struct {
+		ID      json.RawMessage `json:"id"`
+		Minimum int64           `json:"min"`
+	}
+	if err := json.Unmarshal(encoded, &read); err != nil {
+		return err
+	}
+	var one string
+	if err := json.Unmarshal(read.ID, &one); err == nil {
+		requirement.Skills = []string{one}
+	} else if err := json.Unmarshal(read.ID, &requirement.Skills); err != nil {
+		return err
+	}
+	requirement.Minimum = read.Minimum
+	return nil
 }
 
 // Spell is what a cast needs of one row of spells/core.json (docs/core/casting.md).

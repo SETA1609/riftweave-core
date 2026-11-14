@@ -6,6 +6,8 @@ package progression
 import (
 	"errors"
 	"fmt"
+	"sort"
+	"strings"
 
 	"github.com/SETA1609/riftweave-core/backend/internal/actor"
 	"github.com/SETA1609/riftweave-core/backend/internal/data"
@@ -29,6 +31,27 @@ type Input struct {
 	Read       *string      `json:"read"`
 	// Groups is a grouped sheet: the ranks of each tracked skill group. Nil is a full sheet.
 	Groups map[string]int64 `json:"groups"`
+	// Key is the skill a session buys with spend; the command does not read it.
+	Key   *string          `json:"key"`
+	Perks map[string]int64 `json:"perks"`
+	Perk  *string          `json:"perk"`
+}
+
+// unmet is one requirement of a perk that fails.
+type unmet struct {
+	Needs   string   `json:"needs"`
+	Key     string   `json:"key,omitempty"`
+	Keys    []string `json:"keys,omitempty"`
+	Minimum *int64   `json:"min,omitempty"`
+	Maximum *int64   `json:"max,omitempty"`
+	Has     *int64   `json:"has,omitempty"`
+}
+
+type perkResult struct {
+	Taken bool    `json:"taken"`
+	Perk  string  `json:"perk"`
+	Rank  int64   `json:"rank"`
+	Unmet []unmet `json:"unmet"`
 }
 
 type readResult struct {
@@ -164,6 +187,11 @@ func Run(ruleset *data.Ruleset, input Input) (any, error) {
 			return nil, err
 		}
 		return readSkill(ruleset, input.Actor, *input.Read, input.Groups)
+	case "take_perk":
+		if err := requireField(input.Operation, "actor and perk", input.Actor != nil && input.Perk != nil); err != nil {
+			return nil, err
+		}
+		return takePerk(ruleset, input.Actor, input.Perks, *input.Perk)
 	}
 	return nil, &data.NotDefinedError{Kind: "progression operation", Key: input.Operation}
 }
@@ -194,4 +222,77 @@ func readSkill(ruleset *data.Ruleset, sheet *actor.Actor, key string, groups map
 		return readResult{Value: start, ReadFrom: "start"}, nil
 	}
 	return readResult{Value: start + groups[group.Key], ReadFrom: "group"}, nil
+}
+
+func refKey(ref string) string { return ref[strings.LastIndex(ref, "/")+1:] }
+
+// takePerk checks one perk against a sheet (docs/core/progression.md, rule 5): its rank, level,
+// attributes, skills, and perks, in that order. It takes the next rank only when none fails.
+func takePerk(ruleset *data.Ruleset, sheet *actor.Actor, held map[string]int64, key string) (perkResult, error) {
+	feature, exists := ruleset.Features.Get(key)
+	if !exists {
+		return perkResult{}, &data.NotDefinedError{Kind: "perk", Key: key}
+	}
+	if feature.Type != "perk" {
+		return perkResult{}, fmt.Errorf("feature %q is not a perk", key)
+	}
+	var ranks int64 = feature.Ranks
+	if ranks == 0 {
+		ranks = 1
+	}
+	var rank int64 = held[key]
+	var failed []unmet = []unmet{}
+	if rank >= ranks {
+		failed = append(failed, unmet{Needs: "rank", Maximum: &ranks, Has: &rank})
+	}
+	var need *data.Prerequisite = &feature.Prerequisite
+	var level int64 = 1
+	if sheet.Level != nil {
+		level = *sheet.Level
+	}
+	if need.Level > level {
+		failed = append(failed, unmet{Needs: "level", Minimum: &need.Level, Has: &level})
+	}
+	var abilities []string = make([]string, 0, len(need.Abilities))
+	for ability := range need.Abilities {
+		abilities = append(abilities, ability)
+	}
+	sort.Strings(abilities)
+	for _, ability := range abilities {
+		var minimum int64 = need.Abilities[ability]
+		parsed, known := actor.ByKey(ability)
+		if !known {
+			return perkResult{}, &data.NotDefinedError{Kind: "attribute", Key: ability}
+		}
+		var has int64 = sheet.Attributes.Get(parsed)
+		if has < minimum {
+			failed = append(failed, unmet{Needs: "attribute", Key: ability, Minimum: &minimum, Has: &has})
+		}
+	}
+	for index := range need.Skills {
+		var requirement *data.SkillRequirement = &need.Skills[index]
+		var keys []string = make([]string, len(requirement.Skills))
+		var best int64 = 0
+		for position, ref := range requirement.Skills {
+			keys[position] = refKey(ref)
+			read, err := readSkill(ruleset, sheet, keys[position], nil)
+			if err != nil {
+				return perkResult{}, err
+			}
+			best = max(best, read.Value)
+		}
+		if best < requirement.Minimum {
+			var minimum, has int64 = requirement.Minimum, best
+			failed = append(failed, unmet{Needs: "skill", Keys: keys, Minimum: &minimum, Has: &has})
+		}
+	}
+	for _, ref := range need.Perks {
+		if held[refKey(ref)] < 1 {
+			failed = append(failed, unmet{Needs: "perk", Key: refKey(ref)})
+		}
+	}
+	if len(failed) > 0 {
+		return perkResult{Perk: key, Rank: rank, Unmet: failed}, nil
+	}
+	return perkResult{Taken: true, Perk: key, Rank: rank + 1, Unmet: failed}, nil
 }
