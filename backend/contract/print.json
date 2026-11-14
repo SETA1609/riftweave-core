@@ -1,0 +1,131 @@
+{
+  "$schema": "./command.schema.json",
+  "name": "print",
+  "summary": "A printable page from the data: a character sheet, a spell card, a monster stat block, or a condition card.",
+  "documentation": "docs/backend/print.md",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "kind": {
+        "type": "string",
+        "enum": [
+          "sheet",
+          "spell",
+          "monster",
+          "condition"
+        ]
+      },
+      "actor": {
+        "$ref": "common.json#/definitions/stored_actor",
+        "description": "With sheet: the character."
+      },
+      "spell": {
+        "$ref": "common.json#/definitions/key",
+        "description": "With spell: a key in spells/core.json."
+      },
+      "condition": {
+        "$ref": "common.json#/definitions/key",
+        "description": "With condition: a key in conditions/core.json."
+      },
+      "label": {
+        "type": "string",
+        "description": "With monster: the name printed at the top."
+      },
+      "monster": {
+        "type": "object",
+        "description": "With monster: a composed monster row, as monster_sheet takes it, with its attacks and resistances.",
+        "properties": {
+          "attributes": {
+            "$ref": "common.json#/definitions/attributes"
+          },
+          "skills": {
+            "$ref": "common.json#/definitions/skills"
+          },
+          "level": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "hitPoints": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "size": {
+            "type": "string"
+          },
+          "resist": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number"
+            }
+          },
+          "attacks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "key": {
+                  "$ref": "common.json#/definitions/key"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "weapon": {
+                  "$ref": "common.json#/definitions/ref"
+                },
+                "ability": {
+                  "type": "string"
+                },
+                "delivery": {
+                  "type": "string"
+                },
+                "phase": {
+                  "type": "string"
+                },
+                "damage": {
+                  "type": "object",
+                  "properties": {
+                    "bonus": {
+                      "type": "integer"
+                    },
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "key",
+                "label",
+                "weapon"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "kind"
+    ]
+  },
+  "result_schema": {
+    "type": "object",
+    "properties": {
+      "title": {
+        "type": "string"
+      },
+      "html": {
+        "type": "string",
+        "description": "One self-contained page: inline CSS, no script. Each printed number has a data- attribute naming it."
+      }
+    },
+    "required": [
+      "title",
+      "html"
+    ],
+    "additionalProperties": false
+  }
+}
