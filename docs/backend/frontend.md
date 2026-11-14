@@ -53,6 +53,19 @@ The toolchain is Node 24.15 or later (the Angular 22 CLI's minimum; CI pins 24.2
 11.21.1 for installs: the npm that ships with Node 24.7 fails to resolve Vitest's optional peers.
 npm 11.21.1 keeps install scripts blocked, its default. [V 2026-11-14]
 
+## Running it
+
+| Command | Needs | Serves |
+| --- | --- | --- |
+| `./scripts/app.sh [--port 4200] [--api-port 8080]` | Go and Node (with Node below 24.15, it runs Node 24.22.1 through `npx`) | `ng serve` at `localhost:4200`, proxying `/v1` and `/openapi.json` to a `riftweave-server` it builds and starts; reloads on a frontend change |
+| `./scripts/app-container.sh [--port 8080] [--build-only]` | docker or podman (`RIFTWEAVE_ENGINE` picks one) | one image with the server, the built app, and the ruleset data behind nginx, at `localhost:8080` |
+
+`app.sh` builds into `cache/` and installs the frontend's packages (npm 11.21.1, `npm ci`) only
+when `node_modules` is missing or older than the lockfile. Ctrl-C stops the server and the app.
+The image (`container/app.Dockerfile`) is built in three stages, the server (Go), the app (Node),
+and nginx, which serves the app and proxies the API on one origin, so the server needs no CORS.
+Both bind to localhost only. [A]
+
 ## Conventions
 
 Every change to `frontend/` follows these (owner, 2026-11-14):
