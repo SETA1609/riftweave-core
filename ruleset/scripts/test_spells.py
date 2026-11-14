@@ -25,7 +25,8 @@ NEW_DAMAGE = {"damage_radiant": "white", "damage_necrotic": "black", "damage_psy
 
 
 def spells():
-    return json.loads((DATA / "spells" / "core.json").read_text())["spells"]
+    """The spells as every reader sees them: spell bases resolved (docs/core/composition.md)."""
+    return validate.load_spells(DATA / "spells" / "core.json")["spells"]
 
 
 def effects():

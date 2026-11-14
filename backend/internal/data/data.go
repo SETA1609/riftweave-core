@@ -654,6 +654,79 @@ func (loader *rulesetLoader) read(file string, target any) bool {
 	return true
 }
 
+// spellIdentity is what a spell built on a spell keeps of its own row, beside its key and source
+// (docs/core/composition.md#a-spell-built-on-a-spell).
+var spellIdentity = [...]string{"key", "label", "description", "source"}
+
+// readSpells reads a spell file and resolves its spell bases before decoding, so every reader sees
+// the flat row: a row with `base` is a copy of that spell with its `overrides` on top, an object
+// field merged per field. A base may not itself name a base.
+func (loader *rulesetLoader) readSpells(file string, target *[]Spell) {
+	var raw struct {
+		Spells []map[string]any `json:"spells"`
+	}
+	if !loader.read(file, &raw) {
+		return
+	}
+	var byKey map[string]map[string]any = make(map[string]map[string]any, len(raw.Spells))
+	for _, row := range raw.Spells {
+		if key, ok := row["key"].(string); ok {
+			byKey[key] = row
+		}
+	}
+	var flat []map[string]any = make([]map[string]any, 0, len(raw.Spells))
+	for _, row := range raw.Spells {
+		baseRef, composed := row["base"].(string)
+		if !composed {
+			flat = append(flat, row)
+			continue
+		}
+		base, exists := byKey[strings.TrimPrefix(baseRef, "core:spell/")]
+		if !exists || !strings.HasPrefix(baseRef, "core:spell/") {
+			loader.fail("%s: spell '%v': base spell '%s' does not exist", file, row["key"], baseRef)
+			continue
+		}
+		if _, chained := base["base"]; chained {
+			loader.fail("%s: spell '%v': base spell '%s' names a base itself; a spell composes one level", file, row["key"], baseRef)
+			continue
+		}
+		var merged map[string]any = make(map[string]any, len(base))
+		for field, value := range base {
+			merged[field] = value
+		}
+		overrides, _ := row["overrides"].(map[string]any)
+		for field, value := range overrides {
+			block, isBlock := value.(map[string]any)
+			inherited, hadBlock := merged[field].(map[string]any)
+			if isBlock && hadBlock {
+				var joined map[string]any = make(map[string]any, len(inherited)+len(block))
+				for inner, innerValue := range inherited {
+					joined[inner] = innerValue
+				}
+				for inner, innerValue := range block {
+					joined[inner] = innerValue
+				}
+				value = joined
+			}
+			merged[field] = value
+		}
+		for _, field := range spellIdentity {
+			delete(merged, field)
+			if value, written := row[field]; written {
+				merged[field] = value
+			}
+		}
+		flat = append(flat, merged)
+	}
+	encoded, err := json.Marshal(flat)
+	if err == nil {
+		err = json.Unmarshal(encoded, target)
+	}
+	if err != nil {
+		loader.fail("%s: %v", file, err)
+	}
+}
+
 func (loader *rulesetLoader) fail(format string, arguments ...any) {
 	loader.errs = append(loader.errs, fmt.Errorf(format, arguments...))
 }
@@ -816,7 +889,7 @@ func Load(fileSystem fs.FS, modules ...fs.FS) (*Ruleset, error) {
 	loader.loadHazards(ruleset)
 
 	var spells struct{ Spells []Spell }
-	loader.read("spells/core.json", &spells)
+	loader.readSpells("spells/core.json", &spells.Spells)
 	ruleset.Spells = newTable(spells.Spells, func(spell *Spell) string { return spell.Key })
 	var features struct{ Features []Feature }
 	loader.read("features/core.json", &features)

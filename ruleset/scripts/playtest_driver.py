@@ -84,6 +84,10 @@ BUILDS = [
 
 
 def load(rel, collection):
+    if rel == "spells/core.json":
+        import validate  # spell bases resolved, as every reader sees them
+
+        return validate.load_spells(DATA / rel)[collection]
     return json.loads((DATA / rel).read_text())[collection]
 
 
