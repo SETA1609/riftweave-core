@@ -64,7 +64,11 @@ npm 11.21.1 keeps install scripts blocked, its default. [V 2026-11-14]
 when `node_modules` is missing or older than the lockfile. Ctrl-C stops the server and the app.
 The image (`container/app.Dockerfile`) is built in three stages, the server (Go), the app (Node),
 and nginx, which serves the app and proxies the API on one origin, so the server needs no CORS.
-Both bind to localhost only. [A]
+Both bind to localhost only. Image names are fully qualified (`docker.io/library/...`,
+`localhost/riftweave-app:local`), since podman does not resolve short names. Rootless podman also
+needs subordinate ids for the user in `/etc/subuid` and `/etc/subgid`; the script checks and
+prints the fix. [V 2026-11-14: `app.sh`, and `app-container.sh` with docker, each served the app
+and the first combat vector's result; with podman, only the check ran, see docs/decisions/APP-21.md]
 
 ## Conventions
 

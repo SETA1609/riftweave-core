@@ -1,5 +1,5 @@
 #### APP-21 Scripts run the frontend locally or in a container
-- Status: doing
+- Status: review
 - Priority: medium
 - Needs: APP-07
 - Do: Owner request, 2026-11-14: one command should start the frontend and its API, on the host or in a container. `scripts/app.sh` builds `riftweave-server`, starts it, installs the frontend's packages when they are missing or stale, and runs `ng serve` with its proxy; Ctrl-C stops both. It needs Go and Node; with a Node below Angular 22's minimum (24.15) it runs Node 24.22.1 through `npx`, so a contributor does not have to change their Node. `scripts/app-container.sh` builds one image (`container/app.Dockerfile`: the server, the built app, and the ruleset data, behind nginx, so the page and the API share one origin and need no CORS) and runs it with docker or podman, bound to localhost. Neither script holds a rule or changes the repo outside `cache/`.
