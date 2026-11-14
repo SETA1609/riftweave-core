@@ -20,6 +20,7 @@ same content license, CC BY 4.0, that the D&D 5.1 SRD uses).
 - `Dockerfile`, `container/`, `.devcontainer/`, `.dockerignore` — images and the dev container
 - `scripts/`, `tools/devops/` — host devops CLI and its shims (it depends on [devops-tools](https://github.com/SETA1609/devops_tools), MIT, fetched by uv and not vendored here)
 - `.github/` — CI workflows and configuration
+- `frontend/` — the Angular frontend (its npm dependencies are fetched by npm and not vendored here)
 
 **CC BY 4.0 (content & documentation):**
 

@@ -1,5 +1,5 @@
 #### APP-07 Angular frontend
-- Status: todo
+- Status: review
 - Priority: low
 - Needs: APP-06
 - Do: An Angular app in `frontend/` that talks only to the API, with a client generated from the OpenAPI document: a character sheet, an attack resolver (attacker, defender, reaction, delivery, rolls), and a playthrough runner over a session. It shows the rolls and the step-by-step result of each pipeline.

@@ -1,0 +1,66 @@
+name: Frontend
+
+# The Angular frontend (APP-07, docs/backend/frontend.md): build it, and run its specs against a
+# real riftweave-server, so an attack resolved through the API must match its vector.
+on:
+  push:
+    paths:
+      - "frontend/**"
+      - "backend/**"
+      - "ruleset/**"
+      - ".github/workflows/frontend.yml"
+  pull_request:
+    paths:
+      - "frontend/**"
+      - "backend/**"
+      - "ruleset/**"
+      - ".github/workflows/frontend.yml"
+  workflow_dispatch:
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      RIFTWEAVE_API: http://127.0.0.1:8080
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Set up Go
+        uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+        with:
+          go-version-file: backend/go.mod
+          cache: false
+
+      # The Angular 22 CLI needs Node 24.15 or later.
+      - name: Set up Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version: "24.22.1"
+
+      - name: Start the API server
+        working-directory: backend
+        run: |
+          go build -o "$RUNNER_TEMP/riftweave-server" ./cmd/riftweave-server
+          "$RUNNER_TEMP/riftweave-server" --data ../ruleset/data --addr 127.0.0.1:8080 &
+          for attempt in $(seq 1 30); do
+            curl -fs "$RIFTWEAVE_API/v1/commands" > /dev/null && exit 0
+            sleep 1
+          done
+          echo "the server did not start" >&2
+          exit 1
+
+      # npm 11.21.1: the npm that ships with Node 24 fails to resolve vitest's optional peers.
+      # Install scripts stay blocked, its default.
+      - name: Install
+        working-directory: frontend
+        run: npx --yes npm@11.21.1 ci --no-audit --no-fund
+
+      - name: Build
+        working-directory: frontend
+        run: npm run build
+
+      - name: Test against the server
+        working-directory: frontend
+        run: npm test
