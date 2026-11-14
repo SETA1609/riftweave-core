@@ -62,7 +62,7 @@ Not yet rows, **[A]** until M2-06:
 
 - **Parry.** Some weapons (rapiers, swords) and the *Duelist* perk let a defender block with the weapon skill instead of the block skill. A successful parry negates the hit.
 - **Two weapons.** An off-hand weapon can parry but not block. It either attacks (an attack, 3 AP) or is held to parry in a turn, not both.
-- **Unarmed.** The *Deflect Arrows* perk blocks missiles with `unarmored`. No unarmed melee block without a perk.
+- **Unarmed.** The *Deflect Arrows* perk blocks missiles with `unarmored`. No unarmed melee block without a perk. A natural weapon (a bite, a claw, a race's claws) is an unarmed attack: it rolls with `unarmed`, and the unarmed perks change its damage ([monsters.md](./monsters.md#natural-weapons)).
 - A defender who is stunned, incapacitated, paralyzed, petrified, or unconscious takes no reaction. **[A]** The conditions grant those flags ([modifier.md](../core/modifier.md)); the pipeline does not read them yet.
 
 ### Armor DR and resist

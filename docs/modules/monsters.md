@@ -326,6 +326,20 @@ not equipment: they cannot be bought, looted, or enchanted, and no loot table na
 A carried weapon rolls its own row's dice, sized by the weapon's own `size`, not the
 creature's [A]. [V 2026-11-12, `test_bestiary.py`]
 
+Every natural weapon is an unarmed attack (M3-16). The file names its skill once,
+`skill: core:skill/unarmed`, so a bite, a gore, and a slam roll to hit with `unarmed`, and a
+carried weapon rolls with its own row's `skill`. The unarmed perks apply to a natural weapon as to
+a fist: `unarmed_damage` adds to the damage, then `unarmed_strike_damage` multiplies it, rounded
+down, after the dice, the attribute modifier, and the growth bonus [A]. The table stays because the
+attacks differ in dice, damage type, and size; a perk per attack type would be the same table again.
+A creature whose row lists no attack and no damaging ability attacks with `core:natural_weapon/slam`
+on `str` [A].
+
+A race's natural weapon is the same row: a feature's `natural_weapon` names it,
+`core:natural_weapon/<key>` (`catman_claws` names `claw`), and its dice move by the actor's
+size on the same steps, so a medium catfolk and a medium jaguar both claw for 1d6 **(breaking)**.
+A player's size is its race's `size` [A]. No feature writes its own dice.
+
 ### Spell-like abilities
 
 An attack that is neither natural nor carried, such as a breath, a bolt, or an ooze's
