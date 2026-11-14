@@ -298,5 +298,125 @@
       "ap": 3,
       "conditions": []
     }
+  },
+  {
+    "name": "perk: Toughness at rank 2 adds 30 HP, emitted as add 15 x 2",
+    "function": "derived",
+    "actor": {
+      "attributes": {
+        "str": 6,
+        "per": 5,
+        "end": 6,
+        "int": 5,
+        "wil": 4,
+        "agi": 5,
+        "cha": 4,
+        "lck": 5
+      },
+      "level": 2,
+      "growth": {
+        "hp": 2,
+        "mp": 2,
+        "sp": 2
+      },
+      "skills": {
+        "red_magic": 50
+      }
+    },
+    "modifiers": [
+      {
+        "target": "hp",
+        "operation": "add",
+        "value": 30,
+        "source": "feature:toughness",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "hp": 103,
+      "mp": 46,
+      "sp": 46
+    }
+  },
+  {
+    "name": "gear: the attack reads the equipped shortsword's Blades, 17 from STR 6",
+    "function": "combat",
+    "attacker": {
+      "skill": 17,
+      "roll": 10,
+      "attributes": {
+        "str": 6,
+        "per": 5,
+        "end": 6,
+        "int": 5,
+        "wil": 4,
+        "agi": 5,
+        "cha": 4,
+        "lck": 5
+      }
+    },
+    "defender": {
+      "evasion_skill": 10,
+      "armor_dr": 0,
+      "hp": 20
+    },
+    "damage": {
+      "roll": 6,
+      "type": "slashing"
+    },
+    "modifiers": [],
+    "expect": {
+      "outcome": "hit",
+      "target": 17,
+      "margin": 7,
+      "damage": 6,
+      "hp": 14
+    }
+  },
+  {
+    "name": "gear: the iron breastplate's DR 7 (drBase 4 + iron 3) reaches the defender",
+    "function": "combat",
+    "attacker": {
+      "skill": 50,
+      "roll": 30,
+      "attributes": {
+        "lck": 1
+      }
+    },
+    "defender": {
+      "evasion_skill": 15,
+      "armor_dr": 7,
+      "hp": 73,
+      "attributes": {
+        "str": 6,
+        "per": 5,
+        "end": 6,
+        "int": 5,
+        "wil": 4,
+        "agi": 5,
+        "cha": 4,
+        "lck": 5
+      },
+      "modifiers": [
+        {
+          "target": "hp",
+          "operation": "add",
+          "value": 30,
+          "source": "feature:toughness",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "damage": {
+      "roll": 10,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "target": 50,
+      "margin": 20,
+      "damage": 3,
+      "hp": 70
+    }
   }
 ]

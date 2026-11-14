@@ -24,7 +24,7 @@ class TestPlaythrough(unittest.TestCase):
 
     def test_the_chain_runs_every_stage_in_order(self):
         stages = [step["name"].split(":", 1)[0] for step in self.steps]
-        order = ["create", "buy", "fight", "loot", "rest", "level", "cast", "condition", "recover"]
+        order = ["create", "buy", "fight", "loot", "rest", "level", "cast", "condition", "recover", "perk", "gear"]
         self.assertEqual(list(dict.fromkeys(stages)), order)
 
     def test_the_second_blow_starts_where_the_first_left_the_zombie(self):

@@ -36,6 +36,17 @@ func startingActor() map[string]any {
 	}
 }
 
+// equippedActor is the starting actor with a shortsword and an iron breastplate worn (APP-13).
+func equippedActor() map[string]any {
+	actor := startingActor()
+	actor["inventory"] = []any{
+		map[string]any{"id": 1, "base": "core:weapon/shortsword", "quantity": 1, "added_effects": []any{}},
+		map[string]any{"id": 2, "base": "core:armor/breastplate", "material": "core:material/iron", "quantity": 1, "added_effects": []any{}},
+	}
+	actor["equipped"] = map[string]any{"main_hand": 1, "torso": 2}
+	return actor
+}
+
 func without(section map[string]any, fields ...string) {
 	for _, field := range fields {
 		delete(section, field)
@@ -46,7 +57,7 @@ func without(section map[string]any, fields ...string) {
 func runChain(t *testing.T, opened *Core) map[string]any {
 	t.Helper()
 	vectors := readJSON(t, filepath.Join(repo, "ruleset", "tests", "vectors", "playthrough.json")).([]any)
-	var session any = sessionCall(t, opened, map[string]any{"operation": "start", "start": startingActor()})["session"]
+	var session any = sessionCall(t, opened, map[string]any{"operation": "start", "start": equippedActor()})["session"]
 	for _, raw := range vectors {
 		var vector map[string]any = raw.(map[string]any)
 		name := vector["name"].(string)
@@ -73,6 +84,19 @@ func runChain(t *testing.T, opened *Core) map[string]any {
 			without(input, "actor")
 		case strings.HasPrefix(name, "cast"):
 			without(input["caster"].(map[string]any), "mana", "attributes", "skills")
+		case strings.HasPrefix(name, "perk"):
+			// Toughness to rank 2 through the session, then derived fills the actor and its modifiers.
+			for range 2 {
+				session = sessionCall(t, opened, map[string]any{"operation": "step", "session": session,
+					"step": map[string]any{"command": "progression", "input": map[string]any{"operation": "take_perk", "perk": "toughness"}}})["session"]
+			}
+			without(input, "actor", "modifiers")
+		case strings.HasPrefix(name, "gear: the attack"):
+			without(input["attacker"].(map[string]any), "skill", "attributes")
+			without(input, "modifiers")
+		case strings.HasPrefix(name, "gear: the iron"):
+			step["as"] = "defender"
+			without(input["defender"].(map[string]any), "armor_dr", "attributes", "modifiers")
 		}
 		answer := sessionCall(t, opened, map[string]any{"operation": "step", "session": session, "step": step})
 		session = answer["session"]
@@ -93,13 +117,13 @@ func TestTheChainMatchesItsVectors(t *testing.T) {
 		t.Errorf("level %v, xp %v", actor["level"], actor["xp"])
 	}
 	var resources map[string]any = actor["resources"].(map[string]any)
-	if resources["hp"] != float64(73) || resources["mp"] != float64(46) {
+	if resources["hp"] != float64(70) || resources["mp"] != float64(46) {
 		t.Errorf("resources %v", resources)
 	}
 	if len(actor["conditions"].([]any)) != 0 {
 		t.Errorf("the long rest should clear blinded: %v", actor["conditions"])
 	}
-	if len(session["log"].([]any)) != 12 {
+	if len(session["log"].([]any)) != 17 {
 		t.Errorf("log has %d entries", len(session["log"].([]any)))
 	}
 }
