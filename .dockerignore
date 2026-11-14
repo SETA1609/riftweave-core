@@ -44,3 +44,8 @@ cache/
 **/.venv
 **/.pytest_cache
 **/.ruff_cache
+
+# Frontend installs and build output; the app image installs and builds its own.
+**/node_modules
+frontend/.angular
+frontend/dist
