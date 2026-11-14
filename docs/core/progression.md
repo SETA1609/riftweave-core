@@ -18,6 +18,7 @@ The numbers that turn experience into levels, skill points, and perks. They live
 | `skill_cost` | normal 2, tag 1 | points for +1 rating |
 | `skill_start` | `5 + attribute * 2` | a skill's value before any point is spent on it |
 | `skill_group_cost` | `members_per_step` 2 | a group point's price on a grouped sheet (below) |
+| `monster_skill_growth` | `per_level` 17, `categories` combat, magic | what a monster's unwritten fighting skills gain per level ([actor-sheet.md](actor-sheet.md)) |
 
 `450` is the normal-difficulty constant. A campaign tunes it by overriding the row, not by changing the formula. [A]
 
