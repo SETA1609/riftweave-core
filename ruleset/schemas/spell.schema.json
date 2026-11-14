@@ -7,7 +7,7 @@
     "$schema": { "type": "string" },
     "spells": {
       "type": "array",
-      "items": { "$ref": "#/definitions/spell" }
+      "items": { "oneOf": [ { "$ref": "#/definitions/spell" }, { "$ref": "#/definitions/spellWithBase" } ] }
     }
   },
   "required": ["spells"],
@@ -44,6 +44,38 @@
         "custom": { "type": "boolean", "description": "True for player-made (spellmaking) spells; false or omitted for authored content" }
       },
       "required": ["key", "label", "description", "color", "level", "effects"],
+      "additionalProperties": false
+    },
+    "spellWithBase": {
+      "description": "A spell written as another spell plus what differs (docs/core/composition.md#a-spell-built-on-a-spell). It is resolved to a flat spell before validation, so this is the shape a file holds, not the one a reader sees.",
+      "type": "object",
+      "properties": {
+        "key": { "$ref": "#/definitions/spell/properties/key" },
+        "label": { "$ref": "#/definitions/spell/properties/label" },
+        "description": { "$ref": "#/definitions/spell/properties/description" },
+        "source": { "$ref": "#/definitions/spell/properties/source" },
+        "base": { "$ref": "schema.json#/definitions/spellRef", "description": "The spell this one builds on; it may not itself name a base." },
+        "overrides": {
+          "type": "object",
+          "description": "The fields that differ from the base spell; an object field merges per field.",
+          "properties": {
+            "label": { "$ref": "#/definitions/spell/properties/label" },
+            "description": { "$ref": "#/definitions/spell/properties/description" },
+            "color": { "$ref": "#/definitions/spell/properties/color" },
+            "level": { "$ref": "#/definitions/spell/properties/level" },
+            "delivery": { "$ref": "#/definitions/spell/properties/delivery" },
+            "save": { "$ref": "#/definitions/spell/properties/save" },
+            "concentration": { "$ref": "#/definitions/spell/properties/concentration" },
+            "effects": { "$ref": "#/definitions/spell/properties/effects" },
+            "cost": { "$ref": "#/definitions/spell/properties/cost" },
+            "cooldown": { "$ref": "#/definitions/spell/properties/cooldown" },
+            "template": { "$ref": "#/definitions/spell/properties/template" },
+            "custom": { "$ref": "#/definitions/spell/properties/custom" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": ["key", "label", "description", "base", "overrides"],
       "additionalProperties": false
     }
   }
