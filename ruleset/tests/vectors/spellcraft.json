@@ -100,7 +100,7 @@
     "caster": { "known": ["core:effect/damage_fire"], "skills": { "red_magic": 50 }, "attributes": { "lck": 5 } },
     "effect": "core:effect/damage_frost",
     "roll": 20,
-    "expect": { "outcome": "learned", "reason": null, "known": ["core:effect/damage_fire", "core:effect/damage_frost"], "days": 7, "cost": { "quantity": 50, "unit": "gp" } }
+    "expect": { "outcome": "learned", "reason": null, "known": ["core:effect/damage_fire", "core:effect/damage_frost"], "days": 7, "cost": { "quantity": 50, "unit": "gold" } }
   },
   {
     "name": "research_on_a_failed_check_spends_the_time_and_teaches_nothing",
@@ -108,7 +108,7 @@
     "caster": { "known": [], "skills": { "red_magic": 50 }, "attributes": { "lck": 5 } },
     "effect": "core:effect/damage_frost",
     "roll": 80,
-    "expect": { "outcome": "failed", "reason": null, "known": [], "days": 7, "cost": { "quantity": 50, "unit": "gp" } }
+    "expect": { "outcome": "failed", "reason": null, "known": [], "days": 7, "cost": { "quantity": 50, "unit": "gold" } }
   },
   {
     "name": "research_reads_the_modifiers_on_the_skill",

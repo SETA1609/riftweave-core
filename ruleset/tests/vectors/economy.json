@@ -4,7 +4,7 @@
     "operation": "convert",
     "cost": {
       "quantity": 3,
-      "unit": "sp"
+      "unit": "silver"
     },
     "expect": {
       "cp": 30
@@ -15,7 +15,7 @@
     "operation": "convert",
     "cost": {
       "quantity": 2,
-      "unit": "gp"
+      "unit": "gold"
     },
     "expect": {
       "cp": 200
@@ -26,7 +26,7 @@
     "operation": "convert",
     "cost": {
       "quantity": 1,
-      "unit": "pp"
+      "unit": "platinum"
     },
     "expect": {
       "cp": 1000
@@ -39,7 +39,7 @@
     "merchant": "general_store",
     "item_cost": {
       "quantity": 2,
-      "unit": "gp"
+      "unit": "gold"
     },
     "expect": {
       "base_cp": 200,
@@ -55,7 +55,7 @@
     "merchant": "smithy",
     "item_cost": {
       "quantity": 2,
-      "unit": "gp"
+      "unit": "gold"
     },
     "expect": {
       "percent": 120,
@@ -69,7 +69,7 @@
     "merchant": "general_store",
     "item_cost": {
       "quantity": 2,
-      "unit": "gp"
+      "unit": "gold"
     },
     "value_percent": 200,
     "expect": {
@@ -83,7 +83,7 @@
     "merchant": "general_store",
     "item_cost": {
       "quantity": 15,
-      "unit": "gp"
+      "unit": "gold"
     },
     "value_percent": 200,
     "expect": {
@@ -98,7 +98,7 @@
     "merchant": "general_store",
     "item_cost": {
       "quantity": 2,
-      "unit": "gp"
+      "unit": "gold"
     },
     "barter": {
       "skill_value": 60,
@@ -117,7 +117,7 @@
     "merchant": "general_store",
     "item_cost": {
       "quantity": 2,
-      "unit": "gp"
+      "unit": "gold"
     },
     "barter": {
       "skill_value": 130,
@@ -136,7 +136,7 @@
     "merchant": "general_store",
     "item_cost": {
       "quantity": 2,
-      "unit": "gp"
+      "unit": "gold"
     },
     "barter": {
       "skill_value": 60,
@@ -155,7 +155,7 @@
     "merchant": "general_store",
     "item_cost": {
       "quantity": 2,
-      "unit": "gp"
+      "unit": "gold"
     },
     "barter": {
       "skill_value": 60,
@@ -174,7 +174,7 @@
     "merchant": "general_store",
     "item_cost": {
       "quantity": 2,
-      "unit": "gp"
+      "unit": "gold"
     },
     "expect": {
       "percent": 40,
@@ -188,7 +188,7 @@
     "merchant": "smithy",
     "item_cost": {
       "quantity": 2,
-      "unit": "gp"
+      "unit": "gold"
     },
     "expect": {
       "price_cp": 100
@@ -201,7 +201,7 @@
     "merchant": "general_store",
     "item_cost": {
       "quantity": 2,
-      "unit": "gp"
+      "unit": "gold"
     },
     "barter": {
       "skill_value": 60,
@@ -220,7 +220,7 @@
     "merchant": "general_store",
     "item_cost": {
       "quantity": 2,
-      "unit": "gp"
+      "unit": "gold"
     },
     "barter": {
       "skill_value": 60,
@@ -239,7 +239,7 @@
     "merchant": "general_store",
     "item_cost": {
       "quantity": 1,
-      "unit": "cp"
+      "unit": "copper"
     },
     "expect": {
       "price_cp": 0
