@@ -1,5 +1,5 @@
 #### APP-14 The core runs in the browser as WebAssembly
-- Status: doing
+- Status: review
 - Priority: medium
 - Needs: APP-07
 - Modified: 2026-11-15
