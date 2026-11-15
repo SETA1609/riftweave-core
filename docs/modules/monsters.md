@@ -1,5 +1,7 @@
 # Monsters — Base + Override System
 
+Modified: 2026-11-15
+
 ## Purpose
 
 Monsters in Riftweave use a **Base + Override** pattern to reduce duplication, enable easy variant creation, and remain architecturally ready for a future ECS/composition refactor.
@@ -41,7 +43,7 @@ Contains all required fields directly:
   "level": 6,
   "attributes": { "str": 7, "end": 6, "agi": 6, "per": 5, "wil": 4 },
   "hitPoints": 78,
-  "abilities": [ ... ],
+  "effects": [ ... ],
   "tags": ["dragon", "elemental"]
 }
 ```
@@ -62,7 +64,7 @@ References a base template and provides only the fields that differ:
     "level": 4,
     "attributes": { "str": 5, "end": 6, "agi": 4, "wil": 6 },
     "hitPoints": 52,
-    "abilities": [ { "effect": 2, "magnitude": 14, "target": "ranged" } ]
+    "effects": [ { "effect": 2, "magnitude": 14, "target": "ranged" } ]
   }
 }
 ```
@@ -80,14 +82,14 @@ The general order and merge rules are in [composition.md](../core/composition.md
 
 ### Array Merging: `$extend` Convention
 
-By default, override array fields (`abilities`, `tags`) **replace** the base array entirely.
+By default, override array fields (`effects`, `tags`) **replace** the base array entirely.
 To **append** to the base array instead, use the `$extend` wrapper:
 
 ```json
 {
   "base": "core:creature_type/elemental",
   "overrides": {
-    "abilities": {
+    "effects": {
       "$extend": [
         { "effect": 57, "magnitude": 4, "duration": 10, "target": "touch" }
       ]
@@ -304,7 +306,7 @@ A monster fights with the same numbers as a character ([core/combat.md](../core/
   names one; `damage.bonus` is what level growth adds. `delivery` (`single`, the default,
   `area`, or `instant`) and an optional `phase` stay as before. An attack has no `amount`.
   [V 2026-11-12, `test_bestiary.py`]
-- **`abilities`** — the effects it applies, from the shared pool. A damaging ability is a
+- **`effects`** — the effects it applies, from the shared pool. A damaging ability is a
   spell-like ability, below.
 - **`spells`** — spells it casts as a player does, `core:spell/<key>`.
 - **`resist`** — a flat number per damage type, the combat pipeline's `defender.resist`.
@@ -355,7 +357,7 @@ fails a `natural_weapon` ref that does not resolve. [V 2026-11-14, `test_bestiar
 ### Spell-like abilities
 
 An attack that is neither natural nor carried, such as a breath, a bolt, or an ooze's
-touch, is a spell-like ability: an entry in `abilities` whose effect deals damage. It pays as
+touch, is a spell-like ability: an entry in `effects` whose effect deals damage. It pays as
 a cast does: mana by the spell cost formula on its effect ([magic.md](./magic.md#cost-formula)),
 and at a table the `cast` action's AP. With too little mana it is not cast. A creature whose
 only attack is a spell-like ability, such as an ooze, pays the AP and no mana, so it never runs
@@ -390,7 +392,7 @@ balance gate checks each monster's strongest attack and its HP against its tier 
 
 - **Simple and flat** — no deep chains, no diamond problems, no multiple inheritance.
 - **Easy to read** — each entry is self-contained after merge; a tool can always produce the flat view.
-- **Future ECS ready** — the override fields map naturally to ECS component slots (`combat`, `abilities`, `traits`, `ai`). Each major section of the data could become a component later without restructuring.
+- **Future ECS ready** — the override fields map naturally to ECS component slots (`combat`, `effects`, `traits`, `ai`). Each major section of the data could become a component later without restructuring.
 
 ## Future ECS Path
 
@@ -402,7 +404,7 @@ The current data shape is intentionally compatible with a future composition sys
   "components": {
     "identity": { "key": "zombie", "label": "Zombie" },
     "combat": { "attack": 4, "defense": 2, "hitPoints": 30 },
-    "abilities": [ { "effect": 46, "magnitude": 4, "target": "touch" } ],
+    "effects": [ { "effect": 46, "magnitude": 4, "target": "touch" } ],
     "traits": ["undead", "mindless"],
     "ai": { "behavior": "melee_charge" }
   }

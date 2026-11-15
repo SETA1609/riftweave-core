@@ -1,5 +1,7 @@
 # Attributes
 
+Modified: 2026-11-15
+
 **Status:** Core (implemented as data + schema)
 
 The eight attributes are the foundation a character is built on: every skill is
@@ -112,7 +114,7 @@ Ten is the cap on a player's attributes at character creation; racial and perk b
 
 ### Endurance (END)
 - **Governs:** hit points, fatigue, resistance to poison and disease.
-- **Seeds skills:** `block`, `medium_armor`, `farming`.
+- **Seeds skills:** `shields`, `medium_armor`, `farming`.
 - **Feeds:** **Hit points** `15 + END × 8 + level × 4`; **Stamina** pool
   `10 + END × 5 + level × 2`. END is the single biggest lever on survivability.
 
@@ -229,7 +231,7 @@ Reduces incoming hostile magic (damage, duration, success chance).
 ### Damage Resistance (Physical & Elemental)
 Reduces incoming damage after a hit is confirmed.
 
-- **Physical DR**: Primarily from armor (base rating + material modifiers + quality/enchants). Flat subtraction or % reduction. Block skill can add temporary DR.
+- **Physical DR**: Primarily from armor (base rating + material modifiers + quality/enchants). Flat subtraction or % reduction. The `shields` skill can add temporary DR.
   - Example: Armor provides "damage-reduction rating". Heavy armor high flat DR but speed/stealth penalties.
 - **Elemental / Phased DR**: Per Wuxing phase (wood/fire/earth/metal/water). Governed by race phase, equipment materials (phase-tagged), effects, and perks.
   - Leverages the wuxing matrix for interactions (e.g. generating cycle amplifies resistance or weakness).
@@ -243,7 +245,7 @@ Reduces incoming damage after a hit is confirmed.
 These fit the existing design (attributes + effects + Wuxing + dual combat modes + classless perks) and close gaps:
 
 - **Evasion / Dodge**: AGI-based chance or bonus to avoid being hit entirely (before armor DR). Complements Block. "Dodge vs block vs armor" is noted as a follow-up in progression.
-- **Block Value / Power**: How much damage a successful Block negates (END or block skill + shield material). Already referenced in perks (e.g. +15% damage blocked).
+- **Block Value / Power**: How much damage a successful Block negates (END or the `shields` skill + shield material). Already referenced in perks (e.g. +15% damage blocked).
 - **Critical Damage Multiplier**: LCK for chance; add multiplier (e.g. 1.5× + LCK/10 or weapon-based). Currently only chance is defined.
 - **Regeneration Rates** (formal): 
   - Mana/Stamina: "scales with WIL" – e.g. WIL × 2 per turn/round or per 6 seconds.
