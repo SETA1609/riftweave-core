@@ -198,7 +198,7 @@ def _scroll_price(bands, _weapons, _armor, _monsters, consumables, spells):
     import kernel_reference
 
     economy = _json("economy/core.json")
-    gold = kernel_reference.to_copper(economy, {"quantity": 1, "unit": "gp"})
+    gold = kernel_reference.to_copper(economy, {"quantity": 1, "unit": "gold"})
     by_ref = {f"core:spell/{s['key']}": s for s in spells}
     for row in consumables:
         spell = by_ref.get(row.get("consumable", {}).get("spell"))

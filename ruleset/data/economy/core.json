@@ -1,25 +1,25 @@
 {
   "$schema": "../../schemas/economy.schema.json",
   "currency": {
-    "base": "cp",
+    "base": "copper",
     "denominations": [
       {
-        "unit": "cp",
+        "unit": "copper",
         "label": "Copper piece",
         "value": 1
       },
       {
-        "unit": "sp",
+        "unit": "silver",
         "label": "Silver piece",
         "value": 10
       },
       {
-        "unit": "gp",
+        "unit": "gold",
         "label": "Gold piece",
         "value": 100
       },
       {
-        "unit": "pp",
+        "unit": "platinum",
         "label": "Platinum piece",
         "value": 1000
       }

@@ -11,6 +11,7 @@
     {"key": "allergic_to_silver", "label": "Allergic to Silver", "kind": "flag", "description": "Items made of silver give the actor none of their bonuses.", "pending": true},
     {"key": "armor_cast_penalty", "label": "Armor Cast Penalty", "kind": "number", "description": "Multiplier on armor cast penalty: 1.25 is 25% more, 0.5 is half.", "pending": true},
     {"key": "armor_dr", "label": "Armor DR", "kind": "number", "description": "Multiplier on the actor's armor DR: 1.25 is 25% more, 0.5 is half.", "pending": true},
+    {"key": "attack_roll", "label": "Attack Roll", "kind": "number", "description": "Points on the attack roll's target: cover, flanking, a called shot. Not the attack action's AP cost, which is the attack row of actions (M5-37)."},
     {"key": "attack_single_opponent", "label": "Attack, Lone Foe", "kind": "number", "description": "Points on the attack target while only one foe engages the actor.", "pending": true},
     {"key": "attack_with_ally_engaged", "label": "Attack, Ally Engaged", "kind": "number", "description": "Points on the attack target against a foe an ally also engages.", "pending": true},
     {"key": "aura_ally_attack", "label": "Ally Attack Aura", "kind": "number", "description": "Points on the attack target of allies who can see the actor.", "pending": true},

@@ -8,7 +8,7 @@
       "type": "potion",
       "cost": {
         "quantity": 25,
-        "unit": "gp"
+        "unit": "gold"
       },
       "weight": 0.5,
       "consumable": {
@@ -30,7 +30,7 @@
       "type": "potion",
       "cost": {
         "quantity": 120,
-        "unit": "gp"
+        "unit": "gold"
       },
       "weight": 0.5,
       "consumable": {
@@ -51,7 +51,7 @@
       "type": "potion",
       "cost": {
         "quantity": 60,
-        "unit": "gp"
+        "unit": "gold"
       },
       "weight": 0.5,
       "consumable": {
@@ -74,7 +74,7 @@
       "type": "poison",
       "cost": {
         "quantity": 40,
-        "unit": "gp"
+        "unit": "gold"
       },
       "weight": 0.1,
       "consumable": {
@@ -100,7 +100,7 @@
       "type": "coating",
       "cost": {
         "quantity": 35,
-        "unit": "gp"
+        "unit": "gold"
       },
       "weight": 0.1,
       "consumable": {
@@ -121,7 +121,7 @@
       "type": "oil",
       "cost": {
         "quantity": 90,
-        "unit": "gp"
+        "unit": "gold"
       },
       "weight": 0.1,
       "consumable": {
@@ -142,7 +142,7 @@
       "type": "food",
       "cost": {
         "quantity": 5,
-        "unit": "gp"
+        "unit": "gold"
       },
       "weight": 1,
       "consumable": {
@@ -164,7 +164,7 @@
       "type": "potion",
       "cost": {
         "quantity": 75,
-        "unit": "gp"
+        "unit": "gold"
       },
       "weight": 0.5,
       "consumable": {
@@ -186,7 +186,7 @@
       "type": "potion",
       "cost": {
         "quantity": 200,
-        "unit": "gp"
+        "unit": "gold"
       },
       "weight": 0.5,
       "consumable": {
@@ -208,7 +208,7 @@
       "type": "potion",
       "cost": {
         "quantity": 40,
-        "unit": "gp"
+        "unit": "gold"
       },
       "weight": 0.5,
       "consumable": {
@@ -230,7 +230,7 @@
       "type": "potion",
       "cost": {
         "quantity": 20,
-        "unit": "gp"
+        "unit": "gold"
       },
       "weight": 0.5,
       "consumable": {
@@ -252,7 +252,7 @@
       "type": "potion",
       "cost": {
         "quantity": 15,
-        "unit": "gp"
+        "unit": "gold"
       },
       "weight": 0.5,
       "consumable": {
@@ -273,7 +273,7 @@
       "type": "potion",
       "cost": {
         "quantity": 40,
-        "unit": "gp"
+        "unit": "gold"
       },
       "weight": 0.5,
       "consumable": {
@@ -294,7 +294,7 @@
       "type": "potion",
       "cost": {
         "quantity": 50,
-        "unit": "gp"
+        "unit": "gold"
       },
       "weight": 0.5,
       "consumable": {
@@ -317,7 +317,7 @@
       "type": "potion",
       "cost": {
         "quantity": 35,
-        "unit": "gp"
+        "unit": "gold"
       },
       "weight": 0.5,
       "consumable": {
@@ -339,7 +339,7 @@
       "type": "potion",
       "cost": {
         "quantity": 90,
-        "unit": "gp"
+        "unit": "gold"
       },
       "weight": 0.5,
       "consumable": {
@@ -361,7 +361,7 @@
       "type": "potion",
       "cost": {
         "quantity": 60,
-        "unit": "gp"
+        "unit": "gold"
       },
       "weight": 0.5,
       "consumable": {
@@ -384,7 +384,7 @@
       "type": "potion",
       "cost": {
         "quantity": 50,
-        "unit": "gp"
+        "unit": "gold"
       },
       "weight": 0.5,
       "consumable": {
@@ -407,7 +407,7 @@
       "type": "poison",
       "cost": {
         "quantity": 60,
-        "unit": "gp"
+        "unit": "gold"
       },
       "weight": 0.1,
       "consumable": {
@@ -428,7 +428,7 @@
       "type": "coating",
       "cost": {
         "quantity": 30,
-        "unit": "gp"
+        "unit": "gold"
       },
       "weight": 0.1,
       "consumable": {
@@ -449,7 +449,7 @@
       "type": "food",
       "cost": {
         "quantity": 5,
-        "unit": "sp"
+        "unit": "silver"
       },
       "weight": 2,
       "consumable": {
@@ -471,7 +471,7 @@
       "type": "food",
       "cost": {
         "quantity": 2,
-        "unit": "sp"
+        "unit": "silver"
       },
       "weight": 1,
       "consumable": {
@@ -493,7 +493,7 @@
       "type": "scroll",
       "cost": {
         "quantity": 40,
-        "unit": "gp"
+        "unit": "gold"
       },
       "weight": 0.1,
       "consumable": {
@@ -508,7 +508,7 @@
       "type": "food",
       "cost": {
         "quantity": 1,
-        "unit": "sp"
+        "unit": "silver"
       },
       "weight": 0.5,
       "consumable": {
