@@ -54,4 +54,4 @@ fi
 
 proxy="$root/cache/app/proxy.conf.json"
 printf '{ "/v1": { "target": "http://127.0.0.1:%s" }, "/openapi.json": { "target": "http://127.0.0.1:%s" } }\n' "$api_port" "$api_port" > "$proxy"
-npx ng serve --port "$port" --proxy-config "$proxy"
+npx ng serve --configuration api --port "$port" --proxy-config "$proxy"

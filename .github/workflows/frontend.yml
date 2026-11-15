@@ -1,7 +1,8 @@
 name: Frontend
 
 # The Angular frontend (APP-07, docs/backend/frontend.md): build it, and run its specs against a
-# real riftweave-server, so an attack resolved through the API must match its vector.
+# real riftweave-server and against the core built to WebAssembly (APP-14), so an attack resolved
+# through either must match its vector.
 on:
   push:
     paths:
@@ -38,6 +39,11 @@ jobs:
         uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
         with:
           node-version: "24.22.1"
+
+      # The core built to WebAssembly (APP-14), for the specs and the end-to-end tests that run it
+      # in the page.
+      - name: Build the WebAssembly core
+        run: ./scripts/build-wasm.sh
 
       - name: Start the API server
         working-directory: backend
