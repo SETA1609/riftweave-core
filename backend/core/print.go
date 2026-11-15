@@ -2,6 +2,7 @@ package core
 
 import (
 	"bytes"
+	_ "embed"
 	"encoding/json"
 	"fmt"
 	"html"
@@ -278,23 +279,9 @@ func printCondition(ruleset *data.Ruleset, key string) (string, []pageSection, e
 	return condition.Label, []pageSection{{Heading: condition.Description, Rows: rows}, {Heading: "Modifiers", Notes: modifiers}}, nil
 }
 
-var pageTemplate = template.Must(template.New("page").Parse(`<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>{{.Title}}</title>
-<style>
-@page { size: A4; margin: 15mm; }
-body { font: 11pt/1.4 system-ui, sans-serif; color: #212529; margin: 0 auto; max-width: 180mm; }
-h1 { font-size: 16pt; margin: 0 0 4mm; border-bottom: 2px solid #212529; }
-h2 { font-size: 11pt; margin: 5mm 0 1mm; }
-table { border-collapse: collapse; width: 100%; }
-td, th { border-bottom: 1px solid #dee2e6; padding: 1mm 2mm; text-align: left; }
-td.number { text-align: right; font-weight: 600; width: 25mm; }
-ul { margin: 0; padding-left: 5mm; }
-section { break-inside: avoid; }
-</style></head>
-<body><h1>{{.Title}}</h1>
-{{range .Sections}}<section><h2>{{.Heading}}</h2>
-{{if .Rows}}<table>{{range .Rows}}<tr><th>{{.Label}}</th>{{if .Attribute}}<td class="number" {{.Data}}>{{.Value}}</td>{{else}}<td>{{.Value}}</td>{{end}}</tr>{{end}}</table>{{end}}
-{{if .Notes}}<ul>{{range .Notes}}<li>{{.}}</li>{{end}}</ul>{{end}}
-</section>
-{{end}}</body></html>
-`))
+// pageTemplate is templates/print.html, compiled into the binary.
+//
+//go:embed templates/print.html
+var pageSource string
+
+var pageTemplate = template.Must(template.New("print.html").Parse(pageSource))
