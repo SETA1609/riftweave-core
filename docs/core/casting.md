@@ -1,6 +1,7 @@
 # Casting
 
 Author: SETA1609
+Modified: 2026-11-15
 
 One cast is one call of the [resolution function](resolution.md) on the spell's `<color>_magic` skill, wrapped in what the cast spends and what it holds. The coefficients are in `ruleset/data/casting/core.json` (`casting.schema.json`), the spells in `ruleset/data/spells/core.json`, the vectors in `ruleset/tests/vectors/casting.json`. Morrowind resolves a spell as one check and then applies its effect list; this does the same. [V 2026-11-06]
 
@@ -53,6 +54,36 @@ full        margin >= full_margin, or the save is a crit: no effects land
 ```
 
 The cast must succeed first; a failed cast rolls no save. The `target` input carries the defender's `attributes`, `skills`, and `roll`. An instant spell cast with no `target` returns its effects as authored and a null `save`, so a consumer can roll the save itself. Any other delivery ignores `target`. A crafted spell carries no save ([magic.md](../modules/magic.md)). [V 2026-11-11, `casting` vectors] The values are in `casting/core.json` under `save`. [A]
+
+## Damage to a target
+
+A cast that lands its damage on a creature runs the combat pipeline's steps after the attack
+roll ([combat.md](combat.md#order)), so a fire bolt and a sword cut lose HP the same way. It
+happens only when `target` carries `hp`; without it the effects come back as authored, for a
+consumer that applies them itself.
+
+```
+packet    each effect core:effect/damage_<type> whose <type> is a damage type
+          (combat/damage_types.json): amount = its magnitude, after the save for an instant spell
+attack    the cast check stands in for the attack roll: the same target, roll, and LCK, so the
+          same margin, crit, and fumble (a failed cast deals nothing)
+steps     combat.md 2 to 8 on target: the reaction its delivery allows (single and area: evade
+          or block; instant: none), crit, area evade, block, armor DR where the type takes it,
+          resist, then hp
+order     the packets in the spell's order; each reads the hp the last one left
+result    damage: per packet { effect, type, amount, damage, evaded, blocked }; hp after all
+```
+
+- No spell damage type takes armor DR today: every one is tagged `bypasses_armor` or
+  `bypasses_physical_armor`, so worn armor never reduces spell damage, as in combat. [V
+  2026-11-15, `damage_types.json`]
+- A crit cast doubles its damage, the combat crit, since an offensive spell is an attack
+  ([combat.md](combat.md)). [A]
+- An effect with a `duration` over one second is damage over time and is not applied by the
+  cast; no damaging spell has one. [A]
+- Orange, green, and violet have no damaging spell. That is intended: orange's attack is its
+  summons, green heals and grows, and violet charms and deceives, so a caster of only those
+  colors fights through creatures, allies, or control. [A]
 
 ## The world target
 

@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/SETA1609/riftweave-core/backend/internal/actor"
+	"github.com/SETA1609/riftweave-core/backend/internal/combat"
 	"github.com/SETA1609/riftweave-core/backend/internal/data"
 	"github.com/SETA1609/riftweave-core/backend/internal/modifier"
 	"github.com/SETA1609/riftweave-core/backend/internal/resolution"
@@ -33,12 +34,33 @@ type Caster struct {
 // summonEffect calls creatures: its parameter is the group, its magnitude how many.
 const summonEffect = "core:effect/summon"
 
-// Target is the defender of an instant spell.
+// Target is the defender: its save against an instant spell, and, when it has hp, what the
+// cast's damage does to it through combat steps 2 to 8 (docs/core/casting.md#damage-to-a-target).
 type Target struct {
-	Attributes actor.Attributes `json:"attributes"`
-	Skills     map[string]int64 `json:"skills"`
-	Roll       int64            `json:"roll"`
+	Attributes           actor.Attributes    `json:"attributes"`
+	Skills               map[string]int64    `json:"skills"`
+	Roll                 *int64              `json:"roll"` // the save roll
+	HitPoints            *int64              `json:"hp"`
+	ArmorDamageReduction int64               `json:"armor_dr"`
+	Resist               map[string]int64    `json:"resist"`
+	EvasionSkill         *int64              `json:"evasion_skill"`
+	Reaction             *combat.Reaction    `json:"reaction"`
+	Flags                []string            `json:"flags"`
+	Modifiers            []modifier.Modifier `json:"modifiers"`
 }
+
+// Packet is one damage effect of a cast and what the combat steps did with it.
+type Packet struct {
+	Effect  string `json:"effect"`
+	Type    string `json:"type"`
+	Amount  int64  `json:"amount"` // the packet before the steps
+	Damage  int64  `json:"damage"` // HP lost
+	Evaded  bool   `json:"evaded"`
+	Blocked bool   `json:"blocked"`
+}
+
+// damagePrefix names a damage effect: core:effect/damage_<damage type>.
+const damagePrefix = "core:effect/damage_"
 
 // Save is the defender's roll against an instant spell, and what it decided.
 type Save struct {
@@ -69,6 +91,8 @@ type Result struct {
 	Summons       []string           `json:"summons"`
 	Dismissed     []string           `json:"dismissed"`
 	Mana          int64              `json:"mana"`
+	Damage        []Packet           `json:"damage"`
+	HitPoints     *int64             `json:"hp"` // the target's after every packet; nil without a target hp
 }
 
 // rollSave rolls the defender's save and leaves in result the effects that land.
@@ -84,7 +108,7 @@ func rollSave(ruleset *data.Ruleset, spell *data.Spell, target *Target, result *
 		}
 		value = target.Attributes.Get(ability) * rules.AttributeMultiplier
 	}
-	var check resolution.Result = resolution.Check(&ruleset.Resolution, value, target.Attributes.Get(actor.Luck), 0, target.Roll)
+	var check resolution.Result = resolution.Check(&ruleset.Resolution, value, target.Attributes.Get(actor.Luck), 0, *target.Roll)
 	var save Save = Save{Result: check, Outcome: "failed"}
 	result.Save = &save
 	if !check.Success {
@@ -135,6 +159,9 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	if !ok {
 		return Result{}, &data.MissingInputError{Subject: "casting " + spell.Key, Needs: skill}
 	}
+	if spell.Delivery == "instant" && input.Target != nil && input.Target.Roll == nil {
+		return Result{}, &data.MissingInputError{Subject: "an instant spell's save", Needs: "the target's roll"}
+	}
 
 	var result Result = Result{
 		Mana:          caster.Mana,
@@ -144,6 +171,11 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		Dispelled:     []string{},
 		Summons:       append([]string{}, caster.Summons...),
 		Dismissed:     []string{},
+		Damage:        []Packet{},
+	}
+	if input.Target != nil && input.Target.HitPoints != nil {
+		var hp int64 = *input.Target.HitPoints
+		result.HitPoints = &hp
 	}
 	for _, flag := range caster.Flags {
 		if slices.Contains(ruleset.Casting.PreventedBy, flag) {
@@ -187,6 +219,11 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	}
 	if spell.Delivery == "instant" && input.Target != nil {
 		if err := rollSave(ruleset, spell, input.Target, &result); err != nil {
+			return Result{}, err
+		}
+	}
+	if input.Target != nil && input.Target.HitPoints != nil {
+		if err := applyDamage(ruleset, spell, &input, &check, &result); err != nil {
 			return Result{}, err
 		}
 	}
@@ -270,4 +307,53 @@ func castCheck(ruleset *data.Ruleset, input *Input, skill string, skillValue int
 	}
 	var luck int64 = input.Caster.Attributes.Get(actor.Luck)
 	return resolution.Check(&ruleset.Resolution, skillValue, luck, bonus, input.Roll), nil
+}
+
+// applyDamage runs each damage packet through combat steps 2 to 8, the cast check standing in
+// for the attack roll: the same target, roll, and LCK give the same margin and crit.
+func applyDamage(ruleset *data.Ruleset, spell *data.Spell, input *Input, check *resolution.Result, result *Result) error {
+	var target *Target = input.Target
+	var delivery string = spell.Delivery
+	if delivery == "" {
+		delivery = "single"
+	}
+	for _, encoded := range result.Effects {
+		var effect struct {
+			Effect    string   `json:"effect"`
+			Magnitude float64  `json:"magnitude"`
+			Duration  *float64 `json:"duration"`
+		}
+		if err := json.Unmarshal(encoded, &effect); err != nil {
+			return err
+		}
+		if !strings.HasPrefix(effect.Effect, damagePrefix) || (effect.Duration != nil && *effect.Duration > 1) {
+			continue
+		}
+		var kind string = strings.TrimPrefix(effect.Effect, damagePrefix)
+		if _, isType := ruleset.DamageTypes.Get(kind); !isType {
+			continue
+		}
+		var amount int64 = int64(effect.Magnitude)
+		hit, err := combat.Run(ruleset, combat.Input{
+			Attacker: combat.Attacker{Skill: check.Target, Roll: input.Roll, Attributes: input.Caster.Attributes},
+			Defender: combat.Defender{
+				EvasionSkill:         target.EvasionSkill,
+				Attributes:           target.Attributes,
+				ArmorDamageReduction: target.ArmorDamageReduction,
+				HitPoints:            *result.HitPoints,
+				Resist:               target.Resist,
+				Reaction:             target.Reaction,
+				Flags:                target.Flags,
+				Modifiers:            target.Modifiers,
+			},
+			Damage:   combat.Damage{Roll: amount, Type: kind},
+			Delivery: delivery,
+		})
+		if err != nil {
+			return err
+		}
+		*result.HitPoints = hit.HitPoints
+		result.Damage = append(result.Damage, Packet{Effect: effect.Effect, Type: kind, Amount: amount, Damage: hit.Damage, Evaded: hit.Evaded, Blocked: hit.Blocked})
+	}
+	return nil
 }
