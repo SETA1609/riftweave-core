@@ -1,8 +1,14 @@
 # Data model
 
+Modified: 2026-11-15
+
 What shape Riftweave's information has. For what a data model is, the common types, and why
 this one was chosen, see [the theory page](../theory/data-models.md). This page links to the
 document that owns each rule and does not repeat it.
+
+The collections and the references between them are drawn, from the schemas, in
+[data-model-diagram.md](data-model-diagram.md) (Mermaid ER diagrams; regenerate with
+`python ruleset/scripts/data_model_diagram.py --write`).
 
 ## The type
 
