@@ -1,6 +1,7 @@
-// End-to-end specs (docs/backend/frontend.md#tests): Chromium on `ng serve` and its proxy, with a
-// real riftweave-server behind it. Each server is started unless one already answers, so CI and
-// ./scripts/app.sh reuse theirs.
+// End-to-end specs (docs/backend/frontend.md#tests), twice: Chromium on `ng serve` and its proxy
+// with a real riftweave-server behind it (chromium), and on a build with no API, where the core
+// runs in the page as WebAssembly (chromium-wasm, after ./scripts/build-wasm.sh). Each server is
+// started unless one already answers, so CI and ./scripts/app.sh reuse theirs.
 import { defineConfig, devices } from '@playwright/test';
 
 const ci = Boolean(process.env['CI']);
@@ -11,7 +12,10 @@ export default defineConfig({
   retries: ci ? 1 : 0,
   reporter: ci ? [['list'], ['html', { open: 'never' }]] : 'list',
   use: { baseURL: 'http://localhost:4200', trace: 'retain-on-failure' },
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+  projects: [
+    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    { name: 'chromium-wasm', use: { ...devices['Desktop Chrome'], baseURL: 'http://localhost:4300' } },
+  ],
   webServer: [
     {
       command: 'go run ./cmd/riftweave-server --data ../ruleset/data --addr 127.0.0.1:8080',
@@ -21,5 +25,6 @@ export default defineConfig({
       timeout: 180_000,
     },
     { command: 'npm start -- --port 4200', url: 'http://localhost:4200', reuseExistingServer: true, timeout: 180_000 },
+    { command: 'npm run start:wasm -- --port 4300', url: 'http://localhost:4300', reuseExistingServer: true, timeout: 180_000 },
   ],
 });
