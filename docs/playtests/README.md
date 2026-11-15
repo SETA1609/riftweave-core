@@ -1,5 +1,7 @@
 # Playtests
 
+Modified: 2026-11-15
+
 ## M5-18 agent runs (2026-11-12)
 
 The alpha playtest asks for a person to play through the human CLI. These runs are the agent
@@ -47,7 +49,7 @@ casts its strongest affordable damage spell and falls back to its weapon.
 | Finding | Filed as |
 | --- | --- |
 | A session cannot buy a skill rank, take a perk, or learn a spell; every run did all three through dev mode. | [APP-12](../issues/open/APP-12.md) |
-| A session never applies the actor's perks, held modifiers, race, or gear to a command, so no perk changed any result in these runs. | [APP-13](../issues/open/APP-13.md) |
+| A session never applies the actor's perks, held modifiers, race, or gear to a command, so no perk changed any result in these runs. | [APP-13](../issues/done/APP-13.md) |
 | Monsters attack and evade with their starting skill at every level and won no fight. | [M3-17](../issues/open/M3-17.md) |
 | No command applies a cast's damage to a target; the driver did it by hand. Orange, green, and violet have no damaging spell. | [M3-18](../issues/open/M3-18.md) |
 | Main skills reach 100 by level 5 to 8, and weapon damage does not grow while monster HP does. | [M5-50](../issues/open/M5-50.md) |
