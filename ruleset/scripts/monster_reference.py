@@ -105,7 +105,7 @@ def monster_attacks(monster):
     """A row's attacks; a row with none and no damaging ability slams."""
     if monster.get("attacks"):
         return monster["attacks"]
-    return [] if damaging_abilities(monster) else [dict(SLAM)]
+    return [] if damaging_effects(monster) else [dict(SLAM)]
 
 
 def feature_attack_dice(feature, size):
@@ -146,9 +146,9 @@ def attack_mean(monster, attack):
     return balance_report.dice_mean(attack_dice(monster, attack)) + attack_modifier(monster, attack) + bonus
 
 
-def damaging_abilities(monster):
-    """The spell-like abilities that deal damage: abilities whose effect is a damage_* effect."""
-    return [a for a in monster.get("abilities", []) or [] if a["effect"].rsplit("/", 1)[-1].startswith("damage_")]
+def damaging_effects(monster):
+    """The spell-like effects that deal damage: a monster's effects whose effect is a damage_* effect."""
+    return [a for a in monster.get("effects", []) or [] if a["effect"].rsplit("/", 1)[-1].startswith("damage_")]
 
 
 @lru_cache(maxsize=None)

@@ -36,7 +36,7 @@ def armor(key, category, slot, dr):
 
 
 def monster(key, level, hp, magnitude):
-    return {"key": key, "level": level, "hitPoints": hp, "abilities": [{"effect": "core:effect/damage_fire", "magnitude": magnitude}]}
+    return {"key": key, "level": level, "hitPoints": hp, "effects": [{"effect": "core:effect/damage_fire", "magnitude": magnitude}]}
 
 
 def subjects(findings, check):

@@ -20,7 +20,7 @@
       },
       "tag_skills": [
         "core:skill/blunt",
-        "core:skill/block",
+        "core:skill/shields",
         "core:skill/athletics"
       ],
       "creation_perks": [],
@@ -31,7 +31,7 @@
           "perk": null,
           "spend": {
             "blunt": 8,
-            "block": 6,
+            "shields": 6,
             "athletics": 5
           },
           "gear": [
@@ -48,7 +48,7 @@
           "perk": "core:feature/toughness",
           "spend": {
             "blunt": 10,
-            "block": 4,
+            "shields": 4,
             "athletics": 3
           }
         },
@@ -67,7 +67,7 @@
           "perk": "core:feature/pack_mule",
           "spend": {
             "blunt": 10,
-            "block": 8
+            "shields": 8
           },
           "gear": [
             "core:armor/helmet"
@@ -78,7 +78,7 @@
           "luck_roll": 5,
           "perk": "core:feature/lucky",
           "spend": {
-            "block": 10,
+            "shields": 10,
             "athletics": 10
           }
         },
@@ -96,7 +96,7 @@
           "perk": "core:feature/toughness",
           "spend": {
             "blunt": 12,
-            "block": 10
+            "shields": 10
           },
           "gear": [
             "core:armor/breastplate"
@@ -116,7 +116,7 @@
           "perk": "core:feature/shield_wall",
           "spend": {
             "blunt": 10,
-            "block": 9
+            "shields": 9
           }
         },
         {

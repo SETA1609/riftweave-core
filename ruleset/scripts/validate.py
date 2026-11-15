@@ -877,12 +877,12 @@ def check_references(
         for m in data.get("monsters", []):
             if not isinstance(m, dict):
                 continue
-            for a in m.get("abilities", []) or []:
+            for a in m.get("effects", []) or []:
                 if isinstance(a, dict):
                     eid = a.get("effect")
                     if isinstance(eid, int):
                         errors.append(
-                            f"ability effect {eid}: numeric refs not allowed (use core:effect/<key>)"
+                            f"monster effect {eid}: numeric refs not allowed (use core:effect/<key>)"
                         )
                     elif isinstance(eid, str) and not resolve_namespaced_ref(
                         eid, namespaced_ref_index
@@ -1257,14 +1257,14 @@ def _grow_damage(merged, step):
         attacks.append(attack)
     if attacks:
         merged["attacks"] = attacks
-    abilities = []
-    for ability in merged.get("abilities", []) or []:
-        ability = dict(ability)
-        if str(ability.get("effect", "")).rsplit("/", 1)[-1].startswith("damage_") and "magnitude" in ability:
-            ability["magnitude"] += step
-        abilities.append(ability)
-    if abilities:
-        merged["abilities"] = abilities
+    effects = []
+    for effect in merged.get("effects", []) or []:
+        effect = dict(effect)
+        if str(effect.get("effect", "")).rsplit("/", 1)[-1].startswith("damage_") and "magnitude" in effect:
+            effect["magnitude"] += step
+        effects.append(effect)
+    if effects:
+        merged["effects"] = effects
 
 
 def compose_row(base, overrides, layers=(), entry=None):
@@ -1350,13 +1350,13 @@ def _apply_monster_template(merged, template):
         merged["attacks"] = attacks
     if "damage_type" in template:
         element = f"core:effect/damage_{template['damage_type']}"
-        abilities = []
-        for ability in merged.get("abilities", []) or []:
-            if ability.get("effect") in ELEMENT_DAMAGE_EFFECTS:
-                ability = {**ability, "effect": element}
-            abilities.append(ability)
-        if abilities:
-            merged["abilities"] = abilities
+        effects = []
+        for effect in merged.get("effects", []) or []:
+            if effect.get("effect") in ELEMENT_DAMAGE_EFFECTS:
+                effect = {**effect, "effect": element}
+            effects.append(effect)
+        if effects:
+            merged["effects"] = effects
     if template.get("attributes"):
         attributes = dict(merged.get("attributes") or {})
         for ability, add in template["attributes"].items():
@@ -1418,7 +1418,7 @@ def _resolve_monster_bases(data, errors):
     The base is a creature type (bases/<name>.json) or another monster in the same
     file (core:monster/<key>), resolved first (docs/modules/monsters.md#derived-monsters).
     Then the row's templates apply in order, then its overrides:
-      - $extend convention for array fields (abilities, tags)
+      - $extend convention for array fields (effects, tags)
       - growth-based attribute and HP scaling from the creature type, on the type's
         level for a type base and on the level difference for a base monster
       - full override of any field (replaces base)
