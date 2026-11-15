@@ -31,6 +31,7 @@ docker run --rm riftweave-validate
 ./scripts/container-image.sh   # image riftweave:python-<version from .toolchain-python-version>
 ./scripts/validate.sh          # python ruleset/scripts/validate.py
 ./scripts/test.sh              # unittest discover ruleset/scripts/test_*.py
+./scripts/format-json.sh       # lay out the listed JSON files; --check fails on drift (CONTRIBUTING.md#json-format)
 ./scripts/shell.sh             # bash in the toolchain container
 ./scripts/agent.sh             # devops-tools agent image (Claude Code); see tools/devops/README.md
 ./scripts/app.sh               # the frontend and its API on the host (Go and Node); docs/backend/frontend.md
