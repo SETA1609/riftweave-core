@@ -82,7 +82,7 @@
       },
       "target": {
         "type": "object",
-        "description": "The defender, for an instant spell's save.",
+        "description": "The defender: its save against an instant spell (attributes, skills, roll), and, when it has hp, what the cast's damage does to it through combat steps 2 to 8 (docs/core/casting.md#damage-to-a-target).",
         "properties": {
           "attributes": {
             "$ref": "common.json#/definitions/attributes"
@@ -91,12 +91,96 @@
             "$ref": "common.json#/definitions/skills"
           },
           "roll": {
-            "$ref": "common.json#/definitions/d100"
+            "$ref": "common.json#/definitions/d100",
+            "description": "The save roll; an instant spell needs it."
+          },
+          "hp": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "armor_dr": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "resist": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "propertyNames": {
+              "pattern": "^[a-z_][a-z0-9_]*$"
+            }
+          },
+          "evasion_skill": {
+            "type": "integer"
+          },
+          "reaction": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "evade",
+                  "block"
+                ]
+              },
+              "roll": {
+                "$ref": "common.json#/definitions/d100"
+              },
+              "skill": {
+                "type": "integer"
+              },
+              "shield_dr": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "kind",
+              "roll"
+            ],
+            "additionalProperties": false,
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "block"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "skill",
+                "shield_dr"
+              ]
+            },
+            "else": {
+              "not": {
+                "anyOf": [
+                  {
+                    "required": [
+                      "skill"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "shield_dr"
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "$ref": "common.json#/definitions/key"
+            },
+            "description": "Flags from conditions (prone, blinded, invisible); a situation row with `when` reads them."
+          },
+          "modifiers": {
+            "$ref": "common.json#/definitions/modifiers"
           }
         },
-        "required": [
-          "roll"
-        ],
         "additionalProperties": false
       }
     },
@@ -252,6 +336,51 @@
           "$ref": "common.json#/definitions/ref"
         },
         "description": "The summons the cast dismissed to stay within the limit, oldest first."
+      },
+      "damage": {
+        "type": "array",
+        "description": "Per damage packet, when target has hp: the combat steps' outcome.",
+        "items": {
+          "type": "object",
+          "properties": {
+            "effect": {
+              "$ref": "common.json#/definitions/ref"
+            },
+            "type": {
+              "type": "string"
+            },
+            "amount": {
+              "type": "integer",
+              "description": "The packet before the combat steps."
+            },
+            "damage": {
+              "type": "integer",
+              "description": "HP lost."
+            },
+            "evaded": {
+              "type": "boolean"
+            },
+            "blocked": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "effect",
+            "type",
+            "amount",
+            "damage",
+            "evaded",
+            "blocked"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "hp": {
+        "type": [
+          "integer",
+          "null"
+        ],
+        "description": "The target's HP after every packet; null without a target hp."
       }
     },
     "additionalProperties": false
