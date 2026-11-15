@@ -194,10 +194,17 @@ def _features():
     return {row["key"]: row for row in _load("features/core.json")["features"]}
 
 
+def perk_ref(held):
+    """A held perk's ref and rank: a bare ref is rank 1, else `{perk, rank}` (M3-19)."""
+    if isinstance(held, str):
+        return held, 1
+    return held["perk"], held.get("rank", 1)
+
+
 def held_templates(bought):
     """The power and nature a caster holds from the perks bought, in order: the latest per slot."""
     held = {"power": None, "nature": None}
-    for ref in bought:
+    for ref, _rank in map(perk_ref, bought):
         for unlocked in _features().get(ref.removeprefix(FEATURE_PREFIX), {}).get("unlocks", []):
             if unlocked.startswith(TEMPLATE_PREFIX):
                 key = unlocked.removeprefix(TEMPLATE_PREFIX)
@@ -261,14 +268,15 @@ def summon(ref, caster):
     bonuses = {row["key"]: row for row in _load("summons/bonuses.json")["summon_bonuses"]}
     rule = _modifier_rule()
     adds = {}
-    for perk in caster.get("perks", []):
-        granted = _features().get(perk.removeprefix(FEATURE_PREFIX), {}).get("summon_bonus")
+    for ref, rank in map(perk_ref, caster.get("perks", [])):
+        granted = _features().get(ref.removeprefix(FEATURE_PREFIX), {}).get("summon_bonus")
         if granted is None:
             continue
         bonus = bonuses[granted.rsplit("/", 1)[-1]]
-        modifier = evaluate_formula(rule, {}, {"attribute": caster["attributes"].get(bonus["attribute"], 0)})
+        modifier = max(evaluate_formula(rule, {}, {"attribute": caster["attributes"].get(bonus["attribute"], 0)}), 0)
+        share = bonus.get("rank_share", [1])[min(rank, len(bonus.get("rank_share", [1]))) - 1]
         for attribute in bonus["attributes"]:
-            adds[attribute] = adds.get(attribute, 0) + max(modifier, 0)
+            adds[attribute] = adds.get(attribute, 0) + math.floor(modifier * share)
     adds = {attribute: add for attribute, add in adds.items() if add}
     if adds:
         validate._apply_monster_template(creature, {"attributes": adds})

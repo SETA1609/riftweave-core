@@ -256,16 +256,18 @@ class TestSpellKnowledge(unittest.TestCase):
 
 
 class TestCharismaStrengthensSummons(unittest.TestCase):
-    """M3-13 (docs/modules/magic.md#summon-groups): a Commanding Summons perk adds the caster's
-    CHA - 5, never below 0, to its group of the summoned creature's attributes."""
+    """M3-13 and M3-19 (docs/modules/magic.md#summon-groups): a Commanding Summons perk adds the
+    caster's CHA - 5, never below 0, to its group of the summoned creature's attributes: half of it,
+    rounded down, at rank 1, and all of it at rank 2."""
 
     REF = "core:monster/fire_elemental"
     MAGIC, PHYSICAL = ("int", "wil"), ("str", "end", "agi")
 
-    def summon(self, cha, *perks):
+    def summon(self, cha, *perks, rank=2):
         import monster_reference
 
-        caster = {"level": 20, "attributes": {"cha": cha}, "perks": [f"core:feature/{p}" for p in perks]}
+        caster = {"level": 20, "attributes": {"cha": cha},
+                  "perks": [{"perk": f"core:feature/{p}", "rank": rank} for p in perks]}
         return monster_reference.summon(self.REF, caster)
 
     def plain(self):
@@ -277,11 +279,11 @@ class TestCharismaStrengthensSummons(unittest.TestCase):
         before, after = self.plain()["attributes"], summoned["attributes"]
         return {a: after.get(a, 0) - before.get(a, 0) for a in self.MAGIC + self.PHYSICAL}
 
-    def test_the_magic_perk_adds_three_to_int_and_wil_at_cha_8(self):
+    def test_the_magic_perk_at_rank_2_adds_three_to_int_and_wil_at_cha_8(self):
         gains = self.gains(self.summon(8, "commanding_summons_magic"))
         self.assertEqual(gains, {"int": 3, "wil": 3, "str": 0, "end": 0, "agi": 0})
 
-    def test_the_physical_perk_adds_three_to_str_end_and_agi_at_cha_8(self):
+    def test_the_physical_perk_at_rank_2_adds_three_to_str_end_and_agi_at_cha_8(self):
         summoned = self.summon(8, "commanding_summons_physical")
         self.assertEqual(self.gains(summoned), {"int": 0, "wil": 0, "str": 3, "end": 3, "agi": 3})
 
@@ -293,6 +295,26 @@ class TestCharismaStrengthensSummons(unittest.TestCase):
     def test_both_perks_add_to_both_groups(self):
         gains = self.gains(self.summon(8, "commanding_summons_magic", "commanding_summons_physical"))
         self.assertEqual(set(gains.values()), {3})
+
+    def test_rank_1_adds_half_the_modifier_rounded_down_and_rank_2_all_of_it(self):
+        for cha, first, second in ((8, 1, 3), (10, 2, 5), (6, 0, 1)):
+            with self.subTest(cha=cha):
+                self.assertEqual(set(self.gains(self.summon(cha, "commanding_summons_magic", rank=1)).values()) - {0}, {first} - {0})
+                self.assertEqual(self.gains(self.summon(cha, "commanding_summons_magic", rank=2))["int"], second)
+
+    def test_a_perk_named_by_its_ref_alone_is_rank_1(self):
+        import monster_reference
+
+        caster = {"level": 20, "attributes": {"cha": 10}, "perks": ["core:feature/commanding_summons_magic"]}
+        self.assertEqual(self.gains(monster_reference.summon(self.REF, caster))["int"], 2)
+
+    def test_the_perks_have_two_ranks_and_the_bonuses_half_then_all(self):
+        features = {f["key"]: f for f in json.loads((DATA / "features" / "core.json").read_text())["features"]}
+        bonuses = {b["key"]: b for b in json.loads((DATA / "summons" / "bonuses.json").read_text())["summon_bonuses"]}
+        for key in ("commanding_summons_magic", "commanding_summons_physical"):
+            self.assertEqual(features[key]["ranks"], 2)
+        for bonus in bonuses.values():
+            self.assertEqual(bonus["rank_share"], [0.5, 1])
 
     def test_without_the_perk_charisma_changes_nothing(self):
         self.assertEqual(self.summon(10)["attributes"], self.plain()["attributes"])
