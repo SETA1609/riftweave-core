@@ -89,6 +89,39 @@ def roll_save(spell, effects, defender, rules):
     return {**check, "result": "partial"}, scaled
 
 
+DAMAGE_PREFIX = "core:effect/damage_"
+# The combat defender fields a casting target may carry (docs/core/casting.md#damage-to-a-target).
+DEFENDER_FIELDS = ("hp", "armor_dr", "resist", "evasion_skill", "reaction", "flags", "modifiers", "attributes")
+
+
+def apply_damage(spell, effects, check, vector, caster):
+    """Each damage packet through combat steps 2 to 8, the cast check as the attack roll."""
+    from kernel_reference import run_combat  # kernel_reference imports this module
+
+    types = {row["key"] for row in load_data("combat/damage_types.json")["damage_types"]}
+    target = vector["target"]
+    hp = target["hp"]
+    packets = []
+    for effect in effects:
+        kind = effect["effect"].removeprefix(DAMAGE_PREFIX)
+        if not effect["effect"].startswith(DAMAGE_PREFIX) or kind not in types or effect.get("duration", 1) > 1:
+            continue
+        amount = int(effect.get("magnitude", 0))
+        defender = {field: target[field] for field in DEFENDER_FIELDS if field in target}
+        hit = run_combat({
+            "attacker": {"skill": check["target"], "roll": vector["roll"], "attributes": caster.get("attributes", {})},
+            "defender": {**defender, "hp": hp},
+            "damage": {"roll": amount, "type": kind},
+            "delivery": spell.get("delivery", "single"),
+        })
+        if "error" in hit:
+            return None, None, hit["error"]
+        hp = hit["hp"]
+        packets.append({"effect": effect["effect"], "type": kind, "amount": amount, "damage": hit["damage"],
+                        "evaded": hit["evaded"], "blocked": hit["blocked"]})
+    return packets, hp, None
+
+
 def run_casting(vector):
     from kernel_reference import run_resolution  # kernel_reference imports this module
 
@@ -104,6 +137,10 @@ def run_casting(vector):
     if skill not in caster["skills"]:
         return {"error": f"casting {spell['key']} needs {skill}"}
 
+    target = vector.get("target")
+    if spell.get("delivery") == "instant" and target is not None and "roll" not in target:
+        return {"error": "an instant spell's save needs the target's roll"}
+
     mana = caster["mana"]
     held = caster.get("concentration")
     result = {
@@ -118,6 +155,8 @@ def run_casting(vector):
         "save": None,
         "summons": list(caster.get("summons", [])),
         "dismissed": [],
+        "damage": [],
+        "hp": target["hp"] if target is not None and "hp" in target else None,
     }
     cost = spell.get("cost", {})
     reagents = list(caster.get("reagents", []))
@@ -155,6 +194,10 @@ def run_casting(vector):
     result["effects"] = [dict(effect) for effect in spell["effects"]]
     if spell.get("delivery") == "instant" and "target" in vector:
         result["save"], result["effects"] = roll_save(spell, result["effects"], vector["target"], rules["save"])
+    if target is not None and "hp" in target:
+        result["damage"], result["hp"], error = apply_damage(spell, result["effects"], check, vector, caster)
+        if error:
+            return {"error": error}
     if spell.get("concentration"):
         result["concentration"] = spell["key"]
         if held is not None and held != spell["key"]:
