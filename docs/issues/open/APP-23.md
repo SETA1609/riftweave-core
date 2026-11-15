@@ -1,0 +1,10 @@
+#### APP-23 An app context with a light and dark mode toggle
+- Status: todo
+- Priority: medium
+- Needs: APP-19
+- Modified: 2026-11-15
+- Do: Owner request, 2026-11-15: the app holds its mode and its language in one context. Add `AppContext` (`frontend/src/app/context.ts`), a root service of signals, the one place a screen reads the viewer's settings: `theme` (`light`, `dark`, or `system`) here, and `locale` for APP-24. It starts from the saved choice, else the system (`prefers-color-scheme`), and saves each change in `localStorage` (a per-viewer convenience; APP-16 may move it to IndexedDB), with every read and write in try/catch so a blocked storage still renders. The theme is applied as `data-theme` on `<html>`: `styles.css` keeps its tokens, moves the dark ones under `:root[data-theme="dark"]`, and keeps the `prefers-color-scheme: dark` block for `system` only, guarded by `:root:not([data-theme="light"])`. A reusable `rw-theme-toggle` (ui/, split `.ts`/`.html`/`.css`) in the header cycles light, dark, and system, with an `aria-label` that names the next mode. No component reads `localStorage` or `matchMedia` itself.
+- Keys: `AppContext` (`theme`, `locale`); `rw-theme-toggle`; `data-theme` on `<html>`
+- Files: ~10 (frontend/src/app/context.ts, frontend/src/app/ui/theme-toggle.ts, theme-toggle.html, theme-toggle.css, frontend/src/app/app.ts, app.html, frontend/src/styles.css, frontend/src/app/app.spec.ts, frontend/e2e/app.spec.ts, docs/backend/frontend.md)
+- See: docs/backend/frontend.md#conventions, docs/issues/open/APP-24.md, docs/issues/open/APP-16.md
+- Done when: the toggle switches the page between light and dark and back to the system's mode; the choice survives a reload; with storage blocked the app still renders in the system's mode; the Vitest specs and a Playwright spec cover it over both transports.
