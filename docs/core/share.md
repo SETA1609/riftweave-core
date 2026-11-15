@@ -16,6 +16,7 @@ share.bonus     core:summon_bonus/<key>: the group of attributes it lends to, an
                 attribute it reads (cha), with a share per rank (rank_share)
 share.range     units: an ally farther than this gets nothing
 share.turns     how many turns the bonus lasts after the sharer starts it
+share.rank_share  optional: the share per rank for this perk, in place of the group's
 ```
 
 Starting a share is the `inspire` action (`actions/core.json`), so it costs AP like any action,
@@ -26,14 +27,29 @@ The same groups as summons, so a bard and a summoner reading one CHA mean the sa
 
 | Group | Attributes | Perk |
 | --- | --- | --- |
-| `magic` | INT, WIL | Bardic Inspiration |
-| `physical` | STR, END, AGI | Skald's War Chant |
+| `magic` | INT, WIL | Bardic Inspiration, then Bardic Anthem |
+| `physical` | STR, END, AGI | Skald's War Chant, then Skald's Saga |
+
+## Two tiers
+
+Like summoning, where Commanding Summons has two ranks and Retinue and Host widen it later
+(M3-19, M3-20), sharing has two tiers. Each class needs its own social skill on top of its
+combat one: Persuasion for the bard, Intimidation for the skald.
+
+| Tier | Level | Perk | Needs | Lends | Range | Turns |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | 18 | Bardic Inspiration, Skald's War Chant | Leader, CHA 7, a magic (bard) or weapon (skald) skill 45, Persuasion or Intimidation 30 | half of CHA − 5 at rank 1, all at rank 2 | 6 | 3 |
+| 2 | 28 | Bardic Anthem, Skald's Saga | the tier-1 perk at rank 2, CHA 8, Persuasion or Intimidation 60 | all of CHA − 5 (`rank_share` [1]) | 12 | 5 |
+
+A sharer who holds both tiers starts the one they choose; a bard who holds the Anthem passes it
+as `perk`. Holding both does not add: the two are one morale bonus. A prerequisite that names a
+perk may name its rank (`{ "perk": ..., "rank": 2 }`, [progression.md](../modules/progression.md#perks-and-traits)).
 
 ## The value
 
 ```
 modifier = attribute_modifier(sharer.cha)        # CHA - 5 (formulas/attribute_modifier.json)
-value    = floor(max(modifier, 0) * rank_share[rank - 1])
+value    = floor(max(modifier, 0) * rank_share[rank - 1])   # the perk's rank_share, else the group's
 ```
 
 At rank 1 a sharer lends half, at rank 2 all of it, exactly as a summon bonus (M3-19). CHA 8

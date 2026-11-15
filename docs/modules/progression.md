@@ -330,7 +330,8 @@ narrative downtime activity tied to the level-up.
 Perks are the **character-defining** progression in this classless system, defined
 in a single `features` table (`ruleset/data/features/core.json`). They are gated by
 `prerequisite` — any of `level`, `abilities` (min attribute values), `skills` (min
-skill values), and `perks` (prerequisite perk refs, `core:feature/<key>`) — and may have
+skill values), and `perks` (prerequisite perk refs, `core:feature/<key>`, or
+`{ "perk": <ref>, "rank": N }` when a rank is needed, M3-14) — and may have
 multiple `ranks`. Their `modifiers` compose into the character's active modifier set. The `type` field
 says how each is acquired:
 
@@ -382,9 +383,11 @@ is a strictly worse copy of the other; `ruleset/scripts/test_perks.py` checks th
 count, the gates, and that each prerequisite perk exists at a lower or equal tier.
 [V 2026-11-06]
 
-Two tier-18 perks lend CHA to allies and need `leader` (tier 12): Bardic Inspiration, on the
-magic group, and Skald's War Chant, on the physical group, each with two ranks. What an ally
-gets, how far it reaches, and how long it lasts are in [share.md](../core/share.md) (M3-14).
+Two tier-18 perks lend CHA to allies and need `leader` (tier 12) and Persuasion or Intimidation
+30: Bardic Inspiration, on the magic group, and Skald's War Chant, on the physical group, each
+with two ranks. At tier 28, Bardic Anthem and Skald's Saga need them at rank 2 and Persuasion or
+Intimidation 60, and lend the whole bonus twice as far for longer. What an ally gets, how far it
+reaches, and how long it lasts are in [share.md](../core/share.md#two-tiers) (M3-14).
 
 ## Magic — 9 color schools
 
