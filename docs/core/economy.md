@@ -1,17 +1,19 @@
 # Economy
 
+Modified: 2026-11-15
+
 Buy, sell, and barter as data. Equipment already carries a `cost` (`quantity` and `unit`) and materials a `valueFactor`; this file adds the denominations, the price formula, the merchant rows, and the barter check. The rows are in `ruleset/data/economy/core.json`, the formula in `ruleset/data/formulas/price.json`, the vectors in `ruleset/tests/vectors/economy.json`. Nothing here needs another module loaded: an item with no material is priced at its base cost. [`docs/modules/factions.md`](../modules/factions.md) leaves a standing-based price modifier for later; it would add to the barter shift below, not replace it.
 
 ## Currency
 
-One base unit, the copper piece. Every other denomination is a whole multiple of it.
+One base unit, the copper piece. Every other denomination is a whole multiple of it. A unit is spelled out, so `sp` stays the stamina pool (M5-37).
 
 | unit | copper |
 | --- | --- |
-| `cp` | 1 |
-| `sp` | 10 |
-| `gp` | 100 |
-| `pp` | 1000 |
+| `copper` | 1 |
+| `silver` | 10 |
+| `gold` | 100 |
+| `platinum` | 1000 |
 
 Prices are integers in copper. There are no fractions of a copper piece: a price rounds down. [A] The ratios are the common fantasy ones, not taken from a Riftweave source. [U]
 

@@ -1,5 +1,7 @@
 # Vertical loop
 
+Modified: 2026-11-15
+
 Author: SETA1609
 
 One actor, existing rows, no magic, alchemy, wuxing, or layering. The record is `ruleset/data/examples/loop.json`.
@@ -22,7 +24,7 @@ The chain in `ruleset/tests/vectors/playthrough.json` extends this loop into a w
 | Create | `derived` | A level-1 character gets 67 HP and 42 MP. |
 | Buy | `economy` | A shortsword, at the general store's price. |
 | Fight | `combat` | A hit on a zombie, its slam back, then a crit that drops it. |
-| Loot | `loot` | The zombie's grave goods give 2 sp. |
+| Loot | `loot` | The zombie's grave goods give 2 silver. |
 | Rest | `rest` | A short rest restores the lost HP. |
 | Level | `progression` | 900 XP reaches level 2, then the level-up pool. |
 | Cast | `casting` | Fire Bolt spends mana. |
