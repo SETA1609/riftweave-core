@@ -87,6 +87,6 @@ Every kernel function and the vector file that covers it. The test reads this ta
 | `spellcraft` | `spellcraft.json` | covered |
 | `consume` | `consume.json` | covered |
 | `stored_actor` | `stored_actor.json` | covered |
-| `share` | `share.json` | pending M3-14 |
+| `share` | `share.json` | covered |
 
 The modifier vectors cover every operation, mixed operations, same-source duplicates, origins, and expiry. The condition vectors apply and remove each of the 24 conditions once, plus stacks and multi-condition effects.
