@@ -142,6 +142,7 @@ class Replay:
             if not any(skills.get(key_of(i), 0) >= requirement["min"] for i in ids):
                 self.fail(f"level {level}: {key} needs {ids} at {requirement['min']}")
         for other in need.get("perks", []):
+            other = other["perk"] if isinstance(other, dict) else other  # a held perk { perk, rank }
             if key_of(other) not in ranks:
                 self.fail(f"level {level}: {key} needs {other}")
         if ranks.get(key, 0) >= perk.get("ranks", 1):

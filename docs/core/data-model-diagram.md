@@ -114,7 +114,9 @@ erDiagram
         string modifiers_origin FK
         string natural_weapon FK
         string prerequisite_perks FK
+        string prerequisite_perks_perk FK
         string prerequisite_skills_id FK
+        string share_bonus FK
         string summon_bonus FK
         string unlocks FK
     }
@@ -247,13 +249,13 @@ erDiagram
     EQUIPMENT }o--|| ORIGINS : "accessory.effects[].origin, consumable.effects[].origin, gear.modifiers[].origin, weapon.on_hit_effects[].origin"
     EQUIPMENT }o--|| SPELLS : "consumable.spell"
     FACTIONS }o--|| ORIGINS : "ranks[].modifiers[].origin, standings[].modifiers[].origin"
-    FEATURES }o--|| FEATURES : "prerequisite.perks[]"
+    FEATURES }o--|| FEATURES : "prerequisite.perks[], prerequisite.perks[].perk"
     FEATURES }o--|| MATERIALS : "unlocks[]"
     FEATURES }o--|| MONSTER_TEMPLATES : "unlocks[]"
     FEATURES }o--|| NATURAL_WEAPONS : "natural_weapon"
     FEATURES }o--|| ORIGINS : "modifiers[].origin"
     FEATURES }o--|| SKILLS : "prerequisite.skills[].id, prerequisite.skills[].id[]"
-    FEATURES }o--|| SUMMON_BONUSES : "summon_bonus"
+    FEATURES }o--|| SUMMON_BONUSES : "share.bonus, summon_bonus"
     HAZARDS }o--|| CHECKS : "avoid.check, detect.check, disarm.check"
     HAZARDS }o--|| EFFECTS : "effects[]"
     INGREDIENTS }o--|| EFFECTS : "effects[]"
@@ -318,7 +320,9 @@ erDiagram
         string modifiers_origin FK
         string natural_weapon FK
         string prerequisite_perks FK
+        string prerequisite_perks_perk FK
         string prerequisite_skills_id FK
+        string share_bonus FK
         string summon_bonus FK
         string unlocks FK
     }
@@ -361,13 +365,13 @@ erDiagram
     CHARACTERS }o--|| RACES : "race"
     CHARACTERS }o--|| SKILLS : "tag_skills[]"
     CHARACTERS }o--|| SPELLS : "levels[].spells[]"
-    FEATURES }o--|| FEATURES : "prerequisite.perks[]"
+    FEATURES }o--|| FEATURES : "prerequisite.perks[], prerequisite.perks[].perk"
     FEATURES }o--|| MATERIALS : "unlocks[]"
     FEATURES }o--|| MONSTER_TEMPLATES : "unlocks[]"
     FEATURES }o--|| NATURAL_WEAPONS : "natural_weapon"
     FEATURES }o--|| ORIGINS : "modifiers[].origin"
     FEATURES }o--|| SKILLS : "prerequisite.skills[].id, prerequisite.skills[].id[]"
-    FEATURES }o--|| SUMMON_BONUSES : "summon_bonus"
+    FEATURES }o--|| SUMMON_BONUSES : "share.bonus, summon_bonus"
     RACES }o--|| FEATURES : "traits[].id"
     RACES }o--|| RACES : "lineage.parentRace"
     SKILL_GROUPS }o--|| SKILLS : "skills[]"

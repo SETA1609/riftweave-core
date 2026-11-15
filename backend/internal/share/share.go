@@ -51,11 +51,15 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		if err != nil {
 			return Result{}, err
 		}
+		var rankShare []float64 = group.RankShare
+		if perk.Share.RankShare != nil {
+			rankShare = perk.Share.RankShare
+		}
 		var rank int64 = sharer.Rank
 		if rank == 0 {
 			rank = 1
 		}
-		if rank < 1 || rank > int64(len(group.RankShare)) || rank > max(perk.Ranks, 1) {
+		if rank < 1 || rank > int64(len(rankShare)) || rank > max(perk.Ranks, 1) {
 			return Result{}, &data.NotDefinedError{Kind: "share rank", Key: fmt.Sprint(rank)}
 		}
 		if sharer.Distance > perk.Share.Range {
@@ -69,7 +73,7 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		if err != nil {
 			return Result{}, err
 		}
-		var value float64 = math.Floor(float64(max(attributeModifier, 0)) * group.RankShare[rank-1])
+		var value float64 = math.Floor(float64(max(attributeModifier, 0)) * rankShare[rank-1])
 		if value <= 0 {
 			continue
 		}

@@ -286,9 +286,15 @@ func takePerk(ruleset *data.Ruleset, sheet *actor.Actor, held map[string]int64, 
 			failed = append(failed, unmet{Needs: "skill", Keys: keys, Minimum: &minimum, Has: &has})
 		}
 	}
-	for _, ref := range need.Perks {
-		if held[refKey(ref)] < 1 {
-			failed = append(failed, unmet{Needs: "perk", Key: refKey(ref)})
+	for _, requirement := range need.Perks {
+		var has int64 = held[refKey(requirement.Perk)]
+		if has < requirement.Rank {
+			var entry unmet = unmet{Needs: "perk", Key: refKey(requirement.Perk)}
+			if requirement.Rank > 1 {
+				var minimum int64 = requirement.Rank
+				entry.Minimum, entry.Has = &minimum, &has
+			}
+			failed = append(failed, entry)
 		}
 	}
 	if len(failed) > 0 {

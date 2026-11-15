@@ -2194,6 +2194,11 @@
               "Black Magic"
             ],
             "min": 45
+          },
+          {
+            "id": "core:skill/persuasion",
+            "label": "Persuasion",
+            "min": 30
           }
         ],
         "perks": [
@@ -2250,6 +2255,11 @@
               "Throwing Weapons"
             ],
             "min": 45
+          },
+          {
+            "id": "core:skill/intimidation",
+            "label": "Intimidation",
+            "min": 30
           }
         ],
         "perks": [
@@ -2268,6 +2278,94 @@
           "operation": "add",
           "value": 5,
           "source": "feature:skalds_war_chant",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "bardic_anthem",
+      "label": "Bardic Anthem",
+      "description": "Your song carries across the field: spend the inspire action and every ally within 12 units adds your whole CHA modifier (CHA - 5, never below 0) to INT and WIL for 5 turns, and your Persuasion +5. It does not add to your Bardic Inspiration; the stronger counts.",
+      "type": "perk",
+      "category": "social",
+      "prerequisite": {
+        "level": 28,
+        "abilities": {
+          "cha": 8
+        },
+        "skills": [
+          {
+            "id": "core:skill/persuasion",
+            "label": "Persuasion",
+            "min": 60
+          }
+        ],
+        "perks": [
+          {
+            "perk": "core:feature/bardic_inspiration",
+            "rank": 2
+          }
+        ]
+      },
+      "ranks": 1,
+      "share": {
+        "bonus": "core:summon_bonus/magic",
+        "range": 12,
+        "turns": 5,
+        "rank_share": [
+          1
+        ]
+      },
+      "modifiers": [
+        {
+          "target": "persuasion",
+          "operation": "add",
+          "value": 5,
+          "source": "feature:bardic_anthem",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "skalds_saga",
+      "label": "Skald's Saga",
+      "description": "Your saga drives the whole line: spend the inspire action and every ally within 12 units adds your whole CHA modifier (CHA - 5, never below 0) to STR, END, and AGI for 5 turns, and your Intimidation +5. It does not add to your War Chant; the stronger counts.",
+      "type": "perk",
+      "category": "social",
+      "prerequisite": {
+        "level": 28,
+        "abilities": {
+          "cha": 8
+        },
+        "skills": [
+          {
+            "id": "core:skill/intimidation",
+            "label": "Intimidation",
+            "min": 60
+          }
+        ],
+        "perks": [
+          {
+            "perk": "core:feature/skalds_war_chant",
+            "rank": 2
+          }
+        ]
+      },
+      "ranks": 1,
+      "share": {
+        "bonus": "core:summon_bonus/physical",
+        "range": 12,
+        "turns": 5,
+        "rank_share": [
+          1
+        ]
+      },
+      "modifiers": [
+        {
+          "target": "intimidation",
+          "operation": "add",
+          "value": 5,
+          "source": "feature:skalds_saga",
           "origin": "core:origin/trained"
         }
       ]

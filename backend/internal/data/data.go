@@ -401,6 +401,8 @@ type Share struct {
 	Bonus string  `json:"bonus"` // core:summon_bonus/<key>
 	Range float64 `json:"range"` // units
 	Turns int64   `json:"turns"`
+	// RankShare is the share per rank for this perk, in place of the group's; nil uses the group's.
+	RankShare []float64 `json:"rank_share"`
 }
 
 // SummonBonus is one row of summons/bonuses.json: an attribute whose modifier is lent to a
@@ -440,7 +442,33 @@ type Prerequisite struct {
 	Level     int64              `json:"level"`
 	Abilities map[string]int64   `json:"abilities"`
 	Skills    []SkillRequirement `json:"skills"`
-	Perks     []string           `json:"perks"`
+	Perks     []PerkRequirement  `json:"perks"`
+}
+
+// PerkRequirement is a prerequisite perk: a ref, held at any rank, or a held perk { perk, rank }
+// that must be held at that rank or above (M3-14).
+type PerkRequirement struct {
+	Perk string `json:"perk"`
+	Rank int64  `json:"rank"`
+}
+
+// UnmarshalJSON reads either shape; a bare ref needs rank 1.
+func (requirement *PerkRequirement) UnmarshalJSON(encoded []byte) error {
+	var ref string
+	if json.Unmarshal(encoded, &ref) == nil {
+		*requirement = PerkRequirement{Perk: ref, Rank: 1}
+		return nil
+	}
+	type held PerkRequirement
+	var object held
+	if err := json.Unmarshal(encoded, &object); err != nil {
+		return err
+	}
+	if object.Rank == 0 {
+		object.Rank = 1
+	}
+	*requirement = PerkRequirement(object)
+	return nil
 }
 
 // SkillRequirement is met when one of its skills reads at least Minimum. Its `id` is one
