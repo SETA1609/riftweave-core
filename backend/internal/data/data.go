@@ -392,6 +392,26 @@ type Feature struct {
 	// Modifiers are the feature's own, as written; a session emits them at the held rank
 	// (docs/backend/sessions.md#what-the-actor-brings-to-a-step-app-13).
 	Modifiers []map[string]any `json:"modifiers"`
+	// Share is what the perk lends to allies in range (docs/core/share.md); nil for most.
+	Share *Share `json:"share"`
+}
+
+// Share is a perk's share object: the group it lends to, how far, and for how long.
+type Share struct {
+	Bonus string  `json:"bonus"` // core:summon_bonus/<key>
+	Range float64 `json:"range"` // units
+	Turns int64   `json:"turns"`
+	// RankShare is the share per rank for this perk, in place of the group's; nil uses the group's.
+	RankShare []float64 `json:"rank_share"`
+}
+
+// SummonBonus is one row of summons/bonuses.json: an attribute whose modifier is lent to a
+// group of attributes, with the share per rank (M3-13, M3-19, M3-14).
+type SummonBonus struct {
+	Key        string    `json:"key"`
+	Attribute  string    `json:"attribute"`
+	Attributes []string  `json:"attributes"`
+	RankShare  []float64 `json:"rank_share"`
 }
 
 // EmitAt is the feature's modifiers at a rank (docs/modules/progression.md#perks-and-traits): an
@@ -422,7 +442,33 @@ type Prerequisite struct {
 	Level     int64              `json:"level"`
 	Abilities map[string]int64   `json:"abilities"`
 	Skills    []SkillRequirement `json:"skills"`
-	Perks     []string           `json:"perks"`
+	Perks     []PerkRequirement  `json:"perks"`
+}
+
+// PerkRequirement is a prerequisite perk: a ref, held at any rank, or a held perk { perk, rank }
+// that must be held at that rank or above (M3-14).
+type PerkRequirement struct {
+	Perk string `json:"perk"`
+	Rank int64  `json:"rank"`
+}
+
+// UnmarshalJSON reads either shape; a bare ref needs rank 1.
+func (requirement *PerkRequirement) UnmarshalJSON(encoded []byte) error {
+	var ref string
+	if json.Unmarshal(encoded, &ref) == nil {
+		*requirement = PerkRequirement{Perk: ref, Rank: 1}
+		return nil
+	}
+	type held PerkRequirement
+	var object held
+	if err := json.Unmarshal(encoded, &object); err != nil {
+		return err
+	}
+	if object.Rank == 0 {
+		object.Rank = 1
+	}
+	*requirement = PerkRequirement(object)
+	return nil
 }
 
 // SkillRequirement is met when one of its skills reads at least Minimum. Its `id` is one
@@ -639,8 +685,9 @@ type Ruleset struct {
 	CalledShots    Table[CalledShot]
 	Hazards        Table[Hazard]
 	Spells         Table[Spell]
-	Features       Table[Feature] // features/core.json, for dev perks (docs/backend/dev-mode.md)
-	Effects        Table[Effect]  // by ref, core:effect/<key>
+	Features       Table[Feature]     // features/core.json, for dev perks (docs/backend/dev-mode.md)
+	SummonBonuses  Table[SummonBonus] // summons/bonuses.json, by ref core:summon_bonus/<key>
+	Effects        Table[Effect]      // by ref, core:effect/<key>
 	Casting        Casting
 	Origins        modifier.OriginPolicies
 	OriginReplaces map[string]bool   // origin ref: its policy is `replace`
@@ -937,6 +984,11 @@ func Load(fileSystem fs.FS, modules ...fs.FS) (*Ruleset, error) {
 	var features struct{ Features []Feature }
 	loader.read("features/core.json", &features)
 	ruleset.Features = newTable(features.Features, func(feature *Feature) string { return feature.Key })
+	var summonBonuses struct {
+		SummonBonuses []SummonBonus `json:"summon_bonuses"`
+	}
+	loader.read("summons/bonuses.json", &summonBonuses)
+	ruleset.SummonBonuses = newTable(summonBonuses.SummonBonuses, func(bonus *SummonBonus) string { return "core:summon_bonus/" + bonus.Key })
 	var effects struct{ Effects []Effect }
 	loader.read("effects/core.json", &effects)
 	ruleset.Effects = newTable(effects.Effects, func(effect *Effect) string { return "core:effect/" + effect.Key })

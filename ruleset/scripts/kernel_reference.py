@@ -570,9 +570,15 @@ def take_perk(actor, held, key):
         best = max(read_skill(actor, skill)["value"] for skill in keys)
         if best < requirement["min"]:
             unmet.append({"needs": "skill", "keys": keys, "min": requirement["min"], "has": best})
-    for ref in need.get("perks", []):
-        if held.get(ref.rsplit("/", 1)[-1], 0) < 1:
-            unmet.append({"needs": "perk", "key": ref.rsplit("/", 1)[-1]})
+    for item in need.get("perks", []):
+        # A ref needs the perk at any rank; a held perk { perk, rank } needs that rank (M3-14).
+        ref, wanted = (item, 1) if isinstance(item, str) else (item["perk"], item.get("rank", 1))
+        has = held.get(ref.rsplit("/", 1)[-1], 0)
+        if has < wanted:
+            entry = {"needs": "perk", "key": ref.rsplit("/", 1)[-1]}
+            if wanted > 1:
+                entry.update({"min": wanted, "has": has})
+            unmet.append(entry)
     if unmet:
         return {"taken": False, "perk": key, "rank": rank, "unmet": unmet}
     return {"taken": True, "perk": key, "rank": rank + 1, "unmet": []}
@@ -762,6 +768,44 @@ def run_stored_actor(vector):
     return {"actor": actor}
 
 
+def run_share(vector):
+    """What one ally gets from the sharers near it (docs/core/share.md, M3-14)."""
+    features = {row["key"]: row for row in load_data("features/core.json")["features"]}
+    groups = {row["key"]: row for row in load_data("summons/bonuses.json")["summon_bonuses"]}
+    modifier_of = load_data("formulas/attribute_modifier.json")["expression"]
+    elapsed = vector.get("elapsed_turns", 0)
+    emitted = []
+    for sharer in vector["sharers"]:
+        perk = features.get(sharer["perk"])
+        if perk is None:
+            return {"error": f'feature "{sharer["perk"]}" is not defined'}
+        share = perk.get("share")
+        if share is None:
+            return {"error": "share needs a perk with a share object"}
+        rank = sharer.get("rank", 1)
+        group = groups[share["bonus"].rsplit("/", 1)[-1]]
+        rank_share = share.get("rank_share", group["rank_share"])
+        if not 1 <= rank <= len(rank_share) or rank > perk.get("ranks", 1):
+            return {"error": f'share rank "{rank}" is not defined'}
+        if sharer["distance"] > share["range"]:
+            continue
+        attribute = sharer["attributes"].get(group["attribute"], 0)
+        modifier = evaluate_formula(modifier_of, {}, {"attribute": attribute})
+        value = math.floor(max(modifier, 0) * rank_share[rank - 1])
+        if value <= 0:
+            continue
+        for target in group["attributes"]:
+            emitted.append({"target": target, "operation": "add", "value": value,
+                            "source": f"share:{perk['key']}:{sharer['name']}", "origin": "core:origin/morale",
+                            "duration": "turns", "turns": share["turns"]})
+    live = live_modifiers(emitted, elapsed)
+    bonus = {}
+    for modifier in live:
+        if modifier["target"] not in bonus:
+            bonus[modifier["target"]] = apply_modifiers(0, [m for m in live if m["target"] == modifier["target"]])
+    return {"modifiers": live, "bonus": bonus}
+
+
 RUNNERS = {
     "monster_sheet": run_monster_sheet,
     "resolution": run_resolution,
@@ -780,6 +824,7 @@ RUNNERS = {
     "casting": run_casting,
     "spellcraft": run_spellcraft,
     "progression": run_progression,
+    "share": run_share,
 }
 
 

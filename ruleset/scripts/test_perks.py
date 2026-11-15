@@ -29,6 +29,11 @@ def level(perk):
     return perk.get("prerequisite", {}).get("level", 1)
 
 
+def prerequisite_refs(perk):
+    """The prerequisite perks' refs: a ref, or a held perk { perk, rank } (M3-14)."""
+    return [item["perk"] if isinstance(item, dict) else item for item in perk.get("prerequisite", {}).get("perks", [])]
+
+
 def emitted(perk):
     """The (target, operation) pairs a perk's modifiers name."""
     return frozenset((m["target"], m["operation"]) for m in perk.get("modifiers", []))
@@ -49,7 +54,7 @@ class TestPerkCatalogue(unittest.TestCase):
     def test_prerequisite_perks_are_keys_of_perks(self):
         keys = {perk["key"] for perk in perks()}
         for perk in perks():
-            for ref in perk.get("prerequisite", {}).get("perks", []):
+            for ref in prerequisite_refs(perk):
                 with self.subTest(perk=perk["key"], needs=ref):
                     self.assertTrue(ref.startswith("core:feature/"))
                     self.assertIn(ref.removeprefix("core:feature/"), keys)
@@ -57,7 +62,7 @@ class TestPerkCatalogue(unittest.TestCase):
     def test_a_prerequisite_perk_is_reachable_at_a_lower_or_equal_level(self):
         by_key = {perk["key"]: perk for perk in perks()}
         for perk in perks():
-            for ref in perk.get("prerequisite", {}).get("perks", []):
+            for ref in prerequisite_refs(perk):
                 with self.subTest(perk=perk["key"], needs=ref):
                     self.assertLessEqual(level(by_key[ref.removeprefix("core:feature/")]), level(perk))
 
@@ -127,10 +132,52 @@ class TestSummonLimitPerks(unittest.TestCase):
         rows = {perk["key"]: perk for perk in perks()}
         retinue, host = rows["summon_retinue"], rows["summon_host"]
         self.assertEqual((retinue["prerequisite"]["level"], host["prerequisite"]["level"]), (14, 28))
-        self.assertIn("core:feature/summon_retinue", host["prerequisite"]["perks"])
+        self.assertIn("core:feature/summon_retinue", prerequisite_refs(host))
         for perk in (retinue, host):
             self.assertIn(("summon_limit", "add", 1), {(m["target"], m["operation"], m["value"]) for m in perk["modifiers"]})
 
+
+
+class TestSharePerks(unittest.TestCase):
+    """M3-14: the bard and skald perks lend CHA to allies (docs/core/share.md)."""
+
+    def test_the_ladder_starts_at_leader_and_each_share_perk_needs_it_at_a_higher_level(self):
+        rows = {perk["key"]: perk for perk in perks()}
+        sharing = [perk for perk in perks() if "share" in perk and perk["prerequisite"]["level"] == 18]
+        self.assertEqual({perk["key"] for perk in sharing}, {"bardic_inspiration", "skalds_war_chant"})
+        for perk in sharing:
+            with self.subTest(perk=perk["key"]):
+                self.assertIn("core:feature/leader", perk["prerequisite"]["perks"])
+                self.assertGreater(level(perk), level(rows["leader"]))
+                self.assertGreaterEqual(perk["prerequisite"]["abilities"]["cha"], rows["leader"]["prerequisite"]["abilities"]["cha"])
+                self.assertEqual(perk["ranks"], 2)
+
+    def test_the_bard_leans_on_magic_and_the_skald_on_weapons(self):
+        rows = {perk["key"]: perk for perk in perks()}
+        bard, skald = rows["bardic_inspiration"], rows["skalds_war_chant"]
+        self.assertEqual(bard["share"]["bonus"], "core:summon_bonus/magic")
+        self.assertEqual(skald["share"]["bonus"], "core:summon_bonus/physical")
+        self.assertTrue(all(ref.endswith("_magic") for ref in bard["prerequisite"]["skills"][0]["id"]))
+        self.assertFalse(any(ref.endswith("_magic") for ref in skald["prerequisite"]["skills"][0]["id"]))
+
+    def test_each_class_has_its_own_social_skill_at_both_tiers(self):
+        rows = {perk["key"]: perk for perk in perks()}
+        for key, skill, minimum in (("bardic_inspiration", "persuasion", 30), ("skalds_war_chant", "intimidation", 30),
+                                    ("bardic_anthem", "persuasion", 60), ("skalds_saga", "intimidation", 60)):
+            with self.subTest(perk=key):
+                needs = {(r["id"], r["min"]) for r in rows[key]["prerequisite"]["skills"] if isinstance(r["id"], str)}
+                self.assertIn((f"core:skill/{skill}", minimum), needs)
+
+    def test_tier_two_needs_tier_one_at_rank_two_and_lends_it_all_twice_as_far_for_longer(self):
+        rows = {perk["key"]: perk for perk in perks()}
+        for top, base in (("bardic_anthem", "bardic_inspiration"), ("skalds_saga", "skalds_war_chant")):
+            with self.subTest(perk=top):
+                self.assertEqual(level(rows[top]), 28)
+                self.assertIn({"perk": f"core:feature/{base}", "rank": 2}, rows[top]["prerequisite"]["perks"])
+                self.assertEqual(rows[top]["share"]["bonus"], rows[base]["share"]["bonus"])
+                self.assertEqual(rows[top]["share"]["rank_share"], [1])
+                self.assertEqual(rows[top]["share"]["range"], 2 * rows[base]["share"]["range"])
+                self.assertGreater(rows[top]["share"]["turns"], rows[base]["share"]["turns"])
 
 if __name__ == "__main__":
     unittest.main()

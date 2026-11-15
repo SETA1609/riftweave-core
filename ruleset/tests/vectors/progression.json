@@ -882,5 +882,114 @@
     "expect": {
       "error": "perk \"nope\" is not defined"
     }
+  },
+  {
+    "name": "take perk: Bardic Anthem needs Bardic Inspiration at rank 2, not rank 1",
+    "operation": "take_perk",
+    "actor": {
+      "attributes": {
+        "str": 5,
+        "per": 5,
+        "end": 5,
+        "int": 6,
+        "wil": 6,
+        "agi": 5,
+        "cha": 8,
+        "lck": 5
+      },
+      "level": 28,
+      "skills": {
+        "persuasion": 60
+      }
+    },
+    "perks": {
+      "leader": 1,
+      "bardic_inspiration": 1
+    },
+    "perk": "bardic_anthem",
+    "expect": {
+      "taken": false,
+      "perk": "bardic_anthem",
+      "rank": 0,
+      "unmet": [
+        {
+          "needs": "perk",
+          "key": "bardic_inspiration",
+          "min": 2,
+          "has": 1
+        }
+      ]
+    }
+  },
+  {
+    "name": "take perk: with Bardic Inspiration at rank 2 and Persuasion 60, Bardic Anthem is taken",
+    "operation": "take_perk",
+    "actor": {
+      "attributes": {
+        "str": 5,
+        "per": 5,
+        "end": 5,
+        "int": 6,
+        "wil": 6,
+        "agi": 5,
+        "cha": 8,
+        "lck": 5
+      },
+      "level": 28,
+      "skills": {
+        "persuasion": 60
+      }
+    },
+    "perks": {
+      "leader": 1,
+      "bardic_inspiration": 2
+    },
+    "perk": "bardic_anthem",
+    "expect": {
+      "taken": true,
+      "perk": "bardic_anthem",
+      "rank": 1,
+      "unmet": []
+    }
+  },
+  {
+    "name": "take perk: Bardic Inspiration needs Persuasion 30 as well as a magic skill",
+    "operation": "take_perk",
+    "actor": {
+      "attributes": {
+        "str": 5,
+        "per": 5,
+        "end": 5,
+        "int": 6,
+        "wil": 6,
+        "agi": 5,
+        "cha": 8,
+        "lck": 5
+      },
+      "level": 18,
+      "skills": {
+        "red_magic": 50,
+        "persuasion": 20
+      }
+    },
+    "perks": {
+      "leader": 1
+    },
+    "perk": "bardic_inspiration",
+    "expect": {
+      "taken": false,
+      "perk": "bardic_inspiration",
+      "rank": 0,
+      "unmet": [
+        {
+          "needs": "skill",
+          "keys": [
+            "persuasion"
+          ],
+          "min": 30,
+          "has": 20
+        }
+      ]
+    }
   }
 ]

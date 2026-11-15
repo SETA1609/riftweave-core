@@ -1,0 +1,651 @@
+[
+  {
+    "name": "a bard at rank 2 with CHA 8 lends +3 on INT and WIL to an ally 4 units away",
+    "sharers": [
+      {
+        "name": "mara",
+        "attributes": {
+          "cha": 8
+        },
+        "perk": "bardic_inspiration",
+        "rank": 2,
+        "distance": 4
+      }
+    ],
+    "expect": {
+      "modifiers": [
+        {
+          "target": "int",
+          "operation": "add",
+          "value": 3,
+          "source": "share:bardic_inspiration:mara",
+          "origin": "core:origin/morale",
+          "duration": "turns",
+          "turns": 3
+        },
+        {
+          "target": "wil",
+          "operation": "add",
+          "value": 3,
+          "source": "share:bardic_inspiration:mara",
+          "origin": "core:origin/morale",
+          "duration": "turns",
+          "turns": 3
+        }
+      ],
+      "bonus": {
+        "int": 3,
+        "wil": 3
+      }
+    }
+  },
+  {
+    "name": "rank 1 lends half, rounded down: CHA 8 gives +1",
+    "sharers": [
+      {
+        "name": "mara",
+        "attributes": {
+          "cha": 8
+        },
+        "perk": "bardic_inspiration",
+        "rank": 1,
+        "distance": 4
+      }
+    ],
+    "expect": {
+      "modifiers": [
+        {
+          "target": "int",
+          "operation": "add",
+          "value": 1,
+          "source": "share:bardic_inspiration:mara",
+          "origin": "core:origin/morale",
+          "duration": "turns",
+          "turns": 3
+        },
+        {
+          "target": "wil",
+          "operation": "add",
+          "value": 1,
+          "source": "share:bardic_inspiration:mara",
+          "origin": "core:origin/morale",
+          "duration": "turns",
+          "turns": 3
+        }
+      ],
+      "bonus": {
+        "int": 1,
+        "wil": 1
+      }
+    }
+  },
+  {
+    "name": "a skald at rank 1 with CHA 9 lends +2 on STR, END, and AGI",
+    "sharers": [
+      {
+        "name": "orm",
+        "attributes": {
+          "cha": 9
+        },
+        "perk": "skalds_war_chant",
+        "rank": 1,
+        "distance": 2
+      }
+    ],
+    "expect": {
+      "modifiers": [
+        {
+          "target": "str",
+          "operation": "add",
+          "value": 2,
+          "source": "share:skalds_war_chant:orm",
+          "origin": "core:origin/morale",
+          "duration": "turns",
+          "turns": 3
+        },
+        {
+          "target": "end",
+          "operation": "add",
+          "value": 2,
+          "source": "share:skalds_war_chant:orm",
+          "origin": "core:origin/morale",
+          "duration": "turns",
+          "turns": 3
+        },
+        {
+          "target": "agi",
+          "operation": "add",
+          "value": 2,
+          "source": "share:skalds_war_chant:orm",
+          "origin": "core:origin/morale",
+          "duration": "turns",
+          "turns": 3
+        }
+      ],
+      "bonus": {
+        "str": 2,
+        "end": 2,
+        "agi": 2
+      }
+    }
+  },
+  {
+    "name": "two bards do not add: morale keeps the stronger bonus on each attribute",
+    "sharers": [
+      {
+        "name": "mara",
+        "attributes": {
+          "cha": 8
+        },
+        "perk": "bardic_inspiration",
+        "rank": 2,
+        "distance": 4
+      },
+      {
+        "name": "ilse",
+        "attributes": {
+          "cha": 10
+        },
+        "perk": "bardic_inspiration",
+        "rank": 1,
+        "distance": 1
+      }
+    ],
+    "expect": {
+      "modifiers": [
+        {
+          "target": "int",
+          "operation": "add",
+          "value": 3,
+          "source": "share:bardic_inspiration:mara",
+          "origin": "core:origin/morale",
+          "duration": "turns",
+          "turns": 3
+        },
+        {
+          "target": "wil",
+          "operation": "add",
+          "value": 3,
+          "source": "share:bardic_inspiration:mara",
+          "origin": "core:origin/morale",
+          "duration": "turns",
+          "turns": 3
+        },
+        {
+          "target": "int",
+          "operation": "add",
+          "value": 2,
+          "source": "share:bardic_inspiration:ilse",
+          "origin": "core:origin/morale",
+          "duration": "turns",
+          "turns": 3
+        },
+        {
+          "target": "wil",
+          "operation": "add",
+          "value": 2,
+          "source": "share:bardic_inspiration:ilse",
+          "origin": "core:origin/morale",
+          "duration": "turns",
+          "turns": 3
+        }
+      ],
+      "bonus": {
+        "int": 3,
+        "wil": 3
+      }
+    }
+  },
+  {
+    "name": "a bard and a skald lend to different attributes, so both count",
+    "sharers": [
+      {
+        "name": "mara",
+        "attributes": {
+          "cha": 8
+        },
+        "perk": "bardic_inspiration",
+        "rank": 2,
+        "distance": 4
+      },
+      {
+        "name": "orm",
+        "attributes": {
+          "cha": 9
+        },
+        "perk": "skalds_war_chant",
+        "rank": 2,
+        "distance": 3
+      }
+    ],
+    "expect": {
+      "modifiers": [
+        {
+          "target": "int",
+          "operation": "add",
+          "value": 3,
+          "source": "share:bardic_inspiration:mara",
+          "origin": "core:origin/morale",
+          "duration": "turns",
+          "turns": 3
+        },
+        {
+          "target": "wil",
+          "operation": "add",
+          "value": 3,
+          "source": "share:bardic_inspiration:mara",
+          "origin": "core:origin/morale",
+          "duration": "turns",
+          "turns": 3
+        },
+        {
+          "target": "str",
+          "operation": "add",
+          "value": 4,
+          "source": "share:skalds_war_chant:orm",
+          "origin": "core:origin/morale",
+          "duration": "turns",
+          "turns": 3
+        },
+        {
+          "target": "end",
+          "operation": "add",
+          "value": 4,
+          "source": "share:skalds_war_chant:orm",
+          "origin": "core:origin/morale",
+          "duration": "turns",
+          "turns": 3
+        },
+        {
+          "target": "agi",
+          "operation": "add",
+          "value": 4,
+          "source": "share:skalds_war_chant:orm",
+          "origin": "core:origin/morale",
+          "duration": "turns",
+          "turns": 3
+        }
+      ],
+      "bonus": {
+        "int": 3,
+        "wil": 3,
+        "str": 4,
+        "end": 4,
+        "agi": 4
+      }
+    }
+  },
+  {
+    "name": "an ally out of range gets nothing: 7 units from a bard whose range is 6",
+    "sharers": [
+      {
+        "name": "mara",
+        "attributes": {
+          "cha": 8
+        },
+        "perk": "bardic_inspiration",
+        "rank": 2,
+        "distance": 7
+      }
+    ],
+    "expect": {
+      "modifiers": [],
+      "bonus": {}
+    }
+  },
+  {
+    "name": "an ally at exactly the range is reached",
+    "sharers": [
+      {
+        "name": "mara",
+        "attributes": {
+          "cha": 8
+        },
+        "perk": "bardic_inspiration",
+        "rank": 2,
+        "distance": 6
+      }
+    ],
+    "expect": {
+      "modifiers": [
+        {
+          "target": "int",
+          "operation": "add",
+          "value": 3,
+          "source": "share:bardic_inspiration:mara",
+          "origin": "core:origin/morale",
+          "duration": "turns",
+          "turns": 3
+        },
+        {
+          "target": "wil",
+          "operation": "add",
+          "value": 3,
+          "source": "share:bardic_inspiration:mara",
+          "origin": "core:origin/morale",
+          "duration": "turns",
+          "turns": 3
+        }
+      ],
+      "bonus": {
+        "int": 3,
+        "wil": 3
+      }
+    }
+  },
+  {
+    "name": "the bonus lasts its 3 turns: still there after 2",
+    "sharers": [
+      {
+        "name": "mara",
+        "attributes": {
+          "cha": 8
+        },
+        "perk": "bardic_inspiration",
+        "rank": 2,
+        "distance": 4
+      }
+    ],
+    "elapsed_turns": 2,
+    "expect": {
+      "modifiers": [
+        {
+          "target": "int",
+          "operation": "add",
+          "value": 3,
+          "source": "share:bardic_inspiration:mara",
+          "origin": "core:origin/morale",
+          "duration": "turns",
+          "turns": 3
+        },
+        {
+          "target": "wil",
+          "operation": "add",
+          "value": 3,
+          "source": "share:bardic_inspiration:mara",
+          "origin": "core:origin/morale",
+          "duration": "turns",
+          "turns": 3
+        }
+      ],
+      "bonus": {
+        "int": 3,
+        "wil": 3
+      }
+    }
+  },
+  {
+    "name": "the bonus ends after its duration: gone after 3 turns",
+    "sharers": [
+      {
+        "name": "mara",
+        "attributes": {
+          "cha": 8
+        },
+        "perk": "bardic_inspiration",
+        "rank": 2,
+        "distance": 4
+      }
+    ],
+    "elapsed_turns": 3,
+    "expect": {
+      "modifiers": [],
+      "bonus": {}
+    }
+  },
+  {
+    "name": "CHA 5 lends nothing, and a CHA below 5 never a penalty",
+    "sharers": [
+      {
+        "name": "mara",
+        "attributes": {
+          "cha": 5
+        },
+        "perk": "bardic_inspiration",
+        "rank": 2,
+        "distance": 1
+      },
+      {
+        "name": "ilse",
+        "attributes": {
+          "cha": 3
+        },
+        "perk": "skalds_war_chant",
+        "rank": 2,
+        "distance": 1
+      }
+    ],
+    "expect": {
+      "modifiers": [],
+      "bonus": {}
+    }
+  },
+  {
+    "name": "a perk with no share object is refused",
+    "sharers": [
+      {
+        "name": "mara",
+        "attributes": {
+          "cha": 8
+        },
+        "perk": "leader",
+        "rank": 1,
+        "distance": 1
+      }
+    ],
+    "expect": {
+      "error": "share needs a perk with a share object"
+    }
+  },
+  {
+    "name": "a rank the perk does not have is refused",
+    "sharers": [
+      {
+        "name": "mara",
+        "attributes": {
+          "cha": 8
+        },
+        "perk": "bardic_inspiration",
+        "rank": 3,
+        "distance": 1
+      }
+    ],
+    "expect": {
+      "error": "share rank \"3\" is not defined"
+    }
+  },
+  {
+    "name": "tier 2: Bardic Anthem lends all of CHA 8 (+3) at its one rank, 10 units away, for 5 turns",
+    "sharers": [
+      {
+        "name": "mara",
+        "attributes": {
+          "cha": 8
+        },
+        "perk": "bardic_anthem",
+        "rank": 1,
+        "distance": 10
+      }
+    ],
+    "expect": {
+      "modifiers": [
+        {
+          "target": "int",
+          "operation": "add",
+          "value": 3,
+          "source": "share:bardic_anthem:mara",
+          "origin": "core:origin/morale",
+          "duration": "turns",
+          "turns": 5
+        },
+        {
+          "target": "wil",
+          "operation": "add",
+          "value": 3,
+          "source": "share:bardic_anthem:mara",
+          "origin": "core:origin/morale",
+          "duration": "turns",
+          "turns": 5
+        }
+      ],
+      "bonus": {
+        "int": 3,
+        "wil": 3
+      }
+    }
+  },
+  {
+    "name": "tier 2 reaches 12 units and no farther",
+    "sharers": [
+      {
+        "name": "mara",
+        "attributes": {
+          "cha": 8
+        },
+        "perk": "bardic_anthem",
+        "rank": 1,
+        "distance": 13
+      }
+    ],
+    "expect": {
+      "modifiers": [],
+      "bonus": {}
+    }
+  },
+  {
+    "name": "tier 2 lasts 5 turns: there after 4, gone after 5",
+    "sharers": [
+      {
+        "name": "mara",
+        "attributes": {
+          "cha": 8
+        },
+        "perk": "bardic_anthem",
+        "rank": 1,
+        "distance": 4
+      }
+    ],
+    "elapsed_turns": 5,
+    "expect": {
+      "modifiers": [],
+      "bonus": {}
+    }
+  },
+  {
+    "name": "tier 2: Skald's Saga lends all of CHA 9 (+4) on STR, END, and AGI",
+    "sharers": [
+      {
+        "name": "orm",
+        "attributes": {
+          "cha": 9
+        },
+        "perk": "skalds_saga",
+        "rank": 1,
+        "distance": 12
+      }
+    ],
+    "expect": {
+      "modifiers": [
+        {
+          "target": "str",
+          "operation": "add",
+          "value": 4,
+          "source": "share:skalds_saga:orm",
+          "origin": "core:origin/morale",
+          "duration": "turns",
+          "turns": 5
+        },
+        {
+          "target": "end",
+          "operation": "add",
+          "value": 4,
+          "source": "share:skalds_saga:orm",
+          "origin": "core:origin/morale",
+          "duration": "turns",
+          "turns": 5
+        },
+        {
+          "target": "agi",
+          "operation": "add",
+          "value": 4,
+          "source": "share:skalds_saga:orm",
+          "origin": "core:origin/morale",
+          "duration": "turns",
+          "turns": 5
+        }
+      ],
+      "bonus": {
+        "str": 4,
+        "end": 4,
+        "agi": 4
+      }
+    }
+  },
+  {
+    "name": "a bard's Anthem and Inspiration are one morale bonus: the stronger counts",
+    "sharers": [
+      {
+        "name": "mara",
+        "attributes": {
+          "cha": 8
+        },
+        "perk": "bardic_inspiration",
+        "rank": 1,
+        "distance": 4
+      },
+      {
+        "name": "mara",
+        "attributes": {
+          "cha": 8
+        },
+        "perk": "bardic_anthem",
+        "rank": 1,
+        "distance": 4
+      }
+    ],
+    "expect": {
+      "modifiers": [
+        {
+          "target": "int",
+          "operation": "add",
+          "value": 1,
+          "source": "share:bardic_inspiration:mara",
+          "origin": "core:origin/morale",
+          "duration": "turns",
+          "turns": 3
+        },
+        {
+          "target": "wil",
+          "operation": "add",
+          "value": 1,
+          "source": "share:bardic_inspiration:mara",
+          "origin": "core:origin/morale",
+          "duration": "turns",
+          "turns": 3
+        },
+        {
+          "target": "int",
+          "operation": "add",
+          "value": 3,
+          "source": "share:bardic_anthem:mara",
+          "origin": "core:origin/morale",
+          "duration": "turns",
+          "turns": 5
+        },
+        {
+          "target": "wil",
+          "operation": "add",
+          "value": 3,
+          "source": "share:bardic_anthem:mara",
+          "origin": "core:origin/morale",
+          "duration": "turns",
+          "turns": 5
+        }
+      ],
+      "bonus": {
+        "int": 3,
+        "wil": 3
+      }
+    }
+  }
+]

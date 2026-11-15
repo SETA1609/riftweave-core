@@ -2159,6 +2159,218 @@
       ]
     },
     {
+      "key": "bardic_inspiration",
+      "label": "Bardic Inspiration",
+      "description": "Your voice and your will steady those around you: spend the inspire action and every ally within 6 units adds half your CHA modifier (CHA - 5, never below 0) to INT and WIL for 3 turns, or all of it at rank 2, and your Persuasion +5. Two bards do not add up; the stronger counts.",
+      "type": "perk",
+      "category": "social",
+      "prerequisite": {
+        "level": 18,
+        "abilities": {
+          "cha": 7
+        },
+        "skills": [
+          {
+            "id": [
+              "core:skill/red_magic",
+              "core:skill/orange_magic",
+              "core:skill/yellow_magic",
+              "core:skill/green_magic",
+              "core:skill/blue_magic",
+              "core:skill/indigo_magic",
+              "core:skill/violet_magic",
+              "core:skill/white_magic",
+              "core:skill/black_magic"
+            ],
+            "label": [
+              "Red Magic",
+              "Orange Magic",
+              "Yellow Magic",
+              "Green Magic",
+              "Blue Magic",
+              "Indigo Magic",
+              "Violet Magic",
+              "White Magic",
+              "Black Magic"
+            ],
+            "min": 45
+          },
+          {
+            "id": "core:skill/persuasion",
+            "label": "Persuasion",
+            "min": 30
+          }
+        ],
+        "perks": [
+          "core:feature/leader"
+        ]
+      },
+      "ranks": 2,
+      "share": {
+        "bonus": "core:summon_bonus/magic",
+        "range": 6,
+        "turns": 3
+      },
+      "modifiers": [
+        {
+          "target": "persuasion",
+          "operation": "add",
+          "value": 5,
+          "source": "feature:bardic_inspiration",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "skalds_war_chant",
+      "label": "Skald's War Chant",
+      "description": "Your chant drives the arms of those around you: spend the inspire action and every ally within 6 units adds half your CHA modifier (CHA - 5, never below 0) to STR, END, and AGI for 3 turns, or all of it at rank 2, and your Intimidation +5. Two skalds do not add up; the stronger counts.",
+      "type": "perk",
+      "category": "social",
+      "prerequisite": {
+        "level": 18,
+        "abilities": {
+          "cha": 7
+        },
+        "skills": [
+          {
+            "id": [
+              "core:skill/blades",
+              "core:skill/blunt",
+              "core:skill/piercing",
+              "core:skill/unarmed",
+              "core:skill/bows",
+              "core:skill/crossbows",
+              "core:skill/guns",
+              "core:skill/throwing_weapons"
+            ],
+            "label": [
+              "Blades",
+              "Blunt",
+              "Piercing",
+              "Unarmed",
+              "Bows",
+              "Crossbows",
+              "Guns",
+              "Throwing Weapons"
+            ],
+            "min": 45
+          },
+          {
+            "id": "core:skill/intimidation",
+            "label": "Intimidation",
+            "min": 30
+          }
+        ],
+        "perks": [
+          "core:feature/leader"
+        ]
+      },
+      "ranks": 2,
+      "share": {
+        "bonus": "core:summon_bonus/physical",
+        "range": 6,
+        "turns": 3
+      },
+      "modifiers": [
+        {
+          "target": "intimidation",
+          "operation": "add",
+          "value": 5,
+          "source": "feature:skalds_war_chant",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "bardic_anthem",
+      "label": "Bardic Anthem",
+      "description": "Your song carries across the field: spend the inspire action and every ally within 12 units adds your whole CHA modifier (CHA - 5, never below 0) to INT and WIL for 5 turns, and your Persuasion +5. It does not add to your Bardic Inspiration; the stronger counts.",
+      "type": "perk",
+      "category": "social",
+      "prerequisite": {
+        "level": 28,
+        "abilities": {
+          "cha": 8
+        },
+        "skills": [
+          {
+            "id": "core:skill/persuasion",
+            "label": "Persuasion",
+            "min": 60
+          }
+        ],
+        "perks": [
+          {
+            "perk": "core:feature/bardic_inspiration",
+            "rank": 2
+          }
+        ]
+      },
+      "ranks": 1,
+      "share": {
+        "bonus": "core:summon_bonus/magic",
+        "range": 12,
+        "turns": 5,
+        "rank_share": [
+          1
+        ]
+      },
+      "modifiers": [
+        {
+          "target": "persuasion",
+          "operation": "add",
+          "value": 5,
+          "source": "feature:bardic_anthem",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "skalds_saga",
+      "label": "Skald's Saga",
+      "description": "Your saga drives the whole line: spend the inspire action and every ally within 12 units adds your whole CHA modifier (CHA - 5, never below 0) to STR, END, and AGI for 5 turns, and your Intimidation +5. It does not add to your War Chant; the stronger counts.",
+      "type": "perk",
+      "category": "social",
+      "prerequisite": {
+        "level": 28,
+        "abilities": {
+          "cha": 8
+        },
+        "skills": [
+          {
+            "id": "core:skill/intimidation",
+            "label": "Intimidation",
+            "min": 60
+          }
+        ],
+        "perks": [
+          {
+            "perk": "core:feature/skalds_war_chant",
+            "rank": 2
+          }
+        ]
+      },
+      "ranks": 1,
+      "share": {
+        "bonus": "core:summon_bonus/physical",
+        "range": 12,
+        "turns": 5,
+        "rank_share": [
+          1
+        ]
+      },
+      "modifiers": [
+        {
+          "target": "intimidation",
+          "operation": "add",
+          "value": 5,
+          "source": "feature:skalds_saga",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
       "key": "diplomat",
       "label": "Diplomat",
       "description": "Even a drawn sword can be talked down: you may parley with hostile foes.",

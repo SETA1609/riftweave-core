@@ -75,8 +75,8 @@
             },
             "perks": {
               "type": "array",
-              "description": "Prerequisite perk refs (namespaced core:feature/<key>) that must already be owned",
-              "items": { "$ref": "schema.json#/definitions/featureRef" }
+              "description": "Prerequisite perks that must already be owned: a ref (core:feature/<key>), held at any rank, or a held perk { perk, rank } that must be held at that rank or above (M3-14).",
+              "items": { "oneOf": [ { "$ref": "schema.json#/definitions/featureRef" }, { "$ref": "schema.json#/definitions/heldPerk" } ] }
             },
             "other": { "type": "string" }
           },
@@ -94,6 +94,18 @@
         },
         "unlocks": { "type": "array", "items": { "oneOf": [ { "$ref": "schema.json#/definitions/monsterTemplateRef" }, { "$ref": "schema.json#/definitions/materialRef" } ] }, "uniqueItems": true, "minItems": 1, "description": "What the perk unlocks beyond a number a modifier holds: a summon power or nature (core:monster_template/<key>), or a bound weapon's material (docs/modules/monsters.md#summoned-creatures). Each ref must resolve." },
         "summon_bonus": { "$ref": "schema.json#/definitions/summonBonusRef", "description": "A summon bonus this perk grants: the caster's attribute modifier adds to that group of a summoned creature's attributes (docs/modules/magic.md#summon-groups). The ref must resolve." },
+        "share": {
+          "type": "object",
+          "description": "What this perk lends to allies within range: the holder's attribute modifier on a group of attributes, as a morale modifier for some turns (docs/core/share.md, M3-14). Started by the inspire action.",
+          "properties": {
+            "bonus": { "$ref": "schema.json#/definitions/summonBonusRef", "description": "The group lent to, and the attribute read, with a share per rank: a row of summons/bonuses.json. The ref must resolve." },
+            "range": { "type": "number", "exclusiveMinimum": 0, "description": "Units: an ally farther away gets nothing." },
+            "turns": { "type": "integer", "minimum": 1, "description": "How many turns the lent bonus lasts." },
+            "rank_share": { "type": "array", "minItems": 1, "items": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 }, "description": "The share of the modifier per rank for this perk, in place of the group's (a tier-2 perk lends all of it at rank 1)." }
+          },
+          "required": ["bonus", "range", "turns"],
+          "additionalProperties": false
+        },
         "natural_weapon": {
           "$ref": "schema.json#/definitions/naturalWeaponRef",
           "description": "The natural weapon this feature gives: a row of natural_weapons/core.json, rolled with the unarmed skill and sized by the actor's size (docs/modules/monsters.md#natural-weapons). The ref must resolve."

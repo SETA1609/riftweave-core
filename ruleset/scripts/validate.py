@@ -754,6 +754,7 @@ def check_references(
                 continue
             pr = f.get("prerequisite", {})
             for pid in pr.get("perks", []):
+                pid = pid.get("perk") if isinstance(pid, dict) else pid  # a held perk names its rank too
                 if isinstance(pid, str) and not resolve_namespaced_ref(
                     pid, namespaced_ref_index
                 ):
