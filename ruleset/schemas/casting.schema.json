@@ -70,6 +70,7 @@
           "required": ["magnitude_factor", "area_factor", "target_multiplier"],
           "additionalProperties": false
         },
+        "summon_limit": { "type": "integer", "minimum": 1, "description": "Active summons a caster holds before perks raise it; past it, a new summon dismisses the oldest (docs/core/casting.md#summons)." },
         "research": {
           "type": "object",
           "description": "The Research downtime action: what one attempt to learn an effect takes, spent whatever the roll (docs/modules/magic.md#spell-knowledge).",

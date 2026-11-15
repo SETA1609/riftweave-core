@@ -189,6 +189,10 @@ Every spell, authored or crafted, costs what §5's formula gives for its effects
 
 ### Summon groups
 
+A caster has one summon at a time unless a perk says otherwise: **Retinue** (level 14) allows two,
+and **Host** (level 28, needs Retinue) three, each an `add 1` on `summon_limit`. A new summon past
+the limit dismisses the oldest ([casting.md](../core/casting.md#summons)). [A]
+
 A summon spell may exist only once what it summons is data. A `summon` effect's `parameter`
 is a group, `core:summon/<key>`, from `summons/core.json`. A group lists its `variants` as
 `core:monster/<key>` refs, and the caster picks one when casting [A]. `magnitude` is how many

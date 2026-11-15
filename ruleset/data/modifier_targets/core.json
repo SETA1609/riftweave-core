@@ -92,6 +92,7 @@
     {"key": "staggered_immune", "label": "Unstaggerable", "kind": "flag", "description": "The actor cannot be staggered.", "pending": true},
     {"key": "starting_skill_points", "label": "Starting Skill Points", "kind": "number", "description": "Skill points added to the pool spent at character creation.", "pending": true},
     {"key": "stealth_in_darkness", "label": "Stealth in Darkness", "kind": "number", "description": "Points on stealth while in dim light or darkness.", "pending": true},
+    {"key": "summon_limit", "label": "Summon Limit", "kind": "number", "description": "Active summons a caster holds past the base summon_limit of casting/core.json; past it, a new summon dismisses the oldest (docs/core/casting.md#summons)."},
     {"key": "summon_duration", "label": "Summon Duration", "kind": "number", "description": "Multiplier on summon duration: 1.25 is 25% more, 0.5 is half.", "pending": true},
     {"key": "sunlight_sensitive", "label": "Sunlight Sensitive", "kind": "flag", "description": "The actor is hindered on checks in bright sunlight; the feature's description says how.", "pending": true},
     {"key": "surprise_immune", "label": "Unsurprisable", "kind": "flag", "description": "The actor cannot be surprised.", "pending": true},
