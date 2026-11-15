@@ -1,5 +1,7 @@
 # Contributing to Riftweave
 
+Modified: 2026-11-15
+
 Thanks for your interest in Riftweave! This repository is a **data-oriented,
 engine-agnostic cRPG ruleset**. The product *is* the data: a set of JSON files
 describing attributes, skills, perks, effects, spells, items, and ancestries,
@@ -196,6 +198,28 @@ one name.
   sentences (`test_crit_on_roll_under_five_is_tagged`).
 - **Renaming a key is breaking.** It goes in its own issue and is marked **(breaking)** in
   the changelog.
+
+### JSON format
+
+Every JSON file is plain JSON (no comments, no trailing commas), so any reader parses it. One
+formatter lays it out, `ruleset/scripts/format_json.py`, so a diff shows a change and not a
+restyle:
+
+- **Indent** 2 spaces.
+- **One line when it fits.** An object or array whose one-line form fits in 100 columns, at
+  its indent and with its key and comma, stays on one line: `{ "target": "hp", "op": "add",
+  "value": 15 }`, `["fire", "cold"]`. Otherwise each member goes on its own line, and the rule
+  applies again inside.
+- **Spaces inside an object's braces** on one line; none inside an array's brackets.
+- **Nothing is reordered or rewritten.** Keys stay in the order written, numbers keep their
+  spelling (`1.0` stays `1.0`), strings are never wrapped, so a long `description` may pass
+  100 columns, and UTF-8 stays UTF-8 (no `\u` escapes).
+- **One trailing newline.**
+
+`./scripts/format-json.sh` formats the paths in `ruleset/scripts/format_paths.txt`, or the
+paths it is given; `--check` only lists the files it would change and fails if there are any.
+CI runs the check on the listed paths, so a listed file cannot drift. Formatting a formatted
+file changes nothing. The list grows as M5-52 formats each collection.
 
 ## Submitting
 

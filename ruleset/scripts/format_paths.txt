@@ -1,0 +1,2 @@
+# Paths the format check covers (CONTRIBUTING.md#json-format), relative to the repo root.
+# One file or directory per line. M5-52 adds each collection as it is formatted.

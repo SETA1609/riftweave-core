@@ -46,5 +46,6 @@ clean-directories = [
 
 [tool.devops-tools.container.commands]
 validate = ["python", "ruleset/scripts/validate.py"]
+format-json = ["python", "ruleset/scripts/format_json.py"]
 test = ["python", "-m", "unittest", "discover", "-s", "ruleset/scripts", "-p", "test_*.py"]
 python = ["python"]
