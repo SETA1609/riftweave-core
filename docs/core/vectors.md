@@ -1,5 +1,7 @@
 # Vectors
 
+Modified: 2026-11-15
+
 Author: SETA1609
 
 One file is the contract between implementations. An actor, a modifier list, a seeded roll, an expected result. Python runs it, and the Go core in `backend/` runs the same file. A second implementation that disagrees fails the vector, not a review comment.
@@ -85,5 +87,6 @@ Every kernel function and the vector file that covers it. The test reads this ta
 | `spellcraft` | `spellcraft.json` | covered |
 | `consume` | `consume.json` | covered |
 | `stored_actor` | `stored_actor.json` | covered |
+| `share` | `share.json` | pending M3-14 |
 
 The modifier vectors cover every operation, mixed operations, same-source duplicates, origins, and expiry. The condition vectors apply and remove each of the 24 conditions once, plus stacks and multi-condition effects.

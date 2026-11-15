@@ -1,5 +1,7 @@
 # Core System: Attributes, Skills, Perks, Magic
 
+Modified: 2026-11-15
+
 Riftweave is a **classless, d100 roll-under cRPG ruleset**. A character is the sum
 of eight attributes, a spread of point-buy skills (some tagged), and a stack of
 perks. The numeric formulas below are the **ruleset reference**; a consuming game or
@@ -379,6 +381,10 @@ needs a lower perk (`iron_fist` needs `brawler`, `archmage` needs
 is a strictly worse copy of the other; `ruleset/scripts/test_perks.py` checks this, the
 count, the gates, and that each prerequisite perk exists at a lower or equal tier.
 [V 2026-11-06]
+
+Two tier-18 perks lend CHA to allies and need `leader` (tier 12): Bardic Inspiration, on the
+magic group, and Skald's War Chant, on the physical group, each with two ranks. What an ally
+gets, how far it reaches, and how long it lasts are in [share.md](../core/share.md) (M3-14).
 
 ## Magic — 9 color schools
 

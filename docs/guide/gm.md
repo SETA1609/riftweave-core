@@ -1,5 +1,7 @@
 # Running the game
 
+Modified: 2026-11-15
+
 ## Pacing
 
 - **Keep it moving.** A turn is a few AP and one roll. If a player is stuck, ask what they want to happen, then name the action that does it.
@@ -53,6 +55,8 @@ If no skill fits, use an attribute: its value × 10 is the target.
 **Damage you have to invent.** Use the band for the party's level: a falling crate is about what a monster of that level would deal. For a fall, roll the same way, and let armor help only if it would.
 
 **Conditions you have to invent.** Pick the nearest [condition](../modules/conditions.md) instead of writing a new one. A held-down character is restrained, and a dazed one is staggered.
+
+**Allies who lend CHA.** A bard or a skald's `inspire` reaches every ally within its range in units, which you measure on the map or call by eye in the theatre of the mind: within shouting distance, about 6 squares. Track it like any timed effect, with a die turned to the turns left. If two characters inspire the same ally, only the bigger bonus counts on each attribute, so a second bard helps only when the first is out of range or out of turns ([share](../core/share.md)).
 
 **What happens at 0 HP.** The core rules leave this to you. A simple default: at 0 HP a character is down and out of the fight, and an ally can bring them round with healing or a short rest. Decide before the first fight, and tell the players.
 
