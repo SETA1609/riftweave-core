@@ -132,5 +132,28 @@ class TestSummonLimitPerks(unittest.TestCase):
             self.assertIn(("summon_limit", "add", 1), {(m["target"], m["operation"], m["value"]) for m in perk["modifiers"]})
 
 
+
+class TestSharePerks(unittest.TestCase):
+    """M3-14: the bard and skald perks lend CHA to allies (docs/core/share.md)."""
+
+    def test_the_ladder_starts_at_leader_and_each_share_perk_needs_it_at_a_higher_level(self):
+        rows = {perk["key"]: perk for perk in perks()}
+        sharing = [perk for perk in perks() if "share" in perk]
+        self.assertEqual({perk["key"] for perk in sharing}, {"bardic_inspiration", "skalds_war_chant"})
+        for perk in sharing:
+            with self.subTest(perk=perk["key"]):
+                self.assertIn("core:feature/leader", perk["prerequisite"]["perks"])
+                self.assertGreater(level(perk), level(rows["leader"]))
+                self.assertGreaterEqual(perk["prerequisite"]["abilities"]["cha"], rows["leader"]["prerequisite"]["abilities"]["cha"])
+                self.assertEqual(perk["ranks"], 2)
+
+    def test_the_bard_leans_on_magic_and_the_skald_on_weapons(self):
+        rows = {perk["key"]: perk for perk in perks()}
+        bard, skald = rows["bardic_inspiration"], rows["skalds_war_chant"]
+        self.assertEqual(bard["share"]["bonus"], "core:summon_bonus/magic")
+        self.assertEqual(skald["share"]["bonus"], "core:summon_bonus/physical")
+        self.assertTrue(all(ref.endswith("_magic") for ref in bard["prerequisite"]["skills"][0]["id"]))
+        self.assertFalse(any(ref.endswith("_magic") for ref in skald["prerequisite"]["skills"][0]["id"]))
+
 if __name__ == "__main__":
     unittest.main()

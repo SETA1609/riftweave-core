@@ -373,7 +373,7 @@ scale yet states its unit in its description.
 
 ### The catalogue
 
-82 perks (`type: perk`) in `features/core.json`, at five level tiers (1, 6, 12, 18,
+94 perks (`type: perk`) in `features/core.json`, at five level tiers (1, 6, 12, 18,
 24, read from `prerequisite.level`; no level is tier 1). Every attribute gates at least
 one perk, and combat, magic, and social have at least eight each. A higher tier often
 needs a lower perk (`iron_fist` needs `brawler`, `archmage` needs
