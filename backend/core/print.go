@@ -95,7 +95,7 @@ func runPrint(ruleset *data.Ruleset, input printInput) (printResult, error) {
 		return printResult{}, err
 	}
 	var page bytes.Buffer
-	if err := pageTemplate.Execute(&page, map[string]any{"Title": title, "Sections": sections}); err != nil {
+	if err := pageTemplate.Execute(&page, map[string]any{"Title": title, "Style": pageStyle, "Sections": sections}); err != nil {
 		return printResult{}, err
 	}
 	return printResult{Title: title, HTML: page.String()}, nil
@@ -279,9 +279,16 @@ func printCondition(ruleset *data.Ruleset, key string) (string, []pageSection, e
 	return condition.Label, []pageSection{{Heading: condition.Description, Rows: rows}, {Heading: "Modifiers", Notes: modifiers}}, nil
 }
 
-// pageTemplate is templates/print.html, compiled into the binary.
+// The page is templates/print.html with templates/print.css inlined into its <style>, so the
+// printout stays one self-contained file. Both are compiled into the binary.
 //
 //go:embed templates/print.html
 var pageSource string
+
+// pageStyle is template.CSS so html/template writes it into <style> unchanged: it is our own
+// file, never data.
+//
+//go:embed templates/print.css
+var pageStyle template.CSS
 
 var pageTemplate = template.Must(template.New("print.html").Parse(pageSource))
