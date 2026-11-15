@@ -1,0 +1,43 @@
+{
+  "$schema": "./command.schema.json",
+  "name": "share",
+  "summary": "What one ally gets from the bards and skalds near it: each sharer within its perk's range lends its CHA modifier to the perk's group as a morale modifier for some turns; the strongest counts per attribute.",
+  "documentation": "docs/core/share.md",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "sharers": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string", "minLength": 1, "description": "Who shares; it makes each sharer's modifiers a source of its own." },
+            "attributes": { "$ref": "common.json#/definitions/attributes" },
+            "perk": { "$ref": "common.json#/definitions/key", "description": "A feature with a share object." },
+            "rank": { "type": "integer", "minimum": 1 },
+            "distance": { "type": "number", "minimum": 0, "description": "Units from the ally." }
+          },
+          "required": ["name", "attributes", "perk", "distance"],
+          "additionalProperties": false
+        }
+      },
+      "elapsed_turns": { "type": "integer", "minimum": 0, "description": "Turns since the sharers started; a bonus whose turns have elapsed is gone." }
+    },
+    "required": ["sharers"],
+    "additionalProperties": false
+  },
+  "result_schema": {
+    "type": "object",
+    "properties": {
+      "modifiers": { "$ref": "common.json#/definitions/modifiers" },
+      "bonus": {
+        "type": "object",
+        "description": "Per attribute, the bonus that counts after morale keeps the strongest.",
+        "propertyNames": { "$ref": "../../ruleset/schemas/schema.json#/definitions/ability" },
+        "additionalProperties": { "type": "integer" }
+      }
+    },
+    "required": ["modifiers", "bonus"],
+    "additionalProperties": false
+  }
+}

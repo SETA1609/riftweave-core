@@ -69,7 +69,7 @@ caller measures in units ([contract.md](contract.md#distance)). [A]
 ## Input and result
 
 ```
-input   sharers: [{ name, attributes: { cha }, perk: core:feature/<key>, rank, distance }]
+input   sharers: [{ name, attributes: { cha }, perk: <feature key>, rank, distance }]
         elapsed_turns: turns since the sharers started (default 0)
 result  modifiers: the live modifiers on the ally
         bonus: { <attribute>: the value that counts }
