@@ -81,7 +81,7 @@
           "type": "object",
           "properties": {
             "quantity": { "type": "integer", "minimum": 1 },
-            "unit": { "type": "string", "enum": ["cp", "sp", "gp", "pp"] }
+            "unit": { "type": "string", "enum": ["copper", "silver", "gold", "platinum"] }
           },
           "required": ["quantity", "unit"],
           "additionalProperties": false
