@@ -30,7 +30,7 @@
     "merchant": "general_store",
     "item_cost": {
       "quantity": 10,
-      "unit": "gp"
+      "unit": "gold"
     },
     "expect": {
       "base_cp": 1000,

@@ -181,8 +181,9 @@ one name.
   (`damage_fire`, `fortify_strength`, `potion_minor_healing`). No invented abbreviations or
   dropped vowels (`dmg`, `pot`, `mgr`).
 - **Allowed abbreviations** are the game's own terms: the ability enum (`str`, `per`, `end`,
-  `int`, `wil`, `agi`, `cha`, `lck`), `hp`, `mp`, `ap`, `dr`, `xp`, `crit`, `id`, `min`,
-  `max`. Anything else is spelled out.
+  `int`, `wil`, `agi`, `cha`, `lck`), `hp`, `mp`, `sp` (stamina), `ap`, `dr`, `xp`, `crit`, `id`,
+  `min`, `max`. Anything else is spelled out, coins included (`copper`, `silver`, `gold`,
+  `platinum`), so no abbreviation names two things.
 - **Schema property casing** is mixed today: older schemas use `camelCase` (`hitPoints`,
   `durationType`), newer ones `snake_case` (`base_key`, `enchantment_slots`). A new property
   follows the schema it extends. Unifying them renames keys, so it is a breaking change for

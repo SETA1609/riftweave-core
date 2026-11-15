@@ -36,7 +36,7 @@ def resolved_weapons():
 
 
 def tier(cost):
-    gold = to_copper(cost) / to_copper({"quantity": 1, "unit": "gp"})
+    gold = to_copper(cost) / to_copper({"quantity": 1, "unit": "gold"})
     return 1 + sum(gold >= bound for bound in TIER_BOUNDS_GP)
 
 

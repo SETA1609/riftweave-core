@@ -8,7 +8,7 @@
       "type": "tool",
       "cost": {
         "quantity": 25,
-        "unit": "gp"
+        "unit": "gold"
       },
       "weight": 1,
       "gear": {
@@ -30,7 +30,7 @@
       "type": "tool",
       "cost": {
         "quantity": 5,
-        "unit": "gp"
+        "unit": "gold"
       },
       "weight": 3,
       "gear": {
@@ -53,7 +53,7 @@
       "type": "tool",
       "cost": {
         "quantity": 25,
-        "unit": "gp"
+        "unit": "gold"
       },
       "weight": 12,
       "gear": {
@@ -75,7 +75,7 @@
       "type": "tool",
       "cost": {
         "quantity": 50,
-        "unit": "gp"
+        "unit": "gold"
       },
       "weight": 8,
       "gear": {
@@ -97,7 +97,7 @@
       "type": "tool",
       "cost": {
         "quantity": 20,
-        "unit": "gp"
+        "unit": "gold"
       },
       "weight": 8,
       "gear": {
@@ -119,7 +119,7 @@
       "type": "tool",
       "cost": {
         "quantity": 15,
-        "unit": "gp"
+        "unit": "gold"
       },
       "weight": 4,
       "gear": {
@@ -141,7 +141,7 @@
       "type": "tool",
       "cost": {
         "quantity": 25,
-        "unit": "gp"
+        "unit": "gold"
       },
       "weight": 2,
       "gear": {
@@ -163,7 +163,7 @@
       "type": "tool",
       "cost": {
         "quantity": 25,
-        "unit": "gp"
+        "unit": "gold"
       },
       "weight": 3,
       "gear": {
@@ -185,7 +185,7 @@
       "type": "adventuring_gear",
       "cost": {
         "quantity": 1,
-        "unit": "gp"
+        "unit": "gold"
       },
       "weight": 5,
       "gear": {}
@@ -197,7 +197,7 @@
       "type": "adventuring_gear",
       "cost": {
         "quantity": 1,
-        "unit": "cp"
+        "unit": "copper"
       },
       "weight": 1,
       "gear": {
@@ -211,7 +211,7 @@
       "type": "adventuring_gear",
       "cost": {
         "quantity": 5,
-        "unit": "gp"
+        "unit": "gold"
       },
       "weight": 2,
       "gear": {}
@@ -223,7 +223,7 @@
       "type": "adventuring_gear",
       "cost": {
         "quantity": 10,
-        "unit": "sp"
+        "unit": "silver"
       },
       "weight": 3,
       "gear": {}
@@ -235,7 +235,7 @@
       "type": "adventuring_gear",
       "cost": {
         "quantity": 2,
-        "unit": "gp"
+        "unit": "gold"
       },
       "weight": 10,
       "gear": {}
@@ -247,7 +247,7 @@
       "type": "adventuring_gear",
       "cost": {
         "quantity": 2,
-        "unit": "gp"
+        "unit": "gold"
       },
       "weight": 2,
       "gear": {}
@@ -259,7 +259,7 @@
       "type": "adventuring_gear",
       "cost": {
         "quantity": 2,
-        "unit": "sp"
+        "unit": "silver"
       },
       "weight": 2,
       "gear": {}
@@ -271,7 +271,7 @@
       "type": "adventuring_gear",
       "cost": {
         "quantity": 2,
-        "unit": "gp"
+        "unit": "gold"
       },
       "weight": 2,
       "gear": {}
@@ -283,7 +283,7 @@
       "type": "adventuring_gear",
       "cost": {
         "quantity": 1,
-        "unit": "cp"
+        "unit": "copper"
       },
       "weight": 0,
       "gear": {
@@ -297,7 +297,7 @@
       "type": "adventuring_gear",
       "cost": {
         "quantity": 5,
-        "unit": "sp"
+        "unit": "silver"
       },
       "weight": 1,
       "gear": {}

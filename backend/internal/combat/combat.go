@@ -130,7 +130,7 @@ func situationModifiers(ruleset *data.Ruleset, input *Input, delivery string) ([
 	}
 	if calledShot.Attack != 0 {
 		modifiers = append(modifiers, modifier.Modifier{
-			Target:    "attack",
+			Target:    "attack_roll",
 			Operation: modifier.Add,
 			Value:     float64(calledShot.Attack),
 			Source:    "called_shot:" + calledShot.Key,

@@ -90,7 +90,7 @@ class TestChecks(unittest.TestCase):
         self.assertEqual(subjects(findings, "monster_hits_to_kill"), ["golem", "rat"])
 
 
-def drink(key, toxicity, effects, cost=(25, "gp")):
+def drink(key, toxicity, effects, cost=(25, "gold")):
     return {"key": key, "type": "potion", "cost": {"quantity": cost[0], "unit": cost[1]},
             "consumable": {"delivery": "drink", "toxicity": toxicity, "effects": effects}}
 
@@ -116,7 +116,7 @@ POTION_BANDS = {**BANDS, "toxicity": {"tolerance": 5}, "magic_skill": 50, "scrol
 
 
 def scroll(key, gold, spell="core:spell/fire_bolt"):
-    return {"key": key, "type": "scroll", "cost": {"quantity": gold, "unit": "gp"},
+    return {"key": key, "type": "scroll", "cost": {"quantity": gold, "unit": "gold"},
             "consumable": {"delivery": "read", "spell": spell}}
 
 

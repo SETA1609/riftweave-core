@@ -379,7 +379,7 @@ def situation_modifiers(vector, delivery):
     if "called_shot" in vector:
         called = next(c for c in data["called_shots"] if c["key"] == vector["called_shot"])
         if called["attack"]:
-            modifiers.append({"target": "attack", "operation": "add", "value": called["attack"], "source": f"called_shot:{called['key']}"})
+            modifiers.append({"target": "attack_roll", "operation": "add", "value": called["attack"], "source": f"called_shot:{called['key']}"})
     return modifiers, called
 
 
@@ -398,7 +398,7 @@ def run_combat(vector):
 
     attack = run_resolution(
         {
-            "actor": {"skills": {"attack": attacker["skill"]}, "attributes": attacker.get("attributes", {})},
+            "actor": {"skills": {"attack_roll": attacker["skill"]}, "attributes": attacker.get("attributes", {})},
             "modifiers": vector.get("modifiers", []) + situation_mods,
             "roll": attacker["roll"],
         }

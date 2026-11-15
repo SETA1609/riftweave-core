@@ -28,7 +28,7 @@
           "kind": "coins",
           "coins": {
             "quantity": 3,
-            "unit": "sp"
+            "unit": "silver"
           }
         },
         {
@@ -37,7 +37,7 @@
           "kind": "coins",
           "coins": {
             "quantity": 1,
-            "unit": "gp"
+            "unit": "gold"
           }
         },
         {
@@ -73,7 +73,7 @@
           "kind": "coins",
           "coins": {
             "quantity": 2,
-            "unit": "sp"
+            "unit": "silver"
           }
         },
         {
@@ -102,7 +102,7 @@
           "kind": "coins",
           "coins": {
             "quantity": 5,
-            "unit": "gp"
+            "unit": "gold"
           }
         },
         {
@@ -126,7 +126,7 @@
           "kind": "coins",
           "coins": {
             "quantity": 20,
-            "unit": "gp"
+            "unit": "gold"
           }
         },
         {
@@ -164,7 +164,7 @@
           "kind": "coins",
           "coins": {
             "quantity": 50,
-            "unit": "gp"
+            "unit": "gold"
           }
         },
         {

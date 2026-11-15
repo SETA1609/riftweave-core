@@ -11,6 +11,6 @@
       "area_factor": 0.05,
       "target_multiplier": { "self": 1.0, "touch": 1.0, "ranged": 1.5, "area": 2.0, "world": 3.0 }
     },
-    "research": { "days": 7, "cost": { "quantity": 50, "unit": "gp" } }
+    "research": { "days": 7, "cost": { "quantity": 50, "unit": "gold" } }
   }
 }

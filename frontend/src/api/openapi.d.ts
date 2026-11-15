@@ -473,7 +473,7 @@ export interface components {
         cost: {
             quantity: number;
             /** @enum {string} */
-            unit: "cp" | "sp" | "gp" | "pp";
+            unit: "copper" | "silver" | "gold" | "platinum";
         };
         d100: number;
         /** @description Any command may return this instead of its result. */

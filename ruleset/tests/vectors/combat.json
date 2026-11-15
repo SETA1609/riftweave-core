@@ -153,7 +153,7 @@
     },
     "modifiers": [
       {
-        "target": "attack",
+        "target": "attack_roll",
         "operation": "add",
         "value": 10,
         "source": "perk:test"

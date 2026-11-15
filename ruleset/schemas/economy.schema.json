@@ -19,14 +19,14 @@
     "currency": {
       "type": "object",
       "properties": {
-        "base": { "type": "string", "enum": ["cp", "sp", "gp", "pp"] },
+        "base": { "type": "string", "enum": ["copper", "silver", "gold", "platinum"] },
         "denominations": {
           "type": "array",
           "minItems": 1,
           "items": {
             "type": "object",
             "properties": {
-              "unit": { "type": "string", "enum": ["cp", "sp", "gp", "pp"] },
+              "unit": { "type": "string", "enum": ["copper", "silver", "gold", "platinum"] },
               "label": { "type": "string" },
               "value": { "type": "integer", "minimum": 1, "description": "Worth in base units." }
             },
