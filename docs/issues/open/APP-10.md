@@ -1,5 +1,5 @@
 #### APP-10 Spell authoring in the backend and frontend, with JSON export
-- Status: doing
+- Status: review
 - Priority: low
 - Needs: APP-06, APP-07, M3-06
 - Modified: 2026-11-15
