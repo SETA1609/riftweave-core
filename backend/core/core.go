@@ -112,10 +112,16 @@ type Core struct{ rules *data.Ruleset }
 
 // New loads the ruleset from the data directory held by fileSystem, and only the modules given.
 func New(fileSystem fs.FS, modules ...fs.FS) (*Core, error) {
+	return NewWithSchemas(fileSystem, nil, modules...)
+}
+
+// NewWithSchemas is New with ruleset/schemas, which the author command checks drafts against.
+func NewWithSchemas(fileSystem, schemas fs.FS, modules ...fs.FS) (*Core, error) {
 	ruleset, err := data.Load(fileSystem, modules...)
 	if err != nil {
 		return nil, err
 	}
+	ruleset.Schemas = schemas
 	return &Core{ruleset}, nil
 }
 
@@ -134,7 +140,11 @@ func Open(directory string) (*Core, error) {
 			modules = append(modules, os.DirFS(module))
 		}
 	}
-	return New(os.DirFS(directory), modules...)
+	var schemas fs.FS
+	if info, statError := os.Stat(filepath.Join(directory, "..", "schemas")); statError == nil && info.IsDir() {
+		schemas = os.DirFS(filepath.Join(directory, "..", "schemas"))
+	}
+	return NewWithSchemas(os.DirFS(directory), schemas, modules...)
 }
 
 // Commands lists the command names, sorted.

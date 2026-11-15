@@ -1,0 +1,46 @@
+{
+  "file": {
+    "$schema": "../../../schemas/spell.schema.json",
+    "spells": [
+      {
+        "color": "red",
+        "cost": {
+          "mana": 4
+        },
+        "delivery": "single",
+        "description": "A test spell: a small flame.",
+        "effects": [
+          {
+            "effect": "core:effect/damage_fire",
+            "magnitude": 6,
+            "target": "ranged"
+          }
+        ],
+        "key": "authored_spark",
+        "label": "Authored Spark",
+        "level": 1
+      }
+    ]
+  },
+  "manifest": {
+    "$schema": "../../schemas/module.manifest.schema.json",
+    "data": [
+      "data/spells.json"
+    ],
+    "description": "Spells written with the author command (docs/backend/authoring.md).",
+    "extends": {
+      "collections": [
+        "spells"
+      ]
+    },
+    "id": "authored",
+    "requires": [],
+    "schemas": [],
+    "version": "0.1.0"
+  },
+  "path": "ruleset/modules/authored/data/spells.json",
+  "refs": [
+    "module:authored/spell/authored_spark"
+  ],
+  "shape": "module"
+}
