@@ -1,5 +1,7 @@
 # Printouts
 
+Modified: 2026-11-15
+
 The `print` command renders a printable page from the data (APP-11), so a printed number is the
 number the rules compute and a rule change is a rebuild, not an errata pass. It is an adapter like
 `session`: every number on a page comes from another command's result (`derived`,

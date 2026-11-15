@@ -1,6 +1,7 @@
 # APP-11 Printouts generated from the data
 
 Date: 2026-11-14
+Modified: 2026-11-15
 
 - **Decision:** one command, `print`, with a `kind` (`sheet`, `spell`, `monster`, `condition`), returning `title` and one self-contained HTML page (inline CSS, `@page`, no script). PDF is the browser's print, so the backend needs no PDF library. [A]
 - **Decision:** `print` holds no rule. A sheet's derived stats come from `derived` with the actor's modifiers (the session's `actorModifiers`, APP-13); a skill's target is `progression read_skill` passed through `modifiers` with the modifiers on that skill; a stat block's to-hit and evasion come from `monster_sheet`, with the attack's skill `unarmed` for a natural weapon (M3-16) or the carried weapon's skill. Only the raised skills, the ones a sheet writes, are printed (M5-49). [V 2026-11-14, `print_test.go`]
