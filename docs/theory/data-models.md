@@ -1,5 +1,7 @@
 # Data model theory
 
+Modified: 2026-11-15
+
 Background for [docs/core/data-model.md](../core/data-model.md): what a data model is, which
 types exist, and why Riftweave's is shaped as it is. This page explains; it sets no rule.
 
@@ -75,6 +77,8 @@ what belongs to one row, such as a spell's list of effects. [A]
 
 Rules that do array reads and integer math stay simple and fast, and the backend resolves
 references once at load instead of on every command (`docs/backend/README.md`). [V 2026-11-10]
+Why the files still name rows by string, and how code turns those strings into indices
+(interning) or numbers (hashing): [keys.md](keys.md).
 
 ### The alternatives
 
