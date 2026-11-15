@@ -141,7 +141,7 @@ func mustStored(t *testing.T, raw map[string]any) *stored.Actor {
 
 func TestThePageInlinesItsStylesheetUnescaped(t *testing.T) {
 	page := printPage(t, open(t), map[string]any{"kind": "condition", "condition": "blinded"})
-	if !strings.Contains(page, "<style>@page { size: A4; margin: 15mm; }") || strings.Contains(page, "ZgotmplZ") {
+	if !strings.Contains(page, "<style>\n@page { size: A4; margin: 15mm; }") || strings.Contains(page, "ZgotmplZ") {
 		t.Errorf("templates/print.css is not in the page's <style> as written: %.400s", page)
 	}
 }
