@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>{{.Title}}</title>
+    <style>
+{{.Style}}
+    </style>
+  </head>
+  <body>
+    <h1>{{.Title}}</h1>
+    {{- range .Sections}}
+    <section>
+      <h2>{{.Heading}}</h2>
+      {{- if .Rows}}
+      <table>
+        {{- range .Rows}}
+        <tr>
+          <th>{{.Label}}</th>
+          {{- if .Attribute}}
+          <td class="number" {{.Data}}>{{.Value}}</td>
+          {{- else}}
+          <td>{{.Value}}</td>
+          {{- end}}
+        </tr>
+        {{- end}}
+      </table>
+      {{- end}}
+      {{- if .Notes}}
+      <ul>
+        {{- range .Notes}}
+        <li>{{.}}</li>
+        {{- end}}
+      </ul>
+      {{- end}}
+    </section>
+    {{- end}}
+  </body>
+</html>

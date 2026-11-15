@@ -1,0 +1,9 @@
+@page { size: A4; margin: 15mm; }
+body { font: 11pt/1.4 system-ui, sans-serif; color: #212529; margin: 0 auto; max-width: 180mm; }
+h1 { font-size: 16pt; margin: 0 0 4mm; border-bottom: 2px solid #212529; }
+h2 { font-size: 11pt; margin: 5mm 0 1mm; }
+table { border-collapse: collapse; width: 100%; }
+td, th { border-bottom: 1px solid #dee2e6; padding: 1mm 2mm; text-align: left; }
+td.number { text-align: right; font-weight: 600; width: 25mm; }
+ul { margin: 0; padding-left: 5mm; }
+section { break-inside: avoid; }
