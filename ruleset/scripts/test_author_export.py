@@ -21,7 +21,7 @@ def validate_with(*exports):
     """Copy the ruleset, add each export at its path, and run validate.py on the copy."""
     with tempfile.TemporaryDirectory() as tmp:
         copy = Path(tmp)
-        shutil.copytree(ROOT / "ruleset", copy / "ruleset", ignore=shutil.ignore_patterns("__pycache__", "tests"))
+        shutil.copytree(ROOT / "ruleset", copy / "ruleset", ignore=shutil.ignore_patterns("__pycache__"))
         for export in exports:
             target = copy / export["path"]
             target.parent.mkdir(parents=True, exist_ok=True)

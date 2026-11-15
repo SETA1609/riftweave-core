@@ -6,23 +6,68 @@
   "input_schema": {
     "type": "object",
     "properties": {
-      "kind": { "type": "string", "enum": ["spell"] },
-      "operation": { "type": "string", "enum": ["check", "load"], "description": "check (the default) a list of drafts, or load one spell by key." },
-      "spells": { "type": "array", "minItems": 1, "items": { "type": "object" }, "description": "check: the draft rows, as spells/core.json holds them; the schema is checked by the command, so a draft may be wrong." },
-      "spell": { "$ref": "common.json#/definitions/key", "description": "load: the spell to load." },
+      "kind": {
+        "type": "string",
+        "enum": [
+          "spell"
+        ]
+      },
+      "operation": {
+        "type": "string",
+        "enum": [
+          "check",
+          "load"
+        ],
+        "description": "check (the default) a list of drafts, or load one spell by key."
+      },
+      "spells": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "object"
+        },
+        "description": "check: the draft rows, as spells/core.json holds them; the schema is checked by the command, so a draft may be wrong."
+      },
+      "spell": {
+        "$ref": "common.json#/definitions/key",
+        "description": "load: the spell to load."
+      },
       "export": {
         "type": "object",
         "properties": {
-          "shape": { "type": "string", "enum": ["core", "module"] },
-          "module": { "$ref": "common.json#/definitions/key", "description": "shape module: the module's id." }
+          "shape": {
+            "type": "string",
+            "enum": [
+              "core",
+              "module"
+            ]
+          },
+          "module": {
+            "$ref": "common.json#/definitions/key",
+            "description": "shape module: the module's id."
+          }
         },
-        "required": ["shape"],
+        "required": [
+          "shape"
+        ],
         "additionalProperties": false,
-        "if": { "properties": { "shape": { "const": "module" } } },
-        "then": { "required": ["module"] }
+        "if": {
+          "properties": {
+            "shape": {
+              "const": "module"
+            }
+          }
+        },
+        "then": {
+          "required": [
+            "module"
+          ]
+        }
       }
     },
-    "required": ["kind"],
+    "required": [
+      "kind"
+    ],
     "additionalProperties": false
   },
   "result_schema": {
@@ -33,51 +78,152 @@
         "items": {
           "type": "object",
           "properties": {
-            "key": { "type": "string" },
-            "row": { "type": "object", "description": "The draft as the file will hold it." },
-            "problems": { "type": "array", "items": { "$ref": "#/definitions/finding" } },
-            "warnings": { "type": "array", "items": { "$ref": "#/definitions/finding" } },
+            "key": {
+              "type": "string"
+            },
+            "row": {
+              "type": "object",
+              "description": "The draft as the file will hold it."
+            },
+            "problems": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "check": {
+                    "type": "string",
+                    "enum": [
+                      "schema",
+                      "ref",
+                      "channel",
+                      "parameter",
+                      "cost"
+                    ]
+                  },
+                  "path": {
+                    "type": "string",
+                    "description": "A JSON pointer into the row."
+                  },
+                  "message": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "check",
+                  "path",
+                  "message"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "warnings": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "check": {
+                    "type": "string",
+                    "enum": [
+                      "schema",
+                      "ref",
+                      "channel",
+                      "parameter",
+                      "cost"
+                    ]
+                  },
+                  "path": {
+                    "type": "string",
+                    "description": "A JSON pointer into the row."
+                  },
+                  "message": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "check",
+                  "path",
+                  "message"
+                ],
+                "additionalProperties": false
+              }
+            },
             "cost": {
-              "type": ["object", "null"],
+              "type": [
+                "object",
+                "null"
+              ],
               "properties": {
-                "mana": { "type": "integer" },
-                "cast_threshold": { "type": "integer" },
-                "craft_threshold": { "type": "integer" }
+                "mana": {
+                  "type": "integer"
+                },
+                "cast_threshold": {
+                  "type": "integer"
+                },
+                "craft_threshold": {
+                  "type": "integer"
+                }
               },
-              "required": ["mana", "cast_threshold", "craft_threshold"],
+              "required": [
+                "mana",
+                "cast_threshold",
+                "craft_threshold"
+              ],
               "additionalProperties": false
             }
           },
-          "required": ["key", "row", "problems", "warnings", "cost"],
+          "required": [
+            "key",
+            "row",
+            "problems",
+            "warnings",
+            "cost"
+          ],
           "additionalProperties": false
         }
       },
       "export": {
         "type": "object",
         "properties": {
-          "shape": { "type": "string", "enum": ["core", "module"] },
-          "path": { "type": "string", "description": "Where the file goes, from the repository root." },
-          "file": { "type": "object", "description": "The whole data file: $schema and the spells wrapper." },
-          "manifest": { "type": "object", "description": "shape module: the manifest the module needs." },
-          "refs": { "type": "array", "items": { "$ref": "common.json#/definitions/ref" }, "description": "How other rows name each exported spell." }
+          "shape": {
+            "type": "string",
+            "enum": [
+              "core",
+              "module"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "description": "Where the file goes, from the repository root."
+          },
+          "file": {
+            "type": "object",
+            "description": "The whole data file: $schema and the spells wrapper."
+          },
+          "manifest": {
+            "type": "object",
+            "description": "shape module: the manifest the module needs."
+          },
+          "refs": {
+            "type": "array",
+            "items": {
+              "$ref": "common.json#/definitions/ref"
+            },
+            "description": "How other rows name each exported spell."
+          }
         },
-        "required": ["shape", "path", "file", "refs"],
+        "required": [
+          "shape",
+          "path",
+          "file",
+          "refs"
+        ],
         "additionalProperties": false
       },
-      "row": { "type": "object", "description": "load: the spell as written." }
-    },
-    "additionalProperties": false,
-    "definitions": {
-      "finding": {
+      "row": {
         "type": "object",
-        "properties": {
-          "check": { "type": "string", "enum": ["schema", "ref", "channel", "parameter", "cost"] },
-          "path": { "type": "string", "description": "A JSON pointer into the row." },
-          "message": { "type": "string" }
-        },
-        "required": ["check", "path", "message"],
-        "additionalProperties": false
+        "description": "load: the spell as written."
       }
-    }
+    },
+    "additionalProperties": false
   }
 }

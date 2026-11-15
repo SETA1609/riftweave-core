@@ -1,5 +1,7 @@
 # Agent CLI
 
+Modified: 2026-11-15
+
 `riftweave` is one static Go binary for agents and scripts (APP-03). It only parses, calls `core.Run`, and formats ([README.md](README.md)): no rule lives here. No prompts, no colour, and one small start, so an agent can call it thousands of times in a loop. The human CLI (APP-05) is a separate mode and the agent path imports none of it.
 
 Build it from `backend/`: `go build ./cmd/riftweave`.
@@ -53,3 +55,7 @@ Rolls are inputs, as everywhere in the core. The CLI does not draw rolls, and th
 - **Resolve an attack:** the rolls and the two sides, run through `combat`. The LCK defaults to the character's.
 
 Rolls stay inputs: you type each one, so a result matches the agent CLI for the same inputs and rolls. With `--dev`, a dev panel and short commands change a session's actor ([dev-mode.md](dev-mode.md#the-human-cli)). It needs a terminal. Charm is imported only by `backend/cmd/riftweave/play`, and `backend/core` and `backend/internal/` stay free of it.
+
+## Authoring
+
+`author` (APP-10) checks draft spells and exports a data file ([authoring.md](authoring.md)). It needs `ruleset/schemas` beside the data directory, which `core.Open` finds; a draft that fails is a result with `problems`, not an error.

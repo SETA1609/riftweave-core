@@ -1,0 +1,30 @@
+{
+  "file": {
+    "$schema": "../../schemas/spell.schema.json",
+    "spells": [
+      {
+        "color": "red",
+        "cost": {
+          "mana": 4
+        },
+        "delivery": "single",
+        "description": "A test spell: a small flame.",
+        "effects": [
+          {
+            "effect": "core:effect/damage_fire",
+            "magnitude": 6,
+            "target": "ranged"
+          }
+        ],
+        "key": "authored_ember",
+        "label": "Authored Ember",
+        "level": 1
+      }
+    ]
+  },
+  "path": "ruleset/data/spells/authored.json",
+  "refs": [
+    "core:spell/authored_ember"
+  ],
+  "shape": "core"
+}

@@ -378,7 +378,9 @@ type Effect struct {
 	MagnitudeUnit         string   `json:"magnitudeUnit"`
 	Channels              []string `json:"channels"`
 	UncraftableParameters []string `json:"uncraftable_parameters"`
-	BaseCost              float64  `json:"baseCost"`
+	// ParameterCategory is the kind of row a parameter must name, if any (docs/core/integrity.md).
+	ParameterCategory string  `json:"parameter_category"`
+	BaseCost          float64 `json:"baseCost"`
 }
 
 // Feature is what a dev operation needs of one row of features/core.json: its kind and ranks.
@@ -650,8 +652,13 @@ type Ruleset struct {
 	Conditions             Conditions
 	Loot                   Loot
 
-	Formulas          map[string]*formula.Program // formulas/<name>.json by name
-	AttributeModifier *formula.Program            // formulas/attribute_modifier.json
+	Formulas map[string]*formula.Program // formulas/<name>.json by name
+	// Files and ModuleFiles are what the ruleset was loaded from, for a command that reads rows
+	// no table holds (author's ref index); Schemas is ruleset/schemas, nil unless given.
+	Files             fs.FS
+	ModuleFiles       []fs.FS
+	Schemas           fs.FS
+	AttributeModifier *formula.Program // formulas/attribute_modifier.json
 	Price             *formula.Program
 	LootLuck          *formula.Program
 	Items             map[string]Item      // core:<category>/<key>
@@ -771,7 +778,7 @@ func (loader *rulesetLoader) fail(format string, arguments ...any) {
 // joins one error per broken file or row.
 func Load(fileSystem fs.FS, modules ...fs.FS) (*Ruleset, error) {
 	var loader *rulesetLoader = &rulesetLoader{fileSystem: fileSystem}
-	var ruleset *Ruleset = &Ruleset{}
+	var ruleset *Ruleset = &Ruleset{Files: fileSystem, ModuleFiles: modules}
 
 	var resolution struct{ Resolution Resolution }
 	if loader.read("resolution/core.json", &resolution) && resolution.Resolution.CriticalWindowPerTwoLuck <= 0 {

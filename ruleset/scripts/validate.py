@@ -1695,7 +1695,7 @@ def _validate_single_data_file(
     return True, [], rel
 
 
-def validate_modules(store, equipment_index=None, effect_channels=None):
+def validate_modules(store, equipment_index=None, effect_channels=None, namespaced_ref_index=None):
     """Discover and validate modules.
     Returns (module_passed, module_failed, module_total, module_conflicts).
     """
@@ -1755,6 +1755,9 @@ def validate_modules(store, equipment_index=None, effect_channels=None):
                 ROOT.parent,
                 equipment_index=equipment_index,
                 effect_channels=effect_channels,
+                # A module row's refs resolve against the same index as core rows (APP-10: a
+                # module spell's effects crashed here when the index was not passed).
+                namespaced_ref_index=namespaced_ref_index,
             )
             if p is None:
                 print(f"  \u26a0  {rel}: no $schema field, skipping")
@@ -1941,7 +1944,8 @@ def main():
 
     # Module validation pass
     mod_passed, mod_failed, mod_total, mod_conflicts = validate_modules(
-        store, equipment_index=equipment_index, effect_channels=effect_channels
+        store, equipment_index=equipment_index, effect_channels=effect_channels,
+        namespaced_ref_index=namespaced_ref_index,
     )
 
     combined_passed = passed + mod_passed

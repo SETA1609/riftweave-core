@@ -120,6 +120,16 @@ func rejection(effect *data.Effect, applied *data.AppliedEffect, color string, k
 }
 
 // spellCost is a spell's mana from its effects alone (docs/modules/magic.md#cost-formula).
+// Cost is the spellcraft formula for a list of effects (docs/core/casting.md#spellcraft): the
+// mana, the cast threshold (the mana), and the craft threshold (mana × 1.25, a half rounding up).
+func Cost(ruleset *data.Ruleset, effects []data.AppliedEffect) (mana, castThreshold, craftThreshold int64, err error) {
+	mana, err = spellCost(ruleset, effects)
+	if err != nil {
+		return 0, 0, 0, err
+	}
+	return mana, mana, roundHalfUp(float64(mana) * 1.25), nil
+}
+
 func spellCost(ruleset *data.Ruleset, effects []data.AppliedEffect) (int64, error) {
 	var rule *data.SpellCost = &ruleset.Casting.SpellCost
 	var total float64

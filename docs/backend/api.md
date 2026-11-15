@@ -1,5 +1,7 @@
 # HTTP API
 
+Modified: 2026-11-15
+
 `riftweave-server` serves the core over HTTP (APP-06). It is an adapter: it parses the request,
 calls `core.Run` with the command name and the body, and writes the result. It holds no rule and
 no state, so a call needs no session and two calls never share anything but the ruleset.
@@ -54,3 +56,7 @@ as OpenAPI 3.1 with `openapi-spec-validator` when it was written. [V 2026-11-12]
 
 Authentication, rate limits, CORS, and TLS: the server binds to localhost by default and is
 meant to run beside the frontend or behind a proxy that adds them. [A]
+
+## Authoring
+
+`author` (APP-10) checks draft spells and exports a data file ([authoring.md](authoring.md)). It needs `ruleset/schemas` beside the data directory, which `core.Open` finds; a draft that fails is a result with `problems`, not an error.
