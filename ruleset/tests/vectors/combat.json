@@ -547,6 +547,46 @@
     }
   },
   {
+    "name": "a perk on the shields skill raises the block target: block 40 plus 20 reaches the attacker's margin",
+    "attacker": {
+      "skill": 72,
+      "roll": 50,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "reaction": {
+        "kind": "block",
+        "skill": 40,
+        "roll": 35,
+        "shield_dr": 2
+      },
+      "modifiers": [
+        {
+          "target": "shields",
+          "operation": "add",
+          "value": 20,
+          "source": "perk:test"
+        }
+      ]
+    },
+    "damage": {
+      "roll": 6,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "blocked": true,
+      "evaded": false,
+      "damage": 4,
+      "hp": 26
+    }
+  },
+  {
     "name": "delivery area: a shield blocks a physical blast, shield DR 2 subtracts",
     "attacker": {
       "skill": 72,
