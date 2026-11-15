@@ -269,6 +269,67 @@
     }
   },
   {
+    "name": "perks: Toughness at rank 2 adds 30 to an authored hitPoints",
+    "monster": {
+      "attributes": {
+        "str": 6,
+        "per": 4,
+        "end": 4,
+        "int": 5,
+        "wil": 2,
+        "agi": 5,
+        "cha": 3,
+        "lck": 3
+      },
+      "level": 3,
+      "hitPoints": 59,
+      "perks": [
+        {
+          "perk": "core:feature/toughness",
+          "rank": 2
+        }
+      ]
+    },
+    "expect": {
+      "hp": 89
+    }
+  },
+  {
+    "name": "perks: Armored Evasion adds 10 to a grown evasion, and a perk with no rank is rank 1",
+    "monster": {
+      "attributes": {
+        "str": 6,
+        "per": 4,
+        "end": 4,
+        "int": 5,
+        "wil": 2,
+        "agi": 5,
+        "cha": 3,
+        "lck": 3
+      },
+      "level": 3,
+      "perks": [
+        {
+          "perk": "core:feature/armored_evasion"
+        },
+        {
+          "perk": "core:feature/alert"
+        }
+      ]
+    },
+    "read_skills": [
+      "evasion",
+      "stealth"
+    ],
+    "expect": {
+      "skills": {
+        "evasion": 59,
+        "stealth": 15
+      },
+      "initiative": 14
+    }
+  },
+  {
     "name": "error: an unknown skill",
     "monster": {
       "attributes": {

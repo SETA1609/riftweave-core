@@ -4,7 +4,9 @@
 package derived
 
 import (
+	"encoding/json"
 	"slices"
+	"strings"
 
 	"github.com/SETA1609/riftweave-core/backend/internal/actor"
 	"github.com/SETA1609/riftweave-core/backend/internal/data"
@@ -96,6 +98,36 @@ type MonsterRow struct {
 	Skills     map[string]int64 `json:"skills"`
 	Level      *int64           `json:"level"`
 	HitPoints  *int64           `json:"hitPoints"`
+	// Perks are the row's perks at their rank (M3-15); their modifiers reach the sheet.
+	Perks []struct {
+		Perk string `json:"perk"`
+		Rank *int64 `json:"rank"`
+	} `json:"perks"`
+}
+
+// perkModifiers are the row's perks emitted at their rank, in list order.
+func perkModifiers(ruleset *data.Ruleset, row *MonsterRow) ([]modifier.Modifier, error) {
+	var modifiers []modifier.Modifier
+	for _, held := range row.Perks {
+		feature, err := ruleset.Features.Require("perk", held.Perk[strings.LastIndex(held.Perk, "/")+1:])
+		if err != nil {
+			return nil, err
+		}
+		var rank int64 = 1
+		if held.Rank != nil {
+			rank = *held.Rank
+		}
+		encoded, err := json.Marshal(feature.EmitAt(rank))
+		if err != nil {
+			return nil, err
+		}
+		var emitted []modifier.Modifier
+		if err := json.Unmarshal(encoded, &emitted); err != nil {
+			return nil, err
+		}
+		modifiers = append(modifiers, emitted...)
+	}
+	return modifiers, nil
 }
 
 // MonsterSheetInput is the `monster_sheet` command's input.
@@ -108,7 +140,11 @@ type MonsterSheetInput struct {
 // and skills by the rules a player uses, with authored hit points replacing the computed value.
 func RunMonsterSheet(ruleset *data.Ruleset, input MonsterSheetInput) (map[string]any, error) {
 	var row *MonsterRow = &input.Monster
-	values, err := Compute(ruleset, actor.Actor{Attributes: row.Attributes, Level: row.Level}, nil)
+	perks, err := perkModifiers(ruleset, row)
+	if err != nil {
+		return nil, err
+	}
+	values, err := Compute(ruleset, actor.Actor{Attributes: row.Attributes, Level: row.Level}, perks)
 	if err != nil {
 		return nil, err
 	}
@@ -117,12 +153,20 @@ func RunMonsterSheet(ruleset *data.Ruleset, input MonsterSheetInput) (map[string
 		result[stat.Key] = values[index]
 	}
 	if row.HitPoints != nil {
-		result["hp"] = *row.HitPoints
+		hp, err := modifier.Value(*row.HitPoints, modifier.Target(perks, "hp"), ruleset.Origins, 0, nil)
+		if err != nil {
+			return nil, err
+		}
+		result["hp"] = hp
 	}
 	var skills map[string]int64 = make(map[string]int64, len(input.ReadSkills))
 	for _, key := range input.ReadSkills {
 		if written, ok := row.Skills[key]; ok {
-			skills[key] = written
+			value, err := modifier.Value(written, modifier.Target(perks, key), ruleset.Origins, 0, nil)
+			if err != nil {
+				return nil, err
+			}
+			skills[key] = value
 			continue
 		}
 		skill, err := ruleset.Skills.Require("skill", key)
@@ -141,7 +185,11 @@ func RunMonsterSheet(ruleset *data.Ruleset, input MonsterSheetInput) (map[string
 			}
 			start = min(ruleset.Progression.SkillCap, start+growth.PerLevel*(level-1))
 		}
-		skills[key] = start
+		value, err := modifier.Value(start, modifier.Target(perks, key), ruleset.Origins, 0, nil)
+		if err != nil {
+			return nil, err
+		}
+		skills[key] = value
 	}
 	result["skills"] = skills
 	return result, nil

@@ -259,6 +259,16 @@
       "pattern": "^(core:effect/[a-z0-9_]+|module:[a-z0-9_]+/effect/[a-z0-9_]+)$",
       "description": "A reference to a effect row (docs/core/integrity.md)."
     },
+    "heldPerk": {
+      "type": "object",
+      "description": "A perk an actor holds, at a rank (M3-15): at most the perk's ranks, 1 when left out.",
+      "properties": {
+        "perk": { "$ref": "#/definitions/featureRef" },
+        "rank": { "type": "integer", "minimum": 1 }
+      },
+      "required": ["perk"],
+      "additionalProperties": false
+    },
     "featureRef": {
       "type": "string",
       "pattern": "^(core:feature/[a-z0-9_]+|module:[a-z0-9_]+/feature/[a-z0-9_]+)$",

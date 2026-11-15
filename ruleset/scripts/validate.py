@@ -1373,6 +1373,16 @@ def _apply_monster_template(merged, template):
         merged["spells"] = spells + [spell for spell in template["spells"] if spell not in spells]
     if template.get("loot"):
         merged["loot"] = list(merged.get("loot") or []) + template["loot"]
+    if template.get("perks"):
+        # A template's perk adds to the monster's; when both name one, the higher rank is kept (M3-15).
+        perks = [dict(held) for held in merged.get("perks") or []]
+        for held in template["perks"]:
+            same = next((mine for mine in perks if mine["perk"] == held["perk"]), None)
+            if same is None:
+                perks.append(dict(held))
+            elif held.get("rank", 1) > same.get("rank", 1):
+                same["rank"] = held["rank"]
+        merged["perks"] = perks
     tags = list(merged.get("tags") or [])
     tags += [tag for tag in template.get("tags", []) if tag not in tags]
     if tags:
@@ -1762,6 +1772,30 @@ def validate_modules(store, equipment_index=None, effect_channels=None):
     return passed, failed, total, conflicts
 
 
+# A perk of these categories means little on a monster, so naming one warns (M3-15).
+MONSTER_PERK_WARN_CATEGORIES = ("social", "utility")
+
+
+def check_monster_perks(monsters, templates):
+    """Each monster's and template's perks (M3-15): a rank at most the perk's ranks (an error),
+    and a social or utility perk (a warning). Returns (errors, warnings)."""
+    features = {row["key"]: row for row in json.loads((DATA_DIR / "features" / "core.json").read_text())["features"]}
+    errors, warnings = [], []
+    for kind, rows in (("monster", monsters), ("template", templates)):
+        for row in rows:
+            for held in row.get("perks") or []:
+                key = held["perk"].rsplit("/", 1)[-1]
+                feature = features.get(key)
+                if feature is None:
+                    continue  # the reference check reports it
+                rank, ranks = held.get("rank", 1), feature.get("ranks") or 1
+                if rank > ranks:
+                    errors.append(f"{kind} '{row.get('key')}': perk {key} at rank {rank}, past its {ranks}")
+                if feature.get("category") in MONSTER_PERK_WARN_CATEGORIES:
+                    warnings.append(f"{kind} '{row.get('key')}': perk {key} is {feature['category']}, which means little on a monster")
+    return errors, warnings
+
+
 def check_racial_trait_refs(data_files):
     """Racial traits live only in features, as type racial_trait (M1-06).
 
@@ -1858,6 +1892,18 @@ def main():
             for e in errors:
                 print(f"       {e}")
             failed += 1
+
+    composed = {"monsters": json.loads((DATA_DIR / "monsters" / "core.json").read_text())["monsters"]}
+    _resolve_monster_bases(composed, [])
+    template_rows = json.loads((DATA_DIR / "monsters" / "templates.json").read_text())["monster_templates"]
+    perk_errors, perk_warnings = check_monster_perks(composed["monsters"], template_rows)
+    for warning in perk_warnings:
+        print(f"  \u26a0  {warning}")
+    if perk_errors:
+        print("  \u2717  monster perks (rank at most the perk's ranks)")
+        for e in perk_errors:
+            print(f"       {e}")
+        failed += 1
 
     trait_errors = check_racial_trait_refs(data_files)
     if trait_errors:
