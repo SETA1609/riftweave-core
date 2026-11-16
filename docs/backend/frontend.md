@@ -57,7 +57,7 @@ src/app/wasm.ts           load wasm_exec.js, instantiateStreaming(fetch('riftwea
 | Screen | Calls | Shows |
 | --- | --- | --- |
 | Character sheet | `derived` on the attributes and level; `POST /v1/sessions` to create the character | every derived stat, and the stored actor of the new session |
-| Attack resolver | `combat` with the attacker (skill, roll, LCK), the defender (evasion or block, armor DR, HP, reaction), the delivery, and the damage roll | each step of the result: the target, the margin, crit, the reaction, the damage after DR, and HP after |
+| Attack resolver | `combat` with the attacker (skill, roll, LCK), the defender (evasion, armor DR, a carried shield's DR and the shields skill, HP, and a dodge or block stance), the delivery, and the damage roll | each step of the result: the target, the margin, crit, the evasion and block bands, evaded or blocked, the damage after DR, and HP after (M3-27) |
 | Playthrough | `POST /v1/sessions/step` for each step of `ruleset/tests/vectors/playthrough.json`, then `replay` | each step's input and result, and whether the replay matches |
 | Saved games | `replay` on an opened file | the saves in this browser (name, rules, last played, last backup), a backup file for each, and what opening a file found |
 
