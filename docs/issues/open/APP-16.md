@@ -1,5 +1,5 @@
 #### APP-16 Saves in the browser: IndexedDB with JSON export and import
-- Status: doing
+- Status: review
 - Priority: medium
 - Needs: APP-14
 - Modified: 2026-11-16
