@@ -10,7 +10,7 @@ import type { Option } from './ui/select-field';
 import { SelectField } from './ui/select-field';
 import { TextField } from './ui/text-field';
 
-const STEPS = ['outcome', 'target', 'margin', 'crit', 'evaded', 'blocked', 'reaction_tags', 'damage', 'hp', 'counter'] as const;
+const STEPS = ['outcome', 'target', 'margin', 'crit', 'evasion_rate', 'block_rate', 'evaded', 'blocked', 'damage', 'hp', 'counter', 'stagger_ap'] as const;
 
 @Component({
   selector: 'rw-attack',
@@ -20,7 +20,7 @@ const STEPS = ['outcome', 'target', 'margin', 'crit', 'evaded', 'blocked', 'reac
 })
 export class Attack {
   private readonly api = inject(API);
-  readonly reactions: readonly Option[] = [{ value: '', label: 'none' }, { value: 'evade', label: 'evade' }, { value: 'block', label: 'block' }];
+  readonly stances: readonly Option[] = [{ value: '', label: 'none' }, { value: 'dodge', label: 'dodge' }, { value: 'block', label: 'block' }];
   readonly deliveries: readonly Option[] = [{ value: 'single', label: 'single' }, { value: 'area', label: 'area' }, { value: 'instant', label: 'instant' }];
 
   readonly attackerSkill = signal(72);
@@ -29,8 +29,9 @@ export class Attack {
   readonly evasion = signal(25);
   readonly armor = signal(2);
   readonly hp = signal(30);
-  readonly reaction = signal('');
-  readonly reactionRoll = signal(50);
+  readonly shield = signal(0);
+  readonly shields = signal(40);
+  readonly stance = signal('');
   readonly damageRoll = signal(8);
   readonly damageType = signal('slashing');
   readonly delivery = signal('single');
@@ -50,8 +51,12 @@ export class Attack {
   /** The `combat` input the form describes; a field the form leaves out is left out. */
   input(): CombatInput {
     const defender: CombatInput['defender'] = { evasion_skill: this.evasion(), armor_dr: this.armor(), hp: this.hp() };
-    if (this.reaction()) {
-      defender.reaction = { kind: this.reaction() as 'evade' | 'block', roll: this.reactionRoll() };
+    if (this.shield() > 0) {
+      defender.shield_dr = this.shield();
+      defender.shields_skill = this.shields();
+    }
+    if (this.stance()) {
+      defender.stance = this.stance();
     }
     return {
       attacker: { skill: this.attackerSkill(), roll: this.attackerRoll(), attributes: { lck: this.luck() } },

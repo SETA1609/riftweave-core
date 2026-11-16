@@ -1,6 +1,6 @@
 # Combat
 
-Modified: 2026-11-15
+Modified: 2026-11-16
 
 Commentary on the combat rules: what they are for, how they fit together, and worked examples. It holds no rule of its own. Every rule here is owned by a file in `docs/core/`, has its numbers in `ruleset/data/`, and is pinned by a vector in `ruleset/tests/vectors/`. **If this file and `docs/core/` disagree, `docs/core/` wins** and this file is the bug.
 
@@ -48,32 +48,35 @@ Leaving an enemy's reach without disengaging provokes one attack from that enemy
 
 ## 3. Defense
 
-The order of one attack is fixed in [docs/core/combat.md](../core/combat.md): attack roll, one defender reaction, damage, crit, block or area reduction, armor DR, resist, HP. This section explains the pieces.
+The order of one attack is fixed in [docs/core/combat.md](../core/combat.md): one attack roll read against the defense bands, damage, crit, area halving, armor and shield DR, resist, HP. This section explains the pieces.
 
-### Reactions: evade or block
+### Defense: one roll, two bands, two stances
 
-The defender declares one reaction before the attack roll and rolls it only if the attack hits. The reaction roll is a normal d100 check with the defender's skill and LCK: a 100 fumbles, a roll in the crit window is tagged `crit` (no effect yet). It succeeds when the reaction succeeds **and** its margin reaches the attacker's margin.
+The defender rolls nothing. The attacker's d100 decides it all: a miss, a hit, or a success that lands inside the defender's band (owner, 2026-11-16, M3-27). The bands are the attacker's margin read against the defender's numbers:
 
-- **Evade** rolls the `evasion` skill. Against a single-target attack it avoids the hit. Against an area attack it halves the damage. Instant spells cannot be evaded; their target makes the save the spell names (M3-05).
-- **Block** rolls the `shields` skill and subtracts the shield's DR. It works against physical damage types only. Shields: buckler DR 1, standard shield DR 2, tower shield DR 4 (and grants cover to an adjacent ally, **[A]**, M3-03).
+- **Evasion, always on.** The evasion rate is half the `evasion` skill. A success whose margin is under it is **evaded**: a single-target attack does nothing, an area attack is halved. Instant spells meet no band; their target makes the save the spell names.
+- **A carried shield, always on.** Its DR adds to the armor DR against physical types: buckler DR 1, standard shield DR 2, tower shield DR 4 (and grants cover to an adjacent ally, **[A]**, M3-03). No action, no roll.
+- **Dodge, a stance** (3 AP, until your next turn): the evasion rate doubles. An area attack in the band is still halved, not avoided.
+- **Block, a stance** (2 AP, reserved, refunded if nobody swings; needs a shield): a block band of half the `shields` skill sits under the evaded band, and a success in it is **blocked**: no damage. It works against physical types only, unless Spell Ward gives a band of half the width against magic.
+- A crit always hits: no band reaches it.
 - Delivery decides what is possible, not the damage type: a fire bolt can be dodged; a fireball dodged is halved.
 
-Balance between the two is perks and armor, not the pipeline: gated block and dodge perks (M2-06), armor evasion penalties on the evasion skill, and instant spells that skip the dodge.
+Balance between the two is perks and armor, not the pipeline: gated block and dodge perks (M2-06), armor evasion penalties on the evasion skill, a shield's DR that helps without an action, and instant spells that skip the dodge.
 
-Not yet rows, **[A]** until M2-06:
+Not yet rows, **[A]**:
 
-- **Parry.** Some weapons (rapiers, swords) and the *Duelist* perk let a defender block with the weapon skill instead of the `shields` skill. A successful parry negates the hit.
+- **Parry.** Some weapons (rapiers, swords) and the *Duelist* perk let a defender block with the weapon skill instead of the `shields` skill. A parried hit is blocked.
 - **Two weapons.** An off-hand weapon can parry but not block. It either attacks (an attack, 3 AP) or is held to parry in a turn, not both.
 - **Unarmed.** The *Deflect Arrows* perk blocks missiles with `unarmored`. No unarmed melee block without a perk. A natural weapon (a bite, a claw, a race's claws) is an unarmed attack: it rolls with `unarmed`, and the unarmed perks change its damage ([monsters.md](./monsters.md#natural-weapons)).
-- A defender who is stunned, incapacitated, paralyzed, petrified, or unconscious takes no reaction. **[A]** The conditions grant those flags ([modifier.md](../core/modifier.md)); the pipeline does not read them yet.
+- A defender who is stunned, incapacitated, paralyzed, petrified, or unconscious keeps no stance and has no evasion band. **[A]** The conditions grant those flags ([modifier.md](../core/modifier.md)); the pipeline does not read them yet.
 
 ### Armor DR and resist
 
-Armor DR is the sum of all worn pieces ([armor.md](./armor.md)) and applies only to damage types tagged `armor_dr_applies`; a piercing hit halves it. Resist is the contract's `resist` operation: a flat subtraction from damage of the matching type. Both stop at zero.
+Armor DR is the sum of all worn pieces ([armor.md](./armor.md)), plus a carried shield's DR, and applies only to damage types tagged `armor_dr_applies`; a piercing hit halves the total. Resist is the contract's `resist` operation: a flat subtraction from damage of the matching type. Both stop at zero.
 
 ### Magic
 
-A spell attack runs the same order as a weapon: the cast check is the attack roll, delivery decides the reaction, then damage, crit, resist. Physical armor DR does not apply to fire, frost, shock, or other types without `armor_dr_applies`.
+A spell attack runs the same order as a weapon: the cast check is the attack roll, delivery decides the bands it meets, then damage, crit, resist. Physical armor DR does not apply to fire, frost, shock, or other types without `armor_dr_applies`.
 
 Further magic layers are not in the kernel yet **[U]**: spell absorption (a chance to absorb a spell into mana, `core:effect/spell_absorption`), WIL-based magic resistance, and phase resistance from the [wuxing](./wuxing.md) cycles. They will add terms to the same steps (M3-01, M3-05); none changes the order.
 
@@ -148,24 +151,24 @@ Each step below is a vector in `ruleset/tests/vectors/combat.json` (the names st
 
 ### Example 1: knight against bandit
 
-- **Sir Aldric:** Blades 72, Block 55, Evasion 30, LCK 4, END 7, AGI 6, PER 4. Derived at level 1: HP 75, AP 4, initiative 4. Iron plate cuirass, helm, gauntlets, and greaves: armor DR 22. Longsword (1d10 slashing), standard shield (DR 2).
-- **Bandit:** Blades 45, Evasion 25. Leather jerkin and cap: armor DR 2. Shortsword (1d6). HP 30.
+- **Sir Aldric:** Blades 72, Shields 55, Evasion 30, LCK 4, END 7, AGI 6, PER 4. Derived at level 1: HP 75, AP 4, initiative 4. Iron plate cuirass, helm, gauntlets, and greaves: armor DR 22. Longsword (1d10 slashing), standard shield (DR 2).
+- **Bandit:** Blades 45, Evasion 25 (evasion rate 12). Leather jerkin and cap: armor DR 2. Shortsword (1d6). HP 30.
 
 1. **Initiative.** Aldric 4 against the bandit's PER 3: Aldric acts first.
-2. **Aldric attacks** (3 AP). The bandit had declared a dodge. Blades 72, roll 47: hit, margin 25. Bandit's evade: Evasion 25, roll 63: fails. Damage 8 − DR 2 = **6**. Bandit HP 30 → **24**. *(example 1a)*
-3. **The bandit attacks.** Aldric had declared a block (2 AP). Blades 45, roll 32: hit, margin 13. Block 55, roll 41: margin 14 reaches 13, blocked. Damage 5 − shield 2 = 3, − armor DR 22 = **0**. Aldric HP stays **75**. *(example 1b)*
-4. **Next round, Aldric attacks again.** Roll 4: inside the crit window (5 + floor(4 / 2) = 7), tagged `crit`. The bandit's evade fails (63). Damage 8 × 2 = 16 − DR 2 = **14**. Bandit HP 24 → **10**. *(example 1c)*
+2. **Aldric attacks** (3 AP). The bandit had declared a dodge: evasion rate 12 doubles to 24. Blades 72, roll 47: margin 25, not under 24, a hit. Damage 8 − DR 2 = **6**. Bandit HP 30 → **24**. *(example 1a)*
+3. **The bandit attacks.** Aldric had declared a block (2 AP): evasion rate 15, block band 27, so a margin under 15 is evaded, 15 to 41 is blocked, 42 and up hits. Blades 45, roll 25: margin 20, blocked, no damage. Aldric HP stays **75**. Had the bandit rolled 2 (a crit, margin 43), the hit would land: 5 × 2 = 10 − armor 22 and shield 2 = **0**. *(example 1b)*
+4. **Next round, Aldric attacks again.** Roll 4: inside the crit window (5 + floor(4 / 2) = 7), tagged `crit`, and a crit always hits, dodge or not. Damage 8 × 2 = 16 − DR 2 = **14**. Bandit HP 24 → **10**. *(example 1c)*
 
 ### Example 2: mage against fire
 
 - **Lyra:** Red Magic 65. Knows *Fire Bolt* (`damage_fire` 8, `ranged`, so delivery single) and *Fire Burst* (`damage_fire` 28, `area`).
-- **Cinder,** a fire salamander: Evasion 30, scales DR 3, fire resist 3, HP 40.
-- **Two goblins:** Evasion 20, DR 1, HP 15.
+- **Cinder,** a fire salamander: Evasion 30 (rate 15), scales DR 3, fire resist 3, HP 40.
+- **Two goblins:** a nimble one with Evasion 40 (rate 20) and one with Evasion 20 (rate 10), DR 1, HP 15.
 
-1. **Fire Bolt at Cinder** (3 AP, 5 mana). Cast check 65, roll 38: hit, margin 27. Cinder dodges: Evasion 30, roll 12: margin 18 does not reach 27, fails. Fire is not tagged `armor_dr_applies`, so the scales do nothing. Damage 8 − fire resist 3 = **5**. Cinder HP 40 → **35**. *(example 2a)*
-2. **Fire Burst on both goblins** (3 AP, 25 mana). One cast check for the burst: roll 50, margin 15. Each goblin rolls its own evade:
-   - Goblin A: Evasion 20, roll 5: margin 15 ties 15, evaded. An area attack is halved, not avoided: 28 → **14**. HP 15 → **1**. The roll of 5 is also tagged `crit`; a crit reaction has no effect yet. *(example 2b)*
-   - Goblin B: roll 40, over 20: fails. Damage **28**. HP 15 → **0**. *(example 2c)*
+1. **Fire Bolt at Cinder** (3 AP, 5 mana). Cast check 65, roll 38: margin 27, over Cinder's rate 15, a hit. Fire is not tagged `armor_dr_applies`, so the scales do nothing. Damage 8 − fire resist 3 = **5**. Cinder HP 40 → **35**. *(example 2a)*
+2. **Fire Burst on both goblins** (3 AP, 25 mana). One cast check for the burst: roll 50, margin 15. Each goblin reads it against its own band:
+   - Goblin A: rate 20, margin 15 is under it, evaded. An area attack is halved, not avoided: 28 → **14**. HP 15 → **1**. *(example 2b)*
+   - Goblin B: rate 10, margin 15 is not under it, a hit. Damage **28**. HP 15 → **0**. *(example 2c)*
 
 ---
 
@@ -199,7 +202,7 @@ Total worn DR is roughly 3–8 light, 8–18 medium, 14–28 heavy. A fighter at
 
 ### Skill benchmarks and heuristics
 
-| Level | Weapon skill | Evasion | Block |
+| Level | Weapon skill | Evasion | Shields |
 | --- | --- | --- | --- |
 | 1 | 20–30 | 15–25 | 15–25 |
 | 5 | 35–50 | 25–40 | 25–40 |
@@ -207,10 +210,10 @@ Total worn DR is roughly 3–8 light, 8–18 medium, 14–28 heavy. A fighter at
 | 20 | 70–85 | 55–75 | 55–75 |
 | 30 | 85–100 | 70–90 | 70–90 |
 
-- A fair one-on-one fight ends in 4–6 hits on each side, after misses, reactions, and DR. A boss takes 8–12 party hits, a minion 1–2.
+- A fair one-on-one fight ends in 4–6 hits on each side, after misses, evades, blocks, and DR. A boss takes 8–12 party hits, a minion 1–2.
 - Expected DR should stay below expected damage per hit, or the fight stalls.
 - With LCK 0 the crit window is 5 (5 % of rolls); at LCK 10 it is 10.
-- Two equal fighters at 100 attack and 100 evasion: about half the attacks land, half are dodged, 1 % fumble.
+- Two equal fighters at 100 attack and 100 evasion (rate 50): rolls 1 to 50 hit, 51 to 99 are evaded, 100 fumbles, so about half land, half are dodged, 1 % fumble.
 
 ---
 
@@ -219,7 +222,7 @@ Total worn DR is roughly 3–8 light, 8–18 medium, 14–28 heavy. A fighter at
 A real-time game runs the same functions. These notes are presentation, not rules: a client that disagrees with a vector is wrong.
 
 - **Time instead of turns.** An action costs its AP times `stamina_per_ap` in stamina, and a duration is its seconds; [actions.md](../core/actions.md#one-rule-set-two-clocks) has the conversion. A client may show the cost as a cooldown in the same proportion (an attack costs three times a move). Initiative is not needed when everyone acts at once; aggro decides who an enemy targets.
-- **Reactions.** "Declared before the attack" becomes holding the block or dodge input when the hit lands. The block and evade rolls are still d100 checks against the same skills and margins; input timing may decide whether the reaction is declared, not whether it succeeds. **[A]** A narrower parry window for the parry perks (M2-06).
+- **Stances.** A dodge or block stance becomes holding the dodge or block input when the hit lands: the same bands on the attacker's one roll. Input timing may decide whether the stance is held, not whether the band catches the roll. **[A]** A narrower parry window for the parry perks (M2-06).
 - **Dodge feedback.** A successful evade plays a dodge animation; an area dodge plays a stumble and shows the halved number.
 - **Damage popups.** Show the pipeline: `16 − 2 (DR) = 14`. Colours: white physical, orange crit, blue magic, green healing, red damage over time, grey fully absorbed.
 - **Animation guidance.** Attack recovery 0.3–0.5 s (heavy weapons 0.6–0.8 s), hit stun 0.1–0.2 s, knockdown 0.5–0.8 s plus 0.5 s to stand, dodge animation 0.3–0.5 s.
@@ -251,5 +254,5 @@ When adding one:
 ## 14. Settled questions
 
 - **Slots and layers.** The slot and layer model in [armor.md](./armor.md) is the data. A client may hide it (auto-equip a skin layer, a three-zone screen); the DR is the same.
-- **Shields.** `slot: "offhand"`, `layer: null`. A shield adds no passive DR; its DR applies only on a successful block. Its `evasionPenalty` applies whenever it is worn. A buckler leaves room for a light off-hand item.
+- **Shields.** `slot: "offhand"`, `layer: null`. A carried shield's DR adds to the armor DR against physical types (M3-27); a block stance adds a block band on top. Its `evasionPenalty` applies whenever it is worn. A buckler leaves room for a light off-hand item.
 - **Conditions and effects.** Every condition's `appliedBy` and `removedBy` names a real effect in `ruleset/data/effects/core.json`; the integrity check fails on one that does not resolve ([integrity.md](../core/integrity.md)).

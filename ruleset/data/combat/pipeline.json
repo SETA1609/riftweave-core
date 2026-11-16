@@ -23,6 +23,51 @@
         }
       ]
     },
+    "evasion_rate": {
+      "operation": "divide",
+      "arguments": [
+        {
+          "variable": "skill"
+        },
+        {
+          "literal": 2
+        }
+      ]
+    },
+    "dodge_evasion_rate": {
+      "operation": "multiply",
+      "arguments": [
+        {
+          "variable": "rate"
+        },
+        {
+          "literal": 2
+        }
+      ]
+    },
+    "block_rate": {
+      "operation": "divide",
+      "arguments": [
+        {
+          "variable": "skill"
+        },
+        {
+          "literal": 2
+        }
+      ]
+    },
+    "magic_block_rate": {
+      "operation": "divide",
+      "arguments": [
+        {
+          "variable": "rate"
+        },
+        {
+          "literal": 2
+        }
+      ]
+    },
+    "bulwark_stagger_ap": 2,
     "pierce_dr": {
       "operation": "divide",
       "arguments": [

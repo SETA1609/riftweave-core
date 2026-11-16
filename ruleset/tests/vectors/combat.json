@@ -25,8 +25,7 @@
       "blocked": false,
       "evaded": false,
       "damage": 6,
-      "hp": 24,
-      "reaction_tags": []
+      "hp": 24
     }
   },
   {
@@ -168,7 +167,7 @@
     }
   },
   {
-    "name": "evasion does not lower the attacker's target: evasion 90 without a reaction still faces target 72",
+    "name": "evasion does not lower the attacker's target: evasion 90 still faces target 72; margin 2 lands in its band of 45",
     "attacker": {
       "skill": 72,
       "roll": 70,
@@ -186,11 +185,12 @@
       "type": "slashing"
     },
     "expect": {
-      "outcome": "hit",
+      "outcome": "evaded",
       "target": 72,
       "margin": 2,
-      "damage": 8,
-      "hp": 22
+      "evasion_rate": 45,
+      "evaded": true,
+      "damage": 0
     }
   },
   {
@@ -218,7 +218,7 @@
     }
   },
   {
-    "name": "evade: target is the evasion skill 25; evade margin 15 reaches the attack margin 7",
+    "name": "evasion band: evasion 25 gives a band of 12; roll 65, margin 7, is evaded and a single attack does nothing",
     "attacker": {
       "skill": 72,
       "roll": 65,
@@ -230,9 +230,8 @@
       "evasion_skill": 25,
       "armor_dr": 2,
       "hp": 30,
-      "reaction": {
-        "kind": "evade",
-        "roll": 10
+      "attributes": {
+        "lck": 0
       }
     },
     "damage": {
@@ -241,16 +240,48 @@
     },
     "expect": {
       "outcome": "evaded",
-      "target": 72,
-      "margin": 7,
       "evaded": true,
       "blocked": false,
       "damage": 0,
-      "hp": 30
+      "hp": 30,
+      "margin": 7,
+      "evasion_rate": 12,
+      "block_rate": 0,
+      "counter": false
     }
   },
   {
-    "name": "evade: a tie on margin goes to the defender (12 against 12)",
+    "name": "evasion band: margin 11 (roll 61) is the band's last number, evaded",
+    "attacker": {
+      "skill": 72,
+      "roll": 61,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "evaded",
+      "evaded": true,
+      "blocked": false,
+      "damage": 0,
+      "hp": 30,
+      "margin": 11
+    }
+  },
+  {
+    "name": "evasion band: margin 12 (roll 60) equals the rate, a hit; armor DR 2 absorbs part",
     "attacker": {
       "skill": 72,
       "roll": 60,
@@ -260,11 +291,39 @@
     },
     "defender": {
       "evasion_skill": 25,
-      "armor_dr": 0,
+      "armor_dr": 2,
       "hp": 30,
-      "reaction": {
-        "kind": "evade",
-        "roll": 13
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "margin": 12,
+      "evaded": false,
+      "damage": 6,
+      "hp": 24
+    }
+  },
+  {
+    "name": "evasion band: evasion 90 gives 45; roll 30, margin 42, is evaded: skill points count",
+    "attacker": {
+      "skill": 72,
+      "roll": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 90,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
       }
     },
     "damage": {
@@ -274,26 +333,26 @@
     "expect": {
       "outcome": "evaded",
       "evaded": true,
+      "blocked": false,
       "damage": 0,
-      "hp": 30
+      "hp": 30,
+      "evasion_rate": 45
     }
   },
   {
-    "name": "evade fails: evade roll 40 is over the evasion skill 25",
+    "name": "evasion band: no evasion_skill is a band of 0; margin 0 (roll 72) is a hit",
     "attacker": {
       "skill": 72,
-      "roll": 65,
+      "roll": 72,
       "attributes": {
         "lck": 0
       }
     },
     "defender": {
-      "evasion_skill": 25,
-      "armor_dr": 0,
+      "armor_dr": 2,
       "hp": 30,
-      "reaction": {
-        "kind": "evade",
-        "roll": 40
+      "attributes": {
+        "lck": 0
       }
     },
     "damage": {
@@ -302,27 +361,27 @@
     },
     "expect": {
       "outcome": "hit",
-      "evaded": false,
-      "damage": 8,
-      "hp": 22
+      "margin": 0,
+      "evasion_rate": 0,
+      "damage": 6,
+      "hp": 24
     }
   },
   {
-    "name": "evade fails: evade margin 15 is under the attack margin 25",
+    "name": "evasion band: a crit always hits, even inside the band (target 50, evasion 100, roll 3)",
     "attacker": {
-      "skill": 72,
-      "roll": 47,
+      "skill": 50,
+      "roll": 3,
       "attributes": {
         "lck": 0
       }
     },
     "defender": {
-      "evasion_skill": 25,
-      "armor_dr": 0,
+      "evasion_skill": 100,
+      "armor_dr": 2,
       "hp": 30,
-      "reaction": {
-        "kind": "evade",
-        "roll": 10
+      "attributes": {
+        "lck": 0
       }
     },
     "damage": {
@@ -331,13 +390,16 @@
     },
     "expect": {
       "outcome": "hit",
+      "crit": true,
+      "margin": 47,
+      "evasion_rate": 50,
       "evaded": false,
-      "damage": 8,
-      "hp": 22
+      "damage": 14,
+      "hp": 16
     }
   },
   {
-    "name": "evade is not rolled on a miss",
+    "name": "evasion band: a miss stays a miss",
     "attacker": {
       "skill": 72,
       "roll": 80,
@@ -347,11 +409,10 @@
     },
     "defender": {
       "evasion_skill": 25,
-      "armor_dr": 0,
+      "armor_dr": 2,
       "hp": 30,
-      "reaction": {
-        "kind": "evade",
-        "roll": 1
+      "attributes": {
+        "lck": 0
       }
     },
     "damage": {
@@ -360,27 +421,27 @@
     },
     "expect": {
       "outcome": "miss",
+      "margin": null,
       "evaded": false,
       "damage": 0,
       "hp": 30
     }
   },
   {
-    "name": "evade: evasion 90 dodges an attack margin of 25 (roll 30, margin 60); skill points count in full",
+    "name": "evasion band: a fumble stays a fumble",
     "attacker": {
       "skill": 72,
-      "roll": 47,
+      "roll": 100,
       "attributes": {
         "lck": 0
       }
     },
     "defender": {
-      "evasion_skill": 90,
-      "armor_dr": 0,
+      "evasion_skill": 25,
+      "armor_dr": 2,
       "hp": 30,
-      "reaction": {
-        "kind": "evade",
-        "roll": 30
+      "attributes": {
+        "lck": 0
       }
     },
     "damage": {
@@ -388,15 +449,81 @@
       "type": "slashing"
     },
     "expect": {
-      "outcome": "evaded",
-      "margin": 25,
-      "evaded": true,
+      "outcome": "fumble",
+      "evaded": false,
       "damage": 0,
       "hp": 30
     }
   },
   {
-    "name": "delivery single: a fire bolt is dodged whole, like an arrow",
+    "name": "armored evasion: +10 on evasion 25 widens the band to 17; margin 15 (roll 57) is evaded",
+    "attacker": {
+      "skill": 72,
+      "roll": 57,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "evasion",
+          "operation": "add",
+          "value": 10,
+          "source": "feature:armored_evasion",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "evaded",
+      "evaded": true,
+      "blocked": false,
+      "damage": 0,
+      "hp": 30,
+      "evasion_rate": 17
+    }
+  },
+  {
+    "name": "armored evasion: without it margin 15 is a hit",
+    "attacker": {
+      "skill": 72,
+      "roll": 57,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "evasion_rate": 12,
+      "damage": 6,
+      "hp": 24
+    }
+  },
+  {
+    "name": "delivery single: a fire bolt in the band is dodged whole, like an arrow",
     "attacker": {
       "skill": 72,
       "roll": 65,
@@ -406,14 +533,12 @@
     },
     "defender": {
       "evasion_skill": 25,
-      "armor_dr": 0,
+      "armor_dr": 2,
       "hp": 30,
-      "reaction": {
-        "kind": "evade",
-        "roll": 10
+      "attributes": {
+        "lck": 0
       }
     },
-    "delivery": "single",
     "damage": {
       "roll": 10,
       "type": "fire"
@@ -421,12 +546,13 @@
     "expect": {
       "outcome": "evaded",
       "evaded": true,
+      "blocked": false,
       "damage": 0,
       "hp": 30
     }
   },
   {
-    "name": "delivery area: a successful evade halves a fireball, 10 to 5",
+    "name": "delivery area: a fireball in the band is halved, 10 to 5",
     "attacker": {
       "skill": 72,
       "roll": 65,
@@ -436,18 +562,17 @@
     },
     "defender": {
       "evasion_skill": 25,
-      "armor_dr": 0,
+      "armor_dr": 2,
       "hp": 30,
-      "reaction": {
-        "kind": "evade",
-        "roll": 10
+      "attributes": {
+        "lck": 0
       }
     },
-    "delivery": "area",
     "damage": {
       "roll": 10,
       "type": "fire"
     },
+    "delivery": "area",
     "expect": {
       "outcome": "hit",
       "evaded": true,
@@ -466,18 +591,17 @@
     },
     "defender": {
       "evasion_skill": 25,
-      "armor_dr": 0,
+      "armor_dr": 2,
       "hp": 30,
-      "reaction": {
-        "kind": "evade",
-        "roll": 10
+      "attributes": {
+        "lck": 0
       }
     },
-    "delivery": "area",
     "damage": {
       "roll": 9,
       "type": "fire"
     },
+    "delivery": "area",
     "expect": {
       "outcome": "hit",
       "evaded": true,
@@ -486,38 +610,36 @@
     }
   },
   {
-    "name": "delivery area: a crit doubles 6 to 12 before the evade halves it to 6",
+    "name": "delivery area: outside the band the fireball lands in full",
     "attacker": {
       "skill": 72,
-      "roll": 3,
+      "roll": 47,
       "attributes": {
         "lck": 0
       }
     },
     "defender": {
-      "evasion_skill": 100,
-      "armor_dr": 0,
+      "evasion_skill": 25,
+      "armor_dr": 2,
       "hp": 30,
-      "reaction": {
-        "kind": "evade",
-        "roll": 20
+      "attributes": {
+        "lck": 0
       }
     },
-    "delivery": "area",
     "damage": {
-      "roll": 6,
+      "roll": 10,
       "type": "fire"
     },
+    "delivery": "area",
     "expect": {
       "outcome": "hit",
-      "crit": true,
-      "evaded": true,
-      "damage": 6,
-      "hp": 24
+      "evaded": false,
+      "damage": 10,
+      "hp": 20
     }
   },
   {
-    "name": "delivery area: a failed evade takes the whole fireball",
+    "name": "delivery instant: no band; margin 7 lands in full (its save is casting.md)",
     "attacker": {
       "skill": 72,
       "roll": 65,
@@ -527,27 +649,827 @@
     },
     "defender": {
       "evasion_skill": 25,
-      "armor_dr": 0,
+      "armor_dr": 2,
       "hp": 30,
-      "reaction": {
-        "kind": "evade",
-        "roll": 40
+      "attributes": {
+        "lck": 0
       }
     },
-    "delivery": "area",
     "damage": {
       "roll": 10,
       "type": "fire"
     },
+    "delivery": "instant",
     "expect": {
       "outcome": "hit",
       "evaded": false,
+      "evasion_rate": 0,
       "damage": 10,
       "hp": 20
     }
   },
   {
-    "name": "a perk on the shields skill raises the block target: block 40 plus 20 reaches the attacker's margin",
+    "name": "delivery instant: a block stance gives no band either",
+    "attacker": {
+      "skill": 72,
+      "roll": 52,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "shield_dr": 2,
+      "shields_skill": 40,
+      "stance": "block"
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "delivery": "instant",
+    "expect": {
+      "outcome": "hit",
+      "blocked": false,
+      "block_rate": 0,
+      "damage": 4,
+      "hp": 26
+    }
+  },
+  {
+    "name": "dodge: the stance doubles the band, 12 to 24; margin 20 (roll 52) is evaded",
+    "attacker": {
+      "skill": 72,
+      "roll": 52,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "stance": "dodge"
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "evaded",
+      "evaded": true,
+      "blocked": false,
+      "damage": 0,
+      "hp": 30,
+      "evasion_rate": 24
+    }
+  },
+  {
+    "name": "dodge: without the stance margin 20 is a hit",
+    "attacker": {
+      "skill": 72,
+      "roll": 52,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "evasion_rate": 12,
+      "damage": 6,
+      "hp": 24
+    }
+  },
+  {
+    "name": "dodge: an area attack in the doubled band is still halved, not avoided",
+    "attacker": {
+      "skill": 72,
+      "roll": 52,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "stance": "dodge"
+    },
+    "damage": {
+      "roll": 10,
+      "type": "fire"
+    },
+    "delivery": "area",
+    "expect": {
+      "outcome": "hit",
+      "evaded": true,
+      "damage": 5,
+      "hp": 25
+    }
+  },
+  {
+    "name": "riposte: dodging, margin 20 is in the band's lowest rolls (window 5: margins 19 to 23), counter",
+    "attacker": {
+      "skill": 72,
+      "roll": 52,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "stance": "dodge",
+      "modifiers": [
+        {
+          "target": "riposte",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:riposte",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "evaded",
+      "evaded": true,
+      "blocked": false,
+      "damage": 0,
+      "hp": 30,
+      "counter": true
+    }
+  },
+  {
+    "name": "riposte: dodging, margin 10 is evaded outside the window, no counter",
+    "attacker": {
+      "skill": 72,
+      "roll": 62,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "stance": "dodge",
+      "modifiers": [
+        {
+          "target": "riposte",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:riposte",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "evaded",
+      "evaded": true,
+      "blocked": false,
+      "damage": 0,
+      "hp": 30,
+      "counter": false
+    }
+  },
+  {
+    "name": "riposte: without the dodge stance there is no counter, even in the window",
+    "attacker": {
+      "skill": 72,
+      "roll": 64,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "riposte",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:riposte",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "evaded",
+      "evaded": true,
+      "blocked": false,
+      "damage": 0,
+      "hp": 30,
+      "counter": false
+    }
+  },
+  {
+    "name": "riposte: an area attack in the window is halved, no counter",
+    "attacker": {
+      "skill": 72,
+      "roll": 52,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "stance": "dodge",
+      "modifiers": [
+        {
+          "target": "riposte",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:riposte",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "damage": {
+      "roll": 10,
+      "type": "fire"
+    },
+    "delivery": "area",
+    "expect": {
+      "outcome": "hit",
+      "evaded": true,
+      "counter": false,
+      "damage": 5,
+      "hp": 25
+    }
+  },
+  {
+    "name": "riposte: the defender's LCK 4 widens the window to 7 (margins 17 to 23)",
+    "attacker": {
+      "skill": 72,
+      "roll": 55,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 4
+      },
+      "stance": "dodge",
+      "modifiers": [
+        {
+          "target": "riposte",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:riposte",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "evaded",
+      "evaded": true,
+      "blocked": false,
+      "damage": 0,
+      "hp": 30,
+      "counter": true
+    }
+  },
+  {
+    "name": "shield: a carried shield's DR 2 adds to armor DR 2, with no stance",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "shield_dr": 2
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "blocked": false,
+      "damage": 4,
+      "hp": 26
+    }
+  },
+  {
+    "name": "shield training: +2 on shield_dr, so the shield subtracts 4 with armor 2",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "shield_dr": 2,
+      "modifiers": [
+        {
+          "target": "shield_dr",
+          "operation": "add",
+          "value": 2,
+          "source": "feature:shield_training",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "damage": 2,
+      "hp": 28
+    }
+  },
+  {
+    "name": "shield: fire skips the shield's DR as it skips armor",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "shield_dr": 2
+    },
+    "damage": {
+      "roll": 8,
+      "type": "fire"
+    },
+    "expect": {
+      "outcome": "hit",
+      "damage": 8,
+      "hp": 22
+    }
+  },
+  {
+    "name": "shield: piercing halves armor and shield together (4 + 2 = 6 becomes 3)",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 4,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "shield_dr": 2
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "damage": 5,
+      "hp": 25
+    }
+  },
+  {
+    "name": "block: shields 40 gives a block band of 20 under the band of 12; margin 20 (roll 52) is blocked, no damage",
+    "attacker": {
+      "skill": 72,
+      "roll": 52,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "shield_dr": 2,
+      "shields_skill": 40,
+      "stance": "block"
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "blocked",
+      "blocked": true,
+      "evaded": false,
+      "evasion_rate": 12,
+      "block_rate": 20,
+      "stagger_ap": 0,
+      "damage": 0,
+      "hp": 30
+    }
+  },
+  {
+    "name": "block: margin 12 (roll 60) is the block band's first number",
+    "attacker": {
+      "skill": 72,
+      "roll": 60,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "shield_dr": 2,
+      "shields_skill": 40,
+      "stance": "block"
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "blocked",
+      "blocked": true,
+      "damage": 0,
+      "hp": 30
+    }
+  },
+  {
+    "name": "block: margin 31 (roll 41) is its last number",
+    "attacker": {
+      "skill": 72,
+      "roll": 41,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "shield_dr": 2,
+      "shields_skill": 40,
+      "stance": "block"
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "blocked",
+      "blocked": true,
+      "damage": 0,
+      "hp": 30
+    }
+  },
+  {
+    "name": "block: margin 32 (roll 40) is a hit; shield and armor DR subtract together",
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "shield_dr": 2,
+      "shields_skill": 40,
+      "stance": "block"
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "blocked": false,
+      "damage": 4,
+      "hp": 26
+    }
+  },
+  {
+    "name": "block: margin 7 is still evaded first; the evasion band sits above",
+    "attacker": {
+      "skill": 72,
+      "roll": 65,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "shield_dr": 2,
+      "shields_skill": 40,
+      "stance": "block"
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "evaded",
+      "evaded": true,
+      "blocked": false,
+      "damage": 0,
+      "hp": 30
+    }
+  },
+  {
+    "name": "block: a perk on the shields skill widens the band: 40 plus 20 is 30, so margin 35 (roll 37) is blocked",
+    "attacker": {
+      "skill": 72,
+      "roll": 37,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "shield_dr": 2,
+      "shields_skill": 40,
+      "stance": "block",
+      "modifiers": [
+        {
+          "target": "shields",
+          "operation": "add",
+          "value": 20,
+          "source": "feature:shield_wall",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "blocked",
+      "blocked": true,
+      "block_rate": 30
+    }
+  },
+  {
+    "name": "block: a blocked physical blast (area) does no damage",
+    "attacker": {
+      "skill": 72,
+      "roll": 52,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "shield_dr": 2,
+      "shields_skill": 40,
+      "stance": "block"
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "delivery": "area",
+    "expect": {
+      "outcome": "blocked",
+      "blocked": true,
+      "damage": 0,
+      "hp": 30
+    }
+  },
+  {
+    "name": "block: a shield does not block fire; margin 20 is a hit in full",
+    "attacker": {
+      "skill": 72,
+      "roll": 52,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "shield_dr": 2,
+      "shields_skill": 40,
+      "stance": "block"
+    },
+    "damage": {
+      "roll": 8,
+      "type": "fire"
+    },
+    "expect": {
+      "outcome": "hit",
+      "blocked": false,
+      "block_rate": 0,
+      "damage": 8,
+      "hp": 22
+    }
+  },
+  {
+    "name": "block: the stance needs a carried shield",
+    "attacker": {
+      "skill": 72,
+      "roll": 52,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "shields_skill": 40,
+      "stance": "block"
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "error": "a block needs shield_dr and shields_skill"
+    }
+  },
+  {
+    "name": "stance: an unknown stance is an error",
+    "attacker": {
+      "skill": 72,
+      "roll": 52,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "stance": "parry"
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "error": "stance \"parry\" is not defined"
+    }
+  },
+  {
+    "name": "spell ward: blocking, fire meets a band of half the width, 10; margin 20 is blocked",
+    "attacker": {
+      "skill": 72,
+      "roll": 52,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "shield_dr": 2,
+      "shields_skill": 40,
+      "stance": "block",
+      "modifiers": [
+        {
+          "target": "block_magic",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:spell_ward",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "damage": {
+      "roll": 8,
+      "type": "fire"
+    },
+    "expect": {
+      "outcome": "blocked",
+      "blocked": true,
+      "block_rate": 10,
+      "damage": 0,
+      "hp": 30
+    }
+  },
+  {
+    "name": "spell ward: margin 22 (roll 50) is past the half band, fire lands in full",
     "attacker": {
       "skill": 72,
       "roll": 50,
@@ -557,329 +1479,186 @@
     },
     "defender": {
       "evasion_skill": 25,
-      "armor_dr": 0,
+      "armor_dr": 2,
       "hp": 30,
-      "reaction": {
-        "kind": "block",
-        "skill": 40,
-        "roll": 35,
-        "shield_dr": 2
+      "attributes": {
+        "lck": 0
       },
+      "shield_dr": 2,
+      "shields_skill": 40,
+      "stance": "block",
       "modifiers": [
         {
-          "target": "shields",
-          "operation": "add",
-          "value": 20,
-          "source": "perk:test"
+          "target": "block_magic",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:spell_ward",
+          "origin": "core:origin/trained"
         }
       ]
     },
     "damage": {
-      "roll": 6,
-      "type": "slashing"
-    },
-    "expect": {
-      "outcome": "hit",
-      "blocked": true,
-      "evaded": false,
-      "damage": 4,
-      "hp": 26
-    }
-  },
-  {
-    "name": "delivery area: a shield blocks a physical blast, shield DR 2 subtracts",
-    "attacker": {
-      "skill": 72,
-      "roll": 65,
-      "attributes": {
-        "lck": 0
-      }
-    },
-    "defender": {
-      "evasion_skill": 25,
-      "armor_dr": 0,
-      "hp": 30,
-      "reaction": {
-        "kind": "block",
-        "skill": 55,
-        "roll": 41,
-        "shield_dr": 2
-      }
-    },
-    "delivery": "area",
-    "damage": {
-      "roll": 5,
-      "type": "slashing"
-    },
-    "expect": {
-      "outcome": "hit",
-      "blocked": true,
-      "evaded": false,
-      "damage": 3,
-      "hp": 27
-    }
-  },
-  {
-    "name": "delivery instant: no evade; the spell lands in full (its save is M3-05)",
-    "attacker": {
-      "skill": 72,
-      "roll": 65,
-      "attributes": {
-        "lck": 0
-      }
-    },
-    "defender": {
-      "evasion_skill": 100,
-      "armor_dr": 0,
-      "hp": 30,
-      "reaction": {
-        "kind": "evade",
-        "roll": 1
-      }
-    },
-    "delivery": "instant",
-    "damage": {
-      "roll": 10,
+      "roll": 8,
       "type": "fire"
     },
     "expect": {
       "outcome": "hit",
-      "evaded": false,
-      "damage": 10,
-      "hp": 20
-    }
-  },
-  {
-    "name": "delivery instant: no block either",
-    "attacker": {
-      "skill": 72,
-      "roll": 65,
-      "attributes": {
-        "lck": 0
-      }
-    },
-    "defender": {
-      "evasion_skill": 25,
-      "armor_dr": 0,
-      "hp": 30,
-      "reaction": {
-        "kind": "block",
-        "skill": 55,
-        "roll": 41,
-        "shield_dr": 2
-      }
-    },
-    "delivery": "instant",
-    "damage": {
-      "roll": 5,
-      "type": "slashing"
-    },
-    "expect": {
-      "outcome": "hit",
       "blocked": false,
-      "damage": 5,
-      "hp": 25
-    }
-  },
-  {
-    "name": "reaction fumble: evade roll 100 fails even at evasion 100 against an attack margin of 0",
-    "attacker": {
-      "skill": 72,
-      "roll": 72,
-      "attributes": {
-        "lck": 0
-      }
-    },
-    "defender": {
-      "evasion_skill": 100,
-      "armor_dr": 0,
-      "hp": 30,
-      "reaction": {
-        "kind": "evade",
-        "roll": 100
-      }
-    },
-    "damage": {
-      "roll": 8,
-      "type": "slashing"
-    },
-    "expect": {
-      "outcome": "hit",
-      "margin": 0,
-      "evaded": false,
-      "reaction_tags": [
-        "fumble"
-      ],
       "damage": 8,
       "hp": 22
     }
   },
   {
-    "name": "reaction fumble: block roll 100 fails even at block 100",
+    "name": "spell ward: a physical hit keeps the full band of 20",
     "attacker": {
       "skill": 72,
-      "roll": 72,
+      "roll": 47,
       "attributes": {
         "lck": 0
       }
     },
     "defender": {
       "evasion_skill": 25,
-      "armor_dr": 0,
+      "armor_dr": 2,
       "hp": 30,
-      "reaction": {
-        "kind": "block",
-        "skill": 100,
-        "roll": 100,
-        "shield_dr": 2
-      }
-    },
-    "damage": {
-      "roll": 5,
-      "type": "slashing"
-    },
-    "expect": {
-      "outcome": "hit",
-      "blocked": false,
-      "reaction_tags": [
-        "fumble"
-      ],
-      "damage": 5,
-      "hp": 25
-    }
-  },
-  {
-    "name": "reaction crit: the defender's LCK 4 widens the window to 7; evade roll 6 is tagged crit",
-    "attacker": {
-      "skill": 72,
-      "roll": 65,
       "attributes": {
         "lck": 0
-      }
-    },
-    "defender": {
-      "evasion_skill": 25,
-      "attributes": {
-        "lck": 4
       },
-      "armor_dr": 0,
-      "hp": 30,
-      "reaction": {
-        "kind": "evade",
-        "roll": 6
-      }
+      "shield_dr": 2,
+      "shields_skill": 40,
+      "stance": "block",
+      "modifiers": [
+        {
+          "target": "block_magic",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:spell_ward",
+          "origin": "core:origin/trained"
+        }
+      ]
     },
     "damage": {
       "roll": 8,
       "type": "slashing"
     },
     "expect": {
-      "outcome": "evaded",
-      "evaded": true,
-      "reaction_tags": [
-        "crit"
-      ],
-      "damage": 0,
-      "hp": 30
+      "outcome": "blocked",
+      "blocked": true,
+      "block_rate": 20
     }
   },
   {
-    "name": "reaction crit: evade roll 6 is not a crit at LCK 0",
+    "name": "bulwark: blocking, margin 29 is in the block band's lowest rolls (window 5: margins 27 to 31), the attacker is staggered",
     "attacker": {
       "skill": 72,
-      "roll": 65,
+      "roll": 43,
       "attributes": {
         "lck": 0
       }
     },
     "defender": {
       "evasion_skill": 25,
-      "armor_dr": 0,
+      "armor_dr": 2,
       "hp": 30,
-      "reaction": {
-        "kind": "evade",
-        "roll": 6
-      }
+      "attributes": {
+        "lck": 0
+      },
+      "shield_dr": 2,
+      "shields_skill": 40,
+      "stance": "block",
+      "modifiers": [
+        {
+          "target": "bulwark",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:bulwark",
+          "origin": "core:origin/trained"
+        }
+      ]
     },
     "damage": {
       "roll": 8,
       "type": "slashing"
     },
     "expect": {
-      "outcome": "evaded",
-      "evaded": true,
-      "reaction_tags": [],
+      "outcome": "blocked",
+      "blocked": true,
+      "stagger_ap": 2,
       "damage": 0,
       "hp": 30
     }
   },
   {
-    "name": "reaction crit: a crit block (roll 3) has no extra effect yet, shield DR 2 as usual",
+    "name": "bulwark: a block outside the window staggers no one",
     "attacker": {
       "skill": 72,
-      "roll": 65,
+      "roll": 52,
       "attributes": {
         "lck": 0
       }
     },
     "defender": {
       "evasion_skill": 25,
-      "armor_dr": 0,
+      "armor_dr": 2,
       "hp": 30,
-      "reaction": {
-        "kind": "block",
-        "skill": 55,
-        "roll": 3,
-        "shield_dr": 2
-      }
+      "attributes": {
+        "lck": 0
+      },
+      "shield_dr": 2,
+      "shields_skill": 40,
+      "stance": "block",
+      "modifiers": [
+        {
+          "target": "bulwark",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:bulwark",
+          "origin": "core:origin/trained"
+        }
+      ]
     },
     "damage": {
-      "roll": 5,
+      "roll": 8,
       "type": "slashing"
     },
     "expect": {
-      "outcome": "hit",
+      "outcome": "blocked",
       "blocked": true,
-      "reaction_tags": [
-        "crit"
-      ],
-      "damage": 3,
-      "hp": 27
+      "stagger_ap": 0
     }
   },
   {
-    "name": "block: margin 14 reaches the attack margin 7, shield DR 2 subtracts",
+    "name": "bulwark: without the perk the same block staggers no one",
     "attacker": {
       "skill": 72,
-      "roll": 65,
+      "roll": 43,
       "attributes": {
         "lck": 0
       }
     },
     "defender": {
       "evasion_skill": 25,
-      "armor_dr": 0,
+      "armor_dr": 2,
       "hp": 30,
-      "reaction": {
-        "kind": "block",
-        "skill": 55,
-        "roll": 41,
-        "shield_dr": 2
-      }
+      "attributes": {
+        "lck": 0
+      },
+      "shield_dr": 2,
+      "shields_skill": 40,
+      "stance": "block"
     },
     "damage": {
-      "roll": 5,
+      "roll": 8,
       "type": "slashing"
     },
     "expect": {
-      "outcome": "hit",
+      "outcome": "blocked",
       "blocked": true,
-      "damage": 3,
-      "hp": 27
+      "stagger_ap": 0
     }
   },
   {
-    "name": "block fails: block roll 90 is over skill 55",
+    "name": "instant: dodge, riposte, and armored evasion, still no band",
     "attacker": {
       "skill": 72,
       "roll": 65,
@@ -891,82 +1670,341 @@
       "evasion_skill": 25,
       "armor_dr": 0,
       "hp": 30,
-      "reaction": {
-        "kind": "block",
-        "skill": 55,
-        "roll": 90,
-        "shield_dr": 2
-      }
-    },
-    "damage": {
-      "roll": 5,
-      "type": "slashing"
-    },
-    "expect": {
-      "blocked": false,
-      "damage": 5,
-      "hp": 25
-    }
-  },
-  {
-    "name": "block fails: block margin 14 is under the attack margin 62",
-    "attacker": {
-      "skill": 72,
-      "roll": 10,
       "attributes": {
         "lck": 0
-      }
-    },
-    "defender": {
-      "evasion_skill": 25,
-      "armor_dr": 0,
-      "hp": 30,
-      "reaction": {
-        "kind": "block",
-        "skill": 55,
-        "roll": 41,
-        "shield_dr": 2
-      }
-    },
-    "damage": {
-      "roll": 5,
-      "type": "slashing"
-    },
-    "expect": {
-      "outcome": "hit",
-      "blocked": false,
-      "damage": 5,
-      "hp": 25
-    }
-  },
-  {
-    "name": "block then armor: shield 2 and DR 4 both subtract",
-    "attacker": {
-      "skill": 72,
-      "roll": 65,
-      "attributes": {
-        "lck": 0
-      }
-    },
-    "defender": {
-      "evasion_skill": 25,
-      "armor_dr": 4,
-      "hp": 30,
-      "reaction": {
-        "kind": "block",
-        "skill": 55,
-        "roll": 41,
-        "shield_dr": 2
-      }
+      },
+      "stance": "dodge",
+      "modifiers": [
+        {
+          "target": "riposte",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:riposte",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "evasion",
+          "operation": "add",
+          "value": 10,
+          "source": "feature:armored_evasion",
+          "origin": "core:origin/trained"
+        }
+      ]
     },
     "damage": {
       "roll": 12,
+      "type": "fire"
+    },
+    "delivery": "instant",
+    "expect": {
+      "outcome": "hit",
+      "evaded": false,
+      "counter": false,
+      "damage": 12,
+      "hp": 18
+    }
+  },
+  {
+    "name": "instant: block, spell ward, and bulwark, still no band",
+    "attacker": {
+      "skill": 72,
+      "roll": 52,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "shield_dr": 4,
+      "shields_skill": 55,
+      "stance": "block",
+      "modifiers": [
+        {
+          "target": "shield_dr",
+          "operation": "add",
+          "value": 2,
+          "source": "feature:shield_training",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "block_magic",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:spell_ward",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "bulwark",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:bulwark",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "damage": {
+      "roll": 12,
+      "type": "fire"
+    },
+    "delivery": "instant",
+    "expect": {
+      "outcome": "hit",
+      "blocked": false,
+      "stagger_ap": 0,
+      "damage": 12,
+      "hp": 18
+    }
+  },
+  {
+    "name": "called shot: a blocked hit lists no riders (head, target 92 - 20 = 72, margin 20)",
+    "attacker": {
+      "skill": 92,
+      "roll": 52,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "shield_dr": 2,
+      "shields_skill": 40,
+      "stance": "block"
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "called_shot": "head",
+    "expect": {
+      "outcome": "blocked",
+      "blocked": true,
+      "riders": []
+    }
+  },
+  {
+    "name": "example 1a: Aldric's longsword against the dodging bandit: margin 25 is past the doubled band of 24, a hit",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 4
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "stance": "dodge"
+    },
+    "damage": {
+      "roll": 8,
       "type": "slashing"
     },
     "expect": {
-      "blocked": true,
+      "outcome": "hit",
+      "margin": 25,
+      "evasion_rate": 24,
       "damage": 6,
       "hp": 24
+    }
+  },
+  {
+    "name": "example 1b: the bandit's shortsword against Aldric's block: margin 20 is in the block band (15 to 41), no damage",
+    "attacker": {
+      "skill": 45,
+      "roll": 25,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 30,
+      "armor_dr": 22,
+      "hp": 75,
+      "attributes": {
+        "lck": 4
+      },
+      "shield_dr": 2,
+      "shields_skill": 55,
+      "stance": "block"
+    },
+    "damage": {
+      "roll": 5,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "blocked",
+      "blocked": true,
+      "evasion_rate": 15,
+      "block_rate": 27,
+      "damage": 0,
+      "hp": 75
+    }
+  },
+  {
+    "name": "example 1b, a crit: roll 2 always hits through the block stance; 5 x 2 = 10 is stopped by armor 22 and shield 2",
+    "attacker": {
+      "skill": 45,
+      "roll": 2,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 30,
+      "armor_dr": 22,
+      "hp": 75,
+      "attributes": {
+        "lck": 4
+      },
+      "shield_dr": 2,
+      "shields_skill": 55,
+      "stance": "block"
+    },
+    "damage": {
+      "roll": 5,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "crit": true,
+      "blocked": false,
+      "damage": 0,
+      "hp": 75
+    }
+  },
+  {
+    "name": "example 1c: Aldric crits on 4 (LCK 4, window 7); a crit hits through the dodge, damage doubles before DR",
+    "attacker": {
+      "skill": 72,
+      "roll": 4,
+      "attributes": {
+        "lck": 4
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 24,
+      "attributes": {
+        "lck": 0
+      },
+      "stance": "dodge"
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "crit": true,
+      "damage": 14,
+      "hp": 10
+    }
+  },
+  {
+    "name": "example 2a: Lyra's fire bolt (single) at Cinder: margin 27 is past the band of 15; fire resist 3, scales DR 3 do not apply",
+    "attacker": {
+      "skill": 65,
+      "roll": 38,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 30,
+      "armor_dr": 3,
+      "hp": 40,
+      "attributes": {
+        "lck": 0
+      },
+      "resist": {
+        "fire": 3
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "fire"
+    },
+    "expect": {
+      "outcome": "hit",
+      "margin": 27,
+      "evasion_rate": 15,
+      "damage": 5,
+      "hp": 35
+    }
+  },
+  {
+    "name": "example 2b: fire burst (area) on goblin A: margin 15 is in its band of 20, halved 28 to 14",
+    "attacker": {
+      "skill": 65,
+      "roll": 50,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 40,
+      "armor_dr": 1,
+      "hp": 15,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 28,
+      "type": "fire"
+    },
+    "delivery": "area",
+    "expect": {
+      "outcome": "hit",
+      "evaded": true,
+      "evasion_rate": 20,
+      "damage": 14,
+      "hp": 1
+    }
+  },
+  {
+    "name": "example 2c: fire burst (area) on goblin B: margin 15 is past its band of 10, 28 in full",
+    "attacker": {
+      "skill": 65,
+      "roll": 50,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 1,
+      "hp": 15,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 28,
+      "type": "fire"
+    },
+    "delivery": "area",
+    "expect": {
+      "outcome": "hit",
+      "evaded": false,
+      "evasion_rate": 10,
+      "damage": 28,
+      "hp": 0
     }
   },
   {
@@ -988,36 +2026,6 @@
       "type": "fire"
     },
     "expect": {
-      "damage": 10,
-      "hp": 20
-    }
-  },
-  {
-    "name": "damage type: a shield does not block fire",
-    "attacker": {
-      "skill": 72,
-      "roll": 65,
-      "attributes": {
-        "lck": 0
-      }
-    },
-    "defender": {
-      "evasion_skill": 25,
-      "armor_dr": 0,
-      "hp": 30,
-      "reaction": {
-        "kind": "block",
-        "skill": 55,
-        "roll": 41,
-        "shield_dr": 2
-      }
-    },
-    "damage": {
-      "roll": 10,
-      "type": "fire"
-    },
-    "expect": {
-      "blocked": false,
       "damage": 10,
       "hp": 20
     }
@@ -1167,195 +2175,6 @@
     },
     "expect": {
       "damage": 48,
-      "hp": 0
-    }
-  },
-  {
-    "name": "example 1a: Aldric's longsword hits the bandit; the bandit's evade fails",
-    "attacker": {
-      "skill": 72,
-      "roll": 47,
-      "attributes": {
-        "lck": 4
-      }
-    },
-    "defender": {
-      "evasion_skill": 25,
-      "armor_dr": 2,
-      "hp": 30,
-      "reaction": {
-        "kind": "evade",
-        "roll": 63
-      }
-    },
-    "damage": {
-      "roll": 8,
-      "type": "slashing"
-    },
-    "expect": {
-      "outcome": "hit",
-      "margin": 25,
-      "evaded": false,
-      "damage": 6,
-      "hp": 24
-    }
-  },
-  {
-    "name": "example 1b: the bandit's shortsword is blocked; Aldric's armor takes the rest",
-    "attacker": {
-      "skill": 45,
-      "roll": 32,
-      "attributes": {
-        "lck": 0
-      }
-    },
-    "defender": {
-      "evasion_skill": 30,
-      "armor_dr": 22,
-      "hp": 75,
-      "reaction": {
-        "kind": "block",
-        "skill": 55,
-        "roll": 41,
-        "shield_dr": 2
-      }
-    },
-    "damage": {
-      "roll": 5,
-      "type": "slashing"
-    },
-    "expect": {
-      "outcome": "hit",
-      "margin": 13,
-      "blocked": true,
-      "damage": 0,
-      "hp": 75
-    }
-  },
-  {
-    "name": "example 1c: Aldric crits on 4 (LCK 4, window 7); damage doubles before DR",
-    "attacker": {
-      "skill": 72,
-      "roll": 4,
-      "attributes": {
-        "lck": 4
-      }
-    },
-    "defender": {
-      "evasion_skill": 25,
-      "armor_dr": 2,
-      "hp": 24,
-      "reaction": {
-        "kind": "evade",
-        "roll": 63
-      }
-    },
-    "damage": {
-      "roll": 8,
-      "type": "slashing"
-    },
-    "expect": {
-      "outcome": "hit",
-      "crit": true,
-      "damage": 14,
-      "hp": 10
-    }
-  },
-  {
-    "name": "example 2a: Lyra's fire bolt (single) is not dodged; fire resist 3, scales DR 3 do not apply",
-    "attacker": {
-      "skill": 65,
-      "roll": 38,
-      "attributes": {
-        "lck": 0
-      }
-    },
-    "defender": {
-      "evasion_skill": 30,
-      "armor_dr": 3,
-      "hp": 40,
-      "resist": {
-        "fire": 3
-      },
-      "reaction": {
-        "kind": "evade",
-        "roll": 12
-      }
-    },
-    "delivery": "single",
-    "damage": {
-      "roll": 8,
-      "type": "fire"
-    },
-    "expect": {
-      "outcome": "hit",
-      "margin": 27,
-      "evaded": false,
-      "damage": 5,
-      "hp": 35
-    }
-  },
-  {
-    "name": "example 2b: fire burst (area) on goblin A; a tied evade halves 28 to 14",
-    "attacker": {
-      "skill": 65,
-      "roll": 50,
-      "attributes": {
-        "lck": 0
-      }
-    },
-    "defender": {
-      "evasion_skill": 20,
-      "armor_dr": 1,
-      "hp": 15,
-      "reaction": {
-        "kind": "evade",
-        "roll": 5
-      }
-    },
-    "delivery": "area",
-    "damage": {
-      "roll": 28,
-      "type": "fire"
-    },
-    "expect": {
-      "outcome": "hit",
-      "margin": 15,
-      "evaded": true,
-      "reaction_tags": [
-        "crit"
-      ],
-      "damage": 14,
-      "hp": 1
-    }
-  },
-  {
-    "name": "example 2c: fire burst (area) on goblin B; the evade fails, 28 in full",
-    "attacker": {
-      "skill": 65,
-      "roll": 50,
-      "attributes": {
-        "lck": 0
-      }
-    },
-    "defender": {
-      "evasion_skill": 20,
-      "armor_dr": 1,
-      "hp": 15,
-      "reaction": {
-        "kind": "evade",
-        "roll": 40
-      }
-    },
-    "delivery": "area",
-    "damage": {
-      "roll": 28,
-      "type": "fire"
-    },
-    "expect": {
-      "outcome": "hit",
-      "evaded": false,
-      "damage": 28,
       "hp": 0
     }
   },
@@ -1884,616 +2703,6 @@
     }
   },
   {
-    "name": "shield training: a block subtracts the shield's 2 and 2 more",
-    "attacker": {
-      "skill": 72,
-      "roll": 65,
-      "attributes": {
-        "lck": 0
-      }
-    },
-    "defender": {
-      "evasion_skill": 25,
-      "armor_dr": 0,
-      "hp": 30,
-      "attributes": {
-        "lck": 0
-      },
-      "reaction": {
-        "kind": "block",
-        "skill": 55,
-        "roll": 41,
-        "shield_dr": 2
-      },
-      "modifiers": [
-        {
-          "target": "shield_dr",
-          "operation": "add",
-          "value": 2,
-          "source": "feature:shield_training",
-          "origin": "core:origin/trained"
-        }
-      ]
-    },
-    "damage": {
-      "roll": 10,
-      "type": "slashing"
-    },
-    "expect": {
-      "outcome": "hit",
-      "blocked": true,
-      "damage": 6,
-      "hp": 24
-    }
-  },
-  {
-    "name": "spell ward: a block stops a fire bolt at half shield DR",
-    "attacker": {
-      "skill": 72,
-      "roll": 65,
-      "attributes": {
-        "lck": 0
-      }
-    },
-    "defender": {
-      "evasion_skill": 25,
-      "armor_dr": 0,
-      "hp": 30,
-      "attributes": {
-        "lck": 0
-      },
-      "reaction": {
-        "kind": "block",
-        "skill": 55,
-        "roll": 41,
-        "shield_dr": 4
-      },
-      "modifiers": [
-        {
-          "target": "block_magic",
-          "operation": "grant",
-          "value": 1,
-          "source": "feature:spell_ward",
-          "origin": "core:origin/trained"
-        }
-      ]
-    },
-    "damage": {
-      "roll": 8,
-      "type": "fire"
-    },
-    "expect": {
-      "outcome": "hit",
-      "blocked": true,
-      "damage": 6,
-      "hp": 24
-    }
-  },
-  {
-    "name": "spell ward: without it a shield does not stop fire",
-    "attacker": {
-      "skill": 72,
-      "roll": 65,
-      "attributes": {
-        "lck": 0
-      }
-    },
-    "defender": {
-      "evasion_skill": 25,
-      "armor_dr": 0,
-      "hp": 30,
-      "attributes": {
-        "lck": 0
-      },
-      "reaction": {
-        "kind": "block",
-        "skill": 55,
-        "roll": 41,
-        "shield_dr": 4
-      }
-    },
-    "damage": {
-      "roll": 8,
-      "type": "fire"
-    },
-    "expect": {
-      "outcome": "hit",
-      "blocked": false,
-      "damage": 8,
-      "hp": 22
-    }
-  },
-  {
-    "name": "spell ward and shield training: half of 4 + 2 is 3 against fire",
-    "attacker": {
-      "skill": 72,
-      "roll": 65,
-      "attributes": {
-        "lck": 0
-      }
-    },
-    "defender": {
-      "evasion_skill": 25,
-      "armor_dr": 0,
-      "hp": 30,
-      "attributes": {
-        "lck": 0
-      },
-      "reaction": {
-        "kind": "block",
-        "skill": 55,
-        "roll": 41,
-        "shield_dr": 4
-      },
-      "modifiers": [
-        {
-          "target": "shield_dr",
-          "operation": "add",
-          "value": 2,
-          "source": "feature:shield_training",
-          "origin": "core:origin/trained"
-        },
-        {
-          "target": "block_magic",
-          "operation": "grant",
-          "value": 1,
-          "source": "feature:spell_ward",
-          "origin": "core:origin/trained"
-        }
-      ]
-    },
-    "damage": {
-      "roll": 8,
-      "type": "fire"
-    },
-    "expect": {
-      "outcome": "hit",
-      "blocked": true,
-      "damage": 5,
-      "hp": 25
-    }
-  },
-  {
-    "name": "spell ward: a physical block keeps the full shield DR",
-    "attacker": {
-      "skill": 72,
-      "roll": 65,
-      "attributes": {
-        "lck": 0
-      }
-    },
-    "defender": {
-      "evasion_skill": 25,
-      "armor_dr": 0,
-      "hp": 30,
-      "attributes": {
-        "lck": 0
-      },
-      "reaction": {
-        "kind": "block",
-        "skill": 55,
-        "roll": 41,
-        "shield_dr": 4
-      },
-      "modifiers": [
-        {
-          "target": "block_magic",
-          "operation": "grant",
-          "value": 1,
-          "source": "feature:spell_ward",
-          "origin": "core:origin/trained"
-        }
-      ]
-    },
-    "damage": {
-      "roll": 10,
-      "type": "slashing"
-    },
-    "expect": {
-      "outcome": "hit",
-      "blocked": true,
-      "damage": 6,
-      "hp": 24
-    }
-  },
-  {
-    "name": "bulwark: a crit block negates the hit",
-    "attacker": {
-      "skill": 72,
-      "roll": 65,
-      "attributes": {
-        "lck": 0
-      }
-    },
-    "defender": {
-      "evasion_skill": 25,
-      "armor_dr": 0,
-      "hp": 30,
-      "attributes": {
-        "lck": 0
-      },
-      "reaction": {
-        "kind": "block",
-        "skill": 55,
-        "roll": 3,
-        "shield_dr": 2
-      },
-      "modifiers": [
-        {
-          "target": "bulwark",
-          "operation": "grant",
-          "value": 1,
-          "source": "feature:bulwark",
-          "origin": "core:origin/trained"
-        }
-      ]
-    },
-    "damage": {
-      "roll": 10,
-      "type": "slashing"
-    },
-    "expect": {
-      "outcome": "hit",
-      "blocked": true,
-      "reaction_tags": [
-        "crit"
-      ],
-      "damage": 0,
-      "hp": 30
-    }
-  },
-  {
-    "name": "bulwark: a block that is not a crit only subtracts",
-    "attacker": {
-      "skill": 72,
-      "roll": 65,
-      "attributes": {
-        "lck": 0
-      }
-    },
-    "defender": {
-      "evasion_skill": 25,
-      "armor_dr": 0,
-      "hp": 30,
-      "attributes": {
-        "lck": 0
-      },
-      "reaction": {
-        "kind": "block",
-        "skill": 55,
-        "roll": 41,
-        "shield_dr": 2
-      },
-      "modifiers": [
-        {
-          "target": "bulwark",
-          "operation": "grant",
-          "value": 1,
-          "source": "feature:bulwark",
-          "origin": "core:origin/trained"
-        }
-      ]
-    },
-    "damage": {
-      "roll": 10,
-      "type": "slashing"
-    },
-    "expect": {
-      "outcome": "hit",
-      "blocked": true,
-      "reaction_tags": [],
-      "damage": 8,
-      "hp": 22
-    }
-  },
-  {
-    "name": "instant: every block perk and a crit block roll, still unblocked",
-    "attacker": {
-      "skill": 72,
-      "roll": 65,
-      "attributes": {
-        "lck": 0
-      }
-    },
-    "defender": {
-      "evasion_skill": 25,
-      "armor_dr": 0,
-      "hp": 30,
-      "attributes": {
-        "lck": 0
-      },
-      "reaction": {
-        "kind": "block",
-        "skill": 55,
-        "roll": 3,
-        "shield_dr": 4
-      },
-      "modifiers": [
-        {
-          "target": "shield_dr",
-          "operation": "add",
-          "value": 2,
-          "source": "feature:shield_training",
-          "origin": "core:origin/trained"
-        },
-        {
-          "target": "block_magic",
-          "operation": "grant",
-          "value": 1,
-          "source": "feature:spell_ward",
-          "origin": "core:origin/trained"
-        },
-        {
-          "target": "bulwark",
-          "operation": "grant",
-          "value": 1,
-          "source": "feature:bulwark",
-          "origin": "core:origin/trained"
-        }
-      ]
-    },
-    "delivery": "instant",
-    "damage": {
-      "roll": 12,
-      "type": "fire"
-    },
-    "expect": {
-      "outcome": "hit",
-      "blocked": false,
-      "evaded": false,
-      "reaction_tags": [],
-      "damage": 12,
-      "hp": 18
-    }
-  },
-  {
-    "name": "instant: riposte and armored evasion, still no evade",
-    "attacker": {
-      "skill": 72,
-      "roll": 65,
-      "attributes": {
-        "lck": 0
-      }
-    },
-    "defender": {
-      "evasion_skill": 40,
-      "armor_dr": 0,
-      "hp": 30,
-      "attributes": {
-        "lck": 0
-      },
-      "reaction": {
-        "kind": "evade",
-        "roll": 2
-      },
-      "modifiers": [
-        {
-          "target": "evasion",
-          "operation": "add",
-          "value": 10,
-          "source": "feature:armored_evasion",
-          "origin": "core:origin/trained"
-        },
-        {
-          "target": "riposte",
-          "operation": "grant",
-          "value": 1,
-          "source": "feature:riposte",
-          "origin": "core:origin/trained"
-        }
-      ]
-    },
-    "delivery": "instant",
-    "damage": {
-      "roll": 12,
-      "type": "fire"
-    },
-    "expect": {
-      "outcome": "hit",
-      "evaded": false,
-      "counter": false,
-      "damage": 12,
-      "hp": 18
-    }
-  },
-  {
-    "name": "riposte: a crit evade of a single attack sets counter",
-    "attacker": {
-      "skill": 72,
-      "roll": 65,
-      "attributes": {
-        "lck": 0
-      }
-    },
-    "defender": {
-      "evasion_skill": 40,
-      "armor_dr": 0,
-      "hp": 30,
-      "attributes": {
-        "lck": 0
-      },
-      "reaction": {
-        "kind": "evade",
-        "roll": 2
-      },
-      "modifiers": [
-        {
-          "target": "riposte",
-          "operation": "grant",
-          "value": 1,
-          "source": "feature:riposte",
-          "origin": "core:origin/trained"
-        }
-      ]
-    },
-    "damage": {
-      "roll": 10,
-      "type": "slashing"
-    },
-    "expect": {
-      "outcome": "evaded",
-      "evaded": true,
-      "reaction_tags": [
-        "crit"
-      ],
-      "counter": true,
-      "damage": 0
-    }
-  },
-  {
-    "name": "riposte: an evade that is not a crit sets no counter",
-    "attacker": {
-      "skill": 72,
-      "roll": 65,
-      "attributes": {
-        "lck": 0
-      }
-    },
-    "defender": {
-      "evasion_skill": 40,
-      "armor_dr": 0,
-      "hp": 30,
-      "attributes": {
-        "lck": 0
-      },
-      "reaction": {
-        "kind": "evade",
-        "roll": 20
-      },
-      "modifiers": [
-        {
-          "target": "riposte",
-          "operation": "grant",
-          "value": 1,
-          "source": "feature:riposte",
-          "origin": "core:origin/trained"
-        }
-      ]
-    },
-    "damage": {
-      "roll": 10,
-      "type": "slashing"
-    },
-    "expect": {
-      "outcome": "evaded",
-      "evaded": true,
-      "counter": false
-    }
-  },
-  {
-    "name": "riposte: a crit evade of an area attack halves it, no counter",
-    "attacker": {
-      "skill": 72,
-      "roll": 65,
-      "attributes": {
-        "lck": 0
-      }
-    },
-    "defender": {
-      "evasion_skill": 40,
-      "armor_dr": 0,
-      "hp": 30,
-      "attributes": {
-        "lck": 0
-      },
-      "reaction": {
-        "kind": "evade",
-        "roll": 2
-      },
-      "modifiers": [
-        {
-          "target": "riposte",
-          "operation": "grant",
-          "value": 1,
-          "source": "feature:riposte",
-          "origin": "core:origin/trained"
-        }
-      ]
-    },
-    "delivery": "area",
-    "damage": {
-      "roll": 10,
-      "type": "slashing"
-    },
-    "expect": {
-      "outcome": "hit",
-      "evaded": true,
-      "counter": false,
-      "damage": 5,
-      "hp": 25
-    }
-  },
-  {
-    "name": "armored evasion: +10 turns a margin of 5 into 15, enough against 7",
-    "attacker": {
-      "skill": 72,
-      "roll": 65,
-      "attributes": {
-        "lck": 0
-      }
-    },
-    "defender": {
-      "evasion_skill": 30,
-      "armor_dr": 0,
-      "hp": 30,
-      "attributes": {
-        "lck": 0
-      },
-      "reaction": {
-        "kind": "evade",
-        "roll": 25
-      },
-      "modifiers": [
-        {
-          "target": "evasion",
-          "operation": "add",
-          "value": 10,
-          "source": "feature:armored_evasion",
-          "origin": "core:origin/trained"
-        }
-      ]
-    },
-    "damage": {
-      "roll": 10,
-      "type": "slashing"
-    },
-    "expect": {
-      "outcome": "evaded",
-      "evaded": true
-    }
-  },
-  {
-    "name": "armored evasion: without it the evade margin 5 falls short of 7",
-    "attacker": {
-      "skill": 72,
-      "roll": 65,
-      "attributes": {
-        "lck": 0
-      }
-    },
-    "defender": {
-      "evasion_skill": 30,
-      "armor_dr": 0,
-      "hp": 30,
-      "attributes": {
-        "lck": 0
-      },
-      "reaction": {
-        "kind": "evade",
-        "roll": 25
-      }
-    },
-    "damage": {
-      "roll": 10,
-      "type": "slashing"
-    },
-    "expect": {
-      "outcome": "hit",
-      "evaded": false,
-      "damage": 10
-    }
-  },
-  {
     "name": "attribute modifier: str 10 adds 5 to a melee attack",
     "attacker": {
       "skill": 72,
@@ -2680,7 +2889,7 @@
     }
   },
   {
-    "name": "attribute modifier: a called shot multiplies the modifier too",
+    "name": "attribute modifier: a called shot multiplies the modifier too (evasion 20, a band of 10, so margin 10 hits)",
     "attacker": {
       "skill": 72,
       "roll": 47,
@@ -2690,7 +2899,7 @@
       }
     },
     "defender": {
-      "evasion_skill": 25,
+      "evasion_skill": 20,
       "armor_dr": 0,
       "hp": 30
     },

@@ -1,7 +1,7 @@
 {
   "$schema": "./command.schema.json",
   "name": "combat",
-  "summary": "One attack from the roll to the HP lost, with one defender reaction.",
+  "summary": "One attack from the roll to the HP lost: one attack roll read against the defender's evasion and block bands.",
   "documentation": "docs/core/combat.md",
   "input_schema": {
     "type": "object",
@@ -58,62 +58,9 @@
               "pattern": "^[a-z_][a-z0-9_]*$"
             }
           },
-          "reaction": {
-            "type": "object",
-            "properties": {
-              "kind": {
-                "type": "string",
-                "enum": [
-                  "evade",
-                  "block"
-                ]
-              },
-              "roll": {
-                "$ref": "common.json#/definitions/d100"
-              },
-              "skill": {
-                "type": "integer"
-              },
-              "shield_dr": {
-                "type": "integer",
-                "minimum": 0
-              }
-            },
-            "required": [
-              "kind",
-              "roll"
-            ],
-            "additionalProperties": false,
-            "if": {
-              "properties": {
-                "kind": {
-                  "const": "block"
-                }
-              }
-            },
-            "then": {
-              "required": [
-                "skill",
-                "shield_dr"
-              ]
-            },
-            "else": {
-              "not": {
-                "anyOf": [
-                  {
-                    "required": [
-                      "skill"
-                    ]
-                  },
-                  {
-                    "required": [
-                      "shield_dr"
-                    ]
-                  }
-                ]
-              }
-            }
-          },
+          "shield_dr": {"type": "integer", "minimum": 0, "description": "The carried shield's DR; it adds to armor_dr against types with armor_dr_applies."},
+          "shields_skill": {"type": "integer", "description": "The shields skill the block stance's band reads."},
+          "stance": {"type": "string", "description": "The stance the defender declared on their turn: dodge (doubles the evasion band) or block (adds a block band; needs shield_dr and shields_skill). Any other value is an error."},
           "flags": {
             "type": "array",
             "items": {
@@ -196,7 +143,8 @@
           "hit",
           "miss",
           "fumble",
-          "evaded"
+          "evaded",
+          "blocked"
         ]
       },
       "target": {
@@ -221,8 +169,20 @@
       "blocked": {
         "type": "boolean"
       },
-      "reaction_tags": {
-        "$ref": "common.json#/definitions/tags"
+      "evasion_rate": {
+        "type": "integer",
+        "minimum": 0,
+        "description": "The evasion band: a margin under it is evaded."
+      },
+      "block_rate": {
+        "type": "integer",
+        "minimum": 0,
+        "description": "The block stance's band, under the evasion band: a margin in it is blocked."
+      },
+      "stagger_ap": {
+        "type": "integer",
+        "minimum": 0,
+        "description": "Bulwark: AP the attacker loses on their next turn."
       },
       "damage": {
         "type": "integer",
@@ -268,7 +228,8 @@
       "crit",
       "evaded",
       "blocked",
-      "reaction_tags",
+      "evasion_rate",
+      "block_rate",
       "damage",
       "hp"
     ]

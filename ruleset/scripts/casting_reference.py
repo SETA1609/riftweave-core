@@ -91,7 +91,7 @@ def roll_save(spell, effects, defender, rules):
 
 DAMAGE_PREFIX = "core:effect/damage_"
 # The combat defender fields a casting target may carry (docs/core/casting.md#damage-to-a-target).
-DEFENDER_FIELDS = ("hp", "armor_dr", "resist", "evasion_skill", "reaction", "flags", "modifiers", "attributes")
+DEFENDER_FIELDS = ("hp", "armor_dr", "shield_dr", "shields_skill", "resist", "evasion_skill", "stance", "flags", "modifiers", "attributes")
 
 
 def apply_damage(spell, effects, check, vector, caster):

@@ -1,7 +1,7 @@
 // Package combat resolves one attack in the order of docs/core/combat.md: the situations
-// and the called shot, the attack roll, one reaction, then damage through the called shot,
-// crit, area, block, armor, and resist. Dice and rolls
-// are inputs. The multipliers are formulas in combat/pipeline.json, not constants here.
+// and the called shot, one attack roll read against the defender's evasion and block bands,
+// then damage through the called shot, crit, area, armor and shield DR, and resist. Dice and
+// rolls are inputs. The bands and multipliers are formulas in combat/pipeline.json.
 package combat
 
 import (
@@ -24,24 +24,20 @@ type Attacker struct {
 	Flags      []string         `json:"flags"`
 }
 
-// Reaction is the defender's one reaction: an evade, or a block with a shield.
-type Reaction struct {
-	Kind                  string `json:"kind"`
-	Roll                  int64  `json:"roll"`
-	Skill                 *int64 `json:"skill"`
-	ShieldDamageReduction *int64 `json:"shield_dr"`
-}
-
 // Defender is who takes the attack.
 type Defender struct {
 	EvasionSkill         *int64           `json:"evasion_skill"`
 	Attributes           actor.Attributes `json:"attributes"`
 	ArmorDamageReduction int64            `json:"armor_dr"`
-	HitPoints            int64            `json:"hp"`
-	Resist               map[string]int64 `json:"resist"`
-	Reaction             *Reaction        `json:"reaction"`
-	Flags                []string         `json:"flags"`
-	// Modifiers are the defender's perks: adds on evasion, block, and shield_dr, and the
+	// ShieldDamageReduction is a carried shield's DR; it adds to the armor DR.
+	ShieldDamageReduction *int64 `json:"shield_dr"`
+	ShieldsSkill          *int64 `json:"shields_skill"`
+	// Stance is the one the defender declared: dodge, block, or none.
+	Stance    string           `json:"stance"`
+	HitPoints int64            `json:"hp"`
+	Resist    map[string]int64 `json:"resist"`
+	Flags     []string         `json:"flags"`
+	// Modifiers are the defender's perks: adds on evasion, shields, and shield_dr, and the
 	// block_magic, bulwark, and riposte grants.
 	Modifiers []modifier.Modifier `json:"modifiers"`
 }
@@ -68,17 +64,20 @@ type Input struct {
 
 // Result is the outcome of the attack.
 type Result struct {
-	Outcome      string   `json:"outcome"`
-	Target       int64    `json:"target"`
-	Margin       *int64   `json:"margin"`
-	Critical     bool     `json:"crit"`
-	Evaded       bool     `json:"evaded"`
-	Blocked      bool     `json:"blocked"`
-	ReactionTags []string `json:"reaction_tags"`
-	Damage       int64    `json:"damage"`
-	HitPoints    int64    `json:"hp"`
-	// Counter is a riposte: a crit evade of a single attack lets the defender attack back.
+	Outcome     string `json:"outcome"`
+	Target      int64  `json:"target"`
+	Margin      *int64 `json:"margin"`
+	Critical    bool   `json:"crit"`
+	Evaded      bool   `json:"evaded"`
+	Blocked     bool   `json:"blocked"`
+	EvasionRate int64  `json:"evasion_rate"`
+	BlockRate   int64  `json:"block_rate"`
+	Damage      int64  `json:"damage"`
+	HitPoints   int64  `json:"hp"`
+	// Counter is a riposte: a dodge's evade in the window lets the defender attack back.
 	Counter bool `json:"counter"`
+	// StaggerAP is Bulwark: AP the attacker loses on their next turn.
+	StaggerAP int64 `json:"stagger_ap"`
 	// Riders are the called shot's riders on a hit, and empty on a miss or an evade. Without
 	// a called shot the field is left out.
 	Riders *[]data.Rider `json:"riders,omitempty"`
@@ -154,8 +153,17 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	}
 	var defender *Defender = &input.Defender
 	var pipeline *data.Pipeline = &ruleset.Pipeline
-
 	attackModifiers, calledShot, err := situationModifiers(ruleset, &input, delivery)
+	if err != nil {
+		return Result{}, err
+	}
+	if defender.Stance != "" && defender.Stance != "dodge" && defender.Stance != "block" {
+		return Result{}, &data.NotDefinedError{Kind: "stance", Key: defender.Stance}
+	}
+	if defender.Stance == "block" && (defender.ShieldDamageReduction == nil || defender.ShieldsSkill == nil) {
+		return Result{}, &data.MissingInputError{Subject: "a block", Needs: "shield_dr and shields_skill"}
+	}
+	evasionRate, blockRate, err := bands(ruleset, defender, damageType.Physical, delivery)
 	if err != nil {
 		return Result{}, err
 	}
@@ -166,10 +174,11 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	var attackerLuck int64 = input.Attacker.Attributes.Get(actor.Luck)
 	var attack resolution.Result = resolution.Check(&ruleset.Resolution, input.Attacker.Skill, attackerLuck, bonus, input.Attacker.Roll)
 	var result Result = Result{
-		Target:       attack.Target,
-		Margin:       attack.Margin,
-		Critical:     slices.Contains(attack.Tags, "crit"),
-		ReactionTags: []string{},
+		Target:      attack.Target,
+		Margin:      attack.Margin,
+		Critical:    slices.Contains(attack.Tags, "crit"),
+		EvasionRate: evasionRate,
+		BlockRate:   blockRate,
 	}
 	if calledShot != nil {
 		var noRiders []data.Rider = []data.Rider{}
@@ -183,56 +192,27 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		return result, nil
 	}
 
-	// One reaction per attack, rolled only on a hit. Delivery decides what it can do: single
-	// is evaded whole, area is halved by an evade, instant takes no reaction.
-	var reaction *Reaction
-	if delivery != "instant" {
-		reaction = defender.Reaction
-	}
-	// The defender's perks: adds on the reaction targets and shield_dr, and grant flags.
+	// The same roll read in bands: the evasion band, then a block stance's band under it.
+	// A crit always hits. Riposte and Bulwark read the band's lowest rolls, as wide as the
+	// defender's crit window.
 	var perkFlags []string = modifier.Flags(defender.Modifiers, 0, nil)
-	if reaction != nil {
-		if reaction.Kind != "evade" && reaction.Kind != "block" {
-			return Result{}, &data.NotDefinedError{Kind: "reaction kind", Key: reaction.Kind}
+	var margin int64 = *attack.Margin
+	var window int64 = ruleset.Resolution.CriticalWindow + formula.FloorDivide(defender.Attributes.Get(actor.Luck), ruleset.Resolution.CriticalWindowPerTwoLuck)
+	switch {
+	case result.Critical:
+	case margin < evasionRate:
+		result.Evaded = true
+		result.Counter = defender.Stance == "dodge" && delivery == "single" && slices.Contains(perkFlags, "riposte") && margin >= evasionRate-window
+		if delivery == "single" {
+			result.Outcome, result.Damage, result.HitPoints = "evaded", 0, defender.HitPoints
+			return result, nil
 		}
-		if reaction.Kind == "block" && !damageType.Physical && !slices.Contains(perkFlags, "block_magic") {
-			reaction = nil
+	case margin < evasionRate+blockRate:
+		result.Outcome, result.Blocked, result.Damage, result.HitPoints = "blocked", true, 0, defender.HitPoints
+		if slices.Contains(perkFlags, "bulwark") && margin >= evasionRate+blockRate-window {
+			result.StaggerAP = pipeline.BulwarkStaggerAP
 		}
-	}
-	if reaction != nil {
-		// The reaction is a d100 check like the attack: same fumble and crit window.
-		var skill int64
-		var reactionTarget string = "shields"
-		if reaction.Kind == "evade" {
-			reactionTarget = "evasion"
-			if defender.EvasionSkill == nil {
-				return Result{}, &data.MissingInputError{Subject: "an evade", Needs: "the defender's evasion_skill"}
-			}
-			skill = *defender.EvasionSkill
-		} else {
-			if reaction.Skill == nil || reaction.ShieldDamageReduction == nil {
-				return Result{}, &data.MissingInputError{Subject: "a block", Needs: "skill and shield_dr"}
-			}
-			skill = *reaction.Skill
-		}
-		reactionBonus, err := resolution.Bonus(ruleset.Origins, modifier.Target(defender.Modifiers, reactionTarget))
-		if err != nil {
-			return Result{}, err
-		}
-		var check resolution.Result = resolution.Check(&ruleset.Resolution, skill, defender.Attributes.Get(actor.Luck), reactionBonus, reaction.Roll)
-		result.ReactionTags = check.Tags
-		if check.Success && *check.Margin >= *attack.Margin {
-			if reaction.Kind == "block" {
-				result.Blocked = true
-			} else {
-				result.Evaded = true
-				result.Counter = delivery == "single" && slices.Contains(check.Tags, "crit") && slices.Contains(perkFlags, "riposte")
-				if delivery == "single" {
-					result.Outcome, result.Damage, result.HitPoints = "evaded", 0, defender.HitPoints
-					return result, nil
-				}
-			}
-		}
+		return result, nil
 	}
 	result.Outcome = "hit"
 
@@ -262,21 +242,15 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 			return Result{}, err
 		}
 	}
-	if result.Blocked {
-		shieldDamageReduction, err := modifier.Value(*reaction.ShieldDamageReduction, modifier.Target(defender.Modifiers, "shield_dr"), ruleset.Origins, 0, nil)
-		if err != nil {
-			return Result{}, err
-		}
-		if !damageType.Physical {
-			shieldDamageReduction = formula.FloorDivide(shieldDamageReduction, 2)
-		}
-		amount = max(amount-shieldDamageReduction, 0)
-		if slices.Contains(perkFlags, "bulwark") && slices.Contains(result.ReactionTags, "crit") {
-			amount = 0
-		}
-	}
 	if damageType.Physical {
 		var damageReduction int64 = defender.ArmorDamageReduction
+		if defender.ShieldDamageReduction != nil {
+			shield, err := modifier.Value(*defender.ShieldDamageReduction, modifier.Target(defender.Modifiers, "shield_dr"), ruleset.Origins, 0, nil)
+			if err != nil {
+				return Result{}, err
+			}
+			damageReduction += shield
+		}
 		if damageType.Pierce {
 			if damageReduction, err = pipeline.PierceDamageReduction.Evaluate(nil, formula.Variable{Name: "dr", Value: damageReduction}); err != nil {
 				return Result{}, err
@@ -286,9 +260,54 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	}
 	amount = max(amount-defender.Resist[input.Damage.Type], 0)
 	result.Damage, result.HitPoints = amount, max(defender.HitPoints-amount, 0)
-	if calledShot != nil {
+	if calledShot != nil && !result.Evaded {
 		var riders []data.Rider = append([]data.Rider{}, calledShot.Riders...)
 		result.Riders = &riders
 	}
 	return result, nil
+}
+
+// bands is step 2's rates: the evasion band (doubled by the dodge stance) and the block
+// stance's band (halved against magic with block_magic, none without it). Instant meets
+// neither.
+func bands(ruleset *data.Ruleset, defender *Defender, physical bool, delivery string) (int64, int64, error) {
+	if delivery == "instant" {
+		return 0, 0, nil
+	}
+	var pipeline *data.Pipeline = &ruleset.Pipeline
+	var evasionSkill int64
+	if defender.EvasionSkill != nil {
+		evasionSkill = *defender.EvasionSkill
+	}
+	skill, err := modifier.Value(evasionSkill, modifier.Target(defender.Modifiers, "evasion"), ruleset.Origins, 0, nil)
+	if err != nil {
+		return 0, 0, err
+	}
+	evasionRate, err := pipeline.EvasionRate.Evaluate(nil, formula.Variable{Name: "skill", Value: skill})
+	if err != nil {
+		return 0, 0, err
+	}
+	if defender.Stance == "dodge" {
+		if evasionRate, err = pipeline.DodgeEvasionRate.Evaluate(nil, formula.Variable{Name: "rate", Value: evasionRate}); err != nil {
+			return 0, 0, err
+		}
+	}
+	var blockMagic bool = slices.Contains(modifier.Flags(defender.Modifiers, 0, nil), "block_magic")
+	if defender.Stance != "block" || (!physical && !blockMagic) {
+		return evasionRate, 0, nil
+	}
+	shields, err := modifier.Value(*defender.ShieldsSkill, modifier.Target(defender.Modifiers, "shields"), ruleset.Origins, 0, nil)
+	if err != nil {
+		return 0, 0, err
+	}
+	blockRate, err := pipeline.BlockRate.Evaluate(nil, formula.Variable{Name: "skill", Value: shields})
+	if err != nil {
+		return 0, 0, err
+	}
+	if !physical {
+		if blockRate, err = pipeline.MagicBlockRate.Evaluate(nil, formula.Variable{Name: "rate", Value: blockRate}); err != nil {
+			return 0, 0, err
+		}
+	}
+	return evasionRate, blockRate, nil
 }
