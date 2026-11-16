@@ -1,0 +1,10 @@
+#### APP-27 The Angular app opens on a home page, and Start opens the tools
+- Status: todo
+- Priority: medium
+- Needs: APP-25
+- Modified: 2026-11-16
+- Do: Owner request, 2026-11-16: the same layout as the CLI (APP-26), with the same keys. The tab bar in `app.html` gives way to the Angular router: `/` is the **home page** (Start, Characters (APP-33), Settings, Modules, Network); the app runs fully offline on the WASM core, and the network only adds the online table (APP-35); `/settings` edits `AppContext` (theme, language, bestiary) with "Export settings" and "Import settings" (APP-25); `/modules` lists the modules with a check box each, core first, checked and locked (core is always loaded); `/network` picks offline (WASM, APP-14, the default), server (HTTP), or room (disabled until APP-17), and switches the `Transport` of `api.ts` [A]; `/play` is the **tools page**: GM tools, Character creation (today's sheet), Spell creation (APP-22), Skill resolution (a new form over `resolution`), Bestiary (APP-29). The attack screen and the playthrough move under GM tools [A]. A pending entry is shown disabled with its issue id, as in the CLI. Screens and their pieces are generated with `ng generate` and built from the `ui/` components (frontend.md#conventions); a reusable `rw-menu-grid` (ui/) shows a menu's entries as cards, so both menus are one component [A].
+- Keys: routes `/`, `/settings`, `/modules`, `/network`, `/play`, `/play/<tool>`; `rw-menu-grid`
+- Files: ~16 (frontend/src/app/app.ts, app.html, app.css, app.routes.ts, home/, settings/, modules/, network/, play/, resolution/, ui/menu-grid/, app.spec.ts, e2e/menus.spec.ts, docs/backend/frontend.md, docs/backend/app-layout.md, changes/APP-27.md)
+- See: docs/issues/open/APP-26.md, frontend/src/app/app.html, docs/backend/frontend.md#conventions
+- Done when: the app opens on the home page; every route above renders or shows its pending issue; both menus are built from `backend/contract/menu.json`; changing the network mode switches the transport; the Vitest and Playwright tests cover each page and pass.
