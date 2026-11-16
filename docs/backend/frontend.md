@@ -159,8 +159,33 @@ Every change to `frontend/` follows these (owner, 2026-11-14):
   beside what they test (`name.spec.ts`; `app.spec.ts` covers the ui components and the screens).
   End-to-end tests run on Playwright (`npm run e2e`,
   `e2e/*.spec.ts`): a real browser on the built app, the app's proxy, and a real server.
-- **Layout.** `src/app/api.ts` is the API and its `API` token, `src/app/ui/` the shared components,
-  and each screen its three files in `src/app/` (`sheet`, `attack`, `playthrough`). [A]
+- **Generate, then fill in** (owner, 2026-11-15). Components, services, pipes, directives, and
+  guards are made with the Angular CLI, not written from scratch: from `frontend/`, run
+  `npx ng generate component ui/<name> --flat` for a shared component (it writes `<name>.ts`,
+  `.html`, and `.css`, standalone, beside the others in `ui/`), `npx ng generate component <name>`
+  for a screen, `npx ng generate service <name> --skip-tests` for a service, and likewise
+  `pipe`, `directive`, and `guard`. Then rename the selector to the `rw-` prefix and fill the files
+  in. Keep a generated `*.spec.ts` only when it holds a real spec; the shared specs live in
+  `app.spec.ts`. The CLI needs Node 24.15 or later.
+- **Layout.** `src/app/api.ts` is the API and its `API` token, `src/app/context.ts` the app context,
+  `src/app/ui/` the shared components, and each screen its three files in `src/app/` (`sheet`,
+  `attack`, `playthrough`). [A]
+
+## The app context
+
+`AppContext` (`src/app/context.ts`, generated with `ng generate service context`) is the one place a
+screen reads the viewer's settings, as signals: `theme` (`light`, `dark`, or `system`) and `locale`
+(an i18next language code, used by APP-24). It starts from the saved choice, else the system's mode
+(`prefers-color-scheme`), and saves each change in `localStorage`, a per-viewer convenience; every
+read and write is guarded, so a blocked storage still renders, in the system's mode. No component
+reads `localStorage` or `matchMedia` itself. [V 2026-11-16, `app.spec.ts` and `e2e/app.spec.ts`
+over both transports]
+
+The mode is `data-theme` on `<html>`: `light` or `dark` when chosen, and absent for `system`.
+`styles.css` keeps one set of tokens; the dark ones apply under `:root[data-theme="dark"]`, and
+under `prefers-color-scheme: dark` only when no light mode is chosen
+(`:root:not([data-theme="light"])`). `rw-theme-toggle` (`src/app/ui/theme-toggle`) in the header
+cycles light, dark, and the system's mode, and its `aria-label` names the mode it switches to.
 
 ## Not covered
 

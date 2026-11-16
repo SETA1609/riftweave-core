@@ -6,13 +6,14 @@ import { Attack } from './attack';
 import { Playthrough } from './playthrough';
 import { Sheet } from './sheet';
 import { Alert } from './ui/alert';
+import { ThemeToggle } from './ui/theme-toggle';
 
 /** The rules this build ships: the release tag in the Pages build (angular.json `define`). */
 declare const RIFTWEAVE_RULES_VERSION: string;
 
 @Component({
   selector: 'rw-root',
-  imports: [Sheet, Attack, Playthrough, Alert],
+  imports: [Sheet, Attack, Playthrough, Alert, ThemeToggle],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })

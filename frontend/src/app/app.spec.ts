@@ -2,9 +2,10 @@
 // each component binds its value as a signal, and each screen sends the API the same input as before.
 import { Component, signal, type Type } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { API } from './api';
 import { Alert } from './ui/alert';
+import { AppContext } from './context';
 import { Attack } from './attack';
 import { Card } from './ui/card';
 import { KeyValueList } from './ui/key-value-list';
@@ -13,6 +14,7 @@ import { Playthrough } from './playthrough';
 import { SelectField } from './ui/select-field';
 import { Sheet } from './sheet';
 import { TextField } from './ui/text-field';
+import { ThemeToggle } from './ui/theme-toggle';
 
 function render<T>(host: new () => T) {
   const fixture = TestBed.createComponent(host);
@@ -138,5 +140,84 @@ describe('the screens', () => {
     const fixture = TestBed.createComponent(Playthrough);
     fixture.detectChanges();
     expect((fixture.nativeElement as HTMLElement).querySelector('rw-card button.btn')).not.toBeNull();
+  });
+});
+describe('the app context', () => {
+  const root = (): HTMLElement => document.documentElement;
+  /** A fresh context, as after a reload: a new injector reads what was saved. */
+  function fresh(): AppContext {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({ providers: [{ provide: API, useValue: fakeApi }] });
+    const context = TestBed.inject(AppContext);
+    TestBed.tick();
+    return context;
+  }
+
+  beforeEach(() => {
+    localStorage.clear();
+    root().removeAttribute('data-theme');
+  });
+  afterEach(() => vi.restoreAllMocks());
+
+  it("starts in the system's mode with nothing saved, and sets no data-theme", () => {
+    const context = fresh();
+    expect(context.theme()).toBe('system');
+    expect(root().hasAttribute('data-theme')).toBe(false);
+  });
+
+  it('cycles light, dark, and system, and puts the mode on <html>', () => {
+    const context = fresh();
+    context.cycleTheme();
+    TestBed.tick();
+    expect([context.theme(), root().getAttribute('data-theme')]).toEqual(['light', 'light']);
+    context.cycleTheme();
+    TestBed.tick();
+    expect([context.theme(), root().getAttribute('data-theme')]).toEqual(['dark', 'dark']);
+    context.cycleTheme();
+    TestBed.tick();
+    expect([context.theme(), root().hasAttribute('data-theme')]).toEqual(['system', false]);
+  });
+
+  it('keeps the choice across a reload', () => {
+    fresh().theme.set('dark');
+    TestBed.tick();
+    expect(fresh().theme()).toBe('dark');
+    expect(root().getAttribute('data-theme')).toBe('dark');
+  });
+
+  it("renders in the system's mode when storage is blocked", () => {
+    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => { throw new Error('blocked'); });
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('blocked'); });
+    const context = fresh();
+    expect(context.theme()).toBe('system');
+    context.cycleTheme();
+    expect(() => TestBed.tick()).not.toThrow();
+    expect(context.theme()).toBe('light');
+  });
+
+  it('shows the system mode it follows', () => {
+    const context = fresh();
+    context.systemDark.set(true);
+    expect(context.shown()).toBe('dark');
+    context.theme.set('light');
+    expect(context.shown()).toBe('light');
+  });
+});
+
+describe('the theme toggle', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    document.documentElement.removeAttribute('data-theme');
+  });
+
+  it('names the mode it switches to and cycles on a click', async () => {
+    const { fixture, element } = render(ThemeToggle);
+    const button = element.querySelector('button')!;
+    expect(button.getAttribute('aria-label')).toBe('Switch to light mode');
+    button.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(button.getAttribute('aria-label')).toBe('Switch to dark mode');
+    expect(document.documentElement.getAttribute('data-theme')).toBe('light');
   });
 });

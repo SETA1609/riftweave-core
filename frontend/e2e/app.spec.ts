@@ -45,3 +45,32 @@ test('the playthrough runs to a matching replay', async ({ page }) => {
   await expect(page.getByRole('alert')).toHaveText('The replay matches the session.', { timeout: 15000 });
   await expect(page.getByText('differs from its vector')).toHaveCount(0);
 });
+
+test('the mode toggle switches light and dark, keeps the choice, and goes back to the system', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'light' });
+  await page.goto('/');
+  const html = page.locator('html');
+  await expect(html).not.toHaveAttribute('data-theme');
+  await page.getByRole('button', { name: 'Switch to light mode' }).click();
+  await expect(html).toHaveAttribute('data-theme', 'light');
+  await page.getByRole('button', { name: 'Switch to dark mode' }).click();
+  await expect(html).toHaveAttribute('data-theme', 'dark');
+  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(33, 37, 41)');
+  await page.reload();
+  await expect(html).toHaveAttribute('data-theme', 'dark');
+  await page.getByRole('button', { name: "Switch to the system's mode" }).click();
+  await expect(html).not.toHaveAttribute('data-theme');
+  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+});
+
+test("with storage blocked the app still renders, in the system's mode", async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(window, 'localStorage', { get() { throw new Error('storage is blocked'); } });
+  });
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await page.goto('/');
+  await expect(page.getByRole('heading', { name: 'Riftweave' })).toBeVisible();
+  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(33, 37, 41)');
+  await page.getByRole('button', { name: 'Switch to light mode' }).click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+});
