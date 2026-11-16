@@ -7,6 +7,9 @@ import { Playthrough } from './playthrough';
 import { Sheet } from './sheet';
 import { Alert } from './ui/alert';
 
+/** The rules this build ships: the release tag in the Pages build (angular.json `define`). */
+declare const RIFTWEAVE_RULES_VERSION: string;
+
 @Component({
   selector: 'rw-root',
   imports: [Sheet, Attack, Playthrough, Alert],
@@ -14,6 +17,7 @@ import { Alert } from './ui/alert';
   styleUrl: './app.css',
 })
 export class App {
+  readonly rulesVersion = RIFTWEAVE_RULES_VERSION;
   readonly tabs = ['sheet', 'attack', 'playthrough'] as const;
   readonly current = signal<(typeof this.tabs)[number]>('sheet');
   readonly state = signal<'starting' | 'ready' | 'failed'>('starting');
