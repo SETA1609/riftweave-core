@@ -5,6 +5,7 @@ package casting
 
 import (
 	"encoding/json"
+	"fmt"
 	"math"
 	"slices"
 	"strings"
@@ -29,10 +30,8 @@ type Caster struct {
 	Attributes    actor.Attributes `json:"attributes"`
 	Mana          int64            `json:"mana"`
 	Summons       []string         `json:"summons"` // active summons, oldest first: a group ref each
+	Minions       []string         `json:"minions"` // minions, oldest first, outside the summon limit
 }
-
-// summonEffect calls creatures: its parameter is the group, its magnitude how many.
-const summonEffect = "core:effect/summon"
 
 // Target is the defender: its save against an instant spell, and, when it has hp, what the
 // cast's damage does to it through combat steps 2 to 8 (docs/core/casting.md#damage-to-a-target).
@@ -78,6 +77,8 @@ type Input struct {
 	Target    *Target             `json:"target"`   // the defender, for an instant spell's save
 	Caster    Caster              `json:"caster"`
 	Roll      int64               `json:"roll"`
+	// CountRoll is the rolled total of a minion spell's count dice.
+	CountRoll *int64 `json:"count_roll"`
 }
 
 // Result is one cast. Check is nil when nothing was rolled.
@@ -92,6 +93,7 @@ type Result struct {
 	Dispelled     []string           `json:"dispelled"`
 	Summons       []string           `json:"summons"`
 	Dismissed     []string           `json:"dismissed"`
+	Minions       []string           `json:"minions"`
 	Mana          int64              `json:"mana"`
 	Damage        []Packet           `json:"damage"`
 	HitPoints     *int64             `json:"hp"` // the target's after every packet; nil without a target hp
@@ -164,6 +166,24 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	if spell.Delivery == "instant" && input.Target != nil && input.Target.Roll == nil {
 		return Result{}, &data.MissingInputError{Subject: "an instant spell's save", Needs: "the target's roll"}
 	}
+	// A minion spell's count: its number, or its dice's rolled total (docs/core/casting.md#minions).
+	var minions int64 = -1
+	if spell.Summon != nil && spell.Summon.Minion {
+		low, high, err := spell.Summon.Count.Range()
+		if err != nil {
+			return Result{}, err
+		}
+		minions = low
+		if spell.Summon.Count.Dice != "" {
+			if input.CountRoll == nil {
+				return Result{}, &data.MissingInputError{Subject: "a minion count of " + spell.Summon.Count.Dice, Needs: "count_roll"}
+			}
+			if *input.CountRoll < low || *input.CountRoll > high {
+				return Result{}, fmt.Errorf("count_roll %d is not a roll of %s", *input.CountRoll, spell.Summon.Count.Dice)
+			}
+			minions = *input.CountRoll
+		}
+	}
 
 	var result Result = Result{
 		Mana:          caster.Mana,
@@ -173,6 +193,7 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		Dispelled:     []string{},
 		Summons:       append([]string{}, caster.Summons...),
 		Dismissed:     []string{},
+		Minions:       append([]string{}, caster.Minions...),
 		Damage:        []Packet{},
 	}
 	if input.Target != nil && input.Target.HitPoints != nil {
@@ -237,15 +258,14 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 			result.Ended = held
 		}
 	}
-	var summoned []string
-	for _, applied := range spell.Effects {
-		if applied.Effect == summonEffect {
-			for range int(max(applied.Magnitude, 1)) {
-				summoned = append(summoned, applied.Parameter)
-			}
+	if minions >= 0 {
+		// Minions join the caster's minions, outside the summon limit.
+		for range minions {
+			result.Minions = append(result.Minions, spell.Summon.Group)
 		}
 	}
-	if len(summoned) > 0 {
+	if spell.Summon != nil && minions < 0 {
+		var summoned []string = []string{spell.Summon.Group}
 		// The newest join; past the limit the oldest are dismissed (docs/core/casting.md#summons).
 		limit, err := modifier.Value(ruleset.Casting.SummonLimit, modifier.Target(input.Modifiers, "summon_limit"), ruleset.Origins, 0, nil)
 		if err != nil {

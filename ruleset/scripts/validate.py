@@ -6,6 +6,7 @@ are also validated. Module data files share the same schema store as core data.
 """
 
 import json
+import math
 import os
 import re
 from functools import partial
@@ -609,6 +610,9 @@ def check_effect_usage(data_files, module_data_files=None):
                 registry.extend(data["effects"])
         else:
             referenced.update(s for s in _walk_strings(data) if NAMESPACED_REF.match(s))
+            # A summon block stands in for the summon effect, and is priced as it (M3-25).
+            if any(isinstance(row, dict) and "summon" in row for row in data.get("spells", []) or []):
+                referenced.add("core:effect/summon")
     errors = []
     for effect in registry:
         ref = f"core:effect/{effect['key']}"
@@ -1223,7 +1227,7 @@ CREATURE_TYPE_REF_PREFIX = "core:creature_type/"
 MONSTER_TEMPLATES_FILE = DATA_DIR / "monsters" / "templates.json"
 _MONSTER_TEMPLATES = None
 # The order the slots apply in, whatever order a row lists its templates (docs/modules/monsters.md#templates).
-TEMPLATE_SLOTS = ("element", "power", "nature")
+TEMPLATE_SLOTS = ("element", "power", "nature", "minion")
 # The damage effects an element template turns into its own element.
 ELEMENT_DAMAGE_EFFECTS = {f"core:effect/damage_{kind}" for kind in ("fire", "frost", "shock", "acid", "poison")}
 
@@ -1364,6 +1368,9 @@ def _apply_monster_template(merged, template):
         merged["attributes"] = attributes
         if "end" in template["attributes"] and "hitPoints" in merged:
             merged["hitPoints"] = max(1, merged["hitPoints"] + template["attributes"]["end"] * _hp_per_end())
+    if "hit_points_multiplier" in template and "hitPoints" in merged:
+        # After the attribute adds: a minion's HP is cut from what its row would have (M3-25).
+        merged["hitPoints"] = max(1, math.floor(merged["hitPoints"] * template["hit_points_multiplier"]))
     if template.get("resist"):
         resist = dict(merged.get("resist") or {})
         for kind, amount in template["resist"].items():

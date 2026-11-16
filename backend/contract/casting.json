@@ -59,6 +59,13 @@
               "$ref": "common.json#/definitions/ref"
             },
             "description": "The caster's active summons, oldest first: one summon group ref per creature (docs/core/casting.md#summons)."
+          },
+          "minions": {
+            "type": "array",
+            "items": {
+              "$ref": "common.json#/definitions/ref"
+            },
+            "description": "The caster's minions, oldest first: one summon group ref per creature, outside the summon limit (docs/core/casting.md#minions)."
           }
         },
         "required": [
@@ -72,6 +79,11 @@
       },
       "roll": {
         "$ref": "common.json#/definitions/d100"
+      },
+      "count_roll": {
+        "type": "integer",
+        "minimum": 0,
+        "description": "The rolled total of a minion spell's count dice (docs/core/casting.md#minions)."
       },
       "standing": {
         "type": "array",
@@ -283,6 +295,13 @@
           "$ref": "common.json#/definitions/ref"
         },
         "description": "The summons the cast dismissed to stay within the limit, oldest first."
+      },
+      "minions": {
+        "type": "array",
+        "items": {
+          "$ref": "common.json#/definitions/ref"
+        },
+        "description": "The caster's minions after the cast, oldest first."
       },
       "damage": {
         "type": "array",

@@ -124,15 +124,11 @@
       "description": "Animate a fallen corpse to fight at your side for a time.",
       "color": "black",
       "level": 8,
-      "effects": [
-        {
-          "effect": "core:effect/summon",
-          "parameter": "core:summon/undead",
-          "magnitude": 1,
-          "duration": 120,
-          "target": "ranged"
-        }
-      ],
+      "effects": [],
+      "summon": {
+        "group": "core:summon/undead",
+        "duration": 120
+      },
       "cost": {
         "mana": 36,
         "reagents": [
@@ -280,15 +276,11 @@
       "description": "Call a small spirit-beast that scouts and fetches for you.",
       "color": "orange",
       "level": 2,
-      "effects": [
-        {
-          "effect": "core:effect/summon",
-          "parameter": "core:summon/familiar",
-          "magnitude": 1,
-          "duration": 60,
-          "target": "ranged"
-        }
-      ],
+      "effects": [],
+      "summon": {
+        "group": "core:summon/familiar",
+        "duration": 60
+      },
       "cost": {
         "mana": 18
       }
@@ -379,15 +371,11 @@
       "color": "orange",
       "level": 16,
       "concentration": true,
-      "effects": [
-        {
-          "effect": "core:effect/summon",
-          "parameter": "core:summon/elemental",
-          "magnitude": 1,
-          "duration": 120,
-          "target": "ranged"
-        }
-      ],
+      "effects": [],
+      "summon": {
+        "group": "core:summon/elemental",
+        "duration": 120
+      },
       "cost": {
         "mana": 36
       }
@@ -395,21 +383,18 @@
     {
       "key": "conjured_legion",
       "label": "Conjured Legion",
-      "description": "Call three elementals at once.",
-      "color": "orange",
-      "level": 28,
-      "concentration": true,
-      "effects": [
-        {
-          "effect": "core:effect/summon",
-          "parameter": "core:summon/elemental",
-          "magnitude": 3,
-          "duration": 120,
-          "target": "ranged"
+      "description": "Call a legion of lesser elementals, two to four of them, that soak blows for you while you hold them.",
+      "base": "core:spell/summon_elemental",
+      "overrides": {
+        "level": 28,
+        "concentration": true,
+        "summon": {
+          "minion": true,
+          "count": "1d3+1"
+        },
+        "cost": {
+          "mana": 108
         }
-      ],
-      "cost": {
-        "mana": 108
       }
     },
     {
@@ -1291,21 +1276,18 @@
     {
       "key": "raise_horde",
       "label": "Raise Horde",
-      "description": "Raise three of the fallen to fight for you while you hold them.",
-      "color": "black",
-      "level": 22,
-      "concentration": true,
-      "effects": [
-        {
-          "effect": "core:effect/summon",
-          "parameter": "core:summon/undead",
-          "magnitude": 3,
-          "duration": 120,
-          "target": "ranged"
+      "description": "Raise a horde of the fallen, two to four of them, that soak blows for you while you hold them.",
+      "base": "core:spell/raise_thrall",
+      "overrides": {
+        "level": 22,
+        "concentration": true,
+        "summon": {
+          "minion": true,
+          "count": "1d3+1"
+        },
+        "cost": {
+          "mana": 108
         }
-      ],
-      "cost": {
-        "mana": 108
       }
     },
     {
