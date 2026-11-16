@@ -108,6 +108,10 @@ Experience comes from the GM. You reach a level at `450 × level × (level − 1
 4. **Play turns** until one side falls, flees, or talks.
 5. **Give the loot.** Each monster rolls on its own tables.
 
+## Save your game
+
+The app saves as you play, in your browser: the **saves** tab lists your games, and **Download backup** gives you a file you can keep, open on another device, or hand to your GM. Saves live in that browser only, so keep a backup.
+
 ## Print your sheet
 
 The backend prints a sheet from your saved character, with each raised skill's target worked out, so

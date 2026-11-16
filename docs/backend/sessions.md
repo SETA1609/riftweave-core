@@ -19,6 +19,15 @@ Session
 
 The log holds a step's input as it was given, so a replay fills it the same way. A step that fails leaves the session as it was and adds nothing to the log. A session serializes to JSON, so it can be saved and replayed. [V 2026-11-11, `go test ./core`]
 
+## The rules version
+
+`rules_version` names the rules a session ran on. `start` records the core's `RulesVersion`
+(`backend/core/session.go`, `0.1.0` before the 1.0 release [A]), a step keeps it, and `replay`
+stamps the rebuilt session with the current one, whatever the saved session said, so a caller
+that compares the two knows a save came from other rules. A save from other rules is replayed
+under the current ones; `matches` says whether the result is the same character. [V 2026-11-16,
+`go test ./core`]
+
 ## What a step reads and writes
 
 A field the step names wins; the session fills only what is missing. [A]
