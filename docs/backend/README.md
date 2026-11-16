@@ -1,5 +1,7 @@
 # Reference backend
 
+Modified: 2026-11-15
+
 One backend serves the ruleset to every consumer: an agent CLI, a human CLI, an HTTP API, and an Angular frontend (story APP, [07-backend.md](../stories/07-backend.md)). This file is its spec. It adds no rules: the rules are in `docs/core/` and `docs/modules/`, the numbers in `ruleset/data/`, and the vectors are the authority.
 
 ## Layers
@@ -10,7 +12,8 @@ Go core             backend/: loads ruleset/data/, implements every command, pas
 adapters            agent CLI, human CLI (a Charm TUI), HTTP API: parse, call the core, format   (APP-03, 05, 06)
                     the agent CLI is backend/cmd/riftweave (cli.md)
                     the HTTP API is backend/cmd/riftweave-server (api.md)
-frontend            Angular, talks only to the HTTP API through a generated client       (APP-07, frontend.md)
+frontend            Angular, over the HTTP API or the core built to WebAssembly in the page, one contract   (APP-07, APP-14, frontend.md)
+                    the browser core is backend/cmd/riftweave-wasm (frontend.md#the-core-in-the-browser)
 ```
 
 The contract is language-neutral, so the Go core, both CLIs, the OpenAPI document, and the frontend are all built from it, and the Python reference is checked against it today. **An adapter only parses, calls the core, and formats. A rule in an adapter is a bug.** [V 2026-11-04, owner decision]

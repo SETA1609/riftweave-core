@@ -7,9 +7,15 @@
   </nav>
 </header>
 <main>
-  @switch (current()) {
-    @case ('sheet') { <rw-sheet /> }
-    @case ('attack') { <rw-attack /> }
-    @case ('playthrough') { <rw-playthrough /> }
+  @switch (state()) {
+    @case ('starting') { <rw-alert kind="info" message="Starting the rules engine…" /> }
+    @case ('failed') { <rw-alert [message]="failure()" /> }
+    @default {
+      @switch (current()) {
+        @case ('sheet') { <rw-sheet /> }
+        @case ('attack') { <rw-attack /> }
+        @case ('playthrough') { <rw-playthrough /> }
+      }
+    }
   }
 </main>

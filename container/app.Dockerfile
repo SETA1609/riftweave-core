@@ -17,7 +17,8 @@ RUN npx --yes npm@11.21.1 ci --no-audit --no-fund
 COPY frontend/ ./
 # The playthrough screen reads its steps from the vectors.
 COPY ruleset/tests/vectors/playthrough.json /src/ruleset/tests/vectors/playthrough.json
-RUN npm run build
+# The api configuration: the app calls the server behind nginx, not the core in WebAssembly.
+RUN npm run build -- --configuration api
 
 FROM docker.io/library/nginx:1.29.3-alpine
 COPY --from=api /out/riftweave-server /usr/local/bin/riftweave-server

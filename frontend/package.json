@@ -2,11 +2,13 @@
   "name": "riftweave-frontend",
   "version": "0.0.0",
   "private": true,
-  "description": "The Riftweave frontend: an Angular app over the HTTP API (docs/backend/frontend.md).",
+  "description": "The Riftweave frontend: an Angular app over the HTTP API or the core in WebAssembly (docs/backend/frontend.md).",
   "license": "Apache-2.0",
   "scripts": {
-    "start": "ng serve --proxy-config proxy.conf.json",
+    "start": "ng serve --configuration api --proxy-config proxy.conf.json",
+    "start:wasm": "ng serve",
     "build": "ng build",
+    "wasm": "../scripts/build-wasm.sh",
     "test": "ng test --watch=false",
     "generate": "npx --yes openapi-typescript@7.13.0 ${RIFTWEAVE_API:-http://127.0.0.1:8080}/openapi.json -o src/api/openapi.d.ts",
     "e2e": "playwright test"

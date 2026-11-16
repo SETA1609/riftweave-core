@@ -12,3 +12,8 @@ venv/
 
 # Devops run logs
 /cache/
+
+# The browser core (APP-14): scripts/build-wasm.sh copies the data and writes these.
+backend/cmd/riftweave-wasm/ruleset/
+frontend/public/riftweave.wasm
+frontend/public/wasm_exec.js
