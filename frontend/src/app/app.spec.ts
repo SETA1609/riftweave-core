@@ -105,7 +105,7 @@ beforeEach(() => {
 
 describe('the screens', () => {
   it('build their forms from the shared field components', () => {
-    const screens: [Type<unknown>, number][] = [[Sheet, 9], [Attack, 11]];
+    const screens: [Type<unknown>, number][] = [[Sheet, 9], [Attack, 12]];
     for (const [screen, fields] of screens) {
       const fixture = TestBed.createComponent(screen);
       fixture.detectChanges();

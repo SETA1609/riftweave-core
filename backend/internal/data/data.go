@@ -262,6 +262,11 @@ func (group *SkillGroup) SkillKeys() []string { return group.skillsKeys }
 type Pipeline struct {
 	CriticalDamage            formula.Program `json:"crit_damage"`
 	AreaEvadeDamage           formula.Program `json:"area_evade_damage"`
+	EvasionRate               formula.Program `json:"evasion_rate"`
+	DodgeEvasionRate          formula.Program `json:"dodge_evasion_rate"`
+	BlockRate                 formula.Program `json:"block_rate"`
+	MagicBlockRate            formula.Program `json:"magic_block_rate"`
+	BulwarkStaggerAP          int64           `json:"bulwark_stagger_ap"`
 	PierceDamageReduction     formula.Program `json:"pierce_dr"`
 	DamageReductionAppliesTag string          `json:"dr_applies_tag"`
 	PierceTag                 string          `json:"pierce_tag"`

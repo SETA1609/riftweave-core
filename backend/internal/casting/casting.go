@@ -37,16 +37,18 @@ const summonEffect = "core:effect/summon"
 // Target is the defender: its save against an instant spell, and, when it has hp, what the
 // cast's damage does to it through combat steps 2 to 8 (docs/core/casting.md#damage-to-a-target).
 type Target struct {
-	Attributes           actor.Attributes    `json:"attributes"`
-	Skills               map[string]int64    `json:"skills"`
-	Roll                 *int64              `json:"roll"` // the save roll
-	HitPoints            *int64              `json:"hp"`
-	ArmorDamageReduction int64               `json:"armor_dr"`
-	Resist               map[string]int64    `json:"resist"`
-	EvasionSkill         *int64              `json:"evasion_skill"`
-	Reaction             *combat.Reaction    `json:"reaction"`
-	Flags                []string            `json:"flags"`
-	Modifiers            []modifier.Modifier `json:"modifiers"`
+	Attributes            actor.Attributes    `json:"attributes"`
+	Skills                map[string]int64    `json:"skills"`
+	Roll                  *int64              `json:"roll"` // the save roll
+	HitPoints             *int64              `json:"hp"`
+	ArmorDamageReduction  int64               `json:"armor_dr"`
+	Resist                map[string]int64    `json:"resist"`
+	EvasionSkill          *int64              `json:"evasion_skill"`
+	ShieldDamageReduction *int64              `json:"shield_dr"`
+	ShieldsSkill          *int64              `json:"shields_skill"`
+	Stance                string              `json:"stance"`
+	Flags                 []string            `json:"flags"`
+	Modifiers             []modifier.Modifier `json:"modifiers"`
 }
 
 // Packet is one damage effect of a cast and what the combat steps did with it.
@@ -337,14 +339,16 @@ func applyDamage(ruleset *data.Ruleset, spell *data.Spell, input *Input, check *
 		hit, err := combat.Run(ruleset, combat.Input{
 			Attacker: combat.Attacker{Skill: check.Target, Roll: input.Roll, Attributes: input.Caster.Attributes},
 			Defender: combat.Defender{
-				EvasionSkill:         target.EvasionSkill,
-				Attributes:           target.Attributes,
-				ArmorDamageReduction: target.ArmorDamageReduction,
-				HitPoints:            *result.HitPoints,
-				Resist:               target.Resist,
-				Reaction:             target.Reaction,
-				Flags:                target.Flags,
-				Modifiers:            target.Modifiers,
+				EvasionSkill:          target.EvasionSkill,
+				Attributes:            target.Attributes,
+				ArmorDamageReduction:  target.ArmorDamageReduction,
+				HitPoints:             *result.HitPoints,
+				Resist:                target.Resist,
+				ShieldDamageReduction: target.ShieldDamageReduction,
+				ShieldsSkill:          target.ShieldsSkill,
+				Stance:                target.Stance,
+				Flags:                 target.Flags,
+				Modifiers:             target.Modifiers,
 			},
 			Damage:   combat.Damage{Roll: amount, Type: kind},
 			Delivery: delivery,

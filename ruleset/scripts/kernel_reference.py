@@ -396,6 +396,31 @@ def run_combat(vector):
     except ValueError as error:
         return {"error": str(error)}
 
+    if delivery not in ("single", "area", "instant"):
+        raise ValueError(f"delivery {delivery!r} is not defined")
+    physical = pipeline["dr_applies_tag"] in tags
+    # The defender's perks: adds on evasion, shields, and shield_dr, and grant flags.
+    defender_mods = defender.get("modifiers", [])
+    perk_flags = granted_flags(defender_mods)
+    stance = defender.get("stance")
+    if stance not in (None, "dodge", "block"):
+        return {"error": f'stance "{stance}" is not defined'}
+    if stance == "block" and ("shield_dr" not in defender or "shields_skill" not in defender):
+        return {"error": "a block needs shield_dr and shields_skill"}
+    on = lambda target: [m for m in defender_mods if m["target"] == target]
+    evasion_rate = evaluate_formula(pipeline["evasion_rate"], {}, {"skill": apply_modifiers(defender.get("evasion_skill", 0), on("evasion"))})
+    if stance == "dodge":
+        evasion_rate = evaluate_formula(pipeline["dodge_evasion_rate"], {}, {"rate": evasion_rate})
+    block_rate = 0
+    if stance == "block" and (physical or "block_magic" in perk_flags):
+        block_rate = evaluate_formula(pipeline["block_rate"], {}, {"skill": apply_modifiers(defender["shields_skill"], on("shields"))})
+        if not physical:
+            block_rate = evaluate_formula(pipeline["magic_block_rate"], {}, {"rate": block_rate})
+    if delivery == "instant":
+        evasion_rate = block_rate = 0
+    rules = load_data("resolution/core.json")["resolution"]
+    defender_window = rules["crit_window"] + defender.get("attributes", {}).get("lck", 0) // rules["crit_window_per_two_luck"]
+
     attack = run_resolution(
         {
             "actor": {"skills": {"attack_roll": attacker["skill"]}, "attributes": attacker.get("attributes", {})},
@@ -410,8 +435,10 @@ def run_combat(vector):
         "crit": crit,
         "evaded": False,
         "blocked": False,
-        "reaction_tags": [],
+        "evasion_rate": evasion_rate,
+        "block_rate": block_rate,
         "counter": False,
+        "stagger_ap": 0,
     }
     if called is not None:
         result["riders"] = []
@@ -419,41 +446,20 @@ def run_combat(vector):
         result.update(outcome="fumble" if "fumble" in attack["tags"] else "miss", damage=0, hp=defender["hp"])
         return result
 
-    # One reaction per attack, rolled only on a hit. Delivery decides what it can do:
-    # single is evaded whole, area is halved by an evade, instant takes no reaction.
-    physical = pipeline["dr_applies_tag"] in tags
-    if delivery not in ("single", "area", "instant"):
-        raise ValueError(f"delivery {delivery!r} is not defined")
-    reaction = defender.get("reaction") if delivery != "instant" else None
-    kind = reaction["kind"] if reaction else None
-    if kind not in (None, "evade", "block"):
-        raise ValueError(f"reaction kind {kind!r} is not defined")
-    # The defender's perks: adds on the reaction targets and shield_dr, and grant flags.
-    defender_mods = defender.get("modifiers", [])
-    perk_flags = granted_flags(defender_mods)
-    if kind == "block" and not physical and "block_magic" not in perk_flags:
-        kind = None
-    if kind is not None:
-        # The reaction is a d100 check like the attack: same fumble and crit window.
-        skill = defender["evasion_skill"] if kind == "evade" else reaction["skill"]
-        target = "evasion" if kind == "evade" else "shields"
-        check = run_resolution(
-            {
-                "actor": {"skills": {kind: skill}, "attributes": defender.get("attributes", {})},
-                "modifiers": [m for m in defender_mods if m["target"] == target],
-                "roll": reaction["roll"],
-            }
-        )
-        result["reaction_tags"] = check["tags"]
-        if check["success"] and check["margin"] >= attack["margin"]:
-            if kind == "block":
-                result["blocked"] = True
-            else:
-                result["evaded"] = True
-                result["counter"] = delivery == "single" and "crit" in check["tags"] and "riposte" in perk_flags
-                if delivery == "single":
-                    result.update(outcome="evaded", damage=0, hp=defender["hp"])
-                    return result
+    # One roll, read in bands (docs/core/combat.md step 2): the evasion band, then a block
+    # stance's band under it. A crit always hits; instant meets no band.
+    margin, window, rate, block = attack["margin"], defender_window, evasion_rate, block_rate
+    if not crit and margin < rate:
+        result["evaded"] = True
+        result["counter"] = stance == "dodge" and delivery == "single" and "riposte" in perk_flags and margin >= rate - window
+        if delivery == "single":
+            result.update(outcome="evaded", damage=0, hp=defender["hp"])
+            return result
+    elif not crit and margin < rate + block:
+        result.update(outcome="blocked", blocked=True, damage=0, hp=defender["hp"])
+        if "bulwark" in perk_flags and margin >= rate + block - window:
+            result["stagger_ap"] = pipeline["bulwark_stagger_ap"]
+        return result
     result["outcome"] = "hit"
 
     amount = damage["roll"]
@@ -467,21 +473,16 @@ def run_combat(vector):
         amount = evaluate_formula(pipeline["crit_damage"], {}, {"damage": amount})
     if result["evaded"]:
         amount = evaluate_formula(pipeline["area_evade_damage"], {}, {"damage": amount})
-    if result["blocked"]:
-        shield_dr = apply_modifiers(reaction["shield_dr"], [m for m in defender_mods if m["target"] == "shield_dr"])
-        if not physical:
-            shield_dr //= 2
-        amount = max(amount - shield_dr, 0)
-        if "bulwark" in perk_flags and "crit" in result["reaction_tags"]:
-            amount = 0
     if physical:
         dr = defender.get("armor_dr", 0)
+        if "shield_dr" in defender:
+            dr += apply_modifiers(defender["shield_dr"], on("shield_dr"))
         if pipeline["pierce_tag"] in tags:
             dr = evaluate_formula(pipeline["pierce_dr"], {}, {"dr": dr})
         amount = max(amount - dr, 0)
     amount = max(amount - defender.get("resist", {}).get(damage["type"], 0), 0)
     result.update(damage=amount, hp=max(defender["hp"] - amount, 0))
-    if called is not None:
+    if called is not None and not result["evaded"]:
         result["riders"] = [dict(rider) for rider in called.get("riders", [])]
     return result
 

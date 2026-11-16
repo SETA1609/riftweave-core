@@ -41,6 +41,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/commands/author": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Author content rows: check a draft spell as validate.py would, give the spellcraft cost, load a spell to edit, and export a core or module data file.
+         * @description The rules are in docs/backend/authoring.md.
+         */
+        post: operations["author"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/commands/casting": {
         parameters: {
             query?: never;
@@ -71,7 +91,7 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * One attack from the roll to the HP lost, with one defender reaction.
+         * One attack from the roll to the HP lost: one attack roll read against the defender's evasion and block bands.
          * @description The rules are in docs/core/combat.md.
          */
         post: operations["combat"];
@@ -261,6 +281,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/commands/print": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * A printable page from the data: a character sheet, a spell card, a monster stat block, or a condition card.
+         * @description The rules are in docs/backend/print.md.
+         */
+        post: operations["print"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/commands/progression": {
         parameters: {
             query?: never;
@@ -335,6 +375,26 @@ export interface paths {
          * @description The rules are in docs/backend/sessions.md.
          */
         post: operations["session"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/commands/share": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * What one ally gets from the bards and skalds near it: each sharer within its perk's range lends its CHA modifier to the perk's group as a morale modifier for some turns; the strongest counts per attribute.
+         * @description The rules are in docs/core/share.md.
+         */
+        post: operations["share"];
         delete?: never;
         options?: never;
         head?: never;
@@ -577,6 +637,11 @@ export interface components {
         };
         /** @description A reference to a gem row (docs/core/integrity.md). */
         ruleset_gemRef: string;
+        /** @description A perk an actor holds, at a rank (M3-15): at most the perk's ranks, 1 when left out. */
+        ruleset_heldPerk: {
+            perk: components["schemas"]["ruleset_featureRef"];
+            rank?: number;
+        };
         /** @description A reference to a ingredient row (docs/core/integrity.md). */
         ruleset_ingredientRef: string;
         /** @description A reference to an equipment row of any category (docs/core/integrity.md). */
@@ -815,6 +880,123 @@ export interface operations {
             };
         };
     };
+    author: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    export?: {
+                        /** @description shape module: the module's id. */
+                        module?: components["schemas"]["key"];
+                        /** @enum {string} */
+                        shape: "core" | "module";
+                    };
+                    /** @enum {string} */
+                    kind: "spell";
+                    /**
+                     * @description check (the default) a list of drafts, or load one spell by key.
+                     * @enum {string}
+                     */
+                    operation?: "check" | "load";
+                    /** @description load: the spell to load. */
+                    spell?: components["schemas"]["key"];
+                    /** @description check: the draft rows, as spells/core.json holds them; the schema is checked by the command, so a draft may be wrong. */
+                    spells?: Record<string, never>[];
+                };
+            };
+        };
+        responses: {
+            /** @description The result. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        export?: {
+                            /** @description The whole data file: $schema and the spells wrapper. */
+                            file: Record<string, never>;
+                            /** @description shape module: the manifest the module needs. */
+                            manifest?: Record<string, never>;
+                            /** @description Where the file goes, from the repository root. */
+                            path: string;
+                            /** @description How other rows name each exported spell. */
+                            refs: components["schemas"]["ref"][];
+                            /** @enum {string} */
+                            shape: "core" | "module";
+                        };
+                        /** @description load: the spell as written. */
+                        row?: Record<string, never>;
+                        spells?: {
+                            cost: {
+                                cast_threshold: number;
+                                craft_threshold: number;
+                                mana: number;
+                            } | null;
+                            key: string;
+                            problems: {
+                                /** @enum {string} */
+                                check: "schema" | "ref" | "channel" | "parameter" | "cost";
+                                message: string;
+                                /** @description A JSON pointer into the row. */
+                                path: string;
+                            }[];
+                            /** @description The draft as the file will hold it. */
+                            row: Record<string, never>;
+                            warnings: {
+                                /** @enum {string} */
+                                check: "schema" | "ref" | "channel" | "parameter" | "cost";
+                                message: string;
+                                /** @description A JSON pointer into the row. */
+                                path: string;
+                            }[];
+                        }[];
+                    };
+                };
+            };
+            /** @description The body is not the command's input, or a rule needs an input it was not given. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description No such command, or the input names a key that does not exist. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The body is over 1 MiB. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The command refused for another rule reason. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+        };
+    };
     casting: {
         parameters: {
             query?: never;
@@ -834,17 +1016,35 @@ export interface operations {
                         mana: number;
                         reagents?: components["schemas"]["ref"][];
                         skills: components["schemas"]["skills"];
+                        /** @description The caster's active summons, oldest first: one summon group ref per creature (docs/core/casting.md#summons). */
+                        summons?: components["schemas"]["ref"][];
                     };
                     modifiers?: components["schemas"]["modifiers"];
                     roll: components["schemas"]["d100"];
                     spell: components["schemas"]["key"];
                     /** @description Spell keys standing on the target, for dispel. */
                     standing?: components["schemas"]["key"][];
-                    /** @description The defender, for an instant spell's save. */
+                    /** @description The defender: its save against an instant spell (attributes, skills, roll), and, when it has hp, what the cast's damage does to it through combat steps 2 to 8 (docs/core/casting.md#damage-to-a-target). */
                     target?: {
+                        armor_dr?: number;
                         attributes?: components["schemas"]["attributes"];
-                        roll: components["schemas"]["d100"];
+                        evasion_skill?: number;
+                        /** @description Flags from conditions (prone, blinded, invisible); a situation row with `when` reads them. */
+                        flags?: components["schemas"]["key"][];
+                        hp?: number;
+                        modifiers?: components["schemas"]["modifiers"];
+                        resist?: {
+                            [key: string]: number;
+                        };
+                        /** @description The save roll; an instant spell needs it. */
+                        roll?: components["schemas"]["d100"];
+                        /** @description The carried shield's DR; it adds to armor_dr against types with armor_dr_applies. */
+                        shield_dr?: number;
+                        /** @description The shields skill the block stance's band reads. */
+                        shields_skill?: number;
                         skills?: components["schemas"]["skills"];
+                        /** @description The stance the defender declared on their turn: dodge (doubles the evasion band) or block (adds a block band; needs shield_dr and shields_skill). Any other value is an error. */
+                        stance?: string;
                     };
                 };
             };
@@ -865,9 +1065,24 @@ export interface operations {
                         };
                         concentration?: null | components["schemas"]["key"];
                         consumed?: components["schemas"]["ref"][];
+                        /** @description Per damage packet, when target has hp: the combat steps' outcome. */
+                        damage?: {
+                            /** @description The packet before the combat steps. */
+                            amount: number;
+                            blocked: boolean;
+                            /** @description HP lost. */
+                            damage: number;
+                            effect: components["schemas"]["ref"];
+                            evaded: boolean;
+                            type: string;
+                        }[];
+                        /** @description The summons the cast dismissed to stay within the limit, oldest first. */
+                        dismissed?: components["schemas"]["ref"][];
                         dispelled?: components["schemas"]["key"][];
                         effects?: components["schemas"]["ruleset_appliedEffect"][];
                         ended?: null | components["schemas"]["key"];
+                        /** @description The target's HP after every packet; null without a target hp. */
+                        hp?: number | null;
                         mana?: number;
                         /** @enum {string} */
                         outcome?: "cast" | "failed" | "prevented" | "no_mana" | "no_reagents";
@@ -879,6 +1094,8 @@ export interface operations {
                             tags: components["schemas"]["tags"];
                             target: number;
                         };
+                        /** @description The active summons after the cast, oldest first. */
+                        summons?: components["schemas"]["ref"][];
                     };
                 };
             };
@@ -953,16 +1170,15 @@ export interface operations {
                         flags?: components["schemas"]["key"][];
                         hp: number;
                         modifiers?: components["schemas"]["modifiers"];
-                        reaction?: {
-                            /** @enum {string} */
-                            kind: "evade" | "block";
-                            roll: components["schemas"]["d100"];
-                            shield_dr?: number;
-                            skill?: number;
-                        };
                         resist?: {
                             [key: string]: number;
                         };
+                        /** @description The carried shield's DR; it adds to armor_dr against types with armor_dr_applies. */
+                        shield_dr?: number;
+                        /** @description The shields skill the block stance's band reads. */
+                        shields_skill?: number;
+                        /** @description The stance the defender declared on their turn: dodge (doubles the evasion band) or block (adds a block band; needs shield_dr and shields_skill). Any other value is an error. */
+                        stance?: string;
                     };
                     /** @enum {string} */
                     delivery?: "single" | "area" | "instant";
@@ -985,17 +1201,20 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The block stance's band, under the evasion band: a margin in it is blocked. */
+                        block_rate: number;
                         blocked: boolean;
                         /** @description A riposte: the defender may make one attack at no AP cost. */
                         counter?: boolean;
                         crit: boolean;
                         damage: number;
                         evaded: boolean;
+                        /** @description The evasion band: a margin under it is evaded. */
+                        evasion_rate: number;
                         hp: number;
                         margin: number | null;
                         /** @enum {string} */
-                        outcome: "hit" | "miss" | "fumble" | "evaded";
-                        reaction_tags: components["schemas"]["tags"];
+                        outcome: "hit" | "miss" | "fumble" | "evaded" | "blocked";
                         /** @description A called shot's riders on a hit. */
                         riders?: {
                             check?: string;
@@ -1003,6 +1222,8 @@ export interface operations {
                             event?: string;
                             turns?: number;
                         }[];
+                        /** @description Bulwark: AP the attacker loses on their next turn. */
+                        stagger_ap?: number;
                         target: number;
                     };
                 };
@@ -1721,6 +1942,11 @@ export interface operations {
                         attributes?: components["schemas"]["attributes"];
                         hitPoints?: number;
                         level?: number;
+                        /** @description The row's perks, each at a rank (M3-15); their modifiers reach the stats and skills. */
+                        perks?: {
+                            perk: components["schemas"]["ref"];
+                            rank?: number;
+                        }[];
                         skills?: components["schemas"]["skills"];
                     };
                     read_skills?: components["schemas"]["key"][];
@@ -1744,6 +1970,104 @@ export interface operations {
                             [key: string]: number;
                         };
                         sp: number;
+                    };
+                };
+            };
+            /** @description The body is not the command's input, or a rule needs an input it was not given. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description No such command, or the input names a key that does not exist. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The body is over 1 MiB. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The command refused for another rule reason. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+        };
+    };
+    print: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description With sheet: the character. */
+                    actor?: components["schemas"]["stored_actor"];
+                    /** @description With condition: a key in conditions/core.json. */
+                    condition?: components["schemas"]["key"];
+                    /** @enum {string} */
+                    kind: "sheet" | "spell" | "monster" | "condition";
+                    /** @description With monster: the name printed at the top. */
+                    label?: string;
+                    /** @description With monster: a composed monster row, as monster_sheet takes it, with its attacks and resistances. */
+                    monster?: {
+                        attacks?: {
+                            ability?: string;
+                            damage?: {
+                                bonus?: number;
+                                type?: string;
+                            };
+                            delivery?: string;
+                            key: components["schemas"]["key"];
+                            label: string;
+                            phase?: string;
+                            weapon: components["schemas"]["ref"];
+                        }[];
+                        attributes?: components["schemas"]["attributes"];
+                        hitPoints?: number;
+                        level?: number;
+                        resist?: {
+                            [key: string]: number;
+                        };
+                        size?: string;
+                        skills?: components["schemas"]["skills"];
+                    };
+                    /** @description With spell: a key in spells/core.json. */
+                    spell?: components["schemas"]["key"];
+                };
+            };
+        };
+        responses: {
+            /** @description The result. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description One self-contained page: inline CSS, no script. Each printed number has a data- attribute naming it. */
+                        html: string;
+                        title: string;
                     };
                 };
             };
@@ -2136,6 +2460,85 @@ export interface operations {
                         /** @description The step's command result. */
                         result?: Record<string, never>;
                         session: components["schemas"]["session"];
+                    };
+                };
+            };
+            /** @description The body is not the command's input, or a rule needs an input it was not given. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description No such command, or the input names a key that does not exist. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The body is over 1 MiB. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The command refused for another rule reason. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+        };
+    };
+    share: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description Turns since the sharers started; a bonus whose turns have elapsed is gone. */
+                    elapsed_turns?: number;
+                    sharers: {
+                        attributes: components["schemas"]["attributes"];
+                        /** @description Units from the ally. */
+                        distance: number;
+                        /** @description Who shares; it makes each sharer's modifiers a source of its own. */
+                        name: string;
+                        /** @description A feature with a share object. */
+                        perk: components["schemas"]["key"];
+                        rank?: number;
+                    }[];
+                };
+            };
+        };
+        responses: {
+            /** @description The result. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Per attribute, the bonus that counts after morale keeps the strongest. */
+                        bonus: {
+                            [key: string]: number;
+                        };
+                        modifiers: components["schemas"]["modifiers"];
                     };
                 };
             };

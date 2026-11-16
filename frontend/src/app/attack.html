@@ -11,8 +11,9 @@
     <rw-number-field label="evasion" [(value)]="evasion" />
     <rw-number-field label="armor DR" [(value)]="armor" />
     <rw-number-field label="HP" [(value)]="hp" />
-    <rw-select-field label="reaction" [options]="reactions" [(value)]="reaction" />
-    <rw-number-field label="reaction d100" [min]="1" [max]="100" [(value)]="reactionRoll" />
+    <rw-number-field label="shield DR" [min]="0" [(value)]="shield" />
+    <rw-number-field label="shields" [(value)]="shields" />
+    <rw-select-field label="stance" [options]="stances" [(value)]="stance" />
   </fieldset>
   <fieldset>
     <legend>Damage</legend>
