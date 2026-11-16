@@ -7,8 +7,16 @@
   --danger: #b02a37; --danger-bg: #f8d7da; --success: #146c43; --success-bg: #d1e7dd; --info: #055160; --info-bg: #cff4fc;
   --radius: 0.375rem; --space-1: 0.25rem; --space-2: 0.5rem; --space-3: 1rem; --space-4: 1.5rem;
 }
+/* The dark tokens: chosen with data-theme="dark" (AppContext), or the system's when no mode is chosen. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --body: #dee2e6; --body-bg: #212529; --muted: #adb5bd; --border: #495057; --surface: #2b3035;
+  --primary: #3d8bfd; --primary-hover: #5c9dfd; --on-primary: #000000;
+  --danger: #ea868f; --danger-bg: #2c0b0e; --success: #75b798; --success-bg: #051b11; --info: #6edff6; --info-bg: #032830;
+}
+:root[data-theme="light"] { color-scheme: light; }
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --body: #dee2e6; --body-bg: #212529; --muted: #adb5bd; --border: #495057; --surface: #2b3035;
     --primary: #3d8bfd; --primary-hover: #5c9dfd; --on-primary: #000000;
     --danger: #ea868f; --danger-bg: #2c0b0e; --success: #75b798; --success-bg: #051b11; --info: #6edff6; --info-bg: #032830;

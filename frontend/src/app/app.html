@@ -5,6 +5,7 @@
       <button type="button" class="nav-link" [class.active]="tab === current()" (click)="current.set(tab)">{{ tab }}</button>
     }
   </nav>
+  <rw-theme-toggle />
 </header>
 <main>
   @switch (state()) {
