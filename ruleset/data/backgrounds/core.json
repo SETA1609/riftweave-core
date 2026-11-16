@@ -56,7 +56,7 @@
       "category": "military",
       "skill_bonuses": [
         {
-          "skill": "core:skill/block",
+          "skill": "core:skill/shields",
           "bonus": 12
         },
         {
@@ -84,7 +84,7 @@
       ],
       "wealth_bonus": 25,
       "suggested_tag_skills": [
-        "core:skill/block",
+        "core:skill/shields",
         "core:skill/blades",
         "core:skill/athletics"
       ],

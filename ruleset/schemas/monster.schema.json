@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Monster",
-  "description": "A creature/enemy. A monster may carry one element (Wuxing five-phase), a tag the Wuxing module reads. Its attacks and innate abilities are drawn from the shared effect registry through schema.json#/definitions/appliedEffect, exactly like spells and consumables. Certain monsters with living spiritual or elemental essence can also drop spirit cores (see coreDrop); undead and humanoids must never have coreDrop.\n\nSupports a Base + Override pattern: entries may either be flat monsters (all fields inline) or reference a base template and provide only overrides. Base templates live in bases/*.json and are resolved at validation/load time.",
+  "description": "A creature/enemy. A monster may carry one element (Wuxing five-phase), a tag the Wuxing module reads. Its attacks and innate effects are drawn from the shared effect registry through schema.json#/definitions/appliedEffect, exactly like spells and consumables. Certain monsters with living spiritual or elemental essence can also drop spirit cores (see coreDrop); undead and humanoids must never have coreDrop.\n\nSupports a Base + Override pattern: entries may either be flat monsters (all fields inline) or reference a base template and provide only overrides. Base templates live in bases/*.json and are resolved at validation/load time.",
   "type": "object",
   "properties": {
     "$schema": { "type": "string" },
@@ -44,7 +44,7 @@
       "additionalProperties": false
     },
     "monsterData": {
-      "description": "Shared data shape used by both flat monster entries and overrides. All fields are optional here; requiredness is enforced at the entry level. Overrides may use the $extend merge convention on array fields (abilities, tags) to append to the base instead of replacing.",
+      "description": "Shared data shape used by both flat monster entries and overrides. All fields are optional here; requiredness is enforced at the entry level. Overrides may use the $extend merge convention on array fields (effects, tags) to append to the base instead of replacing.",
       "type": "object",
       "properties": {
         "label": { "type": "string", "description": "Human-readable display name with spaces and capitalization." },
@@ -67,9 +67,9 @@
         },
         "hitPoints": { "type": "integer", "minimum": 1, "description": "Optional authored HP; it replaces the computed value (docs/core/actor-sheet.md)." },
         "skills": { "type": "object", "description": "Only the skills this monster fights or casts with; any other reads as a starting value (docs/core/actor-sheet.md).", "propertyNames": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" }, "additionalProperties": { "type": "integer", "minimum": 0, "maximum": 100 } },
-        "abilities": {
+        "effects": {
           "type": "array",
-          "description": "The monster's attacks and innate powers, drawn from the shared effect registry (data/effects). A monster typically wields effects of its own phase, but need not.",
+          "description": "The effects the monster applies: its innate powers, drawn from the shared effect registry (data/effects). Named effects, as on a spell (M5-56; was abilities). A monster typically wields effects of its own phase, but need not.",
           "items": { "$ref": "schema.json#/definitions/appliedEffect" }
         },
         "spells": { "type": "array", "items": { "$ref": "schema.json#/definitions/spellRef" }, "uniqueItems": true, "description": "Spells it casts as a player does, from the mana of the mp row (docs/modules/monsters.md#templates)." },
@@ -144,7 +144,7 @@
         },
         "hitPoints": { "type": "integer", "minimum": 1, "description": "Optional authored HP; it replaces the computed value (docs/core/actor-sheet.md)." },
         "skills": { "type": "object", "description": "Only the skills this monster fights or casts with; any other reads as a starting value (docs/core/actor-sheet.md).", "propertyNames": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" }, "additionalProperties": { "type": "integer", "minimum": 0, "maximum": 100 } },
-        "abilities": {
+        "effects": {
           "type": "array",
           "description": "The monster's attacks and innate powers.",
           "items": { "$ref": "schema.json#/definitions/appliedEffect" }

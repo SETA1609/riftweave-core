@@ -25,7 +25,7 @@
           "per": 2
         },
         "hitPoints": 22,
-        "abilities": [
+        "effects": [
           {
             "effect": "core:effect/damage_force",
             "magnitude": 6,
@@ -69,7 +69,7 @@
           "per": 3
         },
         "hitPoints": 24,
-        "abilities": [
+        "effects": [
           {
             "effect": "core:effect/damage_force",
             "magnitude": 6,
@@ -106,7 +106,7 @@
           "slashing": 3,
           "piercing": 3
         },
-        "abilities": [
+        "effects": [
           {
             "effect": "core:effect/damage_acid",
             "magnitude": 6,
@@ -130,7 +130,7 @@
           "per": 6
         },
         "hitPoints": 59,
-        "abilities": [
+        "effects": [
           {
             "effect": "core:effect/bleed",
             "magnitude": 2,
@@ -199,7 +199,7 @@
           }
         ],
         "hitPoints": 67,
-        "abilities": [
+        "effects": [
           {
             "effect": "core:effect/bleed",
             "magnitude": 3,
@@ -237,7 +237,7 @@
           "agi": 2
         },
         "hitPoints": 60,
-        "abilities": [
+        "effects": [
           {
             "effect": "core:effect/paralyze",
             "magnitude": 3,
@@ -305,7 +305,7 @@
           "per": 4
         },
         "hitPoints": 30,
-        "abilities": [
+        "effects": [
           {
             "effect": "core:effect/damage_fire",
             "magnitude": 7,
@@ -406,7 +406,7 @@
           "per": 5
         },
         "hitPoints": 78,
-        "abilities": [
+        "effects": [
           {
             "effect": "core:effect/damage_fire",
             "magnitude": 12,
@@ -745,7 +745,7 @@
             "chance": 30
           }
         ],
-        "abilities": [
+        "effects": [
           {
             "effect": "core:effect/damage_shock",
             "magnitude": 7,
@@ -787,7 +787,7 @@
             "chance": 30
           }
         ],
-        "abilities": [
+        "effects": [
           {
             "effect": "core:effect/damage_acid",
             "magnitude": 7,
@@ -829,7 +829,7 @@
             "chance": 30
           }
         ],
-        "abilities": [
+        "effects": [
           {
             "effect": "core:effect/damage_poison",
             "magnitude": 7,
@@ -1103,7 +1103,7 @@
           "per": 1
         },
         "hitPoints": 30,
-        "abilities": [
+        "effects": [
           {
             "effect": "core:effect/poison",
             "magnitude": 1,
@@ -1349,7 +1349,7 @@
           "per": 6
         },
         "hitPoints": 30,
-        "abilities": [
+        "effects": [
           {
             "effect": "core:effect/bleed",
             "magnitude": 2,
@@ -1440,7 +1440,7 @@
           "end": 6,
           "wil": 6
         },
-        "abilities": [
+        "effects": [
           {
             "effect": "core:effect/damage_frost",
             "magnitude": 7,
@@ -1498,7 +1498,7 @@
           "per": 5
         },
         "hitPoints": 28,
-        "abilities": [
+        "effects": [
           {
             "effect": "core:effect/damage_frost",
             "magnitude": 7,
@@ -1664,7 +1664,7 @@
           "agi": 4
         },
         "hitPoints": 55,
-        "abilities": [
+        "effects": [
           {
             "effect": "core:effect/damage_force",
             "magnitude": 11,
@@ -1762,7 +1762,7 @@
         "tags": [
           "elemental"
         ],
-        "abilities": [
+        "effects": [
           {
             "effect": "core:effect/damage_radiant",
             "magnitude": 8,
@@ -1833,7 +1833,7 @@
         "tags": [
           "undead"
         ],
-        "abilities": [
+        "effects": [
           {
             "effect": "core:effect/damage_necrotic",
             "magnitude": 11,
@@ -1874,7 +1874,7 @@
           "beast",
           "monstrosity"
         ],
-        "abilities": [
+        "effects": [
           {
             "effect": "core:effect/damage_thunder",
             "magnitude": 8,
@@ -2025,7 +2025,7 @@
           "undead",
           "caster"
         ],
-        "abilities": [
+        "effects": [
           {
             "effect": "core:effect/damage_force",
             "magnitude": 14,

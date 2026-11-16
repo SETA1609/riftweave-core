@@ -1,5 +1,7 @@
 # Armor System
 
+Modified: 2026-11-15
+
 Core armor is a slot, a base DR, a weight, a skill, and an evasion penalty. Layering is content, not a requirement. The pipeline is one line: DV roll, then DR, then a resist tag. A skin layer is not required to wear chain.
 
 Layering rules live in [armor-layering.md](armor-layering.md).
@@ -239,7 +241,7 @@ Instead, their DR value applies only during an **active block** action
 - **Shield DR is NOT added to the passive DR total.** A shield provides no benefit
   unless the wearer actively blocks.
 - **Active block:** The defender's one reaction, declared before the attack roll
-  (2 AP, refunded if no attack comes). The blocker makes a block skill check; on success, the shield's DR (base + material modifier)
+  (2 AP, refunded if no attack comes). The blocker makes a `shields` skill check; on success, the shield's DR (base + material modifier)
   is subtracted from incoming damage. On failure, no block benefit.
 - **Shield DR and armor DR both subtract on a block:** shield DR first, then armor
   DR ([`docs/core/combat.md`](../core/combat.md), vector `example 1b`).
@@ -260,7 +262,7 @@ like armor pieces.
 Some weapons (rapiers, longswords, fencing swords) and the *Duelist* perk allow
 a **parry** instead of a shield block:
 
-- **Parry uses the weapon skill** (e.g. blades) instead of block skill.
+- **Parry uses the weapon skill** (e.g. blades) instead of the `shields` skill.
 - **On success:** The attack is negated entirely (not reduced).
 - **On failure:** The attack hits with full effect (no DR reduction).
 - Parry does not require a shield, but requires a free hand or a light off-hand

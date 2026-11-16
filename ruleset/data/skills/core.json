@@ -5,7 +5,7 @@
     { "key": "blunt", "label": "Blunt", "description": "Strike with maces, hammers, staves, and other bludgeoning melee weapons.", "associatedAbility": "str", "category": "combat", "taggable": true },
     { "key": "piercing", "label": "Piercing", "description": "Thrust and stab with spears, rapiers, daggers, and other piercing melee weapons.", "associatedAbility": "agi", "category": "combat", "taggable": true },
     { "key": "unarmed", "label": "Unarmed", "description": "Fight with fists, claws, and brawling techniques.", "associatedAbility": "agi", "category": "combat", "taggable": true },
-    { "key": "block", "label": "Block", "description": "Absorb and deflect blows with a shield.", "associatedAbility": "end", "category": "combat", "taggable": true },
+    { "key": "shields", "label": "Shields", "description": "Absorb and deflect blows with a shield.", "associatedAbility": "end", "category": "combat", "taggable": true },
 
     { "key": "red_magic", "label": "Red Magic", "description": "Offensive magic: fire, frost, shock, and force.", "associatedAbility": "int", "category": "magic", "taggable": true },
     { "key": "orange_magic", "label": "Orange Magic", "description": "Summoning, bound weapons, and energy creation.", "associatedAbility": "int", "category": "magic", "taggable": true },

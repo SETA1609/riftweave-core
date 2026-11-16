@@ -202,7 +202,7 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	if reaction != nil {
 		// The reaction is a d100 check like the attack: same fumble and crit window.
 		var skill int64
-		var reactionTarget string = "block"
+		var reactionTarget string = "shields"
 		if reaction.Kind == "evade" {
 			reactionTarget = "evasion"
 			if defender.EvasionSkill == nil {

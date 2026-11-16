@@ -1,5 +1,7 @@
 # Combat
 
+Modified: 2026-11-15
+
 Commentary on the combat rules: what they are for, how they fit together, and worked examples. It holds no rule of its own. Every rule here is owned by a file in `docs/core/`, has its numbers in `ruleset/data/`, and is pinned by a vector in `ruleset/tests/vectors/`. **If this file and `docs/core/` disagree, `docs/core/` wins** and this file is the bug.
 
 There is one set of rules. A turn-based table, a party-based cRPG, and a real-time action game run the same functions on the same numbers; a real-time client only presents them differently (§11). There is no bonus action, no reaction slot, and no per-mode column.
@@ -53,14 +55,14 @@ The order of one attack is fixed in [docs/core/combat.md](../core/combat.md): at
 The defender declares one reaction before the attack roll and rolls it only if the attack hits. The reaction roll is a normal d100 check with the defender's skill and LCK: a 100 fumbles, a roll in the crit window is tagged `crit` (no effect yet). It succeeds when the reaction succeeds **and** its margin reaches the attacker's margin.
 
 - **Evade** rolls the `evasion` skill. Against a single-target attack it avoids the hit. Against an area attack it halves the damage. Instant spells cannot be evaded; their target makes the save the spell names (M3-05).
-- **Block** rolls the `block` skill and subtracts the shield's DR. It works against physical damage types only. Shields: buckler DR 1, standard shield DR 2, tower shield DR 4 (and grants cover to an adjacent ally, **[A]**, M3-03).
+- **Block** rolls the `shields` skill and subtracts the shield's DR. It works against physical damage types only. Shields: buckler DR 1, standard shield DR 2, tower shield DR 4 (and grants cover to an adjacent ally, **[A]**, M3-03).
 - Delivery decides what is possible, not the damage type: a fire bolt can be dodged; a fireball dodged is halved.
 
 Balance between the two is perks and armor, not the pipeline: gated block and dodge perks (M2-06), armor evasion penalties on the evasion skill, and instant spells that skip the dodge.
 
 Not yet rows, **[A]** until M2-06:
 
-- **Parry.** Some weapons (rapiers, swords) and the *Duelist* perk let a defender block with the weapon skill instead of the block skill. A successful parry negates the hit.
+- **Parry.** Some weapons (rapiers, swords) and the *Duelist* perk let a defender block with the weapon skill instead of the `shields` skill. A successful parry negates the hit.
 - **Two weapons.** An off-hand weapon can parry but not block. It either attacks (an attack, 3 AP) or is held to parry in a turn, not both.
 - **Unarmed.** The *Deflect Arrows* perk blocks missiles with `unarmored`. No unarmed melee block without a perk. A natural weapon (a bite, a claw, a race's claws) is an unarmed attack: it rolls with `unarmed`, and the unarmed perks change its damage ([monsters.md](./monsters.md#natural-weapons)).
 - A defender who is stunned, incapacitated, paralyzed, petrified, or unconscious takes no reaction. **[A]** The conditions grant those flags ([modifier.md](../core/modifier.md)); the pipeline does not read them yet.

@@ -3,7 +3,7 @@
   "checks": [
     { "key": "unarmed_strike", "label": "Unarmed Strike", "description": "Attack with fists, feet, or natural weapons when no weapon is in hand.", "skill": "core:skill/unarmed" },
     { "key": "dodge", "label": "Dodge", "description": "Step out of the way of an incoming attack, trap, or area effect.", "skill": "core:skill/evasion" },
-    { "key": "shield_block", "label": "Shield Block", "description": "Catch an incoming blow on a raised shield.", "skill": "core:skill/block" },
+    { "key": "shield_block", "label": "Shield Block", "description": "Catch an incoming blow on a raised shield.", "skill": "core:skill/shields" },
     { "key": "deflect_missile", "label": "Deflect Missile", "description": "Bat aside or slip a thrown or shot missile without armor or shield (needs a perk that allows it).", "skill": "core:skill/unarmored" },
 
     { "key": "sneak", "label": "Sneak", "description": "Move without being seen or heard.", "skill": "core:skill/stealth", "opposed_by": "core:skill/investigation" },

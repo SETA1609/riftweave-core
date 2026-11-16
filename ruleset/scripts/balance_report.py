@@ -87,7 +87,7 @@ def _damage(monster):
     modifier plus its growth bonus (docs/modules/monsters.md#attacks-resistances-and-role)."""
     import monster_reference  # it imports this module's helpers lazily
 
-    hits = [a["magnitude"] for a in monster.get("abilities", []) if a["effect"].rsplit("/", 1)[-1].startswith("damage_")]
+    hits = [a["magnitude"] for a in monster.get("effects", []) if a["effect"].rsplit("/", 1)[-1].startswith("damage_")]
     hits += [monster_reference.attack_mean(monster, a) for a in monster.get("attacks", [])]
     return max(hits) if hits else None
 

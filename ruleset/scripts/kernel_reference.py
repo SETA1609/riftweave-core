@@ -436,7 +436,7 @@ def run_combat(vector):
     if kind is not None:
         # The reaction is a d100 check like the attack: same fumble and crit window.
         skill = defender["evasion_skill"] if kind == "evade" else reaction["skill"]
-        target = "evasion" if kind == "evade" else "block"
+        target = "evasion" if kind == "evade" else "shields"
         check = run_resolution(
             {
                 "actor": {"skills": {kind: skill}, "attributes": defender.get("attributes", {})},

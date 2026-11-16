@@ -91,7 +91,7 @@ class TestBestiary(unittest.TestCase):
     def test_every_monster_attacks_or_has_a_damaging_ability(self):
         for row in monsters():
             with self.subTest(monster=row["key"]):
-                self.assertTrue(row.get("attacks") or ref().damaging_abilities(row))
+                self.assertTrue(row.get("attacks") or ref().damaging_effects(row))
 
     def test_families_derive_from_a_base_monster(self):
         rows = {row["key"]: row for row in raw_monsters()}
@@ -340,7 +340,7 @@ class TestAttacksAndAbilities(unittest.TestCase):
         self.assertGreater(step, 0)
         for before, after in zip(row["attacks"], summoned["attacks"]):
             self.assertEqual(after.get("damage", {}).get("bonus", 0), before.get("damage", {}).get("bonus", 0) + step)
-        for before, after in zip(ref().damaging_abilities(row), ref().damaging_abilities(summoned)):
+        for before, after in zip(ref().damaging_effects(row), ref().damaging_effects(summoned)):
             self.assertEqual(after["magnitude"], before["magnitude"] + step)
 
     def test_an_ooze_fights_with_a_touch_ability(self):
@@ -348,7 +348,7 @@ class TestAttacksAndAbilities(unittest.TestCase):
         for key, effect in (("ooze", "damage_acid"), ("acid_ooze", "damage_acid"), ("fire_ooze", "damage_fire"), ("frost_ooze", "damage_frost")):
             with self.subTest(monster=key):
                 self.assertFalse(rows[key].get("attacks"))
-                touches = [a for a in ref().damaging_abilities(rows[key]) if a["target"] == "touch"]
+                touches = [a for a in ref().damaging_effects(rows[key]) if a["target"] == "touch"]
                 self.assertEqual([a["effect"] for a in touches], [f"core:effect/{effect}"])
 
     def test_every_summoned_elemental_has_a_physical_attack_a_bolt_and_a_touch(self):
@@ -363,7 +363,7 @@ class TestAttacksAndAbilities(unittest.TestCase):
             row = rows[key]
             with self.subTest(monster=key):
                 self.assertTrue(any(ref().attack_type(a) in physical for a in row["attacks"]))
-                abilities = ref().damaging_abilities(row)
+                abilities = ref().damaging_effects(row)
                 for target in ("ranged", "touch"):
                     hits = [a for a in abilities if a["target"] == target]
                     self.assertTrue(hits, target)
@@ -372,7 +372,7 @@ class TestAttacksAndAbilities(unittest.TestCase):
     def test_a_spell_like_ability_spends_its_mana_and_the_cast_ap(self):
         from kernel_reference import run_monster_sheet
         row = {r["key"]: r for r in monsters()}["fire_elemental"]
-        bolt = next(a for a in ref().damaging_abilities(row) if a["target"] == "ranged")
+        bolt = next(a for a in ref().damaging_effects(row) if a["target"] == "ranged")
         cost = ref().ability_cost(bolt)
         self.assertGreater(cost, 0)
         mana = run_monster_sheet({"monster": row})["mp"]
@@ -382,7 +382,7 @@ class TestAttacksAndAbilities(unittest.TestCase):
 
     def test_a_creature_whose_only_attack_is_an_ability_pays_no_mana(self):
         row = {r["key"]: r for r in monsters()}["ooze"]
-        touch = ref().damaging_abilities(row)[0]
+        touch = ref().damaging_effects(row)[0]
         self.assertEqual(ref().use_ability(row, touch, 0), {"mp": 0, "ap": 3})
 
 

@@ -31,7 +31,7 @@
       "description": "Getting out of the way, or taking the blow on a shield.",
       "skills": [
         "core:skill/evasion",
-        "core:skill/block"
+        "core:skill/shields"
       ],
       "is_tracked": true
     },

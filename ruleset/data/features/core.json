@@ -136,7 +136,7 @@
         },
         "skills": [
           {
-            "id": "core:skill/block",
+            "id": "core:skill/shields",
             "label": "Block",
             "min": 40
           }
@@ -3087,7 +3087,7 @@
         },
         "skills": [
           {
-            "id": "core:skill/block",
+            "id": "core:skill/shields",
             "label": "Block",
             "min": 30
           }
@@ -3118,7 +3118,7 @@
         },
         "skills": [
           {
-            "id": "core:skill/block",
+            "id": "core:skill/shields",
             "label": "Block",
             "min": 50
           }
@@ -3151,7 +3151,7 @@
         },
         "skills": [
           {
-            "id": "core:skill/block",
+            "id": "core:skill/shields",
             "label": "Block",
             "min": 70
           }

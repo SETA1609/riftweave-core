@@ -1,5 +1,7 @@
 # Character Creation
 
+Modified: 2026-11-15
+
 **Status:** Core (reference procedure)
 
 This document is the **step-by-step sequence** for building a 1st-level character from
@@ -322,16 +324,16 @@ AGI 5, then the dwarf's +1 STR, +2 END, −1 AGI). Tag skills `blunt`, `block`,
 `athletics`; `blades` comes from the background and is bought at 2 points a rank.
 
 <!-- characters:borin -->
-| Level | XP | Perk taken | Pool | `athletics` | `block` | `blunt` | HP | MP | AP | Carry | Init |
+| Level | XP | Perk taken | Pool | `athletics` | `blunt` | `shields` | HP | MP | AP | Carry | Init |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | 0 | — | 19 | 24 | 39 | 27 | 83 | 42 | 3 | 95 | 5 |
-| 2 | 900 | `toughness` | 17 | 27 | 43 | 37 | 102 | 44 | 3 | 95 | 5 |
-| 3 | 2700 | `toughness` (rank 2) | 21 | 37 | 43 | 48 | 121 | 46 | 3 | 95 | 5 |
-| 4 | 5400 | `pack_mule` | 18 | 37 | 51 | 58 | 125 | 48 | 3 | 120 | 5 |
-| 5 | 9000 | `lucky` | 20 | 47 | 61 | 58 | 129 | 50 | 3 | 120 | 5 |
-| 6 | 13500 | `crushing_blow` | 16 | 47 | 61 | 58 | 133 | 52 | 3 | 120 | 5 |
-| 7 | 18900 | `toughness` (rank 3) | 22 | 47 | 71 | 70 | 152 | 54 | 3 | 120 | 5 |
-| 8 | 25200 | `iron_stomach` | 18 | 65 | 71 | 70 | 156 | 56 | 3 | 120 | 5 |
+| 1 | 0 | — | 19 | 24 | 27 | 39 | 83 | 42 | 3 | 95 | 5 |
+| 2 | 900 | `toughness` | 17 | 27 | 37 | 43 | 102 | 44 | 3 | 95 | 5 |
+| 3 | 2700 | `toughness` (rank 2) | 21 | 37 | 48 | 43 | 121 | 46 | 3 | 95 | 5 |
+| 4 | 5400 | `pack_mule` | 18 | 37 | 58 | 51 | 125 | 48 | 3 | 120 | 5 |
+| 5 | 9000 | `lucky` | 20 | 47 | 58 | 61 | 129 | 50 | 3 | 120 | 5 |
+| 6 | 13500 | `crushing_blow` | 16 | 47 | 58 | 61 | 133 | 52 | 3 | 120 | 5 |
+| 7 | 18900 | `toughness` (rank 3) | 22 | 47 | 70 | 71 | 152 | 54 | 3 | 120 | 5 |
+| 8 | 25200 | `iron_stomach` | 18 | 65 | 70 | 71 | 156 | 56 | 3 | 120 | 5 |
 | 9 | 32400 | `shield_wall` | 19 | 65 | 80 | 80 | 160 | 58 | 3 | 120 | 5 |
 | 10 | 40500 | `scavenger` | 17 | 76 | 80 | 80 | 164 | 60 | 3 | 120 | 5 |
 
