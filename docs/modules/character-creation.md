@@ -1,6 +1,6 @@
 # Character Creation
 
-Modified: 2026-11-15
+Modified: 2026-11-16
 
 **Status:** Core (reference procedure)
 
@@ -34,6 +34,8 @@ Creation choices have long-term weight: your race phase becomes your Wuxing foun
 10. [Record your element](#10-record-your-element)
 
 ---
+
+A first-time player can start from a [suggested build](./builds/README.md): attributes, creation perks, tag skills, where the points go, and a perk for every level, checked to be legal at level 30. A build is only a suggestion.
 
 ## 1. Choose a race
 
