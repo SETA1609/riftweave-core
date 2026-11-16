@@ -2,6 +2,7 @@
 // in pipeline order (docs/core/combat.md).
 import { Component, computed, inject, signal } from '@angular/core';
 import { API, type CombatInput, type CombatResult } from './api';
+import { rollD100 } from './saves';
 import { Alert } from './ui/alert';
 import { Card } from './ui/card';
 import { KeyValueList } from './ui/key-value-list';
@@ -45,7 +46,7 @@ export class Attack {
   });
 
   rollAttack(): void {
-    this.attackerRoll.set(1 + Math.floor(Math.random() * 100));
+    this.attackerRoll.set(rollD100());
   }
 
   /** The `combat` input the form describes; a field the form leaves out is left out. */

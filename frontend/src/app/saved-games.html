@@ -1,0 +1,51 @@
+<rw-card title="Saved games">
+  <p class="note">Saves live in this browser only. Download a backup to keep a game safe, or to hand it to someone else.</p>
+  @if (saves.persisted() === false) {
+    <rw-alert kind="info" message="This browser did not promise to keep the saves; a cleared history may remove them. Keep a backup." />
+  }
+  @if (saves.list().length === 0) {
+    <p>No saved games yet. Create a character or run the playthrough, and it is saved as you play.</p>
+  } @else {
+    <table class="table">
+      <thead><tr><th>Name</th><th>Rules</th><th>Last played</th><th>Last backup</th><th></th></tr></thead>
+      <tbody>
+        @for (record of saves.list(); track record.id) {
+          <tr [class.current]="record.id === saves.current()?.id">
+            <td>{{ record.name }} <small>({{ record.session.log.length }} steps)</small></td>
+            <td>{{ record.rules_version || 'unknown' }}</td>
+            <td>{{ record.last_played | date: 'medium' }}</td>
+            <td>
+              {{ record.last_backup ? (record.last_backup | date: 'mediumDate') : 'never' }}
+              @if (stale(record)) { <span class="stale">back it up</span> }
+            </td>
+            <td class="actions">
+              <button type="button" class="btn btn-outline btn-sm" (click)="saves.resume(record.id)">Resume</button>
+              <button type="button" class="btn btn-outline btn-sm" (click)="download(record)">Download backup</button>
+              <button type="button" class="btn btn-outline btn-sm" (click)="saves.remove(record.id)">Delete</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+  <div class="drop" [class.dragging]="dragging()" (dragover)="$event.preventDefault(); dragging.set(true)" (dragleave)="dragging.set(false)" (drop)="drop($event)">
+    <label class="btn btn-primary">Open file <input type="file" accept=".json,application/json" (change)="pick($event)" /></label>
+    <span>or drop a <code>.riftweave.json</code> file here</span>
+  </div>
+  <rw-alert [message]="error()" />
+  @if (opened(); as file) {
+    @if (file.savedVersion !== file.currentVersion) {
+      <rw-alert kind="info" [message]="'This save was made with rules ' + file.savedVersion + ' and was replayed under rules ' + file.currentVersion + (file.matches ? '; the result is the same.' : '; the replay gives a different character.')" />
+    } @else if (file.matches) {
+      <rw-alert kind="success" message="The file replays to the same character." />
+    } @else {
+      <rw-alert message="This file does not replay to the character it holds: it was edited, or it is broken." />
+    }
+    <div class="actions">
+      <button type="button" class="btn btn-primary" (click)="keep('replayed')">Keep the replayed game</button>
+      @if (!file.matches) {
+        <button type="button" class="btn btn-outline" (click)="keep('saved')">Keep the saved character</button>
+      }
+    </div>
+  }
+</rw-card>

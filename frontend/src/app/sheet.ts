@@ -1,7 +1,9 @@
-// The character sheet: attributes and level in, every derived stat out, and a session to play.
-import { Component, inject, signal } from '@angular/core';
+// The character sheet: attributes and level in, every derived stat out, and a session to play,
+// saved in this browser as it starts (docs/backend/frontend.md#saves).
+import { Component, computed, inject, signal } from '@angular/core';
 import { JsonPipe } from '@angular/common';
-import { API, type Attributes, type Session } from './api';
+import { API, type Attributes } from './api';
+import { Saves } from './saves';
 import { Alert } from './ui/alert';
 import { Card } from './ui/card';
 import { KeyValueList } from './ui/key-value-list';
@@ -18,11 +20,13 @@ type Key = (typeof KEYS)[number];
 })
 export class Sheet {
   private readonly api = inject(API);
+  private readonly saves = inject(Saves);
   readonly keys = KEYS;
   readonly attributes = signal<Attributes>({ str: 6, per: 5, end: 6, int: 5, wil: 4, agi: 5, cha: 4, lck: 5 });
   readonly level = signal(1);
   readonly stats = signal<Record<string, unknown> | null>(null);
-  readonly session = signal<Session | null>(null);
+  /** The game in play: the one just created, or the save a reload resumed. */
+  readonly session = computed(() => this.saves.current()?.session ?? null);
   readonly error = signal('');
 
   set(key: Key, value: number): void {
@@ -34,7 +38,10 @@ export class Sheet {
   }
 
   async create(): Promise<void> {
-    await this.run(async () => this.session.set(await this.api.startSession(await this.api.newCharacter(this.attributes()))));
+    await this.run(async () => {
+      const session = await this.api.startSession(await this.api.newCharacter(this.attributes()));
+      await this.saves.begin(`Character ${new Date().toLocaleString()}`, session);
+    });
   }
 
   private async run(call: () => Promise<void>): Promise<void> {
