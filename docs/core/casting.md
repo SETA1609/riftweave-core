@@ -29,7 +29,8 @@ spell   = the row named by `spell`; skill = <color>_magic
 7  success     outcome cast: the spell's effects, as authored
                concentration spell: hold it; the one held before, if another, ends
                dispel N: every standing spell of level <= N is dispelled
-               summon: its creatures join caster.summons; past the limit, the oldest are dismissed
+               summon block: its creatures join caster.summons; past the limit, the oldest are dismissed
+               minion block: count creatures join caster.minions, with no limit
 ```
 
 - The cost is spent before the roll, so a failed cast still costs its mana and reagents, as `magic.md` says. [A]
@@ -144,14 +145,48 @@ paid      = max( minimum_paid, base with the modifiers on spell_cost applied )  
 
 ## Summons
 
+A summon spell writes a `summon` block, not a `core:effect/summon` entry in `effects` (owner,
+2026-11-14, M3-25): `{ "group": "core:summon/<key>", "duration": <seconds> }`. Summon spells are
+custom rows only a GM or dev adds, so they may leave the shared spell shape; `appliedEffect` does
+not change, so potions and enchantments are untouched. A spell whose only effect was the summon
+has `effects: []`. The block is priced as the summon effect it replaces: `spell_cost` reads it as
+`core:effect/summon` with its group, its count (1 for a single summon, the mean of a minion count),
+its duration, and target `ranged` ([magic.md](../modules/magic.md#cost-formula)). [A]
+
 The caster's active summons are an input, `caster.summons`, oldest first: one entry per
 creature, the summon group ref it came from (`core:summon/elemental`). A cast of a spell with a
-`summon` effect adds `magnitude` entries of that effect's group. A caster holds at most
+`summon` block adds one entry of its group. A caster holds at most
 `summon_limit` (`casting/core.json`, 1) plus the `summon_limit` modifiers on it, stacked by
 [modifier.md](modifier.md); past the limit the oldest are dismissed, as a new concentration spell
 ends the old one. Perks raise the limit: two summons from level 14 and three from level 28
 ([magic.md](../modules/magic.md#summon-groups)). A failed cast summons and dismisses nothing.
-Minions (M3-25) will not count toward the limit. [A] [V 2026-11-14, `casting` vectors in Python and Go: no perk, Retinue, Retinue and Host, the oldest dismissed, a failed cast]
+[V 2026-11-14, `casting` vectors in Python and Go: no perk, Retinue, Retinue and Host, the oldest dismissed, a failed cast]
+
+### Minions
+
+Minions are scapegoats: many weak bodies that soak attacks and spread a foe's actions, not
+creatures that grow (owner, 2026-11-14). They stay in core for now; later they move with
+multiple summons to an optional module, so no other rule here depends on this section, and the
+move is the block's minion part, the `minion` template, and the two minion spells.
+
+- **The block's minion part.** `"minion": true` and `count`: a number, or a dice expression such
+  as `1d6`. A dice count is rolled when the spell is cast: the caller passes the rolled total as
+  `count_roll`, as every die is an input; a dice count without `count_roll`, or with a total its
+  dice cannot make, is an error. `count` is allowed only with `minion`. [A]
+- **They do not count toward the summon limit.** The cast adds `count` entries of the group to
+  `caster.minions` (an input, oldest first, default empty) and dismisses nothing; `caster.summons`
+  is untouched. [A]
+- **No summoning bonuses.** A minion is its group's row at the caster's level, resolved as a
+  derived monster, then the `minion` template ([monsters.md](../modules/monsters.md#minions)): no
+  power or nature, no Commanding Summons bonus, no summoner archetype perk. [A]
+- **Mana is set for the mean count,** so the cost rule does not change: `1d3+1` is priced as 3
+  creatures, the 108 mana the three-creature spells cost before, which a level 22 caster's pool
+  holds (a `1d6`, priced as 3.5, would cost 126 and does not). A count from the cast's margin (`1 + ⌊margin / 20⌋`, capped) is a later variant. [A]
+
+Raise Horde (level 22) and Conjured Legion (level 28) are the minion spells, composed from Raise
+Thrall and Summon Elemental ([composition.md](composition.md)): each overrides `level`,
+`summon.count` (`1d3+1`: two to four), `summon.minion`, `concentration`, and the cost, and keeps its base's group
+and duration. [V 2026-11-16, `casting` vectors in Python and Go]
 
 ## Result
 
@@ -166,5 +201,6 @@ ended          the concentration spell the cast ended, or null
 dispelled      the standing spell keys the cast ended, in input order
 summons        the caster's active summons after the cast, oldest first
 dismissed      the summons the cast sent away to stay within the limit, oldest first
+minions        the caster's minions after the cast, oldest first
 save           { target, success, margin, tags, result }, or null when no save was rolled
 ```

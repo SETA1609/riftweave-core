@@ -329,6 +329,11 @@
       "pattern": "^(core:skill_group/[a-z0-9_]+|module:[a-z0-9_]+/skill_group/[a-z0-9_]+)$",
       "description": "A reference to a skill group row, for the grouped sheet (docs/core/progression.md#the-grouped-sheet-variant)."
     },
+    "summonRef": {
+      "type": "string",
+      "pattern": "^(core:summon/[a-z0-9_]+|module:[a-z0-9_]+/summon/[a-z0-9_]+)$",
+      "description": "A reference to a summon group in summons/core.json (docs/modules/magic.md#summon-groups)."
+    },
     "summonBonusRef": {
       "type": "string",
       "pattern": "^(core:summon_bonus/[a-z0-9_]+|module:[a-z0-9_]+/summon_bonus/[a-z0-9_]+)$",

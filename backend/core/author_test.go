@@ -171,3 +171,26 @@ func TestTheExportsMatchTheirFixtures(t *testing.T) {
 		})
 	}
 }
+
+func TestASummonBlockIsPricedAsTheSummonEffectItReplaces(t *testing.T) {
+	opened := authorCore(t)
+	for _, test := range []struct {
+		summon map[string]any
+		mana   float64
+	}{
+		{map[string]any{"group": "core:summon/familiar", "duration": 60}, 18},
+		{map[string]any{"group": "core:summon/elemental", "duration": 120, "minion": true, "count": "1d3+1"}, 108},
+	} {
+		draft := map[string]any{"key": "authored_call", "label": "Authored Call", "description": "A test summon.",
+			"color": "orange", "level": 2, "effects": []any{}, "summon": test.summon, "cost": map[string]any{"mana": test.mana}}
+		result := author(t, opened, map[string]any{"kind": "spell", "spells": []any{draft}})
+		spell := result["spells"].([]any)[0].(map[string]any)
+		cost, _ := spell["cost"].(map[string]any)
+		if cost == nil || cost["mana"].(float64) != test.mana {
+			t.Errorf("%v: cost %v, want mana %v", test.summon, spell["cost"], test.mana)
+		}
+		if warnings := findings(t, result, "warnings"); len(warnings) != 0 {
+			t.Errorf("%v: warnings %v", test.summon, warnings)
+		}
+	}
+}

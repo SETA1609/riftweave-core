@@ -27,9 +27,10 @@
         "concentration": { "type": "boolean", "description": "True if the caster holds the spell; a caster holds one, and a new one ends the old (docs/core/casting.md)." },
         "effects": {
           "type": "array",
-          "minItems": 1,
+          "description": "The applied effects. At least one, unless the spell has a summon block.",
           "items": { "$ref": "schema.json#/definitions/appliedEffect" }
         },
+        "summon": { "$ref": "#/definitions/summon", "description": "What a summon spell calls, in place of a core:effect/summon entry (docs/core/casting.md#summons)." },
         "cost": {
           "type": "object",
           "description": "Casting cost: mana, and any reagents. Magic is paid in mana at a table and in real time alike; no spell costs stamina (docs/core/actions.md#one-rule-set-two-clocks). Derived in-engine from the sum of effects; stored here as the authored baseline.",
@@ -44,6 +45,24 @@
         "custom": { "type": "boolean", "description": "True for player-made (spellmaking) spells; false or omitted for authored content" }
       },
       "required": ["key", "label", "description", "color", "level", "effects"],
+      "additionalProperties": false,
+      "if": { "not": { "required": ["summon"] } },
+      "then": { "properties": { "effects": { "minItems": 1 } } }
+    },
+    "summon": {
+      "type": "object",
+      "description": "A summon block. The base part, group and duration, is all a single summon needs; the minion part, minion and count, is only for minion spells (docs/core/casting.md#minions).",
+      "properties": {
+        "group": { "$ref": "schema.json#/definitions/summonRef" },
+        "duration": { "type": "number", "exclusiveMinimum": 0, "description": "Seconds the creatures stay." },
+        "minion": { "type": "boolean", "description": "True for a minion spell: the creatures are minions, outside the summon limit and its bonuses." },
+        "count": {
+          "description": "How many minions: a number, or dice rolled when the spell is cast (the caller passes count_roll).",
+          "oneOf": [ { "type": "integer", "minimum": 1 }, { "$ref": "schema.json#/definitions/diceExpression" } ]
+        }
+      },
+      "required": ["group", "duration"],
+      "dependencies": { "count": ["minion"] },
       "additionalProperties": false
     },
     "spellWithBase": {
@@ -67,6 +86,17 @@
             "save": { "$ref": "#/definitions/spell/properties/save" },
             "concentration": { "$ref": "#/definitions/spell/properties/concentration" },
             "effects": { "$ref": "#/definitions/spell/properties/effects" },
+            "summon": {
+              "type": "object",
+              "description": "Merged per field into the base's summon block.",
+              "properties": {
+                "group": { "$ref": "#/definitions/summon/properties/group" },
+                "duration": { "$ref": "#/definitions/summon/properties/duration" },
+                "minion": { "$ref": "#/definitions/summon/properties/minion" },
+                "count": { "$ref": "#/definitions/summon/properties/count" }
+              },
+              "additionalProperties": false
+            },
             "cost": { "$ref": "#/definitions/spell/properties/cost" },
             "cooldown": { "$ref": "#/definitions/spell/properties/cooldown" },
             "template": { "$ref": "#/definitions/spell/properties/template" },

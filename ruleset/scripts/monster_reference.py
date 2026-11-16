@@ -283,6 +283,15 @@ def summon(ref, caster):
     return creature
 
 
+def minion(ref, caster):
+    """A minion (docs/core/casting.md#minions): the row at the caster's level, resolved as a derived
+    monster, then the minion template. No power, no nature, and no summon bonus: the caster's perks
+    are not read."""
+    creature = generate(ref, level=caster["level"])
+    validate._apply_monster_template(creature, _templates()["minion"])
+    return creature
+
+
 def example_hp(row):
     """An example row's HP by the player formulas at average rolls: the derived hp plus
     (level - 1) x floor(floor(LCK / 2) / 2) of growth (docs/modules/monsters.md#generated-monsters)."""

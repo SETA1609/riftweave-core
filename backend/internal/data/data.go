@@ -509,7 +509,9 @@ type Spell struct {
 	Description string          `json:"description"`
 	Color       string          `json:"color"`
 	Effects     []AppliedEffect `json:"effects"`
-	Cost        struct {
+	// Summon is a summon spell's block, in place of a core:effect/summon entry; nil otherwise.
+	Summon *SummonBlock `json:"summon"`
+	Cost   struct {
 		Reagents []string `json:"reagents"`
 		Mana     int64    `json:"mana"`
 	} `json:"cost"`
@@ -520,6 +522,59 @@ type Spell struct {
 		Attribute string `json:"attribute"`
 		Skill     string `json:"skill"`
 	} `json:"save"`
+}
+
+// SummonBlock is what a summon spell calls (docs/core/casting.md#summons): a group for a
+// duration, and for a minion spell a count, a number or dice.
+type SummonBlock struct {
+	Group    string      `json:"group"`
+	Duration float64     `json:"duration"`
+	Minion   bool        `json:"minion"`
+	Count    SummonCount `json:"count"`
+}
+
+// SummonCount is a minion count: a fixed number, or dice the caller rolls (Dice set).
+type SummonCount struct {
+	Fixed int64
+	Dice  string
+}
+
+// UnmarshalJSON reads a count written as a number or a dice expression.
+func (count *SummonCount) UnmarshalJSON(raw []byte) error {
+	var dice string
+	if err := json.Unmarshal(raw, &dice); err == nil {
+		count.Dice = dice
+		return nil
+	}
+	return json.Unmarshal(raw, &count.Fixed)
+}
+
+// Range is the totals the count can make: the number itself, or the dice's low and high.
+func (count SummonCount) Range() (int64, int64, error) {
+	if count.Dice == "" {
+		return max(count.Fixed, 1), max(count.Fixed, 1), nil
+	}
+	var number, sides, bonus int64
+	if _, err := fmt.Sscanf(strings.NewReplacer("+", " +", "-", " -").Replace(count.Dice), "%dd%d %d", &number, &sides, &bonus); err != nil {
+		if _, err := fmt.Sscanf(count.Dice, "%dd%d", &number, &sides); err != nil {
+			return 0, 0, fmt.Errorf("count %q is not a dice expression", count.Dice)
+		}
+	}
+	return number + bonus, number*sides + bonus, nil
+}
+
+// AsEffect is the block priced as the summon effect it replaces: its group, its count (a minion
+// count's mean), its duration, and target ranged (docs/core/casting.md#summons).
+func (block *SummonBlock) AsEffect() (AppliedEffect, error) {
+	var count float64 = 1
+	if block.Minion {
+		low, high, err := block.Count.Range()
+		if err != nil {
+			return AppliedEffect{}, err
+		}
+		count = float64(low+high) / 2
+	}
+	return AppliedEffect{Effect: "core:effect/summon", Parameter: block.Group, Target: "ranged", Magnitude: count, Duration: block.Duration}, nil
 }
 
 // CastingSave is how an instant spell's save picks its outcome.

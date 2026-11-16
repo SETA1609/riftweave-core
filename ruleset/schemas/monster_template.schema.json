@@ -19,7 +19,7 @@
         "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
         "label": { "type": "string" },
         "description": { "type": "string" },
-        "slot": { "type": "string", "enum": ["element", "power", "nature"], "description": "Which slot the template fills: element (the five phases), power (dire, elder, ancient), or nature (demonic, angelic, otherworldly)." },
+        "slot": { "type": "string", "enum": ["element", "power", "nature", "minion"], "description": "Which slot the template fills: element (the five phases), power (dire, elder, ancient), nature (demonic, angelic, otherworldly), or minion (the maluses a minion spell puts on its creatures, applied last)." },
         "label_prefix": { "type": "string", "description": "Put before the monster's label, with a space, unless the row's overrides give a label." },
         "phase": { "$ref": "schema.json#/definitions/phase", "description": "The monster's phase, and the phase of every attack." },
         "loot": { "type": "array", "minItems": 1, "description": "Rows added to the monster's loot.", "items": { "$ref": "loot.schema.json#/definitions/lootRow" } },
@@ -30,6 +30,7 @@
           "propertyNames": { "$ref": "schema.json#/definitions/ability" },
           "additionalProperties": { "type": "integer" }
         },
+        "hit_points_multiplier": { "type": "number", "exclusiveMinimum": 0, "maximum": 1, "description": "Multiplies the monster's hitPoints after the attribute adds, rounded down, never below 1 (the minion template)." },
         "resist": {
           "type": "object",
           "description": "Added to the monster's resist, per damage type.",

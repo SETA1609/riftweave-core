@@ -100,16 +100,31 @@ class TestSpells(unittest.TestCase):
     def test_every_summon_names_a_group_of_existing_monsters(self):
         monsters = {m["key"] for m in json.loads((DATA / "monsters" / "core.json").read_text())["monsters"]}
         groups = {g["key"]: g for g in json.loads((DATA / "summons" / "core.json").read_text())["summons"]}
-        summons = [e for s in spells() for e in s["effects"] if e["effect"] == "core:effect/summon"]
-        self.assertTrue(summons)
-        for effect in summons:
-            with self.subTest(parameter=effect["parameter"]):
-                self.assertTrue(effect["parameter"].startswith("core:summon/"))
-                self.assertIn(effect["parameter"].removeprefix("core:summon/"), groups)
+        blocks = [s["summon"] for s in spells() if "summon" in s]
+        self.assertTrue(blocks)
+        for block in blocks:
+            with self.subTest(group=block["group"]):
+                self.assertTrue(block["group"].startswith("core:summon/"))
+                self.assertIn(block["group"].removeprefix("core:summon/"), groups)
         for key, group in groups.items():
             for variant in group["variants"]:
                 with self.subTest(group=key, variant=variant):
                     self.assertIn(variant.removeprefix("core:monster/"), monsters)
+
+    def test_no_spell_names_the_summon_effect_a_summon_block_replaces(self):
+        for row in spells():
+            with self.subTest(spell=row["key"]):
+                self.assertNotIn("core:effect/summon", [e["effect"] for e in row["effects"]])
+
+    def test_the_minion_spells_compose_from_their_single_summons(self):
+        raw = {row["key"]: row for row in json.loads((DATA / "spells" / "core.json").read_text())["spells"]}
+        flat = {row["key"]: row for row in spells()}
+        for minions, single in (("raise_horde", "raise_thrall"), ("conjured_legion", "summon_elemental")):
+            with self.subTest(spell=minions):
+                self.assertEqual(raw[minions]["base"], f"core:spell/{single}")
+                block = flat[minions]["summon"]
+                self.assertEqual((block["group"], block["duration"]), (flat[single]["summon"]["group"], flat[single]["summon"]["duration"]))
+                self.assertTrue(block["minion"])
 
     def test_a_summon_appears_at_its_casters_level(self):
         raw = json.loads((DATA / "monsters" / "core.json").read_text())["monsters"]
@@ -388,3 +403,33 @@ class TestSpellsComposeFromABaseSpell(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestMinions(unittest.TestCase):
+    """M3-25 (docs/core/casting.md#minions): a minion is its row at the caster's level with the minion
+    template, and nothing a summoner's perks would add."""
+
+    REF = "core:monster/skeleton"
+    PERKS = [{"perk": "core:feature/commanding_summons_physical", "rank": 2}, "core:feature/summon_dire"]
+
+    def test_a_minion_is_below_its_row_at_the_same_level(self):
+        import monster_reference
+
+        plain = monster_reference.generate(self.REF, level=22)
+        minion = monster_reference.minion(self.REF, {"level": 22, "attributes": {}})
+        template = monster_reference._templates()["minion"]
+        for ability, add in template["attributes"].items():
+            with self.subTest(ability=ability):
+                self.assertEqual(minion["attributes"][ability], max(1, plain["attributes"].get(ability, 0) + add))
+        self.assertLess(minion["hitPoints"], plain["hitPoints"] // 2)
+        self.assertIn("minion", minion["tags"])
+
+    def test_commanding_summons_and_a_power_perk_add_nothing_to_a_minion(self):
+        import monster_reference
+
+        bare = monster_reference.minion(self.REF, {"level": 22, "attributes": {"cha": 10}})
+        held = monster_reference.minion(self.REF, {"level": 22, "attributes": {"cha": 10}, "perks": self.PERKS})
+        summoned = monster_reference.summon(self.REF, {"level": 22, "attributes": {"cha": 10}, "perks": self.PERKS})
+        self.assertEqual(held, bare)
+        self.assertNotIn("dire", held["tags"])
+        self.assertGreater(summoned["attributes"]["str"], held["attributes"]["str"])

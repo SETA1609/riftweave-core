@@ -298,11 +298,18 @@ func checkSpell(ruleset *data.Ruleset, schema *jsonschema.Schema, refs map[strin
 	// Cost: the spellcraft formula; an authored mana that differs is a warning, not a problem.
 	var drafted struct {
 		Effects []data.AppliedEffect `json:"effects"`
+		Summon  *data.SummonBlock    `json:"summon"`
 		Cost    *struct {
 			Mana *float64 `json:"mana"`
 		} `json:"cost"`
 	}
-	if json.Unmarshal(draft, &drafted) == nil && len(drafted.Effects) > 0 {
+	if json.Unmarshal(draft, &drafted) == nil && drafted.Summon != nil {
+		// A summon block is priced as the summon effect it replaces (M3-25).
+		if summon, err := drafted.Summon.AsEffect(); err == nil {
+			drafted.Effects = append(drafted.Effects, summon)
+		}
+	}
+	if len(drafted.Effects) > 0 {
 		if mana, cast, craftThreshold, err := spellcraft.Cost(ruleset, drafted.Effects); err == nil {
 			spell.Cost = &authorCost{Mana: mana, CastThreshold: cast, CraftThreshold: craftThreshold}
 			if drafted.Cost != nil && drafted.Cost.Mana != nil && int64(*drafted.Cost.Mana) != mana {

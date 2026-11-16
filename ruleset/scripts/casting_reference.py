@@ -27,6 +27,33 @@ SUMMON_EFFECT = "core:effect/summon"
 UNPRICED_MAGNITUDE_UNITS = (None, "seconds")
 
 
+def mean_count(count):
+    """A summon block's count as a number: itself, or the mean of its dice (1d6 is 3.5)."""
+    if isinstance(count, int):
+        return count
+    dice, _, bonus = count.replace("-", "+-").partition("+")
+    number, sides = map(int, dice.split("d"))
+    return number * (sides + 1) / 2 + (int(bonus) if bonus else 0)
+
+
+def dice_range(count):
+    """The totals a dice count can make, low and high."""
+    dice, _, bonus = count.replace("-", "+-").partition("+")
+    number, sides = map(int, dice.split("d"))
+    extra = int(bonus) if bonus else 0
+    return number + extra, number * sides + extra
+
+
+def summon_effects(spell):
+    """A summon block priced as the summon effect it replaces (docs/core/casting.md#summons):
+    its group, its count (the mean of a minion count's dice), its duration, target ranged."""
+    block = spell.get("summon")
+    if block is None:
+        return []
+    return [{"effect": SUMMON_EFFECT, "parameter": block["group"], "magnitude": mean_count(block.get("count", 1)),
+             "duration": block["duration"], "target": "ranged"}]
+
+
 def spell_cost(spell):
     """A spell's mana cost from its effects alone (docs/modules/magic.md#cost-formula):
     per effect magnitude_factor x baseCost x magnitude x duration, plus area_factor x baseCost x
@@ -34,7 +61,7 @@ def spell_cost(spell):
     coefficients = load_data("casting/core.json")["casting"]["spell_cost"]
     effects = {e["key"]: e for e in load_data("effects/core.json")["effects"]}
     total = 0.0
-    for applied in spell["effects"]:
+    for applied in spell["effects"] + summon_effects(spell):
         effect = effects[applied["effect"].rsplit("/", 1)[-1]]
         magnitude = 1 if effect.get("magnitudeUnit") in UNPRICED_MAGNITUDE_UNITS else applied.get("magnitude", 1)
         cost = coefficients["magnitude_factor"] * effect["baseCost"] * magnitude * applied.get("duration", 1)
@@ -141,6 +168,18 @@ def run_casting(vector):
     if spell.get("delivery") == "instant" and target is not None and "roll" not in target:
         return {"error": "an instant spell's save needs the target's roll"}
 
+    block = spell.get("summon")
+    count = None
+    if block is not None and block.get("minion"):
+        count = block.get("count", 1)
+        if not isinstance(count, int):
+            if "count_roll" not in vector:
+                return {"error": f"a minion count of {count} needs count_roll"}
+            low, high = dice_range(count)
+            if not low <= vector["count_roll"] <= high:
+                return {"error": f"count_roll {vector['count_roll']} is not a roll of {count}"}
+            count = vector["count_roll"]
+
     mana = caster["mana"]
     held = caster.get("concentration")
     result = {
@@ -155,6 +194,7 @@ def run_casting(vector):
         "save": None,
         "summons": list(caster.get("summons", [])),
         "dismissed": [],
+        "minions": list(caster.get("minions", [])),
         "damage": [],
         "hp": target["hp"] if target is not None and "hp" in target else None,
     }
@@ -202,7 +242,10 @@ def run_casting(vector):
         result["concentration"] = spell["key"]
         if held is not None and held != spell["key"]:
             result["ended"] = held
-    summoned = [e["parameter"] for e in spell["effects"] if e["effect"] == SUMMON_EFFECT for _ in range(int(e.get("magnitude", 1)))]
+    if count is not None:
+        # Minions join the caster's minions, outside the summon limit (docs/core/casting.md#minions).
+        result["minions"] += [block["group"]] * count
+    summoned = [block["group"]] if block is not None and count is None else []
     if summoned:
         # The newest join; past the limit the oldest are dismissed (docs/core/casting.md#summons).
         from kernel_reference import apply_modifiers  # kernel_reference imports this module
