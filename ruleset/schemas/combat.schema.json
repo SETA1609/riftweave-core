@@ -16,16 +16,37 @@
           "$ref": "schema.json#/definitions/formulaNode"
         },
         "area_evade_damage": {
-          "description": "Damage after a successful evade against an area attack (docs/core/combat.md step 5). Reads var `damage`.",
+          "description": "Damage of an area attack whose margin lands in the evasion band (docs/core/combat.md step 5). Reads var `damage`.",
           "$ref": "schema.json#/definitions/formulaNode"
         },
+        "evasion_rate": {
+          "description": "The evasion band: an attack success whose margin is under it is evaded (docs/core/combat.md step 2). Reads var `skill`, the evasion skill after the defender's modifiers on evasion.",
+          "$ref": "schema.json#/definitions/formulaNode"
+        },
+        "dodge_evasion_rate": {
+          "description": "The evasion band while the defender holds the dodge stance. Reads var `rate`, the evasion_rate.",
+          "$ref": "schema.json#/definitions/formulaNode"
+        },
+        "block_rate": {
+          "description": "The block band while the defender holds the block stance, under the evasion band. Reads var `skill`, the shields skill after the defender's modifiers on shields.",
+          "$ref": "schema.json#/definitions/formulaNode"
+        },
+        "magic_block_rate": {
+          "description": "The block band against a type without the DR tag, with the block_magic grant (Spell Ward). Reads var `rate`, the block_rate.",
+          "$ref": "schema.json#/definitions/formulaNode"
+        },
+        "bulwark_stagger_ap": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "AP the attacker loses on their next turn when a Bulwark block lands in the window of the block band."
+        },
         "pierce_dr": {
-          "description": "Armor DR against a partial-pierce type. Reads var `dr`.",
+          "description": "Armor and shield DR against a partial-pierce type. Reads var `dr`.",
           "$ref": "schema.json#/definitions/formulaNode"
         },
         "dr_applies_tag": {
           "type": "string",
-          "description": "Damage-type tag that lets armor DR and block apply."
+          "description": "Damage-type tag that lets armor and shield DR and the block band apply."
         },
         "pierce_tag": {
           "type": "string",
@@ -33,6 +54,11 @@
         }
       },
       "required": [
+        "evasion_rate",
+        "dodge_evasion_rate",
+        "block_rate",
+        "magic_block_rate",
+        "bulwark_stagger_ap",
         "crit_damage",
         "pierce_dr",
         "dr_applies_tag",
