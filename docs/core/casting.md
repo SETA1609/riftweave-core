@@ -1,7 +1,7 @@
 # Casting
 
 Author: SETA1609
-Modified: 2026-11-15
+Modified: 2026-11-16
 
 One cast is one call of the [resolution function](resolution.md) on the spell's `<color>_magic` skill, wrapped in what the cast spends and what it holds. The coefficients are in `ruleset/data/casting/core.json` (`casting.schema.json`), the spells in `ruleset/data/spells/core.json`, the vectors in `ruleset/tests/vectors/casting.json`. Morrowind resolves a spell as one check and then applies its effect list; this does the same. [V 2026-11-06]
 
@@ -67,9 +67,9 @@ packet    each effect core:effect/damage_<type> whose <type> is a damage type
           (combat/damage_types.json): amount = its magnitude, after the save for an instant spell
 attack    the cast check stands in for the attack roll: the same target, roll, and LCK, so the
           same margin, crit, and fumble (a failed cast deals nothing)
-steps     combat.md 2 to 8 on target: the reaction its delivery allows (single and area: evade
-          or block; instant: none), crit, area evade, block, armor DR where the type takes it,
-          resist, then hp
+steps     combat.md 2 to 8 on target: the defense bands its delivery meets (single and area:
+          the evasion band and a blocking stance's band; instant: none), crit, area evade,
+          armor and shield DR where the type takes it, resist, then hp
 order     the packets in the spell's order; each reads the hp the last one left
 result    damage: per packet { effect, type, amount, damage, evaded, blocked }; hp after all
 ```

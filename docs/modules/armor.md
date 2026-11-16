@@ -1,6 +1,6 @@
 # Armor System
 
-Modified: 2026-11-15
+Modified: 2026-11-16
 
 Core armor is a slot, a base DR, a weight, a skill, and an evasion penalty. Layering is content, not a requirement. The pipeline is one line: DV roll, then DR, then a resist tag. A skin layer is not required to wear chain.
 
@@ -231,20 +231,20 @@ evasion skill. Cumulative across all worn pieces.
 
 ## 5. Shields
 
-Shields are a separate equipment type (`type: "shield"`) governed by the **block**
-skill (END). They occupy the **offhand** slot and do not contribute to passive DR.
-Instead, their DR value applies only during an **active block** action
-(see [`combat.md`](./combat.md) §3 — Layer 2).
+Shields are a separate equipment type (`type: "shield"`) governed by the **`shields`**
+skill (END). They occupy the **offhand** slot. A carried shield's DR adds to the armor DR
+total against physical damage types, with no action ([`docs/core/combat.md`](../core/combat.md),
+M3-27).
 
-### Active Block vs. Passive DR
+### Passive DR and the block stance
 
-- **Shield DR is NOT added to the passive DR total.** A shield provides no benefit
-  unless the wearer actively blocks.
-- **Active block:** The defender's one reaction, declared before the attack roll
-  (2 AP, refunded if no attack comes). The blocker makes a `shields` skill check; on success, the shield's DR (base + material modifier)
-  is subtracted from incoming damage. On failure, no block benefit.
-- **Shield DR and armor DR both subtract on a block:** shield DR first, then armor
-  DR ([`docs/core/combat.md`](../core/combat.md), vector `example 1b`).
+- **Shield DR is added to the DR total** whenever the shield is carried, against types
+  tagged `armor_dr_applies`. A piercing hit halves the total, shield included.
+- **Block stance:** declared on the defender's turn (2 AP, refunded if no attack comes).
+  While it holds, a success of the attacker that lands in a block band of half the
+  `shields` skill, under the evasion band, is blocked: no damage. No defender roll.
+- **Shield DR and armor DR are one subtraction** on a hit that is not blocked
+  ([`docs/core/combat.md`](../core/combat.md), vector `example 1b`).
 
 ### Shield Types
 
