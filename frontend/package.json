@@ -8,6 +8,8 @@
     "start": "ng serve --configuration api --proxy-config proxy.conf.json",
     "start:wasm": "ng serve",
     "build": "ng build",
+    "build:pages": "ng build --configuration pages --base-href /riftweave-core/",
+    "preview:pages": "node scripts/serve-pages.mjs",
     "wasm": "../scripts/build-wasm.sh",
     "test": "ng test --watch=false",
     "generate": "npx --yes openapi-typescript@7.13.0 ${RIFTWEAVE_API:-http://127.0.0.1:8080}/openapi.json -o src/api/openapi.d.ts",
@@ -19,6 +21,7 @@
     "@angular/core": "22.2.4",
     "@angular/forms": "22.2.4",
     "@angular/platform-browser": "22.2.4",
+    "@angular/service-worker": "22.2.4",
     "openapi-fetch": "0.17.0",
     "rxjs": "7.8.2"
   },

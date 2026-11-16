@@ -1,6 +1,14 @@
 # Quick start
 
-Modified: 2026-11-15
+Modified: 2026-11-16
+
+## Play in your browser
+
+Open the published app's link (the project's GitHub Pages site) in any recent browser. There is
+nothing to install and no account: the rules run in the page. After the first visit it also works
+with no internet connection. To keep it like an app, use your browser's **Install** or **Add to
+Home Screen** (on a phone, in the share menu). The footer shows which version of the rules you
+are playing.
 
 ## The one rule
 

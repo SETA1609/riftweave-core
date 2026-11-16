@@ -1,0 +1,87 @@
+name: Pages
+
+# The published app (APP-15, docs/backend/frontend.md#github-pages): on a release tag, build the
+# WebAssembly core (with the ruleset of the same commit built in), the Angular app, and its service
+# worker into one static site under the Pages base path, and publish it with the official Pages
+# actions. Only tags publish, so players see a stable rules version, which the footer shows.
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Set up Go
+        uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+        with:
+          go-version-file: backend/go.mod
+          cache: false
+
+      # The Angular 22 CLI needs Node 24.15 or later.
+      - name: Set up Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version: "24.22.1"
+
+      - name: Build the WebAssembly core
+        run: ./scripts/build-wasm.sh
+
+      # npm 11.21.1, as in frontend.yml. Install scripts stay blocked, its default.
+      - name: Install
+        working-directory: frontend
+        run: npx --yes npm@11.21.1 ci --no-audit --no-fund
+
+      # The tag is the rules version; a manual run builds as "dev". Both come in through the
+      # environment and are checked, so no ref text reaches the shell as code.
+      - name: Build the site
+        working-directory: frontend
+        env:
+          REF_TYPE: ${{ github.ref_type }}
+          REF_NAME: ${{ github.ref_name }}
+          REPOSITORY: ${{ github.event.repository.name }}
+        run: |
+          version=dev
+          if [ "$REF_TYPE" = tag ]; then version="$REF_NAME"; fi
+          case "$version" in
+            dev|v[0-9]*) ;;
+            *) echo "unexpected version $version" >&2; exit 1 ;;
+          esac
+          if ! printf '%s' "$version" | grep -Eq '^[A-Za-z0-9._-]+$'; then echo "unexpected version $version" >&2; exit 1; fi
+          if ! printf '%s' "$REPOSITORY" | grep -Eq '^[A-Za-z0-9._-]+$'; then echo "unexpected repository $REPOSITORY" >&2; exit 1; fi
+          npx ng build --configuration pages --base-href "/$REPOSITORY/" --define "RIFTWEAVE_RULES_VERSION='$version'"
+
+      - name: Configure Pages
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+
+      - name: Upload the site
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: frontend/dist/riftweave/browser
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publish
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

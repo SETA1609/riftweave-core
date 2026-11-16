@@ -1,6 +1,7 @@
 // End-to-end specs (docs/backend/frontend.md#tests), twice: Chromium on `ng serve` and its proxy
 // with a real riftweave-server behind it (chromium), and on a build with no API, where the core
-// runs in the page as WebAssembly (chromium-wasm, after ./scripts/build-wasm.sh). Each server is
+// runs in the page as WebAssembly (chromium-wasm, after ./scripts/build-wasm.sh). The Pages build
+// (APP-15) has its own project, chromium-pages: the static site under its base path, offline. Each server is
 // started unless one already answers, so CI and ./scripts/app.sh reuse theirs.
 import { defineConfig, devices } from '@playwright/test';
 
@@ -13,8 +14,9 @@ export default defineConfig({
   reporter: ci ? [['list'], ['html', { open: 'never' }]] : 'list',
   use: { baseURL: 'http://localhost:4200', trace: 'retain-on-failure' },
   projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-    { name: 'chromium-wasm', use: { ...devices['Desktop Chrome'], baseURL: 'http://localhost:4300' } },
+    { name: 'chromium', testIgnore: /pages\.spec\.ts/, use: { ...devices['Desktop Chrome'] } },
+    { name: 'chromium-wasm', testIgnore: /pages\.spec\.ts/, use: { ...devices['Desktop Chrome'], baseURL: 'http://localhost:4300' } },
+    { name: 'chromium-pages', testMatch: /pages\.spec\.ts/, use: { ...devices['Desktop Chrome'], baseURL: 'http://localhost:4400/riftweave-core/' } },
   ],
   webServer: [
     {
@@ -26,5 +28,6 @@ export default defineConfig({
     },
     { command: 'npm start -- --port 4200', url: 'http://localhost:4200', reuseExistingServer: true, timeout: 180_000 },
     { command: 'npm run start:wasm -- --port 4300', url: 'http://localhost:4300', reuseExistingServer: true, timeout: 180_000 },
+    { command: 'npm run build:pages && npm run preview:pages', url: 'http://localhost:4400/riftweave-core/', reuseExistingServer: true, timeout: 300_000 },
   ],
 });

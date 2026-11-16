@@ -17,10 +17,14 @@
             "tsConfig": "tsconfig.app.json",
             "styles": ["src/styles.css"],
             "assets": [{ "glob": "**/*", "input": "public" }],
-            "define": { "RIFTWEAVE_API": "null" }
+            "define": { "RIFTWEAVE_API": "null", "RIFTWEAVE_RULES_VERSION": "'dev'", "RIFTWEAVE_SERVICE_WORKER": "false" }
           },
           "configurations": {
-            "api": { "define": { "RIFTWEAVE_API": "''" } }
+            "api": { "define": { "RIFTWEAVE_API": "''", "RIFTWEAVE_RULES_VERSION": "'dev'", "RIFTWEAVE_SERVICE_WORKER": "false" } },
+            "pages": {
+              "serviceWorker": "ngsw-config.json",
+              "define": { "RIFTWEAVE_API": "null", "RIFTWEAVE_RULES_VERSION": "'dev'", "RIFTWEAVE_SERVICE_WORKER": "true" }
+            }
           }
         },
         "serve": {

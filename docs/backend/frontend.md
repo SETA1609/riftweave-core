@@ -1,6 +1,6 @@
 # Frontend
 
-Modified: 2026-11-15
+Modified: 2026-11-16
 
 `frontend/` is an Angular app over the core (APP-07): through the HTTP API ([api.md](api.md)), or
 through the Go core compiled to WebAssembly in the page, so it can be served as a static site with
@@ -98,12 +98,34 @@ The toolchain is Node 24.15 or later (the Angular 22 CLI's minimum; CI pins 24.2
 11.21.1 for installs: the npm that ships with Node 24.7 fails to resolve Vitest's optional peers.
 npm 11.21.1 keeps install scripts blocked, its default. [V 2026-11-14]
 
+## GitHub Pages
+
+The published app (APP-15) is one static site: the WebAssembly core with the ruleset of the same
+commit built in, the Angular app, and a service worker. `.github/workflows/pages.yml` builds it on
+a release tag (`v*`) and publishes it with the official Pages actions, pinned by commit; a push to
+`main` does not publish, so players see a stable rules version. The data is in the core, not
+fetched from GitHub at run time. [V 2026-11-16, `e2e/pages.spec.ts` on the Pages build; the
+workflow itself runs only on a tag, so its first real run is the first release]
+
+- **The `pages` build** (`npm run build:pages`): `angular.json` configuration `pages` turns on the
+  service worker (`ngsw-config.json`, which prefetches the app, `wasm_exec.js`, and
+  `riftweave.wasm`) and the `--base-href /<repo>/` of a project site. The workflow passes the tag as
+  `RIFTWEAVE_RULES_VERSION`, which the footer shows; any other build shows `dev`.
+- **Offline and installable.** After one visit the service worker serves everything, so the app
+  plays with no network; `public/manifest.webmanifest` and its icon make it installable on phones
+  and desktops. The service worker is registered only in the `pages` build, so `ng serve` and the
+  tests are unchanged.
+- **Preview.** `npm run preview:pages` serves `dist/` under `/riftweave-core/` on port 4400 as
+  Pages does; the Playwright project `chromium-pages` runs on it, plays with no server, and plays
+  again after going offline.
+
 ## Running it
 
 | Command | Needs | Serves |
 | --- | --- | --- |
 | `./scripts/app.sh [--port 4200] [--api-port 8080]` | Go and Node (with Node below 24.15, it runs Node 24.22.1 through `npx`) | `ng serve` at `localhost:4200`, proxying `/v1` and `/openapi.json` to a `riftweave-server` it builds and starts; reloads on a frontend change |
 | `./scripts/build-wasm.sh`, then `npm run start:wasm` in `frontend/` | Go and Node | `ng serve` at `localhost:4200` with no server: the core runs in the page as WebAssembly |
+| `./scripts/build-wasm.sh`, then `npm run build:pages && npm run preview:pages` in `frontend/` | Go and Node | the Pages build at `localhost:4400/riftweave-core/`, as GitHub Pages serves it, with its service worker |
 | `./scripts/app-container.sh [--port 8080] [--build-only]` | docker or podman (`RIFTWEAVE_ENGINE` picks one) | one image with the server, the built app, and the ruleset data behind nginx, at `localhost:8080` |
 
 `app.sh` builds into `cache/` and installs the frontend's packages (npm 11.21.1, `npm ci`) only
