@@ -1,6 +1,6 @@
 # Monsters — Base + Override System
 
-Modified: 2026-11-15
+Modified: 2026-11-16
 
 ## Purpose
 
@@ -281,6 +281,17 @@ refs (`core:monster_template/dire`), because a modifier holds only a number.
   attributes of the bonus's group after the power and nature ([magic.md](./magic.md#summon-groups)).
 
 [V 2026-11-12, `test_bestiary.py`]
+
+### Minions
+
+A minion spell ([casting.md](../core/casting.md#minions)) calls its group's row at the caster's
+level, resolved as a derived monster, then the `minion` template: the template slot `minion`, which
+applies last and takes no power, nature, or summon bonus. The template lowers every attribute
+(`attributes`, each never below 1) and cuts HP with `hit_points_multiplier`, applied after the
+attribute adds and rounded down, never below 1, so an ordinary attack drops a minion in one or two
+hits. Its skills follow its lower attributes. The sizes are first numbers, to set against the
+balance bands in the M5-50 pacing pass. [U] A minion keeps its row's attacks and effects, so a
+horde still hits like its kind, only more often and less hard to drop.
 
 ### Names
 

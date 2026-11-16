@@ -193,16 +193,18 @@ A caster has one summon at a time unless a perk says otherwise: **Retinue** (lev
 and **Host** (level 28, needs Retinue) three, each an `add 1` on `summon_limit`. A new summon past
 the limit dismisses the oldest ([casting.md](../core/casting.md#summons)). [A]
 
-A summon spell may exist only once what it summons is data. A `summon` effect's `parameter`
-is a group, `core:summon/<key>`, from `summons/core.json`. A group lists its `variants` as
-`core:monster/<key>` refs, and the caster picks one when casting [A]. `magnitude` is how many
-appear, a count the spell states. The creatures are ordinary monster rows ([monsters.md](./monsters.md#summoned-creatures)).
+A summon spell may exist only once what it summons is data. Its `summon` block names a group,
+`core:summon/<key>`, from `summons/core.json`, and a duration (M3-25; it replaces the
+`core:effect/summon` entry, [casting.md](../core/casting.md#summons)). A group lists its `variants`
+as `core:monster/<key>` refs, and the caster picks one when casting [A]. A single summon calls one
+creature; a minion spell calls `count` minions ([casting.md](../core/casting.md#minions)). The
+creatures are ordinary monster rows ([monsters.md](./monsters.md#summoned-creatures)).
 
 | Group | Spells | Variants |
 | --- | --- | --- |
 | `familiar` | Summon Familiar | owl, cat, raven |
-| `elemental` | Summon Elemental, Conjured Legion | fire, ice, storm, acid, venom |
-| `undead` | Raise Thrall, Raise Horde | skeleton, zombie |
+| `elemental` | Summon Elemental, Conjured Legion (minions) | fire, ice, storm, acid, venom |
+| `undead` | Raise Thrall, Raise Horde (minions) | skeleton, zombie |
 
 A creature appears at its caster's level, whatever the spell's level. The row is the base of a
 [derived monster](./monsters.md#derived-monsters) at that level, so its attributes and HP move by
@@ -211,8 +213,13 @@ weaker row stays weaker. Templates go on top in order: the element, then the cas
 then the caster's nature. The caster's power and nature are perks with `unlocks`: the power ladder
 `summon_dire`, `summon_elder`, `summon_ancient`, each needing the one before, and the natures
 `summon_demonic`, `summon_angelic`, `summon_otherworldly`. The latest bought in each slot is the one
-the caster holds ([monsters.md](./monsters.md#summoned-creatures)). [V 2026-11-12] `validate.py` refuses a summon whose `parameter` is not a group, and
-`test_spells.py` fails on a group or variant that does not exist. [V 2026-11-10]
+the caster holds ([monsters.md](./monsters.md#summoned-creatures)). [V 2026-11-12] `validate.py` refuses a summon block whose `group` is not a group, and
+`test_spells.py` fails on a group or variant that does not exist, or on a spell that still names
+`core:effect/summon`. [V 2026-11-16]
+
+Minions take none of this: no power or nature, no Commanding Summons bonus, and no summoner
+archetype perk. They are the row at the caster's level with the `minion` template, and they do
+not count toward the summon limit ([casting.md](../core/casting.md#minions)). [V 2026-11-16, `test_spells.py`]
 
 **Charisma strengthens summons through a perk.** `commanding_summons_magic` and
 `commanding_summons_physical` each name a summon bonus, `core:summon_bonus/<key>`, from
