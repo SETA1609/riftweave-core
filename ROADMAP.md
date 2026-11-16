@@ -1,5 +1,7 @@
 # Roadmap
 
+Modified: 2026-11-16
+
 The core SRD is **finished** when it is tagged `v1.0.0` and every item under
 [Definition of finished](#definition-of-finished) is true. This file is the source of truth for
 scope; the story files it links to are the source of truth for work. Linear mirrors both and links
@@ -134,6 +136,24 @@ Issues, in order: [docs/stories/06-modules.md](docs/stories/06-modules.md).
 
 Also parked with no issue yet: psionics, alignment and morality, birthsigns. Open one when it
 is picked up.
+
+## Versions and releases
+
+One version names the whole project: the ruleset, the Go core, the CLIs, the API, and the
+published app, because the app ships the core and the data of the same commit. The version is
+[semantic](docs/core/versioning.md), kept in one file, `VERSION`, and released as a `v`-tag on
+`main` (M5-62).
+
+| Tag | When | What it means |
+| --- | --- | --- |
+| `v0.MINOR.0` | Before 1.0, when a batch of merged work is worth playing (about one per closed milestone or larger feature, and always after a breaking change) | A stable rules version for players: the Pages app (APP-15) publishes it, and saves record it (APP-16). Any minor may break before 1.0, marked **(breaking)** in the changelog |
+| `v0.MINOR.PATCH` | A fix to a released version: a data correction, a doc, a bug | Nothing a save or a module depends on changes |
+| `v1.0.0` | The definition of finished holds (M5 exit) | The SRD is stable; from here a breaking change is a MAJOR |
+
+A release is its own pull request: the changelog fragments move into `CHANGELOG.md`
+([changes/README.md](changes/README.md#releasing)), `VERSION` moves, the key diff from the last
+tag is checked, and the tag on the merge commit runs the release and Pages workflows. The first
+tag is `v0.1.0`, once M5-62 merges.
 
 ## Assumptions (change any of these)
 
