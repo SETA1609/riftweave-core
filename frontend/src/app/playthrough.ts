@@ -1,8 +1,10 @@
-// The playthrough runner: ruleset/tests/vectors/playthrough.json as session steps, then a replay.
+// The playthrough runner: ruleset/tests/vectors/playthrough.json as session steps, then a replay. Every
+// step is saved in this browser before the next one runs (docs/backend/frontend.md#saves).
 import { Component, inject, signal } from '@angular/core';
 import { JsonPipe } from '@angular/common';
 import playthrough from '../../../ruleset/tests/vectors/playthrough.json';
 import { API, type Session } from './api';
+import { Saves } from './saves';
 import { Alert } from './ui/alert';
 import { Card } from './ui/card';
 
@@ -17,6 +19,7 @@ type Row = { name: string; input: Record<string, unknown>; result: Record<string
 })
 export class Playthrough {
   private readonly api = inject(API);
+  private readonly saves = inject(Saves);
   readonly rows = signal<Row[]>([]);
   readonly replayed = signal<boolean | null>(null);
   readonly error = signal('');
@@ -28,10 +31,12 @@ export class Playthrough {
     try {
       const actor = await this.api.newCharacter({ str: 6, per: 5, end: 6, int: 5, wil: 4, agi: 5, cha: 4, lck: 5 });
       let session: Session = await this.api.startSession(actor);
+      await this.saves.begin('Playthrough', session);
       for (const vector of playthrough as Vector[]) {
         const { name, function: command, expect, ...input } = vector;
         const answer = await this.api.step(session, { command, input: input as Record<string, never> });
         session = answer.session;
+        await this.saves.record(session);
         const result = (answer.result ?? {}) as Record<string, unknown>;
         const matches = Object.entries(expect).every(([field, value]) => JSON.stringify(result[field]) === JSON.stringify(value));
         this.rows.update((rows) => [...rows, { name, input, result, matches }]);

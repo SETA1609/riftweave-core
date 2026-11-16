@@ -74,3 +74,59 @@ test("with storage blocked the app still renders, in the system's mode", async (
   await page.getByRole('button', { name: 'Switch to light mode' }).click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
 });
+
+test('a playthrough is saved as it runs, and a reload resumes it', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: 'playthrough', exact: true }).click();
+  await page.getByRole('button', { name: 'Run the playthrough' }).click();
+  await expect(page.getByText('The replay matches the session.')).toBeVisible();
+  await page.reload();
+  await page.getByRole('button', { name: 'saves', exact: true }).click();
+  await expect(page.getByRole('row', { name: /^Playthrough \(\d+ steps\)/ })).toBeVisible();
+});
+
+/** Create a character, then download its backup; returns the file's JSON. */
+async function backup(page: Page): Promise<Record<string, unknown>> {
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Create character' }).click();
+  await expect(page.getByRole('region', { name: 'Stored actor' })).toBeVisible();
+  await page.getByRole('button', { name: 'saves', exact: true }).click();
+  const download = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Download backup' }).click();
+  const file = await download;
+  expect(file.suggestedFilename()).toMatch(/\.riftweave\.json$/);
+  const chunks: Buffer[] = [];
+  for await (const chunk of await file.createReadStream()) {
+    chunks.push(chunk as Buffer);
+  }
+  return JSON.parse(Buffer.concat(chunks).toString('utf8')) as Record<string, unknown>;
+}
+
+/** Open a file in a fresh browser (no saves) and return its saved-games page. */
+async function openFresh(browser: import('@playwright/test').Browser, baseURL: string, name: string, content: unknown): Promise<Page> {
+  const context = await browser.newContext({ baseURL });
+  const page = await context.newPage();
+  await page.goto('/');
+  await page.getByRole('button', { name: 'saves', exact: true }).click();
+  await page.locator('input[type=file]').setInputFiles({ name, mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(content)) });
+  return page;
+}
+
+test('a backup opens in a fresh browser to the same character', async ({ page, browser, baseURL }) => {
+  const saved = await backup(page);
+  expect(Object.keys(saved)).toEqual(expect.arrayContaining(['rules_version', 'ruleset', 'start', 'log', 'actor']));
+  const fresh = await openFresh(browser, baseURL!, 'mine.riftweave.json', saved);
+  await expect(fresh.getByText('The file replays to the same character.')).toBeVisible();
+  await fresh.getByRole('button', { name: 'Keep the replayed game' }).click();
+  await expect(fresh.getByRole('row', { name: /^mine \(0 steps\)/ })).toBeVisible();
+});
+
+test('an edited backup is flagged, and one from other rules says so', async ({ page, browser, baseURL }) => {
+  const saved = await backup(page);
+  const edited = { ...saved, actor: { ...(saved['actor'] as object), xp: 99_999 } };
+  const flagged = await openFresh(browser, baseURL!, 'edited.riftweave.json', edited);
+  await expect(flagged.getByText('This file does not replay to the character it holds')).toBeVisible();
+  await expect(flagged.getByRole('button', { name: 'Keep the saved character' })).toBeVisible();
+  const older = await openFresh(browser, baseURL!, 'older.riftweave.json', { ...saved, rules_version: '0.0.1' });
+  await expect(older.getByText(/made with rules 0\.0\.1 and was replayed under rules \S+; the result is the same/)).toBeVisible();
+});

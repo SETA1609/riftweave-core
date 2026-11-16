@@ -1,7 +1,8 @@
 #### APP-16 Saves in the browser: IndexedDB with JSON export and import
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: APP-14
+- Modified: 2026-11-16
 - Do: Owner request, 2026-11-14: with no server, a player's games live in their browser, and must not be lost. Two layers. **Autosave:** every session step is written to IndexedDB at once, so there is no save button to forget; the app lists the saved characters and campaigns with their name, rules version, and last played date, and asks the browser to keep its storage (`navigator.storage.persist()`), since a browser may clear site data (cleared history, private windows, Safari's limit on unvisited sites [U]). **Files:** "Download backup" and "Open file" (and drag and drop) read and write a `.riftweave.json` file that is the session JSON itself (`start`, `log`, `actor`) plus the rules version, so the same file replays in `riftweave session replay` and through the API, and a GM can hand a prepared character to a player. The app reminds the player when the last backup is old (for example 7 days) and says in one sentence that saves live in this browser only. Opening a file replays it: a save whose replay does not match its actor is flagged, and every roll is in the log, so an edited save shows. A save from another rules version is replayed under the current rules; when the result differs, the app says so and lets the player keep the saved actor [A]. Rolls the app makes come from `crypto.getRandomValues` and are written into the step, so a replay reproduces the game. `localStorage` is not used: it is small and blocks the page.
 - Keys: the save record (session, rules version, name, last played, last backup); the `.riftweave.json` file
 - Files: ~8 (frontend/src/app/saves.ts, frontend/src/app/saves.spec.ts, frontend/src/app/app.ts, frontend/src/app/sheet.ts, frontend/src/app/playthrough.ts, docs/backend/frontend.md, docs/backend/sessions.md, docs/guide/quick-start.md)

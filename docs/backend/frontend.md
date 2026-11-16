@@ -57,13 +57,36 @@ src/app/wasm.ts           load wasm_exec.js, instantiateStreaming(fetch('riftwea
 | Screen | Calls | Shows |
 | --- | --- | --- |
 | Character sheet | `derived` on the attributes and level; `POST /v1/sessions` to create the character | every derived stat, and the stored actor of the new session |
-| Attack resolver | `combat` with the attacker (skill, roll, LCK), the defender (evasion or block, armor DR, HP, reaction), the delivery, and the damage roll | each step of the result: the target, the margin, crit, the reaction, the damage after DR, and HP after |
+| Attack resolver | `combat` with the attacker (skill, roll, LCK), the defender (evasion, armor DR, a carried shield's DR and the shields skill, HP, and a dodge or block stance), the delivery, and the damage roll | each step of the result: the target, the margin, crit, the evasion and block bands, evaded or blocked, the damage after DR, and HP after (M3-27) |
 | Playthrough | `POST /v1/sessions/step` for each step of `ruleset/tests/vectors/playthrough.json`, then `replay` | each step's input and result, and whether the replay matches |
+| Saved games | `replay` on an opened file | the saves in this browser (name, rules, last played, last backup), a backup file for each, and what opening a file found |
 
 Every roll is an input field, as in the vectors: the app rolls nothing unless asked, and a rolled
-value is written into the field before the call, so a result can be read back against a vector.
+value comes from `crypto.getRandomValues` and is written into the field before the call, so a result can be read back against a vector.
 The playthrough runner sends each vector's input as a session step, as given, and all twelve
 steps match their vectors and the replay matches. [V 2026-11-14, by hand against the server]
+
+## Saves
+
+A player's games live in their browser (APP-16), in two layers. [V 2026-11-16, `saves.spec.ts` and
+`e2e/app.spec.ts` over both transports]
+
+- **Autosave.** `Saves` (`src/app/saves.ts`, generated with `ng generate service saves`) writes a
+  save to IndexedDB (database `riftweave`, store `saves`) when a session starts and after every
+  step, and the next step runs only once the write is done. A save is `{ id, name, rules_version,
+  last_played, last_backup, session }`. The app resumes the latest save when it starts, and asks
+  the browser to keep its storage (`navigator.storage.persist()`), since a browser may clear site
+  data [U: which browsers clear it, and when, is not checked]. `localStorage` is not used for
+  saves: it is small, and it blocks the page.
+- **Backup files.** "Download backup" writes `<name>.riftweave.json`: the session JSON itself,
+  with its `rules_version` ([sessions.md](sessions.md#the-rules-version)), so the agent CLI
+  replays it as it is: `jq '{operation: "replay", session: .}' mara.riftweave.json | riftweave
+  session`. "Open file", or dropping a file on the saved games, replays it first: a file that
+  replays to its actor is kept as the replayed game; one that does not is flagged as edited or
+  broken, and the player may keep the saved character anyway; a file from other rules says which
+  rules it was made with and that it was replayed under the current ones. A save with no backup,
+  or a backup older than 7 days, is marked, and the screen says that saves live in this browser
+  only.
 
 ## Tests
 
@@ -189,5 +212,5 @@ cycles light, dark, and the system's mode, and its `aria-label` names the mode i
 
 ## Not covered
 
-Styling past a readable layout, a saved list of characters, and the human CLI's level-up flow.
+Styling past a readable layout, sharing saves between devices (APP-17 rooms, APP-30 files), and the human CLI's level-up flow.
 The app reads the session JSON the server returns and keeps it in memory only. [A]

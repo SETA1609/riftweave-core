@@ -720,6 +720,8 @@ export interface components {
              */
             dev?: true;
             log: components["schemas"]["session_step"][];
+            /** @description The rules the session was started on, or last replayed under (docs/backend/sessions.md#the-rules-version). */
+            rules_version?: string;
             ruleset: {
                 modules: components["schemas"]["key"][];
             };

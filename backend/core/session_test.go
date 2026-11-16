@@ -231,3 +231,27 @@ func TestALevelUpsChoicesAreWrittenWithNoDevStep(t *testing.T) {
 		t.Error("the session replays to the same actor")
 	}
 }
+
+func TestASessionRecordsItsRulesAndAReplayStampsTheCurrentOnes(t *testing.T) {
+	opened := open(t)
+	session := runChain(t, opened)
+	if session["rules_version"] != RulesVersion {
+		t.Fatalf("a started session records rules_version %q, got %v", RulesVersion, session["rules_version"])
+	}
+	session["rules_version"] = "0.0.1"
+	answer := sessionCall(t, opened, map[string]any{"operation": "replay", "session": session})
+	if answer["matches"] != true || answer["session"].(map[string]any)["rules_version"] != RulesVersion {
+		t.Errorf("replay of an older save: matches %v, rules_version %v", answer["matches"], answer["session"].(map[string]any)["rules_version"])
+	}
+}
+
+// The browser's backup file (APP-16) is the session JSON itself, so the agent CLI replays it as
+// the session command's input with no change.
+func TestABackupFileReplaysAsTheSessionCommandsInput(t *testing.T) {
+	opened := open(t)
+	backup, _ := json.Marshal(runChain(t, opened))
+	out, err := opened.Run("session", []byte(`{"operation":"replay","session":`+string(backup)+`}`))
+	if err != nil || !strings.Contains(string(out), `"matches":true`) {
+		t.Errorf("replay of a backup: %s, %v", out, err)
+	}
+}

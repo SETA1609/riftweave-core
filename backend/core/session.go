@@ -27,11 +27,13 @@ type SessionRuleset struct {
 
 // Session is one run (docs/core/state.md): a starting actor, a log, and the current snapshot.
 type Session struct {
-	Ruleset SessionRuleset `json:"ruleset"`
-	Start   stored.Actor   `json:"start"`
-	Log     []SessionStep  `json:"log"`
-	Actor   stored.Actor   `json:"actor"`
-	Dev     bool           `json:"dev,omitempty"` // a dev operation ran (docs/backend/dev-mode.md)
+	// RulesVersion is the rules a session was started on, or last replayed under (RulesVersion).
+	RulesVersion string         `json:"rules_version,omitempty"`
+	Ruleset      SessionRuleset `json:"ruleset"`
+	Start        stored.Actor   `json:"start"`
+	Log          []SessionStep  `json:"log"`
+	Actor        stored.Actor   `json:"actor"`
+	Dev          bool           `json:"dev,omitempty"` // a dev operation ran (docs/backend/dev-mode.md)
 }
 
 // sessionOperation is what a `session` call does. It decodes from its name, so an unknown
@@ -77,6 +79,11 @@ type sessionResult struct {
 
 func init() { commands["session"] = bind(runSession) }
 
+// RulesVersion names the rules this core runs. A session records it at start, and a replay
+// stamps the rebuilt session with it, so a save from other rules shows (APP-16). It moves with a
+// release of the ruleset (M5-09 tags v1.0.0). [A]
+const RulesVersion = "0.1.0"
+
 // runSession is the `session` command (docs/backend/sessions.md). It holds no rule.
 func runSession(ruleset *data.Ruleset, input sessionInput) (sessionResult, error) {
 	switch input.Operation {
@@ -93,7 +100,7 @@ func runSession(ruleset *data.Ruleset, input sessionInput) (sessionResult, error
 		if err != nil {
 			return sessionResult{}, err
 		}
-		return sessionResult{Session: Session{Ruleset: SessionRuleset{Modules: modules}, Start: *input.Start, Log: []SessionStep{}, Actor: actor}}, nil
+		return sessionResult{Session: Session{RulesVersion: RulesVersion, Ruleset: SessionRuleset{Modules: modules}, Start: *input.Start, Log: []SessionStep{}, Actor: actor}}, nil
 	case operationStep:
 		if input.Session == nil || input.Step == nil {
 			return sessionResult{}, errors.New("session step needs a session and a step")
@@ -124,6 +131,7 @@ func runSession(ruleset *data.Ruleset, input sessionInput) (sessionResult, error
 		saved, rebuilt := encodedValue(session.Actor), encodedValue(actor)
 		var matches bool = reflect.DeepEqual(saved, rebuilt)
 		session.Actor = actor
+		session.RulesVersion = RulesVersion // rebuilt under these rules, whatever the save said
 		return sessionResult{Session: session, Matches: &matches}, nil
 	}
 	return sessionResult{}, fmt.Errorf("session operation %d is not defined", input.Operation)
