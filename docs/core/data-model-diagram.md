@@ -158,10 +158,10 @@ erDiagram
     }
     MONSTERS {
         string key PK
-        string abilities_effect FK
-        string abilities_origin FK
         string attacks_weapon FK
         string base FK
+        string effects_effect FK
+        string effects_origin FK
         string loot_item FK
         string loot_material FK
         string perks_perk FK
@@ -263,13 +263,13 @@ erDiagram
     MONSTER_TEMPLATES }o--|| FEATURES : "perks[].perk"
     MONSTER_TEMPLATES }o--|| MATERIALS : "loot[].material"
     MONSTER_TEMPLATES }o--|| SPELLS : "spells[]"
-    MONSTERS }o--|| EFFECTS : "abilities[].effect"
+    MONSTERS }o--|| EFFECTS : "effects[].effect"
     MONSTERS }o--|| EQUIPMENT : "attacks[].weapon, loot[].item"
     MONSTERS }o--|| FEATURES : "perks[].perk"
     MONSTERS }o--|| MATERIALS : "loot[].material"
     MONSTERS }o--|| MONSTERS : "base"
     MONSTERS }o--|| NATURAL_WEAPONS : "attacks[].weapon"
-    MONSTERS }o--|| ORIGINS : "abilities[].origin"
+    MONSTERS }o--|| ORIGINS : "effects[].origin"
     MONSTERS }o--|| SPELLS : "spells[]"
     RACES }o--|| FEATURES : "traits[].id"
     RACES }o--|| RACES : "lineage.parentRace"
@@ -566,10 +566,10 @@ erDiagram
     }
     MONSTERS {
         string key PK
-        string abilities_effect FK
-        string abilities_origin FK
         string attacks_weapon FK
         string base FK
+        string effects_effect FK
+        string effects_origin FK
         string loot_item FK
         string loot_material FK
         string perks_perk FK
@@ -608,13 +608,13 @@ erDiagram
     MONSTER_TEMPLATES }o--|| FEATURES : "perks[].perk"
     MONSTER_TEMPLATES }o--|| MATERIALS : "loot[].material"
     MONSTER_TEMPLATES }o--|| SPELLS : "spells[]"
-    MONSTERS }o--|| EFFECTS : "abilities[].effect"
+    MONSTERS }o--|| EFFECTS : "effects[].effect"
     MONSTERS }o--|| EQUIPMENT : "attacks[].weapon, loot[].item"
     MONSTERS }o--|| FEATURES : "perks[].perk"
     MONSTERS }o--|| MATERIALS : "loot[].material"
     MONSTERS }o--|| MONSTERS : "base"
     MONSTERS }o--|| NATURAL_WEAPONS : "attacks[].weapon"
-    MONSTERS }o--|| ORIGINS : "abilities[].origin"
+    MONSTERS }o--|| ORIGINS : "effects[].origin"
     MONSTERS }o--|| SPELLS : "spells[]"
     SITUATIONS }o--|| ORIGINS : "melee[].origin, ranged[].origin"
     TABLES }o--|| EQUIPMENT : "entries[].item"
