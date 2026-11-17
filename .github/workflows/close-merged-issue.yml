@@ -1,5 +1,6 @@
 # After a pull request merges, move its issue from docs/issues/open to docs/issues/done when its
-# status is review, regenerate the table in docs/issues/order.md, and commit that to main.
+# status is review, regenerate the table in docs/issues/order.md, and commit that to development, where every
+# pull request merges; main is protected and takes only development (M5-76).
 name: Close merged issue
 
 on:
@@ -7,7 +8,7 @@ on:
     types:
       - closed
     branches:
-      - main
+      - development
 
 permissions:
   contents: write

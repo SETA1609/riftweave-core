@@ -66,8 +66,9 @@ its file to `docs/issues/open/` first.
 - The issue's `Status` is `review`.
 - If you used AI, a person has reviewed every change ([AI rules](ai.md)).
 
-Open it against `main`, titled `<issue-id> <issue title>`. Open branches are rebased
-automatically after every push to `main`, so run `git pull --rebase` before committing on one.
+Open it against `development` (branch from it too), titled `<issue-id> <issue title>`; `main`
+takes only `development`. Open branches are rebased automatically after every push to
+`development`, so run `git pull --rebase` before committing on one.
 
 Contributions are accepted under the project's licenses; see
 [LICENSING.md](../../LICENSING.md).

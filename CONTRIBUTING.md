@@ -1,6 +1,6 @@
 # Contributing to Riftweave
 
-Modified: 2026-11-15
+Modified: 2026-11-17
 
 Thanks for your interest in Riftweave! This repository is a **data-oriented,
 engine-agnostic cRPG ruleset**. The product *is* the data: a set of JSON files
@@ -128,7 +128,7 @@ vectors.
    the changelog fragment; the backend PR opens on top of it and adds its own bullet to the
    same fragment. The issue goes to `review` with the first PR and is done when the second
    merges.
-3. **Each PR leaves `main` green.** `validate.py` and `./scripts/test.sh` pass at the PR's
+3. **Each PR leaves `development` green.** `validate.py` and `./scripts/test.sh` pass at the PR's
    last commit.
 4. **Docs in the same PR.** A change to a rule, a decision, or a tag updates the matching
    doc. Record decisions in `docs/decisions/<issue-id>.md`, one file per issue
@@ -151,7 +151,12 @@ vectors.
 8. **AI is a tool, and a human reviews.** A person reads every change before it is
    committed ([AI rules](docs/onboarding/ai.md)).
 
-Open pull requests are rebased onto `main` after every push to `main`
+**Branches** (M5-76). Every issue branch starts from `development` and its pull request
+targets `development`. `main` is protected: only a pull request from `development` merges into
+it, when the owner releases. The workflows that commit after a merge (closing the issue,
+regenerating `order.md`) push to `development`, which is why they work without a token.
+
+Open pull requests are rebased onto `development` after every push to `development`
 (`.github/workflows/rebase-open-branches.yml`). Conflicts where both sides only added
 lines to a story file, `docs/decisions.md`, `docs/core/vectors.md`, or `CHANGELOG.md` keep
 both, the branch's lines first. Pull requests do not touch the generated `docs/issues/order.md`;
@@ -224,7 +229,7 @@ file changes nothing. The list grows as M5-52 formats each collection.
 
 ## Submitting
 
-- Work on an issue branch and open a pull request against `main`.
+- Work on an issue branch from `development` and open a pull request against `development`.
 - Make sure `python ruleset/scripts/validate.py` passes and that any new
   cross-references (effects, skills) resolve.
 

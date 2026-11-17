@@ -15,6 +15,9 @@ package = false
 # Read by devops-tools (roadmap-order, changelog-fragments, rebase-open-branches). Pass this file
 # with --settings-file.
 [tool.devops-tools]
+# Pull requests merge to development; main takes only development (M5-76). The rebase moves open
+# pull requests onto this branch.
+main-branch = "development"
 docs-cache-directory = "cache/docs"
 roadmap-file = "docs/issues/order.md"
 changes-directory = "changes"

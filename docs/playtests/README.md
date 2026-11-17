@@ -51,7 +51,7 @@ casts its strongest affordable damage spell and falls back to its weapon.
 | A session cannot buy a skill rank, take a perk, or learn a spell; every run did all three through dev mode. | [APP-12](../issues/done/APP-12.md) |
 | A session never applies the actor's perks, held modifiers, race, or gear to a command, so no perk changed any result in these runs. | [APP-13](../issues/done/APP-13.md) |
 | Monsters attack and evade with their starting skill at every level and won no fight. | [M3-17](../issues/done/M3-17.md) |
-| No command applies a cast's damage to a target; the driver did it by hand. Orange, green, and violet have no damaging spell. | [M3-18](../issues/open/M3-18.md) |
+| No command applies a cast's damage to a target; the driver did it by hand. Orange, green, and violet have no damaging spell. | [M3-18](../issues/done/M3-18.md) |
 | Main skills reach 100 by level 5 to 8, and weapon damage does not grow while monster HP does. | [M5-50](../issues/open/M5-50.md) |
 | 38 of 88 perks were never taken, and 94 of 232 level-ups had no eligible perk for the build. | [M5-19](../issues/open/M5-19.md), through the perk table in the decision record |
 | The XP for a level comes from the driver, not from the fights: XP awards are GM guidance ([progression.md](../core/progression.md#not-in-the-data)). | decision, no change |
