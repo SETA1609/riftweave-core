@@ -56,15 +56,17 @@ def to_copper(cost):
 
 
 def item_field(ref, field):
-    """An equipment item's field: its own, its overrides', or its base's (None if none)."""
+    """An equipment item's field: its own, or its base's with its overrides merged in, field by
+    field (docs/core/overrides.md#how-an-override-merges); None if none."""
     category, key = ref.split(":", 1)[1].split("/", 1)
     file_name, base_dir = EQUIPMENT[category]
     rows = validate.equipment_rows(DATA_DIR / "equipment" / file_name)
     row = next(r for r in rows if r["key"] == key)
-    value = row.get(field, row.get("overrides", {}).get(field))
-    if value is None and "base" in row:
-        value = load_data(f"equipment/bases/{base_dir}/{row['base'].rsplit('/', 1)[-1]}.json").get(field)
-    return value
+    if field in row:
+        return row[field]
+    base = load_data(f"equipment/bases/{base_dir}/{row['base'].rsplit('/', 1)[-1]}.json").get(field) if "base" in row else None
+    overrides = row.get("overrides", {})
+    return validate._merge_field(base, overrides[field]) if field in overrides else base
 
 
 def item_cost(ref):
@@ -153,13 +155,15 @@ def entry_for(table, roll, shift=0):
 
 
 def monster_level(ref):
-    """A core monster's level: its overrides', or its base's."""
+    """A core monster's level: its overrides', its row's, or its base monster's or type's."""
     key = ref.rsplit("/", 1)[-1]
     row = next(m for m in load_data("monsters/core.json")["monsters"] if m["key"] == key)
     if "level" in row.get("overrides", {}):
         return row["overrides"]["level"]
     if "level" in row:
         return row["level"]
+    if row["base"].startswith(validate.MONSTER_REF_PREFIX):
+        return monster_level(row["base"])
     return load_data(f"monsters/bases/{row['base'].rsplit('/', 1)[-1]}.json")["level"]
 
 

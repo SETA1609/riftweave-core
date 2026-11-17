@@ -734,6 +734,15 @@ def check_references(
     errors = []
 
     if coll_name == "races":
+        # A subrace inherits its parent's fields; one equal to the parent's is a copy (M5-73).
+        by_key = {r.get("key"): r for r in data.get("races", []) if isinstance(r, dict)}
+        for r in data.get("races", []):
+            if not isinstance(r, dict) or r.get("lineage", {}).get("role") != "subrace":
+                continue
+            parent = by_key.get(str(r["lineage"].get("parentRace", "")).rsplit("/", 1)[-1], {})
+            for field, value in r.items():
+                if field not in ("key", "label", "description", "lineage", "source") and parent.get(field) == value:
+                    errors.append(f"subrace '{r.get('key')}': {field} equals its parent's; drop it (M5-73)")
         for r in data.get("races", []):
             if not isinstance(r, dict):
                 continue
@@ -1206,11 +1215,13 @@ def _apply_growth_hp(base, level):
 
 
 def _merge_field(base_val, override_val):
-    """Merge a single field from override into base.
+    """Merge a single field from override into base (docs/core/overrides.md#how-an-override-merges).
 
-    Supports $extend convention: if override_val is a dict with an
-    $extend key, the $extend array is appended to the base array.
-    Otherwise override replaces base (or is added if base lacks the field).
+    An object merges field by field into the base's object, each field by this same rule, so
+    an override names only the sub-fields that differ (M5-73). A dict with an `$extend` key
+    appends its array to the base array; one with a `$replace` key replaces the base's value
+    whole, for an object that drops some of the base's fields. Any other value replaces the base's (or is added if
+    the base lacks the field).
     """
     if isinstance(override_val, dict) and "$extend" in override_val:
         items = override_val["$extend"]
@@ -1219,6 +1230,13 @@ def _merge_field(base_val, override_val):
         if isinstance(items, list):
             return list(items)
         return base_val
+    if isinstance(override_val, dict) and "$replace" in override_val:
+        return override_val["$replace"]
+    if isinstance(override_val, dict) and isinstance(base_val, dict):
+        merged = dict(base_val)
+        for field, value in override_val.items():
+            merged[field] = _merge_field(base_val.get(field), value)
+        return merged
     return override_val
 
 
@@ -1271,16 +1289,34 @@ def _grow_damage(merged, step):
         merged["effects"] = effects
 
 
-def compose_row(base, overrides, layers=(), entry=None):
-    """One row from a base, layers, and overrides (docs/core/composition.md)."""
+def override_copies(inherited, override, path=""):
+    """The paths in an override whose value equals what the row inherits, so removing them
+    changes nothing: a copy of a fact about the base (M5-73, docs/core/integrity.md#normal-forms).
+    An object is searched field by field; `$extend` is never a copy, and `$replace` is one only
+    when it replaces the base's value with that same value."""
+    if isinstance(override, dict) and "$extend" in override:
+        return []
+    if isinstance(override, dict) and "$replace" in override:
+        return [path] if override["$replace"] == inherited else []
+    if isinstance(override, dict) and isinstance(inherited, dict):
+        found = []
+        for field, value in override.items():
+            if field in inherited:
+                found += override_copies(inherited[field], value, f"{path}.{field}" if path else field)
+        return found
+    return [path] if override == inherited else []
+
+
+def compose_row(base, overrides, layers=(), entry=None, copies=None):
+    """One row from a base, layers, and overrides (docs/core/composition.md). With `copies`, a
+    list, the override paths that equal what the row inherits are appended to it."""
     merged = json.loads(json.dumps(base))
     for apply_layer in layers:
         apply_layer(merged)
+    if copies is not None:
+        copies += override_copies(merged, overrides)
     for field, value in overrides.items():
-        if field == "attributes" and isinstance(value, dict) and isinstance(merged.get(field), dict):
-            merged[field] = {**merged[field], **value}
-        else:
-            merged[field] = _merge_field(merged.get(field), value)
+        merged[field] = _merge_field(merged.get(field), value)
     if entry is not None:
         merged.pop("id", None)
         if entry.get("id") is not None:
@@ -1507,7 +1543,11 @@ def _resolve_monster_bases(data, errors):
             return None
         layers, filled = planned
 
-        merged = compose_row(merged, overrides, layers=layers, entry=entry)
+        copies = []
+        merged = compose_row(merged, overrides, layers=layers, entry=entry, copies=copies)
+        if base_key.startswith(MONSTER_REF_PREFIX):
+            copies = [path for path in copies if path != "level"]  # a derived monster states its level
+        errors.extend(f"monster '{key}': overrides.{path} equals what it inherits; drop it (M5-73)" for path in copies)
         resolved[key] = (merged, type_data, filled)
         return resolved[key]
 
@@ -1604,7 +1644,9 @@ def _resolve_equipment_bases(data, errors, fp):
             )
             continue
 
-        merged = compose_row(bases[base_name], overrides, entry=entry)
+        copies = []
+        merged = compose_row(bases[base_name], overrides, entry=entry, copies=copies)
+        errors.extend(f"equipment '{entry.get('key')}': overrides.{path} equals its base; drop it (M5-73)" for path in copies)
         # default_materials names what a base (or a row's overrides) is found and sold in
         # (docs/core/loot.md#what-lands-on-an-item); loot reads it, the item schema does not.
         merged.pop("default_materials", None)

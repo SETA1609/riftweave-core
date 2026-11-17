@@ -1249,6 +1249,42 @@ func (loader *rulesetLoader) itemBases(directory string) []string {
 	return keys
 }
 
+// MergeOverride merges an override value into its base value, as validate.py's _merge_field
+// (docs/core/overrides.md#how-an-override-merges): an object merges field by field, each field by
+// this same rule; `{"$extend": [...]}` appends to the base's list; `{"$replace": v}` is v whole;
+// any other value replaces the base's.
+func MergeOverride(base, override any) any {
+	object, isObject := override.(map[string]any)
+	if !isObject {
+		return override
+	}
+	if items, extends := object["$extend"]; extends {
+		list, isList := items.([]any)
+		if !isList {
+			return base
+		}
+		if baseList, hadList := base.([]any); hadList {
+			return append(slices.Clone(baseList), list...)
+		}
+		return slices.Clone(list)
+	}
+	if value, replaces := object["$replace"]; replaces {
+		return value
+	}
+	baseObject, hadObject := base.(map[string]any)
+	if !hadObject {
+		return override
+	}
+	var merged map[string]any = make(map[string]any, len(baseObject)+len(object))
+	for field, value := range baseObject {
+		merged[field] = value
+	}
+	for field, value := range object {
+		merged[field] = MergeOverride(baseObject[field], value)
+	}
+	return merged
+}
+
 // weaponFields is what an item row says of its weapon: its dice and its skill ref.
 type weaponFields struct {
 	Damage struct{ Dice string }
@@ -1276,42 +1312,49 @@ func (loader *rulesetLoader) loadItems(ruleset *Ruleset) {
 			Type             string
 			Consumable       *Consumable
 		}
-		type itemRow struct {
-			itemFields
-			Key       string
-			Base      string
-			Overrides itemFields
-		}
-		var raw struct{ Equipment []itemRow }
+		var raw struct{ Equipment []map[string]any }
 		loader.read("equipment/"+category.file+".json", &raw)
-		var rows []itemRow
+		var rows []map[string]any
 		for _, key := range loader.itemBases(category.baseDirectory) {
-			rows = append(rows, itemRow{Key: key, Base: "core:" + category.category + "_base/" + key})
+			rows = append(rows, map[string]any{"key": key, "base": "core:" + category.category + "_base/" + key})
 		}
 		rows = append(rows, raw.Equipment...)
 		for _, row := range rows {
-			var base itemFields
-			if row.Base != "" {
-				loader.read(fmt.Sprintf("equipment/bases/%s/%s.json", category.baseDirectory, baseName(row.Base)), &base)
+			// A row is its base with its overrides merged in (as validate.py's compose_row),
+			// then its own fields on top.
+			var composed map[string]any = map[string]any{}
+			if baseRef, _ := row["base"].(string); baseRef != "" {
+				var base map[string]any
+				loader.read(fmt.Sprintf("equipment/bases/%s/%s.json", category.baseDirectory, baseName(baseRef)), &base)
+				composed = base
+				if overrides, ok := row["overrides"].(map[string]any); ok {
+					composed, _ = MergeOverride(base, overrides).(map[string]any)
+				}
 			}
-			// A field is the row's own, its overrides', or its base's.
-			var cost *Cost = cmp.Or(row.Cost, row.Overrides.Cost, base.Cost)
-			var weapon *weaponFields = cmp.Or(row.Weapon, row.Overrides.Weapon, base.Weapon)
-			var armor = cmp.Or(row.Armor, row.Overrides.Armor, base.Armor)
-			var defaults []string = row.DefaultMaterials
-			if defaults == nil {
-				defaults = row.Overrides.DefaultMaterials
+			for field, value := range row {
+				if field != "base" && field != "overrides" {
+					composed[field] = value
+				}
 			}
-			if defaults == nil {
-				defaults = base.DefaultMaterials
+			var fields struct {
+				itemFields
+				Key string
 			}
+			if encoded, err := json.Marshal(composed); err != nil || json.Unmarshal(encoded, &fields) != nil {
+				loader.fail("equipment/%s.json: %v does not decode", category.file, row["key"])
+				continue
+			}
+			var cost *Cost = fields.Cost
+			var weapon *weaponFields = fields.Weapon
+			var armor = fields.Armor
+			var defaults []string = fields.DefaultMaterials
 			if cost == nil {
-				loader.fail("equipment/%s.json: %s has no cost", category.file, row.Key)
+				loader.fail("equipment/%s.json: %s has no cost", category.file, fields.Key)
 				continue
 			}
 			copper, err := ruleset.Economy.ToCopper(*cost)
 			if err != nil {
-				loader.fail("equipment/%s.json: %s: %v", category.file, row.Key, err)
+				loader.fail("equipment/%s.json: %s: %v", category.file, fields.Key, err)
 				continue
 			}
 			var item Item = Item{
@@ -1319,8 +1362,8 @@ func (loader *rulesetLoader) loadItems(ruleset *Ruleset) {
 				TakesMaterial:    category.category == "weapon" || category.category == "armor",
 				IsWeapon:         category.category == "weapon",
 				DefaultMaterials: defaults,
-				Type:             row.Type,
-				Consumable:       row.Consumable,
+				Type:             fields.Type,
+				Consumable:       fields.Consumable,
 			}
 			if weapon != nil {
 				item.Dice = weapon.Damage.Dice
@@ -1330,7 +1373,7 @@ func (loader *rulesetLoader) loadItems(ruleset *Ruleset) {
 				var dr int64 = armor.DRBase
 				item.ArmorDRBase = &dr
 			}
-			ruleset.Items["core:"+category.category+"/"+row.Key] = item
+			ruleset.Items["core:"+category.category+"/"+fields.Key] = item
 		}
 	}
 
@@ -1384,18 +1427,41 @@ func (loader *rulesetLoader) loadItems(ruleset *Ruleset) {
 	var byKey = make(map[string]int, len(monsters.Monsters))
 	for index, monster := range monsters.Monsters {
 		byKey[monster.Key] = index
-		var level *int64 = monster.Overrides.Level
-		if level == nil {
-			level = monster.Level
+	}
+	// A monster's level: its overrides', its row's, or its base monster's or creature type's,
+	// since an override lists only what differs from its base (M5-73).
+	var resolveLevel func(key string, seen map[string]bool) (int64, bool)
+	resolveLevel = func(key string, seen map[string]bool) (int64, bool) {
+		if level, done := ruleset.MonsterLevel[key]; done {
+			return level, true
 		}
+		index, known := byKey[key]
+		if !known || seen[key] {
+			return 0, false
+		}
+		seen[key] = true
+		var monster = monsters.Monsters[index]
+		var level *int64 = cmp.Or(monster.Overrides.Level, monster.Level)
 		if level == nil {
-			var base struct{ Level int64 }
-			if !loader.read("monsters/bases/"+baseName(monster.Base)+".json", &base) {
-				continue
+			if parent, derived := strings.CutPrefix(monster.Base, "core:monster/"); derived {
+				inherited, found := resolveLevel(parent, seen)
+				if !found {
+					return 0, false
+				}
+				level = &inherited
+			} else {
+				var base struct{ Level int64 }
+				if !loader.read("monsters/bases/"+baseName(monster.Base)+".json", &base) {
+					return 0, false
+				}
+				level = &base.Level
 			}
-			level = &base.Level
 		}
-		ruleset.MonsterLevel[monster.Key] = *level
+		ruleset.MonsterLevel[key] = *level
+		return *level, true
+	}
+	for _, monster := range monsters.Monsters {
+		resolveLevel(monster.Key, map[string]bool{})
 	}
 
 	// A monster's loot: its type's or base monster's, then its templates', then its own.

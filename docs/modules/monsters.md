@@ -1,6 +1,6 @@
 # Monsters — Base + Override System
 
-Modified: 2026-11-16
+Modified: 2026-11-17
 
 ## Purpose
 
@@ -76,7 +76,7 @@ The general order and merge rules are in [composition.md](../core/composition.md
 1. The base is either a creature type, `bases/<base>.json`, or another monster,
    `core:monster/<key>` in the same file (see [Derived monsters](#derived-monsters)).
 2. Templates, if the entry lists any, apply in order (see [Templates](#templates)).
-3. Fields from `overrides` are shallow-merged on top (override wins).
+3. Fields from `overrides` merge on top, an object field by field ([composition.md](../core/composition.md#how-an-override-lands)); a field equal to what the monster inherits fails validation, except a derived monster's `level`, which it always states.
 4. `id` and `key` come from the entry wrapper, never from the base or overrides.
 5. After merge, the entry is validated against the flat monster schema.
 
