@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Settings file",
+  "description": "The settings both apps hold and trade (APP-25, docs/backend/settings.md): the Angular app exports and imports it, and so does `riftweave settings`. A key this schema does not name is kept on import and written back on export, so a round trip through either app loses nothing.",
+  "type": "object",
+  "properties": {
+    "riftweave": { "const": "settings", "description": "What the file is, so a save or a character file is not taken for settings." },
+    "version": { "const": 1, "description": "The file format; an app refuses a version it does not read." },
+    "locale": { "type": "string", "pattern": "^[a-z]{2,3}(-[A-Za-z0-9]{2,8})*$", "description": "An i18next language code (APP-24, APP-28)." },
+    "theme": { "enum": ["light", "dark", "system"], "description": "The colour mode (APP-23); the CLI maps it to its own colours." },
+    "modules": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_-]*$", "not": { "const": "core" } },
+      "description": "The enabled optional modules, by manifest id. Core is always loaded and is never listed."
+    },
+    "network": {
+      "type": "object",
+      "properties": {
+        "mode": { "enum": ["local", "server", "room"], "description": "local (offline, the default), server (an API at server_url), or room (APP-17)." },
+        "server_url": { "type": "string" },
+        "room_code": { "type": "string" }
+      },
+      "required": ["mode"]
+    },
+    "bestiary": {
+      "type": "object",
+      "properties": {
+        "players_see_only_known": { "type": "boolean", "description": "APP-29: players see only the monsters the GM revealed." }
+      }
+    }
+  },
+  "required": ["riftweave", "version"]
+}

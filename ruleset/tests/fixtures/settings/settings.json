@@ -1,0 +1,23 @@
+{
+  "bestiary": {
+    "players_see_only_known": true
+  },
+  "locale": "de",
+  "modules": [
+    "factions",
+    "wuxing"
+  ],
+  "network": {
+    "mode": "server",
+    "server_url": "http://127.0.0.1:8080"
+  },
+  "riftweave": "settings",
+  "theme": "dark",
+  "version": 1,
+  "x_from_a_later_app": {
+    "kept": [
+      1,
+      2
+    ]
+  }
+}
