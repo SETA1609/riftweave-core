@@ -6,7 +6,7 @@ requires-python = ">=3.13"
 # No local code: everything runs through devops-tools (README.md). The host needs nothing but
 # uv. Pin devops-tools to a full commit SHA; bump it in its own PR.
 dependencies = [
-    "devops-tools @ git+https://github.com/SETA1609/devops_tools@1fae926966890801f64913193ba41c65111b81c3",
+    "devops-tools @ git+https://github.com/SETA1609/devops_tools@5458d06de23067e53e41a7b883bd3f483bc62a92",
 ]
 
 [tool.uv]
@@ -15,6 +15,9 @@ package = false
 # Read by devops-tools (roadmap-order, changelog-fragments, rebase-open-branches). Pass this file
 # with --settings-file.
 [tool.devops-tools]
+# Pull requests merge to development; main takes only development (M5-76). The rebase moves open
+# pull requests onto this branch.
+main-branch = "development"
 docs-cache-directory = "cache/docs"
 roadmap-file = "docs/issues/order.md"
 changes-directory = "changes"

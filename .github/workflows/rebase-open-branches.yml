@@ -3,7 +3,7 @@ name: Rebase open branches
 on:
   push:
     branches:
-      - main
+      - development
 
 permissions:
   contents: write
@@ -18,7 +18,7 @@ jobs:
   # devops-tools pin in tools/devops/pyproject.toml, and move them in one PR together with
   # changelog-fragments.yml.
   rebase-open-branches:
-    uses: SETA1609/devops_tools/.github/workflows/rebase-open-branches.yml@1fae926966890801f64913193ba41c65111b81c3 # issue-12 branch; re-pin to its merge commit on main (M5-76)
+    uses: SETA1609/devops_tools/.github/workflows/rebase-open-branches.yml@5458d06de23067e53e41a7b883bd3f483bc62a92 # main after v0.3.0
     with:
-      devops-tools-version: 1fae926966890801f64913193ba41c65111b81c3
+      devops-tools-version: 5458d06de23067e53e41a7b883bd3f483bc62a92
       settings-file: tools/devops/pyproject.toml

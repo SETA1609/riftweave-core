@@ -5,7 +5,7 @@ name: Changelog fragments
 on:
   pull_request:
     branches:
-      - main
+      - development
 
 permissions:
   contents: read
@@ -15,7 +15,7 @@ jobs:
   # Keep the ref and devops-tools-version equal to the devops-tools pin in
   # tools/devops/pyproject.toml, and move them in one PR with rebase-open-branches.yml.
   check-changelog-fragments:
-    uses: SETA1609/devops_tools/.github/workflows/changelog-fragments.yml@1fae926966890801f64913193ba41c65111b81c3 # issue-12 branch; re-pin to its merge commit on main (M5-76)
+    uses: SETA1609/devops_tools/.github/workflows/changelog-fragments.yml@5458d06de23067e53e41a7b883bd3f483bc62a92 # main after v0.3.0
     with:
-      devops-tools-version: 1fae926966890801f64913193ba41c65111b81c3
+      devops-tools-version: 5458d06de23067e53e41a7b883bd3f483bc62a92
       settings-file: tools/devops/pyproject.toml
