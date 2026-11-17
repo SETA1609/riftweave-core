@@ -12,7 +12,8 @@ sys.path.insert(0, str(_SCRIPTS))
 
 import validate  # noqa: E402
 
-EQUIPMENT = _SCRIPTS.parent / "data" / "equipment"
+DATA = _SCRIPTS.parent / "data"
+EQUIPMENT = DATA / "equipment"
 ITEM_FILES = {"weapons.json": "weapons", "armor.json": "armor", "accessories.json": "accessories"}
 
 
@@ -47,6 +48,67 @@ class TestComposeRow(unittest.TestCase):
         row = validate.compose_row({"key": "base", "id": 1}, {}, entry={"key": "wolf", "id": 7, "source": {"source": "s"}})
         self.assertEqual((row["key"], row["id"], row["source"]), ("wolf", 7, {"source": "s"}))
 
+
+    def test_an_object_merges_field_by_field(self):
+        base = {"cost": {"quantity": 50, "unit": "gold"}, "weapon": {"damage": {"dice": "1d6", "type": "slashing"}}}
+        row = validate.compose_row(base, {"cost": {"quantity": 100}, "weapon": {"damage": {"dice": "1d8"}}})
+        self.assertEqual(row["cost"], {"quantity": 100, "unit": "gold"})
+        self.assertEqual(row["weapon"]["damage"], {"dice": "1d8", "type": "slashing"})
+
+    def test_replace_drops_the_fields_the_object_does_not_name(self):
+        row = validate.compose_row({"resist": {"fire": 20, "poison": 20}}, {"resist": {"$replace": {"poison": 20}}})
+        self.assertEqual(row["resist"], {"poison": 20})
+
+
+class TestAnOverrideListsOnlyWhatDiffers(unittest.TestCase):
+    """M5-73, docs/core/integrity.md#5-an-override-lists-only-what-differs"""
+
+    def copies(self, base, overrides, layers=()):
+        found = []
+        validate.compose_row(base, overrides, layers=layers, copies=found)
+        return found
+
+    def test_a_field_equal_to_the_base_is_a_copy(self):
+        self.assertEqual(self.copies({"phase": "metal", "size": "medium"}, {"phase": "metal", "size": "large"}), ["phase"])
+
+    def test_a_sub_field_equal_to_the_base_is_a_copy(self):
+        base = {"cost": {"quantity": 50, "unit": "gold"}}
+        self.assertEqual(self.copies(base, {"cost": {"quantity": 100, "unit": "gold"}}), ["cost.unit"])
+
+    def test_the_base_is_read_after_its_layers(self):
+        layer = lambda row: row.update(phase="fire")
+        self.assertEqual(self.copies({"phase": "metal"}, {"phase": "fire"}, layers=[layer]), ["phase"])
+        self.assertEqual(self.copies({"phase": "metal"}, {"phase": "metal"}, layers=[layer]), [])
+
+    def test_extend_is_never_a_copy_and_replace_only_with_the_same_value(self):
+        base = {"tags": ["beast"], "resist": {"fire": 20}}
+        self.assertEqual(self.copies(base, {"tags": {"$extend": []}, "resist": {"$replace": {"poison": 5}}}), [])
+        self.assertEqual(self.copies(base, {"resist": {"$replace": {"fire": 20}}}), ["resist"])
+
+    def test_an_equipment_fixture_that_repeats_its_base_fails(self):
+        data = {"equipment": [{"key": "steel_dagger", "base": "core:weapon_base/dagger",
+                               "overrides": {"enchantment_slots": 2, "phase": "metal"}}]}
+        base = json.loads((EQUIPMENT / "bases" / "weapons" / "dagger.json").read_text())
+        data["equipment"][0]["overrides"]["phase"] = base["phase"]
+        errors = []
+        validate._resolve_equipment_bases(data, errors, EQUIPMENT / "weapons.json")
+        self.assertEqual(errors, ["equipment 'steel_dagger': overrides.phase equals its base; drop it (M5-73)"])
+
+    def test_a_subrace_field_equal_to_its_parents_fails(self):
+        races = {"races": [
+            {"key": "elf", "label": "Elf", "lineage": {"role": "parent"}, "phase": "wood"},
+            {"key": "wood_elf", "label": "Wood Elf", "lineage": {"role": "subrace", "parentRace": "core:race/elf"}, "phase": "wood"},
+        ]}
+        errors = validate.check_references(races, "races", namespaced_ref_index={"core:race/elf"})
+        self.assertEqual(errors, ["subrace 'wood_elf': phase equals its parent's; drop it (M5-73)"])
+
+    def test_the_real_data_has_no_copies(self):
+        errors = []
+        data = {"monsters": json.loads((DATA / "monsters" / "core.json").read_text())["monsters"]}
+        validate._resolve_monster_bases(data, errors)
+        for name in ITEM_FILES:
+            validate._resolve_equipment_bases(json.loads((EQUIPMENT / name).read_text()), errors, EQUIPMENT / name)
+        self.assertEqual([e for e in errors if "M5-73" in e], [])
 
 
 class TestABaseThatIsAnItem(unittest.TestCase):

@@ -131,7 +131,7 @@ class TestBestiary(unittest.TestCase):
     def test_a_template_sets_phase_attacks_resist_tags_and_label(self):
         merged = resolve([
             {"id": 1, "key": "blob", "base": "core:creature_type/ooze", "overrides": {
-                "label": "Blob", "level": 2, "resist": {"fire": 2, "acid": 5}, "tags": ["ooze"],
+                "label": "Blob", "resist": {"fire": 2, "acid": 5},
                 "attacks": [{"key": "slam", "label": "Slam", "weapon": "core:natural_weapon/slam"}]}},
             {"id": 2, "key": "fire_blob", "base": "core:monster/blob", "templates": ["fire"], "overrides": {"level": 2}},
         ])["fire_blob"]
@@ -146,7 +146,7 @@ class TestBestiary(unittest.TestCase):
 
     def test_a_derived_monster_moves_by_its_types_growth(self):
         rows = resolve([
-            {"id": 1, "key": "blob", "base": "core:creature_type/ooze", "overrides": {"level": 2}},
+            {"id": 1, "key": "blob", "base": "core:creature_type/ooze", "overrides": {}},
             {"id": 2, "key": "big_blob", "base": "core:monster/blob", "overrides": {"level": 6, "label": "Big Blob"}},
         ])
         base = json.loads((DATA / "monsters" / "bases" / "ooze.json").read_text())

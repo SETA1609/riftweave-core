@@ -1,5 +1,7 @@
 # Composition
 
+Modified: 2026-11-17
+
 Many rows are built from parts instead of written out: a monster from a creature type and
 templates, a weapon from a base and a material's overrides. There is one way to do it. Any new
 composed row (a bound weapon, a summon with its power and nature) uses this order and these
@@ -19,8 +21,15 @@ row = compose(base, layers, overrides)
 | --- | --- |
 | A plain value, or a list | Replaces the field |
 | `{ "$extend": [...] }` on a list | Appends to the field |
-| `attributes` | Merged per attribute; attributes it does not name keep their value |
+| `{ "$replace": value }` | Replaces the field whole, for an object that drops some of the base's fields (a derived monster's `resist`) |
+| Any other object (`cost`, `attributes`, `weapon`, `resist`) | Merged field by field, each field by these same rules; fields it does not name keep the base's value (M5-73) |
 | An object on a spell (`cost`, `save`, a summon block) | Merged per field; fields it does not name keep the base's value (M3-26) |
+
+An override lists only what differs: a value equal to what the row inherits (after its layers)
+is a copy of a fact about the base, and `validate.py` fails it
+([integrity.md](integrity.md#5-an-override-lists-only-what-differs)). A new `cost.quantity` is
+written alone, without the `cost.unit` it keeps. Both loaders merge the same way: Python's
+`_merge_field` and Go's `data.MergeOverride`. [V 2026-11-17]
 
 A base is what the row starts from: a creature type, another monster, or an equipment base, named by a typed reference ([keys.md](keys.md)). A
 layer knows only how to change a row, so adding a kind of layer adds no merge rule. Composition

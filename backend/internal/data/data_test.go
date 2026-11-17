@@ -147,3 +147,24 @@ func TestASpellBaseThatNamesABaseIsReported(t *testing.T) {
 		t.Fatalf("want errors for second (a base that names a base) and third (nope), got %v", err)
 	}
 }
+
+func TestAnOverrideMergesFieldByField(t *testing.T) {
+	var base map[string]any = map[string]any{
+		"cost":   map[string]any{"quantity": 50.0, "unit": "gold"},
+		"tags":   []any{"beast"},
+		"resist": map[string]any{"fire": 20.0, "poison": 20.0},
+	}
+	var override map[string]any = map[string]any{
+		"cost":   map[string]any{"quantity": 100.0},
+		"tags":   map[string]any{"$extend": []any{"x"}},
+		"resist": map[string]any{"$replace": map[string]any{"poison": 20.0}},
+	}
+	var want map[string]any = map[string]any{
+		"cost":   map[string]any{"quantity": 100.0, "unit": "gold"},
+		"tags":   []any{"beast", "x"},
+		"resist": map[string]any{"poison": 20.0},
+	}
+	if got := MergeOverride(base, override); !reflect.DeepEqual(got, want) {
+		t.Errorf("got %v, want %v", got, want)
+	}
+}
