@@ -1,6 +1,6 @@
 # Data model theory
 
-Modified: 2026-11-15
+Modified: 2026-11-17
 
 Background for [docs/core/data-model.md](../core/data-model.md): what a data model is, which
 types exist, and why Riftweave's is shaped as it is. This page explains; it sets no rule.
@@ -66,7 +66,7 @@ It names D&D 3.5's typed bonuses as the failure to avoid. [V 2026-11-10]
 Game content is many small things that refer to each other. A monster names effects, a spell
 names effects, and a drop names items. Keeping each fact once, and pointing at it, means a
 change lands in one place. The cost of copies is real: materials once carried the same numbers
-in two columns (M5-23). [V 2026-11-10]
+in two columns (M5-23). [V 2026-11-10] The normal forms are the standard rules for "each fact once": [normal-forms.md](normal-forms.md).
 
 ### Why documents, as the storage
 

@@ -1,6 +1,6 @@
 # Data model
 
-Modified: 2026-11-15
+Modified: 2026-11-17
 
 What shape Riftweave's information has. For what a data model is, the common types, and why
 this one was chosen, see [the theory page](../theory/data-models.md). This page links to the
@@ -30,6 +30,7 @@ in-memory tables. It is a hybrid, and each layer has its own type. [V 2026-11-11
 | References | `core:<category>/<key>`. A numeric id is not a reference. [V 2026-11-11] | [keys.md](keys.md), [integrity.md](integrity.md) |
 | Shared pools | An effect is one row; spells, consumables, and ingredients point at it. [V 2026-11-11] | `ruleset/data/effects/core.json` |
 | Composition | A row is a base, plus templates, plus overrides, merged into one flat row. [V 2026-11-11] | [monsters.md](../modules/monsters.md), [overrides.md](overrides.md) |
+| Normal forms | The source files must meet 1NF, 2NF, and 3NF: one kind of value per field, no fact about part of a key, no fact about another non-key field. The forms past 3NF (BCNF, 4NF, 5NF) are not required, so data may be denormalized beyond 3NF. Generated files and the runtime tables may copy. [V owner 2026-11-17] | [normal-forms.md](../theory/normal-forms.md), [integrity.md](integrity.md) |
 | Stored and computed | Store the primary facts. Derived stats are functions of them. [V 2026-11-11] | [contract.md](contract.md), [derived.md](derived.md) |
 | One way to change a value | A modifier, with one stacking rule. [V 2026-11-11] | [contract.md](contract.md), [modifier.md](modifier.md) |
 | Modifier targets | A modifier's `target` is a key naming one row, of the kind its operation needs; targets no other table holds are rows of `modifier_targets`. [V 2026-11-11] | [modifier.md](modifier.md#target), [integrity.md](integrity.md) |
@@ -51,10 +52,11 @@ in-memory tables. It is a hybrid, and each layer has its own type. [V 2026-11-11
 
 Places where the data does not yet follow the model:
 
-- **Authored monster HP.** 50 of the 54 monster rows store `hitPoints` instead of computing it. [V 2026-11-11]
+- **Authored monster HP.** 55 of the 59 monster rows store `hitPoints` instead of computing it (M5-74). [V 2026-11-17]
 - **Authored HP growth.** Each creature type in `monsters/bases/` authors `growth.hitPointsPerLevel`, so a monster's HP does not come from the player formula. [V 2026-11-11]
 - **Formulas have no schema.** The four files in `formulas/` name no `$schema`, so `validate.py` skips them with a warning. [V 2026-11-11]
 - **JSON Schema cannot check references.** `validate.py` and tests do that on top of it, and a
   free-text field such as `parameter` is only checked where a test says so. [V 2026-11-11]
 - **Module overrides.** `module_loader.merge_data()` does not read `overrides` yet.
   [V 2026-11-11]
+- **Normal-form gaps.** A field of two types (M5-70), labels copied beside references (M5-71), enums written beside their tables (M5-72), overrides that repeat their base (M5-73), stored monster HP (M5-74), and descriptions that restate numbers (M5-75); each issue holds its audit counts, and [normal-forms.md](../theory/normal-forms.md) explains the forms. [V 2026-11-17]
