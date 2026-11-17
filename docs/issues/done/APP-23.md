@@ -1,5 +1,6 @@
 #### APP-23 An app context with a light and dark mode toggle
-- Status: review
+- Status: done
+- Merged: #204, 2026-11-16
 - Priority: medium
 - Needs: APP-19
 - Modified: 2026-11-16

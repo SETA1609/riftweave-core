@@ -1,5 +1,6 @@
 #### APP-15 The frontend is published on GitHub Pages
-- Status: review
+- Status: done
+- Merged: #206, 2026-11-16
 - Priority: medium
 - Needs: APP-14
 - Modified: 2026-11-16

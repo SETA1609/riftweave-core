@@ -1,5 +1,6 @@
 # After a pull request merges, move its issue from docs/issues/open to docs/issues/done when its
-# status is review, regenerate the table in docs/issues/order.md, and commit that to main.
+# status is review, regenerate the table in docs/issues/order.md, and commit that to main. main is
+# protected, so the push uses the ISSUE_CLOSER_TOKEN secret (M5-76).
 name: Close merged issue
 
 on:
@@ -15,7 +16,10 @@ permissions:
 jobs:
   # Keep the ref and devops-tools-version equal to the devops-tools pin in tools/devops/pyproject.toml.
   close-merged-issue:
-    uses: SETA1609/devops_tools/.github/workflows/close-merged-issue.yml@5458d06de23067e53e41a7b883bd3f483bc62a92 # main after v0.3.0
+    uses: SETA1609/devops_tools/.github/workflows/close-merged-issue.yml@1fae926966890801f64913193ba41c65111b81c3 # issue-12 branch; re-pin to its merge commit on main (M5-76)
     with:
-      devops-tools-version: 5458d06de23067e53e41a7b883bd3f483bc62a92
+      devops-tools-version: 1fae926966890801f64913193ba41c65111b81c3
       settings-file: tools/devops/pyproject.toml
+    secrets:
+      # main is protected and rejects GITHUB_TOKEN; this token may push there (M5-76).
+      push-token: ${{ secrets.ISSUE_CLOSER_TOKEN }}
