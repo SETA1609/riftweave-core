@@ -1,0 +1,12 @@
+#### APP-40 Spell cards, and custom spells printed as cards
+- Status: todo
+- Priority: low
+- Needs: APP-10, APP-22, APP-39
+- Modified: 2026-11-17
+- Do: Owner request, 2026-11-17 (later work): APP-11's spell card is one page per spell from a key in `spells/core.json`. Two steps:
+  - **Design the card** (spec step): a fixed card size that cuts from a page, several cards per A4 or letter page [A: poker size, 63 x 88 mm, nine per page], with the color, level, mana cost and cast threshold, delivery and its defense (blockable and dodgeable, or a save, worded as M3-30 words them), duration, concentration, and each effect in a line. A long spell spills onto a second card, never onto a smaller font [A]. The layout lives in `docs/backend/print.md` with a sample.
+  - **Custom spells:** `print` with `spell` takes a spell row as well as a key, so a spell made in the spell editor (APP-10, APP-22) or loaded from a module prints the same way. The row is checked first by the `author` command's problems, and a spell with problems does not print. The player's spell list (APP-31) prints all their known spells as one sheet of cards.
+- Keys: `print` kind `spell` with a row or a key; kind `spells` for a sheet of cards [A]
+- Files: ~10 (backend/contract/print.json, backend/core/print.go and its test, backend/cmd/riftweave/play/print.go, frontend/src/app/spell-editor/, frontend/src/app/app.spec.ts, e2e/print.spec.ts, docs/backend/print.md, docs/decisions/APP-40.md, changes/APP-40.md)
+- See: docs/backend/print.md, docs/issues/open/APP-10.md, docs/issues/open/APP-22.md
+- Done when: the card layout is in `print.md`; a core spell and an authored spell print as cards, nine to a page; a test checks a card's mana cost and threshold against the spellcraft formula; a spell with problems is refused; the tests pass.

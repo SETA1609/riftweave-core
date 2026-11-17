@@ -1,0 +1,15 @@
+#### APP-38 A new character from a suggested build, in both apps
+- Status: todo
+- Priority: medium
+- Needs: M5-47, APP-31, APP-33
+- Modified: 2026-11-17
+- Do: Owner request, 2026-11-17: a player who wants a ready start picks a suggested build and the app fills the character from it. Character creation in both apps (the human CLI and the Angular app) gets a **From a build** choice beside starting empty. It lists the builds of the `builds` collection (M5-47, M5-60, M5-61, and any enabled module's), filterable by path and sub-path, each with its summary and a link to its page. Picking one and a level from 1 to `max_level` fills the character:
+  - **Level 1:** the build's attribute spread, tag skills, creation perks and traits, and its skill points; the player still picks race, background, and name, because a build does not hold them [A].
+  - **Above level 1:** the app replays level-ups with the `progression` command, taking the build's perk and skill points at each level, so the result is a legal character the rules computed, not a copy of numbers. A level the build cannot reach legally (a module changed a prerequisite) stops there and says why.
+  - **Still a suggestion:** after the import the character is the player's. At each later level-up (APP-31) the build's perk for that level is shown first and marked as suggested; any other legal choice is allowed. A character keeps the build's key it was made from, only to show these suggestions [A].
+  - **Files:** a build can also be imported from and exported to a JSON file (APP-30, kind `build`), so a GM or player can share a custom build offline. An imported build is checked like the core ones (refs, prerequisites, level gates); a failing one is listed with its problems and cannot be applied.
+  - The pre-built characters of M6-12 are made the same way, so both use one path.
+- Keys: a `build` command (`list`, `apply` with build, level, race, background) [A]; `build_key` on the stored actor; file kind `build`
+- Files: ~14 (backend/contract/build.json, backend/core/build.go and its test, backend/contract/stored_actor.json, backend/contract/file.json, ruleset/tests/vectors/builds.json, ruleset/scripts/kernel_reference.py, backend/cmd/riftweave/play/create.go, play_test.go, frontend/src/app/create/, frontend/src/app/app.spec.ts, e2e/create.spec.ts, docs/backend/builds.md, changes/APP-38.md)
+- See: docs/issues/open/M5-47.md, docs/issues/open/APP-31.md, docs/issues/open/APP-33.md, docs/issues/open/M6-12.md
+- Done when: both apps make a character from each core build at levels 1, 5, and 10; a vector pins one applied build in Python and Go; a build file exported from one app imports into the other; an illegal build file is refused with its problems; the tests pass.
