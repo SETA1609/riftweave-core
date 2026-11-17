@@ -1,6 +1,8 @@
 # Integrity gates
 
-What `python ruleset/scripts/validate.py` refuses to pass. JSON Schema alone cannot check that a reference points at something, so the validator adds four gates on top of it. They close the open items of the data review (`docs/archive/review/findings-data-schemas.md` M3 and M6) and are tested in `ruleset/scripts/test_integrity.py`.
+Modified: 2026-11-17
+
+What `python ruleset/scripts/validate.py` refuses to pass. JSON Schema alone cannot check that a reference points at something, so the validator adds five gates on top of it. They close the open items of the data review (`docs/archive/review/findings-data-schemas.md` M3 and M6) and are tested in `ruleset/scripts/test_integrity.py`.
 
 ## 1. Every reference resolves
 
@@ -23,6 +25,10 @@ Every entry in `effects/core.json` is referenced from some other data file or mo
 ## 4. Every modifier target names one row
 
 A modifier's `target` is a key, not a `core:` reference, so gate 1 does not see it. Every modifier in `ruleset/data/` and in a module's data (an object with an `operation` and a `target`) must name one row of the kind its operation needs, as [modifier.md](modifier.md#target) lists: an attribute, a skill, a derived stat, an action, a condition, a damage type, or a row of `modifier_targets`. The gate also fails a `modifier_targets` row that no modifier names, a row whose key repeats a key of another target table, and a `pending` flag that disagrees with the golden vectors. Vectors are inputs, so their own modifiers are not checked against the table. [V 2026-11-10]
+
+## 5. An override lists only what differs
+
+Third normal form for composed rows ([normal-forms.md](../theory/normal-forms.md#third-normal-form-3nf-no-fact-about-another-non-key-field)). An equipment or monster override whose field, or sub-field of an object, equals what the row inherits after its base and layers fails: removing it would change nothing, so it is a copy. A derived monster's `level` is exempt, because it must state one. A subrace field equal to its parent race's fails the same way. `$extend` is never a copy, and `$replace` is one only when it replaces with the same value. Tested in `test_composition.py`. [V 2026-11-17]
 
 ## Not covered
 

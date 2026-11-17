@@ -63,8 +63,7 @@
       "lineage": {
         "role": "subrace",
         "parentRace": "core:race/elf"
-      },
-      "phase": "wood"
+      }
     },
     {
       "key": "green_elf",
@@ -74,7 +73,6 @@
         "role": "subrace",
         "parentRace": "core:race/elf"
       },
-      "phase": "wood",
       "abilityModifiers": {
         "per": 1
       },
@@ -146,8 +144,7 @@
       "lineage": {
         "role": "subrace",
         "parentRace": "core:race/dwarf"
-      },
-      "phase": "metal"
+      }
     },
     {
       "key": "hill_dwarf",
@@ -176,7 +173,6 @@
         "role": "subrace",
         "parentRace": "core:race/dwarf"
       },
-      "phase": "metal",
       "abilityModifiers": {
         "str": 1
       },

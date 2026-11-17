@@ -12,7 +12,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from balance_report import sized_dice  # noqa: E402
-from validate import equipment_rows  # noqa: E402
+from validate import compose_row, equipment_rows  # noqa: E402
 
 DATA = Path(__file__).resolve().parent.parent / "data"
 EQUIPMENT = DATA / "equipment"
@@ -32,7 +32,7 @@ def to_copper(cost):
 def resolved_weapons():
     for row in rows("weapons"):
         base = json.loads((EQUIPMENT / "bases" / "weapons" / f"{row['base'].rsplit('/', 1)[-1]}.json").read_text())
-        yield row["key"], {**base, **row["overrides"]}
+        yield row["key"], compose_row(base, row["overrides"])
 
 
 def tier(cost):

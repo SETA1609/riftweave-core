@@ -7,8 +7,6 @@
       "overrides": {
         "label": "Skeleton",
         "description": "The animated bones of a long-dead warrior, raised by dark magic. Its attacks chip away at armor and expose weaknesses.",
-        "phase": "water",
-        "size": "medium",
         "level": 1,
         "loot": [
           {
@@ -20,9 +18,7 @@
           }
         ],
         "attributes": {
-          "str": 3,
-          "agi": 4,
-          "per": 2
+          "agi": 4
         },
         "hitPoints": 22,
         "effects": [
@@ -61,12 +57,9 @@
       "overrides": {
         "label": "Bandit",
         "description": "A desperate outlaw who preys on travellers. Uses dirty tricks like leg sweeps to knock foes off balance.",
-        "phase": "wood",
-        "size": "medium",
         "level": 1,
         "attributes": {
-          "agi": 4,
-          "per": 3
+          "agi": 4
         },
         "hitPoints": 24,
         "effects": [
@@ -101,7 +94,6 @@
       "overrides": {
         "label": "Ooze",
         "description": "A blind, quivering mass that flows over the cave floor and engulfs whatever it touches.",
-        "level": 2,
         "resist": {
           "slashing": 3,
           "piercing": 3
@@ -121,8 +113,6 @@
       "overrides": {
         "label": "Wolf",
         "description": "A grey hunter of the forests that runs in packs and drags down prey by the legs.",
-        "phase": "wood",
-        "size": "medium",
         "level": 3,
         "attributes": {
           "str": 6,
@@ -158,8 +148,6 @@
       "overrides": {
         "label": "Dog",
         "description": "A big farm dog or hunting hound, loyal and loud, with a bite worse than its bark.",
-        "phase": "wood",
-        "size": "medium",
         "level": 3,
         "attributes": {
           "str": 6,
@@ -198,7 +186,6 @@
             "shift": 15
           }
         ],
-        "hitPoints": 67,
         "effects": [
           {
             "effect": "core:effect/bleed",
@@ -221,9 +208,6 @@
       "overrides": {
         "label": "Stone Golem",
         "description": "A lumbering construct hewn from bedrock, slow but nearly unstoppable. Its fists shatter bone and leave victims stunned.",
-        "phase": "earth",
-        "size": "large",
-        "level": 5,
         "loot": [
           {
             "table": "hoard_minor",
@@ -232,9 +216,7 @@
           }
         ],
         "attributes": {
-          "str": 7,
-          "end": 9,
-          "agi": 2
+          "end": 9
         },
         "hitPoints": 60,
         "effects": [
@@ -286,8 +268,6 @@
       "overrides": {
         "label": "Fire Elemental",
         "description": "A roiling mass of living flame that scorches everything in its path and leaves its victims burning.",
-        "phase": "fire",
-        "size": "medium",
         "level": 5,
         "loot": [
           {
@@ -389,7 +369,6 @@
       "overrides": {
         "label": "Ember Drake",
         "description": "A lesser dragon wreathed in living flame. Its breath sets the air alight and its touch leaves lingering burns.",
-        "phase": "fire",
         "size": "large",
         "level": 6,
         "loot": [
@@ -402,7 +381,6 @@
         ],
         "attributes": {
           "str": 7,
-          "agi": 6,
           "per": 5
         },
         "hitPoints": 78,
@@ -450,7 +428,6 @@
       "overrides": {
         "label": "Treant Sapling",
         "description": "A young tree-guardian, slow to anger and slow to fall.",
-        "phase": "wood",
         "size": "large",
         "level": 9,
         "attributes": {
@@ -474,10 +451,7 @@
         "resist": {
           "bludgeoning": 4,
           "piercing": 4
-        },
-        "tags": [
-          "plant"
-        ]
+        }
       }
     },
     {
@@ -625,7 +599,7 @@
       "overrides": {
         "level": 21,
         "attributes": {
-          "str": 16
+          
         },
         "loot": [
           {
@@ -681,10 +655,10 @@
             "phase": "metal"
           }
         ],
-        "resist": {
+        "resist": {"$replace": {
           "poison": 30,
           "psychic": 30
-        },
+        }},
         "role": "standard"
       }
     },
@@ -718,11 +692,11 @@
             "weapon": "core:natural_weapon/slam"
           }
         ],
-        "resist": {
+        "resist": {"$replace": {
           "slashing": 6,
           "piercing": 6,
           "psychic": 40
-        }
+        }}
       }
     },
     {
@@ -757,10 +731,10 @@
             "target": "touch"
           }
         ],
-        "resist": {
+        "resist": {"$replace": {
           "shock": 20,
           "poison": 20
-        },
+        }},
         "tags": [
           "elemental",
           "storm"
@@ -799,10 +773,10 @@
             "target": "touch"
           }
         ],
-        "resist": {
+        "resist": {"$replace": {
           "acid": 20,
           "poison": 20
-        },
+        }},
         "tags": [
           "elemental",
           "acid"
@@ -847,9 +821,9 @@
             "target": "touch"
           }
         ],
-        "resist": {
+        "resist": {"$replace": {
           "poison": 20
-        },
+        }},
         "tags": [
           "elemental",
           "venom"
@@ -885,10 +859,10 @@
             "phase": "fire"
           }
         ],
-        "resist": {
+        "resist": {"$replace": {
           "fire": 40,
           "acid": 15
-        }
+        }}
       }
     },
     {
@@ -928,14 +902,6 @@
       "base": "core:monster/ember_drake",
       "overrides": {
         "level": 30,
-        "loot": [
-          {
-            "table": "hoard_major"
-          },
-          {
-            "table": "hoard_minor"
-          }
-        ],
         "label": "Ancient Dragon",
         "description": "The oldest of the drakes, whose breath ends armies.",
         "size": "huge",
@@ -961,7 +927,7 @@
       "overrides": {
         "level": 22,
         "attributes": {
-          "str": 14
+          
         },
         "loot": [
           {
@@ -985,9 +951,9 @@
             "phase": "wood"
           }
         ],
-        "resist": {
+        "resist": {"$replace": {
           "bludgeoning": 6
-        }
+        }}
       }
     },
     {
@@ -1022,10 +988,10 @@
             "phase": "metal"
           }
         ],
-        "resist": {
+        "resist": {"$replace": {
           "shock": 20,
           "thunder": 20
-        }
+        }}
       }
     },
     {
@@ -1057,9 +1023,9 @@
             "phase": "water"
           }
         ],
-        "resist": {
+        "resist": {"$replace": {
           "frost": 30
-        }
+        }}
       }
     },
     {
@@ -1093,12 +1059,9 @@
       "overrides": {
         "label": "Zombie",
         "description": "A shambling corpse animated by necromantic will. Its rotting touch spreads poison through the victim's veins.",
-        "phase": "water",
-        "size": "medium",
         "level": 1,
         "attributes": {
           "str": 4,
-          "end": 4,
           "agi": 1,
           "per": 1
         },
@@ -1115,9 +1078,6 @@
             "magnitude": 4,
             "target": "touch"
           }
-        ],
-        "tags": [
-          "undead"
         ],
         "attacks": [
           {
@@ -1138,7 +1098,6 @@
       "overrides": {
         "label": "Giant Rat",
         "description": "A dog-sized rat from the sewers. Alone it is a nuisance; in a pack it is a danger.",
-        "phase": "wood",
         "size": "small",
         "level": 1,
         "attributes": {
@@ -1175,7 +1134,6 @@
       "overrides": {
         "label": "Goblin Skirmisher",
         "description": "A quick, cowardly raider that jabs from behind its friends.",
-        "phase": "wood",
         "size": "small",
         "level": 2,
         "attributes": {
@@ -1208,16 +1166,11 @@
       "overrides": {
         "label": "Owl Familiar",
         "description": "A silent spirit-owl that watches the dark for its caster.",
-        "phase": "wood",
-        "size": "tiny",
-        "level": 1,
         "role": "minion",
         "attributes": {
-          "str": 1,
           "agi": 7,
           "per": 8
         },
-        "hitPoints": 8,
         "attacks": [
           {
             "key": "talons",
@@ -1239,16 +1192,10 @@
       "overrides": {
         "label": "Cat Familiar",
         "description": "A sleek spirit-cat that slips through gaps and fetches small things.",
-        "phase": "wood",
-        "size": "tiny",
-        "level": 1,
         "role": "minion",
         "attributes": {
-          "str": 1,
-          "agi": 8,
-          "per": 6
+          "agi": 8
         },
-        "hitPoints": 8,
         "attacks": [
           {
             "key": "claws",
@@ -1270,16 +1217,11 @@
       "overrides": {
         "label": "Raven Familiar",
         "description": "A sharp-eyed spirit-raven that carries a word or a trinket.",
-        "phase": "wood",
-        "size": "tiny",
-        "level": 1,
         "role": "minion",
         "attributes": {
-          "str": 1,
           "agi": 8,
           "per": 7
         },
-        "hitPoints": 8,
         "attacks": [
           {
             "key": "peck",
@@ -1302,8 +1244,6 @@
         "label": "Cave Spider",
         "description": "A pale spider the size of a shield that hunts in the dark under the hills.",
         "phase": "earth",
-        "size": "medium",
-        "level": 2,
         "attributes": {
           "agi": 6
         },
@@ -1340,8 +1280,6 @@
       "overrides": {
         "label": "Grove Stalker",
         "description": "A thorn-skinned predator of the deep wood, its claws weep venomous sap that poisons its prey.",
-        "phase": "wood",
-        "size": "medium",
         "level": 3,
         "attributes": {
           "str": 5,
@@ -1393,7 +1331,6 @@
         "label": "Bog Shambler",
         "description": "A heap of rotting reeds and mud that lurches out of the marsh.",
         "phase": "water",
-        "size": "medium",
         "level": 3,
         "attributes": {
           "str": 6
@@ -1410,10 +1347,7 @@
         "resist": {
           "acid": 10,
           "bludgeoning": 2
-        },
-        "tags": [
-          "plant"
-        ]
+        }
       }
     },
     {
@@ -1422,8 +1356,6 @@
       "overrides": {
         "label": "Frost Revenant",
         "description": "The risen dead of those who froze in the high passes, exhaling killing cold that numbs the living.",
-        "phase": "water",
-        "size": "medium",
         "level": 4,
         "loot": [
           {
@@ -1437,8 +1369,7 @@
         ],
         "attributes": {
           "str": 5,
-          "end": 6,
-          "wil": 6
+          "end": 6
         },
         "effects": [
           {
@@ -1452,9 +1383,6 @@
             "duration": 12,
             "target": "ranged"
           }
-        ],
-        "tags": [
-          "undead"
         ],
         "hitPoints": 30,
         "attacks": [
@@ -1481,8 +1409,6 @@
         "label": "Ice Elemental",
         "description": "A frigid being of living ice that freezes the air around it and slows those who draw near.",
         "phase": "water",
-        "size": "medium",
-        "level": 4,
         "loot": [
           {
             "table": "hoard_minor"
@@ -1494,8 +1420,7 @@
         ],
         "attributes": {
           "str": 6,
-          "agi": 4,
-          "per": 5
+          "agi": 4
         },
         "hitPoints": 28,
         "effects": [
@@ -1547,14 +1472,11 @@
       "overrides": {
         "label": "Undead Horse",
         "description": "A warhorse raised from the battlefield it fell on, all bone and torn hide, that never tires.",
-        "phase": "water",
         "size": "large",
         "level": 4,
         "attributes": {
           "str": 6,
-          "end": 5,
-          "agi": 4,
-          "per": 3
+          "agi": 4
         },
         "hitPoints": 71,
         "tags": [
@@ -1577,7 +1499,6 @@
         "label": "Orc Raider",
         "description": "A scarred warrior who fights for plunder and the joy of it.",
         "phase": "fire",
-        "size": "medium",
         "level": 6,
         "attributes": {
           "str": 8
@@ -1608,8 +1529,6 @@
       "overrides": {
         "label": "Ghoul",
         "description": "A corpse-eater whose touch carries the chill of the grave.",
-        "phase": "water",
-        "size": "medium",
         "level": 6,
         "attributes": {
           "str": 9
@@ -1637,10 +1556,7 @@
         "resist": {
           "necrotic": 15,
           "poison": 20
-        },
-        "tags": [
-          "undead"
-        ]
+        }
       }
     },
     {
@@ -1650,7 +1566,6 @@
         "label": "Iron Sentinel",
         "description": "An animated suit of war-plate that guards forgotten vaults, striking with crushing force that staggers its foes.",
         "phase": "metal",
-        "size": "large",
         "level": 7,
         "loot": [
           {
@@ -1684,9 +1599,6 @@
             "duration": 3,
             "target": "touch"
           }
-        ],
-        "tags": [
-          "construct"
         ],
         "coreDrop": {
           "baseChance": 0.1,
@@ -1739,10 +1651,7 @@
         ],
         "resist": {
           "thunder": 10
-        },
-        "tags": [
-          "beast"
-        ]
+        }
       }
     },
     {
@@ -1751,7 +1660,6 @@
       "overrides": {
         "label": "Wisp",
         "description": "A drifting mote of light that lures travellers off the path and burns them.",
-        "phase": "fire",
         "size": "tiny",
         "level": 7,
         "role": "minion",
@@ -1759,9 +1667,6 @@
         "resist": {
           "radiant": 15
         },
-        "tags": [
-          "elemental"
-        ],
         "effects": [
           {
             "effect": "core:effect/damage_radiant",
@@ -1817,8 +1722,6 @@
       "overrides": {
         "label": "Wraith",
         "description": "A shade of hate that drinks the warmth from the living.",
-        "phase": "water",
-        "size": "medium",
         "level": 11,
         "loot": [
           {
@@ -1830,9 +1733,6 @@
           "necrotic": 20,
           "frost": 10
         },
-        "tags": [
-          "undead"
-        ],
         "effects": [
           {
             "effect": "core:effect/damage_necrotic",
@@ -1849,7 +1749,6 @@
         "label": "Harpy",
         "description": "A shrieking bird-woman whose cry rattles the bones.",
         "phase": "metal",
-        "size": "medium",
         "level": 11,
         "loot": [
           {
@@ -1890,8 +1789,6 @@
       "overrides": {
         "label": "Salamander",
         "description": "A serpent-bodied warrior of the burning deep.",
-        "phase": "fire",
-        "size": "medium",
         "level": 12,
         "attributes": {
           "str": 9
@@ -1932,7 +1829,6 @@
       "overrides": {
         "perks": [{"perk": "core:feature/toughness", "rank": 2}], "label": "Troll",
         "description": "A towering brute whose wounds close almost as fast as they open.",
-        "phase": "wood",
         "size": "large",
         "level": 13,
         "loot": [
@@ -1968,7 +1864,6 @@
         "label": "Basilisk",
         "description": "An eight-legged lizard whose stare turns flesh to stone.",
         "phase": "earth",
-        "size": "medium",
         "level": 14,
         "loot": [
           {
@@ -1998,8 +1893,6 @@
       "overrides": {
         "label": "Lich Acolyte",
         "description": "A dead mage bound to a greater master, still casting what it learned in life.",
-        "phase": "water",
-        "size": "medium",
         "level": 16,
         "loot": [
           {
@@ -2073,7 +1966,6 @@
         "label": "Radiant Seraph",
         "description": "A winged herald of a forgotten court, terrible in its certainty.",
         "phase": "metal",
-        "size": "medium",
         "level": 18,
         "attributes": {
           "str": 12
