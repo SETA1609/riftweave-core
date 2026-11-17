@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Suggested build",
+  "description": "A worked plan for reaching one style of play from creation to level 30 (docs/modules/builds/README.md). A suggestion: it gates nothing, and every perk it names is an ordinary feature row.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "builds": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/build"
+      }
+    }
+  },
+  "required": [
+    "builds"
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "build": {
+      "type": "object",
+      "properties": {
+        "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
+        "label": { "type": "string" },
+        "description": { "type": "string", "description": "The style of play, in a sentence or two." },
+        "path": { "type": "string", "enum": ["melee", "magic", "ranged", "hybrid"] },
+        "sub_path": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$", "description": "The style inside the path; a hybrid names its two paths in its page." },
+        "attributes": {
+          "type": "object",
+          "description": "The point buy of character creation step 2: 4 in every attribute plus 10 points, none over 10, before race modifiers and creation perks.",
+          "propertyNames": { "$ref": "schema.json#/definitions/ability" },
+          "additionalProperties": { "type": "integer", "minimum": 4, "maximum": 10 }
+        },
+        "creation_perks": {
+          "type": "array",
+          "maxItems": 2,
+          "uniqueItems": true,
+          "items": { "$ref": "schema.json#/definitions/featureRef" },
+          "description": "Level 1: up to two creation perks (features with type creation)."
+        },
+        "suggested_tag_skills": {
+          "type": "array",
+          "minItems": 3,
+          "uniqueItems": true,
+          "items": { "$ref": "schema.json#/definitions/skillRef" },
+          "description": "The tag skills: three, or four with a creation perk that adds one."
+        },
+        "skill_priorities": {
+          "type": "array",
+          "minItems": 1,
+          "description": "Where the skill points go, in order: each entry raises its skill to `to` before the next gets a point. A skill may come back later with a higher value.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "skill": { "$ref": "schema.json#/definitions/skillRef" },
+              "to": { "type": "integer", "minimum": 1, "maximum": 100 }
+            },
+            "required": ["skill", "to"],
+            "additionalProperties": false
+          }
+        },
+        "perks_by_level": {
+          "type": "object",
+          "description": "The perk to take at each level that grants one, keyed by the level (2 to 30). A perk with ranks appears once per rank.",
+          "propertyNames": { "pattern": "^([2-9]|[12][0-9]|30)$" },
+          "additionalProperties": { "$ref": "schema.json#/definitions/featureRef" }
+        },
+        "source": { "$ref": "schema.json#/definitions/sourceRef" }
+      },
+      "required": ["key", "label", "description", "path", "sub_path", "attributes", "creation_perks", "suggested_tag_skills", "skill_priorities", "perks_by_level"],
+      "additionalProperties": false
+    }
+  }
+}
