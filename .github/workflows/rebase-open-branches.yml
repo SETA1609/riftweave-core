@@ -3,7 +3,7 @@ name: Rebase open branches
 on:
   push:
     branches:
-      - main
+      - development
 
 permissions:
   contents: write

@@ -11,5 +11,5 @@
   - The pre-built characters of M6-12 are made the same way, so both use one path.
 - Keys: a `build` command (`list`, `apply` with build, level, race, background) [A]; `build_key` on the stored actor; file kind `build`
 - Files: ~14 (backend/contract/build.json, backend/core/build.go and its test, backend/contract/stored_actor.json, backend/contract/file.json, ruleset/tests/vectors/builds.json, ruleset/scripts/kernel_reference.py, backend/cmd/riftweave/play/create.go, play_test.go, frontend/src/app/create/, frontend/src/app/app.spec.ts, e2e/create.spec.ts, docs/backend/builds.md, changes/APP-38.md)
-- See: docs/issues/open/M5-47.md, docs/issues/open/APP-31.md, docs/issues/open/APP-33.md, docs/issues/open/M6-12.md
+- See: docs/issues/done/M5-47.md, docs/issues/open/APP-31.md, docs/issues/open/APP-33.md, docs/issues/open/M6-12.md
 - Done when: both apps make a character from each core build at levels 1, 5, and 10; a vector pins one applied build in Python and Go; a build file exported from one app imports into the other; an illegal build file is refused with its problems; the tests pass.

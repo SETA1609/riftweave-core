@@ -5,7 +5,7 @@ name: Changelog fragments
 on:
   pull_request:
     branches:
-      - main
+      - development
 
 permissions:
   contents: read

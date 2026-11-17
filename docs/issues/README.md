@@ -15,7 +15,7 @@ move the file, add the `Merged:` line, or touch the generated [order.md](order.m
 
 After the merge, [close-merged-issue.yml](../../.github/workflows/close-merged-issue.yml) finds the
 issue from the branch name, moves it to `done/` when its status is `review`, regenerates the table in
-[order.md](order.md), and commits that to `main`. A pull request that
+[order.md](order.md), and commits that to `development`, where every pull request merges. A pull request that
 finishes only part of an issue leaves its status at `doing` or `todo`, and the issue stays open.
 
 ## Older issues
