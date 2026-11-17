@@ -1,6 +1,6 @@
 # Frontend
 
-Modified: 2026-11-16
+Modified: 2026-11-17
 
 `frontend/` is an Angular app over the core (APP-07): through the HTTP API ([api.md](api.md)), or
 through the Go core compiled to WebAssembly in the page, so it can be served as a static site with
@@ -209,6 +209,9 @@ The mode is `data-theme` on `<html>`: `light` or `dark` when chosen, and absent 
 under `prefers-color-scheme: dark` only when no light mode is chosen
 (`:root:not([data-theme="light"])`). `rw-theme-toggle` (`src/app/ui/theme-toggle`) in the header
 cycles light, dark, and the system's mode, and its `aria-label` names the mode it switches to.
+
+Settings: `exportSettings()` and `importSettings()` trade the settings file with the human CLI
+([settings.md](settings.md), APP-25).
 
 ## Not covered
 

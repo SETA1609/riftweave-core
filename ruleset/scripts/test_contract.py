@@ -22,7 +22,7 @@ from test_vectors import VECTOR_DIR, discover_vectors, vector_function  # noqa: 
 REPO_ROOT = _SCRIPTS.parent.parent
 CONTRACT_DIR = REPO_ROOT / "backend" / "contract"
 SCHEMA_DIR = REPO_ROOT / "ruleset" / "schemas"
-NOT_COMMANDS = {"command.schema.json", "common.json"}
+NOT_COMMANDS = {"command.schema.json", "common.json", "settings.schema.json"}  # settings: a file format, APP-25
 VECTOR_ONLY_FIELDS = {"name", "function", "expect"}
 
 
@@ -108,3 +108,18 @@ class TestContract(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestTheSettingsFile(unittest.TestCase):
+    """APP-25: the settings file both apps trade (docs/backend/settings.md)."""
+
+    def test_the_fixture_validates_against_the_schema(self):
+        schema = json.loads((CONTRACT_DIR / "settings.schema.json").read_text())
+        Draft7Validator.check_schema(schema)
+        fixture = json.loads((REPO_ROOT / "ruleset" / "tests" / "fixtures" / "settings" / "settings.json").read_text())
+        self.assertEqual(list(Draft7Validator(schema).iter_errors(fixture)), [])
+
+    def test_the_schema_refuses_core_as_a_module_and_an_unknown_version(self):
+        validator = Draft7Validator(json.loads((CONTRACT_DIR / "settings.schema.json").read_text()))
+        self.assertFalse(validator.is_valid({"riftweave": "settings", "version": 1, "modules": ["core"]}))
+        self.assertFalse(validator.is_valid({"riftweave": "settings", "version": 2}))
