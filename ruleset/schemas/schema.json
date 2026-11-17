@@ -299,6 +299,11 @@
       "pattern": "^(core:(weapon|armor|accessory)_base/[a-z0-9_]+|module:[a-z0-9_]+/(weapon|armor|accessory)_base/[a-z0-9_]+)$",
       "description": "A reference to a base template in equipment/bases/ (docs/core/keys.md)."
     },
+    "maneuverRef": {
+      "type": "string",
+      "pattern": "^(core:maneuver/[a-z0-9_]+|module:[a-z0-9_]+/maneuver/[a-z0-9_]+)$",
+      "description": "A reference to a combat maneuver in maneuvers/core.json (docs/core/actions.md#maneuvers)."
+    },
     "monsterRef": {
       "type": "string",
       "pattern": "^(core:monster/[a-z0-9_]+|module:[a-z0-9_]+/monster/[a-z0-9_]+)$",

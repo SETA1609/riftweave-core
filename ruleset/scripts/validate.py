@@ -28,6 +28,7 @@ MONSTERS_BASES_DIR = DATA_DIR / "monsters" / "bases"
 CHANNEL_REQUIREMENTS = {
     "ingredient": "ingredient",
     "enchantment": "enchantment",
+    "maneuver": "maneuver",
 }
 
 
@@ -124,6 +125,7 @@ COLLECTION_CATEGORIES = {
     "monster_templates": "monster_template",
     "skill_groups": "skill_group",
     "summon_bonuses": "summon_bonus",
+    "maneuvers": "maneuver",
 }
 
 
@@ -931,6 +933,26 @@ def check_references(
                         )
                     )
 
+    elif coll_name == "maneuvers":
+        # A maneuver performs an action of actions/core.json; its effects declare the
+        # maneuver channel (docs/core/actions.md#maneuvers).
+        action_keys = {a["key"] for a in json.loads((DATA_DIR / "actions" / "core.json").read_text())["actions"]}
+        for m in data.get("maneuvers", []):
+            if not isinstance(m, dict):
+                continue
+            mkey = m.get("key", "?")
+            if m.get("modifies") not in action_keys:
+                errors.append(f"maneuver '{mkey}': modifies {m.get('modifies')!r}, not an action")
+            for applied in m.get("effects", []):
+                eid = applied.get("effect") if isinstance(applied, dict) else None
+                if isinstance(eid, str) and not validate_effect_channel(eid, "maneuver", effect_channels):
+                    declared = effect_channels.get(eid, set()) if effect_channels else set()
+                    errors.append(
+                        _format_channel_violation(
+                            eid, CHANNEL_REQUIREMENTS["maneuver"], declared, f"maneuver '{mkey}' ({rel_path})"
+                        )
+                    )
+
     elif coll_name == "conditions":
         for c in data.get("conditions", []):
             if not isinstance(c, dict):
@@ -1417,6 +1439,9 @@ def _apply_monster_template(merged, template):
         merged["spells"] = spells + [spell for spell in template["spells"] if spell not in spells]
     if template.get("loot"):
         merged["loot"] = list(merged.get("loot") or []) + template["loot"]
+    if template.get("maneuvers"):
+        maneuvers = list(merged.get("maneuvers") or [])
+        merged["maneuvers"] = maneuvers + [ref for ref in template["maneuvers"] if ref not in maneuvers]
     if template.get("perks"):
         # A template's perk adds to the monster's; when both name one, the higher rank is kept (M3-15).
         perks = [dict(held) for held in merged.get("perks") or []]

@@ -133,7 +133,7 @@ Cross-file references (effect IDs, skill IDs, perk prerequisites, `parentRace`, 
 - Perk and skill prerequisites in features
 - Race `parentRace` and trait refs
 - Background skill bonuses, suggested tag skills, starting spells, and starting equipment
-- **Effect channel enforcement**: effects used as `ingredient` must declare `"ingredient"` channel; effects used as `enchantment` (in `crafted_items`) must declare `"enchantment"` channel
+- **Effect channel enforcement**: effects used as `ingredient` must declare `"ingredient"` channel; effects used as `enchantment` (in `crafted_items`) must declare `"enchantment"` channel; effects a maneuver applies must declare `"maneuver"`
 
 Renaming an ID in a data file may cause the validator to report broken references. See `ruleset/scripts/validate.py::check_references()` for the full list of checked fields.
 
@@ -146,6 +146,7 @@ Each data file names its schema in `$schema`:
 - `ingredients`, `materials`, `gems`, `tiers`, `crafting` (recipes and crafted items)
 - kernel and world tables: `actions`, `casting`, `checks`, `combat`, `derived`, `formulas`, `progression`, `resolution`, `rest`, `economy`, `loot`, `hazards`, `balance`
 - `examples` (worked characters and the play loop)
+- `maneuvers` (combat maneuvers: an attack for more or fewer AP, with effects from the shared pool on the `maneuver` channel; `docs/core/actions.md#maneuvers`)
 - `skill_groups` (the optional grouped sheet: every skill in one group; `docs/core/progression.md#the-grouped-sheet-variant`)
 - `origins` (the kinds of modifier source and their stacking policy, `highest` or `add`)
 - `modifier_targets` (the modifier targets no other table holds: a rule's number or a flag; `docs/core/modifier.md#target`)

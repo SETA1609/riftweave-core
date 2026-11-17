@@ -390,6 +390,12 @@ The phase is two-sided. A monster's own `phase` is how incoming phased effects l
 (its resistance side, through the cycles); an attack's `phase` is how its blows land on
 others (its attack side). [A]
 
+### Maneuvers
+
+A monster row or template lists `maneuvers` (`core:maneuver/<key>`) it can attack with, the
+same rows a player uses ([actions.md](../core/actions.md#maneuvers)); a template's are appended,
+skipping any the row has. The troll has Heavy Swing. [V 2026-11-17, `test_bestiary.py`]
+
 ### The floor
 
 At least 40 monsters span levels 1 to 30; every phase is a monster's phase and an attack's

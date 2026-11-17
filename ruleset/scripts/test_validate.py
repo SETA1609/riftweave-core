@@ -200,6 +200,30 @@ class TestNamespacedRefIndex(unittest.TestCase):
         self.assertFalse(resolve_namespaced_ref(None, index))
 
 
+class TestManeuverChannel(unittest.TestCase):
+    """M3-24: a maneuver's effects declare the maneuver channel (docs/core/actions.md#maneuvers)."""
+
+    def maneuver(self, effect, modifies="attack"):
+        return {"maneuvers": [{"key": "shove", "label": "Shove", "description": "x", "modifies": modifies,
+                               "ap": 0, "effects": [{"effect": effect}]}]}
+
+    def test_an_effect_without_the_maneuver_channel_fails(self):
+        channels = {"core:effect/knockdown": {"spell", "innate"}}
+        result = check_references(self.maneuver("core:effect/knockdown"), "maneuvers", effect_channels=channels)
+        self.assertEqual(len(result), 1)
+        self.assertIn("maneuver", result[0])
+
+    def test_an_effect_with_the_maneuver_channel_passes(self):
+        channels = {"core:effect/stagger": {"spell", "maneuver"}}
+        self.assertEqual(check_references(self.maneuver("core:effect/stagger"), "maneuvers", effect_channels=channels), [])
+
+    def test_a_maneuver_of_an_unknown_action_fails(self):
+        channels = {"core:effect/stagger": {"maneuver"}}
+        result = check_references(self.maneuver("core:effect/stagger", "fly"), "maneuvers", effect_channels=channels)
+        self.assertEqual(len(result), 1)
+        self.assertIn("not an action", result[0])
+
+
 class TestCraftedItemsRefValidation(unittest.TestCase):
     def test_rejects_numeric_effect_in_enchantment(self):
         result = check_references(

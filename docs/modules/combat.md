@@ -1,6 +1,6 @@
 # Combat
 
-Modified: 2026-11-16
+Modified: 2026-11-17
 
 Commentary on the combat rules: what they are for, how they fit together, and worked examples. It holds no rule of its own. Every rule here is owned by a file in `docs/core/`, has its numbers in `ruleset/data/`, and is pinned by a vector in `ruleset/tests/vectors/`. **If this file and `docs/core/` disagree, `docs/core/` wins** and this file is the bug.
 
@@ -118,6 +118,12 @@ Declared before the roll. The rows are in `ruleset/data/combat/situations.json` 
 | Groin, eyes | −30 | ×2 | staggered; stunned 1 round on a failed END check |
 
 Beyond short range a ranged called shot takes another −10; at long range it is not possible. A crit on a called shot doubles the location's damage too (×1.5 then ×2). Perks halve the penalties: *Marksman* (ranged), *Street Samurai* (all), *Surgeon* (no damage loss on arms and legs).
+
+### Maneuvers
+
+A maneuver changes how an attack is made rather than where it lands, so it stacks with a called
+shot: a Heavy Swing to the head is −30 to hit and ×1.5 then ×1.5 on the damage. The rows, their
+costs, and who may use them are in [core/actions.md](../core/actions.md#maneuvers).
 
 ## 7. Initiative
 

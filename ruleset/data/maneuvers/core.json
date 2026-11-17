@@ -1,0 +1,27 @@
+{
+  "$schema": "../../schemas/maneuver.schema.json",
+  "maneuvers": [
+    {
+      "key": "heavy_swing",
+      "label": "Heavy Swing",
+      "description": "You wind up and swing with everything you have: one more AP, a harder roll, half again the damage, and a hit that lands staggers the target.",
+      "modifies": "attack",
+      "ap": 1,
+      "attack": -10,
+      "damage_multiplier": 1.5,
+      "ranges": ["melee"],
+      "effects": [{ "effect": "core:effect/stagger", "duration": 4 }]
+    },
+    {
+      "key": "quick_strike",
+      "label": "Quick Strike",
+      "description": "A fast flick of a light blade: one AP less than an attack, for half the damage.",
+      "modifies": "attack",
+      "ap": -1,
+      "damage_multiplier": 0.5,
+      "ranges": ["melee"],
+      "weapon_properties": ["light"],
+      "effects": []
+    }
+  ]
+}
