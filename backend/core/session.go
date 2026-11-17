@@ -79,11 +79,6 @@ type sessionResult struct {
 
 func init() { commands["session"] = bind(runSession) }
 
-// RulesVersion names the rules this core runs. A session records it at start, and a replay
-// stamps the rebuilt session with it, so a save from other rules shows (APP-16). It moves with a
-// release of the ruleset (M5-09 tags v1.0.0). [A]
-const RulesVersion = "0.1.0"
-
 // runSession is the `session` command (docs/backend/sessions.md). It holds no rule.
 func runSession(ruleset *data.Ruleset, input sessionInput) (sessionResult, error) {
 	switch input.Operation {

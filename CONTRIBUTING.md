@@ -227,6 +227,29 @@ paths it is given; `--check` only lists the files it would change and fails if t
 CI runs the check on the listed paths, so a listed file cannot drift. Formatting a formatted
 file changes nothing. The list grows as M5-52 formats each collection.
 
+## Releasing
+
+The owner releases; a release is its own pull request, for its own issue (M5-62). Before 1.0 a
+release moves the MINOR (`0.1.0` to `0.2.0`), or the PATCH for a fix
+([ROADMAP.md](ROADMAP.md#versions-and-releases)).
+
+1. **Branch** from the latest `development` (M5-76: every pull request merges there).
+2. **Fragments:** `$DT changelog-fragments $S release --section-title "v<version>"` moves them
+   into `CHANGELOG.md` ([changes/README.md](changes/README.md#releasing)), then add the release
+   issue's own fragment.
+3. **Version:** write `<version>` to `VERSION`, run `cd backend && go generate ./core`, set
+   `version` in `frontend/package.json` (and its two lines in `package-lock.json`), and run
+   `go test ./core -run TestTheExportsMatchTheirFixtures -update` for the author fixture.
+   `go test ./core` fails until all of them agree.
+4. **Keys:** `python ruleset/scripts/key_diff.py v<last version> WORKTREE` lists the removed
+   keys; each needs a **(breaking)** bullet in the new section that names it.
+   `python ruleset/scripts/release_check.py v<version> --previous v<last version>` runs the
+   same check the workflow runs.
+5. **Merge** the release pull request into `development`, then `development` into `main`.
+6. **Tag** the merge commit on `main`: `git tag v<version> && git push origin v<version>`.
+   `release.yml` checks the tag against `VERSION`, the changelog section, and the key diff, and
+   creates the GitHub release with that section as its notes; `pages.yml` publishes the app.
+
 ## Submitting
 
 - Work on an issue branch from `development` and open a pull request against `development`.
