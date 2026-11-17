@@ -1,5 +1,6 @@
 #### APP-25 One settings file that both apps read, export, and import
-- Status: review
+- Status: done
+- Merged: #220, 2026-11-17
 - Priority: medium
 - Needs: APP-23
 - Modified: 2026-11-17
