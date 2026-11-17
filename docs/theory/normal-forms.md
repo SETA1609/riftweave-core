@@ -4,8 +4,10 @@ Modified: 2026-11-17
 
 Background for [docs/core/data-model.md](../core/data-model.md) and
 [docs/core/integrity.md](../core/integrity.md): what the first three normal forms are, why a
-data set follows them, and how they apply to Riftweave's JSON rows. This page explains; it sets
-no rule. The rules are the integrity gates, which the issues listed at the end add one by one.
+data set follows them, and how they apply to Riftweave's JSON rows. This page explains. The rule
+lives in data-model.md (owner, 2026-11-17): the source must meet 1NF, 2NF, and 3NF, and need not
+go past 3NF ([Past 3NF](#past-3nf)). The integrity gates ([integrity.md](../core/integrity.md))
+enforce it. Which gaps the data still has is tracked in data-model.md and the issues, not here.
 
 Sources, downloaded with `devops-tools fetch-docs` into the gitignored `cache/docs/` on
 2026-11-17 and quoted from there:
@@ -73,10 +75,9 @@ and some facts have nowhere to live. Codd stated the aims of going past the firs
 
 For Riftweave the reasons are concrete:
 
-- **Copies drift, and this has already happened.** When M5-56 renamed the `block` skill to
-  `shields`, the ref in four perk prerequisites moved with it, but the label copied beside the
-  ref still says "Block". [V 2026-11-17, a script over `ruleset/data/features/core.json` on
-  `main` at `c99c7a8`] Earlier, materials carried the same numbers in two columns (M5-23).
+- **Copies drift.** When a skill is renamed, a ref to it moves with the rename, but a label
+  copied beside the ref keeps the old name. This happened when the `block` skill became
+  `shields`.
 - **A rename should be one edit.** Content is edited by hand and reviewed as a git diff. A
   fact written once changes in one line of the diff.
 - **Modules override by key** ([overrides.md](../core/overrides.md)). If a module changes a
@@ -108,10 +109,9 @@ allowed. What breaks 1NF here [A]:
   `label: [A, B]`). The pairing is a fact that no field holds.
 - **Several facts packed into one string**, such as `"str 6, blades 40"` in place of fields.
 
-**Today.** Every field path in `ruleset/data/` holds one JSON type except one: a perk
-prerequisite's `skills[].id` is a single ref in 59 rows and a list of refs (meaning "any of
-these") in 10, and its `label` follows it as a parallel list. [V 2026-11-17, a script over every
-data file] Issue M5-70.
+**Example.** A perk prerequisite whose `skills[].id` is a single ref in some rows and a list of
+refs ("any of these") in others, with its `label` following it as a parallel list, breaks 1NF
+twice: one field of two kinds, and two lists paired by position.
 
 ## Second normal form (2NF): no fact about part of the key
 
@@ -126,10 +126,9 @@ keyed by the perk and the skill it names, and its `min` is a fact about both (th
 this much of this skill). A `label` there is a fact about the skill alone, so it belongs in the
 `skills` table, not in the perk.
 
-**Today.** 77 references carry a copy of the target's label: 59 in perk prerequisites and 18 in
-race `traits`. Four of them are already wrong (the "Block" labels above). [V 2026-11-17] The
-2026-11-01 review flagged the race copies as DOD-23 and left them open
-(`docs/archive/review/findings-data-oriented-design.md`). Issue M5-71.
+**Example.** A `label` written beside a `core:skill/...` ref in a perk prerequisite, or beside a
+trait ref in a race, is the target's label copied. The ref alone is enough; a reader looks the
+label up.
 
 ## Third normal form (3NF): no fact about another non-key field
 
@@ -162,25 +161,21 @@ Kent's summary of 2NF and 3NF together, in the form Wikipedia quotes:
 `<color>_magic`. An armor piece stores its weight class, and the casting penalty for each class
 lives once in `casting/core.json` (`armor_penalty`), not on each piece. [V 2026-11-17]
 
-**Today.**
+**Examples.**
 
-- 55 of 59 monster rows store `hitPoints`. [V 2026-11-17] Issue M5-74.
-- 74 override fields equal the base field they replace (`phase` 26, `size` 24, `tags` 9,
-  `level` 7, `hitPoints` 6, `enchantment_slots` 2), and 4 subraces repeat their parent's
-  `phase`. Another 41 values are repeated because an override replaces a whole object: a new
-  `cost.quantity` forces `cost.unit` to be written again. [V 2026-11-17] Issue M5-73.
-- 79 of 124 feature descriptions restate a number that is also a modifier value of the same
-  row. [V 2026-11-17, a script matching numbers in the text to the row's modifiers; it can
-  count a coincidence] Issue M5-75.
+- A monster row that stores `hitPoints` the HP formula would give.
+- An override that sets `phase` to the base's own phase, or a subrace that repeats its parent's.
+- An override merge that replaces a whole object, so a new `cost.quantity` forces `cost.unit` to
+  be written again: the merge rule itself makes copies.
+- A perk description that says "+10" beside a modifier whose `value` is 10.
 
 ## A domain written once
 
 1NF speaks of a field's domain, the values it may hold. A domain is also a fact, and it can be
 copied too. The eight abilities are rows of `abilities/core.json` and also an enum in
 `schema.json`, and the same enum is written out again in `derived.schema.json` and
-`ability.schema.json`. The 13 damage types are rows of `combat/damage_types.json` and an enum in
-`schema.json`. They match today. [V 2026-11-17] Issue M5-72: one source, and a check that the
-other is the same.
+`ability.schema.json`. The damage types are rows of `combat/damage_types.json` and an enum in
+`schema.json`. The cure is one source, and a check that the other copy equals it.
 
 ## When copies are fine
 
@@ -199,17 +194,9 @@ from the source and never edited by hand is a cache, not a second fact:
 ## Past 3NF
 
 Kent goes on to Boyce-Codd normal form (BCNF), the fourth (4NF), and the fifth (5NF). They deal
-with keys that overlap and with several independent lists in one row. The goal here is 3NF
-**at least**. Of the patterns above, only the parallel lists come near 4NF, and M5-70 removes
-them. [A]
+with keys that overlap and with several independent lists in one row. **The rule here: 1NF, 2NF,
+and 3NF must hold; the forms past 3NF are not required**, so a design may stay denormalized
+beyond 3NF when that reads better. [V owner 2026-11-17] A row that breaks BCNF, 4NF, or 5NF but
+meets 3NF passes the gates. Of the patterns above, only the parallel lists come near 4NF, and
+they go anyway, because they break 1NF.
 
-## The issues
-
-| Form | Issue | What it fixes | Gate it adds |
-| --- | --- | --- | --- |
-| 1NF | M5-70 | Perk prerequisite `skills[].id` is a ref or a list; the label list runs beside it | A field path holds one JSON type in every row |
-| 2NF | M5-71 | 77 labels copied beside references, 4 already stale | No field of the target row beside a reference |
-| Domain | M5-72 | Ability and damage-type enums written beside their tables | Each enum equals its table |
-| 3NF | M5-73 | 74 override values equal to the base; 4 subrace copies; whole-object overrides | An override that equals its base fails |
-| 3NF | M5-74 | 55 monsters store `hitPoints` | HP is computed, never authored |
-| 3NF | M5-75 | 79 descriptions restate modifier numbers | A number in a description is one of the row's values, or the text is filled from them |
