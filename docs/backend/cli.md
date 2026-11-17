@@ -1,6 +1,6 @@
 # Agent CLI
 
-Modified: 2026-11-15
+Modified: 2026-11-17
 
 `riftweave` is one static Go binary for agents and scripts (APP-03). It only parses, calls `core.Run`, and formats ([README.md](README.md)): no rule lives here. No prompts, no colour, and one small start, so an agent can call it thousands of times in a loop. The human CLI (APP-05) is a separate mode and the agent path imports none of it.
 
@@ -46,6 +46,11 @@ Rolls are inputs, as everywhere in the core. The CLI does not draw rolls, and th
 ## Checks
 
 `go test ./cmd/riftweave` runs every vector in `ruleset/tests/vectors/` through the CLI, as a process would see it (arguments, stdin, stdout, stderr, exit code), and compares the JSON with `core.Run`; it checks `list` against the contract, `describe`, and that bad input exits 2 with a JSON error. [V 2026-11-08]
+
+## Settings
+
+`riftweave settings export [file]` and `riftweave settings import <file>` write and read the
+settings file the frontend trades ([settings.md](settings.md), APP-25).
 
 ## Human mode
 

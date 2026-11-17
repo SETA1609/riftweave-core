@@ -3,12 +3,15 @@
 // matchMedia itself. Each choice is saved in localStorage, a per-viewer convenience, and every read
 // and write is guarded, so a blocked storage still renders in the system's mode.
 import { DOCUMENT, Service, computed, effect, inject, signal } from '@angular/core';
+import { type SettingsFile, defaultSettings, encodeSettings, parseSettings } from './settings-file';
 
 export type Theme = 'light' | 'dark' | 'system';
 export const THEMES: readonly Theme[] = ['light', 'dark', 'system'];
 
 const THEME_KEY = 'riftweave.theme';
 const LOCALE_KEY = 'riftweave.locale';
+// The whole settings file as last imported (APP-25), so the keys this app does not use survive.
+const SETTINGS_KEY = 'riftweave.settings';
 
 /** A saved value, or null when there is none or storage is blocked. */
 function load(key: string): string | null {
@@ -75,5 +78,25 @@ export class AppContext {
   /** Move to the next mode. */
   cycleTheme(): void {
     this.theme.set(this.next());
+  }
+
+  /** The settings file to export (`riftweave-settings.json`, APP-25): the last imported file, or
+   * the defaults, with this app's current theme and language. */
+  exportSettings(): string {
+    const saved = parseSettings(load(SETTINGS_KEY) ?? '');
+    const file: SettingsFile = 'settings' in saved ? saved.settings : defaultSettings();
+    return encodeSettings({ ...file, theme: this.theme(), locale: this.locale() });
+  }
+
+  /** Apply a settings file. Returns null on success, or the message of the rule it breaks, in
+   * which case nothing changes. */
+  importSettings(text: string): string | null {
+    const parsed = parseSettings(text);
+    if ('error' in parsed) return parsed.error;
+    const theme = THEMES.find((known) => known === parsed.settings['theme']);
+    if (theme) this.theme.set(theme);
+    if (typeof parsed.settings['locale'] === 'string') this.locale.set(parsed.settings['locale']);
+    save(SETTINGS_KEY, encodeSettings(parsed.settings));
+    return null;
   }
 }

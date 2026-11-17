@@ -36,6 +36,7 @@ const usage = `usage: riftweave [--data <dir>] <command> [file]
        riftweave describe <command>
        riftweave [--dev] play
        riftweave [--dev] mcp
+       riftweave settings export [file] | import <file>
 
 A command reads one JSON object from the file, or from stdin, and writes its result to
 stdout. Errors are JSON on stderr. Exit 0 ok, 1 rule error, 2 bad input, 3 no ruleset.
@@ -86,6 +87,9 @@ func run(args []string, stdin io.Reader, stdout, stderr io.Writer, getenv func(s
 		}
 		_, _ = stdout.Write(content)
 		return exitOK
+	}
+	if args[0] == "settings" {
+		return settingsCommand(args[1:], stdout, stderr, getenv)
 	}
 	if args[0] == "play" {
 		return interactive(dataFlag, devFlag, stdin, stdout, stderr, getenv)

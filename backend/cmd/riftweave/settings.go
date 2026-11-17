@@ -1,0 +1,81 @@
+package main
+
+import (
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+	"io/fs"
+	"os"
+	"path/filepath"
+
+	"github.com/SETA1609/riftweave-core/backend/internal/settings"
+)
+
+// settingsPath is where the human CLI keeps its settings (docs/backend/settings.md):
+// os.UserConfigDir()/riftweave/settings.json, or RIFTWEAVE_CONFIG_DIR/settings.json when set.
+func settingsPath(getenv func(string) string) (string, error) {
+	if directory := getenv("RIFTWEAVE_CONFIG_DIR"); directory != "" {
+		return filepath.Join(directory, "settings.json"), nil
+	}
+	directory, err := os.UserConfigDir()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(directory, "riftweave", "settings.json"), nil
+}
+
+// savedSettings is the CLI's settings file, or the defaults when there is none yet.
+func savedSettings(path string) (settings.File, error) {
+	content, err := os.ReadFile(path)
+	if errors.Is(err, fs.ErrNotExist) {
+		return settings.Default(), nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	return settings.Parse(content)
+}
+
+// settingsCommand is `riftweave settings export [file]` and `riftweave settings import <file>`
+// (APP-25): the same file the Angular app exports and imports.
+func settingsCommand(args []string, stdout, stderr io.Writer, getenv func(string) string) int {
+	path, err := settingsPath(getenv)
+	if err != nil {
+		return fail(stderr, exitInput, "no settings directory: %v", err)
+	}
+	switch {
+	case len(args) >= 1 && len(args) <= 2 && args[0] == "export":
+		file, err := savedSettings(path)
+		if err != nil {
+			return fail(stderr, exitInput, "%s: %v", path, err)
+		}
+		if len(args) == 1 {
+			_, _ = stdout.Write(file.Encode())
+			return exitOK
+		}
+		if err := os.WriteFile(args[1], file.Encode(), 0o644); err != nil {
+			return fail(stderr, exitInput, "%v", err)
+		}
+	case len(args) == 2 && args[0] == "import":
+		content, err := os.ReadFile(args[1])
+		if err != nil {
+			return fail(stderr, exitInput, "%v", err)
+		}
+		file, err := settings.Parse(content)
+		if err != nil {
+			return fail(stderr, exitInput, "%s: %v; nothing changed", args[1], err)
+		}
+		if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+			return fail(stderr, exitInput, "%v", err)
+		}
+		if err := os.WriteFile(path, file.Encode(), 0o644); err != nil {
+			return fail(stderr, exitInput, "%v", err)
+		}
+	default:
+		return fail(stderr, exitInput, "settings takes export [file] or import <file>")
+	}
+	body, _ := json.Marshal(map[string]string{"settings": path})
+	fmt.Fprintf(stdout, "%s\n", body)
+	return exitOK
+}
