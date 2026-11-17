@@ -7,5 +7,5 @@
 - Do: Owner request, 2026-11-17: the suggested builds (M5-47, M5-60, M5-61) should later be importable in the apps, so a player who wants a pre-built character can fill one from the app. The apps should also print the character sheet filled with the current state, and later custom spells as spell cards (once spell cards are designed), custom NPC sheets, and custom monsters. File one issue for each: APP-38 (a character from a suggested build), APP-39 (print the current character), APP-40 (spell cards, and custom spells printed as cards), APP-41 (custom NPCs and monsters, printed).
 - Keys: none
 - Files: ~7 (docs/issues/open/APP-37.md to APP-41.md, docs/decisions/APP-37.md, changes/APP-37.md)
-- See: docs/backend/print.md, docs/issues/open/M5-47.md, docs/issues/done/APP-11.md
+- See: docs/backend/print.md, docs/issues/done/M5-47.md, docs/issues/done/APP-11.md
 - Done when: the four issues exist with their Needs; `roadmap-order show` lists them.
