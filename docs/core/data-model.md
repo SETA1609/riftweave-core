@@ -8,7 +8,9 @@ document that owns each rule and does not repeat it.
 
 The collections and the references between them are drawn, from the schemas, in
 [data-model-diagram.md](data-model-diagram.md) (Mermaid ER diagrams; regenerate with
-`python ruleset/scripts/data_model_diagram.py --write`).
+`python ruleset/scripts/data_model_diagram.py --write`). The rows themselves are drawn as Mermaid
+flowcharts: the perk prerequisites in [perk-ladders.md](perk-ladders.md) and every formula tree in
+[formula-trees.md](formula-trees.md) (regenerate with `python ruleset/scripts/data_flowcharts.py --write`).
 
 ## The type
 

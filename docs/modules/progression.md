@@ -1,11 +1,15 @@
 # Core System: Attributes, Skills, Perks, Magic
 
-Modified: 2026-11-15
+Modified: 2026-11-17
 
 Riftweave is a **classless, d100 roll-under cRPG ruleset**. A character is the sum
 of eight attributes, a spread of point-buy skills (some tagged), and a stack of
 perks. The numeric formulas below are the **ruleset reference**; a consuming game or
 tabletop group may override them via its own data.
+
+The perk prerequisites are drawn as ladders in [perk-ladders.md](../core/perk-ladders.md), and
+`xp_to_reach`, `skill_points`, and the other formula trees as flowcharts in
+[formula-trees.md](../core/formula-trees.md), both generated from the data (M5-63).
 
 ## Where the numbers live
 
