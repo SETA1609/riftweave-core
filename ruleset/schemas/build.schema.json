@@ -61,6 +61,12 @@
             "additionalProperties": false
           }
         },
+        "spells": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "schema.json#/definitions/spellRef" },
+          "description": "The spells the build leans on, in about the order it learns them; a suggestion, like the rest (M5-60)."
+        },
         "perks_by_level": {
           "type": "object",
           "description": "The perk to take at each level that grants one, keyed by the level (2 to 30). A perk with ranks appears once per rank.",
