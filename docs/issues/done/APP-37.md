@@ -1,5 +1,6 @@
 #### APP-37 File the build import and printing issues
-- Status: review
+- Status: done
+- Merged: #214, 2026-11-17
 - Priority: medium
 - Needs: —
 - Modified: 2026-11-17

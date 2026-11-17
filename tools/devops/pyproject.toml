@@ -6,7 +6,7 @@ requires-python = ">=3.13"
 # No local code: everything runs through devops-tools (README.md). The host needs nothing but
 # uv. Pin devops-tools to a full commit SHA; bump it in its own PR.
 dependencies = [
-    "devops-tools @ git+https://github.com/SETA1609/devops_tools@5458d06de23067e53e41a7b883bd3f483bc62a92",
+    "devops-tools @ git+https://github.com/SETA1609/devops_tools@1fae926966890801f64913193ba41c65111b81c3",
 ]
 
 [tool.uv]
