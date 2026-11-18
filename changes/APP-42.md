@@ -1,0 +1,2 @@
+### APP-42 File the observability and dev console issues, and raise the data-integrity priorities
+- Added: issues APP-43 to APP-48: telemetry in the OpenTelemetry format with a shared setting, the server, the CLIs, and the frontend observable, a local stack to look at it, and the frontend's objects in the browser console in a dev build. M5-70, M5-71, and M5-74 are now high priority; M5-75, M5-58, and M5-59 medium.

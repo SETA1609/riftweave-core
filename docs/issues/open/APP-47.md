@@ -1,0 +1,10 @@
+#### APP-47 A local stack to look at the telemetry
+- Status: todo
+- Priority: low
+- Needs: APP-44
+- Modified: 2026-11-18
+- Do: Owner request, 2026-11-18: a developer sees the traces, metrics, and logs of a local run without an account anywhere. `scripts/observe.sh` starts an OpenTelemetry Collector with a Grafana stack for traces, metrics, and logs in one container (docker or podman, as the other scripts), pinned by digest, and prints the OTLP endpoint to set and the Grafana URL. `./scripts/app.sh --observe` runs the app with the endpoint set [A]. Development only: nothing in CI or the release depends on it.
+- Keys: `scripts/observe.sh`
+- Files: ~4 (scripts/observe.sh, scripts/app.sh, docs/backend/observability.md, CONTRIBUTING.md)
+- See: docs/backend/observability.md (APP-43), scripts/app.sh
+- Done when: `scripts/observe.sh` starts the stack; a session played through the app with it shows one trace from the browser through the server, with its logs and metrics.
