@@ -1,8 +1,9 @@
 #### GD_S06_04_hybrid-summoner-perks Hybrid summoner perks: a spellblade or arcane archer fights beside their summons
-- Status: todo
+- Status: review
 - Priority: low
 - Needs: M3-10, M3-14, M3-20
 - Was: M3-23
+- Modified: 2026-11-19
 - Do: Owner request, 2026-11-14: the third summoner archetype (M3-21 to M3-23). The hybrid summoner fights with a weapon, like a magic swordsman or an arcane archer, beside their summons. Add a perk ladder that adds to the physical and casting attributes such a build needs, such as STR or AGI with PER for a bow, and INT or WIL [A], while the caster has an active summon. It also lets the summon and the caster work together, for example a flanking bonus when both attack one target [A]. Choose which attributes each rung adds in the spec, so a melee and a ranged hybrid each have a path [U]. The ladder should also serve a summoned mount once a mounted combat module exists: a rung that makes a summon a mount, or adds a mounted bonus, is noted in the spec as a later extension, not built here [A]. Write how a player and a GM read it in `docs/guide/`.
 - Keys: the hybrid summoner perks in `features/core.json`
 - Files: ~7 (docs/modules/magic.md, docs/modules/combat.md, docs/guide/quick-start.md, ruleset/data/features/core.json, ruleset/data/modifier_targets/core.json, ruleset/scripts/test_perks.py, ruleset/tests/vectors/)
