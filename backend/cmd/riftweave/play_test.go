@@ -429,3 +429,23 @@ func TestPlaySkillResolutionRollsABlankRoll(t *testing.T) {
 	}
 	matchesTheAgentCLI(t, model, "resolution")
 }
+
+// TestPlayImportsAFileFromTheMainMenu is APP-30 in the human CLI: Import, a path, and the
+// file's character becomes the character a dev session starts from; a missing module stops it.
+func TestPlayImportsAFileFromTheMainMenu(t *testing.T) {
+	opened, err := core.Open(dataDirectory)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var options = play.Options{Import: playImport(checkerFor(opened.Run, dataDirectory), dataDirectory, settings.Default())}
+	var model tea.Model = play.NewWith(opened.Run, options)
+	model = press(model, "down", "down", "down", "down", "down", "enter", "../../../ruleset/tests/fixtures/files/character.riftweave.json", "enter")
+	if view := model.View(); !strings.Contains(view, "imported a character file") {
+		t.Errorf("no import line: %s", view)
+	}
+	// The cursor is still on Import.
+	model = press(model, "enter", "../../../ruleset/tests/fixtures/files/missing-module.riftweave.json", "enter")
+	if view := model.View(); !strings.Contains(view, "module factions is not enabled here") {
+		t.Errorf("no module alert: %s", view)
+	}
+}
