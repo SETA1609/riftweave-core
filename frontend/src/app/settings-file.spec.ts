@@ -5,14 +5,14 @@ import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
 import fixture from '../../../ruleset/tests/fixtures/settings/settings.json';
 import { AppContext } from './context';
-import { encodeSettings, parseSettings } from './settings-file';
+import { defaultSettings, encodeSettings, parseSettings } from './settings-file';
 
 const text = encodeSettings(fixture as never);
 
 describe('the settings file', () => {
   it('reads the shared fixture with the values the Go test reads', () => {
     const parsed = parseSettings(text);
-    expect('settings' in parsed && parsed.settings).toMatchObject({ locale: 'de', theme: 'dark', network: { mode: 'server' } });
+    expect('settings' in parsed && parsed.settings).toMatchObject({ locale: 'de', theme: 'dark', network: { mode: 'server' }, telemetry: { mode: 'export' } });
   });
 
   it('writes a file back unchanged, keys it does not use included', () => {
@@ -28,9 +28,17 @@ describe('the settings file', () => {
     ['{"riftweave": "settings", "version": 1, "theme": "blue"}', 'theme blue'],
     ['{"riftweave": "settings", "version": 1, "modules": ["core"]}', 'lists core'],
     ['{"riftweave": "settings", "version": 1, "network": {"mode": "lan"}}', 'network.mode'],
+    ['{"riftweave": "settings", "version": 1, "telemetry": {"mode": "on"}}', 'telemetry.mode'],
+    ['{"riftweave": "settings", "version": 1, "telemetry": {"mode": "export", "endpoint": "collector:4318"}}', 'telemetry.endpoint'],
   ])('refuses %s', (body, says) => {
     const parsed = parseSettings(body);
     expect('error' in parsed && parsed.error).toContain(says);
+  });
+});
+
+describe('telemetry', () => {
+  it('is off in a fresh install', () => {
+    expect(defaultSettings()['telemetry']).toEqual({ mode: 'off' });
   });
 });
 

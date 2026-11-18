@@ -139,6 +139,19 @@ func TestCharmStaysOutOfTheCore(t *testing.T) {
 	}
 }
 
+// TestTelemetryStaysOutOfTheCore keeps the core pure (APP-43, docs/backend/observability.md): the
+// adapters observe the calls they make, and no OpenTelemetry package reaches the core or
+// internal/.
+func TestTelemetryStaysOutOfTheCore(t *testing.T) {
+	output, err := exec.Command("go", "list", "-deps", "../../core", "../../internal/...").CombinedOutput()
+	if err != nil {
+		t.Fatalf("%v: %s", err, output)
+	}
+	if strings.Contains(string(output), "go.opentelemetry.io") {
+		t.Error("the core imports an OpenTelemetry package")
+	}
+}
+
 func startedDev(t *testing.T) tea.Model {
 	t.Helper()
 	opened, err := core.Open(dataDirectory)

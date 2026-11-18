@@ -12,6 +12,10 @@
     "server_url": "http://127.0.0.1:8080"
   },
   "riftweave": "settings",
+  "telemetry": {
+    "endpoint": "http://127.0.0.1:4318",
+    "mode": "export"
+  },
   "theme": "dark",
   "version": 1,
   "x_from_a_later_app": {
