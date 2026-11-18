@@ -1,5 +1,5 @@
 #### APP-43 Telemetry in the OpenTelemetry format, and a telemetry setting both apps share
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: —
 - Modified: 2026-11-18
