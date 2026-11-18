@@ -223,6 +223,30 @@ Minions take none of this: no power or nature, no Commanding Summons bonus, and 
 archetype perk. They are the row at the caster's level with the `minion` template, and they do
 not count toward the summon limit ([casting.md](../core/casting.md#minions)). [V 2026-11-16, `test_spells.py`]
 
+### The bonded summoner
+
+The first of three summoner archetypes (GD_S06_02; the commander and the hybrid follow): the
+caster stays the damage dealer, and an active summon makes their own magic stronger. The perks'
+modifiers have the duration `while_summoning`: they hold only while the caster has at least one
+active summon, and end when the last one goes ([modifier.md](../core/modifier.md#order-for-one-numeric-target)).
+Minions do not count, as for every archetype perk. Each perk is one source, so two or three
+summons out give each bonus once. [A]
+
+| Perk | Level | Needs | While a summon is active |
+| --- | --- | --- | --- |
+| Kindred Focus | 6 | orange or black magic 40 | +10 to every magic skill (the nine `<color>_magic`) |
+| Shared Wellspring | 12 | Kindred Focus, orange or black magic 55 | spells cost 20% less mana (`multiply 0.8` on `spell_cost`, after the skill discount) |
+| Elemental Kinship | 18 | Kindred Focus, orange or black magic 70 | +4 damage on each damage packet whose type matches an active summon's element (`bonded_element_damage`) |
+
+**An element match** reads the element templates of the caster's active summons (`fire`, `frost`,
+`storm`, `acid`, `venom`, M3-10): each template's `damage_type`. A fire elemental out and a Fire
+Bolt cast: the bolt's fire packet gains +4; a Frost Bolt gains nothing. The cast takes the
+templates as `caster.summon_templates` ([casting.md](../core/casting.md#the-bonded-summoner)). [A]
+
+The summon emits nothing of its own: the perks are the caster's, the session hands their
+modifiers to the cast as it hands every perk's, and the cast drops the `while_summoning` ones when
+`caster.summons` is empty. The kernel gains no notion of a bond. [A]
+
 **Charisma strengthens summons through a perk.** `commanding_summons_magic` and
 `commanding_summons_physical` each name a summon bonus, `core:summon_bonus/<key>`, from
 `summons/bonuses.json`: `magic` adds to INT and WIL, `physical` to STR, END, and AGI. When the
