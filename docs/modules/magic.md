@@ -391,6 +391,7 @@ parameters only, `uncraftable_parameters` lists the others. [A]
 | `storage` | Pocket Storage, a pocket inventory, is engine state. |
 | `bound_weapon` | Bound weapons are rows a perk ladder upgrades ([Bound weapons](#bound-weapons)). |
 | `summon` | Summons are static rows a GM or dev adds (M3-08). |
+| `command_summons` | The held command belongs to the commander's ladder ([commanding.md](../core/commanding.md)), not to a recipe. |
 | `restore_resource` with `mana` | No crafted spell restores mana, instant or over time, so mana cannot pay for itself. |
 
 Absorb and drain effects (`spell_absorption`, `life_steal`, `mana_leech`, the `drain_*`

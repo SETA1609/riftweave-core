@@ -41,6 +41,7 @@ def emitted(perk):
         frozenset((m["target"], m["operation"]) for m in perk.get("modifiers", []))
         | frozenset(("unlocks", ref) for ref in perk.get("unlocks", []))
         | frozenset(("bound_weapon_effects", e["effect"], e.get("parameter")) for e in perk.get("bound_weapon_effects", []))
+        | (frozenset({("command", tuple(sorted(perk["command"].items())))}) if "command" in perk else frozenset())
     )
 
 
@@ -55,8 +56,8 @@ class TestPerkCatalogue(unittest.TestCase):
         for perk in perks():
             with self.subTest(perk=perk["key"]):
                 self.assertTrue(
-                    perk.get("modifiers") or perk.get("unlocks") or perk.get("bound_weapon_effects"),
-                    "a perk emits modifiers, unlocks something, or adds a bound weapon effect",
+                    perk.get("modifiers") or perk.get("unlocks") or perk.get("bound_weapon_effects") or perk.get("command"),
+                    "a perk emits modifiers, unlocks something, adds a bound weapon effect, or gives orders",
                 )
                 for modifier in perk.get("modifiers", []):
                     self.assertEqual(modifier["source"], f"feature:{perk['key']}")

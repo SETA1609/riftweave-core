@@ -1537,6 +1537,138 @@
       ]
     },
     {
+      "key": "field_command",
+      "label": "Field Command",
+      "description": "You give your summons orders: spend the command action and one summon adds 2 AP to its next turn.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 6,
+        "abilities": {
+          "cha": 5
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/orange_magic",
+              "core:skill/black_magic"
+            ],
+            "min": 40
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "command": {
+        "ap": 2,
+        "reach": "one",
+        "turns": 1
+      }
+    },
+    {
+      "key": "sharp_orders",
+      "label": "Sharp Orders",
+      "description": "Your orders are short and sure: the command action costs 1 AP less.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 10,
+        "abilities": {
+          "cha": 5
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/orange_magic",
+              "core:skill/black_magic"
+            ],
+            "min": 45
+          }
+        ],
+        "perks": [
+          {
+            "perk": "core:feature/field_command"
+          }
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "command",
+          "operation": "add",
+          "value": -1,
+          "source": "feature:sharp_orders",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "voice_of_the_host",
+      "label": "Voice of the Host",
+      "description": "One order carries to every summon you have: each adds 2 AP to its next turn.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 14,
+        "abilities": {
+          "cha": 5
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/orange_magic",
+              "core:skill/black_magic"
+            ],
+            "min": 60
+          }
+        ],
+        "perks": [
+          {
+            "perk": "core:feature/sharp_orders"
+          }
+        ]
+      },
+      "ranks": 1,
+      "command": {
+        "ap": 2,
+        "reach": "all",
+        "turns": 1
+      }
+    },
+    {
+      "key": "iron_drill",
+      "label": "Iron Drill",
+      "description": "Your summons answer an order at once: the one you order adds 3 AP to its next turn.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 18,
+        "abilities": {
+          "cha": 5
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/orange_magic",
+              "core:skill/black_magic"
+            ],
+            "min": 65
+          }
+        ],
+        "perks": [
+          {
+            "perk": "core:feature/field_command"
+          }
+        ]
+      },
+      "ranks": 1,
+      "command": {
+        "ap": 3,
+        "reach": "one",
+        "turns": 1
+      }
+    },
+    {
       "key": "kindred_focus",
       "label": "Kindred Focus",
       "description": "While one of your summons is out, its bond sharpens your own magic: +10 to every magic skill.",
