@@ -1,6 +1,6 @@
 # Suggested builds
 
-Modified: 2026-11-16
+Modified: 2026-11-17
 
 Riftweave has no classes. A **suggested build** is a worked plan for reaching one style of play, from character creation to level 30, for a player who does not yet know the perk table. It is a suggestion and nothing more.
 
@@ -16,6 +16,7 @@ The builds are rows in [`ruleset/data/builds/core.json`](../../../ruleset/data/b
 - **`suggested_tag_skills`.** The three tag skills of step 5 (four with Genius).
 - **`skill_priorities`.** Where the skill points go, in order: each entry raises one skill to a value before the next entry gets anything. An entry can come back later with a higher value. Points left over carry to the next level.
 - **`perks_by_level`.** A perk for every level that grants one, levels 2 to 30. A perk with ranks appears once per rank.
+- **`spells`** (a caster's). The spells it leans on, in about the order it learns them (M5-60).
 
 ## How a build is checked
 
@@ -40,6 +41,9 @@ Every build page ends with what the build can still do outside its style, and at
 | Melee | Shield-bearer | [melee.md](melee.md#shield-bearer) |
 | Melee | Two-handed fighter | [melee.md](melee.md#two-handed-fighter) |
 | Melee | Duelist | [melee.md](melee.md#duelist) |
-| Magic | three builds (M5-60) | `magic.md` |
+| Magic | Blaster | [magic.md](magic.md#blaster) |
+| Magic | Summoner | [magic.md](magic.md#summoner) |
+| Magic | Support | [magic.md](magic.md#support) |
 | Ranged | three builds (M5-61) | `ranged.md` |
-| Hybrid | magic swordsman (M5-60), arcane archer or trickster, ranger (M5-61) | `hybrids.md` |
+| Hybrid | Magic swordsman | [hybrids.md](hybrids.md#magic-swordsman) |
+| Hybrid | arcane archer or trickster, ranger (M5-61) | `hybrids.md` |

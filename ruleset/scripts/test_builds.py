@@ -31,6 +31,19 @@ class TestBuilds(unittest.TestCase):
         melee = sorted(b["sub_path"] for b in builds() if b["path"] == "melee")
         self.assertEqual(melee, ["duelist", "shield_bearer", "two_handed"])
 
+    def test_the_magic_path_has_its_three_sub_paths_and_the_magic_swordsman(self):
+        magic = sorted(b["sub_path"] for b in builds() if b["path"] == "magic")
+        self.assertEqual(magic, ["blaster", "summoner", "support"])
+        self.assertIn("magic_swordsman", [b["sub_path"] for b in builds() if b["path"] == "hybrid"])
+
+    def test_a_builds_spells_are_of_a_color_whose_skill_it_raises(self):
+        spells = {row["key"]: row for row in json.loads((_SCRIPTS.parent / "data" / "spells" / "core.json").read_text())["spells"]}
+        for build in builds():
+            raised = {p["skill"].rsplit("/", 1)[-1] for p in build["skill_priorities"]}
+            for ref in build.get("spells", []):
+                with self.subTest(build=build["key"], spell=ref):
+                    self.assertIn(f"{spells[ref.rsplit('/', 1)[-1]]['color']}_magic", raised)
+
     def test_every_build_has_a_page_that_names_it(self):
         pages = {"melee": "melee.md", "magic": "magic.md", "ranged": "ranged.md", "hybrid": "hybrids.md"}
         docs = _SCRIPTS.parents[1] / "docs" / "modules" / "builds"
