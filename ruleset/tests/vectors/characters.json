@@ -76,7 +76,7 @@
         "target": "hp",
         "operation": "add",
         "value": 15,
-        "source": "feature:toughness",
+        "source": "feature:hardened_hide",
         "origin": "core:origin/trained"
       }
     ],
@@ -140,7 +140,7 @@
         "target": "hp",
         "operation": "add",
         "value": 30,
-        "source": "feature:toughness",
+        "source": "feature:hardened_hide",
         "origin": "core:origin/trained"
       }
     ],
@@ -204,7 +204,7 @@
         "target": "hp",
         "operation": "add",
         "value": 30,
-        "source": "feature:toughness",
+        "source": "feature:hardened_hide",
         "origin": "core:origin/trained"
       },
       {
@@ -275,7 +275,7 @@
         "target": "hp",
         "operation": "add",
         "value": 30,
-        "source": "feature:toughness",
+        "source": "feature:hardened_hide",
         "origin": "core:origin/trained"
       },
       {
@@ -346,7 +346,7 @@
         "target": "hp",
         "operation": "add",
         "value": 30,
-        "source": "feature:toughness",
+        "source": "feature:hardened_hide",
         "origin": "core:origin/trained"
       },
       {
@@ -417,7 +417,7 @@
         "target": "hp",
         "operation": "add",
         "value": 45,
-        "source": "feature:toughness",
+        "source": "feature:hardened_hide",
         "origin": "core:origin/trained"
       },
       {
@@ -488,7 +488,7 @@
         "target": "hp",
         "operation": "add",
         "value": 45,
-        "source": "feature:toughness",
+        "source": "feature:hardened_hide",
         "origin": "core:origin/trained"
       },
       {
@@ -559,7 +559,7 @@
         "target": "hp",
         "operation": "add",
         "value": 45,
-        "source": "feature:toughness",
+        "source": "feature:hardened_hide",
         "origin": "core:origin/trained"
       },
       {
@@ -630,7 +630,7 @@
         "target": "hp",
         "operation": "add",
         "value": 45,
-        "source": "feature:toughness",
+        "source": "feature:hardened_hide",
         "origin": "core:origin/trained"
       },
       {

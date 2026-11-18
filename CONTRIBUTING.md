@@ -1,6 +1,6 @@
 # Contributing to Riftweave
 
-Modified: 2026-11-17
+Modified: 2026-11-18
 
 Thanks for your interest in Riftweave! This repository is a **data-oriented,
 engine-agnostic cRPG ruleset**. The product *is* the data: a set of JSON files
@@ -197,6 +197,12 @@ one name.
   neutral units are units (distance, one square), seconds (time), and weight units
   ([contract.md](docs/core/contract.md#distance)), so `range`, `duration`, and `weight` carry
   no suffix; a number in another unit says so, as `duration_turns`.
+- **Original names for perks, maneuvers, and traits.** Core is a public SRD, so a name is
+  our own, never a feat, perk, or ability name from another game. Plain words and
+  real-world terms stay (berserker, riposte, backstab, sniper). Do not use (M5-67):
+  `toughness`, `alert`, `iron_will`, `lucky`, `quick_draw`, `spell_penetration`,
+  `second_wind`, `light_foot`, `gunslinger`, `deadeye`, `power_attack`, `cleave`, `duelist`,
+  or any other name you know from a published game. When in doubt, pick another name.
 - **Booleans read as questions:** `is_ranged`, `has_reach`, `requires_concentration`.
 - **No vague names:** not `data`, `info`, `misc`, `common`, `other`, `extra`, `stuff`.
 - **Python** (scripts, tools) follows PEP 8 casing and the same rules: verb + object

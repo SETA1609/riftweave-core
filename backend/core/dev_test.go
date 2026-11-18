@@ -223,16 +223,16 @@ func TestAPerkIsGrantedUpToItsRanksAndRemoved(t *testing.T) {
 	var opened *Core = devCore(t)
 	var session any = startedSession(t, opened)
 	for rank := 1; rank <= 3; rank++ {
-		session = dev(t, opened, session, map[string]any{"operation": "perk", "key": "toughness"})["session"]
-		if got := session.(map[string]any)["actor"].(map[string]any)["perks"].(map[string]any)["toughness"]; got != float64(rank) {
-			t.Fatalf("rank %d: perks.toughness = %v", rank, got)
+		session = dev(t, opened, session, map[string]any{"operation": "perk", "key": "hardened_hide"})["session"]
+		if got := session.(map[string]any)["actor"].(map[string]any)["perks"].(map[string]any)["hardened_hide"]; got != float64(rank) {
+			t.Fatalf("rank %d: perks.hardened_hide = %v", rank, got)
 		}
 	}
-	if out := devRefused(t, opened, session, map[string]any{"operation": "perk", "key": "toughness"}); !strings.Contains(out, "rank") {
+	if out := devRefused(t, opened, session, map[string]any{"operation": "perk", "key": "hardened_hide"}); !strings.Contains(out, "rank") {
 		t.Errorf("a fourth rank of a 3-rank perk: %s", out)
 	}
-	var removed map[string]any = dev(t, opened, session, map[string]any{"operation": "perk", "key": "toughness", "remove": 1})
-	if perks, _ := actorOf(removed)["perks"].(map[string]any); perks["toughness"] != nil {
+	var removed map[string]any = dev(t, opened, session, map[string]any{"operation": "perk", "key": "hardened_hide", "remove": 1})
+	if perks, _ := actorOf(removed)["perks"].(map[string]any); perks["hardened_hide"] != nil {
 		t.Errorf("removed perk still held: %v", perks)
 	}
 	devRefused(t, opened, session, map[string]any{"operation": "perk", "key": "no_such_perk"})
@@ -276,7 +276,7 @@ func TestThePartTwoOperationsReplay(t *testing.T) {
 	var opened *Core = devCore(t)
 	var session any = startedSession(t, opened)
 	for _, operation := range []map[string]any{
-		{"operation": "perk", "key": "toughness"}, {"operation": "learn", "spell": "core:spell/fire_bolt"},
+		{"operation": "perk", "key": "hardened_hide"}, {"operation": "learn", "spell": "core:spell/fire_bolt"},
 		{"operation": "gold", "set": 250}, {"operation": "rest", "key": "short_rest"},
 	} {
 		session = dev(t, opened, session, operation)["session"]

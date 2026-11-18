@@ -85,10 +85,10 @@ func runChain(t *testing.T, opened *Core) map[string]any {
 		case strings.HasPrefix(name, "cast"):
 			without(input["caster"].(map[string]any), "mana", "attributes", "skills")
 		case strings.HasPrefix(name, "perk"):
-			// Toughness to rank 2 through the session, then derived fills the actor and its modifiers.
+			// Hardened Hide to rank 2 through the session, then derived fills the actor and its modifiers.
 			for range 2 {
 				session = sessionCall(t, opened, map[string]any{"operation": "step", "session": session,
-					"step": map[string]any{"command": "progression", "input": map[string]any{"operation": "take_perk", "perk": "toughness"}}})["session"]
+					"step": map[string]any{"command": "progression", "input": map[string]any{"operation": "take_perk", "perk": "hardened_hide"}}})["session"]
 			}
 			without(input, "actor", "modifiers")
 		case strings.HasPrefix(name, "gear: the attack"):
@@ -203,15 +203,15 @@ func TestALevelUpsChoicesAreWrittenWithNoDevStep(t *testing.T) {
 		t.Errorf("blades 17 + 10 and evasion 15 + 3 written: %v", skills)
 	}
 
-	session, _ = step(t, opened, session, "progression", map[string]any{"operation": "take_perk", "perk": "toughness"})
-	session, _ = step(t, opened, session, "progression", map[string]any{"operation": "take_perk", "perk": "toughness"})
+	session, _ = step(t, opened, session, "progression", map[string]any{"operation": "take_perk", "perk": "hardened_hide"})
+	session, _ = step(t, opened, session, "progression", map[string]any{"operation": "take_perk", "perk": "hardened_hide"})
 	session, refused := step(t, opened, session, "progression", map[string]any{"operation": "take_perk", "perk": "power_attack"})
 	if refused["taken"] != false {
 		t.Errorf("power_attack needs blades 40: %v", refused)
 	}
 	perks := session["actor"].(map[string]any)["perks"].(map[string]any)
-	if !reflect.DeepEqual(perks, map[string]any{"toughness": float64(2)}) {
-		t.Errorf("toughness at rank 2 and nothing else: %v", perks)
+	if !reflect.DeepEqual(perks, map[string]any{"hardened_hide": float64(2)}) {
+		t.Errorf("hardened_hide at rank 2 and nothing else: %v", perks)
 	}
 
 	session, _ = step(t, opened, session, "spellcraft", map[string]any{"operation": "learn", "spell": "fire_bolt"})

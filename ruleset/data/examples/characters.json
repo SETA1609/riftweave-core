@@ -45,7 +45,7 @@
         {
           "level": 2,
           "luck_roll": 2,
-          "perk": "core:feature/toughness",
+          "perk": "core:feature/hardened_hide",
           "spend": {
             "blunt": 10,
             "shields": 4,
@@ -55,7 +55,7 @@
         {
           "level": 3,
           "luck_roll": 6,
-          "perk": "core:feature/toughness",
+          "perk": "core:feature/hardened_hide",
           "spend": {
             "blunt": 11,
             "athletics": 10
@@ -76,7 +76,7 @@
         {
           "level": 5,
           "luck_roll": 5,
-          "perk": "core:feature/lucky",
+          "perk": "core:feature/fates_reprieve",
           "spend": {
             "shields": 10,
             "athletics": 10
@@ -93,7 +93,7 @@
         {
           "level": 7,
           "luck_roll": 7,
-          "perk": "core:feature/toughness",
+          "perk": "core:feature/hardened_hide",
           "spend": {
             "blunt": 12,
             "shields": 10
@@ -253,7 +253,7 @@
         {
           "level": 9,
           "luck_roll": 4,
-          "perk": "core:feature/iron_will",
+          "perk": "core:feature/unshaken",
           "spend": {
             "blue_magic": 5,
             "investigation": 11

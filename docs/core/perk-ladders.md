@@ -11,14 +11,14 @@ arrow runs from a prerequisite perk to the perk that needs it, labelled with the
 when more than 1. A rounded box is a prerequisite from another category. A ladder that stops
 early, or a perk nothing leads to, shows at a glance.
 
-96 perks: 37 on a ladder, 59 with no perk before or after them.
+98 perks: 37 on a ladder, 61 with no perk before or after them.
 
 ## Combat
 
 ```mermaid
 graph LR
   power_attack["Power Attack<br/>blades 40 · STR 6"]
-  deadeye["Deadeye<br/>bows or crossbows or guns or throwing_weapons 40 · PER 6"]
+  gap_finder["Gap Finder<br/>bows or crossbows or guns or throwing_weapons 40 · PER 6"]
   brutal_charge["Brutal Charge<br/>STR 9"]
   brawler["Brawler (ranks 2)<br/>unarmed 30 · END 5"]
   iron_fist["Iron Fist<br/>Lv 12 · unarmed 60 · STR 7"]
@@ -31,11 +31,11 @@ graph LR
   sidestep["Sidestep<br/>evasion 30 · AGI 6"]
   armored_evasion["Armored Evasion<br/>Lv 6 · evasion 50"]
   riposte["Riposte<br/>Lv 12 · evasion 60 · AGI 7"]
-  toughness(["Toughness<br/>general"])
-  toughness --> brutal_charge
+  hardened_hide(["Hardened Hide<br/>general"])
+  hardened_hide --> brutal_charge
   brawler --> iron_fist
-  deadeye --> sniper
-  toughness --> unstoppable
+  gap_finder --> sniper
+  hardened_hide --> unstoppable
   power_attack --> executioner
   shield_training --> spell_ward
   spell_ward --> bulwark
@@ -47,10 +47,10 @@ graph LR
 
 ```mermaid
 graph LR
-  toughness["Toughness (ranks 3)<br/>END 5"]
-  lucky["Lucky<br/>LCK 7"]
+  hardened_hide["Hardened Hide (ranks 3)<br/>END 5"]
+  fates_reprieve["Fate's Reprieve<br/>LCK 7"]
   fortune_favored["Fortune Favored<br/>Lv 12 · LCK 8"]
-  lucky --> fortune_favored
+  fates_reprieve --> fortune_favored
 ```
 
 ## Magic
@@ -111,28 +111,30 @@ attributes, and level only.
 
 | Perk | Category | Gates |
 | --- | --- | --- |
-| Alert | general | PER 6 |
+| Ever Watchful | general | PER 6 |
 | Shield Wall | combat | shields 40 · END 6 |
 | Pyromancer | magic | red_magic 50 |
 | Field Medic | survival | medicine 40 |
 | Heavy Armor Expert | combat | heavy_armor 60 · STR 8 |
-| Light Foot | combat | light_armor 50 · AGI 7 |
+| Easy Stride | combat | light_armor 50 · AGI 7 |
+| Wind-Up | combat | STR 5 |
+| Snap Cut | combat | AGI 5 |
 | Acrobat | combat | evasion 40 · AGI 7 |
 | Scavenger | survival | LCK 6 |
 | Cleave | combat | Lv 6 · blades or blunt 50 · STR 6 |
 | Crushing Blow | combat | Lv 6 · blunt 50 · STR 7 |
 | Precise Thrust | combat | Lv 6 · piercing 50 · AGI 6 |
-| Quick Draw | combat | AGI 6 |
+| Ready Hand | combat | AGI 6 |
 | Steady Aim | combat | Lv 6 · bows or crossbows or guns or throwing_weapons 40 · PER 6 |
 | Duelist | combat | Lv 12 · blades 60 · AGI 7 |
-| Second Wind | combat | Lv 12 · END 7 |
+| Catch Your Breath | combat | Lv 12 · END 7 |
 | Berserker | combat | Lv 12 · STR 7 |
 | Thrown Mastery | combat | Lv 12 · throwing_weapons 60 · AGI 7 |
 | Fast Reload | combat | Lv 6 · crossbows 50 · STR 5 |
-| Gunslinger | combat | Lv 12 · guns 60 · AGI 7 |
+| Hip Shot | combat | Lv 12 · guns 60 · AGI 7 |
 | Mana Flow | magic | Lv 6 · WIL 6 |
 | Battle Mage | magic | Lv 12 · INT 6 · END 6 |
-| Spell Penetration | magic | Lv 12 · INT 7 |
+| Ward Breaker | magic | Lv 12 · INT 7 |
 | Elemental Harmony | magic | Lv 18 · INT 6 · WIL 6 |
 | Healer | magic | Lv 6 · green_magic 50 |
 | Illusionist | magic | Lv 6 · yellow_magic 50 |
@@ -166,7 +168,7 @@ attributes, and level only.
 | Tinkerer | utility | repair 40 · INT 6 |
 | Master Alchemist | utility | Lv 12 · alchemy 60 · INT 7 |
 | Master Smith | utility | Lv 12 · blacksmithing 60 · STR 6 |
-| Iron Will | general | Lv 6 · WIL 7 |
+| Unshaken | general | Lv 6 · WIL 7 |
 | Meditative | magic | Lv 6 · WIL 6 |
 | Night Eyes | survival | Lv 6 · PER 7 |
 | Survivor | general | Lv 18 · END 6 · WIL 6 |
