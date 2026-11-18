@@ -1,0 +1,32 @@
+#### GD_S17_07_bow-perk-ladders Bow perk ladders: the longbow and the shortbow
+- Status: todo
+- Priority: medium
+- Needs: GD_S17_05_ranged-full-attack, GD_S17_06_ranged-maneuvers
+- Modified: 2026-11-18
+- Do: Owner request, 2026-11-18: an archer who takes the longbow plays differently from one who takes the shortbow. M5-61 found no bow perk at all past the shared Gap Finder, Steady Aim, and Sniper. Add two bow ladders, each to level 24, with tiers 3 to 6 levels apart.
+  - **Which bow:** a perk names the bow it needs by weapon properties, not by key [A]: the **longbow line** needs a bow with `heavy` (the longbow); the **shortbow line** a bow without it (shortbow, composite bow, improvised bow). How a perk prerequisite names a held weapon (skill plus properties) is added to the feature schema here, once, for the firearm, crossbow, and thrown ladders to reuse.
+  - **The longbow trade:** a `heavy` bow shot after a move in the same turn takes -10 [A]. The longbow stands and hits hard; the shortbow moves.
+  - **Longbow line (the war archer):**
+    - `full_draw` (Lv4, STR 6, Bows 30): a longbow adds `STR - 5` to damage, at most +3 [A].
+    - `bodkin_point`, tiers Lv8 / Lv14 / Lv20 (Bows 50): a longbow arrow ignores 25% / 50% / 75% of armor DR (`core:effect/armor_pierce`).
+    - `arrow_storm` (Lv12, Bows 60, needs `full_draw`): unlocks the maneuver **Arrow Storm**: all remaining AP, at least attack + 2, and 5 arrows on a radius-2 zone at long range; each creature in it takes one strike at -20 [A]. The longbow's artillery, against the shortbow's Split Nock.
+    - `far_mark` (Lv18, PER 8, needs `bodkin_point` tier 1): a longbow's `rangeNormal` x1.5, and Held Breath at long range takes no range penalty.
+    - `heart_seeker` (Lv24, needs `far_mark`): a Held Breath shot with a longbow that crits doubles its damage dice once more [A].
+  - **Shortbow line (the skirmisher):**
+    - `loose_and_step` (Lv4, AGI 6, Bows 30): after a shortbow attack, move 1 unit for no AP [A].
+    - `quick_nock` (Lv8, AGI 7, Bows 50): a shortbow attack costs 1 AP less (2 AP), so an AGI 9 pool of 5 AP shoots twice a turn.
+    - `two_on_the_string` tier 2 (Lv12): Split Nock strikes at -10 instead of -20, shortbow only [A].
+    - `parting_shot` (Lv14, needs `loose_and_step`): a disengage and a shortbow attack together cost the attack's AP.
+    - `running_archer` (Lv18, AGI 8, needs `quick_nock`): no penalty for shooting into melee with a shortbow, and moving after a shot this turn draws no opportunity attack.
+    - `three_on_the_string` (Lv24, needs `two_on_the_string` tier 2): Split Nock looses three arrows.
+  - **Shared:** `two_on_the_string` and `still_hunter` (GD_S17_06) stay open to every bow; `gap_finder`, `steady_aim`, and `sniper` are unchanged.
+  - **Names are original** (M5-67): none is a feat or perk name from another game.
+- Keys: the held-weapon prerequisite on features; `full_draw`, `bodkin_point`, `arrow_storm` (perk and maneuver), `far_mark`, `heart_seeker`, `loose_and_step`, `quick_nock`, `parting_shot`, `running_archer`, `three_on_the_string`; tier 2 of `two_on_the_string`; the moved-heavy-bow penalty
+- Files: ~11 (docs/modules/combat.md, docs/modules/weapons.md, ruleset/schemas/feature.schema.json, ruleset/data/features/core.json, ruleset/data/maneuvers/core.json, ruleset/data/modifier_targets/core.json, ruleset/scripts/validate.py, ruleset/tests/vectors/combat.json, ruleset/scripts/test_perks.py, docs/decisions/GD_S17_07_bow-perk-ladders.md, changes/GD_S17_07_bow-perk-ladders.md)
+- See: docs/decisions/M5-61.md (the gaps), docs/modules/builds/ranged.md (the archer), docs/issues/open/GD_S05_03_defense-perk-ladders.md (`rank_levels`)
+- Done when:
+  - `validate.py` fails on a perk whose held-weapon prerequisite names no weapon property in use.
+  - A vector shows `full_draw` and `bodkin_point` on a longbow and not on a shortbow, and `quick_nock` on a shortbow and not on a longbow.
+  - A vector shows the moved longbow penalty, and Arrow Storm's zone.
+  - Each bow line has at least five perks from level 4 to 24.
+  - `validate.py` and the tests pass.

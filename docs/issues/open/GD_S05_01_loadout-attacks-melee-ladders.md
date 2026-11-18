@@ -3,7 +3,7 @@
 - Priority: medium
 - Needs: M3-27, M5-67
 - Was: M3-28
-- Modified: 2026-11-17
+- Modified: 2026-11-18
 - Do: Owner request, 2026-11-16 and 2026-11-17: the melee builds (M5-47) need perks for carrying a blow into the next foe, for fighting with two weapons, and for extra strikes. AP is `2 + floor(AGI / 3)` (`derived/core.json`, 2 to 5 AP); today every attack costs 3 AP.
   - **The attack strikes with everything held** (owner 2026-11-17): one `attack` action strikes once with the main hand and once with an off-hand weapon, if there is one. Its AP cost depends on the loadout, read from the weapons' `light` and `two_handed` properties. The strikes of one attack may go to different foes in reach. Each strike is its own roll through the whole pipeline (docs/core/combat.md).
   - **The jab** is a new action: one strike with the off-hand weapon alone, at the off-hand weapon's own cost.
@@ -26,7 +26,7 @@
     - `carry_through` (was `cleave`, Lv6): needs `full_weight`. When a strike drops a foe, the next strike of the same action (or one free strike, after an attack) goes to a foe in reach.
     - `reaping_arc` (Lv12, needs `carry_through`): the carry repeats for every foe a strike drops, with no limit but the foes in reach.
     - `circle_cut` (Lv18, two-handed weapon, needs `reaping_arc`): an action that spends all AP and strikes every foe in reach once, at -10. It is the one many-target full attack.
-  - **Extra strikes ladder** (any melee weapon):
+  - **Extra strikes ladder** (any weapon, melee or ranged, owner 2026-11-18; the ranged rows and the reload between strikes are `GD_S17_05_ranged-full-attack`'s):
     - `follow_up` (Lv6): a full attack gains one main-hand strike at -20.
     - `press_on` (Lv18, needs `follow_up`): one more main-hand strike at -30.
   - **Two-weapon ladder:**

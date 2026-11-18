@@ -1,0 +1,20 @@
+#### GD_S17_10_ammo-scavenging-perks Ammunition scavenging perks: more ammunition from the field and from loot
+- Status: todo
+- Priority: medium
+- Needs: GD_S17_09_crossbow-thrown-perk-ladders
+- Modified: 2026-11-18
+- Do: Owner request, 2026-11-18: perks that find more ammunition as loot, and perks that turn what a fight leaves behind into ammunition, so a ranged character can keep shooting without a merchant. They are general perks, so they are also the fillers a ranged build takes in place of magic-table perks (M5-61's gap).
+  - `pick_the_field`, tiers no gate / Lv6 / Lv12 (Survival 30): after a fight, recover 75% / 90% / 100% of arrows and bolts instead of GD_S17_02's half [A]; elemental rounds always burst (GD_S17_04), so none of them comes back [A].
+  - `magpie_eye` (Lv4, PER 6): whenever you roll on a loot table (`loot/core.json`), roll once more on a new `ammo_cache` table that pays rounds of the kinds your carried weapons load [A].
+  - `strip_the_fallen` (Lv8, Survival 40, needs `magpie_eye`): a defeated foe who carried a ranged weapon leaves 1d6 rounds of its kind, and a thrower's leaves its thrown weapons.
+  - `field_fletcher` (Lv6, Survival 40): at a short rest, a Survival check turns gathered wood or scrap into 10 arrows or bolts [A]. It needs no crafting module; the crafting module (GD_S15_01) may add better recipes.
+  - `bullet_mould` (Lv10, Survival 40, any gun skill 40): at a short rest, cast 10 bullets from scrap metal or spent lead, if you carry powder [A].
+  - `make_do` (Lv12, needs `field_fletcher` or `bullet_mould`): fire a near kind at -20 (a bolt from a bow, a stone or shot from a sling or blunderbuss) when your own runs out [A].
+  - **Loot:** the `ammo_cache` table is a loot row by level (levels 1, 6, 12, 18 [A]); from level 6 it may pay elemental rounds (GD_S17_04).
+- Keys: `pick_the_field`, `magpie_eye`, `strip_the_fallen`, `field_fletcher`, `bullet_mould`, `make_do`; the `ammo_cache` loot tables; the recovery rate as a modifier target
+- Files: ~10 (docs/modules/progression.md, docs/core/rest.md, docs/core/loot.md, ruleset/data/features/core.json, ruleset/data/loot/core.json, ruleset/data/modifier_targets/core.json, ruleset/tests/vectors/ (loot and combat), ruleset/scripts/test_perks.py, docs/decisions/GD_S17_10_ammo-scavenging-perks.md, changes/GD_S17_10_ammo-scavenging-perks.md)
+- See: docs/issues/open/GD_S17_02_ammunition-items-and-reloading.md (recovery), ruleset/data/loot/core.json, docs/issues/open/GD_S15_01_crafting-module.md
+- Done when:
+  - A vector recovers arrows at each tier of `pick_the_field`.
+  - A loot vector rolls a bandit's purse with `magpie_eye` and pays one extra `ammo_cache` roll of the carried weapon's kind.
+  - `validate.py` and the tests pass.

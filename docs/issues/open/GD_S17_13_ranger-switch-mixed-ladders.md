@@ -1,0 +1,27 @@
+#### GD_S17_13_ranger-switch-mixed-ladders Ranger ladders: switching between bow and blade, and the mixed hand
+- Status: todo
+- Priority: medium
+- Needs: GD_S17_11_bound-ranged-weapons-ammo
+- Modified: 2026-11-18
+- Do: Owner request, 2026-11-18: the ranger fights in one of two ways. The **switcher** uses one weapon or the other: a bow at range, a blade when the foe closes. The **mixed hand** holds a one-handed melee weapon and a one-handed ranged weapon together: a light thrown weapon, a pistol, or a hand crossbow. M5-61's ranger only splits its points between Bows and Blades; give each form a perk line. Held-weapon prerequisites as in GD_S17_07; names are our own (M5-67).
+  - **Swapping weapons** (a rule no document has today): stowing what is held and drawing another weapon costs 1 AP [A], as a new `swap` row in `actions/core.json`; dropping a weapon costs nothing. Drawing a thrown weapon as part of a throw is GD_S17_09's `hand_to_throw`, not a swap.
+  - **Switcher line** (a two-handed ranged weapon and a melee weapon carried):
+    - `quick_switch` (Lv4, AGI 6): the first swap each turn costs no AP.
+    - `shot_then_steel` (Lv8, needs `quick_switch`): after a ranged strike this turn, your first melee strike gains +10; after a melee strike, your first ranged strike gains +10 [A].
+    - `ready_steel` (Lv12, needs `quick_switch`): while holding a bow or a long gun, an opportunity attack draws your melee weapon and strikes with it at no swap cost.
+    - `step_back_and_loose` (Lv18, needs `shot_then_steel`): a disengage, a swap to the ranged weapon, and a ranged attack together cost the attack's AP + 1 [A].
+  - **Mixed-hand line** (a one-handed melee weapon and a pistol, a hand crossbow, or a light thrown weapon; GD_S17_05's row):
+    - `steel_and_shot` (Lv6, Blades or Piercing or Blunt 30, and the ranged skill 30): the mixed-hand row strikes at -0 / -10 instead of -10 / -20, and the off-hand shot at the foe you strike in melee takes no shooting-into-melee penalty.
+    - `one_hand_load` (Lv8, needs `steel_and_shot`): reloading a pistol or a hand crossbow with a weapon in the other hand costs no extra AP (GD_S17_05's +1).
+    - `pin_and_cut` (Lv12, needs `steel_and_shot`): when the off-hand shot or throw hits, your next main-hand strike this turn gains +10 and adds the off-hand weapon's damage die once [A].
+    - `belt_of_knives` (Lv14, Throwing Weapons 50): with a blade in the main hand, drawing a light thrown weapon into the off hand after a throw costs no AP, so a full attack throws one more at -20.
+    - `crossfire` (Lv20, needs `pin_and_cut`): a full attack with the mixed hand gains one more off-hand ranged strike at -20, if the weapon is loaded or a thrown weapon is in hand.
+  - **Both forms** take the extra-strike ladder of GD_S05_01 and GD_S17_05; neither line gates the other.
+- Keys: the `swap` action; `quick_switch`, `shot_then_steel`, `ready_steel`, `step_back_and_loose`, `steel_and_shot`, `one_hand_load`, `pin_and_cut`, `belt_of_knives`, `crossfire`
+- Files: ~9 (docs/core/actions.md, docs/modules/combat.md, ruleset/data/actions/core.json, ruleset/data/features/core.json, ruleset/data/modifier_targets/core.json, ruleset/tests/vectors/combat.json, ruleset/scripts/test_perks.py, docs/decisions/GD_S17_13_ranger-switch-mixed-ladders.md, changes/GD_S17_13_ranger-switch-mixed-ladders.md)
+- See: docs/issues/open/GD_S17_05_ranged-full-attack.md (the mixed-hand row), docs/modules/builds/hybrids.md (the ranger), docs/decisions/M5-61.md
+- Done when:
+  - A vector swaps from a shortbow to a sword at 1 AP, and at 0 AP with `quick_switch`, and only the first swap of the turn is free.
+  - A vector runs a mixed-hand attack with `steel_and_shot` at -0 / -10, and a pistol reload with a sword in the other hand at 2 AP with `one_hand_load` and 3 AP without.
+  - Each line has at least four perks.
+  - `validate.py` and the tests pass.
