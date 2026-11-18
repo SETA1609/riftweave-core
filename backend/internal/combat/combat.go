@@ -213,6 +213,16 @@ func situationModifiers(ruleset *data.Ruleset, input *Input, delivery string) ([
 			modifiers = append(modifiers, situation.RangeModifiers(attackRange)...)
 		}
 	}
+	// A row's adds: the attacker's modifiers on that target join the attack while the row applies.
+	for _, situation := range applied {
+		if situation.Adds == "" {
+			continue
+		}
+		for _, attackModifier := range modifier.Target(input.Modifiers, situation.Adds) {
+			attackModifier.Target = "attack_roll"
+			modifiers = append(modifiers, attackModifier)
+		}
+	}
 	if input.CalledShot == "" {
 		return modifiers, nil, nil
 	}
@@ -272,7 +282,11 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	if err != nil {
 		return Result{}, err
 	}
-	bonus, err := resolution.Bonus(ruleset.Origins, slices.Concat(input.Modifiers, attackModifiers))
+	// A situation's adds target joins the attack only through its row (situationModifiers).
+	var own []modifier.Modifier = slices.DeleteFunc(slices.Clone(input.Modifiers), func(m modifier.Modifier) bool {
+		return slices.ContainsFunc(ruleset.Situations.Rows(), func(row data.Situation) bool { return row.Adds != "" && row.Adds == m.Target })
+	})
+	bonus, err := resolution.Bonus(ruleset.Origins, slices.Concat(own, attackModifiers))
 	if err != nil {
 		return Result{}, err
 	}

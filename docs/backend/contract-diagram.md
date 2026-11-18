@@ -455,6 +455,7 @@ classDiagram
         modifiers modifiers
         object packet
         List~string~ removed_sources
+        boolean summoning
         string target
         integer value
     }

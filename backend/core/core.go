@@ -216,6 +216,9 @@ type modifiersInput struct {
 	RemovedSources []string            `json:"removed_sources"`
 	Value          int64               `json:"value"`
 	ElapsedTurns   int64               `json:"elapsed_turns"`
+	// Summoning is whether the holder has an active summon; a while_summoning modifier counts
+	// only when it is true (docs/core/modifier.md).
+	Summoning bool `json:"summoning"`
 }
 
 type modifiersResult struct {
@@ -225,6 +228,9 @@ type modifiersResult struct {
 }
 
 func runModifiers(ruleset *data.Ruleset, input modifiersInput) (modifiersResult, error) {
+	if !input.Summoning {
+		input.Modifiers = slices.DeleteFunc(slices.Clone(input.Modifiers), func(m modifier.Modifier) bool { return m.Duration == "while_summoning" })
+	}
 	var targetModifiers []modifier.Modifier = input.Modifiers
 	if input.Target != nil {
 		targetModifiers = modifier.Target(input.Modifiers, *input.Target)

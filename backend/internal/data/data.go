@@ -293,6 +293,8 @@ type Situation struct {
 	Ranged     []modifier.Modifier `json:"ranged"`
 	Forbids    []string            `json:"forbids"`
 	Deliveries []string            `json:"deliveries"` // nil: every delivery
+	// Adds is a modifier target whose attacker modifiers join the attack while the row applies.
+	Adds string `json:"adds"`
 }
 
 // RangeModifiers returns the row's modifiers for a range, "melee" or "ranged".

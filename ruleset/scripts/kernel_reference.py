@@ -139,6 +139,9 @@ def apply_resist(amount, tag, modifiers, elapsed_turns=0, removed_sources=()):
 
 def run_modifiers(vector):
     modifiers = vector.get("modifiers", [])
+    if not vector.get("summoning"):
+        # A while_summoning modifier counts only while a summon is out (docs/core/modifier.md).
+        modifiers = [m for m in modifiers if m.get("duration") != "while_summoning"]
     elapsed = vector.get("elapsed_turns", 0)
     removed = vector.get("removed_sources", [])
     target = vector.get("target")
@@ -392,6 +395,10 @@ def situation_modifiers(vector, delivery):
             raise ValueError(f"{row['key']} forbids a {range_} attack")
         if delivery in row.get("deliveries", ["single", "area", "instant"]):
             modifiers.extend(row.get(range_, []))
+    # A row's `adds`: the attacker's modifiers on that target join the attack while the row applies.
+    for row in applied:
+        if "adds" in row:
+            modifiers.extend({**m, "target": "attack_roll"} for m in vector.get("modifiers", []) if m["target"] == row["adds"])
     called = None
     if "called_shot" in vector:
         called = next(c for c in data["called_shots"] if c["key"] == vector["called_shot"])
@@ -470,10 +477,12 @@ def run_combat(vector):
     rules = load_data("resolution/core.json")["resolution"]
     defender_window = rules["crit_window"] + defender.get("attributes", {}).get("lck", 0) // rules["crit_window_per_two_luck"]
 
+    # A situation's `adds` target joins the attack only through its row (situation_modifiers).
+    adds = {row["adds"] for row in load_data("combat/situations.json")["situations"] if "adds" in row}
     attack = run_resolution(
         {
             "actor": {"skills": {"attack_roll": attacker["skill"]}, "attributes": attacker.get("attributes", {})},
-            "modifiers": vector.get("modifiers", []) + situation_mods,
+            "modifiers": [m for m in vector.get("modifiers", []) if m["target"] not in adds] + situation_mods,
             "roll": attacker["roll"],
         }
     )
