@@ -126,3 +126,17 @@ test('an edited backup is flagged, and one from other rules says so', async ({ p
   const older = await openFresh(browser, baseURL!, 'older.riftweave.json', { ...saved, rules_version: '0.0.1' });
   await expect(older.getByText(/made with rules 0\.0\.1 and was replayed under rules \S+; the result is the same/)).toBeVisible();
 });
+
+test('a dev build puts rw in the console (APP-48)', async ({ page }) => {
+  await page.goto('/#/play/character_creation');
+  await expect(page.getByRole('button', { name: 'Create character' })).toBeVisible();
+  const help = await page.evaluate(() => (globalThis as unknown as { rw: { help(): string } }).rw.help());
+  expect(help).toContain('rw.context');
+  const hp = await page.evaluate(async () => {
+    const rw = (globalThis as unknown as { rw: { api: { derived(actor: object): Promise<{ hp: number }> } } }).rw;
+    return (await rw.api.derived({ attributes: { str: 4, per: 4, end: 4, int: 5, wil: 2, agi: 6, cha: 3, lck: 3 }, level: 3 })).hp;
+  });
+  expect(hp).toBe(59);
+  await page.evaluate(() => (globalThis as unknown as { rw: { context: { theme: { set(theme: string): void } } } }).rw.context.theme.set('dark'));
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+});
