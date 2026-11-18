@@ -12,14 +12,16 @@ const LOCALE = /^[a-z]{2,3}(-[A-Za-z0-9]{2,8})*$/;
 const MODULE = /^[a-z0-9][a-z0-9_-]*$/;
 const THEMES = ['light', 'dark', 'system'];
 const NETWORK_MODES = ['local', 'server', 'room'];
+const TELEMETRY_MODES = ['off', 'local', 'export'];
+const ENDPOINT = /^https?:\/\//;
 
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
-/** The settings of a fresh install: English, the system's colours, no optional modules, offline. */
+/** The settings of a fresh install: English, the system's colours, no optional modules, offline, no telemetry. */
 export function defaultSettings(): SettingsFile {
-  return { riftweave: 'settings', version: SETTINGS_VERSION, locale: 'en', theme: 'system', modules: [], network: { mode: 'local' } };
+  return { riftweave: 'settings', version: SETTINGS_VERSION, locale: 'en', theme: 'system', modules: [], network: { mode: 'local' }, telemetry: { mode: 'off' } };
 }
 
 /** Read a settings file and check it; a file that breaks a rule is refused with a message. */
@@ -62,6 +64,13 @@ export function parseSettings(text: string): Parsed {
     if (!isObject(bestiary)) return { error: 'bestiary is not an object' };
     if ('players_see_only_known' in bestiary && typeof bestiary['players_see_only_known'] !== 'boolean') {
       return { error: 'bestiary.players_see_only_known is not true or false' };
+    }
+  }
+  if ('telemetry' in file) {
+    const telemetry = file['telemetry'];
+    if (!isObject(telemetry) || !TELEMETRY_MODES.includes(telemetry['mode'] as string)) return { error: 'telemetry.mode is not off, local, or export' };
+    if ('endpoint' in telemetry && (typeof telemetry['endpoint'] !== 'string' || !ENDPOINT.test(telemetry['endpoint']))) {
+      return { error: 'telemetry.endpoint is not an http or https URL' };
     }
   }
   return { settings: file as SettingsFile };

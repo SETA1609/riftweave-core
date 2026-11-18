@@ -36,6 +36,19 @@ class TestBuilds(unittest.TestCase):
         self.assertEqual(magic, ["blaster", "summoner", "support"])
         self.assertIn("magic_swordsman", [b["sub_path"] for b in builds() if b["path"] == "hybrid"])
 
+    def test_the_ranged_path_has_its_three_sub_paths_and_the_last_two_hybrids(self):
+        ranged = sorted(b["sub_path"] for b in builds() if b["path"] == "ranged")
+        self.assertEqual(ranged, ["arbalist", "archer", "gunslinger"])
+        hybrids = sorted(b["sub_path"] for b in builds() if b["path"] == "hybrid")
+        self.assertEqual(hybrids, ["arcane_trickster", "magic_swordsman", "ranger"])
+
+    def test_the_main_page_lists_all_twelve_builds(self):
+        self.assertEqual(len(builds()), 12)
+        page = (_SCRIPTS.parents[1] / "docs" / "modules" / "builds" / "README.md").read_text()
+        for build in builds():
+            with self.subTest(build=build["key"]):
+                self.assertIn(f"| {build['label']} |", page)
+
     def test_a_builds_spells_are_of_a_color_whose_skill_it_raises(self):
         spells = {row["key"]: row for row in json.loads((_SCRIPTS.parent / "data" / "spells" / "core.json").read_text())["spells"]}
         for build in builds():

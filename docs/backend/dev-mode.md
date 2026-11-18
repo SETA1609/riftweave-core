@@ -72,3 +72,21 @@ same operations. [V 2026-11-12, `go test ./cmd/riftweave/play`]
 | `:inflict <effect ref> <magnitude> <origin ref> [turns]` | `effect` |
 | `:level <level>` | `level` |
 | `:roll <d100> [<d100> ...]` | queues the rolls; no operation |
+
+## In the browser console
+
+A dev build of the frontend gives the console the app's own objects, as `--dev` gives the CLI its
+operations (APP-48). `globalThis.rw` holds:
+
+| Name | What it is |
+| --- | --- |
+| `rw.context` | the app context's signals: `rw.context.theme.set('dark')`, `rw.context.locale()` |
+| `rw.api` | the API the screens share: `await rw.api.derived({ attributes: { end: 6 }, level: 3 })` |
+| `rw.saves` | the saves: `rw.saves.list()`, `await rw.saves.resume(id)` |
+| `rw.router` | the router: `rw.router.navigateByUrl('/settings')` |
+| `rw.screen()` | the current screen's component, through Angular's dev-mode `ng.getComponent`; null in these builds, which are optimized, so Angular's dev mode is off [A] |
+| `rw.help()` | these names, one line each |
+
+- **Dev builds only.** `rw` is set when the `RIFTWEAVE_DEV` define is true. It is true in the `development` and `api` build configurations of `angular.json`, the ones `ng serve` uses, and false in the default and `pages` builds, so the console module is left out of those bundles. The Pages end-to-end spec checks the published build has no `rw`. [V 2026-11-18, the specs added; run in CI]
+- **Not the core.** `globalThis.riftweave` is the Go core in the page (`backend/cmd/riftweave-wasm`); `rw` is the Angular app around it.
+- **Rules stay rules.** A change made from the console goes through the context or the API, as a screen's would, so it cannot break a rule the screens keep. Editing a session's actor directly uses this page's `dev` command, which the core in the page does not enable; that waits for a dev switch in the WebAssembly entry point [U].

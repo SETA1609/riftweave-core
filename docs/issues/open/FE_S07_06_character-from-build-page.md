@@ -1,0 +1,11 @@
+#### FE_S07_06_character-from-build-page A new character from a suggested build, in both apps (frontend)
+- Status: todo
+- Priority: medium
+- Needs: BE_S07_05_character-from-build-cli, M5-47, FE_S08_02_player-session-page, FE_S07_04_character-list-page, FE_S07_09_character-creation-cv-form
+- Modified: 2026-11-19
+- Was: APP-38
+- Do: Frontend half, split by role on 2026-11-18 (PO_S00_01_issue-splitting-by-role): the Angular screens of `BE_S07_05_character-from-build-cli` and their UX, over the same commands and session steps, built from the shared components (docs/backend/frontend.md#conventions). The behaviour, the keys, and the rules are specified in `BE_S07_05_character-from-build-cli`; this issue adds no contract or core change.
+- Keys: the frontend screen and its route; no new contract keys
+- Files: ~3 (frontend/src/app/create/, frontend/src/app/app.spec.ts, frontend/e2e/create.spec.ts)
+- See: docs/issues/open/BE_S07_05_character-from-build-cli.md
+- Done when: the frontend makes a character from each core build at levels 1, 5, and 10 with the `build` command; a build file exported from the human CLI imports in the page; an illegal build file shows its problems; the specs and the Playwright test pass.

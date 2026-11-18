@@ -32,6 +32,7 @@ Main menu
 ├── Settings
 ├── Modules
 ├── Network
+├── Import                           APP-30
 └── Quit                             CLI only
 ```
 

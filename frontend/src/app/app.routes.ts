@@ -2,6 +2,7 @@
 // and one route per screen. A route's data sets the component's inputs.
 import type { Routes } from '@angular/router';
 import { Attack } from './attack';
+import { FileImport } from './file-import';
 import { Playthrough } from './playthrough';
 import { Resolution } from './resolution';
 import { SavedGames } from './saved-games';
@@ -14,6 +15,7 @@ export const routes: Routes = [
   { path: 'settings', component: SettingsScreens, data: { section: 'settings' }, title: 'Settings' },
   { path: 'modules', component: SettingsScreens, data: { section: 'modules' }, title: 'Modules' },
   { path: 'network', component: SettingsScreens, data: { section: 'network' }, title: 'Network' },
+  { path: 'import', component: FileImport, title: 'Import' },
   { path: 'play', component: MenuGrid, data: { parent: 'start' }, title: 'Start' },
   { path: 'play/gm_tools', component: MenuGrid, data: { parent: 'gm_tools' }, title: 'GM tools' },
   { path: 'play/character_creation', component: Sheet, title: 'Character creation' },

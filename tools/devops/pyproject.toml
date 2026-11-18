@@ -27,6 +27,10 @@ keep-both-added-lines = ["docs/stories/*.md", "docs/decisions.md", "docs/core/ve
 # to done after its pull request merges and regenerates the table in roadmap-file. The tool needs a
 # file with the markers, so the table lives there and not in ROADMAP.md.
 issues-directory = "docs/issues"
+# Role ids <ROLE>_<STORY>_<ISSUE>_<short-description> (PO_S00_01_issue-splitting-by-role), then
+# the older ids that done issues keep (M5-01, APP-30, SET-12). The role form comes first so a
+# branch named after a role id reads as one id.
+issue-id-pattern = "(?:PO|GD|DE|BE|FE|QA|OPS)_S[0-9]{2}_[0-9]{2}_[a-z0-9]+(?:-[a-z0-9]+)*|[A-Za-z][A-Za-z0-9]*(?:\\.[0-9]+)?-[0-9]+"
 
 # Read by `devops-tools container` (README.md#usage).
 [tool.devops-tools.container]

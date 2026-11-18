@@ -110,6 +110,11 @@ export function createApi(over: Transport | string) {
       };
     },
 
+    /** Check a stored actor against the contract (the stored_actor command); it comes back unchanged. */
+    checkActor: (actor: StoredActor) => post('/v1/commands/stored_actor', { actor }),
+    /** Check spell drafts as the author command does (APP-10). */
+    author: (input: Input<'/v1/commands/author'>) => post('/v1/commands/author', input),
+
     startSession: async (start: StoredActor): Promise<Session> => (await post('/v1/sessions', { start })).session,
     step: (session: Session, step: SessionStep) => post('/v1/sessions/step', { session, step }),
     replay: (session: Session) => post('/v1/sessions/replay', { session }),

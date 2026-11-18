@@ -62,4 +62,4 @@ Places where the data does not yet follow the model:
   free-text field such as `parameter` is only checked where a test says so. [V 2026-11-11]
 - **Module overrides.** `module_loader.merge_data()` does not read `overrides` yet.
   [V 2026-11-11]
-- **Normal-form gaps.** A field of two types (M5-70), labels copied beside references (M5-71), enums written beside their tables (M5-72), stored monster HP (M5-74), and descriptions that restate numbers (M5-75); each issue holds its audit counts, and [normal-forms.md](../theory/normal-forms.md) explains the forms. [V 2026-11-17]
+- **Normal-form gaps.** Labels copied beside references in race `traits` (M5-71), enums written beside their tables (M5-72), stored monster HP (M5-74), and descriptions that restate numbers (M5-75); each issue holds its audit counts, and [normal-forms.md](../theory/normal-forms.md) explains the forms. [V 2026-11-17]

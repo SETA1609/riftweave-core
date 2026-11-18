@@ -1,0 +1,15 @@
+#### BE_S08_10_compendium-catalog-cli A compendium of every table to study a build: the catalog command and the CLI screen (backend)
+- Status: todo
+- Priority: medium
+- Needs: APP-27
+- Modified: 2026-11-19
+- Do: Owner request, 2026-11-19: a player or a GM studies the tables to plan a build: weapons, armor, accessories, consumables, gear, materials, gems, monsters, spells, perks, races, backgrounds, skills, conditions, and effects. No contract command lists a collection today [V 2026-11-19, `backend/contract/`], so add one, and a Compendium screen in the human CLI over it.
+  - **The `catalog` command** (`backend/contract/catalog.json`): `list` takes a collection and returns its rows **resolved** (bases and overrides merged, docs/core/composition.md), from core and every enabled module, each with its namespaced key and its source; `get` returns one row by key. Filters and sort are generic (a field equals, a number in a range, text in the label or description) [A], so the command needs no code per collection.
+  - **Columns from the data:** each collection names the columns a table shows (for example weapons: label, skill, damage, properties, range, cost, weight; perks: label, type, level, prerequisites, ranks; spells: label, color, level, mana, delivery) in a small `catalog` view table in the backend, or in the schemas [A, the spec step decides; columns are display, not rules].
+  - **The bestiary keeps its rule:** monsters come through `catalog` too, and `BE_S08_05_bestiary-knowledge-cli` applies "players see only what they know" on top; the item lookup (`BE_S08_03_item-lookup-craft-preview`) uses `catalog` for its list, and adds only the craft preview.
+  - **Human CLI:** a **Compendium** entry in `backend/contract/menu.json` under Start (both apps); the screen picks a collection, shows its table (a Bubble Tea table, scrollable), filters, and opens one row in full. Esc goes back (docs/backend/app-layout.md).
+  - Offline: everything comes from the core's built-in ruleset; no network.
+- Keys: the `catalog` command (`list`, `get`); the `compendium` menu entry; the column views
+- Files: ~10 (backend/contract/catalog.json, backend/contract/menu.json, backend/internal/catalog/, backend/internal/core/ (dispatch), backend/cmd/riftweave/play/compendium.go, backend/cmd/riftweave/play/compendium_test.go, docs/backend/api.md, docs/backend/app-layout.md, docs/decisions/BE_S08_10_compendium-catalog-cli.md, changes/BE_S08_10_compendium-catalog-cli.md)
+- See: docs/core/composition.md, docs/backend/app-layout.md, docs/issues/open/BE_S08_03_item-lookup-craft-preview.md, docs/issues/open/BE_S08_05_bestiary-knowledge-cli.md
+- Done when: `catalog list` returns every collection's rows resolved through their bases, with a module's rows and overrides; a filter and a sort work on weapons and on spells; the CLI Compendium screen lists, filters, and opens a row; the command's tests pass in Go and over HTTP and WebAssembly.

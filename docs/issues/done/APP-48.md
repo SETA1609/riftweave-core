@@ -1,0 +1,13 @@
+#### APP-48 The frontend's objects and functions in the browser console, in a dev build
+- Status: done
+- Merged: #240, 2026-11-18
+- Priority: low
+- Needs: —
+- Modified: 2026-11-18
+- Do: Owner request, 2026-11-18: in a dev build, a developer changes the app's state from the browser console to try things out, as `--dev` does for the CLI (docs/backend/dev-mode.md). A dev build sets `globalThis.rw` (not `globalThis.riftweave`, which is the Go core's in the page) to an object with the app context's signals (`rw.context.theme.set('dark')`), the API (`await rw.api.derived(...)`), the saves, the router, and the current screen's component [A], each documented in a short `rw.help()`.
+  - **Dev builds only:** set when `isDevMode()` and a `RIFTWEAVE_DEV` define is true in `angular.json`'s development configurations; the production and Pages builds leave it out entirely, and a test checks the Pages bundle has no `rw` [A].
+  - **Rules stay rules:** a change made from the console goes through the API or the context, as a screen's would, so it cannot break a rule the screens keep; editing a session's actor uses the core's `dev` operations where the core in the page has dev mode on [A].
+- Keys: `globalThis.rw`, `RIFTWEAVE_DEV`
+- Files: ~6 (frontend/src/app/dev-console.ts, frontend/src/main.ts, frontend/angular.json, frontend/src/app/app.spec.ts, frontend/e2e/app.spec.ts, docs/backend/dev-mode.md)
+- See: docs/backend/dev-mode.md, frontend/src/app/context.ts, frontend/src/app/api.ts
+- Done when: in `ng serve`, `rw.context`, `rw.api`, and `rw.help()` work from the console; the Pages build has no `rw`; the specs cover both.

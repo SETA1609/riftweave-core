@@ -129,6 +129,8 @@ type Options struct {
 	Modules  []string
 	Remote   func(url string) Runner
 	Dev      bool
+	// Import reads and checks a file for the Import entry (APP-30); nil leaves the entry inert.
+	Import Importer
 }
 
 // Model is the Bubble Tea model.
@@ -144,6 +146,7 @@ type Model struct {
 	settings     settings.File
 	save         func(settings.File) error
 	modules      []string
+	importer     Importer
 	promptReturn mode
 	promptDone   func(Model, string) Model
 	current      form
@@ -182,7 +185,7 @@ func NewWith(run Runner, options Options) Model {
 		remote = func(url string) Runner { return Remote(url, nil) }
 	}
 	var model Model = Model{run: run, local: run, remote: remote, menu: mainMenu, luck: "5", dev: options.Dev,
-		settings: copyOf(file), save: options.Save, modules: options.Modules}
+		settings: copyOf(file), save: options.Save, modules: options.Modules, importer: options.Import}
 	return model.follow()
 }
 
@@ -412,6 +415,9 @@ func (model Model) enter(entry menuEntry) (tea.Model, tea.Cmd) {
 		model.returnCursor, model.cursor, model.problem = model.cursor, 0, ""
 		model.mode = map[string]mode{"settings": modeSettings, "modules": modeModules, "network": modeNetwork}[entry.Key]
 		return model, nil
+	case "import":
+		model.returnCursor, model.problem = model.cursor, ""
+		return model.importFile()
 	case "character_creation":
 		return model.open(createForm()), textinput.Blink
 	case "skill_resolution":

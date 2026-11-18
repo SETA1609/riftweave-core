@@ -1,0 +1,14 @@
+#### FE_S08_12_back-on-every-screen A Back button on every screen
+- Status: todo
+- Priority: medium
+- Needs: —
+- Modified: 2026-11-19
+- Do: Owner request, 2026-11-19: every screen always has a way back. Today only a menu grid has **Back** (`frontend/src/app/ui/menu-grid.html`); a tool screen (character creation, skill resolution, attack, saved games, playthrough, settings) has none, and the browser's back is the only way out [V 2026-11-19, `app.routes.ts`].
+  - **The rule** (as in the CLI, docs/backend/app-layout.md: Esc goes back one menu, and from a form or a screen to the menu that opened it): every screen but the main menu shows **Back** in the same place, in a shared screen header with the screen's title, and goes to its parent menu from the menu tree (`backend/contract/menu.json`), not to browser history, so a deep link still has a way back [A].
+  - **Esc** does the same in the browser, unless a dialog or a field has focus.
+  - **Unsaved work:** a screen with an unsaved draft (character creation) asks before leaving [A].
+  - **A component:** `rw-screen-header` (title and Back) in `frontend/src/app/ui/`, used by every routed screen; the menu grid keeps its own Back card or uses the header too, decided in the spec step [A].
+- Keys: `rw-screen-header`
+- Files: ~12 (frontend/src/app/ui/screen-header.ts, screen-header.html, screen-header.css, screen-header.spec.ts, the routed screens' templates: sheet.html, resolution.html, attack.html, saved-games.html, playthrough.html, settings-screens.html, frontend/e2e/menus.spec.ts, docs/backend/app-layout.md)
+- See: docs/backend/app-layout.md, frontend/src/app/app.routes.ts, frontend/src/app/ui/menu-grid.ts
+- Done when: every route but `/` shows Back and its title; Back and Esc go to the parent menu, also after opening the screen by its URL; a Playwright spec walks every screen and back.

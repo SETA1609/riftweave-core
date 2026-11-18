@@ -139,6 +139,19 @@ func TestCharmStaysOutOfTheCore(t *testing.T) {
 	}
 }
 
+// TestTelemetryStaysOutOfTheCore keeps the core pure (APP-43, docs/backend/observability.md): the
+// adapters observe the calls they make, and no OpenTelemetry package reaches the core or
+// internal/.
+func TestTelemetryStaysOutOfTheCore(t *testing.T) {
+	output, err := exec.Command("go", "list", "-deps", "../../core", "../../internal/...").CombinedOutput()
+	if err != nil {
+		t.Fatalf("%v: %s", err, output)
+	}
+	if strings.Contains(string(output), "go.opentelemetry.io") {
+		t.Error("the core imports an OpenTelemetry package")
+	}
+}
+
 func startedDev(t *testing.T) tea.Model {
 	t.Helper()
 	opened, err := core.Open(dataDirectory)
@@ -415,4 +428,24 @@ func TestPlaySkillResolutionRollsABlankRoll(t *testing.T) {
 		t.Errorf("a blank roll gave %s", input)
 	}
 	matchesTheAgentCLI(t, model, "resolution")
+}
+
+// TestPlayImportsAFileFromTheMainMenu is APP-30 in the human CLI: Import, a path, and the
+// file's character becomes the character a dev session starts from; a missing module stops it.
+func TestPlayImportsAFileFromTheMainMenu(t *testing.T) {
+	opened, err := core.Open(dataDirectory)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var options = play.Options{Import: playImport(checkerFor(opened.Run, dataDirectory), dataDirectory, settings.Default())}
+	var model tea.Model = play.NewWith(opened.Run, options)
+	model = press(model, "down", "down", "down", "down", "down", "enter", "../../../ruleset/tests/fixtures/files/character.riftweave.json", "enter")
+	if view := model.View(); !strings.Contains(view, "imported a character file") {
+		t.Errorf("no import line: %s", view)
+	}
+	// The cursor is still on Import.
+	model = press(model, "enter", "../../../ruleset/tests/fixtures/files/missing-module.riftweave.json", "enter")
+	if view := model.View(); !strings.Contains(view, "module factions is not enabled here") {
+		t.Errorf("no module alert: %s", view)
+	}
 }

@@ -22,7 +22,7 @@ from test_vectors import VECTOR_DIR, discover_vectors, vector_function  # noqa: 
 REPO_ROOT = _SCRIPTS.parent.parent
 CONTRACT_DIR = REPO_ROOT / "backend" / "contract"
 SCHEMA_DIR = REPO_ROOT / "ruleset" / "schemas"
-NOT_COMMANDS = {"command.schema.json", "common.json", "settings.schema.json", "menu.json"}  # settings: a file format, APP-25; menu: the app menu tree, APP-26
+NOT_COMMANDS = {"command.schema.json", "common.json", "settings.schema.json", "menu.json", "file.json"}  # settings, file: file formats, APP-25, APP-30; menu: the app menu tree, APP-26
 VECTOR_ONLY_FIELDS = {"name", "function", "expect"}
 
 
@@ -123,3 +123,30 @@ class TestTheSettingsFile(unittest.TestCase):
         validator = Draft7Validator(json.loads((CONTRACT_DIR / "settings.schema.json").read_text()))
         self.assertFalse(validator.is_valid({"riftweave": "settings", "version": 1, "modules": ["core"]}))
         self.assertFalse(validator.is_valid({"riftweave": "settings", "version": 2}))
+
+
+class TestTheFileEnvelope(unittest.TestCase):
+    """APP-30: the file both apps trade (docs/backend/files.md)."""
+
+    FIXTURES = REPO_ROOT / "ruleset" / "tests" / "fixtures" / "files"
+
+    def check(self, name):
+        path = CONTRACT_DIR / "file.json"
+        schema = json.loads(path.read_text())
+        Draft7Validator.check_schema(schema)
+        fixture = json.loads((self.FIXTURES / name).read_text())
+        return list(validator(schema, path, load_store()).iter_errors(fixture))
+
+    def test_a_fixture_of_each_kind_validates(self):
+        for name in ("character.riftweave.json", "session.riftweave.json", "spell.riftweave.json", "missing-module.riftweave.json"):
+            with self.subTest(fixture=name):
+                self.assertEqual(self.check(name), [])
+
+    def test_the_invalid_fixture_is_refused(self):
+        self.assertNotEqual(self.check("invalid.riftweave.json"), [])
+
+    def test_each_fixture_is_written_the_one_way(self):
+        for path in sorted(self.FIXTURES.glob("*.json")):
+            with self.subTest(fixture=path.name):
+                text = path.read_text()
+                self.assertEqual(text, json.dumps(json.loads(text), indent=2, sort_keys=True, ensure_ascii=False) + "\n")

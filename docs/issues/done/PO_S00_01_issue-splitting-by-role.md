@@ -1,0 +1,11 @@
+#### PO_S00_01_issue-splitting-by-role Better documentation on how issues should be split, with a table reference
+- Status: done
+- Merged: #243, 2026-11-18
+- Priority: high
+- Needs: M5-76
+- Modified: 2026-11-18
+- Do: Owner request, 2026-11-18: split work by who does it, not by milestone. Add `docs/issues/ROLES.md` with the roles (PO, GD, DE, BE, FE, QA, OPS) and what each works on; name every new issue `<ROLE>_<STORY>_<ISSUE>_<short-description>`, with the issue number restarting in each story; group the open issues into stories `S00` to `S16` with one file each in `docs/stories/`; rename the open issues, each with a `Was:` line, and split the full-stack ones into a backend and a frontend issue in the same story. Issues with an open pull request keep their id until it merges. FE and BE each own the UX of their own surface; there is no UX role. Replaces the prefix proposal of M5-77, which is dropped.
+- Keys: role codes `PO`, `GD`, `DE`, `BE`, `FE`, `QA`, `OPS`; story ids `S00` to `S16`; `issue-id-pattern` in `tools/devops/pyproject.toml`
+- Files: ~110, of which about 85 are renamed or new issue files (docs/issues/ROLES.md, docs/issues/README.md, docs/stories/README.md, docs/stories/S*.md, docs/issues/open/, tools/devops/pyproject.toml, CONTRIBUTING.md, AGENTS.md, ROADMAP.md, docs/decisions/PO_S00_01_issue-splitting-by-role.md, changes/PO_S00_01_issue-splitting-by-role.md)
+- See: docs/issues/ROLES.md, docs/stories/README.md#ids, docs/issues/open/M5-77.md
+- Done when: `ROLES.md` and the id table are in the repo; every open issue without an open pull request has a role id, a story, and a `Was:` line; no `Needs:` names an old open id; `roadmap-order show` and `changelog-fragments check --branch PO_S00_01_issue-splitting-by-role` pass.

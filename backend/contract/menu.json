@@ -7,6 +7,7 @@
     { "key": "settings", "parent": "main", "label": "Settings" },
     { "key": "modules", "parent": "main", "label": "Modules" },
     { "key": "network", "parent": "main", "label": "Network" },
+    { "key": "import", "parent": "main", "label": "Import" },
     { "key": "quit", "parent": "main", "label": "Quit", "apps": ["cli"] },
     { "key": "gm_tools", "parent": "start", "label": "GM tools" },
     { "key": "character_creation", "parent": "start", "label": "Character creation" },

@@ -39,9 +39,7 @@ def perks():
 
 
 def held(entry):
-    """A prerequisite perk's key and rank: a bare ref is rank 1."""
-    if isinstance(entry, str):
-        return entry.removeprefix(FEATURE_PREFIX), 1
+    """A prerequisite perk's key and rank, 1 when left out."""
     return entry["perk"].removeprefix(FEATURE_PREFIX), entry.get("rank", 1)
 
 
@@ -50,8 +48,7 @@ def gates(perk):
     need = perk.get("prerequisite", {})
     parts = [f"Lv {need['level']}"] if "level" in need else []
     for skill in need.get("skills", []):
-        ids = skill["id"] if isinstance(skill["id"], list) else [skill["id"]]
-        parts.append(" or ".join(ref.rsplit("/", 1)[-1] for ref in ids) + f" {skill['min']}")
+        parts.append(" or ".join(ref.rsplit("/", 1)[-1] for ref in skill["any_of"]) + f" {skill['min']}")
     parts += [f"{ability.upper()} {value}" for ability, value in need.get("abilities", {}).items()]
     return " · ".join(parts)
 

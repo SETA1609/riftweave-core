@@ -1,0 +1,17 @@
+#### BE_S07_08_character-creation-command Character creation as one command that checks a draft step by step (backend)
+- Status: todo
+- Priority: medium
+- Needs: GD_S07_07_creation-rules-as-data
+- Modified: 2026-11-19
+- Do: Owner request, 2026-11-19: character creation becomes a form in both apps, and the form must not hold the rules. Today the frontend's creation screen sends eight attribute numbers and a level and shows the stored actor as JSON [V 2026-11-19, `frontend/src/app/sheet.html`]; no command checks race, background, creation perks, or tag skills.
+  - **The `creation` command** (`backend/contract/creation.json`):
+    - `rules`: the creation numbers of `GD_S07_07` and the choices with their effects (races, backgrounds, creation perks, skills), so an app draws the form from data.
+    - `check`: takes a **draft** (any steps filled, in any order: name, race, attributes as the points spent on each, background, creation perks, tag skills, skill points, spells, equipment) and returns, per step, what is legal and what is wrong (for example "2 points left", "INT is at its maximum of 10", "a third tag skill is needed"), the attributes after race, the starting skills, and the derived stats (HP, MP, SP, AP, carry, initiative), so a form can show them live.
+    - `finish`: a complete, legal draft becomes a stored actor (docs/core/state.md), which saves and exports like any other; an illegal one is refused with the same messages.
+  - **Points, not totals:** the draft holds the points spent per attribute, 0 to 6 each and 10 in all [A from the numbers], so "add" and "remove" are the only edits and no total can be typed out of range.
+  - **Human CLI:** the CLI's Character creation screen walks the same steps over `check` and `finish`, with + and − on the attributes and the points left shown.
+  - **From a build:** `BE_S07_05_character-from-build-cli`'s `apply` fills a draft, which then goes through `check` like a hand-made one [A].
+- Keys: the `creation` command (`rules`, `check`, `finish`); the draft shape in `common.json`
+- Files: ~10 (backend/contract/creation.json, backend/contract/common.json, backend/internal/creation/, backend/internal/core/ (dispatch), backend/cmd/riftweave/play/creation.go, backend/cmd/riftweave/play/creation_test.go, ruleset/tests/vectors/creation.json, docs/backend/api.md, docs/decisions/BE_S07_08_character-creation-command.md, changes/BE_S07_08_character-creation-command.md)
+- See: docs/modules/character-creation.md, docs/issues/open/GD_S07_07_creation-rules-as-data.md, docs/issues/open/BE_S07_05_character-from-build-cli.md
+- Done when: vectors check a draft with points left, one over the pool, one with an attribute over its maximum, and a complete one that `finish` turns into a stored actor; the CLI screen creates a character; the tests pass in Go and over HTTP and WebAssembly.

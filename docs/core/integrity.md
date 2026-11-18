@@ -2,7 +2,7 @@
 
 Modified: 2026-11-18
 
-What `python ruleset/scripts/validate.py` refuses to pass. JSON Schema alone cannot check that a reference points at something, so the validator adds five gates on top of it. They close the open items of the data review (`docs/archive/review/findings-data-schemas.md` M3 and M6) and are tested in `ruleset/scripts/test_integrity.py`.
+What `python ruleset/scripts/validate.py` refuses to pass. JSON Schema alone cannot check that a reference points at something, so the validator and its tests add seven gates on top of it. They close the open items of the data review (`docs/archive/review/findings-data-schemas.md` M3 and M6) and are tested in `ruleset/scripts/test_integrity.py`.
 
 ## 1. Every reference resolves
 
@@ -51,6 +51,12 @@ fails when they differ.
 already a skill, a phase is the wuxing module's row, and a grade has no field beyond its name [A].
 The `spellcraft` command contract repeats `color` twice; it moves to a `$ref` with the contract
 diagram regenerated (APP-36) [U].
+
+## 7. One kind of value per field
+
+First normal form ([normal-forms.md](../theory/normal-forms.md#first-normal-form-1nf-one-value-of-one-kind-per-field)): a field holds one domain in every row. `test_integrity.py` walks every file under `ruleset/data/` (bases included) and every module's data files, reads each field by its path from the collection (`features[].prerequisite.skills[].any_of`), and fails when one path holds two JSON types across rows. A null is no type, and an integer and a float count as one, a number. The failure lists each path and the types it found. Golden vectors are inputs and are not walked. [V 2026-11-18]
+
+A field that needs "one or many" names a list, and one is a list of one: a perk's skill requirement is `{ "any_of": [ref, ...], "min": n }`, and a prerequisite perk is `{ "perk": ref, "rank": n }` with `rank` left out for 1 (M5-70). [V 2026-11-18]
 
 ## Not covered
 

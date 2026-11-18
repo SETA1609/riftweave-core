@@ -4,6 +4,12 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { JsonPipe } from '@angular/common';
 import { API, type Attributes } from './api';
 import { Saves } from './saves';
+import { AppContext } from './context';
+import { download, encodeFile, makeFile } from './files';
+import { MODULE_VERSIONS } from './settings-screens';
+
+/** The rules this build ships (angular.json `define`). */
+declare const RIFTWEAVE_RULES_VERSION: string;
 import { Alert } from './ui/alert';
 import { Card } from './ui/card';
 import { KeyValueList } from './ui/key-value-list';
@@ -21,6 +27,7 @@ type Key = (typeof KEYS)[number];
 export class Sheet {
   private readonly api = inject(API);
   private readonly saves = inject(Saves);
+  private readonly context = inject(AppContext);
   readonly keys = KEYS;
   readonly attributes = signal<Attributes>({ str: 6, per: 5, end: 6, int: 5, wil: 4, agi: 5, cha: 4, lck: 5 });
   readonly level = signal(1);
@@ -42,6 +49,20 @@ export class Sheet {
       const session = await this.api.startSession(await this.api.newCharacter(this.attributes()));
       await this.saves.begin(`Character ${new Date().toLocaleString()}`, session);
     });
+  }
+
+  /** The character as a file both apps open (APP-30): its stored actor, the rules its session
+   * runs, and the enabled modules. */
+  exportText(): string | null {
+    const session = this.session();
+    if (session === null) return null;
+    const modules = MODULE_VERSIONS.filter((module) => this.context.modules().includes(module.id));
+    return encodeFile(makeFile('character', session.actor, session.rules_version ?? RIFTWEAVE_RULES_VERSION, modules));
+  }
+
+  exportCharacter(): void {
+    const text = this.exportText();
+    if (text !== null) download('character.riftweave.json', text);
   }
 
   private async run(call: () => Promise<void>): Promise<void> {

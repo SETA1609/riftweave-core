@@ -724,6 +724,54 @@ def check_modifier_targets(data_files, module_data_files=None, vector_files=()):
     return errors
 
 
+def collect_all_data_files():
+    """Every data file the normal forms cover (gate 7): all of ruleset/data/, bases included, and
+    every module's declared data files. Golden vectors are inputs and are left out."""
+    files = sorted(DATA_DIR.rglob("*.json"))
+    files.extend(fp for fp, _ in collect_module_data_files())
+    return files
+
+
+def _json_type(value):
+    if value is None:
+        return None
+    if isinstance(value, bool):
+        return "boolean"
+    if isinstance(value, (int, float)):
+        return "number"
+    return {str: "string", list: "array", dict: "object"}[type(value)]
+
+
+def check_one_type_per_field(files):
+    """Gate 7 (docs/core/integrity.md, first normal form): a field path, read from the collection
+    (`features[].prerequisite.skills[].any_of`), holds one JSON type across every row of every file.
+    A null is no type; an integer and a float are both a number."""
+    seen = {}  # path -> {type: first file}
+
+    def walk(value, path, where):
+        kind = _json_type(value)
+        if kind is not None and path:
+            seen.setdefault(path, {}).setdefault(kind, where)
+        if isinstance(value, dict):
+            for key, child in value.items():
+                if key != "$schema":
+                    walk(child, f"{path}.{key}" if path else key, where)
+        elif isinstance(value, list):
+            for child in value:
+                walk(child, f"{path}[]", where)
+
+    for fp in files:
+        data = _load_json_file(Path(fp))
+        if data is not None:
+            walk(data, "", _rel(Path(fp), ROOT))
+    errors = []
+    for path, kinds in sorted(seen.items()):
+        if len(kinds) > 1:
+            found = ", ".join(f"{kind} ({where})" for kind, where in sorted(kinds.items()))
+            errors.append(f"{path} holds more than one type: {found}")
+    return errors
+
+
 def check_references(
     data,
     coll_name,
@@ -769,24 +817,18 @@ def check_references(
                 continue
             pr = f.get("prerequisite", {})
             for pid in pr.get("perks", []):
-                pid = pid.get("perk") if isinstance(pid, dict) else pid  # a held perk names its rank too
+                pid = pid.get("perk") if isinstance(pid, dict) else pid  # a held perk { perk, rank }
                 if isinstance(pid, str) and not resolve_namespaced_ref(
                     pid, namespaced_ref_index
                 ):
                     errors.append(f"prereq perk {pid} does not exist")
             for s in pr.get("skills", []):
                 if isinstance(s, dict):
-                    sid = s.get("id")
-                    if isinstance(sid, str) and not resolve_namespaced_ref(
-                        sid, namespaced_ref_index
-                    ):
-                        errors.append(f"prereq skill {sid} does not exist")
-                    elif isinstance(sid, list):
-                        for sss in sid:
-                            if isinstance(sss, str) and not resolve_namespaced_ref(
-                                sss, namespaced_ref_index
-                            ):
-                                errors.append(f"prereq skill {sss} does not exist")
+                    for sid in s.get("any_of", []):
+                        if isinstance(sid, str) and not resolve_namespaced_ref(
+                            sid, namespaced_ref_index
+                        ):
+                            errors.append(f"prereq skill {sid} does not exist")
 
     elif coll_name == "effects":
         for e in data.get("effects", []):
@@ -1975,6 +2017,7 @@ def main():
         ("skill groups (every skill in one)", check_skill_groups(data_files)),
         ("effect parameters", check_effect_parameters(data_files, module_data_files)),
         ("modifier targets (each names one row)", check_modifier_targets(data_files, module_data_files, collect_vector_files())),
+        ("one type per field (first normal form)", check_one_type_per_field(collect_all_data_files())),
     ):
         if errors:
             print(f"  \u2717  {label}")

@@ -1,0 +1,11 @@
+#### DE_S04_02_perks-compose-from-base Perks compose from a base perk
+- Status: todo
+- Priority: medium
+- Needs: DE_S04_01_base-perk-schema
+- Was: M5-59
+- Modified: 2026-11-18
+- Do: Owner decision, 2026-11-16 (M5-58 question 8): besides the schema kinds of M5-58, a perk row can build on another perk row, as spells do since M3-26 and monsters and equipment before them (docs/core/composition.md). A feature row may name `base` (a `core:feature/<key>` ref, or a module's) and `overrides` holding only the fields that differ, resolved through the one `compose_row`: start from the base, apply the overrides, take identity (`key`, `label`, `source`) from the row. A base is a plain feature row and stays choosable [A]. A base may not name a base, so there is one level and no cycle [A]. The composed row keeps the base's `kind`; an override may not change it, because the kind decides which fields are allowed [A]. Nested blocks (`share`, `summon_bonus`, `natural_weapon`) merge per field, as M3-26's `summon` block does, so an override of `share.range` keeps `share.turns`. First rows: Bardic Anthem on Bardic Inspiration and Skald's Saga on Skald's War Chant, which differ in level, prerequisites, bonus, range, and turns. Python (`validate.py`) and the Go loader resolve feature bases before any check or command reads a feature. A module perk can build on a core perk the same way.
+- Keys: `base` and `overrides` on feature rows
+- Files: ~9 (docs/core/composition.md, docs/modules/progression.md, ruleset/schemas/feature.schema.json, ruleset/scripts/validate.py, ruleset/scripts/test_perks.py, ruleset/data/features/core.json, backend/internal/data/data.go, backend/internal/data/data_test.go, ruleset/tests/vectors/share.json)
+- See: docs/issues/done/M3-26.md, docs/core/composition.md, ruleset/scripts/validate.py (`compose_row`)
+- Done when: a feature row with `base` and `overrides` resolves to the base's fields plus the overrides in Python and Go; an override of one field in a nested block keeps the block's other fields; a base that does not resolve, a base that names a base, or an override that changes `kind` fails validation; the share vector for Bardic Anthem passes unchanged; `validate.py`, the tests, and `go test ./...` pass.

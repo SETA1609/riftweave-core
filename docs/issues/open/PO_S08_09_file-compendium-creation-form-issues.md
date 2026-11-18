@@ -1,0 +1,10 @@
+#### PO_S08_09_file-compendium-creation-form-issues File the compendium, back button, and creation form issues
+- Status: todo
+- Priority: medium
+- Needs: —
+- Modified: 2026-11-19
+- Do: Owner request, 2026-11-19: every screen of the app has a way back; a player or GM can study the tables (weapons, armor, and the other items, the bestiary, spells, perks, and the rest) to plan a build; and character creation is a form laid out like a CV, where the JSON appears only on export and in the console. Creation starts every attribute at 4 with 10 points to spend (docs/modules/character-creation.md#2-assign-attributes; the owner kept 4 + 10 on 2026-11-19), and the form only adds or removes those 10. File `BE_S08_10` and `FE_S08_11` (the compendium), `FE_S08_12` (back on every screen), and `GD_S07_07`, `BE_S07_08`, and `FE_S07_09` (the creation numbers as data, the creation command, and the form), and link the item lookup, the bestiary, and the build pages to them.
+- Keys: none
+- Files: ~15 (docs/stories/S07-files-between-apps.md, docs/stories/S08-play-sessions.md, docs/issues/open/PO_S08_09_file-compendium-creation-form-issues.md, BE_S08_10_compendium-catalog-cli.md, FE_S08_11_compendium-tables-page.md, FE_S08_12_back-on-every-screen.md, GD_S07_07_creation-rules-as-data.md, BE_S07_08_character-creation-command.md, FE_S07_09_character-creation-cv-form.md, BE_S08_03_item-lookup-craft-preview.md, BE_S08_05_bestiary-knowledge-cli.md, BE_S07_05_character-from-build-cli.md, FE_S07_06_character-from-build-page.md, docs/decisions/PO_S08_09_file-compendium-creation-form-issues.md, changes/PO_S08_09_file-compendium-creation-form-issues.md)
+- See: docs/backend/app-layout.md, docs/modules/character-creation.md, frontend/src/app/sheet.html, frontend/src/app/ui/menu-grid.html
+- Done when: the six issues exist with their `Needs` in the S07 and S08 tables; the item lookup and the bestiary need the catalog command, and the build page needs the creation form; `roadmap-order show` lists the new issues.
