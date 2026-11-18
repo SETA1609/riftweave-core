@@ -32,3 +32,9 @@ test('after one visit the Pages build works offline', async ({ page, context }) 
   await expect(page.getByRole('region', { name: 'Stored actor' })).toBeVisible();
   await context.setOffline(false);
 });
+
+test('the Pages build has no dev console (APP-48)', async ({ page }) => {
+  await page.goto('./#/play/character_creation');
+  await expect(page.getByRole('button', { name: 'Create character' })).toBeVisible();
+  expect(await page.evaluate(() => 'rw' in globalThis)).toBe(false);
+});

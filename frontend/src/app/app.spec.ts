@@ -19,6 +19,10 @@ import { MODULE_IDS, SettingsScreens } from './settings-screens';
 import { MENU, MenuGrid, pathOf } from './ui/menu-grid';
 import { SelectField } from './ui/select-field';
 import { Sheet } from './sheet';
+import { SAVE_STORE, Saves, memoryStore } from './saves';
+import { Injector } from '@angular/core';
+import { Router } from '@angular/router';
+import { installDevConsole } from './dev-console';
 import { TextField } from './ui/text-field';
 import { ThemeToggle } from './ui/theme-toggle';
 
@@ -333,5 +337,40 @@ describe('skill resolution', () => {
     } }]);
     fixture.detectChanges();
     expect((fixture.nativeElement as HTMLElement).textContent).toContain('margin');
+  });
+});
+
+describe('the dev console (APP-48)', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    TestBed.configureTestingModule({ providers: [provideRouter(routes), { provide: SAVE_STORE, useValue: memoryStore() }] });
+  });
+
+  it('puts the context, the API, the saves, and the router on rw', () => {
+    const host: { rw?: ReturnType<typeof installDevConsole> } = {};
+    const rw = installDevConsole(TestBed.inject(Injector), host);
+    expect(host.rw).toBe(rw);
+    expect(rw.context).toBe(TestBed.inject(AppContext));
+    expect(rw.api).toBe(TestBed.inject(API));
+    expect(rw.saves).toBe(TestBed.inject(Saves));
+    expect(rw.router).toBe(TestBed.inject(Router));
+  });
+
+  it('changes the app through the context, as a screen does', () => {
+    const rw = installDevConsole(TestBed.inject(Injector), {});
+    rw.context.theme.set('dark');
+    expect(TestBed.inject(AppContext).shown()).toBe('dark');
+  });
+
+  it('documents itself in rw.help()', () => {
+    vi.spyOn(console, 'info').mockImplementation(() => undefined);
+    const text = installDevConsole(TestBed.inject(Injector), {}).help();
+    for (const name of ['rw.context', 'rw.api', 'rw.saves', 'rw.router', 'rw.screen()', 'rw.help()']) {
+      expect(text).toContain(name);
+    }
+  });
+
+  it('is not on globalThis in a test build, where RIFTWEAVE_DEV is false', () => {
+    expect('rw' in globalThis).toBe(false);
   });
 });
