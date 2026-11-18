@@ -1,5 +1,6 @@
 #### APP-36 The command contract drawn in Mermaid
-- Status: review
+- Status: done
+- Merged: #234, 2026-11-18
 - Priority: low
 - Needs: —
 - Modified: 2026-11-18
