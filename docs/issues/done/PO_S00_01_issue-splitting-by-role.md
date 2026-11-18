@@ -1,5 +1,6 @@
 #### PO_S00_01_issue-splitting-by-role Better documentation on how issues should be split, with a table reference
-- Status: review
+- Status: done
+- Merged: #243, 2026-11-18
 - Priority: high
 - Needs: M5-76
 - Modified: 2026-11-18
