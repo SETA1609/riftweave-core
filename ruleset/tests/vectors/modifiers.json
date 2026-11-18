@@ -802,5 +802,96 @@
     "expect": {
       "value": 59
     }
+  },
+  {
+    "name": "hybrid: Bonded Vanguard adds 1 STR while a summon is out",
+    "value": 6,
+    "target": "str",
+    "summoning": true,
+    "modifiers": [
+      {
+        "target": "str",
+        "operation": "add",
+        "value": 1,
+        "duration": "while_summoning",
+        "source": "feature:bonded_vanguard",
+        "origin": "core:origin/trained"
+      },
+      {
+        "target": "end",
+        "operation": "add",
+        "value": 1,
+        "duration": "while_summoning",
+        "source": "feature:bonded_vanguard",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "value": 7
+    }
+  },
+  {
+    "name": "hybrid: with no summon out the while_summoning bonus is dropped",
+    "value": 6,
+    "target": "str",
+    "summoning": false,
+    "modifiers": [
+      {
+        "target": "str",
+        "operation": "add",
+        "value": 1,
+        "duration": "while_summoning",
+        "source": "feature:bonded_vanguard",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "value": 6
+    }
+  },
+  {
+    "name": "hybrid: summoning absent reads as no summon out",
+    "value": 6,
+    "target": "str",
+    "modifiers": [
+      {
+        "target": "str",
+        "operation": "add",
+        "value": 1,
+        "duration": "while_summoning",
+        "source": "feature:bonded_vanguard",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "value": 6
+    }
+  },
+  {
+    "name": "hybrid: the ranged path, Bonded Marksman and Marksman Ascendant, add 2 PER",
+    "value": 7,
+    "target": "per",
+    "summoning": true,
+    "modifiers": [
+      {
+        "target": "per",
+        "operation": "add",
+        "value": 1,
+        "duration": "while_summoning",
+        "source": "feature:bonded_marksman",
+        "origin": "core:origin/trained"
+      },
+      {
+        "target": "per",
+        "operation": "add",
+        "value": 1,
+        "duration": "while_summoning",
+        "source": "feature:marksman_ascendant",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "value": 9
+    }
   }
 ]
