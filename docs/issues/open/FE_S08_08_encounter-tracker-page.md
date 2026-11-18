@@ -1,0 +1,10 @@
+#### FE_S08_08_encounter-tracker-page An offline encounter tracker: initiative and whose turn it is (frontend)
+- Status: todo
+- Priority: medium
+- Needs: BE_S08_07_encounter-tracker-cli, FE_S07_04_character-list-page
+- Was: APP-34
+- Do: Frontend half, split by role on 2026-11-18 (PO_S00_01_issue-splitting-by-role): the Angular screens of `BE_S08_07_encounter-tracker-cli` and their UX, over the same commands and session steps, built from the shared components (docs/backend/frontend.md#conventions). The behaviour, the keys, and the rules are specified in `BE_S08_07_encounter-tracker-cli`; this issue adds no contract or core change.
+- Keys: the frontend screen and its route; no new contract keys
+- Files: ~3 (frontend/src/app/encounter/, frontend/src/app/app.spec.ts, frontend/e2e/encounter.spec.ts)
+- See: docs/issues/open/BE_S08_07_encounter-tracker-cli.md
+- Done when: a GM runs an encounter of four characters and two monsters offline in the frontend, with the same initiative order and turns as the human CLI for the same log; the specs and the Playwright test pass.

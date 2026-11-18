@@ -1,0 +1,20 @@
+# S07 Files and characters between apps
+
+Format, ids, and roles: [README.md](README.md#ids), [ROLES.md](../issues/ROLES.md).
+
+## S07 Files and characters between apps
+
+**Goal:** A file, a character, or a build made in one app opens in the other.
+
+**Issues:**
+
+| Issue | Role | Title | Was | Needs |
+| --- | --- | --- | --- | --- |
+| `BE_S07_01_file-format-cli` (reserved) | BE | see `APP-30` | APP-30 | open pull request #241, #242: keeps `APP-30` until it merges |
+| `FE_S07_02_file-open-frontend` (reserved) | FE | see `APP-30` | APP-30 | open pull request #241, #242: keeps `APP-30` until it merges |
+| `BE_S07_03_character-list-cli` | BE | A character list, and characters travel between players and the GM as files (backend) | APP-33 | APP-30 |
+| `FE_S07_04_character-list-page` | FE | A character list, and characters travel between players and the GM as files (frontend) | APP-33 | BE_S07_03_character-list-cli, APP-30 |
+| `BE_S07_05_character-from-build-cli` | BE | A new character from a suggested build, in both apps (backend) | APP-38 | M5-47, BE_S08_01_player-session-cli, BE_S07_03_character-list-cli |
+| `FE_S07_06_character-from-build-page` | FE | A new character from a suggested build, in both apps (frontend) | APP-38 | BE_S07_05_character-from-build-cli, M5-47, FE_S08_02_player-session-page, FE_S07_04_character-list-page |
+
+**Done when:** every issue above is done, and a character made from a build in the frontend opens in the human CLI and back, as files.

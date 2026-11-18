@@ -120,7 +120,8 @@ vectors.
 1. **One issue, one PR.** The PR does what the issue says and nothing else. No branch
    without an issue; if work has none, add its file first ([docs/issues/](docs/issues/README.md)).
 2. **At most 20 changed files** per PR, as `git diff --stat` counts them. A file with 5 or
-   fewer changed lines does not count. If the counted files grow past 20, split the issue.
+   fewer changed lines does not count. If the counted files grow past 20, split the issue,
+   by role first (a `BE` and an `FE` issue in the same story, [ids](docs/stories/README.md#ids)).
    Content-floor issues (perks, spells, monsters) split by color, level band, or skill.
    A rule issue that also changes the backend may instead split into two PRs for the one
    issue, by area: `<issue-id>-ruleset-<slug>` (spec, schema, vectors, data, reference) and
@@ -139,10 +140,12 @@ vectors.
    that the branch's issue has one. The owner moves the fragments into the changelog at a
    release. After merge, a workflow moves an issue in `review` to `docs/issues/done/`
    ([how](docs/issues/README.md#how-an-issue-closes)).
-6. **Names.** Branch `<issue-id>-<slug>`, e.g. `M1-07-<slug>` (the issue title in lowercase
-   kebab-case, shortened if long), or `<issue-id>-ruleset-<slug>` and `<issue-id>-backend-<slug>`
-   for a split issue (rule 2); the issue id always comes first, because the changelog check
-   reads it there. People and agents use the same names; there is no `agent/<name>/` prefix.
+6. **Names.** An issue id is `<ROLE>_<STORY>_<ISSUE>_<short-description>`, e.g.
+   `BE_S07_03_character-list-cli`, with one role from [ROLES.md](docs/issues/ROLES.md)
+   ([ids and splitting](docs/stories/README.md#ids)). The branch is the full issue id. An issue
+   that still has an old id uses `<issue-id>-<slug>`, or `<issue-id>-ruleset-<slug>` and
+   `<issue-id>-backend-<slug>` for a split issue (rule 2); the issue id always comes first,
+   because the changelog check reads it there. People and agents use the same names; there is no `agent/<name>/` prefix.
    PR title `<issue-id> <title>`, with `(ruleset)` or `(backend)` for a split. Pick work from
    `roadmap-order show`
    ([order](docs/stories/README.md#order)).
