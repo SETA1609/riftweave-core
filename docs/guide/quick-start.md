@@ -94,6 +94,8 @@ A summoned creature appears at your level. If you took a Commanding Summons perk
 
 A bonded summoner's perks work only while one of your summons is out (not a minion). Kindred Focus adds +10 to every magic skill; Shared Wellspring makes your spells cost 20% less; Elemental Kinship adds +4 to a spell's damage when its element matches a summoned elemental's (a fire elemental out, a Fire Bolt). Two summons out still give each bonus once. When the last summon goes, so do the bonuses.
 
+A hybrid summoner fights beside their summons. While one of your summons is out (not a minion), Bonded Vanguard adds +1 STR and END (a sword or an axe), Bonded Marksman +1 AGI and PER (a bow or a gun), and Kindred Mind +1 INT and WIL; the Ascendant perks add one more of their path's. When you and your summon attack the same foe, Pincer Strike adds +10 to your attack.
+
 A bard or a skald lends CHA to allies the same way. Spend the `inspire` action (2 AP): every ally within the perk's range adds half your CHA − 5 at rank 1, or all of it at rank 2, to INT and WIL (Bardic Inspiration) or STR, END, and AGI (Skald's War Chant) for 3 turns. Two bards do not add up: each ally keeps the bigger bonus on each attribute ([share](../core/share.md)).
 
 ## After the fight

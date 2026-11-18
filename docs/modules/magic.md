@@ -223,6 +223,39 @@ Minions take none of this: no power or nature, no Commanding Summons bonus, and 
 archetype perk. They are the row at the caster's level with the `minion` template, and they do
 not count toward the summon limit ([casting.md](../core/casting.md#minions)). [V 2026-11-16, `test_spells.py`]
 
+### The hybrid summoner
+
+A summoner archetype that fights with a weapon beside their summons, like a magic swordsman or
+an arcane archer (GD_S06_04). Its perks add to the attributes such a build needs while a summon
+is out, and reward the caster and a summon striking one target together. Their modifiers have
+the duration `while_summoning`: they hold only while the caster has at least one active summon
+(minions do not count), and end when the last one goes
+([modifier.md](../core/modifier.md#order-for-one-numeric-target)). [A]
+
+| Perk | Level | Needs | While a summon is active |
+| --- | --- | --- | --- |
+| Bonded Vanguard (melee) | 6 | orange or black magic 30, Blades, Blunt, or Piercing 30 | +1 STR, +1 END |
+| Bonded Marksman (ranged) | 6 | orange or black magic 30, Bows, Crossbows, Guns, or Throwing Weapons 30 | +1 AGI, +1 PER |
+| Pincer Strike | 10 | orange or black magic 40 | +10 to attack when you and a summon of yours attack the same target (`beside_summon`, melee or ranged) |
+| Kindred Mind | 12 | orange or black magic 50 | +1 INT, +1 WIL |
+| Vanguard Ascendant | 18 | Bonded Vanguard | +1 STR, +1 END more |
+| Marksman Ascendant | 18 | Bonded Marksman | +1 AGI, +1 PER more |
+
+The melee path is Bonded Vanguard, then Vanguard Ascendant; the ranged path Bonded Marksman, then
+Marksman Ascendant; both take Pincer Strike and Kindred Mind. Different perks add, so a hybrid
+with both tiers of a path has +2 on each of its attributes. Numbers are [A] until a playtest runs
+a hybrid against the spellblade of docs/playtests/.
+
+**Striking together** is the caller's call, as positions always are: the caller names the
+`beside_summon` situation when a summon of the attacker attacks or engages the same target this
+round ([combat.md](../core/combat.md#situations-and-called-shots)). The row has no modifier of its
+own; its `adds` field names `beside_summon_attack`, and the attacker's live modifiers on that
+target join the attack only while the row applies.
+
+**A summoned mount, later.** Once a mounted combat module exists, the ladder takes a rung that
+makes a summon a mount (a summoned steed that carries its caster) and a mounted bonus beside it;
+it is noted here as an extension and not built. [A]
+
 **Charisma strengthens summons through a perk.** `commanding_summons_magic` and
 `commanding_summons_physical` each name a summon bonus, `core:summon_bonus/<key>`, from
 `summons/bonuses.json`: `magic` adds to INT and WIL, `physical` to STR, END, and AGI. When the
