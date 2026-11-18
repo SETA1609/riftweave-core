@@ -1,5 +1,6 @@
 // The app as a player uses it (docs/backend/frontend.md#tests): a browser, the dev proxy, and a real
 // riftweave-server. Elements are found by label and role, so a restyle does not break a spec.
+import { readFile } from 'node:fs/promises';
 import { expect, test, type Page } from '@playwright/test';
 import combat from '../../ruleset/tests/vectors/combat.json' with { type: 'json' };
 
@@ -141,4 +142,35 @@ test('a dev build puts rw in the console (APP-48)', async ({ page }) => {
   expect(hp).toBe(59);
   await page.evaluate(() => (globalThis as unknown as { rw: { context: { theme: { set(theme: string): void } } } }).rw.context.theme.set('dark'));
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+});
+
+const fixtures = '../ruleset/tests/fixtures/files/';
+
+test('Import opens a character file, and stops on a module this browser does not load (APP-30)', async ({ page }) => {
+  await page.goto('/#/import');
+  await page.locator('input[type=file]').setInputFiles(fixtures + 'character.riftweave.json');
+  await expect(page.getByText('Imported a character file')).toBeVisible();
+
+  await page.locator('input[type=file]').setInputFiles(fixtures + 'missing-module.riftweave.json');
+  await expect(page.getByText('module factions is not enabled here (module:factions/accessory/warden_badge)')).toBeVisible();
+  await page.getByRole('button', { name: 'Import anyway' }).click();
+  await expect(page.getByText('Imported a character file')).toBeVisible();
+
+  await page.locator('input[type=file]').setInputFiles(fixtures + 'invalid.riftweave.json');
+  await expect(page.getByText('nothing changed')).toBeVisible();
+});
+
+test('character creation exports a file in the one layout both apps write (APP-30)', async ({ page }) => {
+  await page.goto('/#/play/character_creation');
+  await page.getByRole('button', { name: 'Create character' }).click();
+  await expect(page.getByRole('region', { name: 'Stored actor' })).toBeVisible();
+  const downloading = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Export character' }).click();
+  const file = await downloading;
+  expect(file.suggestedFilename()).toBe('character.riftweave.json');
+  const text = await readFile(await file.path(), 'utf8');
+  const sortKeys = (value: unknown): unknown => Array.isArray(value) ? value.map(sortKeys)
+    : value && typeof value === 'object' ? Object.fromEntries(Object.keys(value).sort().map((key) => [key, sortKeys((value as Record<string, unknown>)[key])])) : value;
+  expect(text).toBe(JSON.stringify(sortKeys(JSON.parse(text)), null, 2) + '\n');
+  expect(JSON.parse(text)).toMatchObject({ riftweave: 'character', modules: [] });
 });

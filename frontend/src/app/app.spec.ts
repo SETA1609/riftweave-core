@@ -245,7 +245,7 @@ describe('the menus of backend/contract/menu.json', () => {
 
   it('show the home page: the main menu without the CLI-only Quit', () => {
     const element = menu('main');
-    expect(cards(element)).toEqual(['Start', 'Characters (APP-33)', 'Settings', 'Modules', 'Network']);
+    expect(cards(element)).toEqual(['Start', 'Characters (APP-33)', 'Settings', 'Modules', 'Network', 'Import']);
     expect(element.querySelector('[aria-disabled="true"]')!.textContent).toContain('APP-33');
   });
 
