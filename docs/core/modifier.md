@@ -1,6 +1,6 @@
 # Modifier
 
-Modified: 2026-11-15
+Modified: 2026-11-19
 
 Author: SETA1609
 
@@ -12,7 +12,7 @@ operation  add | multiply | set | grant | resist
 value      number
 source     perk:quick, condition:blinded
 origin     core:origin/alchemy (optional; the kind of source, see below)
-duration   turns | uses | while_equipped | while_applied | permanent
+duration   turns | uses | while_equipped | while_applied | while_summoning | permanent
 turns      how many turns a `turns` modifier lasts
 stack      none | add
 ```
@@ -112,7 +112,7 @@ A modifier's `target` is a key, and the key names one row. Where the row lives s
 - **`set` is last.** It replaces the value whatever the `add` and `multiply`, so a paralyzed actor with an AP bonus still has 0 AP. Two `set` on one target: the latest in list order (load order) wins. [A] The contract says `set` replaces the value "for that source's duration"; expiry (step 1) is what ends it.
 - **`grant`** adds the flag named by `target`. It adds no number, and its `value` is ignored. A flag stays while any live source grants it: removing one of two sources that grant `prone` leaves the actor prone. [V 2026-11-04]
 - **`resist`** subtracts from a packet whose tag equals `target`: `amount = max(amount - sum(resist), 0)`. Same-source, origin, and different-source rules are the ones above: two enchanted rings of fire resistance give the larger one. It is the same operation the combat pipeline's resist step reads ([combat.md](combat.md)). [V 2026-11-04]
-- **Expiry.** `permanent` never expires. `while_applied` and `while_equipped` end when their source is removed. `turns` ends when the elapsed turns reach `turns`. `uses` is counted by the caller, who removes the source when the uses run out; the vectors do not cover it. [A]
+- **Expiry.** `permanent` never expires. `while_applied` and `while_equipped` end when their source is removed. `while_summoning` holds only while its holder has an active summon (not a minion); a cast reads `caster.summons` ([magic.md](../modules/magic.md#the-bonded-summoner)). `turns` ends when the elapsed turns reach `turns`. `uses` is counted by the caller, who removes the source when the uses run out; the vectors do not cover it. [A]
 
 ## Conditions
 
