@@ -1,5 +1,7 @@
 # Versioning
 
+Modified: 2026-11-17
+
 The ruleset is versioned with [Semantic Versioning](https://semver.org/): `MAJOR.MINOR.PATCH`. A consumer (an engine, a module, a tabletop table) depends on **keys**: `core:weapon/shortsword` in a save file or a module row names an entry by its key, and a rename breaks it silently, because JSON Schema does not check cross-references ([keys.md](keys.md)). This file says what counts as breaking and how a key leaves.
 
 ## What is public
@@ -29,6 +31,16 @@ Moving an entry to another file, or splitting a file, is not breaking: the key i
 - **PATCH:** a fix to a label, description, or doc; a data correction that no vector and no key depends on.
 
 Before `1.0.0` any minor release may break, but every breaking change is still marked **(breaking)** in its changelog fragment so a consumer can read what moved. `[Unreleased]` becomes `1.0.0` when the roadmap's definition of finished holds ([ROADMAP.md](../../ROADMAP.md#definition-of-finished)).
+
+## Where the version lives
+
+One version names the whole project (ROADMAP.md#versions-and-releases): `VERSION` at the repo
+root (`0.1.0` first). The Go core embeds a copy (`go generate ./core` writes
+`backend/core/VERSION`; a Go embed cannot reach outside its module), and `frontend/package.json`
+and an exported module manifest (the `author` command) carry the same string.
+`TestTheVersionIsTheRepoVersion` and `TestTheAuthorManifestStartsAtTheVersion` fail when any of
+them disagrees. A session records it as `rules_version`. A release moves `VERSION`
+([CONTRIBUTING.md](../../CONTRIBUTING.md#releasing)). [V 2026-11-17, `go test ./core`]
 
 ## Deprecation
 

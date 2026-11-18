@@ -1,6 +1,6 @@
 {
   "name": "riftweave-frontend",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "description": "The Riftweave frontend: an Angular app over the HTTP API or the core in WebAssembly (docs/backend/frontend.md).",
   "license": "Apache-2.0",

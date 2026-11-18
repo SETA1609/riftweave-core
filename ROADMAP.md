@@ -1,6 +1,6 @@
 # Roadmap
 
-Modified: 2026-11-16
+Modified: 2026-11-17
 
 The core SRD is **finished** when it is tagged `v1.0.0` and every item under
 [Definition of finished](#definition-of-finished) is true. This file is the source of truth for
@@ -152,8 +152,8 @@ published app, because the app ships the core and the data of the same commit. T
 
 A release is its own pull request: the changelog fragments move into `CHANGELOG.md`
 ([changes/README.md](changes/README.md#releasing)), `VERSION` moves, the key diff from the last
-tag is checked, and the tag on the merge commit runs the release and Pages workflows. The first
-tag is `v0.1.0`, once M5-62 merges.
+tag is checked, and the tag on the merge commit runs the release and Pages workflows
+([CONTRIBUTING.md](CONTRIBUTING.md#releasing)). The first tag is `v0.1.0`, once M5-62 merges.
 
 ## Assumptions (change any of these)
 

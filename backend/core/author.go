@@ -393,7 +393,7 @@ func exportSpells(export *authorExport, drafts []json.RawMessage, checked []auth
 		result.Manifest = map[string]any{
 			"$schema":     "../../schemas/module.manifest.schema.json",
 			"id":          export.Module,
-			"version":     "0.1.0",
+			"version":     RulesVersion,
 			"description": "Spells written with the author command (docs/backend/authoring.md).",
 			"requires":    []string{},
 			"extends":     map[string]any{"collections": []string{"spells"}},

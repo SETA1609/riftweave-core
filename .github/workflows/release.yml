@@ -1,0 +1,33 @@
+name: Release
+
+# A release tag (M5-62, CONTRIBUTING.md#releasing): check that the tag is `v` plus VERSION, that
+# CHANGELOG.md has its section, and that every key removed since the previous tag is marked
+# breaking there, then create the GitHub release with that section as its notes. pages.yml
+# publishes the app on the same tag.
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+
+      # The tag reaches the shell only through the environment, never as `${{ }}` text.
+      - name: Check the release
+        env:
+          TAG: ${{ github.ref_name }}
+        run: python3 ruleset/scripts/release_check.py "$TAG" --notes "$RUNNER_TEMP/release-notes.md"
+
+      - name: Create the GitHub release
+        env:
+          TAG: ${{ github.ref_name }}
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$TAG" --verify-tag --title "$TAG" --notes-file "$RUNNER_TEMP/release-notes.md"
