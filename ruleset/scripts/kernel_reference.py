@@ -474,6 +474,8 @@ def run_combat(vector):
     }
     if called is not None:
         result["riders"] = []
+    if attacker.get("weapon_effects") is not None:
+        result["weapon_effects"] = []
     if maneuver is not None:
         result["ap"], result["stamina"] = maneuver_cost(maneuver)
         result["effects"] = []
@@ -506,6 +508,11 @@ def run_combat(vector):
         amount = math.floor(amount * called["damage_multiplier"])
     if maneuver is not None:
         amount = math.floor(amount * maneuver.get("damage_multiplier", 1))
+    # The weapon's effects (docs/core/combat.md#weapon-effects).
+    weapon_effects = attacker.get("weapon_effects")
+    for applied in weapon_effects or []:
+        if applied["effect"] == "core:effect/bane" and applied.get("parameter") == defender.get("creature_type"):
+            amount += applied["magnitude"]
     if crit:
         amount = evaluate_formula(pipeline["crit_damage"], {}, {"damage": amount})
     if result["evaded"]:
@@ -516,6 +523,8 @@ def run_combat(vector):
             dr += apply_modifiers(defender["shield_dr"], on("shield_dr"))
         if pipeline["pierce_tag"] in tags:
             dr = evaluate_formula(pipeline["pierce_dr"], {}, {"dr": dr})
+        pierce = min(sum(a["magnitude"] for a in weapon_effects or [] if a["effect"] == "core:effect/armor_pierce"), 100)
+        dr -= dr * pierce // 100
         amount = max(amount - dr, 0)
     amount = max(amount - defender.get("resist", {}).get(damage["type"], 0), 0)
     result.update(damage=amount, hp=max(defender["hp"] - amount, 0))
@@ -523,7 +532,29 @@ def run_combat(vector):
         result["riders"] = [dict(rider) for rider in called.get("riders", [])]
     if maneuver is not None and not result["evaded"]:
         result["effects"] = [dict(applied) for applied in maneuver["effects"]]
+    if weapon_effects is not None and not result["evaded"]:
+        result["weapon_effects"] = landed_weapon_effects(weapon_effects, damage["type"], defender)
     return result
+
+
+WEAPON_STEP_EFFECTS = ("core:effect/armor_pierce", "core:effect/bane")
+
+
+def landed_weapon_effects(weapon_effects, damage_type, defender):
+    """The weapon effects a hit lists for the caller (docs/core/combat.md#weapon-effects):
+    lingering damage of the attack's type, a banish only on a summoned defender, and any other
+    effect as written. Armor pierce and bane already acted on the damage."""
+    landed = []
+    for applied in weapon_effects:
+        if applied["effect"] in WEAPON_STEP_EFFECTS:
+            continue
+        if applied["effect"] == "core:effect/banish_summoned" and "summoned" not in defender.get("flags", []):
+            continue
+        effect = dict(applied)
+        if effect["effect"] == "core:effect/lingering_damage":
+            effect = {"effect": effect["effect"], "parameter": damage_type, **{k: v for k, v in effect.items() if k not in ("effect", "parameter")}}
+        landed.append(effect)
+    return landed
 
 
 def run_progression(vector):

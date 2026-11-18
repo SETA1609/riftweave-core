@@ -31,6 +31,7 @@ type Caster struct {
 	Mana          int64            `json:"mana"`
 	Summons       []string         `json:"summons"` // active summons, oldest first: a group ref each
 	Minions       []string         `json:"minions"` // minions, oldest first, outside the summon limit
+	Perks         []string         `json:"perks"`   // feature refs; a bound weapon reads them
 }
 
 // Target is the defender: its save against an instant spell, and, when it has hp, what the
@@ -79,6 +80,10 @@ type Input struct {
 	Roll      int64               `json:"roll"`
 	// CountRoll is the rolled total of a minion spell's count dice.
 	CountRoll *int64 `json:"count_roll"`
+	// Coating and Enchantment are core:effect/damage_<type> refs on a conjured weapon; the
+	// enchantment wins (docs/core/casting.md#bound-weapons).
+	Coating     string `json:"coating"`
+	Enchantment string `json:"enchantment"`
 }
 
 // Result is one cast. Check is nil when nothing was rolled.
@@ -97,6 +102,99 @@ type Result struct {
 	Mana          int64              `json:"mana"`
 	Damage        []Packet           `json:"damage"`
 	HitPoints     *int64             `json:"hp"` // the target's after every packet; nil without a target hp
+	// BoundWeapon is the conjured weapon of a bound weapon spell; nil (left out) otherwise.
+	BoundWeapon *BoundWeapon `json:"bound_weapon,omitempty"`
+}
+
+// BoundWeapon is a conjured weapon (docs/core/casting.md#bound-weapons).
+type BoundWeapon struct {
+	Weapon     string            `json:"weapon"`
+	Skill      string            `json:"skill"`
+	Dice       string            `json:"dice"`
+	Material   string            `json:"material"`
+	Attack     int64             `json:"attack"`
+	DamageType string            `json:"damage_type"`
+	Phase      *string           `json:"phase"`
+	Effects    []json.RawMessage `json:"effects"`
+}
+
+const (
+	boundWeaponEffect = "core:effect/bound_weapon"
+	lingeringEffect   = "core:effect/lingering_damage"
+	materialPrefix    = "core:material/"
+)
+
+// boundWeapon is the weapon the spell conjures, or nil when it conjures none: the base it
+// copies, the default material or the latest a held perk unlocks, the default damage type or
+// the coating's or enchantment's, and every held perk's on-hit effects.
+func boundWeapon(ruleset *data.Ruleset, spell *data.Spell, input *Input) (*BoundWeapon, error) {
+	var index int = slices.IndexFunc(spell.Effects, func(applied data.AppliedEffect) bool { return applied.Effect == boundWeaponEffect })
+	if index < 0 {
+		return nil, nil
+	}
+	var ref string = spell.Effects[index].Parameter
+	item, ok := ruleset.Items[ref]
+	if !ok || !item.IsWeapon {
+		return nil, fmt.Errorf("%s is not a weapon", ref)
+	}
+	var rules data.BoundWeapon = ruleset.Casting.BoundWeapon
+	var weapon BoundWeapon = BoundWeapon{
+		Weapon: ref, Skill: item.WeaponSkill, Dice: item.Dice,
+		Material: rules.Material, DamageType: rules.DamageType, Effects: []json.RawMessage{},
+	}
+	var effects []map[string]any
+	for _, perkRef := range input.Caster.Perks {
+		perk, ok := ruleset.Features.Get(strings.TrimPrefix(perkRef, "core:feature/"))
+		if !ok {
+			continue
+		}
+		for _, unlocked := range perk.Unlocks {
+			if strings.HasPrefix(unlocked, materialPrefix) {
+				weapon.Material = unlocked
+			}
+		}
+		for _, applied := range perk.BoundWeaponEffects {
+			var effect map[string]any
+			if err := json.Unmarshal(applied.Encoded, &effect); err != nil {
+				return nil, err
+			}
+			effects = append(effects, effect)
+		}
+	}
+	weapon.Attack = ruleset.MaterialAttack[weapon.Material]
+	for _, named := range []struct{ ref, channel string }{{input.Coating, "coating"}, {input.Enchantment, "enchantment"}} {
+		if named.ref == "" {
+			continue
+		}
+		effect, ok := ruleset.Effects.Get(named.ref)
+		if !ok || !strings.HasPrefix(named.ref, damagePrefix) {
+			return nil, fmt.Errorf("%s is not an elemental damage effect", named.ref)
+		}
+		if !slices.Contains(effect.Channels, named.channel) {
+			var article string = "a"
+			if strings.ContainsRune("aeiou", rune(named.channel[0])) {
+				article = "an"
+			}
+			return nil, fmt.Errorf("%s is not %s %s", named.ref, article, named.channel)
+		}
+		weapon.DamageType = strings.TrimPrefix(named.ref, damagePrefix)
+		weapon.Phase = nil
+		if effect.Phase != "" {
+			var phase string = effect.Phase
+			weapon.Phase = &phase
+		}
+	}
+	for _, effect := range effects {
+		if _, named := effect["parameter"]; effect["effect"] == lingeringEffect && !named {
+			effect["parameter"] = weapon.DamageType
+		}
+		encoded, err := json.Marshal(effect)
+		if err != nil {
+			return nil, err
+		}
+		weapon.Effects = append(weapon.Effects, encoded)
+	}
+	return &weapon, nil
 }
 
 // rollSave rolls the defender's save and leaves in result the effects that land.
@@ -239,6 +337,9 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	result.Outcome = "cast"
 	for _, applied := range spell.Effects {
 		result.Effects = append(result.Effects, applied.Encoded)
+	}
+	if result.BoundWeapon, err = boundWeapon(ruleset, spell, &input); err != nil {
+		return Result{}, err
 	}
 	if spell.Delivery == "instant" && input.Target != nil {
 		if err := rollSave(ruleset, spell, input.Target, &result); err != nil {

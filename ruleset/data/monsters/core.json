@@ -1908,10 +1908,19 @@
             "damage": {
               "type": "force"
             }
+          },
+          {
+            "key": "bound_blade",
+            "label": "Bound Blade",
+            "weapon": "core:weapon/longsword",
+            "damage": {
+              "type": "magic"
+            }
           }
         ],
         "resist": {
           "force": 10,
+          "magic": 10,
           "necrotic": 20
         },
         "tags": [

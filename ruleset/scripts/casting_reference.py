@@ -149,6 +149,60 @@ def apply_damage(spell, effects, check, vector, caster):
     return packets, hp, None
 
 
+BOUND_WEAPON_EFFECT = "core:effect/bound_weapon"
+DAMAGE_PREFIX = "core:effect/damage_"
+LINGERING = "core:effect/lingering_damage"
+
+
+def bound_weapon(spell, vector, rules):
+    """The weapon a bound weapon spell conjures (docs/core/casting.md#bound-weapons), or None
+    when the spell conjures none. A coating or an enchantment that does not fit raises
+    ValueError."""
+    applied = next((e for e in spell["effects"] if e["effect"] == BOUND_WEAPON_EFFECT), None)
+    if applied is None:
+        return None
+    from monster_reference import weapon_row  # the composed weapon row
+
+    weapon = weapon_row(applied["parameter"])
+    if weapon is None:
+        raise ValueError(f"{applied['parameter']} is not a weapon")
+    features = {f"core:feature/{row['key']}": row for row in load_data("features/core.json")["features"]}
+    perks = [features[ref] for ref in vector["caster"].get("perks", []) if ref in features]
+    material = rules["bound_weapon"]["material"]
+    effects = []
+    for perk in perks:
+        unlocked = [ref for ref in perk.get("unlocks", []) if ref.startswith("core:material/")]
+        if unlocked:
+            material = unlocked[-1]
+        effects += [dict(effect) for effect in perk.get("bound_weapon_effects", [])]
+    materials = {f"core:material/{row['key']}": row for row in load_data("materials/core.json")["materials"]}
+    registry = {f"core:effect/{row['key']}": row for row in load_data("effects/core.json")["effects"]}
+    damage_type, phase = rules["bound_weapon"]["damage_type"], None
+    for field, channel in (("coating", "coating"), ("enchantment", "enchantment")):
+        ref = vector.get(field)
+        if ref is None:
+            continue
+        row = registry.get(ref)
+        if row is None or not ref.startswith(DAMAGE_PREFIX):
+            raise ValueError(f"{ref} is not an elemental damage effect")
+        if channel not in row.get("channels", []):
+            raise ValueError(f"{ref} is not a{'n' if channel[0] in 'aeiou' else ''} {channel}")
+        damage_type, phase = ref.removeprefix(DAMAGE_PREFIX), row.get("phase")
+    for effect in effects:
+        if effect["effect"] == LINGERING and "parameter" not in effect:
+            effect["parameter"] = damage_type
+    return {
+        "weapon": applied["parameter"],
+        "skill": weapon["weapon"]["skill"].removeprefix("core:skill/"),
+        "dice": weapon["weapon"]["damage"]["dice"],
+        "material": material,
+        "attack": materials[material].get("weapon", {}).get("attack", 0),
+        "damage_type": damage_type,
+        "phase": phase,
+        "effects": effects,
+    }
+
+
 def run_casting(vector):
     from kernel_reference import run_resolution  # kernel_reference imports this module
 
@@ -232,6 +286,12 @@ def run_casting(vector):
 
     result["outcome"] = "cast"
     result["effects"] = [dict(effect) for effect in spell["effects"]]
+    try:
+        conjured = bound_weapon(spell, vector, rules)
+    except ValueError as error:
+        return {"error": str(error)}
+    if conjured is not None:
+        result["bound_weapon"] = conjured
     if spell.get("delivery") == "instant" and "target" in vector:
         result["save"], result["effects"] = roll_save(spell, result["effects"], vector["target"], rules["save"])
     if target is not None and "hp" in target:
