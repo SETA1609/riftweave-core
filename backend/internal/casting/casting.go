@@ -32,6 +32,8 @@ type Caster struct {
 	Summons       []string         `json:"summons"` // active summons, oldest first: a group ref each
 	Minions       []string         `json:"minions"` // minions, oldest first, outside the summon limit
 	Perks         []string         `json:"perks"`   // feature refs; a bound weapon reads them
+	// SummonTemplates are the element templates of the active summons, which Elemental Kinship reads.
+	SummonTemplates []string `json:"summon_templates"`
 }
 
 // Target is the defender: its save against an instant spell, and, when it has hp, what the
@@ -263,6 +265,10 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		standing = append(standing, row)
 	}
 	var caster *Caster = &input.Caster
+	if len(caster.Summons) == 0 {
+		// A while_summoning modifier holds only while a summon is out (docs/core/casting.md#the-bonded-summoner).
+		input.Modifiers = slices.DeleteFunc(slices.Clone(input.Modifiers), func(m modifier.Modifier) bool { return m.Duration == "while_summoning" })
+	}
 	var skill string = spell.Color + "_magic"
 	skillValue, ok := caster.Skills[skill]
 	if !ok {
@@ -443,6 +449,17 @@ func castCheck(ruleset *data.Ruleset, input *Input, skill string, skillValue int
 // for the attack roll: the same target, roll, and LCK give the same margin and crit.
 func applyDamage(ruleset *data.Ruleset, spell *data.Spell, input *Input, check *resolution.Result, result *Result) error {
 	var target *Target = input.Target
+	// Elemental Kinship: the live bonded_element_damage on a packet of an active summon's element.
+	bonded, err := modifier.Value(0, modifier.Target(input.Modifiers, "bonded_element_damage"), ruleset.Origins, 0, nil)
+	if err != nil {
+		return err
+	}
+	var elements []string
+	for _, template := range input.Caster.SummonTemplates {
+		if kind := ruleset.TemplateDamage[template]; kind != "" {
+			elements = append(elements, kind)
+		}
+	}
 	var delivery string = spell.Delivery
 	if delivery == "" {
 		delivery = "single"
@@ -464,6 +481,9 @@ func applyDamage(ruleset *data.Ruleset, spell *data.Spell, input *Input, check *
 			continue
 		}
 		var amount int64 = int64(effect.Magnitude)
+		if slices.Contains(elements, kind) {
+			amount += bonded
+		}
 		hit, err := combat.Run(ruleset, combat.Input{
 			Attacker: combat.Attacker{Skill: check.Target, Roll: input.Roll, Attributes: input.Caster.Attributes},
 			Defender: combat.Defender{
