@@ -15,5 +15,8 @@
   <rw-card title="Derived stats"><rw-key-value-list [entries]="values" /></rw-card>
 }
 @if (session(); as created) {
-  <rw-card title="Stored actor"><pre>{{ created.actor | json }}</pre></rw-card>
+  <rw-card title="Stored actor">
+    <pre>{{ created.actor | json }}</pre>
+    <button type="button" class="btn btn-outline" (click)="exportCharacter()">Export character</button>
+  </rw-card>
 }

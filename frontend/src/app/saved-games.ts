@@ -3,6 +3,12 @@
 import { Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { Saves, needsBackup, type Opened, type SaveRecord } from './saves';
+import { AppContext } from './context';
+import { download, encodeFile, makeFile } from './files';
+import { MODULE_VERSIONS } from './settings-screens';
+
+/** The rules this build ships (angular.json `define`). */
+declare const RIFTWEAVE_RULES_VERSION: string;
 import { Alert } from './ui/alert';
 import { Card } from './ui/card';
 
@@ -14,6 +20,7 @@ import { Card } from './ui/card';
 })
 export class SavedGames {
   readonly saves = inject(Saves);
+  private readonly context = inject(AppContext);
   readonly opened = signal<Opened | null>(null);
   readonly error = signal('');
   readonly dragging = signal(false);
@@ -29,6 +36,13 @@ export class SavedGames {
     link.download = file.name;
     link.click();
     URL.revokeObjectURL(link.href);
+  }
+
+  /** The save as a session file both apps open (APP-30). The backup stays the session itself. */
+  exportFile(record: SaveRecord): void {
+    const modules = MODULE_VERSIONS.filter((module) => this.context.modules().includes(module.id));
+    const file = makeFile('session', record.session, record.session.rules_version ?? RIFTWEAVE_RULES_VERSION, modules);
+    download(`${record.name.replace(/[^\w.-]+/g, '-').toLowerCase()}.session.riftweave.json`, encodeFile(file));
   }
 
   async pick(event: Event): Promise<void> {

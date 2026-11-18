@@ -15,6 +15,11 @@ import { TextField } from './ui/text-field';
  * manifest here. */
 export const MODULE_IDS: readonly string[] = [exampleModule.id, factions.id, wuxing.id].sort();
 
+/** The same modules with the versions their manifests name, for a file's `modules` (APP-30). */
+export const MODULE_VERSIONS: readonly { id: string; version: string }[] = [exampleModule, factions, wuxing]
+  .map((manifest) => ({ id: manifest.id, version: manifest.version }))
+  .sort((a, b) => a.id.localeCompare(b.id));
+
 @Component({
   selector: 'rw-settings-screens',
   imports: [Alert, Card, SelectField, TextField],
