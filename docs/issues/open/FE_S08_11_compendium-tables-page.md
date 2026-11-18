@@ -1,0 +1,15 @@
+#### FE_S08_11_compendium-tables-page A compendium of every table to study a build (frontend)
+- Status: todo
+- Priority: medium
+- Needs: BE_S08_10_compendium-catalog-cli, FE_S08_12_back-on-every-screen
+- Modified: 2026-11-19
+- Do: Owner request, 2026-11-19: the Angular screens of `BE_S08_10_compendium-catalog-cli`, over the `catalog` command, so a player or GM can study weapons, armor, the other items, the bestiary, spells, perks, races, backgrounds, skills, conditions, and effects before building.
+  - **The page** (`/play/compendium`): a tab or list per collection, a sortable table with the command's columns, a filter row (text, and the collection's own fields, such as skill, color, level, phase, or price), and a row that opens its full entry in a side panel or a page of its own (`/play/compendium/<collection>/<key>`, so a link to one perk can be shared).
+  - **Links between rows:** a namespaced ref in an entry (a perk's prerequisite perk, a spell's effect, a weapon's material) is a link to that row, so a player can walk a perk ladder.
+  - **Monsters** follow the bestiary's knowledge setting (`FE_S08_06_bestiary-page`); with it on, a player sees only what the GM revealed.
+  - **Components:** a reusable `rw-data-table` (columns, sort, filter, row click) in `frontend/src/app/ui/`, which the item lookup and the bestiary pages reuse; signals for the state; Bootstrap's look in our own CSS (docs/backend/frontend.md#conventions); generated with `ng generate`.
+  - Works offline over the WebAssembly core.
+- Keys: the `/play/compendium` route; `rw-data-table`
+- Files: ~10 (frontend/src/app/compendium.ts, compendium.html, compendium.css, compendium.spec.ts, frontend/src/app/ui/data-table.ts, data-table.html, data-table.css, data-table.spec.ts, frontend/src/app/app.routes.ts, frontend/e2e/compendium.spec.ts, docs/backend/frontend.md)
+- See: docs/issues/open/BE_S08_10_compendium-catalog-cli.md, docs/issues/open/FE_S08_04_item-lookup-page.md, docs/issues/open/FE_S08_06_bestiary-page.md
+- Done when: every collection shows as a table that sorts and filters; a perk's prerequisite links to that perk; a Playwright spec opens the compendium offline, filters weapons by skill, and opens one; Vitest covers `rw-data-table`.

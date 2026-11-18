@@ -1,0 +1,16 @@
+#### FE_S07_09_character-creation-cv-form Character creation as a form laid out like a CV (frontend)
+- Status: todo
+- Priority: medium
+- Needs: BE_S07_08_character-creation-command, FE_S08_12_back-on-every-screen
+- Modified: 2026-11-19
+- Do: Owner request, 2026-11-19: character creation is a form that reads like a CV, not a JSON dump. The JSON appears only when the character is exported, and it is logged in the browser console.
+  - **Layout like a CV:** one page, a header with name, race, background, level, and element; then sections in the order of docs/modules/character-creation.md: attributes, creation perks, tag skills, skills, spells, equipment, and the derived stats in a side column that updates as the draft changes. Each section shows what `check` says about it (points left, what is missing) next to it, not in a separate error box. Print-friendly, so the page prints as a one-page sheet [A].
+  - **Attributes:** each of the eight shows its value (4 plus the points spent), and only a **−** and a **+** button; there is no number field. **+** is disabled when no points are left or the attribute is at its maximum; **−** when no point is spent on it, so nothing goes below 4 or the 10 points. "N points left" stays in view. The racial modifier shows beside the value, applied after the points.
+  - **Choices from data:** races, backgrounds, creation perks, and skills come from `creation rules`, each with its description, and link to its compendium entry (`FE_S08_11_compendium-tables-page`) when that exists.
+  - **No JSON on the page:** the "Stored actor" card (`frontend/src/app/sheet.html`) goes. **Finish** saves the character; **Export** downloads the stored actor as a file (the file format of `APP-30`) and logs it with `console.info` (through the logger once `FE_S18_02_frontend-build-environments` adds one) [A].
+  - **Leaving:** Back (`FE_S08_12_back-on-every-screen`) asks before dropping an unfinished draft, and the draft is kept in IndexedDB so a reload does not lose it [A].
+  - **Components:** small reusable pieces in `frontend/src/app/ui/` (a `rw-point-stepper` for − value +, a CV section), signals, our own CSS with Bootstrap's look, `ng generate` (docs/backend/frontend.md#conventions).
+- Keys: the creation page; `rw-point-stepper`; the CV section component
+- Files: ~12 (frontend/src/app/sheet.ts, sheet.html, sheet.css, sheet.spec.ts (or a new `creation` component), frontend/src/app/ui/point-stepper.ts, point-stepper.html, point-stepper.css, point-stepper.spec.ts, frontend/src/app/api.ts, frontend/e2e/creation.spec.ts, docs/backend/frontend.md, docs/backend/app-layout.md)
+- See: docs/issues/open/BE_S07_08_character-creation-command.md, docs/modules/character-creation.md, frontend/src/app/sheet.html
+- Done when: a Playwright spec makes a character with only + and −: + stops at 0 points left and at an attribute's maximum, − stops at 4; the page shows no JSON; Export downloads the file and the console shows it; Vitest covers `rw-point-stepper`.

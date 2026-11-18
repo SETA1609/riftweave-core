@@ -1,9 +1,9 @@
 #### BE_S07_05_character-from-build-cli A new character from a suggested build, in both apps (backend)
 - Status: todo
 - Priority: medium
-- Needs: M5-47, BE_S08_01_player-session-cli, BE_S07_03_character-list-cli
+- Needs: M5-47, BE_S08_01_player-session-cli, BE_S07_03_character-list-cli, BE_S07_08_character-creation-command
 - Was: APP-38, split by role on 2026-11-18: this is the backend half (the contract, the Go core, the vectors, and the CLI and TUI with their UX); the browser half is `FE_S07_06_character-from-build-page`
-- Modified: 2026-11-17
+- Modified: 2026-11-19
 - Do: Owner request, 2026-11-17: a player who wants a ready start picks a suggested build and the app fills the character from it. Character creation in both apps (the human CLI and the Angular app) gets a **From a build** choice beside starting empty. It lists the builds of the `builds` collection (M5-47, M5-60, M5-61, and any enabled module's), filterable by path and sub-path, each with its summary and a link to its page. Picking one and a level from 1 to `max_level` fills the character:
   - **Level 1:** the build's attribute spread, tag skills, creation perks and traits, and its skill points; the player still picks race, background, and name, because a build does not hold them [A].
   - **Above level 1:** the app replays level-ups with the `progression` command, taking the build's perk and skill points at each level, so the result is a legal character the rules computed, not a copy of numbers. A level the build cannot reach legally (a module changed a prerequisite) stops there and says why.
