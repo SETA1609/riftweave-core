@@ -21,6 +21,7 @@ from validate import (
     build_namespaced_ref_index,
     check_damage_type_vocabulary,
     check_equipment_uniqueness,
+    check_maneuver_unlocks,
     check_racial_trait_refs,
     load_canonical_damage_types,
     check_references,
@@ -198,6 +199,18 @@ class TestNamespacedRefIndex(unittest.TestCase):
         index = set()
         self.assertFalse(resolve_namespaced_ref(42, index))
         self.assertFalse(resolve_namespaced_ref(None, index))
+
+
+class TestManeuverUnlocks(unittest.TestCase):
+    """M3-24: every maneuver needs a perk that unlocks it (docs/core/actions.md#maneuvers)."""
+
+    def test_a_maneuver_no_perk_unlocks_fails(self):
+        result = check_maneuver_unlocks([{"key": "shove"}], [{"key": "wind_up", "unlocks": ["core:maneuver/heavy_swing"]}])
+        self.assertEqual(len(result), 1)
+        self.assertIn("shove", result[0])
+
+    def test_a_maneuver_a_perk_unlocks_passes(self):
+        self.assertEqual(check_maneuver_unlocks([{"key": "heavy_swing"}], [{"key": "wind_up", "unlocks": ["core:maneuver/heavy_swing"]}]), [])
 
 
 class TestManeuverChannel(unittest.TestCase):

@@ -1874,6 +1874,17 @@ def check_monster_perks(monsters, templates):
     return errors, warnings
 
 
+def check_maneuver_unlocks(maneuvers, features):
+    """Every maneuver needs a perk (docs/core/actions.md#maneuvers): a maneuver no perk lists in
+    `unlocks` is an error, because nobody could learn it. Monsters list theirs directly."""
+    unlocked = {ref for row in features for ref in row.get("unlocks") or []}
+    return [
+        f"maneuver '{row.get('key')}': no perk unlocks it (add core:maneuver/{row.get('key')} to a perk's unlocks)"
+        for row in maneuvers
+        if f"core:maneuver/{row.get('key')}" not in unlocked
+    ]
+
+
 def check_racial_trait_refs(data_files):
     """Racial traits live only in features, as type racial_trait (M1-06).
 
@@ -1980,6 +1991,16 @@ def main():
     if perk_errors:
         print("  \u2717  monster perks (rank at most the perk's ranks)")
         for e in perk_errors:
+            print(f"       {e}")
+        failed += 1
+
+    unlock_errors = check_maneuver_unlocks(
+        json.loads((DATA_DIR / "maneuvers" / "core.json").read_text())["maneuvers"],
+        json.loads((DATA_DIR / "features" / "core.json").read_text())["features"],
+    )
+    if unlock_errors:
+        print("  \u2717  maneuvers (each unlocked by a perk)")
+        for e in unlock_errors:
             print(f"       {e}")
         failed += 1
 

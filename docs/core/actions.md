@@ -2,7 +2,7 @@
 
 Author: SETA1609
 
-Modified: 2026-11-17
+Modified: 2026-11-18
 
 One budget. Costs live in `ruleset/data/actions/core.json`. A turn spends AP. A real-time client spends stamina for the same actions, at a fixed rate. There is no bonus action and no reaction slot.
 
@@ -54,21 +54,25 @@ needs     = one of its ranges (any when it lists none), and a weapon with one of
             weapon_properties (any weapon when it lists none)
 ```
 
-| Maneuver | AP | Attack | Damage | Needs | On a hit |
-| --- | --- | --- | --- | --- | --- |
-| Heavy Swing | attack + 1 | −10 | ×1.5 | melee | staggered (4 s) |
-| Quick Strike | attack − 1 | 0 | ×0.5 | melee, a light weapon | — |
+| Maneuver | AP | Attack | Damage | Needs | On a hit | Unlocked by |
+| --- | --- | --- | --- | --- | --- | --- |
+| Heavy Swing | 4 (attack + 1) | −10 | ×1.5 | melee | staggered (4 s) | Wind-Up (STR 5) |
+| Quick Strike | 2 (attack − 1) | 0 | ×0.5 | melee, a light weapon | — | Snap Cut (AGI 5) |
 
+- **AP follows the attack.** The totals are for today's attack, 3 AP with every weapon. The
+  maneuver stores only its difference (`ap`), so when M3-28 sets the attack cost by loadout, a
+  maneuver's AP moves with it.
 - **Mana.** A maneuver may name a small `mana` cost, for one with a touch of magic; the two
   starting rows cost none. [A]
 - **Effects** must declare the `maneuver` channel, which `validate.py` checks
   (`CHANNEL_REQUIREMENTS`), as it checks `ingredient` and `enchantment`.
-- **Who may use one.** A maneuver no perk unlocks is open to everyone; one that a perk lists in
-  its `unlocks` needs that perk. Both starting rows are open. [A] The passive damage perk
-  (`power_attack`, renamed `full_weight` by M3-28) stays a passive bonus and does not unlock
-  Heavy Swing, so its rank does not decide who may swing hard. [A]
-- **Monsters** list `maneuvers` on their row or template, so a troll swings hard with the same
-  row a fighter uses ([monsters.md](../modules/monsters.md#maneuvers)).
+- **Every maneuver needs a perk** (owner 2026-11-18). A character may attempt a maneuver only
+  while holding a perk that lists it in `unlocks`; nobody knows one untrained. `validate.py`
+  fails on a maneuver no perk unlocks. An unlock perk gives nothing else; a perk's skill
+  bonus must cover two skills or be at least +10 (M5-78). The passive damage perk (`power_attack`,
+  renamed `full_weight` by M3-28) stays a passive bonus and does not unlock Heavy Swing. [A]
+- **Monsters** list `maneuvers` on their row or template, and need no perk for them, so a troll
+  swings hard with the same row a fighter uses ([monsters.md](../modules/monsters.md#maneuvers)).
 - **Names** are our own, not feat names from other games (CONTRIBUTING.md).
 
 ## One rule set, two clocks
