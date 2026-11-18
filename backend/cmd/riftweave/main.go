@@ -132,11 +132,15 @@ func interactive(dataFlag string, devFlag bool, stdin io.Reader, stdout, stderr 
 	if err != nil {
 		return fail(stderr, exitRuleset, "loading %s: %v", directory, err)
 	}
-	var model play.Model = play.New(opened.Run)
 	if devFlag {
 		opened.EnableDev()
-		model = play.NewDev(opened.Run)
 	}
+	options, err := playOptions(directory, getenv)
+	if err != nil {
+		return fail(stderr, exitInput, "%v", err)
+	}
+	options.Dev = devFlag
+	var model play.Model = play.NewWith(opened.Run, options)
 	var program *tea.Program = tea.NewProgram(model, tea.WithInput(stdin), tea.WithOutput(stdout))
 	if _, err := program.Run(); err != nil {
 		return fail(stderr, exitInput, "play needs a terminal: %v", err)
