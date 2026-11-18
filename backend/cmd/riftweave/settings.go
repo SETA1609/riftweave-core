@@ -8,7 +8,9 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"slices"
 
+	"github.com/SETA1609/riftweave-core/backend/cmd/riftweave/play"
 	"github.com/SETA1609/riftweave-core/backend/internal/settings"
 )
 
@@ -78,4 +80,47 @@ func settingsCommand(args []string, stdout, stderr io.Writer, getenv func(string
 	body, _ := json.Marshal(map[string]string{"settings": path})
 	fmt.Fprintf(stdout, "%s\n", body)
 	return exitOK
+}
+
+// playOptions are the human CLI's settings file, how to save it, and the modules beside the
+// ruleset directory (docs/backend/app-layout.md).
+func playOptions(directory string, getenv func(string) string) (play.Options, error) {
+	path, err := settingsPath(getenv)
+	if err != nil {
+		return play.Options{}, fmt.Errorf("no settings directory: %v", err)
+	}
+	file, err := savedSettings(path)
+	if err != nil {
+		return play.Options{}, fmt.Errorf("%s: %v", path, err)
+	}
+	return play.Options{
+		Settings: file,
+		Save: func(file settings.File) error {
+			if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+				return err
+			}
+			return os.WriteFile(path, file.Encode(), 0o644)
+		},
+		Modules: moduleIDs(filepath.Join(directory, "..", "modules")),
+	}, nil
+}
+
+// moduleIDs are the ids in the manifests of the module directories, sorted.
+func moduleIDs(parent string) []string {
+	var ids []string
+	entries, _ := os.ReadDir(parent)
+	for _, entry := range entries {
+		content, err := os.ReadFile(filepath.Join(parent, entry.Name(), "manifest.json"))
+		if err != nil {
+			continue
+		}
+		var manifest struct {
+			ID string `json:"id"`
+		}
+		if json.Unmarshal(content, &manifest) == nil && manifest.ID != "" {
+			ids = append(ids, manifest.ID)
+		}
+	}
+	slices.Sort(ids)
+	return ids
 }

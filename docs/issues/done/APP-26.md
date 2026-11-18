@@ -1,8 +1,9 @@
 #### APP-26 The human CLI opens on a main menu, and Start opens the tools
-- Status: todo
+- Status: done
+- Merged: #228, 2026-11-18
 - Priority: medium
 - Needs: APP-25
-- Modified: 2026-11-16
+- Modified: 2026-11-18
 - Do: Owner request, 2026-11-16: both apps share one layout. `riftweave play` opens on a **main menu**: Start, Characters (APP-33), Settings, Modules, Network, Quit. Everything works offline: a GM and four players run a whole session with no connection, and the network only adds what a shared table needs online (APP-35) (owner, 2026-11-16). **Settings** edits the APP-25 file (language, theme, bestiary) and offers export and import. **Modules** lists the modules in `ruleset/modules/` with a check box each, saved in `settings.modules`; core heads the list, always checked and locked, because core is always loaded (owner, 2026-11-16). **Network** picks `local` (offline, the default: the core in process, today's behaviour) or `server` (the HTTP API at `server_url`, through the same command contract) [A]; `room` is listed and disabled until APP-17. **Start** opens the **tools menu**: GM tools, Character creation, Spell creation, Skill resolution, Bestiary, Back. Character creation and the attack screen move here as they are; GM tools holds the attack screen and the offline encounter tracker (APP-34) (owner, 2026-11-16). Skill resolution is a new form over the `resolution` command (skill, target modifiers, a roll or "roll for me"). An entry whose issue is not merged (Spell creation: APP-22's command side; Bestiary: APP-29) is shown dimmed with that issue's id, so the menu is the same in both apps from the start [A]. Esc goes back one menu. The menu tree (key, parent, issue when pending) is one file, `backend/contract/menu.json`, that the CLI embeds and the Angular app (APP-27) imports, so both show the same entries; the i18n keys of APP-28 hang off the same keys [A].
 - Keys: the menu keys (`start`, `settings`, `modules`, `network`; `gm_tools`, `character_creation`, `spell_creation`, `skill_resolution`, `bestiary`)
 - Files: ~8 (backend/cmd/riftweave/play/play.go, backend/contract/menu.json, backend/cmd/riftweave/play/menu.go, backend/cmd/riftweave/play/settings.go, backend/cmd/riftweave/play/resolution.go, backend/cmd/riftweave/play_test.go, docs/backend/cli.md, docs/backend/app-layout.md, changes/APP-26.md)

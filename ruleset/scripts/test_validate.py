@@ -403,8 +403,8 @@ class TestRacialTraitRefs(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             files = self._write(
                 Path(tmp),
-                [{"key": "toughness", "type": "perk"}],
-                [{"key": "dwarf", "traits": [{"id": "core:feature/toughness"}]}],
+                [{"key": "hardened_hide", "type": "perk"}],
+                [{"key": "dwarf", "traits": [{"id": "core:feature/hardened_hide"}]}],
             )
             errors = check_racial_trait_refs(files)
             self.assertEqual(len(errors), 1)

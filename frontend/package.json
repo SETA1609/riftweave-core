@@ -21,6 +21,7 @@
     "@angular/core": "22.2.4",
     "@angular/forms": "22.2.4",
     "@angular/platform-browser": "22.2.4",
+    "@angular/router": "22.2.4",
     "@angular/service-worker": "22.2.4",
     "openapi-fetch": "0.17.0",
     "rxjs": "7.8.2"

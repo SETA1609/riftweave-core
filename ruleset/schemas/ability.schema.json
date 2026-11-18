@@ -16,7 +16,7 @@
     "ability": {
       "type": "object",
       "properties": {
-        "id": { "type": "string", "enum": ["str", "per", "end", "int", "wil", "agi", "cha", "lck"] },
+        "id": { "$ref": "schema.json#/definitions/ability" },
         "name": { "type": "string" },
         "abbreviation": { "type": "string", "minLength": 3, "maxLength": 3 },
         "description": { "type": "string" },

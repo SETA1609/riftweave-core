@@ -460,28 +460,28 @@ class TestMonstersTakePerks(unittest.TestCase):
 
     def test_the_example_rows_and_templates_name_their_perks(self):
         rows = {r["key"]: r for r in monsters()}
-        self.assertEqual(self.held(rows["troll"]), {"core:feature/toughness": 2})
-        self.assertEqual(self.held(rows["bandit_captain"]), {"core:feature/armored_evasion": 1, "core:feature/alert": 1})
+        self.assertEqual(self.held(rows["troll"]), {"core:feature/hardened_hide": 2})
+        self.assertEqual(self.held(rows["bandit_captain"]), {"core:feature/armored_evasion": 1, "core:feature/ever_watchful": 1})
         templates = {t["key"]: t for t in json.loads((DATA / "monsters" / "templates.json").read_text())["monster_templates"]}
-        self.assertEqual(self.held(templates["dire"]), {"core:feature/toughness": 1})
-        self.assertEqual(self.held(templates["elder"]), {"core:feature/second_wind": 1})
+        self.assertEqual(self.held(templates["dire"]), {"core:feature/hardened_hide": 1})
+        self.assertEqual(self.held(templates["elder"]), {"core:feature/catch_breath": 1})
 
     def test_a_templates_perk_adds_to_the_rows_keeping_the_higher_rank(self):
         rows = resolve([
             {"key": "a", "base": "core:creature_type/beast", "templates": ["dire"], "overrides": {"level": 3,
-             "perks": {"$extend": [{"perk": "core:feature/alert"}]}}},
+             "perks": {"$extend": [{"perk": "core:feature/ever_watchful"}]}}},
             {"key": "b", "base": "core:creature_type/beast", "templates": ["dire"], "overrides": {"level": 3,
-             "perks": {"$extend": [{"perk": "core:feature/toughness", "rank": 3}]}}},
+             "perks": {"$extend": [{"perk": "core:feature/hardened_hide", "rank": 3}]}}},
         ])
-        self.assertEqual(self.held(rows["a"]), {"core:feature/toughness": 1, "core:feature/alert": 1})
-        self.assertEqual(self.held(rows["b"]), {"core:feature/toughness": 3})
+        self.assertEqual(self.held(rows["a"]), {"core:feature/hardened_hide": 1, "core:feature/ever_watchful": 1})
+        self.assertEqual(self.held(rows["b"]), {"core:feature/hardened_hide": 3})
 
     def test_a_rank_past_the_perks_ranks_fails_and_a_social_perk_warns(self):
         errors, warnings = validate.check_monster_perks(
-            [{"key": "x", "perks": [{"perk": "core:feature/toughness", "rank": 4}, {"perk": "core:feature/diplomat"}]}], [])
-        self.assertTrue(any("toughness" in e and "rank 4" in e for e in errors), errors)
+            [{"key": "x", "perks": [{"perk": "core:feature/hardened_hide", "rank": 4}, {"perk": "core:feature/diplomat"}]}], [])
+        self.assertTrue(any("hardened_hide" in e and "rank 4" in e for e in errors), errors)
         self.assertTrue(any("diplomat" in w and "social" in w for w in warnings), warnings)
-        self.assertEqual(validate.check_monster_perks([{"key": "y", "perks": [{"perk": "core:feature/toughness", "rank": 3}]}], []), ([], []))
+        self.assertEqual(validate.check_monster_perks([{"key": "y", "perks": [{"perk": "core:feature/hardened_hide", "rank": 3}]}], []), ([], []))
 
 
 

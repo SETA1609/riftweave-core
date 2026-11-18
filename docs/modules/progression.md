@@ -1,6 +1,6 @@
 # Core System: Attributes, Skills, Perks, Magic
 
-Modified: 2026-11-17
+Modified: 2026-11-18
 
 Riftweave is a **classless, d100 roll-under cRPG ruleset**. A character is the sum
 of eight attributes, a spread of point-buy skills (some tagged), and a stack of
@@ -495,7 +495,7 @@ spends AP at a table and AP times `stamina_per_ap` in stamina in real time
 | Action Points | `2 + floor(AGI / 3)` per turn; the pool carries over from turn to turn but cannot exceed 10. |
 | Carry weight | `25 + STR × 10` |
 | Critical chance | `1% + LCK%` (+ perks) |
-| Initiative | `PER` (+ perks such as *Alert*) |
+| Initiative | `PER` (+ perks such as *Ever Watchful*) |
 
 ### Additional Secondary & Combat Statistics
 

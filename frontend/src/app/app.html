@@ -1,24 +1,12 @@
 <header>
-  <h1>Riftweave</h1>
-  <nav class="nav">
-    @for (tab of tabs; track tab) {
-      <button type="button" class="nav-link" [class.active]="tab === current()" (click)="current.set(tab)">{{ tab }}</button>
-    }
-  </nav>
+  <h1><a routerLink="/">Riftweave</a></h1>
   <rw-theme-toggle />
 </header>
 <main>
   @switch (state()) {
     @case ('starting') { <rw-alert kind="info" message="Starting the rules engine…" /> }
     @case ('failed') { <rw-alert [message]="failure()" /> }
-    @default {
-      @switch (current()) {
-        @case ('sheet') { <rw-sheet /> }
-        @case ('attack') { <rw-attack /> }
-        @case ('playthrough') { <rw-playthrough /> }
-        @case ('saves') { <rw-saved-games /> }
-      }
-    }
+    @default { <router-outlet /> }
   }
 </main>
 <footer>Rules {{ rulesVersion }}</footer>

@@ -1,6 +1,6 @@
 # Frontend
 
-Modified: 2026-11-17
+Modified: 2026-11-18
 
 `frontend/` is an Angular app over the core (APP-07): through the HTTP API ([api.md](api.md)), or
 through the Go core compiled to WebAssembly in the page, so it can be served as a static site with
@@ -54,8 +54,25 @@ src/app/wasm.ts           load wasm_exec.js, instantiateStreaming(fetch('riftwea
 
 ## Screens
 
+The app opens on the home page, the main menu of [app-layout.md](app-layout.md), and the Angular
+router shows one screen at a time (APP-27). The routes use the hash (`#/play/attack`), so the
+static Pages build reloads any page and works offline with no server-side fallback. [A]
+
+| Route | Shows |
+| --- | --- |
+| `/` | the home page: Start, Characters (APP-33), Settings, Modules, Network |
+| `/play` | the tools: GM tools, Character creation, Spell creation (APP-22), Skill resolution, Bestiary (APP-29), Saved games |
+| `/play/gm_tools` | Resolve an attack, Encounter tracker (APP-34), Playthrough |
+| `/play/<tool>` | the tool's screen below |
+| `/settings`, `/modules`, `/network` | the settings file of APP-25, one screen each |
+
+The three menus are one component, `rw-menu-grid` (`ui/menu-grid`), which reads
+`backend/contract/menu.json` and shows a menu's entries as cards; a pending entry is a disabled
+card with its issue id.
+
 | Screen | Calls | Shows |
 | --- | --- | --- |
+| Skill resolution | `resolution` with the skill and its value, LCK, one target modifier, and the roll | the target, success, margin, and tags |
 | Character sheet | `derived` on the attributes and level; `POST /v1/sessions` to create the character | every derived stat, and the stored actor of the new session |
 | Attack resolver | `combat` with the attacker (skill, roll, LCK), the defender (evasion, armor DR, a carried shield's DR and the shields skill, HP, and a dodge or block stance), the delivery, and the damage roll | each step of the result: the target, the margin, crit, the evasion and block bands, evaded or blocked, the damage after DR, and HP after (M3-27) |
 | Playthrough | `POST /v1/sessions/step` for each step of `ruleset/tests/vectors/playthrough.json`, then `replay` | each step's input and result, and whether the replay matches |

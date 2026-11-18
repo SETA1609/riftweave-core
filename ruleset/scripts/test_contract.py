@@ -22,7 +22,7 @@ from test_vectors import VECTOR_DIR, discover_vectors, vector_function  # noqa: 
 REPO_ROOT = _SCRIPTS.parent.parent
 CONTRACT_DIR = REPO_ROOT / "backend" / "contract"
 SCHEMA_DIR = REPO_ROOT / "ruleset" / "schemas"
-NOT_COMMANDS = {"command.schema.json", "common.json", "settings.schema.json"}  # settings: a file format, APP-25
+NOT_COMMANDS = {"command.schema.json", "common.json", "settings.schema.json", "menu.json"}  # settings: a file format, APP-25; menu: the app menu tree, APP-26
 VECTOR_ONLY_FIELDS = {"name", "function", "expect"}
 
 

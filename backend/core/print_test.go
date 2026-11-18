@@ -56,7 +56,7 @@ func TestASheetPrintsEachRaisedSkillsTargetAsTheBackendComputesIt(t *testing.T) 
 	opened := open(t)
 	actor := startingActor()
 	actor["skills"] = map[string]any{"blades": 40, "red_magic": 50}
-	actor["perks"] = map[string]any{"toughness": 2}
+	actor["perks"] = map[string]any{"hardened_hide": 2}
 	html := printPage(t, opened, map[string]any{"kind": "sheet", "actor": actor})
 
 	// A target is the skill's value with the actor's modifiers on it; no perk here names blades.
@@ -69,16 +69,16 @@ func TestASheetPrintsEachRaisedSkillsTargetAsTheBackendComputesIt(t *testing.T) 
 	if strings.Contains(html, `data-target="stealth"`) {
 		t.Error("an unraised skill is not printed")
 	}
-	// Derived stats with the actor's modifiers: Toughness at rank 2 is +30 HP.
+	// Derived stats with the actor's modifiers: Hardened Hide at rank 2 is +30 HP.
 	derived := runJSON(t, opened, "derived", map[string]any{"actor": characterOf(mustStored(t, actor)),
-		"modifiers": []any{map[string]any{"target": "hp", "operation": "add", "value": 30, "source": "feature:toughness", "origin": "core:origin/trained"}}})
+		"modifiers": []any{map[string]any{"target": "hp", "operation": "add", "value": 30, "source": "feature:hardened_hide", "origin": "core:origin/trained"}}})
 	for _, stat := range []string{"hp", "mp", "sp", "ap"} {
 		if got := printed(t, html, "stat", stat); float64(got) != derived[stat].(float64) {
 			t.Errorf("%s printed %d, derived %v", stat, got, derived[stat])
 		}
 	}
-	if got := printed(t, html, "perk", "toughness"); got != 2 {
-		t.Errorf("toughness rank %d, want 2", got)
+	if got := printed(t, html, "perk", "hardened_hide"); got != 2 {
+		t.Errorf("hardened_hide rank %d, want 2", got)
 	}
 }
 

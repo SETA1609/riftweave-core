@@ -329,7 +329,7 @@ A monster fights with the same numbers as a character ([core/combat.md](../core/
   `add` times the rank, a `multiply` of `m` at `1 + (m − 1) × rank`), and `monster_sheet` applies
   them to its derived stats, its authored `hitPoints` included, and its skills. A template's perks
   add to the row's as its spells do, the higher rank kept when both name one; `dire` grants
-  Toughness and `elder` Second Wind. Prerequisites are not checked on a monster: an author or a GM
+  Hardened Hide and `elder` Catch Your Breath. Prerequisites are not checked on a monster: an author or a GM
   places a perk on purpose. A perk of the `social` or `utility` category means little on a monster,
   so `validate.py` warns but does not fail. [V 2026-11-14, `monster_sheet` vectors in Python and Go,
   `test_bestiary.py`]

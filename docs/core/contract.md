@@ -39,7 +39,7 @@ Modifier
   operation         add | multiply | set | grant | resist
   value             number
   duration          turns | uses | while_equipped | while_applied | permanent
-  source            feature:toughness | item:lockpicks | condition:blinded (a kind and a key, never a number)
+  source            feature:hardened_hide | item:lockpicks | condition:blinded (a kind and a key, never a number)
   origin            core:origin/alchemy (optional; the kind of source)
 ```
 
