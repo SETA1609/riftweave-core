@@ -1,8 +1,9 @@
 #### GD_S06_01_bound-weapon-materials Bound weapons have a material, perks, and enchants
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: M3-02, M3-06
 - Was: M3-09
+- Modified: 2026-11-19
 - Do: `bound_weapon` names only the weapon it copies, so it gets no stats from a material. A bound weapon starts with the stats of `core:material/iron` (tier 2, attack +3), written once as data and not on each spell. Perks swap in another base material and add enchants; decide how a perk names a material, since a modifier holds a number. The material gives stats only: a bound weapon overrides the material's phase and has none, so it sits out the five-phase cycles, and it deals `magic` damage in place of its weapon's physical type. `magic` is a new, plain damage type for non-elemental magic. `force` does not fit: its `bypasses_armor` and `unerring` tags would make a starting bound weapon too strong. `resist` with parameter `magic` reduces the new type, so a mage's magic resistance works against a bound weapon, and armor DR applies in full at the start (tag `armor_dr_applies`). A coating or an elemental enchantment overrides the damage type and gives the weapon that element's phase. Stronger enchants come one step at a time through perks: armor penetration (`core:effect/armor_pierce`), more damage to undead, banishing summoned creatures on a hit (a new effect), and damage over time of the weapon's current damage type, so `magic` by default and the coating's or enchant's type when one applies. The same rules apply to every bound weapon, including Bound Bow.
 - Keys: the `magic` damage type; the default material for `bound_weapon`; bound weapon perks in `features/core.json`; `core:effect/banish_summoned`
 - Files: ~11 (docs/core/combat.md, docs/modules/magic.md, docs/modules/weapons.md, ruleset/schemas/schema.json, ruleset/schemas/effect.schema.json, ruleset/data/combat/damage_types.json, ruleset/data/effects/core.json, ruleset/data/features/core.json, ruleset/tests/vectors/casting.json, ruleset/scripts/casting_reference.py, backend/internal/casting/)
