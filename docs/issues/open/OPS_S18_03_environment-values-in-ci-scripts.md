@@ -1,0 +1,20 @@
+#### OPS_S18_03_environment-values-in-ci-scripts The Pages workflow and the local scripts supply each environment's values
+- Status: todo
+- Priority: medium
+- Needs: FE_S18_02_frontend-build-environments
+- Modified: 2026-11-18
+- Do: Owner request, 2026-11-18: the Pages site uses its own configuration and a local run another. FE_S18_02 adds the environment files; this issue makes every way of running the app pick the right one, and supplies the values that must not be committed.
+  - **Pages workflow** (`.github/workflows/pages.yml`): builds `--configuration pages`, and writes the hosted rooms project's URL and anon key into the build from **repository variables** (`vars.RIFTWEAVE_ROOMS_URL`, `vars.RIFTWEAVE_ROOMS_ANON_KEY` [A]), not secrets, since both are public in the built site anyway. With the variables unset, `rooms` stays `null` and the site plays offline only. How the values reach the build (a generated `environment.pages.ts` or a `define`) is decided in the spec step [A].
+  - **A guard on the built site:** after `ng build`, a step fails if `dist/` contains `localhost`, `127.0.0.1`, or the dev console's `globalThis.rw`, or anything shaped like a Supabase service-role key [A].
+  - **Local scripts:** `./scripts/app.sh` runs `local-api`; `npm run start:wasm` runs `local`; `./scripts/app-container.sh` builds `container`; `npm run preview:pages` keeps `pages`. When local Supabase (S10) is added, `app.sh --rooms` starts it and the `local` files already point at it.
+  - **CI:** `.github/workflows/frontend.yml` builds every configuration, so a broken environment file fails the pull request, not the release.
+  - **Docs:** the run table in docs/backend/frontend.md names the environment of each command; CONTRIBUTING.md says where the Pages variables are set (Settings → Secrets and variables → Actions → Variables).
+  - Pin every action by commit, with its tag in a comment.
+- Keys: `vars.RIFTWEAVE_ROOMS_URL`, `vars.RIFTWEAVE_ROOMS_ANON_KEY`; the built-site guard step
+- Files: ~8 (.github/workflows/pages.yml, .github/workflows/frontend.yml, scripts/app.sh, scripts/app-container.sh, docs/backend/frontend.md, CONTRIBUTING.md, docs/decisions/OPS_S18_03_environment-values-in-ci-scripts.md, changes/OPS_S18_03_environment-values-in-ci-scripts.md)
+- See: docs/issues/open/FE_S18_02_frontend-build-environments.md, .github/workflows/pages.yml, docs/backend/frontend.md#running-it
+- Done when:
+  - The Pages build of a release tag carries the variables' rooms values, and without them builds with `rooms: null`.
+  - The guard step fails a build with a planted `localhost` URL, and passes the real one.
+  - `frontend.yml` builds all four configurations.
+  - Each command in the run table starts the app with its environment.
