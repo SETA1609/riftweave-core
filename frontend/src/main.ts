@@ -1,5 +1,4 @@
 import { provideServiceWorker } from '@angular/service-worker';
-import { isDevMode } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideRouter, withComponentInputBinding, withHashLocation } from '@angular/router';
 import { App } from './app/app';
@@ -14,9 +13,10 @@ bootstrapApplication(App, {
   providers: [provideRouter(routes, withComponentInputBinding(), withHashLocation()), provideServiceWorker('ngsw-worker.js', { enabled: RIFTWEAVE_SERVICE_WORKER, registrationStrategy: 'registerImmediately' })],
 })
   .then((app) => {
-    // A constant false in the production and Pages builds: the branch, and the console module
-    // with it, is left out of those bundles.
-    if (RIFTWEAVE_DEV && isDevMode()) {
+    // A constant false in the default and Pages builds: the branch, and the console module with
+    // it, is left out of those bundles. Not isDevMode(): the serve configurations build optimized,
+    // so Angular's dev mode is off there too.
+    if (RIFTWEAVE_DEV) {
       void import('./app/dev-console').then(({ installDevConsole }) => installDevConsole(app.injector));
     }
   })
