@@ -8,3 +8,7 @@ Date: 2026-11-19
 - **The element match** needs the summons' element templates, which `caster.summons` (group refs) does not carry, so the cast takes `caster.summon_templates` (template refs) beside it. [A]
 - **Every magic skill:** Kindred Focus lists one `add 10` per `<color>_magic` (nine modifiers), which meets the perk skill-bonus rule (two skills or more, at least +10). [A]
 - **Numbers** (+10, x0.8, +4, levels 6, 12, 18) are [A] until a playtest runs a bonded summoner against a plain caster.
+- **Verified:** the 8 bonded casting vectors pass in Python (420 tests) and Go (`go test ./...`); `validate.py` passes 52 of 52 files. [V 2026-11-19]
+- **A vector fixed before the data step:** two vectors first expected a failed check's margin as -5; a failed check reports `margin: null` (docs/core/resolution.md), so the tests commit was corrected, not the rule.
+- **Differences from the issue:** `docs/core/casting.md`, `docs/core/vectors.md`, `ruleset/schemas/schema.json`, `backend/contract/casting.json`, Go (`internal/casting`, `internal/data`), and the regenerated `perk-ladders.md` are files the issue did not list; `test_perks.py` needed no change, since its catalogue checks cover the three perks.
+- **Branch:** made from `GD_S06_01_bound-weapon-materials` (the owner asked for the S06 issues one after another), so this pull request carries that one's commits until it merges.
