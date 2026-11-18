@@ -11,7 +11,7 @@ arrow runs from a prerequisite perk to the perk that needs it, labelled with the
 when more than 1. A rounded box is a prerequisite from another category. A ladder that stops
 early, or a perk nothing leads to, shows at a glance.
 
-104 perks: 43 on a ladder, 61 with no perk before or after them.
+107 perks: 46 on a ladder, 61 with no perk before or after them.
 
 ## Combat
 
@@ -60,6 +60,9 @@ graph LR
   arcane_reservoir["Arcane Reservoir (ranks 3)<br/>INT 6"]
   conjurer["Conjurer<br/>Lv 6 · orange_magic 50"]
   summon_retinue["Retinue<br/>Lv 14 · orange_magic or black_magic 60"]
+  kindred_focus["Kindred Focus<br/>Lv 6 · orange_magic or black_magic 40"]
+  shared_wellspring["Shared Wellspring<br/>Lv 12 · orange_magic or black_magic 55"]
+  elemental_kinship["Elemental Kinship<br/>Lv 18 · orange_magic or black_magic 70"]
   tempered_conjuring["Tempered Conjuring<br/>Lv 6 · orange_magic 40"]
   piercing_conjuring["Piercing Conjuring<br/>Lv 10 · orange_magic 50"]
   lingering_conjuring["Lingering Conjuring<br/>Lv 12 · orange_magic 55"]
@@ -72,6 +75,8 @@ graph LR
   summon_ancient["Ancient Summons<br/>Lv 24 · orange_magic 80"]
   archmage["Archmage<br/>Lv 24 · INT 9"]
   conjurer --> summon_retinue
+  kindred_focus --> shared_wellspring
+  kindred_focus --> elemental_kinship
   tempered_conjuring --> piercing_conjuring
   tempered_conjuring --> lingering_conjuring
   piercing_conjuring --> hallowed_conjuring

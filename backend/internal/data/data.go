@@ -779,6 +779,7 @@ type Ruleset struct {
 	MaterialPercent   map[string]int64     // material key: valueFactor * 100
 	MaterialDefense   map[string]int64     // a material ref: its armor.defense, added to an armor piece's drBase
 	MaterialAttack    map[string]int64     // a material ref: its weapon.attack (a bound weapon's attack)
+	TemplateDamage    map[string]string    // a monster template ref: its damage_type, "" for none (element templates)
 	DiceLadder        [][]string           // combat/dice_ladder.json: rungs of equal dice, smallest first
 	Sizes             map[string]Size      // combat/dice_ladder.json: undersized, normal, oversized
 	MonsterLevel      map[string]int64     // monster key
@@ -1431,11 +1432,16 @@ func (loader *rulesetLoader) loadItems(ruleset *Ruleset) {
 	loader.read("monsters/core.json", &monsters)
 	var templates struct {
 		Templates []struct {
-			Key  string
-			Loot []DropRow
+			Key        string
+			Loot       []DropRow
+			DamageType string `json:"damage_type"`
 		} `json:"monster_templates"`
 	}
 	loader.read("monsters/templates.json", &templates)
+	ruleset.TemplateDamage = map[string]string{}
+	for _, template := range templates.Templates {
+		ruleset.TemplateDamage["core:monster_template/"+template.Key] = template.DamageType
+	}
 	var templateLoot map[string][]DropRow = map[string][]DropRow{}
 	for _, template := range templates.Templates {
 		templateLoot[template.Key] = template.Loot

@@ -17,6 +17,7 @@
     {"key": "aura_ally_attack", "label": "Ally Attack Aura", "kind": "number", "description": "Points on the attack target of allies who can see the actor.", "pending": true},
     {"key": "barter_shift", "label": "Barter Prices", "kind": "number", "description": "Percentage points of a better price when buying and selling.", "pending": true},
     {"key": "beastfolk", "label": "Beastfolk", "kind": "flag", "description": "The actor is beastfolk, a kin of the beastfolk template.", "pending": true},
+    {"key": "bonded_element_damage", "label": "Bonded Element Damage", "kind": "number", "description": "Damage added to each of a cast's damage packets whose type matches an active summon's element template (docs/modules/magic.md#the-bonded-summoner)."},
     {"key": "block_magic", "label": "Block Magic", "kind": "flag", "description": "While blocking, a block band of half the width also stops a spell of any damage type (docs/core/combat.md)."},
     {"key": "block_reduction", "label": "Block Share", "kind": "number", "description": "Multiplier on block share: 1.25 is 25% more, 0.5 is half.", "pending": true},
     {"key": "blue_magic_duration", "label": "Blue Magic Duration", "kind": "number", "description": "Multiplier on blue magic duration: 1.25 is 25% more, 0.5 is half.", "pending": true},

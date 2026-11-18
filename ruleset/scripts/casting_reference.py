@@ -125,7 +125,12 @@ def apply_damage(spell, effects, check, vector, caster):
     """Each damage packet through combat steps 2 to 8, the cast check as the attack roll."""
     from kernel_reference import run_combat  # kernel_reference imports this module
 
+    from kernel_reference import apply_modifiers  # kernel_reference imports this module
+
     types = {row["key"] for row in load_data("combat/damage_types.json")["damage_types"]}
+    templates = {f"core:monster_template/{row['key']}": row for row in load_data("monsters/templates.json")["monster_templates"]}
+    elements = {templates[ref].get("damage_type") for ref in caster.get("summon_templates", []) if ref in templates}
+    bonded = apply_modifiers(0, [m for m in vector.get("modifiers", []) if m["target"] == "bonded_element_damage"])
     target = vector["target"]
     hp = target["hp"]
     packets = []
@@ -134,6 +139,8 @@ def apply_damage(spell, effects, check, vector, caster):
         if not effect["effect"].startswith(DAMAGE_PREFIX) or kind not in types or effect.get("duration", 1) > 1:
             continue
         amount = int(effect.get("magnitude", 0))
+        if kind in elements:
+            amount += bonded
         defender = {field: target[field] for field in DEFENDER_FIELDS if field in target}
         hit = run_combat({
             "attacker": {"skill": check["target"], "roll": vector["roll"], "attributes": caster.get("attributes", {})},
@@ -214,6 +221,9 @@ def run_casting(vector):
     except LookupError as error:
         return {"error": str(error)}
     caster = vector["caster"]
+    if not caster.get("summons"):
+        # A while_summoning modifier holds only while a summon is out (docs/core/casting.md#the-bonded-summoner).
+        vector = {**vector, "modifiers": [m for m in vector.get("modifiers", []) if m.get("duration") != "while_summoning"]}
     skill = f"{spell['color']}_magic"
     if skill not in caster["skills"]:
         return {"error": f"casting {spell['key']} needs {skill}"}

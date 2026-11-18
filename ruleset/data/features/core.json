@@ -1537,6 +1537,171 @@
       ]
     },
     {
+      "key": "kindred_focus",
+      "label": "Kindred Focus",
+      "description": "While one of your summons is out, its bond sharpens your own magic: +10 to every magic skill.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 6,
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/orange_magic",
+              "core:skill/black_magic"
+            ],
+            "min": 40
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "red_magic",
+          "operation": "add",
+          "value": 10,
+          "duration": "while_summoning",
+          "source": "feature:kindred_focus",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "orange_magic",
+          "operation": "add",
+          "value": 10,
+          "duration": "while_summoning",
+          "source": "feature:kindred_focus",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "yellow_magic",
+          "operation": "add",
+          "value": 10,
+          "duration": "while_summoning",
+          "source": "feature:kindred_focus",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "green_magic",
+          "operation": "add",
+          "value": 10,
+          "duration": "while_summoning",
+          "source": "feature:kindred_focus",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "blue_magic",
+          "operation": "add",
+          "value": 10,
+          "duration": "while_summoning",
+          "source": "feature:kindred_focus",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "indigo_magic",
+          "operation": "add",
+          "value": 10,
+          "duration": "while_summoning",
+          "source": "feature:kindred_focus",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "violet_magic",
+          "operation": "add",
+          "value": 10,
+          "duration": "while_summoning",
+          "source": "feature:kindred_focus",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "white_magic",
+          "operation": "add",
+          "value": 10,
+          "duration": "while_summoning",
+          "source": "feature:kindred_focus",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "black_magic",
+          "operation": "add",
+          "value": 10,
+          "duration": "while_summoning",
+          "source": "feature:kindred_focus",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "shared_wellspring",
+      "label": "Shared Wellspring",
+      "description": "While one of your summons is out, it lends you its strength: your spells cost 20% less mana.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 12,
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/orange_magic",
+              "core:skill/black_magic"
+            ],
+            "min": 55
+          }
+        ],
+        "perks": [
+          {
+            "perk": "core:feature/kindred_focus"
+          }
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "spell_cost",
+          "operation": "multiply",
+          "value": 0.8,
+          "duration": "while_summoning",
+          "source": "feature:shared_wellspring",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "elemental_kinship",
+      "label": "Elemental Kinship",
+      "description": "While an elemental you summoned is out, your spells of its element hit harder: +4 to each matching damage packet.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 18,
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/orange_magic",
+              "core:skill/black_magic"
+            ],
+            "min": 70
+          }
+        ],
+        "perks": [
+          {
+            "perk": "core:feature/kindred_focus"
+          }
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "bonded_element_damage",
+          "operation": "add",
+          "value": 4,
+          "duration": "while_summoning",
+          "source": "feature:elemental_kinship",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
       "key": "tempered_conjuring",
       "label": "Tempered Conjuring",
       "description": "Your conjured weapons come out as steel, not iron: weapon attack 5.",
