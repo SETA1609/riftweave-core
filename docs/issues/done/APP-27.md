@@ -1,5 +1,6 @@
 #### APP-27 The Angular app opens on a home page, and Start opens the tools
-- Status: review
+- Status: done
+- Merged: #230, 2026-11-18
 - Priority: medium
 - Needs: APP-25
 - Modified: 2026-11-18
