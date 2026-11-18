@@ -42,6 +42,7 @@
           "items": { "type": "string", "enum": ["melee", "ranged"] },
           "description": "Ranges that cannot attack in this situation; the pipeline returns an error."
         },
+        "adds": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$", "description": "A modifier target (modifier_targets/core.json): while the row applies, the attacker's live modifiers on it add to the attack, at any range; outside the row they add nothing (docs/core/combat.md#situations-and-called-shots)." },
         "deliveries": {
           "type": "array",
           "uniqueItems": true,
@@ -50,7 +51,7 @@
         }
       },
       "required": ["key", "label", "description"],
-      "anyOf": [{ "required": ["melee"] }, { "required": ["ranged"] }, { "required": ["forbids"] }],
+      "anyOf": [{ "required": ["melee"] }, { "required": ["ranged"] }, { "required": ["forbids"] }, { "required": ["adds"] }],
       "additionalProperties": false
     },
     "rider": {
