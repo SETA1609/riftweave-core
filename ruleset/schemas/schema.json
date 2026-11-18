@@ -71,7 +71,8 @@
         "radiant",
         "psychic",
         "force",
-        "thunder"
+        "thunder",
+        "magic"
       ],
       "description": "Canonical damage tag. Keys match ruleset/data/combat/damage_types.json. cold is not a key: use frost. lightning is not a key: use shock. Do not add a second vocabulary."
     },

@@ -66,6 +66,13 @@
               "$ref": "common.json#/definitions/ref"
             },
             "description": "The caster's minions, oldest first: one summon group ref per creature, outside the summon limit (docs/core/casting.md#minions)."
+          },
+          "perks": {
+            "type": "array",
+            "items": {
+              "$ref": "common.json#/definitions/ref"
+            },
+            "description": "The caster's perks (core:feature/<key>): a bound weapon reads the material each unlocks and their bound_weapon_effects (docs/core/casting.md#bound-weapons)."
           }
         },
         "required": [
@@ -84,6 +91,14 @@
         "type": "integer",
         "minimum": 0,
         "description": "The rolled total of a minion spell's count dice (docs/core/casting.md#minions)."
+      },
+      "coating": {
+        "$ref": "common.json#/definitions/ref",
+        "description": "A coating on the conjured weapon: a core:effect/damage_<type> with the coating channel."
+      },
+      "enchantment": {
+        "$ref": "common.json#/definitions/ref",
+        "description": "An elemental enchantment on the conjured weapon: a core:effect/damage_<type> with the enchantment channel; it wins over a coating."
       },
       "standing": {
         "type": "array",
@@ -340,6 +355,57 @@
           ],
           "additionalProperties": false
         }
+      },
+      "bound_weapon": {
+        "type": "object",
+        "description": "The conjured weapon, when the spell has a bound_weapon effect (docs/core/casting.md#bound-weapons); left out otherwise.",
+        "properties": {
+          "weapon": {
+            "$ref": "common.json#/definitions/ref"
+          },
+          "skill": {
+            "$ref": "common.json#/definitions/key"
+          },
+          "dice": {
+            "type": "string"
+          },
+          "material": {
+            "$ref": "common.json#/definitions/ref"
+          },
+          "attack": {
+            "type": "integer"
+          },
+          "damage_type": {
+            "$ref": "common.json#/definitions/key"
+          },
+          "phase": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "common.json#/definitions/phase"
+              }
+            ]
+          },
+          "effects": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        },
+        "required": [
+          "weapon",
+          "skill",
+          "dice",
+          "material",
+          "attack",
+          "damage_type",
+          "phase",
+          "effects"
+        ],
+        "additionalProperties": false
       },
       "hp": {
         "type": [
