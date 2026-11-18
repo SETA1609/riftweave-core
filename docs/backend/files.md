@@ -66,6 +66,6 @@ spell is exported from spell creation, which is APP-22. [U]
 ## Fixtures
 
 `ruleset/tests/fixtures/files/` holds a file of each kind, one that names the factions module,
-and one whose character breaks the contract. `test_contract.py` validates them against
+and one whose character breaks the contract twice (level 0, which the schema refuses, and a slot that holds no item, which the `stored_actor` command refuses). `test_contract.py` validates them against
 `file.json` and checks their layout; the Go tests import each kind and export it back byte for
 byte. A character file's sync fields come with APP-33. [U]
