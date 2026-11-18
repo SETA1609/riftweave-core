@@ -23,8 +23,7 @@
         },
         "label": { "type": "string" },
         "attribute": {
-          "type": "string",
-          "enum": ["str", "per", "end", "int", "wil", "agi", "cha", "lck"],
+          "$ref": "schema.json#/definitions/ability",
           "description": "The attribute the stat reads."
         },
         "base": { "type": "number" },
