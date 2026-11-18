@@ -16,19 +16,21 @@ import (
 const Version = 1
 
 var (
-	localePattern = regexp.MustCompile(`^[a-z]{2,3}(-[A-Za-z0-9]{2,8})*$`)
-	modulePattern = regexp.MustCompile(`^[a-z0-9][a-z0-9_-]*$`)
-	themes        = []string{"light", "dark", "system"}
-	networkModes  = []string{"local", "server", "room"}
+	localePattern   = regexp.MustCompile(`^[a-z]{2,3}(-[A-Za-z0-9]{2,8})*$`)
+	modulePattern   = regexp.MustCompile(`^[a-z0-9][a-z0-9_-]*$`)
+	endpointPattern = regexp.MustCompile(`^https?://`)
+	themes          = []string{"light", "dark", "system"}
+	networkModes    = []string{"local", "server", "room"}
+	telemetryModes  = []string{"off", "local", "export"}
 )
 
 // File is one settings file, every key as read.
 type File map[string]any
 
 // Default is the settings of a fresh install: English, the system's colours, no optional
-// modules, and offline.
+// modules, offline, and no telemetry.
 func Default() File {
-	return File{"riftweave": "settings", "version": float64(Version), "locale": "en", "theme": "system", "modules": []any{}, "network": map[string]any{"mode": "local"}}
+	return File{"riftweave": "settings", "version": float64(Version), "locale": "en", "theme": "system", "modules": []any{}, "network": map[string]any{"mode": "local"}, "telemetry": map[string]any{"mode": "off"}}
 }
 
 // Parse reads a settings file and checks it against the schema's rules; a file that breaks
@@ -96,6 +98,18 @@ func Parse(content []byte) (File, error) {
 		if value, present := object["players_see_only_known"]; present {
 			if _, ok := value.(bool); !ok {
 				return nil, fmt.Errorf("bestiary.players_see_only_known is not true or false")
+			}
+		}
+	}
+	if telemetry, present := file["telemetry"]; present {
+		object, ok := telemetry.(map[string]any)
+		mode, _ := object["mode"].(string)
+		if !ok || !slices.Contains(telemetryModes, mode) {
+			return nil, fmt.Errorf("telemetry.mode is not off, local, or export")
+		}
+		if endpoint, present := object["endpoint"]; present {
+			if text, ok := endpoint.(string); !ok || !endpointPattern.MatchString(text) {
+				return nil, fmt.Errorf("telemetry.endpoint is not an http or https URL")
 			}
 		}
 	}
