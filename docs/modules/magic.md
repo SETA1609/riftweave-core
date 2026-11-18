@@ -223,6 +223,15 @@ Minions take none of this: no power or nature, no Commanding Summons bonus, and 
 archetype perk. They are the row at the caster's level with the `minion` template, and they do
 not count toward the summon limit ([casting.md](../core/casting.md#minions)). [V 2026-11-16, `test_spells.py`]
 
+### The commander summoner
+
+A summoner archetype (GD_S06_03): the summons are the damage dealers, and the caster spends their turn to
+drive them, by **orders** (the `command` action, which gives one or every summon AP for its next
+turn) and by a **held command** (Steady the Host, a concentration spell that gives every summon
++5 to attack while held). The ladder is Field Command (6), Sharp Orders (10), Voice of the Host
+(14), and Iron Drill (18); the rules and the `command_summons` function are in
+[commanding.md](../core/commanding.md). [A]
+
 **Charisma strengthens summons through a perk.** `commanding_summons_magic` and
 `commanding_summons_physical` each name a summon bonus, `core:summon_bonus/<key>`, from
 `summons/bonuses.json`: `magic` adds to INT and WIL, `physical` to STR, END, and AGI. When the
