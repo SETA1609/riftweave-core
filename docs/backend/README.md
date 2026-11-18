@@ -1,6 +1,6 @@
 # Reference backend
 
-Modified: 2026-11-15
+Modified: 2026-11-18
 
 One backend serves the ruleset to every consumer: an agent CLI, a human CLI, an HTTP API, and an Angular frontend (story APP, [07-backend.md](../stories/07-backend.md)). This file is its spec. It adds no rules: the rules are in `docs/core/` and `docs/modules/`, the numbers in `ruleset/data/`, and the vectors are the authority.
 
@@ -79,6 +79,11 @@ A command is one kernel or module function, named like its vector function (`com
 | `result_schema` | JSON Schema of a successful result |
 
 `command.schema.json` is the schema these files must match; `common.json` holds the shared pieces (attributes, skills, a cost, the error shape) and points into `ruleset/schemas/schema.json` for `modifier`, `phase`, and `namespacedRef`, so the contract and the data use the same definitions.
+
+Every command's input and result, the shared types, and what a session step reads and writes are
+drawn, from these files, in [contract-diagram.md](contract-diagram.md) (Mermaid; regenerate with
+`python ruleset/scripts/contract_diagram.py --write`, and `test_contract_diagram.py` fails until
+the page matches).
 
 **Inputs are strict** (`additionalProperties: false`). A rule change that adds an input field adds it to the contract in the same pull request, or the contract test fails. Results are strict too, so a consumer can rely on every field it sees.
 
