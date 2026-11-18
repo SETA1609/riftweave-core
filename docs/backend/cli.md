@@ -1,6 +1,6 @@
 # Agent CLI
 
-Modified: 2026-11-17
+Modified: 2026-11-18
 
 `riftweave` is one static Go binary for agents and scripts (APP-03). It only parses, calls `core.Run`, and formats ([README.md](README.md)): no rule lives here. No prompts, no colour, and one small start, so an agent can call it thousands of times in a loop. The human CLI (APP-05) is a separate mode and the agent path imports none of it.
 
@@ -56,8 +56,16 @@ settings file the frontend trades ([settings.md](settings.md), APP-25).
 
 `riftweave play` is the interactive mode of the same binary (APP-05): a terminal UI built with Bubble Tea, Bubbles, and Lip Gloss. It holds no rule. It prompts for inputs, builds the same JSON the agent CLI reads, calls `core.Run`, and shows the result as a table with a short log of the rolls.
 
-- **Create a character:** eight attributes and a level, run through `derived`.
-- **Resolve an attack:** the rolls and the two sides, run through `combat`. The LCK defaults to the character's.
+It opens on the main menu of [app-layout.md](app-layout.md), the same tree the Angular app shows
+(`backend/contract/menu.json`). **Start** opens the tools:
+
+- **Character creation:** eight attributes and a level, run through `derived`.
+- **GM tools, Resolve an attack:** the rolls and the two sides, run through `combat`. The LCK defaults to the character's.
+- **Skill resolution:** one check through `resolution`; a blank roll is rolled for you, and the input names it.
+
+**Settings**, **Modules**, and **Network** edit the settings file (`riftweave settings`), and each
+change is saved at once. In `server` mode the commands go to the HTTP API at `server_url`
+instead of the core in process. Esc goes back one menu.
 
 Rolls stay inputs: you type each one, so a result matches the agent CLI for the same inputs and rolls. With `--dev`, a dev panel and short commands change a session's actor ([dev-mode.md](dev-mode.md#the-human-cli)). It needs a terminal. Charm is imported only by `backend/cmd/riftweave/play`, and `backend/core` and `backend/internal/` stay free of it.
 
