@@ -8,6 +8,6 @@ the tool needs a file to write it to. To see what can start now, run `roadmap-or
 
 | Wave | Story | Keyword | Blocked by | Open issues |
 |---|---|---|---|---|
-| 0 | APP | ready | — | 2 |
+| 0 | APP | ready | — | 1 |
 
 <!-- roadmap-order end -->

@@ -1,5 +1,6 @@
 #### APP-48 The frontend's objects and functions in the browser console, in a dev build
-- Status: review
+- Status: done
+- Merged: #240, 2026-11-18
 - Priority: low
 - Needs: —
 - Modified: 2026-11-18
