@@ -1,0 +1,4 @@
+.menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr)); gap: var(--space-3); }
+.menu-card { display: block; padding: var(--space-3); color: var(--body); text-decoration: none; font-weight: 600; }
+a.menu-card:hover, a.menu-card:focus-visible { border-color: var(--primary); }
+.disabled { color: var(--muted); cursor: not-allowed; font-weight: 400; }

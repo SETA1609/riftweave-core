@@ -4,14 +4,14 @@
 import { expect, test } from '@playwright/test';
 
 test('the Pages build plays with no server and shows its rules version', async ({ page }) => {
-  await page.goto('./');
+  await page.goto('./#/play/character_creation');
   await expect(page.locator('footer')).toHaveText(/^Rules \S+$/);
   await page.getByRole('button', { name: 'Create character' }).click();
   await expect(page.getByRole('region', { name: 'Stored actor' })).toBeVisible();
 });
 
 test('after one visit the Pages build works offline', async ({ page, context }) => {
-  await page.goto('./');
+  await page.goto('./#/play/character_creation');
   await expect(page.getByRole('button', { name: 'Create character' })).toBeVisible();
   // Wait until the service worker controls the page and has cached the app and the core.
   await page.evaluate(async () => {

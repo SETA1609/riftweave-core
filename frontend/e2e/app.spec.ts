@@ -9,7 +9,7 @@ function cell(page: Page, card: string, key: string) {
 }
 
 test('the sheet computes stats and creates a character', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/#/play/character_creation');
   await page.getByLabel('str', { exact: true }).fill('7');
   await page.getByRole('button', { name: 'Compute stats' }).click();
   await expect(cell(page, 'Derived stats', 'hp')).toHaveText(/^\d+$/);
@@ -21,8 +21,7 @@ test('an attack shows the result its vector expects', async ({ page }) => {
   const vector = combat[0] as { attacker: { skill: number; roll: number; attributes: { lck: number } };
     defender: { evasion_skill: number; armor_dr: number; hp: number }; damage: { roll: number; type: string };
     expect: Record<string, unknown> };
-  await page.goto('/');
-  await page.getByRole('button', { name: 'attack', exact: true }).click();
+  await page.goto('/#/play/attack');
   await page.getByLabel('skill', { exact: true }).fill(String(vector.attacker.skill));
   await page.getByLabel('d100', { exact: true }).fill(String(vector.attacker.roll));
   await page.getByLabel('LCK', { exact: true }).fill(String(vector.attacker.attributes.lck));
@@ -39,8 +38,7 @@ test('an attack shows the result its vector expects', async ({ page }) => {
 });
 
 test('the playthrough runs to a matching replay', async ({ page }) => {
-  await page.goto('/');
-  await page.getByRole('button', { name: 'playthrough', exact: true }).click();
+  await page.goto('/#/play/playthrough');
   await page.getByRole('button', { name: 'Run the playthrough' }).click();
   await expect(page.getByRole('alert')).toHaveText('The replay matches the session.', { timeout: 15000 });
   await expect(page.getByText('differs from its vector')).toHaveCount(0);
@@ -76,21 +74,20 @@ test("with storage blocked the app still renders, in the system's mode", async (
 });
 
 test('a playthrough is saved as it runs, and a reload resumes it', async ({ page }) => {
-  await page.goto('/');
-  await page.getByRole('button', { name: 'playthrough', exact: true }).click();
+  await page.goto('/#/play/playthrough');
   await page.getByRole('button', { name: 'Run the playthrough' }).click();
   await expect(page.getByText('The replay matches the session.')).toBeVisible();
   await page.reload();
-  await page.getByRole('button', { name: 'saves', exact: true }).click();
+  await page.goto('/#/play/saved_games');
   await expect(page.getByRole('row', { name: /^Playthrough \(\d+ steps\)/ })).toBeVisible();
 });
 
 /** Create a character, then download its backup; returns the file's JSON. */
 async function backup(page: Page): Promise<Record<string, unknown>> {
-  await page.goto('/');
+  await page.goto('/#/play/character_creation');
   await page.getByRole('button', { name: 'Create character' }).click();
   await expect(page.getByRole('region', { name: 'Stored actor' })).toBeVisible();
-  await page.getByRole('button', { name: 'saves', exact: true }).click();
+  await page.goto('/#/play/saved_games');
   const download = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Download backup' }).click();
   const file = await download;
@@ -106,8 +103,7 @@ async function backup(page: Page): Promise<Record<string, unknown>> {
 async function openFresh(browser: import('@playwright/test').Browser, baseURL: string, name: string, content: unknown): Promise<Page> {
   const context = await browser.newContext({ baseURL });
   const page = await context.newPage();
-  await page.goto('/');
-  await page.getByRole('button', { name: 'saves', exact: true }).click();
+  await page.goto('/#/play/saved_games');
   await page.locator('input[type=file]').setInputFiles({ name, mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(content)) });
   return page;
 }
