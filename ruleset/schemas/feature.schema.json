@@ -41,42 +41,27 @@
             },
             "skills": {
               "type": "array",
-              "description": "Minimum skill values. Each item references a skill by namespaced ref (core:skill/<key>). The label is duplicated for readability. The 'min' field is the required value.\n\nTo support general 'range' perks (e.g. any of the split ranged skills), 'id' and 'label' may be arrays. When 'id' is an array, the prerequisite is satisfied by meeting the 'min' value in *any one* of the listed skills (with matching names in the 'label' array). This reuses the original single-id structure while allowing multiple acceptable skills. Specific perks should continue using a single scalar id.",
+              "description": "Minimum skill values. Each entry is met when any one skill in `any_of` reads at least `min`; a perk that needs one skill lists one (M5-70, first normal form: one shape for every entry).",
               "items": {
                 "type": "object",
                 "properties": {
-                  "id": {
-                    "oneOf": [
-                      { "$ref": "schema.json#/definitions/skillRef" },
-                      {
-                        "type": "array",
-                        "items": { "$ref": "schema.json#/definitions/skillRef" },
-                        "minItems": 1,
-                        "description": "Array of acceptable skill refs. The prerequisite is met if the character has the required min in any one of them."
-                      }
-                    ]
-                  },
-                  "label": {
-                    "oneOf": [
-                      { "type": "string" },
-                      {
-                        "type": "array",
-                        "items": { "type": "string" },
-                        "minItems": 1
-                      }
-                    ],
-                    "description": "Human-readable label of the skill (duplicated from the skills registry for convenience). When 'id' is an array, this should be a parallel array of the corresponding skill names, or a single descriptive string."
+                  "any_of": {
+                    "type": "array",
+                    "items": { "$ref": "schema.json#/definitions/skillRef" },
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "description": "The skills that meet the requirement: a skill ref (core:skill/<key>) each."
                   },
                   "min": { "type": "integer", "minimum": 1, "maximum": 100 }
                 },
-                "required": ["min"],
+                "required": ["any_of", "min"],
                 "additionalProperties": false
               }
             },
             "perks": {
               "type": "array",
-              "description": "Prerequisite perks that must already be owned: a ref (core:feature/<key>), held at any rank, or a held perk { perk, rank } that must be held at that rank or above (M3-14).",
-              "items": { "oneOf": [ { "$ref": "schema.json#/definitions/featureRef" }, { "$ref": "schema.json#/definitions/heldPerk" } ] }
+              "description": "Prerequisite perks that must already be owned: a held perk { perk, rank }, held at that rank or above, 1 when `rank` is left out (M3-14; one shape, M5-70).",
+              "items": { "$ref": "schema.json#/definitions/heldPerk" }
             },
             "other": { "type": "string" }
           },
