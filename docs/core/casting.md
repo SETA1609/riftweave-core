@@ -188,6 +188,12 @@ Thrall and Summon Elemental ([composition.md](composition.md)): each overrides `
 `summon.count` (`1d3+1`: two to four), `summon.minion`, `concentration`, and the cost, and keeps its base's group
 and duration. [V 2026-11-16, `casting` vectors in Python and Go]
 
+## The held command
+
+Steady the Host and any spell with `core:effect/command_summons` are held like every
+concentration spell; what they give the summons is `command_summons`'s
+([commanding.md](commanding.md#the-held-command)). The cast itself only holds the spell. [A]
+
 ## The bonded summoner
 
 Before the check, a cast drops every modifier with `duration: while_summoning` when

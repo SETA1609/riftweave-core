@@ -247,6 +247,15 @@ The summon emits nothing of its own: the perks are the caster's, the session han
 modifiers to the cast as it hands every perk's, and the cast drops the `while_summoning` ones when
 `caster.summons` is empty. The kernel gains no notion of a bond. [A]
 
+### The commander summoner
+
+The second archetype: the summons are the damage dealers, and the caster spends their turn to
+drive them, by **orders** (the `command` action, which gives one or every summon AP for its next
+turn) and by a **held command** (Steady the Host, a concentration spell that gives every summon
++5 to attack while held). The ladder is Field Command (6), Sharp Orders (10), Voice of the Host
+(14), and Iron Drill (18); the rules and the `command_summons` function are in
+[commanding.md](../core/commanding.md). [A]
+
 **Charisma strengthens summons through a perk.** `commanding_summons_magic` and
 `commanding_summons_physical` each name a summon bonus, `core:summon_bonus/<key>`, from
 `summons/bonuses.json`: `magic` adds to INT and WIL, `physical` to STR, END, and AGI. When the
