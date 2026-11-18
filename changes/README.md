@@ -42,8 +42,9 @@ From the repo root (`DT` is `uv run --project tools/devops --locked --no-dev dev
 
 ## Releasing
 
-The owner releases in a pull request of its own, for its own issue. Run `release` on a branch
-made from the latest `main`, so the squash-merge subjects that added the fragments give the PR
+The owner releases in a pull request of its own, for its own issue; the whole procedure, with
+the version and the tag, is in [CONTRIBUTING.md](../CONTRIBUTING.md#releasing). Run `release` on
+a branch made from the latest `development`, so the squash-merge subjects that added the fragments give the PR
 numbers, then add that issue's own fragment (it goes into the next release), so the branch check
 passes.
 
