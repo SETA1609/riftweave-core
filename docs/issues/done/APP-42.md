@@ -1,5 +1,6 @@
 #### APP-42 File the observability and dev console issues, and raise the data-integrity priorities
-- Status: review
+- Status: done
+- Merged: #235, 2026-11-18
 - Priority: medium
 - Needs: —
 - Modified: 2026-11-18
