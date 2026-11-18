@@ -210,8 +210,8 @@ class TestTemplatesAndGeneratedMonsters(unittest.TestCase):
 
     def test_the_power_ladder_needs_the_rung_before(self):
         perks = features()
-        self.assertIn("core:feature/summon_dire", perks["summon_elder"]["prerequisite"]["perks"])
-        self.assertIn("core:feature/summon_elder", perks["summon_ancient"]["prerequisite"]["perks"])
+        self.assertIn({"perk": "core:feature/summon_dire"}, perks["summon_elder"]["prerequisite"]["perks"])
+        self.assertIn({"perk": "core:feature/summon_elder"}, perks["summon_ancient"]["prerequisite"]["perks"])
         self.assertFalse(perks["summon_dire"].get("prerequisite", {}).get("perks"))
 
     def test_each_power_and_nature_perk_unlocks_its_template(self):

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""The four integrity gates of docs/core/integrity.md.
+"""The integrity gates of docs/core/integrity.md.
 
 Run with:
     python -m unittest ruleset/scripts/test_integrity.py
@@ -325,6 +325,29 @@ class TestModifiersNameTheirOperation(unittest.TestCase):
         for path in files:
             walk(json.loads(path.read_text()), path)
         self.assertEqual(found, [])
+
+
+class TestOneKindOfValuePerField(unittest.TestCase):
+    """Gate 7 (first normal form): one field path holds one JSON type in every row."""
+
+    def test_the_data_has_no_field_of_two_types(self):
+        self.assertEqual(validate.check_one_type_per_field(validate.collect_all_data_files()), [])
+
+    def test_a_field_of_two_types_is_reported_with_its_path_and_types(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            one = write_json(Path(tmp) / "a.json", {"features": [{"key": "x", "prerequisite": {"skills": [{"any_of": "core:skill/blades", "min": 40}]}}]})
+            two = write_json(Path(tmp) / "b.json", {"features": [{"key": "y", "prerequisite": {"skills": [{"any_of": ["core:skill/bows"], "min": 40}]}}]})
+            errors = validate.check_one_type_per_field([one, two])
+            self.assertEqual(len(errors), 1, errors)
+            self.assertIn("features[].prerequisite.skills[].any_of", errors[0])
+            self.assertIn("array", errors[0])
+            self.assertIn("string", errors[0])
+
+    def test_null_is_no_type_and_integers_and_floats_are_numbers(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            one = write_json(Path(tmp) / "a.json", {"rows": [{"key": "a", "value": 1, "note": None}]})
+            two = write_json(Path(tmp) / "b.json", {"rows": [{"key": "b", "value": 1.5, "note": "text"}]})
+            self.assertEqual(validate.check_one_type_per_field([one, two]), [])
 
 
 if __name__ == "__main__":

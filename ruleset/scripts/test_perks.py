@@ -30,8 +30,8 @@ def level(perk):
 
 
 def prerequisite_refs(perk):
-    """The prerequisite perks' refs: a ref, or a held perk { perk, rank } (M3-14)."""
-    return [item["perk"] if isinstance(item, dict) else item for item in perk.get("prerequisite", {}).get("perks", [])]
+    """The prerequisite perks' refs, each a held perk { perk, rank } (M3-14, M5-70)."""
+    return [item["perk"] for item in perk.get("prerequisite", {}).get("perks", [])]
 
 
 def emitted(perk):
@@ -151,7 +151,7 @@ class TestSharePerks(unittest.TestCase):
         self.assertEqual({perk["key"] for perk in sharing}, {"bardic_inspiration", "skalds_war_chant"})
         for perk in sharing:
             with self.subTest(perk=perk["key"]):
-                self.assertIn("core:feature/leader", perk["prerequisite"]["perks"])
+                self.assertIn("core:feature/leader", prerequisite_refs(perk))
                 self.assertGreater(level(perk), level(rows["leader"]))
                 self.assertGreaterEqual(perk["prerequisite"]["abilities"]["cha"], rows["leader"]["prerequisite"]["abilities"]["cha"])
                 self.assertEqual(perk["ranks"], 2)
@@ -161,15 +161,15 @@ class TestSharePerks(unittest.TestCase):
         bard, skald = rows["bardic_inspiration"], rows["skalds_war_chant"]
         self.assertEqual(bard["share"]["bonus"], "core:summon_bonus/magic")
         self.assertEqual(skald["share"]["bonus"], "core:summon_bonus/physical")
-        self.assertTrue(all(ref.endswith("_magic") for ref in bard["prerequisite"]["skills"][0]["id"]))
-        self.assertFalse(any(ref.endswith("_magic") for ref in skald["prerequisite"]["skills"][0]["id"]))
+        self.assertTrue(all(ref.endswith("_magic") for ref in bard["prerequisite"]["skills"][0]["any_of"]))
+        self.assertFalse(any(ref.endswith("_magic") for ref in skald["prerequisite"]["skills"][0]["any_of"]))
 
     def test_each_class_has_its_own_social_skill_at_both_tiers(self):
         rows = {perk["key"]: perk for perk in perks()}
         for key, skill, minimum in (("bardic_inspiration", "persuasion", 30), ("skalds_war_chant", "intimidation", 30),
                                     ("bardic_anthem", "persuasion", 60), ("skalds_saga", "intimidation", 60)):
             with self.subTest(perk=key):
-                needs = {(r["id"], r["min"]) for r in rows[key]["prerequisite"]["skills"] if isinstance(r["id"], str)}
+                needs = {(r["any_of"][0], r["min"]) for r in rows[key]["prerequisite"]["skills"] if len(r["any_of"]) == 1}
                 self.assertIn((f"core:skill/{skill}", minimum), needs)
 
     def test_tier_two_needs_tier_one_at_rank_two_and_lends_it_all_twice_as_far_for_longer(self):
