@@ -57,7 +57,7 @@ All of these are checked by a person or by CI. None is a feeling.
 
 ## Where we are
 
-Open work is grouped by story and role (`S00` to `S17`, [docs/stories/README.md](docs/stories/README.md#files)); the milestone files below keep each milestone's goal and its done issues.
+Open work is grouped by story and role (`S00` to `S18`, [docs/stories/README.md](docs/stories/README.md#files)); the milestone files below keep each milestone's goal and its done issues.
 
 Foundations are done. Milestone M0 below is complete and archived in
 [docs/issues/done/](docs/issues/done/); what remains is closing the kernel, then filling content.

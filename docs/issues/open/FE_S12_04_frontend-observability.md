@@ -1,7 +1,7 @@
 #### FE_S12_04_frontend-observability The frontend is observable, and exports its diagnostics
 - Status: todo
 - Priority: low
-- Needs: APP-43
+- Needs: APP-43, FE_S18_02_frontend-build-environments
 - Was: APP-46
 - Modified: 2026-11-18
 - Do: Owner request, 2026-11-18: the Angular app records what APP-43 defines, offline first.
