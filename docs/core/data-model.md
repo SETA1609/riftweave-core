@@ -1,14 +1,15 @@
 # Data model
 
-Modified: 2026-11-17
+Modified: 2026-11-18
 
 What shape Riftweave's information has. For what a data model is, the common types, and why
 this one was chosen, see [the theory page](../theory/data-models.md). This page links to the
 document that owns each rule and does not repeat it.
 
 The collections and the references between them are drawn, from the schemas, in
-[data-model-diagram.md](data-model-diagram.md) (Mermaid ER diagrams; regenerate with
-`python ruleset/scripts/data_model_diagram.py --write`). The rows themselves are drawn as Mermaid
+[data-model-diagram.md](data-model-diagram.md) (Mermaid ER diagrams), and what a row is built on
+(a base and its overrides, a monster's templates) in [composition-diagram.md](composition-diagram.md)
+(Mermaid class diagrams); regenerate both with `python ruleset/scripts/data_model_diagram.py --write`. The rows themselves are drawn as Mermaid
 flowcharts: the perk prerequisites in [perk-ladders.md](perk-ladders.md) and every formula tree in
 [formula-trees.md](formula-trees.md) (regenerate with `python ruleset/scripts/data_flowcharts.py --write`).
 
