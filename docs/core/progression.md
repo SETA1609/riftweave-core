@@ -32,8 +32,8 @@ The numbers that turn experience into levels, skill points, and perks. They live
    - **rank:** the held rank is below `ranks` (1 when the row has none);
    - **level:** `actor.level` is at least `prerequisite.level`;
    - **attribute:** each attribute in `prerequisite.abilities` is at least its value (a missing attribute reads 0);
-   - **skill:** for each entry of `prerequisite.skills`, one of its skills reads at least `min`, each read as `read_skill` reads it on a full sheet (a written value, else its start);
-   - **perk:** each perk in `prerequisite.perks` is held at rank 1 or more.
+   - **skill:** for each entry `{ any_of, min }` of `prerequisite.skills`, one of the skills in `any_of` reads at least `min`, each read as `read_skill` reads it on a full sheet (a written value, else its start); a perk that needs one skill lists one (M5-70);
+   - **perk:** each entry `{ perk, rank }` of `prerequisite.perks` is held at `rank` or more (1 when left out).
 
    How many perks a level grants (`perks_per_level`) is counted by the caller, as the skill-point pool is. [A]
 6. **Tag ratio.** The ratio is 2:1 in favour of tag skills, as in `docs/modules/progression.md`. `AGENTS.md` words it as "+2 per point instead of +1", which is the same ratio on a different scale; the data uses cost, so a point is a point. [V 2026-11-02, read both]
