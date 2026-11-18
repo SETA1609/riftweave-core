@@ -130,6 +130,8 @@ test('an edited backup is flagged, and one from other rules says so', async ({ p
 test('a dev build puts rw in the console (APP-48)', async ({ page }) => {
   await page.goto('/#/play/character_creation');
   await expect(page.getByRole('button', { name: 'Create character' })).toBeVisible();
+  // The console module loads after bootstrap, by a dynamic import.
+  await page.waitForFunction(() => 'rw' in globalThis);
   const help = await page.evaluate(() => (globalThis as unknown as { rw: { help(): string } }).rw.help());
   expect(help).toContain('rw.context');
   const hp = await page.evaluate(async () => {
