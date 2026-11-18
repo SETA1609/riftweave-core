@@ -1,0 +1,10 @@
+#### FE_S10_02_room-log-client Rooms: a GM and up to four players share one session log (frontend)
+- Status: todo
+- Priority: low
+- Needs: BE_S10_01_room-log-supabase, APP-15, APP-16
+- Was: APP-17
+- Do: Frontend half, split by role on 2026-11-18 (PO_S00_01_issue-splitting-by-role): the Angular screens of `BE_S10_01_room-log-supabase` and their UX, over the same commands and session steps, built from the shared components (docs/backend/frontend.md#conventions). The behaviour, the keys, and the rules are specified in `BE_S10_01_room-log-supabase`; this issue adds no contract or core change.
+- Keys: the frontend screen and its route; no new contract keys
+- Files: ~6 (frontend/src/app/room.ts, frontend/src/app/room.spec.ts, frontend/src/app/app.ts, frontend/src/app/api.ts, frontend/package.json, docs/backend/frontend.md)
+- See: docs/issues/open/BE_S10_01_room-log-supabase.md
+- Done when: five browsers in one room see the same log and the same actors; a player joins with a room code and no account; a browser that reconnects catches up by replay; a sixth member sees the refusal; the specs pass.

@@ -1,7 +1,8 @@
 # Issues
 
 One file per issue, named after its id, so two pull requests never edit the same issue list.
-An issue's story (its goal and spec) is in [docs/stories/](../stories/README.md).
+An issue's story (its goal and its issue table) is in [docs/stories/](../stories/README.md), and its
+role in [ROLES.md](ROLES.md). Ids and how to split an issue: [docs/stories/README.md#ids](../stories/README.md#ids).
 
 | Directory | Holds |
 | --- | --- |
