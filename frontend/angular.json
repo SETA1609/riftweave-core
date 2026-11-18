@@ -17,19 +17,20 @@
             "tsConfig": "tsconfig.app.json",
             "styles": ["src/styles.css"],
             "assets": [{ "glob": "**/*", "input": "public" }],
-            "define": { "RIFTWEAVE_API": "null", "RIFTWEAVE_RULES_VERSION": "'dev'", "RIFTWEAVE_SERVICE_WORKER": "false" }
+            "define": { "RIFTWEAVE_API": "null", "RIFTWEAVE_RULES_VERSION": "'dev'", "RIFTWEAVE_SERVICE_WORKER": "false", "RIFTWEAVE_DEV": "false" }
           },
           "configurations": {
-            "api": { "define": { "RIFTWEAVE_API": "''", "RIFTWEAVE_RULES_VERSION": "'dev'", "RIFTWEAVE_SERVICE_WORKER": "false" } },
+            "development": { "define": { "RIFTWEAVE_API": "null", "RIFTWEAVE_RULES_VERSION": "'dev'", "RIFTWEAVE_SERVICE_WORKER": "false", "RIFTWEAVE_DEV": "true" } },
+            "api": { "define": { "RIFTWEAVE_API": "''", "RIFTWEAVE_RULES_VERSION": "'dev'", "RIFTWEAVE_SERVICE_WORKER": "false", "RIFTWEAVE_DEV": "true" } },
             "pages": {
               "serviceWorker": "ngsw-config.json",
-              "define": { "RIFTWEAVE_API": "null", "RIFTWEAVE_RULES_VERSION": "'dev'", "RIFTWEAVE_SERVICE_WORKER": "true" }
+              "define": { "RIFTWEAVE_API": "null", "RIFTWEAVE_RULES_VERSION": "'dev'", "RIFTWEAVE_SERVICE_WORKER": "true", "RIFTWEAVE_DEV": "false" }
             }
           }
         },
         "serve": {
           "builder": "@angular/build:dev-server",
-          "options": { "buildTarget": "riftweave:build" },
+          "options": { "buildTarget": "riftweave:build:development" },
           "configurations": { "api": { "buildTarget": "riftweave:build:api" } }
         },
         "test": {
