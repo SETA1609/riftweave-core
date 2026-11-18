@@ -35,8 +35,10 @@ def prerequisite_refs(perk):
 
 
 def emitted(perk):
-    """The (target, operation) pairs a perk's modifiers name."""
-    return frozenset((m["target"], m["operation"]) for m in perk.get("modifiers", []))
+    """The (target, operation) pairs a perk's modifiers name, and what it unlocks."""
+    return frozenset((m["target"], m["operation"]) for m in perk.get("modifiers", [])) | frozenset(
+        ("unlocks", ref) for ref in perk.get("unlocks", [])
+    )
 
 
 class TestPerkCatalogue(unittest.TestCase):
@@ -44,10 +46,12 @@ class TestPerkCatalogue(unittest.TestCase):
         self.assertGreaterEqual(len(perks()), 60)
 
     def test_every_perk_emits_trained_modifiers_from_itself(self):
+        """A perk changes a number or unlocks something (a maneuver, a template, a material);
+        an unlock-only perk needs no modifier to justify it (docs/core/actions.md#maneuvers)."""
         for perk in perks():
             with self.subTest(perk=perk["key"]):
-                self.assertTrue(perk.get("modifiers"), "a perk emits modifiers")
-                for modifier in perk["modifiers"]:
+                self.assertTrue(perk.get("modifiers") or perk.get("unlocks"), "a perk emits modifiers or unlocks something")
+                for modifier in perk.get("modifiers", []):
                     self.assertEqual(modifier["source"], f"feature:{perk['key']}")
                     self.assertEqual(modifier["origin"], "core:origin/trained")
 

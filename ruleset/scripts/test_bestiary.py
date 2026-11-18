@@ -484,5 +484,29 @@ class TestMonstersTakePerks(unittest.TestCase):
         self.assertEqual(validate.check_monster_perks([{"key": "y", "perks": [{"perk": "core:feature/toughness", "rank": 3}]}], []), ([], []))
 
 
+
+class TestMonstersUseManeuvers(unittest.TestCase):
+    """M3-24: monster rows and templates list combat maneuvers (docs/modules/monsters.md#maneuvers)."""
+
+    def test_the_troll_composes_with_its_maneuver_and_attacks_with_it(self):
+        from kernel_reference import run_combat
+        troll = {r["key"]: r for r in monsters()}["troll"]
+        self.assertEqual(troll["maneuvers"], ["core:maneuver/heavy_swing"])
+        maneuver = troll["maneuvers"][0].removeprefix("core:maneuver/")
+        result = run_combat({
+            "attacker": {"skill": troll.get("skills", {}).get("unarmed", 60), "roll": 10, "attributes": {"lck": 0}},
+            "defender": {"evasion_skill": 0, "armor_dr": 0, "hp": 30},
+            "damage": {"roll": 8, "type": "slashing"},
+            "maneuver": maneuver,
+        })
+        self.assertEqual((result["outcome"], result["damage"], result["ap"]), ("hit", 12, 4))
+        self.assertEqual(result["effects"], [{"effect": "core:effect/stagger", "duration": 4}])
+
+    def test_a_templates_maneuvers_are_appended_skipping_any_the_row_has(self):
+        merged = {"maneuvers": ["core:maneuver/heavy_swing"]}
+        validate._apply_monster_template(merged, {"maneuvers": ["core:maneuver/heavy_swing", "core:maneuver/quick_strike"]})
+        self.assertEqual(merged["maneuvers"], ["core:maneuver/heavy_swing", "core:maneuver/quick_strike"])
+
+
 if __name__ == "__main__":
     unittest.main()

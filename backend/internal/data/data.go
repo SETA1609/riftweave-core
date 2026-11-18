@@ -319,6 +319,21 @@ type CalledShot struct {
 	DamageMultiplier float64 `json:"damage_multiplier"`
 }
 
+// Maneuver is one row of maneuvers/core.json: a way to perform an action for more or fewer
+// AP, with an attack add, a damage multiplier, and effects applied on a hit
+// (docs/core/actions.md#maneuvers).
+type Maneuver struct {
+	Key              string          `json:"key"`
+	Modifies         string          `json:"modifies"`
+	AP               int64           `json:"ap"`
+	Mana             int64           `json:"mana"`
+	Attack           int64           `json:"attack"`
+	DamageMultiplier float64         `json:"damage_multiplier"` // 0 when the row names none, read as 1
+	Ranges           []string        `json:"ranges"`            // empty: any range
+	WeaponProperties []string        `json:"weapon_properties"` // empty: any weapon
+	Effects          []AppliedEffect `json:"effects"`
+}
+
 // HazardCheck is a check a hazard asks for: a row of checks/core.json, and the hazard's
 // difficulty as an add on its target. Skill is the check's skill key, resolved at load.
 type HazardCheck struct {
@@ -743,6 +758,7 @@ type Ruleset struct {
 	DamageTypes    Table[DamageType]
 	Situations     Table[Situation]
 	CalledShots    Table[CalledShot]
+	Maneuvers      Table[Maneuver] // maneuvers/core.json, by key
 	Hazards        Table[Hazard]
 	Spells         Table[Spell]
 	Features       Table[Feature]     // features/core.json, for dev perks (docs/backend/dev-mode.md)
@@ -1015,6 +1031,12 @@ func Load(fileSystem fs.FS, modules ...fs.FS) (*Ruleset, error) {
 	loader.read("combat/situations.json", &situations)
 	ruleset.Situations = newTable(situations.Situations, func(situation *Situation) string { return situation.Key })
 	ruleset.CalledShots = newTable(situations.CalledShots, func(calledShot *CalledShot) string { return calledShot.Key })
+
+	var maneuvers struct {
+		Maneuvers []Maneuver `json:"maneuvers"`
+	}
+	loader.read("maneuvers/core.json", &maneuvers)
+	ruleset.Maneuvers = newTable(maneuvers.Maneuvers, func(maneuver *Maneuver) string { return maneuver.Key })
 
 	var origins struct {
 		Origins []struct {

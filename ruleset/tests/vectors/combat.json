@@ -2965,5 +2965,192 @@
       "damage": 8,
       "hp": 22
     }
+  },
+  {
+    "name": "maneuver: heavy swing hits for 1.5 times the damage at -10, costs attack + 1 AP, and staggers (target 62, margin 15; 8 x 1.5 = 12 - DR 2 = 10)",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "maneuver": "heavy_swing",
+    "expect": {
+      "outcome": "hit",
+      "target": 62,
+      "margin": 15,
+      "damage": 10,
+      "hp": 20,
+      "ap": 4,
+      "stamina": 20,
+      "effects": [
+        {
+          "effect": "core:effect/stagger",
+          "duration": 4
+        }
+      ]
+    }
+  },
+  {
+    "name": "maneuver: an evaded heavy swing still costs its AP and applies nothing",
+    "attacker": {
+      "skill": 72,
+      "roll": 55,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "maneuver": "heavy_swing",
+    "expect": {
+      "outcome": "evaded",
+      "evaded": true,
+      "damage": 0,
+      "ap": 4,
+      "stamina": 20,
+      "effects": []
+    }
+  },
+  {
+    "name": "maneuver: a quick strike with a light weapon costs attack - 1 AP for half the damage (8 x 0.5 = 4 - DR 2 = 2)",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "light",
+        "finesse"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "maneuver": "quick_strike",
+    "expect": {
+      "outcome": "hit",
+      "target": 72,
+      "damage": 2,
+      "hp": 28,
+      "ap": 2,
+      "stamina": 10,
+      "effects": []
+    }
+  },
+  {
+    "name": "maneuver: a quick strike needs a light weapon",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "two_handed"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "maneuver": "quick_strike",
+    "expect": {
+      "error": "quick_strike needs a light weapon"
+    }
+  },
+  {
+    "name": "maneuver: a heavy swing needs a melee attack",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "maneuver": "heavy_swing",
+    "range": "ranged",
+    "expect": {
+      "error": "heavy_swing needs a melee attack"
+    }
+  },
+  {
+    "name": "maneuver: an unknown maneuver is an error",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "maneuver": "whirl",
+    "expect": {
+      "error": "maneuver \"whirl\" is not defined"
+    }
   }
 ]

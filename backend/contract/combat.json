@@ -24,6 +24,13 @@
               "$ref": "common.json#/definitions/key"
             },
             "description": "Flags from conditions (prone, blinded, invisible); a situation row with `when` reads them."
+          },
+          "weapon_properties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The carried weapon's properties, which a maneuver may need."
           }
         },
         "additionalProperties": false,
@@ -125,6 +132,10 @@
       "called_shot": {
         "$ref": "common.json#/definitions/key",
         "description": "A called_shots key in ruleset/data/combat/situations.json."
+      },
+      "maneuver": {
+        "$ref": "common.json#/definitions/key",
+        "description": "A maneuvers key in ruleset/data/maneuvers/core.json: the attack is performed as that maneuver (docs/core/actions.md#maneuvers)."
       }
     },
     "additionalProperties": false,
@@ -218,6 +229,21 @@
       "counter": {
         "type": "boolean",
         "description": "A riposte: the defender may make one attack at no AP cost."
+      },
+      "ap": {
+        "type": "integer",
+        "description": "With a maneuver: the attack's AP plus the maneuver's, at least 1."
+      },
+      "stamina": {
+        "type": "integer",
+        "description": "With a maneuver: ap times stamina_per_ap, its cost in real time."
+      },
+      "effects": {
+        "type": "array",
+        "items": {
+          "type": "object"
+        },
+        "description": "With a maneuver: its applied effects on a hit, empty on a miss or an evade."
       }
     },
     "additionalProperties": false,

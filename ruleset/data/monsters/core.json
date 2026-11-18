@@ -1827,7 +1827,7 @@
       "key": "troll",
       "base": "core:creature_type/humanoid",
       "overrides": {
-        "perks": [{"perk": "core:feature/toughness", "rank": 2}], "label": "Troll",
+        "perks": [{"perk": "core:feature/toughness", "rank": 2}], "maneuvers": ["core:maneuver/heavy_swing"], "label": "Troll",
         "description": "A towering brute whose wounds close almost as fast as they open.",
         "size": "large",
         "level": 13,

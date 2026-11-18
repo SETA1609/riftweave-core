@@ -21,6 +21,7 @@ from validate import (
     build_namespaced_ref_index,
     check_damage_type_vocabulary,
     check_equipment_uniqueness,
+    check_maneuver_unlocks,
     check_racial_trait_refs,
     load_canonical_damage_types,
     check_references,
@@ -198,6 +199,42 @@ class TestNamespacedRefIndex(unittest.TestCase):
         index = set()
         self.assertFalse(resolve_namespaced_ref(42, index))
         self.assertFalse(resolve_namespaced_ref(None, index))
+
+
+class TestManeuverUnlocks(unittest.TestCase):
+    """M3-24: every maneuver needs a perk that unlocks it (docs/core/actions.md#maneuvers)."""
+
+    def test_a_maneuver_no_perk_unlocks_fails(self):
+        result = check_maneuver_unlocks([{"key": "shove"}], [{"key": "wind_up", "unlocks": ["core:maneuver/heavy_swing"]}])
+        self.assertEqual(len(result), 1)
+        self.assertIn("shove", result[0])
+
+    def test_a_maneuver_a_perk_unlocks_passes(self):
+        self.assertEqual(check_maneuver_unlocks([{"key": "heavy_swing"}], [{"key": "wind_up", "unlocks": ["core:maneuver/heavy_swing"]}]), [])
+
+
+class TestManeuverChannel(unittest.TestCase):
+    """M3-24: a maneuver's effects declare the maneuver channel (docs/core/actions.md#maneuvers)."""
+
+    def maneuver(self, effect, modifies="attack"):
+        return {"maneuvers": [{"key": "shove", "label": "Shove", "description": "x", "modifies": modifies,
+                               "ap": 0, "effects": [{"effect": effect}]}]}
+
+    def test_an_effect_without_the_maneuver_channel_fails(self):
+        channels = {"core:effect/knockdown": {"spell", "innate"}}
+        result = check_references(self.maneuver("core:effect/knockdown"), "maneuvers", effect_channels=channels)
+        self.assertEqual(len(result), 1)
+        self.assertIn("maneuver", result[0])
+
+    def test_an_effect_with_the_maneuver_channel_passes(self):
+        channels = {"core:effect/stagger": {"spell", "maneuver"}}
+        self.assertEqual(check_references(self.maneuver("core:effect/stagger"), "maneuvers", effect_channels=channels), [])
+
+    def test_a_maneuver_of_an_unknown_action_fails(self):
+        channels = {"core:effect/stagger": {"maneuver"}}
+        result = check_references(self.maneuver("core:effect/stagger", "fly"), "maneuvers", effect_channels=channels)
+        self.assertEqual(len(result), 1)
+        self.assertIn("not an action", result[0])
 
 
 class TestCraftedItemsRefValidation(unittest.TestCase):

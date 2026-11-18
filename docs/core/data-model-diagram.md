@@ -12,7 +12,7 @@ An entity is a collection of rows, its `key` the primary key. A line is a refere
 other collection, so many rows name one. Composition bases are references too: an equipment row's
 `base` names an equipment base, a monster's `base` a creature type or a monster.
 
-44 collections; 64 pairs of collections joined by a reference.
+45 collections; 69 pairs of collections joined by a reference.
 
 ## Overview
 
@@ -144,6 +144,11 @@ erDiagram
         string key PK
         string effects FK
     }
+    MANEUVERS {
+        string key PK
+        string effects_effect FK
+        string effects_origin FK
+    }
     MATERIAL_FORM_RECIPES {
         string key PK
     }
@@ -160,6 +165,7 @@ erDiagram
         string key PK
         string loot_item FK
         string loot_material FK
+        string maneuvers FK
         string perks_perk FK
         string spells FK
     }
@@ -171,6 +177,7 @@ erDiagram
         string effects_origin FK
         string loot_item FK
         string loot_material FK
+        string maneuvers FK
         string perks_perk FK
         string spells FK
     }
@@ -260,6 +267,7 @@ erDiagram
     EQUIPMENT }o--|| SPELLS : "consumable.spell"
     FACTIONS }o--|| ORIGINS : "ranks[].modifiers[].origin, standings[].modifiers[].origin"
     FEATURES }o--|| FEATURES : "prerequisite.perks[], prerequisite.perks[].perk"
+    FEATURES }o--|| MANEUVERS : "unlocks[]"
     FEATURES }o--|| MATERIALS : "unlocks[]"
     FEATURES }o--|| MONSTER_TEMPLATES : "unlocks[]"
     FEATURES }o--|| NATURAL_WEAPONS : "natural_weapon"
@@ -269,13 +277,17 @@ erDiagram
     HAZARDS }o--|| CHECKS : "avoid.check, detect.check, disarm.check"
     HAZARDS }o--|| EFFECTS : "effects[]"
     INGREDIENTS }o--|| EFFECTS : "effects[]"
+    MANEUVERS }o--|| EFFECTS : "effects[].effect"
+    MANEUVERS }o--|| ORIGINS : "effects[].origin"
     MONSTER_TEMPLATES }o--|| EQUIPMENT : "loot[].item"
     MONSTER_TEMPLATES }o--|| FEATURES : "perks[].perk"
+    MONSTER_TEMPLATES }o--|| MANEUVERS : "maneuvers[]"
     MONSTER_TEMPLATES }o--|| MATERIALS : "loot[].material"
     MONSTER_TEMPLATES }o--|| SPELLS : "spells[]"
     MONSTERS }o--|| EFFECTS : "effects[].effect"
     MONSTERS }o--|| EQUIPMENT : "attacks[].weapon, loot[].item"
     MONSTERS }o--|| FEATURES : "perks[].perk"
+    MONSTERS }o--|| MANEUVERS : "maneuvers[]"
     MONSTERS }o--|| MATERIALS : "loot[].material"
     MONSTERS }o--|| MONSTERS : "base"
     MONSTERS }o--|| NATURAL_WEAPONS : "attacks[].weapon"
@@ -337,6 +349,9 @@ erDiagram
         string summon_bonus FK
         string unlocks FK
     }
+    MANEUVERS {
+        string key PK
+    }
     MATERIALS {
         string key PK
     }
@@ -377,6 +392,7 @@ erDiagram
     CHARACTERS }o--|| SKILLS : "tag_skills[]"
     CHARACTERS }o--|| SPELLS : "levels[].spells[]"
     FEATURES }o--|| FEATURES : "prerequisite.perks[], prerequisite.perks[].perk"
+    FEATURES }o--|| MANEUVERS : "unlocks[]"
     FEATURES }o--|| MATERIALS : "unlocks[]"
     FEATURES }o--|| MONSTER_TEMPLATES : "unlocks[]"
     FEATURES }o--|| NATURAL_WEAPONS : "natural_weapon"
@@ -564,6 +580,9 @@ erDiagram
         string disarm_check FK
         string effects FK
     }
+    MANEUVERS {
+        string key PK
+    }
     MATERIALS {
         string key PK
     }
@@ -574,6 +593,7 @@ erDiagram
         string key PK
         string loot_item FK
         string loot_material FK
+        string maneuvers FK
         string perks_perk FK
         string spells FK
     }
@@ -585,6 +605,7 @@ erDiagram
         string effects_origin FK
         string loot_item FK
         string loot_material FK
+        string maneuvers FK
         string perks_perk FK
         string spells FK
     }
@@ -619,11 +640,13 @@ erDiagram
     HAZARDS }o--|| EFFECTS : "effects[]"
     MONSTER_TEMPLATES }o--|| EQUIPMENT : "loot[].item"
     MONSTER_TEMPLATES }o--|| FEATURES : "perks[].perk"
+    MONSTER_TEMPLATES }o--|| MANEUVERS : "maneuvers[]"
     MONSTER_TEMPLATES }o--|| MATERIALS : "loot[].material"
     MONSTER_TEMPLATES }o--|| SPELLS : "spells[]"
     MONSTERS }o--|| EFFECTS : "effects[].effect"
     MONSTERS }o--|| EQUIPMENT : "attacks[].weapon, loot[].item"
     MONSTERS }o--|| FEATURES : "perks[].perk"
+    MONSTERS }o--|| MANEUVERS : "maneuvers[]"
     MONSTERS }o--|| MATERIALS : "loot[].material"
     MONSTERS }o--|| MONSTERS : "base"
     MONSTERS }o--|| NATURAL_WEAPONS : "attacks[].weapon"
