@@ -1,7 +1,7 @@
 # Casting
 
 Author: SETA1609
-Modified: 2026-11-16
+Modified: 2026-11-19
 
 One cast is one call of the [resolution function](resolution.md) on the spell's `<color>_magic` skill, wrapped in what the cast spends and what it holds. The coefficients are in `ruleset/data/casting/core.json` (`casting.schema.json`), the spells in `ruleset/data/spells/core.json`, the vectors in `ruleset/tests/vectors/casting.json`. Morrowind resolves a spell as one check and then applies its effect list; this does the same. [V 2026-11-06]
 
@@ -188,6 +188,31 @@ Thrall and Summon Elemental ([composition.md](composition.md)): each overrides `
 `summon.count` (`1d3+1`: two to four), `summon.minion`, `concentration`, and the cost, and keeps its base's group
 and duration. [V 2026-11-16, `casting` vectors in Python and Go]
 
+## Bound weapons
+
+A cast whose spell has a `core:effect/bound_weapon` effect also returns the conjured weapon
+([magic.md](../modules/magic.md#bound-weapons)):
+
+```
+weapon       the effect's parameter: the base it copies (core:weapon/<key>)
+skill        the weapon's skill
+dice         the weapon's damage dice
+material     casting.bound_weapon.material, or the material the caster's latest perk
+             unlocks (a core:material ref in its unlocks)
+attack       that material's weapon.attack
+damage_type  casting.bound_weapon.damage_type (magic), or the type of the coating or the
+             enchantment the input names (core:effect/damage_<type>; the enchantment wins)
+phase        null, or that coating's or enchantment's phase
+effects      every held perk's bound_weapon_effects, in perk order; a parameter-less
+             lingering_damage takes the current damage_type
+```
+
+The caster's perks are `caster.perks` (feature refs). The coating and the enchantment are the
+input's `coating` and `enchantment` (effect refs); one without the matching channel, or that
+is not a `damage_<type>` effect, is an error. The weapon's attacks pass `damage_type` as
+`damage.type` and `effects` as `attacker.weapon_effects` to the combat pipeline
+([combat.md](combat.md#weapon-effects)). Without a bound weapon effect the field is left out.
+
 ## Result
 
 ```
@@ -203,4 +228,5 @@ summons        the caster's active summons after the cast, oldest first
 dismissed      the summons the cast sent away to stay within the limit, oldest first
 minions        the caster's minions after the cast, oldest first
 save           { target, success, margin, tags, result }, or null when no save was rolled
+bound_weapon   the conjured weapon (Bound weapons above); left out when the spell conjures none
 ```

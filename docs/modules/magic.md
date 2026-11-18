@@ -1,5 +1,7 @@
 # Magic & Spell Crafting
 
+Modified: 2026-11-19
+
 **Status:** Core (implemented as data + schema) · runtime resolution lives in the engine
 
 This document defines how magic works in Riftweave: how spells are built from
@@ -238,6 +240,44 @@ full modifier: the bonus row's `rank_share` is `[0.5, 1]`, and a rank adds
 
 ---
 
+### Bound weapons
+
+A bound weapon spell (`bound_blade`, `bound_bow`) conjures the weapon its `bound_weapon` effect
+names. The cast returns the conjured weapon as `bound_weapon` ([casting.md](../core/casting.md#bound-weapons)),
+and the attacks it makes run the combat pipeline like any weapon's. The rules are the same for
+every bound weapon, Bound Bow included. (GD_S06_01, owner rules of 2026-11-14.)
+
+- **It starts as iron.** The weapon is the base it copies (dice, skill, properties) made of
+  `core:material/iron` (tier 2, weapon attack +3). The default is written once, in
+  `casting/core.json` under `bound_weapon`, not on each spell.
+- **No phase.** The material gives stats only. A bound weapon has no phase, whatever its
+  material's, so it sits out the five-phase cycles.
+- **`magic` damage.** It deals `magic`, a plain damage type for non-elemental magic, in place of
+  its weapon's physical type. `magic` has `armor_dr_applies`, so armor DR applies in full at the
+  start, and it can miss, be evaded, and be blocked; `resist` with parameter `magic` reduces it,
+  so a mage's magic resistance works against it. `force` does not fit: `bypasses_armor` and
+  `unerring` would make a starting bound weapon too strong.
+- **A coating or an elemental enchantment** sets the damage type and the phase. It is a
+  `core:effect/damage_<type>` effect with the `coating` or the `enchantment` channel; the weapon
+  then deals `<type>` and has that effect's phase. An enchantment wins over a coating. [A]
+- **Perks upgrade it, one step at a time.** A perk changes the material by listing it in
+  `unlocks` (a `core:material/<key>` ref: a modifier holds only a number, so the perk names it),
+  or adds on-hit effects in `bound_weapon_effects` (applied effects from the shared pool with
+  the `enchantment` channel). The material of the latest held perk that unlocks one wins; every
+  held perk's effects add.
+
+| Perk | Level | Needs | Gives |
+| --- | --- | --- | --- |
+| Tempered Conjuring | 6 | orange magic 40 | the material is `core:material/steel` (attack +5) |
+| Piercing Conjuring | 10 | Tempered Conjuring, orange magic 50 | `armor_pierce` 25: a hit ignores a quarter of armor DR |
+| Lingering Conjuring | 12 | Tempered Conjuring, orange magic 55 | `lingering_damage` 2 for 10 s, of the weapon's current damage type |
+| Hallowed Conjuring | 14 | Piercing Conjuring, orange magic 60 | `bane` 4 against `undead` |
+| Unbinding Edge | 18 | Hallowed Conjuring, orange magic 70 | `banish_summoned`: a hit ends a summoned creature |
+| Glassfire Conjuring | 20 | Tempered Conjuring, orange magic 75 | the material is `core:material/obsidian` (attack +6) |
+
+The levels sit 2 to 6 apart along the ladder; every number is [A] until a playtest runs a bound
+weapon against a mundane one of the same level.
+
 ## 4. Casting resolution (d100 roll-under)
 
 The procedure is [docs/core/casting.md](../core/casting.md): one resolution request on
@@ -316,7 +356,7 @@ parameters only, `uncraftable_parameters` lists the others. [A]
 | `teleport` | Divine Intervention sends the caster to the nearest temple of a deity. |
 | `mark`, `recall` | A fixed return point is a world rule, not a recipe. |
 | `storage` | Pocket Storage, a pocket inventory, is engine state. |
-| `bound_weapon` | Bound weapons are rows a perk ladder upgrades (M3-09). |
+| `bound_weapon` | Bound weapons are rows a perk ladder upgrades ([Bound weapons](#bound-weapons)). |
 | `summon` | Summons are static rows a GM or dev adds (M3-08). |
 | `restore_resource` with `mana` | No crafted spell restores mana, instant or over time, so mana cannot pay for itself. |
 
