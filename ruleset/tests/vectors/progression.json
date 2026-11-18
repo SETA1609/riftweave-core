@@ -680,12 +680,12 @@
       "skills": {}
     },
     "perks": {
-      "toughness": 1
+      "hardened_hide": 1
     },
-    "perk": "toughness",
+    "perk": "hardened_hide",
     "expect": {
       "taken": true,
-      "perk": "toughness",
+      "perk": "hardened_hide",
       "rank": 2,
       "unmet": []
     }
@@ -708,12 +708,12 @@
       "skills": {}
     },
     "perks": {
-      "toughness": 3
+      "hardened_hide": 3
     },
-    "perk": "toughness",
+    "perk": "hardened_hide",
     "expect": {
       "taken": false,
-      "perk": "toughness",
+      "perk": "hardened_hide",
       "rank": 3,
       "unmet": [
         {
@@ -829,10 +829,10 @@
       }
     },
     "perks": {},
-    "perk": "deadeye",
+    "perk": "gap_finder",
     "expect": {
       "taken": true,
-      "perk": "deadeye",
+      "perk": "gap_finder",
       "rank": 1,
       "unmet": []
     }

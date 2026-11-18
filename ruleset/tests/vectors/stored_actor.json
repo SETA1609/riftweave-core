@@ -466,7 +466,7 @@
         "main_hand": 1
       },
       "perks": {
-        "toughness": 2
+        "hardened_hide": 2
       },
       "spells": [
         "fire_bolt"
@@ -556,7 +556,7 @@
           "main_hand": 1
         },
         "perks": {
-          "toughness": 2
+          "hardened_hide": 2
         },
         "spells": [
           "fire_bolt"

@@ -1,6 +1,6 @@
 # Character Creation
 
-Modified: 2026-11-16
+Modified: 2026-11-18
 
 **Status:** Core (reference procedure)
 
@@ -174,8 +174,8 @@ by `prerequisite` (`level` / `abilities` / `skills` / `perks`). Every normal lev
 
 Exception: **Humans** *may* take **one perk at creation** (their *Ambition* racial feature) —
 it is an option, not a requirement. Any perk whose prerequisites they already meet
-qualifies; at level 1 that means an ability-only perk such as *Toughness* (`end ≥ 5`)
-or *Alert* (`per ≥ 6`). A human who has no perk worth taking yet may decline and save
+qualifies; at level 1 that means an ability-only perk such as *Hardened Hide* (`end ≥ 5`)
+or *Ever Watchful* (`per ≥ 6`). A human who has no perk worth taking yet may decline and save
 it for later.
 
 Note: creation perks (step 3) and level-up perks come from the **same table** —
@@ -329,12 +329,12 @@ AGI 5, then the dwarf's +1 STR, +2 END, −1 AGI). Tag skills `blunt`, `block`,
 | Level | XP | Perk taken | Pool | `athletics` | `blunt` | `shields` | HP | MP | AP | Carry | Init |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | 0 | — | 19 | 24 | 27 | 39 | 83 | 42 | 3 | 95 | 5 |
-| 2 | 900 | `toughness` | 17 | 27 | 37 | 43 | 102 | 44 | 3 | 95 | 5 |
-| 3 | 2700 | `toughness` (rank 2) | 21 | 37 | 48 | 43 | 121 | 46 | 3 | 95 | 5 |
+| 2 | 900 | `hardened_hide` | 17 | 27 | 37 | 43 | 102 | 44 | 3 | 95 | 5 |
+| 3 | 2700 | `hardened_hide` (rank 2) | 21 | 37 | 48 | 43 | 121 | 46 | 3 | 95 | 5 |
 | 4 | 5400 | `pack_mule` | 18 | 37 | 58 | 51 | 125 | 48 | 3 | 120 | 5 |
-| 5 | 9000 | `lucky` | 20 | 47 | 58 | 61 | 129 | 50 | 3 | 120 | 5 |
+| 5 | 9000 | `fates_reprieve` | 20 | 47 | 58 | 61 | 129 | 50 | 3 | 120 | 5 |
 | 6 | 13500 | `crushing_blow` | 16 | 47 | 58 | 61 | 133 | 52 | 3 | 120 | 5 |
-| 7 | 18900 | `toughness` (rank 3) | 22 | 47 | 70 | 71 | 152 | 54 | 3 | 120 | 5 |
+| 7 | 18900 | `hardened_hide` (rank 3) | 22 | 47 | 70 | 71 | 152 | 54 | 3 | 120 | 5 |
 | 8 | 25200 | `iron_stomach` | 18 | 65 | 70 | 71 | 156 | 56 | 3 | 120 | 5 |
 | 9 | 32400 | `shield_wall` | 19 | 65 | 80 | 80 | 160 | 58 | 3 | 120 | 5 |
 | 10 | 40500 | `scavenger` | 17 | 76 | 80 | 80 | 164 | 60 | 3 | 120 | 5 |
@@ -360,7 +360,7 @@ AGI 4, then the elf's +1 INT, +1 AGI, −1 END). Tag skills `red_magic`, `blue_m
 | 6 | 13500 | `mana_flow` | 23 | 80 | 79 | 85 | 71 | 104 | 3 | 65 | 5 |
 | 7 | 18900 | `transmuter` | 26 | 80 | 90 | 100 | 75 | 106 | 3 | 65 | 5 |
 | 8 | 25200 | `meditative` | 25 | 95 | 100 | 100 | 79 | 108 | 3 | 65 | 5 |
-| 9 | 32400 | `iron_will` | 27 | 100 | 100 | 100 | 83 | 110 | 3 | 65 | 5 |
+| 9 | 32400 | `unshaken` | 27 | 100 | 100 | 100 | 83 | 110 | 3 | 65 | 5 |
 | 10 | 40500 | `arcane_reservoir` (rank 3) | 24 | 100 | 100 | 100 | 87 | 122 | 3 | 65 | 5 |
 
 Gear by level 10: `quarterstaff`, `cloth_robe`, `cloak`.

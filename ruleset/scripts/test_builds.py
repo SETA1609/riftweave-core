@@ -68,11 +68,11 @@ class TestTheChecker(unittest.TestCase):
         return problems
 
     def test_a_perk_before_its_level(self):
-        problems = self.broken(lambda b: b["perks_by_level"].update({"2": "core:feature/bulwark", "13": "core:feature/toughness"}))
+        problems = self.broken(lambda b: b["perks_by_level"].update({"2": "core:feature/bulwark", "13": "core:feature/hardened_hide"}))
         self.assertTrue(any(p.startswith("level 2: bulwark unmet") for p in problems), problems)
 
     def test_a_perk_past_its_ranks(self):
-        problems = self.broken(lambda b: b["perks_by_level"].update({"30": "core:feature/toughness"}))
+        problems = self.broken(lambda b: b["perks_by_level"].update({"30": "core:feature/hardened_hide"}))
         self.assertTrue(any("'needs': 'rank'" in p for p in problems), problems)
 
     def test_a_missing_level(self):
@@ -84,8 +84,8 @@ class TestTheChecker(unittest.TestCase):
         self.assertIn("attributes: 4 each plus 10 points, none over 10", problems)
 
     def test_a_level_perk_as_a_creation_perk(self):
-        problems = self.broken(lambda b: b.update(creation_perks=["core:feature/toughness"]))
-        self.assertIn("core:feature/toughness is not a creation perk", problems)
+        problems = self.broken(lambda b: b.update(creation_perks=["core:feature/hardened_hide"]))
+        self.assertIn("core:feature/hardened_hide is not a creation perk", problems)
 
     def test_a_skill_prerequisite_the_points_never_reach(self):
         problems = self.broken(lambda b: b.update(skill_priorities=[p for p in b["skill_priorities"] if p["skill"] != "core:skill/shields"]))

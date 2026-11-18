@@ -269,7 +269,7 @@
     }
   },
   {
-    "name": "perks: Toughness at rank 2 adds 30 to an authored hitPoints",
+    "name": "perks: Hardened Hide at rank 2 adds 30 to an authored hitPoints",
     "monster": {
       "attributes": {
         "str": 6,
@@ -285,7 +285,7 @@
       "hitPoints": 59,
       "perks": [
         {
-          "perk": "core:feature/toughness",
+          "perk": "core:feature/hardened_hide",
           "rank": 2
         }
       ]
@@ -313,7 +313,7 @@
           "perk": "core:feature/armored_evasion"
         },
         {
-          "perk": "core:feature/alert"
+          "perk": "core:feature/ever_watchful"
         }
       ]
     },

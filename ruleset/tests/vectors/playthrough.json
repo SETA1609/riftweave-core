@@ -300,7 +300,7 @@
     }
   },
   {
-    "name": "perk: Toughness at rank 2 adds 30 HP, emitted as add 15 x 2",
+    "name": "perk: Hardened Hide at rank 2 adds 30 HP, emitted as add 15 x 2",
     "function": "derived",
     "actor": {
       "attributes": {
@@ -328,7 +328,7 @@
         "target": "hp",
         "operation": "add",
         "value": 30,
-        "source": "feature:toughness",
+        "source": "feature:hardened_hide",
         "origin": "core:origin/trained"
       }
     ],
@@ -402,7 +402,7 @@
           "target": "hp",
           "operation": "add",
           "value": 30,
-          "source": "feature:toughness",
+          "source": "feature:hardened_hide",
           "origin": "core:origin/trained"
         }
       ]

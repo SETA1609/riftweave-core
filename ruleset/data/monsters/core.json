@@ -526,7 +526,7 @@
       "key": "bandit_captain",
       "base": "core:monster/bandit",
       "overrides": {
-        "perks": [{"perk": "core:feature/armored_evasion"}, {"perk": "core:feature/alert"}], "level": 8,
+        "perks": [{"perk": "core:feature/armored_evasion"}, {"perk": "core:feature/ever_watchful"}], "level": 8,
         "loot": [
           {
             "table": "hoard_major"
@@ -1827,7 +1827,7 @@
       "key": "troll",
       "base": "core:creature_type/humanoid",
       "overrides": {
-        "perks": [{"perk": "core:feature/toughness", "rank": 2}], "maneuvers": ["core:maneuver/heavy_swing"], "label": "Troll",
+        "perks": [{"perk": "core:feature/hardened_hide", "rank": 2}], "maneuvers": ["core:maneuver/heavy_swing"], "label": "Troll",
         "description": "A towering brute whose wounds close almost as fast as they open.",
         "size": "large",
         "level": 13,

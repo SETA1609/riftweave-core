@@ -268,15 +268,15 @@ class TestModuleDataMerging(unittest.TestCase):
             "features": [
                 {
                     "id": 1,
-                    "key": "toughness",
-                    "label": "Toughness",
+                    "key": "hardened_hide",
+                    "label": "Hardened Hide",
                     "type": "perk",
                     "category": "general",
                 },
                 {
                     "id": 2,
-                    "key": "alert",
-                    "label": "Alert",
+                    "key": "ever_watchful",
+                    "label": "Ever Watchful",
                     "type": "perk",
                     "category": "general",
                 },
@@ -326,8 +326,8 @@ class TestModuleDataMerging(unittest.TestCase):
             "features": [
                 {
                     "id": 1,
-                    "key": "toughness",
-                    "label": "Toughness Dupe",
+                    "key": "hardened_hide",
+                    "label": "Hardened Hide Dupe",
                     "type": "perk",
                     "category": "general",
                 },
@@ -341,7 +341,7 @@ class TestModuleDataMerging(unittest.TestCase):
         self.assertEqual(len(conflicts), 1)
         coll, eid, src_a, src_b = conflicts[0]
         self.assertEqual(coll, "features")
-        self.assertEqual(eid, "toughness")
+        self.assertEqual(eid, "hardened_hide")
         self.assertEqual(src_a, "core")
 
     def test_merge_detects_conflict_between_modules(self):
