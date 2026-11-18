@@ -1,6 +1,6 @@
 # Integrity gates
 
-Modified: 2026-11-17
+Modified: 2026-11-18
 
 What `python ruleset/scripts/validate.py` refuses to pass. JSON Schema alone cannot check that a reference points at something, so the validator adds five gates on top of it. They close the open items of the data review (`docs/archive/review/findings-data-schemas.md` M3 and M6) and are tested in `ruleset/scripts/test_integrity.py`.
 
@@ -29,6 +29,28 @@ A modifier's `target` is a key, not a `core:` reference, so gate 1 does not see 
 ## 5. An override lists only what differs
 
 Third normal form for composed rows ([normal-forms.md](../theory/normal-forms.md#third-normal-form-3nf-no-fact-about-another-non-key-field)). An equipment or monster override whose field, or sub-field of an object, equals what the row inherits after its base and layers fails: removing it would change nothing, so it is a copy. A derived monster's `level` is exempt, because it must state one. A subrace field equal to its parent race's fails the same way. `$extend` is never a copy, and `$replace` is one only when it replaces with the same value. Tested in `test_composition.py`. [V 2026-11-17]
+
+## 6. A domain is written once
+
+A field's domain is a fact too ([normal-forms.md](../theory/normal-forms.md#a-domain-written-once)). Each enum of
+shared vocabulary lives once, in `ruleset/schemas/schema.json`, and every other schema names it
+with a `$ref`: `derived.schema.json`'s `attribute` and `ability.schema.json`'s `id` are
+`schema.json#/definitions/ability` (M5-72). Where a table holds the rows, the enum and the table
+must name the same keys, so a new value cannot land in one place only: `test_integrity.py`
+fails when they differ.
+
+| Enum in `schema.json` | Checked against |
+| --- | --- |
+| `ability` (8) | the `id`s of `abilities/core.json` |
+| `damageType` (13) | `combat/damage_types.json` |
+| `phase` (5) | the `id`s of the wuxing module's `phases` (`modules/wuxing`) |
+| `color` (9) | the magic skills: each color has its `<color>_magic` skill, and each `*_magic` skill a color |
+| `qualityGrade` (8) | nothing: it has no table, and `tiers` is another scale (Common to Legendary) [A] |
+
+`color`, `phase`, and `qualityGrade` stay enum-only, with no core table of their own: a color is
+already a skill, a phase is the wuxing module's row, and a grade has no field beyond its name [A].
+The `spellcraft` command contract repeats `color` twice; it moves to a `$ref` with the contract
+diagram regenerated (APP-36) [U].
 
 ## Not covered
 
