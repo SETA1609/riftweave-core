@@ -32,7 +32,7 @@ Main menu
 ├── Settings
 ├── Modules
 ├── Network
-├── Import                           CLI only until the frontend half of APP-30
+├── Import                           APP-30
 └── Quit                             CLI only
 ```
 

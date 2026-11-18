@@ -59,13 +59,15 @@ panel's session. Adding ` --accept-loss` to the path goes on past a missing modu
 
 ## In the frontend
 
-"Export" on each screen that makes a file and one "Import" on the home page that reads the kind
-are the frontend half of APP-30 (`APP-30-frontend-…`), on the same envelope and fixtures. A
-spell is exported from spell creation, which is APP-22. [U]
+- **Import** on the home page (`/import`, `frontend/src/app/file-import.ts`) opens one file of any kind. The envelope is read by `frontend/src/app/files.ts`, with the CLI's rules and messages, and the data is checked by the core: a character by the `stored_actor` command, a session by a replay, a spell by the `author` command. A character starts a save; a session becomes a save; a spell is checked and waits for spell creation (APP-22); a settings file goes to the settings import.
+- **A missing module** shows the CLI's alert, word for word, with **Enable and import** (only for a module this app has) and **Import anyway**. Another rules version shows a warning and still imports.
+- **Export**: **Export character** on character creation, and **Export file** for each saved game, both stamped with the rules the session runs and the enabled modules at their manifests' versions. The backup download stays the session JSON itself (APP-16).
+
+[V 2026-11-18, `files.spec.ts` and the end-to-end specs, run in CI]
 
 ## Fixtures
 
 `ruleset/tests/fixtures/files/` holds a file of each kind, one that names the factions module,
 and one whose character breaks the contract twice (level 0, which the schema refuses, and a slot that holds no item, which the `stored_actor` command refuses). `test_contract.py` validates them against
 `file.json` and checks their layout; the Go tests import each kind and export it back byte for
-byte. A character file's sync fields come with APP-33. [U]
+byte, and `files.spec.ts` reads and writes each back the same way. A character file's sync fields come with APP-33. [U]
