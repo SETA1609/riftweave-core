@@ -3,6 +3,7 @@ package play
 import (
 	"encoding/json"
 	"io/fs"
+	"slices"
 
 	"github.com/SETA1609/riftweave-core/backend/contract"
 )
@@ -13,10 +14,11 @@ const mainMenu = "main"
 // menuEntry is one row of backend/contract/menu.json (docs/backend/app-layout.md): its key,
 // the menu it sits in, its label, and the issue that adds it while that issue is not merged.
 type menuEntry struct {
-	Key    string `json:"key"`
-	Parent string `json:"parent"`
-	Label  string `json:"label"`
-	Issue  string `json:"issue"`
+	Key    string   `json:"key"`
+	Parent string   `json:"parent"`
+	Label  string   `json:"label"`
+	Issue  string   `json:"issue"`
+	Apps   []string `json:"apps"` // the apps that show it, cli or web; both when empty
 }
 
 // backKey is the entry the app adds at the end of every menu but the main one.
@@ -43,7 +45,7 @@ var tree = menuTree()
 func entriesOf(parent string) []menuEntry {
 	var entries []menuEntry
 	for _, entry := range tree {
-		if entry.Parent == parent {
+		if entry.Parent == parent && (len(entry.Apps) == 0 || slices.Contains(entry.Apps, "cli")) {
 			entries = append(entries, entry)
 		}
 	}
