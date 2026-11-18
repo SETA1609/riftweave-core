@@ -11,6 +11,12 @@ import { Card } from './ui/card';
 import { KeyValueList } from './ui/key-value-list';
 import { NumberField } from './ui/number-field';
 import { Playthrough } from './playthrough';
+import { provideRouter } from '@angular/router';
+import { switchableTransport, type Transport } from './api';
+import { routes } from './app.routes';
+import { Resolution } from './resolution';
+import { MODULE_IDS, SettingsScreens } from './settings-screens';
+import { MENU, MenuGrid, pathOf } from './ui/menu-grid';
 import { SelectField } from './ui/select-field';
 import { Sheet } from './sheet';
 import { TextField } from './ui/text-field';
@@ -98,6 +104,7 @@ const sent: { command: string; input: unknown }[] = [];
 const fakeApi = {
   derived: async (actor: unknown) => { sent.push({ command: 'derived', input: actor }); return { hp: 67, mp: 42, sp: 10, ap: 4 }; },
   combat: async (input: unknown) => { sent.push({ command: 'combat', input }); return { outcome: 'hit', target: 72, damage: 6, hp: 24 }; },
+  resolution: async (input: unknown) => { sent.push({ command: 'resolution', input }); return { target: 50, success: true, margin: 17, tags: [] }; },
 };
 
 beforeEach(() => {
@@ -219,5 +226,112 @@ describe('the theme toggle', () => {
     await fixture.whenStable();
     expect(button.getAttribute('aria-label')).toBe('Switch to dark mode');
     expect(document.documentElement.getAttribute('data-theme')).toBe('light');
+  });
+});
+
+describe('the menus of backend/contract/menu.json', () => {
+  function menu(parent: string): HTMLElement {
+    TestBed.configureTestingModule({ providers: [provideRouter(routes)] });
+    const fixture = TestBed.createComponent(MenuGrid);
+    fixture.componentRef.setInput('parent', parent);
+    fixture.detectChanges();
+    return fixture.nativeElement as HTMLElement;
+  }
+  const cards = (element: HTMLElement) => Array.from(element.querySelectorAll('.menu-card')).map((card) => card.textContent!.trim());
+
+  it('show the home page: the main menu without the CLI-only Quit', () => {
+    const element = menu('main');
+    expect(cards(element)).toEqual(['Start', 'Characters (APP-33)', 'Settings', 'Modules', 'Network']);
+    expect(element.querySelector('[aria-disabled="true"]')!.textContent).toContain('APP-33');
+  });
+
+  it('show the tools page and GM tools, each with Back to the menu above', () => {
+    expect(cards(menu('start'))).toEqual(['GM tools', 'Character creation', 'Spell creation (APP-22)', 'Skill resolution', 'Bestiary (APP-29)', 'Saved games', 'Back']);
+    TestBed.resetTestingModule();
+    const gm = menu('gm_tools');
+    expect(cards(gm)).toEqual(['Resolve an attack', 'Encounter tracker (APP-34)', 'Playthrough', 'Back']);
+    expect(gm.querySelector('a.menu-card:last-child')!.getAttribute('href')).toBe('/play');
+  });
+
+  it('have a route for every entry that is not pending', () => {
+    const paths = routes.map((route) => `/${route.path}`.replace(/\/$/, '') || '/');
+    for (const entry of MENU.filter((entry) => !entry.issue)) {
+      expect(paths, entry.key).toContain(pathOf(entry.key) === '/' ? '/' : pathOf(entry.key));
+    }
+  });
+});
+
+describe('the network setting', () => {
+  function recorder(name: string, calls: string[]): Transport {
+    return { ready: Promise.resolve(), post: async (path) => { calls.push(`${name} ${path}`); return {}; } };
+  }
+
+  it('switches the transport between the core in the page and the server', async () => {
+    const calls: string[] = [];
+    let choice = { mode: 'local', url: '' };
+    const transport = switchableTransport(recorder('local', calls), (url) => recorder(`server ${url}`, calls), () => choice);
+    await transport.post('/v1/commands/derived', {});
+    choice = { mode: 'server', url: 'http://127.0.0.1:9000' };
+    await transport.post('/v1/commands/resolution', {});
+    choice = { mode: 'local', url: 'http://127.0.0.1:9000' };
+    await transport.post('/v1/commands/combat', {});
+    expect(calls).toEqual(['local /v1/commands/derived', 'server http://127.0.0.1:9000 /v1/commands/resolution', 'local /v1/commands/combat']);
+  });
+});
+
+describe('the settings screens', () => {
+  beforeEach(() => localStorage.clear());
+
+  function screen(section: string) {
+    const fixture = TestBed.createComponent(SettingsScreens);
+    fixture.componentRef.setInput('section', section);
+    fixture.detectChanges();
+    return { fixture, element: fixture.nativeElement as HTMLElement, context: TestBed.inject(AppContext) };
+  }
+
+  it('list core checked and locked, then every module, and save a checked one', async () => {
+    const { fixture, element, context } = screen('modules');
+    const boxes = Array.from(element.querySelectorAll<HTMLInputElement>('input[type="checkbox"]'));
+    expect(boxes.map((box) => [box.parentElement!.textContent!.trim(), box.checked, box.disabled])).toEqual([
+      ['core (always loaded)', true, true], ...MODULE_IDS.map((id) => [id, false, false]),
+    ]);
+    boxes[MODULE_IDS.indexOf('factions') + 1].click();
+    await fixture.whenStable();
+    expect(context.modules()).toEqual(['factions']);
+    expect(JSON.parse(context.exportSettings()).modules).toEqual(['factions']);
+  });
+
+  it('refuse server mode without a URL, and switch with one', async () => {
+    const { fixture, element, context } = screen('network');
+    element.querySelectorAll<HTMLInputElement>('input[type="radio"]')[1].click();
+    await fixture.whenStable();
+    expect(element.textContent).toContain('set the server URL first');
+    expect(context.networkMode()).toBe('local');
+    fixture.componentInstance.url.set('http://127.0.0.1:8080');
+    fixture.componentInstance.useServer();
+    expect([context.networkMode(), context.serverUrl()]).toEqual(['server', 'http://127.0.0.1:8080']);
+  });
+
+  it('save the bestiary choice in the settings file', () => {
+    const { element, context } = screen('settings');
+    element.querySelector<HTMLInputElement>('input[type="checkbox"]')!.click();
+    expect(context.playersSeeOnlyKnown()).toBe(true);
+    expect(JSON.parse(context.exportSettings()).bestiary).toEqual({ players_see_only_known: true });
+  });
+});
+
+describe('skill resolution', () => {
+  it('sends the skill, its value, LCK, the modifier, and the roll to resolution', async () => {
+    const fixture = TestBed.createComponent(Resolution);
+    fixture.detectChanges();
+    fixture.componentInstance.bonus.set(10);
+    fixture.componentInstance.roll.set(33);
+    await fixture.componentInstance.resolve();
+    expect(sent).toEqual([{ command: 'resolution', input: {
+      actor: { skills: { lockpick: 40 }, attributes: { lck: 5 } }, skill: 'lockpick',
+      modifiers: [{ target: 'lockpick', operation: 'add', value: 10, source: 'situation:gm' }], roll: 33,
+    } }]);
+    fixture.detectChanges();
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain('margin');
   });
 });

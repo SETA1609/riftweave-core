@@ -10,26 +10,33 @@ with no connection, and the network only adds what a shared table needs online (
 
 ## The menu tree
 
-Each entry has a `key`, the `parent` menu it sits in (`main` for the main menu), a `label`, and
-the `issue` that adds it while that issue is not merged. The app adds **Back** at the end of
-every menu but the main one; it is not in the file.
+Each entry has a `key`, the `parent` menu it sits in (`main` for the main menu), a `label`, the
+`issue` that adds it while that issue is not merged, and `apps` when only one app shows it
+(`cli` or `web`): Quit is the CLI's, and Saved games and Playthrough are the browser's, which
+keeps its saves in IndexedDB (APP-27). The app adds **Back** at the end of every menu but the
+main one; it is not in the file.
 
 ```
 Main menu
 ├── Start
 │   ├── GM tools
 │   │   ├── Resolve an attack
-│   │   └── Encounter tracker          APP-34
+│   │   ├── Encounter tracker          APP-34
+│   │   └── Playthrough                web only
 │   ├── Character creation
 │   ├── Spell creation                 APP-22
 │   ├── Skill resolution
-│   └── Bestiary                       APP-29
+│   ├── Bestiary                       APP-29
+│   └── Saved games                    web only
 ├── Characters                         APP-33
 ├── Settings
 ├── Modules
 ├── Network
-└── Quit
+└── Quit                             CLI only
 ```
+
+In the Angular app the main menu is the home page at `/`, Start is `/play`, a tool is
+`/play/<key>`, and the other main entries are `/<key>` ([frontend.md](frontend.md#screens)).
 
 - **A pending entry** (one with an `issue`) is shown dimmed with that issue's id, and choosing
   it says which issue brings it, so the menus are the same in both apps from the start. [A]
@@ -63,4 +70,8 @@ that is not one, a module named twice) is shown, and nothing is saved.
 - **Network:** `local` (the default: the core in the program, offline) or `server` (the HTTP API
   at `server_url`, [api.md](api.md)). In server mode every command goes to
   `POST <server_url>/v1/commands/<name>` with the same input, so each screen works the same way
-  with either. Server mode needs a URL. `room` is listed and disabled until APP-17.
+  with either. Server mode needs a URL. `room` is listed and disabled until APP-17. In the
+  Angular app `local` is the build's own transport (the core in the page, or the API a dev
+  build names), and the network setting switches the `Transport` of `api.ts` on the next call.
+  A server on another origin than the page needs CORS, which the API does not send yet
+  ([api.md](api.md#not-covered)). [U]

@@ -1,12 +1,9 @@
-// The shell: the three screens (docs/backend/frontend.md#screens) behind a tab bar, shown once the
-// core can answer (at once over HTTP, after the WebAssembly core starts in a static build).
+// The shell: the routes of the app layout (docs/backend/app-layout.md) in the router outlet, shown
+// once the core can answer (at once over HTTP, after the WebAssembly core starts in a static build).
 import { Component, inject, signal } from '@angular/core';
 import { API } from './api';
-import { Attack } from './attack';
-import { Playthrough } from './playthrough';
-import { SavedGames } from './saved-games';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { Saves } from './saves';
-import { Sheet } from './sheet';
 import { Alert } from './ui/alert';
 import { ThemeToggle } from './ui/theme-toggle';
 
@@ -15,14 +12,12 @@ declare const RIFTWEAVE_RULES_VERSION: string;
 
 @Component({
   selector: 'rw-root',
-  imports: [Sheet, Attack, Playthrough, SavedGames, Alert, ThemeToggle],
+  imports: [RouterLink, RouterOutlet, Alert, ThemeToggle],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
 export class App {
   readonly rulesVersion = RIFTWEAVE_RULES_VERSION;
-  readonly tabs = ['sheet', 'attack', 'playthrough', 'saves'] as const;
-  readonly current = signal<(typeof this.tabs)[number]>('sheet');
   readonly state = signal<'starting' | 'ready' | 'failed'>('starting');
   readonly failure = signal('');
 

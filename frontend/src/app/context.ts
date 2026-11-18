@@ -55,6 +55,16 @@ export class AppContext {
     const theme = this.theme();
     return theme === 'system' ? (this.systemDark() ? 'dark' : 'light') : theme;
   });
+  /** The rest of the settings file (APP-25) as last saved: bestiary, modules, network, and any key
+   * this app does not use. Theme and locale live in their own signals above. */
+  readonly file = signal<SettingsFile>(savedFile());
+  /** Whether players see only the monsters they know (APP-29). */
+  readonly playersSeeOnlyKnown = computed(() => (this.file()['bestiary'] as { players_see_only_known?: boolean } | undefined)?.players_see_only_known === true);
+  /** The enabled optional modules, by manifest id; core is always loaded and never listed. */
+  readonly modules = computed(() => (this.file()['modules'] as string[] | undefined) ?? []);
+  /** local (the core in the page, offline), server (the HTTP API at serverUrl), or room (APP-17). */
+  readonly networkMode = computed(() => ((this.file()['network'] as { mode?: string } | undefined)?.mode ?? 'local') as 'local' | 'server' | 'room');
+  readonly serverUrl = computed(() => (this.file()['network'] as { server_url?: string } | undefined)?.server_url ?? '');
   /** The mode the toggle moves to next: light, dark, system, then light again. */
   readonly next = computed<Theme>(() => THEMES[(THEMES.indexOf(this.theme()) + 1) % THEMES.length]);
 
@@ -75,6 +85,31 @@ export class AppContext {
     effect(() => save(LOCALE_KEY, this.locale()));
   }
 
+  /** Change the settings file: the edit is checked by the file's rules and saved, or refused
+   * with the rule's message, and then nothing changes. Returns null on success. */
+  update(edit: (file: SettingsFile) => SettingsFile): string | null {
+    const parsed = parseSettings(encodeSettings(edit(structuredClone(this.file()))));
+    if ('error' in parsed) return parsed.error;
+    this.file.set(parsed.settings);
+    save(SETTINGS_KEY, encodeSettings(parsed.settings));
+    return null;
+  }
+
+  setPlayersSeeOnlyKnown(known: boolean): string | null {
+    return this.update((file) => ({ ...file, bestiary: { ...(file['bestiary'] as object), players_see_only_known: known } }));
+  }
+
+  /** Check or uncheck a module. */
+  toggleModule(id: string): string | null {
+    const enabled = this.modules();
+    return this.update((file) => ({ ...file, modules: enabled.includes(id) ? enabled.filter((module) => module !== id) : [...enabled, id] }));
+  }
+
+  setNetwork(mode: 'local' | 'server', serverUrl = this.serverUrl()): string | null {
+    if (mode === 'server' && !serverUrl) return 'set the server URL first';
+    return this.update((file) => ({ ...file, network: { ...(file['network'] as object), mode, server_url: serverUrl } }));
+  }
+
   /** Move to the next mode. */
   cycleTheme(): void {
     this.theme.set(this.next());
@@ -83,9 +118,7 @@ export class AppContext {
   /** The settings file to export (`riftweave-settings.json`, APP-25): the last imported file, or
    * the defaults, with this app's current theme and language. */
   exportSettings(): string {
-    const saved = parseSettings(load(SETTINGS_KEY) ?? '');
-    const file: SettingsFile = 'settings' in saved ? saved.settings : defaultSettings();
-    return encodeSettings({ ...file, theme: this.theme(), locale: this.locale() });
+    return encodeSettings({ ...this.file(), theme: this.theme(), locale: this.locale() });
   }
 
   /** Apply a settings file. Returns null on success, or the message of the rule it breaks, in
@@ -97,6 +130,13 @@ export class AppContext {
     if (theme) this.theme.set(theme);
     if (typeof parsed.settings['locale'] === 'string') this.locale.set(parsed.settings['locale']);
     save(SETTINGS_KEY, encodeSettings(parsed.settings));
+    this.file.set(parsed.settings);
     return null;
   }
+}
+
+/** The settings file as last saved, or the defaults. */
+function savedFile(): SettingsFile {
+  const saved = parseSettings(load(SETTINGS_KEY) ?? '');
+  return 'settings' in saved ? saved.settings : defaultSettings();
 }

@@ -1,0 +1,30 @@
+@switch (section()) {
+  @case ('settings') {
+    <rw-card title="Settings">
+      <rw-select-field label="Theme" [options]="themes" [value]="context.theme()" (valueChange)="setTheme($event)" />
+      <rw-text-field label="Language" [(value)]="context.locale" />
+      <label class="field"><input type="checkbox" [checked]="context.playersSeeOnlyKnown()" (change)="report(context.setPlayersSeeOnlyKnown($any($event.target).checked))" /> Players see only the monsters they know</label>
+      <button type="button" class="btn btn-outline" (click)="exportSettings()">Export settings</button>
+      <label class="btn btn-outline">Import settings <input type="file" accept=".json,application/json" (change)="importSettings($event)" /></label>
+    </rw-card>
+  }
+  @case ('modules') {
+    <rw-card title="Modules">
+      <label class="field"><input type="checkbox" checked disabled /> core (always loaded)</label>
+      @for (id of moduleIds; track id) {
+        <label class="field"><input type="checkbox" [checked]="context.modules().includes(id)" (change)="report(context.toggleModule(id))" /> {{ id }}</label>
+      }
+    </rw-card>
+  }
+  @case ('network') {
+    <rw-card title="Network">
+      <label class="field"><input type="radio" name="network" [checked]="context.networkMode() === 'local'" (change)="report(context.setNetwork('local'), 'Offline: the core in the page.')" /> Offline: the core in the page</label>
+      <label class="field"><input type="radio" name="network" [checked]="context.networkMode() === 'server'" (change)="useServer()" /> Server: the HTTP API at the server URL</label>
+      <rw-text-field label="Server URL" [(value)]="url" />
+      <button type="button" class="btn btn-outline btn-sm" (click)="useServer()">Use this server</button>
+      <label class="field disabled"><input type="radio" name="network" disabled /> Room (APP-17)</label>
+    </rw-card>
+  }
+}
+<rw-alert [message]="problem()" />
+<rw-alert kind="info" [message]="notice()" />
