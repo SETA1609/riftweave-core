@@ -2,7 +2,12 @@ package main
 
 import (
 	"encoding/json"
+	"io"
+	"net/http"
+	"net/http/httptest"
+	"os"
 	"os/exec"
+	"path/filepath"
 	"reflect"
 	"strings"
 	"testing"
@@ -11,9 +16,10 @@ import (
 
 	"github.com/SETA1609/riftweave-core/backend/cmd/riftweave/play"
 	"github.com/SETA1609/riftweave-core/backend/core"
+	"github.com/SETA1609/riftweave-core/backend/internal/settings"
 )
 
-// press sends keys to the model: "enter", "down", "clear", or text to type.
+// press sends keys to the model: "enter", "down", "up", "esc", "clear", or text to type.
 func press(model tea.Model, keys ...string) tea.Model {
 	for _, key := range keys {
 		var message tea.KeyMsg
@@ -22,6 +28,10 @@ func press(model tea.Model, keys ...string) tea.Model {
 			message = tea.KeyMsg{Type: tea.KeyEnter}
 		case "down":
 			message = tea.KeyMsg{Type: tea.KeyDown}
+		case "up":
+			message = tea.KeyMsg{Type: tea.KeyUp}
+		case "esc":
+			message = tea.KeyMsg{Type: tea.KeyEsc}
 		case "clear":
 			message = tea.KeyMsg{Type: tea.KeyCtrlU}
 		default:
@@ -57,8 +67,15 @@ func matchesTheAgentCLI(t *testing.T, model tea.Model, command string) {
 	}
 }
 
+// The paths through the menus of backend/contract/menu.json: Start, then an entry.
+var (
+	toCreation   = []string{"enter", "down", "enter"}                 // Start, Character creation
+	toAttack     = []string{"enter", "enter", "enter"}                // Start, GM tools, Resolve an attack
+	toResolution = []string{"enter", "down", "down", "down", "enter"} // Start, Skill resolution
+)
+
 func TestPlayCreatesACharacterLikeTheAgentCLI(t *testing.T) {
-	var model tea.Model = press(started(t), "enter", "clear", "9")
+	var model tea.Model = press(press(started(t), toCreation...), "clear", "9")
 	for range 9 {
 		model = press(model, "enter")
 	}
@@ -69,7 +86,7 @@ func TestPlayCreatesACharacterLikeTheAgentCLI(t *testing.T) {
 }
 
 func TestPlayResolvesAnAttackLikeTheAgentCLI(t *testing.T) {
-	var model tea.Model = press(started(t), "down", "enter", "clear", "60", "enter", "clear", "33")
+	var model tea.Model = press(press(started(t), toAttack...), "clear", "60", "enter", "clear", "33")
 	for range 7 {
 		model = press(model, "enter")
 	}
@@ -80,11 +97,12 @@ func TestPlayResolvesAnAttackLikeTheAgentCLI(t *testing.T) {
 }
 
 func TestPlayUsesTheCreatedCharactersLuckForAnAttack(t *testing.T) {
-	var model tea.Model = press(started(t), "enter")
+	var model tea.Model = press(started(t), toCreation...)
 	for range 7 {
 		model = press(model, "enter")
 	}
-	model = press(model, "clear", "8", "enter", "enter", "enter", "down", "enter")
+	// LCK 8, run it, back to the Start menu, then GM tools and the attack.
+	model = press(model, "clear", "8", "enter", "enter", "enter", "up", "enter", "enter")
 	for range 8 {
 		model = press(model, "enter")
 	}
@@ -95,7 +113,7 @@ func TestPlayUsesTheCreatedCharactersLuckForAnAttack(t *testing.T) {
 }
 
 func TestPlayRefusesANumberThatIsNotOne(t *testing.T) {
-	var model tea.Model = press(started(t), "down", "enter", "clear", "x")
+	var model tea.Model = press(press(started(t), toAttack...), "clear", "x")
 	for range 8 {
 		model = press(model, "enter")
 	}
@@ -180,7 +198,7 @@ func TestPlayDevCommandsMatchTheAgentCLI(t *testing.T) {
 
 func TestPlayRollQueueFillsTheNextRollPrompts(t *testing.T) {
 	var model tea.Model = devLine(startedDev(t), "roll 77 3")
-	model = press(model, "down", "enter")
+	model = press(model, toAttack...)
 	for range 8 {
 		model = press(model, "enter")
 	}
@@ -205,4 +223,196 @@ func TestPlayDevRefusesABadCommandAndHasNoPanelWithoutDev(t *testing.T) {
 	if view := press(started(t), ":").View(); strings.Contains(view, "Dev") {
 		t.Errorf("a dev panel without --dev: %s", view)
 	}
+}
+
+// withSettings is the model with a settings file in a temporary directory, saved on each change.
+func withSettings(t *testing.T, remote func(string) play.Runner) (tea.Model, string) {
+	t.Helper()
+	opened, err := core.Open(dataDirectory)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var path string = filepath.Join(t.TempDir(), "settings.json")
+	return play.NewWith(opened.Run, play.Options{
+		Settings: settings.Default(),
+		Save:     func(file settings.File) error { return os.WriteFile(path, file.Encode(), 0o644) },
+		Modules:  moduleIDs(filepath.Join(dataDirectory, "..", "modules")),
+		Remote:   remote,
+	}), path
+}
+
+func saved(t *testing.T, path string) settings.File {
+	t.Helper()
+	content, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	file, err := settings.Parse(content)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return file
+}
+
+func TestPlayOpensOnTheMainMenu(t *testing.T) {
+	var view string = started(t).View()
+	for _, label := range []string{"Start", "Characters (APP-33)", "Settings", "Modules", "Network", "Quit"} {
+		if !strings.Contains(view, label) {
+			t.Errorf("main menu has no %q: %s", label, view)
+		}
+	}
+}
+
+func TestPlayMenusShowEveryEntryAndPendingIssues(t *testing.T) {
+	var tools string = press(started(t), "enter").View()
+	for _, label := range []string{"GM tools", "Character creation", "Spell creation (APP-22)", "Skill resolution", "Bestiary (APP-29)", "Back"} {
+		if !strings.Contains(tools, label) {
+			t.Errorf("tools menu has no %q: %s", label, tools)
+		}
+	}
+	var gm string = press(started(t), "enter", "enter").View()
+	for _, label := range []string{"Resolve an attack", "Encounter tracker (APP-34)", "Back"} {
+		if !strings.Contains(gm, label) {
+			t.Errorf("GM tools has no %q: %s", label, gm)
+		}
+	}
+	for keys, issue := range map[string]string{"down enter": "APP-33", "enter down down enter": "APP-22", "enter down down down down enter": "APP-29", "enter enter down enter": "APP-34"} {
+		if view := press(started(t), strings.Fields(keys)...).View(); !strings.Contains(view, "comes with "+issue) {
+			t.Errorf("%s: no pending issue %s shown: %s", keys, issue, view)
+		}
+	}
+}
+
+func TestPlayEscGoesBackOneMenu(t *testing.T) {
+	var model tea.Model = press(started(t), "enter", "enter")
+	if menu := model.(play.Model).Menu(); menu != "gm_tools" {
+		t.Fatalf("menu %s, want gm_tools", menu)
+	}
+	model = press(model, "esc")
+	if menu := model.(play.Model).Menu(); menu != "start" || !strings.Contains(model.View(), "> GM tools") {
+		t.Errorf("one esc: menu %s, %s", menu, model.View())
+	}
+	model = press(model, "esc")
+	if menu := model.(play.Model).Menu(); menu != "main" || !strings.Contains(model.View(), "> Start") {
+		t.Errorf("two esc: menu %s, %s", menu, model.View())
+	}
+	model = press(model, "down", "down", "enter", "esc") // into Settings and out
+	if !strings.Contains(model.View(), "> Settings") {
+		t.Errorf("esc from Settings: %s", model.View())
+	}
+}
+
+func TestPlaySettingsAreSavedInTheSettingsFile(t *testing.T) {
+	model, path := withSettings(t, nil)
+	model = press(model, "down", "down", "enter")         // Settings
+	model = press(model, "enter", "clear", "de", "enter") // Language
+	model = press(model, "down", "enter")                 // Theme: system to light
+	model = press(model, "down", "enter")                 // Bestiary: players see only known
+	var file settings.File = saved(t, path)
+	if file["locale"] != "de" || file["theme"] != "light" || file["bestiary"].(map[string]any)["players_see_only_known"] != true {
+		t.Errorf("saved %s", file.Encode())
+	}
+	model = press(model, "up", "up", "enter", "clear", "not a code", "enter")
+	if !strings.Contains(model.View(), "not a language code") || saved(t, path)["locale"] != "de" {
+		t.Errorf("a bad locale was not refused: %s", model.View())
+	}
+}
+
+func TestPlaySettingsExportAndImport(t *testing.T) {
+	model, path := withSettings(t, nil)
+	var exported string = filepath.Join(t.TempDir(), "exported.json")
+	model = press(model, "down", "down", "enter", "down", "enter") // Settings, Theme to light
+	model = press(model, "down", "down", "enter", "clear", exported, "enter")
+	content, err := os.ReadFile(exported)
+	if err != nil || !strings.Contains(string(content), `"theme": "light"`) {
+		t.Fatalf("export: %v %s", err, content)
+	}
+	var other string = filepath.Join(t.TempDir(), "other.json")
+	_ = os.WriteFile(other, []byte(`{"riftweave": "settings", "version": 1, "theme": "dark", "kept": 1}`+"\n"), 0o644)
+	model = press(model, "down", "enter", "clear", other, "enter")
+	if file := saved(t, path); file["theme"] != "dark" || file["kept"] == nil {
+		t.Errorf("import: saved %s, view %s", file.Encode(), model.View())
+	}
+}
+
+func TestPlayModulesAreCheckBoxesWithCoreLocked(t *testing.T) {
+	model, path := withSettings(t, nil)
+	model = press(model, "down", "down", "down", "enter") // Modules
+	if view := model.View(); !strings.Contains(view, "[x] core (always loaded)") || !strings.Contains(view, "[ ] factions") {
+		t.Fatalf("modules screen: %s", view)
+	}
+	model = press(model, "enter")
+	if !strings.Contains(model.View(), "core is always loaded") {
+		t.Errorf("core could be changed: %s", model.View())
+	}
+	model = press(model, "down", "down", "enter") // example_module, then factions
+	if modules := saved(t, path)["modules"]; !reflect.DeepEqual(modules, []any{"factions"}) {
+		t.Errorf("saved modules %v", modules)
+	}
+	if !strings.Contains(model.View(), "[x] factions") {
+		t.Errorf("no check on factions: %s", model.View())
+	}
+}
+
+func TestPlayServerModeSendsCommandsToTheServer(t *testing.T) {
+	opened, err := core.Open(dataDirectory)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var served []string
+	server := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		var name string = strings.TrimPrefix(request.URL.Path, "/v1/commands/")
+		served = append(served, request.Method+" "+name)
+		body, _ := io.ReadAll(request.Body)
+		output, err := opened.Run(name, body)
+		if err != nil {
+			writer.WriteHeader(http.StatusUnprocessableEntity)
+		}
+		_, _ = writer.Write(output)
+	}))
+	defer server.Close()
+	model, path := withSettings(t, func(url string) play.Runner { return play.Remote(url, server.Client()) })
+	model = press(model, "down", "down", "down", "down", "enter") // Network
+	model = press(model, "down", "enter")
+	if !strings.Contains(model.View(), "set the server URL first") {
+		t.Errorf("server mode without a URL: %s", model.View())
+	}
+	model = press(model, "down", "enter", "clear", server.URL, "enter", "up", "enter", "esc")
+	if network := saved(t, path)["network"].(map[string]any); network["mode"] != "server" || network["server_url"] != server.URL {
+		t.Fatalf("saved network %v", network)
+	}
+	model = press(model, "up", "up", "up", "up")
+	model = press(model, toResolution...)
+	model = press(model, "enter", "enter", "enter", "enter", "clear", "30", "enter")
+	if !reflect.DeepEqual(served, []string{"POST resolution"}) {
+		t.Fatalf("the server got %v: %s", served, model.View())
+	}
+	matchesTheAgentCLI(t, model, "resolution")
+}
+
+func TestPlaySkillResolutionMatchesTheAgentCLI(t *testing.T) {
+	var model tea.Model = press(press(started(t), toResolution...), "clear", "blades", "enter", "clear", "55", "enter", "enter", "clear", "10", "enter", "clear", "61", "enter")
+	matchesTheAgentCLI(t, model, "resolution")
+	input, _ := model.(play.Model).LastCall()
+	if !strings.Contains(string(input), `"value":10`) || !strings.Contains(string(input), `"roll":61`) {
+		t.Errorf("input %s", input)
+	}
+	if !strings.Contains(model.View(), "blades check: rolled 61 against 65, success") {
+		t.Errorf("no log line: %s", model.View())
+	}
+}
+
+func TestPlaySkillResolutionRollsABlankRoll(t *testing.T) {
+	var model tea.Model = press(started(t), toResolution...)
+	for range 5 {
+		model = press(model, "enter")
+	}
+	input, _ := model.(play.Model).LastCall()
+	var fields struct {
+		Roll int64 `json:"roll"`
+	}
+	if err := json.Unmarshal(input, &fields); err != nil || fields.Roll < 1 || fields.Roll > 100 {
+		t.Errorf("a blank roll gave %s", input)
+	}
+	matchesTheAgentCLI(t, model, "resolution")
 }

@@ -5,6 +5,7 @@ package play
 import (
 	"encoding/json"
 	"fmt"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -12,6 +13,8 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+
+	"github.com/SETA1609/riftweave-core/backend/internal/settings"
 )
 
 // Runner is core.Run: a command name and JSON in, JSON out.
@@ -23,7 +26,11 @@ const (
 	modeMenu mode = iota
 	modeForm
 	modeResult
-	modeCommand // the dev command line (docs/backend/dev-mode.md#the-human-cli)
+	modeCommand  // the dev command line (docs/backend/dev-mode.md#the-human-cli)
+	modeSettings // the settings file (docs/backend/app-layout.md)
+	modeModules
+	modeNetwork
+	modePrompt // a one-line input for a setting
 )
 
 const maximumLogLines = 6
@@ -32,13 +39,16 @@ var (
 	titleStyle = lipgloss.NewStyle().Bold(true)
 	hintStyle  = lipgloss.NewStyle().Faint(true)
 	errorStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("1"))
+	dimStyle   = lipgloss.NewStyle().Faint(true)
 )
 
-// field is one prompt: its label, the default, and whether it is free text, not a number.
+// field is one prompt: its label, the default, whether it is free text, not a number, and
+// whether it may be left blank.
 type field struct {
 	label    string
 	initial  string
 	freeText bool
+	optional bool
 }
 
 // form is what one menu entry asks for and how it becomes a command.
@@ -47,6 +57,7 @@ type form struct {
 	command string
 	fields  []field
 	build   func(values []string) map[string]any
+	before  func(values []string) []string // fills blank optional fields before build, if set
 	columns []string
 	logLine func(values []string, result map[string]any) string
 }
@@ -110,20 +121,40 @@ func attackForm(luck string) form {
 	}
 }
 
+// Options are what the human CLI needs beyond the core (docs/backend/app-layout.md): the
+// settings file and how to save it, the modules in ruleset/modules, and how to reach a server.
+type Options struct {
+	Settings settings.File
+	Save     func(settings.File) error
+	Modules  []string
+	Remote   func(url string) Runner
+	Dev      bool
+}
+
 // Model is the Bubble Tea model.
 type Model struct {
-	run        Runner
-	mode       mode
-	cursor     int
-	current    form
-	inputs     []textinput.Model
-	focus      int
-	problem    string
-	result     table.Model
-	log        []string
-	luck       string
-	lastInput  []byte
-	lastOutput []byte
+	run    Runner
+	local  Runner
+	remote func(url string) Runner
+	mode   mode
+	menu   string // the menu shown: main, start, or gm_tools
+	cursor int
+	// returnCursor is the menu row a screen was opened from, so Esc lands on it again.
+	returnCursor int
+	settings     settings.File
+	save         func(settings.File) error
+	modules      []string
+	promptReturn mode
+	promptDone   func(Model, string) Model
+	current      form
+	inputs       []textinput.Model
+	focus        int
+	problem      string
+	result       table.Model
+	log          []string
+	luck         string
+	lastInput    []byte
+	lastOutput   []byte
 	// Dev mode: the panel's session, the command line, the queued d100 rolls, and the last
 	// character created, which a new session starts from.
 	dev       bool
@@ -133,13 +164,33 @@ type Model struct {
 	character map[string]any
 }
 
-var menuEntries = []string{"Create a character", "Resolve an attack", "Quit"}
-
-// New returns the model at the main menu.
-func New(run Runner) Model { return Model{run: run, luck: "5"} }
+// New returns the model at the main menu, with the default settings and nothing saved.
+func New(run Runner) Model { return NewWith(run, Options{}) }
 
 // NewDev is New with the dev panel and its short commands; the core must have dev mode on.
-func NewDev(run Runner) Model { return Model{run: run, luck: "5", dev: true} }
+func NewDev(run Runner) Model { return NewWith(run, Options{Dev: true}) }
+
+// NewWith returns the model at the main menu with the options. Commands go to the core in
+// process, or to the server when the settings say so.
+func NewWith(run Runner, options Options) Model {
+	var file settings.File = options.Settings
+	if file == nil {
+		file = settings.Default()
+	}
+	var remote = options.Remote
+	if remote == nil {
+		remote = func(url string) Runner { return Remote(url, nil) }
+	}
+	var model Model = Model{run: run, local: run, remote: remote, menu: mainMenu, luck: "5", dev: options.Dev,
+		settings: copyOf(file), save: options.Save, modules: options.Modules}
+	return model.follow()
+}
+
+// Menu is the key of the menu shown, so a test can follow the tree.
+func (model Model) Menu() string { return model.menu }
+
+// Settings is the settings the model holds.
+func (model Model) Settings() settings.File { return model.settings }
 
 // Session is the dev panel's session as JSON, nil before the first dev command.
 func (model Model) Session() []byte { return model.session }
@@ -175,10 +226,16 @@ func (model Model) submit() Model {
 	values := make([]string, len(model.inputs))
 	for index, input := range model.inputs {
 		values[index] = strings.TrimSpace(input.Value())
+		if values[index] == "" && model.current.fields[index].optional {
+			continue
+		}
 		if _, err := strconv.ParseInt(values[index], 10, 64); err != nil && !model.current.fields[index].freeText {
 			model.problem = model.current.fields[index].label + " must be a whole number"
 			return model
 		}
+	}
+	if model.current.before != nil {
+		values = model.current.before(values)
 	}
 	input, err := json.Marshal(model.current.build(values))
 	if err != nil {
@@ -229,13 +286,18 @@ func (model Model) Update(message tea.Msg) (tea.Model, tea.Cmd) {
 		if !isKey {
 			return model, nil
 		}
+		var entries []menuEntry = entriesOf(model.menu)
 		switch key.String() {
 		case "up", "k":
-			model.cursor = (model.cursor + len(menuEntries) - 1) % len(menuEntries)
+			model.cursor = (model.cursor + len(entries) - 1) % len(entries)
+			model.problem = ""
 		case "down", "j":
-			model.cursor = (model.cursor + 1) % len(menuEntries)
+			model.cursor = (model.cursor + 1) % len(entries)
+			model.problem = ""
 		case "q":
 			return model, tea.Quit
+		case "esc":
+			return model.back(), nil
 		case ":":
 			if model.dev {
 				model.line = textinput.New()
@@ -245,20 +307,42 @@ func (model Model) Update(message tea.Msg) (tea.Model, tea.Cmd) {
 				return model, textinput.Blink
 			}
 		case "enter":
-			switch model.cursor {
-			case 0:
-				return model.open(createForm()), textinput.Blink
-			case 1:
-				var attack form = attackForm(model.luck)
-				if len(model.rolls) > 0 {
-					attack.fields[1].initial = strconv.FormatInt(model.rolls[0], 10)
-					model.rolls = model.rolls[1:]
-				}
-				return model.open(attack), textinput.Blink
-			}
-			return model, tea.Quit
+			return model.enter(entries[model.cursor])
 		}
 		return model, nil
+	case modeSettings, modeModules, modeNetwork:
+		if !isKey {
+			return model, nil
+		}
+		var count int = len(model.rows())
+		switch key.String() {
+		case "up", "k":
+			model.cursor = (model.cursor + count - 1) % count
+		case "down", "j":
+			model.cursor = (model.cursor + 1) % count
+		case "esc":
+			model.mode, model.cursor, model.problem = modeMenu, model.returnCursor, ""
+		case "enter", " ":
+			return model.choose()
+		}
+		return model, nil
+	case modePrompt:
+		if isKey {
+			switch key.Type {
+			case tea.KeyEsc:
+				model.mode, model.problem = model.promptReturn, ""
+				return model, nil
+			case tea.KeyEnter:
+				var done = model.promptDone
+				var back = model.promptReturn
+				model = done(model, strings.TrimSpace(model.line.Value()))
+				model.mode = back
+				return model, nil
+			}
+		}
+		var command tea.Cmd
+		model.line, command = model.line.Update(message)
+		return model, command
 	case modeCommand:
 		if isKey {
 			switch key.Type {
@@ -296,6 +380,51 @@ func (model Model) Update(message tea.Msg) (tea.Model, tea.Cmd) {
 	if isKey && (key.Type == tea.KeyEnter || key.Type == tea.KeyEsc) {
 		model.mode = modeMenu
 	}
+	return model, nil
+}
+
+// back goes up one menu; the main menu has no parent and stays.
+func (model Model) back() Model {
+	if model.menu == mainMenu {
+		return model
+	}
+	var left string = model.menu
+	model.menu, model.problem = parentOf(left), ""
+	model.cursor = max(slices.IndexFunc(entriesOf(model.menu), func(entry menuEntry) bool { return entry.Key == left }), 0)
+	return model
+}
+
+// enter opens the entry: a submenu, a screen, a form, or the pending issue's id.
+func (model Model) enter(entry menuEntry) (tea.Model, tea.Cmd) {
+	if entry.Issue != "" {
+		model.problem = entry.Label + " comes with " + entry.Issue
+		return model, nil
+	}
+	switch entry.Key {
+	case backKey:
+		return model.back(), nil
+	case "quit":
+		return model, tea.Quit
+	case "start", "gm_tools":
+		model.menu, model.cursor, model.problem = entry.Key, 0, ""
+		return model, nil
+	case "settings", "modules", "network":
+		model.returnCursor, model.cursor, model.problem = model.cursor, 0, ""
+		model.mode = map[string]mode{"settings": modeSettings, "modules": modeModules, "network": modeNetwork}[entry.Key]
+		return model, nil
+	case "character_creation":
+		return model.open(createForm()), textinput.Blink
+	case "skill_resolution":
+		return model.open(resolutionForm(model.luck)), textinput.Blink
+	case "attack":
+		var attack form = attackForm(model.luck)
+		if len(model.rolls) > 0 {
+			attack.fields[1].initial = strconv.FormatInt(model.rolls[0], 10)
+			model.rolls = model.rolls[1:]
+		}
+		return model.open(attack), textinput.Blink
+	}
+	model.problem = entry.Label + " has no screen yet"
 	return model, nil
 }
 
@@ -511,21 +640,38 @@ func (model Model) View() string {
 	var view strings.Builder
 	switch model.mode {
 	case modeMenu:
-		view.WriteString(titleStyle.Render("Riftweave") + "\n\n")
-		for index, entry := range menuEntries {
+		view.WriteString(titleStyle.Render(titleOf(model.menu)) + "\n\n")
+		for index, entry := range entriesOf(model.menu) {
 			marker := "  "
 			if index == model.cursor {
 				marker = "> "
 			}
-			view.WriteString(marker + entry + "\n")
+			if entry.Issue != "" {
+				view.WriteString(marker + dimStyle.Render(entry.Label+" ("+entry.Issue+")") + "\n")
+				continue
+			}
+			view.WriteString(marker + entry.Label + "\n")
+		}
+		if model.problem != "" {
+			view.WriteString("\n" + errorStyle.Render(model.problem) + "\n")
 		}
 		view.WriteString(model.logView())
 		if model.dev {
 			view.WriteString(model.panelView())
-			view.WriteString("\n" + hintStyle.Render("up/down, enter, : for a dev command, q to quit") + "\n")
+			view.WriteString("\n" + hintStyle.Render("up/down, enter, esc to go back, : for a dev command, q to quit") + "\n")
 		} else {
-			view.WriteString("\n" + hintStyle.Render("up/down, enter, q to quit") + "\n")
+			view.WriteString("\n" + hintStyle.Render("up/down, enter, esc to go back, q to quit") + "\n")
 		}
+	case modeSettings, modeModules, modeNetwork:
+		view.WriteString(model.screenView(map[mode]string{modeSettings: "Settings", modeModules: "Modules", modeNetwork: "Network"}[model.mode]))
+		if model.problem != "" {
+			view.WriteString("\n" + errorStyle.Render(model.problem) + "\n")
+		}
+		view.WriteString(model.logView())
+		view.WriteString("\n" + hintStyle.Render("up/down, enter to change, esc to go back; each change is saved") + "\n")
+	case modePrompt:
+		view.WriteString(model.line.View() + "\n")
+		view.WriteString("\n" + hintStyle.Render("enter to apply, esc to cancel") + "\n")
 	case modeCommand:
 		view.WriteString(titleStyle.Render("Dev command") + "\n\n" + model.line.View() + "\n")
 		if model.problem != "" {

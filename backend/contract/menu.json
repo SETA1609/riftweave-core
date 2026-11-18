@@ -1,0 +1,19 @@
+{
+  "riftweave": "menu",
+  "documentation": "docs/backend/app-layout.md",
+  "entries": [
+    { "key": "start", "parent": "main", "label": "Start" },
+    { "key": "characters", "parent": "main", "label": "Characters", "issue": "APP-33" },
+    { "key": "settings", "parent": "main", "label": "Settings" },
+    { "key": "modules", "parent": "main", "label": "Modules" },
+    { "key": "network", "parent": "main", "label": "Network" },
+    { "key": "quit", "parent": "main", "label": "Quit" },
+    { "key": "gm_tools", "parent": "start", "label": "GM tools" },
+    { "key": "character_creation", "parent": "start", "label": "Character creation" },
+    { "key": "spell_creation", "parent": "start", "label": "Spell creation", "issue": "APP-22" },
+    { "key": "skill_resolution", "parent": "start", "label": "Skill resolution" },
+    { "key": "bestiary", "parent": "start", "label": "Bestiary", "issue": "APP-29" },
+    { "key": "attack", "parent": "gm_tools", "label": "Resolve an attack" },
+    { "key": "encounter_tracker", "parent": "gm_tools", "label": "Encounter tracker", "issue": "APP-34" }
+  ]
+}
