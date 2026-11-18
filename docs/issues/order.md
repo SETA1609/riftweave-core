@@ -9,6 +9,6 @@ the tool needs a file to write it to. To see what can start now, run `roadmap-or
 | Wave | Story | Keyword | Blocked by | Open issues |
 |---|---|---|---|---|
 | 0 | M5 | ready | — | 1 |
-| 0 | APP | ready | — | 3 |
+| 0 | APP | ready | — | 2 |
 
 <!-- roadmap-order end -->
