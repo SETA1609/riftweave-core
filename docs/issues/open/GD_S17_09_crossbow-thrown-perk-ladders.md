@@ -1,0 +1,33 @@
+#### GD_S17_09_crossbow-thrown-perk-ladders Crossbow and thrown-weapon perk ladders
+- Status: todo
+- Priority: medium
+- Needs: GD_S17_08_firearm-perk-ladders
+- Modified: 2026-11-18
+- Do: Owner request, 2026-11-18: the thrower needs perks of their own (today only Thrown Mastery), and the crossbow has only Fast Reload. Add a crossbow ladder split by hand and heavy crossbow, and a thrown ladder that also makes the thrower the one who throws grenades best. Held-weapon prerequisites as in GD_S17_07.
+  - **Which crossbow:** a **hand crossbow** has `light` (hand crossbow); a **heavy crossbow** is two-handed (crossbow, light crossbow, repeating crossbow) [A].
+  - **Hand crossbow (the arbalist with a shield):**
+    - `lever_cock` (Lv4, Crossbows 30): once a turn, reloading a hand crossbow costs no AP [A].
+    - `shield_rest` (Lv10, Shields 40): with a shield and no move this turn, a hand crossbow shot +10.
+    - `bolt_and_board` (Lv16, needs `lever_cock`): after a block in the block band, the next hand crossbow shot this turn costs 1 AP less.
+  - **Heavy crossbow (the siege shot):**
+    - `windlass_draw` (Lv6, STR 6, Crossbows 40): a heavy crossbow's damage die one step up (1d8 to 1d10, `dice_ladder`) [A].
+    - `quarrel_through_mail`, tiers Lv10 / Lv16 / Lv22 (Crossbows 60): a heavy crossbow bolt ignores 25% / 50% / 75% of armor DR.
+    - `wide_burst` (Lv14, needs `windlass_draw`): an elemental bolt's burst radius +1.
+    - `magazine_drill` (Lv12, Crossbows 50): a repeating crossbow's magazine +2, and Pinning Fire with it spends 2 bolts, not 3.
+  - **Thrown line (the thrower):**
+    - `hand_to_throw` (Lv4, AGI 6, Throwing Weapons 30): drawing a thrown weapon is part of the throw, and a thrown weapon in each hand uses GD_S17_05's two-weapon row.
+    - `knife_fan` (Lv8, needs `hand_to_throw`): unlocks the maneuver **Knife Fan**: attack +1 AP, three light thrown weapons at three targets within 3 units of each other, -20 each; three weapons spent.
+    - `thrown_mastery` (Lv12, today's): unchanged.
+    - `skipping_edge` (Lv14, needs `knife_fan`): a thrown weapon that drops its target carries on to a foe within 2 units at -10 [A].
+    - `lobbing_arm` (Lv6, Throwing Weapons 40): a grenade's range x1.5, and `thrown_mastery` and other thrown damage perks add to every grenade's damage [A]. The one place a grenade's fixed damage moves (GD_S17_03).
+    - `short_fuse`, tiers Lv10 / Lv16 (needs `lobbing_arm`): the area roll against your grenades is made at -10 / -20 [A].
+    - `long_throw` (Lv18, PER 7): thrown weapons' and grenades' range penalties halved; the thrower's `sniper`.
+  - **Names are original** (M5-67).
+- Keys: `lever_cock`, `shield_rest`, `bolt_and_board`, `windlass_draw`, `quarrel_through_mail`, `wide_burst`, `magazine_drill`, `hand_to_throw`, `knife_fan` (perk and maneuver), `skipping_edge`, `lobbing_arm`, `short_fuse`, `long_throw`
+- Files: ~9 (docs/modules/combat.md, docs/modules/weapons.md, ruleset/data/features/core.json, ruleset/data/maneuvers/core.json, ruleset/data/modifier_targets/core.json, ruleset/tests/vectors/combat.json, ruleset/scripts/test_perks.py, docs/decisions/GD_S17_09_crossbow-thrown-perk-ladders.md, changes/GD_S17_09_crossbow-thrown-perk-ladders.md)
+- See: docs/issues/open/GD_S17_03_thrown-grenades.md, docs/issues/open/GD_S17_07_bow-perk-ladders.md, docs/modules/builds/ranged.md (the arbalist)
+- Done when:
+  - A vector shows `lobbing_arm` adding `thrown_mastery`'s +2 to a Fire Flask, and the same flask unchanged without it.
+  - A vector runs Knife Fan at three targets, and `windlass_draw` stepping a heavy crossbow's die and not a hand crossbow's.
+  - Each crossbow and the thrown line have at least three perks of their own; the thrown line has at least six.
+  - `validate.py` and the tests pass.

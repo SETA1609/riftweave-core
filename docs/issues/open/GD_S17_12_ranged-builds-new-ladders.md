@@ -1,0 +1,23 @@
+#### GD_S17_12_ranged-builds-new-ladders The ranged builds take the ranged ladders, and the skirmisher and the thrower
+- Status: todo
+- Priority: medium
+- Needs: M5-61, GD_S17_13_ranger-switch-mixed-ladders
+- Modified: 2026-11-18
+- Do: Owner request, 2026-11-18: M5-61's ranged builds were written with the perks of 2026-11-18 and run out of ranged perks at level 18 (`docs/decisions/M5-61.md`). Rework them onto S17's ladders and add the two builds the new ladders make worth suggesting. Every page still says it is a suggestion and that nothing is gated.
+  - **The archer takes the longbow line** (GD_S17_07): Full Draw, Bodkin Point, Held Breath, Arrow Storm, Far Mark, Heart Seeker.
+  - **A new skirmisher takes the shortbow line**: Loose and Step, Quick Nock, Split Nock, Parting Shot, Running Archer, so the longbow and the shortbow archer differ in every tier.
+  - **The gunslinger takes the pistol line** (GD_S17_08), with its page naming what the **marksman** (long gun) and the **breacher** (blunderbuss) take instead; whether those two become build rows of their own is decided in the spec step [A].
+  - **The arbalist takes the hand-crossbow line** (GD_S17_09) with its shield.
+  - **A new thrower takes the thrown line** with grenades (GD_S17_03, GD_S17_09), reversing M5-61's "thrown weapons get no build" now that the line has perks.
+  - **The hybrids:** the arcane trickster takes Bound Ammunition and Conjured Quiver (GD_S17_11) where they fit.
+  - **The ranger has two forms** (owner 2026-11-18), both from GD_S17_13: the **switcher** carries a shortbow and a blade and changes between them (Quick Switch and the switch line), and the **mixed hand** fights with a one-handed melee weapon and a pistol, a hand crossbow, or thrown weapons together (the mixed-hand line and GD_S17_05's row). The build row takes one form and its page names what the other takes instead; whether the other becomes a row of its own is decided in the spec step [A].
+  - **Fillers:** no ranged build takes a magic-table perk it cannot use; where the ranged ladders run out, the scavenging perks (GD_S17_10) and the ranged maneuvers (GD_S17_06) come first. Close the gaps M5-61 recorded, or say which remain.
+  - Each build passes `build_reference.play` from creation to level 30 at the lowest luck roll, every tier at or after its gate.
+- Keys: the reworked `archer`, `arbalist`, `gunslinger`, `arcane_trickster`, `ranger` builds; new `skirmisher` and `thrower` builds (and `marksman`, `breacher` if the spec step makes them rows)
+- Files: ~8 (docs/modules/builds/ranged.md, docs/modules/builds/hybrids.md, docs/modules/builds/README.md, ruleset/data/builds/core.json, ruleset/scripts/test_builds.py, docs/playtests/report.json, docs/decisions/GD_S17_12_ranged-builds-new-ladders.md, changes/GD_S17_12_ranged-builds-new-ladders.md)
+- See: docs/decisions/M5-61.md, docs/modules/builds/ranged.md, docs/issues/open/GD_S05_03_defense-perk-ladders.md (the melee builds' rework, the same pattern)
+- Done when:
+  - Every ranged and ranged-hybrid build passes the legality test, the skirmisher and the thrower included.
+  - No ranged build takes Arcane Reservoir, Battle Mage (or its rename), or Quick Caster as a filler.
+  - The archer and the skirmisher share no perk past Gap Finder, Steady Aim, Sniper, Split Nock, and Held Breath [A].
+  - `validate.py` and the tests pass.

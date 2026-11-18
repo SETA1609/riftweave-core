@@ -1,0 +1,20 @@
+#### GD_S17_11_bound-ranged-weapons-ammo Bound crossbow, pistol, and rifle, and the Bound Ammunition spell
+- Status: todo
+- Priority: medium
+- Needs: GD_S06_01_bound-weapon-materials, GD_S17_04_elemental-bolts-and-bullets, GD_S17_10_ammo-scavenging-perks
+- Modified: 2026-11-18
+- Do: Owner request, 2026-11-18: a bound bow, crossbow, pistol, and rifle, and a Bound Ammunition spell, so a caster pays mana **once** for a number of shots, and can cast more ammunition in the middle of a fight when it runs out. GD_S06_01's rules hold for every bound weapon here: iron's stats at the start, no phase, `magic` damage, perks that change the material and add enchants.
+  - **Bound ranged weapons** (orange, concentration, like `bound_blade` and `bound_bow`): `bound_crossbow` (copies `core:weapon/crossbow`), `bound_pistol` (`core:weapon/flintlock_pistol`), and `bound_rifle` (the long gun GD_S17_08 settles on). Levels about 6 for the pistol, 9 for the crossbow, 16 for the rifle [A], mana by the same scale as the existing bound spells [A]. `bound_bow` stays.
+  - **Rounds come with the cast:** a bound ranged weapon holds conjured rounds, its spell's `magnitude` many (20 arrows, 12 bolts, 8 bullets [A]). The one mana cost pays for all of them; no ammunition item is spent. A `loading` bound weapon still reloads (GD_S17_02), from its conjured rounds. When the rounds or the duration run out, the weapon fades.
+  - **Bound Ammunition** (`bound_ammunition`, orange, about level 2 [A]): conjures rounds of the kind the caster's held weapon loads, `magnitude` many (10 arrows or bolts, 6 bullets or scatter charges [A]), for the spell's duration or until fired. They work in a mundane weapon and deal `magic` damage with the weapon's own dice, skill, material, and perks [A]; they are never recovered (GD_S17_02) and fade unfired. A new effect `core:effect/bound_ammunition` (parameter: the ammunition kind; magnitude: the count) carries it.
+  - **Cast ad hoc:** Bound Ammunition costs the `cast` AP like any spell. The perk `conjured_quiver` (Lv6, orange magic 40) lets the caster cast it in place of a `reload`, for the reload's AP, and the cast loads the weapon [A]. A tier 2 (Lv12) conjures elemental rounds (GD_S17_04) for double the mana, with the burst and rider of the element chosen [A].
+  - **Perk upgrades** follow GD_S06_01's bound-weapon perks; this issue adds only what is ranged: `conjured_quiver`, and a perk that adds rounds per cast (`deep_quiver`, tiers Lv8 / Lv14: x1.5 / x2 [A]).
+  - **Builds:** the arcane trickster (M5-61) can drop the arrows from its kit; GD_S17_12 decides.
+- Keys: `bound_crossbow`, `bound_pistol`, `bound_rifle`, `bound_ammunition` spells; `core:effect/bound_ammunition`; the rounds of a bound ranged weapon; `conjured_quiver`, `deep_quiver`
+- Files: ~10 (docs/modules/magic.md, docs/modules/weapons.md, docs/core/casting.md, ruleset/data/spells/core.json, ruleset/data/effects/core.json, ruleset/data/features/core.json, ruleset/tests/vectors/casting.json, ruleset/tests/vectors/combat.json, docs/decisions/GD_S17_11_bound-ranged-weapons-ammo.md, changes/GD_S17_11_bound-ranged-weapons-ammo.md)
+- See: docs/issues/open/GD_S06_01_bound-weapon-materials.md, ruleset/data/spells/core.json (`bound_blade`, `bound_bow`), docs/issues/open/GD_S17_02_ammunition-items-and-reloading.md
+- Done when:
+  - A vector casts `bound_pistol` once and fires and reloads its rounds with no ammunition item and no more mana, and the pistol fades when the last round is fired.
+  - A vector casts `bound_ammunition` into a mundane crossbow: the bolts deal `magic` damage with the crossbow's bonuses and fade unfired at the end of the duration.
+  - A vector casts it in place of a reload with `conjured_quiver`, at the reload's AP.
+  - `validate.py` and the tests pass.

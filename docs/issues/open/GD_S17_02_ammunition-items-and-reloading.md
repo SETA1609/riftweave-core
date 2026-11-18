@@ -1,0 +1,20 @@
+#### GD_S17_02_ammunition-items-and-reloading Ammunition items, the reload action, and recovering spent ammunition
+- Status: todo
+- Priority: medium
+- Needs: —
+- Modified: 2026-11-18
+- Do: Owner request, 2026-11-18. Every bow, crossbow, gun, and the sling has the `ammunition` property, but no ammunition item exists, and Fast Reload changes a `reload_cost` that no action has. Give ammunition rows, and make the ranged perks after this one able to spend, recover, and find it.
+  - **Ammunition kinds:** `arrow`, `bolt`, `bullet` (ball and powder), `scatter` (a blunderbuss charge), and `stone` (sling) [A]. The kind vocabulary goes in `schema.json` once. A weapon base with the `ammunition` property names the kind it loads (`weapon.ammo`); the blunderbuss loads `scatter` [A].
+  - **Ammunition rows:** an `ammunition` item type in the equipment files (or a collection of its own; decided in the spec step [A]), sold in bundles: 20 arrows, 20 bolts, 10 bullets, 10 scatter charges, 20 sling stones [A], each with its kind, weight, and cost. A row may change the damage type and add riders (`appliedEffect`) on a hit; plain ammunition changes nothing. This is the hook GD_S17_04 (elemental rounds) and GD_S17_11 (conjured rounds) use.
+  - **Spending:** each strike with an `ammunition` weapon spends one round of its kind; with none left the weapon cannot attack. A thrown weapon is its own ammunition and spends itself.
+  - **The reload action:** a new `reload` row in `actions/core.json`, 2 AP [A], that loads one round into a `loading` weapon. A `loading` weapon holds one round and must reload after every shot; a weapon without `loading` draws as part of its attack. `fast_reload`'s `reload_cost` target now has an action to act on. The repeating crossbow's magazine (how many shots before a reload) is decided here [A].
+  - **Recovery:** after a fight, half the arrows and bolts fired are recovered, rounded down; bullets, scatter, and stones are not; thrown weapons are all recovered [A]. GD_S17_10 adds perks on this number, so it is one row of data, not prose.
+  - **At a table:** counting rounds is the rule; the guide says a table may stop counting plain ammunition and count only the special rounds [A].
+- Keys: the ammunition kind vocabulary; `weapon.ammo`; ammunition rows (`core:ammunition/<key>` or `core:gear/<key>` [A]); the `reload` action; the recovery rate
+- Files: ~12 (docs/core/actions.md, docs/core/combat.md, docs/modules/weapons.md, ruleset/schemas/schema.json, ruleset/schemas/equipment.schema.json, ruleset/data/equipment/ (the ammunition rows), ruleset/data/equipment/bases/weapons/ (the `ammo` field on each `ammunition` base), ruleset/data/actions/core.json, ruleset/scripts/validate.py, ruleset/tests/vectors/combat.json, docs/decisions/GD_S17_02_ammunition-items-and-reloading.md, changes/GD_S17_02_ammunition-items-and-reloading.md)
+- See: docs/modules/weapons.md (properties), ruleset/data/features/core.json (`fast_reload`, `reload_cost`), docs/core/actions.md#costs
+- Done when:
+  - `validate.py` fails on an `ammunition` weapon base with no `ammo` kind, and on an ammunition row whose kind no weapon loads.
+  - A vector fires a shot that spends one round, a `loading` weapon that cannot fire again before a reload, a reload at 2 AP and at 1 AP with `fast_reload`, and a weapon with no rounds left that cannot attack.
+  - A vector recovers half of the arrows fired after a fight and none of the bullets.
+  - `validate.py` and the tests pass.

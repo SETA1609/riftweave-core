@@ -9,7 +9,7 @@ story's issues when it is next in line, not before; the design will have moved b
 
 ## Files
 
-Open work is grouped in **stories** `S00` to `S16`, one file each: its goal, the table of its
+Open work is grouped in **stories** `S00` to `S17`, one file each: its goal, the table of its
 issues (role, old id, `Needs`), and its done-when. The issues themselves are one file each in
 [docs/issues/](../issues/README.md), and every issue has one role ([ROLES.md](../issues/ROLES.md)).
 
@@ -32,6 +32,7 @@ issues (role, old id, `Needs`), and its done-when. The issues themselves are one
 | [S14-content-bestiary-table.md](S14-content-bestiary-table.md) | S14 Content parity: bestiary, items, and the table |
 | [S15-optional-modules.md](S15-optional-modules.md) | S15 Optional modules |
 | [S16-table-module.md](S16-table-module.md) | S16 Table module |
+| [S17-ranged-combat.md](S17-ranged-combat.md) | S17 Ranged combat |
 
 The milestone files below hold the goals of the milestones whose done issues kept their old ids
 (before 2026-11-18). They take no new issues; the [roadmap](../../ROADMAP.md) still names its

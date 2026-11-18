@@ -1,6 +1,6 @@
 # Roadmap
 
-Modified: 2026-11-17
+Modified: 2026-11-18
 
 The core SRD is **finished** when it is tagged `v1.0.0` and every item under
 [Definition of finished](#definition-of-finished) is true. This file is the source of truth for
@@ -57,7 +57,7 @@ All of these are checked by a person or by CI. None is a feeling.
 
 ## Where we are
 
-Open work is grouped by story and role (`S00` to `S16`, [docs/stories/README.md](docs/stories/README.md#files)); the milestone files below keep each milestone's goal and its done issues.
+Open work is grouped by story and role (`S00` to `S17`, [docs/stories/README.md](docs/stories/README.md#files)); the milestone files below keep each milestone's goal and its done issues.
 
 Foundations are done. Milestone M0 below is complete and archived in
 [docs/issues/done/](docs/issues/done/); what remains is closing the kernel, then filling content.

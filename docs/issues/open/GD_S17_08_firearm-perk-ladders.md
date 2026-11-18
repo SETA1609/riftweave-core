@@ -1,0 +1,33 @@
+#### GD_S17_08_firearm-perk-ladders Firearm perk ladders: pistols, long guns, and the blunderbuss
+- Status: todo
+- Priority: medium
+- Needs: GD_S17_04_elemental-bolts-and-bullets, GD_S17_07_bow-perk-ladders
+- Modified: 2026-11-18
+- Do: Owner request, 2026-11-18: the gunslinger can go pistols, rifles, or the blunderbuss, and each plays differently. Today guns have one perk of their own (Hip Shot). Add three gun lines with the held-weapon prerequisite of GD_S17_07.
+  - **Which gun:** a **pistol** is a gun with `light` (flintlock pistol); a **long gun** is a two-handed gun without `scatter` (the arquebus); the **blunderbuss** has a new `scatter` property [A]. Whether core adds a rifled long gun (`rifle`: longer range than the arquebus, a slower reload) or the arquebus is the rifle is decided in the spec step [A]; GD_S17_11's Bound Rifle copies whichever it is.
+  - **The scatter rule** (a weapon rule, written here): a `scatter` weapon's attack is an `area` attack in a cone of 3 units [A]; every creature in it takes the area roll and the weapon's damage. Elemental scatter charges (GD_S17_04) burst along this cone.
+  - **Pistol line (the duelist with a gun):**
+    - `brace_of_pistols` (Lv4, AGI 6, Guns 30): drawing a second pistol costs no AP, and the two-pistol row of GD_S17_05 strikes at -0 / -10 instead of -10 / -20.
+    - `barrel_to_the_ribs` (Lv8, Guns 50): no penalty for shooting into melee with a pistol, and a pistol shot at an adjacent foe draws no opportunity attack.
+    - `hip_shot` (Lv12, today's): now pistols only [A].
+    - `reversed_grip` (Lv14, needs `brace_of_pistols`): an empty pistol strikes as a light blunt weapon at the Guns skill, so the jab (GD_S05_01) fills the reload gap.
+    - `practiced_ramrod` (Lv20, AGI 8, needs `brace_of_pistols`): reloading a pistol costs 1 AP less, on top of any other cut, never below 1.
+  - **Long-gun line (the marksman):**
+    - `shoulder_brace` (Lv6, Guns 40): a long-gun shot with no move this turn +10.
+    - `ball_through_plate`, tiers Lv10 / Lv16 / Lv22 (Guns 60): a long-gun ball ignores 25% / 50% / 75% of armor DR.
+    - `through_and_through` (Lv14, needs `shoulder_brace`): a long-gun shot that drops its target carries on to one creature behind it in line, at -20 [A].
+    - `still_hunter` (GD_S17_06) with a long gun: Held Breath's crit window +5 more [A].
+  - **Blunderbuss line (the breacher):**
+    - `tight_choke` (Lv6, Guns 40): choose, per shot, the cone or a single target at +1 damage die [A].
+    - `powder_kick` (Lv10, STR 6): every creature hit within 1 unit is pushed 1 unit, and `knockdown` on a crit.
+    - `wide_mouth` (Lv16, needs `tight_choke`): the cone is 4 units.
+    - `breach_load` (Lv20): an elemental scatter charge's burst covers the cone and 1 unit past it.
+  - **Any gun:** `hot_loads` (Lv12, Guns 50): an elemental bullet's burst radius +1.
+- Keys: the `scatter` property and the cone rule; `brace_of_pistols`, `barrel_to_the_ribs`, `reversed_grip`, `practiced_ramrod`, `shoulder_brace`, `ball_through_plate`, `through_and_through`, `tight_choke`, `powder_kick`, `wide_mouth`, `breach_load`, `hot_loads`; `hip_shot` narrowed to pistols; the rifle row if the spec step adds it
+- Files: ~11 (docs/core/combat.md, docs/modules/weapons.md, ruleset/data/equipment/bases/weapons/blunderbuss.json, ruleset/data/equipment/bases/weapons/ (a `rifle` base, if added), ruleset/data/features/core.json, ruleset/data/modifier_targets/core.json, ruleset/scripts/validate.py, ruleset/tests/vectors/combat.json, ruleset/scripts/test_perks.py, docs/decisions/GD_S17_08_firearm-perk-ladders.md, changes/GD_S17_08_firearm-perk-ladders.md)
+- See: docs/modules/weapons.md (guns), docs/modules/builds/ranged.md (the gunslinger), docs/issues/open/GD_S17_07_bow-perk-ladders.md (the held-weapon prerequisite)
+- Done when:
+  - A vector shows a blunderbuss cone hitting two creatures, and `tight_choke` choosing one target.
+  - A vector shows each line's first perk working with its gun and refused with another gun.
+  - Each gun line has at least four perks.
+  - `validate.py` and the tests pass.
