@@ -1,6 +1,6 @@
 # Suggested builds
 
-Modified: 2026-11-17
+Modified: 2026-11-18
 
 Riftweave has no classes. A **suggested build** is a worked plan for reaching one style of play, from character creation to level 30, for a player who does not yet know the perk table. It is a suggestion and nothing more.
 
@@ -44,6 +44,9 @@ Every build page ends with what the build can still do outside its style, and at
 | Magic | Blaster | [magic.md](magic.md#blaster) |
 | Magic | Summoner | [magic.md](magic.md#summoner) |
 | Magic | Support | [magic.md](magic.md#support) |
-| Ranged | three builds (M5-61) | `ranged.md` |
+| Ranged | Archer | [ranged.md](ranged.md#archer) |
+| Ranged | Arbalist | [ranged.md](ranged.md#arbalist) |
+| Ranged | Gunslinger | [ranged.md](ranged.md#gunslinger) |
 | Hybrid | Magic swordsman | [hybrids.md](hybrids.md#magic-swordsman) |
-| Hybrid | arcane archer or trickster, ranger (M5-61) | `hybrids.md` |
+| Hybrid | Arcane trickster | [hybrids.md](hybrids.md#arcane-trickster) |
+| Hybrid | Ranger | [hybrids.md](hybrids.md#ranger) |
