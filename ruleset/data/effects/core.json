@@ -1667,6 +1667,24 @@
         "weapon",
         "damage_over_time"
       ]
+    },
+    {
+      "key": "command_summons",
+      "label": "Command Summons",
+      "description": "While the caster holds the spell, every active summon of theirs gains magnitude to its attack rolls (docs/core/commanding.md#the-held-command).",
+      "category": "fortify",
+      "polarity": "beneficial",
+      "magnitudeUnit": "points",
+      "baseCost": 0.5,
+      "defaultDuration": 60,
+      "craftable": false,
+      "channels": [
+        "spell"
+      ],
+      "tags": [
+        "summon",
+        "command"
+      ]
     }
   ]
 }
