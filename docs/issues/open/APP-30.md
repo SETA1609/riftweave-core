@@ -1,5 +1,5 @@
 #### APP-30 A file made in one app opens in the other
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: APP-16, APP-26
 - Modified: 2026-11-16

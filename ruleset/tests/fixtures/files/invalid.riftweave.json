@@ -1,0 +1,84 @@
+{
+  "data": {
+    "attributes": {
+      "agi": 7,
+      "cha": 3,
+      "end": 5,
+      "int": 4,
+      "lck": 5,
+      "per": 5,
+      "str": 6,
+      "wil": 5
+    },
+    "conditions": [
+      {
+        "key": "burning",
+        "stacks": 1
+      }
+    ],
+    "equipped": {
+      "main_hand": 9
+    },
+    "flags": [
+      "prone"
+    ],
+    "growth": {
+      "hp": 4,
+      "mp": 2,
+      "sp": 3
+    },
+    "inventory": [
+      {
+        "added_effects": [
+          {
+            "effect": "core:effect/damage_fire",
+            "magnitude": 2,
+            "target": "touch"
+          }
+        ],
+        "base": "core:weapon/longsword",
+        "id": 1,
+        "material": "core:material/steel",
+        "quantity": 1
+      },
+      {
+        "added_effects": [],
+        "base": "core:consumable/potion_healing",
+        "id": 2,
+        "quantity": 3
+      }
+    ],
+    "level": 0,
+    "modifiers": [
+      {
+        "modifier": {
+          "duration": "turns",
+          "operation": "add",
+          "origin": "core:origin/alchemy",
+          "source": "item:potion_strength",
+          "target": "str",
+          "turns": 12,
+          "value": 2
+        },
+        "turns_elapsed": 3
+      }
+    ],
+    "resources": {
+      "ap": 4,
+      "hp": 41,
+      "mp": 20,
+      "sp": 30
+    },
+    "skills": {
+      "blades": 34,
+      "evasion": 28
+    },
+    "tags": [
+      "blades"
+    ],
+    "xp": 450
+  },
+  "modules": [],
+  "riftweave": "character",
+  "rules_version": "0.1.0"
+}
