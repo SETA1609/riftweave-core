@@ -329,3 +329,58 @@ class TestModifiersNameTheirOperation(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+DATA_DIR = _SCRIPTS.parent / "data"
+MODULE_DIR = _SCRIPTS.parent / "modules"
+
+
+def enum_of(name):
+    return json.loads((SCHEMA_DIR / "schema.json").read_text())["definitions"][name]["enum"]
+
+
+def enums_in(node, path=""):
+    """(path, enum) for every enum under a schema node."""
+    found = []
+    if isinstance(node, dict):
+        if isinstance(node.get("enum"), list):
+            found.append((path, node["enum"]))
+        for key, child in node.items():
+            found += enums_in(child, f"{path}/{key}")
+    elif isinstance(node, list):
+        for index, child in enumerate(node):
+            found += enums_in(child, f"{path}[{index}]")
+    return found
+
+
+class TestADomainIsWrittenOnce(unittest.TestCase):
+    """M5-72 (docs/core/integrity.md#6-a-domain-is-written-once)."""
+
+    SHARED = ("ability", "damageType", "color", "phase", "qualityGrade")
+
+    def test_no_other_schema_repeats_a_shared_enum(self):
+        domains = {name: set(enum_of(name)) for name in self.SHARED}
+        for path in sorted(SCHEMA_DIR.glob("*.json")):
+            if path.name == "schema.json":
+                continue
+            for where, values in enums_in(json.loads(path.read_text())):
+                for name, domain in domains.items():
+                    with self.subTest(schema=path.name, at=where, domain=name):
+                        self.assertNotEqual(set(values), domain, f"use schema.json#/definitions/{name}")
+
+    def test_the_ability_enum_is_the_abilities_table(self):
+        rows = json.loads((DATA_DIR / "abilities" / "core.json").read_text())["abilities"]
+        self.assertEqual(sorted(enum_of("ability")), sorted(row["id"] for row in rows))
+
+    def test_the_damage_type_enum_is_the_damage_types_table(self):
+        rows = json.loads((DATA_DIR / "combat" / "damage_types.json").read_text())["damage_types"]
+        self.assertEqual(sorted(enum_of("damageType")), sorted(row["key"] for row in rows))
+
+    def test_the_phase_enum_is_the_wuxing_phases(self):
+        rows = json.loads((MODULE_DIR / "wuxing" / "data" / "wuxing.json").read_text())["phases"]
+        self.assertEqual(sorted(enum_of("phase")), sorted(row["id"] for row in rows))
+
+    def test_every_color_has_its_magic_skill_and_every_magic_skill_a_color(self):
+        skills = json.loads((DATA_DIR / "skills" / "core.json").read_text())["skills"]
+        magic = {row["key"].removesuffix("_magic") for row in skills if row["key"].endswith("_magic")}
+        self.assertEqual(sorted(enum_of("color")), sorted(magic))
