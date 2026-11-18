@@ -5,7 +5,8 @@ package contract
 
 import "embed"
 
-// Files holds every <command>.json, with command.schema.json and common.json.
+// Files holds every <command>.json, with command.schema.json, common.json, the settings
+// file format (settings.schema.json), and the menu tree both apps show (menu.json).
 //
 //go:embed *.json
 var Files embed.FS
