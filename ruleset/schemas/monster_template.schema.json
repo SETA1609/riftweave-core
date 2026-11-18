@@ -39,6 +39,7 @@
         },
         "spells": { "type": "array", "items": { "$ref": "schema.json#/definitions/spellRef" }, "uniqueItems": true, "description": "Appended to the monster's spells, skipping any it has." },
         "perks": { "type": "array", "items": { "$ref": "schema.json#/definitions/heldPerk" }, "description": "Added to the monster's perks; when both name a perk, the higher rank is kept (M3-15)." },
+        "maneuvers": { "type": "array", "items": { "$ref": "schema.json#/definitions/maneuverRef" }, "uniqueItems": true, "description": "Appended to the monster's maneuvers, skipping any it has (M3-24)." },
         "tags": { "type": "array", "items": { "type": "string" }, "description": "Appended to the monster's tags, skipping any it has." }
       },
       "required": ["key", "label", "description", "slot", "label_prefix"],

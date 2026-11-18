@@ -383,6 +383,35 @@ def situation_modifiers(vector, delivery):
     return modifiers, called
 
 
+def maneuver_of(vector):
+    """The maneuver the attack is performed with (docs/core/actions.md#maneuvers), checked
+    against the attack's range and the weapon's properties. None without one; a maneuver that
+    does not fit raises ValueError."""
+    if "maneuver" not in vector:
+        return None
+    rows = {row["key"]: row for row in load_data("maneuvers/core.json")["maneuvers"]}
+    key = vector["maneuver"]
+    if key not in rows:
+        raise ValueError(f'maneuver "{key}" is not defined')
+    row = rows[key]
+    range_ = vector.get("range", "melee")
+    if range_ not in row.get("ranges", [range_]):
+        raise ValueError(f"{key} needs " + " or ".join(f"a {r} attack" for r in row["ranges"]))
+    properties = vector["attacker"].get("weapon_properties", [])
+    wanted = row.get("weapon_properties")
+    if wanted and not set(wanted) & set(properties):
+        raise ValueError(f"{key} needs " + " or ".join(f"a {p} weapon" for p in wanted))
+    return row
+
+
+def maneuver_cost(maneuver):
+    """The AP of an action performed as the maneuver, at least 1, and its stamina in real time."""
+    data = load_data("actions/core.json")
+    base = next(a["cost"] for a in data["actions"] if a["key"] == maneuver["modifies"])
+    ap = max(base + maneuver["ap"], 1)
+    return ap, ap * data["stamina_per_ap"]
+
+
 def run_combat(vector):
     """One attack, in the order of docs/core/combat.md. Dice and rolls are inputs."""
     pipeline = load_data("combat/pipeline.json")["pipeline"]
@@ -393,8 +422,11 @@ def run_combat(vector):
     delivery = vector.get("delivery", "single")
     try:
         situation_mods, called = situation_modifiers(vector, delivery)
+        maneuver = maneuver_of(vector)
     except ValueError as error:
         return {"error": str(error)}
+    if maneuver is not None and maneuver.get("attack", 0):
+        situation_mods.append({"target": "attack_roll", "operation": "add", "value": maneuver["attack"], "source": f"maneuver:{maneuver['key']}"})
 
     if delivery not in ("single", "area", "instant"):
         raise ValueError(f"delivery {delivery!r} is not defined")
@@ -442,6 +474,9 @@ def run_combat(vector):
     }
     if called is not None:
         result["riders"] = []
+    if maneuver is not None:
+        result["ap"], result["stamina"] = maneuver_cost(maneuver)
+        result["effects"] = []
     if not attack["success"]:
         result.update(outcome="fumble" if "fumble" in attack["tags"] else "miss", damage=0, hp=defender["hp"])
         return result
@@ -469,6 +504,8 @@ def run_combat(vector):
         amount = max(amount + modifier, 0)
     if called is not None:
         amount = math.floor(amount * called["damage_multiplier"])
+    if maneuver is not None:
+        amount = math.floor(amount * maneuver.get("damage_multiplier", 1))
     if crit:
         amount = evaluate_formula(pipeline["crit_damage"], {}, {"damage": amount})
     if result["evaded"]:
@@ -484,6 +521,8 @@ def run_combat(vector):
     result.update(damage=amount, hp=max(defender["hp"] - amount, 0))
     if called is not None and not result["evaded"]:
         result["riders"] = [dict(rider) for rider in called.get("riders", [])]
+    if maneuver is not None and not result["evaded"]:
+        result["effects"] = [dict(applied) for applied in maneuver["effects"]]
     return result
 
 

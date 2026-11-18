@@ -664,6 +664,40 @@
       ]
     },
     {
+      "key": "wind_up",
+      "label": "Wind-Up",
+      "description": "You learn to load a blow with your whole weight: you can make the Heavy Swing maneuver.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "abilities": {
+          "str": 5
+        },
+        "perks": []
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:maneuver/heavy_swing"
+      ]
+    },
+    {
+      "key": "snap_cut",
+      "label": "Snap Cut",
+      "description": "You learn to strike with a flick of a light blade: you can make the Quick Strike maneuver.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "abilities": {
+          "agi": 5
+        },
+        "perks": []
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:maneuver/quick_strike"
+      ]
+    },
+    {
       "key": "brutal_charge",
       "label": "Brutal Charge",
       "description": "You barrel through enemies in heavy armor. Power attacks and charges cost stamina equal to a light attack - the heavy surcharge is negated.",

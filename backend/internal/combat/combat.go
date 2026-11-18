@@ -5,9 +5,11 @@
 package combat
 
 import (
+	"encoding/json"
 	"fmt"
 	"math"
 	"slices"
+	"strings"
 
 	"github.com/SETA1609/riftweave-core/backend/internal/actor"
 	"github.com/SETA1609/riftweave-core/backend/internal/data"
@@ -22,6 +24,8 @@ type Attacker struct {
 	Roll       int64            `json:"roll"`
 	Attributes actor.Attributes `json:"attributes"`
 	Flags      []string         `json:"flags"`
+	// WeaponProperties are the carried weapon's properties, which a maneuver may need.
+	WeaponProperties []string `json:"weapon_properties"`
 }
 
 // Defender is who takes the attack.
@@ -60,6 +64,8 @@ type Input struct {
 	Range      string              `json:"range"`
 	Situations []string            `json:"situations"`
 	CalledShot string              `json:"called_shot"`
+	// Maneuver is the maneuvers/core.json key the attack is performed with, if any.
+	Maneuver string `json:"maneuver"`
 }
 
 // Result is the outcome of the attack.
@@ -81,6 +87,47 @@ type Result struct {
 	// Riders are the called shot's riders on a hit, and empty on a miss or an evade. Without
 	// a called shot the field is left out.
 	Riders *[]data.Rider `json:"riders,omitempty"`
+	// AP and Stamina are what the attack costs when it is a maneuver: the attack's cost plus
+	// the maneuver's, at least 1, and that times stamina_per_ap. Left out without a maneuver.
+	AP      *int64 `json:"ap,omitempty"`
+	Stamina *int64 `json:"stamina,omitempty"`
+	// Effects are the maneuver's effects on a hit, and empty on a miss or an evade. Without a
+	// maneuver the field is left out.
+	Effects *[]json.RawMessage `json:"effects,omitempty"`
+}
+
+// maneuverOf is the maneuver the attack is performed with, checked against the attack's
+// range and the weapon's properties; nil without one.
+func maneuverOf(ruleset *data.Ruleset, input *Input) (*data.Maneuver, error) {
+	if input.Maneuver == "" {
+		return nil, nil
+	}
+	maneuver, err := ruleset.Maneuvers.Require("maneuver", input.Maneuver)
+	if err != nil {
+		return nil, err
+	}
+	var attackRange string = input.Range
+	if attackRange == "" {
+		attackRange = "melee"
+	}
+	if len(maneuver.Ranges) > 0 && !slices.Contains(maneuver.Ranges, attackRange) {
+		return nil, &data.MissingInputError{Subject: maneuver.Key, Needs: either(maneuver.Ranges, "attack")}
+	}
+	if len(maneuver.WeaponProperties) > 0 && !slices.ContainsFunc(maneuver.WeaponProperties, func(property string) bool {
+		return slices.Contains(input.Attacker.WeaponProperties, property)
+	}) {
+		return nil, &data.MissingInputError{Subject: maneuver.Key, Needs: either(maneuver.WeaponProperties, "weapon")}
+	}
+	return maneuver, nil
+}
+
+// either names the choices as "a melee attack or a ranged attack".
+func either(choices []string, noun string) string {
+	var names []string = make([]string, 0, len(choices))
+	for _, choice := range choices {
+		names = append(names, "a "+choice+" "+noun)
+	}
+	return strings.Join(names, " or ")
 }
 
 // situationModifiers is step 0: the attack modifiers of every situation that applies (the
@@ -157,6 +204,18 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	if err != nil {
 		return Result{}, err
 	}
+	maneuver, err := maneuverOf(ruleset, &input)
+	if err != nil {
+		return Result{}, err
+	}
+	if maneuver != nil && maneuver.Attack != 0 {
+		attackModifiers = append(attackModifiers, modifier.Modifier{
+			Target:    "attack_roll",
+			Operation: modifier.Add,
+			Value:     float64(maneuver.Attack),
+			Source:    "maneuver:" + maneuver.Key,
+		})
+	}
 	if defender.Stance != "" && defender.Stance != "dodge" && defender.Stance != "block" {
 		return Result{}, &data.NotDefinedError{Kind: "stance", Key: defender.Stance}
 	}
@@ -183,6 +242,16 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	if calledShot != nil {
 		var noRiders []data.Rider = []data.Rider{}
 		result.Riders = &noRiders
+	}
+	if maneuver != nil {
+		action, err := ruleset.Actions.Actions.Require("action", maneuver.Modifies)
+		if err != nil {
+			return Result{}, err
+		}
+		var actionPoints int64 = max(action.Cost+maneuver.AP, 1)
+		var stamina int64 = actionPoints * ruleset.StaminaPerAP
+		var noEffects []json.RawMessage = []json.RawMessage{}
+		result.AP, result.Stamina, result.Effects = &actionPoints, &stamina, &noEffects
 	}
 	if !attack.Success {
 		result.Outcome, result.HitPoints = "miss", defender.HitPoints
@@ -232,6 +301,9 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	if calledShot != nil {
 		amount = int64(math.Floor(float64(amount) * calledShot.DamageMultiplier))
 	}
+	if maneuver != nil && maneuver.DamageMultiplier != 0 {
+		amount = int64(math.Floor(float64(amount) * maneuver.DamageMultiplier))
+	}
 	if result.Critical {
 		if amount, err = pipeline.CriticalDamage.Evaluate(nil, formula.Variable{Name: "damage", Value: amount}); err != nil {
 			return Result{}, err
@@ -263,6 +335,13 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	if calledShot != nil && !result.Evaded {
 		var riders []data.Rider = append([]data.Rider{}, calledShot.Riders...)
 		result.Riders = &riders
+	}
+	if maneuver != nil && !result.Evaded {
+		var effects []json.RawMessage = make([]json.RawMessage, 0, len(maneuver.Effects))
+		for _, applied := range maneuver.Effects {
+			effects = append(effects, applied.Encoded)
+		}
+		result.Effects = &effects
 	}
 	return result, nil
 }

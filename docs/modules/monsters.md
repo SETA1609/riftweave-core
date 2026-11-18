@@ -1,6 +1,6 @@
 # Monsters — Base + Override System
 
-Modified: 2026-11-17
+Modified: 2026-11-18
 
 ## Purpose
 
@@ -389,6 +389,12 @@ and a damaging ability's magnitude. [V 2026-11-12]
 The phase is two-sided. A monster's own `phase` is how incoming phased effects land on it
 (its resistance side, through the cycles); an attack's `phase` is how its blows land on
 others (its attack side). [A]
+
+### Maneuvers
+
+A monster row or template lists `maneuvers` (`core:maneuver/<key>`) it can attack with, the
+same rows a player uses ([actions.md](../core/actions.md#maneuvers)), with no perk needed; a template's are appended,
+skipping any the row has. The troll has Heavy Swing. [V 2026-11-17, `test_bestiary.py`]
 
 ### The floor
 

@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Maneuvers",
+  "description": "Combat maneuvers: a way to perform an action (today an attack) for more or fewer AP, with an attack and damage change and effects from the shared pool, at no mana or little (docs/core/actions.md#maneuvers, M3-24).",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "maneuvers": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/maneuver" }
+    }
+  },
+  "required": ["maneuvers"],
+  "additionalProperties": false,
+  "definitions": {
+    "maneuver": {
+      "type": "object",
+      "properties": {
+        "key": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "label": { "type": "string" },
+        "description": { "type": "string" },
+        "modifies": { "type": "string", "enum": ["attack"], "description": "The action the maneuver is a way of performing, a key in actions/core.json; its AP is that action's cost plus `ap`." },
+        "ap": { "type": "integer", "description": "AP added to the action's cost, negative for a faster one; never below 1 in total. In real time it is stamina at stamina_per_ap (docs/core/actions.md#one-rule-set-two-clocks)." },
+        "mana": { "type": "integer", "minimum": 0, "default": 0, "description": "A small mana cost, for a maneuver with a touch of magic; 0 for most." },
+        "attack": { "type": "integer", "default": 0, "description": "Added to the attack roll's target, as a called shot's attack." },
+        "damage_multiplier": { "type": "number", "exclusiveMinimum": 0, "default": 1, "description": "Multiplies the damage after the called shot, rounded down." },
+        "ranges": { "type": "array", "items": { "type": "string", "enum": ["melee", "ranged"] }, "minItems": 1, "uniqueItems": true, "description": "The attack ranges it works at; any range when left out." },
+        "weapon_properties": { "type": "array", "items": { "type": "string", "enum": ["ammunition", "finesse", "heavy", "light", "loading", "thrown", "two_handed", "versatile"] }, "minItems": 1, "uniqueItems": true, "description": "The weapon must have one of these properties (the weapon `properties` in equipment); any weapon when left out." },
+        "effects": { "type": "array", "items": { "$ref": "schema.json#/definitions/appliedEffect" }, "description": "Applied on a hit that is not evaded, as a called shot's riders; each effect must declare the `maneuver` channel." },
+        "source": { "$ref": "schema.json#/definitions/sourceRef" }
+      },
+      "required": ["key", "label", "description", "modifies", "ap", "effects"],
+      "additionalProperties": false
+    }
+  }
+}

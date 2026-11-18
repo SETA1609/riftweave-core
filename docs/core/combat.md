@@ -1,6 +1,6 @@
 # Combat pipeline
 
-Modified: 2026-11-16
+Modified: 2026-11-17
 
 One attack, in order, from the roll to the HP lost. Every step reads the actor snapshot and data; none calls another system ([contract.md](contract.md)). The numbers are in `ruleset/data/combat/pipeline.json` (formula trees), `ruleset/data/combat/damage_types.json` (tags), and `ruleset/data/resolution/core.json` (the d100 function). [`docs/modules/combat.md`](../modules/combat.md) keeps the TTRPG and video-game commentary and the worked examples; this file is the order of operations they share. An attack is a weapon strike or an offensive spell; both run this order, and the attack's `delivery` decides which defense bands it meets. A cast's damage runs steps 2 to 8 with the cast check as its attack roll ([casting.md](casting.md#damage-to-a-target), M3-18). Save rolls for instant spells are in [casting.md](casting.md#delivery-and-saves); the magic layers (absorption, phase resistance) are not specified here. [U]
 
@@ -11,6 +11,8 @@ One attack, in order, from the roll to the HP lost. Every step reads the actor s
               attack mods += every situation that applies (rows for the range,
               the delivery, and the attacker's and defender's flags)
               attack mods += the called shot's attack row               situations.json
+              maneuver: an error when its ranges or weapon properties do not fit;
+              attack mods += its attack; ap = attack cost + its ap      maneuvers/core.json
 1. attack     one d100 roll: target = weapon_skill + attack mods, stacked by modifier.md   resolution.md
               miss          roll > target
               fumble        roll >= fumble_at, no damage
@@ -30,6 +32,7 @@ One attack, in order, from the roll to the HP lost. Every step reads the actor s
 3. damage     damage = the caller's rolled damage dice
               if the attack names an ability: damage = max(damage + attribute_modifier, 0)
               if a called shot: damage = floor(damage * the location's damage_multiplier)
+              if a maneuver: damage = floor(damage * the maneuver's damage_multiplier)
 4. crit       if crit: damage = crit_damage(damage)                 formula tree
 5. area       if evaded an area attack: damage = area_evade_damage(damage)   formula tree
 6. DR         if the damage type has tag armor_dr_applies:
@@ -38,7 +41,8 @@ One attack, in order, from the roll to the HP lost. Every step reads the actor s
               damage = damage - dr
 7. resist     damage = damage - resist[damage_type]
 8. hp         lost = max(damage, 0); hp = max(hp - lost, 0)
-9. riders     on a hit (not evaded, not blocked), the called shot's riders are listed for the caller
+9. riders     on a hit (not evaded, not blocked), the called shot's riders are listed for the caller,
+              and a maneuver's effects; with a maneuver the result also gives its ap and stamina
 ```
 Each subtraction stops at zero before the next step: a step never raises damage. Dice and rolls are inputs, so a vector pins them. The reference does not roll. `window` is the defender's crit window from [resolution.md](resolution.md) (`crit_window + LCK // crit_window_per_two_luck`).
 
