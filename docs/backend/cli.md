@@ -52,6 +52,12 @@ Rolls are inputs, as everywhere in the core. The CLI does not draw rolls, and th
 `riftweave settings export [file]` and `riftweave settings import <file>` write and read the
 settings file the frontend trades ([settings.md](settings.md), APP-25).
 
+## Files
+
+`riftweave export <character|session|spell> [file]` wraps the data from the file or stdin in the
+envelope both apps trade, and `riftweave import <file> [--enable-modules | --accept-loss]`
+checks one before it applies and prints `{kind, data, warnings}` ([files.md](files.md), APP-30).
+
 ## Human mode
 
 `riftweave play` is the interactive mode of the same binary (APP-05): a terminal UI built with Bubble Tea, Bubbles, and Lip Gloss. It holds no rule. It prompts for inputs, builds the same JSON the agent CLI reads, calls `core.Run`, and shows the result as a table with a short log of the rolls.
