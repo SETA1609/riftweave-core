@@ -51,4 +51,4 @@ A blade in light armor and no shield: slips the blow instead of taking it, and a
   - **14–26, the shadow.** Catch Your Breath, Berserker, Hardened Hide, Night Eyes, Ghost and Backstab as Stealth reaches 50, Precise Thrust (Piercing 50, a rapier's skill), the third Hardened Hide, Iron Stomach, Streetwise, Brawler twice, **Assassin** at 26 (Stealth 70).
   - **27–30.** Pack Mule twice, Locksmith, Light Fingers; see the gaps.
 - **At level 30:** Evasion 100, Blades 99, Stealth 70, Light Armor 50, Piercing 50.
-- **Outside the build:** a duelist has little HP and DR, so an instant spell, which meets no band, and a crit, which always hits, are what kill one. A shield works at the untrained Shields skill. A bow works at its untrained skill; the ranged builds are in `ranged.md` (M5-61).
+- **Outside the build:** a duelist has little HP and DR, so an instant spell, which meets no band, and a crit, which always hits, are what kill one. A shield works at the untrained Shields skill. A bow works at its untrained skill; the ranged builds are in [ranged.md](ranged.md).
