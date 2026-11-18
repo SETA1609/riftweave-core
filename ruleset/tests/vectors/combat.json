@@ -3152,5 +3152,271 @@
     "expect": {
       "error": "maneuver \"whirl\" is not defined"
     }
+  },
+  {
+    "name": "bound weapon: magic damage takes armor DR in full, then resist magic",
+    "attacker": {
+      "skill": 70,
+      "roll": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30,
+      "armor_dr": 3,
+      "resist": {
+        "magic": 2
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "magic"
+    },
+    "expect": {
+      "outcome": "hit",
+      "damage": 3,
+      "hp": 27
+    }
+  },
+  {
+    "name": "bound weapon: magic damage can miss",
+    "attacker": {
+      "skill": 70,
+      "roll": 85,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30,
+      "armor_dr": 3
+    },
+    "damage": {
+      "roll": 8,
+      "type": "magic"
+    },
+    "expect": {
+      "outcome": "miss",
+      "damage": 0,
+      "hp": 30
+    }
+  },
+  {
+    "name": "weapon effects: armor pierce 25 ignores a quarter of armor DR 8, rounded down: DR 6",
+    "attacker": {
+      "skill": 70,
+      "roll": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_effects": [
+        {
+          "effect": "core:effect/armor_pierce",
+          "magnitude": 25
+        }
+      ]
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30,
+      "armor_dr": 8
+    },
+    "damage": {
+      "roll": 10,
+      "type": "magic"
+    },
+    "expect": {
+      "outcome": "hit",
+      "damage": 4,
+      "weapon_effects": []
+    }
+  },
+  {
+    "name": "weapon effects: bane +4 against an undead defender",
+    "attacker": {
+      "skill": 70,
+      "roll": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_effects": [
+        {
+          "effect": "core:effect/bane",
+          "parameter": "undead",
+          "magnitude": 4
+        }
+      ]
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30,
+      "armor_dr": 2,
+      "creature_type": "undead"
+    },
+    "damage": {
+      "roll": 6,
+      "type": "magic"
+    },
+    "expect": {
+      "damage": 8
+    }
+  },
+  {
+    "name": "weapon effects: bane against undead does nothing to a beast",
+    "attacker": {
+      "skill": 70,
+      "roll": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_effects": [
+        {
+          "effect": "core:effect/bane",
+          "parameter": "undead",
+          "magnitude": 4
+        }
+      ]
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30,
+      "armor_dr": 2,
+      "creature_type": "beast"
+    },
+    "damage": {
+      "roll": 6,
+      "type": "magic"
+    },
+    "expect": {
+      "damage": 4
+    }
+  },
+  {
+    "name": "weapon effects: banish lands on a summoned defender",
+    "attacker": {
+      "skill": 70,
+      "roll": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_effects": [
+        {
+          "effect": "core:effect/banish_summoned"
+        }
+      ]
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30,
+      "flags": [
+        "summoned"
+      ]
+    },
+    "damage": {
+      "roll": 4,
+      "type": "magic"
+    },
+    "expect": {
+      "outcome": "hit",
+      "weapon_effects": [
+        {
+          "effect": "core:effect/banish_summoned"
+        }
+      ]
+    }
+  },
+  {
+    "name": "weapon effects: banish fails on a creature that was not summoned",
+    "attacker": {
+      "skill": 70,
+      "roll": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_effects": [
+        {
+          "effect": "core:effect/banish_summoned"
+        }
+      ]
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 4,
+      "type": "magic"
+    },
+    "expect": {
+      "outcome": "hit",
+      "weapon_effects": []
+    }
+  },
+  {
+    "name": "weapon effects: lingering damage takes the attack's damage type",
+    "attacker": {
+      "skill": 70,
+      "roll": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_effects": [
+        {
+          "effect": "core:effect/lingering_damage",
+          "magnitude": 2,
+          "duration": 10
+        }
+      ]
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 4,
+      "type": "fire"
+    },
+    "expect": {
+      "weapon_effects": [
+        {
+          "effect": "core:effect/lingering_damage",
+          "parameter": "fire",
+          "magnitude": 2,
+          "duration": 10
+        }
+      ]
+    }
+  },
+  {
+    "name": "weapon effects: nothing lands on a miss",
+    "attacker": {
+      "skill": 70,
+      "roll": 85,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_effects": [
+        {
+          "effect": "core:effect/lingering_damage",
+          "magnitude": 2,
+          "duration": 10
+        }
+      ]
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 4,
+      "type": "magic"
+    },
+    "expect": {
+      "outcome": "miss",
+      "weapon_effects": []
+    }
   }
 ]
