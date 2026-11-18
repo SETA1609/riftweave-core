@@ -1,5 +1,6 @@
 #### APP-26 The human CLI opens on a main menu, and Start opens the tools
-- Status: review
+- Status: done
+- Merged: #228, 2026-11-18
 - Priority: medium
 - Needs: APP-25
 - Modified: 2026-11-18
