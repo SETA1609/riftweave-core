@@ -28,6 +28,15 @@
       "properties": {
         "players_see_only_known": { "type": "boolean", "description": "APP-29: players see only the monsters the GM revealed." }
       }
+    },
+    "telemetry": {
+      "type": "object",
+      "description": "What the app reports about itself, in the OpenTelemetry format (APP-43, docs/backend/observability.md). Never anything about the player: no actor, session, save, or free-text input.",
+      "properties": {
+        "mode": { "enum": ["off", "local", "export"], "description": "off (the default): nothing is recorded. local: kept on the device, exportable as a diagnostics file. export: sent by OTLP/HTTP to endpoint." },
+        "endpoint": { "type": "string", "pattern": "^https?://", "description": "The OTLP/HTTP base URL for export, such as http://localhost:4318. A process's OTEL_EXPORTER_OTLP_ENDPOINT takes precedence where it has one." }
+      },
+      "required": ["mode"]
     }
   },
   "required": ["riftweave", "version"]
