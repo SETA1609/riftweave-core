@@ -66,8 +66,9 @@
         },
         "skills": [
           {
-            "id": "core:skill/blades",
-            "label": "Blades",
+            "any_of": [
+              "core:skill/blades"
+            ],
             "min": 40
           }
         ],
@@ -96,17 +97,11 @@
         },
         "skills": [
           {
-            "id": [
+            "any_of": [
               "core:skill/bows",
               "core:skill/crossbows",
               "core:skill/guns",
               "core:skill/throwing_weapons"
-            ],
-            "label": [
-              "Bows",
-              "Crossbows",
-              "Guns",
-              "Throwing Weapons"
             ],
             "min": 40
           }
@@ -136,8 +131,9 @@
         },
         "skills": [
           {
-            "id": "core:skill/shields",
-            "label": "Block",
+            "any_of": [
+              "core:skill/shields"
+            ],
             "min": 40
           }
         ],
@@ -163,8 +159,9 @@
       "prerequisite": {
         "skills": [
           {
-            "id": "core:skill/red_magic",
-            "label": "Red Magic",
+            "any_of": [
+              "core:skill/red_magic"
+            ],
             "min": 50
           }
         ],
@@ -193,8 +190,9 @@
         },
         "skills": [
           {
-            "id": "core:skill/stealth",
-            "label": "Stealth",
+            "any_of": [
+              "core:skill/stealth"
+            ],
             "min": 50
           }
         ],
@@ -223,8 +221,9 @@
         },
         "skills": [
           {
-            "id": "core:skill/persuasion",
-            "label": "Persuasion",
+            "any_of": [
+              "core:skill/persuasion"
+            ],
             "min": 50
           }
         ],
@@ -257,8 +256,9 @@
       "prerequisite": {
         "skills": [
           {
-            "id": "core:skill/medicine",
-            "label": "Medicine",
+            "any_of": [
+              "core:skill/medicine"
+            ],
             "min": 40
           }
         ],
@@ -615,8 +615,9 @@
         },
         "skills": [
           {
-            "id": "core:skill/heavy_armor",
-            "label": "Heavy Armor",
+            "any_of": [
+              "core:skill/heavy_armor"
+            ],
             "min": 60
           }
         ],
@@ -645,8 +646,9 @@
         },
         "skills": [
           {
-            "id": "core:skill/light_armor",
-            "label": "Light Armor",
+            "any_of": [
+              "core:skill/light_armor"
+            ],
             "min": 50
           }
         ],
@@ -708,7 +710,9 @@
           "str": 9
         },
         "perks": [
-          "core:feature/hardened_hide"
+          {
+            "perk": "core:feature/hardened_hide"
+          }
         ]
       },
       "ranks": 1,
@@ -734,8 +738,9 @@
         },
         "skills": [
           {
-            "id": "core:skill/evasion",
-            "label": "Evasion",
+            "any_of": [
+              "core:skill/evasion"
+            ],
             "min": 40
           }
         ],
@@ -788,13 +793,9 @@
         },
         "skills": [
           {
-            "id": [
+            "any_of": [
               "core:skill/blades",
               "core:skill/blunt"
-            ],
-            "label": [
-              "Blades",
-              "Blunt"
             ],
             "min": 50
           }
@@ -825,8 +826,9 @@
         },
         "skills": [
           {
-            "id": "core:skill/blunt",
-            "label": "Blunt",
+            "any_of": [
+              "core:skill/blunt"
+            ],
             "min": 50
           }
         ],
@@ -856,8 +858,9 @@
         },
         "skills": [
           {
-            "id": "core:skill/piercing",
-            "label": "Piercing",
+            "any_of": [
+              "core:skill/piercing"
+            ],
             "min": 50
           }
         ],
@@ -886,8 +889,9 @@
         },
         "skills": [
           {
-            "id": "core:skill/unarmed",
-            "label": "Unarmed",
+            "any_of": [
+              "core:skill/unarmed"
+            ],
             "min": 30
           }
         ],
@@ -917,13 +921,16 @@
         },
         "skills": [
           {
-            "id": "core:skill/unarmed",
-            "label": "Unarmed",
+            "any_of": [
+              "core:skill/unarmed"
+            ],
             "min": 60
           }
         ],
         "perks": [
-          "core:feature/brawler"
+          {
+            "perk": "core:feature/brawler"
+          }
         ]
       },
       "ranks": 1,
@@ -973,17 +980,11 @@
         },
         "skills": [
           {
-            "id": [
+            "any_of": [
               "core:skill/bows",
               "core:skill/crossbows",
               "core:skill/guns",
               "core:skill/throwing_weapons"
-            ],
-            "label": [
-              "Bows",
-              "Crossbows",
-              "Guns",
-              "Throwing Weapons"
             ],
             "min": 40
           }
@@ -1014,21 +1015,18 @@
         },
         "skills": [
           {
-            "id": [
+            "any_of": [
               "core:skill/bows",
               "core:skill/crossbows",
               "core:skill/guns"
-            ],
-            "label": [
-              "Bows",
-              "Crossbows",
-              "Guns"
             ],
             "min": 70
           }
         ],
         "perks": [
-          "core:feature/gap_finder"
+          {
+            "perk": "core:feature/gap_finder"
+          }
         ]
       },
       "ranks": 1,
@@ -1055,8 +1053,9 @@
         },
         "skills": [
           {
-            "id": "core:skill/blades",
-            "label": "Blades",
+            "any_of": [
+              "core:skill/blades"
+            ],
             "min": 60
           }
         ],
@@ -1117,13 +1116,16 @@
         },
         "skills": [
           {
-            "id": "core:skill/heavy_armor",
-            "label": "Heavy Armor",
+            "any_of": [
+              "core:skill/heavy_armor"
+            ],
             "min": 50
           }
         ],
         "perks": [
-          "core:feature/hardened_hide"
+          {
+            "perk": "core:feature/hardened_hide"
+          }
         ]
       },
       "ranks": 1,
@@ -1180,7 +1182,9 @@
           "str": 8
         },
         "perks": [
-          "core:feature/power_attack"
+          {
+            "perk": "core:feature/power_attack"
+          }
         ]
       },
       "ranks": 1,
@@ -1207,8 +1211,9 @@
         },
         "skills": [
           {
-            "id": "core:skill/throwing_weapons",
-            "label": "Throwing Weapons",
+            "any_of": [
+              "core:skill/throwing_weapons"
+            ],
             "min": 60
           }
         ],
@@ -1238,8 +1243,9 @@
         },
         "skills": [
           {
-            "id": "core:skill/crossbows",
-            "label": "Crossbows",
+            "any_of": [
+              "core:skill/crossbows"
+            ],
             "min": 50
           }
         ],
@@ -1269,8 +1275,9 @@
         },
         "skills": [
           {
-            "id": "core:skill/guns",
-            "label": "Guns",
+            "any_of": [
+              "core:skill/guns"
+            ],
             "min": 60
           }
         ],
@@ -1418,8 +1425,9 @@
         "level": 6,
         "skills": [
           {
-            "id": "core:skill/green_magic",
-            "label": "Green Magic",
+            "any_of": [
+              "core:skill/green_magic"
+            ],
             "min": 50
           }
         ],
@@ -1446,8 +1454,9 @@
         "level": 6,
         "skills": [
           {
-            "id": "core:skill/yellow_magic",
-            "label": "Yellow Magic",
+            "any_of": [
+              "core:skill/yellow_magic"
+            ],
             "min": 50
           }
         ],
@@ -1474,8 +1483,9 @@
         "level": 6,
         "skills": [
           {
-            "id": "core:skill/orange_magic",
-            "label": "Orange Magic",
+            "any_of": [
+              "core:skill/orange_magic"
+            ],
             "min": 50
           }
         ],
@@ -1502,19 +1512,17 @@
         "level": 14,
         "skills": [
           {
-            "id": [
+            "any_of": [
               "core:skill/orange_magic",
               "core:skill/black_magic"
-            ],
-            "label": [
-              "Orange Magic",
-              "Black Magic"
             ],
             "min": 60
           }
         ],
         "perks": [
-          "core:feature/conjurer"
+          {
+            "perk": "core:feature/conjurer"
+          }
         ]
       },
       "ranks": 1,
@@ -1538,19 +1546,17 @@
         "level": 28,
         "skills": [
           {
-            "id": [
+            "any_of": [
               "core:skill/orange_magic",
               "core:skill/black_magic"
-            ],
-            "label": [
-              "Orange Magic",
-              "Black Magic"
             ],
             "min": 90
           }
         ],
         "perks": [
-          "core:feature/summon_retinue"
+          {
+            "perk": "core:feature/summon_retinue"
+          }
         ]
       },
       "ranks": 1,
@@ -1574,8 +1580,9 @@
         "level": 8,
         "skills": [
           {
-            "id": "core:skill/orange_magic",
-            "label": "Orange Magic",
+            "any_of": [
+              "core:skill/orange_magic"
+            ],
             "min": 40
           }
         ],
@@ -1605,13 +1612,16 @@
         "level": 16,
         "skills": [
           {
-            "id": "core:skill/orange_magic",
-            "label": "Orange Magic",
+            "any_of": [
+              "core:skill/orange_magic"
+            ],
             "min": 60
           }
         ],
         "perks": [
-          "core:feature/summon_dire"
+          {
+            "perk": "core:feature/summon_dire"
+          }
         ]
       },
       "ranks": 1,
@@ -1638,13 +1648,16 @@
         "level": 24,
         "skills": [
           {
-            "id": "core:skill/orange_magic",
-            "label": "Orange Magic",
+            "any_of": [
+              "core:skill/orange_magic"
+            ],
             "min": 80
           }
         ],
         "perks": [
-          "core:feature/summon_elder"
+          {
+            "perk": "core:feature/summon_elder"
+          }
         ]
       },
       "ranks": 1,
@@ -1674,13 +1687,9 @@
         },
         "skills": [
           {
-            "id": [
+            "any_of": [
               "core:skill/orange_magic",
               "core:skill/black_magic"
-            ],
-            "label": [
-              "Orange Magic",
-              "Black Magic"
             ],
             "min": 30
           }
@@ -1712,13 +1721,9 @@
         },
         "skills": [
           {
-            "id": [
+            "any_of": [
               "core:skill/orange_magic",
               "core:skill/black_magic"
-            ],
-            "label": [
-              "Orange Magic",
-              "Black Magic"
             ],
             "min": 30
           }
@@ -1747,8 +1752,9 @@
         "level": 12,
         "skills": [
           {
-            "id": "core:skill/orange_magic",
-            "label": "Orange Magic",
+            "any_of": [
+              "core:skill/orange_magic"
+            ],
             "min": 50
           }
         ],
@@ -1778,8 +1784,9 @@
         "level": 12,
         "skills": [
           {
-            "id": "core:skill/orange_magic",
-            "label": "Orange Magic",
+            "any_of": [
+              "core:skill/orange_magic"
+            ],
             "min": 50
           }
         ],
@@ -1809,8 +1816,9 @@
         "level": 12,
         "skills": [
           {
-            "id": "core:skill/orange_magic",
-            "label": "Orange Magic",
+            "any_of": [
+              "core:skill/orange_magic"
+            ],
             "min": 50
           }
         ],
@@ -1840,8 +1848,9 @@
         "level": 6,
         "skills": [
           {
-            "id": "core:skill/blue_magic",
-            "label": "Blue Magic",
+            "any_of": [
+              "core:skill/blue_magic"
+            ],
             "min": 50
           }
         ],
@@ -1868,8 +1877,9 @@
         "level": 6,
         "skills": [
           {
-            "id": "core:skill/indigo_magic",
-            "label": "Indigo Magic",
+            "any_of": [
+              "core:skill/indigo_magic"
+            ],
             "min": 50
           }
         ],
@@ -1896,8 +1906,9 @@
         "level": 6,
         "skills": [
           {
-            "id": "core:skill/violet_magic",
-            "label": "Violet Magic",
+            "any_of": [
+              "core:skill/violet_magic"
+            ],
             "min": 50
           }
         ],
@@ -1927,8 +1938,9 @@
         },
         "skills": [
           {
-            "id": "core:skill/white_magic",
-            "label": "White Magic",
+            "any_of": [
+              "core:skill/white_magic"
+            ],
             "min": 50
           }
         ],
@@ -1955,8 +1967,9 @@
         "level": 12,
         "skills": [
           {
-            "id": "core:skill/black_magic",
-            "label": "Black Magic",
+            "any_of": [
+              "core:skill/black_magic"
+            ],
             "min": 50
           }
         ],
@@ -2034,7 +2047,9 @@
           "int": 9
         },
         "perks": [
-          "core:feature/arcane_reservoir"
+          {
+            "perk": "core:feature/arcane_reservoir"
+          }
         ]
       },
       "ranks": 1,
@@ -2060,8 +2075,9 @@
         },
         "skills": [
           {
-            "id": "core:skill/persuasion",
-            "label": "Persuasion",
+            "any_of": [
+              "core:skill/persuasion"
+            ],
             "min": 30
           }
         ],
@@ -2090,8 +2106,9 @@
         },
         "skills": [
           {
-            "id": "core:skill/intimidation",
-            "label": "Intimidation",
+            "any_of": [
+              "core:skill/intimidation"
+            ],
             "min": 40
           }
         ],
@@ -2120,8 +2137,9 @@
         },
         "skills": [
           {
-            "id": "core:skill/deception",
-            "label": "Deception",
+            "any_of": [
+              "core:skill/deception"
+            ],
             "min": 40
           }
         ],
@@ -2150,8 +2168,9 @@
         },
         "skills": [
           {
-            "id": "core:skill/insight",
-            "label": "Insight",
+            "any_of": [
+              "core:skill/insight"
+            ],
             "min": 40
           }
         ],
@@ -2205,7 +2224,7 @@
         },
         "skills": [
           {
-            "id": [
+            "any_of": [
               "core:skill/red_magic",
               "core:skill/orange_magic",
               "core:skill/yellow_magic",
@@ -2216,27 +2235,19 @@
               "core:skill/white_magic",
               "core:skill/black_magic"
             ],
-            "label": [
-              "Red Magic",
-              "Orange Magic",
-              "Yellow Magic",
-              "Green Magic",
-              "Blue Magic",
-              "Indigo Magic",
-              "Violet Magic",
-              "White Magic",
-              "Black Magic"
-            ],
             "min": 45
           },
           {
-            "id": "core:skill/persuasion",
-            "label": "Persuasion",
+            "any_of": [
+              "core:skill/persuasion"
+            ],
             "min": 30
           }
         ],
         "perks": [
-          "core:feature/leader"
+          {
+            "perk": "core:feature/leader"
+          }
         ]
       },
       "ranks": 2,
@@ -2268,7 +2279,7 @@
         },
         "skills": [
           {
-            "id": [
+            "any_of": [
               "core:skill/blades",
               "core:skill/blunt",
               "core:skill/piercing",
@@ -2278,26 +2289,19 @@
               "core:skill/guns",
               "core:skill/throwing_weapons"
             ],
-            "label": [
-              "Blades",
-              "Blunt",
-              "Piercing",
-              "Unarmed",
-              "Bows",
-              "Crossbows",
-              "Guns",
-              "Throwing Weapons"
-            ],
             "min": 45
           },
           {
-            "id": "core:skill/intimidation",
-            "label": "Intimidation",
+            "any_of": [
+              "core:skill/intimidation"
+            ],
             "min": 30
           }
         ],
         "perks": [
-          "core:feature/leader"
+          {
+            "perk": "core:feature/leader"
+          }
         ]
       },
       "ranks": 2,
@@ -2329,8 +2333,9 @@
         },
         "skills": [
           {
-            "id": "core:skill/persuasion",
-            "label": "Persuasion",
+            "any_of": [
+              "core:skill/persuasion"
+            ],
             "min": 60
           }
         ],
@@ -2373,8 +2378,9 @@
         },
         "skills": [
           {
-            "id": "core:skill/intimidation",
-            "label": "Intimidation",
+            "any_of": [
+              "core:skill/intimidation"
+            ],
             "min": 60
           }
         ],
@@ -2417,13 +2423,16 @@
         },
         "skills": [
           {
-            "id": "core:skill/persuasion",
-            "label": "Persuasion",
+            "any_of": [
+              "core:skill/persuasion"
+            ],
             "min": 70
           }
         ],
         "perks": [
-          "core:feature/silver_tongue"
+          {
+            "perk": "core:feature/silver_tongue"
+          }
         ]
       },
       "ranks": 1,
@@ -2474,13 +2483,16 @@
         },
         "skills": [
           {
-            "id": "core:skill/intimidation",
-            "label": "Intimidation",
+            "any_of": [
+              "core:skill/intimidation"
+            ],
             "min": 60
           }
         ],
         "perks": [
-          "core:feature/intimidating_presence"
+          {
+            "perk": "core:feature/intimidating_presence"
+          }
         ]
       },
       "ranks": 1,
@@ -2506,8 +2518,9 @@
         },
         "skills": [
           {
-            "id": "core:skill/investigation",
-            "label": "Investigation",
+            "any_of": [
+              "core:skill/investigation"
+            ],
             "min": 40
           }
         ],
@@ -2536,8 +2549,9 @@
         },
         "skills": [
           {
-            "id": "core:skill/sleight_of_hand",
-            "label": "Sleight of Hand",
+            "any_of": [
+              "core:skill/sleight_of_hand"
+            ],
             "min": 40
           }
         ],
@@ -2566,8 +2580,9 @@
         },
         "skills": [
           {
-            "id": "core:skill/lockpick",
-            "label": "Lockpick",
+            "any_of": [
+              "core:skill/lockpick"
+            ],
             "min": 40
           }
         ],
@@ -2597,8 +2612,9 @@
         },
         "skills": [
           {
-            "id": "core:skill/stealth",
-            "label": "Stealth",
+            "any_of": [
+              "core:skill/stealth"
+            ],
             "min": 50
           }
         ],
@@ -2628,14 +2644,19 @@
         },
         "skills": [
           {
-            "id": "core:skill/stealth",
-            "label": "Stealth",
+            "any_of": [
+              "core:skill/stealth"
+            ],
             "min": 70
           }
         ],
         "perks": [
-          "core:feature/backstab",
-          "core:feature/ghost"
+          {
+            "perk": "core:feature/backstab"
+          },
+          {
+            "perk": "core:feature/ghost"
+          }
         ]
       },
       "ranks": 1,
@@ -2661,8 +2682,9 @@
         },
         "skills": [
           {
-            "id": "core:skill/lore",
-            "label": "Lore",
+            "any_of": [
+              "core:skill/lore"
+            ],
             "min": 40
           }
         ],
@@ -2738,8 +2760,9 @@
         },
         "skills": [
           {
-            "id": "core:skill/survival",
-            "label": "Survival",
+            "any_of": [
+              "core:skill/survival"
+            ],
             "min": 40
           }
         ],
@@ -2768,8 +2791,9 @@
         },
         "skills": [
           {
-            "id": "core:skill/animal_handling",
-            "label": "Animal Handling",
+            "any_of": [
+              "core:skill/animal_handling"
+            ],
             "min": 40
           }
         ],
@@ -2876,8 +2900,9 @@
         },
         "skills": [
           {
-            "id": "core:skill/repair",
-            "label": "Repair",
+            "any_of": [
+              "core:skill/repair"
+            ],
             "min": 40
           }
         ],
@@ -2907,8 +2932,9 @@
         },
         "skills": [
           {
-            "id": "core:skill/alchemy",
-            "label": "Alchemy",
+            "any_of": [
+              "core:skill/alchemy"
+            ],
             "min": 60
           }
         ],
@@ -2938,8 +2964,9 @@
         },
         "skills": [
           {
-            "id": "core:skill/blacksmithing",
-            "label": "Blacksmithing",
+            "any_of": [
+              "core:skill/blacksmithing"
+            ],
             "min": 60
           }
         ],
@@ -2991,7 +3018,9 @@
           "lck": 8
         },
         "perks": [
-          "core:feature/fates_reprieve"
+          {
+            "perk": "core:feature/fates_reprieve"
+          }
         ]
       },
       "ranks": 1,
@@ -3121,8 +3150,9 @@
         },
         "skills": [
           {
-            "id": "core:skill/shields",
-            "label": "Block",
+            "any_of": [
+              "core:skill/shields"
+            ],
             "min": 30
           }
         ],
@@ -3152,13 +3182,16 @@
         },
         "skills": [
           {
-            "id": "core:skill/shields",
-            "label": "Block",
+            "any_of": [
+              "core:skill/shields"
+            ],
             "min": 50
           }
         ],
         "perks": [
-          "core:feature/shield_training"
+          {
+            "perk": "core:feature/shield_training"
+          }
         ]
       },
       "ranks": 1,
@@ -3185,13 +3218,16 @@
         },
         "skills": [
           {
-            "id": "core:skill/shields",
-            "label": "Block",
+            "any_of": [
+              "core:skill/shields"
+            ],
             "min": 70
           }
         ],
         "perks": [
-          "core:feature/spell_ward"
+          {
+            "perk": "core:feature/spell_ward"
+          }
         ]
       },
       "ranks": 1,
@@ -3217,8 +3253,9 @@
         },
         "skills": [
           {
-            "id": "core:skill/evasion",
-            "label": "Evasion",
+            "any_of": [
+              "core:skill/evasion"
+            ],
             "min": 30
           }
         ],
@@ -3245,13 +3282,16 @@
         "level": 6,
         "skills": [
           {
-            "id": "core:skill/evasion",
-            "label": "Evasion",
+            "any_of": [
+              "core:skill/evasion"
+            ],
             "min": 50
           }
         ],
         "perks": [
-          "core:feature/sidestep"
+          {
+            "perk": "core:feature/sidestep"
+          }
         ]
       },
       "ranks": 1,
@@ -3278,13 +3318,16 @@
         },
         "skills": [
           {
-            "id": "core:skill/evasion",
-            "label": "Evasion",
+            "any_of": [
+              "core:skill/evasion"
+            ],
             "min": 60
           }
         ],
         "perks": [
-          "core:feature/armored_evasion"
+          {
+            "perk": "core:feature/armored_evasion"
+          }
         ]
       },
       "ranks": 1,

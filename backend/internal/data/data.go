@@ -465,20 +465,15 @@ type Prerequisite struct {
 	Perks     []PerkRequirement  `json:"perks"`
 }
 
-// PerkRequirement is a prerequisite perk: a ref, held at any rank, or a held perk { perk, rank }
-// that must be held at that rank or above (M3-14).
+// PerkRequirement is a prerequisite perk { perk, rank }: held at that rank or above, 1 when the
+// rank is left out (M3-14; one shape, M5-70).
 type PerkRequirement struct {
 	Perk string `json:"perk"`
 	Rank int64  `json:"rank"`
 }
 
-// UnmarshalJSON reads either shape; a bare ref needs rank 1.
+// UnmarshalJSON reads { perk, rank }; a missing rank needs rank 1.
 func (requirement *PerkRequirement) UnmarshalJSON(encoded []byte) error {
-	var ref string
-	if json.Unmarshal(encoded, &ref) == nil {
-		*requirement = PerkRequirement{Perk: ref, Rank: 1}
-		return nil
-	}
 	type held PerkRequirement
 	var object held
 	if err := json.Unmarshal(encoded, &object); err != nil {
@@ -491,30 +486,11 @@ func (requirement *PerkRequirement) UnmarshalJSON(encoded []byte) error {
 	return nil
 }
 
-// SkillRequirement is met when one of its skills reads at least Minimum. Its `id` is one
-// skill ref or a list of them.
+// SkillRequirement { any_of, min } is met when one of its skills reads at least Minimum; a
+// perk that needs one skill lists one (one shape, M5-70).
 type SkillRequirement struct {
-	Skills  []string
-	Minimum int64
-}
-
-// UnmarshalJSON reads `id` as a ref or a list of refs.
-func (requirement *SkillRequirement) UnmarshalJSON(encoded []byte) error {
-	var read struct {
-		ID      json.RawMessage `json:"id"`
-		Minimum int64           `json:"min"`
-	}
-	if err := json.Unmarshal(encoded, &read); err != nil {
-		return err
-	}
-	var one string
-	if err := json.Unmarshal(read.ID, &one); err == nil {
-		requirement.Skills = []string{one}
-	} else if err := json.Unmarshal(read.ID, &requirement.Skills); err != nil {
-		return err
-	}
-	requirement.Minimum = read.Minimum
-	return nil
+	Skills  []string `json:"any_of"`
+	Minimum int64    `json:"min"`
 }
 
 // Spell is what a cast needs of one row of spells/core.json (docs/core/casting.md).

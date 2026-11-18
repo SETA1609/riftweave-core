@@ -605,14 +605,13 @@ def take_perk(actor, held, key):
         if has < need["abilities"][ability]:
             unmet.append({"needs": "attribute", "key": ability, "min": need["abilities"][ability], "has": has})
     for requirement in need.get("skills", []):
-        refs = requirement["id"] if isinstance(requirement["id"], list) else [requirement["id"]]
-        keys = [ref.rsplit("/", 1)[-1] for ref in refs]
+        keys = [ref.rsplit("/", 1)[-1] for ref in requirement["any_of"]]
         best = max(read_skill(actor, skill)["value"] for skill in keys)
         if best < requirement["min"]:
             unmet.append({"needs": "skill", "keys": keys, "min": requirement["min"], "has": best})
     for item in need.get("perks", []):
-        # A ref needs the perk at any rank; a held perk { perk, rank } needs that rank (M3-14).
-        ref, wanted = (item, 1) if isinstance(item, str) else (item["perk"], item.get("rank", 1))
+        # A held perk { perk, rank } needs that rank, 1 when left out (M3-14, M5-70).
+        ref, wanted = item["perk"], item.get("rank", 1)
         has = held.get(ref.rsplit("/", 1)[-1], 0)
         if has < wanted:
             entry = {"needs": "perk", "key": ref.rsplit("/", 1)[-1]}
