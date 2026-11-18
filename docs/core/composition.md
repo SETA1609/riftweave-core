@@ -1,11 +1,13 @@
 # Composition
 
-Modified: 2026-11-17
+Modified: 2026-11-18
 
 Many rows are built from parts instead of written out: a monster from a creature type and
 templates, a weapon from a base and a material's overrides. There is one way to do it. Any new
 composed row (a bound weapon, a summon with its power and nature) uses this order and these
 merge rules, not a procedure of its own.
+Every family that builds on a base is drawn, from the schemas and the data, in
+[composition-diagram.md](composition-diagram.md).
 
 ```
 row = compose(base, layers, overrides)
