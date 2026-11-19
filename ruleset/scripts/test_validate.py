@@ -23,6 +23,9 @@ from validate import (
     check_equipment_uniqueness,
     check_attack_sequences,
     check_stances,
+    check_rank_levels,
+    check_build_tiers,
+    check_spell_ward_table,
     check_maneuver_unlocks,
     check_racial_trait_refs,
     load_canonical_damage_types,
@@ -262,6 +265,52 @@ class TestStances(unittest.TestCase):
         errors = check_stances([{**self.ROW, "modifiers": [bad]}], [self.PERK])
         for needed in ("origin core:origin/martial", "source stance:lunge", "duration while_applied"):
             self.assertTrue(any(needed in e for e in errors), (needed, errors))
+
+
+class TestTieredPerks(unittest.TestCase):
+    """GD_S05_03: rank_levels gates each tier, a build takes no tier early, and the spell ward
+    table is what its formula gives."""
+
+    DATA = Path(__file__).resolve().parent.parent / "data"
+    PERK = {"key": "wall", "ranks": 3, "rank_levels": [1, 6, 12], "prerequisite": {},
+            "modifiers": [{"target": "shield_dr", "operation": "add", "value": 2}], "rank_values": {"shield_dr": [2, 3, 4]}}
+
+    def rows(self, name, key):
+        return json.loads((self.DATA / name / "core.json").read_text())[key]
+
+    def test_the_data_passes(self):
+        features = self.rows("features", "features")
+        self.assertEqual(check_rank_levels(features), [])
+        self.assertEqual(check_build_tiers(self.rows("builds", "builds"), features), [])
+        pipeline = json.loads((self.DATA / "combat" / "pipeline.json").read_text())["pipeline"]
+        self.assertEqual(check_spell_ward_table(pipeline), [])
+
+    def test_a_gate_count_a_first_gate_or_a_step_out_of_rule_fails(self):
+        errors = check_rank_levels([{**self.PERK, "rank_levels": [1, 6]}])
+        self.assertTrue(any("2 gates for 3 ranks" in e for e in errors), errors)
+        errors = check_rank_levels([{**self.PERK, "rank_levels": [4, 8, 12]}])
+        self.assertTrue(any("not its prerequisite level 1" in e for e in errors), errors)
+        errors = check_rank_levels([{**self.PERK, "rank_levels": [1, 3, 12]}])
+        self.assertTrue(any("not 3 to 6 levels apart" in e for e in errors), errors)
+
+    def test_rank_values_need_one_value_per_rank_on_a_target_the_perk_emits(self):
+        errors = check_rank_levels([{**self.PERK, "rank_values": {"shield_dr": [2, 3], "hp": [1, 2, 3]}}])
+        self.assertTrue(any("2 values for 3 ranks" in e for e in errors), errors)
+        self.assertTrue(any("names hp" in e for e in errors), errors)
+
+    def test_a_tier_taken_before_its_gate_fails(self):
+        build = {"key": "early", "perks_by_level": {"2": "core:feature/wall", "3": "core:feature/wall"}}
+        errors = check_build_tiers([build], [self.PERK])
+        self.assertTrue(any("tier 2 at level 3, before its gate 6" in e for e in errors), errors)
+        build = {"key": "on_time", "perks_by_level": {"2": "core:feature/wall", "6": "core:feature/wall"}}
+        self.assertEqual(check_build_tiers([build], [self.PERK]), [])
+
+    def test_a_spell_ward_cell_off_the_formula_fails(self):
+        pipeline = json.loads((self.DATA / "combat" / "pipeline.json").read_text())["pipeline"]
+        table = [list(row) for row in pipeline["spell_ward_table"]]
+        table[8][2] = 54
+        errors = check_spell_ward_table({**pipeline, "spell_ward_table": table})
+        self.assertTrue(any("END 9 tier 3 reads 54, the formula gives 50" in e for e in errors), errors)
 
 
 class TestManeuverChannel(unittest.TestCase):

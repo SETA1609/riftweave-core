@@ -3591,5 +3591,645 @@
       ],
       "lost": 0
     }
+  },
+  {
+    "name": "boss strike: tier 1, a jab with a shield is a bash: 2 AP at -10, bludgeoning damage of shield DR 3 + 1d4 roll 2 = 5, minus DR 2",
+    "action": "jab",
+    "loadout": {
+      "main": "one_handed",
+      "off": "shield"
+    },
+    "attacker": {
+      "skill": 60,
+      "off_skill": 50,
+      "shield_dr": 3,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "boss_strike",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:boss_strike",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 20,
+        "damage": 2
+      }
+    ],
+    "expect": {
+      "action": "jab",
+      "sequence": "one_handed_and_light",
+      "ap": 2,
+      "stamina": 10,
+      "strikes": [
+        {
+          "hand": "off",
+          "foe": 0,
+          "attack": -10,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 20,
+          "crit": false,
+          "damage": 3,
+          "hp": 27,
+          "carried": false,
+          "free": false,
+          "scissor": false,
+          "bash": true,
+          "stagger_ap": 0
+        }
+      ],
+      "hp": [
+        27
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "boss strike: tier 1 leaves the attack alone: one main-hand strike at 3 AP",
+    "action": "attack",
+    "loadout": {
+      "main": "one_handed",
+      "off": "shield"
+    },
+    "attacker": {
+      "skill": 60,
+      "off_skill": 50,
+      "shield_dr": 3,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "boss_strike",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:boss_strike",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 20,
+        "damage": 6
+      }
+    ],
+    "expect": {
+      "action": "attack",
+      "sequence": "one_handed_weapon",
+      "ap": 3,
+      "stamina": 15,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": 0,
+          "outcome": "hit",
+          "target": 60,
+          "margin": 40,
+          "crit": false,
+          "damage": 4,
+          "hp": 26,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        26
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "boss strike: tier 2, the attack also bashes, as a light off-hand weapon (main -10, off -20, 4 AP)",
+    "action": "attack",
+    "loadout": {
+      "main": "one_handed",
+      "off": "shield"
+    },
+    "attacker": {
+      "skill": 60,
+      "off_skill": 50,
+      "shield_dr": 3,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "boss_strike",
+          "operation": "add",
+          "value": 2,
+          "source": "feature:boss_strike",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 20,
+        "damage": 6
+      },
+      {
+        "attack": 20,
+        "damage": 2
+      }
+    ],
+    "expect": {
+      "action": "attack",
+      "sequence": "one_handed_and_light",
+      "ap": 4,
+      "stamina": 20,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -10,
+          "outcome": "hit",
+          "target": 50,
+          "margin": 30,
+          "crit": false,
+          "damage": 4,
+          "hp": 26,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "off",
+          "foe": 0,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 30,
+          "margin": 10,
+          "crit": false,
+          "damage": 3,
+          "hp": 23,
+          "carried": false,
+          "free": false,
+          "scissor": false,
+          "bash": true,
+          "stagger_ap": 0
+        }
+      ],
+      "hp": [
+        23
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "boss strike: tier 2 with a light weapon and a buckler uses the two light weapons row (3 AP)",
+    "action": "attack",
+    "loadout": {
+      "main": "light",
+      "off": "buckler"
+    },
+    "attacker": {
+      "skill": 60,
+      "off_skill": 50,
+      "shield_dr": 3,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "boss_strike",
+          "operation": "add",
+          "value": 2,
+          "source": "feature:boss_strike",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 20,
+        "damage": 6
+      },
+      {
+        "attack": 20,
+        "damage": 2
+      }
+    ],
+    "expect": {
+      "action": "attack",
+      "sequence": "two_light_weapons",
+      "ap": 3,
+      "stamina": 15,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -10,
+          "outcome": "hit",
+          "target": 50,
+          "margin": 30,
+          "crit": false,
+          "damage": 4,
+          "hp": 26,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "off",
+          "foe": 0,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 30,
+          "margin": 10,
+          "crit": false,
+          "damage": 3,
+          "hp": 23,
+          "carried": false,
+          "free": false,
+          "scissor": false,
+          "bash": true,
+          "stagger_ap": 0
+        }
+      ],
+      "hp": [
+        23
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "boss strike: tier 3, a bash that hits costs the target 2 AP",
+    "action": "jab",
+    "loadout": {
+      "main": "one_handed",
+      "off": "shield"
+    },
+    "attacker": {
+      "skill": 60,
+      "off_skill": 50,
+      "shield_dr": 3,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "boss_strike",
+          "operation": "add",
+          "value": 3,
+          "source": "feature:boss_strike",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 20,
+        "damage": 2
+      }
+    ],
+    "expect": {
+      "action": "jab",
+      "sequence": "one_handed_and_light",
+      "ap": 2,
+      "stamina": 10,
+      "strikes": [
+        {
+          "hand": "off",
+          "foe": 0,
+          "attack": -10,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 20,
+          "crit": false,
+          "damage": 3,
+          "hp": 27,
+          "carried": false,
+          "free": false,
+          "scissor": false,
+          "bash": true,
+          "stagger_ap": 2
+        }
+      ],
+      "hp": [
+        27
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "boss strike: tier 3, a bash that misses costs nothing",
+    "action": "jab",
+    "loadout": {
+      "main": "one_handed",
+      "off": "shield"
+    },
+    "attacker": {
+      "skill": 60,
+      "off_skill": 50,
+      "shield_dr": 3,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "boss_strike",
+          "operation": "add",
+          "value": 3,
+          "source": "feature:boss_strike",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 90,
+        "damage": 2
+      }
+    ],
+    "expect": {
+      "action": "jab",
+      "sequence": "one_handed_and_light",
+      "ap": 2,
+      "stamina": 10,
+      "strikes": [
+        {
+          "hand": "off",
+          "foe": 0,
+          "attack": -10,
+          "outcome": "miss",
+          "target": 40,
+          "margin": null,
+          "crit": false,
+          "damage": 0,
+          "hp": 30,
+          "carried": false,
+          "free": false,
+          "scissor": false,
+          "bash": true,
+          "stagger_ap": 0
+        }
+      ],
+      "hp": [
+        30
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "boss strike: tier 4, a bash right after a block costs 1 AP",
+    "action": "jab",
+    "ap": 1,
+    "after_block": true,
+    "loadout": {
+      "main": "one_handed",
+      "off": "shield"
+    },
+    "attacker": {
+      "skill": 60,
+      "off_skill": 50,
+      "shield_dr": 3,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "boss_strike",
+          "operation": "add",
+          "value": 4,
+          "source": "feature:boss_strike",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 20,
+        "damage": 2
+      }
+    ],
+    "expect": {
+      "action": "jab",
+      "sequence": "one_handed_and_light",
+      "ap": 1,
+      "stamina": 5,
+      "strikes": [
+        {
+          "hand": "off",
+          "foe": 0,
+          "attack": -10,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 20,
+          "crit": false,
+          "damage": 3,
+          "hp": 27,
+          "carried": false,
+          "free": false,
+          "scissor": false,
+          "bash": true,
+          "stagger_ap": 2
+        }
+      ],
+      "hp": [
+        27
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "boss strike: tier 3 does not make the bash after a block cheaper",
+    "action": "jab",
+    "ap": 1,
+    "after_block": true,
+    "loadout": {
+      "main": "one_handed",
+      "off": "shield"
+    },
+    "attacker": {
+      "skill": 60,
+      "off_skill": 50,
+      "shield_dr": 3,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "boss_strike",
+          "operation": "add",
+          "value": 3,
+          "source": "feature:boss_strike",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 20,
+        "damage": 2
+      }
+    ],
+    "expect": {
+      "error": "jab needs 2 AP"
+    }
+  },
+  {
+    "name": "boss strike: without the perk a shield has no jab",
+    "action": "jab",
+    "loadout": {
+      "main": "one_handed",
+      "off": "shield"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 20,
+        "damage": 2
+      }
+    ],
+    "expect": {
+      "error": "a jab needs a weapon in the off hand (one_handed_weapon has none)"
+    }
+  },
+  {
+    "name": "boss strike: a bash without shield_dr is an error",
+    "action": "jab",
+    "loadout": {
+      "main": "one_handed",
+      "off": "shield"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "boss_strike",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:boss_strike",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 20,
+        "damage": 2
+      }
+    ],
+    "expect": {
+      "error": "a shield bash needs shield_dr"
+    }
   }
 ]

@@ -993,5 +993,107 @@
         }
       ]
     }
+  },
+  {
+    "name": "take perk: a tier before its rank_levels gate is refused (Shield Training tier 2 at level 5, gate 6)",
+    "operation": "take_perk",
+    "actor": {
+      "attributes": {
+        "str": 6,
+        "per": 5,
+        "end": 6,
+        "int": 4,
+        "wil": 5,
+        "agi": 5,
+        "cha": 4,
+        "lck": 4
+      },
+      "skills": {
+        "shields": 45
+      },
+      "level": 5
+    },
+    "perks": {
+      "shield_training": 1
+    },
+    "perk": "shield_training",
+    "expect": {
+      "taken": false,
+      "perk": "shield_training",
+      "rank": 1,
+      "unmet": [
+        {
+          "needs": "level",
+          "min": 6,
+          "has": 5
+        }
+      ]
+    }
+  },
+  {
+    "name": "take perk: the tier at its gate is taken (Shield Training tier 2 at level 6)",
+    "operation": "take_perk",
+    "actor": {
+      "attributes": {
+        "str": 6,
+        "per": 5,
+        "end": 6,
+        "int": 4,
+        "wil": 5,
+        "agi": 5,
+        "cha": 4,
+        "lck": 4
+      },
+      "skills": {
+        "shields": 45
+      },
+      "level": 6
+    },
+    "perks": {
+      "shield_training": 1
+    },
+    "perk": "shield_training",
+    "expect": {
+      "taken": true,
+      "perk": "shield_training",
+      "rank": 2,
+      "unmet": []
+    }
+  },
+  {
+    "name": "take perk: the first tier of a tiered perk gated at 6 needs level 6 (Spell Ward)",
+    "operation": "take_perk",
+    "actor": {
+      "attributes": {
+        "str": 6,
+        "per": 5,
+        "end": 6,
+        "int": 4,
+        "wil": 6,
+        "agi": 5,
+        "cha": 4,
+        "lck": 4
+      },
+      "skills": {
+        "shields": 55
+      },
+      "level": 5
+    },
+    "perks": {
+      "shield_training": 1
+    },
+    "perk": "spell_ward",
+    "expect": {
+      "taken": false,
+      "perk": "spell_ward",
+      "rank": 0,
+      "unmet": [
+        {
+          "needs": "level",
+          "min": 6,
+          "has": 5
+        }
+      ]
+    }
   }
 ]
