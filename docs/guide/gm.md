@@ -62,6 +62,8 @@ If no skill fits, use an attribute: its value × 10 is the target.
 
 **A hybrid summoner beside a summon.** Bonded Vanguard, Bonded Marksman, Kindred Mind and the Ascendant perks hold only while the summoner has a summon out (a minion does not count): their attribute bonuses and drop the moment the last one goes. Pincer Strike needs a ruling each attack: call the `beside_summon` situation when the summoner and a summon are both engaging the same foe this turn (the summon attacked it, or is in melee with it). No situation, no +10.
 
+**A hybrid summoner beside a summon.** Bonded Vanguard, Bonded Marksman, Kindred Mind and the Ascendant perks hold only while the summoner has a summon out (a minion does not count): their attribute bonuses drop the moment the last one goes. Pincer Strike needs a ruling each attack: call the `beside_summon` situation when the summoner and a summon are both engaging the same foe this turn (the summon attacked it, or is in melee with it). No situation, no +10.
+
 **What happens at 0 HP.** The core rules leave this to you. A simple default: at 0 HP a character is down and out of the fight, and an ally can bring them round with healing or a short rest. Decide before the first fight, and tell the players.
 
 ## A lighter sheet at the table
