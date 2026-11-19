@@ -12,7 +12,7 @@ An entity is a collection of rows, its `key` the primary key. A line is a refere
 other collection, so many rows name one. Composition bases are references too: an equipment row's
 `base` names an equipment base, a monster's `base` a creature type or a monster.
 
-45 collections; 70 pairs of collections joined by a reference.
+45 collections; 71 pairs of collections joined by a reference.
 
 ## Overview
 
@@ -119,6 +119,8 @@ erDiagram
     }
     FEATURES {
         string key PK
+        string bound_weapon_effects_effect FK
+        string bound_weapon_effects_origin FK
         string modifiers_origin FK
         string natural_weapon FK
         string prerequisite_perks_perk FK
@@ -267,12 +269,13 @@ erDiagram
     EQUIPMENT }o--|| ORIGINS : "accessory.effects[].origin, consumable.effects[].origin, gear.modifiers[].origin, weapon.on_hit_effects[].origin"
     EQUIPMENT }o--|| SPELLS : "consumable.spell"
     FACTIONS }o--|| ORIGINS : "ranks[].modifiers[].origin, standings[].modifiers[].origin"
+    FEATURES }o--|| EFFECTS : "bound_weapon_effects[].effect"
     FEATURES }o--|| FEATURES : "prerequisite.perks[].perk"
     FEATURES }o--|| MANEUVERS : "unlocks[]"
     FEATURES }o--|| MATERIALS : "unlocks[]"
     FEATURES }o--|| MONSTER_TEMPLATES : "unlocks[]"
     FEATURES }o--|| NATURAL_WEAPONS : "natural_weapon"
-    FEATURES }o--|| ORIGINS : "modifiers[].origin"
+    FEATURES }o--|| ORIGINS : "bound_weapon_effects[].origin, modifiers[].origin"
     FEATURES }o--|| SKILLS : "prerequisite.skills[].any_of[]"
     FEATURES }o--|| SUMMON_BONUSES : "share.bonus, summon_bonus"
     HAZARDS }o--|| CHECKS : "avoid.check, detect.check, disarm.check"
@@ -336,11 +339,16 @@ erDiagram
         string race FK
         string tag_skills FK
     }
+    EFFECTS {
+        string key PK
+    }
     EQUIPMENT {
         string key PK
     }
     FEATURES {
         string key PK
+        string bound_weapon_effects_effect FK
+        string bound_weapon_effects_origin FK
         string modifiers_origin FK
         string natural_weapon FK
         string prerequisite_perks_perk FK
@@ -391,12 +399,13 @@ erDiagram
     CHARACTERS }o--|| RACES : "race"
     CHARACTERS }o--|| SKILLS : "tag_skills[]"
     CHARACTERS }o--|| SPELLS : "levels[].spells[]"
+    FEATURES }o--|| EFFECTS : "bound_weapon_effects[].effect"
     FEATURES }o--|| FEATURES : "prerequisite.perks[].perk"
     FEATURES }o--|| MANEUVERS : "unlocks[]"
     FEATURES }o--|| MATERIALS : "unlocks[]"
     FEATURES }o--|| MONSTER_TEMPLATES : "unlocks[]"
     FEATURES }o--|| NATURAL_WEAPONS : "natural_weapon"
-    FEATURES }o--|| ORIGINS : "modifiers[].origin"
+    FEATURES }o--|| ORIGINS : "bound_weapon_effects[].origin, modifiers[].origin"
     FEATURES }o--|| SKILLS : "prerequisite.skills[].any_of[]"
     FEATURES }o--|| SUMMON_BONUSES : "share.bonus, summon_bonus"
     RACES }o--|| FEATURES : "traits[].id"

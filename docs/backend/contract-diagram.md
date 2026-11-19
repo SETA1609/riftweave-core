@@ -173,7 +173,9 @@ Cast one spell: the gate, the mana and reagent cost, one resolution on the spell
 classDiagram
     class casting_input {
         object caster
+        ref coating
         integer count_roll
+        ref enchantment
         modifiers modifiers
         d100 roll
         key spell
@@ -181,6 +183,7 @@ classDiagram
         object target
     }
     class casting_result {
+        object bound_weapon
         null_or_object check
         null_or_key concentration
         List~ref~ consumed
@@ -232,6 +235,7 @@ classDiagram
         integer stagger_ap
         integer stamina
         integer target
+        List~object~ weapon_effects
     }
 ```
 

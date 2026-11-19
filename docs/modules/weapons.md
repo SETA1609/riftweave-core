@@ -1,5 +1,7 @@
 # Weapons
 
+Modified: 2026-11-19
+
 Weapons in Riftweave are defined as base equipment entries in `ruleset/data/equipment/weapons.json` (governed by `equipment.schema.json`). They are deliberately simple and use **classic D&D 3.5-style dice** for damage. Material-based variations and crafting options are **not** encoded as data variations in the schema or base entries. Instead, they are explained here for use by the crafting and magic-crafting modules.
 
 ## Core Classification Axes
@@ -138,6 +140,10 @@ distinct base weapon (the catalogue entry that loot, shops, and prices name as
 own name, story, or price (`elven_wood_longbow`, `cursed_iron_longsword`). Generic
 variants are not rows: a loot row or a crafted item names the base and its `material`
 (and, from M4-07, its `size`). [V 2026-11-07, owner decision]
+
+A bound weapon is the same composition, made by a spell: the base it copies, `core:material/iron`
+or the material a perk names, no phase, and `magic` damage until a coating or an elemental
+enchantment sets another ([magic.md](magic.md#bound-weapons)).
 
 ## Materials and Weapon Variations
 

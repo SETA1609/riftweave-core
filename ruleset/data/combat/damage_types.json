@@ -13,6 +13,7 @@
     { "key": "radiant", "label": "Radiant", "description": "Holy purifying light. Governed by White magic.", "category": "energy", "tags": ["bypasses_armor", "phase_fire", "anti_undead"] },
     { "key": "psychic", "label": "Psychic", "description": "Mental and soul damage. Bypasses physical protection.", "category": "energy", "tags": ["bypasses_armor", "mental", "wil_resist"] },
     { "key": "force", "label": "Force", "description": "Raw magical energy. Governed by Red magic. Unerring.", "category": "energy", "tags": ["bypasses_armor", "unerring"] },
-    { "key": "thunder", "label": "Thunder", "description": "Sonic concussive damage. Governed by Indigo magic.", "category": "energy", "tags": ["bypasses_armor", "sonic", "aoe"] }
+    { "key": "thunder", "label": "Thunder", "description": "Sonic concussive damage. Governed by Indigo magic.", "category": "energy", "tags": ["bypasses_armor", "sonic", "aoe"] },
+    { "key": "magic", "label": "Magic", "description": "Plain magic with no element: the edge of a bound weapon. Armor stops it like a blade, and resist magic reduces it.", "category": "energy", "tags": ["armor_dr_applies"] }
   ]
 }

@@ -31,6 +31,13 @@
               "type": "string"
             },
             "description": "The carried weapon's properties, which a maneuver may need."
+          },
+          "weapon_effects": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "The weapon's on-hit applied effects: armor_pierce, bane, lingering_damage, banish_summoned (docs/core/combat.md#weapon-effects)."
           }
         },
         "additionalProperties": false,
@@ -68,6 +75,10 @@
           "shield_dr": {"type": "integer", "minimum": 0, "description": "The carried shield's DR; it adds to armor_dr against types with armor_dr_applies."},
           "shields_skill": {"type": "integer", "description": "The shields skill the block stance's band reads."},
           "stance": {"type": "string", "description": "The stance the defender declared on their turn: dodge (doubles the evasion band) or block (adds a block band; needs shield_dr and shields_skill). Any other value is an error."},
+          "creature_type": {
+            "$ref": "common.json#/definitions/key",
+            "description": "The defender's creature type (undead, beast, ...), which a weapon's bane reads."
+          },
           "flags": {
             "type": "array",
             "items": {
@@ -244,6 +255,13 @@
           "type": "object"
         },
         "description": "With a maneuver: its applied effects on a hit, empty on a miss or an evade."
+      },
+      "weapon_effects": {
+        "type": "array",
+        "items": {
+          "type": "object"
+        },
+        "description": "With weapon effects: those that land on a hit (docs/core/combat.md#weapon-effects), empty on a miss, an evade, or a block. Left out without weapon effects."
       }
     },
     "additionalProperties": false,

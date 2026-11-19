@@ -1308,7 +1308,6 @@
     },
     {
       "key": "armor_pierce",
-      "reserved": true,
       "label": "Armor Pierce",
       "description": "Partially ignores the target's armor DR. Magnitude is the percentage of armor DR ignored (e.g. magnitude 50 = 50% armor ignored). Common on piercing weapons and dedicated armor-piercing ammunition.",
       "category": "control",
@@ -1615,6 +1614,58 @@
       "tags": [
         "lock",
         "force"
+      ]
+    },
+    {
+      "key": "bane",
+      "label": "Bane",
+      "description": "A weapon's edge against one kind of creature: on a hit, +magnitude damage when the defender's creature type is the parameter (undead, beast, ...).",
+      "category": "damage",
+      "polarity": "harmful",
+      "magnitudeUnit": "points",
+      "baseCost": 1,
+      "defaultDuration": 1,
+      "channels": [
+        "enchantment"
+      ],
+      "tags": [
+        "combat",
+        "weapon"
+      ]
+    },
+    {
+      "key": "banish_summoned",
+      "label": "Banish Summoned",
+      "description": "On a hit, ends the defender if it was summoned: the caller dismisses that summon. A creature that was not summoned is unharmed by it.",
+      "category": "control",
+      "polarity": "harmful",
+      "baseCost": 20,
+      "defaultDuration": 1,
+      "channels": [
+        "enchantment"
+      ],
+      "tags": [
+        "combat",
+        "weapon",
+        "summon"
+      ]
+    },
+    {
+      "key": "lingering_damage",
+      "label": "Lingering Damage",
+      "description": "On a hit, damage over time of the parameter's damage type, magnitude per tick for the duration; on a weapon the parameter is the attack's damage type.",
+      "category": "damage",
+      "polarity": "harmful",
+      "magnitudeUnit": "points",
+      "baseCost": 5,
+      "defaultDuration": 10,
+      "channels": [
+        "enchantment"
+      ],
+      "tags": [
+        "combat",
+        "weapon",
+        "damage_over_time"
       ]
     }
   ]

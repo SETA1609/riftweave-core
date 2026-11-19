@@ -26,6 +26,9 @@ type Attacker struct {
 	Flags      []string         `json:"flags"`
 	// WeaponProperties are the carried weapon's properties, which a maneuver may need.
 	WeaponProperties []string `json:"weapon_properties"`
+	// WeaponEffects are the weapon's on-hit effects (docs/core/combat.md#weapon-effects); nil
+	// when the input names none.
+	WeaponEffects []data.AppliedEffect `json:"weapon_effects"`
 }
 
 // Defender is who takes the attack.
@@ -41,6 +44,8 @@ type Defender struct {
 	HitPoints int64            `json:"hp"`
 	Resist    map[string]int64 `json:"resist"`
 	Flags     []string         `json:"flags"`
+	// CreatureType is the defender's creature type, which a weapon's bane reads.
+	CreatureType string `json:"creature_type"`
 	// Modifiers are the defender's perks: adds on evasion, shields, and shield_dr, and the
 	// block_magic, bulwark, and riposte grants.
 	Modifiers []modifier.Modifier `json:"modifiers"`
@@ -94,6 +99,47 @@ type Result struct {
 	// Effects are the maneuver's effects on a hit, and empty on a miss or an evade. Without a
 	// maneuver the field is left out.
 	Effects *[]json.RawMessage `json:"effects,omitempty"`
+	// WeaponEffects are the weapon effects that land on a hit, and empty on a miss, an evade,
+	// or a block. Without weapon effects the field is left out.
+	WeaponEffects *[]json.RawMessage `json:"weapon_effects,omitempty"`
+}
+
+const (
+	armorPierceEffect = "core:effect/armor_pierce"
+	baneEffect        = "core:effect/bane"
+	banishEffect      = "core:effect/banish_summoned"
+	lingeringEffect   = "core:effect/lingering_damage"
+)
+
+// landedWeaponEffects are the weapon effects a hit lists for the caller: lingering damage of
+// the attack's type, a banish only on a summoned defender, and any other effect as written.
+// Armor pierce and bane already acted on the damage.
+func landedWeaponEffects(effects []data.AppliedEffect, damageType string, defender *Defender) ([]json.RawMessage, error) {
+	var landed []json.RawMessage = []json.RawMessage{}
+	for _, applied := range effects {
+		switch applied.Effect {
+		case armorPierceEffect, baneEffect:
+			continue
+		case banishEffect:
+			if !slices.Contains(defender.Flags, "summoned") {
+				continue
+			}
+		case lingeringEffect:
+			var effect map[string]any
+			if err := json.Unmarshal(applied.Encoded, &effect); err != nil {
+				return nil, err
+			}
+			effect["parameter"] = damageType
+			encoded, err := json.Marshal(effect)
+			if err != nil {
+				return nil, err
+			}
+			landed = append(landed, encoded)
+			continue
+		}
+		landed = append(landed, applied.Encoded)
+	}
+	return landed, nil
 }
 
 // maneuverOf is the maneuver the attack is performed with, checked against the attack's
@@ -243,6 +289,10 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		var noRiders []data.Rider = []data.Rider{}
 		result.Riders = &noRiders
 	}
+	if input.Attacker.WeaponEffects != nil {
+		var none []json.RawMessage = []json.RawMessage{}
+		result.WeaponEffects = &none
+	}
 	if maneuver != nil {
 		action, err := ruleset.Actions.Actions.Require("action", maneuver.Modifies)
 		if err != nil {
@@ -304,6 +354,17 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	if maneuver != nil && maneuver.DamageMultiplier != 0 {
 		amount = int64(math.Floor(float64(amount) * maneuver.DamageMultiplier))
 	}
+	// The weapon's banes (docs/core/combat.md#weapon-effects), and its armor pierce for step 6.
+	var pierce int64
+	for _, applied := range input.Attacker.WeaponEffects {
+		switch {
+		case applied.Effect == baneEffect && applied.Parameter != "" && applied.Parameter == defender.CreatureType:
+			amount += int64(applied.Magnitude)
+		case applied.Effect == armorPierceEffect:
+			pierce += int64(applied.Magnitude)
+		}
+	}
+	pierce = min(pierce, 100)
 	if result.Critical {
 		if amount, err = pipeline.CriticalDamage.Evaluate(nil, formula.Variable{Name: "damage", Value: amount}); err != nil {
 			return Result{}, err
@@ -328,6 +389,7 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 				return Result{}, err
 			}
 		}
+		damageReduction -= damageReduction * pierce / 100
 		amount = max(amount-damageReduction, 0)
 	}
 	amount = max(amount-defender.Resist[input.Damage.Type], 0)
@@ -342,6 +404,13 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 			effects = append(effects, applied.Encoded)
 		}
 		result.Effects = &effects
+	}
+	if input.Attacker.WeaponEffects != nil && !result.Evaded {
+		landed, err := landedWeaponEffects(input.Attacker.WeaponEffects, input.Damage.Type, defender)
+		if err != nil {
+			return Result{}, err
+		}
+		result.WeaponEffects = &landed
 	}
 	return result, nil
 }

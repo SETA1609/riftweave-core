@@ -35,9 +35,12 @@ def prerequisite_refs(perk):
 
 
 def emitted(perk):
-    """The (target, operation) pairs a perk's modifiers name, and what it unlocks."""
-    return frozenset((m["target"], m["operation"]) for m in perk.get("modifiers", [])) | frozenset(
-        ("unlocks", ref) for ref in perk.get("unlocks", [])
+    """The (target, operation) pairs a perk's modifiers name, what it unlocks, and the effects it
+    adds to a bound weapon."""
+    return (
+        frozenset((m["target"], m["operation"]) for m in perk.get("modifiers", []))
+        | frozenset(("unlocks", ref) for ref in perk.get("unlocks", []))
+        | frozenset(("bound_weapon_effects", e["effect"], e.get("parameter")) for e in perk.get("bound_weapon_effects", []))
     )
 
 
@@ -46,11 +49,15 @@ class TestPerkCatalogue(unittest.TestCase):
         self.assertGreaterEqual(len(perks()), 60)
 
     def test_every_perk_emits_trained_modifiers_from_itself(self):
-        """A perk changes a number or unlocks something (a maneuver, a template, a material);
-        an unlock-only perk needs no modifier to justify it (docs/core/actions.md#maneuvers)."""
+        """A perk changes a number, unlocks something (a maneuver, a template, a material), or adds
+        an effect to a bound weapon (docs/modules/magic.md#bound-weapons); an unlock-only perk
+        needs no modifier to justify it (docs/core/actions.md#maneuvers)."""
         for perk in perks():
             with self.subTest(perk=perk["key"]):
-                self.assertTrue(perk.get("modifiers") or perk.get("unlocks"), "a perk emits modifiers or unlocks something")
+                self.assertTrue(
+                    perk.get("modifiers") or perk.get("unlocks") or perk.get("bound_weapon_effects"),
+                    "a perk emits modifiers, unlocks something, or adds a bound weapon effect",
+                )
                 for modifier in perk.get("modifiers", []):
                     self.assertEqual(modifier["source"], f"feature:{perk['key']}")
                     self.assertEqual(modifier["origin"], "core:origin/trained")

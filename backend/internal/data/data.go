@@ -401,6 +401,9 @@ type Effect struct {
 	// ParameterCategory is the kind of row a parameter must name, if any (docs/core/integrity.md).
 	ParameterCategory string  `json:"parameter_category"`
 	BaseCost          float64 `json:"baseCost"`
+	// Phase is the effect's five-phase element, if any; a coating or an elemental enchantment
+	// gives it to a bound weapon (docs/core/casting.md#bound-weapons).
+	Phase string `json:"phase"`
 }
 
 // Feature is what a dev operation needs of one row of features/core.json: its kind and ranks.
@@ -414,6 +417,11 @@ type Feature struct {
 	Modifiers []map[string]any `json:"modifiers"`
 	// Share is what the perk lends to allies in range (docs/core/share.md); nil for most.
 	Share *Share `json:"share"`
+	// Unlocks are the refs the perk unlocks; a core:material ref is a bound weapon's material.
+	Unlocks []string `json:"unlocks"`
+	// BoundWeaponEffects are the on-hit effects the perk adds to the holder's bound weapons
+	// (docs/modules/magic.md#bound-weapons).
+	BoundWeaponEffects []AppliedEffect `json:"bound_weapon_effects"`
 }
 
 // Share is a perk's share object: the group it lends to, how far, and for how long.
@@ -579,12 +587,19 @@ type CastingSave struct {
 // the heaviest armor category worn.
 type Casting struct {
 	SummonLimit   int64            `json:"summon_limit"` // active summons before perks (docs/core/casting.md#summons)
+	BoundWeapon   BoundWeapon      `json:"bound_weapon"`
 	Save          CastingSave      `json:"save"`
 	ArmorPenalty  map[string]int64 `json:"armor_penalty"`
 	PreventedBy   []string         `json:"prevented_by"`
 	SkillDiscount SkillDiscount    `json:"skill_discount"`
 	SpellCost     SpellCost        `json:"spell_cost"`
 	Research      Research         `json:"research"`
+}
+
+// BoundWeapon is what a conjured weapon starts as (docs/modules/magic.md#bound-weapons).
+type BoundWeapon struct {
+	Material   string `json:"material"`    // core:material/<key>
+	DamageType string `json:"damage_type"` // a damage_types.json key
 }
 
 // SpellCost holds the spell cost formula's coefficients (docs/modules/magic.md#cost-formula).
@@ -763,6 +778,7 @@ type Ruleset struct {
 	Items             map[string]Item      // core:<category>/<key>
 	MaterialPercent   map[string]int64     // material key: valueFactor * 100
 	MaterialDefense   map[string]int64     // a material ref: its armor.defense, added to an armor piece's drBase
+	MaterialAttack    map[string]int64     // a material ref: its weapon.attack (a bound weapon's attack)
 	DiceLadder        [][]string           // combat/dice_ladder.json: rungs of equal dice, smallest first
 	Sizes             map[string]Size      // combat/dice_ladder.json: undersized, normal, oversized
 	MonsterLevel      map[string]int64     // monster key
@@ -1387,12 +1403,15 @@ func (loader *rulesetLoader) loadItems(ruleset *Ruleset) {
 			Key         string
 			ValueFactor float64
 			Armor       struct{ Defense int64 }
+			Weapon      struct{ Attack int64 }
 		}
 	}
 	loader.read("materials/core.json", &materials)
 	ruleset.MaterialPercent = map[string]int64{}
 	ruleset.MaterialDefense = map[string]int64{}
+	ruleset.MaterialAttack = map[string]int64{}
 	for _, material := range materials.Materials {
+		ruleset.MaterialAttack["core:material/"+material.Key] = material.Weapon.Attack
 		ruleset.MaterialPercent[material.Key] = int64(math.RoundToEven(material.ValueFactor * 100))
 		ruleset.MaterialDefense["core:material/"+material.Key] = material.Armor.Defense
 	}
