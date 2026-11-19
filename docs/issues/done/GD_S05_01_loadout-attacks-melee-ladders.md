@@ -1,5 +1,6 @@
 #### GD_S05_01_loadout-attacks-melee-ladders Attacks by loadout, the jab, the full attack, and the melee perk ladders
-- Status: review
+- Status: done
+- Merged: #253, 2026-11-19
 - Priority: medium
 - Needs: M3-27, M5-67
 - Was: M3-28
