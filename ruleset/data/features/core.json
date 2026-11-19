@@ -1537,6 +1537,177 @@
       ]
     },
     {
+      "key": "tempered_conjuring",
+      "label": "Tempered Conjuring",
+      "description": "Your conjured weapons come out as steel, not iron: weapon attack 5.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 6,
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/orange_magic"
+            ],
+            "min": 40
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:material/steel"
+      ]
+    },
+    {
+      "key": "piercing_conjuring",
+      "label": "Piercing Conjuring",
+      "description": "Your conjured edge finds the seams: a hit with a bound weapon ignores a quarter of armor DR.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 10,
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/orange_magic"
+            ],
+            "min": 50
+          }
+        ],
+        "perks": [
+          {
+            "perk": "core:feature/tempered_conjuring"
+          }
+        ]
+      },
+      "ranks": 1,
+      "bound_weapon_effects": [
+        {
+          "effect": "core:effect/armor_pierce",
+          "magnitude": 25
+        }
+      ]
+    },
+    {
+      "key": "lingering_conjuring",
+      "label": "Lingering Conjuring",
+      "description": "Your conjured weapons leave their magic in the wound: 2 damage a tick for 10 seconds, of the weapon's damage type.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 12,
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/orange_magic"
+            ],
+            "min": 55
+          }
+        ],
+        "perks": [
+          {
+            "perk": "core:feature/tempered_conjuring"
+          }
+        ]
+      },
+      "ranks": 1,
+      "bound_weapon_effects": [
+        {
+          "effect": "core:effect/lingering_damage",
+          "magnitude": 2,
+          "duration": 10
+        }
+      ]
+    },
+    {
+      "key": "hallowed_conjuring",
+      "label": "Hallowed Conjuring",
+      "description": "Your conjured weapons burn the dead: +4 damage against undead.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 14,
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/orange_magic"
+            ],
+            "min": 60
+          }
+        ],
+        "perks": [
+          {
+            "perk": "core:feature/piercing_conjuring"
+          }
+        ]
+      },
+      "ranks": 1,
+      "bound_weapon_effects": [
+        {
+          "effect": "core:effect/bane",
+          "parameter": "undead",
+          "magnitude": 4
+        }
+      ]
+    },
+    {
+      "key": "unbinding_edge",
+      "label": "Unbinding Edge",
+      "description": "Magic meets magic: a hit with a bound weapon ends a summoned creature.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 18,
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/orange_magic"
+            ],
+            "min": 70
+          }
+        ],
+        "perks": [
+          {
+            "perk": "core:feature/hallowed_conjuring"
+          }
+        ]
+      },
+      "ranks": 1,
+      "bound_weapon_effects": [
+        {
+          "effect": "core:effect/banish_summoned"
+        }
+      ]
+    },
+    {
+      "key": "glassfire_conjuring",
+      "label": "Glassfire Conjuring",
+      "description": "Your conjured weapons are volcanic glass: weapon attack 6, and still no phase.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 20,
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/orange_magic"
+            ],
+            "min": 75
+          }
+        ],
+        "perks": [
+          {
+            "perk": "core:feature/tempered_conjuring"
+          }
+        ]
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:material/obsidian"
+      ]
+    },
+    {
       "key": "summon_host",
       "label": "Host",
       "description": "A small army answers you: you keep three summons at once.",

@@ -829,6 +829,21 @@ def check_references(
                             sid, namespaced_ref_index
                         ):
                             errors.append(f"prereq skill {sid} does not exist")
+            # A bound weapon's on-hit effects (docs/modules/magic.md#bound-weapons) resolve and
+            # declare the enchantment channel.
+            for applied in f.get("bound_weapon_effects", []) or []:
+                eid = applied.get("effect") if isinstance(applied, dict) else None
+                if not isinstance(eid, str):
+                    continue
+                if not resolve_namespaced_ref(eid, namespaced_ref_index):
+                    errors.append(f"feature '{f.get('key', '?')}': bound weapon effect {eid!r} does not resolve")
+                elif not validate_effect_channel(eid, "enchantment", effect_channels):
+                    declared = effect_channels.get(eid, set()) if effect_channels else set()
+                    errors.append(
+                        _format_channel_violation(
+                            eid, CHANNEL_REQUIREMENTS["enchantment"], declared, f"feature '{f.get('key', '?')}' ({rel_path})"
+                        )
+                    )
 
     elif coll_name == "effects":
         for e in data.get("effects", []):

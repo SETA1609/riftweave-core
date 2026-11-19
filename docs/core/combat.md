@@ -1,6 +1,6 @@
 # Combat pipeline
 
-Modified: 2026-11-17
+Modified: 2026-11-19
 
 One attack, in order, from the roll to the HP lost. Every step reads the actor snapshot and data; none calls another system ([contract.md](contract.md)). The numbers are in `ruleset/data/combat/pipeline.json` (formula trees), `ruleset/data/combat/damage_types.json` (tags), and `ruleset/data/resolution/core.json` (the d100 function). [`docs/modules/combat.md`](../modules/combat.md) keeps the TTRPG and video-game commentary and the worked examples; this file is the order of operations they share. An attack is a weapon strike or an offensive spell; both run this order, and the attack's `delivery` decides which defense bands it meets. A cast's damage runs steps 2 to 8 with the cast check as its attack roll ([casting.md](casting.md#damage-to-a-target), M3-18). Save rolls for instant spells are in [casting.md](casting.md#delivery-and-saves); the magic layers (absorption, phase resistance) are not specified here. [U]
 
@@ -33,16 +33,20 @@ One attack, in order, from the roll to the HP lost. Every step reads the actor s
               if the attack names an ability: damage = max(damage + attribute_modifier, 0)
               if a called shot: damage = floor(damage * the location's damage_multiplier)
               if a maneuver: damage = floor(damage * the maneuver's damage_multiplier)
+              bane: damage += magnitude of each weapon bane whose parameter is the defender's creature_type
 4. crit       if crit: damage = crit_damage(damage)                 formula tree
 5. area       if evaded an area attack: damage = area_evade_damage(damage)   formula tree
 6. DR         if the damage type has tag armor_dr_applies:
               dr = armor_dr + shield_dr (the carried shield's, plus defender mods on shield_dr)
               dr = pierce_dr(dr) if the type also has armor_pierce_partial
+              dr = dr - floor(dr * pierce / 100), pierce = the weapon's armor_pierce magnitudes, at most 100
               damage = damage - dr
 7. resist     damage = damage - resist[damage_type]
 8. hp         lost = max(damage, 0); hp = max(hp - lost, 0)
 9. riders     on a hit (not evaded, not blocked), the called shot's riders are listed for the caller,
               and a maneuver's effects; with a maneuver the result also gives its ap and stamina
+              weapon_effects: the weapon's lingering_damage (of the attack's damage type) and, against
+              a defender with the summoned flag, banish_summoned
 ```
 Each subtraction stops at zero before the next step: a step never raises damage. Dice and rolls are inputs, so a vector pins them. The reference does not roll. `window` is the defender's crit window from [resolution.md](resolution.md) (`crit_window + LCK // crit_window_per_two_luck`).
 
@@ -77,6 +81,21 @@ The defender's perks reach the pipeline as `defender.modifiers`, stacked by [mod
 - **Instant stays out.** An `instant` attack meets no band, so no perk blocks or evades it; its defense is the save ([casting.md](casting.md#delivery-and-saves)). [V 2026-11-06, owner rule in M2-06]
 - **Perks hook on the stances.** With no defender roll there is no crit reaction, so Riposte and Bulwark read a window of the band instead, and only in their stance (owner pick, 2026-11-16). The band's lowest rolls are its highest margins, next to the hit band: the attacker only just failed to hit clean. [A]
 - **The caller applies the stagger.** `stagger_ap` is the AP the attacker loses on their next turn; the pipeline reports it and the caller spends it, as it runs a riposte's `counter`. [A]
+
+## Weapon effects
+
+`attacker.weapon_effects` are the on-hit effects of the weapon, such as a bound weapon's perk
+enchantments ([casting.md](casting.md#bound-weapons)). Each is an applied effect:
+
+| Effect | Step | What it does |
+| --- | --- | --- |
+| `armor_pierce` | 6 | ignores `magnitude` percent of the armor and shield DR, rounded down in the defender's favour; several add, at most 100 |
+| `bane` | 3 | `+magnitude` damage when its `parameter` is the defender's `creature_type` (`undead`, `beast`, ...); a bane with no `parameter` adds nothing |
+| `lingering_damage` | 9 | listed in `weapon_effects` on a hit, with the attack's damage type as its parameter (the attack's type always wins, even over a parameter the input carries; a bound weapon's own effect already carries its type): damage over time for the caller to run |
+| `banish_summoned` | 9 | listed on a hit when the defender has the `summoned` flag; the caller ends that summon. Against a creature that was not summoned it does nothing |
+
+On a miss, an evade, or a block `weapon_effects` is empty; without weapon effects the field is
+left out. Other effects in the list are passed through on a hit, for the caller. [A]
 
 ## Situations and called shots
 

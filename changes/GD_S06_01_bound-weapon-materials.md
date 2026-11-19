@@ -1,0 +1,4 @@
+### GD_S06_01_bound-weapon-materials Bound weapons have a material, perks, and enchants
+- Added: the `magic` damage type, reduced by armor DR and by `resist` `magic`; a bound weapon spell's cast returns the conjured weapon (`bound_weapon`), iron by default (`casting/core.json`), with no phase and `magic` damage until a coating or an elemental enchantment sets the type and phase.
+- Added: the bound weapon perk ladder (Tempered, Piercing, Lingering, Hallowed, and Glassfire Conjuring, and Unbinding Edge), with `bound_weapon_effects` on features and the effects `bane`, `banish_summoned`, and `lingering_damage`; the combat pipeline reads `attacker.weapon_effects` and `defender.creature_type`.
+- Changed: `armor_pierce` is no longer reserved; the Lich Acolyte gains a Bound Blade attack and resists `magic`.
