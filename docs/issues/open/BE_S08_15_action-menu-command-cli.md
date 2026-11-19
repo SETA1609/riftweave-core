@@ -1,0 +1,15 @@
+#### BE_S08_15_action-menu-command-cli What a character can do on their turn, and what it costs: the action menu command and the CLI screen (backend)
+- Status: todo
+- Priority: medium
+- Needs: GD_S08_14_action-menu-rules, BE_S08_07_encounter-tracker-cli
+- Modified: 2026-11-19
+- Do: Owner request, 2026-11-19: the backend half of the action menu that `GD_S08_14_action-menu-rules` specifies.
+  - **The command:** an `action_menu` contract command (`backend/contract/action_menu.json`) and its Go core in `backend/internal/actionmenu/`, registered in `backend/core/core.go`. It runs the same vectors as the Python reference through every transport.
+  - **From a session:** given a stored actor and the encounter's state (whose turn, AP left, current SP and mana, active summons, from `BE_S08_07_encounter-tracker-cli`), the caller passes nothing it can read from the session [A].
+  - **The CLI screen:** in the human CLI and the TUI, the current turn of the encounter tracker shows the menu. Entries are grouped by kind, each with AP, stamina, and mana, and the AP left at the top. An entry that is not available is dimmed with its reason (`not enough AP`, `no mana`, `hands do not fit`, `only while prone`, `no summon out`).
+  - **Picking an entry:** picking an attack, a jab, a full attack, or a maneuver opens the attack resolver with the actor's loadout and the AP filled in; picking any other entry records it as the turn's step and spends its AP [A]. After each step the menu shows again with the new AP left.
+  - **The agent CLI:** gets `riftweave action-menu` with the same JSON in and out.
+- Keys: `action_menu` (command), `backend/internal/actionmenu`, the `action_menu` screen
+- Files: ~12 (backend/contract/action_menu.json, backend/internal/actionmenu/actionmenu.go, actionmenu_test.go, backend/core/core.go, backend/cmd/riftweave/main.go, backend/cmd/riftweave/play/action_menu.go, play_test.go, docs/backend/cli.md, docs/backend/app-layout.md, the contract diagram, docs/decisions/BE_S08_15_action-menu-command-cli.md, changes/BE_S08_15_action-menu-command-cli.md)
+- See: docs/core/actions.md, backend/contract/actions.json, backend/contract/attack_sequence.json, docs/issues/open/BE_S08_07_encounter-tracker-cli.md, docs/backend/app-layout.md
+- Done when: every `action_menu` vector passes in Go through every transport; a TUI test walks a turn: the menu, an attack that spends the AP, then the menu again with the full attack dimmed for `ap`.
