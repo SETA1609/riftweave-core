@@ -197,8 +197,9 @@ A cast whose spell has a `core:effect/bound_weapon` effect also returns the conj
 weapon       the effect's parameter: the base it copies (core:weapon/<key>)
 skill        the weapon's skill
 dice         the weapon's damage dice
-material     casting.bound_weapon.material, or the material the caster's latest perk
-             unlocks (a core:material ref in its unlocks)
+material     casting.bound_weapon.material, or the material unlocked (a core:material ref
+             in its unlocks) by the held perk with the highest prerequisite level, then
+             the higher weapon.attack; the order of caster.perks does not matter
 attack       that material's weapon.attack
 damage_type  casting.bound_weapon.damage_type (magic), or the type of the coating or the
              enchantment the input names (core:effect/damage_<type>; the enchantment wins)

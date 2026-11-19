@@ -90,8 +90,8 @@ enchantments ([casting.md](casting.md#bound-weapons)). Each is an applied effect
 | Effect | Step | What it does |
 | --- | --- | --- |
 | `armor_pierce` | 6 | ignores `magnitude` percent of the armor and shield DR, rounded down in the defender's favour; several add, at most 100 |
-| `bane` | 3 | `+magnitude` damage when its `parameter` is the defender's `creature_type` (`undead`, `beast`, ...) |
-| `lingering_damage` | 9 | listed in `weapon_effects` on a hit, with the attack's damage type as its parameter: damage over time for the caller to run |
+| `bane` | 3 | `+magnitude` damage when its `parameter` is the defender's `creature_type` (`undead`, `beast`, ...); a bane with no `parameter` adds nothing |
+| `lingering_damage` | 9 | listed in `weapon_effects` on a hit, with the attack's damage type as its parameter (the attack's type always wins, even over a parameter the input carries; a bound weapon's own effect already carries its type): damage over time for the caller to run |
 | `banish_summoned` | 9 | listed on a hit when the defender has the `summoned` flag; the caller ends that summon. Against a creature that was not summoned it does nothing |
 
 On a miss, an evade, or a block `weapon_effects` is empty; without weapon effects the field is

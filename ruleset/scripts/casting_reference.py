@@ -169,13 +169,20 @@ def bound_weapon(spell, vector, rules):
     features = {f"core:feature/{row['key']}": row for row in load_data("features/core.json")["features"]}
     perks = [features[ref] for ref in vector["caster"].get("perks", []) if ref in features]
     material = rules["bound_weapon"]["material"]
-    effects = []
-    for perk in perks:
-        unlocked = [ref for ref in perk.get("unlocks", []) if ref.startswith("core:material/")]
-        if unlocked:
-            material = unlocked[-1]
-        effects += [dict(effect) for effect in perk.get("bound_weapon_effects", [])]
     materials = {f"core:material/{row['key']}": row for row in load_data("materials/core.json")["materials"]}
+    effects = []
+    # The material of the unlocking perk highest on the ladder (its prerequisite level), then the
+    # higher weapon.attack, then the key: never the order the caller lists perks in.
+    best = None
+    for perk in perks:
+        for ref in perk.get("unlocks", []):
+            if ref.startswith("core:material/"):
+                rank = (perk.get("prerequisite", {}).get("level", 0), materials[ref].get("weapon", {}).get("attack", 0), ref)
+                if best is None or rank > best:
+                    best = rank
+        effects += [dict(effect) for effect in perk.get("bound_weapon_effects", [])]
+    if best is not None:
+        material = best[2]
     registry = {f"core:effect/{row['key']}": row for row in load_data("effects/core.json")["effects"]}
     damage_type, phase = rules["bound_weapon"]["damage_type"], None
     for field, channel in (("coating", "coating"), ("enchantment", "enchantment")):

@@ -3265,6 +3265,34 @@
     }
   },
   {
+    "name": "weapon effects: a bane with no parameter adds nothing, even to a defender with no creature type",
+    "attacker": {
+      "skill": 70,
+      "roll": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_effects": [
+        {
+          "effect": "core:effect/bane",
+          "magnitude": 4
+        }
+      ]
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30,
+      "armor_dr": 2
+    },
+    "damage": {
+      "roll": 6,
+      "type": "magic"
+    },
+    "expect": {
+      "damage": 4
+    }
+  },
+  {
     "name": "weapon effects: bane against undead does nothing to a beast",
     "attacker": {
       "skill": 70,
@@ -3416,6 +3444,48 @@
     },
     "expect": {
       "outcome": "miss",
+      "weapon_effects": []
+    }
+  },
+  {
+    "name": "weapon effects: nothing lands on a block",
+    "attacker": {
+      "skill": 72,
+      "roll": 52,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_effects": [
+        {
+          "effect": "core:effect/lingering_damage",
+          "magnitude": 2,
+          "duration": 10
+        },
+        {
+          "effect": "core:effect/banish_summoned"
+        }
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      },
+      "shield_dr": 2,
+      "shields_skill": 40,
+      "stance": "block",
+      "flags": [
+        "summoned"
+      ]
+    },
+    "damage": {
+      "roll": 8,
+      "type": "magic"
+    },
+    "expect": {
+      "outcome": "blocked",
       "weapon_effects": []
     }
   }

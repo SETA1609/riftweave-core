@@ -125,7 +125,7 @@ const (
 )
 
 // boundWeapon is the weapon the spell conjures, or nil when it conjures none: the base it
-// copies, the default material or the latest a held perk unlocks, the default damage type or
+// copies, the default material or the one the highest held perk unlocks, the default damage type or
 // the coating's or enchantment's, and every held perk's on-hit effects.
 func boundWeapon(ruleset *data.Ruleset, spell *data.Spell, input *Input) (*BoundWeapon, error) {
 	var index int = slices.IndexFunc(spell.Effects, func(applied data.AppliedEffect) bool { return applied.Effect == boundWeaponEffect })
@@ -143,14 +143,21 @@ func boundWeapon(ruleset *data.Ruleset, spell *data.Spell, input *Input) (*Bound
 		Material: rules.Material, DamageType: rules.DamageType, Effects: []json.RawMessage{},
 	}
 	var effects []map[string]any
+	// The material of the unlocking perk highest on the ladder (its prerequisite level), then the
+	// higher weapon.attack, then the ref: never the order the caller lists perks in.
+	var bestLevel, bestAttack int64 = -1, -1
 	for _, perkRef := range input.Caster.Perks {
 		perk, ok := ruleset.Features.Get(strings.TrimPrefix(perkRef, "core:feature/"))
 		if !ok {
 			continue
 		}
 		for _, unlocked := range perk.Unlocks {
-			if strings.HasPrefix(unlocked, materialPrefix) {
-				weapon.Material = unlocked
+			if !strings.HasPrefix(unlocked, materialPrefix) {
+				continue
+			}
+			var level, attack int64 = perk.Prerequisite.Level, ruleset.MaterialAttack[unlocked]
+			if level > bestLevel || (level == bestLevel && (attack > bestAttack || (attack == bestAttack && unlocked > weapon.Material))) {
+				bestLevel, bestAttack, weapon.Material = level, attack, unlocked
 			}
 		}
 		for _, applied := range perk.BoundWeaponEffects {

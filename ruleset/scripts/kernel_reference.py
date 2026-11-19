@@ -511,7 +511,8 @@ def run_combat(vector):
     # The weapon's effects (docs/core/combat.md#weapon-effects).
     weapon_effects = attacker.get("weapon_effects")
     for applied in weapon_effects or []:
-        if applied["effect"] == "core:effect/bane" and applied.get("parameter") == defender.get("creature_type"):
+        # A bane needs a parameter, as in Go: no parameter matches no creature type, not a defender without one.
+        if applied["effect"] == "core:effect/bane" and applied.get("parameter") and applied["parameter"] == defender.get("creature_type"):
             amount += applied["magnitude"]
     if crit:
         amount = evaluate_formula(pipeline["crit_damage"], {}, {"damage": amount})

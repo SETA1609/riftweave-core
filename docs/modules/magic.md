@@ -263,7 +263,8 @@ every bound weapon, Bound Bow included. (GD_S06_01, owner rules of 2026-11-14.)
 - **Perks upgrade it, one step at a time.** A perk changes the material by listing it in
   `unlocks` (a `core:material/<key>` ref: a modifier holds only a number, so the perk names it),
   or adds on-hit effects in `bound_weapon_effects` (applied effects from the shared pool with
-  the `enchantment` channel). The material of the latest held perk that unlocks one wins; every
+  the `enchantment` channel). The material of the held perk highest on the ladder (prerequisite level, then the
+  material's attack) wins, whatever order the perks are listed in; every
   held perk's effects add.
 
 | Perk | Level | Needs | Gives |
