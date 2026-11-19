@@ -217,6 +217,7 @@ classDiagram
         modifiers modifiers
         enum range
         List~key~ situations
+        boolean summoning
     }
     class combat_result {
         integer ap
@@ -472,6 +473,7 @@ classDiagram
         modifiers modifiers
         object packet
         List~string~ removed_sources
+        boolean summoning
         string target
         integer value
     }

@@ -25,6 +25,10 @@
           "type": "string"
         }
       },
+      "summoning": {
+        "type": "boolean",
+        "description": "Whether the holder has an active summon; a while_summoning modifier counts only when true (docs/core/modifier.md)."
+      },
       "packet": {
         "type": "object",
         "properties": {

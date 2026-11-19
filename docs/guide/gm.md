@@ -56,6 +56,8 @@ If no skill fits, use an attribute: its value × 10 is the target.
 
 **Conditions you have to invent.** Pick the nearest [condition](../modules/conditions.md) instead of writing a new one. A held-down character is restrained, and a dazed one is staggered.
 
+**A hybrid summoner beside a summon.** Bonded Vanguard, Bonded Marksman, Kindred Mind and the Ascendant perks hold only while the summoner has a summon out (a minion does not count): their attribute bonuses drop the moment the last one goes. Pincer Strike needs a ruling each attack: call the `beside_summon` situation when the summoner and a summon are both engaging the same foe this turn (the summon attacked it, or is in melee with it). No situation, no +10.
+
 **Allies who lend CHA.** A bard or a skald's `inspire` reaches every ally within its range in units, which you measure on the map or call by eye in the theatre of the mind: within shouting distance, about 6 squares. Track it like any timed effect, with a die turned to the turns left. If two characters inspire the same ally, only the bigger bonus counts on each attribute, so a second bard helps only when the first is out of range or out of turns ([share](../core/share.md)).
 
 **A bonded summoner's bonuses.** Kindred Focus, Shared Wellspring, and Elemental Kinship hold only while the summoner has a summon out; a minion does not count. You track one thing: whether at least one summon is still out. When the last one is slain, banished, or dismissed, the bonuses end at once, so the summoner's next spell rolls and costs without them. A second summon adds nothing more ([magic](../modules/magic.md#the-bonded-summoner)).

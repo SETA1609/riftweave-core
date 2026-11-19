@@ -1,6 +1,6 @@
 # Combat
 
-Modified: 2026-11-17
+Modified: 2026-11-19
 
 Commentary on the combat rules: what they are for, how they fit together, and worked examples. It holds no rule of its own. Every rule here is owned by a file in `docs/core/`, has its numbers in `ruleset/data/`, and is pinned by a vector in `ruleset/tests/vectors/`. **If this file and `docs/core/` disagree, `docs/core/` wins** and this file is the bug.
 
@@ -98,6 +98,7 @@ The rows are in `ruleset/data/combat/situations.json`; the order and the stackin
 | Three-quarters cover | −20 on attacks against the target |
 | Full cover | cannot be targeted by ranged attacks |
 | Flanking (two allies on opposite sides) | +10 on melee attacks |
+| Beside your summon (you and a summon of yours attack the same target) | nothing, unless a perk adds to `beside_summon_attack` (Pincer Strike: +10, melee or ranged) |
 | Difficult terrain | each move costs 2 AP; no disengage |
 | Attacker prone | −20 on melee attacks; no ranged attacks without a perk |
 | Target prone | +10 on ranged attacks against it |
