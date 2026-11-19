@@ -1,0 +1,16 @@
+#### GD_S19_08_spell-ap-by-level A minor spell costs less AP than a major one
+- Status: todo
+- Priority: medium
+- Needs: —
+- Modified: 2026-11-19
+- Do: Owner request, 2026-11-19 (borrowed from Divinity: Original Sin 2, where each skill has its own AP).
+  - **The gap:** every cast is 3 AP and only mana scales ([V 2026-11-19, `docs/core/actions.md#costs`]: "a petty spark and a heavy bolt both cost 3 AP"). With a pool of 3 to 5, a minor buff takes the whole turn, so at a table a caster casts only damage.
+  - **The rule** [A, numbers checked in the spec step]:
+    - by the spell's `level` (1 to 30 today): levels 1 to 5 cost 2 AP, 6 to 20 cost 3, and 21 and up cost 4;
+    - or a perk (Quick Casting) that takes 1 AP off a spell up to a mana cost.
+  - The spec step picks one, keeps the cast AP in data (`actions/core.json` or `casting/`), and keeps it the same in real time through `stamina_per_ap`.
+  - **Unchanged:** mana still pays for the spell, and a cantrip never costs 0 AP.
+- Keys: `cast` AP by level band, or the Quick Casting perk
+- Files: ~7 (docs/core/actions.md, docs/core/casting.md, ruleset/data/actions/core.json, ruleset/data/casting/core.json, ruleset/tests/vectors/casting.json, ruleset/tests/vectors/actions.json, ruleset/scripts/casting_reference.py)
+- See: docs/core/casting.md, ruleset/data/spells/core.json, docs/core/actions.md#costs
+- Done when: `casting` vectors give the AP of a level 1, 10, and 24 spell (or with and without the perk), in Python and Go.

@@ -1,0 +1,15 @@
+#### GD_S19_09_initiative-ties One rule for initiative ties
+- Status: todo
+- Priority: medium
+- Needs: —
+- Modified: 2026-11-19
+- Do: Owner request, 2026-11-19.
+  - **The conflict:** initiative is `PER` plus modifiers (`docs/core/derived.md`). Two documents break ties differently [V 2026-11-19]:
+    - docs/modules/combat.md §7: ties go to the higher AGI, then a d100 roll-off, lowest first;
+    - `BE_S08_07_encounter-tracker-cli`: ties go to AGI, then LCK, then the GM's order.
+  - **The rule:** pick one and write it once in `docs/core/derived.md` (or `combat.md`), with the other places linking to it. The offline tracker cannot roll a shared d100 between devices, so AGI, then LCK, then a d100 roll-off is the likely choice [A].
+  - Initiative stays fixed (no roll), as in Fallout's sequence of 2 × PER [V 2026-11-19, `derived/core.json`].
+- Keys: none (a rule in the docs, and a tie list in the `derived` result if the tracker needs one)
+- Files: ~4 (docs/core/derived.md, docs/modules/combat.md, docs/issues/open/BE_S08_07_encounter-tracker-cli.md, ruleset/tests/vectors/derived_examples.json)
+- See: docs/modules/combat.md#7-initiative, docs/issues/open/BE_S08_07_encounter-tracker-cli.md
+- Done when: one tie rule appears in one place and the others link to it; the encounter tracker's issue names it.

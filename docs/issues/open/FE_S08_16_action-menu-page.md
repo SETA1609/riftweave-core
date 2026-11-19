@@ -1,0 +1,15 @@
+#### FE_S08_16_action-menu-page What a character can do on their turn, and what it costs: the action menu in the app (frontend)
+- Status: todo
+- Priority: medium
+- Needs: BE_S08_15_action-menu-command-cli, FE_S08_08_encounter-tracker-page
+- Modified: 2026-11-19
+- Do: Owner request, 2026-11-19: the browser half of the action menu (`BE_S08_15_action-menu-command-cli`).
+  - **Where it shows:** a panel on the player's turn, in the encounter tracker (`FE_S08_08_encounter-tracker-page`) and in the player's own session page once `FE_S08_02_player-session-page` exists [A]. It shows the AP left as a bar and the current stamina and mana.
+  - **The list:** the menu's entries grouped by kind (actions, attacks, maneuvers, stances, spells, orders), each with its AP, stamina, and mana cost.
+  - **Not available:** an entry that is not available now is disabled, with its reason as text, not by colour alone (accessibility) [A].
+  - **Picking an entry:** an attack, a jab, a full attack, or a maneuver opens the attack screen (`frontend/src/app/attack.ts`) filled in from the actor and the loadout; any other entry is recorded as the turn's step. The panel then refreshes from `action_menu` with the new AP left.
+  - **Holds no rule:** the panel computes no cost itself; everything comes from `action_menu`, in the API and the WebAssembly app alike.
+- Keys: `rw-action-menu`
+- Files: ~9 (frontend/src/app/action-menu.ts, action-menu.html, action-menu.css, action-menu.spec.ts, frontend/src/app/api.ts, the encounter tracker's template, frontend/e2e/action-menu.spec.ts, docs/decisions/FE_S08_16_action-menu-page.md, changes/FE_S08_16_action-menu-page.md)
+- See: docs/issues/open/BE_S08_15_action-menu-command-cli.md, docs/issues/open/FE_S08_08_encounter-tracker-page.md, frontend/src/app/attack.ts, docs/backend/app-layout.md
+- Done when: a Vitest spec renders each kind and a disabled entry with its reason; a Playwright spec plays a turn in the API and the WebAssembly app: the menu, an attack, then the menu again with less AP and the full attack disabled.

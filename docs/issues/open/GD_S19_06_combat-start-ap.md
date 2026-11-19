@@ -1,0 +1,13 @@
+#### GD_S19_06_combat-start-ap A fight starts on a partial pool
+- Status: todo
+- Priority: medium
+- Needs: GD_S19_05_ap-bank-cap-and-guard
+- Modified: 2026-11-19
+- Do: Owner request, 2026-11-19 (borrowed from Divinity: Original Sin 2, which starts a fight on 4 of a maximum 6).
+  - **The gap:** initiative is a fixed number (PER), so the same actor always acts first, on a full pool, with a bank carried from before the fight [V 2026-11-19, `docs/core/derived.md`, `docs/core/actions.md#pool`].
+  - **The rule** [A]: a fight starts each actor on `pool - 1` AP (at least 2) with no carried AP. A perk or a surprise round may change that; an ambusher acting in a surprise round gets the full pool.
+  - **Out of combat:** a short rest still refills the pool. Whether a pool refills when a fight ends is settled here too: today only a short rest does [V 2026-11-19].
+- Keys: `pool.combat_start` in `actions/core.json`
+- Files: ~5 (docs/core/actions.md, ruleset/data/actions/core.json, ruleset/schemas/action.schema.json, ruleset/tests/vectors/actions.json, ruleset/scripts/kernel_reference.py)
+- See: docs/core/actions.md#pool, docs/issues/open/BE_S08_07_encounter-tracker-cli.md
+- Done when: `actions` vectors give the starting AP for pools 3, 4, and 5, and a surprise round; the encounter tracker's `encounter_start` step has the rule to read.
