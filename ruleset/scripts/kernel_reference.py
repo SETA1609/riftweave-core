@@ -924,7 +924,9 @@ def run_command_summons(vector):
         from casting_reference import load_data as load_casting_data  # spell bases resolved
 
         spells = {row["key"]: row for row in load_casting_data("spells/core.json")["spells"]}
-        for applied in spells.get(held, {}).get("effects", []):
+        if held not in spells:
+            return {"error": f"{held} is not a spell"}
+        for applied in spells[held]["effects"]:
             if applied["effect"] != "core:effect/command_summons":
                 continue
             for name in summons:

@@ -12,7 +12,7 @@
           "name": { "type": "string", "minLength": 1, "description": "Who commands; it makes the commander's modifiers a source of their own." },
           "perk": { "$ref": "common.json#/definitions/key", "description": "A feature with a command object, which an order uses." },
           "modifiers": { "$ref": "common.json#/definitions/modifiers", "description": "The commander's modifiers; those on command change an order's cost." },
-          "concentration": { "oneOf": [ { "type": "null" }, { "$ref": "common.json#/definitions/key" } ], "description": "The spell the commander holds; a held command gives its bonus only while held." }
+          "concentration": { "oneOf": [ { "type": "null" }, { "$ref": "common.json#/definitions/key" } ], "description": "The spell the commander holds; a held command gives its bonus only while held. A key that names no spell is an error." }
         },
         "required": ["name"],
         "additionalProperties": false

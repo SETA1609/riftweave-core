@@ -80,18 +80,20 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		}
 	}
 	if commander.Concentration != nil {
-		if spell, ok := ruleset.Spells.Get(*commander.Concentration); ok {
-			for _, applied := range spell.Effects {
-				if applied.Effect != heldEffect {
-					continue
-				}
-				for _, name := range input.Summons {
-					result.Modifiers[name] = append(result.Modifiers[name], modifier.Modifier{
-						Target: "attack_roll", Operation: modifier.Add, Value: applied.Magnitude,
-						Source: "command:" + spell.Key + ":" + commander.Name, Origin: moraleOrigin,
-						Duration: "while_applied",
-					})
-				}
+		spell, ok := ruleset.Spells.Get(*commander.Concentration)
+		if !ok {
+			return Result{}, fmt.Errorf("%s is not a spell", *commander.Concentration)
+		}
+		for _, applied := range spell.Effects {
+			if applied.Effect != heldEffect {
+				continue
+			}
+			for _, name := range input.Summons {
+				result.Modifiers[name] = append(result.Modifiers[name], modifier.Modifier{
+					Target: "attack_roll", Operation: modifier.Add, Value: applied.Magnitude,
+					Source: "command:" + spell.Key + ":" + commander.Name, Origin: moraleOrigin,
+					Duration: "while_applied",
+				})
 			}
 		}
 	}

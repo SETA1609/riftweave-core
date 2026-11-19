@@ -61,5 +61,8 @@ result  ap:        the order's cost after the commander's modifiers on `command`
 ```
 
 An order with no `commander.perk`, a perk with no `command` object, a target that is not an
-active summon, or more than one target with `reach: "one"` is an error. The kernel has no party: the
+active summon, or more than one target with `reach: "one"` is an error, and so is a
+`commander.concentration` that names no spell (`<key> is not a spell`). A concentration spell with
+no `command_summons` effect gives the summons nothing; it is casting's one-held-spell rule that
+ends the held command when such a spell starts. The kernel has no party: the
 caller passes each summon its modifiers, as with `share` ([share.md](share.md#no-party-in-the-kernel)).
