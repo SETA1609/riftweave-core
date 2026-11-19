@@ -53,7 +53,7 @@
           },
           "modifiers": {
             "$ref": "common.json#/definitions/modifiers",
-            "description": "The attacker's perks: adds on full_attack_strikes, full_attack_off_strikes, mainhand_penalty, offhand_penalty, and the carry_through, reaping_arc, scissor_cut, and can_circle_cut grants."
+            "description": "The attacker's perks and fighting stance (the stance command's modifiers): adds on full_attack_strikes, full_attack_off_strikes, mainhand_penalty, offhand_penalty, attack_roll (every strike), attack_single_opponent (every strike with one foe in reach), attack_after_parry (the first main-hand strike when after_parry), and unarmed_damage (an empty main hand), and the carry_through, reaping_arc, scissor_cut, can_circle_cut, off_hand_parries, and carry_on_crit grants."
           }
         },
         "additionalProperties": false,
@@ -118,6 +118,10 @@
       "summoning": {
         "type": "boolean",
         "description": "Whether the attacker has an active summon (not a minion), for every strike's while_summoning modifiers, as in combat. Default false."
+      },
+      "after_parry": {
+        "type": "boolean",
+        "description": "The attacker parried a hit since their last strike: attack_after_parry adds to the first main-hand strike (Espada y Daga, docs/core/combat.md#fighting-stances)."
       }
     },
     "additionalProperties": false,

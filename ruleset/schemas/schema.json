@@ -315,11 +315,18 @@
       "type": "object",
       "properties": {
         "main": { "$ref": "#/definitions/mainHand" },
-        "off": { "$ref": "#/definitions/offHand" }
+        "off": { "$ref": "#/definitions/offHand" },
+        "main_skill": { "$ref": "#/definitions/skillRef", "description": "The main-hand weapon's skill, which a stance may need." },
+        "off_skill": { "$ref": "#/definitions/skillRef", "description": "The off-hand weapon's skill, which a stance may need." }
       },
       "required": ["main", "off"],
       "additionalProperties": false,
       "description": "What an actor's two hands hold."
+    },
+    "stanceRef": {
+      "type": "string",
+      "pattern": "^(core:stance/[a-z0-9_]+|module:[a-z0-9_]+/stance/[a-z0-9_]+)$",
+      "description": "A reference to a fighting stance in stances/core.json (docs/core/combat.md#fighting-stances)."
     },
     "maneuverRef": {
       "type": "string",

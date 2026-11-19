@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Fighting stances",
+  "description": "Fighting stances: toggles a perk unlocks, each tied to what the hands hold (docs/core/combat.md#fighting-stances, GD_S05_02). At most one is active; its modifiers carry the martial origin, the source stance:<key>, and while_applied.",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "rules": {
+      "type": "object",
+      "properties": {
+        "turn_start_ap": { "type": "integer", "minimum": 0, "description": "AP to take or change a stance at the start of the actor's own turn." },
+        "mid_turn_ap": { "type": "integer", "minimum": 0, "description": "AP to take or change a stance later in the turn." },
+        "parry_band_divisor": { "type": "integer", "minimum": 1, "description": "A parry band is floor(weapon skill / this)." }
+      },
+      "required": ["turn_start_ap", "mid_turn_ap", "parry_band_divisor"],
+      "additionalProperties": false
+    },
+    "stances": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/stance" }
+    }
+  },
+  "required": ["rules", "stances"],
+  "additionalProperties": false,
+  "definitions": {
+    "stance": {
+      "type": "object",
+      "properties": {
+        "key": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "label": { "type": "string" },
+        "description": { "type": "string" },
+        "main": { "type": "array", "items": { "$ref": "schema.json#/definitions/mainHand" }, "minItems": 1, "uniqueItems": true, "description": "The main hand it needs; any when left out." },
+        "off": { "type": "array", "items": { "$ref": "schema.json#/definitions/offHand" }, "minItems": 1, "uniqueItems": true, "description": "The off hand it needs; any when left out." },
+        "main_skills": { "type": "array", "items": { "$ref": "schema.json#/definitions/skillRef" }, "minItems": 1, "uniqueItems": true, "description": "The main-hand weapon must use one of these skills; any when left out." },
+        "off_skills": { "type": "array", "items": { "$ref": "schema.json#/definitions/skillRef" }, "minItems": 1, "uniqueItems": true, "description": "The off-hand weapon must use one of these skills; any when left out." },
+        "modifiers": { "type": "array", "items": { "$ref": "schema.json#/definitions/modifier" }, "minItems": 1, "description": "What the stance does while active: origin core:origin/martial, source stance:<key>, duration while_applied." },
+        "source": { "$ref": "schema.json#/definitions/sourceRef" }
+      },
+      "required": ["key", "label", "description", "modifiers"],
+      "additionalProperties": false
+    }
+  }
+}

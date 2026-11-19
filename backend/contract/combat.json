@@ -74,6 +74,7 @@
           },
           "shield_dr": {"type": "integer", "minimum": 0, "description": "The carried shield's DR; it adds to armor_dr against types with armor_dr_applies."},
           "shields_skill": {"type": "integer", "description": "The shields skill the block stance's band reads."},
+          "weapon_skill": {"type": "integer", "description": "The held weapon's skill: a parry grant reads it for the parry band, floor(weapon_skill / stances.rules.parry_band_divisor), and block_with_weapon lets the block band read it when it beats shields_skill (docs/core/combat.md#fighting-stances). A parry grant without it is an error."},
           "stance": {"type": "string", "description": "The stance the defender declared on their turn: dodge (doubles the evasion band) or block (adds a block band; needs shield_dr and shields_skill). Any other value is an error."},
           "loadout": { "$ref": "../../ruleset/schemas/schema.json#/definitions/loadout", "description": "What the defender holds; with a weapon in each hand, the defender's modifiers on two_weapon_evasion_band widen the evasion band (Crossed Guard)." },
           "creature_type": {
@@ -88,7 +89,8 @@
             "description": "Flags from conditions (prone, blinded, invisible); a situation row with `when` reads them."
           },
           "modifiers": {
-            "$ref": "common.json#/definitions/modifiers"
+            "$ref": "common.json#/definitions/modifiers",
+            "description": "The defender's perks and fighting stance (the stance command's modifiers): adds on evasion, evasion_band, shields, shield_dr, and two_weapon_evasion_band, and the block_magic, bulwark, riposte, parry, and block_with_weapon grants."
           }
         },
         "additionalProperties": false,
@@ -207,6 +209,15 @@
         "minimum": 0,
         "description": "The block stance's band, under the evasion band: a margin in it is blocked."
       },
+      "parry_rate": {
+        "type": "integer",
+        "minimum": 0,
+        "description": "A parrying stance's band, under the block band: a margin in it is blocked and parried. 0 without a parry grant, against non-physical damage, or for an instant attack."
+      },
+      "parried": {
+        "type": "boolean",
+        "description": "The parry band stopped the hit (outcome blocked)."
+      },
       "stagger_ap": {
         "type": "integer",
         "minimum": 0,
@@ -280,6 +291,8 @@
       "blocked",
       "evasion_rate",
       "block_rate",
+      "parry_rate",
+      "parried",
       "damage",
       "hp"
     ]
