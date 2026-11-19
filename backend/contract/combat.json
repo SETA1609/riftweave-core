@@ -75,6 +75,7 @@
           "shield_dr": {"type": "integer", "minimum": 0, "description": "The carried shield's DR; it adds to armor_dr against types with armor_dr_applies."},
           "shields_skill": {"type": "integer", "description": "The shields skill the block stance's band reads."},
           "stance": {"type": "string", "description": "The stance the defender declared on their turn: dodge (doubles the evasion band) or block (adds a block band; needs shield_dr and shields_skill). Any other value is an error."},
+          "loadout": { "$ref": "../../ruleset/schemas/schema.json#/definitions/loadout", "description": "What the defender holds; with a weapon in each hand, the defender's modifiers on two_weapon_evasion_band widen the evasion band (Crossed Guard)." },
           "creature_type": {
             "$ref": "common.json#/definitions/key",
             "description": "The defender's creature type (undead, beast, ...), which a weapon's bane reads."
@@ -148,6 +149,7 @@
         "$ref": "common.json#/definitions/key",
         "description": "A called_shots key in ruleset/data/combat/situations.json."
       },
+      "loadout": { "$ref": "../../ruleset/schemas/schema.json#/definitions/loadout", "description": "What the attacker holds: a maneuver's AP is then the loadout's attack AP (attack_sequences/core.json) plus its own. A loadout no attack sequence covers is an error." },
       "maneuver": {
         "$ref": "common.json#/definitions/key",
         "description": "A maneuvers key in ruleset/data/maneuvers/core.json: the attack is performed as that maneuver (docs/core/actions.md#maneuvers)."
