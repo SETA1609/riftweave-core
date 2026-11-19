@@ -1,5 +1,6 @@
 #### GD_S05_02_fighting-stances Fighting stances: toggles a perk unlocks
-- Status: review
+- Status: done
+- Merged: #254, 2026-11-19
 - Priority: medium
 - Needs: M3-27, GD_S05_01_loadout-attacks-melee-ladders
 - Was: M3-29
