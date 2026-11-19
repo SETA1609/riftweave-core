@@ -43,7 +43,7 @@ A pistol in each holster and nothing heavier than leather: fires from the hip, s
 
 - **Attributes:** PER 8, AGI 8, END 5, INT 5, STR 4, WIL 4, CHA 4, LCK 4; with Gifted and Small Frame, AGI 10, PER 9, END 6, INT 6.
 - **Tag skills:** Guns, Evasion, Light Armor.
-- **Mechanics:** a flintlock pistol rolls 1d10 and is `light` and `loading` ([weapons.md](../weapons.md)). **Hip Shot** at 12 makes guns crit on 5 more, on top of Gap Finder, so the gunslinger crits more than any other ranged build. AGI 10 gives a pool of 5 AP, with the archer's AGI 9 the largest of the three. The defense is the duelist's: the evasion band, the dodge stance, and **Riposte** at 13. The build skips the creation perk Fast Shot, which forbids aimed shots.
+- **Mechanics:** a flintlock pistol rolls 1d10 and is `light` and `loading` ([weapons.md](../weapons.md)). **Hip Shot** at 12 makes guns crit on 5 more, on top of Gap Finder, so the gunslinger crits more than any other ranged build. AGI 10 gives a pool of 5 AP, with the archer's AGI 9 the largest of the three. The defense is the fencer's: the evasion band, the dodge stance, and **Riposte** at 13. The build skips the creation perk Fast Shot, which forbids aimed shots.
 - **Level by level:**
   - **2–9, the draw.** Gap Finder, Sidestep, Ready Hand, Acrobat, **Steady Aim** at 6, Armored Evasion, Easy Stride, Fleet-Footed.
   - **10–18, the duel.** Streetwise, Hardened Hide, **Hip Shot** at 12 (Guns 60), **Riposte** at 13 (Evasion 60), two more Hardened Hide, Ever Watchful, Night Eyes, **Sniper** at 18.

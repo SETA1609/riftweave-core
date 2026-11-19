@@ -38,17 +38,17 @@ A maul or a warhammer in both hands and heavy armor: no shield, every blow a big
 - **At level 30:** Blunt 100, Heavy Armor 100, Intimidation 63, Blades 40, and 30 to 40 in the filler skills.
 - **Outside the build:** a sword works at Blades 40; a shield works at Shields 30 with Shield Training's +2, though without the block ladder. Ranged attacks and magic are untrained.
 
-## Duelist
+## Fencer
 
 A blade in light armor and no shield: slips the blow instead of taking it, and answers a dodge with a riposte.
 
 - **Attributes:** AGI 8, STR 6, PER 6, END 6, INT 4, WIL 4, CHA 4, LCK 4; with Gifted and Small Frame (+1 AGI), AGI 10, STR 7, PER 7, END 7.
 - **Tag skills:** Blades, Evasion, Light Armor.
-- **Mechanics:** the evasion band is half the Evasion skill and the **dodge stance** (3 AP, 2 with Sidestep) doubles it, so a duelist at Evasion 100 evades every success with a margin under 100 while dodging; **Riposte** turns an evade in the band's lowest rolls into a free attack. Light armor keeps the band wide ([combat.md](../../core/combat.md#reading-the-steps)). Stealth gives the opening strike (Backstab, Assassin).
+- **Mechanics:** the evasion band is half the Evasion skill and the **dodge stance** (3 AP, 2 with Sidestep) doubles it, so a fencer at Evasion 100 evades every success with a margin under 100 while dodging; **Riposte** turns an evade in the band's lowest rolls into a free attack. Light armor keeps the band wide ([combat.md](../../core/combat.md#reading-the-steps)). Stealth gives the opening strike (Backstab, Assassin).
 - **Level by level:**
   - **2–7, the footwork.** Sidestep, Ever Watchful, Ready Hand, Acrobat, Full Weight, **Armored Evasion** at 7.
-  - **8–13, the blade.** Hardened Hide, Easy Stride, Fleet Footed, Carry Through, **Duelist** at 12 (Blades 60), **Riposte** at 13 (Evasion 60).
+  - **8–13, the blade.** Hardened Hide, Easy Stride, Fleet Footed, Carry Through, **Fencer's Measure** at 12 (Blades 60), **Riposte** at 13 (Evasion 60).
   - **14–26, the shadow.** Catch Your Breath, Berserker, Hardened Hide, Night Eyes, Ghost and Backstab as Stealth reaches 50, Precise Thrust (Piercing 50, a rapier's skill), the third Hardened Hide, Iron Stomach, Streetwise, Brawler twice, **Assassin** at 26 (Stealth 70).
   - **27–30.** Pack Mule twice, Locksmith, Light Fingers; see the gaps.
 - **At level 30:** Evasion 100, Blades 99, Stealth 70, Light Armor 50, Piercing 50.
-- **Outside the build:** a duelist has little HP and DR, so an instant spell, which meets no band, and a crit, which always hits, are what kill one. A shield works at the untrained Shields skill. A bow works at its untrained skill; the ranged builds are in [ranged.md](ranged.md).
+- **Outside the build:** a fencer has little HP and DR, so an instant spell, which meets no band, and a crit, which always hits, are what kill one. A shield works at the untrained Shields skill. A bow works at its untrained skill; the ranged builds are in [ranged.md](ranged.md).

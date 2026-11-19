@@ -341,6 +341,9 @@ type Maneuver struct {
 type Loadout struct {
 	Main string `json:"main"`
 	Off  string `json:"off"`
+	// MainSkill and OffSkill are the weapons' skills, which a fighting stance may need.
+	MainSkill string `json:"main_skill"`
+	OffSkill  string `json:"off_skill"`
 }
 
 // HoldsTwoWeapons is a loadout with a weapon in each hand.
@@ -403,6 +406,44 @@ func (sequences *AttackSequences) Covering(main, off string) *AttackSequence {
 		}
 	}
 	return nil
+}
+
+// Stance is one row of stances/core.json: a fighting stance a perk unlocks, what the hands
+// must hold, and its modifiers (docs/core/combat.md#fighting-stances). An empty list is any.
+type Stance struct {
+	Key        string              `json:"key"`
+	Main       []string            `json:"main"`
+	Off        []string            `json:"off"`
+	MainSkills []string            `json:"main_skills"`
+	OffSkills  []string            `json:"off_skills"`
+	Modifiers  []modifier.Modifier `json:"modifiers"`
+}
+
+// Misfit is why a loadout does not hold what the stance needs, nil when it fits.
+func (stance *Stance) Misfit(loadout Loadout) error {
+	if (len(stance.Main) > 0 && !slices.Contains(stance.Main, loadout.Main)) || (len(stance.Off) > 0 && !slices.Contains(stance.Off, loadout.Off)) {
+		return fmt.Errorf("stance %q does not fit main hand %q and off hand %q", stance.Key, loadout.Main, loadout.Off)
+	}
+	for _, hand := range []struct {
+		name   string
+		skills []string
+		skill  string
+	}{{"main", stance.MainSkills, loadout.MainSkill}, {"off", stance.OffSkills, loadout.OffSkill}} {
+		if len(hand.skills) > 0 && !slices.Contains(hand.skills, hand.skill) {
+			return fmt.Errorf("stance %q needs a %s-hand weapon of skill %s", stance.Key, hand.name, strings.Join(hand.skills, " or "))
+		}
+	}
+	return nil
+}
+
+// Stances is stances/core.json: the AP rules and the rows.
+type Stances struct {
+	Rules struct {
+		TurnStartAP      int64 `json:"turn_start_ap"`
+		MidTurnAP        int64 `json:"mid_turn_ap"`
+		ParryBandDivisor int64 `json:"parry_band_divisor"`
+	} `json:"rules"`
+	Rows []Stance `json:"stances"`
 }
 
 // HazardCheck is a check a hazard asks for: a row of checks/core.json, and the hazard's
@@ -833,17 +874,19 @@ type Ruleset struct {
 	Maneuvers    Table[Maneuver] // maneuvers/core.json, by key
 	// AttackSequences is attack_sequences/core.json: how strikes stack by loadout.
 	AttackSequences AttackSequences
-	Hazards         Table[Hazard]
-	Spells          Table[Spell]
-	Features        Table[Feature]     // features/core.json, for dev perks (docs/backend/dev-mode.md)
-	SummonBonuses   Table[SummonBonus] // summons/bonuses.json, by ref core:summon_bonus/<key>
-	Effects         Table[Effect]      // by ref, core:effect/<key>
-	Casting         Casting
-	Origins         modifier.OriginPolicies
-	OriginReplaces  map[string]bool   // origin ref: its policy is `replace`
-	OriginFor       map[string]string // emitter: the origin ref it defaults to
-	SecondsPerTurn  int64             // actions/core.json
-	StaminaPerAP    int64             // actions/core.json: stamina one AP is worth (docs/core/actions.md)
+	// Stances is stances/core.json: the fighting stances a perk unlocks.
+	Stances        Stances
+	Hazards        Table[Hazard]
+	Spells         Table[Spell]
+	Features       Table[Feature]     // features/core.json, for dev perks (docs/backend/dev-mode.md)
+	SummonBonuses  Table[SummonBonus] // summons/bonuses.json, by ref core:summon_bonus/<key>
+	Effects        Table[Effect]      // by ref, core:effect/<key>
+	Casting        Casting
+	Origins        modifier.OriginPolicies
+	OriginReplaces map[string]bool   // origin ref: its policy is `replace`
+	OriginFor      map[string]string // emitter: the origin ref it defaults to
+	SecondsPerTurn int64             // actions/core.json
+	StaminaPerAP   int64             // actions/core.json: stamina one AP is worth (docs/core/actions.md)
 	// ToxicityDecayPerSecond is how fast stored toxicity falls (rest/core.json).
 	ToxicityDecayPerSecond int64
 	Conditions             Conditions
@@ -1113,6 +1156,7 @@ func Load(fileSystem fs.FS, modules ...fs.FS) (*Ruleset, error) {
 	}
 	loader.read("maneuvers/core.json", &maneuvers)
 	loader.read("attack_sequences/core.json", &ruleset.AttackSequences)
+	loader.read("stances/core.json", &ruleset.Stances)
 	ruleset.Maneuvers = newTable(maneuvers.Maneuvers, func(maneuver *Maneuver) string { return maneuver.Key })
 
 	var origins struct {

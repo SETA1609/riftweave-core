@@ -126,6 +126,7 @@ COLLECTION_CATEGORIES = {
     "skill_groups": "skill_group",
     "summon_bonuses": "summon_bonus",
     "maneuvers": "maneuver",
+    "stances": "stance",
 }
 
 
@@ -1942,6 +1943,27 @@ def check_maneuver_unlocks(maneuvers, features):
     ]
 
 
+def check_stances(stances, features):
+    """Fighting stances (docs/core/combat.md#fighting-stances): a perk unlocks each, and every
+    modifier a stance emits carries origin core:origin/martial, source stance:<key>, and
+    duration while_applied, so a stance's bonus stacks as martial and ends with the stance."""
+    unlocked = {ref for row in features for ref in row.get("unlocks") or []}
+    errors = []
+    for row in stances:
+        key = row.get("key")
+        if f"core:stance/{key}" not in unlocked:
+            errors.append(f"stance '{key}': no perk unlocks it (add core:stance/{key} to a perk's unlocks)")
+        for mod in row.get("modifiers", []):
+            target = mod.get("target")
+            if mod.get("origin") != "core:origin/martial":
+                errors.append(f"stance '{key}': modifier {target} needs origin core:origin/martial")
+            if mod.get("source") != f"stance:{key}":
+                errors.append(f"stance '{key}': modifier {target} needs source stance:{key}")
+            if mod.get("duration") != "while_applied":
+                errors.append(f"stance '{key}': modifier {target} needs duration while_applied")
+    return errors
+
+
 OFF_HAND_WEAPONS = ("light_weapon", "weapon")
 
 
@@ -2086,6 +2108,16 @@ def main():
     if unlock_errors:
         print("  \u2717  maneuvers (each unlocked by a perk)")
         for e in unlock_errors:
+            print(f"       {e}")
+        failed += 1
+
+    stance_errors = check_stances(
+        json.loads((DATA_DIR / "stances" / "core.json").read_text())["stances"],
+        json.loads((DATA_DIR / "features" / "core.json").read_text())["features"],
+    )
+    if stance_errors:
+        print("  \u2717  stances (each unlocked by a perk, martial and while applied)")
+        for e in stance_errors:
             print(f"       {e}")
         failed += 1
 

@@ -11,7 +11,7 @@ arrow runs from a prerequisite perk to the perk that needs it, labelled with the
 when more than 1. A rounded box is a prerequisite from another category. A ladder that stops
 early, or a perk nothing leads to, shows at a glance.
 
-125 perks: 63 on a ladder, 62 with no perk before or after them.
+122 perks: 55 on a ladder, 67 with no perk before or after them.
 
 ## Combat
 
@@ -76,10 +76,6 @@ graph LR
   arcane_reservoir["Arcane Reservoir (ranks 3)<br/>INT 6"]
   conjurer["Conjurer<br/>Lv 6 · orange_magic 50"]
   summon_retinue["Retinue<br/>Lv 14 · orange_magic or black_magic 60"]
-  bonded_vanguard["Bonded Vanguard<br/>Lv 6 · orange_magic or black_magic 30 · blades or blunt or piercing 30"]
-  bonded_marksman["Bonded Marksman<br/>Lv 6 · orange_magic or black_magic 30 · bows or crossbows or guns or throwing_weapons 30"]
-  vanguard_ascendant["Vanguard Ascendant<br/>Lv 18 · orange_magic or black_magic 60 · blades or blunt or piercing 60"]
-  marksman_ascendant["Marksman Ascendant<br/>Lv 18 · orange_magic or black_magic 60 · bows or crossbows or guns or throwing_weapons 60"]
   tempered_conjuring["Tempered Conjuring<br/>Lv 6 · orange_magic 40"]
   piercing_conjuring["Piercing Conjuring<br/>Lv 10 · orange_magic 50"]
   lingering_conjuring["Lingering Conjuring<br/>Lv 12 · orange_magic 55"]
@@ -90,17 +86,11 @@ graph LR
   summon_dire["Dire Summons<br/>Lv 8 · orange_magic 40"]
   summon_elder["Elder Summons<br/>Lv 16 · orange_magic 60"]
   summon_ancient["Ancient Summons<br/>Lv 24 · orange_magic 80"]
-  field_command["Field Command<br/>Lv 6 · orange_magic or black_magic 40 · CHA 5"]
-  sharp_orders["Sharp Orders<br/>Lv 10 · orange_magic or black_magic 45 · CHA 5"]
-  voice_of_the_host["Voice of the Host<br/>Lv 14 · orange_magic or black_magic 60 · CHA 5"]
-  iron_drill["Iron Drill<br/>Lv 18 · orange_magic or black_magic 65 · CHA 5"]
   kindred_focus["Kindred Focus<br/>Lv 6 · orange_magic or black_magic 40"]
   shared_wellspring["Shared Wellspring<br/>Lv 12 · orange_magic or black_magic 55"]
   elemental_kinship["Elemental Kinship<br/>Lv 18 · orange_magic or black_magic 70"]
   archmage["Archmage<br/>Lv 24 · INT 9"]
   conjurer --> summon_retinue
-  bonded_vanguard --> vanguard_ascendant
-  bonded_marksman --> marksman_ascendant
   tempered_conjuring --> piercing_conjuring
   tempered_conjuring --> lingering_conjuring
   piercing_conjuring --> hallowed_conjuring
@@ -109,9 +99,6 @@ graph LR
   summon_retinue --> summon_host
   summon_dire --> summon_elder
   summon_elder --> summon_ancient
-  field_command --> sharp_orders
-  sharp_orders --> voice_of_the_host
-  field_command --> iron_drill
   kindred_focus --> shared_wellspring
   kindred_focus --> elemental_kinship
   arcane_reservoir --> archmage
@@ -170,7 +157,14 @@ attributes, and level only.
 | Precise Thrust | combat | Lv 6 · piercing 50 · AGI 6 |
 | Ready Hand | combat | AGI 6 |
 | Steady Aim | combat | Lv 6 · bows or crossbows or guns or throwing_weapons 40 · PER 6 |
-| Duelist | combat | Lv 12 · blades 60 · AGI 7 |
+| Fencer's Measure | combat | Lv 12 · blades 60 · AGI 7 |
+| Espada y Daga | combat | Lv 8 · blades or piercing 40 · AGI 6 |
+| Buckler Play | combat | Lv 6 · shields 30 · AGI 5 |
+| Phalanx | combat | Lv 8 · piercing 40 · END 6 |
+| Long Guard | combat | Lv 10 · blades or blunt or piercing 50 · STR 6 |
+| Bare Knuckle | combat | Lv 6 · unarmed 30 · END 5 |
+| Forward Guard | combat | Lv 4 · STR 5 |
+| Low Guard | combat | Lv 4 · AGI 5 |
 | Catch Your Breath | combat | Lv 12 · END 7 |
 | Berserker | combat | Lv 12 · STR 7 |
 | Thrown Mastery | combat | Lv 12 · throwing_weapons 60 · AGI 7 |
@@ -182,8 +176,6 @@ attributes, and level only.
 | Elemental Harmony | magic | Lv 18 · INT 6 · WIL 6 |
 | Healer | magic | Lv 6 · green_magic 50 |
 | Illusionist | magic | Lv 6 · yellow_magic 50 |
-| Pincer Strike | magic | Lv 10 · orange_magic or black_magic 40 |
-| Kindred Mind | magic | Lv 12 · orange_magic or black_magic 50 |
 | Commanding Summons: Magic | magic | Lv 6 · orange_magic or black_magic 30 · CHA 6 |
 | Commanding Summons: Physical | magic | Lv 6 · orange_magic or black_magic 30 · CHA 6 |
 | Demonic Pact | magic | Lv 12 · orange_magic 50 |
