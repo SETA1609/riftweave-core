@@ -238,6 +238,10 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		if input.Attacker.ShieldDR == nil {
 			return Result{}, &data.MissingInputError{Subject: "a shield bash", Needs: "shield_dr"}
 		}
+		// The bash rolls on the Shields skill, never silently on the main-hand weapon's.
+		if input.Attacker.OffSkill == nil {
+			return Result{}, &data.MissingInputError{Subject: "a shield bash", Needs: "off_skill"}
+		}
 		var asLight data.Loadout = input.Loadout
 		asLight.Off = bash.AsOff
 		if row = ruleset.AttackSequences.Covering(asLight.Main, asLight.Off); row == nil {
@@ -362,7 +366,8 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		var roll Roll = rolls[0]
 		rolls = rolls[1:]
 		var foe int64 = strike.foe
-		var scissor bool = scissorLeft && strike.hand == "off" && struckByMain[foe]
+		// A shield has no weapon dice, so a bash is never the Scissor Cut strike.
+		var scissor bool = scissorLeft && strike.hand == "off" && struckByMain[foe] && !bashing
 		var damage Damage = input.Damage
 		var skill int64 = input.Attacker.Skill
 		var properties []string = input.Attacker.WeaponProperties

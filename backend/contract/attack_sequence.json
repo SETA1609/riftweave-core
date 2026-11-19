@@ -23,7 +23,7 @@
           "skill": { "type": "integer", "description": "The main-hand weapon skill." },
           "off_skill": {
             "type": "integer",
-            "description": "The off-hand weapon skill; the main-hand skill when left out."
+            "description": "The off-hand weapon skill; the main-hand skill when left out. A Boss Strike bash rolls on it (the Shields skill) and needs it."
           },
           "attributes": { "$ref": "common.json#/definitions/attributes" },
           "flags": {

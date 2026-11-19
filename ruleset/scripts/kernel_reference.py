@@ -681,6 +681,9 @@ def run_attack_sequence(vector):
     if bashing:
         if "shield_dr" not in attacker:
             return {"error": "a shield bash needs shield_dr"}
+        # The bash rolls on the Shields skill, never silently on the main-hand weapon's.
+        if "off_skill" not in attacker:
+            return {"error": "a shield bash needs off_skill"}
         row = attack_sequence_of({**vector["loadout"], "off": bash["as_off"]})
         if row is None:
             return {"error": no_sequence_error({**vector["loadout"], "off": bash["as_off"]})}
@@ -734,7 +737,8 @@ def run_attack_sequence(vector):
             return {"error": f"the {action} needs a roll for strike {len(strikes) + 1}"}
         roll = rolls.pop(0)
         foe, hand = strike["foe"], strike["hand"]
-        scissor = scissor_left and hand == "off" and foe in struck_by_main
+        # A shield has no weapon dice, so a bash is never the Scissor Cut strike.
+        scissor = scissor_left and hand == "off" and foe in struck_by_main and not bashing
         damage = dict(vector["off_damage"] if hand == "off" and "off_damage" in vector else vector["damage"])
         damage["roll"] = (roll["damage"] + unarmed) * (2 if scissor else 1)
         if bashing and hand == "off":

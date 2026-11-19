@@ -4231,5 +4231,143 @@
     "expect": {
       "error": "a shield bash needs shield_dr"
     }
+  },
+  {
+    "name": "boss strike: a bash is never the Scissor Cut strike: a shield has no weapon dice, so the bash deals shield_dr plus its roll",
+    "action": "full_attack",
+    "ap": 5,
+    "loadout": {
+      "main": "one_handed",
+      "off": "shield"
+    },
+    "attacker": {
+      "skill": 60,
+      "off_skill": 50,
+      "shield_dr": 3,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "boss_strike",
+          "operation": "add",
+          "value": 2,
+          "source": "feature:boss_strike",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "scissor_cut",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:scissor_cut",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 20,
+        "damage": 6
+      },
+      {
+        "attack": 20,
+        "damage": 2
+      }
+    ],
+    "expect": {
+      "action": "full_attack",
+      "sequence": "one_handed_and_light",
+      "ap": 5,
+      "stamina": 25,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -10,
+          "outcome": "hit",
+          "target": 50,
+          "margin": 30,
+          "crit": false,
+          "damage": 4,
+          "hp": 26,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "off",
+          "foe": 0,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 30,
+          "margin": 10,
+          "crit": false,
+          "damage": 3,
+          "hp": 23,
+          "carried": false,
+          "free": false,
+          "scissor": false,
+          "bash": true,
+          "stagger_ap": 0
+        }
+      ],
+      "hp": [
+        23
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "boss strike: a bash without off_skill is an error: it rolls on Shields, not the main-hand weapon",
+    "action": "jab",
+    "loadout": {
+      "main": "one_handed",
+      "off": "shield"
+    },
+    "attacker": {
+      "skill": 60,
+      "shield_dr": 3,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "boss_strike",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:boss_strike",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 20,
+        "damage": 2
+      }
+    ],
+    "expect": {
+      "error": "a shield bash needs off_skill"
+    }
   }
 ]

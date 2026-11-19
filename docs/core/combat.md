@@ -107,7 +107,7 @@ The Spell Ward table, END down and tier across (percent of the damage warded):
 
 ### The shield bash
 
-Boss Strike makes the carried shield (a buckler counts) a second weapon in the attack sequence ([attacks by loadout](#attacks-by-loadout)): `shield_bash` in `attack_sequences/core.json`. The off hand reads as a `light_weapon`, so the AP follow the light weapon row, and the bash rolls on the Shields skill (`off_skill`). Its damage is `shield_dr` plus the bash roll, bludgeoning.
+Boss Strike makes the carried shield (a buckler counts) a second weapon in the attack sequence ([attacks by loadout](#attacks-by-loadout)): `shield_bash` in `attack_sequences/core.json`. The off hand reads as a `light_weapon`, so the AP follow the light weapon row, and the bash rolls on the Shields skill (`off_skill`; a bash without it is an error, as without `shield_dr`, so it never rolls on the main-hand weapon's skill). Its damage is `shield_dr` plus the bash roll, bludgeoning. A shield has no weapon dice, so a bash is never the Scissor Cut strike. [V 2026-11-19]
 
 | Tier | Bash |
 | --- | --- |
