@@ -1,6 +1,6 @@
 # Quick start
 
-Modified: 2026-11-17
+Modified: 2026-11-19
 
 ## Play in your browser
 
@@ -91,6 +91,8 @@ Unspent AP carries over, up to 10. There is no bonus action and no reaction slot
 Spells work the same way on the matching magic skill: spend the mana first, then roll. Some spells land with no chance to dodge, and those allow a save instead.
 
 A summoned creature appears at your level. If you took a Commanding Summons perk, add half your CHA − 5 at rank 1, rounded down, or all of it at rank 2 (never below 0) to the creature's INT and WIL (magic) or STR, END, and AGI (physical), whichever the perk names, before you work out its HP and damage. With CHA 8 that is +3 on each.
+
+A bonded summoner's perks work only while one of your summons is out (not a minion). Kindred Focus adds +10 to every magic skill; Shared Wellspring makes your spells cost 20% less; Elemental Kinship adds +4 to a spell's damage when its element matches a summoned elemental's (a fire elemental out, a Fire Bolt). Two summons out still give each bonus once. When the last summon goes, so do the bonuses.
 
 A bard or a skald lends CHA to allies the same way. Spend the `inspire` action (2 AP): every ally within the perk's range adds half your CHA − 5 at rank 1, or all of it at rank 2, to INT and WIL (Bardic Inspiration) or STR, END, and AGI (Skald's War Chant) for 3 turns. Two bards do not add up: each ally keeps the bigger bonus on each attribute ([share](../core/share.md)).
 

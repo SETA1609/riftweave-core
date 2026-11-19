@@ -67,6 +67,13 @@
             },
             "description": "The caster's minions, oldest first: one summon group ref per creature, outside the summon limit (docs/core/casting.md#minions)."
           },
+          "summon_templates": {
+            "type": "array",
+            "items": {
+              "$ref": "common.json#/definitions/ref"
+            },
+            "description": "The element templates of the caster's active summons (core:monster_template/<key>), which Elemental Kinship reads: one per active summon, in the same order as summons, so a dismissed summon's template goes with it (docs/core/casting.md#the-bonded-summoner)."
+          },
           "perks": {
             "type": "array",
             "items": {

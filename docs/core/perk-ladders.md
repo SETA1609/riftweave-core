@@ -11,7 +11,7 @@ arrow runs from a prerequisite perk to the perk that needs it, labelled with the
 when more than 1. A rounded box is a prerequisite from another category. A ladder that stops
 early, or a perk nothing leads to, shows at a glance.
 
-104 perks: 43 on a ladder, 61 with no perk before or after them.
+107 perks: 46 on a ladder, 61 with no perk before or after them.
 
 ## Combat
 
@@ -70,6 +70,9 @@ graph LR
   summon_dire["Dire Summons<br/>Lv 8 · orange_magic 40"]
   summon_elder["Elder Summons<br/>Lv 16 · orange_magic 60"]
   summon_ancient["Ancient Summons<br/>Lv 24 · orange_magic 80"]
+  kindred_focus["Kindred Focus<br/>Lv 6 · orange_magic or black_magic 40"]
+  shared_wellspring["Shared Wellspring<br/>Lv 12 · orange_magic or black_magic 55"]
+  elemental_kinship["Elemental Kinship<br/>Lv 18 · orange_magic or black_magic 70"]
   archmage["Archmage<br/>Lv 24 · INT 9"]
   conjurer --> summon_retinue
   tempered_conjuring --> piercing_conjuring
@@ -80,6 +83,8 @@ graph LR
   summon_retinue --> summon_host
   summon_dire --> summon_elder
   summon_elder --> summon_ancient
+  kindred_focus --> shared_wellspring
+  kindred_focus --> elemental_kinship
   arcane_reservoir --> archmage
 ```
 

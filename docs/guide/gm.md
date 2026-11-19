@@ -58,6 +58,8 @@ If no skill fits, use an attribute: its value × 10 is the target.
 
 **Allies who lend CHA.** A bard or a skald's `inspire` reaches every ally within its range in units, which you measure on the map or call by eye in the theatre of the mind: within shouting distance, about 6 squares. Track it like any timed effect, with a die turned to the turns left. If two characters inspire the same ally, only the bigger bonus counts on each attribute, so a second bard helps only when the first is out of range or out of turns ([share](../core/share.md)).
 
+**A bonded summoner's bonuses.** Kindred Focus, Shared Wellspring, and Elemental Kinship hold only while the summoner has a summon out; a minion does not count. You track one thing: whether at least one summon is still out. When the last one is slain, banished, or dismissed, the bonuses end at once, so the summoner's next spell rolls and costs without them. A second summon adds nothing more ([magic](../modules/magic.md#the-bonded-summoner)).
+
 **What happens at 0 HP.** The core rules leave this to you. A simple default: at 0 HP a character is down and out of the fight, and an ally can bring them round with healing or a short rest. Decide before the first fight, and tell the players.
 
 ## A lighter sheet at the table

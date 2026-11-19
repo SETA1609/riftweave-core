@@ -188,6 +188,16 @@ Thrall and Summon Elemental ([composition.md](composition.md)): each overrides `
 `summon.count` (`1d3+1`: two to four), `summon.minion`, `concentration`, and the cost, and keeps its base's group
 and duration. [V 2026-11-16, `casting` vectors in Python and Go]
 
+## The bonded summoner
+
+Before the check, a cast resolves every modifier with `duration: while_summoning` against
+`caster.summons`: kept while a summon is out, dropped when the list is empty
+([modifier.md](modifier.md#order-for-one-numeric-target), [magic.md](../modules/magic.md#the-bonded-summoner)). After the
+save, each damage packet whose type is the `damage_type` of a template in `caster.summon_templates`
+(the element templates of the active summons, `core:monster_template/<key>`, one per active
+summon in the order of `caster.summons`) adds the sum of the
+live `bonded_element_damage` modifiers to its amount, before the combat steps. [A]
+
 ## Bound weapons
 
 A cast whose spell has a `core:effect/bound_weapon` effect also returns the conjured weapon

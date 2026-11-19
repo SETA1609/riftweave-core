@@ -22,11 +22,28 @@ def load_data(rel_path):
     return json.loads((DATA_DIR / rel_path).read_text())
 
 
+def summoning_modifiers(modifiers, active):
+    """Resolve `while_summoning` for a holder whose summon state is known: with an active summon
+    they hold while their source does (while_applied), without one they are dropped. A consumer
+    that knows the holder's summons calls this once; live_modifiers drops unresolved ones."""
+    resolved = []
+    for modifier in modifiers:
+        if modifier.get("duration") == "while_summoning":
+            if not active:
+                continue
+            modifier = {**modifier, "duration": "while_applied"}
+        resolved.append(modifier)
+    return resolved
+
+
 def live_modifiers(modifiers, elapsed_turns=0, removed_sources=()):
-    """Step 1 of docs/core/modifier.md: drop removed sources and elapsed `turns` modifiers."""
+    """Step 1 of docs/core/modifier.md: drop removed sources, elapsed `turns` modifiers, and
+    `while_summoning` modifiers that summoning_modifiers did not resolve."""
     live = []
     for modifier in modifiers:
         if modifier["source"] in removed_sources:
+            continue
+        if modifier.get("duration") == "while_summoning":
             continue
         if modifier.get("duration") == "turns" and elapsed_turns >= modifier["turns"]:
             continue
