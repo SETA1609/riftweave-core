@@ -58,11 +58,33 @@ type Modifier struct {
 // not in the map has no policy, which is an error.
 type OriginPolicies map[string]bool
 
-// Live drops the modifiers of removed sources and the `turns` modifiers that have elapsed.
+// Summoning resolves the `while_summoning` modifiers for a holder whose summon state is known:
+// with an active summon they hold while their source does (while_applied), without one they
+// are dropped. A consumer that knows the holder's summons calls it once on its input; every
+// other consumer leaves them unresolved, and Live drops them.
+func Summoning(modifiers []Modifier, active bool) []Modifier {
+	var resolved []Modifier = make([]Modifier, 0, len(modifiers))
+	for _, candidate := range modifiers {
+		if candidate.Duration == "while_summoning" {
+			if !active {
+				continue
+			}
+			candidate.Duration = "while_applied"
+		}
+		resolved = append(resolved, candidate)
+	}
+	return resolved
+}
+
+// Live drops the modifiers of removed sources, the `turns` modifiers that have elapsed, and the
+// `while_summoning` modifiers that Summoning did not resolve (no summon is known to be out).
 func Live(modifiers []Modifier, elapsedTurns int64, removedSources []string) []Modifier {
 	var live []Modifier = make([]Modifier, 0, len(modifiers))
 	for _, candidate := range modifiers {
 		if slices.Contains(removedSources, candidate.Source) {
+			continue
+		}
+		if candidate.Duration == "while_summoning" {
 			continue
 		}
 		if candidate.Duration == "turns" && elapsedTurns >= candidate.Turns {

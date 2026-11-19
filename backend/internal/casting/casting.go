@@ -265,10 +265,8 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		standing = append(standing, row)
 	}
 	var caster *Caster = &input.Caster
-	if len(caster.Summons) == 0 {
-		// A while_summoning modifier holds only while a summon is out (docs/core/casting.md#the-bonded-summoner).
-		input.Modifiers = slices.DeleteFunc(slices.Clone(input.Modifiers), func(m modifier.Modifier) bool { return m.Duration == "while_summoning" })
-	}
+	// A while_summoning modifier holds only while a summon is out (docs/core/casting.md#the-bonded-summoner).
+	input.Modifiers = modifier.Summoning(input.Modifiers, len(caster.Summons) > 0)
 	var skill string = spell.Color + "_magic"
 	skillValue, ok := caster.Skills[skill]
 	if !ok {

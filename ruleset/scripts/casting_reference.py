@@ -123,9 +123,7 @@ DEFENDER_FIELDS = ("hp", "armor_dr", "shield_dr", "shields_skill", "resist", "ev
 
 def apply_damage(spell, effects, check, vector, caster):
     """Each damage packet through combat steps 2 to 8, the cast check as the attack roll."""
-    from kernel_reference import run_combat  # kernel_reference imports this module
-
-    from kernel_reference import apply_modifiers  # kernel_reference imports this module
+    from kernel_reference import apply_modifiers, run_combat  # kernel_reference imports this module
 
     types = {row["key"] for row in load_data("combat/damage_types.json")["damage_types"]}
     templates = {f"core:monster_template/{row['key']}": row for row in load_data("monsters/templates.json")["monster_templates"]}
@@ -228,9 +226,10 @@ def run_casting(vector):
     except LookupError as error:
         return {"error": str(error)}
     caster = vector["caster"]
-    if not caster.get("summons"):
-        # A while_summoning modifier holds only while a summon is out (docs/core/casting.md#the-bonded-summoner).
-        vector = {**vector, "modifiers": [m for m in vector.get("modifiers", []) if m.get("duration") != "while_summoning"]}
+    from kernel_reference import summoning_modifiers  # kernel_reference imports this module
+
+    # A while_summoning modifier holds only while a summon is out (docs/core/casting.md#the-bonded-summoner).
+    vector = {**vector, "modifiers": summoning_modifiers(vector.get("modifiers", []), bool(caster.get("summons")))}
     skill = f"{spell['color']}_magic"
     if skill not in caster["skills"]:
         return {"error": f"casting {spell['key']} needs {skill}"}
