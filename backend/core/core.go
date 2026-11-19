@@ -228,9 +228,8 @@ type modifiersResult struct {
 }
 
 func runModifiers(ruleset *data.Ruleset, input modifiersInput) (modifiersResult, error) {
-	if !input.Summoning {
-		input.Modifiers = slices.DeleteFunc(slices.Clone(input.Modifiers), func(m modifier.Modifier) bool { return m.Duration == "while_summoning" })
-	}
+	// The one while_summoning rule, in the shared live step (docs/core/modifier.md).
+	input.Modifiers = modifier.Summoning(input.Modifiers, input.Summoning)
 	var targetModifiers []modifier.Modifier = input.Modifiers
 	if input.Target != nil {
 		targetModifiers = modifier.Target(input.Modifiers, *input.Target)

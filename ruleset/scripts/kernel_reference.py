@@ -138,10 +138,8 @@ def apply_resist(amount, tag, modifiers, elapsed_turns=0, removed_sources=()):
 
 
 def run_modifiers(vector):
-    modifiers = vector.get("modifiers", [])
-    if not vector.get("summoning"):
-        # A while_summoning modifier counts only while a summon is out (docs/core/modifier.md).
-        modifiers = [m for m in modifiers if m.get("duration") != "while_summoning"]
+    # The one while_summoning rule, in the shared live step (docs/core/modifier.md).
+    modifiers = summoning_modifiers(vector.get("modifiers", []), bool(vector.get("summoning")))
     elapsed = vector.get("elapsed_turns", 0)
     removed = vector.get("removed_sources", [])
     target = vector.get("target")
@@ -438,6 +436,9 @@ def maneuver_cost(maneuver):
 
 def run_combat(vector):
     """One attack, in the order of docs/core/combat.md. Dice and rolls are inputs."""
+    # The attacker's while_summoning modifiers, resolved once; beside_summon means a summon is out.
+    summoning = bool(vector.get("summoning")) or "beside_summon" in vector.get("situations", [])
+    vector = {**vector, "modifiers": summoning_modifiers(vector.get("modifiers", []), summoning)}
     pipeline = load_data("combat/pipeline.json")["pipeline"]
     types = {t["key"]: t for t in load_data("combat/damage_types.json")["damage_types"]}
     attacker, defender, damage = vector["attacker"], vector["defender"], vector["damage"]

@@ -217,6 +217,7 @@ classDiagram
         modifiers modifiers
         enum range
         List~key~ situations
+        boolean summoning
     }
     class combat_result {
         integer ap
