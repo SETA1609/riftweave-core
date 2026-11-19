@@ -1,5 +1,6 @@
 #### PO_S08_13_file-action-menu-issues File the action menu issues
-- Status: review
+- Status: done
+- Merged: #390, 2026-11-19
 - Priority: medium
 - Needs: —
 - Modified: 2026-11-19
