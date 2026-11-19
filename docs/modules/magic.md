@@ -223,6 +223,21 @@ Minions take none of this: no power or nature, no Commanding Summons bonus, and 
 archetype perk. They are the row at the caster's level with the `minion` template, and they do
 not count toward the summon limit ([casting.md](../core/casting.md#minions)). [V 2026-11-16, `test_spells.py`]
 
+**Charisma strengthens summons through a perk.** `commanding_summons_magic` and
+`commanding_summons_physical` each name a summon bonus, `core:summon_bonus/<key>`, from
+`summons/bonuses.json`: `magic` adds to INT and WIL, `physical` to STR, END, and AGI. When the
+caster summons, each bonus the caster holds adds the caster's CHA modifier, `CHA − 5`
+([attributes.md](./attributes.md#the-attribute-modifier)), to every attribute of its group, after
+the power and nature, through the same merge as a template's `attributes`, so END moves an authored
+`hitPoints` and the creature's mana and damage follow its new attributes. A CHA of 5 or below adds
+nothing; there is no penalty. Without a bonus perk, CHA changes nothing. A caster takes one group
+with one perk; the second perk adds the other group. [V 2026-11-12, `test_spells.py`]
+
+Each Commanding Summons perk has two ranks (M3-19). Rank 1 adds half the modifier, rank 2 the
+full modifier: the bonus row's `rank_share` is `[0.5, 1]`, and a rank adds
+`floor(max(CHA − 5, 0) × rank_share[rank − 1])`. At CHA 8 that is +1, then +3; at CHA 10, +2, then
++5. The caster's perks are refs at rank 1, or `{ "perk": ref, "rank": n }`. [V 2026-11-14, `test_spells.py`]
+
 ### The bonded summoner
 
 The first of three summoner archetypes (GD_S06_02; the commander and the hybrid follow): the
@@ -246,21 +261,6 @@ templates as `caster.summon_templates` ([casting.md](../core/casting.md#the-bond
 The summon emits nothing of its own: the perks are the caster's, the session hands their
 modifiers to the cast as it hands every perk's, and the cast drops the `while_summoning` ones when
 `caster.summons` is empty. The kernel gains no notion of a bond. [A]
-
-**Charisma strengthens summons through a perk.** `commanding_summons_magic` and
-`commanding_summons_physical` each name a summon bonus, `core:summon_bonus/<key>`, from
-`summons/bonuses.json`: `magic` adds to INT and WIL, `physical` to STR, END, and AGI. When the
-caster summons, each bonus the caster holds adds the caster's CHA modifier, `CHA − 5`
-([attributes.md](./attributes.md#the-attribute-modifier)), to every attribute of its group, after
-the power and nature, through the same merge as a template's `attributes`, so END moves an authored
-`hitPoints` and the creature's mana and damage follow its new attributes. A CHA of 5 or below adds
-nothing; there is no penalty. Without a bonus perk, CHA changes nothing. A caster takes one group
-with one perk; the second perk adds the other group. [V 2026-11-12, `test_spells.py`]
-
-Each Commanding Summons perk has two ranks (M3-19). Rank 1 adds half the modifier, rank 2 the
-full modifier: the bonus row's `rank_share` is `[0.5, 1]`, and a rank adds
-`floor(max(CHA − 5, 0) × rank_share[rank − 1])`. At CHA 8 that is +1, then +3; at CHA 10, +2, then
-+5. The caster's perks are refs at rank 1, or `{ "perk": ref, "rank": n }`. [V 2026-11-14, `test_spells.py`]
 
 ---
 

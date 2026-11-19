@@ -60,9 +60,6 @@ graph LR
   arcane_reservoir["Arcane Reservoir (ranks 3)<br/>INT 6"]
   conjurer["Conjurer<br/>Lv 6 · orange_magic 50"]
   summon_retinue["Retinue<br/>Lv 14 · orange_magic or black_magic 60"]
-  kindred_focus["Kindred Focus<br/>Lv 6 · orange_magic or black_magic 40"]
-  shared_wellspring["Shared Wellspring<br/>Lv 12 · orange_magic or black_magic 55"]
-  elemental_kinship["Elemental Kinship<br/>Lv 18 · orange_magic or black_magic 70"]
   tempered_conjuring["Tempered Conjuring<br/>Lv 6 · orange_magic 40"]
   piercing_conjuring["Piercing Conjuring<br/>Lv 10 · orange_magic 50"]
   lingering_conjuring["Lingering Conjuring<br/>Lv 12 · orange_magic 55"]
@@ -73,10 +70,11 @@ graph LR
   summon_dire["Dire Summons<br/>Lv 8 · orange_magic 40"]
   summon_elder["Elder Summons<br/>Lv 16 · orange_magic 60"]
   summon_ancient["Ancient Summons<br/>Lv 24 · orange_magic 80"]
+  kindred_focus["Kindred Focus<br/>Lv 6 · orange_magic or black_magic 40"]
+  shared_wellspring["Shared Wellspring<br/>Lv 12 · orange_magic or black_magic 55"]
+  elemental_kinship["Elemental Kinship<br/>Lv 18 · orange_magic or black_magic 70"]
   archmage["Archmage<br/>Lv 24 · INT 9"]
   conjurer --> summon_retinue
-  kindred_focus --> shared_wellspring
-  kindred_focus --> elemental_kinship
   tempered_conjuring --> piercing_conjuring
   tempered_conjuring --> lingering_conjuring
   piercing_conjuring --> hallowed_conjuring
@@ -85,6 +83,8 @@ graph LR
   summon_retinue --> summon_host
   summon_dire --> summon_elder
   summon_elder --> summon_ancient
+  kindred_focus --> shared_wellspring
+  kindred_focus --> elemental_kinship
   arcane_reservoir --> archmage
 ```
 
