@@ -200,7 +200,7 @@
             "while_summoning",
             "permanent"
           ],
-          "description": "When the modifier ends. while_applied and while_equipped end with their source; while_summoning holds only while the holder has an active summon (docs/modules/magic.md#the-bonded-summoner); turns ends after `turns` elapsed turns; uses is counted by the caller; permanent never ends."
+          "description": "When the modifier ends. while_applied and while_equipped end with their source; while_summoning holds only while the holder has an active summon (docs/core/modifier.md#order-for-one-numeric-target); turns ends after `turns` elapsed turns; uses is counted by the caller; permanent never ends."
         },
         "turns": {
           "type": "integer",

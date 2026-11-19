@@ -11,4 +11,4 @@ Date: 2026-11-19
 - **Verified:** the 8 bonded casting vectors pass in Python (420 tests) and Go (`go test ./...`); `validate.py` passes 52 of 52 files. [V 2026-11-19]
 - **A vector fixed before the data step:** two vectors first expected a failed check's margin as -5; a failed check reports `margin: null` (docs/core/resolution.md), so the tests commit was corrected, not the rule.
 - **Differences from the issue:** `docs/core/casting.md`, `docs/core/vectors.md`, `ruleset/schemas/schema.json`, `backend/contract/casting.json`, Go (`internal/casting`, `internal/data`), and the regenerated `perk-ladders.md` are files the issue did not list; `test_perks.py` needed no change, since its catalogue checks cover the three perks.
-- **Branch:** made from `GD_S06_01_bound-weapon-materials` (the owner asked for the S06 issues one after another), so this pull request carries that one's commits until it merges.
+- **Branch:** made from `development`, on its own. GD_S06_04 carries the same `while_summoning` foundation (the schema value, `modifier.Summoning` / `summoning_modifiers`, and the shared live step) line for line, so the two merge in either order.
