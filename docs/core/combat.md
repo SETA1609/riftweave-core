@@ -82,6 +82,62 @@ The defender's perks reach the pipeline as `defender.modifiers`, stacked by [mod
 - **Perks hook on the stances.** With no defender roll there is no crit reaction, so Riposte and Bulwark read a window of the band instead, and only in their stance (owner pick, 2026-11-16). The band's lowest rolls are its highest margins, next to the hit band: the attacker only just failed to hit clean. [A]
 - **The caller applies the stagger.** `stagger_ap` is the AP the attacker loses on their next turn; the pipeline reports it and the caller spends it, as it runs a riposte's `counter`. [A]
 
+## Attacks by loadout
+
+Owner request, 2026-11-16 and 2026-11-17 (GD_S05_01). An attack action strikes with everything held: once with the main hand and once with an off-hand weapon, if there is one. Each strike is its own roll through the order above (one `combat` run per strike), and the `attack_sequence` command runs the action. The loadout is what the two hands hold, in the `mainHand` and `offHand` vocabulary of `ruleset/schemas/schema.json`: a main hand `empty`, `light`, `one_handed`, or `two_handed` (a two-handed weapon, or a versatile one in both hands), and an off hand `empty`, `shield`, `buckler`, `light_weapon`, `weapon`, or `two_handed` (the main hand's grip). [A]
+
+How strikes stack is a table, `ruleset/data/attack_sequences/core.json`, not prose:
+
+| Loadout | Attack AP | Strikes | Jab AP (off hand only) |
+| --- | --- | --- | --- |
+| both hands empty | 2 | main 0 | - |
+| one light weapon, off hand empty, a shield, or a buckler | 2 | main 0 | - |
+| one one-handed weapon, off hand empty, a shield, or a buckler | 3 | main 0 | - |
+| one weapon in both hands | 3 | main 0 | - |
+| two light weapons | 3 | main -10, off -20 | 2, at -10 |
+| a one-handed main and a light off hand (sword and dagger) | 4 | main -10, off -20 | 2, at -10 |
+| two one-handed weapons (a light main counts as one-handed here) | 5 | main -10, off -30 | 3, at -20 |
+
+```
+attack       the row's AP; its strikes in order; each strike may go to its own foe in reach (targets)
+jab          the off-hand weapon alone, at the row's jab AP and value; a row without an off-hand weapon has none
+full_attack  spends every AP left, at least the row's attack AP + full_attack.min_extra_ap (1), against one foe:
+             the row's strikes, then full_attack_strikes main-hand strikes at extra_main_attacks (-20, -30),
+             then, with two weapons and full_attack_off_strikes, one off-hand strike at the off value + extra_off_attack (-10)
+circle_cut   with can_circle_cut and a two_handed main hand: every AP left (at least attack + 1), one main-hand
+             strike at circle_cut.attack (-10) at every foe in reach; nothing carries
+penalties    mainhand_penalty and offhand_penalty add to a negative value of the table (attack and jab), never past 0;
+             the strikes perks add keep their own values
+drop         a strike whose foe is down is lost, unless a carry is left: it goes to the first foe in reach still
+             standing (carried), and a full attack's later strikes follow it
+carries      carry_through: one per action; reaping_arc: one for every drop; none without them
+free strike  when the action's last strike drops a foe and a carry is left, one more strike with the same hand and
+             value goes to the next foe still standing (free)
+scissor      scissor_cut, full attack only: the first off-hand strike that hits a foe a main-hand strike of the same
+             full attack already hit rolls its damage dice twice (the damage roll doubled), once per full attack
+crossed      a defender holding a weapon in each hand adds its modifiers on two_weapon_evasion_band to the
+             evasion band, after the dodge stance doubles it
+```
+
+- **Rolls are inputs.** `rolls` holds one attack roll and one damage roll per strike made, in order; a lost strike takes none. Too few rolls is an error. [A]
+- **AP follows the loadout.** A two-handed attack stays 3 AP, because an AGI 3 character has only 3 AP; a two-handed weapon pays for itself by leaving no hand for a shield. A maneuver's AP is the loadout's attack AP plus its own when the `combat` input names a `loadout`. [A]
+- **Numbers are [A]** until the M5-18 playtest driver reruns a dual-wield build against a one-weapon build of the same level.
+
+| Ladder | Perk | Level | Emits | Effect |
+| --- | --- | --- | --- | --- |
+| Carry Through | Full Weight | 1 | `multiply melee_damage 1.25` | the old Power Attack bonus, open to Blades, Blunt, or Piercing 40 |
+| Carry Through | Carry Through | 6 | `grant carry_through` | one carry per action |
+| Carry Through | Reaping Arc | 12 | `grant reaping_arc` | a carry for every drop |
+| Carry Through | Circle Cut | 18 | `grant can_circle_cut` | the circle cut action |
+| Extra strikes | Follow-Up | 6 | `add full_attack_strikes 1` | a full attack strikes once more at -20 |
+| Extra strikes | Press On | 18 | `add full_attack_strikes 1` | and once more at -30 |
+| Two weapons | Off-Hand Drill | 4 | `add mainhand_penalty 10`, `add offhand_penalty 10` | both two-weapon penalties are 10 smaller |
+| Two weapons | Crossed Guard | 8 | `add two_weapon_evasion_band 5` | the evasion band +5 while holding two weapons |
+| Two weapons | Twin Rhythm | 14 | `add full_attack_off_strikes 1` | a second off-hand strike in a full attack |
+| Two weapons | Scissor Cut | 20 | `grant scissor_cut` | the off-hand dice once more |
+
+[V 2026-11-19, `attack_sequence.json` and `combat.json` vectors in Python and Go]
+
 ## Weapon effects
 
 `attacker.weapon_effects` are the on-hit effects of the weapon, such as a bound weapon's perk
