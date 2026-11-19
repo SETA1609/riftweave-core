@@ -37,6 +37,16 @@
               "heavy"
             ]
           },
+          "shield": {
+            "type": "string",
+            "enum": [
+              "none",
+              "buckler",
+              "standard",
+              "tower"
+            ],
+            "description": "The shield held, none when left out: its casting.shield_penalty adds to the armor penalty, and modifiers on armor_cast_penalty (Mailed Casting) multiply both."
+          },
           "reagents": {
             "type": "array",
             "items": {

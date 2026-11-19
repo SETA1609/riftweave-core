@@ -26,6 +26,18 @@
           "required": ["none", "light", "medium", "heavy"],
           "additionalProperties": false
         },
+        "shield_penalty": {
+          "type": "object",
+          "description": "An add on the cast target by the shield held, on top of the armor penalty (GD_S05_03); `none` is no shield. Modifiers on armor_cast_penalty (Mailed Casting) multiply both.",
+          "properties": {
+            "none": { "type": "integer", "maximum": 0 },
+            "buckler": { "type": "integer", "maximum": 0 },
+            "standard": { "type": "integer", "maximum": 0 },
+            "tower": { "type": "integer", "maximum": 0 }
+          },
+          "required": ["none", "buckler", "standard", "tower"],
+          "additionalProperties": false
+        },
         "save": {
           "type": "object",
           "description": "How an instant spell's save picks its outcome (docs/core/casting.md#delivery-and-saves).",
@@ -100,7 +112,7 @@
           "additionalProperties": false
         }
       },
-      "required": ["prevented_by", "armor_penalty", "skill_discount", "spell_cost", "bound_weapon"],
+      "required": ["prevented_by", "armor_penalty", "shield_penalty", "skill_discount", "spell_cost", "bound_weapon"],
       "additionalProperties": false
     }
   },
