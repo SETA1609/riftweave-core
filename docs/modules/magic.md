@@ -303,6 +303,15 @@ every bound weapon, Bound Bow included. (GD_S06_01, owner rules of 2026-11-14.)
 The levels sit 2 to 6 apart along the ladder; every number is [A] until a playtest runs a bound
 weapon against a mundane one of the same level.
 
+### The commander summoner
+
+A summoner archetype (GD_S06_03): the summons are the damage dealers, and the caster spends their turn to
+drive them, by **orders** (the `command` action, which gives one or every summon AP for its next
+turn) and by a **held command** (Steady the Host, a concentration spell that gives every summon
++5 to attack while held). The ladder is Field Command (6), Sharp Orders (10), Voice of the Host
+(14), and Iron Drill (18); the rules and the `command_summons` function are in
+[commanding.md](../core/commanding.md). [A]
+
 ## 4. Casting resolution (d100 roll-under)
 
 The procedure is [docs/core/casting.md](../core/casting.md): one resolution request on
@@ -383,6 +392,7 @@ parameters only, `uncraftable_parameters` lists the others. [A]
 | `storage` | Pocket Storage, a pocket inventory, is engine state. |
 | `bound_weapon` | Bound weapons are rows a perk ladder upgrades ([Bound weapons](#bound-weapons)). |
 | `summon` | Summons are static rows a GM or dev adds (M3-08). |
+| `command_summons` | The held command belongs to the commander's ladder ([commanding.md](../core/commanding.md)), not to a recipe. |
 | `restore_resource` with `mana` | No crafted spell restores mana, instant or over time, so mana cannot pay for itself. |
 
 Absorb and drain effects (`spell_absorption`, `life_steal`, `mana_leech`, the `drain_*`

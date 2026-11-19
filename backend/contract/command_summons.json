@@ -1,0 +1,46 @@
+{
+  "$schema": "./command.schema.json",
+  "name": "command_summons",
+  "summary": "What each of a commander's summons gets: an order (the command action) gives the summons it reaches AP for their next turn, and a held command spell gives every summon a bonus to attack while it is held.",
+  "documentation": "docs/core/commanding.md",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "commander": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "minLength": 1, "description": "Who commands; it makes the commander's modifiers a source of their own." },
+          "perk": { "$ref": "common.json#/definitions/key", "description": "A feature with a command object, which an order uses." },
+          "modifiers": { "$ref": "common.json#/definitions/modifiers", "description": "The commander's modifiers; those on command change an order's cost." },
+          "concentration": { "oneOf": [ { "type": "null" }, { "$ref": "common.json#/definitions/key" } ], "description": "The spell the commander holds; a held command gives its bonus only while held. A key that names no spell is an error." }
+        },
+        "required": ["name"],
+        "additionalProperties": false
+      },
+      "summons": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true, "description": "The names of the commander's active summons." },
+      "order": {
+        "type": "object",
+        "properties": {
+          "targets": { "type": "array", "items": { "type": "string", "minLength": 1 }, "minItems": 1, "uniqueItems": true, "description": "The summons the order reaches." }
+        },
+        "required": ["targets"],
+        "additionalProperties": false
+      }
+    },
+    "required": ["commander", "summons"],
+    "additionalProperties": false
+  },
+  "result_schema": {
+    "type": "object",
+    "properties": {
+      "ap": { "type": "integer", "minimum": 0, "description": "What the order costs the commander, 0 without an order." },
+      "modifiers": {
+        "type": "object",
+        "description": "Per summon name, the modifiers it gets; every summon is listed.",
+        "additionalProperties": { "$ref": "common.json#/definitions/modifiers" }
+      }
+    },
+    "required": ["ap", "modifiers"],
+    "additionalProperties": false
+  }
+}
