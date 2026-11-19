@@ -1,0 +1,18 @@
+#### GD_S19_05_ap-bank-cap-and-guard Carry a little AP, and turn the rest into guard
+- Status: todo
+- Priority: medium
+- Needs: —
+- Modified: 2026-11-19
+- Do: Owner request, 2026-11-19 (borrowed from Fallout's unspent AP that becomes armor class, and Divinity: Original Sin 2's maximum near the AP recovered each turn: recover 4, maximum 6).
+  - **The gap:** unspent AP carries up to `cap` 10 while a pool is 3 to 5 [V 2026-11-19, `docs/core/actions.md#pool`]. Two quiet turns bank two casts, a "wait, then burst" a real-time client does not have.
+  - **The other side:** some loadouts need the bank to attack at all. At pool 3, two one-handed weapons (attack 5) and a sword and dagger (attack 4) cannot attack without saving, and a full attack spends every AP it is given for a fixed number of strikes, so a bank spent on it is wasted [V 2026-11-19, `attack_sequences/core.json`].
+  - **The rule: held AP** (owner, 2026-11-19; numbers [A], checked in a playtest). Fallout's "unspent AP becomes defense" and Fallout Tactics' overwatch become one rule:
+    - **Held:** AP you leave unspent at the end of your turn is held until your next turn.
+    - **Guard:** while held, each AP gives +5 on `evasion`. A careful turn guards you; dodge (3 AP, double evasion) stays the stronger, deliberate choice.
+    - **Spend it:** you may spend held AP on an opportunity attack or a readied attack (`GD_S19_04_ready-and-opportunity-attacks`), at the loadout's attack cost. The guard drops by what you spend.
+    - **Carry:** at the start of your next turn, at most 2 of the AP still held carry into the new pool (cap 10), and the rest is gone. This ends the "wait, then burst".
+    - **Loadouts:** the spec checks every loadout at pool 3 and 4 and proposes a fix where one cannot attack every second turn (a lower `ap` on that row, or the carry rule).
+- Keys: `pool.carry` (replaces `cap` as the carry limit), `pool.guard_per_ap`, held AP on the actor between turns
+- Files: ~7 (docs/core/actions.md, docs/core/combat.md, ruleset/data/actions/core.json, ruleset/schemas/action.schema.json, ruleset/data/attack_sequences/core.json, ruleset/tests/vectors/actions.json, ruleset/scripts/kernel_reference.py)
+- See: docs/core/actions.md#pool, ruleset/data/attack_sequences/core.json, docs/modules/combat.md
+- Done when: `actions` vectors give the held AP, the guard, and the carry for pools 3, 4, and 5, and the guard after part of the held AP pays an opportunity attack; a table in the spec shows each loadout's attacks per turn at pool 3 and 4.

@@ -1,0 +1,15 @@
+#### GD_S19_02_movement-distance-per-ap How far one move goes: squares per AP from the race's speed
+- Status: todo
+- Priority: high
+- Needs: —
+- Modified: 2026-11-19
+- Do: Owner request, 2026-11-19 (borrowed from Divinity: Original Sin 1 and 2, where an AP buys a distance that grows with speed).
+  - **The gap:** `move` costs 1 AP (`actions/core.json`) and covers no set distance. A race's `speed` is "units per round" (`race.schema.json`, `docs/core/contract.md#distance`), so the two rules do not meet. The battle grid assumes "one cell is one move" and marks the unit unverified (`BE_S10_05_battle-grid-steps`) [V 2026-11-19].
+  - **The rule:** one `move` covers `floor(speed / 2)` squares, which is 2 or 3 for today's speeds of 5 to 7 [A]. A pool of 4 spent on moving then covers 8 to 12 squares, near Fallout's 7 to 10 hexes. The divisor lives in `actions/core.json`, not in code.
+  - **Speed per round goes:** `speed` becomes squares per AP's worth of the formula, and the docs that read "per round" are rewritten.
+  - **What adds to a move:** encumbrance and armor add AP to a move as `add` modifiers on `move` (docs/modules/combat.md §8), and difficult terrain doubles the cost (§5).
+  - **Real time:** a real-time client moves at `floor(speed / 2)` squares per `seconds_per_turn / pool` [U: checked in the spec step].
+- Keys: `move.squares_per_speed` (or a `distance` formula row) in `actions/core.json`
+- Files: ~8 (docs/core/actions.md, docs/core/contract.md, docs/modules/combat.md, ruleset/data/actions/core.json, ruleset/schemas/action.schema.json, ruleset/schemas/race.schema.json, ruleset/tests/vectors/actions.json, ruleset/scripts/kernel_reference.py)
+- See: docs/core/contract.md#distance, docs/issues/open/BE_S10_05_battle-grid-steps.md, ruleset/data/races/core.json
+- Done when: `actions` vectors give the squares a move covers for speeds 5, 6, and 7, encumbered and not; no doc says "per round" for speed; `BE_S10_05` can drop its [U] on the unit.

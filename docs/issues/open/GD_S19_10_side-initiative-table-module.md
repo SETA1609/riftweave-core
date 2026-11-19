@@ -1,0 +1,15 @@
+#### GD_S19_10_side-initiative-table-module Side initiative for the table: fast foes, players, slow foes
+- Status: todo
+- Priority: low
+- Needs: GD_S19_09_initiative-ties, GD_S16_01_optional-defence-roll
+- Modified: 2026-11-19
+- Do: Owner request, 2026-11-19 (borrowed from the Divinity: Original Sin board game, where fast enemies act, then the players in any order, then slow enemies).
+  - **Why:** an individual initiative order is slow to run at a physical table; a side order is quick and keeps the players talking.
+  - **The rule** [A]: an optional rule for the table module (story S16, `ruleset/modules/`), which `GD_S16_01_optional-defence-roll` creates:
+    - a foe whose initiative is above the party's highest acts first, then the players in any order they agree, then the other foes;
+    - ties follow `GD_S19_09_initiative-ties`.
+  - Core initiative is unchanged; the module only changes the order.
+- Keys: a module option `side_initiative`
+- Files: ~4 (the table module's doc and manifest from GD_S16_01, docs/guide/gm.md, docs/core/derived.md)
+- See: docs/stories/S16-table-module.md, docs/guide/gm.md
+- Done when: the module documents the order with an example round, and `validate.py` passes on its manifest.
