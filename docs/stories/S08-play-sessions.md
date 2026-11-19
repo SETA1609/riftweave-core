@@ -4,7 +4,7 @@ Format, ids, and roles: [README.md](README.md#ids), [ROLES.md](../issues/ROLES.m
 
 ## S08 Play sessions in both apps
 
-**Goal:** A player and a GM run their part of a session in either app: the player's character, items and crafting, the bestiary, encounters, and a compendium of every table, with a way back from every screen.
+**Goal:** A player and a GM run their part of a session in either app: the player's character, items and crafting, the bestiary, encounters with a menu of what a character can do on their turn and what it costs, and a compendium of every table, with a way back from every screen.
 
 **Issues:**
 
@@ -22,5 +22,9 @@ Format, ids, and roles: [README.md](README.md#ids), [ROLES.md](../issues/ROLES.m
 | `BE_S08_10_compendium-catalog-cli` | BE | A compendium of every table to study a build: the catalog command and the CLI screen (backend) | — | APP-27 |
 | `FE_S08_11_compendium-tables-page` | FE | A compendium of every table to study a build (frontend) | — | BE_S08_10_compendium-catalog-cli, FE_S08_12_back-on-every-screen |
 | `FE_S08_12_back-on-every-screen` | FE | A Back button on every screen | — | — |
+| `PO_S08_13_file-action-menu-issues` | PO | File the action menu issues | — | — |
+| `GD_S08_14_action-menu-rules` | GD | What a character can do on their turn, and what it costs: the action menu rules | — | GD_S05_01_loadout-attacks-melee-ladders, GD_S05_02_fighting-stances, GD_S05_03_defense-perk-ladders, GD_S05_04_trip-and-disarm |
+| `BE_S08_15_action-menu-command-cli` | BE | What a character can do on their turn, and what it costs: the action menu command and the CLI screen (backend) | — | GD_S08_14_action-menu-rules, BE_S08_07_encounter-tracker-cli |
+| `FE_S08_16_action-menu-page` | FE | What a character can do on their turn, and what it costs: the action menu in the app (frontend) | — | BE_S08_15_action-menu-command-cli, FE_S08_08_encounter-tracker-page |
 
 **Done when:** every issue above is done, and each screen exists in the human CLI and the frontend with a way back, and its session steps replay the same in Python and Go.
