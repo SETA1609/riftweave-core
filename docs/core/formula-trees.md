@@ -70,15 +70,19 @@ flowchart TB
   n1 --> n3
 ```
 
-### `pipeline.magic_block_rate`
+### `pipeline.spell_ward_percent`
 
 ```mermaid
 flowchart TB
-  n1{"÷ (floor)"}
-  n2(["rate"])
+  n1{"×"}
+  n2{"×"}
+  n3(["end"])
+  n2 --> n3
+  n4["2"]
+  n2 --> n4
   n1 --> n2
-  n3["2"]
-  n1 --> n3
+  n5(["tier"])
+  n1 --> n5
 ```
 
 ### `pipeline.pierce_dr`
