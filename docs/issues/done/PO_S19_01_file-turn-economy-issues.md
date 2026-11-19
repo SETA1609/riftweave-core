@@ -1,5 +1,6 @@
 #### PO_S19_01_file-turn-economy-issues File the turn-based action economy issues
-- Status: review
+- Status: done
+- Merged: #385, 2026-11-19
 - Priority: medium
 - Needs: —
 - Modified: 2026-11-19
