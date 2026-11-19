@@ -145,6 +145,35 @@ classDiagram
     actions_input --> actor : actor
 ```
 
+## attack_sequence
+
+One attack action by loadout: the attack, the jab, the full attack, or the circle cut, each strike its own roll through the combat pipeline.
+
+```mermaid
+classDiagram
+    class attack_sequence_input {
+        enum action
+        integer ap
+        object attacker
+        object damage
+        List~object~ foes
+        loadout loadout
+        modifiers modifiers
+        object off_damage
+        List~object~ rolls
+        List~integer~ targets
+    }
+    class attack_sequence_result {
+        string action
+        integer ap
+        List~integer~ hp
+        integer lost
+        string sequence
+        integer stamina
+        List~object~ strikes
+    }
+```
+
 ## author
 
 Author content rows: check a draft spell as validate.py would, give the spellcraft cost, load a spell to edit, and export a core or module data file.
@@ -213,6 +242,7 @@ classDiagram
         object damage
         object defender
         enum delivery
+        loadout loadout
         key maneuver
         modifiers modifiers
         enum range

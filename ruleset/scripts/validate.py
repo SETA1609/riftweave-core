@@ -1942,6 +1942,33 @@ def check_maneuver_unlocks(maneuvers, features):
     ]
 
 
+OFF_HAND_WEAPONS = ("light_weapon", "weapon")
+
+
+def check_attack_sequences(rows):
+    """attack_sequences/core.json (docs/core/combat.md#attacks-by-loadout): each loadout is
+    covered by at most one row, an off-hand strike or a jab needs an off-hand weapon, and a
+    row with an off-hand weapon has a jab and an off-hand strike."""
+    errors, covered = [], {}
+    for row in rows:
+        key = row.get("key")
+        for main in row.get("main", []):
+            for off in row.get("off", []):
+                if (main, off) in covered:
+                    errors.append(f"attack sequence '{key}': {main} main hand and {off} off hand are already covered by '{covered[(main, off)]}'")
+                covered.setdefault((main, off), key)
+        armed = [off in OFF_HAND_WEAPONS for off in row.get("off", [])]
+        if any(armed) and not all(armed):
+            errors.append(f"attack sequence '{key}': mixes off-hand weapons with an off hand that holds none")
+        strikes_off = any(strike.get("hand") == "off" for strike in row.get("strikes", []))
+        if all(armed) and armed:
+            if not strikes_off or "jab" not in row:
+                errors.append(f"attack sequence '{key}': an off-hand weapon needs an off-hand strike and a jab")
+        elif strikes_off or "jab" in row:
+            errors.append(f"attack sequence '{key}': an off-hand strike or a jab needs an off-hand weapon")
+    return errors
+
+
 def check_racial_trait_refs(data_files):
     """Racial traits live only in features, as type racial_trait (M1-06).
 
@@ -2059,6 +2086,15 @@ def main():
     if unlock_errors:
         print("  \u2717  maneuvers (each unlocked by a perk)")
         for e in unlock_errors:
+            print(f"       {e}")
+        failed += 1
+
+    sequence_errors = check_attack_sequences(
+        json.loads((DATA_DIR / "attack_sequences" / "core.json").read_text())["attack_sequences"]
+    )
+    if sequence_errors:
+        print("  \u2717  attack sequences (one row per loadout)")
+        for e in sequence_errors:
             print(f"       {e}")
         failed += 1
 

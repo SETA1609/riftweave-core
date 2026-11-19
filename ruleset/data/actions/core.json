@@ -12,7 +12,10 @@
     "rest": "refill"
   },
   "actions": [
-    { "key": "attack", "cost": 3 },
+    { "key": "attack", "cost": 3, "by_loadout": true },
+    { "key": "jab", "cost": 2, "by_loadout": true },
+    { "key": "full_attack", "cost": 4, "by_loadout": true, "spends_all": true },
+    { "key": "circle_cut", "cost": 4, "by_loadout": true, "spends_all": true },
     { "key": "cast", "cost": 3 },
     { "key": "move", "cost": 1 },
     { "key": "disengage", "cost": 1 },

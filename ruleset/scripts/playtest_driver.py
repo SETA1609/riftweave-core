@@ -44,7 +44,7 @@ BUILDS = [
      "attributes": {"str": 7, "per": 5, "end": 7, "int": 4, "wil": 4, "agi": 6, "cha": 4, "lck": 5},
      "tags": ["blades", "evasion", "heavy_armor"], "weapon": ("1d8", "slashing", "str"), "attack": "blades",
      "spend": ["blades", "evasion", "heavy_armor", "athletics"], "colors": [],
-     "perk_order": ["hardened_hide", "power_attack", "ever_watchful", "shield_wall", "heavy_armor_expert"]},
+     "perk_order": ["hardened_hide", "full_weight", "ever_watchful", "shield_wall", "heavy_armor_expert"]},
     {"key": "ranged_bows", "label": "Archer", "race": "core:race/elf",
      "attributes": {"str": 4, "per": 8, "end": 5, "int": 4, "wil": 4, "agi": 8, "cha": 4, "lck": 5},
      "tags": ["bows", "evasion", "stealth"], "weapon": ("1d8", "piercing", "per"), "attack": "bows",
@@ -79,7 +79,7 @@ BUILDS = [
      "attributes": {"str": 6, "per": 5, "end": 6, "int": 7, "wil": 4, "agi": 5, "cha": 4, "lck": 5},
      "tags": ["blades", "red_magic", "evasion"], "weapon": ("1d8", "slashing", "str"), "attack": "blades",
      "spend": ["blades", "red_magic", "evasion", "medium_armor"], "colors": ["red"],
-     "perk_order": ["power_attack", "hardened_hide", "pyromancer", "ever_watchful"]},
+     "perk_order": ["full_weight", "hardened_hide", "pyromancer", "ever_watchful"]},
 ]
 
 

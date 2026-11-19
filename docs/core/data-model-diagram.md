@@ -12,7 +12,7 @@ An entity is a collection of rows, its `key` the primary key. A line is a refere
 other collection, so many rows name one. Composition bases are references too: an equipment row's
 `base` names an equipment base, a monster's `base` a creature type or a monster.
 
-45 collections; 71 pairs of collections joined by a reference.
+46 collections; 71 pairs of collections joined by a reference.
 
 ## Overview
 
@@ -25,6 +25,9 @@ erDiagram
         string key PK
     }
     ACTIONS {
+        string key PK
+    }
+    ATTACK_SEQUENCES {
         string key PK
     }
     BACKGROUNDS {

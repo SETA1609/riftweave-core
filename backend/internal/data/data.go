@@ -336,6 +336,75 @@ type Maneuver struct {
 	Effects          []AppliedEffect `json:"effects"`
 }
 
+// Loadout is what an actor's two hands hold, in the mainHand and offHand vocabulary of
+// ruleset/schemas/schema.json.
+type Loadout struct {
+	Main string `json:"main"`
+	Off  string `json:"off"`
+}
+
+// HoldsTwoWeapons is a loadout with a weapon in each hand.
+func (loadout *Loadout) HoldsTwoWeapons() bool {
+	return loadout != nil && (loadout.Main == "light" || loadout.Main == "one_handed") && (loadout.Off == "light_weapon" || loadout.Off == "weapon")
+}
+
+// NoSequenceError is a loadout no attack_sequences row covers.
+type NoSequenceError struct{ Loadout Loadout }
+
+func (noSequence *NoSequenceError) Error() string {
+	return fmt.Sprintf("no attack sequence fits main hand %q and off hand %q", noSequence.Loadout.Main, noSequence.Loadout.Off)
+}
+
+// Strike is one strike of an attack sequence: its hand and its attack value.
+type Strike struct {
+	Hand   string `json:"hand"`
+	Attack int64  `json:"attack"`
+}
+
+// Jab is a loadout's off-hand strike alone: its AP and its attack value.
+type Jab struct {
+	AP     int64 `json:"ap"`
+	Attack int64 `json:"attack"`
+}
+
+// AttackSequence is one row of attack_sequences/core.json: the loadouts it covers, the attack
+// action's AP, its strikes in order, and the jab when the off hand holds a weapon
+// (docs/core/combat.md#attacks-by-loadout).
+type AttackSequence struct {
+	Key     string   `json:"key"`
+	Main    []string `json:"main"`
+	Off     []string `json:"off"`
+	AP      int64    `json:"ap"`
+	Strikes []Strike `json:"strikes"`
+	Jab     *Jab     `json:"jab"`
+}
+
+// AttackSequences is attack_sequences/core.json: the rows, what a full attack adds, and the
+// circle cut.
+type AttackSequences struct {
+	FullAttack struct {
+		MinExtraAP       int64   `json:"min_extra_ap"`
+		ExtraMainAttacks []int64 `json:"extra_main_attacks"`
+		ExtraOffAttack   int64   `json:"extra_off_attack"`
+	} `json:"full_attack"`
+	CircleCut struct {
+		Attack int64    `json:"attack"`
+		Main   []string `json:"main"`
+	} `json:"circle_cut"`
+	Rows []AttackSequence `json:"attack_sequences"`
+}
+
+// Covering is the row that covers a loadout, nil when none does.
+func (sequences *AttackSequences) Covering(main, off string) *AttackSequence {
+	for index := range sequences.Rows {
+		var row *AttackSequence = &sequences.Rows[index]
+		if slices.Contains(row.Main, main) && slices.Contains(row.Off, off) {
+			return row
+		}
+	}
+	return nil
+}
+
 // HazardCheck is a check a hazard asks for: a row of checks/core.json, and the hazard's
 // difficulty as an add on its target. Skill is the check's skill key, resolved at load.
 type HazardCheck struct {
@@ -750,29 +819,31 @@ type Ruleset struct {
 	Skills      Table[Skill]
 	SkillGroups Table[SkillGroup]
 	// GroupOfSkill is the skill group each skill belongs to, by skill key.
-	GroupOfSkill   map[string]*SkillGroup
-	Actions        Actions
-	Wuxing         Wuxing
-	Modules        []string // ids of the loaded modules
-	Rest           Table[Occasion]
-	Economy        Economy
-	Progression    Progression
-	Pipeline       Pipeline
-	DamageTypes    Table[DamageType]
-	Situations     Table[Situation]
-	CalledShots    Table[CalledShot]
-	Maneuvers      Table[Maneuver] // maneuvers/core.json, by key
-	Hazards        Table[Hazard]
-	Spells         Table[Spell]
-	Features       Table[Feature]     // features/core.json, for dev perks (docs/backend/dev-mode.md)
-	SummonBonuses  Table[SummonBonus] // summons/bonuses.json, by ref core:summon_bonus/<key>
-	Effects        Table[Effect]      // by ref, core:effect/<key>
-	Casting        Casting
-	Origins        modifier.OriginPolicies
-	OriginReplaces map[string]bool   // origin ref: its policy is `replace`
-	OriginFor      map[string]string // emitter: the origin ref it defaults to
-	SecondsPerTurn int64             // actions/core.json
-	StaminaPerAP   int64             // actions/core.json: stamina one AP is worth (docs/core/actions.md)
+	GroupOfSkill map[string]*SkillGroup
+	Actions      Actions
+	Wuxing       Wuxing
+	Modules      []string // ids of the loaded modules
+	Rest         Table[Occasion]
+	Economy      Economy
+	Progression  Progression
+	Pipeline     Pipeline
+	DamageTypes  Table[DamageType]
+	Situations   Table[Situation]
+	CalledShots  Table[CalledShot]
+	Maneuvers    Table[Maneuver] // maneuvers/core.json, by key
+	// AttackSequences is attack_sequences/core.json: how strikes stack by loadout.
+	AttackSequences AttackSequences
+	Hazards         Table[Hazard]
+	Spells          Table[Spell]
+	Features        Table[Feature]     // features/core.json, for dev perks (docs/backend/dev-mode.md)
+	SummonBonuses   Table[SummonBonus] // summons/bonuses.json, by ref core:summon_bonus/<key>
+	Effects         Table[Effect]      // by ref, core:effect/<key>
+	Casting         Casting
+	Origins         modifier.OriginPolicies
+	OriginReplaces  map[string]bool   // origin ref: its policy is `replace`
+	OriginFor       map[string]string // emitter: the origin ref it defaults to
+	SecondsPerTurn  int64             // actions/core.json
+	StaminaPerAP    int64             // actions/core.json: stamina one AP is worth (docs/core/actions.md)
 	// ToxicityDecayPerSecond is how fast stored toxicity falls (rest/core.json).
 	ToxicityDecayPerSecond int64
 	Conditions             Conditions
@@ -1041,6 +1112,7 @@ func Load(fileSystem fs.FS, modules ...fs.FS) (*Ruleset, error) {
 		Maneuvers []Maneuver `json:"maneuvers"`
 	}
 	loader.read("maneuvers/core.json", &maneuvers)
+	loader.read("attack_sequences/core.json", &ruleset.AttackSequences)
 	ruleset.Maneuvers = newTable(maneuvers.Maneuvers, func(maneuver *Maneuver) string { return maneuver.Key })
 
 	var origins struct {

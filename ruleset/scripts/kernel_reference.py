@@ -426,10 +426,18 @@ def maneuver_of(vector):
     return row
 
 
-def maneuver_cost(maneuver):
-    """The AP of an action performed as the maneuver, at least 1, and its stamina in real time."""
+def holds_two_weapons(loadout):
+    """A loadout with a weapon in each hand (docs/core/combat.md#attacks-by-loadout)."""
+    return loadout is not None and loadout["main"] in ("light", "one_handed") and loadout["off"] in ("light_weapon", "weapon")
+
+
+def maneuver_cost(maneuver, loadout=None):
+    """The AP of an action performed as the maneuver, at least 1, and its stamina in real time.
+    With a loadout the attack costs the loadout's attack AP (attack_sequences/core.json)."""
     data = load_data("actions/core.json")
     base = next(a["cost"] for a in data["actions"] if a["key"] == maneuver["modifies"])
+    if loadout is not None and maneuver["modifies"] == "attack":
+        base = attack_sequence_of(loadout)["ap"]
     ap = max(base + maneuver["ap"], 1)
     return ap, ap * data["stamina_per_ap"]
 
@@ -450,6 +458,9 @@ def run_combat(vector):
         maneuver = maneuver_of(vector)
     except ValueError as error:
         return {"error": str(error)}
+    loadout = vector.get("loadout")
+    if loadout is not None and attack_sequence_of(loadout) is None:
+        return {"error": no_sequence_error(loadout)}
     if maneuver is not None and maneuver.get("attack", 0):
         situation_mods.append({"target": "attack_roll", "operation": "add", "value": maneuver["attack"], "source": f"maneuver:{maneuver['key']}"})
 
@@ -468,6 +479,8 @@ def run_combat(vector):
     evasion_rate = evaluate_formula(pipeline["evasion_rate"], {}, {"skill": apply_modifiers(defender.get("evasion_skill", 0), on("evasion"))})
     if stance == "dodge":
         evasion_rate = evaluate_formula(pipeline["dodge_evasion_rate"], {}, {"rate": evasion_rate})
+    if holds_two_weapons(defender.get("loadout")):
+        evasion_rate = max(apply_modifiers(evasion_rate, on("two_weapon_evasion_band")), 0)
     block_rate = 0
     if stance == "block" and (physical or "block_magic" in perk_flags):
         block_rate = evaluate_formula(pipeline["block_rate"], {}, {"skill": apply_modifiers(defender["shields_skill"], on("shields"))})
@@ -504,7 +517,7 @@ def run_combat(vector):
     if attacker.get("weapon_effects") is not None:
         result["weapon_effects"] = []
     if maneuver is not None:
-        result["ap"], result["stamina"] = maneuver_cost(maneuver)
+        result["ap"], result["stamina"] = maneuver_cost(maneuver, vector.get("loadout"))
         result["effects"] = []
     if not attack["success"]:
         result.update(outcome="fumble" if "fumble" in attack["tags"] else "miss", damage=0, hp=defender["hp"])
@@ -563,6 +576,163 @@ def run_combat(vector):
     if weapon_effects is not None and not result["evaded"]:
         result["weapon_effects"] = landed_weapon_effects(weapon_effects, damage["type"], defender)
     return result
+
+
+def attack_sequence_of(loadout):
+    """The attack_sequences row that covers a loadout (docs/core/combat.md#attacks-by-loadout),
+    or None when no row does."""
+    data = load_data("attack_sequences/core.json")
+    for row in data["attack_sequences"]:
+        if loadout["main"] in row["main"] and loadout["off"] in row["off"]:
+            return row
+    return None
+
+
+def no_sequence_error(loadout):
+    return 'no attack sequence fits main hand "%s" and off hand "%s"' % (loadout["main"], loadout["off"])
+
+
+def soften(value, softening):
+    """A negative strike value after mainhand_penalty or offhand_penalty, never past 0."""
+    return min(value + softening, 0) if value < 0 else value
+
+
+def plan_strikes(vector, row, flags, on):
+    """The strikes of the action in order, as (hand, attack value), and the AP it spends."""
+    data = load_data("attack_sequences/core.json")
+    action = vector["action"]
+    soft = {"main": apply_modifiers(0, on("mainhand_penalty")), "off": apply_modifiers(0, on("offhand_penalty"))}
+    table = [(strike["hand"], soften(strike["attack"], soft[strike["hand"]])) for strike in row["strikes"]]
+    left = vector.get("ap")
+    if action in ("attack", "jab"):
+        if action == "jab":
+            if "jab" not in row:
+                raise ValueError(f"a jab needs a weapon in the off hand ({row['key']} has none)")
+            table, cost = [("off", soften(row["jab"]["attack"], soft["off"]))], row["jab"]["ap"]
+        else:
+            cost = row["ap"]
+        if left is not None and left < cost:
+            raise ValueError(f"{action} needs {cost} AP")
+        return table, cost
+    need = row["ap"] + data["full_attack"]["min_extra_ap"]
+    if left is None or left < need:
+        raise ValueError(f"{action} needs {need} AP")
+    if action == "circle_cut":
+        if "can_circle_cut" not in flags:
+            raise ValueError("circle_cut needs a perk that grants can_circle_cut")
+        if vector["loadout"]["main"] not in data["circle_cut"]["main"]:
+            raise ValueError("circle_cut needs " + " or ".join(f"a {m} main hand" for m in data["circle_cut"]["main"]))
+        return [("main", data["circle_cut"]["attack"])] * len(vector["foes"]), left
+    extra = data["full_attack"]["extra_main_attacks"]
+    count = max(min(apply_modifiers(0, on("full_attack_strikes")), len(extra)), 0)
+    strikes = table + [("main", value) for value in extra[:count]]
+    off = [value for hand, value in table if hand == "off"]
+    if off and apply_modifiers(0, on("full_attack_off_strikes")) >= 1:
+        strikes.append(("off", off[0] + data["full_attack"]["extra_off_attack"]))
+    return strikes, left
+
+
+def run_attack_sequence(vector):
+    """One attack action by loadout (docs/core/combat.md#attacks-by-loadout): the loadout's
+    strikes, each its own roll through run_combat, against the foes in reach. Rolls are inputs."""
+    action = vector["action"]
+    if action not in ("attack", "jab", "full_attack", "circle_cut"):
+        return {"error": f'action "{action}" is not defined'}
+    row = attack_sequence_of(vector["loadout"])
+    if row is None:
+        return {"error": no_sequence_error(vector["loadout"])}
+    attacker, foes = vector["attacker"], vector["foes"]
+    modifiers = attacker.get("modifiers", [])
+    flags = granted_flags(modifiers)
+    on = lambda target: [m for m in modifiers if m["target"] == target]
+    try:
+        plan, ap = plan_strikes(vector, row, flags, on)
+    except ValueError as error:
+        return {"error": str(error)}
+    if action in ("full_attack", "circle_cut"):
+        aims = [0] * len(plan) if action == "full_attack" else list(range(len(foes)))
+    else:
+        aims = vector.get("targets", [0] * len(plan))
+        if len(aims) != len(plan):
+            return {"error": f"targets names {len(aims)} foes for {len(plan)} strikes"}
+    for aim in aims:
+        if aim < 0 or aim >= len(foes):
+            return {"error": f"target {aim} is not a foe in reach"}
+        if foes[aim]["hp"] == 0:
+            return {"error": f"foe {aim} is already down"}
+    hp = [foe["hp"] for foe in foes]
+    # A circle cut strikes each foe once, so nothing carries (its own rule, [A]).
+    carries = 0 if action == "circle_cut" else math.inf if "reaping_arc" in flags else 1 if "carry_through" in flags else 0
+    rolls = list(vector["rolls"])
+    queue = [{"hand": hand, "attack": value, "foe": aim, "free": False} for (hand, value), aim in zip(plan, aims)]
+    struck_by_main, scissor_left = set(), action == "full_attack" and "scissor_cut" in flags
+    strikes, lost, index = [], 0, 0
+    while index < len(queue):
+        strike = queue[index]
+        index += 1
+        carried = False
+        if hp[strike["foe"]] == 0:
+            standing = [i for i, left in enumerate(hp) if left > 0]
+            if carries > 0 and standing:
+                carries -= 1
+                carried = True
+                if action == "full_attack":
+                    for later in queue[index - 1:]:
+                        later["foe"] = standing[0]
+                strike["foe"] = standing[0]
+            else:
+                lost += 1
+                continue
+        if not rolls:
+            return {"error": f"the {action} needs a roll for strike {len(strikes) + 1}"}
+        roll = rolls.pop(0)
+        foe, hand = strike["foe"], strike["hand"]
+        scissor = scissor_left and hand == "off" and foe in struck_by_main
+        damage = dict(vector["off_damage"] if hand == "off" and "off_damage" in vector else vector["damage"])
+        damage["roll"] = roll["damage"] * (2 if scissor else 1)
+        skill = attacker.get("off_skill", attacker["skill"]) if hand == "off" else attacker["skill"]
+        strike_modifiers = list(vector.get("modifiers", []))
+        if strike["attack"]:
+            strike_modifiers.append({"target": "attack_roll", "operation": "add", "value": strike["attack"], "source": f"strike:{hand}"})
+        outcome = run_combat(
+            {
+                "attacker": {"skill": skill, "roll": roll["attack"], "attributes": attacker.get("attributes", {}), "flags": attacker.get("flags", [])},
+                "defender": {**foes[foe], "hp": hp[foe]},
+                "damage": damage,
+                "modifiers": strike_modifiers,
+            }
+        )
+        if "error" in outcome:
+            return outcome
+        hit = outcome["outcome"] == "hit"
+        if scissor and hit:
+            scissor_left = False
+        elif scissor:
+            scissor = False
+        if hit and hand == "main":
+            struck_by_main.add(foe)
+        dropped = hp[foe] > 0 and outcome["hp"] == 0
+        hp[foe] = outcome["hp"]
+        strikes.append(
+            {
+                "hand": hand,
+                "foe": foe,
+                "attack": strike["attack"],
+                "outcome": outcome["outcome"],
+                "target": outcome["target"],
+                "margin": outcome["margin"],
+                "crit": outcome["crit"],
+                "damage": outcome["damage"],
+                "hp": outcome["hp"],
+                "carried": carried,
+                "free": strike["free"],
+                "scissor": scissor and hit,
+            }
+        )
+        if dropped and index == len(queue) and carries > 0 and any(left > 0 for left in hp):
+            queue.append({"hand": hand, "attack": strike["attack"], "foe": foe, "free": True})
+    stamina = ap * load_data("actions/core.json")["stamina_per_ap"]
+    return {"action": action, "sequence": row["key"], "ap": ap, "stamina": stamina, "strikes": strikes, "hp": hp, "lost": lost}
 
 
 WEAPON_STEP_EFFECTS = ("core:effect/armor_pierce", "core:effect/bane")
@@ -959,6 +1129,7 @@ RUNNERS = {
     "stored_actor": run_stored_actor,
     "economy": run_economy,
     "combat": run_combat,
+    "attack_sequence": run_attack_sequence,
     "loot": run_loot,
     "hazard": run_hazard,
     "casting": run_casting,

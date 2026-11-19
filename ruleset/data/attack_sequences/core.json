@@ -1,0 +1,66 @@
+{
+  "$schema": "../../schemas/attack_sequence.schema.json",
+  "full_attack": { "min_extra_ap": 1, "extra_main_attacks": [-20, -30], "extra_off_attack": -10 },
+  "circle_cut": { "attack": -10, "main": ["two_handed"] },
+  "attack_sequences": [
+    {
+      "key": "unarmed",
+      "label": "Both hands empty",
+      "main": ["empty"],
+      "off": ["empty"],
+      "ap": 2,
+      "strikes": [{ "hand": "main", "attack": 0 }]
+    },
+    {
+      "key": "light_weapon",
+      "label": "One light weapon",
+      "main": ["light"],
+      "off": ["empty", "shield", "buckler"],
+      "ap": 2,
+      "strikes": [{ "hand": "main", "attack": 0 }]
+    },
+    {
+      "key": "one_handed_weapon",
+      "label": "One one-handed weapon",
+      "main": ["one_handed"],
+      "off": ["empty", "shield", "buckler"],
+      "ap": 3,
+      "strikes": [{ "hand": "main", "attack": 0 }]
+    },
+    {
+      "key": "two_handed_weapon",
+      "label": "One weapon in both hands",
+      "main": ["two_handed"],
+      "off": ["two_handed"],
+      "ap": 3,
+      "strikes": [{ "hand": "main", "attack": 0 }]
+    },
+    {
+      "key": "two_light_weapons",
+      "label": "Two light weapons",
+      "main": ["light"],
+      "off": ["light_weapon"],
+      "ap": 3,
+      "strikes": [{ "hand": "main", "attack": -10 }, { "hand": "off", "attack": -20 }],
+      "jab": { "ap": 2, "attack": -10 }
+    },
+    {
+      "key": "one_handed_and_light",
+      "label": "A one-handed weapon and a light off-hand weapon",
+      "main": ["one_handed"],
+      "off": ["light_weapon"],
+      "ap": 4,
+      "strikes": [{ "hand": "main", "attack": -10 }, { "hand": "off", "attack": -20 }],
+      "jab": { "ap": 2, "attack": -10 }
+    },
+    {
+      "key": "two_one_handed_weapons",
+      "label": "Two one-handed weapons",
+      "main": ["light", "one_handed"],
+      "off": ["weapon"],
+      "ap": 5,
+      "strikes": [{ "hand": "main", "attack": -10 }, { "hand": "off", "attack": -30 }],
+      "jab": { "ap": 3, "attack": -20 }
+    }
+  ]
+}
