@@ -1,0 +1,2265 @@
+[
+  {
+    "name": "attack, one light weapon: 2 AP, one main-hand strike at 0",
+    "action": "attack",
+    "loadout": {
+      "main": "light",
+      "off": "empty"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 6
+      }
+    ],
+    "expect": {
+      "action": "attack",
+      "sequence": "light_weapon",
+      "ap": 2,
+      "stamina": 10,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": 0,
+          "outcome": "hit",
+          "target": 60,
+          "margin": 30,
+          "crit": false,
+          "damage": 4,
+          "hp": 26,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        26
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "attack, a one-handed weapon and a shield: 3 AP, one main-hand strike at 0",
+    "action": "attack",
+    "loadout": {
+      "main": "one_handed",
+      "off": "shield"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 8
+      }
+    ],
+    "expect": {
+      "action": "attack",
+      "sequence": "one_handed_weapon",
+      "ap": 3,
+      "stamina": 15,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": 0,
+          "outcome": "hit",
+          "target": 60,
+          "margin": 30,
+          "crit": false,
+          "damage": 6,
+          "hp": 24,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        24
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "attack, a buckler with a light weapon: 2 AP, the buckler does not strike",
+    "action": "attack",
+    "loadout": {
+      "main": "light",
+      "off": "buckler"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 6
+      }
+    ],
+    "expect": {
+      "action": "attack",
+      "sequence": "light_weapon",
+      "ap": 2,
+      "stamina": 10,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": 0,
+          "outcome": "hit",
+          "target": 60,
+          "margin": 30,
+          "crit": false,
+          "damage": 4,
+          "hp": 26,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        26
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "attack, a two-handed weapon: 3 AP, one main-hand strike at 0",
+    "action": "attack",
+    "loadout": {
+      "main": "two_handed",
+      "off": "two_handed"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 12
+      }
+    ],
+    "expect": {
+      "action": "attack",
+      "sequence": "two_handed_weapon",
+      "ap": 3,
+      "stamina": 15,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": 0,
+          "outcome": "hit",
+          "target": 60,
+          "margin": 30,
+          "crit": false,
+          "damage": 10,
+          "hp": 20,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        20
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "attack, two light weapons: 3 AP, main at -10 and off at -20 (targets 50 and 40)",
+    "action": "attack",
+    "loadout": {
+      "main": "light",
+      "off": "light_weapon"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 6
+      },
+      {
+        "attack": 30,
+        "damage": 4
+      }
+    ],
+    "expect": {
+      "action": "attack",
+      "sequence": "two_light_weapons",
+      "ap": 3,
+      "stamina": 15,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -10,
+          "outcome": "hit",
+          "target": 50,
+          "margin": 20,
+          "crit": false,
+          "damage": 4,
+          "hp": 26,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "off",
+          "foe": 0,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 10,
+          "crit": false,
+          "damage": 2,
+          "hp": 24,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        24
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "attack, sword and dagger: 4 AP, main -10 and off -20, each strike at its own foe",
+    "action": "attack",
+    "loadout": {
+      "main": "one_handed",
+      "off": "light_weapon"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      },
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 20
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 8
+      },
+      {
+        "attack": 25,
+        "damage": 4
+      }
+    ],
+    "targets": [
+      0,
+      1
+    ],
+    "expect": {
+      "action": "attack",
+      "sequence": "one_handed_and_light",
+      "ap": 4,
+      "stamina": 20,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -10,
+          "outcome": "hit",
+          "target": 50,
+          "margin": 20,
+          "crit": false,
+          "damage": 6,
+          "hp": 24,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "off",
+          "foe": 1,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 15,
+          "crit": false,
+          "damage": 2,
+          "hp": 18,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        24,
+        18
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "attack, two one-handed weapons: 5 AP, main -10 and off -30 (the off strike at 30 misses a roll of 35)",
+    "action": "attack",
+    "loadout": {
+      "main": "one_handed",
+      "off": "weapon"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 8
+      },
+      {
+        "attack": 35,
+        "damage": 8
+      }
+    ],
+    "expect": {
+      "action": "attack",
+      "sequence": "two_one_handed_weapons",
+      "ap": 5,
+      "stamina": 25,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -10,
+          "outcome": "hit",
+          "target": 50,
+          "margin": 20,
+          "crit": false,
+          "damage": 6,
+          "hp": 24,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "off",
+          "foe": 0,
+          "attack": -30,
+          "outcome": "miss",
+          "target": 30,
+          "margin": null,
+          "crit": false,
+          "damage": 0,
+          "hp": 24,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        24
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "jab, two light weapons: 2 AP, the off hand alone at -10",
+    "action": "jab",
+    "loadout": {
+      "main": "light",
+      "off": "light_weapon"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 4
+      }
+    ],
+    "expect": {
+      "action": "jab",
+      "sequence": "two_light_weapons",
+      "ap": 2,
+      "stamina": 10,
+      "strikes": [
+        {
+          "hand": "off",
+          "foe": 0,
+          "attack": -10,
+          "outcome": "hit",
+          "target": 50,
+          "margin": 20,
+          "crit": false,
+          "damage": 2,
+          "hp": 28,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        28
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "jab, two one-handed weapons: 3 AP, the off hand alone at -20",
+    "action": "jab",
+    "loadout": {
+      "main": "one_handed",
+      "off": "weapon"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 8
+      }
+    ],
+    "expect": {
+      "action": "jab",
+      "sequence": "two_one_handed_weapons",
+      "ap": 3,
+      "stamina": 15,
+      "strikes": [
+        {
+          "hand": "off",
+          "foe": 0,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 10,
+          "crit": false,
+          "damage": 6,
+          "hp": 24,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        24
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "jab without an off-hand weapon is an error",
+    "action": "jab",
+    "loadout": {
+      "main": "one_handed",
+      "off": "shield"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 8
+      }
+    ],
+    "expect": {
+      "error": "a jab needs a weapon in the off hand (one_handed_weapon has none)"
+    }
+  },
+  {
+    "name": "attack with too few AP left is an error",
+    "action": "attack",
+    "loadout": {
+      "main": "one_handed",
+      "off": "weapon"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 8
+      },
+      {
+        "attack": 30,
+        "damage": 8
+      }
+    ],
+    "ap": 4,
+    "expect": {
+      "error": "attack needs 5 AP"
+    }
+  },
+  {
+    "name": "a loadout no row covers is an error",
+    "action": "attack",
+    "loadout": {
+      "main": "empty",
+      "off": "weapon"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 8
+      }
+    ],
+    "expect": {
+      "error": "no attack sequence fits main hand \"empty\" and off hand \"weapon\""
+    }
+  },
+  {
+    "name": "full attack spends every AP left; one weapon and no perks is one strike",
+    "action": "full_attack",
+    "loadout": {
+      "main": "one_handed",
+      "off": "empty"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 8
+      }
+    ],
+    "ap": 5,
+    "expect": {
+      "action": "full_attack",
+      "sequence": "one_handed_weapon",
+      "ap": 5,
+      "stamina": 25,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": 0,
+          "outcome": "hit",
+          "target": 60,
+          "margin": 30,
+          "crit": false,
+          "damage": 6,
+          "hp": 24,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        24
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "full attack needs the attack AP + 1: 3 AP with a one-handed weapon is an error",
+    "action": "full_attack",
+    "loadout": {
+      "main": "one_handed",
+      "off": "empty"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 8
+      }
+    ],
+    "ap": 3,
+    "expect": {
+      "error": "full_attack needs 4 AP"
+    }
+  },
+  {
+    "name": "full attack, two light weapons: the target drops on the main-hand strike and the off-hand strike is lost",
+    "action": "full_attack",
+    "loadout": {
+      "main": "light",
+      "off": "light_weapon"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 4
+      },
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 6
+      },
+      {
+        "attack": 30,
+        "damage": 6
+      }
+    ],
+    "ap": 4,
+    "expect": {
+      "action": "full_attack",
+      "sequence": "two_light_weapons",
+      "ap": 4,
+      "stamina": 20,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -10,
+          "outcome": "hit",
+          "target": 50,
+          "margin": 20,
+          "crit": false,
+          "damage": 4,
+          "hp": 0,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        0,
+        30
+      ],
+      "lost": 1
+    }
+  },
+  {
+    "name": "full attack with carry_through: the off-hand strike carries to the next foe in reach",
+    "action": "full_attack",
+    "loadout": {
+      "main": "light",
+      "off": "light_weapon"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "carry_through",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:carry_through",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 4
+      },
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 6
+      },
+      {
+        "attack": 30,
+        "damage": 6
+      }
+    ],
+    "ap": 4,
+    "expect": {
+      "action": "full_attack",
+      "sequence": "two_light_weapons",
+      "ap": 4,
+      "stamina": 20,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -10,
+          "outcome": "hit",
+          "target": 50,
+          "margin": 20,
+          "crit": false,
+          "damage": 4,
+          "hp": 0,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "off",
+          "foe": 1,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 10,
+          "crit": false,
+          "damage": 4,
+          "hp": 26,
+          "carried": true,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        0,
+        26
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "full attack with follow_up and press_on: two more main-hand strikes at -20 and -30",
+    "action": "full_attack",
+    "loadout": {
+      "main": "one_handed",
+      "off": "empty"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "full_attack_strikes",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:follow_up",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "full_attack_strikes",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:press_on",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 40
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 20,
+        "damage": 8
+      },
+      {
+        "attack": 20,
+        "damage": 8
+      },
+      {
+        "attack": 20,
+        "damage": 8
+      }
+    ],
+    "ap": 5,
+    "expect": {
+      "action": "full_attack",
+      "sequence": "one_handed_weapon",
+      "ap": 5,
+      "stamina": 25,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": 0,
+          "outcome": "hit",
+          "target": 60,
+          "margin": 40,
+          "crit": false,
+          "damage": 6,
+          "hp": 34,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 20,
+          "crit": false,
+          "damage": 6,
+          "hp": 28,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -30,
+          "outcome": "hit",
+          "target": 30,
+          "margin": 10,
+          "crit": false,
+          "damage": 6,
+          "hp": 22,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        22
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "full attack with follow_up only: one more main-hand strike at -20",
+    "action": "full_attack",
+    "loadout": {
+      "main": "two_handed",
+      "off": "two_handed"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "full_attack_strikes",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:follow_up",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 40
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 20,
+        "damage": 12
+      },
+      {
+        "attack": 20,
+        "damage": 12
+      }
+    ],
+    "ap": 4,
+    "expect": {
+      "action": "full_attack",
+      "sequence": "two_handed_weapon",
+      "ap": 4,
+      "stamina": 20,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": 0,
+          "outcome": "hit",
+          "target": 60,
+          "margin": 40,
+          "crit": false,
+          "damage": 10,
+          "hp": 30,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 20,
+          "crit": false,
+          "damage": 10,
+          "hp": 20,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        20
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "full attack with off_hand_drill and twin_rhythm: penalties 10 smaller (main 0, off -10), a second off-hand strike at -20",
+    "action": "full_attack",
+    "loadout": {
+      "main": "light",
+      "off": "light_weapon"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "mainhand_penalty",
+          "operation": "add",
+          "value": 10,
+          "source": "feature:off_hand_drill",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "offhand_penalty",
+          "operation": "add",
+          "value": 10,
+          "source": "feature:off_hand_drill",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "full_attack_off_strikes",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:twin_rhythm",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 60
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 20,
+        "damage": 6
+      },
+      {
+        "attack": 20,
+        "damage": 6
+      },
+      {
+        "attack": 20,
+        "damage": 6
+      }
+    ],
+    "ap": 5,
+    "expect": {
+      "action": "full_attack",
+      "sequence": "two_light_weapons",
+      "ap": 5,
+      "stamina": 25,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": 0,
+          "outcome": "hit",
+          "target": 60,
+          "margin": 40,
+          "crit": false,
+          "damage": 4,
+          "hp": 56,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "off",
+          "foe": 0,
+          "attack": -10,
+          "outcome": "hit",
+          "target": 50,
+          "margin": 30,
+          "crit": false,
+          "damage": 4,
+          "hp": 52,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "off",
+          "foe": 0,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 20,
+          "crit": false,
+          "damage": 4,
+          "hp": 48,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        48
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "attack with off_hand_drill: two one-handed weapons at main 0 and off -20",
+    "action": "attack",
+    "loadout": {
+      "main": "one_handed",
+      "off": "weapon"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "mainhand_penalty",
+          "operation": "add",
+          "value": 10,
+          "source": "feature:off_hand_drill",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "offhand_penalty",
+          "operation": "add",
+          "value": 10,
+          "source": "feature:off_hand_drill",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 40
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 20,
+        "damage": 8
+      },
+      {
+        "attack": 20,
+        "damage": 8
+      }
+    ],
+    "expect": {
+      "action": "attack",
+      "sequence": "two_one_handed_weapons",
+      "ap": 5,
+      "stamina": 25,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": 0,
+          "outcome": "hit",
+          "target": 60,
+          "margin": 40,
+          "crit": false,
+          "damage": 6,
+          "hp": 34,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "off",
+          "foe": 0,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 20,
+          "crit": false,
+          "damage": 6,
+          "hp": 28,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        28
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "jab with off_hand_drill: the jab's -10 softens to 0, never past it",
+    "action": "jab",
+    "loadout": {
+      "main": "light",
+      "off": "light_weapon"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "mainhand_penalty",
+          "operation": "add",
+          "value": 10,
+          "source": "feature:off_hand_drill",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "offhand_penalty",
+          "operation": "add",
+          "value": 10,
+          "source": "feature:off_hand_drill",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 40
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 20,
+        "damage": 6
+      }
+    ],
+    "expect": {
+      "action": "jab",
+      "sequence": "two_light_weapons",
+      "ap": 2,
+      "stamina": 10,
+      "strikes": [
+        {
+          "hand": "off",
+          "foe": 0,
+          "attack": 0,
+          "outcome": "hit",
+          "target": 60,
+          "margin": 40,
+          "crit": false,
+          "damage": 4,
+          "hp": 36,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        36
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "full attack with carry_through but no reaping_arc: the carry happens once, the strike after the second drop is lost",
+    "action": "full_attack",
+    "loadout": {
+      "main": "light",
+      "off": "light_weapon"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "carry_through",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:carry_through",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "full_attack_strikes",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:follow_up",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 4
+      },
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 4
+      },
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 20,
+        "damage": 6
+      },
+      {
+        "attack": 20,
+        "damage": 6
+      },
+      {
+        "attack": 20,
+        "damage": 6
+      }
+    ],
+    "ap": 5,
+    "expect": {
+      "action": "full_attack",
+      "sequence": "two_light_weapons",
+      "ap": 5,
+      "stamina": 25,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -10,
+          "outcome": "hit",
+          "target": 50,
+          "margin": 30,
+          "crit": false,
+          "damage": 4,
+          "hp": 0,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "off",
+          "foe": 1,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 20,
+          "crit": false,
+          "damage": 4,
+          "hp": 0,
+          "carried": true,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        0,
+        0,
+        30
+      ],
+      "lost": 1
+    }
+  },
+  {
+    "name": "full attack with reaping_arc: the carry repeats for every foe dropped",
+    "action": "full_attack",
+    "loadout": {
+      "main": "light",
+      "off": "light_weapon"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "carry_through",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:carry_through",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "reaping_arc",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:reaping_arc",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "full_attack_strikes",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:follow_up",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 4
+      },
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 4
+      },
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 20,
+        "damage": 6
+      },
+      {
+        "attack": 20,
+        "damage": 6
+      },
+      {
+        "attack": 20,
+        "damage": 6
+      }
+    ],
+    "ap": 5,
+    "expect": {
+      "action": "full_attack",
+      "sequence": "two_light_weapons",
+      "ap": 5,
+      "stamina": 25,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -10,
+          "outcome": "hit",
+          "target": 50,
+          "margin": 30,
+          "crit": false,
+          "damage": 4,
+          "hp": 0,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "off",
+          "foe": 1,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 20,
+          "crit": false,
+          "damage": 4,
+          "hp": 0,
+          "carried": true,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "main",
+          "foe": 2,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 20,
+          "crit": false,
+          "damage": 4,
+          "hp": 26,
+          "carried": true,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        0,
+        0,
+        26
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "attack with carry_through: the last strike drops its foe, so one free strike goes to the next foe",
+    "action": "attack",
+    "loadout": {
+      "main": "two_handed",
+      "off": "two_handed"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "carry_through",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:carry_through",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 5
+      },
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 20,
+        "damage": 12
+      },
+      {
+        "attack": 25,
+        "damage": 12
+      }
+    ],
+    "expect": {
+      "action": "attack",
+      "sequence": "two_handed_weapon",
+      "ap": 3,
+      "stamina": 15,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": 0,
+          "outcome": "hit",
+          "target": 60,
+          "margin": 40,
+          "crit": false,
+          "damage": 10,
+          "hp": 0,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "main",
+          "foe": 1,
+          "attack": 0,
+          "outcome": "hit",
+          "target": 60,
+          "margin": 35,
+          "crit": false,
+          "damage": 10,
+          "hp": 20,
+          "carried": true,
+          "free": true,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        0,
+        20
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "attack without carry_through: no free strike after a drop",
+    "action": "attack",
+    "loadout": {
+      "main": "two_handed",
+      "off": "two_handed"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 5
+      },
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 20,
+        "damage": 12
+      }
+    ],
+    "expect": {
+      "action": "attack",
+      "sequence": "two_handed_weapon",
+      "ap": 3,
+      "stamina": 15,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": 0,
+          "outcome": "hit",
+          "target": 60,
+          "margin": 40,
+          "crit": false,
+          "damage": 10,
+          "hp": 0,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        0,
+        30
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "full attack with scissor_cut: the off-hand strike that hits a foe the main hand hit counts its dice twice, once per full attack",
+    "action": "full_attack",
+    "loadout": {
+      "main": "light",
+      "off": "light_weapon"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "mainhand_penalty",
+          "operation": "add",
+          "value": 10,
+          "source": "feature:off_hand_drill",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "offhand_penalty",
+          "operation": "add",
+          "value": 10,
+          "source": "feature:off_hand_drill",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "full_attack_off_strikes",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:twin_rhythm",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "scissor_cut",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:scissor_cut",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 60
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 20,
+        "damage": 6
+      },
+      {
+        "attack": 20,
+        "damage": 4
+      },
+      {
+        "attack": 20,
+        "damage": 4
+      }
+    ],
+    "ap": 5,
+    "expect": {
+      "action": "full_attack",
+      "sequence": "two_light_weapons",
+      "ap": 5,
+      "stamina": 25,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": 0,
+          "outcome": "hit",
+          "target": 60,
+          "margin": 40,
+          "crit": false,
+          "damage": 4,
+          "hp": 56,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "off",
+          "foe": 0,
+          "attack": -10,
+          "outcome": "hit",
+          "target": 50,
+          "margin": 30,
+          "crit": false,
+          "damage": 6,
+          "hp": 50,
+          "carried": false,
+          "free": false,
+          "scissor": true
+        },
+        {
+          "hand": "off",
+          "foe": 0,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 20,
+          "crit": false,
+          "damage": 2,
+          "hp": 48,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        48
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "circle cut: all AP, one strike at -10 at every foe in reach",
+    "action": "circle_cut",
+    "loadout": {
+      "main": "two_handed",
+      "off": "two_handed"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "carry_through",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:carry_through",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "reaping_arc",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:reaping_arc",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "can_circle_cut",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:circle_cut",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 5
+      },
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      },
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 20,
+        "damage": 12
+      },
+      {
+        "attack": 20,
+        "damage": 12
+      },
+      {
+        "attack": 20,
+        "damage": 12
+      }
+    ],
+    "ap": 4,
+    "expect": {
+      "action": "circle_cut",
+      "sequence": "two_handed_weapon",
+      "ap": 4,
+      "stamina": 20,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -10,
+          "outcome": "hit",
+          "target": 50,
+          "margin": 30,
+          "crit": false,
+          "damage": 10,
+          "hp": 0,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "main",
+          "foe": 1,
+          "attack": -10,
+          "outcome": "hit",
+          "target": 50,
+          "margin": 30,
+          "crit": false,
+          "damage": 10,
+          "hp": 20,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "main",
+          "foe": 2,
+          "attack": -10,
+          "outcome": "hit",
+          "target": 50,
+          "margin": 30,
+          "crit": false,
+          "damage": 10,
+          "hp": 20,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        0,
+        20,
+        20
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "circle cut without the perk is an error",
+    "action": "circle_cut",
+    "loadout": {
+      "main": "two_handed",
+      "off": "two_handed"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 20,
+        "damage": 12
+      }
+    ],
+    "ap": 4,
+    "expect": {
+      "error": "circle_cut needs a perk that grants can_circle_cut"
+    }
+  },
+  {
+    "name": "circle cut needs a two-handed weapon",
+    "action": "circle_cut",
+    "loadout": {
+      "main": "one_handed",
+      "off": "shield"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "carry_through",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:carry_through",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "reaping_arc",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:reaping_arc",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "can_circle_cut",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:circle_cut",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 20,
+        "damage": 12
+      }
+    ],
+    "ap": 5,
+    "expect": {
+      "error": "circle_cut needs a two_handed main hand"
+    }
+  },
+  {
+    "name": "the off hand rolls with off_skill and deals off_damage: a dagger's piercing halves the DR",
+    "action": "attack",
+    "loadout": {
+      "main": "one_handed",
+      "off": "light_weapon"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "off_skill": 50
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 4,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 8
+      },
+      {
+        "attack": 20,
+        "damage": 5
+      }
+    ],
+    "off_damage": {
+      "type": "piercing"
+    },
+    "expect": {
+      "action": "attack",
+      "sequence": "one_handed_and_light",
+      "ap": 4,
+      "stamina": 20,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -10,
+          "outcome": "hit",
+          "target": 50,
+          "margin": 20,
+          "crit": false,
+          "damage": 4,
+          "hp": 26,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "off",
+          "foe": 0,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 30,
+          "margin": 10,
+          "crit": false,
+          "damage": 3,
+          "hp": 23,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        23
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "a strike aimed at a foe already down is an error",
+    "action": "attack",
+    "loadout": {
+      "main": "light",
+      "off": "empty"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 0
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 6
+      }
+    ],
+    "expect": {
+      "error": "foe 0 is already down"
+    }
+  },
+  {
+    "name": "too few rolls is an error",
+    "action": "attack",
+    "loadout": {
+      "main": "light",
+      "off": "light_weapon"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 6
+      }
+    ],
+    "expect": {
+      "error": "the attack needs a roll for strike 2"
+    }
+  }
+]

@@ -205,9 +205,9 @@ func TestALevelUpsChoicesAreWrittenWithNoDevStep(t *testing.T) {
 
 	session, _ = step(t, opened, session, "progression", map[string]any{"operation": "take_perk", "perk": "hardened_hide"})
 	session, _ = step(t, opened, session, "progression", map[string]any{"operation": "take_perk", "perk": "hardened_hide"})
-	session, refused := step(t, opened, session, "progression", map[string]any{"operation": "take_perk", "perk": "power_attack"})
+	session, refused := step(t, opened, session, "progression", map[string]any{"operation": "take_perk", "perk": "full_weight"})
 	if refused["taken"] != false {
-		t.Errorf("power_attack needs blades 40: %v", refused)
+		t.Errorf("full_weight needs blades, blunt, or piercing 40: %v", refused)
 	}
 	perks := session["actor"].(map[string]any)["perks"].(map[string]any)
 	if !reflect.DeepEqual(perks, map[string]any{"hardened_hide": float64(2)}) {

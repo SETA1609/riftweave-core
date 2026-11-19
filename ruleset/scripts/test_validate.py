@@ -21,6 +21,7 @@ from validate import (
     build_namespaced_ref_index,
     check_damage_type_vocabulary,
     check_equipment_uniqueness,
+    check_attack_sequences,
     check_maneuver_unlocks,
     check_racial_trait_refs,
     load_canonical_damage_types,
@@ -211,6 +212,30 @@ class TestManeuverUnlocks(unittest.TestCase):
 
     def test_a_maneuver_a_perk_unlocks_passes(self):
         self.assertEqual(check_maneuver_unlocks([{"key": "heavy_swing"}], [{"key": "wind_up", "unlocks": ["core:maneuver/heavy_swing"]}]), [])
+
+
+class TestAttackSequences(unittest.TestCase):
+    """GD_S05_01: one attack_sequences row per loadout (docs/core/combat.md#attacks-by-loadout)."""
+
+    ONE = {"key": "one", "main": ["one_handed"], "off": ["empty"], "ap": 3, "strikes": [{"hand": "main", "attack": 0}]}
+    TWO = {"key": "two", "main": ["light"], "off": ["light_weapon"], "ap": 3,
+           "strikes": [{"hand": "main", "attack": -10}, {"hand": "off", "attack": -20}], "jab": {"ap": 2, "attack": -10}}
+
+    def test_the_data_passes(self):
+        rows = json.loads((Path(__file__).resolve().parent.parent / "data" / "attack_sequences" / "core.json").read_text())
+        self.assertEqual(check_attack_sequences(rows["attack_sequences"]), [])
+
+    def test_two_rows_for_one_loadout_fail(self):
+        errors = check_attack_sequences([self.ONE, {**self.ONE, "key": "again"}])
+        self.assertTrue(any("already covered by 'one'" in e for e in errors), errors)
+
+    def test_a_jab_without_an_off_hand_weapon_fails(self):
+        errors = check_attack_sequences([{**self.ONE, "jab": {"ap": 2, "attack": -10}}])
+        self.assertTrue(any("needs an off-hand weapon" in e for e in errors), errors)
+
+    def test_an_off_hand_weapon_without_a_jab_fails(self):
+        errors = check_attack_sequences([{k: v for k, v in self.TWO.items() if k != "jab"}])
+        self.assertTrue(any("needs an off-hand strike and a jab" in e for e in errors), errors)
 
 
 class TestManeuverChannel(unittest.TestCase):

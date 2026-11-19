@@ -17,7 +17,7 @@ POUNDS = r"(?i)\b(pounds?|lbs?)\b"
 
 # Perk: (new target, the percent per rank it gave as an `add`, its listed ranks).
 SCALED = {
-    "power_attack": ("melee_damage", 25, 1), "shield_wall": ("block_reduction", 15, 1),
+    "full_weight": ("melee_damage", 25, 1), "shield_wall": ("block_reduction", 15, 1),
     "pyromancer": ("red_magic_magnitude", 15, 2), "ghost": ("detection_chance", -25, 1),
     "field_medic": ("medicine_healing", 50, 1), "heavy_armor_expert": ("heavy_armor_surcharge", -50, 1),
     "acrobat": ("dodge_stamina", -25, 1), "iron_fist": ("unarmed_strike_damage", 50, 1),

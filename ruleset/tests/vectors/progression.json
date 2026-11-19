@@ -786,10 +786,10 @@
       "skills": {}
     },
     "perks": {},
-    "perk": "power_attack",
+    "perk": "full_weight",
     "expect": {
       "taken": false,
-      "perk": "power_attack",
+      "perk": "full_weight",
       "rank": 0,
       "unmet": [
         {
@@ -801,7 +801,9 @@
         {
           "needs": "skill",
           "keys": [
-            "blades"
+            "blades",
+            "blunt",
+            "piercing"
           ],
           "min": 40,
           "has": 15
