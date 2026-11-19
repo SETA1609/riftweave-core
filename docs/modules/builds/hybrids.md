@@ -13,9 +13,9 @@ A blade in one hand and fire in the other, in light armor: closes to cut, and bu
 - **Attributes:** STR 7, INT 7, END 6, AGI 6, the rest 4; with Gifted and Iron Allergy (+1 INT), STR 8, INT 9, END 7, AGI 7.
 - **Tag skills:** Blades, Red Magic, Light Armor.
 - **Spells:** Fire Bolt, Frost Lance, Fire Burst, Flame Shield, Chain Lightning, Meteor.
-- **Mechanics:** an attack and a cast cost 3 AP each, and AGI 7 gives a pool of 4 ([actions.md](../../core/actions.md#pool)), so a turn is one or the other plus a move. **Quick Caster** at 18 makes a cast 2 AP: a cast and two moves, or a cast now and the unspent AP carried, so an attack and a cast land in one turn every other turn. Light armor keeps the casting penalty small, and **Battle Mage** halves it. The blade half is the duelist's (Power Attack, Cleave, **Duelist**), the fire half the blaster's (**Pyromancer**, Ward Breaker, **Archmage**).
+- **Mechanics:** an attack and a cast cost 3 AP each, and AGI 7 gives a pool of 4 ([actions.md](../../core/actions.md#pool)), so a turn is one or the other plus a move. **Quick Caster** at 18 makes a cast 2 AP: a cast and two moves, or a cast now and the unspent AP carried, so an attack and a cast land in one turn every other turn. Light armor keeps the casting penalty small, and **Battle Mage** halves it. The blade half is the duelist's (Full Weight, Carry Through, **Duelist**), the fire half the blaster's (**Pyromancer**, Ward Breaker, **Archmage**).
 - **Level by level:**
-  - **2–9.** Power Attack (Blades 40), Arcane Reservoir twice, Hardened Hide, **Cleave** at 6, **Pyromancer** at 7 and 9, Easy Stride (Light Armor 50).
+  - **2–9.** Full Weight (Blades 40), Arcane Reservoir twice, Hardened Hide, **Carry Through** at 6, **Pyromancer** at 7 and 9, Easy Stride (Light Armor 50).
   - **10–19.** Sidestep, Hardened Hide, **Battle Mage** at 12, **Duelist** at 13 (Blades 60), Catch Your Breath, Berserker, Ward Breaker, Armored Evasion, **Quick Caster** at 18, the third Hardened Hide.
   - **20–30.** **Executioner** at 24 and **Archmage** at 25; the rest are general perks (Quick Learner, Polyglot, Tinkerer, Streetwise, Iron Stomach, Fleet Footed, Pack Mule, Scholar, Field Medic).
 - **At level 30:** Blades 100, Red Magic 100, Light Armor 80, Evasion 50, and 40 in the filler skills.
@@ -42,9 +42,9 @@ A longbow, a blade at the hip, and the wild for a home: tracks the quarry, shoot
 
 - **Attributes:** PER 7, STR 6, END 6, AGI 6, WIL 5, the rest 4; with Gifted and Leather Allergy (+1 END), PER 8, END 8, STR 7, AGI 7, WIL 6.
 - **Tag skills:** Bows, Blades, Survival.
-- **Mechanics:** the bow and the blade cost 3 AP an attack each, so the ranger switches by the range of the fight, not by the turn. Leather Allergy rules out most light armor, so the ranger wears medium armor at a low skill. The bow half is the archer's (Gap Finder, Steady Aim, **Sniper**), the blade half the duelist's (Power Attack, Cleave, **Duelist**), and Survival feeds Tracker and Beast Friend.
+- **Mechanics:** the bow and the blade cost 3 AP an attack each, so the ranger switches by the range of the fight, not by the turn. Leather Allergy rules out most light armor, so the ranger wears medium armor at a low skill. The bow half is the archer's (Gap Finder, Steady Aim, **Sniper**), the blade half the duelist's (Full Weight, Carry Through, **Duelist**), and Survival feeds Tracker and Beast Friend.
 - **Level by level:**
-  - **2–10.** Gap Finder, Hardened Hide, Power Attack, **Tracker** at 5, **Steady Aim** at 6, Night Eyes, **Cleave** at 8, two more Hardened Hide.
+  - **2–10.** Gap Finder, Hardened Hide, Full Weight, **Tracker** at 5, **Steady Aim** at 6, Night Eyes, **Carry Through** at 8, two more Hardened Hide.
   - **11–20.** Beast Friend, Ever Watchful, Berserker, Catch Your Breath, Iron Stomach, Sidestep, Ready Hand, **Sniper** at 18, **Duelist** at 19 (Blades 60), Survivor.
   - **21–30.** General perks: Pack Mule twice, Fleet-Footed, Streetwise, Meditative, Field Medic, Wind-Up, Snap Cut, Empath, Acrobat.
 - **At level 30:** Bows 89, Survival 70, Blades 60, and 40 in Animal Handling, Medium Armor, Evasion, Medicine, and Insight. Two top skills share the points, so neither reaches 100.

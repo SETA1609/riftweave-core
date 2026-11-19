@@ -3682,5 +3682,166 @@
       "outcome": "miss",
       "target": 50
     }
+  },
+  {
+    "name": "maneuver: the AP follows the loadout; heavy swing with two one-handed weapons is the attack's 5 + 1",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "maneuver": "heavy_swing",
+    "loadout": {
+      "main": "one_handed",
+      "off": "weapon"
+    },
+    "expect": {
+      "outcome": "hit",
+      "ap": 6,
+      "stamina": 30
+    }
+  },
+  {
+    "name": "maneuver: quick strike with one light weapon is the attack's 2 - 1",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "light",
+        "finesse"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "maneuver": "quick_strike",
+    "loadout": {
+      "main": "light",
+      "off": "empty"
+    },
+    "expect": {
+      "outcome": "hit",
+      "ap": 1,
+      "stamina": 5
+    }
+  },
+  {
+    "name": "loadout: an attacker loadout no attack sequence covers is an error",
+    "attacker": {
+      "skill": 72,
+      "roll": 47
+    },
+    "defender": {
+      "hp": 30
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "loadout": {
+      "main": "empty",
+      "off": "weapon"
+    },
+    "expect": {
+      "error": "no attack sequence fits main hand \"empty\" and off hand \"weapon\""
+    }
+  },
+  {
+    "name": "crossed guard: a defender holding two weapons widens the evasion band by 5 (12 + 5 = 17), so margin 15 is evaded",
+    "attacker": {
+      "skill": 72,
+      "roll": 57,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "loadout": {
+        "main": "one_handed",
+        "off": "light_weapon"
+      },
+      "modifiers": [
+        {
+          "target": "two_weapon_evasion_band",
+          "operation": "add",
+          "value": 5,
+          "source": "feature:crossed_guard",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "evaded",
+      "evasion_rate": 17
+    }
+  },
+  {
+    "name": "crossed guard: with a shield in the off hand the band stays 12, so margin 15 hits",
+    "attacker": {
+      "skill": 72,
+      "roll": 57,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "loadout": {
+        "main": "one_handed",
+        "off": "shield"
+      },
+      "modifiers": [
+        {
+          "target": "two_weapon_evasion_band",
+          "operation": "add",
+          "value": 5,
+          "source": "feature:crossed_guard",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "outcome": "hit",
+      "evasion_rate": 12
+    }
   }
 ]

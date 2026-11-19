@@ -20,7 +20,10 @@ The size matches the derived `ap` function. The cap is why unspent points carry.
 ## Costs
 
 ```
-attack 3
+attack 3, by loadout (2 to 5)
+jab 2, by loadout (2 or 3, the off hand alone)
+full_attack every AP left, at least attack + 1, by loadout
+circle_cut every AP left, at least attack + 1 (Circle Cut perk, two-handed weapon)
 cast 3
 move 1
 disengage 1
@@ -30,6 +33,8 @@ block 2, reserved, refund if unused
 command 2, an order to summons (commanding.md)
 aimed +2 on the attack cost
 ```
+
+The attack, the jab, the full attack, and the circle cut cost what the loadout's row of `ruleset/data/attack_sequences/core.json` says (`by_loadout`); the `cost` in `actions/core.json` is the cost with one one-handed weapon, for a caller that knows no loadout. The full attack and the circle cut spend every AP left (`spends_all`). The strikes each makes are in [combat.md](combat.md#attacks-by-loadout) (GD_S05_01).
 
 A perk changes a cost with `add` on the action's key: the Sidestep perk emits `add dodge -1`, and the cost is the row's cost after the actor's modifiers on that key, stacked by [modifier.md](modifier.md), never below 0. [V 2026-11-06]
 
@@ -60,9 +65,10 @@ needs     = one of its ranges (any when it lists none), and a weapon with one of
 | Heavy Swing | 4 (attack + 1) | −10 | ×1.5 | melee | staggered (4 s) | Wind-Up (STR 5) |
 | Quick Strike | 2 (attack − 1) | 0 | ×0.5 | melee, a light weapon | — | Snap Cut (AGI 5) |
 
-- **AP follows the attack.** The totals are for today's attack, 3 AP with every weapon. The
-  maneuver stores only its difference (`ap`), so when M3-28 sets the attack cost by loadout, a
-  maneuver's AP moves with it.
+- **AP follows the attack.** The totals are for an attack with one one-handed weapon, 3 AP. The
+  maneuver stores only its difference (`ap`), so its AP moves with the loadout's attack AP: a
+  Heavy Swing with two one-handed weapons is 5 + 1, a Quick Strike with one light weapon 2 - 1
+  (the `combat` input's `loadout`, GD_S05_01).
 - **Mana.** A maneuver may name a small `mana` cost, for one with a touch of magic; the two
   starting rows cost none. [A]
 - **Effects** must declare the `maneuver` channel, which `validate.py` checks
@@ -70,8 +76,8 @@ needs     = one of its ranges (any when it lists none), and a weapon with one of
 - **Every maneuver needs a perk** (owner 2026-11-18). A character may attempt a maneuver only
   while holding a perk that lists it in `unlocks`; nobody knows one untrained. `validate.py`
   fails on a maneuver no perk unlocks. An unlock perk gives nothing else; a perk's skill
-  bonus must cover two skills or be at least +10 (M5-78). The passive damage perk (`power_attack`,
-  renamed `full_weight` by M3-28) stays a passive bonus and does not unlock Heavy Swing. [A]
+  bonus must cover two skills or be at least +10 (M5-78). The passive damage perk (`full_weight`,
+  once `power_attack`) stays a passive bonus and does not unlock Heavy Swing. [A]
 - **Monsters** list `maneuvers` on their row or template, and need no perk for them, so a troll
   swings hard with the same row a fighter uses ([monsters.md](../modules/monsters.md#maneuvers)).
 - **Names** are our own, not feat names from other games (CONTRIBUTING.md).

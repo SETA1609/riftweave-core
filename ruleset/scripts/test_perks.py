@@ -191,5 +191,31 @@ class TestSharePerks(unittest.TestCase):
                 self.assertEqual(rows[top]["share"]["range"], 2 * rows[base]["share"]["range"])
                 self.assertGreater(rows[top]["share"]["turns"], rows[base]["share"]["turns"])
 
+
+class TestMeleeLadders(unittest.TestCase):
+    """GD_S05_01: the Carry Through, extra strikes, and two-weapon ladders (docs/core/combat.md#attacks-by-loadout)."""
+
+    LADDERS = {
+        "full_weight": (1, None), "carry_through": (6, "full_weight"), "reaping_arc": (12, "carry_through"),
+        "circle_cut": (18, "reaping_arc"), "follow_up": (6, None), "press_on": (18, "follow_up"),
+        "off_hand_drill": (4, None), "crossed_guard": (8, "off_hand_drill"), "twin_rhythm": (14, "off_hand_drill"),
+        "scissor_cut": (20, "twin_rhythm"),
+    }
+
+    def test_power_attack_and_cleave_are_gone(self):
+        keys = {feature["key"] for feature in features()}
+        self.assertFalse({"power_attack", "cleave"} & keys)
+
+    def test_each_rung_has_its_level_and_needs_the_rung_below(self):
+        rows = {perk["key"]: perk for perk in perks()}
+        for key, (gate, below) in self.LADDERS.items():
+            with self.subTest(perk=key):
+                self.assertEqual(level(rows[key]), gate)
+                self.assertEqual(prerequisite_refs(rows[key]), [f"core:feature/{below}"] if below else [])
+
+    def test_full_weight_opens_to_blades_blunt_or_piercing_40(self):
+        row = next(perk for perk in perks() if perk["key"] == "full_weight")
+        self.assertEqual(row["prerequisite"]["skills"], [{"any_of": ["core:skill/blades", "core:skill/blunt", "core:skill/piercing"], "min": 40}])
+
 if __name__ == "__main__":
     unittest.main()

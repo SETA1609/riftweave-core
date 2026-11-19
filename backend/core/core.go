@@ -18,6 +18,7 @@ import (
 	"slices"
 
 	"github.com/SETA1609/riftweave-core/backend/internal/actor"
+	"github.com/SETA1609/riftweave-core/backend/internal/attack"
 	"github.com/SETA1609/riftweave-core/backend/internal/casting"
 	"github.com/SETA1609/riftweave-core/backend/internal/combat"
 	"github.com/SETA1609/riftweave-core/backend/internal/commandsummons"
@@ -102,6 +103,7 @@ var commands map[string]commandHandler = map[string]commandHandler{
 	"consume":         bind(consume.Run),
 	"stored_actor":    bind(stored.Run),
 	"combat":          bind(combat.Run),
+	"attack_sequence": bind(attack.Run),
 	"loot":            bind(loot.Run),
 	"hazard":          bind(hazard.Run),
 	"share":           bind(share.Run),

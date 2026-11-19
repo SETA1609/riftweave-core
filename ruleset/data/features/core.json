@@ -55,9 +55,9 @@
       ]
     },
     {
-      "key": "power_attack",
-      "label": "Power Attack",
-      "description": "You put your whole body behind each swing, dealing extra melee damage.",
+      "key": "full_weight",
+      "label": "Full Weight",
+      "description": "You put your whole body behind each swing, dealing extra melee damage. Opens the Carry Through ladder.",
       "type": "perk",
       "category": "combat",
       "prerequisite": {
@@ -67,7 +67,9 @@
         "skills": [
           {
             "any_of": [
-              "core:skill/blades"
+              "core:skill/blades",
+              "core:skill/blunt",
+              "core:skill/piercing"
             ],
             "min": 40
           }
@@ -80,7 +82,7 @@
           "target": "melee_damage",
           "operation": "multiply",
           "value": 1.25,
-          "source": "feature:power_attack",
+          "source": "feature:full_weight",
           "origin": "core:origin/trained"
         }
       ]
@@ -781,9 +783,9 @@
       ]
     },
     {
-      "key": "cleave",
-      "label": "Cleave",
-      "description": "When a melee blow drops a foe, the swing carries into one more within reach.",
+      "key": "carry_through",
+      "label": "Carry Through",
+      "description": "When a strike drops a foe, the next strike of the same action goes to another foe in reach; after the last strike of an action, one free strike does (docs/core/combat.md#attacks-by-loadout).",
       "type": "perk",
       "category": "combat",
       "prerequisite": {
@@ -795,20 +797,276 @@
           {
             "any_of": [
               "core:skill/blades",
-              "core:skill/blunt"
+              "core:skill/blunt",
+              "core:skill/piercing"
             ],
             "min": 50
           }
         ],
+        "perks": [
+          {
+            "perk": "core:feature/full_weight"
+          }
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "carry_through",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:carry_through",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "reaping_arc",
+      "label": "Reaping Arc",
+      "description": "The carry repeats for every foe a strike drops, with no limit but the foes in reach.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 12,
+        "abilities": {
+          "str": 7
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/blades",
+              "core:skill/blunt",
+              "core:skill/piercing"
+            ],
+            "min": 60
+          }
+        ],
+        "perks": [
+          {
+            "perk": "core:feature/carry_through"
+          }
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "reaping_arc",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:reaping_arc",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "circle_cut",
+      "label": "Circle Cut",
+      "description": "With a two-handed weapon: an action that spends all your AP and strikes every foe in reach once, at -10. The one full attack that reaches many foes.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 18,
+        "abilities": {
+          "str": 8
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/blades",
+              "core:skill/blunt",
+              "core:skill/piercing"
+            ],
+            "min": 70
+          }
+        ],
+        "perks": [
+          {
+            "perk": "core:feature/reaping_arc"
+          }
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "can_circle_cut",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:circle_cut",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "follow_up",
+      "label": "Follow-Up",
+      "description": "A full attack gains one more main-hand strike, at -20.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 6,
+        "abilities": {
+          "agi": 5
+        },
         "perks": []
       },
       "ranks": 1,
       "modifiers": [
         {
-          "target": "cleave_on_kill",
+          "target": "full_attack_strikes",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:follow_up",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "press_on",
+      "label": "Press On",
+      "description": "A full attack gains a second extra main-hand strike, at -30.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 18,
+        "abilities": {
+          "agi": 7
+        },
+        "perks": [
+          {
+            "perk": "core:feature/follow_up"
+          }
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "full_attack_strikes",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:press_on",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "off_hand_drill",
+      "label": "Off-Hand Drill",
+      "description": "Drilled with a weapon in each hand: both two-weapon penalties are 10 smaller.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 4,
+        "abilities": {
+          "agi": 6
+        },
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "mainhand_penalty",
+          "operation": "add",
+          "value": 10,
+          "source": "feature:off_hand_drill",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "offhand_penalty",
+          "operation": "add",
+          "value": 10,
+          "source": "feature:off_hand_drill",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "crossed_guard",
+      "label": "Crossed Guard",
+      "description": "While you hold two weapons, your evasion band grows by 5.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 8,
+        "abilities": {
+          "agi": 6
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/evasion"
+            ],
+            "min": 30
+          }
+        ],
+        "perks": [
+          {
+            "perk": "core:feature/off_hand_drill"
+          }
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "two_weapon_evasion_band",
+          "operation": "add",
+          "value": 5,
+          "source": "feature:crossed_guard",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "twin_rhythm",
+      "label": "Twin Rhythm",
+      "description": "A full attack with two weapons gains a second off-hand strike, at the off-hand value -10.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 14,
+        "abilities": {
+          "agi": 7
+        },
+        "perks": [
+          {
+            "perk": "core:feature/off_hand_drill"
+          }
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "full_attack_off_strikes",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:twin_rhythm",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "scissor_cut",
+      "label": "Scissor Cut",
+      "description": "When a main-hand and an off-hand strike of one full attack both hit the same foe, the off-hand weapon's damage dice count once more.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 20,
+        "abilities": {
+          "agi": 8
+        },
+        "perks": [
+          {
+            "perk": "core:feature/twin_rhythm"
+          }
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "scissor_cut",
           "operation": "grant",
           "value": 1,
-          "source": "feature:cleave",
+          "source": "feature:scissor_cut",
           "origin": "core:origin/trained"
         }
       ]
@@ -1183,7 +1441,7 @@
         },
         "perks": [
           {
-            "perk": "core:feature/power_attack"
+            "perk": "core:feature/full_weight"
           }
         ]
       },

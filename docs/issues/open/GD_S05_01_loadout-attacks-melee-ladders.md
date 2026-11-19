@@ -1,9 +1,9 @@
 #### GD_S05_01_loadout-attacks-melee-ladders Attacks by loadout, the jab, the full attack, and the melee perk ladders
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: M3-27, M5-67
 - Was: M3-28
-- Modified: 2026-11-18
+- Modified: 2026-11-19
 - Do: Owner request, 2026-11-16 and 2026-11-17: the melee builds (M5-47) need perks for carrying a blow into the next foe, for fighting with two weapons, and for extra strikes. AP is `2 + floor(AGI / 3)` (`derived/core.json`, 2 to 5 AP); today every attack costs 3 AP.
   - **The attack strikes with everything held** (owner 2026-11-17): one `attack` action strikes once with the main hand and once with an off-hand weapon, if there is one. Its AP cost depends on the loadout, read from the weapons' `light` and `two_handed` properties. The strikes of one attack may go to different foes in reach. Each strike is its own roll through the whole pipeline (docs/core/combat.md).
   - **The jab** is a new action: one strike with the off-hand weapon alone, at the off-hand weapon's own cost.

@@ -44,6 +44,9 @@ type Defender struct {
 	HitPoints int64            `json:"hp"`
 	Resist    map[string]int64 `json:"resist"`
 	Flags     []string         `json:"flags"`
+	// Loadout is what the defender holds; with a weapon in each hand the defender's
+	// modifiers on two_weapon_evasion_band widen the evasion band (Crossed Guard).
+	Loadout *data.Loadout `json:"loadout"`
 	// CreatureType is the defender's creature type, which a weapon's bane reads.
 	CreatureType string `json:"creature_type"`
 	// Modifiers are the defender's perks: adds on evasion, shields, and shield_dr, and the
@@ -74,6 +77,8 @@ type Input struct {
 	// Summoning is whether the attacker has an active summon, for its while_summoning
 	// modifiers; the beside_summon situation implies it (docs/core/modifier.md).
 	Summoning bool `json:"summoning"`
+	// Loadout is what the attacker holds: a maneuver's AP is then the loadout's attack AP.
+	Loadout *data.Loadout `json:"loadout"`
 }
 
 // besideSummon is the situation of a summon attacking the same target, so one is out.
@@ -272,6 +277,12 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	if err != nil {
 		return Result{}, err
 	}
+	var sequence *data.AttackSequence
+	if input.Loadout != nil {
+		if sequence = ruleset.AttackSequences.Covering(input.Loadout.Main, input.Loadout.Off); sequence == nil {
+			return Result{}, &data.NoSequenceError{Loadout: *input.Loadout}
+		}
+	}
 	if maneuver != nil && maneuver.Attack != 0 {
 		attackModifiers = append(attackModifiers, modifier.Modifier{
 			Target:    "attack_roll",
@@ -324,7 +335,11 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		if err != nil {
 			return Result{}, err
 		}
-		var actionPoints int64 = max(action.Cost+maneuver.AP, 1)
+		var cost int64 = action.Cost
+		if sequence != nil && maneuver.Modifies == "attack" {
+			cost = sequence.AP
+		}
+		var actionPoints int64 = max(cost+maneuver.AP, 1)
 		var stamina int64 = actionPoints * ruleset.StaminaPerAP
 		var noEffects []json.RawMessage = []json.RawMessage{}
 		result.AP, result.Stamina, result.Effects = &actionPoints, &stamina, &noEffects
@@ -465,6 +480,13 @@ func bands(ruleset *data.Ruleset, defender *Defender, physical bool, delivery st
 		if evasionRate, err = pipeline.DodgeEvasionRate.Evaluate(nil, formula.Variable{Name: "rate", Value: evasionRate}); err != nil {
 			return 0, 0, err
 		}
+	}
+	if defender.Loadout.HoldsTwoWeapons() {
+		widened, err := modifier.Value(evasionRate, modifier.Target(defender.Modifiers, "two_weapon_evasion_band"), ruleset.Origins, 0, nil)
+		if err != nil {
+			return 0, 0, err
+		}
+		evasionRate = max(widened, 0)
 	}
 	var blockMagic bool = slices.Contains(modifier.Flags(defender.Modifiers, 0, nil), "block_magic")
 	if defender.Stance != "block" || (!physical && !blockMagic) {

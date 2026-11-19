@@ -301,6 +301,26 @@
       "pattern": "^(core:(weapon|armor|accessory)_base/[a-z0-9_]+|module:[a-z0-9_]+/(weapon|armor|accessory)_base/[a-z0-9_]+)$",
       "description": "A reference to a base template in equipment/bases/ (docs/core/keys.md)."
     },
+    "mainHand": {
+      "type": "string",
+      "enum": ["empty", "light", "one_handed", "two_handed"],
+      "description": "What the main hand holds (docs/core/combat.md#attacks-by-loadout): nothing, a weapon with the `light` property, another one-handed weapon, or a weapon held in both hands (a `two_handed` weapon, or a `versatile` one in both hands). One vocabulary for attack sequences and stances."
+    },
+    "offHand": {
+      "type": "string",
+      "enum": ["empty", "shield", "buckler", "light_weapon", "weapon", "two_handed"],
+      "description": "What the off hand holds (docs/core/combat.md#attacks-by-loadout): nothing, a shield, a buckler, a light weapon, another one-handed weapon, or the main hand's two-handed grip. One vocabulary for attack sequences and stances."
+    },
+    "loadout": {
+      "type": "object",
+      "properties": {
+        "main": { "$ref": "#/definitions/mainHand" },
+        "off": { "$ref": "#/definitions/offHand" }
+      },
+      "required": ["main", "off"],
+      "additionalProperties": false,
+      "description": "What an actor's two hands hold."
+    },
     "maneuverRef": {
       "type": "string",
       "pattern": "^(core:maneuver/[a-z0-9_]+|module:[a-z0-9_]+/maneuver/[a-z0-9_]+)$",
