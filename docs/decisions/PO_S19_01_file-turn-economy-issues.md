@@ -18,6 +18,7 @@ Date: 2026-11-19
 - **Roles:** each issue is GD (spec, data, vectors, Python reference). Go runs every vector file, so an issue's Go side lands in the same pull request, as GD_S05_01 did, unless it needs a new contract command.
 - **Numbers are proposals** [A], to be settled in each issue's spec step and a playtest: a move covers `floor(speed / 2)` squares; carry pool + 2 and +5 evasion per further unspent AP; a fight starts on pool − 1; an Action Boy-like perk +1 AP at level 12 and up; a cast costs 2, 3, or 4 AP by spell level.
 - **GitHub:** a story issue `S19: Turn-based action economy` with the ten issues as sub-issues, as for S17 and S18. The repo stays the source of truth.
-- **Open:**
-  - Does unspent AP become guard (`GD_S19_05`) or keep carrying up to the old cap of 10? The two pull against each other, and the owner chooses in the spec step.
-  - Does an opportunity attack cost AP (`GD_S19_04`, with Phalanx's pending `opportunity_attack_cost`)?
+- **Owner answers (2026-11-19):**
+  - Opportunity attacks are a base rule, which perks extend (cost, triggers, number, reach).
+  - Counter-attacks stay perks (Riposte, in the dodge stance).
+  - Unspent AP is **held** until your next turn: it guards you (+5 evasion per AP), it pays an opportunity attack or a readied attack at the loadout's attack cost, and at most 2 carry into the next pool. So `GD_S19_04` needs `GD_S19_05`.
