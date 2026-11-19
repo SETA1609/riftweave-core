@@ -7,7 +7,7 @@ Run `python ruleset/scripts/contract_diagram.py --write` after a contract change
 `test_contract_diagram.py` fails until the page matches. What the contract is:
 [README.md](README.md#commands) and [contract.md](../core/contract.md).
 
-25 commands. Each is a class diagram of its input and its result; a field whose type is
+26 commands. Each is a class diagram of its input and its result; a field whose type is
 a shared type of `common.json` links to it, and the shared types are drawn once, below.
 
 ## Shared types
@@ -153,6 +153,7 @@ One attack action by loadout: the attack, the jab, the full attack, or the circl
 classDiagram
     class attack_sequence_input {
         enum action
+        boolean after_parry
         integer ap
         object attacker
         object damage
@@ -264,6 +265,8 @@ classDiagram
         integer hp
         integer_or_null margin
         enum outcome
+        boolean parried
+        integer parry_rate
         List~object~ riders
         integer stagger_ap
         integer stamina
@@ -731,6 +734,26 @@ classDiagram
     }
     class cost
     spellcraft_result --> cost : cost
+```
+
+## stance
+
+A fighting stance over a stretch of turns: take or change one, end it, or change the loadout, which ends a stance it no longer fits.
+
+```mermaid
+classDiagram
+    class stance_input {
+        List~object~ events
+        loadout loadout
+        List~featureRef~ perks
+        string_or_null stance
+    }
+    class stance_result {
+        integer ap
+        modifiers modifiers
+        string_or_null stance
+        List~object~ steps
+    }
 ```
 
 ## stored_actor

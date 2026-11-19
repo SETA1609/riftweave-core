@@ -36,6 +36,7 @@ import (
 	"github.com/SETA1609/riftweave-core/backend/internal/rest"
 	"github.com/SETA1609/riftweave-core/backend/internal/share"
 	"github.com/SETA1609/riftweave-core/backend/internal/spellcraft"
+	"github.com/SETA1609/riftweave-core/backend/internal/stance"
 	"github.com/SETA1609/riftweave-core/backend/internal/stored"
 	"github.com/SETA1609/riftweave-core/backend/internal/wuxing"
 )
@@ -104,6 +105,7 @@ var commands map[string]commandHandler = map[string]commandHandler{
 	"stored_actor":    bind(stored.Run),
 	"combat":          bind(combat.Run),
 	"attack_sequence": bind(attack.Run),
+	"stance":          bind(stance.Run),
 	"loot":            bind(loot.Run),
 	"hazard":          bind(hazard.Run),
 	"share":           bind(share.Run),

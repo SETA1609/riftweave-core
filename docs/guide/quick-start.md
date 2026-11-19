@@ -22,7 +22,7 @@ There are no classes. A character is eight attributes, a set of skills, and the 
 
 ## Make a character
 
-Not sure what to play? The [suggested builds](../modules/builds/README.md) are worked plans from creation to level 30, a shield-bearer or a duelist, for example. They are suggestions: nothing is locked to a build.
+Not sure what to play? The [suggested builds](../modules/builds/README.md) are worked plans from creation to level 30, a shield-bearer or a fencer, for example. They are suggestions: nothing is locked to a build.
 
 1. **Choose a race.** It adjusts your attributes and gives you traits, a speed, and a size ([races](../modules/race.md)). Common Dwarf and Common Elf are the plain choices.
 2. **Assign attributes.** Start all eight at 4 and spend 10 points, with no attribute above 10. Then apply your race's adjustments, which may pass 10.

@@ -11,7 +11,7 @@ arrow runs from a prerequisite perk to the perk that needs it, labelled with the
 when more than 1. A rounded box is a prerequisite from another category. A ladder that stops
 early, or a perk nothing leads to, shows at a glance.
 
-125 perks: 63 on a ladder, 62 with no perk before or after them.
+132 perks: 63 on a ladder, 69 with no perk before or after them.
 
 ## Combat
 
@@ -170,7 +170,14 @@ attributes, and level only.
 | Precise Thrust | combat | Lv 6 · piercing 50 · AGI 6 |
 | Ready Hand | combat | AGI 6 |
 | Steady Aim | combat | Lv 6 · bows or crossbows or guns or throwing_weapons 40 · PER 6 |
-| Duelist | combat | Lv 12 · blades 60 · AGI 7 |
+| Fencer's Measure | combat | Lv 12 · blades 60 · AGI 7 |
+| Espada y Daga | combat | Lv 8 · blades or piercing 40 · AGI 6 |
+| Buckler Play | combat | Lv 6 · shields 30 · AGI 5 |
+| Phalanx | combat | Lv 8 · piercing 40 · END 6 |
+| Long Guard | combat | Lv 10 · blades or blunt or piercing 50 · STR 6 |
+| Bare Knuckle | combat | Lv 6 · unarmed 30 · END 5 |
+| Forward Guard | combat | Lv 4 · STR 5 |
+| Low Guard | combat | Lv 4 · AGI 5 |
 | Catch Your Breath | combat | Lv 12 · END 7 |
 | Berserker | combat | Lv 12 · STR 7 |
 | Thrown Mastery | combat | Lv 12 · throwing_weapons 60 · AGI 7 |

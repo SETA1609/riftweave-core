@@ -4,7 +4,7 @@ Modified: 2026-11-18
 
 Riftweave has no classes. A **suggested build** is a worked plan for reaching one style of play, from character creation to level 30, for a player who does not yet know the perk table. It is a suggestion and nothing more.
 
-**Nothing is gated by a build.** Any character can use any weapon, cast any spell it knows, and raise any skill. Leaving a build is only less efficient, never forbidden: a duelist who picks up a maul still hits with it, just with a lower skill and no maul perks behind it. A build names no new rule, perk, or item; every perk it suggests is a row in [`features/core.json`](../../../ruleset/data/features/core.json), and every number it relies on is in the module docs it links to.
+**Nothing is gated by a build.** Any character can use any weapon, cast any spell it knows, and raise any skill. Leaving a build is only less efficient, never forbidden: a fencer who picks up a maul still hits with it, just with a lower skill and no maul perks behind it. A build names no new rule, perk, or item; every perk it suggests is a row in [`features/core.json`](../../../ruleset/data/features/core.json), and every number it relies on is in the module docs it links to.
 
 ## What a build holds
 
@@ -40,7 +40,7 @@ Every build page ends with what the build can still do outside its style, and at
 | --- | --- | --- |
 | Melee | Shield-bearer | [melee.md](melee.md#shield-bearer) |
 | Melee | Two-handed fighter | [melee.md](melee.md#two-handed-fighter) |
-| Melee | Duelist | [melee.md](melee.md#duelist) |
+| Melee | Fencer | [melee.md](melee.md#fencer) |
 | Magic | Blaster | [magic.md](magic.md#blaster) |
 | Magic | Summoner | [magic.md](magic.md#summoner) |
 | Magic | Support | [magic.md](magic.md#support) |

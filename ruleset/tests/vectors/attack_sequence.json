@@ -2584,5 +2584,1012 @@
       ],
       "lost": 0
     }
+  },
+  {
+    "name": "stance: Forward Guard adds +10 to every strike's target (60 + 10)",
+    "action": "attack",
+    "loadout": {
+      "main": "light",
+      "off": "empty"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "attack_roll",
+          "operation": "add",
+          "value": 10,
+          "source": "stance:forward_guard",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        },
+        {
+          "target": "evasion_band",
+          "operation": "add",
+          "value": -10,
+          "source": "stance:forward_guard",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 6
+      }
+    ],
+    "expect": {
+      "action": "attack",
+      "sequence": "light_weapon",
+      "ap": 2,
+      "stamina": 10,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": 0,
+          "outcome": "hit",
+          "target": 70,
+          "margin": 40,
+          "crit": false,
+          "damage": 4,
+          "hp": 26,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        26
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "stance: Fencer's Measure adds +10 with one foe in reach",
+    "action": "attack",
+    "loadout": {
+      "main": "light",
+      "off": "empty",
+      "main_skill": "core:skill/piercing"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "parry",
+          "operation": "grant",
+          "value": 1,
+          "source": "stance:fencers_measure",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        },
+        {
+          "target": "attack_single_opponent",
+          "operation": "add",
+          "value": 10,
+          "source": "stance:fencers_measure",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "piercing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 6
+      }
+    ],
+    "expect": {
+      "action": "attack",
+      "sequence": "light_weapon",
+      "ap": 2,
+      "stamina": 10,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": 0,
+          "outcome": "hit",
+          "target": 70,
+          "margin": 40,
+          "crit": false,
+          "damage": 5,
+          "hp": 25,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        25
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "stance: Fencer's Measure adds nothing with two foes in reach",
+    "action": "attack",
+    "loadout": {
+      "main": "light",
+      "off": "empty",
+      "main_skill": "core:skill/piercing"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "parry",
+          "operation": "grant",
+          "value": 1,
+          "source": "stance:fencers_measure",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        },
+        {
+          "target": "attack_single_opponent",
+          "operation": "add",
+          "value": 10,
+          "source": "stance:fencers_measure",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      },
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "piercing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 6
+      }
+    ],
+    "expect": {
+      "action": "attack",
+      "sequence": "light_weapon",
+      "ap": 2,
+      "stamina": 10,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": 0,
+          "outcome": "hit",
+          "target": 60,
+          "margin": 30,
+          "crit": false,
+          "damage": 5,
+          "hp": 25,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        25,
+        30
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "stance: Espada y Daga's full attack makes no off-hand strike, and after a parry the main-hand strike gains +10 (60 - 10 + 10)",
+    "action": "full_attack",
+    "ap": 5,
+    "loadout": {
+      "main": "one_handed",
+      "off": "light_weapon"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "parry",
+          "operation": "grant",
+          "value": 1,
+          "source": "stance:espada_y_daga",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        },
+        {
+          "target": "off_hand_parries",
+          "operation": "grant",
+          "value": 1,
+          "source": "stance:espada_y_daga",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        },
+        {
+          "target": "attack_after_parry",
+          "operation": "add",
+          "value": 10,
+          "source": "stance:espada_y_daga",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        }
+      ]
+    },
+    "after_parry": true,
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 6
+      }
+    ],
+    "expect": {
+      "action": "full_attack",
+      "sequence": "one_handed_and_light",
+      "ap": 5,
+      "stamina": 25,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -10,
+          "outcome": "hit",
+          "target": 60,
+          "margin": 30,
+          "crit": false,
+          "damage": 4,
+          "hp": 26,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        26
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "stance: Espada y Daga's plain attack still strikes with the dagger, and the parry bonus goes to the main hand only",
+    "action": "attack",
+    "loadout": {
+      "main": "one_handed",
+      "off": "light_weapon"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "parry",
+          "operation": "grant",
+          "value": 1,
+          "source": "stance:espada_y_daga",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        },
+        {
+          "target": "off_hand_parries",
+          "operation": "grant",
+          "value": 1,
+          "source": "stance:espada_y_daga",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        },
+        {
+          "target": "attack_after_parry",
+          "operation": "add",
+          "value": 10,
+          "source": "stance:espada_y_daga",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        }
+      ]
+    },
+    "after_parry": true,
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 6
+      },
+      {
+        "attack": 30,
+        "damage": 4
+      }
+    ],
+    "expect": {
+      "action": "attack",
+      "sequence": "one_handed_and_light",
+      "ap": 4,
+      "stamina": 20,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -10,
+          "outcome": "hit",
+          "target": 60,
+          "margin": 30,
+          "crit": false,
+          "damage": 4,
+          "hp": 26,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "off",
+          "foe": 0,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 10,
+          "crit": false,
+          "damage": 2,
+          "hp": 24,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        24
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "stance: Bare Knuckle adds +2 unarmed damage (3 + 2 - DR 2 = 3) and one more strike in a full attack at -20",
+    "action": "full_attack",
+    "ap": 3,
+    "loadout": {
+      "main": "empty",
+      "off": "empty"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "unarmed_damage",
+          "operation": "add",
+          "value": 2,
+          "source": "stance:bare_knuckle",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        },
+        {
+          "target": "full_attack_strikes",
+          "operation": "add",
+          "value": 1,
+          "source": "stance:bare_knuckle",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "bludgeoning"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 3
+      },
+      {
+        "attack": 30,
+        "damage": 3
+      }
+    ],
+    "expect": {
+      "action": "full_attack",
+      "sequence": "unarmed",
+      "ap": 3,
+      "stamina": 15,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": 0,
+          "outcome": "hit",
+          "target": 60,
+          "margin": 30,
+          "crit": false,
+          "damage": 3,
+          "hp": 27,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 10,
+          "crit": false,
+          "damage": 3,
+          "hp": 24,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        24
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "stance: Long Guard lets Carry Through fire on a crit that leaves the foe standing: a free strike at the next foe",
+    "action": "full_attack",
+    "ap": 4,
+    "loadout": {
+      "main": "two_handed",
+      "off": "two_handed"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "carry_through",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:carry_through",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "carry_on_crit",
+          "operation": "grant",
+          "value": 1,
+          "source": "stance:long_guard",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        },
+        {
+          "target": "evasion_band",
+          "operation": "add",
+          "value": -10,
+          "source": "stance:long_guard",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 40
+      },
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 2,
+        "damage": 8
+      },
+      {
+        "attack": 30,
+        "damage": 6
+      }
+    ],
+    "expect": {
+      "action": "full_attack",
+      "sequence": "two_handed_weapon",
+      "ap": 4,
+      "stamina": 20,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": 0,
+          "outcome": "hit",
+          "target": 60,
+          "margin": 58,
+          "crit": true,
+          "damage": 14,
+          "hp": 26,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "main",
+          "foe": 1,
+          "attack": 0,
+          "outcome": "hit",
+          "target": 60,
+          "margin": 30,
+          "crit": false,
+          "damage": 4,
+          "hp": 26,
+          "carried": true,
+          "free": true,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        26,
+        26
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "stance: with Press On, Long Guard's crit carry sends the rest of the full attack to the next foe",
+    "action": "full_attack",
+    "ap": 4,
+    "loadout": {
+      "main": "two_handed",
+      "off": "two_handed"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "carry_through",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:carry_through",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "full_attack_strikes",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:press_on",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "carry_on_crit",
+          "operation": "grant",
+          "value": 1,
+          "source": "stance:long_guard",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        },
+        {
+          "target": "evasion_band",
+          "operation": "add",
+          "value": -10,
+          "source": "stance:long_guard",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 40
+      },
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 2,
+        "damage": 8
+      },
+      {
+        "attack": 30,
+        "damage": 6
+      }
+    ],
+    "expect": {
+      "action": "full_attack",
+      "sequence": "two_handed_weapon",
+      "ap": 4,
+      "stamina": 20,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": 0,
+          "outcome": "hit",
+          "target": 60,
+          "margin": 58,
+          "crit": true,
+          "damage": 14,
+          "hp": 26,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "main",
+          "foe": 1,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 10,
+          "crit": false,
+          "damage": 4,
+          "hp": 26,
+          "carried": true,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        26,
+        26
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "stance: without Long Guard a crit that leaves the foe standing carries nothing",
+    "action": "full_attack",
+    "ap": 4,
+    "loadout": {
+      "main": "two_handed",
+      "off": "two_handed"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "carry_through",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:carry_through",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 40
+      },
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 2,
+        "damage": 8
+      }
+    ],
+    "expect": {
+      "action": "full_attack",
+      "sequence": "two_handed_weapon",
+      "ap": 4,
+      "stamina": 20,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": 0,
+          "outcome": "hit",
+          "target": 60,
+          "margin": 58,
+          "crit": true,
+          "damage": 14,
+          "hp": 26,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        26,
+        30
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "Long Guard: in an attack, a crit does not move a next strike the caller aimed at another foe, and keeps the carry",
+    "action": "attack",
+    "loadout": {
+      "main": "light",
+      "off": "light_weapon"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "carry_through",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:carry_through",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "carry_on_crit",
+          "operation": "grant",
+          "value": 1,
+          "source": "stance:long_guard",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 0,
+        "hp": 40
+      },
+      {
+        "evasion_skill": 0,
+        "hp": 40
+      },
+      {
+        "evasion_skill": 0,
+        "hp": 40
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "targets": [
+      0,
+      2
+    ],
+    "rolls": [
+      {
+        "attack": 1,
+        "damage": 4
+      },
+      {
+        "attack": 20,
+        "damage": 4
+      }
+    ],
+    "expect": {
+      "action": "attack",
+      "sequence": "two_light_weapons",
+      "ap": 3,
+      "stamina": 15,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -10,
+          "outcome": "hit",
+          "target": 50,
+          "margin": 49,
+          "crit": true,
+          "damage": 8,
+          "hp": 32,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "off",
+          "foe": 2,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 20,
+          "crit": false,
+          "damage": 4,
+          "hp": 36,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        32,
+        40,
+        36
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "Long Guard: in an attack, a crit carries a next strike aimed at the same foe to the first other foe standing",
+    "action": "attack",
+    "loadout": {
+      "main": "light",
+      "off": "light_weapon"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "carry_through",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:carry_through",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "carry_on_crit",
+          "operation": "grant",
+          "value": 1,
+          "source": "stance:long_guard",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 0,
+        "hp": 40
+      },
+      {
+        "evasion_skill": 0,
+        "hp": 40
+      },
+      {
+        "evasion_skill": 0,
+        "hp": 40
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "targets": [
+      0,
+      0
+    ],
+    "rolls": [
+      {
+        "attack": 1,
+        "damage": 4
+      },
+      {
+        "attack": 20,
+        "damage": 4
+      }
+    ],
+    "expect": {
+      "action": "attack",
+      "sequence": "two_light_weapons",
+      "ap": 3,
+      "stamina": 15,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -10,
+          "outcome": "hit",
+          "target": 50,
+          "margin": 49,
+          "crit": true,
+          "damage": 8,
+          "hp": 32,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "off",
+          "foe": 1,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 20,
+          "crit": false,
+          "damage": 4,
+          "hp": 36,
+          "carried": true,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        32,
+        36,
+        40
+      ],
+      "lost": 0
+    }
   }
 ]

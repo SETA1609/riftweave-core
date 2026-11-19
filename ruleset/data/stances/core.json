@@ -1,0 +1,214 @@
+{
+  "$schema": "../../schemas/stance.schema.json",
+  "rules": { "turn_start_ap": 0, "mid_turn_ap": 1, "parry_band_divisor": 4 },
+  "stances": [
+    {
+      "key": "fencers_measure",
+      "label": "Fencer's Measure",
+      "description": "A one-handed blade and nothing in the other hand: the blade parries (a parry band of a quarter of its skill), and you gain +10 to attack while only one foe is in reach.",
+      "main": ["light", "one_handed"],
+      "off": ["empty"],
+      "main_skills": ["core:skill/blades", "core:skill/piercing"],
+      "modifiers": [
+        {
+          "target": "parry",
+          "operation": "grant",
+          "value": 1,
+          "source": "stance:fencers_measure",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        },
+        {
+          "target": "attack_single_opponent",
+          "operation": "add",
+          "value": 10,
+          "source": "stance:fencers_measure",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        }
+      ]
+    },
+    {
+      "key": "espada_y_daga",
+      "label": "Espada y Daga",
+      "description": "A blade in the main hand and a dagger in the off hand: the dagger does not strike in a full attack but parries, and after a parry the next main-hand strike gains +10.",
+      "main": ["light", "one_handed"],
+      "off": ["light_weapon"],
+      "main_skills": ["core:skill/blades", "core:skill/piercing"],
+      "off_skills": ["core:skill/piercing"],
+      "modifiers": [
+        {
+          "target": "parry",
+          "operation": "grant",
+          "value": 1,
+          "source": "stance:espada_y_daga",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        },
+        {
+          "target": "off_hand_parries",
+          "operation": "grant",
+          "value": 1,
+          "source": "stance:espada_y_daga",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        },
+        {
+          "target": "attack_after_parry",
+          "operation": "add",
+          "value": 10,
+          "source": "stance:espada_y_daga",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        }
+      ]
+    },
+    {
+      "key": "buckler_play",
+      "label": "Buckler Play",
+      "description": "A one-handed weapon and a buckler: while blocking, the block band reads the better of Shields and the weapon skill.",
+      "main": ["light", "one_handed"],
+      "off": ["buckler"],
+      "modifiers": [
+        {
+          "target": "block_with_weapon",
+          "operation": "grant",
+          "value": 1,
+          "source": "stance:buckler_play",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        }
+      ]
+    },
+    {
+      "key": "phalanx",
+      "label": "Phalanx",
+      "description": "A spear and a shield: opportunity attacks cost you 2 AP, and an adjacent ally gains your shield's cover.",
+      "main": ["one_handed", "two_handed"],
+      "off": ["shield"],
+      "main_skills": ["core:skill/piercing"],
+      "modifiers": [
+        {
+          "target": "opportunity_attack_cost",
+          "operation": "add",
+          "value": -1,
+          "source": "stance:phalanx",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        },
+        {
+          "target": "shield_cover_to_ally",
+          "operation": "grant",
+          "value": 1,
+          "source": "stance:phalanx",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        }
+      ]
+    },
+    {
+      "key": "long_guard",
+      "label": "Long Guard",
+      "description": "A weapon in both hands, held long: Full Weight's bonus doubles and Carry Through also fires on a critical strike, but your evasion band shrinks by 10.",
+      "main": ["two_handed"],
+      "off": ["two_handed"],
+      "modifiers": [
+        {
+          "target": "full_weight_doubled",
+          "operation": "grant",
+          "value": 1,
+          "source": "stance:long_guard",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        },
+        {
+          "target": "carry_on_crit",
+          "operation": "grant",
+          "value": 1,
+          "source": "stance:long_guard",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        },
+        {
+          "target": "evasion_band",
+          "operation": "add",
+          "value": -10,
+          "source": "stance:long_guard",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        }
+      ]
+    },
+    {
+      "key": "bare_knuckle",
+      "label": "Bare Knuckle",
+      "description": "Both hands empty: +2 unarmed damage and one more unarmed strike in a full attack, at -20.",
+      "main": ["empty"],
+      "off": ["empty"],
+      "modifiers": [
+        {
+          "target": "unarmed_damage",
+          "operation": "add",
+          "value": 2,
+          "source": "stance:bare_knuckle",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        },
+        {
+          "target": "full_attack_strikes",
+          "operation": "add",
+          "value": 1,
+          "source": "stance:bare_knuckle",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        }
+      ]
+    },
+    {
+      "key": "forward_guard",
+      "label": "Forward Guard",
+      "description": "Any loadout, weight forward: +10 to attack and -10 to your evasion band.",
+      "modifiers": [
+        {
+          "target": "attack_roll",
+          "operation": "add",
+          "value": 10,
+          "source": "stance:forward_guard",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        },
+        {
+          "target": "evasion_band",
+          "operation": "add",
+          "value": -10,
+          "source": "stance:forward_guard",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        }
+      ]
+    },
+    {
+      "key": "low_guard",
+      "label": "Low Guard",
+      "description": "Any loadout, weight back: -10 to attack and +10 to your evasion band.",
+      "modifiers": [
+        {
+          "target": "attack_roll",
+          "operation": "add",
+          "value": -10,
+          "source": "stance:low_guard",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        },
+        {
+          "target": "evasion_band",
+          "operation": "add",
+          "value": 10,
+          "source": "stance:low_guard",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        }
+      ]
+    }
+  ]
+}

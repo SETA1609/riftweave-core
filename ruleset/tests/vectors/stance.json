@@ -1,0 +1,507 @@
+[
+  {
+    "name": "take: Fencer's Measure at the start of the turn is free; a rapier alone fits, and its modifiers come back martial and while applied",
+    "perks": [
+      "core:feature/fencers_measure"
+    ],
+    "loadout": {
+      "main": "light",
+      "off": "empty",
+      "main_skill": "core:skill/piercing"
+    },
+    "events": [
+      {
+        "take": "fencers_measure"
+      }
+    ],
+    "expect": {
+      "stance": "fencers_measure",
+      "ap": 0,
+      "modifiers": [
+        {
+          "target": "parry",
+          "operation": "grant",
+          "value": 1,
+          "source": "stance:fencers_measure",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        },
+        {
+          "target": "attack_single_opponent",
+          "operation": "add",
+          "value": 10,
+          "source": "stance:fencers_measure",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        }
+      ],
+      "steps": [
+        {
+          "ap": 0,
+          "ended": null,
+          "stance": "fencers_measure"
+        }
+      ]
+    }
+  },
+  {
+    "name": "drop: drawing a dagger into the empty off hand ends Fencer's Measure",
+    "perks": [
+      "core:feature/fencers_measure"
+    ],
+    "loadout": {
+      "main": "light",
+      "off": "empty",
+      "main_skill": "core:skill/piercing"
+    },
+    "stance": "fencers_measure",
+    "events": [
+      {
+        "loadout": {
+          "main": "light",
+          "off": "light_weapon",
+          "main_skill": "core:skill/piercing",
+          "off_skill": "core:skill/piercing"
+        }
+      }
+    ],
+    "expect": {
+      "stance": null,
+      "ap": 0,
+      "modifiers": [],
+      "steps": [
+        {
+          "ap": 0,
+          "ended": "fencers_measure",
+          "stance": null
+        }
+      ]
+    }
+  },
+  {
+    "name": "replace: Forward Guard replaces Low Guard mid-turn for 1 AP, and only Forward Guard's modifiers apply",
+    "perks": [
+      "core:feature/low_guard",
+      "core:feature/forward_guard"
+    ],
+    "loadout": {
+      "main": "two_handed",
+      "off": "two_handed"
+    },
+    "stance": "low_guard",
+    "events": [
+      {
+        "take": "forward_guard",
+        "mid_turn": true
+      }
+    ],
+    "expect": {
+      "stance": "forward_guard",
+      "ap": 1,
+      "modifiers": [
+        {
+          "target": "attack_roll",
+          "operation": "add",
+          "value": 10,
+          "source": "stance:forward_guard",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        },
+        {
+          "target": "evasion_band",
+          "operation": "add",
+          "value": -10,
+          "source": "stance:forward_guard",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        }
+      ],
+      "steps": [
+        {
+          "ap": 1,
+          "ended": "low_guard",
+          "stance": "forward_guard"
+        }
+      ]
+    }
+  },
+  {
+    "name": "replace: a take at the start of the turn, then a change back mid-turn: 0 + 1 AP",
+    "perks": [
+      "core:feature/low_guard",
+      "core:feature/forward_guard"
+    ],
+    "loadout": {
+      "main": "one_handed",
+      "off": "shield"
+    },
+    "events": [
+      {
+        "take": "low_guard"
+      },
+      {
+        "take": "forward_guard",
+        "mid_turn": true
+      }
+    ],
+    "expect": {
+      "stance": "forward_guard",
+      "ap": 1,
+      "modifiers": [
+        {
+          "target": "attack_roll",
+          "operation": "add",
+          "value": 10,
+          "source": "stance:forward_guard",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        },
+        {
+          "target": "evasion_band",
+          "operation": "add",
+          "value": -10,
+          "source": "stance:forward_guard",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        }
+      ],
+      "steps": [
+        {
+          "ap": 0,
+          "ended": null,
+          "stance": "low_guard"
+        },
+        {
+          "ap": 1,
+          "ended": "low_guard",
+          "stance": "forward_guard"
+        }
+      ]
+    }
+  },
+  {
+    "name": "take: the stance already active costs nothing, even mid-turn",
+    "perks": [
+      "core:feature/low_guard"
+    ],
+    "loadout": {
+      "main": "empty",
+      "off": "empty"
+    },
+    "stance": "low_guard",
+    "events": [
+      {
+        "take": "low_guard",
+        "mid_turn": true
+      }
+    ],
+    "expect": {
+      "stance": "low_guard",
+      "ap": 0,
+      "modifiers": [
+        {
+          "target": "attack_roll",
+          "operation": "add",
+          "value": -10,
+          "source": "stance:low_guard",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        },
+        {
+          "target": "evasion_band",
+          "operation": "add",
+          "value": 10,
+          "source": "stance:low_guard",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        }
+      ],
+      "steps": [
+        {
+          "ap": 0,
+          "ended": null,
+          "stance": "low_guard"
+        }
+      ]
+    }
+  },
+  {
+    "name": "end: ending a stance is free and leaves no modifiers",
+    "perks": [
+      "core:feature/bare_knuckle"
+    ],
+    "loadout": {
+      "main": "empty",
+      "off": "empty"
+    },
+    "stance": "bare_knuckle",
+    "events": [
+      {
+        "end": true
+      }
+    ],
+    "expect": {
+      "stance": null,
+      "ap": 0,
+      "modifiers": [],
+      "steps": [
+        {
+          "ap": 0,
+          "ended": "bare_knuckle",
+          "stance": null
+        }
+      ]
+    }
+  },
+  {
+    "name": "drop: drawing a one-handed weapon ends Bare Knuckle",
+    "perks": [
+      "core:feature/bare_knuckle"
+    ],
+    "loadout": {
+      "main": "empty",
+      "off": "empty"
+    },
+    "events": [
+      {
+        "take": "bare_knuckle"
+      },
+      {
+        "loadout": {
+          "main": "one_handed",
+          "off": "empty"
+        }
+      }
+    ],
+    "expect": {
+      "stance": null,
+      "ap": 0,
+      "modifiers": [],
+      "steps": [
+        {
+          "ap": 0,
+          "ended": null,
+          "stance": "bare_knuckle"
+        },
+        {
+          "ap": 0,
+          "ended": "bare_knuckle",
+          "stance": null
+        }
+      ]
+    }
+  },
+  {
+    "name": "drop: Forward Guard fits any loadout, so a weapon swap keeps it",
+    "perks": [
+      "core:feature/forward_guard"
+    ],
+    "loadout": {
+      "main": "empty",
+      "off": "empty"
+    },
+    "stance": "forward_guard",
+    "events": [
+      {
+        "loadout": {
+          "main": "two_handed",
+          "off": "two_handed"
+        }
+      }
+    ],
+    "expect": {
+      "stance": "forward_guard",
+      "ap": 0,
+      "modifiers": [
+        {
+          "target": "attack_roll",
+          "operation": "add",
+          "value": 10,
+          "source": "stance:forward_guard",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        },
+        {
+          "target": "evasion_band",
+          "operation": "add",
+          "value": -10,
+          "source": "stance:forward_guard",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        }
+      ],
+      "steps": [
+        {
+          "ap": 0,
+          "ended": null,
+          "stance": "forward_guard"
+        }
+      ]
+    }
+  },
+  {
+    "name": "take: Espada y Daga needs a blade and a dagger (piercing) in the off hand",
+    "perks": [
+      "core:feature/espada_y_daga"
+    ],
+    "loadout": {
+      "main": "one_handed",
+      "off": "light_weapon",
+      "main_skill": "core:skill/blades",
+      "off_skill": "core:skill/piercing"
+    },
+    "events": [
+      {
+        "take": "espada_y_daga",
+        "mid_turn": true
+      }
+    ],
+    "expect": {
+      "stance": "espada_y_daga",
+      "ap": 1,
+      "modifiers": [
+        {
+          "target": "parry",
+          "operation": "grant",
+          "value": 1,
+          "source": "stance:espada_y_daga",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        },
+        {
+          "target": "off_hand_parries",
+          "operation": "grant",
+          "value": 1,
+          "source": "stance:espada_y_daga",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        },
+        {
+          "target": "attack_after_parry",
+          "operation": "add",
+          "value": 10,
+          "source": "stance:espada_y_daga",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        }
+      ],
+      "steps": [
+        {
+          "ap": 1,
+          "ended": null,
+          "stance": "espada_y_daga"
+        }
+      ]
+    }
+  },
+  {
+    "name": "error: a stance no held perk unlocks",
+    "perks": [
+      "core:feature/low_guard"
+    ],
+    "loadout": {
+      "main": "empty",
+      "off": "empty"
+    },
+    "events": [
+      {
+        "take": "forward_guard"
+      }
+    ],
+    "expect": {
+      "error": "stance \"forward_guard\" needs a perk that unlocks it"
+    }
+  },
+  {
+    "name": "error: Fencer's Measure with a mace (blunt) does not fit",
+    "perks": [
+      "core:feature/fencers_measure"
+    ],
+    "loadout": {
+      "main": "one_handed",
+      "off": "empty",
+      "main_skill": "core:skill/blunt"
+    },
+    "events": [
+      {
+        "take": "fencers_measure"
+      }
+    ],
+    "expect": {
+      "error": "stance \"fencers_measure\" needs a main-hand weapon of skill core:skill/blades or core:skill/piercing"
+    }
+  },
+  {
+    "name": "error: Phalanx needs a shield in the off hand",
+    "perks": [
+      "core:feature/phalanx"
+    ],
+    "loadout": {
+      "main": "one_handed",
+      "off": "buckler",
+      "main_skill": "core:skill/piercing"
+    },
+    "events": [
+      {
+        "take": "phalanx"
+      }
+    ],
+    "expect": {
+      "error": "stance \"phalanx\" does not fit main hand \"one_handed\" and off hand \"buckler\""
+    }
+  },
+  {
+    "name": "error: a stance that is not defined",
+    "perks": [],
+    "loadout": {
+      "main": "empty",
+      "off": "empty"
+    },
+    "events": [
+      {
+        "take": "iron_wall"
+      }
+    ],
+    "expect": {
+      "error": "stance \"iron_wall\" is not defined"
+    }
+  },
+  {
+    "name": "error: a perk that is not defined",
+    "perks": [
+      "core:feature/duelist"
+    ],
+    "loadout": {
+      "main": "empty",
+      "off": "empty"
+    },
+    "events": [],
+    "expect": {
+      "error": "feature \"core:feature/duelist\" is not defined"
+    }
+  },
+  {
+    "name": "an event that both takes a stance and changes the loadout is an error, not a dropped loadout",
+    "perks": [
+      "core:feature/fencers_measure"
+    ],
+    "loadout": {
+      "main": "light",
+      "off": "empty",
+      "main_skill": "core:skill/piercing"
+    },
+    "events": [
+      {
+        "take": "fencers_measure",
+        "loadout": {
+          "main": "light",
+          "off": "light_weapon",
+          "main_skill": "core:skill/piercing"
+        }
+      }
+    ],
+    "expect": {
+      "error": "a stance event takes one of take, end, or loadout"
+    }
+  }
+]

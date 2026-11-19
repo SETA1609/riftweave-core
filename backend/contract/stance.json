@@ -1,0 +1,63 @@
+{
+  "$schema": "./command.schema.json",
+  "name": "stance",
+  "summary": "A fighting stance over a stretch of turns: take or change one, end it, or change the loadout, which ends a stance it no longer fits.",
+  "documentation": "docs/core/combat.md",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "perks": {
+        "type": "array",
+        "items": { "$ref": "../../ruleset/schemas/schema.json#/definitions/featureRef" },
+        "description": "The actor's perks; a stance needs one whose unlocks names it."
+      },
+      "loadout": {
+        "$ref": "../../ruleset/schemas/schema.json#/definitions/loadout",
+        "description": "What the hands hold at the start, with the weapons' skills when a stance needs them."
+      },
+      "stance": {
+        "type": ["string", "null"],
+        "description": "The stance active before the first event, if any. It must fit the loadout."
+      },
+      "events": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "take": { "$ref": "common.json#/definitions/key", "description": "Take or change to this stance: stances.rules.turn_start_ap at the start of the actor's own turn, stances.rules.mid_turn_ap with mid_turn. Taking the active one costs nothing." },
+            "mid_turn": { "type": "boolean", "description": "The take is not at the start of the actor's own turn." },
+            "end": { "type": "boolean", "description": "End the active stance, for no AP." },
+            "loadout": { "$ref": "../../ruleset/schemas/schema.json#/definitions/loadout", "description": "The hands now hold this (a weapon drawn, dropped, or swapped); a stance it no longer fits ends." }
+          },
+          "additionalProperties": false
+        },
+        "description": "The steps, in order. Each needs exactly one of take, end, or loadout; more than one is an error."
+      }
+    },
+    "additionalProperties": false,
+    "required": ["loadout"]
+  },
+  "result_schema": {
+    "type": "object",
+    "properties": {
+      "stance": { "type": ["string", "null"], "description": "The stance active after the last event." },
+      "ap": { "type": "integer", "minimum": 0, "description": "The AP the events cost." },
+      "modifiers": { "$ref": "common.json#/definitions/modifiers", "description": "The active stance's modifiers, to pass to combat (defender) and attack_sequence (attacker)." },
+      "steps": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "stance": { "type": ["string", "null"] },
+            "ap": { "type": "integer", "minimum": 0 },
+            "ended": { "type": ["string", "null"], "description": "The stance this step ended, replaced or no longer fitting." }
+          },
+          "required": ["stance", "ap", "ended"],
+          "additionalProperties": false
+        }
+      }
+    },
+    "additionalProperties": false,
+    "required": ["stance", "ap", "modifiers", "steps"]
+  }
+}

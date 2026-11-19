@@ -1299,9 +1299,9 @@
       ]
     },
     {
-      "key": "duelist",
-      "label": "Duelist",
-      "description": "One on one, your blade reads every opening: +10 to attack when only one foe engages you.",
+      "key": "fencers_measure",
+      "label": "Fencer's Measure",
+      "description": "You learn Fencer's Measure, a fighting stance for a lone one-handed blade (docs/core/combat.md#fighting-stances).",
       "type": "perk",
       "category": "combat",
       "prerequisite": {
@@ -1320,14 +1320,177 @@
         "perks": []
       },
       "ranks": 1,
-      "modifiers": [
-        {
-          "target": "attack_single_opponent",
-          "operation": "add",
-          "value": 10,
-          "source": "feature:duelist",
-          "origin": "core:origin/trained"
-        }
+      "unlocks": [
+        "core:stance/fencers_measure"
+      ]
+    },
+    {
+      "key": "espada_y_daga",
+      "label": "Espada y Daga",
+      "description": "You learn Espada y Daga, a fighting stance (docs/core/combat.md#fighting-stances).",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 8,
+        "abilities": {
+          "agi": 6
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/blades",
+              "core:skill/piercing"
+            ],
+            "min": 40
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:stance/espada_y_daga"
+      ]
+    },
+    {
+      "key": "buckler_play",
+      "label": "Buckler Play",
+      "description": "You learn Buckler Play, a fighting stance (docs/core/combat.md#fighting-stances).",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 6,
+        "abilities": {
+          "agi": 5
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/shields"
+            ],
+            "min": 30
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:stance/buckler_play"
+      ]
+    },
+    {
+      "key": "phalanx",
+      "label": "Phalanx",
+      "description": "You learn Phalanx, a fighting stance (docs/core/combat.md#fighting-stances).",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 8,
+        "abilities": {
+          "end": 6
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/piercing"
+            ],
+            "min": 40
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:stance/phalanx"
+      ]
+    },
+    {
+      "key": "long_guard",
+      "label": "Long Guard",
+      "description": "You learn Long Guard, a fighting stance (docs/core/combat.md#fighting-stances).",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 10,
+        "abilities": {
+          "str": 6
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/blades",
+              "core:skill/blunt",
+              "core:skill/piercing"
+            ],
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:stance/long_guard"
+      ]
+    },
+    {
+      "key": "bare_knuckle",
+      "label": "Bare Knuckle",
+      "description": "You learn Bare Knuckle, a fighting stance (docs/core/combat.md#fighting-stances).",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 6,
+        "abilities": {
+          "end": 5
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/unarmed"
+            ],
+            "min": 30
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:stance/bare_knuckle"
+      ]
+    },
+    {
+      "key": "forward_guard",
+      "label": "Forward Guard",
+      "description": "You learn Forward Guard, a fighting stance (docs/core/combat.md#fighting-stances).",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 4,
+        "abilities": {
+          "str": 5
+        },
+        "perks": []
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:stance/forward_guard"
+      ]
+    },
+    {
+      "key": "low_guard",
+      "label": "Low Guard",
+      "description": "You learn Low Guard, a fighting stance (docs/core/combat.md#fighting-stances).",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 4,
+        "abilities": {
+          "agi": 5
+        },
+        "perks": []
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:stance/low_guard"
       ]
     },
     {

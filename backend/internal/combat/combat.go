@@ -39,6 +39,8 @@ type Defender struct {
 	// ShieldDamageReduction is a carried shield's DR; it adds to the armor DR.
 	ShieldDamageReduction *int64 `json:"shield_dr"`
 	ShieldsSkill          *int64 `json:"shields_skill"`
+	// WeaponSkill is the held weapon's skill, which a parry band and Buckler Play read.
+	WeaponSkill *int64 `json:"weapon_skill"`
 	// Stance is the one the defender declared: dodge, block, or none.
 	Stance    string           `json:"stance"`
 	HitPoints int64            `json:"hp"`
@@ -49,8 +51,9 @@ type Defender struct {
 	Loadout *data.Loadout `json:"loadout"`
 	// CreatureType is the defender's creature type, which a weapon's bane reads.
 	CreatureType string `json:"creature_type"`
-	// Modifiers are the defender's perks: adds on evasion, shields, and shield_dr, and the
-	// block_magic, bulwark, and riposte grants.
+	// Modifiers are the defender's perks and fighting stance: adds on evasion, evasion_band,
+	// shields, and shield_dr, and the block_magic, bulwark, riposte, parry, and
+	// block_with_weapon grants.
 	Modifiers []modifier.Modifier `json:"modifiers"`
 }
 
@@ -94,8 +97,11 @@ type Result struct {
 	Blocked     bool   `json:"blocked"`
 	EvasionRate int64  `json:"evasion_rate"`
 	BlockRate   int64  `json:"block_rate"`
-	Damage      int64  `json:"damage"`
-	HitPoints   int64  `json:"hp"`
+	// ParryRate is a parrying stance's band, under the block band; Parried is a hit it stopped.
+	ParryRate int64 `json:"parry_rate"`
+	Parried   bool  `json:"parried"`
+	Damage    int64 `json:"damage"`
+	HitPoints int64 `json:"hp"`
 	// Counter is a riposte: a dodge's evade in the window lets the defender attack back.
 	Counter bool `json:"counter"`
 	// StaggerAP is Bulwark: AP the attacker loses on their next turn.
@@ -297,6 +303,9 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	if defender.Stance == "block" && (defender.ShieldDamageReduction == nil || defender.ShieldsSkill == nil) {
 		return Result{}, &data.MissingInputError{Subject: "a block", Needs: "shield_dr and shields_skill"}
 	}
+	if slices.Contains(modifier.Flags(defender.Modifiers, 0, nil), "parry") && defender.WeaponSkill == nil {
+		return Result{}, &data.MissingInputError{Subject: "a parry", Needs: "weapon_skill"}
+	}
 	evasionRate, blockRate, err := bands(ruleset, defender, damageType.Physical, delivery)
 	if err != nil {
 		return Result{}, err
@@ -321,6 +330,9 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		Critical:    slices.Contains(attack.Tags, "crit"),
 		EvasionRate: evasionRate,
 		BlockRate:   blockRate,
+	}
+	if delivery != "instant" && damageType.Physical && slices.Contains(modifier.Flags(defender.Modifiers, 0, nil), "parry") {
+		result.ParryRate = formula.FloorDivide(*defender.WeaponSkill, ruleset.Stances.Rules.ParryBandDivisor)
 	}
 	if calledShot != nil {
 		var noRiders []data.Rider = []data.Rider{}
@@ -352,7 +364,8 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		return result, nil
 	}
 
-	// The same roll read in bands: the evasion band, then a block stance's band under it.
+	// The same roll read in bands: the evasion band, then a block stance's band under it, then
+	// a parrying stance's band under that.
 	// A crit always hits. Riposte and Bulwark read the band's lowest rolls, as wide as the
 	// defender's crit window.
 	var perkFlags []string = modifier.Flags(defender.Modifiers, 0, nil)
@@ -372,6 +385,9 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		if slices.Contains(perkFlags, "bulwark") && margin >= evasionRate+blockRate-window {
 			result.StaggerAP = pipeline.BulwarkStaggerAP
 		}
+		return result, nil
+	case margin < evasionRate+blockRate+result.ParryRate:
+		result.Outcome, result.Blocked, result.Parried, result.Damage, result.HitPoints = "blocked", true, true, 0, defender.HitPoints
 		return result, nil
 	}
 	result.Outcome = "hit"
@@ -488,6 +504,12 @@ func bands(ruleset *data.Ruleset, defender *Defender, physical bool, delivery st
 		}
 		evasionRate = max(widened, 0)
 	}
+	// A fighting stance's evasion_band (forward, low, and long guard).
+	banded, err := modifier.Value(evasionRate, modifier.Target(defender.Modifiers, "evasion_band"), ruleset.Origins, 0, nil)
+	if err != nil {
+		return 0, 0, err
+	}
+	evasionRate = max(banded, 0)
 	var blockMagic bool = slices.Contains(modifier.Flags(defender.Modifiers, 0, nil), "block_magic")
 	if defender.Stance != "block" || (!physical && !blockMagic) {
 		return evasionRate, 0, nil
@@ -495,6 +517,9 @@ func bands(ruleset *data.Ruleset, defender *Defender, physical bool, delivery st
 	shields, err := modifier.Value(*defender.ShieldsSkill, modifier.Target(defender.Modifiers, "shields"), ruleset.Origins, 0, nil)
 	if err != nil {
 		return 0, 0, err
+	}
+	if defender.WeaponSkill != nil && slices.Contains(modifier.Flags(defender.Modifiers, 0, nil), "block_with_weapon") {
+		shields = max(shields, *defender.WeaponSkill)
 	}
 	blockRate, err := pipeline.BlockRate.Evaluate(nil, formula.Variable{Name: "skill", Value: shields})
 	if err != nil {

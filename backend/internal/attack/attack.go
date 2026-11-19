@@ -30,8 +30,10 @@ type Attacker struct {
 	// none (an off-hand weapon never borrows the main hand's bane or binding).
 	OffWeaponProperties []string             `json:"off_weapon_properties"`
 	OffWeaponEffects    []data.AppliedEffect `json:"off_weapon_effects"`
-	// Modifiers are the attacker's perks: adds on full_attack_strikes, full_attack_off_strikes,
-	// mainhand_penalty, and offhand_penalty, and the carry and circle cut grants.
+	// Modifiers are the attacker's perks and fighting stance: adds on full_attack_strikes,
+	// full_attack_off_strikes, mainhand_penalty, offhand_penalty, attack_roll,
+	// attack_single_opponent, attack_after_parry, and unarmed_damage, and the carry, circle
+	// cut, off_hand_parries, and carry_on_crit grants.
 	Modifiers []modifier.Modifier `json:"modifiers"`
 }
 
@@ -62,6 +64,8 @@ type Input struct {
 	// Situations and Summoning go to every strike, as in combat (flanking, beside_summon, ...).
 	Situations []string `json:"situations"`
 	Summoning  bool     `json:"summoning"`
+	// AfterParry is Espada y Daga's opening: the attacker parried a hit since their last strike.
+	AfterParry bool `json:"after_parry"`
 }
 
 // StrikeResult is one strike made.
@@ -94,10 +98,11 @@ type Result struct {
 }
 
 type planned struct {
-	hand   string
-	attack int64
-	foe    int64
-	free   bool
+	hand    string
+	attack  int64
+	foe     int64
+	free    bool
+	carried bool
 }
 
 // soften is a negative strike value after mainhand_penalty or offhand_penalty, never past 0.
@@ -174,6 +179,10 @@ func plan(ruleset *data.Ruleset, input *Input, row *data.AttackSequence, flags [
 			}
 			break
 		}
+	}
+	if slices.Contains(flags, "off_hand_parries") {
+		// Espada y Daga: the off-hand weapon parries instead of striking in a full attack.
+		table = slices.DeleteFunc(table, func(strike planned) bool { return strike.hand == "off" })
 	}
 	return table, *input.AP, nil
 }
@@ -257,13 +266,38 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		strikes[index].foe = aims[index]
 	}
 	var queue []planned = strikes
+	// A fighting stance's attack terms: attack_roll on every strike, attack_single_opponent
+	// with one foe in reach, attack_after_parry on the first main-hand strike after a parry,
+	// and unarmed_damage on an empty main hand.
+	var stanceAttack []modifier.Modifier = modifier.Target(input.Attacker.Modifiers, "attack_roll")
+	if len(foes) == 1 {
+		stanceAttack = append(stanceAttack, modifier.Target(input.Attacker.Modifiers, "attack_single_opponent")...)
+	}
+	var afterParry []modifier.Modifier
+	if input.AfterParry {
+		afterParry = modifier.Target(input.Attacker.Modifiers, "attack_after_parry")
+	}
+	var unarmed int64
+	if input.Loadout.Main == "empty" {
+		if unarmed, err = on("unarmed_damage"); err != nil {
+			return Result{}, err
+		}
+	}
+	var asAttackRoll func([]modifier.Modifier) []modifier.Modifier = func(mods []modifier.Modifier) []modifier.Modifier {
+		var renamed []modifier.Modifier = make([]modifier.Modifier, len(mods))
+		for index, mod := range mods {
+			renamed[index] = mod
+			renamed[index].Target = "attack_roll"
+		}
+		return renamed
+	}
 	var rolls []Roll = input.Rolls
 	var struckByMain map[int64]bool = map[int64]bool{}
 	var scissorLeft bool = input.Action == "full_attack" && slices.Contains(flags, "scissor_cut")
 	var result Result = Result{Action: input.Action, Sequence: row.Key, AP: actionPoints, Strikes: []StrikeResult{}, HP: hitPoints}
 	for index := 0; index < len(queue); index++ {
 		var strike *planned = &queue[index]
-		var carried bool
+		var carried bool = strike.carried
 		if hitPoints[strike.foe] == 0 {
 			var standing int64 = -1
 			for foe, left := range hitPoints {
@@ -305,13 +339,18 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 			}
 			properties, effects = input.Attacker.OffWeaponProperties, input.Attacker.OffWeaponEffects
 		}
-		var damageRoll int64 = roll.Damage
+		var damageRoll int64 = roll.Damage + unarmed
 		if scissor {
 			damageRoll *= 2
 		}
 		var strikeModifiers []modifier.Modifier = slices.Clone(input.Modifiers)
 		if strike.attack != 0 {
 			strikeModifiers = append(strikeModifiers, modifier.Modifier{Target: "attack_roll", Operation: modifier.Add, Value: float64(strike.attack), Source: "strike:" + strike.hand})
+		}
+		strikeModifiers = append(strikeModifiers, asAttackRoll(stanceAttack)...)
+		if strike.hand == "main" && len(afterParry) > 0 {
+			strikeModifiers = append(strikeModifiers, asAttackRoll(afterParry)...)
+			afterParry = nil
 		}
 		var defender combat.Defender = foes[foe]
 		defender.HitPoints = hitPoints[foe]
@@ -354,6 +393,32 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		}
 		if dropped && index == len(queue)-1 && carries > 0 && slices.ContainsFunc(hitPoints, func(left int64) bool { return left > 0 }) {
 			queue = append(queue, planned{hand: strike.hand, attack: strike.attack, foe: foe, free: true})
+		}
+		// Long Guard: a crit that leaves its foe standing carries as a drop would, to the first
+		// other standing foe.
+		var other int64 = -1
+		for index, left := range hitPoints {
+			if left > 0 && int64(index) != foe {
+				other = int64(index)
+				break
+			}
+		}
+		// In an attack, only a next strike aimed at the critted foe is carried; one the caller
+		// aimed elsewhere keeps its foe, and the carry is not spent.
+		var aimedElsewhere bool = input.Action != "full_attack" && index < len(queue)-1 && queue[index+1].foe != foe
+		if outcome.Critical && !dropped && slices.Contains(flags, "carry_on_crit") && carries > 0 && other >= 0 && !aimedElsewhere {
+			carries--
+			switch {
+			case index < len(queue)-1 && input.Action == "full_attack":
+				for later := index + 1; later < len(queue); later++ {
+					queue[later].foe = other
+				}
+				queue[index+1].carried = true
+			case index < len(queue)-1:
+				queue[index+1].foe, queue[index+1].carried = other, true
+			default:
+				queue = append(queue, planned{hand: strike.hand, attack: strike.attack, foe: other, free: true, carried: true})
+			}
 		}
 	}
 	result.Stamina = actionPoints * ruleset.StaminaPerAP

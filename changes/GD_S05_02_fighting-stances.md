@@ -1,0 +1,6 @@
+### GD_S05_02_fighting-stances Fighting stances: toggles a perk unlocks
+- Added: the `stances` collection (schema and data) with Fencer's Measure, Espada y Daga, Buckler Play, Phalanx, Long Guard, Bare Knuckle, Forward Guard, and Low Guard; a perk of the same key unlocks each (`core:stance/<key>` in `unlocks`).
+- Added: the `stance` command and kernel function (Python and Go): take, change (free at the start of the turn, 1 AP mid-turn), end, and a loadout change that ends a stance it no longer fits; `stance.json` vectors.
+- Added: the `evasion_band`, `attack_after_parry`, `opportunity_attack_cost` (pending) modifier targets and the `parry`, `block_with_weapon`, `off_hand_parries`, `carry_on_crit`, `full_weight_doubled` (pending), and `shield_cover_to_ally` (pending) flags; optional `main_skill` and `off_skill` on the loadout.
+- Changed: `combat` takes `defender.weapon_skill` and returns `parry_rate` and `parried`; `attack_sequence` reads `attack_roll`, `attack_single_opponent`, `attack_after_parry` (with the new `after_parry` input), and `unarmed_damage` from the attacker's modifiers.
+- Changed (breaking): the perk `duelist` is `fencers_measure` (it unlocks the stance instead of emitting a modifier), and the build `duelist` is `fencer`.
