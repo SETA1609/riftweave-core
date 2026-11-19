@@ -2,7 +2,7 @@
 
 Author: SETA1609
 
-Modified: 2026-11-18
+Modified: 2026-11-19
 
 One budget. Costs live in `ruleset/data/actions/core.json`. A turn spends AP. A real-time client spends stamina for the same actions, at a fixed rate. There is no bonus action and no reaction slot.
 
@@ -27,6 +27,7 @@ disengage 1
 dodge 3
 item 2
 block 2, reserved, refund if unused
+command 2, an order to summons (commanding.md)
 aimed +2 on the attack cost
 ```
 

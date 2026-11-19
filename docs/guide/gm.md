@@ -1,6 +1,6 @@
 # Running the game
 
-Modified: 2026-11-15
+Modified: 2026-11-19
 
 ## Pacing
 
@@ -61,6 +61,10 @@ If no skill fits, use an attribute: its value × 10 is the target.
 **A bonded summoner's bonuses.** Kindred Focus, Shared Wellspring, and Elemental Kinship hold only while the summoner has a summon out; a minion does not count. You track one thing: whether at least one summon is still out. When the last one is slain, banished, or dismissed, the bonuses end at once, so the summoner's next spell rolls and costs without them. A second summon adds nothing more ([magic](../modules/magic.md#the-bonded-summoner)).
 
 **What happens at 0 HP.** The core rules leave this to you. A simple default: at 0 HP a character is down and out of the fight, and an ally can bring them round with healing or a short rest. Decide before the first fight, and tell the players.
+
+## Summons on the table
+
+A commander's summons act on their own initiative, but an order changes their turn: when the commander gives one, note +2 AP (or +3 with Iron Drill) beside each summon it reached, and spend it on that summon's next turn only. While the commander holds Steady the Host, every summon adds +5 to its attack rolls; strike it off the moment the commander casts another concentration spell. A bonded summoner's bonuses go the other way, to the caster, and only while a summon is out ([commanding.md](../core/commanding.md), [magic.md](../modules/magic.md#the-bonded-summoner)).
 
 ## A lighter sheet at the table
 

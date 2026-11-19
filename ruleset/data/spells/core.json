@@ -326,6 +326,25 @@
       }
     },
     {
+      "key": "steady_the_host",
+      "label": "Steady the Host",
+      "description": "Hold your summons to a drill: while you concentrate, every summon of yours adds +5 to its attack rolls.",
+      "color": "orange",
+      "level": 8,
+      "concentration": true,
+      "effects": [
+        {
+          "effect": "core:effect/command_summons",
+          "magnitude": 5,
+          "duration": 60,
+          "target": "self"
+        }
+      ],
+      "cost": {
+        "mana": 15
+      }
+    },
+    {
       "key": "conjured_blades",
       "label": "Conjured Blades",
       "description": "A whirl of conjured knives cuts everyone in the area.",

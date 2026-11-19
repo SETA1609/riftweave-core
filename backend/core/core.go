@@ -20,6 +20,7 @@ import (
 	"github.com/SETA1609/riftweave-core/backend/internal/actor"
 	"github.com/SETA1609/riftweave-core/backend/internal/casting"
 	"github.com/SETA1609/riftweave-core/backend/internal/combat"
+	"github.com/SETA1609/riftweave-core/backend/internal/commandsummons"
 	"github.com/SETA1609/riftweave-core/backend/internal/condition"
 	"github.com/SETA1609/riftweave-core/backend/internal/consume"
 	"github.com/SETA1609/riftweave-core/backend/internal/data"
@@ -88,25 +89,26 @@ func bind[Input, Output any](run func(*data.Ruleset, Input) (Output, error)) com
 
 // commands is the registry, keyed by the command and vector function name.
 var commands map[string]commandHandler = map[string]commandHandler{
-	"resolution":    bind(resolution.Run),
-	"derived":       bind(derived.Run),
-	"actions":       bind(derived.RunActions),
-	"monster_sheet": bind(derived.RunMonsterSheet),
-	"formula":       bind(runFormula),
-	"modifiers":     bind(runModifiers),
-	"conditions":    bind(condition.Run),
-	"wuxing":        bind(wuxing.Run),
-	"economy":       bind(economy.Run),
-	"rest":          bind(rest.Run),
-	"consume":       bind(consume.Run),
-	"stored_actor":  bind(stored.Run),
-	"combat":        bind(combat.Run),
-	"loot":          bind(loot.Run),
-	"hazard":        bind(hazard.Run),
-	"share":         bind(share.Run),
-	"casting":       bind(casting.Run),
-	"spellcraft":    bind(spellcraft.Run),
-	"progression":   bind(progression.Run),
+	"resolution":      bind(resolution.Run),
+	"derived":         bind(derived.Run),
+	"actions":         bind(derived.RunActions),
+	"monster_sheet":   bind(derived.RunMonsterSheet),
+	"formula":         bind(runFormula),
+	"modifiers":       bind(runModifiers),
+	"conditions":      bind(condition.Run),
+	"wuxing":          bind(wuxing.Run),
+	"economy":         bind(economy.Run),
+	"rest":            bind(rest.Run),
+	"consume":         bind(consume.Run),
+	"stored_actor":    bind(stored.Run),
+	"combat":          bind(combat.Run),
+	"loot":            bind(loot.Run),
+	"hazard":          bind(hazard.Run),
+	"share":           bind(share.Run),
+	"command_summons": bind(commandsummons.Run),
+	"casting":         bind(casting.Run),
+	"spellcraft":      bind(spellcraft.Run),
+	"progression":     bind(progression.Run),
 }
 
 // Core is an opened ruleset.
