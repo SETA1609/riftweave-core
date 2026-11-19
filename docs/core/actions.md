@@ -40,7 +40,7 @@ A perk changes a cost with `add` on the action's key: the Sidestep perk emits `a
 
 Cast AP is static. A spell also spends its mana cost. AP does not vary by spell. A petty spark and a heavy bolt both cost 3 AP. The bolt costs more mana. A perk that wants a cheaper cast emits `add` on the cast cost. It does not edit the spell.
 
-Dodge and block are stances, declared on your turn and in force until your next ([combat.md](combat.md#reading-the-steps)). Dodge spends 3 and doubles your evasion rate. Block is a hold on this pool, not a reaction slot: declare it, spend 2, and the unused 2 comes back if nobody swings; while it holds, a block band of half your `shields` skill stops physical hits. Aimed is not a second attack. It adds 2 to the attack cost.
+Dodge and block are stances, declared on your turn and in force until your next ([combat.md](combat.md#reading-the-steps)). A fighting stance a perk unlocks is another thing, a way of holding the weapons: it costs nothing at the start of your turn, 1 AP later in it, and stands together with dodge or block ([combat.md](combat.md#fighting-stances)). Dodge spends 3 and doubles your evasion rate. Block is a hold on this pool, not a reaction slot: declare it, spend 2, and the unused 2 comes back if nobody swings; while it holds, a block band of half your `shields` skill stops physical hits. Aimed is not a second attack. It adds 2 to the attack cost.
 
 Dash is not an action. Double move is spending 1 AP twice.
 

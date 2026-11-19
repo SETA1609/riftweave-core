@@ -10,7 +10,7 @@ One payload. Conditions, features, and applied effects emit this row. They do no
 target     a key naming one row: attribute, skill, derived stat, action, condition, damage type, or modifier target (see Target)
 operation  add | multiply | set | grant | resist
 value      number
-source     perk:quick, condition:blinded
+source     perk:quick, condition:blinded, stance:low_guard
 origin     core:origin/alchemy (optional; the kind of source, see below)
 duration   turns | uses | while_equipped | while_applied | while_summoning | permanent
 turns      how many turns a `turns` modifier lasts

@@ -139,6 +139,42 @@ crossed      a defender holding a weapon in each hand adds its modifiers on two_
 
 [V 2026-11-19, `attack_sequence.json` and `combat.json` vectors in Python and Go]
 
+## Fighting stances
+
+Owner request, 2026-11-16 (GD_S05_02). A fighting stance is a toggle a perk unlocks, not a passive: the perk names `core:stance/<key>` in its `unlocks`, and the stance is a row of `ruleset/data/stances/core.json` with what the hands must hold and the modifiers it emits. The `stance` command takes, changes, and ends one, and drops it when the loadout stops fitting; its `modifiers` are what the caller passes to `combat` (as the defender's) and `attack_sequence` (as the attacker's).
+
+```
+one          at most one fighting stance is active [A]; taking another replaces it
+cost         taking or changing one at the start of the actor's own turn: rules.turn_start_ap (0);
+             later in the turn (mid_turn): rules.mid_turn_ap (1) [A]; taking the active one, or ending one, is free
+lasts        until changed or ended; a loadout it no longer fits (a weapon drawn, dropped, or swapped) ends it
+loadout      main and off from the loadout vocabulary (any when left out); main_skills and off_skills name the
+             weapon's skill (the loadout's main_skill and off_skill) [A]
+modifiers    origin core:origin/martial, source stance:<key>, duration while_applied; validate.py checks all three
+with dodge   a fighting stance stands together with the dodge or block stance: those are declared defenses
+or block     (actions.md#pool), this is how the hands are held [A]
+parry        a parry grant reads the defender's weapon_skill: a parry band of floor(weapon_skill / rules.parry_band_divisor)
+             (4) under the block band, physical hits only, none for an instant attack; a margin in it is blocked
+             and parried; a crit always hits
+```
+
+| Stance | Perk level | Hands | Emits | Effect |
+| --- | --- | --- | --- | --- |
+| Fencer's Measure | 12 | a light or one-handed blade or piercing weapon, off hand empty | `grant parry`, `add attack_single_opponent 10` | a parry band; +10 on every strike while only one foe is in reach. Replaces Duelist |
+| Espada y Daga | 8 | a blade or piercing weapon and a piercing light weapon (a dagger) | `grant parry`, `grant off_hand_parries`, `add attack_after_parry 10` | the dagger makes no strike in a full attack and parries; after a parry (`after_parry`) the first main-hand strike gains +10 |
+| Buckler Play | 6 | a light or one-handed weapon and a buckler | `grant block_with_weapon` | while blocking, the block band reads the better of Shields and the weapon skill. The bash is `boss_strike` (GD_S05_03) |
+| Phalanx | 8 | a piercing (spear) weapon and a shield | `add opportunity_attack_cost -1`, `grant shield_cover_to_ally` | opportunity attacks cost 2 AP; an adjacent ally gains the shield's cover. Both targets are pending: no kernel step has opportunity attacks or cover yet [U] |
+| Long Guard | 10 | a weapon in both hands | `grant full_weight_doubled`, `grant carry_on_crit`, `add evasion_band -10` | Full Weight counts twice (pending, as `melee_damage` is); Carry Through also fires on a crit that leaves its foe standing; the evasion band -10 |
+| Bare Knuckle | 6 | both hands empty | `add unarmed_damage 2`, `add full_attack_strikes 1` | +2 damage on each unarmed strike; one more strike in a full attack at -20 |
+| Forward Guard | 4 | any | `add attack_roll 10`, `add evasion_band -10` | +10 on every strike; the evasion band -10 |
+| Low Guard | 4 | any | `add attack_roll -10`, `add evasion_band 10` | -10 on every strike; the evasion band +10 |
+
+- **The evasion band** term applies after the dodge stance doubles the band and after Crossed Guard, never below 0.
+- **A crit carry** (Long Guard) spends a carry as a drop would: the next strike of the action, or a free strike after the last, goes to the first other foe still standing; a full attack's later strikes follow it.
+- **Numbers are [A]** until the playtest driver runs a stance build.
+
+[V 2026-11-19, `stance.json`, `combat.json`, and `attack_sequence.json` vectors in Python and Go]
+
 ## Weapon effects
 
 `attacker.weapon_effects` are the on-hit effects of the weapon, such as a bound weapon's perk

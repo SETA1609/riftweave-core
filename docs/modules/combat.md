@@ -67,8 +67,8 @@ Balance between the two is perks and armor, not the pipeline: gated block and do
 
 Not yet rows, **[A]**:
 
-- **Parry.** Some weapons (rapiers, swords) and the *Duelist* perk let a defender block with the weapon skill instead of the `shields` skill. A parried hit is blocked.
-- **Two weapons.** An off-hand weapon can parry but not block. It strikes as part of the attack (GD_S05_01) or alone as a jab; parrying with it is GD_S05_02's stances.
+- **Parry.** The *Fencer's Measure* and *Espada y Daga* stances let a defender parry with the weapon skill: a parry band of a quarter of the skill, under the block band. A parried hit is blocked ([combat.md](../core/combat.md#fighting-stances)).
+- **Two weapons.** An off-hand weapon can parry but not block. It strikes as part of the attack (GD_S05_01) or alone as a jab; with *Espada y Daga* a dagger parries instead of striking in a full attack.
 - **Unarmed.** The *Deflect Arrows* perk blocks missiles with `unarmored`. No unarmed melee block without a perk. A natural weapon (a bite, a claw, a race's claws) is an unarmed attack: it rolls with `unarmed`, and the unarmed perks change its damage ([monsters.md](./monsters.md#natural-weapons)).
 - A defender who is stunned, incapacitated, paralyzed, petrified, or unconscious keeps no stance and has no evasion band. **[A]** The conditions grant those flags ([modifier.md](../core/modifier.md)); the pipeline does not read them yet.
 
