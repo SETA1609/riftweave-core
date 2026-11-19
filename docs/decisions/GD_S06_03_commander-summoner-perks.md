@@ -11,4 +11,4 @@ Date: 2026-11-19
 - **Authored only:** `command_summons` has `craftable: false`, like `bound_weapon`, since the held command belongs to the ladder, not to a recipe; `test_spells.py` and the uncraftable table in docs/modules/magic.md list it. [A]
 - **Verified:** the 10 `command_summons` vectors pass in Python (420 tests) and Go (`go test ./...`); `validate.py` passes 52 of 52 files. [V 2026-11-19]
 - **Differences from the issue:** a new command (`backend/contract/command_summons.json`, `backend/internal/commandsummons/`, `backend/core/core.go`, `kernel_reference.py`) and its page (`docs/core/commanding.md`), the effect row, `feature.schema.json`, `docs/core/vectors.md`, `test_spells.py`, and the regenerated diagrams are files the issue did not list. `frontend/src/api/openapi.d.ts` is not regenerated (as in GD_S06_01).
-- **Branch:** made from `GD_S06_02_bonded-summoner-perks`, so this pull request carries the two earlier S06 issues until they merge.
+- **Branch:** made from `development`, on its own: it needs neither GD_S06_02 nor GD_S06_04, and merges in any order with them.
