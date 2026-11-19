@@ -785,5 +785,22 @@
     "expect": {
       "value": 50
     }
+  },
+  {
+    "name": "while_summoning: not live in the shared step unless a command resolves it",
+    "value": 59,
+    "modifiers": [
+      {
+        "target": "hp",
+        "operation": "add",
+        "value": 5,
+        "source": "feature:kindred_focus",
+        "origin": "core:origin/trained",
+        "duration": "while_summoning"
+      }
+    ],
+    "expect": {
+      "value": 59
+    }
   }
 ]

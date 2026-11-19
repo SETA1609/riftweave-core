@@ -20,6 +20,7 @@
     {"key": "block_magic", "label": "Block Magic", "kind": "flag", "description": "While blocking, a block band of half the width also stops a spell of any damage type (docs/core/combat.md)."},
     {"key": "block_reduction", "label": "Block Share", "kind": "number", "description": "Multiplier on block share: 1.25 is 25% more, 0.5 is half.", "pending": true},
     {"key": "blue_magic_duration", "label": "Blue Magic Duration", "kind": "number", "description": "Multiplier on blue magic duration: 1.25 is 25% more, 0.5 is half.", "pending": true},
+    {"key": "bonded_element_damage", "label": "Bonded Element Damage", "kind": "number", "description": "Damage added to each of a cast's damage packets whose type matches an active summon's element template (docs/modules/magic.md#the-bonded-summoner)."},
     {"key": "bulwark", "label": "Bulwark", "kind": "flag", "description": "While blocking, a block in the band's window staggers the attacker (docs/core/combat.md)."},
     {"key": "cannot_aim", "label": "Cannot Aim", "kind": "flag", "description": "The actor cannot take the aimed action (actions/core.json).", "pending": true},
     {"key": "charm_resistant", "label": "Charm Resistant", "kind": "flag", "description": "The actor resists charm and mind-affecting magic.", "pending": true},
