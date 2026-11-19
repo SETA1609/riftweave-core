@@ -904,6 +904,48 @@ def run_share(vector):
     return {"modifiers": live, "bonus": bonus}
 
 
+def run_command_summons(vector):
+    """What each of a commander's summons gets from an order and a held command
+    (docs/core/commanding.md, GD_S06_03)."""
+    features = {row["key"]: row for row in load_data("features/core.json")["features"]}
+    commander = vector["commander"]
+    summons = vector["summons"]
+    granted = {name: [] for name in summons}
+    ap = 0
+    if "order" in vector:
+        perk = features.get(commander.get("perk", ""))
+        command = perk.get("command") if perk else None
+        if command is None:
+            return {"error": "an order needs a perk with a command object"}
+        targets = vector["order"]["targets"]
+        for name in targets:
+            if name not in granted:
+                return {"error": f"{name} is not an active summon"}
+        if command["reach"] == "one" and len(targets) > 1:
+            return {"error": f"an order with {perk['key']} reaches 1 summon, not {len(targets)}"}
+        base = next(a["cost"] for a in load_data("actions/core.json")["actions"] if a["key"] == "command")
+        ap = max(apply_modifiers(base, [m for m in commander.get("modifiers", []) if m["target"] == "command"]), 0)
+        for name in targets:
+            granted[name].append({"target": "ap", "operation": "add", "value": command["ap"],
+                                  "source": f"command:{perk['key']}:{commander['name']}", "origin": "core:origin/morale",
+                                  "duration": "turns", "turns": command["turns"]})
+    held = commander.get("concentration")
+    if held is not None:
+        from casting_reference import load_data as load_casting_data  # spell bases resolved
+
+        spells = {row["key"]: row for row in load_casting_data("spells/core.json")["spells"]}
+        if held not in spells:
+            return {"error": f"{held} is not a spell"}
+        for applied in spells[held]["effects"]:
+            if applied["effect"] != "core:effect/command_summons":
+                continue
+            for name in summons:
+                granted[name].append({"target": "attack_roll", "operation": "add", "value": applied["magnitude"],
+                                      "source": f"command:{held}:{commander['name']}", "origin": "core:origin/morale",
+                                      "duration": "while_applied"})
+    return {"ap": ap, "modifiers": granted}
+
+
 RUNNERS = {
     "monster_sheet": run_monster_sheet,
     "resolution": run_resolution,
@@ -923,6 +965,7 @@ RUNNERS = {
     "spellcraft": run_spellcraft,
     "progression": run_progression,
     "share": run_share,
+    "command_summons": run_command_summons,
 }
 
 

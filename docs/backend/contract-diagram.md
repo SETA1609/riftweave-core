@@ -7,7 +7,7 @@ Run `python ruleset/scripts/contract_diagram.py --write` after a contract change
 `test_contract_diagram.py` fails until the page matches. What the contract is:
 [README.md](README.md#commands) and [contract.md](../core/contract.md).
 
-23 commands. Each is a class diagram of its input and its result; a field whose type is
+24 commands. Each is a class diagram of its input and its result; a field whose type is
 a shared type of `common.json` links to it, and the shared types are drawn once, below.
 
 ## Shared types
@@ -237,6 +237,23 @@ classDiagram
         integer stamina
         integer target
         List~object~ weapon_effects
+    }
+```
+
+## command_summons
+
+What each of a commander's summons gets: an order (the command action) gives the summons it reaches AP for their next turn, and a held command spell gives every summon a bonus to attack while it is held.
+
+```mermaid
+classDiagram
+    class command_summons_input {
+        object commander
+        object order
+        List~string~ summons
+    }
+    class command_summons_result {
+        integer ap
+        object modifiers
     }
 ```
 

@@ -224,6 +224,12 @@ is not a `damage_<type>` effect, is an error. The weapon's attacks pass `damage_
 `damage.type` and `effects` as `attacker.weapon_effects` to the combat pipeline
 ([combat.md](combat.md#weapon-effects)). Without a bound weapon effect the field is left out.
 
+## The held command
+
+Steady the Host and any spell with `core:effect/command_summons` are held like every
+concentration spell; what they give the summons is `command_summons`'s
+([commanding.md](commanding.md#the-held-command)). The cast itself only holds the spell. [A]
+
 ## Result
 
 ```

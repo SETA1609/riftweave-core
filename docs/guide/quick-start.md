@@ -98,6 +98,8 @@ A bonded summoner's perks work only while one of your summons is out (not a mini
 
 A bard or a skald lends CHA to allies the same way. Spend the `inspire` action (2 AP): every ally within the perk's range adds half your CHA − 5 at rank 1, or all of it at rank 2, to INT and WIL (Bardic Inspiration) or STR, END, and AGI (Skald's War Chant) for 3 turns. Two bards do not add up: each ally keeps the bigger bonus on each attribute ([share](../core/share.md)).
 
+A commander summoner drives their summons. Give an order (the `command` action, 2 AP) and the summon it names adds 2 AP to its next turn; Sharp Orders makes an order cost 1 AP, Voice of the Host reaches every summon, and Iron Drill gives 3 AP. Or hold Steady the Host: while you concentrate on it, every summon adds +5 to its attack rolls, and it ends when you cast another concentration spell.
+
 ## After the fight
 
 - **End of combat** refills stamina and AP.

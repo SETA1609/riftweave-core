@@ -419,11 +419,21 @@ type Feature struct {
 	Modifiers []map[string]any `json:"modifiers"`
 	// Share is what the perk lends to allies in range (docs/core/share.md); nil for most.
 	Share *Share `json:"share"`
+	// Command is the orders the perk gives a summoner's summons (docs/core/commanding.md); nil for most.
+	Command *Command `json:"command"`
 	// Unlocks are the refs the perk unlocks; a core:material ref is a bound weapon's material.
 	Unlocks []string `json:"unlocks"`
 	// BoundWeaponEffects are the on-hit effects the perk adds to the holder's bound weapons
 	// (docs/modules/magic.md#bound-weapons).
 	BoundWeaponEffects []AppliedEffect `json:"bound_weapon_effects"`
+}
+
+// Command is a perk's command object: the AP an ordered summon adds to its next turn, whether
+// one order reaches one summon or all, and for how many turns.
+type Command struct {
+	AP    int64  `json:"ap"`
+	Reach string `json:"reach"` // "one" or "all"
+	Turns int64  `json:"turns"`
 }
 
 // Share is a perk's share object: the group it lends to, how far, and for how long.
