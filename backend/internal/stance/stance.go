@@ -92,6 +92,15 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	var result Result = Result{Steps: []Step{}, Modifiers: []modifier.Modifier{}}
 	for _, event := range input.Events {
 		var step Step
+		var set int
+		for _, given := range []bool{event.Take != nil, event.End, event.Loadout != nil} {
+			if given {
+				set++
+			}
+		}
+		if set > 1 {
+			return Result{}, errors.New("a stance event takes one of take, end, or loadout")
+		}
 		switch {
 		case event.Take != nil:
 			if err := check(*event.Take, loadout); err != nil {

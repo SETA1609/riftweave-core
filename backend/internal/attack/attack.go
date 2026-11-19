@@ -403,7 +403,10 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 				break
 			}
 		}
-		if outcome.Critical && !dropped && slices.Contains(flags, "carry_on_crit") && carries > 0 && other >= 0 {
+		// In an attack, only a next strike aimed at the critted foe is carried; one the caller
+		// aimed elsewhere keeps its foe, and the carry is not spent.
+		var aimedElsewhere bool = input.Action != "full_attack" && index < len(queue)-1 && queue[index+1].foe != foe
+		if outcome.Critical && !dropped && slices.Contains(flags, "carry_on_crit") && carries > 0 && other >= 0 && !aimedElsewhere {
 			carries--
 			switch {
 			case index < len(queue)-1 && input.Action == "full_attack":

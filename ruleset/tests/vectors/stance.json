@@ -479,5 +479,29 @@
     "expect": {
       "error": "feature \"core:feature/duelist\" is not defined"
     }
+  },
+  {
+    "name": "an event that both takes a stance and changes the loadout is an error, not a dropped loadout",
+    "perks": [
+      "core:feature/fencers_measure"
+    ],
+    "loadout": {
+      "main": "light",
+      "off": "empty",
+      "main_skill": "core:skill/piercing"
+    },
+    "events": [
+      {
+        "take": "fencers_measure",
+        "loadout": {
+          "main": "light",
+          "off": "light_weapon",
+          "main_skill": "core:skill/piercing"
+        }
+      }
+    ],
+    "expect": {
+      "error": "a stance event takes one of take, end, or loadout"
+    }
   }
 ]

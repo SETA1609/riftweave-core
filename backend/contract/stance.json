@@ -31,7 +31,7 @@
           },
           "additionalProperties": false
         },
-        "description": "The steps, in order. Each needs take, end, or loadout."
+        "description": "The steps, in order. Each needs exactly one of take, end, or loadout; more than one is an error."
       }
     },
     "additionalProperties": false,

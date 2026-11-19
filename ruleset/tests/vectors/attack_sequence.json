@@ -3383,5 +3383,213 @@
       ],
       "lost": 0
     }
+  },
+  {
+    "name": "Long Guard: in an attack, a crit does not move a next strike the caller aimed at another foe, and keeps the carry",
+    "action": "attack",
+    "loadout": {
+      "main": "light",
+      "off": "light_weapon"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "carry_through",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:carry_through",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "carry_on_crit",
+          "operation": "grant",
+          "value": 1,
+          "source": "stance:long_guard",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 0,
+        "hp": 40
+      },
+      {
+        "evasion_skill": 0,
+        "hp": 40
+      },
+      {
+        "evasion_skill": 0,
+        "hp": 40
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "targets": [
+      0,
+      2
+    ],
+    "rolls": [
+      {
+        "attack": 1,
+        "damage": 4
+      },
+      {
+        "attack": 20,
+        "damage": 4
+      }
+    ],
+    "expect": {
+      "action": "attack",
+      "sequence": "two_light_weapons",
+      "ap": 3,
+      "stamina": 15,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -10,
+          "outcome": "hit",
+          "target": 50,
+          "margin": 49,
+          "crit": true,
+          "damage": 8,
+          "hp": 32,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "off",
+          "foe": 2,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 20,
+          "crit": false,
+          "damage": 4,
+          "hp": 36,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        32,
+        40,
+        36
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "Long Guard: in an attack, a crit carries a next strike aimed at the same foe to the first other foe standing",
+    "action": "attack",
+    "loadout": {
+      "main": "light",
+      "off": "light_weapon"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "carry_through",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:carry_through",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "carry_on_crit",
+          "operation": "grant",
+          "value": 1,
+          "source": "stance:long_guard",
+          "origin": "core:origin/martial",
+          "duration": "while_applied"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 0,
+        "hp": 40
+      },
+      {
+        "evasion_skill": 0,
+        "hp": 40
+      },
+      {
+        "evasion_skill": 0,
+        "hp": 40
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "targets": [
+      0,
+      0
+    ],
+    "rolls": [
+      {
+        "attack": 1,
+        "damage": 4
+      },
+      {
+        "attack": 20,
+        "damage": 4
+      }
+    ],
+    "expect": {
+      "action": "attack",
+      "sequence": "two_light_weapons",
+      "ap": 3,
+      "stamina": 15,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -10,
+          "outcome": "hit",
+          "target": 50,
+          "margin": 49,
+          "crit": true,
+          "damage": 8,
+          "hp": 32,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "off",
+          "foe": 1,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 20,
+          "crit": false,
+          "damage": 4,
+          "hp": 36,
+          "carried": true,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        32,
+        36,
+        40
+      ],
+      "lost": 0
+    }
   }
 ]

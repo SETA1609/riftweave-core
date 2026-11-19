@@ -777,7 +777,10 @@ def run_attack_sequence(vector):
         # Long Guard: a crit that leaves its foe standing carries as a drop would, to the first
         # other standing foe.
         others = [i for i, left in enumerate(hp) if left > 0 and i != foe]
-        if outcome["crit"] and not dropped and "carry_on_crit" in flags and carries > 0 and others:
+        # In an attack, only a next strike aimed at the critted foe is carried; one the caller
+        # aimed elsewhere keeps its foe, and the carry is not spent.
+        aimed_elsewhere = action != "full_attack" and index < len(queue) and queue[index]["foe"] != foe
+        if outcome["crit"] and not dropped and "carry_on_crit" in flags and carries > 0 and others and not aimed_elsewhere:
             carries -= 1
             if index < len(queue):
                 for later in queue[index:] if action == "full_attack" else queue[index:index + 1]:
@@ -829,6 +832,8 @@ def run_stance(vector):
     total, steps = 0, []
     for event in vector.get("events", []):
         step = {"ap": 0, "ended": None}
+        if ("take" in event) + bool(event.get("end")) + ("loadout" in event) > 1:
+            return {"error": "a stance event takes one of take, end, or loadout"}
         if "take" in event:
             key = event["take"]
             if error := check(key, loadout):
