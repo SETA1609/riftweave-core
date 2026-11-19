@@ -1,5 +1,6 @@
 #### GD_S06_03_commander-summoner-perks Commander summoner perks: the caster spends turns to drive their summons
-- Status: review
+- Status: done
+- Merged: #251, 2026-11-19
 - Priority: low
 - Needs: M3-10, M3-14, M3-20
 - Was: M3-22
