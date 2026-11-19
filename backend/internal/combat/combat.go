@@ -71,7 +71,13 @@ type Input struct {
 	CalledShot string              `json:"called_shot"`
 	// Maneuver is the maneuvers/core.json key the attack is performed with, if any.
 	Maneuver string `json:"maneuver"`
+	// Summoning is whether the attacker has an active summon, for its while_summoning
+	// modifiers; the beside_summon situation implies it (docs/core/modifier.md).
+	Summoning bool `json:"summoning"`
 }
+
+// besideSummon is the situation of a summon attacking the same target, so one is out.
+const besideSummon = "beside_summon"
 
 // Result is the outcome of the attack.
 type Result struct {
@@ -213,6 +219,16 @@ func situationModifiers(ruleset *data.Ruleset, input *Input, delivery string) ([
 			modifiers = append(modifiers, situation.RangeModifiers(attackRange)...)
 		}
 	}
+	// A row's adds: the attacker's modifiers on that target join the attack while the row applies.
+	for _, situation := range applied {
+		if situation.Adds == "" {
+			continue
+		}
+		for _, attackModifier := range modifier.Target(input.Modifiers, situation.Adds) {
+			attackModifier.Target = "attack_roll"
+			modifiers = append(modifiers, attackModifier)
+		}
+	}
 	if input.CalledShot == "" {
 		return modifiers, nil, nil
 	}
@@ -233,6 +249,8 @@ func situationModifiers(ruleset *data.Ruleset, input *Input, delivery string) ([
 
 // Run is the `combat` command.
 func Run(ruleset *data.Ruleset, input Input) (Result, error) {
+	// The attacker's while_summoning modifiers, resolved once (docs/core/modifier.md).
+	input.Modifiers = modifier.Summoning(input.Modifiers, input.Summoning || slices.Contains(input.Situations, besideSummon))
 	damageType, err := ruleset.DamageTypes.Require("damage type", input.Damage.Type)
 	if err != nil {
 		return Result{}, err
@@ -272,7 +290,15 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	if err != nil {
 		return Result{}, err
 	}
-	bonus, err := resolution.Bonus(ruleset.Origins, slices.Concat(input.Modifiers, attackModifiers))
+	// A situation's adds target joins the attack only through its row (situationModifiers).
+	var adds map[string]bool = map[string]bool{}
+	for _, row := range ruleset.Situations.Rows() {
+		if row.Adds != "" {
+			adds[row.Adds] = true
+		}
+	}
+	var own []modifier.Modifier = slices.DeleteFunc(slices.Clone(input.Modifiers), func(m modifier.Modifier) bool { return adds[m.Target] })
+	bonus, err := resolution.Bonus(ruleset.Origins, slices.Concat(own, attackModifiers))
 	if err != nil {
 		return Result{}, err
 	}

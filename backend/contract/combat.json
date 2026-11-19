@@ -132,6 +132,10 @@
         ],
         "description": "Default melee."
       },
+      "summoning": {
+        "type": "boolean",
+        "description": "Whether the attacker has an active summon (not a minion), for its while_summoning modifiers. Default false; the beside_summon situation implies true (docs/core/modifier.md)."
+      },
       "situations": {
         "type": "array",
         "uniqueItems": true,

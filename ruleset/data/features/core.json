@@ -1537,6 +1537,274 @@
       ]
     },
     {
+      "key": "bonded_vanguard",
+      "label": "Bonded Vanguard",
+      "description": "While one of your summons is out, you fight at its side with its strength: +1 STR and +1 END.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 6,
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/orange_magic",
+              "core:skill/black_magic"
+            ],
+            "min": 30
+          },
+          {
+            "any_of": [
+              "core:skill/blades",
+              "core:skill/blunt",
+              "core:skill/piercing"
+            ],
+            "min": 30
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "str",
+          "operation": "add",
+          "value": 1,
+          "duration": "while_summoning",
+          "source": "feature:bonded_vanguard",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "end",
+          "operation": "add",
+          "value": 1,
+          "duration": "while_summoning",
+          "source": "feature:bonded_vanguard",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "bonded_marksman",
+      "label": "Bonded Marksman",
+      "description": "While one of your summons is out, its senses sharpen yours: +1 AGI and +1 PER.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 6,
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/orange_magic",
+              "core:skill/black_magic"
+            ],
+            "min": 30
+          },
+          {
+            "any_of": [
+              "core:skill/bows",
+              "core:skill/crossbows",
+              "core:skill/guns",
+              "core:skill/throwing_weapons"
+            ],
+            "min": 30
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "agi",
+          "operation": "add",
+          "value": 1,
+          "duration": "while_summoning",
+          "source": "feature:bonded_marksman",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "per",
+          "operation": "add",
+          "value": 1,
+          "duration": "while_summoning",
+          "source": "feature:bonded_marksman",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "pincer_strike",
+      "label": "Pincer Strike",
+      "description": "When you and a summon of yours attack the same foe, you strike where it cannot guard: +10 to your attack, near or far.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 10,
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/orange_magic",
+              "core:skill/black_magic"
+            ],
+            "min": 40
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "beside_summon_attack",
+          "operation": "add",
+          "value": 10,
+          "duration": "while_summoning",
+          "source": "feature:pincer_strike",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "kindred_mind",
+      "label": "Kindred Mind",
+      "description": "While one of your summons is out, its mind steadies yours: +1 INT and +1 WIL.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 12,
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/orange_magic",
+              "core:skill/black_magic"
+            ],
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "int",
+          "operation": "add",
+          "value": 1,
+          "duration": "while_summoning",
+          "source": "feature:kindred_mind",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "wil",
+          "operation": "add",
+          "value": 1,
+          "duration": "while_summoning",
+          "source": "feature:kindred_mind",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "vanguard_ascendant",
+      "label": "Vanguard Ascendant",
+      "description": "You and your summon fight as one: +1 more STR and END while one is out.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 18,
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/orange_magic",
+              "core:skill/black_magic"
+            ],
+            "min": 60
+          },
+          {
+            "any_of": [
+              "core:skill/blades",
+              "core:skill/blunt",
+              "core:skill/piercing"
+            ],
+            "min": 60
+          }
+        ],
+        "perks": [
+          {
+            "perk": "core:feature/bonded_vanguard"
+          }
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "str",
+          "operation": "add",
+          "value": 1,
+          "duration": "while_summoning",
+          "source": "feature:vanguard_ascendant",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "end",
+          "operation": "add",
+          "value": 1,
+          "duration": "while_summoning",
+          "source": "feature:vanguard_ascendant",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "marksman_ascendant",
+      "label": "Marksman Ascendant",
+      "description": "You and your summon see as one: +1 more AGI and PER while one is out.",
+      "type": "perk",
+      "category": "magic",
+      "prerequisite": {
+        "level": 18,
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/orange_magic",
+              "core:skill/black_magic"
+            ],
+            "min": 60
+          },
+          {
+            "any_of": [
+              "core:skill/bows",
+              "core:skill/crossbows",
+              "core:skill/guns",
+              "core:skill/throwing_weapons"
+            ],
+            "min": 60
+          }
+        ],
+        "perks": [
+          {
+            "perk": "core:feature/bonded_marksman"
+          }
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "agi",
+          "operation": "add",
+          "value": 1,
+          "duration": "while_summoning",
+          "source": "feature:marksman_ascendant",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "per",
+          "operation": "add",
+          "value": 1,
+          "duration": "while_summoning",
+          "source": "feature:marksman_ascendant",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
       "key": "tempered_conjuring",
       "label": "Tempered Conjuring",
       "description": "Your conjured weapons come out as steel, not iron: weapon attack 5.",

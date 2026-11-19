@@ -3488,5 +3488,199 @@
       "outcome": "blocked",
       "weapon_effects": []
     }
+  },
+  {
+    "name": "hybrid: Pincer Strike adds 10 when a summon attacks the same target",
+    "attacker": {
+      "skill": 50,
+      "roll": 55,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 5,
+      "type": "slashing"
+    },
+    "situations": [
+      "beside_summon"
+    ],
+    "modifiers": [
+      {
+        "target": "beside_summon_attack",
+        "operation": "add",
+        "value": 10,
+        "duration": "while_summoning",
+        "source": "feature:pincer_strike",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "outcome": "hit",
+      "target": 60,
+      "damage": 5
+    }
+  },
+  {
+    "name": "hybrid: Pincer Strike works at range too",
+    "attacker": {
+      "skill": 50,
+      "roll": 55,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 5,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "situations": [
+      "beside_summon"
+    ],
+    "modifiers": [
+      {
+        "target": "beside_summon_attack",
+        "operation": "add",
+        "value": 10,
+        "duration": "while_summoning",
+        "source": "feature:pincer_strike",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "outcome": "hit",
+      "target": 60
+    }
+  },
+  {
+    "name": "hybrid: without the summon beside, Pincer Strike adds nothing",
+    "attacker": {
+      "skill": 50,
+      "roll": 55,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 5,
+      "type": "slashing"
+    },
+    "modifiers": [
+      {
+        "target": "beside_summon_attack",
+        "operation": "add",
+        "value": 10,
+        "duration": "while_summoning",
+        "source": "feature:pincer_strike",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "outcome": "miss",
+      "target": 50
+    }
+  },
+  {
+    "name": "hybrid: beside a summon with no perk adds nothing",
+    "attacker": {
+      "skill": 50,
+      "roll": 55,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 5,
+      "type": "slashing"
+    },
+    "situations": [
+      "beside_summon"
+    ],
+    "expect": {
+      "outcome": "miss",
+      "target": 50
+    }
+  },
+  {
+    "name": "summoning: a while_summoning attack bonus counts when the attacker has a summon out",
+    "attacker": {
+      "skill": 50,
+      "roll": 55,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 5,
+      "type": "slashing"
+    },
+    "summoning": true,
+    "modifiers": [
+      {
+        "target": "attack_roll",
+        "operation": "add",
+        "value": 10,
+        "duration": "while_summoning",
+        "source": "feature:test_bond",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "outcome": "hit",
+      "target": 60
+    }
+  },
+  {
+    "name": "summoning: without a summon out (absent) a while_summoning attack bonus does not count",
+    "attacker": {
+      "skill": 50,
+      "roll": 55,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 0,
+      "hp": 30
+    },
+    "damage": {
+      "roll": 5,
+      "type": "slashing"
+    },
+    "modifiers": [
+      {
+        "target": "attack_roll",
+        "operation": "add",
+        "value": 10,
+        "duration": "while_summoning",
+        "source": "feature:test_bond",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "outcome": "miss",
+      "target": 50
+    }
   }
 ]

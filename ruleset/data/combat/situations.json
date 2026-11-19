@@ -11,6 +11,8 @@
       "forbids": ["ranged"] },
     { "key": "flanking", "label": "Flanking", "description": "Two allies stand on opposite sides of the target.",
       "melee": [{ "target": "attack_roll", "operation": "add", "value": 10, "source": "situation:flanking", "origin": "core:origin/martial" }] },
+    { "key": "beside_summon", "label": "Beside a summon", "description": "A summon of the attacker attacks the same target this round. It adds nothing by itself; a perk's modifiers on beside_summon_attack add to the attack (docs/modules/magic.md#the-hybrid-summoner).",
+      "adds": "beside_summon_attack" },
     { "key": "attacker_prone", "label": "Attacker prone", "description": "Attacking from the ground: a weak swing, and no shot without a perk.",
       "when": { "attacker": "prone" },
       "melee": [{ "target": "attack_roll", "operation": "add", "value": -20, "source": "situation:attacker_prone", "origin": "core:origin/condition" }],
