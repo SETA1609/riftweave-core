@@ -1,6 +1,6 @@
 # Melee builds
 
-Modified: 2026-11-18
+Modified: 2026-11-19
 
 Three suggested builds for fighting at arm's length. They are suggestions: nothing here is gated, and any of them can pick up a bow or learn a spell ([README](README.md)). The rows are in [`ruleset/data/builds/core.json`](../../../ruleset/data/builds/core.json); each is checked from creation to level 30 at the lowest luck roll.
 
@@ -16,12 +16,12 @@ A blade, a shield, and heavy plate: holds the line, blocks blows outright, and o
 - **Tag skills:** Blades, Shields, Heavy Armor.
 - **Mechanics:** the carried shield's DR adds to armor DR on every physical hit, with no action; the **block stance** (2 AP, refunded if nobody swings) adds a block band of half the Shields skill that stops a hit outright ([combat.md](../../core/combat.md#reading-the-steps)). Heavy armor and a shield stack DR, so low-tier physical damage stops at the armor.
 - **Level by level:**
-  - **2–7, the shield.** Hardened Hide, then the block ladder as Shields reaches 30 and 50: Shield Training (+2 shield DR), Shield Wall, Spell Ward (the block band also stops magic, at half width) at 6, and Full Weight once Blades is 40.
-  - **8–14, the wall.** Carry Through, Brutal Charge, the third Hardened Hide, **Bulwark** at 12 (a block in the band's lowest rolls staggers the attacker), Catch Your Breath, and Heavy Armor Expert once Heavy Armor is 60.
-  - **15–24, the veteran.** Berserker, Pack Mule, Iron Stomach, **Unstoppable** at 18, Survivor, then Executioner at 24 on Full Weight.
-  - **25–30.** Fillers: the melee perk table runs out here (see the gaps in the [decision record](../../decisions/M5-47.md)).
+  - **2–6, the shield.** Hardened Hide, then the tier 1 of each shield ladder ([combat.md](../../core/combat.md#block-and-dodge-perks)): Shield Training (+2 shield DR), Shield Wall (+3 block band), Boss Strike (the shield joins the attack as a bash), and **Spell Ward** at 6 (a magic hit in the block band loses END × 2 % of its damage).
+  - **7–16, the wall.** Tier 2 of Shield Training, Shield Wall, and Boss Strike at 7 to 9, **Guardian** at 10, **Bulwark** at 12 on Shield Training tier 2, then tier 3 of Shield Training, Shield Wall, and Boss Strike at 13 to 15, and Guardian tier 2 at 16.
+  - **17–24, the veteran.** Heavy Armor Expert, Spell Ward tier 2 at 18, Boss Strike tier 4 at 19, Guardian tier 3 at 20, then Full Weight, Carry Through, Hardened Hide, and Spell Ward tier 3 at 24.
+  - **25–30.** Unstoppable, Catch Your Breath, Berserker, Survivor, Ever Watchful, Intimidating Presence. The tiered ladders fill the gap the melee perk table had here ([decision record](../../decisions/M5-47.md)), as GD_S05_03 planned.
 - **At level 30:** Shields 100, Blades 100, Heavy Armor 75, Intimidation 60, Evasion 50.
-- **Outside the build:** the evasion band is narrow in heavy armor and a shield, so area spells hurt; there is no answer to magic beyond Spell Ward's half band. A bow or crossbow works at its untrained skill. Dropping the shield for a two-hander keeps every perk except the block ladder's.
+- **Outside the build:** the evasion band is narrow in heavy armor and a shield, so area spells hurt; Spell Ward cuts a magic hit in the block band by at most half. Guardian is a pending perk: the kernel has no allies yet. A bow or crossbow works at its untrained skill. Dropping the shield for a two-hander keeps every perk except the block ladder's.
 
 ## Two-handed fighter
 
@@ -31,12 +31,12 @@ A maul or a warhammer in both hands and heavy armor: no shield, every blow a big
 - **Tag skills:** Blunt, Heavy Armor, Intimidation.
 - **Mechanics:** the attribute modifier adds STR − 5 to every blow before the crit doubles it ([attributes.md](../attributes.md#the-attribute-modifier)), so STR 10 is +5 a hit; Crushing Blow and Carry Through are the blunt and two-handed perks; Intimidation feeds Intimidating Presence and Menacing. With no shield the defense is DR and the evasion band only.
 - **Level by level:**
-  - **2–8, the swing.** Hardened Hide, Full Weight (Blades 40 is the one off-tag skill the build buys early), Ever Watchful, a second Hardened Hide, **Crushing Blow** and **Carry Through** at 6 and 7, Brutal Charge.
-  - **9–18, the armor.** The third Hardened Hide, Pack Mule twice, Berserker and Catch Your Breath at 12, Heavy Armor Expert, Intimidating Presence, Iron Stomach, Night Eyes, **Unstoppable** at 18.
-  - **19–24, the presence.** Streetwise, **Menacing** once Intimidation is 60, Meditative, Brawler twice, **Executioner** at 24.
-  - **25–30.** Fillers from survival and social perks (Tracker, Shield Training, Survivor, Haggler, Empath, Mana Flow); see the gaps.
+  - **2–9, the swing.** Hardened Hide, Full Weight (Blades 40 is the one off-tag skill the build buys early), Forward Guard, a second Hardened Hide, Follow Up, **Carry Through** at 7, **Crushing Blow** at 8, the third Hardened Hide.
+  - **10–19, the sweep.** **Long Guard** at 10, Brutal Charge, **Reaping Arc** at 12, Catch Your Breath, Heavy Armor Expert, Berserker, Intimidating Presence, Iron Stomach, **Circle Cut** at 18, **Unstoppable** at 19.
+  - **20–24, the presence.** **Menacing** once Intimidation is 60, Ever Watchful, Pack Mule twice, **Executioner** at 24.
+  - **25–30.** Brawler, Shield Training, Survivor, Night Eyes, Streetwise, Meditative; see the gaps.
 - **At level 30:** Blunt 100, Heavy Armor 100, Intimidation 63, Blades 40, and 30 to 40 in the filler skills.
-- **Outside the build:** a sword works at Blades 40; a shield works at Shields 30 with Shield Training's +2, though without the block ladder. Ranged attacks and magic are untrained.
+- **Outside the build:** a sword works at Blades 40; a shield works with Shield Training's +2, though without the other shield ladders. Ranged attacks and magic are untrained.
 
 ## Fencer
 
@@ -46,9 +46,9 @@ A blade in light armor and no shield: slips the blow instead of taking it, and a
 - **Tag skills:** Blades, Evasion, Light Armor.
 - **Mechanics:** the evasion band is half the Evasion skill and the **dodge stance** (3 AP, 2 with Sidestep) doubles it, so a fencer at Evasion 100 evades every success with a margin under 100 while dodging; **Riposte** turns an evade in the band's lowest rolls into a free attack. Light armor keeps the band wide ([combat.md](../../core/combat.md#reading-the-steps)). Stealth gives the opening strike (Backstab, Assassin).
 - **Level by level:**
-  - **2–7, the footwork.** Sidestep, Ever Watchful, Ready Hand, Acrobat, Full Weight, **Armored Evasion** at 7.
+  - **2–7, the footwork.** Sidestep, Ever Watchful, Low Guard, Full Weight, Follow Up, **Armored Evasion** at 7 (tier 1, +5 evasion).
   - **8–13, the blade.** Hardened Hide, Easy Stride, Fleet Footed, Carry Through, **Fencer's Measure** at 12 (Blades 60), **Riposte** at 13 (Evasion 60).
-  - **14–26, the shadow.** Catch Your Breath, Berserker, Hardened Hide, Night Eyes, Ghost and Backstab as Stealth reaches 50, Precise Thrust (Piercing 50, a rapier's skill), the third Hardened Hide, Iron Stomach, Streetwise, Brawler twice, **Assassin** at 26 (Stealth 70).
-  - **27–30.** Pack Mule twice, Locksmith, Light Fingers; see the gaps.
+  - **14–26, the shadow.** Armored Evasion tier 2, Catch Your Breath, Berserker, Ready Hand, Press On at 18, Armored Evasion tier 3 at 19, Precise Thrust (Piercing 50, a rapier's skill), Backstab and Ghost as Stealth reaches 50, Hardened Hide twice, Night Eyes, **Assassin** at 26 (Stealth 70).
+  - **27–30.** Iron Stomach, Streetwise, Pack Mule, Brawler; see the gaps.
 - **At level 30:** Evasion 100, Blades 99, Stealth 70, Light Armor 50, Piercing 50.
 - **Outside the build:** a fencer has little HP and DR, so an instant spell, which meets no band, and a crit, which always hits, are what kill one. A shield works at the untrained Shields skill. A bow works at its untrained skill; the ranged builds are in [ranged.md](ranged.md).

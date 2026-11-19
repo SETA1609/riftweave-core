@@ -2,6 +2,14 @@
   "$schema": "../../schemas/attack_sequence.schema.json",
   "full_attack": { "min_extra_ap": 1, "extra_main_attacks": [-20, -30], "extra_off_attack": -10 },
   "circle_cut": { "attack": -10, "main": ["two_handed"] },
+  "shield_bash": {
+    "off": ["shield", "buckler"],
+    "as_off": "light_weapon",
+    "damage_type": "bludgeoning",
+    "tiers": { "jab": 1, "attack": 2, "stagger": 3, "after_block": 4 },
+    "stagger_ap": 2,
+    "after_block_ap": 1
+  },
   "attack_sequences": [
     {
       "key": "unarmed",

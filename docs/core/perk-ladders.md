@@ -11,7 +11,7 @@ arrow runs from a prerequisite perk to the perk that needs it, labelled with the
 when more than 1. A rounded box is a prerequisite from another category. A ladder that stops
 early, or a perk nothing leads to, shows at a glance.
 
-132 perks: 63 on a ladder, 69 with no perk before or after them.
+125 perks: 57 on a ladder, 68 with no perk before or after them.
 
 ## Combat
 
@@ -34,11 +34,13 @@ graph LR
   sniper["Sniper<br/>Lv 18 · bows or crossbows or guns 70 · PER 8"]
   unstoppable["Unstoppable<br/>Lv 18 · heavy_armor 50 · END 8"]
   executioner["Executioner<br/>Lv 24 · STR 8"]
-  shield_training["Shield Training<br/>shields 30 · END 5"]
-  spell_ward["Spell Ward<br/>Lv 6 · shields 50 · WIL 6"]
+  shield_training["Shield Training (ranks 3)<br/>shields 30 · END 5"]
+  spell_ward["Spell Ward (ranks 3)<br/>Lv 6 · shields 50 · WIL 6"]
   bulwark["Bulwark<br/>Lv 12 · shields 70 · END 7"]
   sidestep["Sidestep<br/>evasion 30 · AGI 6"]
-  armored_evasion["Armored Evasion<br/>Lv 6 · evasion 50"]
+  armored_evasion["Armored Evasion (ranks 3)<br/>Lv 6 · evasion 50"]
+  unarmored_grace["Unarmored Grace (ranks 4)<br/>evasion 30 · AGI 6"]
+  flowing_step["Flowing Step<br/>Lv 12"]
   riposte["Riposte<br/>Lv 12 · evasion 60 · AGI 7"]
   hardened_hide(["Hardened Hide<br/>general"])
   hardened_hide --> brutal_charge
@@ -54,8 +56,9 @@ graph LR
   hardened_hide --> unstoppable
   full_weight --> executioner
   shield_training --> spell_ward
-  spell_ward --> bulwark
+  shield_training -- rank 2 --> bulwark
   sidestep --> armored_evasion
+  unarmored_grace -- rank 2 --> flowing_step
   armored_evasion --> riposte
 ```
 
@@ -76,10 +79,6 @@ graph LR
   arcane_reservoir["Arcane Reservoir (ranks 3)<br/>INT 6"]
   conjurer["Conjurer<br/>Lv 6 · orange_magic 50"]
   summon_retinue["Retinue<br/>Lv 14 · orange_magic or black_magic 60"]
-  bonded_vanguard["Bonded Vanguard<br/>Lv 6 · orange_magic or black_magic 30 · blades or blunt or piercing 30"]
-  bonded_marksman["Bonded Marksman<br/>Lv 6 · orange_magic or black_magic 30 · bows or crossbows or guns or throwing_weapons 30"]
-  vanguard_ascendant["Vanguard Ascendant<br/>Lv 18 · orange_magic or black_magic 60 · blades or blunt or piercing 60"]
-  marksman_ascendant["Marksman Ascendant<br/>Lv 18 · orange_magic or black_magic 60 · bows or crossbows or guns or throwing_weapons 60"]
   tempered_conjuring["Tempered Conjuring<br/>Lv 6 · orange_magic 40"]
   piercing_conjuring["Piercing Conjuring<br/>Lv 10 · orange_magic 50"]
   lingering_conjuring["Lingering Conjuring<br/>Lv 12 · orange_magic 55"]
@@ -90,17 +89,11 @@ graph LR
   summon_dire["Dire Summons<br/>Lv 8 · orange_magic 40"]
   summon_elder["Elder Summons<br/>Lv 16 · orange_magic 60"]
   summon_ancient["Ancient Summons<br/>Lv 24 · orange_magic 80"]
-  field_command["Field Command<br/>Lv 6 · orange_magic or black_magic 40 · CHA 5"]
-  sharp_orders["Sharp Orders<br/>Lv 10 · orange_magic or black_magic 45 · CHA 5"]
-  voice_of_the_host["Voice of the Host<br/>Lv 14 · orange_magic or black_magic 60 · CHA 5"]
-  iron_drill["Iron Drill<br/>Lv 18 · orange_magic or black_magic 65 · CHA 5"]
   kindred_focus["Kindred Focus<br/>Lv 6 · orange_magic or black_magic 40"]
   shared_wellspring["Shared Wellspring<br/>Lv 12 · orange_magic or black_magic 55"]
   elemental_kinship["Elemental Kinship<br/>Lv 18 · orange_magic or black_magic 70"]
   archmage["Archmage<br/>Lv 24 · INT 9"]
   conjurer --> summon_retinue
-  bonded_vanguard --> vanguard_ascendant
-  bonded_marksman --> marksman_ascendant
   tempered_conjuring --> piercing_conjuring
   tempered_conjuring --> lingering_conjuring
   piercing_conjuring --> hallowed_conjuring
@@ -109,9 +102,6 @@ graph LR
   summon_retinue --> summon_host
   summon_dire --> summon_elder
   summon_elder --> summon_ancient
-  field_command --> sharp_orders
-  sharp_orders --> voice_of_the_host
-  field_command --> iron_drill
   kindred_focus --> shared_wellspring
   kindred_focus --> elemental_kinship
   arcane_reservoir --> archmage
@@ -164,7 +154,6 @@ attributes, and level only.
 | Easy Stride | combat | light_armor 50 · AGI 7 |
 | Wind-Up | combat | STR 5 |
 | Snap Cut | combat | AGI 5 |
-| Acrobat | combat | evasion 40 · AGI 7 |
 | Scavenger | survival | LCK 6 |
 | Crushing Blow | combat | Lv 6 · blunt 50 · STR 7 |
 | Precise Thrust | combat | Lv 6 · piercing 50 · AGI 6 |
@@ -184,13 +173,11 @@ attributes, and level only.
 | Fast Reload | combat | Lv 6 · crossbows 50 · STR 5 |
 | Hip Shot | combat | Lv 12 · guns 60 · AGI 7 |
 | Mana Flow | magic | Lv 6 · WIL 6 |
-| Battle Mage | magic | Lv 12 · INT 6 · END 6 |
+| Mailed Casting | magic | Lv 6 · INT 6 · END 6 |
 | Ward Breaker | magic | Lv 12 · INT 7 |
 | Elemental Harmony | magic | Lv 18 · INT 6 · WIL 6 |
 | Healer | magic | Lv 6 · green_magic 50 |
 | Illusionist | magic | Lv 6 · yellow_magic 50 |
-| Pincer Strike | magic | Lv 10 · orange_magic or black_magic 40 |
-| Kindred Mind | magic | Lv 12 · orange_magic or black_magic 50 |
 | Commanding Summons: Magic | magic | Lv 6 · orange_magic or black_magic 30 · CHA 6 |
 | Commanding Summons: Physical | magic | Lv 6 · orange_magic or black_magic 30 · CHA 6 |
 | Demonic Pact | magic | Lv 12 · orange_magic 50 |
@@ -225,3 +212,5 @@ attributes, and level only.
 | Meditative | magic | Lv 6 · WIL 6 |
 | Night Eyes | survival | Lv 6 · PER 7 |
 | Survivor | general | Lv 18 · END 6 · WIL 6 |
+| Guardian | combat | Lv 6 · shields 50 |
+| Boss Strike | combat | shields 30 · STR 5 |

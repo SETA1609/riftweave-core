@@ -1,6 +1,6 @@
 # Magic builds
 
-Modified: 2026-11-18
+Modified: 2026-11-19
 
 Three suggested builds for casters. They are suggestions: nothing here is gated, and any of them can pick up a blade or a bow ([README](README.md)). A blaster can still stab with a dagger at its untrained skill, and a summoner can still cast a bolt. The rows are in [`ruleset/data/builds/core.json`](../../../ruleset/data/builds/core.json); each is checked from creation to level 30 at the lowest luck roll.
 
@@ -18,7 +18,7 @@ Fire and force from range in light clothes: burns a crowd before it closes, and 
 - **Mechanics:** red magic carries the damage spells, indigo the force and thunder ones that push and knock back. A `single` or `area` spell meets the target's evasion and block bands; an area spell's evaded targets still take half ([combat.md](../../core/combat.md)). Evasion is the blaster's only defense, so it is a tag skill.
 - **Level by level:**
   - **2–9, the mana.** Arcane Reservoir three times, Hardened Hide, **Pyromancer** at 5 (Red Magic 50) and its second rank at 9, Mana Flow, **Telekinetic** (+50% Indigo range).
-  - **10–18, the craft.** Meditative, Hardened Hide, **Ward Breaker** at 12 (ignores 5 resist), Battle Mage (half the armor penalty, for a hauberk if it wants one), Warded Mind, the third Hardened Hide, Ever Watchful, Scholar, **Elemental Harmony** at 18.
+  - **10–18, the craft.** Meditative, Hardened Hide, **Ward Breaker** at 12 (ignores 5 resist), Mailed Casting (×0.75 on the armor and shield penalties, for a hauberk if it wants one), Warded Mind, the third Hardened Hide, Ever Watchful, Scholar, **Elemental Harmony** at 18.
   - **19–30.** **Archmage** at 24 (spells cost 20% less); the rest are general perks (Trap Sense, Quick Learner, Tinkerer, Polyglot, Tracker, Beast Friend, Survivor, Unshaken, Streetwise, Empath, Iron Stomach).
 - **At level 30:** Red Magic 100, Indigo Magic 100, Evasion 100, Lore 60, and 40 in the filler skills.
 - **Outside the build:** HP and DR are low, so a blow that gets through hurts; a dagger works at its untrained Blades or Piercing. Instant spells from enemies meet no band, so a save is the only answer to them.

@@ -124,7 +124,7 @@
     {
       "key": "shield_wall",
       "label": "Shield Wall",
-      "description": "You turn a shield into a fortress, blocking a greater share of incoming damage.",
+      "description": "You plant the shield and hold the line: while you block, the block band is 3 wider per tier (3, 6, 9).",
       "type": "perk",
       "category": "combat",
       "prerequisite": {
@@ -141,12 +141,17 @@
         ],
         "perks": []
       },
-      "ranks": 1,
+      "ranks": 3,
+      "rank_levels": [
+        1,
+        6,
+        12
+      ],
       "modifiers": [
         {
-          "target": "block_reduction",
-          "operation": "multiply",
-          "value": 1.15,
+          "target": "block_band",
+          "operation": "add",
+          "value": 3,
           "source": "feature:shield_wall",
           "origin": "core:origin/trained"
         }
@@ -724,37 +729,6 @@
           "operation": "grant",
           "value": 1,
           "source": "feature:brutal_charge",
-          "origin": "core:origin/trained"
-        }
-      ]
-    },
-    {
-      "key": "acrobat",
-      "label": "Acrobat",
-      "description": "You are exceptionally nimble and coordinated. Dodge rolls cost 25% less stamina, and you recover from knockdowns faster.",
-      "type": "perk",
-      "category": "combat",
-      "prerequisite": {
-        "abilities": {
-          "agi": 7
-        },
-        "skills": [
-          {
-            "any_of": [
-              "core:skill/evasion"
-            ],
-            "min": 40
-          }
-        ],
-        "perks": []
-      },
-      "ranks": 1,
-      "modifiers": [
-        {
-          "target": "dodge_stamina",
-          "operation": "multiply",
-          "value": 0.75,
-          "source": "feature:acrobat",
           "origin": "core:origin/trained"
         }
       ]
@@ -1763,26 +1737,31 @@
       ]
     },
     {
-      "key": "battle_mage",
-      "label": "Battle Mage",
-      "description": "You have learned to cast in a hauberk: the armor penalty on casting is halved.",
+      "key": "mailed_casting",
+      "label": "Mailed Casting",
+      "description": "You have learned to cast in mail and behind a shield: the armor and shield penalty on casting is x0.75, x0.5 at the second tier, x0.25 at the third.",
       "type": "perk",
       "category": "magic",
       "prerequisite": {
-        "level": 12,
+        "level": 6,
         "abilities": {
           "int": 6,
           "end": 6
         },
         "perks": []
       },
-      "ranks": 1,
+      "ranks": 3,
+      "rank_levels": [
+        6,
+        12,
+        18
+      ],
       "modifiers": [
         {
           "target": "armor_cast_penalty",
           "operation": "multiply",
-          "value": 0.5,
-          "source": "feature:battle_mage",
+          "value": 0.75,
+          "source": "feature:mailed_casting",
           "origin": "core:origin/trained"
         }
       ]
@@ -4298,7 +4277,7 @@
     {
       "key": "shield_training",
       "label": "Shield Training",
-      "description": "You angle the shield to take the blow on its boss: a carried shield subtracts 2 more damage.",
+      "description": "You angle the shield to take the blow on its boss: a carried shield subtracts 2 more damage, 3 at the second tier, 4 at the third.",
       "type": "perk",
       "category": "combat",
       "prerequisite": {
@@ -4315,7 +4294,19 @@
         ],
         "perks": []
       },
-      "ranks": 1,
+      "ranks": 3,
+      "rank_levels": [
+        1,
+        6,
+        12
+      ],
+      "rank_values": {
+        "shield_dr": [
+          2,
+          3,
+          4
+        ]
+      },
       "modifiers": [
         {
           "target": "shield_dr",
@@ -4329,7 +4320,7 @@
     {
       "key": "spell_ward",
       "label": "Spell Ward",
-      "description": "Your shield catches fire and force as well as steel: while you block, a band of half the width also stops a single or area spell of any type. An instant spell still cannot be blocked.",
+      "description": "Your shield takes the sting out of a spell: while you block, a single or area spell whose roll lands in the block band deals less, END x 2 x tier percent of its damage resisted, at most 50%. It never stops a spell, and an instant spell, which meets no band, deals its full result.",
       "type": "perk",
       "category": "combat",
       "prerequisite": {
@@ -4351,11 +4342,16 @@
           }
         ]
       },
-      "ranks": 1,
+      "ranks": 3,
+      "rank_levels": [
+        6,
+        12,
+        18
+      ],
       "modifiers": [
         {
-          "target": "block_magic",
-          "operation": "grant",
+          "target": "spell_ward",
+          "operation": "add",
           "value": 1,
           "source": "feature:spell_ward",
           "origin": "core:origin/trained"
@@ -4383,7 +4379,8 @@
         ],
         "perks": [
           {
-            "perk": "core:feature/spell_ward"
+            "perk": "core:feature/shield_training",
+            "rank": 2
           }
         ]
       },
@@ -4394,6 +4391,77 @@
           "operation": "grant",
           "value": 1,
           "source": "feature:bulwark",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "guardian",
+      "label": "Guardian",
+      "description": "You keep your shield between your friends and harm: while you block, one adjacent ally's evasion band +10; at the second tier the block band also covers attacks on that ally; at the third it covers every adjacent ally. Any shield works.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 6,
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/shields"
+            ],
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 3,
+      "rank_levels": [
+        6,
+        12,
+        18
+      ],
+      "modifiers": [
+        {
+          "target": "guardian",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:guardian",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "boss_strike",
+      "label": "Boss Strike",
+      "description": "You hit with the shield's boss. Tier 1: a bash is a jab with the shield, blunt damage of the shield's DR + 1d4. Tier 2: the attack also strikes with the shield, as a light off-hand weapon. Tier 3: a bash that hits costs the target 2 AP on its next turn. Tier 4: right after a block in your band, a bash costs 1 AP.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "abilities": {
+          "str": 5
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/shields"
+            ],
+            "min": 30
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 4,
+      "rank_levels": [
+        1,
+        6,
+        12,
+        18
+      ],
+      "modifiers": [
+        {
+          "target": "boss_strike",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:boss_strike",
           "origin": "core:origin/trained"
         }
       ]
@@ -4432,7 +4500,7 @@
     {
       "key": "armored_evasion",
       "label": "Armored Evasion",
-      "description": "You have learned to move in your armor: +10 on the evasion skill, which offsets what armor costs you.",
+      "description": "You have learned to move in your armor: +5 on the evasion skill per tier (5, 10, 15), which offsets what armor costs you.",
       "type": "perk",
       "category": "combat",
       "prerequisite": {
@@ -4451,13 +4519,81 @@
           }
         ]
       },
-      "ranks": 1,
+      "ranks": 3,
+      "rank_levels": [
+        6,
+        12,
+        18
+      ],
       "modifiers": [
         {
           "target": "evasion",
           "operation": "add",
-          "value": 10,
+          "value": 5,
           "source": "feature:armored_evasion",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "unarmored_grace",
+      "label": "Unarmored Grace",
+      "description": "With no body armor (clothes and robes allowed), your evasion band is 5 wider per tier (5, 10, 15, 20).",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "abilities": {
+          "agi": 6
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/evasion"
+            ],
+            "min": 30
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 4,
+      "rank_levels": [
+        1,
+        6,
+        12,
+        18
+      ],
+      "modifiers": [
+        {
+          "target": "unarmored_evasion_band",
+          "operation": "add",
+          "value": 5,
+          "source": "feature:unarmored_grace",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "flowing_step",
+      "label": "Flowing Step",
+      "description": "With no body armor, the first move each turn draws no opportunity attack.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 12,
+        "perks": [
+          {
+            "perk": "core:feature/unarmored_grace",
+            "rank": 2
+          }
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "flowing_step",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:flowing_step",
           "origin": "core:origin/trained"
         }
       ]

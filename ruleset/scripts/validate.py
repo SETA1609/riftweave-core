@@ -1964,6 +1964,64 @@ def check_stances(stances, features):
     return errors
 
 
+RANK_LEVEL_STEPS = (3, 6)
+
+
+def check_rank_levels(features):
+    """Tiered perks (GD_S05_03): rank_levels has one gate per rank, the first at the
+    prerequisite level (1 without one), each next 3 to 6 levels later; rank_values has one value
+    per rank for a target the perk emits."""
+    errors = []
+    for row in features:
+        key, ranks = row.get("key"), row.get("ranks") or 1
+        levels = row.get("rank_levels")
+        if levels is not None:
+            if len(levels) != ranks:
+                errors.append(f"perk '{key}': rank_levels has {len(levels)} gates for {ranks} ranks")
+            first = (row.get("prerequisite") or {}).get("level", 1)
+            if levels and levels[0] != first:
+                errors.append(f"perk '{key}': the first tier's gate {levels[0]} is not its prerequisite level {first}")
+            low, high = RANK_LEVEL_STEPS
+            for before, after in zip(levels, levels[1:]):
+                if not low <= after - before <= high:
+                    errors.append(f"perk '{key}': tiers at {before} and {after} are not {low} to {high} levels apart")
+        targets = {m.get("target") for m in row.get("modifiers") or []}
+        for target, values in (row.get("rank_values") or {}).items():
+            if target not in targets:
+                errors.append(f"perk '{key}': rank_values names {target}, which no modifier of the perk targets")
+            if len(values) != ranks:
+                errors.append(f"perk '{key}': rank_values for {target} has {len(values)} values for {ranks} ranks")
+    return errors
+
+
+def check_build_tiers(builds, features):
+    """A build takes each tier of a tiered perk at its rank_levels gate or later (GD_S05_03)."""
+    gates = {f"core:feature/{row['key']}": row["rank_levels"] for row in features if row.get("rank_levels")}
+    errors = []
+    for build in builds:
+        held = {}
+        for level, ref in sorted(((int(level), ref) for level, ref in (build.get("perks_by_level") or {}).items())):
+            held[ref] = held.get(ref, 0) + 1
+            levels = gates.get(ref)
+            if levels and held[ref] <= len(levels) and level < levels[held[ref] - 1]:
+                errors.append(f"build '{build.get('key')}': {ref} tier {held[ref]} at level {level}, before its gate {levels[held[ref] - 1]}")
+    return errors
+
+
+def check_spell_ward_table(pipeline):
+    """combat/pipeline.json's spell_ward_table is what spell_ward_percent and the cap give, one
+    row per END from 1 and one column per tier from 1 (GD_S05_03)."""
+    from kernel_reference import evaluate_formula
+
+    errors = []
+    for end, row in enumerate(pipeline.get("spell_ward_table", []), start=1):
+        for tier, percent in enumerate(row, start=1):
+            want = min(evaluate_formula(pipeline["spell_ward_percent"], {}, {"end": end, "tier": tier}), pipeline["spell_ward_max_percent"])
+            if percent != want:
+                errors.append(f"spell_ward_table: END {end} tier {tier} reads {percent}, the formula gives {want}")
+    return errors
+
+
 OFF_HAND_WEAPONS = ("light_weapon", "weapon")
 
 
@@ -2118,6 +2176,16 @@ def main():
     if stance_errors:
         print("  \u2717  stances (each unlocked by a perk, martial and while applied)")
         for e in stance_errors:
+            print(f"       {e}")
+        failed += 1
+
+    feature_rows = json.loads((DATA_DIR / "features" / "core.json").read_text())["features"]
+    tier_errors = check_rank_levels(feature_rows) + check_build_tiers(
+        json.loads((DATA_DIR / "builds" / "core.json").read_text())["builds"], feature_rows
+    ) + check_spell_ward_table(json.loads((DATA_DIR / "combat" / "pipeline.json").read_text())["pipeline"])
+    if tier_errors:
+        print("  \u2717  tiered perks (rank_levels, rank_values, builds, the spell ward table)")
+        for e in tier_errors:
             print(f"       {e}")
         failed += 1
 

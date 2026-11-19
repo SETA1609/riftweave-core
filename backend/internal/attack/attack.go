@@ -30,6 +30,8 @@ type Attacker struct {
 	// none (an off-hand weapon never borrows the main hand's bane or binding).
 	OffWeaponProperties []string             `json:"off_weapon_properties"`
 	OffWeaponEffects    []data.AppliedEffect `json:"off_weapon_effects"`
+	// ShieldDR is the carried shield's DR, which a Boss Strike bash adds to its damage roll.
+	ShieldDR *int64 `json:"shield_dr"`
 	// Modifiers are the attacker's perks and fighting stance: adds on full_attack_strikes,
 	// full_attack_off_strikes, mainhand_penalty, offhand_penalty, attack_roll,
 	// attack_single_opponent, attack_after_parry, and unarmed_damage, and the carry, circle
@@ -66,6 +68,8 @@ type Input struct {
 	Summoning  bool     `json:"summoning"`
 	// AfterParry is Espada y Daga's opening: the attacker parried a hit since their last strike.
 	AfterParry bool `json:"after_parry"`
+	// AfterBlock is Boss Strike's last tier: the attacker just blocked a hit in their band.
+	AfterBlock bool `json:"after_block"`
 }
 
 // StrikeResult is one strike made.
@@ -84,6 +88,10 @@ type StrikeResult struct {
 	Scissor bool   `json:"scissor"`
 	// WeaponEffects are the effects that landed, listed only when the strike's hand has any.
 	WeaponEffects *[]json.RawMessage `json:"weapon_effects,omitempty"`
+	// Bash marks an off-hand strike made with the shield (Boss Strike), and StaggerAP is the AP
+	// it costs the target. Both are left out on any other strike.
+	Bash      bool   `json:"bash,omitempty"`
+	StaggerAP *int64 `json:"stagger_ap,omitempty"`
 }
 
 // Result is the action's outcome.
@@ -214,6 +222,35 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	var on func(string) (int64, error) = func(target string) (int64, error) {
 		return modifier.Value(0, modifier.Target(input.Attacker.Modifiers, target), ruleset.Origins, 0, nil)
 	}
+	// Boss Strike: from its jab tier a jab with a shield is a bash, and from its attack tier
+	// the attack strikes with the shield too, as the row of a light off-hand weapon.
+	var bash = &ruleset.AttackSequences.ShieldBash
+	tier, err := on("boss_strike")
+	if err != nil {
+		return Result{}, err
+	}
+	var needed int64 = bash.Tiers.Attack
+	if input.Action == "jab" {
+		needed = bash.Tiers.Jab
+	}
+	var bashing bool = slices.Contains(bash.Off, input.Loadout.Off) && tier >= needed && input.Action != "circle_cut"
+	if bashing {
+		if input.Attacker.ShieldDR == nil {
+			return Result{}, &data.MissingInputError{Subject: "a shield bash", Needs: "shield_dr"}
+		}
+		var asLight data.Loadout = input.Loadout
+		asLight.Off = bash.AsOff
+		if row = ruleset.AttackSequences.Covering(asLight.Main, asLight.Off); row == nil {
+			return Result{}, &data.NoSequenceError{Loadout: asLight}
+		}
+		if input.Action == "jab" && input.AfterBlock && tier >= bash.Tiers.AfterBlock && row.Jab != nil {
+			var cheap data.AttackSequence = *row
+			var jab data.Jab = *row.Jab
+			jab.AP = bash.AfterBlockAP
+			cheap.Jab = &jab
+			row = &cheap
+		}
+	}
 	strikes, actionPoints, err := plan(ruleset, &input, row, flags, on)
 	if err != nil {
 		return Result{}, err
@@ -343,6 +380,10 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		if scissor {
 			damageRoll *= 2
 		}
+		var isBash bool = bashing && strike.hand == "off"
+		if isBash {
+			damage, damageRoll = Damage{Type: bash.DamageType}, *input.Attacker.ShieldDR+roll.Damage
+		}
 		var strikeModifiers []modifier.Modifier = slices.Clone(input.Modifiers)
 		if strike.attack != 0 {
 			strikeModifiers = append(strikeModifiers, modifier.Modifier{Target: "attack_roll", Operation: modifier.Add, Value: float64(strike.attack), Source: "strike:" + strike.hand})
@@ -390,6 +431,13 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 				landed = *outcome.WeaponEffects
 			}
 			result.Strikes[len(result.Strikes)-1].WeaponEffects = &landed
+		}
+		if isBash {
+			var stagger int64
+			if hit && tier >= bash.Tiers.Stagger {
+				stagger = bash.StaggerAP
+			}
+			result.Strikes[len(result.Strikes)-1].Bash, result.Strikes[len(result.Strikes)-1].StaggerAP = true, &stagger
 		}
 		if dropped && index == len(queue)-1 && carries > 0 && slices.ContainsFunc(hitPoints, func(left int64) bool { return left > 0 }) {
 			queue = append(queue, planned{hand: strike.hand, attack: strike.attack, foe: foe, free: true})
