@@ -763,47 +763,6 @@
     }
   },
   {
-    "name": "origin: an origin groups by target, so two stats keep their own bonus",
-    "target": "str",
-    "value": 40,
-    "modifiers": [
-      {
-        "target": "str",
-        "operation": "add",
-        "value": 10,
-        "source": "effect:fortify_strength",
-        "origin": "core:origin/alchemy"
-      },
-      {
-        "target": "end",
-        "operation": "add",
-        "value": 10,
-        "source": "effect:fortify_endurance",
-        "origin": "core:origin/alchemy"
-      }
-    ],
-    "expect": {
-      "value": 50
-    }
-  },
-  {
-    "name": "while_summoning: not live in the shared step unless a command resolves it",
-    "value": 59,
-    "modifiers": [
-      {
-        "target": "hp",
-        "operation": "add",
-        "value": 5,
-        "source": "feature:kindred_focus",
-        "origin": "core:origin/trained",
-        "duration": "while_summoning"
-      }
-    ],
-    "expect": {
-      "value": 59
-    }
-  },
-  {
     "name": "hybrid: Bonded Vanguard adds 1 STR while a summon is out",
     "value": 6,
     "target": "str",
@@ -892,6 +851,47 @@
     ],
     "expect": {
       "value": 9
+    }
+  },
+  {
+    "name": "origin: an origin groups by target, so two stats keep their own bonus",
+    "target": "str",
+    "value": 40,
+    "modifiers": [
+      {
+        "target": "str",
+        "operation": "add",
+        "value": 10,
+        "source": "effect:fortify_strength",
+        "origin": "core:origin/alchemy"
+      },
+      {
+        "target": "end",
+        "operation": "add",
+        "value": 10,
+        "source": "effect:fortify_endurance",
+        "origin": "core:origin/alchemy"
+      }
+    ],
+    "expect": {
+      "value": 50
+    }
+  },
+  {
+    "name": "while_summoning: not live in the shared step unless a command resolves it",
+    "value": 59,
+    "modifiers": [
+      {
+        "target": "hp",
+        "operation": "add",
+        "value": 5,
+        "source": "feature:kindred_focus",
+        "origin": "core:origin/trained",
+        "duration": "while_summoning"
+      }
+    ],
+    "expect": {
+      "value": 59
     }
   }
 ]
