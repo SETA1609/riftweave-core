@@ -198,12 +198,6 @@ save, each damage packet whose type is the `damage_type` of a template in `caste
 summon in the order of `caster.summons`) adds the sum of the
 live `bonded_element_damage` modifiers to its amount, before the combat steps. [A]
 
-## The held command
-
-Steady the Host and any spell with `core:effect/command_summons` are held like every
-concentration spell; what they give the summons is `command_summons`'s
-([commanding.md](commanding.md#the-held-command)). The cast itself only holds the spell. [A]
-
 ## Bound weapons
 
 A cast whose spell has a `core:effect/bound_weapon` effect also returns the conjured weapon
@@ -229,6 +223,12 @@ input's `coating` and `enchantment` (effect refs); one without the matching chan
 is not a `damage_<type>` effect, is an error. The weapon's attacks pass `damage_type` as
 `damage.type` and `effects` as `attacker.weapon_effects` to the combat pipeline
 ([combat.md](combat.md#weapon-effects)). Without a bound weapon effect the field is left out.
+
+## The held command
+
+Steady the Host and any spell with `core:effect/command_summons` are held like every
+concentration spell; what they give the summons is `command_summons`'s
+([commanding.md](commanding.md#the-held-command)). The cast itself only holds the spell. [A]
 
 ## Result
 
