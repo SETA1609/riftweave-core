@@ -1,5 +1,6 @@
 #### GD_S06_02_bonded-summoner-perks Bonded summoner perks: an active summon empowers its caster
-- Status: review
+- Status: done
+- Merged: #249, 2026-11-19
 - Priority: low
 - Needs: M3-10, M3-14, M3-20
 - Was: M3-21
