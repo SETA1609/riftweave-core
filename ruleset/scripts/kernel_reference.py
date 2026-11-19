@@ -691,15 +691,27 @@ def run_attack_sequence(vector):
         damage = dict(vector["off_damage"] if hand == "off" and "off_damage" in vector else vector["damage"])
         damage["roll"] = roll["damage"] * (2 if scissor else 1)
         skill = attacker.get("off_skill", attacker["skill"]) if hand == "off" else attacker["skill"]
+        # An off-hand weapon has only its own properties and effects, never the main hand's.
+        prefix = "off_" if hand == "off" else ""
+        properties, effects = attacker.get(f"{prefix}weapon_properties", []), attacker.get(f"{prefix}weapon_effects", [])
         strike_modifiers = list(vector.get("modifiers", []))
         if strike["attack"]:
             strike_modifiers.append({"target": "attack_roll", "operation": "add", "value": strike["attack"], "source": f"strike:{hand}"})
         outcome = run_combat(
             {
-                "attacker": {"skill": skill, "roll": roll["attack"], "attributes": attacker.get("attributes", {}), "flags": attacker.get("flags", [])},
+                "attacker": {
+                    "skill": skill,
+                    "roll": roll["attack"],
+                    "attributes": attacker.get("attributes", {}),
+                    "flags": attacker.get("flags", []),
+                    "weapon_properties": properties,
+                    "weapon_effects": effects,
+                },
                 "defender": {**foes[foe], "hp": hp[foe]},
                 "damage": damage,
                 "modifiers": strike_modifiers,
+                "situations": vector.get("situations", []),
+                "summoning": vector.get("summoning", False),
             }
         )
         if "error" in outcome:
@@ -727,6 +739,8 @@ def run_attack_sequence(vector):
                 "carried": carried,
                 "free": strike["free"],
                 "scissor": scissor and hit,
+                # The landed effects, listed only when the strike's hand has any.
+                **({"weapon_effects": outcome.get("weapon_effects", [])} if effects else {}),
             }
         )
         if dropped and index == len(queue) and carries > 0 and any(left > 0 for left in hp):

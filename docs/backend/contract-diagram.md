@@ -7,7 +7,7 @@ Run `python ruleset/scripts/contract_diagram.py --write` after a contract change
 `test_contract_diagram.py` fails until the page matches. What the contract is:
 [README.md](README.md#commands) and [contract.md](../core/contract.md).
 
-24 commands. Each is a class diagram of its input and its result; a field whose type is
+25 commands. Each is a class diagram of its input and its result; a field whose type is
 a shared type of `common.json` links to it, and the shared types are drawn once, below.
 
 ## Shared types
@@ -161,6 +161,8 @@ classDiagram
         modifiers modifiers
         object off_damage
         List~object~ rolls
+        List~key~ situations
+        boolean summoning
         List~integer~ targets
     }
     class attack_sequence_result {

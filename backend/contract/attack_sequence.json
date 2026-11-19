@@ -31,6 +31,26 @@
             "items": { "$ref": "common.json#/definitions/key" },
             "description": "Flags from conditions, as in combat."
           },
+          "weapon_properties": {
+            "type": "array",
+            "items": { "$ref": "common.json#/definitions/key" },
+            "description": "The main-hand weapon's properties, as combat's attacker.weapon_properties."
+          },
+          "weapon_effects": {
+            "type": "array",
+            "items": { "type": "object" },
+            "description": "The main-hand weapon's on-hit applied effects (a bound weapon's bane, lingering damage, ...), as combat's attacker.weapon_effects."
+          },
+          "off_weapon_properties": {
+            "type": "array",
+            "items": { "$ref": "common.json#/definitions/key" },
+            "description": "The off-hand weapon's properties; none when left out."
+          },
+          "off_weapon_effects": {
+            "type": "array",
+            "items": { "type": "object" },
+            "description": "The off-hand weapon's on-hit applied effects; none when left out: an off-hand weapon never borrows the main hand's."
+          },
           "modifiers": {
             "$ref": "common.json#/definitions/modifiers",
             "description": "The attacker's perks: adds on full_attack_strikes, full_attack_off_strikes, mainhand_penalty, offhand_penalty, and the carry_through, reaping_arc, scissor_cut, and can_circle_cut grants."
@@ -89,6 +109,15 @@
       "modifiers": {
         "$ref": "common.json#/definitions/modifiers",
         "description": "Attack modifiers on every strike (situations)."
+      },
+      "situations": {
+        "type": "array",
+        "items": { "$ref": "common.json#/definitions/key" },
+        "description": "Keys in ruleset/data/combat/situations.json for every strike, as in combat (flanking, beside_summon, ...)."
+      },
+      "summoning": {
+        "type": "boolean",
+        "description": "Whether the attacker has an active summon (not a minion), for every strike's while_summoning modifiers, as in combat. Default false."
       }
     },
     "additionalProperties": false,
@@ -129,6 +158,11 @@
             "scissor": {
               "type": "boolean",
               "description": "Scissor Cut counted the off-hand dice once more."
+            },
+            "weapon_effects": {
+              "type": "array",
+              "items": { "type": "object" },
+              "description": "The weapon effects that landed, as combat's; listed only when the strike's hand has weapon effects."
             }
           },
           "additionalProperties": false,

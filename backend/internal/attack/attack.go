@@ -23,6 +23,13 @@ type Attacker struct {
 	OffSkill   *int64           `json:"off_skill"`
 	Attributes actor.Attributes `json:"attributes"`
 	Flags      []string         `json:"flags"`
+	// WeaponProperties and WeaponEffects are the main-hand weapon's, as in combat.
+	WeaponProperties []string             `json:"weapon_properties"`
+	WeaponEffects    []data.AppliedEffect `json:"weapon_effects"`
+	// OffWeaponProperties and OffWeaponEffects are the off-hand weapon's; left out, it has
+	// none (an off-hand weapon never borrows the main hand's bane or binding).
+	OffWeaponProperties []string             `json:"off_weapon_properties"`
+	OffWeaponEffects    []data.AppliedEffect `json:"off_weapon_effects"`
 	// Modifiers are the attacker's perks: adds on full_attack_strikes, full_attack_off_strikes,
 	// mainhand_penalty, and offhand_penalty, and the carry and circle cut grants.
 	Modifiers []modifier.Modifier `json:"modifiers"`
@@ -52,6 +59,9 @@ type Input struct {
 	Rolls     []Roll              `json:"rolls"`
 	Targets   []int64             `json:"targets"`
 	Modifiers []modifier.Modifier `json:"modifiers"`
+	// Situations and Summoning go to every strike, as in combat (flanking, beside_summon, ...).
+	Situations []string `json:"situations"`
+	Summoning  bool     `json:"summoning"`
 }
 
 // StrikeResult is one strike made.
@@ -68,6 +78,8 @@ type StrikeResult struct {
 	Carried bool   `json:"carried"`
 	Free    bool   `json:"free"`
 	Scissor bool   `json:"scissor"`
+	// WeaponEffects are the effects that landed, listed only when the strike's hand has any.
+	WeaponEffects *[]json.RawMessage `json:"weapon_effects,omitempty"`
 }
 
 // Result is the action's outcome.
@@ -282,6 +294,8 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		var scissor bool = scissorLeft && strike.hand == "off" && struckByMain[foe]
 		var damage Damage = input.Damage
 		var skill int64 = input.Attacker.Skill
+		var properties []string = input.Attacker.WeaponProperties
+		var effects []data.AppliedEffect = input.Attacker.WeaponEffects
 		if strike.hand == "off" {
 			if input.OffDamage != nil {
 				damage = *input.OffDamage
@@ -289,6 +303,7 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 			if input.Attacker.OffSkill != nil {
 				skill = *input.Attacker.OffSkill
 			}
+			properties, effects = input.Attacker.OffWeaponProperties, input.Attacker.OffWeaponEffects
 		}
 		var damageRoll int64 = roll.Damage
 		if scissor {
@@ -301,10 +316,15 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		var defender combat.Defender = foes[foe]
 		defender.HitPoints = hitPoints[foe]
 		outcome, err := combat.Run(ruleset, combat.Input{
-			Attacker:  combat.Attacker{Skill: skill, Roll: roll.Attack, Attributes: input.Attacker.Attributes, Flags: input.Attacker.Flags},
-			Defender:  defender,
-			Damage:    combat.Damage{Roll: damageRoll, Type: damage.Type, Ability: damage.Ability},
-			Modifiers: strikeModifiers,
+			Attacker: combat.Attacker{
+				Skill: skill, Roll: roll.Attack, Attributes: input.Attacker.Attributes, Flags: input.Attacker.Flags,
+				WeaponProperties: properties, WeaponEffects: effects,
+			},
+			Defender:   defender,
+			Damage:     combat.Damage{Roll: damageRoll, Type: damage.Type, Ability: damage.Ability},
+			Modifiers:  strikeModifiers,
+			Situations: input.Situations,
+			Summoning:  input.Summoning,
 		})
 		if err != nil {
 			return Result{}, err
@@ -325,6 +345,13 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 			Margin: outcome.Margin, Crit: outcome.Critical, Damage: outcome.Damage, HP: outcome.HitPoints,
 			Carried: carried, Free: strike.free, Scissor: scissor && hit,
 		})
+		if len(effects) > 0 {
+			var landed []json.RawMessage = []json.RawMessage{}
+			if outcome.WeaponEffects != nil {
+				landed = *outcome.WeaponEffects
+			}
+			result.Strikes[len(result.Strikes)-1].WeaponEffects = &landed
+		}
 		if dropped && index == len(queue)-1 && carries > 0 && slices.ContainsFunc(hitPoints, func(left int64) bool { return left > 0 }) {
 			queue = append(queue, planned{hand: strike.hand, attack: strike.attack, foe: foe, free: true})
 		}

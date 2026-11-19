@@ -2261,5 +2261,328 @@
     "expect": {
       "error": "the attack needs a roll for strike 2"
     }
+  },
+  {
+    "name": "a strike carries its hand's weapon: the main hand's bane and lingering damage land on its strike, the off hand has none",
+    "action": "attack",
+    "loadout": {
+      "main": "light",
+      "off": "light_weapon"
+    },
+    "attacker": {
+      "skill": 70,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_effects": [
+        {
+          "effect": "core:effect/bane",
+          "parameter": "undead",
+          "magnitude": 4
+        },
+        {
+          "effect": "core:effect/lingering_damage",
+          "magnitude": 2,
+          "duration": 3
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 0,
+        "armor_dr": 2,
+        "hp": 40,
+        "creature_type": "undead"
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 6
+      },
+      {
+        "attack": 30,
+        "damage": 6
+      }
+    ],
+    "expect": {
+      "action": "attack",
+      "sequence": "two_light_weapons",
+      "ap": 3,
+      "stamina": 15,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -10,
+          "outcome": "hit",
+          "target": 60,
+          "margin": 30,
+          "crit": false,
+          "damage": 8,
+          "hp": 32,
+          "carried": false,
+          "free": false,
+          "scissor": false,
+          "weapon_effects": [
+            {
+              "effect": "core:effect/lingering_damage",
+              "parameter": "slashing",
+              "magnitude": 2,
+              "duration": 3
+            }
+          ]
+        },
+        {
+          "hand": "off",
+          "foe": 0,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 50,
+          "margin": 20,
+          "crit": false,
+          "damage": 4,
+          "hp": 28,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        28
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "a strike carries its hand's weapon: an off-hand weapon's own effects land on the off-hand strike",
+    "action": "attack",
+    "loadout": {
+      "main": "light",
+      "off": "light_weapon"
+    },
+    "attacker": {
+      "skill": 70,
+      "attributes": {
+        "lck": 0
+      },
+      "off_weapon_effects": [
+        {
+          "effect": "core:effect/bane",
+          "parameter": "undead",
+          "magnitude": 4
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 0,
+        "armor_dr": 2,
+        "hp": 40,
+        "creature_type": "undead"
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 6
+      },
+      {
+        "attack": 30,
+        "damage": 6
+      }
+    ],
+    "expect": {
+      "action": "attack",
+      "sequence": "two_light_weapons",
+      "ap": 3,
+      "stamina": 15,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -10,
+          "outcome": "hit",
+          "target": 60,
+          "margin": 30,
+          "crit": false,
+          "damage": 4,
+          "hp": 36,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "off",
+          "foe": 0,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 50,
+          "margin": 20,
+          "crit": false,
+          "damage": 8,
+          "hp": 28,
+          "carried": false,
+          "free": false,
+          "scissor": false,
+          "weapon_effects": []
+        }
+      ],
+      "hp": [
+        28
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "situations go to every strike: flanking adds 10 to both strikes of a two-weapon attack",
+    "action": "attack",
+    "loadout": {
+      "main": "light",
+      "off": "light_weapon"
+    },
+    "situations": [
+      "flanking"
+    ],
+    "attacker": {
+      "skill": 50,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "foes": [
+      {
+        "evasion_skill": 0,
+        "hp": 40
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 45,
+        "damage": 4
+      },
+      {
+        "attack": 35,
+        "damage": 4
+      }
+    ],
+    "expect": {
+      "action": "attack",
+      "sequence": "two_light_weapons",
+      "ap": 3,
+      "stamina": 15,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -10,
+          "outcome": "hit",
+          "target": 50,
+          "margin": 5,
+          "crit": false,
+          "damage": 4,
+          "hp": 36,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "off",
+          "foe": 0,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 5,
+          "crit": false,
+          "damage": 4,
+          "hp": 32,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        32
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "situations go to every strike: Pincer Strike beside a summon adds 10 to each strike of a full attack",
+    "action": "full_attack",
+    "loadout": {
+      "main": "one_handed",
+      "off": "empty"
+    },
+    "ap": 4,
+    "situations": [
+      "beside_summon"
+    ],
+    "modifiers": [
+      {
+        "target": "beside_summon_attack",
+        "operation": "add",
+        "value": 10,
+        "duration": "while_summoning",
+        "source": "feature:pincer_strike",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "attacker": {
+      "skill": 50,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "foes": [
+      {
+        "evasion_skill": 0,
+        "hp": 40
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 55,
+        "damage": 4
+      }
+    ],
+    "expect": {
+      "action": "full_attack",
+      "sequence": "one_handed_weapon",
+      "ap": 4,
+      "stamina": 20,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": 0,
+          "outcome": "hit",
+          "target": 60,
+          "margin": 5,
+          "crit": false,
+          "damage": 4,
+          "hp": 36,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        36
+      ],
+      "lost": 0
+    }
   }
 ]
