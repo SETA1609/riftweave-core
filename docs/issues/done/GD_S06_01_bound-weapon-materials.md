@@ -1,5 +1,6 @@
 #### GD_S06_01_bound-weapon-materials Bound weapons have a material, perks, and enchants
-- Status: review
+- Status: done
+- Merged: #248, 2026-11-19
 - Priority: medium
 - Needs: M3-02, M3-06
 - Was: M3-09
