@@ -22,6 +22,7 @@ from validate import (
     check_damage_type_vocabulary,
     check_equipment_uniqueness,
     check_attack_sequences,
+    check_stances,
     check_maneuver_unlocks,
     check_racial_trait_refs,
     load_canonical_damage_types,
@@ -236,6 +237,31 @@ class TestAttackSequences(unittest.TestCase):
     def test_an_off_hand_weapon_without_a_jab_fails(self):
         errors = check_attack_sequences([{k: v for k, v in self.TWO.items() if k != "jab"}])
         self.assertTrue(any("needs an off-hand strike and a jab" in e for e in errors), errors)
+
+
+class TestStances(unittest.TestCase):
+    """GD_S05_02: a perk unlocks each fighting stance, and its modifiers are martial and while applied."""
+
+    MOD = {"target": "attack_roll", "operation": "add", "value": 10, "source": "stance:lunge",
+           "origin": "core:origin/martial", "duration": "while_applied"}
+    ROW = {"key": "lunge", "label": "Lunge", "description": "x", "modifiers": [MOD]}
+    PERK = {"key": "lunge", "unlocks": ["core:stance/lunge"]}
+
+    def test_the_data_passes(self):
+        data = Path(__file__).resolve().parent.parent / "data"
+        stances = json.loads((data / "stances" / "core.json").read_text())["stances"]
+        features = json.loads((data / "features" / "core.json").read_text())["features"]
+        self.assertEqual(check_stances(stances, features), [])
+
+    def test_a_stance_no_perk_unlocks_fails(self):
+        errors = check_stances([self.ROW], [])
+        self.assertTrue(any("no perk unlocks it" in e for e in errors), errors)
+
+    def test_a_modifier_with_another_origin_source_or_duration_fails(self):
+        bad = {**self.MOD, "origin": "core:origin/trained", "source": "feature:lunge", "duration": "instant"}
+        errors = check_stances([{**self.ROW, "modifiers": [bad]}], [self.PERK])
+        for needed in ("origin core:origin/martial", "source stance:lunge", "duration while_applied"):
+            self.assertTrue(any(needed in e for e in errors), (needed, errors))
 
 
 class TestManeuverChannel(unittest.TestCase):
