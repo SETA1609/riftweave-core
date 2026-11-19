@@ -1,0 +1,16 @@
+#### GD_S19_05_ap-bank-cap-and-guard Carry a little AP, and turn the rest into guard
+- Status: todo
+- Priority: medium
+- Needs: —
+- Modified: 2026-11-19
+- Do: Owner request, 2026-11-19 (borrowed from Fallout's unspent AP that becomes armor class, and Divinity: Original Sin 2's maximum near the AP recovered each turn: recover 4, maximum 6).
+  - **The gap:** unspent AP carries up to `cap` 10 while a pool is 3 to 5 [V 2026-11-19, `docs/core/actions.md#pool`]. Two quiet turns bank two casts, a "wait, then burst" a real-time client does not have.
+  - **The other side:** some loadouts need the bank to attack at all. At pool 3, two one-handed weapons (attack 5) and a sword and dagger (attack 4) cannot attack without saving, and a full attack spends every AP it is given for a fixed number of strikes, so a bank spent on it is wasted [V 2026-11-19, `attack_sequences/core.json`].
+  - **The rule** [A, numbers checked in a playtest]:
+    - **Carry:** at most 2 unspent AP carry, not 10 (the carry becomes pool + 2).
+    - **Guard:** each unspent AP beyond the carry becomes +5 on `evasion` until your next turn. A careful turn guards you; dodge (3 AP, double evasion) stays the stronger, deliberate choice.
+    - **Loadouts:** the spec checks every loadout at pool 3 and 4 and proposes a fix where one cannot attack every second turn (a lower `ap` on that row, or the carry rule).
+- Keys: `pool.carry` (replaces `cap` as the carry limit), `pool.guard_per_ap`
+- Files: ~7 (docs/core/actions.md, docs/core/combat.md, ruleset/data/actions/core.json, ruleset/schemas/action.schema.json, ruleset/data/attack_sequences/core.json, ruleset/tests/vectors/actions.json, ruleset/scripts/kernel_reference.py)
+- See: docs/core/actions.md#pool, ruleset/data/attack_sequences/core.json, docs/modules/combat.md
+- Done when: `actions` vectors give the carry and the guard for pools 3, 4, and 5; a table in the spec shows each loadout's attacks per turn at pool 3 and 4.

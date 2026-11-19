@@ -9,7 +9,7 @@ story's issues when it is next in line, not before; the design will have moved b
 
 ## Files
 
-Open work is grouped in **stories** `S00` to `S18`, one file each: its goal, the table of its
+Open work is grouped in **stories** `S00` to `S19`, one file each: its goal, the table of its
 issues (role, old id, `Needs`), and its done-when. The issues themselves are one file each in
 [docs/issues/](../issues/README.md), and every issue has one role ([ROLES.md](../issues/ROLES.md)).
 
@@ -34,6 +34,7 @@ issues (role, old id, `Needs`), and its done-when. The issues themselves are one
 | [S16-table-module.md](S16-table-module.md) | S16 Table module |
 | [S17-ranged-combat.md](S17-ranged-combat.md) | S17 Ranged combat |
 | [S18-app-environments.md](S18-app-environments.md) | S18 App environments |
+| [S19-turn-economy.md](S19-turn-economy.md) | S19 Turn-based action economy |
 
 The milestone files below hold the goals of the milestones whose done issues kept their old ids
 (before 2026-11-18). They take no new issues; the [roadmap](../../ROADMAP.md) still names its

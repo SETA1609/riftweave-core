@@ -1,0 +1,15 @@
+#### GD_S19_04_ready-and-opportunity-attacks Ready an attack on reserved AP, and opportunity attacks in the pipeline
+- Status: todo
+- Priority: medium-high
+- Needs: GD_S19_02_movement-distance-per-ap
+- Modified: 2026-11-19
+- Do: Owner request, 2026-11-19 (borrowed from Fallout Tactics' overwatch).
+  - **What we have:** no reaction slot, and only a stance, dodge or block, can be declared on your turn [V 2026-11-19, `docs/core/actions.md`]. Block already reserves AP and refunds it if unused (`reserved`, `refund_if_unused` in `actions/core.json`).
+  - **Ready (new):** a `ready` action reserves the loadout's attack AP on your turn, with a trigger: a foe enters your reach, or a foe in reach acts. The attack fires as an `attack_sequence` attack when the trigger first happens before your next turn, and the AP comes back at your next turn if it never fires. One readied attack at a time; it ends when you move or are knocked down [A].
+  - **Opportunity attacks (written, not built):** docs/modules/combat.md §2 already has them (leaving reach provokes one; Disengage, 1 AP, prevents it), and docs/core/combat.md lists them as not built [V 2026-11-19]. Build them into the same trigger step as `ready`, so both are one mechanism: an attack outside your turn, paid from AP you hold back.
+  - **Cost of an opportunity attack:** free, or paid from held-back AP [U: decided in the spec step, together with Phalanx's pending `opportunity_attack_cost` from GD_S05_02].
+  - **Ranged overwatch** waits for `GD_S17_05_ranged-full-attack`; this issue is melee reach [A].
+- Keys: `ready` (action row), the trigger (`enters_reach`, `acts_in_reach`), `opportunity_attack_cost`
+- Files: ~10 (docs/core/actions.md, docs/core/combat.md, docs/modules/combat.md, ruleset/data/actions/core.json, ruleset/schemas/action.schema.json, ruleset/scripts/kernel_reference.py, backend/internal/attack/attack.go, backend/contract/attack_sequence.json, ruleset/tests/vectors/attack_sequence.json, ruleset/tests/vectors/actions.json)
+- See: docs/modules/combat.md#2-opportunity-attacks, docs/issues/open/GD_S05_02_fighting-stances.md (Phalanx), docs/issues/open/GD_S17_05_ranged-full-attack.md
+- Done when: vectors cover a readied attack that fires, one that is refunded, an opportunity attack on leaving reach, and Disengage preventing it, in Python and Go; Phalanx's `opportunity_attack_cost` is no longer pending.
