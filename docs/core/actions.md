@@ -2,7 +2,7 @@
 
 Author: SETA1609
 
-Modified: 2026-11-19
+Modified: 2026-11-21
 
 One budget. Costs live in `ruleset/data/actions/core.json`. A turn spends AP. A real-time client spends stamina for the same actions, at a fixed rate. There is no bonus action and no reaction slot.
 
@@ -43,6 +43,18 @@ Cast AP is static. A spell also spends its mana cost. AP does not vary by spell.
 Dodge and block are stances, declared on your turn and in force until your next ([combat.md](combat.md#reading-the-steps)). A fighting stance a perk unlocks is another thing, a way of holding the weapons: it costs nothing at the start of your turn, 1 AP later in it, and stands together with dodge or block ([combat.md](combat.md#fighting-stances)). Dodge spends 3 and doubles your evasion rate. Block is a hold on this pool, not a reaction slot: declare it, spend 2, and the unused 2 comes back if nobody swings; while it holds, a block band of half your `shields` skill stops physical hits. Aimed is not a second attack. It adds 2 to the attack cost.
 
 Dash is not an action. Double move is spending 1 AP twice.
+
+## How far a move goes
+
+```
+squares per move = floor(speed / speed_divisor)      speed_divisor = 2 (move row)
+```
+
+A race's `speed` is not a distance per round any more; it says how far each `move` goes. At today's speeds of 5 to 7, one move covers 2 or 3 squares, and a pool of 4 spent on moving covers 8 to 12, close to Fallout's 7 to 10 hexes for the same budget. The divisor is the `speed_divisor` on the `move` row of `actions/core.json`, so a module changes it without code. Divinity: Original Sin 1 and 2 price movement the same way: an AP buys a distance that grows with speed. It differs here in that speed comes from the race, not from an attribute. [V 2026-11-21, `actions` vectors]
+
+What raises the price of a move changes its AP, never its squares. Encumbrance and armor emit `add move +1` ([combat.md §8](../modules/combat.md#8-encumbrance-and-armor-action-costs)); difficult terrain doubles the cost ([combat.md §5](../modules/combat.md#5-cover-flanking-terrain-prone)). An encumbered human (speed 6) pays 2 AP for each move and still covers 3 squares. [V 2026-11-21, `actions` vectors]
+
+The `actions` command takes `speed` and returns `squares`, the squares its moves cover; without a speed it returns no `squares`. A real-time client moves at `floor(speed / 2)` squares per `seconds_per_turn / pool` seconds, so a pool of 4 walks a human 3 squares every 1.25 seconds. [A]
 
 ## Maneuvers
 
