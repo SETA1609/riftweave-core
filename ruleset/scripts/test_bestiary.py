@@ -306,6 +306,35 @@ class TestTemplatesAndGeneratedMonsters(unittest.TestCase):
         validate.validate({"monsters": [rows["brute"]]}, store[schema_uri], resolver=resolver)
 
 
+class TestHitPointsAreComputed(unittest.TestCase):
+    """DE_S02_03 (docs/modules/monsters.md#hit-points): no monster stores HP; the sheet computes it."""
+
+    def test_no_row_base_or_template_writes_hit_points(self):
+        self.assertEqual(validate.check_monster_hit_points(), [])
+
+    def test_a_row_a_base_or_a_template_that_writes_hit_points_is_reported(self):
+        errors = validate.check_monster_hit_points(
+            monsters=[{"key": "blob", "base": "core:creature_type/ooze", "overrides": {"hitPoints": 30}}],
+            bases={"ooze": {"key": "ooze", "growth": {"hitPointsPerLevel": 4}}},
+            templates=[{"key": "minion", "hit_points_multiplier": 0.25}],
+        )
+        self.assertEqual(len(errors), 3, errors)
+        self.assertTrue(any("blob" in e and "hitPoints" in e for e in errors))
+        self.assertTrue(any("ooze" in e and "hitPointsPerLevel" in e for e in errors))
+        self.assertTrue(any("minion" in e and "hit_points_multiplier" in e for e in errors))
+
+    def test_every_monster_hp_is_the_formula_times_its_role(self):
+        from kernel_reference import load_data, run_derived
+
+        share = load_data("progression/core.json")["progression"]["monster_hp_multiplier"]
+        for row in monsters():
+            if row.get("perks"):
+                continue  # a perk's hp modifier adds after the multiplier (monster_sheet vectors)
+            with self.subTest(monster=row["key"]):
+                formula = run_derived({"actor": {"attributes": row["attributes"], "level": row["level"]}})["hp"]
+                self.assertEqual(ref().hit_points(row), max(1, int(formula * share[row.get("role", "standard")])))
+
+
 class TestAttacksAndAbilities(unittest.TestCase):
     """Natural and carried weapons, the attribute modifier, damage growth, and spell-like abilities (M3-10)."""
 
