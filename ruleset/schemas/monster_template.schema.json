@@ -30,6 +30,7 @@
           "propertyNames": { "$ref": "schema.json#/definitions/ability" },
           "additionalProperties": { "type": "integer" }
         },
+        "role": { "type": "string", "enum": ["standard", "boss", "minion"], "description": "The role the template gives the monster, and so its HP multiplier (progression/core.json monster_hp_multiplier) and balance band: the minion template sets minion." },
         "hit_points_multiplier": { "type": "number", "exclusiveMinimum": 0, "maximum": 1, "description": "Multiplies the monster's hitPoints after the attribute adds, rounded down, never below 1 (the minion template)." },
         "resist": {
           "type": "object",

@@ -23,6 +23,11 @@
             "type": "integer",
             "minimum": 1
           },
+          "role": {
+            "type": "string",
+            "enum": ["standard", "boss", "minion"],
+            "description": "Scales the computed HP by progression/core.json monster_hp_multiplier; default standard (DE_S02_03)."
+          },
           "perks": {
             "type": "array",
             "description": "The row's perks, each at a rank (M3-15); their modifiers reach the stats and skills.",

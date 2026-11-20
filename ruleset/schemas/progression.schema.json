@@ -89,6 +89,17 @@
           },
           "required": ["per_level", "categories"],
           "additionalProperties": false
+        },
+        "monster_hp_multiplier": {
+          "type": "object",
+          "description": "A monster's HP is the player formula (derived/core.json, the hp row) before perks, times its role's multiplier, rounded down, at least 1 (docs/core/actor-sheet.md, DE_S02_03).",
+          "properties": {
+            "standard": { "type": "number", "exclusiveMinimum": 0 },
+            "boss": { "type": "number", "exclusiveMinimum": 0 },
+            "minion": { "type": "number", "exclusiveMinimum": 0 }
+          },
+          "required": ["standard", "boss", "minion"],
+          "additionalProperties": false
         }
       },
       "required": ["start_level", "max_level", "skill_cap", "xp_to_reach", "skill_points", "pool_roll_max", "luck_roll", "creation", "perks_per_level", "tag_skills", "skill_cost"],

@@ -243,6 +243,7 @@ classDiagram
         perks
         phase
         resist
+        role
         slot
         spells
         tags
