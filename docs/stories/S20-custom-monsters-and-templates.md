@@ -11,6 +11,7 @@ Format, ids, and roles: [README.md](README.md#ids), [ROLES.md](../issues/ROLES.m
 | Issue | Role | Title | Was | Needs |
 | --- | --- | --- | --- | --- |
 | `PO_S20_01_file-custom-monster-and-template-issues` | PO | File the custom monster and character template issues | — | — |
+| `PO_S20_10_template-grant-answer` | PO | Record who may take a character template | — | — |
 | `GD_S20_02_custom-monster-rules` | GD | A custom monster computes like a character, without a player's limits | — | — |
 | `BE_S20_03_custom-monster-editor-cli` | BE | Build and save a custom monster in the CLI and the TUI (backend) | — | GD_S20_02_custom-monster-rules, BE_S09_07_custom-monster-print |
 | `FE_S20_04_custom-monster-editor-page` | FE | Build and save a custom monster in the app (frontend) | — | BE_S20_03_custom-monster-editor-cli, FE_S09_08_custom-monster-page |

@@ -17,11 +17,14 @@
     - optional **resistances** and **drawbacks** (a vulnerability, a condition such as sunlight weakness), as negative modifiers or flags.
   - **Where it applies:** all of it emits modifiers with an `innate` origin, so the stacking rules of `origins/core.json` apply and nothing is added twice.
   - **Taking and removing:** a template is taken or removed on the actor and is not baked into the character's attributes; removing it removes every modifier, perk, and tag it gave, and the sheet goes back to what it was [A].
+  - **Who may take one** (owner answer, 2026-11-20):
+    - **Rules as written:** a player cannot pick a template. It is not a level-up choice; the GM grants it through a story or game event.
+    - **Outside the rules:** the app has a checkbox, off by default, that lets anyone take a template anyway, to build a supposed character (a GM's NPC, a one-shot, a what-if build). It lifts only the grant rule; one template per slot still holds [A].
+    - **Recorded:** a held template keeps how it came (`granted` or `outside_rules`), so the sheet can show that a character was built outside the rules [A].
   - **One shape with monsters?** The spec says whether monster templates move to the same shape (so a GM's vampire monster and a vampire PC use one row), or stay separate [U].
 - Keys: `character_templates` collection (or `applies_to`), `slot`, `grants`, a stored actor's `templates`; origin `innate`
 - Files: ~10 (docs/core/templates.md, docs/core/derived.md, ruleset/schemas/character_template.schema.json, ruleset/data/character_templates/core.json, ruleset/scripts/validate.py, ruleset/scripts/kernel_reference.py, ruleset/tests/vectors/derived_examples.json, backend/contract/common.json, docs/decisions/GD_S20_05_character-template-model.md, changes/GD_S20_05_character-template-model.md)
 - See: docs/modules/monsters.md#templates, docs/core/modifier.md, docs/core/derived.md, ruleset/data/origins/core.json
-- Done when: the schema and one example template validate; `derived` vectors give a character's sheet with a template and again without it, in Python and Go; two templates in one slot are refused; the spec answers the monster-template question.
+- Done when: the schema and one example template validate; `derived` vectors give a character's sheet with a template and again without it, in Python and Go; two templates in one slot are refused; a template taken outside the rules is recorded as such; the spec answers the monster-template question.
 - Open:
-  - Is taking a template a level-up choice, a story event the GM grants, or both [U]?
   - Does a template cost anything (XP, a perk pick, a drawback) [U]?
