@@ -334,5 +334,139 @@
       "cost": 4,
       "squares": 3
     }
+  },
+  {
+    "name": "draw: one weapon into an empty hand costs 1 AP",
+    "actor": {
+      "attributes": {
+        "agi": 6
+      }
+    },
+    "actions": [
+      "draw"
+    ],
+    "expect": {
+      "pool": 4,
+      "cost": 1
+    }
+  },
+  {
+    "name": "sheathe: putting one away costs 1 AP",
+    "actor": {
+      "attributes": {
+        "agi": 6
+      }
+    },
+    "actions": [
+      "sheathe"
+    ],
+    "expect": {
+      "pool": 4,
+      "cost": 1
+    }
+  },
+  {
+    "name": "drop: letting one fall is free",
+    "actor": {
+      "attributes": {
+        "agi": 6
+      }
+    },
+    "actions": [
+      "drop"
+    ],
+    "expect": {
+      "pool": 4,
+      "cost": 0
+    }
+  },
+  {
+    "name": "swap: changing to the secondary loadout costs 1 AP",
+    "actor": {
+      "attributes": {
+        "agi": 6
+      }
+    },
+    "actions": [
+      "swap"
+    ],
+    "expect": {
+      "pool": 4,
+      "cost": 1
+    }
+  },
+  {
+    "name": "swap with Drilled Hands is free",
+    "actor": {
+      "attributes": {
+        "agi": 6
+      }
+    },
+    "actions": [
+      "swap"
+    ],
+    "modifiers": [
+      {
+        "target": "swap",
+        "operation": "add",
+        "value": -1,
+        "source": "feature:drilled_hands",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "pool": 4,
+      "cost": 0
+    }
+  },
+  {
+    "name": "swap and attack: 1 + 3 AP, 3 with Drilled Hands",
+    "actor": {
+      "attributes": {
+        "agi": 6
+      }
+    },
+    "actions": [
+      "swap",
+      "attack"
+    ],
+    "modifiers": [
+      {
+        "target": "swap",
+        "operation": "add",
+        "value": -1,
+        "source": "feature:drilled_hands",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "pool": 4,
+      "cost": 3
+    }
+  },
+  {
+    "name": "drop, then draw: 0 + 1 AP; Drilled Hands does not change a draw",
+    "actor": {
+      "attributes": {
+        "agi": 6
+      }
+    },
+    "actions": [
+      "drop",
+      "draw"
+    ],
+    "modifiers": [
+      {
+        "target": "swap",
+        "operation": "add",
+        "value": -1,
+        "source": "feature:drilled_hands",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "pool": 4,
+      "cost": 1
+    }
   }
 ]

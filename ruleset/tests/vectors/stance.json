@@ -503,5 +503,165 @@
     "expect": {
       "error": "a stance event takes one of take, end, or loadout"
     }
+  },
+  {
+    "name": "paid swap: a swap to sword and shield costs 1 AP and ends Fencer's Measure",
+    "perks": [
+      "core:feature/fencers_measure"
+    ],
+    "loadout": {
+      "main": "light",
+      "off": "empty",
+      "main_skill": "core:skill/piercing"
+    },
+    "stance": "fencers_measure",
+    "events": [
+      {
+        "loadout": {
+          "main": "one_handed",
+          "off": "shield",
+          "main_skill": "core:skill/blades"
+        },
+        "by": "swap"
+      }
+    ],
+    "expect": {
+      "stance": null,
+      "ap": 1,
+      "modifiers": [],
+      "steps": [
+        {
+          "ap": 1,
+          "ended": "fencers_measure",
+          "stance": null
+        }
+      ]
+    }
+  },
+  {
+    "name": "paid swap: with Drilled Hands the swap is free and still ends the stance",
+    "perks": [
+      "core:feature/fencers_measure",
+      "core:feature/drilled_hands"
+    ],
+    "loadout": {
+      "main": "light",
+      "off": "empty",
+      "main_skill": "core:skill/piercing"
+    },
+    "stance": "fencers_measure",
+    "events": [
+      {
+        "loadout": {
+          "main": "one_handed",
+          "off": "shield",
+          "main_skill": "core:skill/blades"
+        },
+        "by": "swap"
+      }
+    ],
+    "expect": {
+      "stance": null,
+      "ap": 0,
+      "modifiers": [],
+      "steps": [
+        {
+          "ap": 0,
+          "ended": "fencers_measure",
+          "stance": null
+        }
+      ]
+    }
+  },
+  {
+    "name": "paid draw: drawing a dagger costs 1 AP and ends Fencer's Measure",
+    "perks": [
+      "core:feature/fencers_measure"
+    ],
+    "loadout": {
+      "main": "light",
+      "off": "empty",
+      "main_skill": "core:skill/piercing"
+    },
+    "stance": "fencers_measure",
+    "events": [
+      {
+        "loadout": {
+          "main": "light",
+          "off": "light_weapon",
+          "main_skill": "core:skill/piercing",
+          "off_skill": "core:skill/piercing"
+        },
+        "by": "draw"
+      }
+    ],
+    "expect": {
+      "stance": null,
+      "ap": 1,
+      "steps": [
+        {
+          "ap": 1,
+          "ended": "fencers_measure",
+          "stance": null
+        }
+      ]
+    }
+  },
+  {
+    "name": "paid drop: dropping the shield is free, and Forward Guard stays",
+    "perks": [
+      "core:feature/forward_guard"
+    ],
+    "loadout": {
+      "main": "one_handed",
+      "off": "shield",
+      "main_skill": "core:skill/blades"
+    },
+    "stance": "forward_guard",
+    "events": [
+      {
+        "loadout": {
+          "main": "one_handed",
+          "off": "empty",
+          "main_skill": "core:skill/blades"
+        },
+        "by": "drop"
+      }
+    ],
+    "expect": {
+      "stance": "forward_guard",
+      "ap": 0,
+      "steps": [
+        {
+          "ap": 0,
+          "ended": null,
+          "stance": "forward_guard"
+        }
+      ]
+    }
+  },
+  {
+    "name": "error: a loadout change paid by an action that does not change the loadout",
+    "perks": [
+      "core:feature/fencers_measure"
+    ],
+    "loadout": {
+      "main": "light",
+      "off": "empty",
+      "main_skill": "core:skill/piercing"
+    },
+    "events": [
+      {
+        "loadout": {
+          "main": "one_handed",
+          "off": "shield",
+          "main_skill": "core:skill/blades"
+        },
+        "by": "attack"
+      }
+    ],
+    "expect": {
+      "error": "action \"attack\" does not change the loadout"
+    }
   }
 ]
