@@ -253,6 +253,9 @@ type Progression struct {
 		PerLevel   int64    `json:"per_level"`
 		Categories []string `json:"categories"`
 	} `json:"monster_skill_growth"`
+	// MonsterHPMultiplier scales a monster's computed HP by its role: standard, boss, minion
+	// (docs/core/actor-sheet.md, DE_S02_03).
+	MonsterHPMultiplier map[string]float64 `json:"monster_hp_multiplier"`
 }
 
 // SkillGroup is one row of skill_groups/core.json, the grouped sheet

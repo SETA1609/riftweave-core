@@ -7,7 +7,6 @@
   "level": 5,
   "loot": [{ "table": "hoard_minor" }],
   "attributes": { "str": 7, "end": 8, "agi": 2, "wil": 3 },
-  "hitPoints": 80,
   "tags": ["construct"],
   "growth": {
     "attributes": {
@@ -16,7 +15,6 @@
       "agi": { "per_level": 0.2 },
       "wil": { "per_level": 0.1 }
     },
-    "hitPointsPerLevel": 12,
     "damage_per_level": 0.25
   }
 }

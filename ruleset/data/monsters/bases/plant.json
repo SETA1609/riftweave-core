@@ -7,7 +7,6 @@
   "level": 2,
   "loot": [{ "table": "beast_den" }],
   "attributes": { "str": 4, "end": 6, "agi": 1, "per": 3, "wil": 3 },
-  "hitPoints": 35,
   "tags": ["plant"],
   "growth": {
     "attributes": {
@@ -17,7 +16,6 @@
       "per": { "per_level": 0.25 },
       "wil": { "per_level": 0.25 }
     },
-    "hitPointsPerLevel": 10,
     "damage_per_level": 0.25
   }
 }

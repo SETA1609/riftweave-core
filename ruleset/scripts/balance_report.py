@@ -101,13 +101,16 @@ def _monster_damage(bands, _weapons, _armor, monsters):
 
 
 def _monster_hits_to_kill(bands, _weapons, _armor, monsters):
+    import monster_reference  # it imports this module's helpers lazily
+
     for row in monsters:
         damage = _tier(bands, row["level"])["expected_damage"]
-        hits = round(row["hitPoints"] / ((damage[0] + damage[1]) / 2), 1)
+        hp = monster_reference.hit_points(row)  # computed, never stored (DE_S02_03)
+        hits = round(hp / ((damage[0] + damage[1]) / 2), 1)
         role = row.get("role", "standard")
         band = bands["hits_to_kill"][role]
         if not _within(hits, band):
-            yield _finding("monster_hits_to_kill", row["key"], hits, band, f"level {row['level']}, {role}, {row['hitPoints']} HP")
+            yield _finding("monster_hits_to_kill", row["key"], hits, band, f"level {row['level']}, {role}, {hp} HP")
 
 
 def _json(rel):

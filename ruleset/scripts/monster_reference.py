@@ -324,11 +324,10 @@ def minion(ref, caster):
     return creature
 
 
-def example_hp(row):
-    """An example row's HP by the player formulas at average rolls: the derived hp plus
-    (level - 1) x floor(floor(LCK / 2) / 2) of growth (docs/modules/monsters.md#generated-monsters)."""
-    from kernel_reference import run_derived
+def hit_points(row):
+    """A monster's HP: its sheet's hp, the player formula before perks times its role's
+    monster_hp_multiplier, rounded down, at least 1, then its perks' hp modifiers
+    (docs/modules/monsters.md#hit-points, DE_S02_03)."""
+    from kernel_reference import run_monster_sheet
 
-    derived = run_derived({"actor": {"attributes": row["attributes"], "level": row["level"]}})
-    luck = row["attributes"].get("lck", 0)
-    return derived["hp"] + (row["level"] - 1) * math.floor((luck // 2) / 2)
+    return run_monster_sheet({"monster": {key: row[key] for key in ("attributes", "level", "role", "perks") if key in row}})["hp"]

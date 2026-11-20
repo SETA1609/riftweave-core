@@ -6,6 +6,7 @@ package derived
 import (
 	"encoding/json"
 	"fmt"
+	"math"
 	"slices"
 	"strings"
 
@@ -98,7 +99,8 @@ type MonsterRow struct {
 	Attributes actor.Attributes `json:"attributes"`
 	Skills     map[string]int64 `json:"skills"`
 	Level      *int64           `json:"level"`
-	HitPoints  *int64           `json:"hitPoints"`
+	// Role scales the computed HP by progression's monster_hp_multiplier; empty is standard (DE_S02_03).
+	Role string `json:"role"`
 	// Perks are the row's perks at their rank (M3-15); their modifiers reach the sheet.
 	Perks []struct {
 		Perk string `json:"perk"`
@@ -181,14 +183,21 @@ type MonsterSheetInput struct {
 }
 
 // RunMonsterSheet is the `monster_sheet` command (docs/core/actor-sheet.md): a monster's stats
-// and skills by the rules a player uses, with authored hit points replacing the computed value.
+// and skills by the rules a player uses; its HP is the player formula before perks times its
+// role's monster_hp_multiplier, rounded down and at least 1, then its perks' hp modifiers (DE_S02_03).
 func RunMonsterSheet(ruleset *data.Ruleset, input MonsterSheetInput) (map[string]any, error) {
 	var row *MonsterRow = &input.Monster
 	perks, err := perkModifiers(ruleset, row)
 	if err != nil {
 		return nil, err
 	}
-	values, err := Compute(ruleset, actor.Actor{Attributes: row.Attributes, Level: row.Level}, perks)
+	var beforeHP []modifier.Modifier
+	for _, current := range perks {
+		if current.Target != "hp" {
+			beforeHP = append(beforeHP, current)
+		}
+	}
+	values, err := Compute(ruleset, actor.Actor{Attributes: row.Attributes, Level: row.Level}, beforeHP)
 	if err != nil {
 		return nil, err
 	}
@@ -196,13 +205,21 @@ func RunMonsterSheet(ruleset *data.Ruleset, input MonsterSheetInput) (map[string
 	for index, stat := range ruleset.Derived.Rows() {
 		result[stat.Key] = values[index]
 	}
-	if row.HitPoints != nil {
-		hp, err := modifier.Value(*row.HitPoints, modifier.Target(perks, "hp"), ruleset.Origins, 0, nil)
-		if err != nil {
-			return nil, err
-		}
-		result["hp"] = hp
+	var role string = row.Role
+	if role == "" {
+		role = "standard"
 	}
+	share, ok := ruleset.Progression.MonsterHPMultiplier[role]
+	if !ok {
+		return nil, fmt.Errorf("monster role %q has no monster_hp_multiplier", role)
+	}
+	base, _ := result["hp"].(int64)
+	var scaled int64 = max(1, int64(math.Floor(float64(base)*share)))
+	hp, err := modifier.Value(scaled, modifier.Target(perks, "hp"), ruleset.Origins, 0, nil)
+	if err != nil {
+		return nil, err
+	}
+	result["hp"] = hp
 	var skills map[string]int64 = make(map[string]int64, len(input.ReadSkills))
 	for _, key := range input.ReadSkills {
 		if written, ok := row.Skills[key]; ok {

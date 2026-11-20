@@ -7,7 +7,6 @@
   "level": 3,
   "loot": [{ "table": "grave_goods" }],
   "attributes": { "str": 4, "end": 5, "agi": 3, "per": 3, "wil": 6 },
-  "hitPoints": 40,
   "tags": ["undead"],
   "growth": {
     "attributes": {
@@ -17,7 +16,6 @@
       "per": { "per_level": 0.3 },
       "wil": { "per_level": 0.5 }
     },
-    "hitPointsPerLevel": 8,
     "damage_per_level": 0.25
   }
 }

@@ -151,7 +151,7 @@ class TestBestiary(unittest.TestCase):
         ])
         base = json.loads((DATA / "monsters" / "bases" / "ooze.json").read_text())
         growth = base["growth"]
-        self.assertEqual(rows["big_blob"]["hitPoints"], rows["blob"]["hitPoints"] + 4 * growth["hitPointsPerLevel"])
+        self.assertNotIn("hitPoints", rows["big_blob"])  # computed by the sheet (DE_S02_03)
         for ability, rule in growth["attributes"].items():
             with self.subTest(ability=ability):
                 expected = max(1, round(rows["blob"]["attributes"][ability] + 4 * rule["per_level"]))
@@ -203,7 +203,7 @@ class TestTemplatesAndGeneratedMonsters(unittest.TestCase):
         dog = ref().generate("core:monster/dog", power="dire", level=3)
         wolf = ref().generate("core:monster/wolf", power="dire", level=3)
         self.assertLess(sum(dog["attributes"].values()), sum(wolf["attributes"].values()))
-        self.assertLess(dog["hitPoints"], wolf["hitPoints"])
+        self.assertLess(ref().hit_points(dog), ref().hit_points(wolf))
         for ability, value in dog["attributes"].items():
             with self.subTest(ability=ability):
                 self.assertLessEqual(value, wolf["attributes"].get(ability, 0))
@@ -287,8 +287,10 @@ class TestTemplatesAndGeneratedMonsters(unittest.TestCase):
         for key in ("dog", "wolf", "dire_wolf", "elder_wolf", "demonic_hound", "undead_horse"):
             with self.subTest(monster=key):
                 row = rows[key]
-                self.assertEqual(row["hitPoints"], ref().example_hp(row))
                 derived = run_derived({"actor": {"attributes": row["attributes"], "level": row["level"]}})
+                # A standard monster: the formula times 0.4, before its perks' hp modifiers (DE_S02_03).
+                before_perks = {field: value for field, value in row.items() if field != "perks"}
+                self.assertEqual(ref().hit_points(before_perks), max(1, int(derived["hp"] * 0.4)))
                 self.assertEqual(run_monster_sheet({"monster": row})["mp"], derived["mp"])
 
     def test_a_skill_missing_from_the_sheet_reads_the_starting_value(self):
@@ -539,7 +541,7 @@ class TestMonstersTakePerks(unittest.TestCase):
         wolf = next(row for row in monsters() if row["key"] == "wolf")
         refs = [held["perk"] for held in wolf["perks"]]
         self.assertEqual(refs, ["core:feature/low_sweep", "core:feature/hooking_blows"])
-        sheet = kernel_reference.run_monster_sheet({"monster": {key: wolf[key] for key in ("attributes", "level", "hitPoints", "perks")}})
+        sheet = kernel_reference.run_monster_sheet({"monster": {key: wolf[key] for key in ("attributes", "level", "perks")}})
         self.assertEqual(sheet["maneuvers"], ["core:maneuver/trip"])
         self.assertEqual(sheet["riders"], ["core:maneuver/trip"])
         bite = kernel_reference.run_combat({

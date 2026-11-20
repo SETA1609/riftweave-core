@@ -19,10 +19,6 @@
             "type": "integer",
             "minimum": 1
           },
-          "hitPoints": {
-            "type": "integer",
-            "minimum": 1
-          },
           "role": {
             "type": "string",
             "enum": ["standard", "boss", "minion"],

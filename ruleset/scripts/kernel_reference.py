@@ -1158,10 +1158,14 @@ def run_monster_sheet(vector):
     row = vector["monster"]
     attributes = row.get("attributes", {})
     perk_modifiers = held_perk_modifiers(row.get("perks", []))
-    result = run_derived({"actor": {"attributes": attributes, "level": row.get("level", 1)}, "modifiers": perk_modifiers})
-    if "hitPoints" in row:
-        result["hp"] = apply_modifiers(row["hitPoints"], [m for m in perk_modifiers if m["target"] == "hp"])
+    actor = {"attributes": attributes, "level": row.get("level", 1)}
+    result = run_derived({"actor": actor, "modifiers": perk_modifiers})
     progression = load_data("progression/core.json")["progression"]
+    # Its HP: the player formula before perks, times its role's share, rounded down and at
+    # least 1; the perks' hp modifiers apply after (DE_S02_03, docs/core/actor-sheet.md).
+    formula = run_derived({"actor": actor, "modifiers": [m for m in perk_modifiers if m["target"] != "hp"]})["hp"]
+    share = progression["monster_hp_multiplier"][row.get("role", "standard")]
+    result["hp"] = apply_modifiers(max(1, math.floor(formula * share)), [m for m in perk_modifiers if m["target"] == "hp"])
     rows = {s["key"]: s for s in load_data("skills/core.json")["skills"]}
     growth = progression.get("monster_skill_growth", {"per_level": 0, "categories": []})
     level = row.get("level", 1)

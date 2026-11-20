@@ -26,12 +26,11 @@
         "damage_type": { "$ref": "schema.json#/definitions/damageType", "description": "The damage type of every attack that does not name its own, and the element each elemental damage_* ability turns into." },
         "attributes": {
           "type": "object",
-          "description": "Added to the monster's attributes, a missing one counting 0. An END add moves an authored hitPoints by the hp row's per_point.",
+          "description": "Added to the monster's attributes, a missing one counting 0. An END add raises the computed HP.",
           "propertyNames": { "$ref": "schema.json#/definitions/ability" },
           "additionalProperties": { "type": "integer" }
         },
         "role": { "type": "string", "enum": ["standard", "boss", "minion"], "description": "The role the template gives the monster, and so its HP multiplier (progression/core.json monster_hp_multiplier) and balance band: the minion template sets minion." },
-        "hit_points_multiplier": { "type": "number", "exclusiveMinimum": 0, "maximum": 1, "description": "Multiplies the monster's hitPoints after the attribute adds, rounded down, never below 1 (the minion template)." },
         "resist": {
           "type": "object",
           "description": "Added to the monster's resist, per damage type.",

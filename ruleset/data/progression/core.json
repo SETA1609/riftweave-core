@@ -101,6 +101,7 @@
     "monster_skill_growth": {
       "per_level": 17,
       "categories": ["combat", "magic"]
-    }
+    },
+    "monster_hp_multiplier": { "standard": 0.4, "boss": 0.8, "minion": 0.2 }
   }
 }

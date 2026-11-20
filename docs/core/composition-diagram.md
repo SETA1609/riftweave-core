@@ -97,7 +97,6 @@ classDiagram
         core_drop
         description
         effects
-        hitPoints
         key
         label
         level
@@ -234,7 +233,6 @@ classDiagram
         attributes
         damage_type
         description
-        hit_points_multiplier
         key
         label
         label_prefix

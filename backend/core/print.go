@@ -35,7 +35,7 @@ type printMonster struct {
 	Attributes map[string]int64   `json:"attributes"`
 	Skills     map[string]int64   `json:"skills"`
 	Level      *int64             `json:"level"`
-	HitPoints  *int64             `json:"hitPoints"`
+	Role       string             `json:"role"`
 	Size       string             `json:"size"`
 	Resist     map[string]float64 `json:"resist"`
 	Attacks    []printAttack      `json:"attacks"`
@@ -245,7 +245,7 @@ func printMonsterBlock(ruleset *data.Ruleset, label string, monster *printMonste
 		read = append(read, skill)
 	}
 	sheet, err := run(ruleset, "monster_sheet", map[string]any{"monster": map[string]any{
-		"attributes": monster.Attributes, "skills": monster.Skills, "level": monster.Level, "hitPoints": monster.HitPoints,
+		"attributes": monster.Attributes, "skills": monster.Skills, "level": monster.Level, "role": monster.Role,
 	}, "read_skills": read})
 	if err != nil {
 		return "", nil, err
