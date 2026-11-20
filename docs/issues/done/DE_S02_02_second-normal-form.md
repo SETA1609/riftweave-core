@@ -1,5 +1,6 @@
 #### DE_S02_02_second-normal-form Second normal form: a reference is the key alone
-- Status: review
+- Status: done
+- Merged: #394, 2026-11-20
 - Priority: high
 - Needs: M5-70
 - Was: M5-71
