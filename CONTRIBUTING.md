@@ -87,6 +87,11 @@ wrong. [ROADMAP.md](ROADMAP.md) owns scope and `docs/stories/` owns the work.
 6. **Match surrounding style.** Mirror the existing JSON formatting (e.g. compact
    one-line entries where a collection already uses them) and comment/description
    density.
+7. **A description says only its row's numbers.** A feature's description may restate
+   its own values ("+10 to deception", "20% less mana"), but a number from another
+   table is named instead ("at the first extra strike's penalty"), and a number the row
+   does not hold fails `validate.py`
+   ([gate 9](docs/core/integrity.md#9-a-description-says-only-its-rows-numbers)).
 
 ## Workflow
 

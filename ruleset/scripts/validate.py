@@ -843,6 +843,85 @@ def check_reference_copies(data_files, module_data_files=None, rel_base=ROOT):
     return errors
 
 
+DESCRIPTION_NUMBER = re.compile(r"(?<![\w.])\d+(?:\.\d+)?(?:d\d+)?(?![\w.]*\d)")
+DESCRIPTION_ORDINAL = re.compile(r"\b(?:tier|rank)\s+(\d+)\b", re.IGNORECASE)
+
+
+def _row_values(node, numbers, strings):
+    """Every number and string a row holds outside its label and description."""
+    if isinstance(node, bool):
+        return
+    if isinstance(node, (int, float)):
+        numbers.add(round(abs(node), 6))
+    elif isinstance(node, str):
+        strings.add(node)
+    elif isinstance(node, dict):
+        for field, value in node.items():
+            if field not in ("label", "description"):
+                _row_values(value, numbers, strings)
+    elif isinstance(node, list):
+        for value in node:
+            _row_values(value, numbers, strings)
+
+
+def description_numbers_allowed(row):
+    """The numbers a row's description may say (docs/core/integrity.md gate 9): each number the row
+    holds, an add modifier's value times each rank, a multiply modifier's change as a percent
+    (1.2 is 20), and the ranks themselves as tier or rank ordinals. Signs are ignored."""
+    numbers, strings = set(), set()
+    _row_values(row, numbers, strings)
+    ranks = row.get("ranks", 1) if isinstance(row.get("ranks"), int) else 1
+    for modifier in row.get("modifiers", []):
+        value = modifier.get("value")
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            continue
+        operation = modifier.get("operation")
+        if operation == "add":
+            numbers |= {round(abs(value * rank), 6) for rank in range(2, ranks + 1)}
+        elif operation == "multiply":
+            numbers |= {round(abs(1 + (value - 1) * rank - 1) * 100, 6) for rank in range(1, ranks + 1)}
+    return numbers, strings, ranks
+
+
+def description_number_errors(row):
+    """The numbers in a row's description that are none of its values (gate 9)."""
+    text = row.get("description")
+    if not isinstance(text, str):
+        return []
+    numbers, strings, ranks = description_numbers_allowed(row)
+    ordinals = {match.start(1) for match in DESCRIPTION_ORDINAL.finditer(text) if 1 <= int(match.group(1)) <= ranks}
+    wrong = []
+    for match in DESCRIPTION_NUMBER.finditer(text):
+        token = match.group(0)
+        if "d" in token:
+            if token not in strings:
+                wrong.append(token)
+        elif match.start() not in ordinals and round(float(token), 6) not in numbers:
+            wrong.append(token)
+    return wrong
+
+
+# The collections gate 9 covers (DE_S02_04); the decision record lists the ones to reach next.
+DESCRIPTION_NUMBER_COLLECTIONS = ("features",)
+
+
+def check_description_numbers(data_files, module_data_files=None, rel_base=ROOT):
+    """Gate 9 (docs/core/integrity.md, third normal form): a number in a description is one of the
+    row's own values, so the prose may restate a value but cannot drift from it."""
+    errors = []
+    for fp in _all_files(data_files, module_data_files):
+        data = _load_json_file(fp)
+        if not isinstance(data, dict):
+            continue
+        for collection in DESCRIPTION_NUMBER_COLLECTIONS:
+            for row in data.get(collection, []) if isinstance(data.get(collection), list) else []:
+                if isinstance(row, dict):
+                    wrong = description_number_errors(row)
+                    if wrong:
+                        errors.append(f"{_rel(fp, rel_base)}: {collection} '{row.get('key')}': the description says {', '.join(wrong)}, which the row does not hold (DE_S02_04)")
+    return errors
+
+
 def check_references(
     data,
     coll_name,
@@ -2324,6 +2403,7 @@ def main():
         ("modifier targets (each names one row)", check_modifier_targets(data_files, module_data_files, collect_vector_files())),
         ("one type per field (first normal form)", check_one_type_per_field(collect_all_data_files())),
         ("a reference is the key alone (second normal form)", check_reference_copies(data_files, module_data_files)),
+        ("a description says only its row's numbers (third normal form)", check_description_numbers(data_files, module_data_files)),
     ):
         if errors:
             print(f"  \u2717  {label}")

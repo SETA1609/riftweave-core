@@ -399,6 +399,52 @@ class TestAReferenceIsTheKeyAlone(unittest.TestCase):
         self.assertEqual(self.check(self.FEATURES, races), [])
 
 
+class TestADescriptionSaysOnlyItsRowsNumbers(unittest.TestCase):
+    """Gate 9 (third normal form): a number in a feature description is one of the row's values."""
+
+    @staticmethod
+    def perk(description, **extra):
+        return {"key": "p", "label": "P", "description": description, "type": "perk", **extra}
+
+    @staticmethod
+    def add(target, value):
+        return {"target": target, "operation": "add", "value": value}
+
+    def errors(self, row):
+        with tempfile.TemporaryDirectory() as tmp:
+            return validate.check_description_numbers([write_json(Path(tmp) / "f.json", {"features": [row]})], rel_base=Path(tmp))
+
+    def test_every_real_feature_description_passes(self):
+        data_files = list(validate.collect_data_files())
+        self.assertEqual(validate.check_description_numbers(data_files, list(validate.collect_module_data_files())), [])
+
+    def test_a_number_its_modifiers_do_not_hold_fails(self):
+        errors = self.errors(self.perk("+15 to deception.", modifiers=[self.add("deception", 10)]))
+        self.assertEqual(len(errors), 1, errors)
+        self.assertIn("15", errors[0])
+        self.assertIn("'p'", errors[0])
+
+    def test_a_restated_value_passes_and_the_sign_is_ignored(self):
+        self.assertEqual(self.errors(self.perk("+10 to deception, -10 evasion.", modifiers=[self.add("deception", 10), self.add("evasion", -10)])), [])
+
+    def test_rank_multiples_and_ordinals_pass_up_to_ranks(self):
+        row = self.perk("+5 per tier (5, 10, 15). Tier 3: more.", ranks=3, modifiers=[self.add("evasion", 5)])
+        self.assertEqual(self.errors(row), [])
+        row = self.perk("+5 per tier (5, 10, 15, 20). Tier 4: more.", ranks=3, modifiers=[self.add("evasion", 5)])
+        self.assertEqual(len(self.errors(row)), 1)
+        self.assertIn("20, 4", self.errors(row)[0])
+
+    def test_a_multiplier_reads_as_a_percent(self):
+        row = self.perk("Spells cost 20% less mana; +15% damage.", modifiers=[
+            {"target": "spell_cost", "operation": "multiply", "value": 0.8},
+            {"target": "damage", "operation": "multiply", "value": 1.15}])
+        self.assertEqual(self.errors(row), [])
+
+    def test_dice_must_be_a_string_the_row_holds(self):
+        self.assertEqual(len(self.errors(self.perk("Claws deal 1d6."))), 1)
+        self.assertEqual(self.errors(self.perk("Claws deal 1d6.", natural_dice="1d6")), [])
+
+
 if __name__ == "__main__":
     unittest.main()
 
