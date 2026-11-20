@@ -16,6 +16,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from wuxing_reference import load_wuxing, run_wuxing  # noqa: E402
+import monster_reference  # noqa: E402
 import validate  # noqa: E402
 
 RULESET = Path(__file__).resolve().parent.parent
@@ -64,7 +65,7 @@ class TestBestiaryPhases(unittest.TestCase):
         validate._resolve_monster_bases(data, [])
         rows = data["monsters"]
         defending = {row["phase"] for row in rows}
-        attacking = {attack["phase"] for row in rows for attack in row.get("attacks", []) if "phase" in attack}
+        attacking = {monster_reference.attack_phase(attack) for row in rows for attack in row.get("attacks", [])}
         for phase in PHASES:
             with self.subTest(phase=phase):
                 self.assertIn(phase, defending, "no monster has this phase")

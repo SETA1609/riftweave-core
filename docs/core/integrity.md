@@ -1,8 +1,8 @@
 # Integrity gates
 
-Modified: 2026-11-18
+Modified: 2026-11-20
 
-What `python ruleset/scripts/validate.py` refuses to pass. JSON Schema alone cannot check that a reference points at something, so the validator and its tests add seven gates on top of it. They close the open items of the data review (`docs/archive/review/findings-data-schemas.md` M3 and M6) and are tested in `ruleset/scripts/test_integrity.py`.
+What `python ruleset/scripts/validate.py` refuses to pass. JSON Schema alone cannot check that a reference points at something, so the validator and its tests add eight gates on top of it. They close the open items of the data review (`docs/archive/review/findings-data-schemas.md` M3 and M6) and are tested in `ruleset/scripts/test_integrity.py`.
 
 ## 1. Every reference resolves
 
@@ -57,6 +57,12 @@ diagram regenerated (APP-36) [U].
 First normal form ([normal-forms.md](../theory/normal-forms.md#first-normal-form-1nf-one-value-of-one-kind-per-field)): a field holds one domain in every row. `test_integrity.py` walks every file under `ruleset/data/` (bases included) and every module's data files, reads each field by its path from the collection (`features[].prerequisite.skills[].any_of`), and fails when one path holds two JSON types across rows. A null is no type, and an integer and a float count as one, a number. The failure lists each path and the types it found. Golden vectors are inputs and are not walked. [V 2026-11-18]
 
 A field that needs "one or many" names a list, and one is a list of one: a perk's skill requirement is `{ "any_of": [ref, ...], "min": n }`, and a prerequisite perk is `{ "perk": ref, "rank": n }` with `rank` left out for 1 (M5-70). [V 2026-11-18]
+
+## 8. A reference is the key alone
+
+Second normal form ([normal-forms.md](../theory/normal-forms.md#second-normal-form-2nf-no-fact-about-part-of-the-key)). An object that names a row by a `core:` reference is a child row keyed by its parent and that row, so a field beside the reference that is a fact about the named row alone is a copy, and it goes stale when the row changes. `validate.py` fails an object that holds a `core:` reference and also a field with the same name and value as a field of the referenced row (`label`, `description`, `phase`, ...); text compares without case and spaces, so `Short Sword` beside a row labelled `Shortsword` is a copy. The referenced row is read after composition: an equipment item with its base, a creature type as its base file. Fields that are about the pair, such as a skill requirement's `min`, a perk's `rank`, or an attack's own `damage`, stay. A consumer that shows the named row's label reads it from that row, or, for a module override, from the overriding row. Data files, bases, and module data are walked; golden vectors are inputs and are not. Tested in `test_integrity.py`. [V 2026-11-20]
+
+What this removed (DE_S02_02): the `label` beside each race trait (`races[].traits[]` is `{ "id" }`), the `label` beside a natural weapon attack that only repeated the weapon's (an attack's `label` is optional and defaults to its weapon's), and a crafted item's `phase` and its engraving jewel's `phase`, which repeated the material's or the gem's (`crafting_reference.py` already reads them from there). [V 2026-11-20]
 
 ## Not covered
 

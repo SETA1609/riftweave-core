@@ -107,6 +107,25 @@ func TestAMonsterStatBlockPrintsItsToHitFromTheMonsterSheet(t *testing.T) {
 	}
 }
 
+// DE_S02_02: an attack names its weapon, and its label is the weapon row's unless it writes its own.
+func TestAMonsterAttackWithoutALabelPrintsItsWeaponsLabel(t *testing.T) {
+	opened := open(t)
+	monster := map[string]any{
+		"attributes": map[string]any{"str": 5, "agi": 5}, "level": 1,
+		"attacks": []any{
+			map[string]any{"key": "bite", "weapon": "core:natural_weapon/bite"},
+			map[string]any{"key": "cut", "weapon": "core:weapon/shortsword"},
+			map[string]any{"key": "gnaw", "label": "Gnaw", "weapon": "core:natural_weapon/bite"},
+		},
+	}
+	html := printPage(t, opened, map[string]any{"kind": "monster", "label": "Bandit", "monster": monster})
+	for _, want := range []string{"Bite (core:natural_weapon/bite", "Shortsword (core:weapon/shortsword", "Gnaw (core:natural_weapon/bite"} {
+		if !strings.Contains(html, want) {
+			t.Errorf("the page does not print %q", want)
+		}
+	}
+}
+
 func TestASpellCardAndAConditionCardPrintFromTheData(t *testing.T) {
 	opened := open(t)
 	spell := printPage(t, opened, map[string]any{"kind": "spell", "spell": "fire_bolt"})

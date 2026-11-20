@@ -74,7 +74,7 @@ Base Template  +  Material  +  [Jewel]  +  [Enchantments]  +  [Coatings]
                      └── coatings: [temporary, 3 uses]
 ```
 
-Key rule: **phase defaults to material's phase; engraving jewel overwrites it entirely.** This is the full engraving mechanic for v1.
+Key rule: **phase defaults to material's phase; engraving jewel overwrites it entirely.** This is the full engraving mechanic for v1. The phase is computed, never stored: a `crafted_items` row names its `material_key` and its `engraving_jewel.gem_key`, and the effective phase is read from the gem, else the material. A stored `phase` beside those references would repeat the row it names, which `validate.py` fails ([integrity.md](../core/integrity.md#8-a-reference-is-the-key-alone), DE_S02_02).
 
 See `ruleset/scripts/crafting_reference.py --verbose` for a runnable demonstration.
 
