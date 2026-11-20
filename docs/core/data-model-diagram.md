@@ -12,7 +12,7 @@ An entity is a collection of rows, its `key` the primary key. A line is a refere
 other collection, so many rows name one. Composition bases are references too: an equipment row's
 `base` names an equipment base, a monster's `base` a creature type or a monster.
 
-45 collections; 71 pairs of collections joined by a reference.
+47 collections; 74 pairs of collections joined by a reference.
 
 ## Overview
 
@@ -25,6 +25,9 @@ erDiagram
         string key PK
     }
     ACTIONS {
+        string key PK
+    }
+    ATTACK_SEQUENCES {
         string key PK
     }
     BACKGROUNDS {
@@ -121,10 +124,12 @@ erDiagram
         string key PK
         string bound_weapon_effects_effect FK
         string bound_weapon_effects_origin FK
+        string excludes FK
         string modifiers_origin FK
         string natural_weapon FK
         string prerequisite_perks_perk FK
         string prerequisite_skills_any_of FK
+        string rider FK
         string share_bonus FK
         string summon_bonus FK
         string unlocks FK
@@ -226,6 +231,12 @@ erDiagram
         string save_skill FK
         string summon_group FK
     }
+    STANCES {
+        string key PK
+        string main_skills FK
+        string modifiers_origin FK
+        string off_skills FK
+    }
     SUMMON_BONUSES {
         string key PK
     }
@@ -270,13 +281,14 @@ erDiagram
     EQUIPMENT }o--|| SPELLS : "consumable.spell"
     FACTIONS }o--|| ORIGINS : "ranks[].modifiers[].origin, standings[].modifiers[].origin"
     FEATURES }o--|| EFFECTS : "bound_weapon_effects[].effect"
-    FEATURES }o--|| FEATURES : "prerequisite.perks[].perk"
-    FEATURES }o--|| MANEUVERS : "unlocks[]"
+    FEATURES }o--|| FEATURES : "excludes[], prerequisite.perks[].perk"
+    FEATURES }o--|| MANEUVERS : "rider, unlocks[]"
     FEATURES }o--|| MATERIALS : "unlocks[]"
     FEATURES }o--|| MONSTER_TEMPLATES : "unlocks[]"
     FEATURES }o--|| NATURAL_WEAPONS : "natural_weapon"
     FEATURES }o--|| ORIGINS : "bound_weapon_effects[].origin, modifiers[].origin"
     FEATURES }o--|| SKILLS : "prerequisite.skills[].any_of[]"
+    FEATURES }o--|| STANCES : "unlocks[]"
     FEATURES }o--|| SUMMON_BONUSES : "share.bonus, summon_bonus"
     HAZARDS }o--|| CHECKS : "avoid.check, detect.check, disarm.check"
     HAZARDS }o--|| EFFECTS : "effects[]"
@@ -309,6 +321,8 @@ erDiagram
     SPELLS }o--|| SKILLS : "save.skill"
     SPELLS }o--|| SPELLS : "base"
     SPELLS }o--|| SUMMONS : "summon.group"
+    STANCES }o--|| ORIGINS : "modifiers[].origin"
+    STANCES }o--|| SKILLS : "main_skills[], off_skills[]"
     SUMMONS }o--|| MONSTERS : "variants[]"
     TABLES }o--|| EQUIPMENT : "entries[].item"
 ```
@@ -349,10 +363,12 @@ erDiagram
         string key PK
         string bound_weapon_effects_effect FK
         string bound_weapon_effects_origin FK
+        string excludes FK
         string modifiers_origin FK
         string natural_weapon FK
         string prerequisite_perks_perk FK
         string prerequisite_skills_any_of FK
+        string rider FK
         string share_bonus FK
         string summon_bonus FK
         string unlocks FK
@@ -387,6 +403,9 @@ erDiagram
     SPELLS {
         string key PK
     }
+    STANCES {
+        string key PK
+    }
     SUMMON_BONUSES {
         string key PK
     }
@@ -400,13 +419,14 @@ erDiagram
     CHARACTERS }o--|| SKILLS : "tag_skills[]"
     CHARACTERS }o--|| SPELLS : "levels[].spells[]"
     FEATURES }o--|| EFFECTS : "bound_weapon_effects[].effect"
-    FEATURES }o--|| FEATURES : "prerequisite.perks[].perk"
-    FEATURES }o--|| MANEUVERS : "unlocks[]"
+    FEATURES }o--|| FEATURES : "excludes[], prerequisite.perks[].perk"
+    FEATURES }o--|| MANEUVERS : "rider, unlocks[]"
     FEATURES }o--|| MATERIALS : "unlocks[]"
     FEATURES }o--|| MONSTER_TEMPLATES : "unlocks[]"
     FEATURES }o--|| NATURAL_WEAPONS : "natural_weapon"
     FEATURES }o--|| ORIGINS : "bound_weapon_effects[].origin, modifiers[].origin"
     FEATURES }o--|| SKILLS : "prerequisite.skills[].any_of[]"
+    FEATURES }o--|| STANCES : "unlocks[]"
     FEATURES }o--|| SUMMON_BONUSES : "share.bonus, summon_bonus"
     RACES }o--|| FEATURES : "traits[].id"
     RACES }o--|| RACES : "lineage.parentRace"

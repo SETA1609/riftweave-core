@@ -1,0 +1,18 @@
+#### GD_S19_03_swap-draw-costs Drawing, sheathing, and swapping a loadout cost AP
+- Status: todo
+- Priority: medium-high
+- Needs: GD_S05_02_fighting-stances
+- Modified: 2026-11-19
+- Do: Owner request, 2026-11-19 (borrowed from Fallout Tactics, 2 AP to swap, and the Divinity board game, 1 AP to equip).
+  - **The gap:** since GD_S05_01 the loadout decides what an attack costs and strikes, and since GD_S05_02 a loadout change ends a stance that no longer fits. Changing the loadout is now a tactical move, but no action prices it [V 2026-11-19, `actions/core.json` has no draw, sheathe, or swap row].
+  - **New action rows** [A, numbers checked in the spec step]:
+    - `draw` 1 AP: one weapon or a shield into an empty hand;
+    - `sheathe` 1 AP, or dropping one, 0 AP;
+    - `swap` 1 AP: between two loadouts the character has set up before the fight, a primary and a secondary.
+  - **A perk:** one perk (Quick Hands, or a rank on an existing ladder) makes `swap` 0 AP, through `add swap -1` [A].
+  - **Reload stays out:** reloading belongs to `GD_S17_02_ammunition-items-and-reloading`.
+  - **Wider use:** the session's loadout change (GD_S05_02's `stance` events) records which action paid for it, and the action menu (`GD_S08_14_action-menu-rules`, once filed) lists the three.
+- Keys: `draw`, `sheathe`, `swap` (action rows); the secondary loadout on a stored actor
+- Files: ~8 (docs/core/actions.md, docs/core/combat.md, ruleset/data/actions/core.json, ruleset/data/features/core.json, backend/contract/stored_actor.json, ruleset/tests/vectors/actions.json, ruleset/tests/vectors/stance.json (GD_S05_02 adds it), ruleset/scripts/kernel_reference.py)
+- See: docs/core/combat.md#attacks-by-loadout, docs/issues/open/GD_S05_02_fighting-stances.md, docs/issues/open/GD_S17_02_ammunition-items-and-reloading.md
+- Done when: `actions` vectors price a draw, a sheathe, and a swap, with and without the perk; a `stance` vector ends a stance on a paid swap.

@@ -286,8 +286,17 @@ def run_casting(vector):
     armor = caster.get("armor", "none")
     if armor not in rules["armor_penalty"]:
         return {"error": f'armor category "{armor}" is not defined'}
-    if rules["armor_penalty"][armor]:
-        modifiers.append({"target": skill, "operation": "add", "value": rules["armor_penalty"][armor], "source": f"armor:{armor}"})
+    from kernel_reference import apply_modifiers  # kernel_reference imports this module
+
+    shield = caster.get("shield", "none")
+    if shield not in rules["shield_penalty"]:
+        return {"error": f'shield "{shield}" is not defined'}
+    # Mailed Casting multiplies each penalty, floored (GD_S05_03).
+    scale = [m for m in vector.get("modifiers", []) if m["target"] == "armor_cast_penalty"]
+    for source, penalty in ((f"armor:{armor}", rules["armor_penalty"][armor]), (f"shield:{shield}", rules["shield_penalty"][shield])):
+        penalty = apply_modifiers(penalty, scale)
+        if penalty:
+            modifiers.append({"target": skill, "operation": "add", "value": penalty, "source": source})
     check = run_resolution(
         {
             "actor": {"skills": {skill: caster["skills"][skill]}, "attributes": caster.get("attributes", {})},

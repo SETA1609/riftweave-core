@@ -11,35 +11,66 @@ arrow runs from a prerequisite perk to the perk that needs it, labelled with the
 when more than 1. A rounded box is a prerequisite from another category. A ladder that stops
 early, or a perk nothing leads to, shows at a glance.
 
-117 perks: 54 on a ladder, 63 with no perk before or after them.
+143 perks: 73 on a ladder, 70 with no perk before or after them.
 
 ## Combat
 
 ```mermaid
 graph LR
-  power_attack["Power Attack<br/>blades 40 · STR 6"]
+  full_weight["Full Weight<br/>blades or blunt or piercing 40 · STR 6"]
   gap_finder["Gap Finder<br/>bows or crossbows or guns or throwing_weapons 40 · PER 6"]
+  low_sweep["Low Sweep<br/>blades or blunt or piercing or unarmed 30 · AGI 5"]
+  hooking_blows["Hooking Blows<br/>Lv 8 · AGI 6"]
+  bind_and_wrench["Bind and Wrench<br/>blades or blunt or piercing or unarmed 30 · STR 5"]
+  wrenching_blows["Wrenching Blows<br/>Lv 8 · STR 6"]
+  low_aim["Low Aim<br/>bows or crossbows or guns or throwing_weapons 30 · PER 5"]
+  hamstring_shots["Hamstring Shots<br/>Lv 8 · PER 6"]
+  knuckle_shot["Knuckle Shot<br/>bows or crossbows or guns or throwing_weapons 30 · PER 5"]
+  stripping_shots["Stripping Shots<br/>Lv 8 · PER 6"]
   brutal_charge["Brutal Charge<br/>STR 9"]
+  carry_through["Carry Through<br/>Lv 6 · blades or blunt or piercing 50 · STR 6"]
+  reaping_arc["Reaping Arc<br/>Lv 12 · blades or blunt or piercing 60 · STR 7"]
+  circle_cut["Circle Cut<br/>Lv 18 · blades or blunt or piercing 70 · STR 8"]
+  follow_up["Follow-Up<br/>Lv 6 · AGI 5"]
+  press_on["Press On<br/>Lv 18 · AGI 7"]
+  off_hand_drill["Off-Hand Drill<br/>Lv 4 · AGI 6"]
+  crossed_guard["Crossed Guard<br/>Lv 8 · evasion 30 · AGI 6"]
+  twin_rhythm["Twin Rhythm<br/>Lv 14 · AGI 7"]
+  scissor_cut["Scissor Cut<br/>Lv 20 · AGI 8"]
   brawler["Brawler (ranks 2)<br/>unarmed 30 · END 5"]
   iron_fist["Iron Fist<br/>Lv 12 · unarmed 60 · STR 7"]
   sniper["Sniper<br/>Lv 18 · bows or crossbows or guns 70 · PER 8"]
   unstoppable["Unstoppable<br/>Lv 18 · heavy_armor 50 · END 8"]
   executioner["Executioner<br/>Lv 24 · STR 8"]
-  shield_training["Shield Training<br/>shields 30 · END 5"]
-  spell_ward["Spell Ward<br/>Lv 6 · shields 50 · WIL 6"]
+  shield_training["Shield Training (ranks 3)<br/>shields 30 · END 5"]
+  spell_ward["Spell Ward (ranks 3)<br/>Lv 6 · shields 50 · WIL 6"]
   bulwark["Bulwark<br/>Lv 12 · shields 70 · END 7"]
   sidestep["Sidestep<br/>evasion 30 · AGI 6"]
-  armored_evasion["Armored Evasion<br/>Lv 6 · evasion 50"]
+  armored_evasion["Armored Evasion (ranks 3)<br/>Lv 6 · evasion 50"]
+  unarmored_grace["Unarmored Grace (ranks 4)<br/>evasion 30 · AGI 6"]
+  flowing_step["Flowing Step<br/>Lv 12"]
   riposte["Riposte<br/>Lv 12 · evasion 60 · AGI 7"]
+  low_sweep --> hooking_blows
+  bind_and_wrench --> wrenching_blows
+  low_aim --> hamstring_shots
+  knuckle_shot --> stripping_shots
   hardened_hide(["Hardened Hide<br/>general"])
   hardened_hide --> brutal_charge
+  full_weight --> carry_through
+  carry_through --> reaping_arc
+  reaping_arc --> circle_cut
+  follow_up --> press_on
+  off_hand_drill --> crossed_guard
+  off_hand_drill --> twin_rhythm
+  twin_rhythm --> scissor_cut
   brawler --> iron_fist
   gap_finder --> sniper
   hardened_hide --> unstoppable
-  power_attack --> executioner
+  full_weight --> executioner
   shield_training --> spell_ward
-  spell_ward --> bulwark
+  shield_training -- rank 2 --> bulwark
   sidestep --> armored_evasion
+  unarmored_grace -- rank 2 --> flowing_step
   armored_evasion --> riposte
 ```
 
@@ -148,21 +179,26 @@ attributes, and level only.
 | Easy Stride | combat | light_armor 50 · AGI 7 |
 | Wind-Up | combat | STR 5 |
 | Snap Cut | combat | AGI 5 |
-| Acrobat | combat | evasion 40 · AGI 7 |
 | Scavenger | survival | LCK 6 |
-| Cleave | combat | Lv 6 · blades or blunt 50 · STR 6 |
 | Crushing Blow | combat | Lv 6 · blunt 50 · STR 7 |
 | Precise Thrust | combat | Lv 6 · piercing 50 · AGI 6 |
 | Ready Hand | combat | AGI 6 |
 | Steady Aim | combat | Lv 6 · bows or crossbows or guns or throwing_weapons 40 · PER 6 |
-| Duelist | combat | Lv 12 · blades 60 · AGI 7 |
+| Fencer's Measure | combat | Lv 12 · blades 60 · AGI 7 |
+| Espada y Daga | combat | Lv 8 · blades or piercing 40 · AGI 6 |
+| Buckler Play | combat | Lv 6 · shields 30 · AGI 5 |
+| Phalanx | combat | Lv 8 · piercing 40 · END 6 |
+| Long Guard | combat | Lv 10 · blades or blunt or piercing 50 · STR 6 |
+| Bare Knuckle | combat | Lv 6 · unarmed 30 · END 5 |
+| Forward Guard | combat | Lv 4 · STR 5 |
+| Low Guard | combat | Lv 4 · AGI 5 |
 | Catch Your Breath | combat | Lv 12 · END 7 |
 | Berserker | combat | Lv 12 · STR 7 |
 | Thrown Mastery | combat | Lv 12 · throwing_weapons 60 · AGI 7 |
 | Fast Reload | combat | Lv 6 · crossbows 50 · STR 5 |
 | Hip Shot | combat | Lv 12 · guns 60 · AGI 7 |
 | Mana Flow | magic | Lv 6 · WIL 6 |
-| Battle Mage | magic | Lv 12 · INT 6 · END 6 |
+| Mailed Casting | magic | Lv 6 · INT 6 · END 6 |
 | Ward Breaker | magic | Lv 12 · INT 7 |
 | Elemental Harmony | magic | Lv 18 · INT 6 · WIL 6 |
 | Healer | magic | Lv 6 · green_magic 50 |
@@ -203,3 +239,5 @@ attributes, and level only.
 | Meditative | magic | Lv 6 · WIL 6 |
 | Night Eyes | survival | Lv 6 · PER 7 |
 | Survivor | general | Lv 18 · END 6 · WIL 6 |
+| Guardian | combat | Lv 6 · shields 50 |
+| Boss Strike | combat | shields 30 · STR 5 |

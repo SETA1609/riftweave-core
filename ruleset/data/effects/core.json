@@ -1056,7 +1056,8 @@
       "channels": [
         "spell",
         "innate",
-        "coating"
+        "coating",
+        "maneuver"
       ],
       "tags": [
         "control",
@@ -1542,9 +1543,9 @@
       ]
     },
     {
-      "key": "cleave",
+      "key": "spillover",
       "reserved": true,
-      "label": "Cleave",
+      "label": "Spillover",
       "description": "On a successful melee hit, the attack also strikes a second adjacent target. Magnitude is the percentage of the original damage dealt to the secondary target.",
       "category": "damage",
       "polarity": "harmful",

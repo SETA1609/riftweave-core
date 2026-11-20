@@ -25,6 +25,7 @@ type Caster struct {
 	Skills        map[string]int64 `json:"skills"`
 	Concentration *string          `json:"concentration"` // the held spell key, or nil
 	Armor         string           `json:"armor"`         // heaviest category worn; "" is none
+	Shield        string           `json:"shield"`        // the shield held: buckler, standard, tower; "" is none
 	Flags         []string         `json:"flags"`
 	Reagents      []string         `json:"reagents"`
 	Attributes    actor.Attributes `json:"attributes"`
@@ -426,14 +427,33 @@ func castCheck(ruleset *data.Ruleset, input *Input, skill string, skillValue int
 	if !ok {
 		return resolution.Result{}, &data.NotDefinedError{Kind: "armor category", Key: armor}
 	}
+	var shield string = input.Caster.Shield
+	if shield == "" {
+		shield = "none"
+	}
+	shieldPenalty, ok := ruleset.Casting.ShieldPenalty[shield]
+	if !ok {
+		return resolution.Result{}, &data.NotDefinedError{Kind: "shield", Key: shield}
+	}
 	var modifiers []modifier.Modifier = modifier.Target(input.Modifiers, skill)
-	if penalty != 0 {
-		modifiers = append(modifiers, modifier.Modifier{
-			Target:    skill,
-			Operation: modifier.Add,
-			Value:     float64(penalty),
-			Source:    "armor:" + armor,
-		})
+	// Mailed Casting multiplies each penalty, floored.
+	var scale []modifier.Modifier = modifier.Target(input.Modifiers, "armor_cast_penalty")
+	for _, worn := range []struct {
+		source  string
+		penalty int64
+	}{{"armor:" + armor, penalty}, {"shield:" + shield, shieldPenalty}} {
+		scaled, err := modifier.Value(worn.penalty, scale, ruleset.Origins, 0, nil)
+		if err != nil {
+			return resolution.Result{}, err
+		}
+		if scaled != 0 {
+			modifiers = append(modifiers, modifier.Modifier{
+				Target:    skill,
+				Operation: modifier.Add,
+				Value:     float64(scaled),
+				Source:    worn.source,
+			})
+		}
 	}
 	bonus, err := resolution.Bonus(ruleset.Origins, modifiers)
 	if err != nil {

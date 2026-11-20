@@ -7,7 +7,7 @@ Run `python ruleset/scripts/contract_diagram.py --write` after a contract change
 `test_contract_diagram.py` fails until the page matches. What the contract is:
 [README.md](README.md#commands) and [contract.md](../core/contract.md).
 
-24 commands. Each is a class diagram of its input and its result; a field whose type is
+26 commands. Each is a class diagram of its input and its result; a field whose type is
 a shared type of `common.json` links to it, and the shared types are drawn once, below.
 
 ## Shared types
@@ -145,6 +145,39 @@ classDiagram
     actions_input --> actor : actor
 ```
 
+## attack_sequence
+
+One attack action by loadout: the attack, the jab, the full attack, or the circle cut, each strike its own roll through the combat pipeline.
+
+```mermaid
+classDiagram
+    class attack_sequence_input {
+        enum action
+        boolean after_block
+        boolean after_parry
+        integer ap
+        object attacker
+        object damage
+        List~object~ foes
+        loadout loadout
+        modifiers modifiers
+        object off_damage
+        List~object~ rolls
+        List~key~ situations
+        boolean summoning
+        List~integer~ targets
+    }
+    class attack_sequence_result {
+        string action
+        integer ap
+        List~integer~ hp
+        integer lost
+        string sequence
+        integer stamina
+        List~object~ strikes
+    }
+```
+
 ## author
 
 Author content rows: check a draft spell as validate.py would, give the spellcraft cost, load a spell to edit, and export a core or module data file.
@@ -213,6 +246,7 @@ classDiagram
         object damage
         object defender
         enum delivery
+        loadout loadout
         key maneuver
         modifiers modifiers
         enum range
@@ -229,13 +263,20 @@ classDiagram
         List~object~ effects
         boolean evaded
         integer evasion_rate
+        List~enum~ events
         integer hp
         integer_or_null margin
         enum outcome
+        boolean parried
+        integer parry_rate
+        key rider
         List~object~ riders
+        object save
         integer stagger_ap
         integer stamina
         integer target
+        integer ward_percent
+        boolean warded
         List~object~ weapon_effects
     }
 ```
@@ -499,7 +540,9 @@ classDiagram
         integer carry
         integer hp
         integer initiative
+        List~ref~ maneuvers
         integer mp
+        List~ref~ riders
         object skills
         integer sp
     }
@@ -699,6 +742,26 @@ classDiagram
     }
     class cost
     spellcraft_result --> cost : cost
+```
+
+## stance
+
+A fighting stance over a stretch of turns: take or change one, end it, or change the loadout, which ends a stance it no longer fits.
+
+```mermaid
+classDiagram
+    class stance_input {
+        List~object~ events
+        loadout loadout
+        List~featureRef~ perks
+        string_or_null stance
+    }
+    class stance_result {
+        integer ap
+        modifiers modifiers
+        string_or_null stance
+        List~object~ steps
+    }
 ```
 
 ## stored_actor

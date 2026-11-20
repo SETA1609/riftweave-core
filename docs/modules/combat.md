@@ -28,7 +28,9 @@ A turn spends action points. The pool is `2 + floor(AGI / 3)`, unspent points ca
 
 | Action | AP |
 | --- | --- |
-| attack | 3 |
+| attack | by loadout, 2 to 5 (3 with one one-handed weapon) |
+| jab | by loadout, 2 or 3: the off-hand weapon alone |
+| full attack | every AP left, at least the attack + 1 |
 | cast | 3 (plus the spell's mana) |
 | move | 1 per move |
 | disengage | 1 |
@@ -37,7 +39,7 @@ A turn spends action points. The pool is `2 + floor(AGI / 3)`, unspent points ca
 | block | 2, reserved, refunded if no attack comes |
 | aimed | +2 on the attack |
 
-There is no bonus action and no reaction slot. An off-hand attack is an attack. A second move is two moves. Readying a block or a dodge spends its cost from the pool before the enemy's turn (§3).
+There is no bonus action and no reaction slot. An attack strikes with everything held: with two weapons it is a main-hand and an off-hand strike, each its own roll, at the loadout's AP and penalties ([core/combat.md](../core/combat.md#attacks-by-loadout)); the jab is the off hand alone. A second move is two moves. Readying a block or a dodge spends its cost from the pool before the enemy's turn (§3).
 
 ## 2. Opportunity attacks
 
@@ -55,9 +57,9 @@ The order of one attack is fixed in [docs/core/combat.md](../core/combat.md): on
 The defender rolls nothing. The attacker's d100 decides it all: a miss, a hit, or a success that lands inside the defender's band (owner, 2026-11-16, M3-27). The bands are the attacker's margin read against the defender's numbers:
 
 - **Evasion, always on.** The evasion rate is half the `evasion` skill. A success whose margin is under it is **evaded**: a single-target attack does nothing, an area attack is halved. Instant spells meet no band; their target makes the save the spell names.
-- **A carried shield, always on.** Its DR adds to the armor DR against physical types: buckler DR 1, standard shield DR 2, tower shield DR 4 (and grants cover to an adjacent ally, **[A]**, M3-03). No action, no roll.
+- **A carried shield, always on.** Its DR adds to the armor DR against physical types: buckler DR 1, standard shield DR 2, tower shield DR 4 (covering an adjacent ally is the Guardian perk, GD_S05_03). No action, no roll.
 - **Dodge, a stance** (3 AP, until your next turn): the evasion rate doubles. An area attack in the band is still halved, not avoided.
-- **Block, a stance** (2 AP, reserved, refunded if nobody swings; needs a shield): a block band of half the `shields` skill sits under the evaded band, and a success in it is **blocked**: no damage. It works against physical types only, unless Spell Ward gives a band of half the width against magic.
+- **Block, a stance** (2 AP, reserved, refunded if nobody swings; needs a shield): a block band of half the `shields` skill sits under the evaded band, and a success in it is **blocked**: no damage. It stops physical types only; with Spell Ward a magic hit in the band still lands, less END × 2 % per tier (at most 50 %).
 - A crit always hits: no band reaches it.
 - Delivery decides what is possible, not the damage type: a fire bolt can be dodged; a fireball dodged is halved.
 
@@ -65,8 +67,8 @@ Balance between the two is perks and armor, not the pipeline: gated block and do
 
 Not yet rows, **[A]**:
 
-- **Parry.** Some weapons (rapiers, swords) and the *Duelist* perk let a defender block with the weapon skill instead of the `shields` skill. A parried hit is blocked.
-- **Two weapons.** An off-hand weapon can parry but not block. It either attacks (an attack, 3 AP) or is held to parry in a turn, not both.
+- **Parry.** The *Fencer's Measure* and *Espada y Daga* stances let a defender parry with the weapon skill: a parry band of a quarter of the skill, under the block band. A parried hit is blocked ([combat.md](../core/combat.md#fighting-stances)).
+- **Two weapons.** An off-hand weapon can parry but not block. It strikes as part of the attack (GD_S05_01) or alone as a jab; with *Espada y Daga* a dagger parries instead of striking in a full attack.
 - **Unarmed.** The *Deflect Arrows* perk blocks missiles with `unarmored`. No unarmed melee block without a perk. A natural weapon (a bite, a claw, a race's claws) is an unarmed attack: it rolls with `unarmed`, and the unarmed perks change its damage ([monsters.md](./monsters.md#natural-weapons)).
 - A defender who is stunned, incapacitated, paralyzed, petrified, or unconscious keeps no stance and has no evasion band. **[A]** The conditions grant those flags ([modifier.md](../core/modifier.md)); the pipeline does not read them yet.
 
@@ -126,6 +128,17 @@ A maneuver changes how an attack is made rather than where it lands, so it stack
 shot: a Heavy Swing to the head is −30 to hit and ×1.5 then ×1.5 on the damage. The rows, their
 costs, and who may use them are in [core/actions.md](../core/actions.md#maneuvers).
 
+**Trip** (−10, half damage; the target falls prone) and **Disarm** (−15, half damage; the target
+drops its weapon) are the control maneuvers, with **Tripping Shot** and **Disarming Shot** their
+ranged twins, each unlocked by its own perk (Low Sweep, Bind and Wrench, Low Aim, Knuckle Shot).
+The attack resolves as a normal attack; a hit then makes a maneuver attempt, a save the target
+makes against your weapon's attribute × 10 + 20 ([core/actions.md](../core/actions.md#the-maneuver-attempt)).
+A **rider perk** (Hooking Blows, Wrenching Blows, Hamstring Shots, Stripping Shots) makes the
+same attempt after every plain hit of its range, at no cost to the blow, without the +20. In each
+range the trip line and the disarm line exclude each other: with one you cannot take the other,
+unless a respec, at the game's or GM's discretion, swaps them
+([core/progression.md](../core/progression.md#excluded-perks)). **[A]** GD_S05_04.
+
 ## 7. Initiative
 
 Initiative is a derived stat: `PER` plus modifiers ([derived.md](../core/derived.md)). Highest acts first. Ties go to the higher AGI, then to a d100 roll-off, lowest first. **[A]** The *Alert* perk adds 10. There is no d20.
@@ -148,7 +161,7 @@ Encumbrance comes from worn weight against STR ([armor.md](./armor.md) §9). Tho
 | Over STR × 15 | each move +1 AP | ×3 | no dodge, −20 athletics |
 | Over STR × 20 | none | evade always fails | only drop items and talk |
 
-A knight in full plate (heavy, AGI 6, pool 4) cannot afford a 5 AP dodge: he blocks (2 AP) and trusts his DR. A skirmisher in leather (light, AGI 9, pool 5) can dodge once and still move twice. *Heavy Armor Expert*, *Light Foot*, and *Acrobat* reduce the surcharges (M2-06).
+A knight in full plate (heavy, AGI 6, pool 4) cannot afford a 5 AP dodge: he blocks (2 AP) and trusts his DR. A skirmisher in leather (light, AGI 9, pool 5) can dodge once and still move twice. *Heavy Armor Expert* and *Light Foot* reduce the surcharges (M2-06); Acrobat is gone (GD_S05_03).
 
 ---
 
@@ -247,7 +260,7 @@ Mounted combat, underwater combat, vehicles, and mass battles are not specified.
 
 ## 13. Combat perks and traits
 
-Perks are rows in `ruleset/data/features/core.json`; each emits modifiers ([contract.md](../core/contract.md)) and so works the same at a table and in an engine. Existing combat perks include Toughness (+15 HP per rank), Alert (+10 initiative), Power Attack, Deadeye, Shield Wall, Fast Shot (creation), and Field Medic. The gated block and dodge ladders are M2-06.
+Perks are rows in `ruleset/data/features/core.json`; each emits modifiers ([contract.md](../core/contract.md)) and so works the same at a table and in an engine. Existing combat perks include Toughness (+15 HP per rank), Alert (+10 initiative), Full Weight, Deadeye, Fast Shot (creation), and Field Medic. The block and dodge ladders are tiered perks (GD_S05_03, [core/combat.md](../core/combat.md#block-and-dodge-perks)): one perk with `rank_levels`, each tier gated at its own level. The melee ladders (Carry Through, extra strikes, two weapons) are in [core/combat.md](../core/combat.md#attacks-by-loadout).
 
 When adding one:
 

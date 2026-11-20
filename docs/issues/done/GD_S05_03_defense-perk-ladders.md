@@ -1,9 +1,10 @@
 #### GD_S05_03_defense-perk-ladders Defense perk ladders: shields, shield bash, evasion, no armor, and armor on casting
-- Status: todo
+- Status: done
+- Merged: #255, 2026-11-20
 - Priority: medium
 - Needs: M3-27, GD_S05_02_fighting-stances, M5-47
 - Was: M3-30
-- Modified: 2026-11-17
+- Modified: 2026-11-19
 - Do: Owner request, 2026-11-17: the evasion and shield perks stop at level 12, a few no longer fit M3-27's bands, and the melee builds (M5-47) need defense choices up to level 30. Rework them as tiered perks, add a shield bash, no-armor, and guardian ladder, and make heavier armor cost more on casting.
   - **Tiers 3 to 6 levels apart** (owner 2026-11-17): a tiered perk whose first tier has no level gate takes its next tiers at about Lv6, 12, 18, 24; one whose first tier is gated at level L takes them at about L+6, L+12. The feature schema has `ranks` but no level gate per rank: add one (for example `rank_levels: [1, 6, 12]`) and have `validate.py` check it.
   - **Spells you can block and spells you save against** are two different defenses (docs/core/casting.md#delivery-and-saves), and every text in this issue names which one it means. A **blockable** spell has `single` or `area` delivery: it is rolled against the defender's bands (M3-27), so it can land in the block band. An **instant** spell has nothing to dodge or block: it takes no band, and its defense is the **save** the spell names (an attribute or a skill). Spell Ward works only on blockable spells; it never changes a save.

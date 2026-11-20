@@ -27,6 +27,8 @@
         "damage_multiplier": { "type": "number", "exclusiveMinimum": 0, "default": 1, "description": "Multiplies the damage after the called shot, rounded down." },
         "ranges": { "type": "array", "items": { "type": "string", "enum": ["melee", "ranged"] }, "minItems": 1, "uniqueItems": true, "description": "The attack ranges it works at; any range when left out." },
         "weapon_properties": { "type": "array", "items": { "type": "string", "enum": ["ammunition", "finesse", "heavy", "light", "loading", "thrown", "two_handed", "versatile"] }, "minItems": 1, "uniqueItems": true, "description": "The weapon must have one of these properties (the weapon `properties` in equipment); any weapon when left out." },
+        "save_bonus": { "type": "integer", "minimum": 0, "description": "Makes the maneuver an attempt (GD_S05_04): after a hit, the defender saves against the DC, the weapon's attribute x maneuver_save_multiplier plus this bonus; its effects and events land on a failed save (docs/core/actions.md#the-maneuver-attempt). A rider's attempt has no bonus. A maneuver without it lands its effects on any hit." },
+        "events": { "type": "array", "items": { "type": "string", "enum": ["disarm"] }, "minItems": 1, "uniqueItems": true, "description": "What a landed attempt does beyond effects, for the caller to apply: `disarm` is the target dropping its weapon, the event the arms called shot names (GD_S05_04)." },
         "effects": { "type": "array", "items": { "$ref": "schema.json#/definitions/appliedEffect" }, "description": "Applied on a hit that is not evaded, as a called shot's riders; each effect must declare the `maneuver` channel." },
         "source": { "$ref": "schema.json#/definitions/sourceRef" }
       },

@@ -786,10 +786,10 @@
       "skills": {}
     },
     "perks": {},
-    "perk": "power_attack",
+    "perk": "full_weight",
     "expect": {
       "taken": false,
-      "perk": "power_attack",
+      "perk": "full_weight",
       "rank": 0,
       "unmet": [
         {
@@ -801,7 +801,9 @@
         {
           "needs": "skill",
           "keys": [
-            "blades"
+            "blades",
+            "blunt",
+            "piercing"
           ],
           "min": 40,
           "has": 15
@@ -988,6 +990,317 @@
           ],
           "min": 30,
           "has": 20
+        }
+      ]
+    }
+  },
+  {
+    "name": "take perk: a tier before its rank_levels gate is refused (Shield Training tier 2 at level 5, gate 6)",
+    "operation": "take_perk",
+    "actor": {
+      "attributes": {
+        "str": 6,
+        "per": 5,
+        "end": 6,
+        "int": 4,
+        "wil": 5,
+        "agi": 5,
+        "cha": 4,
+        "lck": 4
+      },
+      "skills": {
+        "shields": 45
+      },
+      "level": 5
+    },
+    "perks": {
+      "shield_training": 1
+    },
+    "perk": "shield_training",
+    "expect": {
+      "taken": false,
+      "perk": "shield_training",
+      "rank": 1,
+      "unmet": [
+        {
+          "needs": "level",
+          "min": 6,
+          "has": 5
+        }
+      ]
+    }
+  },
+  {
+    "name": "take perk: the tier at its gate is taken (Shield Training tier 2 at level 6)",
+    "operation": "take_perk",
+    "actor": {
+      "attributes": {
+        "str": 6,
+        "per": 5,
+        "end": 6,
+        "int": 4,
+        "wil": 5,
+        "agi": 5,
+        "cha": 4,
+        "lck": 4
+      },
+      "skills": {
+        "shields": 45
+      },
+      "level": 6
+    },
+    "perks": {
+      "shield_training": 1
+    },
+    "perk": "shield_training",
+    "expect": {
+      "taken": true,
+      "perk": "shield_training",
+      "rank": 2,
+      "unmet": []
+    }
+  },
+  {
+    "name": "take perk: the first tier of a tiered perk gated at 6 needs level 6 (Spell Ward)",
+    "operation": "take_perk",
+    "actor": {
+      "attributes": {
+        "str": 6,
+        "per": 5,
+        "end": 6,
+        "int": 4,
+        "wil": 6,
+        "agi": 5,
+        "cha": 4,
+        "lck": 4
+      },
+      "skills": {
+        "shields": 55
+      },
+      "level": 5
+    },
+    "perks": {
+      "shield_training": 1
+    },
+    "perk": "spell_ward",
+    "expect": {
+      "taken": false,
+      "perk": "spell_ward",
+      "rank": 0,
+      "unmet": [
+        {
+          "needs": "level",
+          "min": 6,
+          "has": 5
+        }
+      ]
+    }
+  },
+  {
+    "name": "take perk: the trip line blocks the disarm line (Bind and Wrench with Low Sweep held)",
+    "operation": "take_perk",
+    "actor": {
+      "attributes": {
+        "str": 6,
+        "per": 6,
+        "end": 5,
+        "int": 4,
+        "wil": 4,
+        "agi": 6,
+        "cha": 4,
+        "lck": 4
+      },
+      "level": 8,
+      "skills": {
+        "blades": 40,
+        "bows": 40
+      }
+    },
+    "perks": {
+      "low_sweep": 1
+    },
+    "perk": "bind_and_wrench",
+    "expect": {
+      "taken": false,
+      "perk": "bind_and_wrench",
+      "rank": 0,
+      "unmet": [
+        {
+          "needs": "not_excluded",
+          "key": "low_sweep"
+        }
+      ]
+    }
+  },
+  {
+    "name": "take perk: the disarm line blocks the trip line, each held perk listed (Low Sweep with Bind and Wrench and Wrenching Blows held)",
+    "operation": "take_perk",
+    "actor": {
+      "attributes": {
+        "str": 6,
+        "per": 6,
+        "end": 5,
+        "int": 4,
+        "wil": 4,
+        "agi": 6,
+        "cha": 4,
+        "lck": 4
+      },
+      "level": 8,
+      "skills": {
+        "blades": 40,
+        "bows": 40
+      }
+    },
+    "perks": {
+      "bind_and_wrench": 1,
+      "wrenching_blows": 1
+    },
+    "perk": "low_sweep",
+    "expect": {
+      "taken": false,
+      "perk": "low_sweep",
+      "rank": 0,
+      "unmet": [
+        {
+          "needs": "not_excluded",
+          "key": "bind_and_wrench"
+        },
+        {
+          "needs": "not_excluded",
+          "key": "wrenching_blows"
+        }
+      ]
+    }
+  },
+  {
+    "name": "take perk: the melee trip line does not block the ranged disarm line (Knuckle Shot with Low Sweep held)",
+    "operation": "take_perk",
+    "actor": {
+      "attributes": {
+        "str": 6,
+        "per": 6,
+        "end": 5,
+        "int": 4,
+        "wil": 4,
+        "agi": 6,
+        "cha": 4,
+        "lck": 4
+      },
+      "level": 8,
+      "skills": {
+        "blades": 40,
+        "bows": 40
+      }
+    },
+    "perks": {
+      "low_sweep": 1,
+      "hooking_blows": 1
+    },
+    "perk": "knuckle_shot",
+    "expect": {
+      "taken": true,
+      "perk": "knuckle_shot",
+      "rank": 1,
+      "unmet": []
+    }
+  },
+  {
+    "name": "take perk: a rider perk needs its maneuver's unlock perk",
+    "operation": "take_perk",
+    "actor": {
+      "attributes": {
+        "str": 6,
+        "per": 6,
+        "end": 5,
+        "int": 4,
+        "wil": 4,
+        "agi": 6,
+        "cha": 4,
+        "lck": 4
+      },
+      "level": 8,
+      "skills": {
+        "blades": 40,
+        "bows": 40
+      }
+    },
+    "perks": {},
+    "perk": "hooking_blows",
+    "expect": {
+      "taken": false,
+      "perk": "hooking_blows",
+      "rank": 0,
+      "unmet": [
+        {
+          "needs": "perk",
+          "key": "low_sweep"
+        }
+      ]
+    }
+  },
+  {
+    "name": "take perk: a rider perk on its own line is taken (Hooking Blows after Low Sweep)",
+    "operation": "take_perk",
+    "actor": {
+      "attributes": {
+        "str": 6,
+        "per": 6,
+        "end": 5,
+        "int": 4,
+        "wil": 4,
+        "agi": 6,
+        "cha": 4,
+        "lck": 4
+      },
+      "level": 8,
+      "skills": {
+        "blades": 40,
+        "bows": 40
+      }
+    },
+    "perks": {
+      "low_sweep": 1
+    },
+    "perk": "hooking_blows",
+    "expect": {
+      "taken": true,
+      "perk": "hooking_blows",
+      "rank": 1,
+      "unmet": []
+    }
+  },
+  {
+    "name": "take perk: a summon nature blocks the other two (Summon Angelic with Summon Demonic held)",
+    "operation": "take_perk",
+    "actor": {
+      "attributes": {
+        "str": 6,
+        "per": 6,
+        "end": 5,
+        "int": 8,
+        "wil": 8,
+        "agi": 6,
+        "cha": 8,
+        "lck": 4
+      },
+      "level": 12,
+      "skills": {
+        "orange_magic": 60
+      }
+    },
+    "perks": {
+      "summon_demonic": 1
+    },
+    "perk": "summon_angelic",
+    "expect": {
+      "taken": false,
+      "perk": "summon_angelic",
+      "rank": 0,
+      "unmet": [
+        {
+          "needs": "not_excluded",
+          "key": "summon_demonic"
         }
       ]
     }

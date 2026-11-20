@@ -1,0 +1,231 @@
+{
+  "$schema": "./command.schema.json",
+  "name": "attack_sequence",
+  "summary": "One attack action by loadout: the attack, the jab, the full attack, or the circle cut, each strike its own roll through the combat pipeline.",
+  "documentation": "docs/core/combat.md",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "action": {
+        "type": "string",
+        "enum": ["attack", "jab", "full_attack", "circle_cut"],
+        "description": "The action (actions/core.json); its strikes and AP come from the loadout's attack_sequences row."
+      },
+      "loadout": { "$ref": "../../ruleset/schemas/schema.json#/definitions/loadout" },
+      "ap": {
+        "type": "integer",
+        "minimum": 0,
+        "description": "The attacker's AP left. A full attack and a circle cut spend all of it and need at least the attack AP + full_attack.min_extra_ap; an attack or a jab with fewer than its AP is an error."
+      },
+      "attacker": {
+        "type": "object",
+        "properties": {
+          "skill": { "type": "integer", "description": "The main-hand weapon skill." },
+          "off_skill": {
+            "type": "integer",
+            "description": "The off-hand weapon skill; the main-hand skill when left out. A Boss Strike bash rolls on it (the Shields skill) and needs it."
+          },
+          "attributes": { "$ref": "common.json#/definitions/attributes" },
+          "flags": {
+            "type": "array",
+            "items": { "$ref": "common.json#/definitions/key" },
+            "description": "Flags from conditions, as in combat."
+          },
+          "weapon_properties": {
+            "type": "array",
+            "items": { "$ref": "common.json#/definitions/key" },
+            "description": "The main-hand weapon's properties, as combat's attacker.weapon_properties."
+          },
+          "weapon_effects": {
+            "type": "array",
+            "items": { "type": "object" },
+            "description": "The main-hand weapon's on-hit applied effects (a bound weapon's bane, lingering damage, ...), as combat's attacker.weapon_effects."
+          },
+          "off_weapon_properties": {
+            "type": "array",
+            "items": { "$ref": "common.json#/definitions/key" },
+            "description": "The off-hand weapon's properties; none when left out."
+          },
+          "off_weapon_effects": {
+            "type": "array",
+            "items": { "type": "object" },
+            "description": "The off-hand weapon's on-hit applied effects; none when left out: an off-hand weapon never borrows the main hand's."
+          },
+          "shield_dr": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "The carried shield's DR: a Boss Strike bash's damage is this plus the damage roll. A bash without it is an error."
+          },
+          "perks": {
+            "type": "array",
+            "items": { "$ref": "common.json#/definitions/ref" },
+            "description": "The attacker's perk refs, as combat's attacker.perks: every strike reads them for a rider (docs/core/actions.md#rider-perks)."
+          },
+          "modifiers": {
+            "$ref": "common.json#/definitions/modifiers",
+            "description": "The attacker's perks and fighting stance (the stance command's modifiers): adds on full_attack_strikes, full_attack_off_strikes, mainhand_penalty, offhand_penalty, attack_roll (every strike), attack_single_opponent (every strike with one foe in reach), attack_after_parry (the first main-hand strike when after_parry), and unarmed_damage (an empty main hand), and boss_strike (the Boss Strike tier), and the carry_through, reaping_arc, scissor_cut, can_circle_cut, off_hand_parries, and carry_on_crit grants."
+          }
+        },
+        "additionalProperties": false,
+        "required": ["skill"]
+      },
+      "foes": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "object",
+          "description": "A combat defender (combat.json input defender), without the attack's rolls."
+        },
+        "description": "The foes in reach, in the order a carry picks them; foe 0 is a full attack's target."
+      },
+      "damage": {
+        "type": "object",
+        "properties": {
+          "type": { "$ref": "common.json#/definitions/key" },
+          "ability": { "$ref": "../../ruleset/schemas/schema.json#/definitions/ability" }
+        },
+        "additionalProperties": false,
+        "required": ["type"],
+        "description": "The main-hand damage type and attribute; each strike's roll is in rolls."
+      },
+      "off_damage": {
+        "type": "object",
+        "properties": {
+          "type": { "$ref": "common.json#/definitions/key" },
+          "ability": { "$ref": "../../ruleset/schemas/schema.json#/definitions/ability" }
+        },
+        "additionalProperties": false,
+        "required": ["type"],
+        "description": "The off-hand damage type and attribute; damage when left out."
+      },
+      "rolls": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "attack": { "$ref": "common.json#/definitions/d100" },
+            "damage": { "type": "integer", "minimum": 0 }
+          },
+          "additionalProperties": false,
+          "required": ["attack", "damage"]
+        },
+        "description": "One attack roll and one damage roll per strike made, in order; a lost strike takes none."
+      },
+      "targets": {
+        "type": "array",
+        "items": { "type": "integer", "minimum": 0 },
+        "description": "An attack's or a jab's foe per strike (indexes into foes); all 0 when left out."
+      },
+      "modifiers": {
+        "$ref": "common.json#/definitions/modifiers",
+        "description": "Attack modifiers on every strike (situations)."
+      },
+      "situations": {
+        "type": "array",
+        "items": { "$ref": "common.json#/definitions/key" },
+        "description": "Keys in ruleset/data/combat/situations.json for every strike, as in combat (flanking, beside_summon, ...)."
+      },
+      "summoning": {
+        "type": "boolean",
+        "description": "Whether the attacker has an active summon (not a minion), for every strike's while_summoning modifiers, as in combat. Default false."
+      },
+      "after_block": {
+        "type": "boolean",
+        "description": "The attacker just blocked a hit in their band: from Boss Strike's after_block tier a bash jab costs shield_bash.after_block_ap."
+      },
+      "after_parry": {
+        "type": "boolean",
+        "description": "The attacker parried a hit since their last strike: attack_after_parry adds to the first main-hand strike (Espada y Daga, docs/core/combat.md#fighting-stances)."
+      }
+    },
+    "additionalProperties": false,
+    "required": ["action", "loadout", "attacker", "foes", "damage", "rolls"]
+  },
+  "result_schema": {
+    "type": "object",
+    "properties": {
+      "action": { "type": "string" },
+      "sequence": { "type": "string", "description": "The attack_sequences row key." },
+      "ap": { "type": "integer", "minimum": 0 },
+      "stamina": { "type": "integer", "minimum": 0, "description": "ap times stamina_per_ap." },
+      "strikes": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "hand": { "type": "string", "enum": ["main", "off"] },
+            "foe": { "type": "integer", "minimum": 0 },
+            "attack": {
+              "type": "integer",
+              "description": "The strike's attack value after the penalty perks."
+            },
+            "outcome": { "type": "string", "enum": ["hit", "miss", "fumble", "evaded", "blocked"] },
+            "target": { "type": "integer" },
+            "margin": { "anyOf": [{ "type": "integer" }, { "type": "null" }] },
+            "crit": { "type": "boolean" },
+            "damage": { "type": "integer", "minimum": 0 },
+            "hp": { "type": "integer", "minimum": 0 },
+            "carried": {
+              "type": "boolean",
+              "description": "The strike went to another foe because its own dropped (carry_through)."
+            },
+            "free": {
+              "type": "boolean",
+              "description": "The free strike carry_through gives after an action's last strike drops a foe."
+            },
+            "scissor": {
+              "type": "boolean",
+              "description": "Scissor Cut counted the off-hand dice once more."
+            },
+            "weapon_effects": {
+              "type": "array",
+              "items": { "type": "object" },
+              "description": "The weapon effects that landed, as combat's; listed only when the strike's hand has weapon effects."
+            },
+            "bash": {
+              "type": "boolean",
+              "const": true,
+              "description": "A Boss Strike shield bash: the off-hand strike made with the shield, shield_bash.damage_type damage of shield_dr plus the damage roll. Left out on any other strike."
+            },
+            "stagger_ap": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "A bash's stagger: AP the target loses on its next turn (shield_bash.stagger_ap from the stagger tier, on a hit); 0 otherwise. Left out on any other strike."
+            },
+            "rider": { "type": "string", "description": "The maneuver a held rider perk put on the strike, as combat's; left out when no rider rides." },
+            "effects": { "type": "array", "items": { "type": "object" }, "description": "The rider's effects on a hit, as combat's; left out when no rider rides." },
+            "events": { "type": "array", "items": { "type": "string" }, "description": "The rider's events on a hit, as combat's; left out when no rider rides." },
+            "save": { "type": "object", "description": "The rider's attempt on a hit (attribute, dc, target), as combat's; left out otherwise." }
+          },
+          "additionalProperties": false,
+          "required": [
+            "hand",
+            "foe",
+            "attack",
+            "outcome",
+            "target",
+            "margin",
+            "crit",
+            "damage",
+            "hp",
+            "carried",
+            "free",
+            "scissor"
+          ]
+        }
+      },
+      "hp": {
+        "type": "array",
+        "items": { "type": "integer", "minimum": 0 },
+        "description": "Each foe's HP after the action."
+      },
+      "lost": {
+        "type": "integer",
+        "minimum": 0,
+        "description": "Strikes lost because their foe dropped and nothing carried them."
+      }
+    },
+    "additionalProperties": false,
+    "required": ["action", "sequence", "ap", "stamina", "strikes", "hp", "lost"]
+  }
+}

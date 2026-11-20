@@ -184,7 +184,7 @@
     }
   },
   {
-    "name": "armor: heavy armor is -25, so 30 fails against 25",
+    "name": "armor: heavy armor is -30, so 30 fails against 20",
     "spell": "fire_bolt",
     "caster": {
       "skills": {
@@ -201,7 +201,7 @@
       "outcome": "failed",
       "mana": 15,
       "check": {
-        "target": 25,
+        "target": 20,
         "success": false,
         "margin": null,
         "tags": []
@@ -209,7 +209,7 @@
     }
   },
   {
-    "name": "armor: light armor costs nothing",
+    "name": "armor: light armor is -5, so the target is 45",
     "spell": "fire_bolt",
     "caster": {
       "skills": {
@@ -225,16 +225,16 @@
     "expect": {
       "outcome": "cast",
       "check": {
-        "target": 50,
+        "target": 45,
         "success": true,
-        "margin": 20,
+        "margin": 15,
         "tags": []
       },
       "mana": 15
     }
   },
   {
-    "name": "armor: medium -10 and a +5 on red magic; a +20 on blue magic does not count",
+    "name": "armor: medium -15 and a +5 on red magic; a +20 on blue magic does not count",
     "spell": "fire_bolt",
     "caster": {
       "skills": {
@@ -246,7 +246,7 @@
       "mana": 20,
       "armor": "medium"
     },
-    "roll": 40,
+    "roll": 35,
     "modifiers": [
       {
         "target": "red_magic",
@@ -264,7 +264,7 @@
     "expect": {
       "outcome": "cast",
       "check": {
-        "target": 45,
+        "target": 40,
         "success": true,
         "margin": 5,
         "tags": []
@@ -1336,5 +1336,15 @@
   {"name": "bonded: Shared Wellspring takes 20% off the paid cost while a summon is out: 5 becomes 4", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 20, "summons": ["core:summon/elemental"]}, "modifiers": [{"target": "spell_cost", "operation": "multiply", "value": 0.8, "source": "feature:shared_wellspring", "origin": "core:origin/trained", "duration": "while_summoning"}], "roll": 30, "expect": {"outcome": "cast", "mana": 16}},
   {"name": "bonded: Shared Wellspring does nothing with no summon out", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 20}, "modifiers": [{"target": "spell_cost", "operation": "multiply", "value": 0.8, "source": "feature:shared_wellspring", "origin": "core:origin/trained", "duration": "while_summoning"}], "roll": 30, "expect": {"outcome": "cast", "mana": 15}},
   {"name": "bonded: Elemental Kinship adds 4 to a fire packet while a fire elemental is out", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 20, "summons": ["core:summon/elemental"], "summon_templates": ["core:monster_template/fire"]}, "modifiers": [{"target": "bonded_element_damage", "operation": "add", "value": 4, "source": "feature:elemental_kinship", "origin": "core:origin/trained", "duration": "while_summoning"}], "roll": 30, "target": {"hp": 30}, "expect": {"damage": [{"effect": "core:effect/damage_fire", "type": "fire", "amount": 12, "damage": 12, "evaded": false, "blocked": false}], "hp": 18}},
-  {"name": "bonded: Elemental Kinship does nothing when the summon's element does not match", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 20, "summons": ["core:summon/elemental"], "summon_templates": ["core:monster_template/frost"]}, "modifiers": [{"target": "bonded_element_damage", "operation": "add", "value": 4, "source": "feature:elemental_kinship", "origin": "core:origin/trained", "duration": "while_summoning"}], "roll": 30, "target": {"hp": 30}, "expect": {"damage": [{"effect": "core:effect/damage_fire", "type": "fire", "amount": 8, "damage": 8, "evaded": false, "blocked": false}], "hp": 22}}
+  {"name": "bonded: Elemental Kinship does nothing when the summon's element does not match", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 20, "summons": ["core:summon/elemental"], "summon_templates": ["core:monster_template/frost"]}, "modifiers": [{"target": "bonded_element_damage", "operation": "add", "value": 4, "source": "feature:elemental_kinship", "origin": "core:origin/trained", "duration": "while_summoning"}], "roll": 30, "target": {"hp": 30}, "expect": {"damage": [{"effect": "core:effect/damage_fire", "type": "fire", "amount": 8, "damage": 8, "evaded": false, "blocked": false}], "hp": 22}},
+  {"name": "armor: no armor and no shield, no penalty: 50", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 20}, "roll": 30, "expect": {"outcome": "cast", "check": {"target": 50, "success": true, "margin": 20, "tags": []}}},
+  {"name": "mailed casting: tier 1 (x0.75) turns light -5 into -4 (floored): 46", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 20, "armor": "light"}, "roll": 30, "modifiers": [{"target": "armor_cast_penalty", "operation": "multiply", "value": 0.75, "source": "feature:mailed_casting", "origin": "core:origin/trained"}], "expect": {"outcome": "cast", "check": {"target": 46, "success": true, "margin": 16, "tags": []}}},
+  {"name": "mailed casting: tier 1 turns medium -15 into -12: 38", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 20, "armor": "medium"}, "roll": 30, "modifiers": [{"target": "armor_cast_penalty", "operation": "multiply", "value": 0.75, "source": "feature:mailed_casting", "origin": "core:origin/trained"}], "expect": {"outcome": "cast", "check": {"target": 38, "success": true, "margin": 8, "tags": []}}},
+  {"name": "mailed casting: tier 1 turns heavy -30 into -23: 27", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 20, "armor": "heavy"}, "roll": 30, "modifiers": [{"target": "armor_cast_penalty", "operation": "multiply", "value": 0.75, "source": "feature:mailed_casting", "origin": "core:origin/trained"}], "expect": {"outcome": "failed", "check": {"target": 27, "success": false, "margin": null, "tags": []}}},
+  {"name": "mailed casting: tier 2 (x0.5) turns heavy -30 into -15: 35", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 20, "armor": "heavy"}, "roll": 30, "modifiers": [{"target": "armor_cast_penalty", "operation": "multiply", "value": 0.5, "source": "feature:mailed_casting", "origin": "core:origin/trained"}], "expect": {"outcome": "cast", "check": {"target": 35, "success": true, "margin": 5, "tags": []}}},
+  {"name": "mailed casting: tier 3 (x0.25) turns heavy -30 into -8: 42", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 20, "armor": "heavy"}, "roll": 30, "modifiers": [{"target": "armor_cast_penalty", "operation": "multiply", "value": 0.25, "source": "feature:mailed_casting", "origin": "core:origin/trained"}], "expect": {"outcome": "cast", "check": {"target": 42, "success": true, "margin": 12, "tags": []}}},
+  {"name": "shield: a buckler costs nothing on casting: 50", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 20, "shield": "buckler"}, "roll": 30, "expect": {"outcome": "cast", "check": {"target": 50, "success": true, "margin": 20, "tags": []}}},
+  {"name": "shield: a standard shield is -5: 45", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 20, "shield": "standard"}, "roll": 30, "expect": {"outcome": "cast", "check": {"target": 45, "success": true, "margin": 15, "tags": []}}},
+  {"name": "shield: heavy armor -30 and a tower shield -15, so 30 fails against 5", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 20, "armor": "heavy", "shield": "tower"}, "roll": 30, "expect": {"outcome": "failed", "check": {"target": 5, "success": false, "margin": null, "tags": []}}},
+  {"name": "mailed casting: tier 2 halves both, heavy -15 and tower -8 (floored): 27", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 20, "armor": "heavy", "shield": "tower"}, "roll": 30, "modifiers": [{"target": "armor_cast_penalty", "operation": "multiply", "value": 0.5, "source": "feature:mailed_casting", "origin": "core:origin/trained"}], "expect": {"outcome": "failed", "check": {"target": 27, "success": false, "margin": null, "tags": []}}}
 ]

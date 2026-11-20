@@ -250,8 +250,13 @@ func takePerk(ruleset *data.Ruleset, sheet *actor.Actor, held map[string]int64, 
 	if sheet.Level != nil {
 		level = *sheet.Level
 	}
-	if need.Level > level {
-		failed = append(failed, unmet{Needs: "level", Minimum: &need.Level, Has: &level})
+	// A tiered perk's next tier has its own gate (rank_levels, GD_S05_03).
+	var gate int64 = need.Level
+	if rank < int64(len(feature.RankLevels)) {
+		gate = feature.RankLevels[rank]
+	}
+	if gate > level {
+		failed = append(failed, unmet{Needs: "level", Minimum: &gate, Has: &level})
 	}
 	var abilities []string = make([]string, 0, len(need.Abilities))
 	for ability := range need.Abilities {
@@ -296,6 +301,18 @@ func takePerk(ruleset *data.Ruleset, sheet *actor.Actor, held map[string]int64, 
 			}
 			failed = append(failed, entry)
 		}
+	}
+	// A held perk that excludes this one, or that this one excludes, blocks it: the trip line
+	// blocks the disarm line (docs/core/progression.md#excluded-perks, GD_S05_04).
+	var others []string = make([]string, 0, len(held))
+	for other, has := range held {
+		if row, known := ruleset.Features.Get(other); known && has > 0 && data.Exclude(feature, row) {
+			others = append(others, other)
+		}
+	}
+	sort.Strings(others)
+	for _, other := range others {
+		failed = append(failed, unmet{Needs: "not_excluded", Key: other})
 	}
 	if len(failed) > 0 {
 		return perkResult{Perk: key, Rank: rank, Unmet: failed}, nil

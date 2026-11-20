@@ -55,9 +55,9 @@
       ]
     },
     {
-      "key": "power_attack",
-      "label": "Power Attack",
-      "description": "You put your whole body behind each swing, dealing extra melee damage.",
+      "key": "full_weight",
+      "label": "Full Weight",
+      "description": "You put your whole body behind each swing, dealing extra melee damage. Opens the Carry Through ladder.",
       "type": "perk",
       "category": "combat",
       "prerequisite": {
@@ -67,7 +67,9 @@
         "skills": [
           {
             "any_of": [
-              "core:skill/blades"
+              "core:skill/blades",
+              "core:skill/blunt",
+              "core:skill/piercing"
             ],
             "min": 40
           }
@@ -80,7 +82,7 @@
           "target": "melee_damage",
           "operation": "multiply",
           "value": 1.25,
-          "source": "feature:power_attack",
+          "source": "feature:full_weight",
           "origin": "core:origin/trained"
         }
       ]
@@ -122,7 +124,7 @@
     {
       "key": "shield_wall",
       "label": "Shield Wall",
-      "description": "You turn a shield into a fortress, blocking a greater share of incoming damage.",
+      "description": "You plant the shield and hold the line: while you block, the block band is 3 wider per tier (3, 6, 9).",
       "type": "perk",
       "category": "combat",
       "prerequisite": {
@@ -139,12 +141,17 @@
         ],
         "perks": []
       },
-      "ranks": 1,
+      "ranks": 3,
+      "rank_levels": [
+        1,
+        6,
+        12
+      ],
       "modifiers": [
         {
-          "target": "block_reduction",
-          "operation": "multiply",
-          "value": 1.15,
+          "target": "block_band",
+          "operation": "add",
+          "value": 3,
           "source": "feature:shield_wall",
           "origin": "core:origin/trained"
         }
@@ -700,6 +707,230 @@
       ]
     },
     {
+      "key": "low_sweep",
+      "label": "Low Sweep",
+      "description": "You learn to fight for the legs as well as the body: you can make the Trip maneuver.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "abilities": {
+          "agi": 5
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/blades",
+              "core:skill/blunt",
+              "core:skill/piercing",
+              "core:skill/unarmed"
+            ],
+            "min": 30
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:maneuver/trip"
+      ],
+      "excludes": [
+        "core:feature/bind_and_wrench",
+        "core:feature/wrenching_blows"
+      ]
+    },
+    {
+      "key": "hooking_blows",
+      "label": "Hooking Blows",
+      "description": "Every cut you make reaches for a leg: after each plain melee attack that hits, the target saves against your weapon's attribute or falls, as the Trip maneuver, at no cost to the blow. The trip line and the disarm line exclude each other.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 8,
+        "abilities": {
+          "agi": 6
+        },
+        "perks": [
+          {
+            "perk": "core:feature/low_sweep"
+          }
+        ]
+      },
+      "ranks": 1,
+      "rider": "core:maneuver/trip",
+      "excludes": [
+        "core:feature/bind_and_wrench",
+        "core:feature/wrenching_blows"
+      ]
+    },
+    {
+      "key": "bind_and_wrench",
+      "label": "Bind and Wrench",
+      "description": "You learn to catch a weapon in your own and twist it free: you can make the Disarm maneuver.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "abilities": {
+          "str": 5
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/blades",
+              "core:skill/blunt",
+              "core:skill/piercing",
+              "core:skill/unarmed"
+            ],
+            "min": 30
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:maneuver/disarm"
+      ],
+      "excludes": [
+        "core:feature/low_sweep",
+        "core:feature/hooking_blows"
+      ]
+    },
+    {
+      "key": "wrenching_blows",
+      "label": "Wrenching Blows",
+      "description": "Every blow you land worries at the grip: after each plain melee attack that hits, the target saves against your weapon's attribute or drops its weapon, as the Disarm maneuver, at no cost to the blow. The disarm line and the trip line exclude each other.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 8,
+        "abilities": {
+          "str": 6
+        },
+        "perks": [
+          {
+            "perk": "core:feature/bind_and_wrench"
+          }
+        ]
+      },
+      "ranks": 1,
+      "rider": "core:maneuver/disarm",
+      "excludes": [
+        "core:feature/low_sweep",
+        "core:feature/hooking_blows"
+      ]
+    },
+    {
+      "key": "low_aim",
+      "label": "Low Aim",
+      "description": "You learn to shoot or throw at the legs: you can make the Tripping Shot maneuver.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "abilities": {
+          "per": 5
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/bows",
+              "core:skill/crossbows",
+              "core:skill/guns",
+              "core:skill/throwing_weapons"
+            ],
+            "min": 30
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:maneuver/tripping_shot"
+      ],
+      "excludes": [
+        "core:feature/knuckle_shot",
+        "core:feature/stripping_shots"
+      ]
+    },
+    {
+      "key": "hamstring_shots",
+      "label": "Hamstring Shots",
+      "description": "Every shot you loose goes low: after each plain ranged attack that hits, the target saves against your weapon's attribute or falls, as the Tripping Shot maneuver, at no cost to the shot. The ranged trip line and the ranged disarm line exclude each other.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 8,
+        "abilities": {
+          "per": 6
+        },
+        "perks": [
+          {
+            "perk": "core:feature/low_aim"
+          }
+        ]
+      },
+      "ranks": 1,
+      "rider": "core:maneuver/tripping_shot",
+      "excludes": [
+        "core:feature/knuckle_shot",
+        "core:feature/stripping_shots"
+      ]
+    },
+    {
+      "key": "knuckle_shot",
+      "label": "Knuckle Shot",
+      "description": "You learn to shoot or throw at the weapon hand: you can make the Disarming Shot maneuver.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "abilities": {
+          "per": 5
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/bows",
+              "core:skill/crossbows",
+              "core:skill/guns",
+              "core:skill/throwing_weapons"
+            ],
+            "min": 30
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:maneuver/disarming_shot"
+      ],
+      "excludes": [
+        "core:feature/low_aim",
+        "core:feature/hamstring_shots"
+      ]
+    },
+    {
+      "key": "stripping_shots",
+      "label": "Stripping Shots",
+      "description": "Every shot you loose goes for the hand: after each plain ranged attack that hits, the target saves against your weapon's attribute or drops its weapon, as the Disarming Shot maneuver, at no cost to the shot. The ranged disarm line and the ranged trip line exclude each other.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 8,
+        "abilities": {
+          "per": 6
+        },
+        "perks": [
+          {
+            "perk": "core:feature/knuckle_shot"
+          }
+        ]
+      },
+      "ranks": 1,
+      "rider": "core:maneuver/disarming_shot",
+      "excludes": [
+        "core:feature/low_aim",
+        "core:feature/hamstring_shots"
+      ]
+    },
+    {
       "key": "brutal_charge",
       "label": "Brutal Charge",
       "description": "You barrel through enemies in heavy armor. Power attacks and charges cost stamina equal to a light attack - the heavy surcharge is negated.",
@@ -722,37 +953,6 @@
           "operation": "grant",
           "value": 1,
           "source": "feature:brutal_charge",
-          "origin": "core:origin/trained"
-        }
-      ]
-    },
-    {
-      "key": "acrobat",
-      "label": "Acrobat",
-      "description": "You are exceptionally nimble and coordinated. Dodge rolls cost 25% less stamina, and you recover from knockdowns faster.",
-      "type": "perk",
-      "category": "combat",
-      "prerequisite": {
-        "abilities": {
-          "agi": 7
-        },
-        "skills": [
-          {
-            "any_of": [
-              "core:skill/evasion"
-            ],
-            "min": 40
-          }
-        ],
-        "perks": []
-      },
-      "ranks": 1,
-      "modifiers": [
-        {
-          "target": "dodge_stamina",
-          "operation": "multiply",
-          "value": 0.75,
-          "source": "feature:acrobat",
           "origin": "core:origin/trained"
         }
       ]
@@ -781,9 +981,9 @@
       ]
     },
     {
-      "key": "cleave",
-      "label": "Cleave",
-      "description": "When a melee blow drops a foe, the swing carries into one more within reach.",
+      "key": "carry_through",
+      "label": "Carry Through",
+      "description": "When a strike drops a foe, the next strike of the same action goes to another foe in reach; after the last strike of an action, one free strike does (docs/core/combat.md#attacks-by-loadout).",
       "type": "perk",
       "category": "combat",
       "prerequisite": {
@@ -795,20 +995,276 @@
           {
             "any_of": [
               "core:skill/blades",
-              "core:skill/blunt"
+              "core:skill/blunt",
+              "core:skill/piercing"
             ],
             "min": 50
           }
         ],
+        "perks": [
+          {
+            "perk": "core:feature/full_weight"
+          }
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "carry_through",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:carry_through",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "reaping_arc",
+      "label": "Reaping Arc",
+      "description": "The carry repeats for every foe a strike drops, with no limit but the foes in reach.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 12,
+        "abilities": {
+          "str": 7
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/blades",
+              "core:skill/blunt",
+              "core:skill/piercing"
+            ],
+            "min": 60
+          }
+        ],
+        "perks": [
+          {
+            "perk": "core:feature/carry_through"
+          }
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "reaping_arc",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:reaping_arc",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "circle_cut",
+      "label": "Circle Cut",
+      "description": "With a two-handed weapon: an action that spends all your AP and strikes every foe in reach once, at -10. The one full attack that reaches many foes.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 18,
+        "abilities": {
+          "str": 8
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/blades",
+              "core:skill/blunt",
+              "core:skill/piercing"
+            ],
+            "min": 70
+          }
+        ],
+        "perks": [
+          {
+            "perk": "core:feature/reaping_arc"
+          }
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "can_circle_cut",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:circle_cut",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "follow_up",
+      "label": "Follow-Up",
+      "description": "A full attack gains one more main-hand strike, at -20.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 6,
+        "abilities": {
+          "agi": 5
+        },
         "perks": []
       },
       "ranks": 1,
       "modifiers": [
         {
-          "target": "cleave_on_kill",
+          "target": "full_attack_strikes",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:follow_up",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "press_on",
+      "label": "Press On",
+      "description": "A full attack gains a second extra main-hand strike, at -30.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 18,
+        "abilities": {
+          "agi": 7
+        },
+        "perks": [
+          {
+            "perk": "core:feature/follow_up"
+          }
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "full_attack_strikes",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:press_on",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "off_hand_drill",
+      "label": "Off-Hand Drill",
+      "description": "Drilled with a weapon in each hand: both two-weapon penalties are 10 smaller.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 4,
+        "abilities": {
+          "agi": 6
+        },
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "mainhand_penalty",
+          "operation": "add",
+          "value": 10,
+          "source": "feature:off_hand_drill",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "offhand_penalty",
+          "operation": "add",
+          "value": 10,
+          "source": "feature:off_hand_drill",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "crossed_guard",
+      "label": "Crossed Guard",
+      "description": "While you hold two weapons, your evasion band grows by 5.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 8,
+        "abilities": {
+          "agi": 6
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/evasion"
+            ],
+            "min": 30
+          }
+        ],
+        "perks": [
+          {
+            "perk": "core:feature/off_hand_drill"
+          }
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "two_weapon_evasion_band",
+          "operation": "add",
+          "value": 5,
+          "source": "feature:crossed_guard",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "twin_rhythm",
+      "label": "Twin Rhythm",
+      "description": "A full attack with two weapons gains a second off-hand strike, at the off-hand value -10.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 14,
+        "abilities": {
+          "agi": 7
+        },
+        "perks": [
+          {
+            "perk": "core:feature/off_hand_drill"
+          }
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "full_attack_off_strikes",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:twin_rhythm",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "scissor_cut",
+      "label": "Scissor Cut",
+      "description": "When a main-hand and an off-hand strike of one full attack both hit the same foe, the off-hand weapon's damage dice count once more.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 20,
+        "abilities": {
+          "agi": 8
+        },
+        "perks": [
+          {
+            "perk": "core:feature/twin_rhythm"
+          }
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "scissor_cut",
           "operation": "grant",
           "value": 1,
-          "source": "feature:cleave",
+          "source": "feature:scissor_cut",
           "origin": "core:origin/trained"
         }
       ]
@@ -1041,9 +1497,9 @@
       ]
     },
     {
-      "key": "duelist",
-      "label": "Duelist",
-      "description": "One on one, your blade reads every opening: +10 to attack when only one foe engages you.",
+      "key": "fencers_measure",
+      "label": "Fencer's Measure",
+      "description": "You learn Fencer's Measure, a fighting stance for a lone one-handed blade (docs/core/combat.md#fighting-stances).",
       "type": "perk",
       "category": "combat",
       "prerequisite": {
@@ -1062,14 +1518,177 @@
         "perks": []
       },
       "ranks": 1,
-      "modifiers": [
-        {
-          "target": "attack_single_opponent",
-          "operation": "add",
-          "value": 10,
-          "source": "feature:duelist",
-          "origin": "core:origin/trained"
-        }
+      "unlocks": [
+        "core:stance/fencers_measure"
+      ]
+    },
+    {
+      "key": "espada_y_daga",
+      "label": "Espada y Daga",
+      "description": "You learn Espada y Daga, a fighting stance (docs/core/combat.md#fighting-stances).",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 8,
+        "abilities": {
+          "agi": 6
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/blades",
+              "core:skill/piercing"
+            ],
+            "min": 40
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:stance/espada_y_daga"
+      ]
+    },
+    {
+      "key": "buckler_play",
+      "label": "Buckler Play",
+      "description": "You learn Buckler Play, a fighting stance (docs/core/combat.md#fighting-stances).",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 6,
+        "abilities": {
+          "agi": 5
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/shields"
+            ],
+            "min": 30
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:stance/buckler_play"
+      ]
+    },
+    {
+      "key": "phalanx",
+      "label": "Phalanx",
+      "description": "You learn Phalanx, a fighting stance (docs/core/combat.md#fighting-stances).",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 8,
+        "abilities": {
+          "end": 6
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/piercing"
+            ],
+            "min": 40
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:stance/phalanx"
+      ]
+    },
+    {
+      "key": "long_guard",
+      "label": "Long Guard",
+      "description": "You learn Long Guard, a fighting stance (docs/core/combat.md#fighting-stances).",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 10,
+        "abilities": {
+          "str": 6
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/blades",
+              "core:skill/blunt",
+              "core:skill/piercing"
+            ],
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:stance/long_guard"
+      ]
+    },
+    {
+      "key": "bare_knuckle",
+      "label": "Bare Knuckle",
+      "description": "You learn Bare Knuckle, a fighting stance (docs/core/combat.md#fighting-stances).",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 6,
+        "abilities": {
+          "end": 5
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/unarmed"
+            ],
+            "min": 30
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:stance/bare_knuckle"
+      ]
+    },
+    {
+      "key": "forward_guard",
+      "label": "Forward Guard",
+      "description": "You learn Forward Guard, a fighting stance (docs/core/combat.md#fighting-stances).",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 4,
+        "abilities": {
+          "str": 5
+        },
+        "perks": []
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:stance/forward_guard"
+      ]
+    },
+    {
+      "key": "low_guard",
+      "label": "Low Guard",
+      "description": "You learn Low Guard, a fighting stance (docs/core/combat.md#fighting-stances).",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 4,
+        "abilities": {
+          "agi": 5
+        },
+        "perks": []
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:stance/low_guard"
       ]
     },
     {
@@ -1183,7 +1802,7 @@
         },
         "perks": [
           {
-            "perk": "core:feature/power_attack"
+            "perk": "core:feature/full_weight"
           }
         ]
       },
@@ -1342,26 +1961,31 @@
       ]
     },
     {
-      "key": "battle_mage",
-      "label": "Battle Mage",
-      "description": "You have learned to cast in a hauberk: the armor penalty on casting is halved.",
+      "key": "mailed_casting",
+      "label": "Mailed Casting",
+      "description": "You have learned to cast in mail and behind a shield: the armor and shield penalty on casting is x0.75, x0.5 at the second tier, x0.25 at the third.",
       "type": "perk",
       "category": "magic",
       "prerequisite": {
-        "level": 12,
+        "level": 6,
         "abilities": {
           "int": 6,
           "end": 6
         },
         "perks": []
       },
-      "ranks": 1,
+      "ranks": 3,
+      "rank_levels": [
+        6,
+        12,
+        18
+      ],
       "modifiers": [
         {
           "target": "armor_cast_penalty",
           "operation": "multiply",
-          "value": 0.5,
-          "source": "feature:battle_mage",
+          "value": 0.75,
+          "source": "feature:mailed_casting",
           "origin": "core:origin/trained"
         }
       ]
@@ -2343,6 +2967,10 @@
           "source": "feature:summon_demonic",
           "origin": "core:origin/trained"
         }
+      ],
+      "excludes": [
+        "core:feature/summon_angelic",
+        "core:feature/summon_otherworldly"
       ]
     },
     {
@@ -2375,6 +3003,10 @@
           "source": "feature:summon_angelic",
           "origin": "core:origin/trained"
         }
+      ],
+      "excludes": [
+        "core:feature/summon_demonic",
+        "core:feature/summon_otherworldly"
       ]
     },
     {
@@ -2407,6 +3039,10 @@
           "source": "feature:summon_otherworldly",
           "origin": "core:origin/trained"
         }
+      ],
+      "excludes": [
+        "core:feature/summon_demonic",
+        "core:feature/summon_angelic"
       ]
     },
     {
@@ -3877,7 +4513,7 @@
     {
       "key": "shield_training",
       "label": "Shield Training",
-      "description": "You angle the shield to take the blow on its boss: a carried shield subtracts 2 more damage.",
+      "description": "You angle the shield to take the blow on its boss: a carried shield subtracts 2 more damage, 3 at the second tier, 4 at the third.",
       "type": "perk",
       "category": "combat",
       "prerequisite": {
@@ -3894,7 +4530,19 @@
         ],
         "perks": []
       },
-      "ranks": 1,
+      "ranks": 3,
+      "rank_levels": [
+        1,
+        6,
+        12
+      ],
+      "rank_values": {
+        "shield_dr": [
+          2,
+          3,
+          4
+        ]
+      },
       "modifiers": [
         {
           "target": "shield_dr",
@@ -3908,7 +4556,7 @@
     {
       "key": "spell_ward",
       "label": "Spell Ward",
-      "description": "Your shield catches fire and force as well as steel: while you block, a band of half the width also stops a single or area spell of any type. An instant spell still cannot be blocked.",
+      "description": "Your shield takes the sting out of a spell: while you block, a single or area spell whose roll lands in the block band deals less, END x 2 x tier percent of its damage resisted, at most 50%. It never stops a spell, and an instant spell, which meets no band, deals its full result.",
       "type": "perk",
       "category": "combat",
       "prerequisite": {
@@ -3930,11 +4578,16 @@
           }
         ]
       },
-      "ranks": 1,
+      "ranks": 3,
+      "rank_levels": [
+        6,
+        12,
+        18
+      ],
       "modifiers": [
         {
-          "target": "block_magic",
-          "operation": "grant",
+          "target": "spell_ward",
+          "operation": "add",
           "value": 1,
           "source": "feature:spell_ward",
           "origin": "core:origin/trained"
@@ -3962,7 +4615,8 @@
         ],
         "perks": [
           {
-            "perk": "core:feature/spell_ward"
+            "perk": "core:feature/shield_training",
+            "rank": 2
           }
         ]
       },
@@ -3973,6 +4627,77 @@
           "operation": "grant",
           "value": 1,
           "source": "feature:bulwark",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "guardian",
+      "label": "Guardian",
+      "description": "You keep your shield between your friends and harm: while you block, one adjacent ally's evasion band +10; at the second tier the block band also covers attacks on that ally; at the third it covers every adjacent ally. Any shield works.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 6,
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/shields"
+            ],
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 3,
+      "rank_levels": [
+        6,
+        12,
+        18
+      ],
+      "modifiers": [
+        {
+          "target": "guardian",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:guardian",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "boss_strike",
+      "label": "Boss Strike",
+      "description": "You hit with the shield's boss. Tier 1: a bash is a jab with the shield, blunt damage of the shield's DR + 1d4. Tier 2: the attack also strikes with the shield, as a light off-hand weapon. Tier 3: a bash that hits costs the target 2 AP on its next turn. Tier 4: right after a block in your band, a bash costs 1 AP.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "abilities": {
+          "str": 5
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/shields"
+            ],
+            "min": 30
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 4,
+      "rank_levels": [
+        1,
+        6,
+        12,
+        18
+      ],
+      "modifiers": [
+        {
+          "target": "boss_strike",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:boss_strike",
           "origin": "core:origin/trained"
         }
       ]
@@ -4011,7 +4736,7 @@
     {
       "key": "armored_evasion",
       "label": "Armored Evasion",
-      "description": "You have learned to move in your armor: +10 on the evasion skill, which offsets what armor costs you.",
+      "description": "You have learned to move in your armor: +5 on the evasion skill per tier (5, 10, 15), which offsets what armor costs you.",
       "type": "perk",
       "category": "combat",
       "prerequisite": {
@@ -4030,13 +4755,81 @@
           }
         ]
       },
-      "ranks": 1,
+      "ranks": 3,
+      "rank_levels": [
+        6,
+        12,
+        18
+      ],
       "modifiers": [
         {
           "target": "evasion",
           "operation": "add",
-          "value": 10,
+          "value": 5,
           "source": "feature:armored_evasion",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "unarmored_grace",
+      "label": "Unarmored Grace",
+      "description": "With no body armor (clothes and robes allowed), your evasion band is 5 wider per tier (5, 10, 15, 20).",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "abilities": {
+          "agi": 6
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/evasion"
+            ],
+            "min": 30
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 4,
+      "rank_levels": [
+        1,
+        6,
+        12,
+        18
+      ],
+      "modifiers": [
+        {
+          "target": "unarmored_evasion_band",
+          "operation": "add",
+          "value": 5,
+          "source": "feature:unarmored_grace",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "flowing_step",
+      "label": "Flowing Step",
+      "description": "With no body armor, the first move each turn draws no opportunity attack.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 12,
+        "perks": [
+          {
+            "perk": "core:feature/unarmored_grace",
+            "rank": 2
+          }
+        ]
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "flowing_step",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:flowing_step",
           "origin": "core:origin/trained"
         }
       ]

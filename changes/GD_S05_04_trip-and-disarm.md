@@ -1,0 +1,6 @@
+### GD_S05_04_trip-and-disarm Trip and disarm: maneuvers a perk unlocks, and rider perks that put one on every attack
+- Added: the `trip` and `disarm` maneuvers and their ranged twins `tripping_shot` and `disarming_shot` (`save_bonus` and `events` on the maneuver schema; `knockdown` gains the `maneuver` channel), unlocked by Low Sweep, Bind and Wrench, Low Aim, and Knuckle Shot.
+- Added: the maneuver attempt: a hit makes a save the defender rolls against the weapon's attribute x `maneuver_save_multiplier` (10) + `save_bonus`; `combat` returns `save`.
+- Added: the rider perks Hooking Blows, Wrenching Blows, Hamstring Shots, and Stripping Shots (`rider` on features); `combat` takes `attacker.perks` and returns `rider`, `effects`, `events`, and `save` on a plain hit the rider fits; `attack_sequence` passes `attacker.perks` to every strike, which reports the same fields.
+- Added: `excludes` on features: the trip and disarm lines of a range, and the summon natures, exclude each other (`take_perk` unmet `not_excluded`); the summon power is the highest rung held. The perk respec rule, with no limit, in docs/core/progression.md.
+- Added: monsters hold the same perks; `monster_sheet` returns `maneuvers` and `riders` and fails an excluded pair; `validate.py` checks exclusions both ways and on monsters. The wolf trips.

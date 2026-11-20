@@ -1,0 +1,95 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Attack sequences",
+  "description": "How strikes stack, per loadout (docs/core/combat.md#attacks-by-loadout, GD_S05_01): the attack action's AP and its strikes in order, each with its hand and attack modifier, the off-hand jab, and the strikes a full attack and a circle cut add. Perks change the strikes only through modifier targets (full_attack_strikes, full_attack_off_strikes, mainhand_penalty, offhand_penalty), so this table stays the one place that says how attacks stack.",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "full_attack": {
+      "type": "object",
+      "properties": {
+        "min_extra_ap": { "type": "integer", "minimum": 0, "description": "A full attack spends every AP left, and needs at least the loadout's attack AP plus this." },
+        "extra_main_attacks": { "type": "array", "items": { "type": "integer", "maximum": 0 }, "minItems": 1, "description": "The attack value of each extra main-hand strike full_attack_strikes adds, in order; no more strikes than listed." },
+        "extra_off_attack": { "type": "integer", "maximum": 0, "description": "Added to the loadout's off-hand strike value for the extra off-hand strike full_attack_off_strikes adds (at most one)." }
+      },
+      "required": ["min_extra_ap", "extra_main_attacks", "extra_off_attack"],
+      "additionalProperties": false
+    },
+    "circle_cut": {
+      "type": "object",
+      "properties": {
+        "attack": { "type": "integer", "maximum": 0, "description": "The attack value of the one main-hand strike at each foe in reach." },
+        "main": { "type": "array", "items": { "$ref": "schema.json#/definitions/mainHand" }, "minItems": 1, "uniqueItems": true, "description": "The main-hand loadouts it needs." }
+      },
+      "required": ["attack", "main"],
+      "additionalProperties": false
+    },
+    "shield_bash": {
+      "type": "object",
+      "description": "Boss Strike's shield bash (GD_S05_03): the shield as an off-hand weapon, by the attacker's boss_strike tier.",
+      "properties": {
+        "off": { "type": "array", "items": { "$ref": "schema.json#/definitions/offHand" }, "minItems": 1, "uniqueItems": true, "description": "The off hands that bash." },
+        "as_off": { "$ref": "schema.json#/definitions/offHand", "description": "The off hand the shield counts as for the attack sequence row (its jab and strikes)." },
+        "damage_type": { "type": "string", "pattern": "^[a-z_]+$", "description": "The bash's damage type; the damage is the shield's DR plus the damage roll (1d4)." },
+        "tiers": {
+          "type": "object",
+          "properties": {
+            "jab": { "type": "integer", "minimum": 1, "description": "The tier from which a jab is a bash." },
+            "attack": { "type": "integer", "minimum": 1, "description": "The tier from which the attack and the full attack also strike with the shield." },
+            "stagger": { "type": "integer", "minimum": 1, "description": "The tier from which a bash that hits costs the target stagger_ap." },
+            "after_block": { "type": "integer", "minimum": 1, "description": "The tier from which a bash right after a block costs after_block_ap." }
+          },
+          "required": ["jab", "attack", "stagger", "after_block"],
+          "additionalProperties": false
+        },
+        "stagger_ap": { "type": "integer", "minimum": 0, "description": "AP a bash that hits costs the target on its next turn." },
+        "after_block_ap": { "type": "integer", "minimum": 0, "description": "The bash's AP right after a block in the attacker's band." }
+      },
+      "required": ["off", "as_off", "damage_type", "tiers", "stagger_ap", "after_block_ap"],
+      "additionalProperties": false
+    },
+    "attack_sequences": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/attackSequence" }
+    }
+  },
+  "required": ["full_attack", "circle_cut", "shield_bash", "attack_sequences"],
+  "additionalProperties": false,
+  "definitions": {
+    "hand": { "type": "string", "enum": ["main", "off"] },
+    "strike": {
+      "type": "object",
+      "properties": {
+        "hand": { "$ref": "#/definitions/hand" },
+        "attack": { "type": "integer", "maximum": 0, "description": "Added to the strike's attack target; mainhand_penalty or offhand_penalty softens a negative one, never past 0." }
+      },
+      "required": ["hand", "attack"],
+      "additionalProperties": false
+    },
+    "attackSequence": {
+      "type": "object",
+      "properties": {
+        "key": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "label": { "type": "string" },
+        "main": { "type": "array", "items": { "$ref": "schema.json#/definitions/mainHand" }, "minItems": 1, "uniqueItems": true, "description": "The main-hand loadouts this row covers." },
+        "off": { "type": "array", "items": { "$ref": "schema.json#/definitions/offHand" }, "minItems": 1, "uniqueItems": true, "description": "The off-hand loadouts this row covers." },
+        "ap": { "type": "integer", "minimum": 1, "description": "The attack action's AP with this loadout." },
+        "strikes": { "type": "array", "items": { "$ref": "#/definitions/strike" }, "minItems": 1, "description": "The attack's strikes, in order; each is its own roll through the combat pipeline." },
+        "jab": {
+          "type": "object",
+          "properties": {
+            "ap": { "type": "integer", "minimum": 1 },
+            "attack": { "type": "integer", "maximum": 0 }
+          },
+          "required": ["ap", "attack"],
+          "additionalProperties": false,
+          "description": "One off-hand strike alone; only a loadout with an off-hand weapon has one."
+        },
+        "source": { "$ref": "schema.json#/definitions/sourceRef" }
+      },
+      "required": ["key", "label", "main", "off", "ap", "strikes"],
+      "additionalProperties": false
+    }
+  }
+}

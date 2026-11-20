@@ -265,11 +265,17 @@ type Pipeline struct {
 	EvasionRate               formula.Program `json:"evasion_rate"`
 	DodgeEvasionRate          formula.Program `json:"dodge_evasion_rate"`
 	BlockRate                 formula.Program `json:"block_rate"`
-	MagicBlockRate            formula.Program `json:"magic_block_rate"`
+	SpellWardPercent          formula.Program `json:"spell_ward_percent"`
+	SpellWardMaxPercent       int64           `json:"spell_ward_max_percent"`
+	SpellWardTable            [][]int64       `json:"spell_ward_table"`
 	BulwarkStaggerAP          int64           `json:"bulwark_stagger_ap"`
 	PierceDamageReduction     formula.Program `json:"pierce_dr"`
 	DamageReductionAppliesTag string          `json:"dr_applies_tag"`
 	PierceTag                 string          `json:"pierce_tag"`
+
+	// ManeuverSaveMultiplier times the weapon attribute is a maneuver attempt's DC before
+	// its save bonus (GD_S05_04).
+	ManeuverSaveMultiplier int64 `json:"maneuver_save_multiplier"`
 }
 
 // DamageType is one row of combat/damage_types.json. Physical and Pierce are the pipeline's
@@ -334,6 +340,147 @@ type Maneuver struct {
 	Ranges           []string        `json:"ranges"`            // empty: any range
 	WeaponProperties []string        `json:"weapon_properties"` // empty: any weapon
 	Effects          []AppliedEffect `json:"effects"`
+
+	// SaveBonus is a maneuver attempt's bonus on its DC (GD_S05_04); nil when the row makes
+	// no attempt and its effects land on any hit.
+	SaveBonus *int64 `json:"save_bonus"`
+	// Events are what a landed attempt does beyond effects, for the caller: "disarm".
+	Events []string `json:"events"`
+}
+
+// Fits reports whether an attack at the range with a weapon of the properties fits the
+// maneuver's ranges and weapon properties.
+func (maneuver *Maneuver) Fits(attackRange string, properties []string) bool {
+	if len(maneuver.Ranges) > 0 && !slices.Contains(maneuver.Ranges, attackRange) {
+		return false
+	}
+	return len(maneuver.WeaponProperties) == 0 || slices.ContainsFunc(maneuver.WeaponProperties, func(property string) bool {
+		return slices.Contains(properties, property)
+	})
+}
+
+// Loadout is what an actor's two hands hold, in the mainHand and offHand vocabulary of
+// ruleset/schemas/schema.json.
+type Loadout struct {
+	Main string `json:"main"`
+	Off  string `json:"off"`
+	// MainSkill and OffSkill are the weapons' skills, which a fighting stance may need.
+	MainSkill string `json:"main_skill"`
+	OffSkill  string `json:"off_skill"`
+}
+
+// HoldsTwoWeapons is a loadout with a weapon in each hand.
+func (loadout *Loadout) HoldsTwoWeapons() bool {
+	return loadout != nil && (loadout.Main == "light" || loadout.Main == "one_handed") && (loadout.Off == "light_weapon" || loadout.Off == "weapon")
+}
+
+// NoSequenceError is a loadout no attack_sequences row covers.
+type NoSequenceError struct{ Loadout Loadout }
+
+func (noSequence *NoSequenceError) Error() string {
+	return fmt.Sprintf("no attack sequence fits main hand %q and off hand %q", noSequence.Loadout.Main, noSequence.Loadout.Off)
+}
+
+// Strike is one strike of an attack sequence: its hand and its attack value.
+type Strike struct {
+	Hand   string `json:"hand"`
+	Attack int64  `json:"attack"`
+}
+
+// Jab is a loadout's off-hand strike alone: its AP and its attack value.
+type Jab struct {
+	AP     int64 `json:"ap"`
+	Attack int64 `json:"attack"`
+}
+
+// AttackSequence is one row of attack_sequences/core.json: the loadouts it covers, the attack
+// action's AP, its strikes in order, and the jab when the off hand holds a weapon
+// (docs/core/combat.md#attacks-by-loadout).
+type AttackSequence struct {
+	Key     string   `json:"key"`
+	Main    []string `json:"main"`
+	Off     []string `json:"off"`
+	AP      int64    `json:"ap"`
+	Strikes []Strike `json:"strikes"`
+	Jab     *Jab     `json:"jab"`
+}
+
+// AttackSequences is attack_sequences/core.json: the rows, what a full attack adds, and the
+// circle cut.
+type AttackSequences struct {
+	FullAttack struct {
+		MinExtraAP       int64   `json:"min_extra_ap"`
+		ExtraMainAttacks []int64 `json:"extra_main_attacks"`
+		ExtraOffAttack   int64   `json:"extra_off_attack"`
+	} `json:"full_attack"`
+	CircleCut struct {
+		Attack int64    `json:"attack"`
+		Main   []string `json:"main"`
+	} `json:"circle_cut"`
+	// ShieldBash is Boss Strike's shield bash, by the attacker's boss_strike tier.
+	ShieldBash struct {
+		Off        []string `json:"off"`
+		AsOff      string   `json:"as_off"`
+		DamageType string   `json:"damage_type"`
+		Tiers      struct {
+			Jab        int64 `json:"jab"`
+			Attack     int64 `json:"attack"`
+			Stagger    int64 `json:"stagger"`
+			AfterBlock int64 `json:"after_block"`
+		} `json:"tiers"`
+		StaggerAP    int64 `json:"stagger_ap"`
+		AfterBlockAP int64 `json:"after_block_ap"`
+	} `json:"shield_bash"`
+	Rows []AttackSequence `json:"attack_sequences"`
+}
+
+// Covering is the row that covers a loadout, nil when none does.
+func (sequences *AttackSequences) Covering(main, off string) *AttackSequence {
+	for index := range sequences.Rows {
+		var row *AttackSequence = &sequences.Rows[index]
+		if slices.Contains(row.Main, main) && slices.Contains(row.Off, off) {
+			return row
+		}
+	}
+	return nil
+}
+
+// Stance is one row of stances/core.json: a fighting stance a perk unlocks, what the hands
+// must hold, and its modifiers (docs/core/combat.md#fighting-stances). An empty list is any.
+type Stance struct {
+	Key        string              `json:"key"`
+	Main       []string            `json:"main"`
+	Off        []string            `json:"off"`
+	MainSkills []string            `json:"main_skills"`
+	OffSkills  []string            `json:"off_skills"`
+	Modifiers  []modifier.Modifier `json:"modifiers"`
+}
+
+// Misfit is why a loadout does not hold what the stance needs, nil when it fits.
+func (stance *Stance) Misfit(loadout Loadout) error {
+	if (len(stance.Main) > 0 && !slices.Contains(stance.Main, loadout.Main)) || (len(stance.Off) > 0 && !slices.Contains(stance.Off, loadout.Off)) {
+		return fmt.Errorf("stance %q does not fit main hand %q and off hand %q", stance.Key, loadout.Main, loadout.Off)
+	}
+	for _, hand := range []struct {
+		name   string
+		skills []string
+		skill  string
+	}{{"main", stance.MainSkills, loadout.MainSkill}, {"off", stance.OffSkills, loadout.OffSkill}} {
+		if len(hand.skills) > 0 && !slices.Contains(hand.skills, hand.skill) {
+			return fmt.Errorf("stance %q needs a %s-hand weapon of skill %s", stance.Key, hand.name, strings.Join(hand.skills, " or "))
+		}
+	}
+	return nil
+}
+
+// Stances is stances/core.json: the AP rules and the rows.
+type Stances struct {
+	Rules struct {
+		TurnStartAP      int64 `json:"turn_start_ap"`
+		MidTurnAP        int64 `json:"mid_turn_ap"`
+		ParryBandDivisor int64 `json:"parry_band_divisor"`
+	} `json:"rules"`
+	Rows []Stance `json:"stances"`
 }
 
 // HazardCheck is a check a hazard asks for: a row of checks/core.json, and the hazard's
@@ -410,10 +557,14 @@ type Effect struct {
 
 // Feature is what a dev operation needs of one row of features/core.json: its kind and ranks.
 type Feature struct {
-	Key          string       `json:"key"`
-	Type         string       `json:"type"`
-	Ranks        int64        `json:"ranks"`
-	Prerequisite Prerequisite `json:"prerequisite"`
+	Key   string `json:"key"`
+	Type  string `json:"type"`
+	Ranks int64  `json:"ranks"`
+	// RankLevels is each tier's level gate (GD_S05_03); nil gates every tier at the prerequisite level.
+	RankLevels []int64 `json:"rank_levels"`
+	// RankValues is a modifier's value at each rank, by target, in place of value × rank.
+	RankValues   map[string][]float64 `json:"rank_values"`
+	Prerequisite Prerequisite         `json:"prerequisite"`
 	// Modifiers are the feature's own, as written; a session emits them at the held rank
 	// (docs/backend/sessions.md#what-the-actor-brings-to-a-step-app-13).
 	Modifiers []map[string]any `json:"modifiers"`
@@ -426,6 +577,11 @@ type Feature struct {
 	// BoundWeaponEffects are the on-hit effects the perk adds to the holder's bound weapons
 	// (docs/modules/magic.md#bound-weapons).
 	BoundWeaponEffects []AppliedEffect `json:"bound_weapon_effects"`
+	// Excludes are the perk refs this perk blocks and that block it, both ways: the trip line
+	// and the disarm line (GD_S05_04).
+	Excludes []string `json:"excludes"`
+	// Rider is the maneuver ref a rider perk puts on plain attacks; empty for most.
+	Rider string `json:"rider"`
 }
 
 // Command is a perk's command object: the AP an ordered summon adds to its next turn, whether
@@ -434,6 +590,11 @@ type Command struct {
 	AP    int64  `json:"ap"`
 	Reach string `json:"reach"` // "one" or "all"
 	Turns int64  `json:"turns"`
+}
+
+// Exclude reports whether one of the two perks names the other in its excludes.
+func Exclude(first, second *Feature) bool {
+	return slices.Contains(first.Excludes, "core:feature/"+second.Key) || slices.Contains(second.Excludes, "core:feature/"+first.Key)
 }
 
 // Share is a perk's share object: the group it lends to, how far, and for how long.
@@ -464,7 +625,10 @@ func (feature *Feature) EmitAt(rank int64) []map[string]any {
 		for field, value := range written {
 			modifier[field] = value
 		}
-		if value, isNumber := written["value"].(float64); isNumber {
+		target, _ := written["target"].(string)
+		if byRank, ranked := feature.RankValues[target]; ranked && len(byRank) > 0 {
+			modifier["value"] = byRank[min(max(rank, 1), int64(len(byRank)))-1]
+		} else if value, isNumber := written["value"].(float64); isNumber {
 			switch written["operation"] {
 			case "add":
 				modifier["value"] = value * float64(rank)
@@ -602,6 +766,7 @@ type Casting struct {
 	BoundWeapon   BoundWeapon      `json:"bound_weapon"`
 	Save          CastingSave      `json:"save"`
 	ArmorPenalty  map[string]int64 `json:"armor_penalty"`
+	ShieldPenalty map[string]int64 `json:"shield_penalty"`
 	PreventedBy   []string         `json:"prevented_by"`
 	SkillDiscount SkillDiscount    `json:"skill_discount"`
 	SpellCost     SpellCost        `json:"spell_cost"`
@@ -750,18 +915,22 @@ type Ruleset struct {
 	Skills      Table[Skill]
 	SkillGroups Table[SkillGroup]
 	// GroupOfSkill is the skill group each skill belongs to, by skill key.
-	GroupOfSkill   map[string]*SkillGroup
-	Actions        Actions
-	Wuxing         Wuxing
-	Modules        []string // ids of the loaded modules
-	Rest           Table[Occasion]
-	Economy        Economy
-	Progression    Progression
-	Pipeline       Pipeline
-	DamageTypes    Table[DamageType]
-	Situations     Table[Situation]
-	CalledShots    Table[CalledShot]
-	Maneuvers      Table[Maneuver] // maneuvers/core.json, by key
+	GroupOfSkill map[string]*SkillGroup
+	Actions      Actions
+	Wuxing       Wuxing
+	Modules      []string // ids of the loaded modules
+	Rest         Table[Occasion]
+	Economy      Economy
+	Progression  Progression
+	Pipeline     Pipeline
+	DamageTypes  Table[DamageType]
+	Situations   Table[Situation]
+	CalledShots  Table[CalledShot]
+	Maneuvers    Table[Maneuver] // maneuvers/core.json, by key
+	// AttackSequences is attack_sequences/core.json: how strikes stack by loadout.
+	AttackSequences AttackSequences
+	// Stances is stances/core.json: the fighting stances a perk unlocks.
+	Stances        Stances
 	Hazards        Table[Hazard]
 	Spells         Table[Spell]
 	Features       Table[Feature]     // features/core.json, for dev perks (docs/backend/dev-mode.md)
@@ -1041,6 +1210,8 @@ func Load(fileSystem fs.FS, modules ...fs.FS) (*Ruleset, error) {
 		Maneuvers []Maneuver `json:"maneuvers"`
 	}
 	loader.read("maneuvers/core.json", &maneuvers)
+	loader.read("attack_sequences/core.json", &ruleset.AttackSequences)
+	loader.read("stances/core.json", &ruleset.Stances)
 	ruleset.Maneuvers = newTable(maneuvers.Maneuvers, func(maneuver *Maneuver) string { return maneuver.Key })
 
 	var origins struct {

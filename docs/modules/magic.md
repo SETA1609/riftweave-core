@@ -214,8 +214,8 @@ its creature type's growth. The row still sets the stats: of two creatures at th
 weaker row stays weaker. Templates go on top in order: the element, then the caster's power tier,
 then the caster's nature. The caster's power and nature are perks with `unlocks`: the power ladder
 `summon_dire`, `summon_elder`, `summon_ancient`, each needing the one before, and the natures
-`summon_demonic`, `summon_angelic`, `summon_otherworldly`. The latest bought in each slot is the one
-the caster holds ([monsters.md](./monsters.md#summoned-creatures)). [V 2026-11-12] `validate.py` refuses a summon block whose `group` is not a group, and
+`summon_demonic`, `summon_angelic`, `summon_otherworldly`. The highest power rung held applies, and
+the natures exclude each other, so the caster holds one of each ([monsters.md](./monsters.md#summoned-creatures), GD_S05_04). [V 2026-11-19, `test_bestiary.py`] `validate.py` refuses a summon block whose `group` is not a group, and
 `test_spells.py` fails on a group or variant that does not exist, or on a spell that still names
 `core:effect/summon`. [V 2026-11-16]
 
@@ -355,7 +355,7 @@ the spell's `<color>_magic` skill, after the cast spends its mana and reagents.
 2. **Cost.** Mana (`INT × 8 + level × 2` is the pool; it regenerates with WIL) and the
    spell's reagents are spent before the roll, so a failed cast still costs them.
 3. **Success.** The target is the skill, plus the armor penalty of the heaviest armor
-   worn, plus the modifiers on the skill. Crit and fumble are tags from
+   worn and the shield penalty of the shield carried, plus the modifiers on the skill. Crit and fumble are tags from
    [docs/core/resolution.md](../core/resolution.md). A phase is a tag. It is not
    required to cast.
 4. **Effects.** A success emits the spell's effects at their authored magnitudes. The

@@ -56,17 +56,78 @@
         }
       ]
     },
-    "magic_block_rate": {
-      "operation": "divide",
+    "spell_ward_percent": {
+      "operation": "multiply",
       "arguments": [
         {
-          "variable": "rate"
+          "operation": "multiply",
+          "arguments": [
+            {
+              "variable": "end"
+            },
+            {
+              "literal": 2
+            }
+          ]
         },
         {
-          "literal": 2
+          "variable": "tier"
         }
       ]
     },
+    "spell_ward_max_percent": 50,
+    "spell_ward_table": [
+      [
+        2,
+        4,
+        6
+      ],
+      [
+        4,
+        8,
+        12
+      ],
+      [
+        6,
+        12,
+        18
+      ],
+      [
+        8,
+        16,
+        24
+      ],
+      [
+        10,
+        20,
+        30
+      ],
+      [
+        12,
+        24,
+        36
+      ],
+      [
+        14,
+        28,
+        42
+      ],
+      [
+        16,
+        32,
+        48
+      ],
+      [
+        18,
+        36,
+        50
+      ],
+      [
+        20,
+        40,
+        50
+      ]
+    ],
     "bulwark_stagger_ap": 2,
     "pierce_dr": {
       "operation": "divide",
@@ -80,6 +141,7 @@
       ]
     },
     "dr_applies_tag": "armor_dr_applies",
-    "pierce_tag": "armor_pierce_partial"
+    "pierce_tag": "armor_pierce_partial",
+    "maneuver_save_multiplier": 10
   }
 }

@@ -38,6 +38,13 @@
               "type": "object"
             },
             "description": "The weapon's on-hit applied effects: armor_pierce, bane, lingering_damage, banish_summoned (docs/core/combat.md#weapon-effects)."
+          },
+          "perks": {
+            "type": "array",
+            "items": {
+              "$ref": "common.json#/definitions/ref"
+            },
+            "description": "The attacker's held perks (feature refs). A rider perk among them whose maneuver fits the attack makes a maneuver attempt after a plain hit (docs/core/actions.md#rider-perks); two riders that fit the same attack are an error."
           }
         },
         "additionalProperties": false,
@@ -74,7 +81,10 @@
           },
           "shield_dr": {"type": "integer", "minimum": 0, "description": "The carried shield's DR; it adds to armor_dr against types with armor_dr_applies."},
           "shields_skill": {"type": "integer", "description": "The shields skill the block stance's band reads."},
+          "armor": {"type": "string", "enum": ["none", "light", "medium", "heavy"], "description": "The heaviest body armor worn, none when left out (clothes and robes are none). Unarmored Grace's unarmored_evasion_band widens the band only with none."},
+          "weapon_skill": {"type": "integer", "description": "The held weapon's skill: a parry grant reads it for the parry band, floor(weapon_skill / stances.rules.parry_band_divisor), and block_with_weapon lets the block band read it when it beats shields_skill (docs/core/combat.md#fighting-stances). A parry grant without it is an error."},
           "stance": {"type": "string", "description": "The stance the defender declared on their turn: dodge (doubles the evasion band) or block (adds a block band; needs shield_dr and shields_skill). Any other value is an error."},
+          "loadout": { "$ref": "../../ruleset/schemas/schema.json#/definitions/loadout", "description": "What the defender holds; with a weapon in each hand, the defender's modifiers on two_weapon_evasion_band widen the evasion band (Crossed Guard)." },
           "creature_type": {
             "$ref": "common.json#/definitions/key",
             "description": "The defender's creature type (undead, beast, ...), which a weapon's bane reads."
@@ -87,7 +97,8 @@
             "description": "Flags from conditions (prone, blinded, invisible); a situation row with `when` reads them."
           },
           "modifiers": {
-            "$ref": "common.json#/definitions/modifiers"
+            "$ref": "common.json#/definitions/modifiers",
+            "description": "The defender's perks and fighting stance (the stance command's modifiers): adds on evasion, evasion_band, shields, block_band, shield_dr, two_weapon_evasion_band, unarmored_evasion_band, and spell_ward (the tier), and the bulwark, riposte, parry, and block_with_weapon grants."
           }
         },
         "additionalProperties": false,
@@ -148,6 +159,7 @@
         "$ref": "common.json#/definitions/key",
         "description": "A called_shots key in ruleset/data/combat/situations.json."
       },
+      "loadout": { "$ref": "../../ruleset/schemas/schema.json#/definitions/loadout", "description": "What the attacker holds: a maneuver's AP is then the loadout's attack AP (attack_sequences/core.json) plus its own. A loadout no attack sequence covers is an error." },
       "maneuver": {
         "$ref": "common.json#/definitions/key",
         "description": "A maneuvers key in ruleset/data/maneuvers/core.json: the attack is performed as that maneuver (docs/core/actions.md#maneuvers)."
@@ -205,6 +217,25 @@
         "minimum": 0,
         "description": "The block stance's band, under the evasion band: a margin in it is blocked."
       },
+      "parry_rate": {
+        "type": "integer",
+        "minimum": 0,
+        "description": "A parrying stance's band, under the block band: a margin in it is blocked and parried. 0 without a parry grant, against non-physical damage, or for an instant attack."
+      },
+      "parried": {
+        "type": "boolean",
+        "description": "The parry band stopped the hit (outcome blocked)."
+      },
+      "warded": {
+        "type": "boolean",
+        "description": "Spell Ward: a spell (a type without the DR tag) whose roll landed in the block band while blocking. It still hits, with ward_percent of its damage resisted."
+      },
+      "ward_percent": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 100,
+        "description": "The percent Spell Ward resisted: spell_ward_percent (END x 2 x tier) at most spell_ward_max_percent (50); 0 when not warded."
+      },
       "stagger_ap": {
         "type": "integer",
         "minimum": 0,
@@ -258,7 +289,46 @@
         "items": {
           "type": "object"
         },
-        "description": "With a maneuver: its applied effects on a hit, empty on a miss or an evade."
+        "description": "With a maneuver or a rider: its applied effects on a hit, empty on a miss or an evade. With a save, they land only when the defender fails it."
+      },
+      "events": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": [
+            "disarm"
+          ]
+        },
+        "description": "With a maneuver or a rider: its events on a hit (disarm), empty otherwise."
+      },
+      "save": {
+        "type": "object",
+        "properties": {
+          "attribute": {
+            "$ref": "common.json#/definitions/key",
+            "description": "The weapon's attribute (damage.ability) the attempt is made with."
+          },
+          "dc": {
+            "type": "integer",
+            "description": "The attacker's attribute times maneuver_save_multiplier, plus the maneuver's save_bonus (none for a rider)."
+          },
+          "target": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "The defender's d100 save target, 100 minus the DC and never below 0; the caller rolls it, and a failed save lands the effects and events."
+          }
+        },
+        "required": [
+          "attribute",
+          "dc",
+          "target"
+        ],
+        "additionalProperties": false,
+        "description": "A maneuver attempt on a hit (a maneuver with a save_bonus, or a rider), docs/core/actions.md#the-maneuver-attempt; left out otherwise."
+      },
+      "rider": {
+        "$ref": "common.json#/definitions/key",
+        "description": "The maneuver a held rider perk put on this plain attack."
       },
       "weapon_effects": {
         "type": "array",
@@ -278,6 +348,10 @@
       "blocked",
       "evasion_rate",
       "block_rate",
+      "parry_rate",
+      "parried",
+      "warded",
+      "ward_percent",
       "damage",
       "hp"
     ]

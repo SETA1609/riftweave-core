@@ -35,13 +35,14 @@ def prerequisite_refs(perk):
 
 
 def emitted(perk):
-    """The (target, operation) pairs a perk's modifiers name, what it unlocks, and the effects it
-    adds to a bound weapon."""
+    """The (target, operation) pairs a perk's modifiers name, what it unlocks, the effects it
+    adds to a bound weapon, and the maneuver it rides (GD_S05_04)."""
     return (
         frozenset((m["target"], m["operation"]) for m in perk.get("modifiers", []))
         | frozenset(("unlocks", ref) for ref in perk.get("unlocks", []))
         | frozenset(("bound_weapon_effects", e["effect"], e.get("parameter")) for e in perk.get("bound_weapon_effects", []))
         | (frozenset({("command", tuple(sorted(perk["command"].items())))}) if "command" in perk else frozenset())
+        | frozenset(("rider", perk["rider"]) for _ in [0] if perk.get("rider"))
     )
 
 
@@ -50,14 +51,15 @@ class TestPerkCatalogue(unittest.TestCase):
         self.assertGreaterEqual(len(perks()), 60)
 
     def test_every_perk_emits_trained_modifiers_from_itself(self):
-        """A perk changes a number, unlocks something (a maneuver, a template, a material), or adds
-        an effect to a bound weapon (docs/modules/magic.md#bound-weapons); an unlock-only perk
-        needs no modifier to justify it (docs/core/actions.md#maneuvers)."""
+        """A perk changes a number, unlocks something (a maneuver, a template, a material), adds
+        an effect to a bound weapon (docs/modules/magic.md#bound-weapons), or rides a maneuver on
+        plain attacks (docs/core/actions.md#rider-perks); an unlock-only or rider perk needs no
+        modifier to justify it (docs/core/actions.md#maneuvers)."""
         for perk in perks():
             with self.subTest(perk=perk["key"]):
                 self.assertTrue(
-                    perk.get("modifiers") or perk.get("unlocks") or perk.get("bound_weapon_effects") or perk.get("command"),
-                    "a perk emits modifiers, unlocks something, adds a bound weapon effect, or gives orders",
+                    perk.get("modifiers") or perk.get("unlocks") or perk.get("bound_weapon_effects") or perk.get("command") or perk.get("rider"),
+                    "a perk emits modifiers, unlocks something, adds a bound weapon effect, gives orders, or rides a maneuver",
                 )
                 for modifier in perk.get("modifiers", []):
                     self.assertEqual(modifier["source"], f"feature:{perk['key']}")
@@ -190,6 +192,120 @@ class TestSharePerks(unittest.TestCase):
                 self.assertEqual(rows[top]["share"]["rank_share"], [1])
                 self.assertEqual(rows[top]["share"]["range"], 2 * rows[base]["share"]["range"])
                 self.assertGreater(rows[top]["share"]["turns"], rows[base]["share"]["turns"])
+
+
+class TestMeleeLadders(unittest.TestCase):
+    """GD_S05_01: the Carry Through, extra strikes, and two-weapon ladders (docs/core/combat.md#attacks-by-loadout)."""
+
+    LADDERS = {
+        "full_weight": (1, None), "carry_through": (6, "full_weight"), "reaping_arc": (12, "carry_through"),
+        "circle_cut": (18, "reaping_arc"), "follow_up": (6, None), "press_on": (18, "follow_up"),
+        "off_hand_drill": (4, None), "crossed_guard": (8, "off_hand_drill"), "twin_rhythm": (14, "off_hand_drill"),
+        "scissor_cut": (20, "twin_rhythm"),
+    }
+
+    def test_power_attack_and_cleave_are_gone(self):
+        keys = {feature["key"] for feature in features()}
+        self.assertFalse({"power_attack", "cleave"} & keys)
+
+    def test_each_rung_has_its_level_and_needs_the_rung_below(self):
+        rows = {perk["key"]: perk for perk in perks()}
+        for key, (gate, below) in self.LADDERS.items():
+            with self.subTest(perk=key):
+                self.assertEqual(level(rows[key]), gate)
+                self.assertEqual(prerequisite_refs(rows[key]), [f"core:feature/{below}"] if below else [])
+
+    def test_full_weight_opens_to_blades_blunt_or_piercing_40(self):
+        row = next(perk for perk in perks() if perk["key"] == "full_weight")
+        self.assertEqual(row["prerequisite"]["skills"], [{"any_of": ["core:skill/blades", "core:skill/blunt", "core:skill/piercing"], "min": 40}])
+
+class TestDefenseLadders(unittest.TestCase):
+    """GD_S05_03: the shield, evasion, no-armor, and armored casting ladders as tiered perks."""
+
+    TIERS = {
+        "shield_training": [1, 6, 12], "shield_wall": [1, 6, 12], "spell_ward": [6, 12, 18],
+        "guardian": [6, 12, 18], "boss_strike": [1, 6, 12, 18], "armored_evasion": [6, 12, 18],
+        "unarmored_grace": [1, 6, 12, 18], "mailed_casting": [6, 12, 18],
+    }
+    # Perk: (target, the value at each tier, as kernel_reference.emit_perk gives it).
+    VALUES = {
+        "shield_training": ("shield_dr", [2, 3, 4]), "shield_wall": ("block_band", [3, 6, 9]),
+        "spell_ward": ("spell_ward", [1, 2, 3]), "armored_evasion": ("evasion", [5, 10, 15]),
+        "unarmored_grace": ("unarmored_evasion_band", [5, 10, 15, 20]), "boss_strike": ("boss_strike", [1, 2, 3, 4]),
+        "mailed_casting": ("armor_cast_penalty", [0.75, 0.5, 0.25]),
+    }
+
+    def test_acrobat_and_battle_mage_are_gone(self):
+        keys = {feature["key"] for feature in features()}
+        self.assertFalse({"acrobat", "battle_mage"} & keys)
+
+    def test_each_ladder_has_its_tier_gates(self):
+        rows = {perk["key"]: perk for perk in perks()}
+        for key, gates in self.TIERS.items():
+            with self.subTest(perk=key):
+                self.assertEqual(rows[key]["rank_levels"], gates)
+                self.assertEqual(rows[key]["ranks"], len(gates))
+
+    def test_each_tier_emits_its_value(self):
+        import sys
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from kernel_reference import emit_perk
+
+        rows = {perk["key"]: perk for perk in perks()}
+        for key, (target, values) in self.VALUES.items():
+            for rank, value in enumerate(values, start=1):
+                with self.subTest(perk=key, rank=rank):
+                    emitted = next(m for m in emit_perk(rows[key], rank) if m["target"] == target)
+                    self.assertAlmostEqual(emitted["value"], value)
+
+    def test_bulwark_needs_shield_training_tier_2_not_spell_ward(self):
+        row = next(perk for perk in perks() if perk["key"] == "bulwark")
+        self.assertEqual(row["prerequisite"]["perks"], [{"perk": "core:feature/shield_training", "rank": 2}])
+
+
+class TestTripAndDisarm(unittest.TestCase):
+    """GD_S05_04: each maneuver has an unlock perk and a rider perk that needs it, a melee line
+    and a ranged line, and the trip line and the disarm line of a range exclude each other."""
+
+    LINES = {
+        "trip": ("low_sweep", "hooking_blows"),
+        "disarm": ("bind_and_wrench", "wrenching_blows"),
+        "tripping_shot": ("low_aim", "hamstring_shots"),
+        "disarming_shot": ("knuckle_shot", "stripping_shots"),
+    }
+    EXCLUDED = (("trip", "disarm"), ("tripping_shot", "disarming_shot"))
+
+    def test_each_maneuver_has_its_unlock_and_rider_perk(self):
+        rows = {perk["key"]: perk for perk in perks()}
+        for maneuver, (unlock, rider) in self.LINES.items():
+            with self.subTest(maneuver=maneuver):
+                self.assertIn(f"core:maneuver/{maneuver}", rows[unlock]["unlocks"])
+                self.assertEqual(rows[rider]["rider"], f"core:maneuver/{maneuver}")
+                self.assertNotIn("group", rows[rider])
+                self.assertEqual(prerequisite_refs(rows[rider]), [f"core:feature/{unlock}"])
+
+    def test_the_trip_line_and_the_disarm_line_exclude_each_other(self):
+        rows = {perk["key"]: perk for perk in perks()}
+        for first, second in self.EXCLUDED:
+            for key in self.LINES[first]:
+                with self.subTest(perk=key):
+                    self.assertEqual(sorted(rows[key]["excludes"]), sorted(f"core:feature/{other}" for other in self.LINES[second]))
+            for key in self.LINES[second]:
+                with self.subTest(perk=key):
+                    self.assertEqual(sorted(rows[key]["excludes"]), sorted(f"core:feature/{other}" for other in self.LINES[first]))
+
+    def test_a_held_line_blocks_the_other_and_a_rank_up_needs_no_more(self):
+        import sys
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from kernel_reference import take_perk
+
+        actor = {"attributes": {"str": 6, "agi": 6, "per": 6}, "level": 8, "skills": {"blades": 40, "bows": 40}}
+        taken = take_perk(actor, {"low_sweep": 1, "hooking_blows": 1}, "bind_and_wrench")
+        self.assertFalse(taken["taken"])
+        self.assertEqual(taken["unmet"], [{"needs": "not_excluded", "key": "hooking_blows"}, {"needs": "not_excluded", "key": "low_sweep"}])
+        self.assertTrue(take_perk(actor, {"low_sweep": 1, "hooking_blows": 1}, "low_aim")["taken"])
+        self.assertNotIn("replaced", take_perk(actor, {"low_sweep": 1}, "hooking_blows"))
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -24,7 +24,7 @@ spell   = the row named by `spell`; skill = <color>_magic
 2  mana        mana < the paid cost                    → outcome no_mana, nothing spent
 3  reagents    a cost.reagents ref not in the caster's → outcome no_reagents, nothing spent
 4  spend       mana -= the paid cost; the reagents are consumed
-5  check       target = skill + armor_penalty[armor] + modifiers on the skill   (resolution.md)
+5  check       target = skill + armor_penalty[armor] + shield_penalty[shield] + modifiers on the skill   (resolution.md)
 6  failure     outcome failed: no effects, concentration unchanged
 7  success     outcome cast: the spell's effects, as authored
                concentration spell: hold it; the one held before, if another, ends
@@ -37,6 +37,20 @@ spell   = the row named by `spell`; skill = <color>_magic
 - A fumble is only a tag on a failure. It costs nothing more. [A]
 - The margin is in the result. The effects are the authored magnitudes: scaling a magnitude by the margin is not core, and a consumer that wants it reads the margin. [A]
 - The armor penalty is a modifier with source `armor:<category>`, so it stacks by [modifier.md](modifier.md) like any other. No armor means `none`. [A]
+
+## Armor and shields
+
+The casting penalties are in `ruleset/data/casting/core.json` (GD_S05_03). Each is a modifier on the skill, with source `armor:<category>` or `shield:<kind>`; `caster.shield` names the shield carried, `none` when left out.
+
+| Armor | Penalty | Shield | Penalty |
+| --- | --- | --- | --- |
+| none | 0 | none | 0 |
+| light | -5 | buckler | 0 |
+| medium | -15 | standard | -5 |
+| heavy | -30 | tower | -15 |
+
+- **Mailed Casting** (`multiply armor_cast_penalty 0.75`, three tiers at levels 6, 12, 18) scales both penalties: tier 1 keeps three quarters, tier 2 a half, tier 3 a quarter. Each penalty is scaled on its own and rounded down, so heavy armor with tier 1 is -23, not -22. It replaces Battle Mage. [A, GD_S05_03]
+- A buckler costs nothing to cast with, so a caster who wants a block band carries one. [A]
 - A dispelled spell's modifiers carry the source `spell:<key>`; the consumer removes them through the removed sources of [modifier.md](modifier.md). The cast returns only the keys. [A]
 - The AP cost of a cast is the `cast` row in [actions.md](actions.md); this function does not spend AP.
 

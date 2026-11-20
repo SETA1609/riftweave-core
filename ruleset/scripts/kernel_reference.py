@@ -426,10 +426,59 @@ def maneuver_of(vector):
     return row
 
 
-def maneuver_cost(maneuver):
-    """The AP of an action performed as the maneuver, at least 1, and its stamina in real time."""
+def maneuver_fits(row, vector):
+    """Whether a plain attack fits a maneuver's ranges and weapon properties."""
+    if vector.get("range", "melee") not in row.get("ranges", [vector.get("range", "melee")]):
+        return False
+    wanted = row.get("weapon_properties")
+    return not wanted or bool(set(wanted) & set(vector["attacker"].get("weapon_properties", [])))
+
+
+def rider_of(vector, maneuver):
+    """The maneuver a held rider perk puts on a plain attack (docs/core/actions.md#rider-perks),
+    or None: none held, the attack is a maneuver, or no rider's maneuver fits the attack (a
+    melee rider on a ranged shot). Two riders that fit the same attack raise ValueError."""
+    refs = vector["attacker"].get("perks", [])
+    if not refs:
+        return None
+    features = {row["key"]: row for row in load_data("features/core.json")["features"]}
+    rows = {row["key"]: row for row in load_data("maneuvers/core.json")["maneuvers"]}
+    fitting = []
+    for ref in refs:
+        key = ref.rsplit("/", 1)[-1]
+        if key not in features:
+            raise ValueError(f'perk "{key}" is not defined')
+        rider = features[key].get("rider")
+        if rider and maneuver_fits(rows[rider.rsplit("/", 1)[-1]], vector):
+            fitting.append(key)
+    if len(fitting) > 1:
+        raise ValueError("two rider perks fit this attack: " + ", ".join(fitting))
+    if not fitting or maneuver is not None:
+        return None
+    return rows[features[fitting[0]]["rider"].rsplit("/", 1)[-1]]
+
+
+def maneuver_save(row, bonus, vector, pipeline):
+    """A maneuver attempt's save (docs/core/actions.md#the-maneuver-attempt): the DC is the
+    attacker's weapon attribute (damage.ability) x maneuver_save_multiplier plus the bonus, and
+    the defender's save target is 100 minus it, never below 0. The caller rolls the save."""
+    ability = vector["damage"]["ability"]
+    dc = vector["attacker"].get("attributes", {}).get(ability, 0) * pipeline["maneuver_save_multiplier"] + bonus
+    return {"attribute": ability, "dc": dc, "target": max(100 - dc, 0)}
+
+
+def holds_two_weapons(loadout):
+    """A loadout with a weapon in each hand (docs/core/combat.md#attacks-by-loadout)."""
+    return loadout is not None and loadout["main"] in ("light", "one_handed") and loadout["off"] in ("light_weapon", "weapon")
+
+
+def maneuver_cost(maneuver, loadout=None):
+    """The AP of an action performed as the maneuver, at least 1, and its stamina in real time.
+    With a loadout the attack costs the loadout's attack AP (attack_sequences/core.json)."""
     data = load_data("actions/core.json")
     base = next(a["cost"] for a in data["actions"] if a["key"] == maneuver["modifies"])
+    if loadout is not None and maneuver["modifies"] == "attack":
+        base = attack_sequence_of(loadout)["ap"]
     ap = max(base + maneuver["ap"], 1)
     return ap, ap * data["stamina_per_ap"]
 
@@ -448,15 +497,23 @@ def run_combat(vector):
     try:
         situation_mods, called = situation_modifiers(vector, delivery)
         maneuver = maneuver_of(vector)
+        rider = rider_of(vector, maneuver)
     except ValueError as error:
         return {"error": str(error)}
+    # A maneuver attempt (a save_bonus row, or a rider) saves against the weapon's attribute.
+    attempt = rider is not None or (maneuver is not None and "save_bonus" in maneuver)
+    if attempt and "ability" not in damage:
+        return {"error": "a maneuver attempt needs the weapon's attribute (damage.ability)"}
+    loadout = vector.get("loadout")
+    if loadout is not None and attack_sequence_of(loadout) is None:
+        return {"error": no_sequence_error(loadout)}
     if maneuver is not None and maneuver.get("attack", 0):
         situation_mods.append({"target": "attack_roll", "operation": "add", "value": maneuver["attack"], "source": f"maneuver:{maneuver['key']}"})
 
     if delivery not in ("single", "area", "instant"):
         raise ValueError(f"delivery {delivery!r} is not defined")
     physical = pipeline["dr_applies_tag"] in tags
-    # The defender's perks: adds on evasion, shields, and shield_dr, and grant flags.
+    # The defender's perks: adds on evasion, shields, block_band, and shield_dr, and grant flags.
     defender_mods = defender.get("modifiers", [])
     perk_flags = granted_flags(defender_mods)
     stance = defender.get("stance")
@@ -464,17 +521,33 @@ def run_combat(vector):
         return {"error": f'stance "{stance}" is not defined'}
     if stance == "block" and ("shield_dr" not in defender or "shields_skill" not in defender):
         return {"error": "a block needs shield_dr and shields_skill"}
+    if "parry" in perk_flags and "weapon_skill" not in defender:
+        return {"error": "a parry needs weapon_skill"}
     on = lambda target: [m for m in defender_mods if m["target"] == target]
     evasion_rate = evaluate_formula(pipeline["evasion_rate"], {}, {"skill": apply_modifiers(defender.get("evasion_skill", 0), on("evasion"))})
     if stance == "dodge":
         evasion_rate = evaluate_formula(pipeline["dodge_evasion_rate"], {}, {"rate": evasion_rate})
+    if holds_two_weapons(defender.get("loadout")):
+        evasion_rate = max(apply_modifiers(evasion_rate, on("two_weapon_evasion_band")), 0)
+    # A fighting stance's evasion_band (forward, low, and long guard; docs/core/combat.md#fighting-stances).
+    evasion_rate = max(apply_modifiers(evasion_rate, on("evasion_band")), 0)
+    # Unarmored Grace: no body armor widens the band (GD_S05_03).
+    if defender.get("armor", "none") == "none":
+        evasion_rate = max(apply_modifiers(evasion_rate, on("unarmored_evasion_band")), 0)
+    # Spell Ward: the block band does not stop a spell, it marks the rolls that are warded.
+    ward_tier = apply_modifiers(0, on("spell_ward"))
     block_rate = 0
-    if stance == "block" and (physical or "block_magic" in perk_flags):
-        block_rate = evaluate_formula(pipeline["block_rate"], {}, {"skill": apply_modifiers(defender["shields_skill"], on("shields"))})
-        if not physical:
-            block_rate = evaluate_formula(pipeline["magic_block_rate"], {}, {"rate": block_rate})
+    if stance == "block" and (physical or ward_tier > 0):
+        shields = apply_modifiers(defender["shields_skill"], on("shields"))
+        if "block_with_weapon" in perk_flags and "weapon_skill" in defender:
+            shields = max(shields, defender["weapon_skill"])
+        block_rate = max(apply_modifiers(evaluate_formula(pipeline["block_rate"], {}, {"skill": shields}), on("block_band")), 0)
+    # A parrying stance's band sits under the block band, physical hits only.
+    parry_rate = 0
+    if "parry" in perk_flags and physical:
+        parry_rate = defender["weapon_skill"] // load_data("stances/core.json")["rules"]["parry_band_divisor"]
     if delivery == "instant":
-        evasion_rate = block_rate = 0
+        evasion_rate = block_rate = parry_rate = 0
     rules = load_data("resolution/core.json")["resolution"]
     defender_window = rules["crit_window"] + defender.get("attributes", {}).get("lck", 0) // rules["crit_window_per_two_luck"]
 
@@ -496,6 +569,10 @@ def run_combat(vector):
         "blocked": False,
         "evasion_rate": evasion_rate,
         "block_rate": block_rate,
+        "parry_rate": parry_rate,
+        "parried": False,
+        "warded": False,
+        "ward_percent": 0,
         "counter": False,
         "stagger_ap": 0,
     }
@@ -504,14 +581,20 @@ def run_combat(vector):
     if attacker.get("weapon_effects") is not None:
         result["weapon_effects"] = []
     if maneuver is not None:
-        result["ap"], result["stamina"] = maneuver_cost(maneuver)
+        result["ap"], result["stamina"] = maneuver_cost(maneuver, vector.get("loadout"))
         result["effects"] = []
+    # A maneuver's or a rider's check and events (GD_S05_04); the caller rolls the check.
+    carried = maneuver if maneuver is not None else rider
+    if rider is not None:
+        result.update(rider=rider["key"], effects=[])
+    if carried is not None:
+        result["events"] = []
     if not attack["success"]:
         result.update(outcome="fumble" if "fumble" in attack["tags"] else "miss", damage=0, hp=defender["hp"])
         return result
 
     # One roll, read in bands (docs/core/combat.md step 2): the evasion band, then a block
-    # stance's band under it. A crit always hits; instant meets no band.
+    # stance's band under it, then a parry band under that. A crit always hits; instant meets no band.
     margin, window, rate, block = attack["margin"], defender_window, evasion_rate, block_rate
     if not crit and margin < rate:
         result["evaded"] = True
@@ -519,10 +602,16 @@ def run_combat(vector):
         if delivery == "single":
             result.update(outcome="evaded", damage=0, hp=defender["hp"])
             return result
+    elif not crit and margin < rate + block and not physical:
+        ward = evaluate_formula(pipeline["spell_ward_percent"], {}, {"end": defender.get("attributes", {}).get("end", 0), "tier": ward_tier})
+        result.update(warded=True, ward_percent=min(ward, pipeline["spell_ward_max_percent"]))
     elif not crit and margin < rate + block:
         result.update(outcome="blocked", blocked=True, damage=0, hp=defender["hp"])
         if "bulwark" in perk_flags and margin >= rate + block - window:
             result["stagger_ap"] = pipeline["bulwark_stagger_ap"]
+        return result
+    elif not crit and margin < rate + block + parry_rate:
+        result.update(outcome="blocked", blocked=True, parried=True, damage=0, hp=defender["hp"])
         return result
     result["outcome"] = "hit"
 
@@ -555,14 +644,311 @@ def run_combat(vector):
         dr -= dr * pierce // 100
         amount = max(amount - dr, 0)
     amount = max(amount - defender.get("resist", {}).get(damage["type"], 0), 0)
+    amount -= amount * result["ward_percent"] // 100
     result.update(damage=amount, hp=max(defender["hp"] - amount, 0))
     if called is not None and not result["evaded"]:
         result["riders"] = [dict(rider) for rider in called.get("riders", [])]
     if maneuver is not None and not result["evaded"]:
         result["effects"] = [dict(applied) for applied in maneuver["effects"]]
+        result["events"] = list(maneuver.get("events", []))
+        if "save_bonus" in maneuver:
+            result["save"] = maneuver_save(maneuver, maneuver["save_bonus"], vector, pipeline)
+    # A rider: the attack resolves as a plain one, then on a hit the maneuver's attempt
+    # follows, with no save bonus.
+    if rider is not None and not result["evaded"]:
+        result["effects"] = [dict(applied) for applied in rider["effects"]]
+        result["events"] = list(rider.get("events", []))
+        result["save"] = maneuver_save(rider, 0, vector, pipeline)
     if weapon_effects is not None and not result["evaded"]:
         result["weapon_effects"] = landed_weapon_effects(weapon_effects, damage["type"], defender)
     return result
+
+
+def attack_sequence_of(loadout):
+    """The attack_sequences row that covers a loadout (docs/core/combat.md#attacks-by-loadout),
+    or None when no row does."""
+    data = load_data("attack_sequences/core.json")
+    for row in data["attack_sequences"]:
+        if loadout["main"] in row["main"] and loadout["off"] in row["off"]:
+            return row
+    return None
+
+
+def no_sequence_error(loadout):
+    return 'no attack sequence fits main hand "%s" and off hand "%s"' % (loadout["main"], loadout["off"])
+
+
+def soften(value, softening):
+    """A negative strike value after mainhand_penalty or offhand_penalty, never past 0."""
+    return min(value + softening, 0) if value < 0 else value
+
+
+def plan_strikes(vector, row, flags, on):
+    """The strikes of the action in order, as (hand, attack value), and the AP it spends."""
+    data = load_data("attack_sequences/core.json")
+    action = vector["action"]
+    soft = {"main": apply_modifiers(0, on("mainhand_penalty")), "off": apply_modifiers(0, on("offhand_penalty"))}
+    table = [(strike["hand"], soften(strike["attack"], soft[strike["hand"]])) for strike in row["strikes"]]
+    left = vector.get("ap")
+    if action in ("attack", "jab"):
+        if action == "jab":
+            if "jab" not in row:
+                raise ValueError(f"a jab needs a weapon in the off hand ({row['key']} has none)")
+            table, cost = [("off", soften(row["jab"]["attack"], soft["off"]))], row["jab"]["ap"]
+        else:
+            cost = row["ap"]
+        if left is not None and left < cost:
+            raise ValueError(f"{action} needs {cost} AP")
+        return table, cost
+    need = row["ap"] + data["full_attack"]["min_extra_ap"]
+    if left is None or left < need:
+        raise ValueError(f"{action} needs {need} AP")
+    if action == "circle_cut":
+        if "can_circle_cut" not in flags:
+            raise ValueError("circle_cut needs a perk that grants can_circle_cut")
+        if vector["loadout"]["main"] not in data["circle_cut"]["main"]:
+            raise ValueError("circle_cut needs " + " or ".join(f"a {m} main hand" for m in data["circle_cut"]["main"]))
+        return [("main", data["circle_cut"]["attack"])] * len(vector["foes"]), left
+    extra = data["full_attack"]["extra_main_attacks"]
+    count = max(min(apply_modifiers(0, on("full_attack_strikes")), len(extra)), 0)
+    strikes = table + [("main", value) for value in extra[:count]]
+    off = [value for hand, value in table if hand == "off"]
+    if off and apply_modifiers(0, on("full_attack_off_strikes")) >= 1:
+        strikes.append(("off", off[0] + data["full_attack"]["extra_off_attack"]))
+    if "off_hand_parries" in flags:
+        # Espada y Daga: the off-hand weapon parries instead of striking in a full attack.
+        strikes = [(hand, value) for hand, value in strikes if hand == "main"]
+    return strikes, left
+
+
+def run_attack_sequence(vector):
+    """One attack action by loadout (docs/core/combat.md#attacks-by-loadout): the loadout's
+    strikes, each its own roll through run_combat, against the foes in reach. Rolls are inputs."""
+    action = vector["action"]
+    if action not in ("attack", "jab", "full_attack", "circle_cut"):
+        return {"error": f'action "{action}" is not defined'}
+    row = attack_sequence_of(vector["loadout"])
+    if row is None:
+        return {"error": no_sequence_error(vector["loadout"])}
+    attacker, foes = vector["attacker"], vector["foes"]
+    modifiers = attacker.get("modifiers", [])
+    flags = granted_flags(modifiers)
+    on = lambda target: [m for m in modifiers if m["target"] == target]
+    # Boss Strike (GD_S05_03): from its jab tier a jab with a shield is a bash, and from its
+    # attack tier the attack strikes with the shield too, as the row of a light off-hand weapon.
+    bash = load_data("attack_sequences/core.json")["shield_bash"]
+    tier = apply_modifiers(0, on("boss_strike"))
+    bashing = vector["loadout"]["off"] in bash["off"] and tier >= bash["tiers"]["jab" if action == "jab" else "attack"] and action != "circle_cut"
+    if bashing:
+        if "shield_dr" not in attacker:
+            return {"error": "a shield bash needs shield_dr"}
+        # The bash rolls on the Shields skill, never silently on the main-hand weapon's.
+        if "off_skill" not in attacker:
+            return {"error": "a shield bash needs off_skill"}
+        row = attack_sequence_of({**vector["loadout"], "off": bash["as_off"]})
+        if row is None:
+            return {"error": no_sequence_error({**vector["loadout"], "off": bash["as_off"]})}
+        if action == "jab" and vector.get("after_block") and tier >= bash["tiers"]["after_block"]:
+            row = {**row, "jab": {**row["jab"], "ap": bash["after_block_ap"]}}
+    try:
+        plan, ap = plan_strikes(vector, row, flags, on)
+    except ValueError as error:
+        return {"error": str(error)}
+    if action in ("full_attack", "circle_cut"):
+        aims = [0] * len(plan) if action == "full_attack" else list(range(len(foes)))
+    else:
+        aims = vector.get("targets", [0] * len(plan))
+        if len(aims) != len(plan):
+            return {"error": f"targets names {len(aims)} foes for {len(plan)} strikes"}
+    for aim in aims:
+        if aim < 0 or aim >= len(foes):
+            return {"error": f"target {aim} is not a foe in reach"}
+        if foes[aim]["hp"] == 0:
+            return {"error": f"foe {aim} is already down"}
+    hp = [foe["hp"] for foe in foes]
+    # A circle cut strikes each foe once, so nothing carries (its own rule, [A]).
+    carries = 0 if action == "circle_cut" else math.inf if "reaping_arc" in flags else 1 if "carry_through" in flags else 0
+    rolls = list(vector["rolls"])
+    queue = [{"hand": hand, "attack": value, "foe": aim, "free": False, "carried": False} for (hand, value), aim in zip(plan, aims)]
+    # A fighting stance's attack terms (docs/core/combat.md#fighting-stances): attack_roll on
+    # every strike, attack_single_opponent with one foe in reach, attack_after_parry on the
+    # first main-hand strike after a parry, and unarmed_damage on an empty main hand.
+    stance_attack = on("attack_roll") + (on("attack_single_opponent") if len(foes) == 1 else [])
+    after_parry = on("attack_after_parry") if vector.get("after_parry") else []
+    unarmed = apply_modifiers(0, on("unarmed_damage")) if vector["loadout"]["main"] == "empty" else 0
+    struck_by_main, scissor_left = set(), action == "full_attack" and "scissor_cut" in flags
+    strikes, lost, index = [], 0, 0
+    while index < len(queue):
+        strike = queue[index]
+        index += 1
+        carried = strike["carried"]
+        if hp[strike["foe"]] == 0:
+            standing = [i for i, left in enumerate(hp) if left > 0]
+            if carries > 0 and standing:
+                carries -= 1
+                carried = True
+                if action == "full_attack":
+                    for later in queue[index - 1:]:
+                        later["foe"] = standing[0]
+                strike["foe"] = standing[0]
+            else:
+                lost += 1
+                continue
+        if not rolls:
+            return {"error": f"the {action} needs a roll for strike {len(strikes) + 1}"}
+        roll = rolls.pop(0)
+        foe, hand = strike["foe"], strike["hand"]
+        # A shield has no weapon dice, so a bash is never the Scissor Cut strike.
+        scissor = scissor_left and hand == "off" and foe in struck_by_main and not bashing
+        damage = dict(vector["off_damage"] if hand == "off" and "off_damage" in vector else vector["damage"])
+        damage["roll"] = (roll["damage"] + unarmed) * (2 if scissor else 1)
+        if bashing and hand == "off":
+            damage = {"type": bash["damage_type"], "roll": attacker["shield_dr"] + roll["damage"]}
+        skill = attacker.get("off_skill", attacker["skill"]) if hand == "off" else attacker["skill"]
+        # An off-hand weapon has only its own properties and effects, never the main hand's.
+        prefix = "off_" if hand == "off" else ""
+        properties, effects = attacker.get(f"{prefix}weapon_properties", []), attacker.get(f"{prefix}weapon_effects", [])
+        strike_modifiers = list(vector.get("modifiers", []))
+        if strike["attack"]:
+            strike_modifiers.append({"target": "attack_roll", "operation": "add", "value": strike["attack"], "source": f"strike:{hand}"})
+        strike_modifiers += [{**m, "target": "attack_roll"} for m in stance_attack]
+        if hand == "main" and after_parry:
+            strike_modifiers += [{**m, "target": "attack_roll"} for m in after_parry]
+            after_parry = []
+        outcome = run_combat(
+            {
+                "attacker": {
+                    "skill": skill,
+                    "roll": roll["attack"],
+                    "attributes": attacker.get("attributes", {}),
+                    "flags": attacker.get("flags", []),
+                    "weapon_properties": properties,
+                    "weapon_effects": effects,
+                    # A shield has no weapon attribute, so no rider rides a bash (GD_S05_04).
+                    "perks": [] if bashing and hand == "off" else attacker.get("perks", []),
+                },
+                "defender": {**foes[foe], "hp": hp[foe]},
+                "damage": damage,
+                "modifiers": strike_modifiers,
+                "situations": vector.get("situations", []),
+                "summoning": vector.get("summoning", False),
+            }
+        )
+        if "error" in outcome:
+            return outcome
+        hit = outcome["outcome"] == "hit"
+        if scissor and hit:
+            scissor_left = False
+        elif scissor:
+            scissor = False
+        if hit and hand == "main":
+            struck_by_main.add(foe)
+        dropped = hp[foe] > 0 and outcome["hp"] == 0
+        hp[foe] = outcome["hp"]
+        strikes.append(
+            {
+                "hand": hand,
+                "foe": foe,
+                "attack": strike["attack"],
+                "outcome": outcome["outcome"],
+                "target": outcome["target"],
+                "margin": outcome["margin"],
+                "crit": outcome["crit"],
+                "damage": outcome["damage"],
+                "hp": outcome["hp"],
+                "carried": carried,
+                "free": strike["free"],
+                "scissor": scissor and hit,
+                # The landed effects, listed only when the strike's hand has any.
+                **({"weapon_effects": outcome.get("weapon_effects", [])} if effects else {}),
+                # A rider perk's attempt, as in combat; left out on a strike no rider rides.
+                **{key: outcome[key] for key in ("rider", "effects", "events", "save") if key in outcome},
+            }
+        )
+        if bashing and hand == "off":
+            strikes[-1].update(bash=True, stagger_ap=bash["stagger_ap"] if hit and tier >= bash["tiers"]["stagger"] else 0)
+        if dropped and index == len(queue) and carries > 0 and any(left > 0 for left in hp):
+            queue.append({"hand": hand, "attack": strike["attack"], "foe": foe, "free": True, "carried": False})
+        # Long Guard: a crit that leaves its foe standing carries as a drop would, to the first
+        # other standing foe.
+        others = [i for i, left in enumerate(hp) if left > 0 and i != foe]
+        # In an attack, only a next strike aimed at the critted foe is carried; one the caller
+        # aimed elsewhere keeps its foe, and the carry is not spent.
+        aimed_elsewhere = action != "full_attack" and index < len(queue) and queue[index]["foe"] != foe
+        if outcome["crit"] and not dropped and "carry_on_crit" in flags and carries > 0 and others and not aimed_elsewhere:
+            carries -= 1
+            if index < len(queue):
+                for later in queue[index:] if action == "full_attack" else queue[index:index + 1]:
+                    later["foe"] = others[0]
+                queue[index]["carried"] = True
+            else:
+                queue.append({"hand": hand, "attack": strike["attack"], "foe": others[0], "free": True, "carried": True})
+    stamina = ap * load_data("actions/core.json")["stamina_per_ap"]
+    return {"action": action, "sequence": row["key"], "ap": ap, "stamina": stamina, "strikes": strikes, "hp": hp, "lost": lost}
+
+
+def stance_misfit(row, loadout):
+    """Why a loadout does not hold what a stance needs (docs/core/combat.md#fighting-stances),
+    or None when it fits."""
+    key = row["key"]
+    if loadout["main"] not in row.get("main", [loadout["main"]]) or loadout["off"] not in row.get("off", [loadout["off"]]):
+        return 'stance "%s" does not fit main hand "%s" and off hand "%s"' % (key, loadout["main"], loadout["off"])
+    for hand in ("main", "off"):
+        skills = row.get(f"{hand}_skills")
+        if skills and loadout.get(f"{hand}_skill") not in skills:
+            return 'stance "%s" needs a %s-hand weapon of skill %s' % (key, hand, " or ".join(skills))
+    return None
+
+
+def run_stance(vector):
+    """A fighting stance over one stretch of turns (docs/core/combat.md#fighting-stances): take
+    or change one (free at the start of the actor's own turn, mid_turn_ap later), end it, or
+    change the loadout, which ends a stance it no longer fits. At most one is active."""
+    data = load_data("stances/core.json")
+    rows = {row["key"]: row for row in data["stances"]}
+    features = {row["key"]: row for row in load_data("features/core.json")["features"]}
+    unlocked = set()
+    for ref in vector.get("perks", []):
+        key = ref.removeprefix("core:feature/")
+        if not ref.startswith("core:feature/") or key not in features:
+            return {"error": f'feature "{ref}" is not defined'}
+        unlocked.update(features[key].get("unlocks", []))
+
+    def check(key, loadout):
+        if key not in rows:
+            return f'stance "{key}" is not defined'
+        if f"core:stance/{key}" not in unlocked:
+            return f'stance "{key}" needs a perk that unlocks it'
+        return stance_misfit(rows[key], loadout)
+
+    loadout, held = vector["loadout"], vector.get("stance")
+    if held is not None and (error := check(held, loadout)):
+        return {"error": error}
+    total, steps = 0, []
+    for event in vector.get("events", []):
+        step = {"ap": 0, "ended": None}
+        if ("take" in event) + bool(event.get("end")) + ("loadout" in event) > 1:
+            return {"error": "a stance event takes one of take, end, or loadout"}
+        if "take" in event:
+            key = event["take"]
+            if error := check(key, loadout):
+                return {"error": error}
+            if key != held:
+                step["ap"] = data["rules"]["mid_turn_ap" if event.get("mid_turn") else "turn_start_ap"]
+                step["ended"], held = held, key
+        elif event.get("end"):
+            step["ended"], held = held, None
+        elif "loadout" in event:
+            loadout = event["loadout"]
+            if held is not None and stance_misfit(rows[held], loadout):
+                step["ended"], held = held, None
+        else:
+            return {"error": "a stance event needs take, end, or loadout"}
+        total += step["ap"]
+        step["stance"] = held
+        steps.append(step)
+    modifiers = [dict(m) for m in rows[held]["modifiers"]] if held is not None else []
+    return {"stance": held, "ap": total, "modifiers": modifiers, "steps": steps}
 
 
 WEAPON_STEP_EFFECTS = ("core:effect/armor_pierce", "core:effect/bane")
@@ -656,8 +1042,12 @@ def take_perk(actor, held, key):
     if rank >= ranks:
         unmet.append({"needs": "rank", "max": ranks, "has": rank})
     level = actor.get("level", 1)
-    if need.get("level", 0) > level:
-        unmet.append({"needs": "level", "min": need["level"], "has": level})
+    # A tiered perk's next tier has its own gate (rank_levels, GD_S05_03).
+    gate = need.get("level", 0)
+    if feature.get("rank_levels") and rank < len(feature["rank_levels"]):
+        gate = feature["rank_levels"][rank]
+    if gate > level:
+        unmet.append({"needs": "level", "min": gate, "has": level})
     attributes = actor.get("attributes", {})
     for ability in sorted(need.get("abilities", {})):
         has = attributes.get(ability, 0)
@@ -677,6 +1067,13 @@ def take_perk(actor, held, key):
             if wanted > 1:
                 entry.update({"min": wanted, "has": has})
             unmet.append(entry)
+    # A held perk that excludes this one, or that this one excludes, blocks it: the trip line
+    # blocks the disarm line (docs/core/progression.md#excluded-perks, GD_S05_04).
+    for other in sorted(held):
+        listed = {ref.rsplit("/", 1)[-1] for ref in feature.get("excludes") or []}
+        back = {ref.rsplit("/", 1)[-1] for ref in features.get(other, {}).get("excludes") or []}
+        if held[other] > 0 and (other in listed or key in back):
+            unmet.append({"needs": "not_excluded", "key": other})
     if unmet:
         return {"taken": False, "perk": key, "rank": rank, "unmet": unmet}
     return {"taken": True, "perk": key, "rank": rank + 1, "unmet": []}
@@ -704,11 +1101,15 @@ def read_skill(actor, key, groups=None):
 
 def emit_perk(feature, rank):
     """A perk's modifiers at a rank (docs/modules/progression.md#perks-and-traits): an add at
-    value x rank, a multiply of m at 1 + (m - 1) x rank, a grant or a set once."""
+    value x rank, a multiply of m at 1 + (m - 1) x rank, a grant or a set once. A target in
+    rank_values takes that rank's value instead (GD_S05_03)."""
     emitted = []
     for modifier in feature.get("modifiers", []):
         modifier = dict(modifier)
-        if operation_of(modifier) == "add":
+        by_rank = feature.get("rank_values", {}).get(modifier["target"])
+        if by_rank is not None:
+            modifier["value"] = by_rank[min(rank, len(by_rank)) - 1]
+        elif operation_of(modifier) == "add":
             modifier["value"] = modifier["value"] * rank
         elif operation_of(modifier) == "multiply":
             modifier["value"] = 1 + (modifier["value"] - 1) * rank
@@ -752,6 +1153,20 @@ def run_monster_sheet(vector):
         else:
             return {"error": f'skill "{key}" is not defined'}
     result["skills"] = skills
+    # Its maneuvers: the ones the row lists and the ones its perks unlock; a rider perk puts
+    # its maneuver on the monster's plain attacks that fit it, and no two held perks exclude
+    # each other (GD_S05_04).
+    features = {f["key"]: f for f in load_data("features/core.json")["features"]}
+    held = [features[item["perk"].rsplit("/", 1)[-1]] for item in row.get("perks", [])]
+    unlocked = [ref for feature in held for ref in feature.get("unlocks", []) if ref.startswith("core:maneuver/")]
+    result["maneuvers"] = sorted(set(row.get("maneuvers", [])) | set(unlocked))
+    for index, first in enumerate(held):
+        for second in held[index + 1:]:
+            if f"core:feature/{second['key']}" in first.get("excludes", []) or f"core:feature/{first['key']}" in second.get("excludes", []):
+                return {"error": f"perks {first['key']} and {second['key']} exclude each other"}
+    riders = sorted(feature["rider"] for feature in held if feature.get("rider"))
+    if riders:
+        result["riders"] = riders
     return result
 
 
@@ -959,6 +1374,8 @@ RUNNERS = {
     "stored_actor": run_stored_actor,
     "economy": run_economy,
     "combat": run_combat,
+    "attack_sequence": run_attack_sequence,
+    "stance": run_stance,
     "loot": run_loot,
     "hazard": run_hazard,
     "casting": run_casting,

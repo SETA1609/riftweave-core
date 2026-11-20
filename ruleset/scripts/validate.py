@@ -126,6 +126,7 @@ COLLECTION_CATEGORIES = {
     "skill_groups": "skill_group",
     "summon_bonuses": "summon_bonus",
     "maneuvers": "maneuver",
+    "stances": "stance",
 }
 
 
@@ -1928,7 +1929,45 @@ def check_monster_perks(monsters, templates):
                     errors.append(f"{kind} '{row.get('key')}': perk {key} at rank {rank}, past its {ranks}")
                 if feature.get("category") in MONSTER_PERK_WARN_CATEGORIES:
                     warnings.append(f"{kind} '{row.get('key')}': perk {key} is {feature['category']}, which means little on a monster")
+            # No two perks that exclude each other, as a player holds (GD_S05_04): the trip line
+            # and the disarm line, or two summon natures.
+            keys = [held["perk"].rsplit("/", 1)[-1] for held in row.get("perks") or []]
+            for first, second in excluded_pairs(keys, features):
+                errors.append(f"{kind} '{row.get('key')}': holds {first} and {second}, which exclude each other")
     return errors, warnings
+
+
+def excluded_pairs(keys, features):
+    """The pairs of held perk keys that exclude each other (`excludes`, either way), in order."""
+    pairs = []
+    for index, first in enumerate(keys):
+        for second in keys[index + 1:]:
+            listed = {ref.rsplit("/", 1)[-1] for ref in (features.get(first, {}).get("excludes") or [])}
+            back = {ref.rsplit("/", 1)[-1] for ref in (features.get(second, {}).get("excludes") or [])}
+            if second in listed or first in back:
+                pairs.append((first, second))
+    return pairs
+
+
+def check_rider_perks(features):
+    """A rider perk (GD_S05_04) names a maneuver and needs a perk that unlocks it; a perk's
+    `excludes` name perks that list it back, so a line blocks a line both ways
+    (docs/core/actions.md#rider-perks)."""
+    rows = {row.get("key"): row for row in features}
+    errors = []
+    for row in features:
+        rider = row.get("rider")
+        if rider:
+            needed = [rows.get(item["perk"].rsplit("/", 1)[-1], {}) for item in (row.get("prerequisite") or {}).get("perks", [])]
+            if not any(rider in (perk.get("unlocks") or []) for perk in needed):
+                errors.append(f"perk '{row['key']}': rides {rider} but needs no perk that unlocks it")
+        for ref in row.get("excludes") or []:
+            other = rows.get(ref.rsplit("/", 1)[-1])
+            if other is None:
+                continue  # the reference check reports it
+            if f"core:feature/{row['key']}" not in (other.get("excludes") or []):
+                errors.append(f"perk '{row['key']}': excludes {other['key']}, which does not exclude it back")
+    return errors
 
 
 def check_maneuver_unlocks(maneuvers, features):
@@ -1940,6 +1979,112 @@ def check_maneuver_unlocks(maneuvers, features):
         for row in maneuvers
         if f"core:maneuver/{row.get('key')}" not in unlocked
     ]
+
+
+def check_stances(stances, features):
+    """Fighting stances (docs/core/combat.md#fighting-stances): a perk unlocks each, and every
+    modifier a stance emits carries origin core:origin/martial, source stance:<key>, and
+    duration while_applied, so a stance's bonus stacks as martial and ends with the stance."""
+    unlocked = {ref for row in features for ref in row.get("unlocks") or []}
+    errors = []
+    for row in stances:
+        key = row.get("key")
+        if f"core:stance/{key}" not in unlocked:
+            errors.append(f"stance '{key}': no perk unlocks it (add core:stance/{key} to a perk's unlocks)")
+        for mod in row.get("modifiers", []):
+            target = mod.get("target")
+            if mod.get("origin") != "core:origin/martial":
+                errors.append(f"stance '{key}': modifier {target} needs origin core:origin/martial")
+            if mod.get("source") != f"stance:{key}":
+                errors.append(f"stance '{key}': modifier {target} needs source stance:{key}")
+            if mod.get("duration") != "while_applied":
+                errors.append(f"stance '{key}': modifier {target} needs duration while_applied")
+    return errors
+
+
+RANK_LEVEL_STEPS = (3, 6)
+
+
+def check_rank_levels(features):
+    """Tiered perks (GD_S05_03): rank_levels has one gate per rank, the first at the
+    prerequisite level (1 without one), each next 3 to 6 levels later; rank_values has one value
+    per rank for a target the perk emits."""
+    errors = []
+    for row in features:
+        key, ranks = row.get("key"), row.get("ranks") or 1
+        levels = row.get("rank_levels")
+        if levels is not None:
+            if len(levels) != ranks:
+                errors.append(f"perk '{key}': rank_levels has {len(levels)} gates for {ranks} ranks")
+            first = (row.get("prerequisite") or {}).get("level", 1)
+            if levels and levels[0] != first:
+                errors.append(f"perk '{key}': the first tier's gate {levels[0]} is not its prerequisite level {first}")
+            low, high = RANK_LEVEL_STEPS
+            for before, after in zip(levels, levels[1:]):
+                if not low <= after - before <= high:
+                    errors.append(f"perk '{key}': tiers at {before} and {after} are not {low} to {high} levels apart")
+        targets = {m.get("target") for m in row.get("modifiers") or []}
+        for target, values in (row.get("rank_values") or {}).items():
+            if target not in targets:
+                errors.append(f"perk '{key}': rank_values names {target}, which no modifier of the perk targets")
+            if len(values) != ranks:
+                errors.append(f"perk '{key}': rank_values for {target} has {len(values)} values for {ranks} ranks")
+    return errors
+
+
+def check_build_tiers(builds, features):
+    """A build takes each tier of a tiered perk at its rank_levels gate or later (GD_S05_03)."""
+    gates = {f"core:feature/{row['key']}": row["rank_levels"] for row in features if row.get("rank_levels")}
+    errors = []
+    for build in builds:
+        held = {}
+        for level, ref in sorted(((int(level), ref) for level, ref in (build.get("perks_by_level") or {}).items())):
+            held[ref] = held.get(ref, 0) + 1
+            levels = gates.get(ref)
+            if levels and held[ref] <= len(levels) and level < levels[held[ref] - 1]:
+                errors.append(f"build '{build.get('key')}': {ref} tier {held[ref]} at level {level}, before its gate {levels[held[ref] - 1]}")
+    return errors
+
+
+def check_spell_ward_table(pipeline):
+    """combat/pipeline.json's spell_ward_table is what spell_ward_percent and the cap give, one
+    row per END from 1 and one column per tier from 1 (GD_S05_03)."""
+    from kernel_reference import evaluate_formula
+
+    errors = []
+    for end, row in enumerate(pipeline.get("spell_ward_table", []), start=1):
+        for tier, percent in enumerate(row, start=1):
+            want = min(evaluate_formula(pipeline["spell_ward_percent"], {}, {"end": end, "tier": tier}), pipeline["spell_ward_max_percent"])
+            if percent != want:
+                errors.append(f"spell_ward_table: END {end} tier {tier} reads {percent}, the formula gives {want}")
+    return errors
+
+
+OFF_HAND_WEAPONS = ("light_weapon", "weapon")
+
+
+def check_attack_sequences(rows):
+    """attack_sequences/core.json (docs/core/combat.md#attacks-by-loadout): each loadout is
+    covered by at most one row, an off-hand strike or a jab needs an off-hand weapon, and a
+    row with an off-hand weapon has a jab and an off-hand strike."""
+    errors, covered = [], {}
+    for row in rows:
+        key = row.get("key")
+        for main in row.get("main", []):
+            for off in row.get("off", []):
+                if (main, off) in covered:
+                    errors.append(f"attack sequence '{key}': {main} main hand and {off} off hand are already covered by '{covered[(main, off)]}'")
+                covered.setdefault((main, off), key)
+        armed = [off in OFF_HAND_WEAPONS for off in row.get("off", [])]
+        if any(armed) and not all(armed):
+            errors.append(f"attack sequence '{key}': mixes off-hand weapons with an off hand that holds none")
+        strikes_off = any(strike.get("hand") == "off" for strike in row.get("strikes", []))
+        if all(armed) and armed:
+            if not strikes_off or "jab" not in row:
+                errors.append(f"attack sequence '{key}': an off-hand weapon needs an off-hand strike and a jab")
+        elif strikes_off or "jab" in row:
+            errors.append(f"attack sequence '{key}': an off-hand strike or a jab needs an off-hand weapon")
+    return errors
 
 
 def check_racial_trait_refs(data_files):
@@ -2047,7 +2192,7 @@ def main():
     for warning in perk_warnings:
         print(f"  \u26a0  {warning}")
     if perk_errors:
-        print("  \u2717  monster perks (rank at most the perk's ranks)")
+        print("  \u2717  monster perks (rank at most the perk's ranks, no excluded pair)")
         for e in perk_errors:
             print(f"       {e}")
         failed += 1
@@ -2059,6 +2204,42 @@ def main():
     if unlock_errors:
         print("  \u2717  maneuvers (each unlocked by a perk)")
         for e in unlock_errors:
+            print(f"       {e}")
+        failed += 1
+
+    rider_errors = check_rider_perks(json.loads((DATA_DIR / "features" / "core.json").read_text())["features"])
+    if rider_errors:
+        print("  \u2717  rider perks and exclusions (the unlock perk, excludes both ways)")
+        for e in rider_errors:
+            print(f"       {e}")
+        failed += 1
+
+    stance_errors = check_stances(
+        json.loads((DATA_DIR / "stances" / "core.json").read_text())["stances"],
+        json.loads((DATA_DIR / "features" / "core.json").read_text())["features"],
+    )
+    if stance_errors:
+        print("  \u2717  stances (each unlocked by a perk, martial and while applied)")
+        for e in stance_errors:
+            print(f"       {e}")
+        failed += 1
+
+    feature_rows = json.loads((DATA_DIR / "features" / "core.json").read_text())["features"]
+    tier_errors = check_rank_levels(feature_rows) + check_build_tiers(
+        json.loads((DATA_DIR / "builds" / "core.json").read_text())["builds"], feature_rows
+    ) + check_spell_ward_table(json.loads((DATA_DIR / "combat" / "pipeline.json").read_text())["pipeline"])
+    if tier_errors:
+        print("  \u2717  tiered perks (rank_levels, rank_values, builds, the spell ward table)")
+        for e in tier_errors:
+            print(f"       {e}")
+        failed += 1
+
+    sequence_errors = check_attack_sequences(
+        json.loads((DATA_DIR / "attack_sequences" / "core.json").read_text())["attack_sequences"]
+    )
+    if sequence_errors:
+        print("  \u2717  attack sequences (one row per loadout)")
+        for e in sequence_errors:
             print(f"       {e}")
         failed += 1
 

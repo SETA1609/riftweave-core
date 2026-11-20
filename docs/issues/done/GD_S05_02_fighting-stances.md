@@ -1,9 +1,10 @@
 #### GD_S05_02_fighting-stances Fighting stances: toggles a perk unlocks
-- Status: todo
+- Status: done
+- Merged: #254, 2026-11-19
 - Priority: medium
 - Needs: M3-27, GD_S05_01_loadout-attacks-melee-ladders
 - Was: M3-29
-- Modified: 2026-11-17
+- Modified: 2026-11-19
 - Do: Owner request, 2026-11-16: a stance is a toggle, not a passive. M3-27 makes block and dodge declared stances; this issue adds the stances a perk unlocks, each tied to what the actor holds.
   - **The rule:** an actor has at most one fighting stance active [A]. Taking one at the start of the actor's own turn costs nothing; changing it mid-turn costs 1 AP [A]. It lasts until changed. If the loadout stops matching (a weapon is dropped or swapped), the stance ends. Its modifiers carry the `martial` origin and the source `stance:<key>`, `while_applied` (docs/core/modifier.md). Whether a fighting stance can stand together with M3-27's block or dodge stance is decided in the spec step.
   - **Loadout:** each stance names what the hands must hold: the main-hand skill, and the off hand as `empty`, `shield`, `buckler`, `light_weapon`, `weapon`, or `two_handed` [A]. The same loadout terms as M3-28's `attack_sequences`, written once in `schema.json`.

@@ -29,7 +29,7 @@ class TestBuilds(unittest.TestCase):
 
     def test_the_melee_path_has_its_three_sub_paths(self):
         melee = sorted(b["sub_path"] for b in builds() if b["path"] == "melee")
-        self.assertEqual(melee, ["duelist", "shield_bearer", "two_handed"])
+        self.assertEqual(melee, ["fencer", "shield_bearer", "two_handed"])
 
     def test_the_magic_path_has_its_three_sub_paths_and_the_magic_swordsman(self):
         magic = sorted(b["sub_path"] for b in builds() if b["path"] == "magic")

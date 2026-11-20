@@ -21,7 +21,13 @@ from validate import (
     build_namespaced_ref_index,
     check_damage_type_vocabulary,
     check_equipment_uniqueness,
+    check_attack_sequences,
+    check_stances,
+    check_rank_levels,
+    check_build_tiers,
+    check_spell_ward_table,
     check_maneuver_unlocks,
+    check_rider_perks,
     check_racial_trait_refs,
     load_canonical_damage_types,
     check_references,
@@ -211,6 +217,123 @@ class TestManeuverUnlocks(unittest.TestCase):
 
     def test_a_maneuver_a_perk_unlocks_passes(self):
         self.assertEqual(check_maneuver_unlocks([{"key": "heavy_swing"}], [{"key": "wind_up", "unlocks": ["core:maneuver/heavy_swing"]}]), [])
+
+
+class TestRiderPerks(unittest.TestCase):
+    """GD_S05_04: a rider perk needs the perk that unlocks its maneuver, and an exclusion is
+    listed both ways."""
+
+    UNLOCK = {"key": "low_sweep", "unlocks": ["core:maneuver/trip"]}
+
+    def test_the_data_passes(self):
+        features = json.loads((Path(__file__).resolve().parent.parent / "data" / "features" / "core.json").read_text())["features"]
+        self.assertEqual(check_rider_perks(features), [])
+
+    def test_a_one_way_exclusion_fails(self):
+        other = {"key": "bind", "unlocks": ["core:maneuver/disarm"]}
+        errors = check_rider_perks([dict(self.UNLOCK, excludes=["core:feature/bind"]), other])
+        self.assertTrue(any("does not exclude it back" in e for e in errors), errors)
+        self.assertEqual(check_rider_perks([dict(self.UNLOCK, excludes=["core:feature/bind"]), dict(other, excludes=["core:feature/low_sweep"])]), [])
+
+    def test_a_rider_that_does_not_need_its_unlock_perk_fails(self):
+        rider = {"key": "hook", "rider": "core:maneuver/trip", "prerequisite": {"perks": []}}
+        errors = check_rider_perks([self.UNLOCK, rider])
+        self.assertTrue(any("needs no perk that unlocks it" in e for e in errors), errors)
+
+
+class TestAttackSequences(unittest.TestCase):
+    """GD_S05_01: one attack_sequences row per loadout (docs/core/combat.md#attacks-by-loadout)."""
+
+    ONE = {"key": "one", "main": ["one_handed"], "off": ["empty"], "ap": 3, "strikes": [{"hand": "main", "attack": 0}]}
+    TWO = {"key": "two", "main": ["light"], "off": ["light_weapon"], "ap": 3,
+           "strikes": [{"hand": "main", "attack": -10}, {"hand": "off", "attack": -20}], "jab": {"ap": 2, "attack": -10}}
+
+    def test_the_data_passes(self):
+        rows = json.loads((Path(__file__).resolve().parent.parent / "data" / "attack_sequences" / "core.json").read_text())
+        self.assertEqual(check_attack_sequences(rows["attack_sequences"]), [])
+
+    def test_two_rows_for_one_loadout_fail(self):
+        errors = check_attack_sequences([self.ONE, {**self.ONE, "key": "again"}])
+        self.assertTrue(any("already covered by 'one'" in e for e in errors), errors)
+
+    def test_a_jab_without_an_off_hand_weapon_fails(self):
+        errors = check_attack_sequences([{**self.ONE, "jab": {"ap": 2, "attack": -10}}])
+        self.assertTrue(any("needs an off-hand weapon" in e for e in errors), errors)
+
+    def test_an_off_hand_weapon_without_a_jab_fails(self):
+        errors = check_attack_sequences([{k: v for k, v in self.TWO.items() if k != "jab"}])
+        self.assertTrue(any("needs an off-hand strike and a jab" in e for e in errors), errors)
+
+
+class TestStances(unittest.TestCase):
+    """GD_S05_02: a perk unlocks each fighting stance, and its modifiers are martial and while applied."""
+
+    MOD = {"target": "attack_roll", "operation": "add", "value": 10, "source": "stance:lunge",
+           "origin": "core:origin/martial", "duration": "while_applied"}
+    ROW = {"key": "lunge", "label": "Lunge", "description": "x", "modifiers": [MOD]}
+    PERK = {"key": "lunge", "unlocks": ["core:stance/lunge"]}
+
+    def test_the_data_passes(self):
+        data = Path(__file__).resolve().parent.parent / "data"
+        stances = json.loads((data / "stances" / "core.json").read_text())["stances"]
+        features = json.loads((data / "features" / "core.json").read_text())["features"]
+        self.assertEqual(check_stances(stances, features), [])
+
+    def test_a_stance_no_perk_unlocks_fails(self):
+        errors = check_stances([self.ROW], [])
+        self.assertTrue(any("no perk unlocks it" in e for e in errors), errors)
+
+    def test_a_modifier_with_another_origin_source_or_duration_fails(self):
+        bad = {**self.MOD, "origin": "core:origin/trained", "source": "feature:lunge", "duration": "instant"}
+        errors = check_stances([{**self.ROW, "modifiers": [bad]}], [self.PERK])
+        for needed in ("origin core:origin/martial", "source stance:lunge", "duration while_applied"):
+            self.assertTrue(any(needed in e for e in errors), (needed, errors))
+
+
+class TestTieredPerks(unittest.TestCase):
+    """GD_S05_03: rank_levels gates each tier, a build takes no tier early, and the spell ward
+    table is what its formula gives."""
+
+    DATA = Path(__file__).resolve().parent.parent / "data"
+    PERK = {"key": "wall", "ranks": 3, "rank_levels": [1, 6, 12], "prerequisite": {},
+            "modifiers": [{"target": "shield_dr", "operation": "add", "value": 2}], "rank_values": {"shield_dr": [2, 3, 4]}}
+
+    def rows(self, name, key):
+        return json.loads((self.DATA / name / "core.json").read_text())[key]
+
+    def test_the_data_passes(self):
+        features = self.rows("features", "features")
+        self.assertEqual(check_rank_levels(features), [])
+        self.assertEqual(check_build_tiers(self.rows("builds", "builds"), features), [])
+        pipeline = json.loads((self.DATA / "combat" / "pipeline.json").read_text())["pipeline"]
+        self.assertEqual(check_spell_ward_table(pipeline), [])
+
+    def test_a_gate_count_a_first_gate_or_a_step_out_of_rule_fails(self):
+        errors = check_rank_levels([{**self.PERK, "rank_levels": [1, 6]}])
+        self.assertTrue(any("2 gates for 3 ranks" in e for e in errors), errors)
+        errors = check_rank_levels([{**self.PERK, "rank_levels": [4, 8, 12]}])
+        self.assertTrue(any("not its prerequisite level 1" in e for e in errors), errors)
+        errors = check_rank_levels([{**self.PERK, "rank_levels": [1, 3, 12]}])
+        self.assertTrue(any("not 3 to 6 levels apart" in e for e in errors), errors)
+
+    def test_rank_values_need_one_value_per_rank_on_a_target_the_perk_emits(self):
+        errors = check_rank_levels([{**self.PERK, "rank_values": {"shield_dr": [2, 3], "hp": [1, 2, 3]}}])
+        self.assertTrue(any("2 values for 3 ranks" in e for e in errors), errors)
+        self.assertTrue(any("names hp" in e for e in errors), errors)
+
+    def test_a_tier_taken_before_its_gate_fails(self):
+        build = {"key": "early", "perks_by_level": {"2": "core:feature/wall", "3": "core:feature/wall"}}
+        errors = check_build_tiers([build], [self.PERK])
+        self.assertTrue(any("tier 2 at level 3, before its gate 6" in e for e in errors), errors)
+        build = {"key": "on_time", "perks_by_level": {"2": "core:feature/wall", "6": "core:feature/wall"}}
+        self.assertEqual(check_build_tiers([build], [self.PERK]), [])
+
+    def test_a_spell_ward_cell_off_the_formula_fails(self):
+        pipeline = json.loads((self.DATA / "combat" / "pipeline.json").read_text())["pipeline"]
+        table = [list(row) for row in pipeline["spell_ward_table"]]
+        table[8][2] = 54
+        errors = check_spell_ward_table({**pipeline, "spell_ward_table": table})
+        self.assertTrue(any("END 9 tier 3 reads 54, the formula gives 50" in e for e in errors), errors)
 
 
 class TestManeuverChannel(unittest.TestCase):

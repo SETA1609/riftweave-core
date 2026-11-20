@@ -1,9 +1,10 @@
 #### GD_S05_04_trip-and-disarm Trip and disarm: maneuvers a perk unlocks, and rider perks that put one on every attack
-- Status: todo
+- Status: done
+- Merged: #256, 2026-11-20
 - Priority: medium
 - Needs: M3-24, GD_S05_01_loadout-attacks-melee-ladders
 - Was: M3-31
-- Modified: 2026-11-18
+- Modified: 2026-11-19
 - Do: Owner request, 2026-11-18: every maneuver is unlocked by a perk (M3-24 makes this the rule). This issue adds the next maneuvers and a second kind of perk that carries a maneuver's effect onto normal attacks.
   - **Unlock perks.** Each new maneuver has one perk that lists it in `unlocks`; holding it lets you attempt the maneuver. Starting rows: **trip** (on a hit, the target makes a check or falls `prone`; the `knockdown` effect gains the `maneuver` channel) and **disarm** (on a hit, the target makes a check or drops its weapon, the same `disarm` event the arms called shot uses). Their AP, attack, and the check's attribute are [A] and set in the spec step. Shove and the others stay for later rows.
   - **Rider perks.** A second perk per maneuver, which needs its unlock perk, puts that maneuver's effect on the actor's normal attacks: every hit of a plain attack may trip, or may disarm. Whether the rider costs the attack anything (a smaller chance, a weaker check) is [A].

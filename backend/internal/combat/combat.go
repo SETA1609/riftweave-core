@@ -29,6 +29,9 @@ type Attacker struct {
 	// WeaponEffects are the weapon's on-hit effects (docs/core/combat.md#weapon-effects); nil
 	// when the input names none.
 	WeaponEffects []data.AppliedEffect `json:"weapon_effects"`
+	// Perks are the attacker's held perks (refs); a rider perk among them puts its maneuver
+	// on a plain attack (docs/core/actions.md#rider-perks).
+	Perks []string `json:"perks"`
 }
 
 // Defender is who takes the attack.
@@ -39,15 +42,24 @@ type Defender struct {
 	// ShieldDamageReduction is a carried shield's DR; it adds to the armor DR.
 	ShieldDamageReduction *int64 `json:"shield_dr"`
 	ShieldsSkill          *int64 `json:"shields_skill"`
+	// WeaponSkill is the held weapon's skill, which a parry band and Buckler Play read.
+	WeaponSkill *int64 `json:"weapon_skill"`
 	// Stance is the one the defender declared: dodge, block, or none.
 	Stance    string           `json:"stance"`
 	HitPoints int64            `json:"hp"`
 	Resist    map[string]int64 `json:"resist"`
 	Flags     []string         `json:"flags"`
+	// Loadout is what the defender holds; with a weapon in each hand the defender's
+	// modifiers on two_weapon_evasion_band widen the evasion band (Crossed Guard).
+	Loadout *data.Loadout `json:"loadout"`
 	// CreatureType is the defender's creature type, which a weapon's bane reads.
 	CreatureType string `json:"creature_type"`
-	// Modifiers are the defender's perks: adds on evasion, shields, and shield_dr, and the
-	// block_magic, bulwark, and riposte grants.
+	// Armor is the heaviest body armor worn: none, light, medium, or heavy; "" reads none.
+	// Unarmored Grace widens the band only with none.
+	Armor string `json:"armor"`
+	// Modifiers are the defender's perks and fighting stance: adds on evasion, evasion_band,
+	// shields, block_band, shield_dr, unarmored_evasion_band, and spell_ward, and the bulwark, riposte, parry, and
+	// block_with_weapon grants.
 	Modifiers []modifier.Modifier `json:"modifiers"`
 }
 
@@ -74,6 +86,8 @@ type Input struct {
 	// Summoning is whether the attacker has an active summon, for its while_summoning
 	// modifiers; the beside_summon situation implies it (docs/core/modifier.md).
 	Summoning bool `json:"summoning"`
+	// Loadout is what the attacker holds: a maneuver's AP is then the loadout's attack AP.
+	Loadout *data.Loadout `json:"loadout"`
 }
 
 // besideSummon is the situation of a summon attacking the same target, so one is out.
@@ -89,8 +103,15 @@ type Result struct {
 	Blocked     bool   `json:"blocked"`
 	EvasionRate int64  `json:"evasion_rate"`
 	BlockRate   int64  `json:"block_rate"`
-	Damage      int64  `json:"damage"`
-	HitPoints   int64  `json:"hp"`
+	// ParryRate is a parrying stance's band, under the block band; Parried is a hit it stopped.
+	ParryRate int64 `json:"parry_rate"`
+	Parried   bool  `json:"parried"`
+	// Warded is Spell Ward: a spell whose roll landed in the block band, with WardPercent of
+	// its damage resisted.
+	Warded      bool  `json:"warded"`
+	WardPercent int64 `json:"ward_percent"`
+	Damage      int64 `json:"damage"`
+	HitPoints   int64 `json:"hp"`
 	// Counter is a riposte: a dodge's evade in the window lets the defender attack back.
 	Counter bool `json:"counter"`
 	// StaggerAP is Bulwark: AP the attacker loses on their next turn.
@@ -102,9 +123,17 @@ type Result struct {
 	// the maneuver's, at least 1, and that times stamina_per_ap. Left out without a maneuver.
 	AP      *int64 `json:"ap,omitempty"`
 	Stamina *int64 `json:"stamina,omitempty"`
-	// Effects are the maneuver's effects on a hit, and empty on a miss or an evade. Without a
-	// maneuver the field is left out.
+	// Effects are the maneuver's (or the rider's) effects on a hit, and empty on a miss or an
+	// evade. Without a maneuver or a rider the field is left out.
 	Effects *[]json.RawMessage `json:"effects,omitempty"`
+	// Events are the maneuver's (or the rider's) events on a hit, such as disarm; left out
+	// without a maneuver or a rider.
+	Events *[]string `json:"events,omitempty"`
+	// Save is the maneuver attempt on a hit, for a maneuver with a save bonus or a rider;
+	// the caller rolls it and a failed save lands the effects and events.
+	Save *Save `json:"save,omitempty"`
+	// Rider is the maneuver key a held rider perk put on this plain attack.
+	Rider string `json:"rider,omitempty"`
 	// WeaponEffects are the weapon effects that land on a hit, and empty on a miss, an evade,
 	// or a block. Without weapon effects the field is left out.
 	WeaponEffects *[]json.RawMessage `json:"weapon_effects,omitempty"`
@@ -171,6 +200,58 @@ func maneuverOf(ruleset *data.Ruleset, input *Input) (*data.Maneuver, error) {
 		return nil, &data.MissingInputError{Subject: maneuver.Key, Needs: either(maneuver.WeaponProperties, "weapon")}
 	}
 	return maneuver, nil
+}
+
+// riderOf is the maneuver a held rider perk puts on a plain attack: nil when none is held,
+// the attack is a maneuver, or no rider's maneuver fits the attack. Two riders that fit the
+// same attack are an error.
+func riderOf(ruleset *data.Ruleset, input *Input, maneuver *data.Maneuver) (*data.Maneuver, error) {
+	var attackRange string = input.Range
+	if attackRange == "" {
+		attackRange = "melee"
+	}
+	var fitting []string
+	var rider *data.Maneuver
+	for _, ref := range input.Attacker.Perks {
+		feature, err := ruleset.Features.Require("perk", ref[strings.LastIndex(ref, "/")+1:])
+		if err != nil {
+			return nil, err
+		}
+		if feature.Rider == "" {
+			continue
+		}
+		row, err := ruleset.Maneuvers.Require("maneuver", feature.Rider[strings.LastIndex(feature.Rider, "/")+1:])
+		if err != nil {
+			return nil, err
+		}
+		if row.Fits(attackRange, input.Attacker.WeaponProperties) {
+			fitting, rider = append(fitting, feature.Key), row
+		}
+	}
+	if len(fitting) > 1 {
+		return nil, fmt.Errorf("two rider perks fit this attack: %s", strings.Join(fitting, ", "))
+	}
+	if maneuver != nil {
+		return nil, nil
+	}
+	return rider, nil
+}
+
+// Save is a maneuver attempt's save (docs/core/actions.md#the-maneuver-attempt).
+type Save struct {
+	Attribute string `json:"attribute"`
+	DC        int64  `json:"dc"`
+	Target    int64  `json:"target"`
+}
+
+// saveOf is the attempt's save: the DC is the weapon attribute times the pipeline's
+// multiplier plus the bonus, and the defender's target is 100 minus it, at least 0.
+func saveOf(input *Input, multiplier, bonus int64) *Save {
+	var dc int64 = bonus
+	if ability, known := actor.ByKey(input.Damage.Ability); known {
+		dc += input.Attacker.Attributes.Get(ability) * multiplier
+	}
+	return &Save{Attribute: input.Damage.Ability, DC: dc, Target: max(100-dc, 0)}
 }
 
 // either names the choices as "a melee attack or a ranged attack".
@@ -272,6 +353,20 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	if err != nil {
 		return Result{}, err
 	}
+	rider, err := riderOf(ruleset, &input, maneuver)
+	if err != nil {
+		return Result{}, err
+	}
+	// A maneuver attempt (a save bonus row, or a rider) saves against the weapon's attribute.
+	if (rider != nil || (maneuver != nil && maneuver.SaveBonus != nil)) && input.Damage.Ability == "" {
+		return Result{}, fmt.Errorf("a maneuver attempt needs the weapon's attribute (damage.ability)")
+	}
+	var sequence *data.AttackSequence
+	if input.Loadout != nil {
+		if sequence = ruleset.AttackSequences.Covering(input.Loadout.Main, input.Loadout.Off); sequence == nil {
+			return Result{}, &data.NoSequenceError{Loadout: *input.Loadout}
+		}
+	}
 	if maneuver != nil && maneuver.Attack != 0 {
 		attackModifiers = append(attackModifiers, modifier.Modifier{
 			Target:    "attack_roll",
@@ -285,6 +380,9 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	}
 	if defender.Stance == "block" && (defender.ShieldDamageReduction == nil || defender.ShieldsSkill == nil) {
 		return Result{}, &data.MissingInputError{Subject: "a block", Needs: "shield_dr and shields_skill"}
+	}
+	if slices.Contains(modifier.Flags(defender.Modifiers, 0, nil), "parry") && defender.WeaponSkill == nil {
+		return Result{}, &data.MissingInputError{Subject: "a parry", Needs: "weapon_skill"}
 	}
 	evasionRate, blockRate, err := bands(ruleset, defender, damageType.Physical, delivery)
 	if err != nil {
@@ -311,6 +409,9 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		EvasionRate: evasionRate,
 		BlockRate:   blockRate,
 	}
+	if delivery != "instant" && damageType.Physical && slices.Contains(modifier.Flags(defender.Modifiers, 0, nil), "parry") {
+		result.ParryRate = formula.FloorDivide(*defender.WeaponSkill, ruleset.Stances.Rules.ParryBandDivisor)
+	}
 	if calledShot != nil {
 		var noRiders []data.Rider = []data.Rider{}
 		result.Riders = &noRiders
@@ -324,10 +425,23 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		if err != nil {
 			return Result{}, err
 		}
-		var actionPoints int64 = max(action.Cost+maneuver.AP, 1)
+		var cost int64 = action.Cost
+		if sequence != nil && maneuver.Modifies == "attack" {
+			cost = sequence.AP
+		}
+		var actionPoints int64 = max(cost+maneuver.AP, 1)
 		var stamina int64 = actionPoints * ruleset.StaminaPerAP
 		var noEffects []json.RawMessage = []json.RawMessage{}
 		result.AP, result.Stamina, result.Effects = &actionPoints, &stamina, &noEffects
+	}
+	var carried *data.Maneuver = maneuver
+	if rider != nil {
+		var noEffects []json.RawMessage = []json.RawMessage{}
+		carried, result.Rider, result.Effects = rider, rider.Key, &noEffects
+	}
+	if carried != nil {
+		var noEvents []string = []string{}
+		result.Events = &noEvents
 	}
 	if !attack.Success {
 		result.Outcome, result.HitPoints = "miss", defender.HitPoints
@@ -337,7 +451,8 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		return result, nil
 	}
 
-	// The same roll read in bands: the evasion band, then a block stance's band under it.
+	// The same roll read in bands: the evasion band, then a block stance's band under it, then
+	// a parrying stance's band under that.
 	// A crit always hits. Riposte and Bulwark read the band's lowest rolls, as wide as the
 	// defender's crit window.
 	var perkFlags []string = modifier.Flags(defender.Modifiers, 0, nil)
@@ -352,11 +467,24 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 			result.Outcome, result.Damage, result.HitPoints = "evaded", 0, defender.HitPoints
 			return result, nil
 		}
+	case margin < evasionRate+blockRate && !damageType.Physical:
+		tier, err := modifier.Value(0, modifier.Target(defender.Modifiers, "spell_ward"), ruleset.Origins, 0, nil)
+		if err != nil {
+			return Result{}, err
+		}
+		ward, err := pipeline.SpellWardPercent.Evaluate(nil, formula.Variable{Name: "end", Value: defender.Attributes.Get(actor.Endurance)}, formula.Variable{Name: "tier", Value: tier})
+		if err != nil {
+			return Result{}, err
+		}
+		result.Warded, result.WardPercent = true, min(ward, pipeline.SpellWardMaxPercent)
 	case margin < evasionRate+blockRate:
 		result.Outcome, result.Blocked, result.Damage, result.HitPoints = "blocked", true, 0, defender.HitPoints
 		if slices.Contains(perkFlags, "bulwark") && margin >= evasionRate+blockRate-window {
 			result.StaggerAP = pipeline.BulwarkStaggerAP
 		}
+		return result, nil
+	case margin < evasionRate+blockRate+result.ParryRate:
+		result.Outcome, result.Blocked, result.Parried, result.Damage, result.HitPoints = "blocked", true, true, 0, defender.HitPoints
 		return result, nil
 	}
 	result.Outcome = "hit"
@@ -419,6 +547,7 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		amount = max(amount-damageReduction, 0)
 	}
 	amount = max(amount-defender.Resist[input.Damage.Type], 0)
+	amount -= amount * result.WardPercent / 100
 	result.Damage, result.HitPoints = amount, max(defender.HitPoints-amount, 0)
 	if calledShot != nil && !result.Evaded {
 		var riders []data.Rider = append([]data.Rider{}, calledShot.Riders...)
@@ -430,6 +559,21 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 			effects = append(effects, applied.Encoded)
 		}
 		result.Effects = &effects
+		var events []string = append([]string{}, maneuver.Events...)
+		result.Events = &events
+		if maneuver.SaveBonus != nil {
+			result.Save = saveOf(&input, pipeline.ManeuverSaveMultiplier, *maneuver.SaveBonus)
+		}
+	}
+	// A rider: the attack resolves as a plain one, then on a hit the maneuver's attempt
+	// follows, with no save bonus.
+	if rider != nil && !result.Evaded {
+		var effects []json.RawMessage = make([]json.RawMessage, 0, len(rider.Effects))
+		for _, applied := range rider.Effects {
+			effects = append(effects, applied.Encoded)
+		}
+		var events []string = append([]string{}, rider.Events...)
+		result.Effects, result.Events, result.Save = &effects, &events, saveOf(&input, pipeline.ManeuverSaveMultiplier, 0)
 	}
 	if input.Attacker.WeaponEffects != nil && !result.Evaded {
 		landed, err := landedWeaponEffects(input.Attacker.WeaponEffects, input.Damage.Type, defender)
@@ -442,7 +586,7 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 }
 
 // bands is step 2's rates: the evasion band (doubled by the dodge stance) and the block
-// stance's band (halved against magic with block_magic, none without it). Instant meets
+// stance's band (physical hits, and with Spell Ward the spells it wards). Instant meets
 // neither.
 func bands(ruleset *data.Ruleset, defender *Defender, physical bool, delivery string) (int64, int64, error) {
 	if delivery == "instant" {
@@ -466,22 +610,48 @@ func bands(ruleset *data.Ruleset, defender *Defender, physical bool, delivery st
 			return 0, 0, err
 		}
 	}
-	var blockMagic bool = slices.Contains(modifier.Flags(defender.Modifiers, 0, nil), "block_magic")
-	if defender.Stance != "block" || (!physical && !blockMagic) {
+	if defender.Loadout.HoldsTwoWeapons() {
+		widened, err := modifier.Value(evasionRate, modifier.Target(defender.Modifiers, "two_weapon_evasion_band"), ruleset.Origins, 0, nil)
+		if err != nil {
+			return 0, 0, err
+		}
+		evasionRate = max(widened, 0)
+	}
+	// A fighting stance's evasion_band (forward, low, and long guard).
+	banded, err := modifier.Value(evasionRate, modifier.Target(defender.Modifiers, "evasion_band"), ruleset.Origins, 0, nil)
+	if err != nil {
+		return 0, 0, err
+	}
+	evasionRate = max(banded, 0)
+	// Unarmored Grace: no body armor widens the band.
+	if defender.Armor == "" || defender.Armor == "none" {
+		unarmored, err := modifier.Value(evasionRate, modifier.Target(defender.Modifiers, "unarmored_evasion_band"), ruleset.Origins, 0, nil)
+		if err != nil {
+			return 0, 0, err
+		}
+		evasionRate = max(unarmored, 0)
+	}
+	wardTier, err := modifier.Value(0, modifier.Target(defender.Modifiers, "spell_ward"), ruleset.Origins, 0, nil)
+	if err != nil {
+		return 0, 0, err
+	}
+	if defender.Stance != "block" || (!physical && wardTier <= 0) {
 		return evasionRate, 0, nil
 	}
 	shields, err := modifier.Value(*defender.ShieldsSkill, modifier.Target(defender.Modifiers, "shields"), ruleset.Origins, 0, nil)
 	if err != nil {
 		return 0, 0, err
 	}
+	if defender.WeaponSkill != nil && slices.Contains(modifier.Flags(defender.Modifiers, 0, nil), "block_with_weapon") {
+		shields = max(shields, *defender.WeaponSkill)
+	}
 	blockRate, err := pipeline.BlockRate.Evaluate(nil, formula.Variable{Name: "skill", Value: shields})
 	if err != nil {
 		return 0, 0, err
 	}
-	if !physical {
-		if blockRate, err = pipeline.MagicBlockRate.Evaluate(nil, formula.Variable{Name: "rate", Value: blockRate}); err != nil {
-			return 0, 0, err
-		}
+	widened, err := modifier.Value(blockRate, modifier.Target(defender.Modifiers, "block_band"), ruleset.Origins, 0, nil)
+	if err != nil {
+		return 0, 0, err
 	}
-	return evasionRate, blockRate, nil
+	return evasionRate, max(widened, 0), nil
 }
