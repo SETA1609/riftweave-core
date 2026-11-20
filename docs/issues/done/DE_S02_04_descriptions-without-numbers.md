@@ -1,5 +1,6 @@
 #### DE_S02_04_descriptions-without-numbers Third normal form: a description does not restate its numbers
-- Status: review
+- Status: done
+- Merged: #395, 2026-11-20
 - Priority: medium
 - Needs: DE_S02_02_second-normal-form
 - Was: M5-75
