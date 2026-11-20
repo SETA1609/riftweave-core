@@ -124,6 +124,27 @@ def attack_type(attack):
     return weapon_row(weapon)["weapon"]["damage"]["type"]
 
 
+def attack_label(attack):
+    """The attack's name: its own `label`, else its weapon row's (DE_S02_02)."""
+    if attack.get("label"):
+        return attack["label"]
+    weapon = attack["weapon"]
+    if weapon.startswith(NATURAL_PREFIX):
+        return natural_weapons()[weapon.removeprefix(NATURAL_PREFIX)]["label"]
+    return weapon_row(weapon)["label"]
+
+
+def attack_phase(attack):
+    """The phase the attack carries: its own, else a carried weapon's; a natural weapon has none
+    of its own (DE_S02_02)."""
+    if attack.get("phase"):
+        return attack["phase"]
+    weapon = attack["weapon"]
+    if weapon.startswith(NATURAL_PREFIX):
+        return None
+    return weapon_row(weapon).get("phase")
+
+
 @lru_cache(maxsize=None)
 def _modifier_rule():
     return _load("formulas/attribute_modifier.json")["expression"]

@@ -5,6 +5,7 @@ If modules exist under ruleset/modules/, each module's manifest and data files
 are also validated. Module data files share the same schema store as core data.
 """
 
+import copy
 import json
 import math
 import os
@@ -770,6 +771,67 @@ def check_one_type_per_field(files):
         if len(kinds) > 1:
             found = ", ".join(f"{kind} ({where})" for kind, where in sorted(kinds.items()))
             errors.append(f"{path} holds more than one type: {found}")
+    return errors
+
+
+def _rows_by_reference(data_files, module_data_files=None, rel_base=ROOT):
+    """Every row a core: reference can name, keyed by the reference: the keyed collections, each
+    equipment item after its base, and, for the shipped tree, each base file as a row."""
+    rows = {}
+    for fp in _all_files(data_files, module_data_files):
+        data = _load_json_file(fp)
+        if not isinstance(data, dict):
+            continue
+        for collection, items in data.items():
+            category = COLLECTION_CATEGORIES.get(collection)
+            if category and isinstance(items, list):
+                for item in items:
+                    if isinstance(item, dict) and isinstance(item.get("key"), str):
+                        rows.setdefault(f"core:{category}/{item['key']}", item)
+        category = _equipment_category_for_file(fp)
+        if category and isinstance(data.get("equipment"), list):
+            composed = {"equipment": copy.deepcopy(equipment_rows(fp, equipment=data["equipment"]))}
+            _resolve_equipment_bases(composed, [], fp)
+            for item in composed["equipment"]:
+                if isinstance(item, dict) and isinstance(item.get("key"), str):
+                    rows.setdefault(f"core:{category}/{item['key']}", item)
+    if rel_base == ROOT:
+        for directory, category in _base_directories().items():
+            if directory.exists():
+                for path in sorted(directory.glob("*.json")):
+                    base = _load_json_file(path)
+                    if isinstance(base, dict):
+                        rows.setdefault(f"core:{category}/{path.stem}", base)
+    return rows
+
+
+def check_reference_copies(data_files, module_data_files=None, rel_base=ROOT):
+    """Gate 8 (docs/core/integrity.md, second normal form): an object that holds a core: reference
+    holds no field with the same name and value as a field of the row it names. The named row's
+    `key` is its identity, not a copy; fields about the pair (`min`, `rank`) differ by name."""
+    rows = _rows_by_reference(data_files, module_data_files, rel_base)
+    base_files = _base_files() if rel_base == ROOT else []
+    errors = []
+
+    def walk(node, path, where):
+        if isinstance(node, dict):
+            for field, value in node.items():
+                target = rows.get(value) if isinstance(value, str) and NAMESPACED_REF.match(value) else None
+                if target is None or target is node:
+                    continue
+                for other, copied in node.items():
+                    if other not in (field, "key", "$schema") and other in target and target[other] == copied:
+                        errors.append(f"{where}: {path or '(root)'}.{other} repeats the {other} of {value} ({field}); drop it and read the row (DE_S02_02)")
+            for field, value in node.items():
+                walk(value, f"{path}.{field}" if path else field, where)
+        elif isinstance(node, list):
+            for index, value in enumerate(node):
+                walk(value, f"{path}[{index}]", where)
+
+    for fp in [*_all_files(data_files, module_data_files), *base_files]:
+        data = _load_json_file(fp)
+        if data is not None:
+            walk(data, "", _rel(fp, rel_base))
     return errors
 
 
@@ -2237,6 +2299,7 @@ def main():
         ("effect parameters", check_effect_parameters(data_files, module_data_files)),
         ("modifier targets (each names one row)", check_modifier_targets(data_files, module_data_files, collect_vector_files())),
         ("one type per field (first normal form)", check_one_type_per_field(collect_all_data_files())),
+        ("a reference is the key alone (second normal form)", check_reference_copies(data_files, module_data_files)),
     ):
         if errors:
             print(f"  \u2717  {label}")

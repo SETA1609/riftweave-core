@@ -136,7 +136,6 @@
         "attacks": [
           {
             "key": "bite",
-            "label": "Bite",
             "weapon": "core:natural_weapon/bite",
             "phase": "wood"
           }
@@ -164,7 +163,6 @@
         "attacks": [
           {
             "key": "bite",
-            "label": "Bite",
             "weapon": "core:natural_weapon/bite",
             "phase": "wood"
           }
@@ -251,7 +249,6 @@
         "attacks": [
           {
             "key": "slam",
-            "label": "Slam",
             "weapon": "core:natural_weapon/slam",
             "phase": "earth"
           }
@@ -316,7 +313,6 @@
         "attacks": [
           {
             "key": "slam",
-            "label": "Slam",
             "weapon": "core:natural_weapon/slam",
             "damage": {
               "type": "bludgeoning"
@@ -413,7 +409,6 @@
         "attacks": [
           {
             "key": "claw",
-            "label": "Claw",
             "weapon": "core:natural_weapon/claw",
             "phase": "fire"
           }
@@ -481,8 +476,7 @@
           {
             "key": "tree_club",
             "label": "Tree Club",
-            "weapon": "core:weapon/warhammer",
-            "phase": "earth"
+            "weapon": "core:weapon/warhammer"
           }
         ]
       }
@@ -550,10 +544,8 @@
         "attacks": [
           {
             "key": "rapier",
-            "label": "Rapier",
             "weapon": "core:weapon/rapier",
-            "ability": "agi",
-            "phase": "metal"
+            "ability": "agi"
           }
         ]
       }
@@ -910,7 +902,6 @@
         "attacks": [
           {
             "key": "bite",
-            "label": "Bite",
             "weapon": "core:natural_weapon/bite",
             "phase": "fire"
           }
@@ -1083,7 +1074,6 @@
         "attacks": [
           {
             "key": "slam",
-            "label": "Slam",
             "weapon": "core:natural_weapon/slam"
           }
         ],
@@ -1114,7 +1104,6 @@
         "attacks": [
           {
             "key": "bite",
-            "label": "Bite",
             "weapon": "core:natural_weapon/bite",
             "ability": "agi",
             "phase": "wood"
@@ -1150,7 +1139,6 @@
         "attacks": [
           {
             "key": "spear",
-            "label": "Spear",
             "weapon": "core:weapon/spear",
             "ability": "agi"
           }
@@ -1175,7 +1163,6 @@
         "attacks": [
           {
             "key": "talons",
-            "label": "Talons",
             "weapon": "core:natural_weapon/talons",
             "ability": "agi",
             "phase": "wood"
@@ -1226,7 +1213,6 @@
         "attacks": [
           {
             "key": "peck",
-            "label": "Peck",
             "weapon": "core:natural_weapon/peck",
             "ability": "agi",
             "phase": "wood"
@@ -1340,7 +1326,6 @@
         "attacks": [
           {
             "key": "slam",
-            "label": "Slam",
             "weapon": "core:natural_weapon/slam",
             "phase": "water"
           }
@@ -1454,7 +1439,6 @@
         "attacks": [
           {
             "key": "slam",
-            "label": "Slam",
             "weapon": "core:natural_weapon/slam",
             "damage": {
               "type": "bludgeoning"
@@ -1487,7 +1471,6 @@
         "attacks": [
           {
             "key": "hoof",
-            "label": "Hoof",
             "weapon": "core:natural_weapon/hoof"
           }
         ]
@@ -1609,7 +1592,6 @@
         "attacks": [
           {
             "key": "halberd",
-            "label": "Halberd",
             "weapon": "core:weapon/halberd",
             "phase": "metal"
           }
@@ -1760,7 +1742,6 @@
         "attacks": [
           {
             "key": "talons",
-            "label": "Talons",
             "weapon": "core:natural_weapon/talons",
             "damage": {
               "type": "slashing"
@@ -1875,7 +1856,6 @@
         "attacks": [
           {
             "key": "bite",
-            "label": "Bite",
             "weapon": "core:natural_weapon/bite",
             "phase": "earth"
           }
@@ -1955,7 +1935,6 @@
         "attacks": [
           {
             "key": "bite",
-            "label": "Bite",
             "weapon": "core:natural_weapon/bite",
             "phase": "earth"
           }

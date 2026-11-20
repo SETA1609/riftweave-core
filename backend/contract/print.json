@@ -67,7 +67,8 @@
                   "$ref": "common.json#/definitions/key"
                 },
                 "label": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Only where it differs from the weapon's; left out, the page prints the weapon row's label (DE_S02_02)."
                 },
                 "weapon": {
                   "$ref": "common.json#/definitions/ref"
@@ -96,7 +97,6 @@
               },
               "required": [
                 "key",
-                "label",
                 "weapon"
               ],
               "additionalProperties": false

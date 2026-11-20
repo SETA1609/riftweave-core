@@ -70,8 +70,7 @@
           "items": {
             "type": "object",
             "properties": {
-              "id": { "$ref": "schema.json#/definitions/featureRef", "description": "Reference to a racial_trait feature. Use namespaced format core:feature/<key> (or a module: ref)." },
-              "label": { "type": "string", "description": "Human-readable label of the trait (duplicated from the feature row for convenience)." }
+              "id": { "$ref": "schema.json#/definitions/featureRef", "description": "Reference to a racial_trait feature. Use namespaced format core:feature/<key> (or a module: ref)." }
             },
             "required": ["id"],
             "additionalProperties": false

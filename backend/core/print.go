@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"html"
 	"html/template"
+	"io/fs"
 	"sort"
 	"strings"
 
@@ -204,6 +205,26 @@ func printSpell(ruleset *data.Ruleset, key string) (string, []pageSection, error
 	return spell.Label, []pageSection{{Heading: spell.Description, Rows: rows}, {Heading: "Effects", Notes: effects}}, nil
 }
 
+// naturalWeaponLabels are the natural weapons' labels by key, read from the data the ruleset
+// was loaded from (natural_weapons/core.json).
+func naturalWeaponLabels(ruleset *data.Ruleset) (map[string]string, error) {
+	content, err := fs.ReadFile(ruleset.Files, "natural_weapons/core.json")
+	if err != nil {
+		return nil, err
+	}
+	var file struct {
+		NaturalWeapons []struct{ Key, Label string } `json:"natural_weapons"`
+	}
+	if err := json.Unmarshal(content, &file); err != nil {
+		return nil, err
+	}
+	var labels map[string]string = make(map[string]string, len(file.NaturalWeapons))
+	for _, weapon := range file.NaturalWeapons {
+		labels[weapon.Key] = weapon.Label
+	}
+	return labels, nil
+}
+
 func printMonsterBlock(ruleset *data.Ruleset, label string, monster *printMonster) (string, []pageSection, error) {
 	if monster == nil {
 		return "", nil, &data.MissingInputError{Subject: "print monster", Needs: "monster"}
@@ -236,10 +257,23 @@ func printMonsterBlock(ruleset *data.Ruleset, label string, monster *printMonste
 		{Label: "AP", Attribute: "stat", Name: "ap", Value: sheet["ap"]},
 		{Label: "evasion", Attribute: "stat", Name: "evasion", Value: skills["evasion"]},
 	}
+	labels, err := naturalWeaponLabels(ruleset)
+	if err != nil {
+		return "", nil, err
+	}
 	var attacks []row
 	for index, attack := range monster.Attacks {
+		// An attack's label is the weapon row's unless it names its own (DE_S02_02).
+		var name string = attack.Label
+		if name == "" {
+			if strings.HasPrefix(attack.Weapon, "core:natural_weapon/") {
+				name = labels[strings.TrimPrefix(attack.Weapon, "core:natural_weapon/")]
+			} else {
+				name = ruleset.Items[attack.Weapon].Label
+			}
+		}
 		attacks = append(attacks, row{
-			Label:     fmt.Sprintf("%s (%s, %s; to-hit with %s)", attack.Label, attack.Weapon, cmpOr(attack.Damage.Type, "its weapon's type"), attackSkills[index]),
+			Label:     fmt.Sprintf("%s (%s, %s; to-hit with %s)", name, attack.Weapon, cmpOr(attack.Damage.Type, "its weapon's type"), attackSkills[index]),
 			Attribute: "to-hit", Name: attack.Key, Value: skills[attackSkills[index]],
 		})
 	}

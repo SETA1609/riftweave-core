@@ -880,6 +880,8 @@ type Loot struct {
 // set its material, the materials it is found in (the first is its fallback), and for a
 // weapon its dice, which a loot row's size moves (docs/core/loot.md#what-lands-on-an-item).
 type Item struct {
+	// Label is the composed row's label: what an attack that names the item prints (DE_S02_02).
+	Label            string
 	Dice             string
 	DefaultMaterials []string
 	CostCopper       int64
@@ -1510,6 +1512,7 @@ func (loader *rulesetLoader) loadItems(ruleset *Ruleset) {
 	}
 	for _, category := range categories {
 		type itemFields struct {
+			Label  string
 			Cost   *Cost
 			Weapon *weaponFields
 			Armor  *struct {
@@ -1565,6 +1568,7 @@ func (loader *rulesetLoader) loadItems(ruleset *Ruleset) {
 				continue
 			}
 			var item Item = Item{
+				Label:            fields.Label,
 				CostCopper:       copper,
 				TakesMaterial:    category.category == "weapon" || category.category == "armor",
 				IsWeapon:         category.category == "weapon",

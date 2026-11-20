@@ -234,7 +234,7 @@ Omit `speed`/`size` to inherit the elf's; set `phase` to keep `wood` or override
   "speed": 30,
   "size": "small",
   "ability_modifiers": { "agi": 2, "lck": 1, "str": -1 },
-  "traits": [ { "id": "core:feature/ratman_squeeze", "label": "Squeeze" } ]
+  "traits": [ { "id": "core:feature/ratman_squeeze" } ]
 }
 ```
 

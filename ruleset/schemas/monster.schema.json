@@ -38,7 +38,7 @@
           "additionalProperties": false
         },
         "delivery": { "type": "string", "enum": ["single", "area", "instant"], "description": "Which reactions the attack allows (docs/core/combat.md); default single." },
-        "phase": { "$ref": "schema.json#/definitions/phase", "description": "The phase the attack carries into the five-phase cycles." }
+        "phase": { "$ref": "schema.json#/definitions/phase", "description": "The phase the attack carries into the five-phase cycles, only where it differs from a carried weapon's phase, which it defaults to." }
       },
       "required": ["key", "weapon"],
       "additionalProperties": false
