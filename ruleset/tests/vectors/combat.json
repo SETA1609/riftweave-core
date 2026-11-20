@@ -4667,5 +4667,945 @@
       "outcome": "evaded",
       "evasion_rate": 27
     }
+  },
+  {
+    "name": "trip: a hit at -10 for half the damage, then a trip attempt: DC = AGI 5 x 10 + 20 = 70, so the target saves on 30 or less (margin 30; 8 x 0.5 = 4)",
+    "attacker": {
+      "skill": 60,
+      "roll": 20,
+      "attributes": {
+        "lck": 0,
+        "agi": 5,
+        "str": 4,
+        "per": 6
+      }
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing",
+      "ability": "agi"
+    },
+    "maneuver": "trip",
+    "expect": {
+      "outcome": "hit",
+      "margin": 30,
+      "damage": 4,
+      "hp": 26,
+      "ap": 3,
+      "effects": [
+        {
+          "effect": "core:effect/knockdown",
+          "duration": 5
+        }
+      ],
+      "events": [],
+      "save": {
+        "attribute": "agi",
+        "dc": 70,
+        "target": 30
+      }
+    }
+  },
+  {
+    "name": "trip: the attempt uses the weapon's attribute, here STR 4 for a mace: DC 60, save target 40",
+    "attacker": {
+      "skill": 60,
+      "roll": 20,
+      "attributes": {
+        "lck": 0,
+        "agi": 5,
+        "str": 4,
+        "per": 6
+      }
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "bludgeoning",
+      "ability": "str"
+    },
+    "maneuver": "trip",
+    "expect": {
+      "outcome": "hit",
+      "margin": 30,
+      "damage": 3,
+      "hp": 27,
+      "ap": 3,
+      "effects": [
+        {
+          "effect": "core:effect/knockdown",
+          "duration": 5
+        }
+      ],
+      "events": [],
+      "save": {
+        "attribute": "str",
+        "dc": 60,
+        "target": 40
+      }
+    }
+  },
+  {
+    "name": "trip: a miss makes no attempt",
+    "attacker": {
+      "skill": 60,
+      "roll": 80,
+      "attributes": {
+        "lck": 0,
+        "agi": 5,
+        "str": 4,
+        "per": 6
+      }
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing",
+      "ability": "agi"
+    },
+    "maneuver": "trip",
+    "expect": {
+      "outcome": "miss",
+      "margin": null,
+      "damage": 0,
+      "hp": 30,
+      "ap": 3,
+      "effects": [],
+      "events": []
+    }
+  },
+  {
+    "name": "trip: an evaded trip makes no attempt (band 10, margin 5)",
+    "attacker": {
+      "skill": 60,
+      "roll": 45,
+      "attributes": {
+        "lck": 0,
+        "agi": 5,
+        "str": 4,
+        "per": 6
+      }
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing",
+      "ability": "agi"
+    },
+    "maneuver": "trip",
+    "expect": {
+      "outcome": "evaded",
+      "margin": 5,
+      "damage": 0,
+      "hp": 30,
+      "ap": 3,
+      "effects": [],
+      "events": []
+    }
+  },
+  {
+    "name": "trip: a ranged attack cannot trip",
+    "attacker": {
+      "skill": 60,
+      "roll": 20,
+      "attributes": {
+        "lck": 0,
+        "agi": 5,
+        "str": 4,
+        "per": 6
+      }
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing",
+      "ability": "agi"
+    },
+    "maneuver": "trip",
+    "range": "ranged",
+    "expect": {
+      "error": "trip needs a melee attack"
+    }
+  },
+  {
+    "name": "trip: an attempt with no weapon attribute is an error",
+    "attacker": {
+      "skill": 60,
+      "roll": 20,
+      "attributes": {
+        "lck": 0,
+        "agi": 5,
+        "str": 4,
+        "per": 6
+      }
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "maneuver": "trip",
+    "expect": {
+      "error": "a maneuver attempt needs the weapon's attribute (damage.ability)"
+    }
+  },
+  {
+    "name": "trip: a DC of 100 or more leaves a save target of 0 (AGI 9: DC 110)",
+    "attacker": {
+      "skill": 60,
+      "roll": 20,
+      "attributes": {
+        "lck": 0,
+        "agi": 9
+      }
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing",
+      "ability": "agi"
+    },
+    "maneuver": "trip",
+    "expect": {
+      "save": {
+        "attribute": "agi",
+        "dc": 110,
+        "target": 0
+      }
+    }
+  },
+  {
+    "name": "disarm: a hit at -15 for half the damage, then a disarm attempt: DC 70, save target 30 (margin 25)",
+    "attacker": {
+      "skill": 60,
+      "roll": 20,
+      "attributes": {
+        "lck": 0,
+        "agi": 5,
+        "str": 4,
+        "per": 6
+      }
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing",
+      "ability": "agi"
+    },
+    "maneuver": "disarm",
+    "expect": {
+      "outcome": "hit",
+      "margin": 25,
+      "damage": 4,
+      "hp": 26,
+      "ap": 3,
+      "effects": [],
+      "events": [
+        "disarm"
+      ],
+      "save": {
+        "attribute": "agi",
+        "dc": 70,
+        "target": 30
+      }
+    }
+  },
+  {
+    "name": "disarm: a miss makes no attempt",
+    "attacker": {
+      "skill": 60,
+      "roll": 70,
+      "attributes": {
+        "lck": 0,
+        "agi": 5,
+        "str": 4,
+        "per": 6
+      }
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing",
+      "ability": "agi"
+    },
+    "maneuver": "disarm",
+    "expect": {
+      "outcome": "miss",
+      "margin": null,
+      "damage": 0,
+      "hp": 30,
+      "ap": 3,
+      "effects": [],
+      "events": []
+    }
+  },
+  {
+    "name": "tripping shot: a ranged hit at -10 for half the damage, then a trip attempt with the bow's PER 6: DC 80, save target 20",
+    "attacker": {
+      "skill": 60,
+      "roll": 20,
+      "attributes": {
+        "lck": 0,
+        "agi": 5,
+        "str": 4,
+        "per": 6
+      }
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing",
+      "ability": "per"
+    },
+    "maneuver": "tripping_shot",
+    "range": "ranged",
+    "expect": {
+      "outcome": "hit",
+      "margin": 30,
+      "damage": 4,
+      "hp": 26,
+      "ap": 3,
+      "effects": [
+        {
+          "effect": "core:effect/knockdown",
+          "duration": 5
+        }
+      ],
+      "events": [],
+      "save": {
+        "attribute": "per",
+        "dc": 80,
+        "target": 20
+      }
+    }
+  },
+  {
+    "name": "disarming shot: a ranged hit at -15 for half the damage, then a disarm attempt: DC 80, save target 20",
+    "attacker": {
+      "skill": 60,
+      "roll": 20,
+      "attributes": {
+        "lck": 0,
+        "agi": 5,
+        "str": 4,
+        "per": 6
+      }
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing",
+      "ability": "per"
+    },
+    "maneuver": "disarming_shot",
+    "range": "ranged",
+    "expect": {
+      "outcome": "hit",
+      "margin": 25,
+      "damage": 4,
+      "hp": 26,
+      "ap": 3,
+      "effects": [],
+      "events": [
+        "disarm"
+      ],
+      "save": {
+        "attribute": "per",
+        "dc": 80,
+        "target": 20
+      }
+    }
+  },
+  {
+    "name": "disarming shot: a melee attack cannot make it",
+    "attacker": {
+      "skill": 60,
+      "roll": 20,
+      "attributes": {
+        "lck": 0,
+        "agi": 5,
+        "str": 4,
+        "per": 6
+      }
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing",
+      "ability": "agi"
+    },
+    "maneuver": "disarming_shot",
+    "expect": {
+      "error": "disarming_shot needs a ranged attack"
+    }
+  },
+  {
+    "name": "heavy swing: a maneuver with no save bonus makes no attempt; its stagger lands on the hit",
+    "attacker": {
+      "skill": 72,
+      "roll": 10,
+      "attributes": {
+        "lck": 0,
+        "agi": 5,
+        "str": 4,
+        "per": 6
+      }
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing",
+      "ability": "agi"
+    },
+    "maneuver": "heavy_swing",
+    "expect": {
+      "outcome": "hit",
+      "effects": [
+        {
+          "effect": "core:effect/stagger",
+          "duration": 4
+        }
+      ],
+      "events": []
+    }
+  },
+  {
+    "name": "rider: Hooking Blows makes a trip attempt after any plain hit, at full damage and no extra AP: DC = AGI 5 x 10 = 50, save target 50",
+    "attacker": {
+      "skill": 60,
+      "roll": 35,
+      "attributes": {
+        "lck": 0,
+        "agi": 5,
+        "str": 4,
+        "per": 6
+      },
+      "perks": [
+        "core:feature/low_sweep",
+        "core:feature/hooking_blows"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing",
+      "ability": "agi"
+    },
+    "expect": {
+      "outcome": "hit",
+      "margin": 25,
+      "damage": 8,
+      "hp": 22,
+      "rider": "trip",
+      "effects": [
+        {
+          "effect": "core:effect/knockdown",
+          "duration": 5
+        }
+      ],
+      "events": [],
+      "save": {
+        "attribute": "agi",
+        "dc": 50,
+        "target": 50
+      }
+    }
+  },
+  {
+    "name": "rider: a plain miss makes no attempt",
+    "attacker": {
+      "skill": 60,
+      "roll": 80,
+      "attributes": {
+        "lck": 0,
+        "agi": 5,
+        "str": 4,
+        "per": 6
+      },
+      "perks": [
+        "core:feature/low_sweep",
+        "core:feature/hooking_blows"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing",
+      "ability": "agi"
+    },
+    "expect": {
+      "outcome": "miss",
+      "margin": null,
+      "damage": 0,
+      "hp": 30,
+      "rider": "trip",
+      "effects": [],
+      "events": []
+    }
+  },
+  {
+    "name": "rider: Wrenching Blows makes a disarm attempt after a plain hit",
+    "attacker": {
+      "skill": 60,
+      "roll": 10,
+      "attributes": {
+        "lck": 0,
+        "agi": 5,
+        "str": 4,
+        "per": 6
+      },
+      "perks": [
+        "core:feature/bind_and_wrench",
+        "core:feature/wrenching_blows"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing",
+      "ability": "agi"
+    },
+    "expect": {
+      "outcome": "hit",
+      "margin": 50,
+      "damage": 8,
+      "hp": 22,
+      "rider": "disarm",
+      "effects": [],
+      "events": [
+        "disarm"
+      ],
+      "save": {
+        "attribute": "agi",
+        "dc": 50,
+        "target": 50
+      }
+    }
+  },
+  {
+    "name": "rider: Hamstring Shots makes a trip attempt after a plain ranged hit, with the bow's PER 6: DC 60",
+    "attacker": {
+      "skill": 60,
+      "roll": 10,
+      "attributes": {
+        "lck": 0,
+        "agi": 5,
+        "str": 4,
+        "per": 6
+      },
+      "perks": [
+        "core:feature/low_aim",
+        "core:feature/hamstring_shots"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing",
+      "ability": "per"
+    },
+    "range": "ranged",
+    "expect": {
+      "outcome": "hit",
+      "margin": 50,
+      "damage": 9,
+      "hp": 21,
+      "rider": "tripping_shot",
+      "effects": [
+        {
+          "effect": "core:effect/knockdown",
+          "duration": 5
+        }
+      ],
+      "events": [],
+      "save": {
+        "attribute": "per",
+        "dc": 60,
+        "target": 40
+      }
+    }
+  },
+  {
+    "name": "rider: with a maneuver the rider stays off; the maneuver's own effects apply (Heavy Swing staggers)",
+    "attacker": {
+      "skill": 72,
+      "roll": 10,
+      "attributes": {
+        "lck": 0,
+        "agi": 5,
+        "str": 4,
+        "per": 6
+      },
+      "perks": [
+        "core:feature/low_sweep",
+        "core:feature/hooking_blows"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing",
+      "ability": "agi"
+    },
+    "maneuver": "heavy_swing",
+    "expect": {
+      "outcome": "hit",
+      "effects": [
+        {
+          "effect": "core:effect/stagger",
+          "duration": 4
+        }
+      ],
+      "events": []
+    }
+  },
+  {
+    "name": "rider: a ranged plain attack does not fit Trip, so the melee rider stays off",
+    "attacker": {
+      "skill": 60,
+      "roll": 10,
+      "attributes": {
+        "lck": 0,
+        "agi": 5,
+        "str": 4,
+        "per": 6
+      },
+      "perks": [
+        "core:feature/low_sweep",
+        "core:feature/hooking_blows"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing",
+      "ability": "agi"
+    },
+    "range": "ranged",
+    "expect": {
+      "outcome": "hit",
+      "damage": 8
+    }
+  },
+  {
+    "name": "rider: a melee rider and a ranged rider ride their own attacks (Hooking Blows on a melee hit)",
+    "attacker": {
+      "skill": 60,
+      "roll": 10,
+      "attributes": {
+        "lck": 0,
+        "agi": 5,
+        "str": 4,
+        "per": 6
+      },
+      "perks": [
+        "core:feature/low_sweep",
+        "core:feature/hooking_blows",
+        "core:feature/low_aim",
+        "core:feature/hamstring_shots"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing",
+      "ability": "agi"
+    },
+    "expect": {
+      "rider": "trip",
+      "save": {
+        "attribute": "agi",
+        "dc": 50,
+        "target": 50
+      }
+    }
+  },
+  {
+    "name": "rider: two riders that fit the same attack are an error",
+    "attacker": {
+      "skill": 60,
+      "roll": 10,
+      "attributes": {
+        "lck": 0,
+        "agi": 5,
+        "str": 4,
+        "per": 6
+      },
+      "perks": [
+        "core:feature/low_sweep",
+        "core:feature/hooking_blows",
+        "core:feature/bind_and_wrench",
+        "core:feature/wrenching_blows"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing",
+      "ability": "agi"
+    },
+    "expect": {
+      "error": "two rider perks fit this attack: hooking_blows, wrenching_blows"
+    }
+  },
+  {
+    "name": "rider: a rider attempt with no weapon attribute is an error",
+    "attacker": {
+      "skill": 60,
+      "roll": 10,
+      "attributes": {
+        "lck": 0,
+        "agi": 5,
+        "str": 4,
+        "per": 6
+      },
+      "perks": [
+        "core:feature/low_sweep",
+        "core:feature/hooking_blows"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing"
+    },
+    "expect": {
+      "error": "a maneuver attempt needs the weapon's attribute (damage.ability)"
+    }
+  },
+  {
+    "name": "rider: an undefined perk is an error",
+    "attacker": {
+      "skill": 60,
+      "roll": 10,
+      "attributes": {
+        "lck": 0,
+        "agi": 5,
+        "str": 4,
+        "per": 6
+      },
+      "perks": [
+        "core:feature/nope"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "slashing",
+      "ability": "agi"
+    },
+    "expect": {
+      "error": "perk \"nope\" is not defined"
+    }
+  },
+  {
+    "name": "monster: a wolf holding Low Sweep and Hooking Blows makes a trip attempt after a plain bite, with its AGI 5: DC 50",
+    "attacker": {
+      "skill": 70,
+      "roll": 15,
+      "attributes": {
+        "str": 6,
+        "agi": 5,
+        "lck": 0
+      },
+      "perks": [
+        "core:feature/low_sweep",
+        "core:feature/hooking_blows"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 6,
+      "type": "piercing",
+      "ability": "agi"
+    },
+    "expect": {
+      "outcome": "hit",
+      "margin": 55,
+      "damage": 6,
+      "hp": 24,
+      "rider": "trip",
+      "effects": [
+        {
+          "effect": "core:effect/knockdown",
+          "duration": 5
+        }
+      ],
+      "events": [],
+      "save": {
+        "attribute": "agi",
+        "dc": 50,
+        "target": 50
+      }
+    }
   }
 ]

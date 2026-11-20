@@ -220,11 +220,20 @@ class TestTemplatesAndGeneratedMonsters(unittest.TestCase):
             with self.subTest(template=key):
                 self.assertEqual(perks[f"summon_{key}"]["unlocks"], [f"core:monster_template/{key}"])
 
-    def test_the_latest_power_and_nature_bought_replace_the_earlier(self):
-        bought = ["core:feature/summon_dire", "core:feature/summon_demonic", "core:feature/summon_elder",
-                  "core:feature/summon_angelic"]
-        self.assertEqual(ref().held_templates(bought), {"power": "elder", "nature": "angelic"})
+    def test_the_highest_power_rung_overrides_the_lower_whatever_the_order(self):
+        bought = ["core:feature/summon_elder", "core:feature/summon_demonic", "core:feature/summon_dire"]
+        self.assertEqual(ref().held_templates(bought), {"power": "elder", "nature": "demonic"})
+        self.assertEqual(ref().held_templates(["core:feature/summon_ancient", "core:feature/summon_dire"])["power"], "ancient")
         self.assertEqual(ref().held_templates([]), {"power": None, "nature": None})
+
+    def test_the_natures_exclude_each_other(self):
+        perks = features()
+        natures = ("summon_demonic", "summon_angelic", "summon_otherworldly")
+        for key in natures:
+            with self.subTest(perk=key):
+                self.assertEqual(sorted(perks[key]["excludes"]), sorted(f"core:feature/{other}" for other in natures if other != key))
+        with self.assertRaisesRegex(ValueError, "exclude each other"):
+            ref().held_templates(["core:feature/summon_demonic", "core:feature/summon_angelic"])
 
     def test_two_templates_in_one_slot_fail(self):
         cases = {
@@ -482,6 +491,43 @@ class TestMonstersTakePerks(unittest.TestCase):
         self.assertTrue(any("hardened_hide" in e and "rank 4" in e for e in errors), errors)
         self.assertTrue(any("diplomat" in w and "social" in w for w in warnings), warnings)
         self.assertEqual(validate.check_monster_perks([{"key": "y", "perks": [{"perk": "core:feature/hardened_hide", "rank": 3}]}], []), ([], []))
+
+    def test_the_trip_and_disarm_lines_on_one_monster_fail_and_one_line_passes(self):
+        """GD_S05_04: a monster holds no two perks that exclude each other, as a player does."""
+        both = [{"perk": "core:feature/low_sweep"}, {"perk": "core:feature/hooking_blows"},
+                {"perk": "core:feature/bind_and_wrench"}, {"perk": "core:feature/wrenching_blows"}]
+        errors, _ = validate.check_monster_perks([{"key": "x", "perks": both}], [])
+        self.assertTrue(any("low_sweep and bind_and_wrench" in e and "exclude each other" in e for e in errors), errors)
+        errors, _ = validate.check_monster_perks([], [{"key": "t", "perks": both}])
+        self.assertTrue(any("template 't'" in e for e in errors), errors)
+        self.assertEqual(validate.check_monster_perks([{"key": "y", "perks": both[:2]}], []), ([], []))
+
+    def test_the_wolf_trips_with_its_rider_perk(self):
+        """GD_S05_04: the wolf holds Low Sweep and Hooking Blows; its sheet lists Trip and the
+        rider, and a plain bite that hits makes a trip attempt against its agility."""
+        import kernel_reference
+
+        wolf = next(row for row in monsters() if row["key"] == "wolf")
+        refs = [held["perk"] for held in wolf["perks"]]
+        self.assertEqual(refs, ["core:feature/low_sweep", "core:feature/hooking_blows"])
+        sheet = kernel_reference.run_monster_sheet({"monster": {key: wolf[key] for key in ("attributes", "level", "hitPoints", "perks")}})
+        self.assertEqual(sheet["maneuvers"], ["core:maneuver/trip"])
+        self.assertEqual(sheet["riders"], ["core:maneuver/trip"])
+        bite = kernel_reference.run_combat({
+            "attacker": {"skill": 70, "roll": 15, "attributes": {"lck": 0, "agi": 4}, "perks": refs},
+            "defender": {"evasion_skill": 20, "armor_dr": 0, "hp": 30, "attributes": {"lck": 0}},
+            "damage": {"roll": 6, "type": "piercing", "ability": "agi"},
+        })
+        self.assertEqual(bite["rider"], "trip")
+        self.assertEqual(bite["save"], {"attribute": "agi", "dc": 40, "target": 60})
+        self.assertEqual(bite["effects"], [{"effect": "core:effect/knockdown", "duration": 5}])
+
+    def test_a_monster_sheet_with_an_excluded_pair_fails(self):
+        import kernel_reference
+
+        perks = [{"perk": "core:feature/summon_demonic"}, {"perk": "core:feature/summon_angelic"}]
+        sheet = kernel_reference.run_monster_sheet({"monster": {"attributes": {}, "level": 1, "perks": perks}})
+        self.assertEqual(sheet, {"error": "perks summon_demonic and summon_angelic exclude each other"})
 
 
 
