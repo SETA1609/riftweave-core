@@ -1,5 +1,6 @@
 #### BE_S07_03_character-list-cli A character list, and characters travel between players and the GM as files (backend)
-- Status: review
+- Status: done
+- Merged: #396, 2026-11-20
 - Priority: medium
 - Needs: APP-30
 - Was: APP-33, split by role on 2026-11-18: this is the backend half (the contract, the Go core, the vectors, and the CLI and TUI with their UX); the browser half is `FE_S07_04_character-list-page`
