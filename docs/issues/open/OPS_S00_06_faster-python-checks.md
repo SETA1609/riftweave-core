@@ -1,0 +1,15 @@
+#### OPS_S00_06_faster-python-checks Faster Python checks: reuse validators, cache loot values, run test files side by side
+- Status: review
+- Priority: medium
+- Needs: —
+- Modified: 2026-11-20
+- Do: Owner question, 2026-11-20: can numpy, pandas, or Cython make the Python checks faster? They do not fit: the checks walk nested JSON against schemas, and most time is inside `jsonschema` or in repeated work, not in a numeric loop or our own code [V 2026-11-20, cProfile on development dae4244]. The repeated work goes instead:
+  - **`validate.py`:** one Draft 7 validator per schema, reused for every data file, instead of `jsonschema.validate()` per file, which also checks the schema each time. `$ref`s resolve through a `referencing` registry instead of the deprecated `RefResolver`, with a schema that is not in the store (`schema.json`) loaded from its file, as `RefResolver` did. The error lines stay the same.
+  - **`test_contract.py`:** one validator per command (through the same helper), instead of a new validator and resolver for each of about 800 vectors.
+  - **`loot_reference.py`:** `item_value_cp` is cached; a table's expected value asked for the same item once per d100 roll, for every monster that drops it.
+  - **`test_format_json.py`:** each tracked JSON file is formatted once for both checks, and `frontend/package-lock.json`, which npm writes, is left out.
+  - **`run_tests.py`:** runs the test files side by side, one process per file; CI's unit-test step uses it.
+- Keys: none
+- Files: ~12 (ruleset/scripts/validate.py, run_tests.py, loot_reference.py, test_contract.py, test_ancestry.py, test_bestiary.py, test_format_json.py, .github/workflows/validate-ruleset.yml, AGENTS.md, docs/stories/S00-process-and-conventions.md, docs/decisions/OPS_S00_06_faster-python-checks.md, changes/OPS_S00_06_faster-python-checks.md)
+- See: ruleset/scripts/validate.py, .github/workflows/validate-ruleset.yml
+- Done when: validation prints the same error lines on broken data as before; every test passes; no `RefResolver` deprecation warning; the unit-test step runs the files in parallel.

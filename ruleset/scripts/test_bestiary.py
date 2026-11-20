@@ -315,8 +315,8 @@ class TestTemplatesAndGeneratedMonsters(unittest.TestCase):
         self.assertGreater(rows["brute"]["attributes"]["str"], 10)
         store = validate.load_store()
         schema_uri = (validate.SCHEMA_DIR / "monster.schema.json").resolve().as_uri()
-        resolver = validate.RefResolver(base_uri=schema_uri, referrer=store[schema_uri], store=store)
-        validate.validate({"monsters": [rows["brute"]]}, store[schema_uri], resolver=resolver)
+        error = validate.first_schema_error(validate.schema_validator(store[schema_uri], schema_uri, store), {"monsters": [rows["brute"]]})
+        self.assertIsNone(error, error and error.message)
 
 
 class TestHitPointsAreComputed(unittest.TestCase):
