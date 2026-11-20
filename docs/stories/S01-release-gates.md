@@ -15,4 +15,6 @@ Format, ids, and roles: [README.md](README.md#ids), [ROLES.md](../issues/ROLES.m
 | `GD_S01_03_perk-throughput-veto` | GD | Perk throughput veto and distillation | M5-19 | QA_S01_02_alpha-playtest-human-cli |
 | `GD_S01_04_skill-damage-pacing` | GD | Skill and damage pacing over thirty levels | M5-50 | QA_S01_02_alpha-playtest-human-cli |
 
+**GitHub:** story [#259](https://github.com/SETA1609/riftweave-core/issues/259); tasks [`PO_S01_01_licensing-audit-tag-v1` #278](https://github.com/SETA1609/riftweave-core/issues/278), [`QA_S01_02_alpha-playtest-human-cli` #279](https://github.com/SETA1609/riftweave-core/issues/279), [`GD_S01_03_perk-throughput-veto` #280](https://github.com/SETA1609/riftweave-core/issues/280), [`GD_S01_04_skill-damage-pacing` #281](https://github.com/SETA1609/riftweave-core/issues/281).
+
 **Done when:** every issue above is done, and the alpha playtest is logged, the perk throughput and pacing checks pass, the licence audit is done, and `v1.0.0` is tagged.

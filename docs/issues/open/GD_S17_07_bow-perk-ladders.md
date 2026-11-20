@@ -23,7 +23,7 @@
   - **Names are original** (M5-67): none is a feat or perk name from another game.
 - Keys: the held-weapon prerequisite on features; `full_draw`, `bodkin_point`, `arrow_storm` (perk and maneuver), `far_mark`, `heart_seeker`, `loose_and_step`, `quick_nock`, `parting_shot`, `running_archer`, `three_on_the_string`; tier 2 of `two_on_the_string`; the moved-heavy-bow penalty
 - Files: ~11 (docs/modules/combat.md, docs/modules/weapons.md, ruleset/schemas/feature.schema.json, ruleset/data/features/core.json, ruleset/data/maneuvers/core.json, ruleset/data/modifier_targets/core.json, ruleset/scripts/validate.py, ruleset/tests/vectors/combat.json, ruleset/scripts/test_perks.py, docs/decisions/GD_S17_07_bow-perk-ladders.md, changes/GD_S17_07_bow-perk-ladders.md)
-- See: docs/decisions/M5-61.md (the gaps), docs/modules/builds/ranged.md (the archer), docs/issues/open/GD_S05_03_defense-perk-ladders.md (`rank_levels`)
+- See: docs/decisions/M5-61.md (the gaps), docs/modules/builds/ranged.md (the archer), docs/issues/done/GD_S05_03_defense-perk-ladders.md (`rank_levels`)
 - Done when:
   - `validate.py` fails on a perk whose held-weapon prerequisite names no weapon property in use.
   - A vector shows `full_draw` and `bodkin_point` on a longbow and not on a shortbow, and `quick_nock` on a shortbow and not on a longbow.

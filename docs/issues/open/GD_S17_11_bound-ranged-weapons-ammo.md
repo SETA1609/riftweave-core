@@ -13,7 +13,7 @@
   - **Builds:** the arcane trickster (M5-61) can drop the arrows from its kit; GD_S17_12 decides.
 - Keys: `bound_blade` without concentration; `bound_mace`; the free-hand rule for bound weapons; `bound_crossbow`, `bound_pistol`, `bound_rifle`, `bound_ammunition` spells; `core:effect/bound_ammunition`; the rounds of a bound ranged weapon; `conjured_quiver`, `deep_quiver`
 - Files: ~10 (docs/modules/magic.md, docs/modules/weapons.md, docs/core/casting.md, ruleset/data/spells/core.json, ruleset/data/effects/core.json, ruleset/data/features/core.json, ruleset/tests/vectors/casting.json, ruleset/tests/vectors/combat.json, docs/decisions/GD_S17_11_bound-ranged-weapons-ammo.md, changes/GD_S17_11_bound-ranged-weapons-ammo.md)
-- See: docs/issues/open/GD_S06_01_bound-weapon-materials.md, ruleset/data/spells/core.json (`bound_blade`, `bound_bow`), docs/issues/open/GD_S17_02_ammunition-items-and-reloading.md
+- See: docs/issues/done/GD_S06_01_bound-weapon-materials.md, ruleset/data/spells/core.json (`bound_blade`, `bound_bow`), docs/issues/open/GD_S17_02_ammunition-items-and-reloading.md
 - Done when:
   - A vector casts `bound_blade` twice and holds both, casts `bound_pistol` with both hands full and it replaces the named hand's weapon, and casts `bound_bow` while holding a concentration spell and the old one ends.
   - A vector casts `bound_pistol` once and fires and reloads its rounds with no ammunition item and no more mana, and the pistol fades when the last round is fired.

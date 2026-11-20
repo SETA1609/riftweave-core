@@ -15,4 +15,8 @@ Format, ids, and roles: [README.md](README.md#ids), [ROLES.md](../issues/ROLES.m
 | `GD_S06_03_commander-summoner-perks` | GD | Commander summoner perks: the caster spends turns to drive their summons | M3-22 | M3-10, M3-14, M3-20 |
 | `GD_S06_04_hybrid-summoner-perks` | GD | Hybrid summoner perks: a spellblade or arcane archer fights beside their summons | M3-23 | M3-10, M3-14, M3-20 |
 
+**Status:** all issues done on `development` and `main` (#248, #249, #251, #252, then #257 / #391).
+
+**GitHub:** none. S06 was already done when the GitHub story and task issues were filed.
+
 **Done when:** every issue above is done, and vectors pin a bound weapon's material and enchant, and one perk of each summoner style.

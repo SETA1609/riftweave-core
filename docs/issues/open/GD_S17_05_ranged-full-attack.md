@@ -22,7 +22,7 @@
   - **Aimed and full:** a full attack cannot be aimed; the held-breath maneuver (GD_S17_06) is the aimed shot that spends a turn [A].
 - Keys: the ranged rows of `attack_sequences`; the reload-inside-a-full-attack rule; the range reading of `carry_through` and `reaping_arc`
 - Files: ~8 (docs/core/combat.md, docs/core/actions.md, ruleset/data/attack_sequences/core.json, ruleset/data/features/core.json (descriptions of `follow_up`, `press_on`, `carry_through`, `reaping_arc`), ruleset/scripts/validate.py, ruleset/tests/vectors/combat.json, docs/decisions/GD_S17_05_ranged-full-attack.md, changes/GD_S17_05_ranged-full-attack.md)
-- See: docs/issues/open/GD_S05_01_loadout-attacks-melee-ladders.md (`attack_sequences`, the full attack), docs/core/actions.md#pool
+- See: docs/issues/done/GD_S05_01_loadout-attacks-melee-ladders.md (`attack_sequences`, the full attack), docs/core/actions.md#pool
 - Done when:
   - A vector runs a full attack with a shortbow and `follow_up`: two strikes, two arrows spent; with `press_on` as well, three.
   - A vector runs a full attack with two loaded pistols: two strikes, then a reload inside the budget, or the full attack ends when the AP runs out.
