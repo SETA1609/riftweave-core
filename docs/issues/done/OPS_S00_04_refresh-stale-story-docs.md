@@ -1,5 +1,6 @@
 #### OPS_S00_04_refresh-stale-story-docs Refresh the story and issue docs after S05 and S06 landed
-- Status: review
+- Status: done
+- Merged: #392, 2026-11-20
 - Priority: medium
 - Needs: —
 - Modified: 2026-11-20
