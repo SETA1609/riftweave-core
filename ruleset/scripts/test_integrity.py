@@ -350,6 +350,51 @@ class TestOneKindOfValuePerField(unittest.TestCase):
             self.assertEqual(validate.check_one_type_per_field([one, two]), [])
 
 
+class TestAReferenceIsTheKeyAlone(unittest.TestCase):
+    """Gate 8 (second normal form): a field beside a core: reference does not repeat the named row."""
+
+    def check(self, *collections):
+        with tempfile.TemporaryDirectory() as tmp:
+            files = [write_json(Path(tmp) / f"{index}.json", data) for index, data in enumerate(collections)]
+            return validate.check_reference_copies(files, rel_base=Path(tmp))
+
+    FEATURES = {"features": [{"key": "elf_darkvision", "label": "Darkvision", "description": "Sees in the dark."}]}
+
+    def test_the_real_data_copies_no_field_of_a_row_it_names(self):
+        data_files = list(validate.collect_data_files())
+        module_files = list(validate.collect_module_data_files())
+        self.assertEqual(validate.check_reference_copies(data_files, module_files), [])
+
+    def test_a_label_copied_beside_a_reference_is_reported(self):
+        races = {"races": [{"key": "elf", "traits": [{"id": "core:feature/elf_darkvision", "label": "Darkvision"}]}]}
+        errors = self.check(self.FEATURES, races)
+        self.assertEqual(len(errors), 1, errors)
+        self.assertIn("races[0].traits[0]", errors[0])
+        self.assertIn("label", errors[0])
+        self.assertIn("core:feature/elf_darkvision", errors[0])
+
+    def test_any_field_of_the_named_row_counts_not_only_the_label(self):
+        races = {"races": [{"key": "elf", "traits": [{"id": "core:feature/elf_darkvision", "description": "Sees in the dark."}]}]}
+        self.assertEqual(len(self.check(self.FEATURES, races)), 1)
+
+    def test_a_field_about_the_pair_or_a_different_value_stays(self):
+        races = {"races": [{"key": "elf", "traits": [{"id": "core:feature/elf_darkvision", "label": "Night Eyes", "rank": 2}]}]}
+        self.assertEqual(self.check(self.FEATURES, races), [])
+
+    def test_an_equipment_reference_is_read_after_its_base(self):
+        weapons = {"equipment": [{"key": "shortsword", "label": "Shortsword", "weapon": {"skill": "core:skill/blades"}}]}
+        monsters = {"monsters": [{"key": "bandit", "overrides": {"attacks": [{"key": "cut", "label": "Shortsword", "weapon": "core:weapon/shortsword"}]}}]}
+        with tempfile.TemporaryDirectory() as tmp:
+            files = [write_json(Path(tmp) / "equipment" / "weapons.json", weapons), write_json(Path(tmp) / "monsters.json", monsters)]
+            errors = validate.check_reference_copies(files, rel_base=Path(tmp))
+        self.assertEqual(len(errors), 1, errors)
+        self.assertIn("core:weapon/shortsword", errors[0])
+
+    def test_a_module_reference_is_not_looked_up(self):
+        races = {"races": [{"key": "elf", "traits": [{"id": "module:m/feature/elf_darkvision", "label": "Darkvision"}]}]}
+        self.assertEqual(self.check(self.FEATURES, races), [])
+
+
 if __name__ == "__main__":
     unittest.main()
 
