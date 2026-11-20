@@ -805,6 +805,14 @@ def _rows_by_reference(data_files, module_data_files=None, rel_base=ROOT):
     return rows
 
 
+def _same_value(a, b):
+    """Equal values, with text compared without case and spaces, so a near copy ("Short Sword"
+    next to a row labelled "Shortsword") counts as the copy it is."""
+    if isinstance(a, str) and isinstance(b, str):
+        return "".join(a.split()).casefold() == "".join(b.split()).casefold()
+    return a == b
+
+
 def check_reference_copies(data_files, module_data_files=None, rel_base=ROOT):
     """Gate 8 (docs/core/integrity.md, second normal form): an object that holds a core: reference
     holds no field with the same name and value as a field of the row it names. The named row's
@@ -820,7 +828,7 @@ def check_reference_copies(data_files, module_data_files=None, rel_base=ROOT):
                 if target is None or target is node:
                     continue
                 for other, copied in node.items():
-                    if other not in (field, "key", "$schema") and other in target and target[other] == copied:
+                    if other not in (field, "key", "$schema") and other in target and _same_value(target[other], copied):
                         errors.append(f"{where}: {path or '(root)'}.{other} repeats the {other} of {value} ({field}); drop it and read the row (DE_S02_02)")
             for field, value in node.items():
                 walk(value, f"{path}.{field}" if path else field, where)

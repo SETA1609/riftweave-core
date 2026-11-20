@@ -377,6 +377,10 @@ class TestAReferenceIsTheKeyAlone(unittest.TestCase):
         races = {"races": [{"key": "elf", "traits": [{"id": "core:feature/elf_darkvision", "description": "Sees in the dark."}]}]}
         self.assertEqual(len(self.check(self.FEATURES, races)), 1)
 
+    def test_a_copy_that_differs_only_in_case_or_spaces_is_reported(self):
+        races = {"races": [{"key": "elf", "traits": [{"id": "core:feature/elf_darkvision", "label": "dark Vision"}]}]}
+        self.assertEqual(len(self.check(self.FEATURES, races)), 1)
+
     def test_a_field_about_the_pair_or_a_different_value_stays(self):
         races = {"races": [{"key": "elf", "traits": [{"id": "core:feature/elf_darkvision", "label": "Night Eyes", "rank": 2}]}]}
         self.assertEqual(self.check(self.FEATURES, races), [])

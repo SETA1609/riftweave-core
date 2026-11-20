@@ -82,7 +82,6 @@
         "attacks": [
           {
             "key": "short_sword",
-            "label": "Short Sword",
             "weapon": "core:weapon/shortsword"
           }
         ]
@@ -1884,7 +1883,6 @@
         "attacks": [
           {
             "key": "staff",
-            "label": "Staff",
             "weapon": "core:weapon/quarterstaff",
             "damage": {
               "type": "force"
