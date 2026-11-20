@@ -1,5 +1,6 @@
 #### GD_S05_03_defense-perk-ladders Defense perk ladders: shields, shield bash, evasion, no armor, and armor on casting
-- Status: review
+- Status: done
+- Merged: #255, 2026-11-20
 - Priority: medium
 - Needs: M3-27, GD_S05_02_fighting-stances, M5-47
 - Was: M3-30
