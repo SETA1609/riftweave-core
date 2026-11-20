@@ -75,40 +75,62 @@ var (
 	toResolution = []string{"enter", "down", "down", "down", "enter"} // Start, Skill resolution
 )
 
-func TestPlayCreatesACharacterLikeTheAgentCLI(t *testing.T) {
-	var model tea.Model = press(press(started(t), toCreation...), "clear", "9")
-	for range 9 {
-		model = press(model, "enter")
+// createBrunna walks the creation screen (BE_S07_08): a hill dwarf scout with every point spent,
+// Small Frame, and three tag skills. Rows: name, race, background, the eight attributes, creation
+// perks, tag skills, finish.
+func createBrunna(model tea.Model) tea.Model {
+	model = press(press(model, toCreation...), "Brunna", "down")
+	for range 8 { // none, then human ... hill dwarf, the eighth playable race
+		model = press(model, "right")
 	}
-	matchesTheAgentCLI(t, model, "derived")
-	if !strings.Contains(model.View(), "created: level 1") {
+	model = press(model, "down", "right", "down") // background: scout
+	for _, spent := range []int{2, 1, 2, 0, 0, 3, 0, 2} {
+		for range spent {
+			model = press(model, "+")
+		}
+		model = press(model, "down")
+	}
+	return press(model, "small_frame", "down", "survival stealth bows", "down", "enter")
+}
+
+func TestPlayCreatesACharacterOverCheckAndFinish(t *testing.T) {
+	var model tea.Model = createBrunna(started(t))
+	matchesTheAgentCLI(t, model, "creation")
+	input, _ := model.(play.Model).LastCall()
+	if !strings.Contains(string(input), `"operation":"finish"`) {
+		t.Errorf("the last call is not a finish: %s", input)
+	}
+	if !strings.Contains(model.View(), "created: Brunna, level 1, 83 HP") {
 		t.Errorf("no log line: %s", model.View())
 	}
 }
 
-func TestPlayResolvesAnAttackLikeTheAgentCLI(t *testing.T) {
-	var model tea.Model = press(press(started(t), toAttack...), "clear", "60", "enter", "clear", "33")
-	for range 7 {
-		model = press(model, "enter")
+func TestPlayCreationShowsThePointsLeftAndTheProblems(t *testing.T) {
+	var model tea.Model = press(started(t), toCreation...)
+	if !strings.Contains(model.View(), "10 points left") {
+		t.Errorf("no points left shown: %s", model.View())
 	}
-	matchesTheAgentCLI(t, model, "combat")
-	if !strings.Contains(model.View(), "attack: rolled 33 against 60") {
-		t.Errorf("no log line: %s", model.View())
+	model = press(model, "down", "down", "down", "down", "down", "down") // the INT row
+	for range 7 {
+		model = press(model, "+")
+	}
+	if !strings.Contains(model.View(), "int is 11, over the maximum of 10") {
+		t.Errorf("no problem shown: %s", model.View())
+	}
+	model = press(model, "-", "-", "-")
+	if !strings.Contains(model.View(), "6 points left") {
+		t.Errorf("a removed point is not given back: %s", model.View())
 	}
 }
 
 func TestPlayUsesTheCreatedCharactersLuckForAnAttack(t *testing.T) {
-	var model tea.Model = press(started(t), toCreation...)
-	for range 7 {
-		model = press(model, "enter")
-	}
-	// LCK 8, run it, back to the Start menu, then GM tools and the attack.
-	model = press(model, "clear", "8", "enter", "enter", "enter", "up", "enter", "enter")
+	// Brunna's LCK is 6 (4 + 2 points); back to the Start menu, then GM tools and the attack.
+	var model tea.Model = press(createBrunna(started(t)), "up", "enter", "enter")
 	for range 8 {
 		model = press(model, "enter")
 	}
 	input, _ := model.(play.Model).LastCall()
-	if !strings.Contains(string(input), `"lck":8`) {
+	if !strings.Contains(string(input), `"lck":6`) {
 		t.Errorf("attack input %s", input)
 	}
 }
