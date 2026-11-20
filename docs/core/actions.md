@@ -11,11 +11,42 @@ One budget. Costs live in `ruleset/data/actions/core.json`. A turn spends AP. A 
 ```
 pool  = 2 + floor(AGI / 3)
 cap   = 10
-carry = min(unspent, cap)
+carry = 2            at most 2 held AP carry into the next pool (held AP, below)
 rest  = refill
 ```
 
-The size matches the derived `ap` function. The cap is why unspent points carry. Without it a module can bank a second turn. A short rest refills the pool. Fallout spends a small pool the same way.
+The size matches the derived `ap` function. A turn starts with at most `cap` AP, carried AP included. A short rest refills the pool. Fallout spends a small pool the same way.
+
+## Held AP
+
+AP left unspent at the end of your turn is **held** until your next turn (GD_S19_05). Fallout turns unspent AP into armor class, and Fallout Tactics into overwatch; here one rule does both:
+
+```
+held       = available − cost              available = min(pool + carried, cap)
+guard      = (held − held_spent) × guard_per_ap      guard_per_ap = 5, on evasion
+carry      = min(held − held_spent, carry)           carry = 2
+next pool  = min(pool + carry, cap)
+```
+
+- **Guard.** While held, each AP gives +5 on `evasion`. A careful turn guards you; dodge (3 AP, double evasion) stays the stronger, deliberate choice.
+- **Spend it.** Held AP may pay an opportunity attack or a readied attack (`GD_S19_04_ready-and-opportunity-attacks`) at the loadout's attack cost. The guard drops by what you spend: 4 held, 3 spent, +5 guard and 1 to carry.
+- **Carry.** At the start of your next turn at most 2 of what is still held join the new pool; the rest is gone. Two quiet turns no longer bank two casts. Divinity: Original Sin 2 keeps the maximum near what a turn recovers (recover 4, maximum 6); a pool of 4 here peaks at 6.
+
+The `actions` command takes `carried` (at most `carry`) and `held_spent` (at most what is held) and returns `available`, `held`, `guard`, `carry`, and `next_pool`. [V 2026-11-21, `actions` vectors for pools 3, 4, and 5 in Python and Go]
+
+Attacks per turn over six turns, attacking whenever the AP allows and holding the rest (`ap` from `attack_sequences/core.json`):
+
+| Loadout | Attack AP | Pool 3 | Pool 4 |
+| --- | --- | --- | --- |
+| Both hands empty | 2 | 1 2 1 2 1 2 | 2 2 2 2 2 2 |
+| One light weapon | 2 | 1 2 1 2 1 2 | 2 2 2 2 2 2 |
+| One one-handed weapon | 3 | 1 1 1 1 1 1 | 1 1 2 1 1 2 |
+| One weapon in both hands | 3 | 1 1 1 1 1 1 | 1 1 2 1 1 2 |
+| Two light weapons | 3 | 1 1 1 1 1 1 | 1 1 2 1 1 2 |
+| A one-handed weapon and a light off-hand weapon | 4 | 0 1 1 0 1 1 | 1 1 1 1 1 1 |
+| Two one-handed weapons | 5 | 0 1 0 1 0 1 | 0 1 1 0 1 1 |
+
+Every loadout attacks at least every second turn at pool 3, so no row needs a lower `ap`; two one-handed weapons at pool 3 is the slowest and lives on the carry. [V 2026-11-21, computed from `attack_sequences/core.json`] The numbers 5 and 2 are [A] until a playtest.
 
 ## Costs
 
