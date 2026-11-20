@@ -82,6 +82,16 @@ def paid_cost(authored, skill, modifiers, rules):
     return max(rules["skill_discount"]["minimum_paid"], apply_modifiers(base, own))
 
 
+def cast_ap(spell, modifiers, rules):
+    """A cast's AP (docs/core/actions.md#cast-ap-by-level): the band of the spell's level, after
+    the caster's modifiers on `cast`, never below the minimum."""
+    from kernel_reference import apply_modifiers  # kernel_reference imports this module
+
+    table = rules["cast_ap"]
+    band = next(b for b in table["bands"] if b.get("up_to_level", spell["level"]) >= spell["level"])
+    return max(apply_modifiers(band["ap"], [m for m in modifiers if m.get("target") == "cast"]), table["minimum"])
+
+
 def spell_row(spells, key):
     for spell in spells:
         if spell["key"] == key:
@@ -268,6 +278,9 @@ def run_casting(vector):
         "damage": [],
         "hp": target["hp"] if target is not None and "hp" in target else None,
     }
+    # The AP the cast spends at a table, and its stamina in real time (docs/core/actions.md).
+    result["ap"] = cast_ap(spell, vector.get("modifiers", []), rules)
+    result["stamina"] = result["ap"] * load_data("actions/core.json")["stamina_per_ap"]
     cost = spell.get("cost", {})
     reagents = list(caster.get("reagents", []))
     if any(flag in rules["prevented_by"] for flag in caster.get("flags", [])):

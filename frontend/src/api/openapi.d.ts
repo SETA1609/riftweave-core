@@ -1406,6 +1406,8 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The cast's AP: the band of the spell's level after the modifiers on cast, never below the minimum (docs/core/actions.md#cast-ap-by-level). */
+                        ap?: number;
                         /** @description The conjured weapon, when the spell has a bound_weapon effect (docs/core/casting.md#bound-weapons); left out otherwise. */
                         bound_weapon?: {
                             attack: number;
@@ -1456,6 +1458,8 @@ export interface operations {
                             tags: components["schemas"]["tags"];
                             target: number;
                         };
+                        /** @description The cast's AP times stamina_per_ap, for a real-time client. */
+                        stamina?: number;
                         /** @description The active summons after the cast, oldest first. */
                         summons?: components["schemas"]["ref"][];
                     };

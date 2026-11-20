@@ -250,6 +250,7 @@ classDiagram
         object target
     }
     class casting_result {
+        integer ap
         object bound_weapon
         null_or_object check
         null_or_key concentration
@@ -264,6 +265,7 @@ classDiagram
         List~ref~ minions
         enum outcome
         null_or_object save
+        integer stamina
         List~ref~ summons
     }
 ```
