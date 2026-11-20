@@ -1,0 +1,2 @@
+### PO_S20_01_file-custom-monster-and-template-issues File the custom monster and character template issues
+- Added: story S20 Custom monsters and character templates, with issues for the rule that a custom monster computes like a character without a player's limits, its editor in the CLI, TUI, and app, a character template model (attributes, skills, HP, MP, SP, AP, and perks added; one per slot; removable), lich and vampire templates, werebeast templates, and templates on a saved character and its sheet.
