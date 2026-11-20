@@ -37,12 +37,12 @@
           }
         },
         
-        "appliedBy": {
+        "applied_by": {
           "type": "array",
           "description": "Effect refs that can apply this condition. Use namespaced format core:effect/<key>. Empty only for a condition a rule applies, such as overdosed (docs/core/modifier.md#toxicity).",
           "items": { "$ref": "schema.json#/definitions/effectRef" }
         },
-        "removedBy": {
+        "removed_by": {
           "type": "array",
           "description": "Effect refs that can remove this condition (typically core:effect/cure). May be empty for conditions with only non-effect removal (e.g. prone is removed by the 'stand' action, not by any effect).",
           "items": { "$ref": "schema.json#/definitions/effectRef" }
@@ -52,7 +52,7 @@
           "description": "Whether multiple instances of this condition stack (e.g. exhaustion has 6 levels).",
           "default": false
         },
-        "maxStacks": {
+        "max_stacks": {
           "type": "integer",
           "minimum": 1,
           "description": "Maximum stack count if stacking is true."
@@ -85,7 +85,7 @@
           "additionalProperties": false
         }
       },
-      "required": ["key", "label", "description", "appliedBy", "removedBy"],
+      "required": ["key", "label", "description", "applied_by", "removed_by"],
       "additionalProperties": false
     }
   }

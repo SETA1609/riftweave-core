@@ -7,7 +7,6 @@
       "description": "A steel-forged longsword with a keen edge. The standard of any professional soldier.",
       "base_key": "core:weapon/longsword",
       "material_key": "core:material/steel",
-      "phase": "metal",
       "attack_bonus": 5,
       "defense_bonus": 0,
       "effect_magnitude_multiplier": 1.0,
@@ -20,7 +19,6 @@
       "description": "A sturdy iron cuirass forged to protect the torso. Heavy but reliable.",
       "base_key": "core:armor/plate_cuirass",
       "material_key": "core:material/iron",
-      "phase": "metal",
       "attack_bonus": 0,
       "defense_bonus": 3,
       "effect_magnitude_multiplier": 1.0,
@@ -33,11 +31,10 @@
       "description": "A steel longsword with a ruby set into the crossguard. The gem's fire phase overwrites the blade's metal element, making it interact as Fire in Wuxing cycles.",
       "base_key": "core:weapon/longsword",
       "material_key": "core:material/steel",
-      "phase": "fire",
       "attack_bonus": 5,
       "defense_bonus": 0,
       "effect_magnitude_multiplier": 1.0,
-      "engraving_jewel": { "gem_key": "core:gem/ruby", "phase": "fire" },
+      "engraving_jewel": { "gem_key": "core:gem/ruby" },
       "enchantments": [
         { "effect": "core:effect/burn", "magnitude": 3, "duration": 10 }
       ],
@@ -49,11 +46,10 @@
       "description": "An elven wood longbow engraved with a sapphire. The bow's natural Wood phase is overwritten by the sapphire's Water phase. Frost arrows fired from this bow benefit from the generating cycle (Water feeds Wood).",
       "base_key": "core:weapon/longbow",
       "material_key": "core:material/elven_wood",
-      "phase": "water",
       "attack_bonus": 3,
       "defense_bonus": 0,
       "effect_magnitude_multiplier": 1.2,
-      "engraving_jewel": { "gem_key": "core:gem/sapphire", "phase": "water" },
+      "engraving_jewel": { "gem_key": "core:gem/sapphire" },
       "enchantments": [
         { "effect": "core:effect/damage_frost", "magnitude": 6, "duration": 1 }
       ],
@@ -65,7 +61,6 @@
       "description": "An obsidian dagger with a burn enchantment and temporary coatings (paralytic poison + stamina drain). The Fire phase of the blade interacts with the Earth-phase stamina-drain coating via Wuxing cycles. See crafting_reference.py --verbose for exact interaction output.",
       "base_key": "core:weapon/dagger",
       "material_key": "core:material/obsidian",
-      "phase": "fire",
       "attack_bonus": 6,
       "defense_bonus": 0,
       "effect_magnitude_multiplier": 1.0,
@@ -80,14 +75,13 @@
     {
       "key": "enchanted_gold_amulet",
       "label": "Enchanted Gold Amulet",
-      "description": "A gold amulet engraved with a diamond, carrying a permanent ward enchantment. Gold's high effectMagnitude (0.30) amplifies the resist effect, and the diamond's Metal phase gives it full generating-cycle benefit for the Metal-phase resist.",
+      "description": "A gold amulet engraved with a diamond, carrying a permanent ward enchantment. Gold's high effect_magnitude (0.30) amplifies the resist effect, and the diamond's Metal phase gives it full generating-cycle benefit for the Metal-phase resist.",
       "base_key": "core:accessory/gold_necklace",
       "material_key": "core:material/gold",
-      "phase": "metal",
       "attack_bonus": 0,
       "defense_bonus": 0,
       "effect_magnitude_multiplier": 1.3,
-      "engraving_jewel": { "gem_key": "core:gem/diamond", "phase": "metal" },
+      "engraving_jewel": { "gem_key": "core:gem/diamond" },
       "enchantments": [
         { "effect": "core:effect/resist", "magnitude": 25, "parameter": "magic" }
       ],

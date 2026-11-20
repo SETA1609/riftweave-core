@@ -20,7 +20,7 @@
         "label": { "type": "string", "description": "Human-readable display name with spaces and capitalization." },
         "description": { "type": "string" },
         "source": { "$ref": "schema.json#/definitions/sourceRef" },
-        "associatedAbility": {
+        "associated_ability": {
           "$ref": "schema.json#/definitions/ability",
           "description": "Attribute that seeds this skill's starting rating: skill_start in progression/core.json, 5 + attribute x 2"
         },
@@ -35,7 +35,7 @@
           "default": true
         }
       },
-      "required": ["key", "label", "description", "associatedAbility", "category"],
+      "required": ["key", "label", "description", "associated_ability", "category"],
       "additionalProperties": false
     }
   }

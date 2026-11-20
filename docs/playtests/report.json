@@ -3,12 +3,11 @@
     "caster_black_orange": {
       "attacks": {
         "monster": {
-          "evaded": 106,
-          "fumble": 1,
-          "hit": 128,
-          "miss": 18
+          "evaded": 118,
+          "hit": 119,
+          "miss": 16
         },
-        "monster_damage": 468,
+        "monster_damage": 486,
         "player": {
           "cast": 244,
           "evaded": 5,
@@ -16,7 +15,7 @@
           "hit": 7,
           "miss": 12
         },
-        "player_damage": 2110
+        "player_damage": 1822
       },
       "capped_at": {
         "black_magic": 6,
@@ -30,11 +29,11 @@
         "won": 17
       },
       "findings": {
-        "fought level gap +0": 9,
-        "fought level gap +1": 4,
-        "fought level gap +2": 1,
-        "fought level gap -1": 12,
-        "fought level gap -2": 4,
+        "fought level gap +0": 4,
+        "fought level gap +1": 9,
+        "fought level gap +2": 2,
+        "fought level gap -1": 7,
+        "fought level gap -2": 8,
         "spell damage applied by the driver, not a command": 244
       },
       "label": "Black and orange mage",
@@ -91,20 +90,20 @@
     "caster_blue_green": {
       "attacks": {
         "monster": {
-          "evaded": 73,
-          "fumble": 1,
-          "hit": 106,
-          "miss": 13
+          "evaded": 79,
+          "fumble": 3,
+          "hit": 85,
+          "miss": 20
         },
-        "monster_damage": 424,
+        "monster_damage": 325,
         "player": {
-          "cast": 178,
-          "evaded": 8,
-          "failed": 2,
-          "hit": 14,
-          "miss": 14
+          "cast": 172,
+          "evaded": 4,
+          "failed": 3,
+          "hit": 16,
+          "miss": 16
         },
-        "player_damage": 2751
+        "player_damage": 2343
       },
       "capped_at": {
         "blue_magic": 5,
@@ -112,19 +111,19 @@
         "green_magic": 8
       },
       "fights": {
-        "fled": 7,
+        "fled": 6,
         "lost": 0,
-        "rounds": 216,
-        "won": 23
+        "rounds": 211,
+        "won": 24
       },
       "findings": {
-        "fought level gap +0": 10,
-        "fought level gap +1": 9,
+        "fought level gap +0": 9,
+        "fought level gap +1": 4,
         "fought level gap +2": 6,
         "fought level gap -1": 3,
-        "fought level gap -2": 2,
+        "fought level gap -2": 8,
         "no eligible perk at a level-up": 6,
-        "spell damage applied by the driver, not a command": 178
+        "spell damage applied by the driver, not a command": 172
       },
       "label": "Blue and green mage",
       "level": 30,
@@ -170,23 +169,24 @@
         "petrify",
         "renewal"
       ],
-      "steps": 832
+      "steps": 821
     },
     "caster_red": {
       "attacks": {
         "monster": {
-          "evaded": 42,
-          "hit": 53,
-          "miss": 13
+          "evaded": 41,
+          "fumble": 1,
+          "hit": 57,
+          "miss": 11
         },
-        "monster_damage": 261,
+        "monster_damage": 331,
         "player": {
-          "cast": 107,
-          "evaded": 7,
-          "failed": 12,
-          "hit": 9
+          "cast": 108,
+          "evaded": 11,
+          "failed": 11,
+          "hit": 6
         },
-        "player_damage": 2526
+        "player_damage": 2476
       },
       "capped_at": {
         "evasion": 8,
@@ -194,19 +194,19 @@
         "red_magic": 6
       },
       "fights": {
-        "fled": 3,
+        "fled": 4,
         "lost": 0,
-        "rounds": 135,
-        "won": 27
+        "rounds": 136,
+        "won": 26
       },
       "findings": {
-        "fought level gap +0": 8,
-        "fought level gap +1": 5,
-        "fought level gap +2": 3,
-        "fought level gap -1": 6,
-        "fought level gap -2": 8,
+        "fought level gap +0": 1,
+        "fought level gap +1": 7,
+        "fought level gap +2": 8,
+        "fought level gap -1": 4,
+        "fought level gap -2": 10,
         "no eligible perk at a level-up": 10,
-        "spell damage applied by the driver, not a command": 107
+        "spell damage applied by the driver, not a command": 108
       },
       "label": "Red mage",
       "level": 30,
@@ -243,23 +243,23 @@
         "meteor",
         "inferno"
       ],
-      "steps": 653
+      "steps": 657
     },
     "caster_white_violet": {
       "attacks": {
         "monster": {
-          "evaded": 59,
-          "fumble": 1,
-          "hit": 84,
-          "miss": 17
+          "evaded": 48,
+          "fumble": 2,
+          "hit": 77,
+          "miss": 21
         },
-        "monster_damage": 308,
+        "monster_damage": 265,
         "player": {
-          "cast": 164,
-          "failed": 23,
-          "hit": 2
+          "cast": 153,
+          "evaded": 1,
+          "failed": 22
         },
-        "player_damage": 2712
+        "player_damage": 2479
       },
       "capped_at": {
         "evasion": 11,
@@ -269,17 +269,17 @@
       "fights": {
         "fled": 2,
         "lost": 0,
-        "rounds": 189,
+        "rounds": 176,
         "won": 28
       },
       "findings": {
-        "fought level gap +0": 6,
-        "fought level gap +1": 6,
-        "fought level gap +2": 7,
+        "fought level gap +0": 5,
+        "fought level gap +1": 4,
+        "fought level gap +2": 6,
         "fought level gap -1": 5,
-        "fought level gap -2": 6,
+        "fought level gap -2": 10,
         "no eligible perk at a level-up": 5,
-        "spell damage applied by the driver, not a command": 164
+        "spell damage applied by the driver, not a command": 153
       },
       "label": "White and violet mage",
       "level": 30,
@@ -327,24 +327,24 @@
         "greater_dispel",
         "divine_shield"
       ],
-      "steps": 767
+      "steps": 741
     },
     "caster_yellow_indigo": {
       "attacks": {
         "monster": {
-          "evaded": 61,
+          "evaded": 58,
           "fumble": 3,
-          "hit": 101,
+          "hit": 83,
           "miss": 22
         },
-        "monster_damage": 370,
+        "monster_damage": 359,
         "player": {
-          "cast": 152,
-          "evaded": 16,
-          "hit": 16,
+          "cast": 134,
+          "evaded": 14,
+          "hit": 17,
           "miss": 25
         },
-        "player_damage": 2116
+        "player_damage": 2393
       },
       "capped_at": {
         "evasion": 10,
@@ -352,19 +352,19 @@
         "yellow_magic": 5
       },
       "fights": {
-        "fled": 8,
+        "fled": 6,
         "lost": 0,
-        "rounds": 209,
-        "won": 22
+        "rounds": 190,
+        "won": 24
       },
       "findings": {
-        "fought level gap +0": 7,
+        "fought level gap +0": 4,
         "fought level gap +1": 4,
-        "fought level gap +2": 8,
-        "fought level gap -1": 4,
-        "fought level gap -2": 7,
+        "fought level gap +2": 6,
+        "fought level gap -1": 6,
+        "fought level gap -2": 10,
         "no eligible perk at a level-up": 9,
-        "spell damage applied by the driver, not a command": 152
+        "spell damage applied by the driver, not a command": 134
       },
       "label": "Yellow and indigo mage",
       "level": 30,
@@ -411,43 +411,43 @@
         "mass_charm",
         "sonic_boom"
       ],
-      "steps": 817
+      "steps": 777
     },
     "hybrid_blades_red": {
       "attacks": {
         "monster": {
-          "evaded": 133,
-          "fumble": 8,
-          "hit": 186,
-          "miss": 26
+          "evaded": 131,
+          "fumble": 5,
+          "hit": 183,
+          "miss": 23
         },
-        "monster_damage": 570,
+        "monster_damage": 627,
         "player": {
-          "evaded": 169,
-          "fumble": 1,
-          "hit": 163,
-          "miss": 22
+          "evaded": 171,
+          "fumble": 2,
+          "hit": 153,
+          "miss": 20
         },
-        "player_damage": 908
+        "player_damage": 933
       },
       "capped_at": {
-        "blades": 6,
+        "blades": 7,
         "evasion": 13,
         "medium_armor": 20,
         "red_magic": 10
       },
       "fights": {
-        "fled": 28,
+        "fled": 26,
         "lost": 0,
-        "rounds": 355,
-        "won": 2
+        "rounds": 346,
+        "won": 4
       },
       "findings": {
         "fought level gap +0": 7,
-        "fought level gap +1": 8,
+        "fought level gap +1": 2,
         "fought level gap +2": 5,
-        "fought level gap -1": 2,
-        "fought level gap -2": 8,
+        "fought level gap -1": 5,
+        "fought level gap -2": 11,
         "no eligible perk at a level-up": 5
       },
       "label": "Spellblade",
@@ -489,43 +489,43 @@
         "meteor",
         "inferno"
       ],
-      "steps": 1148
+      "steps": 1135
     },
     "melee_blades": {
       "attacks": {
         "monster": {
-          "evaded": 129,
-          "fumble": 4,
-          "hit": 186,
-          "miss": 20
+          "evaded": 127,
+          "fumble": 3,
+          "hit": 181,
+          "miss": 29
         },
-        "monster_damage": 663,
+        "monster_damage": 574,
         "player": {
-          "evaded": 158,
-          "fumble": 2,
-          "hit": 149,
-          "miss": 34
+          "evaded": 168,
+          "fumble": 3,
+          "hit": 147,
+          "miss": 26
         },
-        "player_damage": 983
+        "player_damage": 956
       },
       "capped_at": {
-        "athletics": 27,
+        "athletics": 26,
         "blades": 8,
-        "evasion": 14,
-        "heavy_armor": 18
+        "evasion": 13,
+        "heavy_armor": 17
       },
       "fights": {
         "fled": 26,
         "lost": 0,
-        "rounds": 343,
+        "rounds": 344,
         "won": 4
       },
       "findings": {
         "fought level gap +0": 6,
-        "fought level gap +1": 6,
-        "fought level gap +2": 10,
-        "fought level gap -1": 5,
-        "fought level gap -2": 3
+        "fought level gap +1": 4,
+        "fought level gap +2": 5,
+        "fought level gap -1": 6,
+        "fought level gap -2": 9
       },
       "label": "Blades fighter",
       "level": 30,
@@ -561,43 +561,43 @@
         "heavy_armor": 100
       },
       "spells": [],
-      "steps": 1074
+      "steps": 1071
     },
     "ranged_bows": {
       "attacks": {
         "monster": {
-          "evaded": 133,
+          "evaded": 138,
           "fumble": 3,
-          "hit": 182,
-          "miss": 29
+          "hit": 160,
+          "miss": 23
         },
-        "monster_damage": 672,
+        "monster_damage": 512,
         "player": {
-          "evaded": 157,
-          "fumble": 5,
-          "hit": 154,
-          "miss": 37
+          "evaded": 145,
+          "fumble": 2,
+          "hit": 153,
+          "miss": 32
         },
-        "player_damage": 1120
+        "player_damage": 1182
       },
       "capped_at": {
         "bows": 9,
         "evasion": 14,
         "light_armor": 26,
-        "stealth": 17
+        "stealth": 18
       },
       "fights": {
-        "fled": 24,
+        "fled": 22,
         "lost": 0,
-        "rounds": 353,
-        "won": 6
+        "rounds": 332,
+        "won": 8
       },
       "findings": {
-        "fought level gap +0": 9,
-        "fought level gap +1": 6,
-        "fought level gap +2": 4,
+        "fought level gap +0": 4,
+        "fought level gap +1": 9,
+        "fought level gap +2": 7,
         "fought level gap -1": 4,
-        "fought level gap -2": 7
+        "fought level gap -2": 6
       },
       "label": "Archer",
       "level": 30,
@@ -636,18 +636,18 @@
         "stealth": 100
       },
       "spells": [],
-      "steps": 1101
+      "steps": 1040
     }
   },
-  "calls": 23907,
+  "calls": 23757,
   "findings": {
-    "fought level gap +0": 62,
-    "fought level gap +1": 48,
-    "fought level gap +2": 44,
-    "fought level gap -1": 41,
-    "fought level gap -2": 45,
+    "fought level gap +0": 40,
+    "fought level gap +1": 43,
+    "fought level gap +2": 45,
+    "fought level gap -1": 40,
+    "fought level gap -2": 72,
     "no eligible perk at a level-up": 35,
-    "spell damage applied by the driver, not a command": 845
+    "spell damage applied by the driver, not a command": 811
   },
   "perks_taken": {
     "arcane_reservoir": 18,

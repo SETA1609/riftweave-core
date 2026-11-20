@@ -1,0 +1,11 @@
+#### OPS_S00_04_refresh-stale-story-docs Refresh the story and issue docs after S05 and S06 landed
+- Status: done
+- Merged: #392, 2026-11-20
+- Priority: medium
+- Needs: —
+- Modified: 2026-11-20
+- Do: Owner request, 2026-11-20: after S05 and S06 merged to `development` and `main` (#391), several story and issue docs were still written as if that work, and the reserved old-id pull requests, were open. Refresh them: point `Focus:` at the next work; record the reserved rows as kept under `M5-61`, `APP-30`, `APP-43`, and `APP-48`; close the filing issues `PO_S17_01`, `PO_S18_01`, and `PO_S08_09`, and `M5-76`, the way the close workflow would have; retarget stale `docs/issues/open/` links; update the roadmap counts and the M5-62 tag line; widen `AGENTS.md` to S19; move implemented parry and two-weapon stances out of "Not yet" in `docs/modules/combat.md`, and price an opportunity attack at the loadout's attack AP, still marked open for `GD_S19_04`; link the GitHub story and task issues in each story file. Do not edit the generated `docs/issues/order.md` (PRs never touch it). The empty table is a devops-tools gap: it does not yet group `_S<NN>_` ids, which is a follow-up in SETA1609/devops_tools, not this issue.
+- Keys: none
+- Files: ~18 counted (docs/stories/README.md, S00 and the reserved and done story files, ROADMAP.md, AGENTS.md, docs/modules/combat.md, the four issue files moved to done/, this file, changes/OPS_S00_04_refresh-stale-story-docs.md), plus short GitHub link lines and one-line See-link fixes that do not count
+- See: docs/stories/README.md#order, docs/issues/README.md#how-an-issue-closes, ROADMAP.md
+- Done when: `Focus:` no longer lists S05 or S06; the reserved rows name the kept done ids; the four missed issue files are in `done/` with `Merged:` lines; `roadmap-order show` lists first work in the new focus stories; `validate.py` and the tests pass.

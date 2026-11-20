@@ -5,10 +5,10 @@
       "key": "blinded",
       "label": "Blinded",
       "description": "Cannot see: checks that need sight fail, −20 on PER checks, and attacks against it have +10.",
-      "appliedBy": [
+      "applied_by": [
         "core:effect/blind"
       ],
-      "removedBy": [
+      "removed_by": [
         "core:effect/cure"
       ],
       "combat": {
@@ -35,10 +35,10 @@
       "key": "charmed",
       "label": "Charmed",
       "description": "Cannot attack the charmer, and the charmer has +20 on social checks against it. Damage from the charmer ends it.",
-      "appliedBy": [
+      "applied_by": [
         "core:effect/charm"
       ],
-      "removedBy": [
+      "removed_by": [
         "core:effect/cure"
       ],
       "modifiers": [
@@ -62,10 +62,10 @@
       "key": "deafened",
       "label": "Deafened",
       "description": "Cannot hear: checks that need hearing fail, and −10 on initiative.",
-      "appliedBy": [
+      "applied_by": [
         "core:effect/deafen"
       ],
-      "removedBy": [
+      "removed_by": [
         "core:effect/cure"
       ],
       "modifiers": [
@@ -89,10 +89,10 @@
       "key": "frightened",
       "label": "Frightened",
       "description": "−10 on attacks and checks while the source is in sight, and cannot move closer to it. Losing sight of it ends it.",
-      "appliedBy": [
+      "applied_by": [
         "core:effect/phobia"
       ],
-      "removedBy": [
+      "removed_by": [
         "core:effect/cure"
       ],
       "combat": {
@@ -119,10 +119,10 @@
       "key": "grappled",
       "label": "Grappled",
       "description": "Held: speed 0, −10 on attacks and AGI checks. An athletics check against the grappler breaks free.",
-      "appliedBy": [
+      "applied_by": [
         "core:effect/grapple"
       ],
-      "removedBy": [
+      "removed_by": [
         "core:effect/cure"
       ],
       "modifiers": [
@@ -156,10 +156,10 @@
       "key": "incapacitated",
       "label": "Incapacitated",
       "description": "Cannot spend AP, react, or concentrate.",
-      "appliedBy": [
+      "applied_by": [
         "core:effect/incapacitate"
       ],
-      "removedBy": [
+      "removed_by": [
         "core:effect/cure"
       ],
       "combat": {
@@ -186,10 +186,10 @@
       "key": "invisible",
       "label": "Invisible",
       "description": "Cannot be seen: attacks against it have −20 and its own attacks +10. Attacking or taking damage ends it.",
-      "appliedBy": [
+      "applied_by": [
         "core:effect/invisibility"
       ],
-      "removedBy": [
+      "removed_by": [
         "core:effect/cure"
       ],
       "modifiers": [
@@ -210,11 +210,11 @@
       "key": "paralyzed",
       "label": "Paralyzed",
       "description": "Cannot move or act: STR and AGI checks fail, and a melee hit from within 1 unit is a crit.",
-      "appliedBy": [
+      "applied_by": [
         "core:effect/paralyze",
         "core:effect/poison_paralytic"
       ],
-      "removedBy": [
+      "removed_by": [
         "core:effect/cure"
       ],
       "combat": {
@@ -242,10 +242,10 @@
       "key": "petrified",
       "label": "Petrified",
       "description": "Turned to stone: cannot act, resists 20 of every damage type, is immune to poison and disease, and beneficial effects do not land.",
-      "appliedBy": [
+      "applied_by": [
         "core:effect/petrify"
       ],
-      "removedBy": [
+      "removed_by": [
         "core:effect/cure"
       ],
       "combat": {
@@ -377,10 +377,10 @@
       "key": "poisoned",
       "label": "Poisoned",
       "description": "The poison's sub_effects are its symptoms; a poison resistance lessens them.",
-      "appliedBy": [
+      "applied_by": [
         "core:effect/poison"
       ],
-      "removedBy": [
+      "removed_by": [
         "core:effect/cure",
         "core:effect/restore_resource"
       ],
@@ -398,10 +398,10 @@
       "key": "prone",
       "label": "Prone",
       "description": "On the ground: −20 on melee attacks, and ranged attacks against it have +10. Standing costs the stand_up action.",
-      "appliedBy": [
+      "applied_by": [
         "core:effect/knockdown"
       ],
-      "removedBy": [],
+      "removed_by": [],
       "combat": {
         "attack_penalty": -20,
         "defense_bonus": 10
@@ -420,10 +420,10 @@
       "key": "restrained",
       "label": "Restrained",
       "description": "Bound: speed 0, −20 on attacks and AGI checks, and attacks against it have +10. A STR check or a teleport frees it.",
-      "appliedBy": [
+      "applied_by": [
         "core:effect/restrain"
       ],
-      "removedBy": [
+      "removed_by": [
         "core:effect/cure"
       ],
       "combat": {
@@ -458,10 +458,10 @@
       "key": "stunned",
       "label": "Stunned",
       "description": "Cannot act, −20 on every check, and attacks against it have +10.",
-      "appliedBy": [
+      "applied_by": [
         "core:effect/stun"
       ],
-      "removedBy": [
+      "removed_by": [
         "core:effect/cure"
       ],
       "combat": {
@@ -496,10 +496,10 @@
       "key": "unconscious",
       "label": "Unconscious",
       "description": "Out cold: cannot act, lies prone, STR and AGI checks fail, and a melee hit from within 1 unit is a crit. Healing above 0 HP or time wakes it.",
-      "appliedBy": [
+      "applied_by": [
         "core:effect/unconsciousness"
       ],
-      "removedBy": [
+      "removed_by": [
         "core:effect/cure"
       ],
       "combat": {
@@ -527,16 +527,16 @@
       "key": "exhaustion",
       "label": "Exhaustion",
       "description": "Stacks to 6: −10 on checks for each level; at 3 speed is halved, at 5 speed is 0, at 6 the actor dies. A full rest removes one level.",
-      "appliedBy": [
+      "applied_by": [
         "core:effect/blight",
         "core:effect/fever",
         "core:effect/plague"
       ],
-      "removedBy": [
+      "removed_by": [
         "core:effect/cure"
       ],
       "stacking": true,
-      "maxStacks": 6,
+      "max_stacks": 6,
       "combat": {
         "attack_penalty_per_stack": -10
       },
@@ -561,10 +561,10 @@
       "key": "burning",
       "label": "Burning",
       "description": "On fire: the burn effect deals its fire damage each second until it ends. Water, frost, or a cure puts it out.",
-      "appliedBy": [
+      "applied_by": [
         "core:effect/burn"
       ],
-      "removedBy": [
+      "removed_by": [
         "core:effect/cure",
         "core:effect/damage_frost"
       ],
@@ -582,10 +582,10 @@
       "key": "bleeding",
       "label": "Bleeding",
       "description": "The bleed effect deals its damage each second until a bandage, healing, or a Medicine check stops it.",
-      "appliedBy": [
+      "applied_by": [
         "core:effect/bleed"
       ],
-      "removedBy": [
+      "removed_by": [
         "core:effect/cure",
         "core:effect/restore_resource"
       ],
@@ -603,10 +603,10 @@
       "key": "slowed",
       "label": "Slowed",
       "description": "Speed halved, −10 on AGI checks, and every action costs 1 AP more (5 stamina in real time).",
-      "appliedBy": [
+      "applied_by": [
         "core:effect/slow"
       ],
-      "removedBy": [
+      "removed_by": [
         "core:effect/cure",
         "core:effect/haste_attack"
       ],
@@ -645,10 +645,10 @@
       "key": "silenced",
       "label": "Silenced",
       "description": "Cannot cast spells, and −20 on social checks that need speech.",
-      "appliedBy": [
+      "applied_by": [
         "core:effect/silence"
       ],
-      "removedBy": [
+      "removed_by": [
         "core:effect/cure"
       ],
       "modifiers": [
@@ -686,12 +686,12 @@
       "key": "diseased",
       "label": "Diseased",
       "description": "The disease effect's symptoms apply; END resists them, and a cure with parameter disease ends it.",
-      "appliedBy": [
+      "applied_by": [
         "core:effect/blight",
         "core:effect/fever",
         "core:effect/plague"
       ],
-      "removedBy": [
+      "removed_by": [
         "core:effect/cure"
       ],
       "modifiers": [
@@ -708,10 +708,10 @@
       "key": "cursed",
       "label": "Cursed",
       "description": "−2 on every attribute; a rest does not end it.",
-      "appliedBy": [
+      "applied_by": [
         "core:effect/curse"
       ],
-      "removedBy": [
+      "removed_by": [
         "core:effect/cure"
       ],
       "modifiers": [
@@ -784,10 +784,10 @@
       "key": "exposed",
       "label": "Exposed",
       "description": "Defenses down: −10 evasion, armor DR halved, and damage taken ×1.25.",
-      "appliedBy": [
+      "applied_by": [
         "core:effect/expose"
       ],
-      "removedBy": [
+      "removed_by": [
         "core:effect/cure"
       ],
       "modifiers": [
@@ -825,10 +825,10 @@
       "key": "taunted",
       "label": "Taunted",
       "description": "−20 on attacks against anyone but the taunter, and cannot willingly move away from it.",
-      "appliedBy": [
+      "applied_by": [
         "core:effect/taunt"
       ],
-      "removedBy": [
+      "removed_by": [
         "core:effect/cure"
       ],
       "combat": {
@@ -848,10 +848,10 @@
       "key": "staggered",
       "label": "Staggered",
       "description": "Cannot react until its next turn, and −10 on the next action.",
-      "appliedBy": [
+      "applied_by": [
         "core:effect/stagger"
       ],
-      "removedBy": [
+      "removed_by": [
         "core:effect/cure"
       ],
       "combat": {
@@ -871,8 +871,8 @@
       "key": "overdosed",
       "label": "Overdosed",
       "description": "Toxicity above the drinker's limit. Lasts while toxicity stays above it and lifts on its own as toxicity falls (docs/core/modifier.md#toxicity).",
-      "appliedBy": [],
-      "removedBy": [],
+      "applied_by": [],
+      "removed_by": [],
       "modifiers": [
         {
           "target": "overdosed",

@@ -64,8 +64,8 @@ def _armor_piece_dr(bands, _weapons, armor, _monsters):
         if category not in CATEGORIES:
             continue
         top = max(t["worn_dr"][category][1] for t in bands["tiers"])
-        if row["armor"]["drBase"] > top:
-            yield _finding("armor_piece_dr", row["key"], row["armor"]["drBase"], [0, top], f"{category} piece over the highest {category} set")
+        if row["armor"]["dr_base"] > top:
+            yield _finding("armor_piece_dr", row["key"], row["armor"]["dr_base"], [0, top], f"{category} piece over the highest {category} set")
 
 
 def _worn_set_dr(bands, _weapons, armor, _monsters):
@@ -75,7 +75,7 @@ def _worn_set_dr(bands, _weapons, armor, _monsters):
         for row in armor:
             piece = row.get("armor", {})
             if piece.get("category") in allowed and piece.get("slot") != "offhand":
-                best[piece["slot"]] = max(best.get(piece["slot"], 0), piece["drBase"])
+                best[piece["slot"]] = max(best.get(piece["slot"], 0), piece["dr_base"])
         total = sum(best.values())
         if not any(_within(total, t["worn_dr"][category]) for t in bands["tiers"]):
             band = [min(t["worn_dr"][category][0] for t in bands["tiers"]), max(t["worn_dr"][category][1] for t in bands["tiers"])]
@@ -101,13 +101,16 @@ def _monster_damage(bands, _weapons, _armor, monsters):
 
 
 def _monster_hits_to_kill(bands, _weapons, _armor, monsters):
+    import monster_reference  # it imports this module's helpers lazily
+
     for row in monsters:
         damage = _tier(bands, row["level"])["expected_damage"]
-        hits = round(row["hitPoints"] / ((damage[0] + damage[1]) / 2), 1)
+        hp = monster_reference.hit_points(row)  # computed, never stored (DE_S02_03)
+        hits = round(hp / ((damage[0] + damage[1]) / 2), 1)
         role = row.get("role", "standard")
         band = bands["hits_to_kill"][role]
         if not _within(hits, band):
-            yield _finding("monster_hits_to_kill", row["key"], hits, band, f"level {row['level']}, {role}, {row['hitPoints']} HP")
+            yield _finding("monster_hits_to_kill", row["key"], hits, band, f"level {row['level']}, {role}, {hp} HP")
 
 
 def _json(rel):

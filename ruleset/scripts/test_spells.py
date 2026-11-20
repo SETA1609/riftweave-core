@@ -127,6 +127,8 @@ class TestSpells(unittest.TestCase):
                 self.assertTrue(block["minion"])
 
     def test_a_summon_appears_at_its_casters_level(self):
+        import monster_reference
+
         raw = json.loads((DATA / "monsters" / "core.json").read_text())["monsters"]
         groups = json.loads((DATA / "summons" / "core.json").read_text())["summons"]
         variants = sorted({v.removeprefix("core:monster/") for g in groups for v in g["variants"]})
@@ -142,10 +144,10 @@ class TestSpells(unittest.TestCase):
             with self.subTest(variant=key):
                 row, creature = rows[key], rows[f"summoned_{key}"]
                 self.assertEqual(creature["level"], caster_level)
-                self.assertGreater(creature["hitPoints"], row["hitPoints"])
+                self.assertGreater(monster_reference.hit_points(creature), monster_reference.hit_points(row))
         # The row still sets the stats: at the same level the zombie keeps its lead over the skeleton.
-        self.assertEqual(rows["summoned_zombie"]["hitPoints"] - rows["summoned_skeleton"]["hitPoints"],
-                         rows["zombie"]["hitPoints"] - rows["skeleton"]["hitPoints"])
+        self.assertGreater(monster_reference.hit_points(rows["summoned_zombie"]),
+                           monster_reference.hit_points(rows["summoned_skeleton"]))
 
     def offensive(self):
         pool = effects()
@@ -199,7 +201,7 @@ class TestSpells(unittest.TestCase):
         for key, effect in effects().items():
             if "spell" in effect["channels"]:
                 with self.subTest(effect=key):
-                    self.assertGreater(effect.get("baseCost", 0), 0)
+                    self.assertGreater(effect.get("base_cost", 0), 0)
 
     def test_a_spell_is_affordable_at_its_level(self):
         for row in spells():
@@ -302,10 +304,11 @@ class TestCharismaStrengthensSummons(unittest.TestCase):
         summoned = self.summon(8, "commanding_summons_physical")
         self.assertEqual(self.gains(summoned), {"int": 0, "wil": 0, "str": 3, "end": 3, "agi": 3})
 
-    def test_an_end_gain_moves_authored_hit_points_by_the_hp_rows_per_point(self):
+    def test_an_end_gain_raises_the_computed_hit_points(self):
+        import monster_reference
+
         plain, summoned = self.plain(), self.summon(8, "commanding_summons_physical")
-        if "hitPoints" in plain:
-            self.assertEqual(summoned["hitPoints"] - plain["hitPoints"], 3 * validate._hp_per_end())
+        self.assertGreater(monster_reference.hit_points(summoned), monster_reference.hit_points(plain))
 
     def test_both_perks_add_to_both_groups(self):
         gains = self.gains(self.summon(8, "commanding_summons_magic", "commanding_summons_physical"))
@@ -421,7 +424,8 @@ class TestMinions(unittest.TestCase):
         for ability, add in template["attributes"].items():
             with self.subTest(ability=ability):
                 self.assertEqual(minion["attributes"][ability], max(1, plain["attributes"].get(ability, 0) + add))
-        self.assertLess(minion["hitPoints"], plain["hitPoints"] // 2)
+        self.assertEqual(minion["role"], "minion")
+        self.assertLess(monster_reference.hit_points(minion), monster_reference.hit_points(plain) // 2)
         self.assertIn("minion", minion["tags"])
 
     def test_commanding_summons_and_a_power_perk_add_nothing_to_a_minion(self):

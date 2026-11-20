@@ -14,7 +14,7 @@ class TestOrigins(unittest.TestCase):
     def test_each_emitter_has_at_most_one_default_origin(self):
         seen = {}
         for row in self.rows:
-            for emitter in row.get("defaultFor", []):
+            for emitter in row.get("default_for", []):
                 self.assertNotIn(emitter, seen, f"{emitter} defaults to {seen.get(emitter)} and {row['key']}")
                 seen[emitter] = row["key"]
 

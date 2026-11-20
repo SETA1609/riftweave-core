@@ -6,7 +6,7 @@ an armor category, a spell or effect color, a check (check row or recipe), or a
 perk. Background bonuses are references, not consumers.
 
 Also checks that the "Seeds skills" lines in docs/modules/attributes.md match
-each skill's associatedAbility.
+each skill's associated_ability.
 
 Usage:
     python ruleset/scripts/skill_audit.py          # table, exit 1 on a problem
@@ -139,9 +139,9 @@ def audit(skills, uses, seeds):
     data_seeds = defaultdict(set)
     for s in skills:
         key = s["key"]
-        ability = s.get("associatedAbility")
+        ability = s.get("associated_ability")
         if not ability:
-            problems.append(f"skill {key}: no associatedAbility")
+            problems.append(f"skill {key}: no associated_ability")
         else:
             data_seeds[ability].add(key)
         kinds = uses.get(key, {})

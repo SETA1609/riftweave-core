@@ -14,5 +14,5 @@
   - **Wider use:** the session's loadout change (GD_S05_02's `stance` events) records which action paid for it, and the action menu (`GD_S08_14_action-menu-rules`, once filed) lists the three.
 - Keys: `draw`, `sheathe`, `swap` (action rows); the secondary loadout on a stored actor
 - Files: ~8 (docs/core/actions.md, docs/core/combat.md, ruleset/data/actions/core.json, ruleset/data/features/core.json, backend/contract/stored_actor.json, ruleset/tests/vectors/actions.json, ruleset/tests/vectors/stance.json (GD_S05_02 adds it), ruleset/scripts/kernel_reference.py)
-- See: docs/core/combat.md#attacks-by-loadout, docs/issues/open/GD_S05_02_fighting-stances.md, docs/issues/open/GD_S17_02_ammunition-items-and-reloading.md
+- See: docs/core/combat.md#attacks-by-loadout, docs/issues/done/GD_S05_02_fighting-stances.md, docs/issues/open/GD_S17_02_ammunition-items-and-reloading.md
 - Done when: `actions` vectors price a draw, a sheathe, and a swap, with and without the perk; a `stance` vector ends a stance on a paid swap.

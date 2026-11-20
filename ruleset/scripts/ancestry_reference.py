@@ -2,7 +2,7 @@
 """What a race, its traits, and a background emit, as contract modifiers
 (docs/modules/race.md#5a-what-a-race-emits, docs/modules/backgrounds.md).
 
-abilityModifiers and skill_bonuses are the compact forms of `add` modifiers. A subrace emits its
+ability_modifiers and skill_bonuses are the compact forms of `add` modifiers. A subrace emits its
 parent's modifiers and traits, then its own; a kin emits only its own; a template is never played.
 """
 
@@ -23,11 +23,11 @@ def _rows(rel, collection):
 
 
 def _own(race, features):
-    """One race row's own modifiers: its abilityModifiers, then its traits'."""
+    """One race row's own modifiers: its ability_modifiers, then its traits'."""
     source = f"race:{race['key']}"
     mods = [
         {"target": attr, "operation": "add", "value": value, "source": source, "origin": INNATE}
-        for attr, value in race.get("abilityModifiers", {}).items()
+        for attr, value in race.get("ability_modifiers", {}).items()
     ]
     for trait in race.get("traits", []):
         mods.extend(dict(m) for m in features[trait["id"].rsplit("/", 1)[-1]].get("modifiers", []))
@@ -42,7 +42,7 @@ def race_modifiers(key):
     if role == "template":
         raise ValueError(f"{key} is a template and is never played")
     if role == "subrace":
-        parent = races[race["lineage"]["parentRace"].rsplit("/", 1)[-1]]
+        parent = races[race["lineage"]["parent_race"].rsplit("/", 1)[-1]]
         return _own(parent, features) + _own(race, features)
     return _own(race, features)
 

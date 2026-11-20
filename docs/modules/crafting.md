@@ -23,7 +23,7 @@ The Crafting module adds systems for characters to create equipment, tools, and 
 The **`materials`** collection already exists (`ruleset/data/materials/core.json`,
 schema `material.schema.json`): bronze, copper, iron, steel, wood, elven_wood,
 silver, gold, obsidian, …. Each material carries a five-phase `phase` element and
-`weapon`, `armor`, and `ingredient` blocks (`attack`, `defense`, `effectMagnitude`) it
+`weapon`, `armor`, and `ingredient` blocks (`attack`, `defense`, `effect_magnitude`) it
 confers on what it becomes, plus `tier` and weight/value factors. Recipes will
 consume materials and read these modifiers onto the produced item.
 
@@ -74,7 +74,7 @@ Base Template  +  Material  +  [Jewel]  +  [Enchantments]  +  [Coatings]
                      └── coatings: [temporary, 3 uses]
 ```
 
-Key rule: **phase defaults to material's phase; engraving jewel overwrites it entirely.** This is the full engraving mechanic for v1.
+Key rule: **phase defaults to material's phase; engraving jewel overwrites it entirely.** This is the full engraving mechanic for v1. The phase is computed, never stored: a `crafted_items` row names its `material_key` and its `engraving_jewel.gem_key`, and the effective phase is read from the gem, else the material. A stored `phase` beside those references would repeat the row it names, which `validate.py` fails ([integrity.md](../core/integrity.md#8-a-reference-is-the-key-alone), DE_S02_02).
 
 See `ruleset/scripts/crafting_reference.py --verbose` for a runnable demonstration.
 

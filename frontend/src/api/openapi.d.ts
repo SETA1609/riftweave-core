@@ -41,6 +41,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/commands/attack_sequence": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * One attack action by loadout: the attack, the jab, the full attack, or the circle cut, each strike its own roll through the combat pipeline.
+         * @description The rules are in docs/core/combat.md.
+         */
+        post: operations["attack_sequence"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/commands/author": {
         parameters: {
             query?: never;
@@ -95,6 +115,26 @@ export interface paths {
          * @description The rules are in docs/core/combat.md.
          */
         post: operations["combat"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/commands/command_summons": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * What each of a commander's summons gets: an order (the command action) gives the summons it reaches AP for their next turn, and a held command spell gives every summon a bonus to attack while it is held.
+         * @description The rules are in docs/core/commanding.md.
+         */
+        post: operations["command_summons"];
         delete?: never;
         options?: never;
         head?: never;
@@ -311,7 +351,7 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * XP and level, a level-up pool, spending points on a skill or a skill group, reading a skill off a sheet, and taking a perk.
+         * XP and level, a level-up pool, spending points on a skill or a skill group, reading a skill off a sheet, taking a perk, and checking a creation point-buy.
          * @description The rules are in docs/core/progression.md.
          */
         post: operations["progression"];
@@ -415,6 +455,26 @@ export interface paths {
          * @description The rules are in docs/core/casting.md.
          */
         post: operations["spellcraft"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/commands/stance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * A fighting stance over a stretch of turns: take or change one, end it, or change the loadout, which ends a stance it no longer fits.
+         * @description The rules are in docs/core/combat.md.
+         */
+        post: operations["stance"];
         delete?: never;
         options?: never;
         head?: never;
@@ -530,6 +590,24 @@ export interface components {
         attributes: {
             [key: string]: number;
         };
+        /** @description A character file's sync fields (BE_S07_03, docs/backend/files.md#the-character-list): who the character is, which revision, and who changed it last, when. */
+        character: {
+            /**
+             * Format: date-time
+             * @description When the last change was made, RFC 3339 in UTC.
+             */
+            changed_at: string;
+            /**
+             * @description Who made the last change.
+             * @enum {unknown}
+             */
+            changed_by: "gm" | "player";
+            /** @description A UUID made when the character is created; it never changes. */
+            id: string;
+            name: string;
+            /** @description Raised by one on every change. */
+            revision: number;
+        };
         cost: {
             quantity: number;
             /** @enum {string} */
@@ -553,6 +631,12 @@ export interface components {
         };
         key: string;
         modifiers: components["schemas"]["ruleset_modifier"][];
+        /** @description One character in a session's party: its sync fields as loaded, the actor as loaded, and the actor now. */
+        party_member: {
+            actor: components["schemas"]["stored_actor"];
+            character: components["schemas"]["character"];
+            start: components["schemas"]["stored_actor"];
+        };
         phase: components["schemas"]["ruleset_phase"];
         pools: {
             hp: number;
@@ -576,10 +660,10 @@ export interface components {
              * @description For fortify effects (especially on skills/attributes): 'unlimited' effects are normally stackable (magnitudes add). 'temporal' effects of the same type (same effect id + parameter) override each other, taking the highest magnitude as the effective value (and usually the longest duration).
              * @enum {string}
              */
-            durationType?: "temporal" | "unlimited";
+            duration_type?: "temporal" | "unlimited";
             /** @description Effect reference: namespaced format core:effect/<key> (e.g. core:effect/damage_fire) */
             effect: components["schemas"]["ruleset_effectRef"];
-            /** @description Effect strength; interpreted per the effect's magnitudeUnit */
+            /** @description Effect strength; interpreted per the effect's magnitude_unit */
             magnitude?: number;
             /** @description The origin its modifiers carry (core:origin/<key>), when it is not the default for the row's category: a divine spell, holy water. docs/core/modifier.md#origin. */
             origin?: components["schemas"]["ruleset_originRef"];
@@ -614,7 +698,7 @@ export interface components {
          * @description Canonical damage tag. Keys match ruleset/data/combat/damage_types.json. cold is not a key: use frost. lightning is not a key: use shock. Do not add a second vocabulary.
          * @enum {string}
          */
-        ruleset_damageType: "bludgeoning" | "piercing" | "slashing" | "fire" | "frost" | "shock" | "acid" | "poison" | "necrotic" | "radiant" | "psychic" | "force" | "thunder";
+        ruleset_damageType: "bludgeoning" | "piercing" | "slashing" | "fire" | "frost" | "shock" | "acid" | "poison" | "necrotic" | "radiant" | "psychic" | "force" | "thunder" | "magic";
         /** @description Polyhedral dice notation used for damage and similar rolls, e.g. 1d8, 2d6+3. Resolution (skill/attack checks) uses d100 roll-under, not this. */
         ruleset_diceExpression: string;
         /** @description A reference to a effect row (docs/core/integrity.md). */
@@ -646,15 +730,31 @@ export interface components {
         ruleset_ingredientRef: string;
         /** @description A reference to an equipment row of any category (docs/core/integrity.md). */
         ruleset_itemRef: string;
+        /** @description What an actor's two hands hold. */
+        ruleset_loadout: {
+            main: components["schemas"]["ruleset_mainHand"];
+            /** @description The main-hand weapon's skill, which a stance may need. */
+            main_skill?: components["schemas"]["ruleset_skillRef"];
+            off: components["schemas"]["ruleset_offHand"];
+            /** @description The off-hand weapon's skill, which a stance may need. */
+            off_skill?: components["schemas"]["ruleset_skillRef"];
+        };
+        /**
+         * @description What the main hand holds (docs/core/combat.md#attacks-by-loadout): nothing, a weapon with the `light` property, another one-handed weapon, or a weapon held in both hands (a `two_handed` weapon, or a `versatile` one in both hands). One vocabulary for attack sequences and stances.
+         * @enum {string}
+         */
+        ruleset_mainHand: "empty" | "light" | "one_handed" | "two_handed";
+        /** @description A reference to a combat maneuver in maneuvers/core.json (docs/core/actions.md#maneuvers). */
+        ruleset_maneuverRef: string;
         /** @description A reference to a material row (docs/core/integrity.md). */
         ruleset_materialRef: string;
         /** @description One opcode on one target. Order for a target, expiry, origins, and conditions: docs/core/modifier.md. Same origin, source, target, and operation does not stack (the strongest wins); different sources add unless they share a highest origin; add, then multiply (floored), then set; grant adds a flag; resist subtracts from a packet with the matching tag. */
         ruleset_modifier: {
             /**
-             * @description When the modifier ends. while_applied and while_equipped end with their source; turns ends after `turns` elapsed turns; uses is counted by the caller; permanent never ends.
+             * @description When the modifier ends. while_applied and while_equipped end with their source; while_summoning holds only while the holder has an active summon (docs/core/modifier.md#order-for-one-numeric-target); turns ends after `turns` elapsed turns; uses is counted by the caller; permanent never ends.
              * @enum {string}
              */
-            duration?: "turns" | "uses" | "while_equipped" | "while_applied" | "permanent";
+            duration?: "turns" | "uses" | "while_equipped" | "while_applied" | "while_summoning" | "permanent";
             /**
              * @description What the modifier does to its target (docs/core/modifier.md).
              * @enum {string}
@@ -682,6 +782,11 @@ export interface components {
         ruleset_namespacedRef: string;
         /** @description A reference to a natural weapon in natural_weapons/core.json (docs/modules/monsters.md#natural-weapons). Not equipment. */
         ruleset_naturalWeaponRef: string;
+        /**
+         * @description What the off hand holds (docs/core/combat.md#attacks-by-loadout): nothing, a shield, a buckler, a light weapon, another one-handed weapon, or the main hand's two-handed grip. One vocabulary for attack sequences and stances.
+         * @enum {string}
+         */
+        ruleset_offHand: "empty" | "shield" | "buckler" | "light_weapon" | "weapon" | "two_handed";
         /** @description A reference to a origin row (docs/core/integrity.md). */
         ruleset_originRef: string;
         /** @description A d100 roll-under value (skill rating, chance, or resistance), normally 0-100 but allowed above 100 for buffed/legendary values. */
@@ -709,8 +814,12 @@ export interface components {
         };
         /** @description A reference to a spell row (docs/core/integrity.md). */
         ruleset_spellRef: string;
+        /** @description A reference to a fighting stance in stances/core.json (docs/core/combat.md#fighting-stances). */
+        ruleset_stanceRef: string;
         /** @description A reference to a summon bonus in summons/bonuses.json (docs/modules/magic.md#summon-groups). */
         ruleset_summonBonusRef: string;
+        /** @description A reference to a summon group in summons/core.json (docs/modules/magic.md#summon-groups). */
+        ruleset_summonRef: string;
         /** @description One run: a starting actor, a log of commands, and the current snapshot (docs/core/state.md). */
         session: {
             actor: components["schemas"]["stored_actor"];
@@ -720,6 +829,8 @@ export interface components {
              */
             dev?: true;
             log: components["schemas"]["session_step"][];
+            /** @description The characters the GM loaded beside the session's own actor, each with the revision it was loaded at (BE_S07_03, docs/backend/sessions.md#the-party). The session carries them and holds no rule for them. */
+            party?: components["schemas"]["party_member"][];
             /** @description The rules the session was started on, or last replayed under (docs/backend/sessions.md#the-rules-version). */
             rules_version?: string;
             ruleset: {
@@ -841,6 +952,175 @@ export interface operations {
                         pool: number;
                         /** @description The cost in stamina for a real-time client: AP times stamina_per_ap. */
                         stamina?: number;
+                    };
+                };
+            };
+            /** @description The body is not the command's input, or a rule needs an input it was not given. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description No such command, or the input names a key that does not exist. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The body is over 1 MiB. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The command refused for another rule reason. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+        };
+    };
+    attack_sequence: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * @description The action (actions/core.json); its strikes and AP come from the loadout's attack_sequences row.
+                     * @enum {string}
+                     */
+                    action: "attack" | "jab" | "full_attack" | "circle_cut";
+                    /** @description The attacker just blocked a hit in their band: from Boss Strike's after_block tier a bash jab costs shield_bash.after_block_ap. */
+                    after_block?: boolean;
+                    /** @description The attacker parried a hit since their last strike: attack_after_parry adds to the first main-hand strike (Espada y Daga, docs/core/combat.md#fighting-stances). */
+                    after_parry?: boolean;
+                    /** @description The attacker's AP left. A full attack and a circle cut spend all of it and need at least the attack AP + full_attack.min_extra_ap; an attack or a jab with fewer than its AP is an error. */
+                    ap?: number;
+                    attacker: {
+                        attributes?: components["schemas"]["attributes"];
+                        /** @description Flags from conditions, as in combat. */
+                        flags?: components["schemas"]["key"][];
+                        /** @description The attacker's perks and fighting stance (the stance command's modifiers): adds on full_attack_strikes, full_attack_off_strikes, mainhand_penalty, offhand_penalty, attack_roll (every strike), attack_single_opponent (every strike with one foe in reach), attack_after_parry (the first main-hand strike when after_parry), and unarmed_damage (an empty main hand), and boss_strike (the Boss Strike tier), and the carry_through, reaping_arc, scissor_cut, can_circle_cut, off_hand_parries, and carry_on_crit grants. */
+                        modifiers?: components["schemas"]["modifiers"];
+                        /** @description The off-hand weapon skill; the main-hand skill when left out. A Boss Strike bash rolls on it (the Shields skill) and needs it. */
+                        off_skill?: number;
+                        /** @description The off-hand weapon's on-hit applied effects; none when left out: an off-hand weapon never borrows the main hand's. */
+                        off_weapon_effects?: Record<string, never>[];
+                        /** @description The off-hand weapon's properties; none when left out. */
+                        off_weapon_properties?: components["schemas"]["key"][];
+                        /** @description The attacker's perk refs, as combat's attacker.perks: every strike reads them for a rider (docs/core/actions.md#rider-perks). */
+                        perks?: components["schemas"]["ref"][];
+                        /** @description The carried shield's DR: a Boss Strike bash's damage is this plus the damage roll. A bash without it is an error. */
+                        shield_dr?: number;
+                        /** @description The main-hand weapon skill. */
+                        skill: number;
+                        /** @description The main-hand weapon's on-hit applied effects (a bound weapon's bane, lingering damage, ...), as combat's attacker.weapon_effects. */
+                        weapon_effects?: Record<string, never>[];
+                        /** @description The main-hand weapon's properties, as combat's attacker.weapon_properties. */
+                        weapon_properties?: components["schemas"]["key"][];
+                    };
+                    /** @description The main-hand damage type and attribute; each strike's roll is in rolls. */
+                    damage: {
+                        ability?: components["schemas"]["ruleset_ability"];
+                        type: components["schemas"]["key"];
+                    };
+                    /** @description The foes in reach, in the order a carry picks them; foe 0 is a full attack's target. */
+                    foes: Record<string, never>[];
+                    loadout: components["schemas"]["ruleset_loadout"];
+                    /** @description Attack modifiers on every strike (situations). */
+                    modifiers?: components["schemas"]["modifiers"];
+                    /** @description The off-hand damage type and attribute; damage when left out. */
+                    off_damage?: {
+                        ability?: components["schemas"]["ruleset_ability"];
+                        type: components["schemas"]["key"];
+                    };
+                    /** @description One attack roll and one damage roll per strike made, in order; a lost strike takes none. */
+                    rolls: {
+                        attack: components["schemas"]["d100"];
+                        damage: number;
+                    }[];
+                    /** @description Keys in ruleset/data/combat/situations.json for every strike, as in combat (flanking, beside_summon, ...). */
+                    situations?: components["schemas"]["key"][];
+                    /** @description Whether the attacker has an active summon (not a minion), for every strike's while_summoning modifiers, as in combat. Default false. */
+                    summoning?: boolean;
+                    /** @description An attack's or a jab's foe per strike (indexes into foes); all 0 when left out. */
+                    targets?: number[];
+                };
+            };
+        };
+        responses: {
+            /** @description The result. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        action: string;
+                        ap: number;
+                        /** @description Each foe's HP after the action. */
+                        hp: number[];
+                        /** @description Strikes lost because their foe dropped and nothing carried them. */
+                        lost: number;
+                        /** @description The attack_sequences row key. */
+                        sequence: string;
+                        /** @description ap times stamina_per_ap. */
+                        stamina: number;
+                        strikes: {
+                            /** @description The strike's attack value after the penalty perks. */
+                            attack: number;
+                            /**
+                             * @description A Boss Strike shield bash: the off-hand strike made with the shield, shield_bash.damage_type damage of shield_dr plus the damage roll. Left out on any other strike.
+                             * @constant
+                             */
+                            bash?: true;
+                            /** @description The strike went to another foe because its own dropped (carry_through). */
+                            carried: boolean;
+                            crit: boolean;
+                            damage: number;
+                            /** @description The rider's effects on a hit, as combat's; left out when no rider rides. */
+                            effects?: Record<string, never>[];
+                            /** @description The rider's events on a hit, as combat's; left out when no rider rides. */
+                            events?: string[];
+                            foe: number;
+                            /** @description The free strike carry_through gives after an action's last strike drops a foe. */
+                            free: boolean;
+                            /** @enum {string} */
+                            hand: "main" | "off";
+                            hp: number;
+                            margin: number | null;
+                            /** @enum {string} */
+                            outcome: "hit" | "miss" | "fumble" | "evaded" | "blocked";
+                            /** @description The maneuver a held rider perk put on the strike, as combat's; left out when no rider rides. */
+                            rider?: string;
+                            /** @description The rider's attempt on a hit (attribute, dc, target), as combat's; left out otherwise. */
+                            save?: Record<string, never>;
+                            /** @description Scissor Cut counted the off-hand dice once more. */
+                            scissor: boolean;
+                            /** @description A bash's stagger: AP the target loses on its next turn (shield_bash.stagger_ap from the stagger tier, on a hit); 0 otherwise. Left out on any other strike. */
+                            stagger_ap?: number;
+                            target: number;
+                            /** @description The weapon effects that landed, as combat's; listed only when the strike's hand has weapon effects. */
+                            weapon_effects?: Record<string, never>[];
+                        }[];
                     };
                 };
             };
@@ -1016,11 +1296,28 @@ export interface operations {
                         concentration?: null | components["schemas"]["key"];
                         flags?: components["schemas"]["key"][];
                         mana: number;
+                        /** @description The caster's minions, oldest first: one summon group ref per creature, outside the summon limit (docs/core/casting.md#minions). */
+                        minions?: components["schemas"]["ref"][];
+                        /** @description The caster's perks (core:feature/<key>): a bound weapon reads the material each unlocks (the highest perk's wins; order does not matter) and their bound_weapon_effects (docs/core/casting.md#bound-weapons). */
+                        perks?: components["schemas"]["ref"][];
                         reagents?: components["schemas"]["ref"][];
+                        /**
+                         * @description The shield held, none when left out: its casting.shield_penalty adds to the armor penalty, and modifiers on armor_cast_penalty (Mailed Casting) multiply both.
+                         * @enum {string}
+                         */
+                        shield?: "none" | "buckler" | "standard" | "tower";
                         skills: components["schemas"]["skills"];
+                        /** @description The element templates of the caster's active summons (core:monster_template/<key>), which Elemental Kinship reads: one per active summon, in the same order as summons, so a dismissed summon's template goes with it (docs/core/casting.md#the-bonded-summoner). */
+                        summon_templates?: components["schemas"]["ref"][];
                         /** @description The caster's active summons, oldest first: one summon group ref per creature (docs/core/casting.md#summons). */
                         summons?: components["schemas"]["ref"][];
                     };
+                    /** @description A coating on the conjured weapon: a core:effect/damage_<type> with the coating channel. */
+                    coating?: components["schemas"]["ref"];
+                    /** @description The rolled total of a minion spell's count dice (docs/core/casting.md#minions). */
+                    count_roll?: number;
+                    /** @description An elemental enchantment on the conjured weapon: a core:effect/damage_<type> with the enchantment channel; it wins over a coating. */
+                    enchantment?: components["schemas"]["ref"];
                     modifiers?: components["schemas"]["modifiers"];
                     roll: components["schemas"]["d100"];
                     spell: components["schemas"]["key"];
@@ -1059,6 +1356,17 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The conjured weapon, when the spell has a bound_weapon effect (docs/core/casting.md#bound-weapons); left out otherwise. */
+                        bound_weapon?: {
+                            attack: number;
+                            damage_type: components["schemas"]["key"];
+                            dice: string;
+                            effects: Record<string, never>[];
+                            material: components["schemas"]["ref"];
+                            phase: null | components["schemas"]["phase"];
+                            skill: components["schemas"]["key"];
+                            weapon: components["schemas"]["ref"];
+                        };
                         check?: null | {
                             margin: number | null;
                             success: boolean;
@@ -1086,6 +1394,8 @@ export interface operations {
                         /** @description The target's HP after every packet; null without a target hp. */
                         hp?: number | null;
                         mana?: number;
+                        /** @description The caster's minions after the cast, oldest first. */
+                        minions?: components["schemas"]["ref"][];
                         /** @enum {string} */
                         outcome?: "cast" | "failed" | "prevented" | "no_mana" | "no_reagents";
                         save?: null | {
@@ -1153,8 +1463,14 @@ export interface operations {
                         attributes?: components["schemas"]["attributes"];
                         /** @description Flags from conditions (prone, blinded, invisible); a situation row with `when` reads them. */
                         flags?: components["schemas"]["key"][];
+                        /** @description The attacker's held perks (feature refs). A rider perk among them whose maneuver fits the attack makes a maneuver attempt after a plain hit (docs/core/actions.md#rider-perks); two riders that fit the same attack are an error. */
+                        perks?: components["schemas"]["ref"][];
                         roll: components["schemas"]["d100"];
                         skill: number;
+                        /** @description The weapon's on-hit applied effects: armor_pierce, bane, lingering_damage, banish_summoned (docs/core/combat.md#weapon-effects). */
+                        weapon_effects?: Record<string, never>[];
+                        /** @description The carried weapon's properties, which a maneuver may need. */
+                        weapon_properties?: string[];
                     };
                     /** @description A called_shots key in ruleset/data/combat/situations.json. */
                     called_shot?: components["schemas"]["key"];
@@ -1165,12 +1481,22 @@ export interface operations {
                         type: components["schemas"]["key"];
                     };
                     defender: {
+                        /**
+                         * @description The heaviest body armor worn, none when left out (clothes and robes are none). Unarmored Grace's unarmored_evasion_band widens the band only with none.
+                         * @enum {string}
+                         */
+                        armor?: "none" | "light" | "medium" | "heavy";
                         armor_dr?: number;
                         attributes?: components["schemas"]["attributes"];
+                        /** @description The defender's creature type (undead, beast, ...), which a weapon's bane reads. */
+                        creature_type?: components["schemas"]["key"];
                         evasion_skill?: number;
                         /** @description Flags from conditions (prone, blinded, invisible); a situation row with `when` reads them. */
                         flags?: components["schemas"]["key"][];
                         hp: number;
+                        /** @description What the defender holds; with a weapon in each hand, the defender's modifiers on two_weapon_evasion_band widen the evasion band (Crossed Guard). */
+                        loadout?: components["schemas"]["ruleset_loadout"];
+                        /** @description The defender's perks and fighting stance (the stance command's modifiers): adds on evasion, evasion_band, shields, block_band, shield_dr, two_weapon_evasion_band, unarmored_evasion_band, and spell_ward (the tier), and the bulwark, riposte, parry, and block_with_weapon grants. */
                         modifiers?: components["schemas"]["modifiers"];
                         resist?: {
                             [key: string]: number;
@@ -1181,9 +1507,15 @@ export interface operations {
                         shields_skill?: number;
                         /** @description The stance the defender declared on their turn: dodge (doubles the evasion band) or block (adds a block band; needs shield_dr and shields_skill). Any other value is an error. */
                         stance?: string;
+                        /** @description The held weapon's skill: a parry grant reads it for the parry band, floor(weapon_skill / stances.rules.parry_band_divisor), and block_with_weapon lets the block band read it when it beats shields_skill (docs/core/combat.md#fighting-stances). A parry grant without it is an error. */
+                        weapon_skill?: number;
                     };
                     /** @enum {string} */
                     delivery?: "single" | "area" | "instant";
+                    /** @description What the attacker holds: a maneuver's AP is then the loadout's attack AP (attack_sequences/core.json) plus its own. A loadout no attack sequence covers is an error. */
+                    loadout?: components["schemas"]["ruleset_loadout"];
+                    /** @description A maneuvers key in ruleset/data/maneuvers/core.json: the attack is performed as that maneuver (docs/core/actions.md#maneuvers). */
+                    maneuver?: components["schemas"]["key"];
                     modifiers?: components["schemas"]["modifiers"];
                     /**
                      * @description Default melee.
@@ -1192,6 +1524,8 @@ export interface operations {
                     range?: "melee" | "ranged";
                     /** @description Keys in ruleset/data/combat/situations.json the caller names (cover, flanking, into melee). */
                     situations?: components["schemas"]["key"][];
+                    /** @description Whether the attacker has an active summon (not a minion), for its while_summoning modifiers. Default false; the beside_summon situation implies true (docs/core/modifier.md). */
+                    summoning?: boolean;
                 };
             };
         };
@@ -1203,6 +1537,8 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description With a maneuver: the attack's AP plus the maneuver's, at least 1. */
+                        ap?: number;
                         /** @description The block stance's band, under the evasion band: a margin in it is blocked. */
                         block_rate: number;
                         blocked: boolean;
@@ -1210,13 +1546,23 @@ export interface operations {
                         counter?: boolean;
                         crit: boolean;
                         damage: number;
+                        /** @description With a maneuver or a rider: its applied effects on a hit, empty on a miss or an evade. With a save, they land only when the defender fails it. */
+                        effects?: Record<string, never>[];
                         evaded: boolean;
                         /** @description The evasion band: a margin under it is evaded. */
                         evasion_rate: number;
+                        /** @description With a maneuver or a rider: its events on a hit (disarm), empty otherwise. */
+                        events?: "disarm"[];
                         hp: number;
                         margin: number | null;
                         /** @enum {string} */
                         outcome: "hit" | "miss" | "fumble" | "evaded" | "blocked";
+                        /** @description The parry band stopped the hit (outcome blocked). */
+                        parried: boolean;
+                        /** @description A parrying stance's band, under the block band: a margin in it is blocked and parried. 0 without a parry grant, against non-physical damage, or for an instant attack. */
+                        parry_rate: number;
+                        /** @description The maneuver a held rider perk put on this plain attack. */
+                        rider?: components["schemas"]["key"];
                         /** @description A called shot's riders on a hit. */
                         riders?: {
                             check?: string;
@@ -1224,9 +1570,110 @@ export interface operations {
                             event?: string;
                             turns?: number;
                         }[];
+                        /** @description A maneuver attempt on a hit (a maneuver with a save_bonus, or a rider), docs/core/actions.md#the-maneuver-attempt; left out otherwise. */
+                        save?: {
+                            /** @description The weapon's attribute (damage.ability) the attempt is made with. */
+                            attribute: components["schemas"]["key"];
+                            /** @description The attacker's attribute times maneuver_save_multiplier, plus the maneuver's save_bonus (none for a rider). */
+                            dc: number;
+                            /** @description The defender's d100 save target, 100 minus the DC and never below 0; the caller rolls it, and a failed save lands the effects and events. */
+                            target: number;
+                        };
                         /** @description Bulwark: AP the attacker loses on their next turn. */
                         stagger_ap?: number;
+                        /** @description With a maneuver: ap times stamina_per_ap, its cost in real time. */
+                        stamina?: number;
                         target: number;
+                        /** @description The percent Spell Ward resisted: spell_ward_percent (END x 2 x tier) at most spell_ward_max_percent (50); 0 when not warded. */
+                        ward_percent: number;
+                        /** @description Spell Ward: a spell (a type without the DR tag) whose roll landed in the block band while blocking. It still hits, with ward_percent of its damage resisted. */
+                        warded: boolean;
+                        /** @description With weapon effects: those that land on a hit (docs/core/combat.md#weapon-effects), empty on a miss, an evade, or a block. Left out without weapon effects. */
+                        weapon_effects?: Record<string, never>[];
+                    };
+                };
+            };
+            /** @description The body is not the command's input, or a rule needs an input it was not given. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description No such command, or the input names a key that does not exist. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The body is over 1 MiB. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The command refused for another rule reason. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+        };
+    };
+    command_summons: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    commander: {
+                        /** @description The spell the commander holds; a held command gives its bonus only while held. A key that names no spell is an error. */
+                        concentration?: null | components["schemas"]["key"];
+                        /** @description The commander's modifiers; those on command change an order's cost. */
+                        modifiers?: components["schemas"]["modifiers"];
+                        /** @description Who commands; it makes the commander's modifiers a source of their own. */
+                        name: string;
+                        /** @description A feature with a command object, which an order uses. */
+                        perk?: components["schemas"]["key"];
+                    };
+                    order?: {
+                        /** @description The summons the order reaches. */
+                        targets: string[];
+                    };
+                    /** @description The names of the commander's active summons. */
+                    summons: string[];
+                };
+            };
+        };
+        responses: {
+            /** @description The result. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description What the order costs the commander, 0 without an order. */
+                        ap: number;
+                        /** @description Per summon name, the modifiers it gets; every summon is listed. */
+                        modifiers: {
+                            [key: string]: components["schemas"]["modifiers"];
+                        };
                     };
                 };
             };
@@ -1873,6 +2320,8 @@ export interface operations {
                         tag: string;
                     };
                     removed_sources?: string[];
+                    /** @description Whether the holder has an active summon; a while_summoning modifier counts only when true (docs/core/modifier.md). */
+                    summoning?: boolean;
                     target?: string;
                     value: number;
                 };
@@ -1942,13 +2391,19 @@ export interface operations {
                 "application/json": {
                     monster: {
                         attributes?: components["schemas"]["attributes"];
-                        hitPoints?: number;
                         level?: number;
+                        /** @description The maneuvers the row lists (M3-24). */
+                        maneuvers?: components["schemas"]["ref"][];
                         /** @description The row's perks, each at a rank (M3-15); their modifiers reach the stats and skills. */
                         perks?: {
                             perk: components["schemas"]["ref"];
                             rank?: number;
                         }[];
+                        /**
+                         * @description Scales the computed HP by progression/core.json monster_hp_multiplier; default standard (DE_S02_03).
+                         * @enum {string}
+                         */
+                        role?: "standard" | "boss" | "minion";
                         skills?: components["schemas"]["skills"];
                     };
                     read_skills?: components["schemas"]["key"][];
@@ -1967,7 +2422,11 @@ export interface operations {
                         carry: number;
                         hp: number;
                         initiative: number;
+                        /** @description The maneuvers the monster can use: the ones it lists and the ones its perks unlock, sorted (GD_S05_04). */
+                        maneuvers?: components["schemas"]["ref"][];
                         mp: number;
+                        /** @description The maneuvers its held rider perks put on its plain attacks that fit them, sorted; left out without one. Two perks that exclude each other are an error. */
+                        riders?: components["schemas"]["ref"][];
                         skills: {
                             [key: string]: number;
                         };
@@ -2041,16 +2500,21 @@ export interface operations {
                             };
                             delivery?: string;
                             key: components["schemas"]["key"];
-                            label: string;
+                            /** @description Only where it differs from the weapon's; left out, the page prints the weapon row's label (DE_S02_02). */
+                            label?: string;
                             phase?: string;
                             weapon: components["schemas"]["ref"];
                         }[];
                         attributes?: components["schemas"]["attributes"];
-                        hitPoints?: number;
                         level?: number;
                         resist?: {
                             [key: string]: number;
                         };
+                        /**
+                         * @description Scales the computed HP by progression/core.json monster_hp_multiplier; default standard (DE_S02_03).
+                         * @enum {string}
+                         */
+                        role?: "standard" | "boss" | "minion";
                         size?: string;
                         skills?: components["schemas"]["skills"];
                     };
@@ -2121,6 +2585,7 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
+                    /** @description The actor: its attributes for level_up and point_buy (as assigned, before race and creation perks), the sheet for read_skill and take_perk. */
                     actor?: components["schemas"]["actor"];
                     /** @description With spend: a skill group key (skill_groups/core.json); one rank costs the group cost, and `skill` is the highest member's value. */
                     group?: string;
@@ -2135,7 +2600,7 @@ export interface operations {
                     luck_roll?: number;
                     mp_roll?: number;
                     /** @enum {string} */
-                    operation: "xp" | "level" | "level_up" | "spend" | "read_skill" | "take_perk";
+                    operation: "xp" | "level" | "level_up" | "spend" | "read_skill" | "take_perk" | "point_buy";
                     /** @description With take_perk: the perk to take, a key in features/core.json. */
                     perk?: components["schemas"]["key"];
                     /** @description With take_perk: the perks held, key to rank. */
@@ -2165,6 +2630,7 @@ export interface operations {
                             mp: number;
                             sp: number;
                         };
+                        /** @description With spend: the points not spent. With point_buy: creation.attribute_points minus spent. */
                         left?: number;
                         level?: number;
                         /** @description With take_perk: the perk checked. */
@@ -2176,12 +2642,13 @@ export interface operations {
                         /** @enum {string} */
                         read_from?: "sheet" | "group" | "start";
                         skill_points?: number;
+                        /** @description With spend: the points spent. With point_buy: the attribute points spent above creation.attribute_start, less the points freed by attributes under it. */
                         spent?: number;
                         taken?: boolean;
                         /** @description With take_perk: each requirement that fails, empty when taken. */
                         unmet?: {
                             has?: number;
-                            /** @description The attribute or perk key. */
+                            /** @description The attribute or perk key; with not_excluded, the held perk that excludes this one. */
                             key?: string;
                             /** @description The skills of a skill requirement; one of them must reach min. */
                             keys?: string[];
@@ -2189,7 +2656,7 @@ export interface operations {
                             max?: number;
                             min?: number;
                             /** @enum {string} */
-                            needs: "rank" | "level" | "attribute" | "skill" | "perk";
+                            needs: "rank" | "level" | "attribute" | "skill" | "perk" | "not_excluded";
                         }[];
                         value?: number;
                         xp_step?: number | null;
@@ -2648,6 +3115,97 @@ export interface operations {
                         skill_ok?: boolean;
                         taught?: components["schemas"]["ref"][];
                         valid?: boolean;
+                    };
+                };
+            };
+            /** @description The body is not the command's input, or a rule needs an input it was not given. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description No such command, or the input names a key that does not exist. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The body is over 1 MiB. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The command refused for another rule reason. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+        };
+    };
+    stance: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description The steps, in order. Each needs exactly one of take, end, or loadout; more than one is an error. */
+                    events?: {
+                        /** @description End the active stance, for no AP. */
+                        end?: boolean;
+                        /** @description The hands now hold this (a weapon drawn, dropped, or swapped); a stance it no longer fits ends. */
+                        loadout?: components["schemas"]["ruleset_loadout"];
+                        /** @description The take is not at the start of the actor's own turn. */
+                        mid_turn?: boolean;
+                        /** @description Take or change to this stance: stances.rules.turn_start_ap at the start of the actor's own turn, stances.rules.mid_turn_ap with mid_turn. Taking the active one costs nothing. */
+                        take?: components["schemas"]["key"];
+                    }[];
+                    /** @description What the hands hold at the start, with the weapons' skills when a stance needs them. */
+                    loadout: components["schemas"]["ruleset_loadout"];
+                    /** @description The actor's perks; a stance needs one whose unlocks names it. */
+                    perks?: components["schemas"]["ruleset_featureRef"][];
+                    /** @description The stance active before the first event, if any. It must fit the loadout. */
+                    stance?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description The result. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description The AP the events cost. */
+                        ap: number;
+                        /** @description The active stance's modifiers, to pass to combat (defender) and attack_sequence (attacker). */
+                        modifiers: components["schemas"]["modifiers"];
+                        /** @description The stance active after the last event. */
+                        stance: string | null;
+                        steps: {
+                            ap: number;
+                            /** @description The stance this step ended, replaced or no longer fitting. */
+                            ended: string | null;
+                            stance: string | null;
+                        }[];
                     };
                 };
             };

@@ -1,18 +1,18 @@
 {
   "$schema": "../../schemas/origin.schema.json",
   "origins": [
-    { "key": "arcane", "label": "Arcane", "stack": "highest", "defaultFor": ["spell"], "description": "Spells of the nine color schools. Two arcane bonuses on one stat do not stack; the strongest counts." },
+    { "key": "arcane", "label": "Arcane", "stack": "highest", "default_for": ["spell"], "description": "Spells of the nine color schools. Two arcane bonuses on one stat do not stack; the strongest counts." },
     { "key": "divine", "label": "Divine", "stack": "highest", "description": "Prayers, blessings, shrines, and relics. A row names it; nothing defaults to it." },
     { "key": "primal", "label": "Primal", "stack": "highest", "description": "Nature and spirit magic: totems, druidic and shamanic rites. A row names it." },
-    { "key": "alchemy", "label": "Alchemy", "stack": "highest", "defaultFor": ["consumable", "ingredient"], "description": "Potions, elixirs, poisons, oils, and raw ingredients. A Fortify Strength +10 and a Giant Strength +5 give +10." },
-    { "key": "enchantment", "label": "Enchantment", "stack": "highest", "defaultFor": ["item_effect", "gem"], "description": "Magic effects on worn or wielded items, and engraved gems. Two rings of fire resistance give the larger one." },
+    { "key": "alchemy", "label": "Alchemy", "stack": "highest", "default_for": ["consumable", "ingredient"], "description": "Potions, elixirs, poisons, oils, and raw ingredients. A Fortify Strength +10 and a Giant Strength +5 give +10." },
+    { "key": "enchantment", "label": "Enchantment", "stack": "highest", "default_for": ["item_effect", "gem"], "description": "Magic effects on worn or wielded items, and engraved gems. Two rings of fire resistance give the larger one." },
     { "key": "martial", "label": "Martial", "stack": "highest", "description": "Stances, battle cries, and combat techniques. A row names it." },
     { "key": "morale", "label": "Morale", "stack": "highest", "description": "Inspiration, leadership, fear, and despair. A row names it." },
     { "key": "environment", "label": "Environment", "stack": "highest", "description": "Terrain, weather, light, and cover. A row names it." },
-    { "key": "equipment", "label": "Equipment", "stack": "add", "defaultFor": ["item_stat"], "description": "An item's own numbers: armor DR per slot, weapon damage. Every item counts." },
-    { "key": "trained", "label": "Trained", "stack": "add", "defaultFor": ["feature", "background"], "description": "Perks, features, and backgrounds. Every perk counts." },
-    { "key": "innate", "label": "Innate", "stack": "add", "defaultFor": ["race", "monster"], "description": "Ancestry and natural traits. Every trait counts." },
-    { "key": "condition", "label": "Condition", "stack": "add", "defaultFor": ["condition"], "description": "Status conditions. Different conditions add; one condition is one source and counts once." },
-    { "key": "food", "label": "Food", "stack": "replace", "defaultFor": ["food"], "description": "Dishes and rations. A new dish removes every running effect of the last one." }
+    { "key": "equipment", "label": "Equipment", "stack": "add", "default_for": ["item_stat"], "description": "An item's own numbers: armor DR per slot, weapon damage. Every item counts." },
+    { "key": "trained", "label": "Trained", "stack": "add", "default_for": ["feature", "background"], "description": "Perks, features, and backgrounds. Every perk counts." },
+    { "key": "innate", "label": "Innate", "stack": "add", "default_for": ["race", "monster"], "description": "Ancestry and natural traits. Every trait counts." },
+    { "key": "condition", "label": "Condition", "stack": "add", "default_for": ["condition"], "description": "Status conditions. Different conditions add; one condition is one source and counts once." },
+    { "key": "food", "label": "Food", "stack": "replace", "default_for": ["food"], "description": "Dishes and rations. A new dish removes every running effect of the last one." }
   ]
 }

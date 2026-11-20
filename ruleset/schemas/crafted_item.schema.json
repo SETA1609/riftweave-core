@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Crafted Item",
-  "description": "A composed item produced by crafting: a base template + material, optionally engraved with a jewel, enchanted with permanent effects, or coated with a temporary consumable. Phase is inherited from the material unless overwritten by an engraving jewel. Effects coming from or through the item interact via Wuxing cycles in data/wuxing.",
+  "description": "A composed item produced by crafting: a base template + material, optionally engraved with a jewel, enchanted with permanent effects, or coated with a temporary consumable. Phase is not stored: it is the engraving jewel's gem's phase, else the material's (docs/core/integrity.md#8-a-reference-is-the-key-alone). Effects coming from or through the item interact via Wuxing cycles in data/wuxing.",
   "type": "object",
   "properties": {
     "$schema": { "type": "string" },
@@ -22,19 +22,14 @@
         "source": { "$ref": "schema.json#/definitions/sourceRef" },
         "base_key": { "$ref": "schema.json#/definitions/itemRef", "description": "Key of the base equipment template (from equipment/weapons.json or armor.json)." },
         "material_key": { "$ref": "schema.json#/definitions/materialRef", "description": "Key of the material (from materials/core.json)." },
-        "phase": {
-          "$ref": "schema.json#/definitions/phase",
-          "description": "Effective element of the crafted item. Defaults to the material's phase. Overwritten by engraving_jewel's phase when present."
-        },
         "attack_bonus": { "type": "number", "description": "Derived from material.weapon.attack. Added to the base weapon's damage or attack." },
         "defense_bonus": { "type": "number", "description": "Derived from material.armor.defense. Added to armor DR." },
-        "effect_magnitude_multiplier": { "type": "number", "minimum": 0, "default": 1.0, "description": "Multiplier to enchantment/coating magnitudes. Base 1.0; material.ingredient.effectMagnitude adds to this." },
+        "effect_magnitude_multiplier": { "type": "number", "minimum": 0, "default": 1.0, "description": "Multiplier to enchantment/coating magnitudes. Base 1.0; material.ingredient.effect_magnitude adds to this." },
         "engraving_jewel": {
           "type": "object",
           "description": "Optional jewel engraved into the item. Overwrites the item's effective phase with the jewel's phase. In v1, this is the entire engraving mechanic — no additional effects.",
           "properties": {
-            "gem_key": { "$ref": "schema.json#/definitions/gemRef", "description": "Key of the gem in data/gems/core.json." },
-            "phase": { "$ref": "schema.json#/definitions/phase", "description": "Gem's phase, which becomes the item's effective phase." }
+            "gem_key": { "$ref": "schema.json#/definitions/gemRef", "description": "Key of the gem in data/gems/core.json. The gem's phase becomes the item's effective phase." }
           },
           "required": ["gem_key"],
           "additionalProperties": false

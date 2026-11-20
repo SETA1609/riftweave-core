@@ -19,6 +19,8 @@ type menuEntry struct {
 	Label  string   `json:"label"`
 	Issue  string   `json:"issue"`
 	Apps   []string `json:"apps"` // the apps that show it, cli or web; both when empty
+	// IssueApps are the apps the issue is pending in, when it is one app's half; both when empty.
+	IssueApps []string `json:"issue_apps"`
 }
 
 // backKey is the entry the app adds at the end of every menu but the main one.
@@ -46,6 +48,9 @@ func entriesOf(parent string) []menuEntry {
 	var entries []menuEntry
 	for _, entry := range tree {
 		if entry.Parent == parent && (len(entry.Apps) == 0 || slices.Contains(entry.Apps, "cli")) {
+			if len(entry.IssueApps) > 0 && !slices.Contains(entry.IssueApps, "cli") {
+				entry.Issue = "" // pending in the other app only
+			}
 			entries = append(entries, entry)
 		}
 	}

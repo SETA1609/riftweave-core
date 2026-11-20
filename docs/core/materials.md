@@ -7,10 +7,10 @@ A material is an identity. A form is how it is shaped. How you find it in nature
 Elin keeps one material card. Hardness, weight, and a fixed effect travel with the material when you smelt it, draw it, or stamp it. The chunk you mine is granite ore. The recipe may still draw fiber from it. The fiber is a bad thread because granite's ingredient column is empty and its weight is high. The recipe does not say no.
 
 ```
-foundAs     ore                         nature's form, not a lock
+found_as     ore                         nature's form, not a lock
 weapon      attack, defense             stamped when the output is a weapon
 armor       defense, weight             stamped when the output is armor
-ingredient  effectMagnitude             stamped when the output is a reagent
+ingredient  effect_magnitude             stamped when the output is a reagent
 value       multiplier on the base
 weight      multiplier on the base
 ```

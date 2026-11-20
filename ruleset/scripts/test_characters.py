@@ -82,7 +82,7 @@ class Replay:
 
         def skill(key):
             if key not in skills:
-                ability = self.skills_table[key]["associatedAbility"]
+                ability = self.skills_table[key]["associated_ability"]
                 skills[key] = 5 + 2 * attributes[ability] + bonus.get(key, 0)
             return skills[key]
 

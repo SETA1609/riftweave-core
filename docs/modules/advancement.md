@@ -35,7 +35,7 @@ At the moment a character is eligible to level (or as a distinct "cultivation / 
 ### Essence Item Types
 
 1. **Monster Cores** (raw essence)
-   - Only certain monsters can drop cores. **Undead (zombies, revenants, skeletons, liches, etc.) and humanoids (bandits, soldiers, cultists, common folk, etc.) never drop cores**, even if they wield magic or have elemental tags. Only monsters with living spiritual or elemental essence (certain beasts, fey, dragons, elementals, awakened constructs, spirits, etc.) are eligible. Mundane or spiritually empty creatures must never have a `coreDrop` field.
+   - Only certain monsters can drop cores. **Undead (zombies, revenants, skeletons, liches, etc.) and humanoids (bandits, soldiers, cultists, common folk, etc.) never drop cores**, even if they wield magic or have elemental tags. Only monsters with living spiritual or elemental essence (certain beasts, fey, dragons, elementals, awakened constructs, spirits, etc.) are eligible. Mundane or spiritually empty creatures must never have a `core_drop` field.
    - Eligible monsters have a base percentage drop chance.
    - The final drop chance is improved by two factors:
      - The monster’s **level** (higher-level monsters are significantly more likely to yield a core).
@@ -44,12 +44,12 @@ At the moment a character is eligible to level (or as a distinct "cultivation / 
 
      ```
      finalChance = clamp(
-         baseChance × (1 + (mobLevel − playerLevel) × 0.05 + LCK × 0.06),
+         base_chance × (1 + (mobLevel − playerLevel) × 0.05 + LCK × 0.06),
          0.02, 0.75
      )
      ```
 
-     - `baseChance` comes from the monster’s `coreDrop.baseChance` (0.0–1.0).
+     - `base_chance` comes from the monster’s `core_drop.base_chance` (0.0–1.0).
      - `(mobLevel − playerLevel)` gives a bonus for hunting stronger prey (negative if the monster is much weaker).
      - Luck provides a steady improvement to essence farming.
      - The result is clamped so eligible monsters always have at least a small chance, but never a guaranteed drop.
@@ -57,11 +57,11 @@ At the moment a character is eligible to level (or as a distinct "cultivation / 
    - Core acquisition uses **two independent rolls**:
 
      1. **Drop Roll** — Use the formula above to determine whether a core drops at all.
-     2. **Grade Roll** — If the drop succeeds, roll for the `qualityGrade` within the monster’s `minGrade`–`maxGrade` range. Lower grades always have significantly higher probability than higher grades, even for powerful monsters.
+     2. **Grade Roll** — If the drop succeeds, roll for the `qualityGrade` within the monster’s `min_grade`–`max_grade` range. Lower grades always have significantly higher probability than higher grades, even for powerful monsters.
 
    - **Grade Roll (proposed reference method)**
 
-     Given the ordered list of possible grades from `minGrade` to `maxGrade`:
+     Given the ordered list of possible grades from `min_grade` to `max_grade`:
 
      - Assign decreasing weights favoring the bottom of the range. Example weights for a 4-grade range (lesser → major):
 
@@ -79,19 +79,19 @@ At the moment a character is eligible to level (or as a distinct "cultivation / 
    - **Worked Examples**
 
      **Example 1: Early-game monster**
-     - Monster: level 5, `baseChance = 0.08`, minGrade=lesser, maxGrade=common
+     - Monster: level 5, `base_chance = 0.08`, min_grade=lesser, max_grade=common
      - Player: level 4, LCK = 3
      - Drop roll: `0.08 × (1 + (5-4)×0.05 + 3×0.06) = 0.08 × 1.23 = 0.0984` (≈ 9.8% chance)
      - If it drops, grade roll (using the weight table above for lesser→common): ~67% lesser, ~33% common.
 
      **Example 2: Hunting above your level**
-     - Monster: level 12, `baseChance = 0.12`, minGrade=common, maxGrade=greater
+     - Monster: level 12, `base_chance = 0.12`, min_grade=common, max_grade=greater
      - Player: level 8, LCK = 5
      - Drop roll: `0.12 × (1 + (12-8)×0.05 + 5×0.06) = 0.12 × 1.50 = 0.18` (18% chance)
      - Grade roll (common→greater weights 8/4/2/1): heavily biased toward common, with greater being rare.
 
      **Example 3: Lucky high-level hunter**
-     - Monster: level 18, `baseChance = 0.15`, minGrade=major, maxGrade=grand
+     - Monster: level 18, `base_chance = 0.15`, min_grade=major, max_grade=grand
      - Player: level 15, LCK = 9
      - Drop roll: `0.15 × (1 + (18-15)×0.05 + 9×0.06) = 0.15 × 1.69 = 0.2535` (≈25.4% chance)
      - Even with good Luck and level advantage, the grade roll will still favor major/common over grand because of the lower-tier bias.
@@ -100,18 +100,18 @@ At the moment a character is eligible to level (or as a distinct "cultivation / 
    - Spirit cores are represented as special ingredients (see `data/ingredients/core.json`). Examples of the expected naming pattern include `greater_blazing_spirit_core`, `major_verdant_spirit_core`, etc.
    - Cores can also rarely appear as loot or treasure.
 
-### Suggested Grade Ranges for Monster Core Drops (minGrade / maxGrade)
+### Suggested Grade Ranges for Monster Core Drops (min_grade / max_grade)
 
-The `coreDrop` object on a monster declares a **floor** (`minGrade`) and **ceiling** (`maxGrade`) using values from the shared `qualityGrade` vocabulary (`petty` … `legendary`).
+The `core_drop` object on a monster declares a **floor** (`min_grade`) and **ceiling** (`max_grade`) using values from the shared `qualityGrade` vocabulary (`petty` … `legendary`).
 
 These are **design suggestions for typical randomly-generated or standard encounters**. The system deliberately allows (and encourages) manual overrides:
 
-- A low-level but narratively important hand-crafted monster (e.g. an ancient shrine guardian, a unique spirit-touched beast, or a story boss) can be given a significantly higher `maxGrade` — or even a higher `minGrade` — than its combat level would normally warrant.
+- A low-level but narratively important hand-crafted monster (e.g. an ancient shrine guardian, a unique spirit-touched beast, or a story boss) can be given a significantly higher `max_grade` — or even a higher `min_grade` — than its combat level would normally warrant.
 - Conversely, a high-level but spiritually "hollow" or recently-created construct might have a depressed range.
 
 #### Reference Table — Typical Random Encounters
 
-| Monster Level | Recommended `minGrade` (floor) | Recommended `maxGrade` (ceil) | Notes |
+| Monster Level | Recommended `min_grade` (floor) | Recommended `max_grade` (ceil) | Notes |
 |---------------|--------------------------------|-------------------------------|-------|
 | 1–3           | `petty`                        | `minor`                       | Fledgling or weak spirits. Essence is thin and low-value. |
 | 4–6           | `minor`                        | `lesser`                      | Common low-to-mid threats. Matches early examples (e.g. Grove Stalker lv 3). The Frost Revenant (lv 4) is undead and therefore has no core drop. |
@@ -123,8 +123,8 @@ These are **design suggestions for typical randomly-generated or standard encoun
 
 **Design notes:**
 - The internal grade roll (when a core drops) is deliberately biased toward the lower end of the declared range. See "Grade Roll (proposed reference method)" above.
-- `baseChance` values are typically in the 0.05–0.18 range for most monsters; higher values are appropriate for especially "essence-rich" creatures.
-- **Undead and humanoids never drop cores.** This is a hard design rule: revenants, zombies, bandits, soldiers, and similar creatures must never have a `coreDrop` field, regardless of level or abilities. Only creatures with genuine living spiritual/elemental essence qualify (e.g. certain beasts, fey, dragons, elementals, and spiritually awakened constructs). Mundane or spiritually empty creatures **must omit the field entirely**.
+- `base_chance` values are typically in the 0.05–0.18 range for most monsters; higher values are appropriate for especially "essence-rich" creatures.
+- **Undead and humanoids never drop cores.** This is a hard design rule: revenants, zombies, bandits, soldiers, and similar creatures must never have a `core_drop` field, regardless of level or abilities. Only creatures with genuine living spiritual/elemental essence qualify (e.g. certain beasts, fey, dragons, elementals, and spiritually awakened constructs). Mundane or spiritually empty creatures **must omit the field entirely**.
 
 This table is the recommended starting point when authoring or balancing monster entries in `data/monsters/`.
 
@@ -141,7 +141,7 @@ This table is the recommended starting point when authoring or balancing monster
 3. For a breakthrough, the player may select up to **3** essence items (cores and/or elixirs) to offer. These are removed from inventory. (Maximum of 3 per breakthrough.)
 4. The system resolves the offered essence (one resolution per item, up to the maximum of 3):
    - Each item is governed by its `phase`. The phase determines a set of possible targets the player can choose from (see Phase → Growth Affinity table below):
-     - Attributes (e.g. STR, END, WIL, etc.) — **only selectable if the item's qualityGrade is greater than common**. Attributes can only increase by +1 total from any number of breakthroughs at this level.
+     - Attributes (e.g. STR, END, WIL, etc.) — **only selectable if the item's quality_grade is greater than common**. Attributes can only increase by +1 total from any number of breakthroughs at this level.
      - Resource pools (HP growth, Mana, Stamina)
      - Skill areas or specific skills (e.g. combat skills, magic schools, survival, etc.) — bonus amounts fall in a **0–10** range overall. Lower grades have a lower maximum; higher grades raise both the floor and ceiling (see Grade Scaling section for example ranges per grade). Higher grades also improve success chance on the luck roll.
    - The player **selects one target** from the governed options for that specific item.
@@ -152,7 +152,7 @@ This table is the recommended starting point when authoring or balancing monster
        final_success_chance = clamp(success, 5, 95)
        ```
        Where:
-       - `base_grade` is the core chance from the item's `qualityGrade` (example values: petty=15%, minor=25%, lesser=35%, common=45%, major=55%, greater=65%, grand=75%, legendary=85%).
+       - `base_grade` is the core chance from the item's `quality_grade` (example values: petty=15%, minor=25%, lesser=35%, common=45%, major=55%, greater=65%, grand=75%, legendary=85%).
        - `phase_synergy` is a Wuxing modifier between the item's phase and the character's foundation or chosen target (+15% generating, 0 neutral, -10% overcoming/weakening).
        - `LCK × 2.5` is the direct Luck contribution.
        - `target_weight` favors easier targets: +10 for skills, 0 for resources, -15 for attributes.
@@ -276,9 +276,9 @@ This makes the Wuxing data a first-class part of long-term character building, n
 
 ## Data & Schema Implications
 
-- **Ingredients**: `ingredient.schema.json` has been extended to support optional `phase` and `qualityGrade`. Spirit cores are implemented as ingredients (see current examples in `data/ingredients/core.json` using the `greater_blazing_spirit_core` / `major_verdant_spirit_core` naming pattern).
+- **Ingredients**: `ingredient.schema.json` has been extended to support optional `phase` and `quality_grade` (from the `qualityGrade` vocabulary). Spirit cores are implemented as ingredients (see current examples in `data/ingredients/core.json` using the `greater_blazing_spirit_core` / `major_verdant_spirit_core` naming pattern).
 - **Effects**: Marker effects (`essence_fire`, `essence_wood`, etc.) have been added to `data/effects/core.json` using the new `"essence"` channel. These identify cores for the breakthrough and refining systems.
-- **Monsters**: The monster schema (`monster.schema.json`) has been extended with an optional `coreDrop` object (`baseChance`, `minGrade`, `maxGrade`). `minGrade`/`maxGrade` are the floor and ceiling (see the Suggested Grade Ranges table above for designer guidance). **Undead and humanoids must never have `coreDrop`** (see rule above). Only monsters with living spiritual or elemental essence may include the field. The final drop chance is calculated at runtime using the reference formula above (`baseChance` modified by monster level and the killer’s Luck (LCK)). When a core drops, a matching spirit core ingredient (e.g. `greater_blazing_spirit_core`) is awarded using the monster’s phase and a grade within the declared range.
+- **Monsters**: The monster schema (`monster.schema.json`) has been extended with an optional `core_drop` object (`base_chance`, `min_grade`, `max_grade`). `min_grade`/`max_grade` are the floor and ceiling (see the Suggested Grade Ranges table above for designer guidance). **Undead and humanoids must never have `core_drop`** (see rule above). Only monsters with living spiritual or elemental essence may include the field. The final drop chance is calculated at runtime using the reference formula above (`base_chance` modified by monster level and the killer’s Luck (LCK)). When a core drops, a matching spirit core ingredient (e.g. `greater_blazing_spirit_core`) is awarded using the monster’s phase and a grade within the declared range.
 - **Features / Perks**: Perks can gate, enhance, or mitigate breakthrough results (e.g. "Stable Foundation", "Heavenly Refiner", "Phase Harmony").
 - **Alchemy module**: Gains a distinct "refining / pill crafting" sub-system on top of normal potion brewing. Refining recipes consume cores + catalysts and output higher-grade or multi-phase elixirs. Quality formula (still TBD in alchemy.md) becomes especially important here.
 
@@ -344,7 +344,7 @@ Players who rush every level with whatever petty cores they have on hand will ha
 ## Next Steps (Non-Exhaustive)
 
 - Flesh out concrete reference tables or formulas for grade + phase + Luck modifiers once stakeholder feedback is gathered.
-- Add `coreDrop` data to appropriate monsters in `data/monsters/core.json` (only those with spiritual/elemental essence). — Initial examples added for the core sample set (levels 3–7). Designers should expand with more monsters and hand-crafted exceptions.
+- Add `core_drop` data to appropriate monsters in `data/monsters/core.json` (only those with spiritual/elemental essence). — Initial examples added for the core sample set (levels 3–7). Designers should expand with more monsters and hand-crafted exceptions.
 - Add growth/essence effects and a refinement delivery type (partially done for essence markers).
 - Write example refining recipes (once a recipe shape exists or as prose in alchemy).
 - Tune and finalize the runtime formula for core drop chance (a reference proposal has been added to this document; constants are open to adjustment).

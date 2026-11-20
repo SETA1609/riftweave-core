@@ -26,7 +26,7 @@
         },
         "skill_bonuses": {
           "type": "array",
-          "description": "One-time flat bonuses added to the normal skill base (5 + associatedAbility × 2) at character creation. These do not count against the level-1 skill point pool and do not affect tag skill ratios.",
+          "description": "One-time flat bonuses added to the normal skill base (5 + associated_ability × 2) at character creation. These do not count against the level-1 skill point pool and do not affect tag skill ratios.",
           "items": {
             "type": "object",
             "properties": {

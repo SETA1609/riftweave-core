@@ -85,13 +85,13 @@ func TestASheetPrintsEachRaisedSkillsTargetAsTheBackendComputesIt(t *testing.T) 
 func TestAMonsterStatBlockPrintsItsToHitFromTheMonsterSheet(t *testing.T) {
 	opened := open(t)
 	wolf := map[string]any{
-		"attributes": map[string]any{"str": 6, "agi": 5, "per": 6, "end": 4, "wil": 2}, "level": 5, "hitPoints": 59,
+		"attributes": map[string]any{"str": 6, "agi": 5, "per": 6, "end": 4, "wil": 2}, "level": 5,
 		"attacks": []any{map[string]any{"key": "bite", "label": "Bite", "weapon": "core:natural_weapon/bite"}},
 		"resist":  map[string]any{"cold": 5},
 	}
 	html := printPage(t, opened, map[string]any{"kind": "monster", "label": "Wolf", "monster": wolf})
 	sheet := runJSON(t, opened, "monster_sheet", map[string]any{"monster": map[string]any{
-		"attributes": wolf["attributes"], "level": 5, "hitPoints": 59}, "read_skills": []any{"unarmed", "evasion"}})
+		"attributes": wolf["attributes"], "level": 5}, "read_skills": []any{"unarmed", "evasion"}})
 	skills := sheet["skills"].(map[string]any)
 	if got := printed(t, html, "to-hit", "bite"); float64(got) != skills["unarmed"].(float64) {
 		t.Errorf("bite to-hit %d, monster_sheet unarmed %v", got, skills["unarmed"])
@@ -99,11 +99,31 @@ func TestAMonsterStatBlockPrintsItsToHitFromTheMonsterSheet(t *testing.T) {
 	if got := printed(t, html, "stat", "evasion"); float64(got) != skills["evasion"].(float64) {
 		t.Errorf("evasion %d, monster_sheet %v", got, skills["evasion"])
 	}
-	if got := printed(t, html, "stat", "hp"); got != 59 {
-		t.Errorf("hp %d, want the authored 59", got)
+	// HP is computed (DE_S02_03): floor((15 + 8 x END 4 + 4 x level 5) x 0.4) for a standard monster.
+	if got := printed(t, html, "stat", "hp"); got != 26 || float64(got) != sheet["hp"].(float64) {
+		t.Errorf("hp %d, want the computed 26 the monster_sheet gives (%v)", got, sheet["hp"])
 	}
 	if got := printed(t, html, "resist", "cold"); got != 5 {
 		t.Errorf("cold resist %d, want 5", got)
+	}
+}
+
+// DE_S02_02: an attack names its weapon, and its label is the weapon row's unless it writes its own.
+func TestAMonsterAttackWithoutALabelPrintsItsWeaponsLabel(t *testing.T) {
+	opened := open(t)
+	monster := map[string]any{
+		"attributes": map[string]any{"str": 5, "agi": 5}, "level": 1,
+		"attacks": []any{
+			map[string]any{"key": "bite", "weapon": "core:natural_weapon/bite"},
+			map[string]any{"key": "cut", "weapon": "core:weapon/shortsword"},
+			map[string]any{"key": "gnaw", "label": "Gnaw", "weapon": "core:natural_weapon/bite"},
+		},
+	}
+	html := printPage(t, opened, map[string]any{"kind": "monster", "label": "Bandit", "monster": monster})
+	for _, want := range []string{"Bite (core:natural_weapon/bite", "Shortsword (core:weapon/shortsword", "Gnaw (core:natural_weapon/bite"} {
+		if !strings.Contains(html, want) {
+			t.Errorf("the page does not print %q", want)
+		}
 	}
 }
 

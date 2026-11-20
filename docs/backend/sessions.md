@@ -9,6 +9,7 @@ Session
   log[]     { command, input, as? }
   actor     the current stored actor
   dev?      true once a dev operation ran ([dev-mode.md](dev-mode.md))
+  party?[]  { character, start, actor }   the characters the GM loaded (below)
 ```
 
 | `operation` | Input | Result |
@@ -18,6 +19,23 @@ Session
 | `replay` | `session` | the `session` rebuilt from `start` and `log`, and `matches`: whether it equals the saved `actor` |
 
 The log holds a step's input as it was given, so a replay fills it the same way. A step that fails leaves the session as it was and adds nothing to the log. A session serializes to JSON, so it can be saved and replayed. [V 2026-11-11, `go test ./core`]
+
+## The party
+
+A GM's session may hold a **party**: the characters the GM loaded beside the session's own
+actor and the GM's monsters (BE_S07_03, [files.md](files.md#the-hand-off)). Each member is the
+character file's sync fields as loaded (`character`, with the `revision` it was loaded at, so a
+replay knows which version it started from), its stored actor as loaded (`start`), and its
+stored actor now (`actor`). `riftweave characters party add` loads one from the character list
+and `party export` writes them back out, one file per player, a revision higher when `actor`
+differs from `start`. The export also records itself in the session: each member's `character`
+becomes the exported sync fields and `start` the exported actor, so a second export counts on
+from the first instead of sending the same revision with other content.
+
+The session carries the party through `start`, `step`, and `replay` unchanged and holds no rule
+for it: no step reads or writes a member yet. The encounter tracker
+(`BE_S08_07_encounter-tracker-cli`) will change members through steps. [A] [V 2026-11-20, a
+`step` keeps the party, `characters_test.go`]
 
 ## The rules version
 
@@ -61,7 +79,7 @@ command's result without the caller restating it. A field the step names still w
 - **The attack's skill** is the equipped weapon's `skill` (the first equipped item that is a
   weapon, by slot name, since the stored actor does not name its slots [A]), read as
   `read_skill` reads it: the written value, else its start. With no weapon it is `unarmed`.
-- **Armor DR** is the sum over every equipped armor piece of `drBase` plus the piece's material
+- **Armor DR** is the sum over every equipped armor piece of `dr_base` plus the piece's material
   `armor.defense` ([armor.md](../modules/armor.md)); a piece with no material takes the first of
   its `default_materials`.
 - **Not filled:** the stored actor has no race or background, so their modifiers are not added;

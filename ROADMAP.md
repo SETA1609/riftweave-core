@@ -1,6 +1,6 @@
 # Roadmap
 
-Modified: 2026-11-18
+Modified: 2026-11-20
 
 The core SRD is **finished** when it is tagged `v1.0.0` and every item under
 [Definition of finished](#definition-of-finished) is true. This file is the source of truth for
@@ -57,7 +57,7 @@ All of these are checked by a person or by CI. None is a feeling.
 
 ## Where we are
 
-Open work is grouped by story and role (`S00` to `S19`, [docs/stories/README.md](docs/stories/README.md#files)); the milestone files below keep each milestone's goal and its done issues.
+Open work is grouped by story and role (`S00` to `S20`, [docs/stories/README.md](docs/stories/README.md#files)); the milestone files below keep each milestone's goal and its done issues.
 
 Foundations are done. Milestone M0 below is complete and archived in
 [docs/issues/done/](docs/issues/done/); what remains is closing the kernel, then filling content.
@@ -73,8 +73,8 @@ Foundations are done. Milestone M0 below is complete and archived in
 | M6 Content parity | Not started: after `v1.0.0` |
 | APP Reference backend | In progress |
 
-Content today, for scale: 110 features, 70 spells, 48 monsters, 3 recipes, 13 accessories,
-22 consumables, 44 skills, 12 races, 8 backgrounds.
+Content today, for scale: 171 features, 75 spells, 59 monsters, 3 recipes, 13 accessories,
+24 consumables, 44 skills, 12 races, 8 backgrounds.
 
 ## M1 Kernel closed
 
@@ -155,7 +155,7 @@ published app, because the app ships the core and the data of the same commit. T
 A release is its own pull request: the changelog fragments move into `CHANGELOG.md`
 ([changes/README.md](changes/README.md#releasing)), `VERSION` moves, the key diff from the last
 tag is checked, and the tag on the merge commit runs the release and Pages workflows
-([CONTRIBUTING.md](CONTRIBUTING.md#releasing)). The first tag is `v0.1.0`, once M5-62 merges.
+([CONTRIBUTING.md](CONTRIBUTING.md#releasing)). M5-62 is done: `VERSION` is `0.1.0`, and the first release tag `v0.1.0` is still uncut.
 
 ## Assumptions (change any of these)
 

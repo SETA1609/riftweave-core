@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Material",
-  "description": "One material identity. foundAs is how nature gives it. weapon, armor, and ingredient columns stamp the recipe output. A recipe does not refuse a material.",
+  "description": "One material identity. found_as is how nature gives it. weapon, armor, and ingredient columns stamp the recipe output. A recipe does not refuse a material.",
   "type": "object",
   "properties": {
     "$schema": {
@@ -28,7 +28,7 @@
         "defense": {
           "type": "number"
         },
-        "effectMagnitude": {
+        "effect_magnitude": {
           "type": "number"
         }
       },
@@ -50,7 +50,7 @@
         "source": {
           "$ref": "schema.json#/definitions/sourceRef"
         },
-        "foundAs": {
+        "found_as": {
           "type": "string",
           "description": "Natural form. Not a lock on later recipes."
         },
@@ -71,12 +71,12 @@
         "ingredient": {
           "$ref": "#/definitions/column"
         },
-        "weightFactor": {
+        "weight_factor": {
           "type": "number",
           "minimum": 0,
           "description": "Multiplies the base's weight; the result is in weight units (docs/core/contract.md#weight)."
         },
-        "valueFactor": {
+        "value_factor": {
           "type": "number",
           "minimum": 0
         },
@@ -90,9 +90,9 @@
       "required": [
         "key",
         "label",
-        "foundAs",
-        "weightFactor",
-        "valueFactor"
+        "found_as",
+        "weight_factor",
+        "value_factor"
       ],
       "additionalProperties": false
     }

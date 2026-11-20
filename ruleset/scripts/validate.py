@@ -5,16 +5,23 @@ If modules exist under ruleset/modules/, each module's manifest and data files
 are also validated. Module data files share the same schema store as core data.
 """
 
+import copy
 import json
 import math
 import os
 import re
+import functools
 from functools import partial
 import sys
 import warnings
 from pathlib import Path
 
-from jsonschema import validate, ValidationError, RefResolver
+from jsonschema import Draft7Validator, ValidationError
+from jsonschema.exceptions import best_match
+from referencing import Registry, Resource
+from referencing.exceptions import NoSuchResource
+from referencing.jsonschema import DRAFT7
+from urllib.parse import unquote, urlparse
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "data"
@@ -135,6 +142,52 @@ def load_store():
     for f in sorted(SCHEMA_DIR.glob("*.schema.json")):
         store[f.as_uri()] = json.loads(f.read_text())
     return store
+
+
+_REGISTRIES = {}
+_VALIDATORS = {}
+
+
+@functools.lru_cache(maxsize=None)
+def _retrieve(uri):
+    """Load a schema that is not in the store from its file, as RefResolver did (schema.json is
+    not a *.schema.json, so it is reached this way). Only local files; cached per uri."""
+    parsed = urlparse(uri)
+    if parsed.scheme != "file":
+        raise NoSuchResource(ref=uri)
+    try:
+        contents = json.loads(Path(unquote(parsed.path)).read_text())
+    except OSError:
+        raise NoSuchResource(ref=uri) from None
+    return Resource(contents=contents, specification=DRAFT7)
+
+
+def schema_registry(store):
+    """A `referencing` registry of every schema in `store` ({file uri: schema}), under its file uri
+    and under its own `$id` where it has one. Built once per store (OPS_S00_06)."""
+    key = id(store)
+    if key not in _REGISTRIES:
+        registry = Registry(retrieve=_retrieve).with_resources(
+            (uri, Resource(contents=schema, specification=DRAFT7)) for uri, schema in store.items()
+        )
+        _REGISTRIES[key] = (store, registry.crawl())
+    return _REGISTRIES[key][1]
+
+
+def schema_validator(schema, uri, store):
+    """A Draft 7 validator for `schema`, read from `uri`: a relative `$ref` resolves against `uri`
+    and the schemas in `store`. One validator per schema and store, so a reference is resolved once,
+    not once per file or vector (OPS_S00_06). Replaces jsonschema's deprecated RefResolver."""
+    key = (id(store), uri, id(schema))
+    if key not in _VALIDATORS:
+        rooted = schema if "$id" in schema else {**schema, "$id": uri}
+        _VALIDATORS[key] = (store, schema, Draft7Validator(rooted, registry=schema_registry(store)))
+    return _VALIDATORS[key][2]
+
+
+def first_schema_error(validator, instance):
+    """The error jsonschema.validate would raise (its best match), or None."""
+    return best_match(validator.iter_errors(instance))
 
 
 def collect_data_files():
@@ -773,6 +826,154 @@ def check_one_type_per_field(files):
     return errors
 
 
+def _rows_by_reference(data_files, module_data_files=None, rel_base=ROOT):
+    """Every row a core: reference can name, keyed by the reference: the keyed collections, each
+    equipment item after its base, and, for the shipped tree, each base file as a row."""
+    rows = {}
+    for fp in _all_files(data_files, module_data_files):
+        data = _load_json_file(fp)
+        if not isinstance(data, dict):
+            continue
+        for collection, items in data.items():
+            category = COLLECTION_CATEGORIES.get(collection)
+            if category and isinstance(items, list):
+                for item in items:
+                    if isinstance(item, dict) and isinstance(item.get("key"), str):
+                        rows.setdefault(f"core:{category}/{item['key']}", item)
+        category = _equipment_category_for_file(fp)
+        if category and isinstance(data.get("equipment"), list):
+            composed = {"equipment": copy.deepcopy(equipment_rows(fp, equipment=data["equipment"]))}
+            _resolve_equipment_bases(composed, [], fp)
+            for item in composed["equipment"]:
+                if isinstance(item, dict) and isinstance(item.get("key"), str):
+                    rows.setdefault(f"core:{category}/{item['key']}", item)
+    if rel_base == ROOT:
+        for directory, category in _base_directories().items():
+            if directory.exists():
+                for path in sorted(directory.glob("*.json")):
+                    base = _load_json_file(path)
+                    if isinstance(base, dict):
+                        rows.setdefault(f"core:{category}/{path.stem}", base)
+    return rows
+
+
+def _same_value(a, b):
+    """Equal values, with text compared without case and spaces, so a near copy ("Short Sword"
+    next to a row labelled "Shortsword") counts as the copy it is."""
+    if isinstance(a, str) and isinstance(b, str):
+        return "".join(a.split()).casefold() == "".join(b.split()).casefold()
+    return a == b
+
+
+def check_reference_copies(data_files, module_data_files=None, rel_base=ROOT):
+    """Gate 8 (docs/core/integrity.md, second normal form): an object that holds a core: reference
+    holds no field with the same name and value as a field of the row it names. The named row's
+    `key` is its identity, not a copy; fields about the pair (`min`, `rank`) differ by name."""
+    rows = _rows_by_reference(data_files, module_data_files, rel_base)
+    base_files = _base_files() if rel_base == ROOT else []
+    errors = []
+
+    def walk(node, path, where):
+        if isinstance(node, dict):
+            for field, value in node.items():
+                target = rows.get(value) if isinstance(value, str) and NAMESPACED_REF.match(value) else None
+                if target is None or target is node:
+                    continue
+                for other, copied in node.items():
+                    if other not in (field, "key", "$schema") and other in target and _same_value(target[other], copied):
+                        errors.append(f"{where}: {path or '(root)'}.{other} repeats the {other} of {value} ({field}); drop it and read the row (DE_S02_02)")
+            for field, value in node.items():
+                walk(value, f"{path}.{field}" if path else field, where)
+        elif isinstance(node, list):
+            for index, value in enumerate(node):
+                walk(value, f"{path}[{index}]", where)
+
+    for fp in [*_all_files(data_files, module_data_files), *base_files]:
+        data = _load_json_file(fp)
+        if data is not None:
+            walk(data, "", _rel(fp, rel_base))
+    return errors
+
+
+DESCRIPTION_NUMBER = re.compile(r"(?<![\w.])\d+(?:\.\d+)?(?:d\d+)?(?![\w.]*\d)")
+DESCRIPTION_ORDINAL = re.compile(r"\b(?:tier|rank)\s+(\d+)\b", re.IGNORECASE)
+
+
+def _row_values(node, numbers, strings):
+    """Every number and string a row holds outside its label and description."""
+    if isinstance(node, bool):
+        return
+    if isinstance(node, (int, float)):
+        numbers.add(round(abs(node), 6))
+    elif isinstance(node, str):
+        strings.add(node)
+    elif isinstance(node, dict):
+        for field, value in node.items():
+            if field not in ("label", "description"):
+                _row_values(value, numbers, strings)
+    elif isinstance(node, list):
+        for value in node:
+            _row_values(value, numbers, strings)
+
+
+def description_numbers_allowed(row):
+    """The numbers a row's description may say (docs/core/integrity.md gate 9): each number the row
+    holds, an add modifier's value times each rank, a multiply modifier's change as a percent
+    (1.2 is 20), and the ranks themselves as tier or rank ordinals. Signs are ignored."""
+    numbers, strings = set(), set()
+    _row_values(row, numbers, strings)
+    ranks = row.get("ranks", 1) if isinstance(row.get("ranks"), int) else 1
+    for modifier in row.get("modifiers", []):
+        value = modifier.get("value")
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            continue
+        operation = modifier.get("operation")
+        if operation == "add":
+            numbers |= {round(abs(value * rank), 6) for rank in range(2, ranks + 1)}
+        elif operation == "multiply":
+            numbers |= {round(abs(1 + (value - 1) * rank - 1) * 100, 6) for rank in range(1, ranks + 1)}
+    return numbers, strings, ranks
+
+
+def description_number_errors(row):
+    """The numbers in a row's description that are none of its values (gate 9)."""
+    text = row.get("description")
+    if not isinstance(text, str):
+        return []
+    numbers, strings, ranks = description_numbers_allowed(row)
+    ordinals = {match.start(1) for match in DESCRIPTION_ORDINAL.finditer(text) if 1 <= int(match.group(1)) <= ranks}
+    wrong = []
+    for match in DESCRIPTION_NUMBER.finditer(text):
+        token = match.group(0)
+        if "d" in token:
+            if token not in strings:
+                wrong.append(token)
+        elif match.start() not in ordinals and round(float(token), 6) not in numbers:
+            wrong.append(token)
+    return wrong
+
+
+# The collections gate 9 covers (DE_S02_04); the decision record lists the ones to reach next.
+DESCRIPTION_NUMBER_COLLECTIONS = ("features",)
+
+
+def check_description_numbers(data_files, module_data_files=None, rel_base=ROOT):
+    """Gate 9 (docs/core/integrity.md, third normal form): a number in a description is one of the
+    row's own values, so the prose may restate a value but cannot drift from it."""
+    errors = []
+    for fp in _all_files(data_files, module_data_files):
+        data = _load_json_file(fp)
+        if not isinstance(data, dict):
+            continue
+        for collection in DESCRIPTION_NUMBER_COLLECTIONS:
+            for row in data.get(collection, []) if isinstance(data.get(collection), list) else []:
+                if isinstance(row, dict):
+                    wrong = description_number_errors(row)
+                    if wrong:
+                        errors.append(f"{_rel(fp, rel_base)}: {collection} '{row.get('key')}': the description says {', '.join(wrong)}, which the row does not hold (DE_S02_04)")
+    return errors
+
+
 def check_references(
     data,
     coll_name,
@@ -790,7 +991,7 @@ def check_references(
         for r in data.get("races", []):
             if not isinstance(r, dict) or r.get("lineage", {}).get("role") != "subrace":
                 continue
-            parent = by_key.get(str(r["lineage"].get("parentRace", "")).rsplit("/", 1)[-1], {})
+            parent = by_key.get(str(r["lineage"].get("parent_race", "")).rsplit("/", 1)[-1], {})
             for field, value in r.items():
                 if field not in ("key", "label", "description", "lineage", "source") and parent.get(field) == value:
                     errors.append(f"subrace '{r.get('key')}': {field} equals its parent's; drop it (M5-73)")
@@ -798,12 +999,12 @@ def check_references(
             if not isinstance(r, dict):
                 continue
             lineage = r.get("lineage", {})
-            if "parentRace" in lineage:
-                pid = lineage["parentRace"]
+            if "parent_race" in lineage:
+                pid = lineage["parent_race"]
                 if isinstance(pid, str) and not resolve_namespaced_ref(
                     pid, namespaced_ref_index
                 ):
-                    errors.append(f"parentRace {pid} does not exist in races")
+                    errors.append(f"parent_race {pid} does not exist in races")
             for t in r.get("traits", []):
                 if isinstance(t, dict):
                     tid = t.get("id")
@@ -1016,57 +1217,57 @@ def check_references(
             if not isinstance(c, dict):
                 continue
             ckey = c.get("key", "?")
-            for eid in c.get("appliedBy", []) or []:
+            for eid in c.get("applied_by", []) or []:
                 if isinstance(eid, int):
                     errors.append(
-                        f"condition '{ckey}' appliedBy effect {eid}: numeric refs not allowed (use core:effect/<key>)"
+                        f"condition '{ckey}' applied_by effect {eid}: numeric refs not allowed (use core:effect/<key>)"
                     )
                 elif isinstance(eid, str) and not resolve_namespaced_ref(
                     eid, namespaced_ref_index
                 ):
                     errors.append(
-                        f"condition '{ckey}' appliedBy effect {eid!r} does not resolve"
+                        f"condition '{ckey}' applied_by effect {eid!r} does not resolve"
                     )
-            for eid in c.get("removedBy", []) or []:
+            for eid in c.get("removed_by", []) or []:
                 if isinstance(eid, int):
                     errors.append(
-                        f"condition '{ckey}' removedBy effect {eid}: numeric refs not allowed (use core:effect/<key>)"
+                        f"condition '{ckey}' removed_by effect {eid}: numeric refs not allowed (use core:effect/<key>)"
                     )
                 elif isinstance(eid, str) and not resolve_namespaced_ref(
                     eid, namespaced_ref_index
                 ):
                     errors.append(
-                        f"condition '{ckey}' removedBy effect {eid!r} does not resolve"
+                        f"condition '{ckey}' removed_by effect {eid!r} does not resolve"
                     )
             # Validate stacking consistency
             stacking = c.get("stacking", False)
-            max_stacks = c.get("maxStacks")
+            max_stacks = c.get("max_stacks")
             if stacking and max_stacks is None:
-                errors.append(f"condition '{ckey}' has stacking:true but no maxStacks")
+                errors.append(f"condition '{ckey}' has stacking:true but no max_stacks")
             if not stacking and max_stacks is not None:
                 errors.append(
-                    f"condition '{ckey}' has maxStacks but stacking is not true"
+                    f"condition '{ckey}' has max_stacks but stacking is not true"
                 )
-            # Validate that prone has empty removedBy (special case)
-            if ckey == "prone" and c.get("removedBy"):
+            # Validate that prone has empty removed_by (special case)
+            if ckey == "prone" and c.get("removed_by"):
                 errors.append(
-                    f"condition 'prone' should have empty removedBy (stand action, not effect)"
+                    f"condition 'prone' should have empty removed_by (stand action, not effect)"
                 )
-            # Validate that cure is not in prone's removedBy
-            if ckey == "prone" and "core:effect/cure" in c.get("removedBy", []):
+            # Validate that cure is not in prone's removed_by
+            if ckey == "prone" and "core:effect/cure" in c.get("removed_by", []):
                 errors.append(
-                    f"condition 'prone' must not have cure (core:effect/cure) in removedBy"
+                    f"condition 'prone' must not have cure (core:effect/cure) in removed_by"
                 )
-            # Check for duplicate effect refs in appliedBy and removedBy
-            ab = c.get("appliedBy", [])
+            # Check for duplicate effect refs in applied_by and removed_by
+            ab = c.get("applied_by", [])
             if len(ab) != len(set(ab)):
                 errors.append(
-                    f"condition '{ckey}' has duplicate effect refs in appliedBy"
+                    f"condition '{ckey}' has duplicate effect refs in applied_by"
                 )
-            rb = c.get("removedBy", [])
+            rb = c.get("removed_by", [])
             if len(rb) != len(set(rb)):
                 errors.append(
-                    f"condition '{ckey}' has duplicate effect refs in removedBy"
+                    f"condition '{ckey}' has duplicate effect refs in removed_by"
                 )
 
     elif coll_name == "equipment":
@@ -1257,8 +1458,8 @@ def _apply_growth(base, level):
     """Compute expected attribute values for a monster at a given level using
     the base template's growth rules.
 
-    Growth is defined per ability as a perLevel rate. The formula:
-      attr = round(base_attr + perLevel * (level - base_level)), at least 1 and with no maximum
+    Growth is defined per ability as a per_level rate. The formula:
+      attr = round(base_attr + per_level * (level - base_level)), at least 1 and with no maximum
       (docs/modules/monsters.md#attribute-growth--level-scaling)
 
     Returns a dict of ability -> int, or None if base has no growth section.
@@ -1275,23 +1476,9 @@ def _apply_growth(base, level):
     computed = {}
     for ability in attr_growth:
         base_val = base_attrs.get(ability, 1)
-        per = attr_growth[ability].get("perLevel", 0)
+        per = attr_growth[ability].get("per_level", 0)
         computed[ability] = max(1, round(base_val + per * delta))
     return computed
-
-
-def _apply_growth_hp(base, level):
-    """Compute expected hit points using hitPointsPerLevel growth."""
-    growth = base.get("growth")
-    if not growth:
-        return None
-    hp_per_level = growth.get("hitPointsPerLevel")
-    if hp_per_level is None:
-        return None
-    base_level = base.get("level", 1)
-    base_hp = base.get("hitPoints", 10)
-    delta = level - base_level
-    return max(1, round(base_hp + hp_per_level * delta))
 
 
 def _merge_field(base_val, override_val):
@@ -1339,12 +1526,6 @@ def _monster_templates():
             for template in json.loads(MONSTER_TEMPLATES_FILE.read_text()).get("monster_templates", []):
                 _MONSTER_TEMPLATES[template["key"]] = template
     return _MONSTER_TEMPLATES
-
-
-def _hp_per_end():
-    """HP per point of END, the hp row's per_point (derived/core.json)."""
-    rows = json.loads((DATA_DIR / "derived" / "core.json").read_text())["derived"]
-    return next(row["per_point"] for row in rows if row["key"] == "hp")
 
 
 def _grow_damage(merged, step):
@@ -1482,11 +1663,9 @@ def _apply_monster_template(merged, template):
         for ability, add in template["attributes"].items():
             attributes[ability] = max(1, attributes.get(ability, 0) + add)
         merged["attributes"] = attributes
-        if "end" in template["attributes"] and "hitPoints" in merged:
-            merged["hitPoints"] = max(1, merged["hitPoints"] + template["attributes"]["end"] * _hp_per_end())
-    if "hit_points_multiplier" in template and "hitPoints" in merged:
-        # After the attribute adds: a minion's HP is cut from what its row would have (M3-25).
-        merged["hitPoints"] = max(1, math.floor(merged["hitPoints"] * template["hit_points_multiplier"]))
+    if "role" in template:
+        # The role sets the HP multiplier the sheet applies (DE_S02_03); HP is never stored.
+        merged["role"] = template["role"]
     if template.get("resist"):
         resist = dict(merged.get("resist") or {})
         for kind, amount in template["resist"].items():
@@ -1598,12 +1777,10 @@ def _resolve_monster_bases(data, errors):
                 attributes = dict(merged.get("attributes") or {})
                 for ability, rule in (growth.get("attributes") or {}).items():
                     if ability in attributes:
-                        attributes[ability] = max(1, round(attributes[ability] + rule.get("perLevel", 0) * delta))
+                        attributes[ability] = max(1, round(attributes[ability] + rule.get("per_level", 0) * delta))
                 merged["attributes"] = attributes
-                if "hitPointsPerLevel" in growth and "hitPoints" in merged:
-                    merged["hitPoints"] = max(1, round(merged["hitPoints"] + growth["hitPointsPerLevel"] * delta))
                 if delta > 0:
-                    _grow_damage(merged, round(growth.get("damagePerLevel", 0) * delta))
+                    _grow_damage(merged, round(growth.get("damage_per_level", 0) * delta))
         else:
             type_name = base_key.removeprefix(CREATURE_TYPE_REF_PREFIX)
             if not base_key.startswith(CREATURE_TYPE_REF_PREFIX) or type_name not in _BASE_CACHE:
@@ -1617,9 +1794,6 @@ def _resolve_monster_bases(data, errors):
             computed_attrs = _apply_growth(type_data, level)
             if computed_attrs is not None:
                 merged["attributes"] = computed_attrs
-            computed_hp = _apply_growth_hp(type_data, level)
-            if computed_hp is not None:
-                merged["hitPoints"] = computed_hp
 
         planned = _template_layers(key, entry.get("templates"), filled, errors)
         if planned is None:
@@ -1792,15 +1966,8 @@ def _validate_single_data_file(
         return False, [f"SCHEMA '{schema_path.name}' not in store"], rel
 
     schema = store[schema_uri]
-    resolver = RefResolver(
-        base_uri=schema_uri,
-        referrer=schema,
-        store=store,
-    )
-
-    try:
-        validate(data, schema, resolver=resolver)
-    except ValidationError as e:
+    e = first_schema_error(schema_validator(schema, schema_uri, store), data)
+    if e is not None:
         path = (
             "/" + "/".join(str(p) for p in e.absolute_path) if e.absolute_path else "/"
         )
@@ -1906,6 +2073,50 @@ def validate_modules(store, equipment_index=None, effect_channels=None, namespac
                 failed += 1
 
     return passed, failed, total, conflicts
+
+
+# A monster's HP is computed by its sheet (DE_S02_03), so no row, base, template or module states it.
+STORED_HP_FIELDS = ("hitPoints", "hitPointsPerLevel", "hit_points_multiplier")
+
+
+def _stored_hp_paths(value, path=""):
+    """The paths under `value` whose key is one of STORED_HP_FIELDS."""
+    if isinstance(value, dict):
+        for key, child in value.items():
+            here = f"{path}.{key}" if path else key
+            if key in STORED_HP_FIELDS:
+                yield here
+            yield from _stored_hp_paths(child, here)
+    elif isinstance(value, list):
+        for index, child in enumerate(value):
+            yield from _stored_hp_paths(child, f"{path}[{index}]")
+
+
+def check_monster_hit_points(monsters=None, bases=None, templates=None, module_files=None):
+    """No monster row, creature-type base, template or module monster writes hitPoints,
+    hitPointsPerLevel or hit_points_multiplier: HP is the player formula times the role's
+    monster_hp_multiplier (docs/modules/monsters.md#hit-points, DE_S02_03). Each argument
+    defaults to the core data; returns the error list."""
+    if monsters is None:
+        monsters = json.loads((DATA_DIR / "monsters" / "core.json").read_text())["monsters"]
+    if bases is None:
+        bases = _base_cache()
+    if templates is None:
+        templates = json.loads(MONSTER_TEMPLATES_FILE.read_text())["monster_templates"]
+    if module_files is None:
+        module_files = [path for path, _module in collect_module_data_files()]
+    sources = [("monster", row.get("key", "?"), row) for row in monsters]
+    sources += [("base", key, row) for key, row in sorted(bases.items())]
+    sources += [("template", row.get("key", "?"), row) for row in templates]
+    for path in module_files:
+        try:
+            content = json.loads(Path(path).read_text())
+        except (json.JSONDecodeError, OSError):
+            continue
+        rows = content.get("monsters", []) if isinstance(content, dict) else []
+        sources += [(f"module {Path(path).name} monster", row.get("key", "?"), row) for row in rows]
+    return [f"{kind} '{key}': {where} is stored; HP is computed (docs/modules/monsters.md#hit-points)"
+            for kind, key, row in sources for where in _stored_hp_paths(row)]
 
 
 # A perk of these categories means little on a monster, so naming one warns (M3-15).
@@ -2139,6 +2350,64 @@ def check_racial_trait_refs(data_files):
     return errors
 
 
+# Property names are snake_case (CONTRIBUTING.md#naming, DE_S02_01). DE_S02_03 removed the stored
+# monster HP, the last camelCase properties, so there is no exception left.
+
+
+def _is_camel_case(name):
+    return any(a.islower() and b.isupper() for a, b in zip(name, name[1:]))
+
+
+def _camel_keys(value, path=""):
+    """(path, key) for every object key under `value` that is camelCase."""
+    if isinstance(value, dict):
+        for key, child in value.items():
+            here = f"{path}.{key}" if path else key
+            if _is_camel_case(key):
+                yield here, key
+            yield from _camel_keys(child, here)
+    elif isinstance(value, list):
+        for index, child in enumerate(value):
+            yield from _camel_keys(child, f"{path}[{index}]")
+
+
+def _schema_property_names(schema, path=""):
+    """(path, name) for every property a schema declares or requires; JSON Schema's own
+    keywords (additionalProperties, oneOf, ...) are not properties."""
+    if isinstance(schema, dict):
+        for key, child in schema.items():
+            here = f"{path}.{key}" if path else key
+            if key in ("properties", "patternProperties") and isinstance(child, dict):
+                for name in child:
+                    yield f"{here}.{name}", name
+            if key == "required" and isinstance(child, list):
+                for name in child:
+                    if isinstance(name, str):
+                        yield here, name
+            yield from _schema_property_names(child, here)
+    elif isinstance(schema, list):
+        for index, child in enumerate(schema):
+            yield from _schema_property_names(child, f"{path}[{index}]")
+
+
+def check_property_casing(schema_files=None, data_files=None):
+    """Every property in a schema and every key in a data file (core, bases, and modules with
+    their manifests) is snake_case (CONTRIBUTING.md#naming, DE_S02_01). Returns the errors."""
+    if schema_files is None:
+        schema_files = sorted(SCHEMA_DIR.glob("*.json"))
+    if data_files is None:
+        data_files = sorted(DATA_DIR.rglob("*.json")) + sorted(MODULES_DIR.rglob("*.json"))
+    errors = []
+    for path in schema_files:
+        for where, name in _schema_property_names(json.loads(Path(path).read_text())):
+            if _is_camel_case(name):
+                errors.append(f"{Path(path).name}: property '{name}' at {where} is camelCase; use snake_case")
+    for path in data_files:
+        for where, key in _camel_keys(json.loads(Path(path).read_text())):
+            errors.append(f"{Path(path).name}: key '{key}' at {where} is camelCase; use snake_case")
+    return errors
+
+
 def main():
     store = load_store()
     data_files = list(collect_data_files())
@@ -2178,6 +2447,8 @@ def main():
         ("effect parameters", check_effect_parameters(data_files, module_data_files)),
         ("modifier targets (each names one row)", check_modifier_targets(data_files, module_data_files, collect_vector_files())),
         ("one type per field (first normal form)", check_one_type_per_field(collect_all_data_files())),
+        ("a reference is the key alone (second normal form)", check_reference_copies(data_files, module_data_files)),
+        ("a description says only its row's numbers (third normal form)", check_description_numbers(data_files, module_data_files)),
     ):
         if errors:
             print(f"  \u2717  {label}")
@@ -2194,6 +2465,13 @@ def main():
     if perk_errors:
         print("  \u2717  monster perks (rank at most the perk's ranks, no excluded pair)")
         for e in perk_errors:
+            print(f"       {e}")
+        failed += 1
+
+    hp_errors = check_monster_hit_points()
+    if hp_errors:
+        print("  \u2717  monster hit points (computed, never stored)")
+        for e in hp_errors:
             print(f"       {e}")
         failed += 1
 
@@ -2221,6 +2499,13 @@ def main():
     if stance_errors:
         print("  \u2717  stances (each unlocked by a perk, martial and while applied)")
         for e in stance_errors:
+            print(f"       {e}")
+        failed += 1
+
+    casing_errors = check_property_casing()
+    if casing_errors:
+        print("  \u2717  property casing (snake_case only)")
+        for e in casing_errors:
             print(f"       {e}")
         failed += 1
 

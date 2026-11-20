@@ -18,13 +18,13 @@ import skill_audit  # noqa: E402
 from skill_audit import audit, collect_uses, load_skills, parse_seeds  # noqa: E402
 
 SKILLS = [
-    {"key": "blades", "associatedAbility": "str"},
-    {"key": "light_armor", "associatedAbility": "agi"},
-    {"key": "red_magic", "associatedAbility": "int"},
-    {"key": "lockpick", "associatedAbility": "agi"},
-    {"key": "athletics", "associatedAbility": "str"},
-    {"key": "insight", "associatedAbility": "per"},
-    {"key": "repair", "associatedAbility": "int"},
+    {"key": "blades", "associated_ability": "str"},
+    {"key": "light_armor", "associated_ability": "agi"},
+    {"key": "red_magic", "associated_ability": "int"},
+    {"key": "lockpick", "associated_ability": "agi"},
+    {"key": "athletics", "associated_ability": "str"},
+    {"key": "insight", "associated_ability": "per"},
+    {"key": "repair", "associated_ability": "int"},
 ]
 
 DOC = """# Attributes
@@ -110,7 +110,7 @@ class TestAudit(unittest.TestCase):
         self.assertEqual(problems, ["orphan skill lockpick: references only: background"])
 
     def test_skill_with_no_references_is_an_orphan(self):
-        skills = [{"key": "farming", "associatedAbility": "end"}]
+        skills = [{"key": "farming", "associated_ability": "end"}]
         _rows, problems = audit(skills, {}, {"end": {"farming"}})
         self.assertIn("orphan skill farming: no references", problems)
 

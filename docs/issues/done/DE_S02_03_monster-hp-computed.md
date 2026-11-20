@@ -1,9 +1,10 @@
 #### DE_S02_03_monster-hp-computed Third normal form: monster hit points are computed
-- Status: todo
+- Status: done
+- Merged: #397, 2026-11-20
 - Priority: high
 - Needs: M5-73
 - Was: M5-74
-- Modified: 2026-11-18
+- Modified: 2026-11-20
 - Do: Owner request, 2026-11-17. A monster's HP is a fact about its level, attributes, and creature type, not about the monster's key, so storing it beside them breaks third normal form ([theory](../../theory/normal-forms.md#third-normal-form-3nf-no-fact-about-another-non-key-field)) and the rule to store primary facts and compute the rest (`docs/core/contract.md`). Today 55 of 59 monster rows store `hitPoints` [V 2026-11-17], and each creature type in `monsters/bases/` authors `growth.hitPointsPerLevel`. `docs/core/data-model.md` lists both as known exceptions.
   - **Compute HP** from the derived-stat formula (`derived/core.json`, the same as an actor's, with a creature-type term if the spec step needs one [A]), from the attributes and level already on the row.
   - **Keep the fights the same size:** compare each monster's computed HP with its authored HP before removing it, list the ones that move by more than 20% in `docs/decisions/DE_S02_03_monster-hp-computed.md`, and change attributes, not the formula, where a monster must stay as tough [A]. Rerun `playtest_driver.py`.

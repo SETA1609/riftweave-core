@@ -15,5 +15,5 @@
   - **Ranged overwatch** waits for `GD_S17_05_ranged-full-attack`; this issue is melee reach [A].
 - Keys: `ready` (action row), the trigger (`enters_reach`, `acts_in_reach`), `opportunity_attack_cost`
 - Files: ~10 (docs/core/actions.md, docs/core/combat.md, docs/modules/combat.md, ruleset/data/actions/core.json, ruleset/schemas/action.schema.json, ruleset/scripts/kernel_reference.py, backend/internal/attack/attack.go, backend/contract/attack_sequence.json, ruleset/tests/vectors/attack_sequence.json, ruleset/tests/vectors/actions.json)
-- See: docs/modules/combat.md#2-opportunity-attacks, docs/issues/open/GD_S05_02_fighting-stances.md (Phalanx), docs/issues/open/GD_S17_05_ranged-full-attack.md
+- See: docs/modules/combat.md#2-opportunity-attacks, docs/issues/done/GD_S05_02_fighting-stances.md (Phalanx), docs/issues/open/GD_S17_05_ranged-full-attack.md
 - Done when: vectors cover a readied attack that fires, one that is refunded, an opportunity attack on leaving reach, and Disengage preventing it, in Python and Go; Phalanx's `opportunity_attack_cost` is no longer pending; a vector pays an opportunity attack from held AP and shows the guard drop by what it spent; docs/modules/combat.md §2 no longer says 3 AP from the carried pool.

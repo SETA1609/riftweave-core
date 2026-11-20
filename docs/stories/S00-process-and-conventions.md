@@ -13,5 +13,11 @@ Format, ids, and roles: [README.md](README.md#ids), [ROLES.md](../issues/ROLES.m
 | `PO_S00_01_issue-splitting-by-role` | PO | Better documentation on how issues should be split, with a table reference | — | M5-76 |
 | `OPS_S00_02_format-data-files` | OPS | Format the data files | M5-52 | M5-51 |
 | `OPS_S00_03_doc-last-changed-stamp` | OPS | Every doc shows when it last changed | M5-53 | — |
+| `OPS_S00_04_refresh-stale-story-docs` | OPS | Refresh the story and issue docs after S05 and S06 landed | — | — |
+| `OPS_S00_06_faster-python-checks` | OPS | Faster Python checks: reuse validators, cache loot values, run test files side by side | — | — |
+
+| `FE_S00_05_regenerate-openapi-types` | FE | Regenerate the frontend's API types from the current contract | — | — |
+
+**GitHub:** story [#258](https://github.com/SETA1609/riftweave-core/issues/258); tasks [`OPS_S00_02_format-data-files` #276](https://github.com/SETA1609/riftweave-core/issues/276), [`OPS_S00_03_doc-last-changed-stamp` #277](https://github.com/SETA1609/riftweave-core/issues/277).
 
 **Done when:** every issue above is done, and every open issue has a role id and a story; the tooling reads the new ids; the data files and docs carry their format and modified date.

@@ -116,10 +116,10 @@ A modifier's `target` is a key, and the key names one row. Where the row lives s
 
 ## Conditions
 
-A condition is a row in `ruleset/data/conditions/core.json`: a named bundle of modifiers, all with source `condition:<key>`, plus `appliedBy` and `removedBy` effect lists.
+A condition is a row in `ruleset/data/conditions/core.json`: a named bundle of modifiers, all with source `condition:<key>`, plus `applied_by` and `removed_by` effect lists.
 
-1. **An effect event** applies every condition whose `appliedBy` lists it, and removes every condition whose `removedBy` lists it. One effect may do several: `blight` applies `exhaustion` and `diseased`; `cure` removes every condition that lists it.
-2. **Apply** adds the condition, or one stack if it is already active and has `maxStacks`. Stacks never pass `maxStacks`. A condition without `maxStacks` applied twice is still one condition: same source does not stack. [V 2026-11-04]
+1. **An effect event** applies every condition whose `applied_by` lists it, and removes every condition whose `removed_by` lists it. One effect may do several: `blight` applies `exhaustion` and `diseased`; `cure` removes every condition that lists it.
+2. **Apply** adds the condition, or one stack if it is already active and has `max_stacks`. Stacks never pass `max_stacks`. A condition without `max_stacks` applied twice is still one condition: same source does not stack. [V 2026-11-04]
 3. **Remove** drops the condition and every modifier with its source, all stacks at once. [A]
 4. **A remove event** (`remove: <key>`) ends a condition with no removing effect: `prone` ends when the actor stands up, an action the caller resolves. [A]
 5. The actor's values are then the base values with every live condition's modifiers, in the order above.

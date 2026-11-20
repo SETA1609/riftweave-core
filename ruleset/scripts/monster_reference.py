@@ -124,6 +124,27 @@ def attack_type(attack):
     return weapon_row(weapon)["weapon"]["damage"]["type"]
 
 
+def attack_label(attack):
+    """The attack's name: its own `label`, else its weapon row's (DE_S02_02)."""
+    if attack.get("label"):
+        return attack["label"]
+    weapon = attack["weapon"]
+    if weapon.startswith(NATURAL_PREFIX):
+        return natural_weapons()[weapon.removeprefix(NATURAL_PREFIX)]["label"]
+    return weapon_row(weapon)["label"]
+
+
+def attack_phase(attack):
+    """The phase the attack carries: its own, else a carried weapon's; a natural weapon has none
+    of its own (DE_S02_02)."""
+    if attack.get("phase"):
+        return attack["phase"]
+    weapon = attack["weapon"]
+    if weapon.startswith(NATURAL_PREFIX):
+        return None
+    return weapon_row(weapon).get("phase")
+
+
 @lru_cache(maxsize=None)
 def _modifier_rule():
     return _load("formulas/attribute_modifier.json")["expression"]
@@ -303,11 +324,10 @@ def minion(ref, caster):
     return creature
 
 
-def example_hp(row):
-    """An example row's HP by the player formulas at average rolls: the derived hp plus
-    (level - 1) x floor(floor(LCK / 2) / 2) of growth (docs/modules/monsters.md#generated-monsters)."""
-    from kernel_reference import run_derived
+def hit_points(row):
+    """A monster's HP: its sheet's hp, the player formula before perks times its role's
+    monster_hp_multiplier, rounded down, at least 1, then its perks' hp modifiers
+    (docs/modules/monsters.md#hit-points, DE_S02_03)."""
+    from kernel_reference import run_monster_sheet
 
-    derived = run_derived({"actor": {"attributes": row["attributes"], "level": row["level"]}})
-    luck = row["attributes"].get("lck", 0)
-    return derived["hp"] + (row["level"] - 1) * math.floor((luck // 2) / 2)
+    return run_monster_sheet({"monster": {key: row[key] for key in ("attributes", "level", "role", "perks") if key in row}})["hp"]

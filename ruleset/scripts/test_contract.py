@@ -11,10 +11,14 @@ import sys
 import unittest
 from pathlib import Path
 
-from jsonschema import Draft7Validator, RefResolver
+import functools
+
+from jsonschema import Draft7Validator
 
 _SCRIPTS = Path(__file__).resolve().parent
 sys.path.insert(0, str(_SCRIPTS))
+
+from validate import schema_validator  # noqa: E402
 
 from kernel_reference import RUNNERS  # noqa: E402
 from test_vectors import VECTOR_DIR, discover_vectors, vector_function  # noqa: E402
@@ -26,8 +30,9 @@ NOT_COMMANDS = {"command.schema.json", "common.json", "settings.schema.json", "m
 VECTOR_ONLY_FIELDS = {"name", "function", "expect"}
 
 
+@functools.cache
 def load_store():
-    """Every ruleset schema and contract file by file URI, for cross-file $ref."""
+    """Every ruleset schema and contract file by file URI, for cross-file $ref. Read once."""
     store = {}
     for path in list(SCHEMA_DIR.glob("*.json")) + list(CONTRACT_DIR.glob("*.json")):
         store[path.resolve().as_uri()] = json.loads(path.read_text())
@@ -45,8 +50,8 @@ def load_commands(contract_dir=CONTRACT_DIR):
 
 
 def validator(schema, path, store):
-    resolver = RefResolver(base_uri=path.resolve().as_uri(), referrer=schema, store=store)
-    return Draft7Validator(schema, resolver=resolver)
+    """One validator per schema and store, so each $ref resolves once (OPS_S00_06)."""
+    return schema_validator(schema, path.resolve().as_uri(), store)
 
 
 def vector_input(vector):
@@ -138,12 +143,20 @@ class TestTheFileEnvelope(unittest.TestCase):
         return list(validator(schema, path, load_store()).iter_errors(fixture))
 
     def test_a_fixture_of_each_kind_validates(self):
-        for name in ("character.riftweave.json", "session.riftweave.json", "spell.riftweave.json", "missing-module.riftweave.json"):
+        for name in ("character.riftweave.json", "character-synced.riftweave.json", "session.riftweave.json", "spell.riftweave.json", "missing-module.riftweave.json"):
             with self.subTest(fixture=name):
                 self.assertEqual(self.check(name), [])
 
     def test_the_invalid_fixture_is_refused(self):
         self.assertNotEqual(self.check("invalid.riftweave.json"), [])
+
+    def test_only_a_character_file_has_sync_fields(self):
+        path = CONTRACT_DIR / "file.json"
+        check = validator(json.loads(path.read_text()), path, load_store())
+        synced = json.loads((self.FIXTURES / "character-synced.riftweave.json").read_text())
+        spell = json.loads((self.FIXTURES / "spell.riftweave.json").read_text())
+        self.assertFalse(check.is_valid({**spell, "character": synced["character"]}))
+        self.assertFalse(check.is_valid({**synced, "character": {**synced["character"], "changed_by": "someone"}}))
 
     def test_each_fixture_is_written_the_one_way(self):
         for path in sorted(self.FIXTURES.glob("*.json")):

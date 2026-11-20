@@ -18,9 +18,9 @@
           }
         ],
         "attributes": {
+          "end": 5,
           "agi": 4
         },
-        "hitPoints": 22,
         "effects": [
           {
             "effect": "core:effect/damage_force",
@@ -59,9 +59,9 @@
         "description": "A desperate outlaw who preys on travellers. Uses dirty tricks like leg sweeps to knock foes off balance.",
         "level": 1,
         "attributes": {
+          "end": 5,
           "agi": 4
         },
-        "hitPoints": 24,
         "effects": [
           {
             "effect": "core:effect/damage_force",
@@ -82,7 +82,6 @@
         "attacks": [
           {
             "key": "short_sword",
-            "label": "Short Sword",
             "weapon": "core:weapon/shortsword"
           }
         ]
@@ -120,7 +119,6 @@
           "agi": 5,
           "per": 6
         },
-        "hitPoints": 59,
         "effects": [
           {
             "effect": "core:effect/bleed",
@@ -136,7 +134,6 @@
         "attacks": [
           {
             "key": "bite",
-            "label": "Bite",
             "weapon": "core:natural_weapon/bite",
             "phase": "wood"
           }
@@ -156,7 +153,6 @@
           "agi": 5,
           "per": 5
         },
-        "hitPoints": 51,
         "tags": [
           "beast",
           "dog"
@@ -164,7 +160,6 @@
         "attacks": [
           {
             "key": "bite",
-            "label": "Bite",
             "weapon": "core:natural_weapon/bite",
             "phase": "wood"
           }
@@ -217,9 +212,8 @@
           }
         ],
         "attributes": {
-          "end": 9
+          "end": 6
         },
-        "hitPoints": 60,
         "effects": [
           {
             "effect": "core:effect/paralyze",
@@ -242,16 +236,15 @@
           "construct",
           "elemental"
         ],
-        "coreDrop": {
-          "baseChance": 0.08,
-          "minGrade": "lesser",
-          "maxGrade": "common"
+        "core_drop": {
+          "base_chance": 0.08,
+          "min_grade": "lesser",
+          "max_grade": "common"
         },
         "role": "boss",
         "attacks": [
           {
             "key": "slam",
-            "label": "Slam",
             "weapon": "core:natural_weapon/slam",
             "phase": "earth"
           }
@@ -285,7 +278,6 @@
           "agi": 6,
           "per": 4
         },
-        "hitPoints": 30,
         "effects": [
           {
             "effect": "core:effect/damage_fire",
@@ -308,15 +300,14 @@
           "elemental",
           "fire"
         ],
-        "coreDrop": {
-          "baseChance": 0.1,
-          "minGrade": "lesser",
-          "maxGrade": "greater"
+        "core_drop": {
+          "base_chance": 0.1,
+          "min_grade": "lesser",
+          "max_grade": "greater"
         },
         "attacks": [
           {
             "key": "slam",
-            "label": "Slam",
             "weapon": "core:natural_weapon/slam",
             "damage": {
               "type": "bludgeoning"
@@ -342,7 +333,6 @@
         "attributes": {
           "agi": 8
         },
-        "hitPoints": 28,
         "attacks": [
           {
             "key": "lightning_dive",
@@ -381,10 +371,10 @@
           }
         ],
         "attributes": {
+          "end": 7,
           "str": 7,
           "per": 5
         },
-        "hitPoints": 78,
         "effects": [
           {
             "effect": "core:effect/damage_fire",
@@ -404,16 +394,15 @@
           "dragon",
           "elemental"
         ],
-        "coreDrop": {
-          "baseChance": 0.09,
-          "minGrade": "lesser",
-          "maxGrade": "common"
+        "core_drop": {
+          "base_chance": 0.09,
+          "min_grade": "lesser",
+          "max_grade": "common"
         },
         "role": "boss",
         "attacks": [
           {
             "key": "claw",
-            "label": "Claw",
             "weapon": "core:natural_weapon/claw",
             "phase": "fire"
           }
@@ -440,7 +429,6 @@
             "rolls": 2
           }
         ],
-        "hitPoints": 55,
         "attacks": [
           {
             "key": "branch_slam",
@@ -470,7 +458,6 @@
             "size": "oversized"
           }
         ],
-        "hitPoints": 55,
         "tags": [
           "giant"
         ],
@@ -481,8 +468,7 @@
           {
             "key": "tree_club",
             "label": "Tree Club",
-            "weapon": "core:weapon/warhammer",
-            "phase": "earth"
+            "weapon": "core:weapon/warhammer"
           }
         ]
       }
@@ -505,7 +491,6 @@
           "agi": 8,
           "str": 15
         },
-        "hitPoints": 105,
         "tags": [
           "undead"
         ],
@@ -545,15 +530,12 @@
           "per": 6,
           "wil": 6
         },
-        "hitPoints": 85,
         "role": "boss",
         "attacks": [
           {
             "key": "rapier",
-            "label": "Rapier",
             "weapon": "core:weapon/rapier",
-            "ability": "agi",
-            "phase": "metal"
+            "ability": "agi"
           }
         ]
       }
@@ -565,9 +547,9 @@
         "acid"
       ],
       "overrides": {
+        "attributes": { "end": 6 },
         "level": 4,
-        "description": "A quivering mass that dissolves whatever it engulfs.",
-        "hitPoints": 32
+        "description": "A quivering mass that dissolves whatever it engulfs."
       }
     },
     {
@@ -577,9 +559,9 @@
         "frost"
       ],
       "overrides": {
+        "attributes": { "end": 6 },
         "description": "An ooze from the glacier caves, half slush, that numbs whatever it swallows.",
-        "level": 4,
-        "hitPoints": 30
+        "level": 4
       }
     },
     {
@@ -589,9 +571,9 @@
         "fire"
       ],
       "overrides": {
+        "attributes": { "end": 6 },
         "description": "An ooze that soaked up a fire vent; it boils as it flows and sets alight what it engulfs.",
-        "level": 5,
-        "hitPoints": 32
+        "level": 5
       }
     },
     {
@@ -611,7 +593,6 @@
         "description": "A hound of living darkness that hunts by the fear it smells.",
         "phase": "water",
         "size": "medium",
-        "hitPoints": 80,
         "tags": [
           "beast",
           "shadow"
@@ -644,7 +625,6 @@
         "label": "Bronze Guardian",
         "description": "A temple statue that walks when its doors are forced.",
         "phase": "metal",
-        "hitPoints": 52,
         "tags": [
           "construct"
         ],
@@ -669,6 +649,7 @@
       "overrides": {
         "level": 20,
         "attributes": {
+          "end": 12,
           "str": 15
         },
         "loot": [
@@ -682,7 +663,6 @@
         "description": "A war engine of riveted iron, built to break walls.",
         "phase": "metal",
         "size": "huge",
-        "hitPoints": 150,
         "tags": [
           "construct"
         ],
@@ -847,7 +827,6 @@
         "label": "Magma Titan",
         "description": "A walking mountain of molten rock.",
         "size": "huge",
-        "hitPoints": 200,
         "role": "boss",
         "attacks": [
           {
@@ -879,7 +858,6 @@
         "label": "Thunderbird",
         "description": "A storm-sized bird whose wingbeats are thunder.",
         "size": "huge",
-        "hitPoints": 100,
         "attacks": [
           {
             "key": "thunderclap",
@@ -906,11 +884,9 @@
         "label": "Ancient Dragon",
         "description": "The oldest of the drakes, whose breath ends armies.",
         "size": "huge",
-        "hitPoints": 210,
         "attacks": [
           {
             "key": "bite",
-            "label": "Bite",
             "weapon": "core:natural_weapon/bite",
             "phase": "fire"
           }
@@ -941,7 +917,6 @@
         "label": "Elder Treant",
         "description": "An ancient tree-lord whose anger shakes the forest floor.",
         "size": "huge",
-        "hitPoints": 180,
         "role": "boss",
         "attacks": [
           {
@@ -975,12 +950,10 @@
         "size": "large",
         "attributes": {
           "str": 10,
-          "end": 8,
           "agi": 8,
           "per": 8,
           "wil": 8
         },
-        "hitPoints": 70,
         "attacks": [
           {
             "key": "lightning_strike",
@@ -1014,7 +987,6 @@
           }
         ],
         "description": "A giant of the glaciers who wears the ice as armor.",
-        "hitPoints": 140,
         "role": "boss",
         "attacks": [
           {
@@ -1037,8 +1009,7 @@
       ],
       "overrides": {
         "description": "A wolf that has led its pack through a dozen hard winters: scarred, grey at the muzzle, and wise to every trap.",
-        "level": 12,
-        "hitPoints": 151
+        "level": 12
       }
     },
     {
@@ -1050,8 +1021,7 @@
       "overrides": {
         "label": "Demonic Hound",
         "description": "A hound that has drunk from a fiend's bowl: its eyes smoulder and its bark carries hellfire.",
-        "level": 6,
-        "hitPoints": 71
+        "level": 6
       }
     },
     {
@@ -1062,11 +1032,11 @@
         "description": "A shambling corpse animated by necromantic will. Its rotting touch spreads poison through the victim's veins.",
         "level": 1,
         "attributes": {
+          "end": 6,
           "str": 4,
           "agi": 1,
           "per": 1
         },
-        "hitPoints": 30,
         "effects": [
           {
             "effect": "core:effect/poison",
@@ -1083,7 +1053,6 @@
         "attacks": [
           {
             "key": "slam",
-            "label": "Slam",
             "weapon": "core:natural_weapon/slam"
           }
         ],
@@ -1102,6 +1071,7 @@
         "size": "small",
         "level": 1,
         "attributes": {
+          "end": 3,
           "agi": 7
         },
         "loot": [
@@ -1110,11 +1080,9 @@
           }
         ],
         "role": "minion",
-        "hitPoints": 8,
         "attacks": [
           {
             "key": "bite",
-            "label": "Bite",
             "weapon": "core:natural_weapon/bite",
             "ability": "agi",
             "phase": "wood"
@@ -1146,11 +1114,9 @@
             "size": "undersized"
           }
         ],
-        "hitPoints": 24,
         "attacks": [
           {
             "key": "spear",
-            "label": "Spear",
             "weapon": "core:weapon/spear",
             "ability": "agi"
           }
@@ -1175,7 +1141,6 @@
         "attacks": [
           {
             "key": "talons",
-            "label": "Talons",
             "weapon": "core:natural_weapon/talons",
             "ability": "agi",
             "phase": "wood"
@@ -1226,7 +1191,6 @@
         "attacks": [
           {
             "key": "peck",
-            "label": "Peck",
             "weapon": "core:natural_weapon/peck",
             "ability": "agi",
             "phase": "wood"
@@ -1253,7 +1217,6 @@
             "table": "grave_goods"
           }
         ],
-        "hitPoints": 26,
         "attacks": [
           {
             "key": "venom_bite",
@@ -1283,11 +1246,11 @@
         "description": "A thorn-skinned predator of the deep wood, its claws weep venomous sap that poisons its prey.",
         "level": 3,
         "attributes": {
+          "end": 5,
           "str": 5,
           "agi": 7,
           "per": 6
         },
-        "hitPoints": 30,
         "effects": [
           {
             "effect": "core:effect/bleed",
@@ -1306,10 +1269,10 @@
           "beast",
           "fey"
         ],
-        "coreDrop": {
-          "baseChance": 0.07,
-          "minGrade": "minor",
-          "maxGrade": "lesser"
+        "core_drop": {
+          "base_chance": 0.07,
+          "min_grade": "minor",
+          "max_grade": "lesser"
         },
         "attacks": [
           {
@@ -1336,11 +1299,9 @@
         "attributes": {
           "str": 6
         },
-        "hitPoints": 30,
         "attacks": [
           {
             "key": "slam",
-            "label": "Slam",
             "weapon": "core:natural_weapon/slam",
             "phase": "water"
           }
@@ -1385,7 +1346,6 @@
             "target": "ranged"
           }
         ],
-        "hitPoints": 30,
         "attacks": [
           {
             "key": "frost_touch",
@@ -1423,7 +1383,6 @@
           "str": 6,
           "agi": 4
         },
-        "hitPoints": 28,
         "effects": [
           {
             "effect": "core:effect/damage_frost",
@@ -1446,15 +1405,14 @@
           "elemental",
           "ice"
         ],
-        "coreDrop": {
-          "baseChance": 0.09,
-          "minGrade": "lesser",
-          "maxGrade": "greater"
+        "core_drop": {
+          "base_chance": 0.09,
+          "min_grade": "lesser",
+          "max_grade": "greater"
         },
         "attacks": [
           {
             "key": "slam",
-            "label": "Slam",
             "weapon": "core:natural_weapon/slam",
             "damage": {
               "type": "bludgeoning"
@@ -1479,7 +1437,6 @@
           "str": 6,
           "agi": 4
         },
-        "hitPoints": 71,
         "tags": [
           "undead",
           "horse"
@@ -1487,7 +1444,6 @@
         "attacks": [
           {
             "key": "hoof",
-            "label": "Hoof",
             "weapon": "core:natural_weapon/hoof"
           }
         ]
@@ -1502,6 +1458,7 @@
         "phase": "fire",
         "level": 6,
         "attributes": {
+          "end": 7,
           "str": 8
         },
         "loot": [
@@ -1510,7 +1467,6 @@
             "rolls": 2
           }
         ],
-        "hitPoints": 45,
         "attacks": [
           {
             "key": "great_axe",
@@ -1532,6 +1488,7 @@
         "description": "A corpse-eater whose touch carries the chill of the grave.",
         "level": 6,
         "attributes": {
+          "end": 7,
           "str": 9
         },
         "loot": [
@@ -1542,7 +1499,6 @@
             "table": "hoard_minor"
           }
         ],
-        "hitPoints": 42,
         "attacks": [
           {
             "key": "rotting_claws",
@@ -1576,10 +1532,8 @@
         ],
         "attributes": {
           "str": 9,
-          "end": 8,
           "agi": 4
         },
-        "hitPoints": 55,
         "effects": [
           {
             "effect": "core:effect/damage_force",
@@ -1592,7 +1546,7 @@
             "magnitude": 2,
             "duration": 20,
             "target": "self",
-            "durationType": "temporal"
+            "duration_type": "temporal"
           },
           {
             "effect": "core:effect/stagger",
@@ -1601,15 +1555,14 @@
             "target": "touch"
           }
         ],
-        "coreDrop": {
-          "baseChance": 0.1,
-          "minGrade": "common",
-          "maxGrade": "major"
+        "core_drop": {
+          "base_chance": 0.1,
+          "min_grade": "common",
+          "max_grade": "major"
         },
         "attacks": [
           {
             "key": "halberd",
-            "label": "Halberd",
             "weapon": "core:weapon/halberd",
             "phase": "metal"
           }
@@ -1630,6 +1583,7 @@
         "size": "large",
         "level": 7,
         "attributes": {
+          "end": 8,
           "str": 7
         },
         "loot": [
@@ -1638,7 +1592,6 @@
             "shift": 15
           }
         ],
-        "hitPoints": 50,
         "attacks": [
           {
             "key": "charge",
@@ -1664,7 +1617,6 @@
         "size": "tiny",
         "level": 7,
         "role": "minion",
-        "hitPoints": 15,
         "resist": {
           "radiant": 15
         },
@@ -1695,7 +1647,6 @@
             "rolls": 2
           }
         ],
-        "hitPoints": 40,
         "attacks": [
           {
             "key": "psychic_lash",
@@ -1729,7 +1680,6 @@
             "table": "hoard_major"
           }
         ],
-        "hitPoints": 48,
         "resist": {
           "necrotic": 20,
           "frost": 10
@@ -1756,11 +1706,9 @@
             "table": "hoard_major"
           }
         ],
-        "hitPoints": 44,
         "attacks": [
           {
             "key": "talons",
-            "label": "Talons",
             "weapon": "core:natural_weapon/talons",
             "damage": {
               "type": "slashing"
@@ -1803,7 +1751,6 @@
             "chance": 30
           }
         ],
-        "hitPoints": 50,
         "attacks": [
           {
             "key": "fire_spear",
@@ -1828,6 +1775,7 @@
       "key": "troll",
       "base": "core:creature_type/humanoid",
       "overrides": {
+        "attributes": { "end": 4 },
         "perks": [{"perk": "core:feature/hardened_hide", "rank": 2}], "maneuvers": ["core:maneuver/heavy_swing"], "label": "Troll",
         "description": "A towering brute whose wounds close almost as fast as they open.",
         "size": "large",
@@ -1841,7 +1789,6 @@
           }
         ],
         "role": "boss",
-        "hitPoints": 100,
         "attacks": [
           {
             "key": "claws",
@@ -1871,11 +1818,9 @@
             "table": "hoard_major"
           }
         ],
-        "hitPoints": 56,
         "attacks": [
           {
             "key": "bite",
-            "label": "Bite",
             "weapon": "core:natural_weapon/bite",
             "phase": "earth"
           }
@@ -1900,11 +1845,9 @@
             "table": "hoard_major"
           }
         ],
-        "hitPoints": 60,
         "attacks": [
           {
             "key": "staff",
-            "label": "Staff",
             "weapon": "core:weapon/quarterstaff",
             "damage": {
               "type": "force"
@@ -1951,11 +1894,9 @@
             "table": "hoard_major"
           }
         ],
-        "hitPoints": 75,
         "attacks": [
           {
             "key": "bite",
-            "label": "Bite",
             "weapon": "core:natural_weapon/bite",
             "phase": "earth"
           }
@@ -1985,7 +1926,6 @@
             "table": "hoard_major"
           }
         ],
-        "hitPoints": 65,
         "attacks": [
           {
             "key": "radiant_spear",
@@ -2023,7 +1963,6 @@
             "table": "hoard_major"
           }
         ],
-        "hitPoints": 95,
         "attacks": [
           {
             "key": "mind_rend",
@@ -2063,7 +2002,6 @@
           }
         ],
         "role": "boss",
-        "hitPoints": 190,
         "attacks": [
           {
             "key": "acid_bite",

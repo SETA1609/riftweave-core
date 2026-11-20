@@ -1,11 +1,12 @@
 #### BE_S07_03_character-list-cli A character list, and characters travel between players and the GM as files (backend)
-- Status: todo
+- Status: done
+- Merged: #396, 2026-11-20
 - Priority: medium
 - Needs: APP-30
 - Was: APP-33, split by role on 2026-11-18: this is the backend half (the contract, the Go core, the vectors, and the CLI and TUI with their UX); the browser half is `FE_S07_04_character-list-page`
-- Modified: 2026-11-16
+- Modified: 2026-11-20
 - Do: Owner request, 2026-11-16: the apps work with no connection, so a table of a GM and four players can play offline and pass characters by hand. **Character list:** a main menu entry (APP-26, APP-27) lists the saved characters (IndexedDB in the frontend, APP-16; `os.UserConfigDir()/riftweave/characters/` in the CLI), with name, level, last change, and who changed it; open, export, import, duplicate, delete. **The hand-off:** before a session each player exports their character file (APP-30, kind `character`) and sends it any way they like (a chat, a USB stick, a shared folder); the GM imports them into the session's **party** (the characters the session loads beside the GM's monsters); the session plays offline on the GM's device; afterwards the GM exports the updated files, one file per player (owner, 2026-11-16), and each player imports theirs. If the GM's and a player's enabled modules differ, APP-30's check alerts before either side loses module data (owner, 2026-11-16). **Sync rule:** a character carries `id` (a UUID made at creation), `revision` (a counter raised on every change), and `changed_by` (`gm` or `player`) [A]. Importing a higher revision of the same id replaces the saved one; a lower revision is refused with a note; the same revision with different content (both sides changed it) shows both and asks which to keep, never merges field by field [A]. The GM's session log keeps each loaded character's revision, so a replay knows which version it started from.
 - Keys: `id`, `revision`, `changed_by` on the character file; the session's party
 - Files: ~11 (backend/contract/file.json, backend/contract/stored_actor.json, backend/contract/session.json, backend/cmd/riftweave/characters.go, characters_test.go, backend/cmd/riftweave/play/characters.go, play_test.go, ruleset/tests/fixtures/files/, docs/backend/sessions.md, docs/backend/files.md, changes/BE_S07_03_character-list-cli.md)
-- See: docs/issues/done/APP-16.md, docs/issues/open/APP-30.md, backend/contract/stored_actor.json
+- See: docs/issues/done/APP-16.md, docs/issues/done/APP-30.md, backend/contract/stored_actor.json
 - Done when: both apps list, export, and import characters; a character exported by a player's frontend loads into a GM's CLI session party, and the GM's updated export imports back into the player's app as a higher revision; a lower revision is refused and a diverged one asks; the tests pass.

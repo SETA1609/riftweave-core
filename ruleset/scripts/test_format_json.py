@@ -76,21 +76,25 @@ class TestNothingIsRewritten(unittest.TestCase):
 class TestEveryFile(unittest.TestCase):
     """Run over every JSON file in the repo, so M5-52 can format them without changing a value."""
 
+    # npm writes the lockfile and never reads our layout, so it is not ours to format (OPS_S00_06).
+    NOT_OURS = {"frontend/package-lock.json"}
+
     @classmethod
     def setUpClass(cls):
         tracked = subprocess.run(["git", "-C", str(ROOT), "ls-files", "*.json"], capture_output=True, text=True, check=True)
-        cls.files = [ROOT / name for name in tracked.stdout.split() if (ROOT / name).is_file()]
+        cls.files = [ROOT / name for name in tracked.stdout.split() if name not in cls.NOT_OURS and (ROOT / name).is_file()]
+        # Format each file once and keep it, so the two tests share one pass (OPS_S00_06).
+        cls.formatted = {path: fmt(path.read_text(encoding="utf-8")) for path in cls.files}
 
     def test_formatting_changes_no_value(self):
         for path in self.files:
             with self.subTest(path=str(path.relative_to(ROOT))):
-                text = path.read_text(encoding="utf-8")
-                self.assertEqual(json.loads(fmt(text)), json.loads(text))
+                self.assertEqual(json.loads(self.formatted[path]), json.loads(path.read_text(encoding="utf-8")))
 
     def test_formatting_twice_changes_nothing(self):
         for path in self.files:
             with self.subTest(path=str(path.relative_to(ROOT))):
-                once = fmt(path.read_text(encoding="utf-8"))
+                once = self.formatted[path]
                 self.assertEqual(fmt(once), once)
 
 

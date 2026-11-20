@@ -87,6 +87,11 @@ wrong. [ROADMAP.md](ROADMAP.md) owns scope and `docs/stories/` owns the work.
 6. **Match surrounding style.** Mirror the existing JSON formatting (e.g. compact
    one-line entries where a collection already uses them) and comment/description
    density.
+7. **A description says only its row's numbers.** A feature's description may restate
+   its own values ("+10 to deception", "20% less mana"), but a number from another
+   table is named instead ("at the first extra strike's penalty"), and a number the row
+   does not hold fails `validate.py`
+   ([gate 9](docs/core/integrity.md#9-a-description-says-only-its-rows-numbers)).
 
 ## Workflow
 
@@ -192,10 +197,10 @@ one name.
   `int`, `wil`, `agi`, `cha`, `lck`), `hp`, `mp`, `sp` (stamina), `ap`, `dr`, `xp`, `crit`, `id`,
   `min`, `max`. Anything else is spelled out, coins included (`copper`, `silver`, `gold`,
   `platinum`), so no abbreviation names two things.
-- **Schema property casing** is mixed today: older schemas use `camelCase` (`hitPoints`,
-  `durationType`), newer ones `snake_case` (`base_key`, `enchantment_slots`). A new property
-  follows the schema it extends. Unifying them renames keys, so it is a breaking change for
-  its own issue.
+- **Property names are `snake_case`** in every schema and data file (`base_key`,
+  `duration_type`, `dr_base`), the same as entry keys. `validate.py` and `test_integrity.py`
+  fail a `camelCase` property (DE_S02_01). JSON Schema's own keywords (`additionalProperties`,
+  `oneOf`) are not properties and keep their spelling.
 - **Units in the name** only when a number is not in the neutral unit for its kind. The
   neutral units are units (distance, one square), seconds (time), and weight units
   ([contract.md](docs/core/contract.md#distance)), so `range`, `duration`, and `weight` carry

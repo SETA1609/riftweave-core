@@ -121,7 +121,7 @@ ingredients, food, and enchantments — see [`progression.md`](./progression.md)
 § Effect registry.
 
 An effect declares: `category`, `polarity`, an optional default `color`, an optional
-`phase`, a `magnitudeUnit`, and the `channels` allowed to draw it. A spell may only
+`phase`, a `magnitude_unit`, and the `channels` allowed to draw it. A spell may only
 use an effect whose `channels` include `"spell"`.
 
 ---
@@ -209,8 +209,8 @@ creatures are ordinary monster rows ([monsters.md](./monsters.md#summoned-creatu
 | `undead` | Raise Thrall, Raise Horde (minions) | skeleton, zombie |
 
 A creature appears at its caster's level, whatever the spell's level. The row is the base of a
-[derived monster](./monsters.md#derived-monsters) at that level, so its attributes and HP move by
-its creature type's growth. The row still sets the stats: of two creatures at the same level, the
+[derived monster](./monsters.md#derived-monsters) at that level, so its attributes move by
+its creature type's growth, and its HP, computed from them, with them. The row still sets the stats: of two creatures at the same level, the
 weaker row stays weaker. Templates go on top in order: the element, then the caster's power tier,
 then the caster's nature. The caster's power and nature are perks with `unlocks`: the power ladder
 `summon_dire`, `summon_elder`, `summon_ancient`, each needing the one before, and the natures
@@ -228,8 +228,8 @@ not count toward the summon limit ([casting.md](../core/casting.md#minions)). [V
 `summons/bonuses.json`: `magic` adds to INT and WIL, `physical` to STR, END, and AGI. When the
 caster summons, each bonus the caster holds adds the caster's CHA modifier, `CHA − 5`
 ([attributes.md](./attributes.md#the-attribute-modifier)), to every attribute of its group, after
-the power and nature, through the same merge as a template's `attributes`, so END moves an authored
-`hitPoints` and the creature's mana and damage follow its new attributes. A CHA of 5 or below adds
+the power and nature, through the same merge as a template's `attributes`, so the creature's computed HP, mana, and
+damage follow its new attributes. A CHA of 5 or below adds
 nothing; there is no penalty. Without a bonus perk, CHA changes nothing. A caster takes one group
 with one perk; the second perk adds the other group. [V 2026-11-12, `test_spells.py`]
 
@@ -460,14 +460,14 @@ same for the same spell, before their own skill and perks (below). The coefficie
 ```
 per effect
   m          = magnitude, or 1 for an effect whose magnitude is not a strength
-               (magnitudeUnit seconds, or none: a stun's strength is its duration)
-  cost       = 0.1 × baseCost × m × duration          duration in seconds, 1 = instant
-  cost      += 0.05 × baseCost × radius               area only
+               (magnitude_unit seconds, or none: a stun's strength is its duration)
+  cost       = 0.1 × base_cost × m × duration          duration in seconds, 1 = instant
+  cost      += 0.05 × base_cost × radius               area only
   cost      ×= target multiplier                       self 1, touch 1, ranged 1.5, area 2
 spell cost   = ceil(sum over the effects)              cost.mana on the row
 ```
 
-- **`baseCost`** is on each effect row: how much one point of it for one second is worth.
+- **`base_cost`** is on each effect row: how much one point of it for one second is worth.
   It carries the difference between a point of fire and a second of paralysis, so no unit
   weights are needed. Light is 0.2, a point of fire 5, a second of paralysis 40.
 - **Duration** multiplies, so a pool effect is priced by its total (10 health a second for
@@ -475,7 +475,7 @@ spell cost   = ceil(sum over the effects)              cost.mana on the row
 - **Riders** cost what they do: a 6-second blind on a burst is priced like a blind spell.
 
 **Sources.** The shape is Morrowind's: OpenMW's `calcEffectCost` multiplies the mean
-magnitude by `0.1 × baseCost` and by the duration, adds `0.05 × area × baseCost`, and
+magnitude by `0.1 × base_cost` and by the duration, adds `0.05 × area × base_cost`, and
 multiplies an effect cast on a target by 1.5; an effect with no magnitude counts it as 1
 (checked against OpenMW/openmw `apps/openmw/mwmechanics/spellutil.cpp` at `b8285cc95d19`,
 2026-11-08). The per-effect base costs follow its ratios (UESP, Morrowind:Magic Effects,
@@ -485,7 +485,7 @@ our magnitudes. The area multiplier is Daggerfall's: Daggerfall Unity's
 the caster 2.0, area at range 2.5; we have one area shape and take 2.0 (Interkarma/
 daggerfall-unity `Assets/Scripts/Game/Formulas/FormulaHelper.cs` at `4e78e1412b17`,
 2026-11-08). Not taken: Daggerfall's magnitude and duration that grow per caster level
-(`plus` per `perLevel` levels), Morrowind's `fEffectCostMult`, and its offset of one second
+(`plus` per `per_level` levels), Morrowind's `fEffectCostMult`, and its offset of one second
 on a player-made spell's duration. [V 2026-11-08]
 
 ### The caster's side

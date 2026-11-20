@@ -20,9 +20,9 @@
         "role": {
           "type": "string",
           "enum": ["standalone", "parent", "subrace", "template", "kin"],
-          "description": "standalone: a complete, unrelated race (human). parent: an abstract ancestor that subraces inherit from (elf, dwarf). subrace: descends from and extends a parent via `parentRace` (inherits its defaults, overrides freely). template: an abstract shape for sister races (beastman) — provides structure, not values. kin: a sister race conforming to a template via `parentRace`, sharing nothing mechanical with its siblings."
+          "description": "standalone: a complete, unrelated race (human). parent: an abstract ancestor that subraces inherit from (elf, dwarf). subrace: descends from and extends a parent via `parent_race` (inherits its defaults, overrides freely). template: an abstract shape for sister races (beastman) — provides structure, not values. kin: a sister race conforming to a template via `parent_race`, sharing nothing mechanical with its siblings."
         },
-        "parentRace": {
+        "parent_race": {
           "$ref": "schema.json#/definitions/raceRef",
           "description": "Reference to the parent race when role=subrace, or the template when role=kin. Use namespaced format core:race/<key>."
         }
@@ -32,7 +32,7 @@
       "allOf": [
         {
           "if": { "properties": { "role": { "enum": ["subrace", "kin"] } }, "required": ["role"] },
-          "then": { "required": ["role", "parentRace"] }
+          "then": { "required": ["role", "parent_race"] }
         }
       ]
     },
@@ -48,7 +48,7 @@
           "$ref": "schema.json#/definitions/phase",
           "description": "The race's innate element (Wuxing five-phase). Optional tag for playable races (standalone, parent, subrace, kin); omitted on templates, whose kin each declare their own. A subrace may inherit its parent's phase or override it. Drives elemental affinity via the cycles in data/wuxing."
         },
-        "abilityModifiers": {
+        "ability_modifiers": {
           "type": "object",
           "description": "Attribute modifiers, keyed by attribute id (e.g. { \"end\": 2, \"agi\": -1 }). On a subrace these stack on top of the parent's (engine-resolved).",
           "propertyNames": { "$ref": "schema.json#/definitions/ability" },
@@ -66,14 +66,13 @@
         },
         "traits": {
           "type": "array",
-          "description": "Racial traits granted by this race entry. Each item references a feature of type `racial_trait` in the perk table (data/features) by namespaced ref. The label is duplicated here for readability when viewing the race data. For parent races these are the base traits; for subraces they stack on the parent's; kin list all of their own.",
+          "description": "Racial traits granted by this race entry. Each item references a feature of type `racial_trait` in the perk table (data/features) by namespaced ref, and nothing else: the trait's label lives in the feature row (docs/core/integrity.md#8-a-reference-is-the-key-alone). For parent races these are the base traits; for subraces they stack on the parent's; kin list all of their own.",
           "items": {
             "type": "object",
             "properties": {
-              "id": { "$ref": "schema.json#/definitions/featureRef", "description": "Reference to a racial_trait feature. Use namespaced format core:feature/<key> (or a module: ref)." },
-              "label": { "type": "string", "description": "Human-readable label of the trait (duplicated from the feature row for convenience)." }
+              "id": { "$ref": "schema.json#/definitions/featureRef", "description": "Reference to a racial_trait feature. Use namespaced format core:feature/<key> (or a module: ref)." }
             },
-            "required": ["id", "label"],
+            "required": ["id"],
             "additionalProperties": false
           }
         }

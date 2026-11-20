@@ -13,29 +13,27 @@
     "per": 6,
     "wil": 3
   },
-  "hitPoints": 8,
   "tags": [
     "familiar"
   ],
   "growth": {
     "attributes": {
       "str": {
-        "perLevel": 0.1
+        "per_level": 0.1
       },
       "end": {
-        "perLevel": 0.2
+        "per_level": 0.2
       },
       "agi": {
-        "perLevel": 0.4
+        "per_level": 0.4
       },
       "per": {
-        "perLevel": 0.4
+        "per_level": 0.4
       },
       "wil": {
-        "perLevel": 0.2
+        "per_level": 0.2
       }
     },
-    "hitPointsPerLevel": 2,
-    "damagePerLevel": 0.25
+    "damage_per_level": 0.25
   }
 }

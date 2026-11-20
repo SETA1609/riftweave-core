@@ -127,7 +127,7 @@ type Cycle struct {
 	Identifier     string   `json:"id"`
 	Interaction    string   `json:"interaction"`
 	Affects        string   `json:"affects"`
-	Multiplier     float64  `json:"magnitudeMultiplier"`
+	Multiplier     float64  `json:"magnitude_multiplier"`
 	Gate           *Gate    `json:"gate"`
 	Edges          []Edge   `json:"edges"`
 	NextPhasesMask [8]uint8 `json:"-"`
@@ -211,7 +211,7 @@ func (economy *Economy) ToCopper(cost Cost) (int64, error) {
 // Skill is what the rules need of one row of skills/core.json.
 type Skill struct {
 	Key               string        `json:"key"`
-	AssociatedAbility string        `json:"associatedAbility"`
+	AssociatedAbility string        `json:"associated_ability"`
 	Category          string        `json:"category"`
 	Ability           actor.Ability `json:"-"`
 }
@@ -230,8 +230,17 @@ type Progression struct {
 	} `json:"luck_roll"`
 	LuckMaximumAbility actor.Ability   `json:"-"`
 	SkillStart         formula.Program `json:"skill_start"`
-	PerksPerLevel      int64           `json:"perks_per_level"`
-	SkillCost          struct {
+	// Creation is the point-buy and the creation-perk cap of a new character
+	// (docs/core/progression.md#character-creation).
+	Creation struct {
+		AttributeStart   int64 `json:"attribute_start"`
+		AttributeMinimum int64 `json:"attribute_min"`
+		AttributePoints  int64 `json:"attribute_points"`
+		AttributeMaximum int64 `json:"attribute_max"`
+		CreationPerksMax int64 `json:"creation_perks_max"`
+	} `json:"creation"`
+	PerksPerLevel int64 `json:"perks_per_level"`
+	SkillCost     struct {
 		Normal int64 `json:"normal"`
 		Tag    int64 `json:"tag"`
 	} `json:"skill_cost"`
@@ -244,6 +253,9 @@ type Progression struct {
 		PerLevel   int64    `json:"per_level"`
 		Categories []string `json:"categories"`
 	} `json:"monster_skill_growth"`
+	// MonsterHPMultiplier scales a monster's computed HP by its role: standard, boss, minion
+	// (docs/core/actor-sheet.md, DE_S02_03).
+	MonsterHPMultiplier map[string]float64 `json:"monster_hp_multiplier"`
 }
 
 // SkillGroup is one row of skill_groups/core.json, the grouped sheet
@@ -544,12 +556,12 @@ type Effect struct {
 	Craftable             *bool    `json:"craftable"` // nil reads true
 	Key                   string   `json:"key"`
 	Color                 string   `json:"color"`
-	MagnitudeUnit         string   `json:"magnitudeUnit"`
+	MagnitudeUnit         string   `json:"magnitude_unit"`
 	Channels              []string `json:"channels"`
 	UncraftableParameters []string `json:"uncraftable_parameters"`
 	// ParameterCategory is the kind of row a parameter must name, if any (docs/core/integrity.md).
 	ParameterCategory string  `json:"parameter_category"`
-	BaseCost          float64 `json:"baseCost"`
+	BaseCost          float64 `json:"base_cost"`
 	// Phase is the effect's five-phase element, if any; a coating or an elemental enchantment
 	// gives it to a bound weapon (docs/core/casting.md#bound-weapons).
 	Phase string `json:"phase"`
@@ -804,10 +816,10 @@ type Condition struct {
 	Key           string              `json:"key"`
 	Label         string              `json:"label"`
 	Description   string              `json:"description"`
-	AppliedBy     []string            `json:"appliedBy"`
-	RemovedBy     []string            `json:"removedBy"`
+	AppliedBy     []string            `json:"applied_by"`
+	RemovedBy     []string            `json:"removed_by"`
 	Stacking      bool                `json:"stacking"`
-	MaximumStacks int64               `json:"maxStacks"`
+	MaximumStacks int64               `json:"max_stacks"`
 	Modifiers     []modifier.Modifier `json:"modifiers"`
 }
 
@@ -871,6 +883,8 @@ type Loot struct {
 // set its material, the materials it is found in (the first is its fallback), and for a
 // weapon its dice, which a loot row's size moves (docs/core/loot.md#what-lands-on-an-item).
 type Item struct {
+	// Label is the composed row's label: what an attack that names the item prints (DE_S02_02).
+	Label            string
 	Dice             string
 	DefaultMaterials []string
 	CostCopper       int64
@@ -878,7 +892,7 @@ type Item struct {
 	IsWeapon         bool
 	Type             string
 	Consumable       *Consumable
-	// WeaponSkill is a weapon's skill key; ArmorDRBase is an armor piece's drBase, nil for an
+	// WeaponSkill is a weapon's skill key; ArmorDRBase is an armor piece's dr_base, nil for an
 	// item that is not armor (docs/modules/armor.md).
 	WeaponSkill string
 	ArmorDRBase *int64
@@ -957,8 +971,8 @@ type Ruleset struct {
 	Price             *formula.Program
 	LootLuck          *formula.Program
 	Items             map[string]Item      // core:<category>/<key>
-	MaterialPercent   map[string]int64     // material key: valueFactor * 100
-	MaterialDefense   map[string]int64     // a material ref: its armor.defense, added to an armor piece's drBase
+	MaterialPercent   map[string]int64     // material key: value_factor * 100
+	MaterialDefense   map[string]int64     // a material ref: its armor.defense, added to an armor piece's dr_base
 	MaterialAttack    map[string]int64     // a material ref: its weapon.attack (a bound weapon's attack)
 	TemplateDamage    map[string]string    // a monster template ref: its damage_type, "" for none (element templates)
 	DiceLadder        [][]string           // combat/dice_ladder.json: rungs of equal dice, smallest first
@@ -1217,7 +1231,7 @@ func Load(fileSystem fs.FS, modules ...fs.FS) (*Ruleset, error) {
 	var origins struct {
 		Origins []struct {
 			Key, Stack string
-			DefaultFor []string `json:"defaultFor"`
+			DefaultFor []string `json:"default_for"`
 		}
 	}
 	loader.read("origins/core.json", &origins)
@@ -1501,10 +1515,11 @@ func (loader *rulesetLoader) loadItems(ruleset *Ruleset) {
 	}
 	for _, category := range categories {
 		type itemFields struct {
+			Label  string
 			Cost   *Cost
 			Weapon *weaponFields
 			Armor  *struct {
-				DRBase int64 `json:"drBase"`
+				DRBase int64 `json:"dr_base"`
 			}
 			DefaultMaterials []string `json:"default_materials"`
 			Type             string
@@ -1556,6 +1571,7 @@ func (loader *rulesetLoader) loadItems(ruleset *Ruleset) {
 				continue
 			}
 			var item Item = Item{
+				Label:            fields.Label,
 				CostCopper:       copper,
 				TakesMaterial:    category.category == "weapon" || category.category == "armor",
 				IsWeapon:         category.category == "weapon",
@@ -1585,7 +1601,7 @@ func (loader *rulesetLoader) loadItems(ruleset *Ruleset) {
 	var materials struct {
 		Materials []struct {
 			Key         string
-			ValueFactor float64
+			ValueFactor float64 `json:"value_factor"`
 			Armor       struct{ Defense int64 }
 			Weapon      struct{ Attack int64 }
 		}

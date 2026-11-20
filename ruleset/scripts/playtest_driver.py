@@ -146,13 +146,13 @@ class Run:
         written = self.actor["skills"].get(key)
         if written is not None:
             return written
-        return 5 + 2 * self.actor["attributes"][self.skills[key]["associatedAbility"]]
+        return 5 + 2 * self.actor["attributes"][self.skills[key]["associated_ability"]]
 
     # --- creation ---------------------------------------------------------------------------
     def start(self):
         attributes = dict(self.build["attributes"])
         derived = self.cli.run("derived", {"actor": {"attributes": attributes, "level": 1}})
-        skills = {key: 5 + 2 * attributes[self.skills[key]["associatedAbility"]] for key in self.build["tags"]}
+        skills = {key: 5 + 2 * attributes[self.skills[key]["associated_ability"]] for key in self.build["tags"]}
         actor = {"attributes": attributes, "level": 1, "xp": 0, "skills": skills, "tags": list(self.build["tags"]),
                  "growth": {"hp": 0, "mp": 0, "sp": 0},
                  "resources": {"hp": derived["hp"], "mp": derived["mp"], "sp": derived["sp"], "ap": derived["ap"]},
@@ -239,7 +239,7 @@ class Run:
             dice, kind = "1d6", "bludgeoning"
             self.findings["monster with no rollable attack"] += 1
         skill = "unarmed" if "natural_weapon" in attack else "blades"
-        sheet = self.cli.run("monster_sheet", {"monster": {k: row[k] for k in ("attributes", "level", "hitPoints", "skills") if k in row},
+        sheet = self.cli.run("monster_sheet", {"monster": {k: row[k] for k in ("attributes", "level", "role", "skills") if k in row},
                                                 "read_skills": [skill, "evasion"]})
         return {"key": row["key"], "level": row.get("level", 1), "hp": sheet["hp"], "attack": sheet["skills"][skill],
                 "evasion": sheet["skills"]["evasion"], "dice": dice, "type": kind, "resist": row.get("resist") or {},

@@ -5,7 +5,7 @@ Demonstrates:
   - Phase inheritance from material to crafted item
   - Phase overwrite via jewel engraving
   - Material attack/defense bonus propagation
-  - Effect magnitude modified by material.effectMagnitude
+  - Effect magnitude modified by material.effect_magnitude
   - Wuxing cycle interaction between item phase and effect phase
   - Distinction between permanent enchantments and consumable coatings
 
@@ -124,7 +124,7 @@ class CraftingResolver:
                 mag = ae.get("magnitude", 0)
                 dur = ae.get("duration", 0)
 
-                # Apply material effectMagnitude multiplier
+                # Apply material effect_magnitude multiplier
                 mag_mult = item["effect_magnitude_multiplier"]
                 modified_mag = mag * mag_mult if mag else 0
 
@@ -157,7 +157,7 @@ class CraftingResolver:
                 self.log(f"    {eff_label}: mag={mag}")
                 if mag_mult != 1.0:
                     self.log(
-                        f"      material.effectMagnitude mult: ×{mag_mult} -> {mag * mag_mult}"
+                        f"      material.effect_magnitude mult: ×{mag_mult} -> {mag * mag_mult}"
                     )
                 self.log(f"      Wuxing: {wuxing_msg} -> effective mag={mod_mag}")
         else:
@@ -240,7 +240,7 @@ def main():
     # 5. Poisoned obsidian dagger — coating (temporary) on weapon
     resolver.demonstrate("poisoned_obsidian_dagger")
 
-    # 6. Enchanted gold amulet — high effectMagnitude + permanent enchantment
+    # 6. Enchanted gold amulet — high effect_magnitude + permanent enchantment
     resolver.demonstrate("enchanted_gold_amulet")
 
     print(f"\n{'=' * 65}")

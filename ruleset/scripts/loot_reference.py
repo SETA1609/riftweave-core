@@ -5,6 +5,7 @@ Rolls are inputs. Items are valued at list price with the price formula of
 docs/core/economy.md, so treasure and prices are one scale.
 """
 
+import functools
 import json
 import sys
 from pathlib import Path
@@ -113,17 +114,20 @@ def takes_material(ref):
 
 
 def value_percent(material):
-    """100, or the material's valueFactor times 100 (docs/core/economy.md)."""
+    """100, or the material's value_factor times 100 (docs/core/economy.md)."""
     if material is None:
         return 100
     key = material.rsplit("/", 1)[-1]
     row = next(m for m in load_data("materials/core.json")["materials"] if m["key"] == key)
-    return round(row["valueFactor"] * 100)
+    return round(row["value_factor"] * 100)
 
 
+@functools.lru_cache(maxsize=None)
 def item_value_cp(ref, material=None, size=None):
     """List price at value_percent = material percent x size percent / 100, rounded down. The
-    material and size are the ones that landed (landed_material, item_size)."""
+    material and size are the ones that landed (landed_material, item_size). Cached: a table's
+    expected value asks for the same item once per d100 roll, for every monster that drops it
+    (OPS_S00_06); the data does not change while a process runs."""
     price = load_data("formulas/price.json")["expression"]
     percent = value_percent(material)
     if size is not None:

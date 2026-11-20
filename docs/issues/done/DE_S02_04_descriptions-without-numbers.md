@@ -1,9 +1,10 @@
 #### DE_S02_04_descriptions-without-numbers Third normal form: a description does not restate its numbers
-- Status: todo
+- Status: done
+- Merged: #395, 2026-11-20
 - Priority: medium
 - Needs: DE_S02_02_second-normal-form
 - Was: M5-75
-- Modified: 2026-11-18
+- Modified: 2026-11-20
 - Do: Owner request, 2026-11-17. "+10 to deception" in a description is a copy of the modifier's `value`; when the value changes the text does not ([theory](../../theory/normal-forms.md#third-normal-form-3nf-no-fact-about-another-non-key-field)). Today 79 of 124 feature descriptions restate a number that is also a modifier value of the same row. [V 2026-11-17, matched by a script; a few may be coincidences] Spells, effects, and consumables restate magnitudes the same way [U: not counted].
   - **Pick one way in the spec step** and record it: (a) a gate that fails when a number in a description is not one of the row's values, so the text may restate them but cannot drift; or (b) placeholders, such as `{modifiers.0.value}`, that the backend fills from the row, so the number is written once [A: (a) first, since it leaves the prose readable in the JSON and in a diff].
   - Apply it to `features/core.json` and list the other collections it should reach next.

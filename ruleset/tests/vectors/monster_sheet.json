@@ -1,6 +1,6 @@
 [
   {
-    "name": "computed: the player formulas, level 3",
+    "name": "computed: a standard monster's hp is the player formula times 0.4, level 3",
     "monster": {
       "attributes": {
         "str": 4,
@@ -15,7 +15,7 @@
       "level": 3
     },
     "expect": {
-      "hp": 59,
+      "hp": 23,
       "mp": 46,
       "ap": 4,
       "carry": 65,
@@ -25,7 +25,7 @@
     }
   },
   {
-    "name": "the same attributes and level as a player give the same stats",
+    "name": "a player with the same attributes and level: every stat but hp is the monster's, and hp is the formula before the role multiplier",
     "function": "derived",
     "actor": {
       "attributes": {
@@ -50,7 +50,7 @@
     }
   },
   {
-    "name": "authored hitPoints replaces only the computed hp",
+    "name": "computed: a boss's hp is the player formula times 0.8",
     "monster": {
       "attributes": {
         "str": 4,
@@ -63,16 +63,30 @@
         "lck": 3
       },
       "level": 3,
-      "hitPoints": 33
+      "role": "boss"
     },
     "expect": {
-      "hp": 33,
-      "mp": 46,
-      "ap": 4,
-      "carry": 65,
-      "initiative": 4,
-      "skills": {},
-      "sp": 36
+      "hp": 47
+    }
+  },
+  {
+    "name": "computed: a minion's hp is the player formula times 0.2, rounded down",
+    "monster": {
+      "attributes": {
+        "str": 4,
+        "per": 4,
+        "end": 4,
+        "int": 5,
+        "wil": 2,
+        "agi": 6,
+        "cha": 3,
+        "lck": 3
+      },
+      "level": 3,
+      "role": "minion"
+    },
+    "expect": {
+      "hp": 11
     }
   },
   {
@@ -83,7 +97,7 @@
       }
     },
     "expect": {
-      "hp": 51,
+      "hp": 20,
       "mp": 2
     }
   },
@@ -269,7 +283,7 @@
     }
   },
   {
-    "name": "perks: Hardened Hide at rank 2 adds 30 to an authored hitPoints",
+    "name": "perks: Hardened Hide at rank 2 adds 30 after the role multiplier",
     "monster": {
       "attributes": {
         "str": 6,
@@ -282,7 +296,6 @@
         "lck": 3
       },
       "level": 3,
-      "hitPoints": 59,
       "perks": [
         {
           "perk": "core:feature/hardened_hide",
@@ -291,7 +304,7 @@
       ]
     },
     "expect": {
-      "hp": 89
+      "hp": 53
     }
   },
   {
@@ -364,7 +377,6 @@
         "lck": 3
       },
       "level": 3,
-      "hitPoints": 59,
       "perks": [
         {
           "perk": "core:feature/low_sweep"
@@ -375,7 +387,7 @@
       ]
     },
     "expect": {
-      "hp": 59,
+      "hp": 26,
       "maneuvers": [
         "core:maneuver/trip"
       ],
@@ -398,7 +410,6 @@
         "lck": 3
       },
       "level": 3,
-      "hitPoints": 59,
       "perks": [
         {
           "perk": "core:feature/bind_and_wrench"
@@ -429,7 +440,6 @@
         "lck": 3
       },
       "level": 3,
-      "hitPoints": 59,
       "perks": [
         {
           "perk": "core:feature/low_sweep"
@@ -470,7 +480,6 @@
         "lck": 3
       },
       "level": 3,
-      "hitPoints": 59,
       "perks": [
         {
           "perk": "core:feature/low_sweep"
@@ -504,7 +513,6 @@
         "lck": 3
       },
       "level": 3,
-      "hitPoints": 59,
       "perks": [
         {
           "perk": "core:feature/summon_demonic"

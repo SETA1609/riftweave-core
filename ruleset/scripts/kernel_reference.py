@@ -164,11 +164,11 @@ def run_conditions(vector):
             continue
         effect = event["effect"]
         for key, row in rows.items():
-            if effect in row.get("removedBy", []):
+            if effect in row.get("removed_by", []):
                 active.pop(key, None)
         for key, row in rows.items():
-            if effect in row.get("appliedBy", []):
-                cap = row.get("maxStacks", 1) if row.get("stacking") else 1
+            if effect in row.get("applied_by", []):
+                cap = row.get("max_stacks", 1) if row.get("stacking") else 1
                 active[key] = min(active.get(key, 0) + 1, cap)
     modifiers = list(vector.get("modifiers", []))
     for key in active:
@@ -972,7 +972,8 @@ def landed_weapon_effects(weapon_effects, damage_type, defender):
 
 
 def run_progression(vector):
-    """XP and level, one level-up pool, and spending a pool on one skill; `op` picks which."""
+    """XP and level, one level-up pool, spending a pool on one skill, reading a skill, taking a
+    perk, and checking a creation point-buy; `op` picks which."""
     rules = load_data("progression/core.json")["progression"]
     op = vector["operation"]
     if op == "xp":
@@ -1019,11 +1020,37 @@ def run_progression(vector):
         room = rules["skill_cap"] - vector["skill"]
         ranks = min(vector["points"] // cost, max(room, 0))
         return {"ranks": ranks, "spent": ranks * cost, "left": vector["points"] - ranks * cost}
+    if op == "point_buy":
+        return point_buy(rules["creation"], vector["actor"]["attributes"])
     if op == "read_skill":
         return read_skill(vector["actor"], vector["read"], vector.get("groups"))
     if op == "take_perk":
         return take_perk(vector["actor"], vector.get("perks") or {}, vector["perk"])
     raise ValueError(f"progression operation {op!r} is not defined")
+
+
+POINT_BUY_ABILITIES = ("str", "per", "end", "int", "wil", "agi", "cha", "lck")
+
+
+def point_buy(creation, attributes):
+    """A creation point-buy checked against progression's `creation` block (docs/core/progression.md,
+    rule 7): the attributes as assigned, before race and creation perks. Each attribute must be
+    given and lie from attribute_min to attribute_max, in ability order; then the points spent,
+    each attribute minus attribute_start (an attribute under the start frees points), may not pass
+    attribute_points. Fewer points are a draft, not an error."""
+    start, lowest, points, highest = creation["attribute_start"], creation["attribute_min"], creation["attribute_points"], creation["attribute_max"]
+    for ability in POINT_BUY_ABILITIES:
+        if ability not in attributes:
+            return {"error": f"attribute {ability} is missing"}
+        value = attributes[ability]
+        if value < lowest:
+            return {"error": f"attribute {ability} is {value}, under the point-buy min of {lowest}"}
+        if value > highest:
+            return {"error": f"attribute {ability} is {value}, over the point-buy max of {highest}"}
+    spent = sum(attributes[ability] - start for ability in POINT_BUY_ABILITIES)
+    if spent > points:
+        return {"error": f"{spent} points spent, more than the {points} to distribute"}
+    return {"spent": spent, "left": points - spent}
 
 
 def take_perk(actor, held, key):
@@ -1083,7 +1110,7 @@ def read_skill(actor, key, groups=None):
     """One skill off a sheet (docs/core/progression.md#two-sheets-one-rule-set). A full sheet reads the
     written value, else the skill's start; a grouped sheet (`groups` given) reads the start plus the
     member's group ranks, or the start alone for an untracked group."""
-    governing = {s["key"]: s["associatedAbility"] for s in load_data("skills/core.json")["skills"]}
+    governing = {s["key"]: s["associated_ability"] for s in load_data("skills/core.json")["skills"]}
     if key not in governing:
         return {"error": f'skill "{key}" is not defined'}
     rule = load_data("progression/core.json")["progression"]["skill_start"]
@@ -1126,15 +1153,25 @@ def held_perk_modifiers(perks):
     return modifiers
 
 
+def scaled_hp(formula, share):
+    """floor(formula x share), with a tolerance so a share stored just under its decimal (0.7 is
+    0.6999...) does not lose a point: 90 x 0.7 is 63, not 62. Go's monster sheet does the same."""
+    return math.floor(formula * share + 1e-9)
+
+
 def run_monster_sheet(vector):
     """A monster's stats and skills by the player rules (docs/core/actor-sheet.md)."""
     row = vector["monster"]
     attributes = row.get("attributes", {})
     perk_modifiers = held_perk_modifiers(row.get("perks", []))
-    result = run_derived({"actor": {"attributes": attributes, "level": row.get("level", 1)}, "modifiers": perk_modifiers})
-    if "hitPoints" in row:
-        result["hp"] = apply_modifiers(row["hitPoints"], [m for m in perk_modifiers if m["target"] == "hp"])
+    actor = {"attributes": attributes, "level": row.get("level", 1)}
+    result = run_derived({"actor": actor, "modifiers": perk_modifiers})
     progression = load_data("progression/core.json")["progression"]
+    # Its HP: the player formula before perks, times its role's share, rounded down and at
+    # least 1; the perks' hp modifiers apply after (DE_S02_03, docs/core/actor-sheet.md).
+    formula = run_derived({"actor": actor, "modifiers": [m for m in perk_modifiers if m["target"] != "hp"]})["hp"]
+    share = progression["monster_hp_multiplier"][row.get("role", "standard")]
+    result["hp"] = apply_modifiers(max(1, scaled_hp(formula, share)), [m for m in perk_modifiers if m["target"] == "hp"])
     rows = {s["key"]: s for s in load_data("skills/core.json")["skills"]}
     growth = progression.get("monster_skill_growth", {"per_level": 0, "categories": []})
     level = row.get("level", 1)
@@ -1144,7 +1181,7 @@ def run_monster_sheet(vector):
         if key in written:
             skills[key] = written[key]
         elif key in rows:
-            start = evaluate_formula(progression["skill_start"], {}, {"attribute": attributes.get(rows[key]["associatedAbility"], 0)})
+            start = evaluate_formula(progression["skill_start"], {}, {"attribute": attributes.get(rows[key]["associated_ability"], 0)})
             if rows[key]["category"] in growth["categories"]:
                 start = min(progression["skill_cap"], start + growth["per_level"] * (level - 1))
             skills[key] = start
@@ -1179,7 +1216,7 @@ def _origin_of(item, effect):
     if "origin" in effect:
         return effect["origin"]
     emitter = "food" if item["type"] == "food" else "consumable"
-    row = next(o for o in load_data("origins/core.json")["origins"] if emitter in o.get("defaultFor", []))
+    row = next(o for o in load_data("origins/core.json")["origins"] if emitter in o.get("default_for", []))
     return f"core:origin/{row['key']}"
 
 

@@ -18,16 +18,16 @@ governed by `race.schema.json`.
 
 A race is a small bundle of character-creation modifiers, applied **on top of** the
 base attribute spread (start each attribute at 4, distribute 10 points, then apply
-the racial `abilityModifiers` — see [`progression.md`](./progression.md)
+the racial `ability_modifiers` — see [`progression.md`](./progression.md)
 § Attributes).
 
 | Field | Meaning |
 | --- | --- |
-| `abilityModifiers` | Integer deltas to the eight attributes, e.g. `{ "end": 2, "str": 1, "agi": -1 }`. |
+| `ability_modifiers` | Integer deltas to the eight attributes, e.g. `{ "end": 2, "str": 1, "agi": -1 }`. |
 | `phase` | The race's single **element** (Wuxing five-phase). Drives elemental affinity — see §4. |
 | `speed` | Walking speed in abstract units (e.g. 6 for a human). |
 | `size` | `tiny` · `small` · `medium` · `large`. |
-| `traits` | Array of `{ id, label }` references to `racial_trait` rows in the perk table (`data/features/core.json`). See §5. |
+| `traits` | Array of `{ id }` references to `racial_trait` rows in the perk table (`data/features/core.json`). See §5. |
 | `lineage` | How this race relates to others — see §2. **The defining structural field.** |
 
 Every race also carries the standard `id` (integer primary key), `key` (stable symbolic identifier), `label` (human-readable name), `description`, and optional `source`.
@@ -36,14 +36,14 @@ Every race also carries the standard `id` (integer primary key), `key` (stable s
 
 ## 2. The lineage system
 
-Every race declares a `lineage` object: a `role` and, when relevant, a `parentRace`.
+Every race declares a `lineage` object: a `role` and, when relevant, a `parent_race`.
 There are **two distinct relationships**, and keeping them separate is the point.
 
 ```json
-"lineage": { "role": "subrace", "parentRace": "core:race/elf" }
+"lineage": { "role": "subrace", "parent_race": "core:race/elf" }
 ```
 
-| Role | Playable? | `parentRace` | Relationship |
+| Role | Playable? | `parent_race` | Relationship |
 | --- | --- | --- | --- |
 | `standalone` | yes | — | A complete, unrelated race (e.g. `human`). |
 | `parent` | no (abstract) | — | An ancestor that subraces inherit from (e.g. the elf parent). |
@@ -62,7 +62,7 @@ green elf or a mountain dwarf. The parent holds the **shared defaults**; each
 - **Override** — declare a field to replace the parent's. A subrace may even change
   its **element**: `black_elf` overrides the elf's `wood` to `water`; `hill_dwarf`
   overrides the dwarf's `metal` to `earth`.
-- **Stack** — `abilityModifiers` and `traits` add to the parent's rather than
+- **Stack** — `ability_modifiers` and `traits` add to the parent's rather than
   replacing them (see §3 resolution).
 
 Because a parent is abstract, each family ships a **baseline subrace** that overrides
@@ -100,20 +100,20 @@ All roles require `id` (integer primary key), `key` (symbolic), `label` (display
 | `template` | omitted | omitted |
 
 (These conditionals are enforced in `race.schema.json` via `if/then`; a subrace
-missing `parentRace`, or a standalone missing `phase`, fails validation.)
+missing `parent_race`, or a standalone missing `phase`, fails validation.)
 
 ### How an engine resolves a subrace (reference)
 
 References across files are **not** schema-validated — resolution is the consuming
-engine's job. The reference rule for a `subrace` whose `parentRace` is `P` (where `P`
+engine's job. The reference rule for a `subrace` whose `parent_race` is `P` (where `P`
 is a string key, e.g. `"core:race/elf"` or `"elf"`):
 
-1. Start from the parent race's fields (looked up by the string key `parentRace`).
+1. Start from the parent race's fields (looked up by the string key `parent_race`).
 2. `phase`, `speed`, `size`: the subrace's value **replaces** the parent's if present,
    otherwise the parent's carries over.
-3. `abilityModifiers`: **sum** per attribute (parent `{end:2}` + subrace `{wil:1}`
+3. `ability_modifiers`: **sum** per attribute (parent `{end:2}` + subrace `{wil:1}`
    → `{end:2, wil:1}`).
-4. `traits`: the array of `{ id, label }` references is the list of racial traits
+4. `traits`: the array of `{ id }` references is the list of racial traits
    this race entry specifically contributes, added to the parent's. The definitions
    are `racial_trait` rows in `data/features/core.json` (§5).
 
@@ -158,14 +158,16 @@ In a race, `traits` is an array of lightweight references:
 
 ```json
 "traits": [
-  { "id": "core:feature/elf_darkvision", "label": "Darkvision" },
-  { "id": "core:feature/elf_fey_ancestry", "label": "Fey Ancestry" }
+  { "id": "core:feature/elf_darkvision" },
+  { "id": "core:feature/elf_fey_ancestry" }
 ]
 ```
 
-The `id` is a namespaced ref `core:feature/<key>` (or a `module:` ref). The `label` is
-duplicated for readability when looking at race data; the full description lives in
-the feature row.
+The `id` is a namespaced ref `core:feature/<key>` (or a `module:` ref). The trait's
+`label` and description live only in the feature row: a screen or printout that names a
+trait reads the row's `label` (a module override's, when a module overrides it). A copy of
+the label beside the `id` fails `validate.py`, as any field that repeats the row it names
+([integrity.md](../core/integrity.md#8-a-reference-is-the-key-alone), DE_S02_02).
 
 Rules, checked by `validate.py`:
 
@@ -192,7 +194,7 @@ ref format, one prerequisite and effect shape, and one place an engine looks for
 
 A race and its traits reach the actor only as contract modifiers ([modifier.md](../core/modifier.md)); no rule lives only in a description. `ruleset/scripts/ancestry_reference.py` reads them, and `test_ancestry.py` pins the reading. [V 2026-11-06]
 
-- **`abilityModifiers`** is the compact form of `add` modifiers: `{ "agi": 1 }` is `add agi 1`, source `race:<key>`, origin `innate`.
+- **`ability_modifiers`** is the compact form of `add` modifiers: `{ "agi": 1 }` is `add agi 1`, source `race:<key>`, origin `innate`.
 - **Traits** carry their own `modifiers` (source `feature:<key>`, origin `innate`): a number is an `add` on a skill or a named target (`darkvision_range`, `tag_skills`, `hp_per_level`), a sense or a proficiency is a `grant` flag (`darkvision`, `proficient_medium_armor`). A trait with a natural weapon names its row instead, `natural_weapon: core:natural_weapon/<key>` (catman claws name `claw`, 1d6 slashing at medium size), and attacks with `unarmed` ([monsters.md](./monsters.md#natural-weapons)).
 - **Lineage.** A subrace emits its parent's modifiers and traits, then its own; the two stack because their sources differ. A kin emits only its own: nothing comes from the template or from sibling kin. A parent or a standalone race emits its own. A template is never played.
 - **Situational bonuses** (shadowmeld in darkness, pack tactics against an engaged foe, a scent-based detection) are `add` on a named situational target the caller reads when the situation holds. [A]
@@ -207,17 +209,17 @@ A race and its traits reach the actor only as contract modifiers ([modifier.md](
   "key": "high_elf",
   "label": "High Elf",
   "description": "Cloister-trained elves steeped in the arcane.",
-  "lineage": { "role": "subrace", "parentRace": "core:race/elf" },
+  "lineage": { "role": "subrace", "parent_race": "core:race/elf" },
   "phase": "wood",
-  "abilityModifiers": { "int": 1 },
-  "traits": [ { "id": "core:feature/high_elf_innate_cantrip", "label": "Innate Cantrip" } ]
+  "ability_modifiers": { "int": 1 },
+  "traits": [ { "id": "core:feature/high_elf_innate_cantrip" } ]
 }
 ```
 
 Add the trait itself as a `racial_trait` row in `data/features/core.json` first.
 
 Omit `speed`/`size` to inherit the elf's; set `phase` to keep `wood` or override it.
-`abilityModifiers` and `traits` here **stack** on the elf base.
+`ability_modifiers` and `traits` here **stack** on the elf base.
 
 **Author your own beastfolk (a new kin)**
 
@@ -227,12 +229,12 @@ Omit `speed`/`size` to inherit the elf's; set `phase` to keep `wood` or override
   "key": "ratman",
   "label": "Ratman",
   "description": "Quick, cunning rodent-folk of the under-city.",
-  "lineage": { "role": "kin", "parentRace": "core:race/beastman" },
+  "lineage": { "role": "kin", "parent_race": "core:race/beastman" },
   "phase": "water",
   "speed": 30,
   "size": "small",
-  "abilityModifiers": { "agi": 2, "lck": 1, "str": -1 },
-  "traits": [ { "id": "core:feature/ratman_squeeze", "label": "Squeeze" } ]
+  "ability_modifiers": { "agi": 2, "lck": 1, "str": -1 },
+  "traits": [ { "id": "core:feature/ratman_squeeze" } ]
 }
 ```
 
@@ -243,7 +245,7 @@ in full. It owes nothing to catman or wolfman beyond also being beastfolk.
 
 - A new freestanding race → `role: standalone`.
 - A new family with shared defaults → add a `role: parent` ancestor, then
-  `role: subrace` children pointing at it via `parentRace`.
+  `role: subrace` children pointing at it via `parent_race`.
 - A new open-ended family where members differ wildly → add a `role: template`, then
   `role: kin` members pointing at it.
 
@@ -255,7 +257,7 @@ in full. It owes nothing to catman or wolfman beyond also being beastfolk.
 | --- | --- | --- |
 | Race entries & lineage | `race.schema.json` | `data/races/core.json` |
 | Racial traits (`type: racial_trait`) | `feature.schema.json` | `data/features/core.json` |
-| Attribute ids (`abilityModifiers` keys) | `schema.json#/definitions/ability` | `data/abilities/core.json` |
+| Attribute ids (`ability_modifiers` keys) | `schema.json#/definitions/ability` | `data/abilities/core.json` |
 | Element vocabulary (`phase`) | `schema.json#/definitions/phase` | — |
 | Interaction cycles | `wuxing.schema.json` | `modules/wuxing/data/wuxing.json` |
 
@@ -275,7 +277,7 @@ in full. It owes nothing to catman or wolfman beyond also being beastfolk.
   changing the shape to an array of objects.
 - **Referential integrity.** The validator only performs JSON Schema checks.
   There is still no automatic cross-file validation that numeric IDs (effects,
-  traits, parentRace, materials, etc.) actually exist in their target
+  traits, parent_race, materials, etc.) actually exist in their target
   collections. A separate integrity pass (or script) would be valuable now that
   IDs are integers.
 - **Documentation maintenance.** Major drifting docs (especially race.md and

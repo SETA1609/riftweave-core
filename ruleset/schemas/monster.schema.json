@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Monster",
-  "description": "A creature/enemy. A monster may carry one element (Wuxing five-phase), a tag the Wuxing module reads. Its attacks and innate effects are drawn from the shared effect registry through schema.json#/definitions/appliedEffect, exactly like spells and consumables. Certain monsters with living spiritual or elemental essence can also drop spirit cores (see coreDrop); undead and humanoids must never have coreDrop.\n\nSupports a Base + Override pattern: entries may either be flat monsters (all fields inline) or reference a base template and provide only overrides. Base templates live in bases/*.json and are resolved at validation/load time.",
+  "description": "A creature/enemy. A monster may carry one element (Wuxing five-phase), a tag the Wuxing module reads. Its attacks and innate effects are drawn from the shared effect registry through schema.json#/definitions/appliedEffect, exactly like spells and consumables. Certain monsters with living spiritual or elemental essence can also drop spirit cores (see core_drop); undead and humanoids must never have core_drop.\n\nSupports a Base + Override pattern: entries may either be flat monsters (all fields inline) or reference a base template and provide only overrides. Base templates live in bases/*.json and are resolved at validation/load time.",
   "type": "object",
   "properties": {
     "$schema": { "type": "string" },
@@ -23,7 +23,7 @@
       "description": "A natural or carried weapon attack: the weapon's dice plus the attribute modifier of ability (docs/modules/monsters.md#attacks-resistances-and-role).",
       "properties": {
         "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
-        "label": { "type": "string", "minLength": 1 },
+        "label": { "type": "string", "minLength": 1, "description": "The attack's name, only where it differs from its weapon's label, which it defaults to (docs/core/integrity.md#8-a-reference-is-the-key-alone)." },
         "weapon": {
           "description": "What the attack rolls: a natural weapon (core:natural_weapon/<key>), sized by the creature, or a carried weapon (core:weapon/<key>).",
           "oneOf": [ { "$ref": "schema.json#/definitions/naturalWeaponRef" }, { "$ref": "schema.json#/definitions/itemRef" } ]
@@ -33,14 +33,14 @@
           "type": "object",
           "properties": {
             "type": { "$ref": "schema.json#/definitions/damageType", "description": "The damage type, when it is not the weapon's. An element template does not change a type the attack names." },
-            "bonus": { "type": "integer", "description": "Added to the roll: what damagePerLevel gives a creature above its row's level." }
+            "bonus": { "type": "integer", "description": "Added to the roll: what damage_per_level gives a creature above its row's level." }
           },
           "additionalProperties": false
         },
         "delivery": { "type": "string", "enum": ["single", "area", "instant"], "description": "Which reactions the attack allows (docs/core/combat.md); default single." },
-        "phase": { "$ref": "schema.json#/definitions/phase", "description": "The phase the attack carries into the five-phase cycles." }
+        "phase": { "$ref": "schema.json#/definitions/phase", "description": "The phase the attack carries into the five-phase cycles, only where it differs from a carried weapon's phase, which it defaults to." }
       },
-      "required": ["key", "label", "weapon"],
+      "required": ["key", "weapon"],
       "additionalProperties": false
     },
     "monsterData": {
@@ -65,7 +65,6 @@
           "propertyNames": { "$ref": "schema.json#/definitions/ability" },
           "additionalProperties": { "type": "integer", "minimum": 1 }
         },
-        "hitPoints": { "type": "integer", "minimum": 1, "description": "Optional authored HP; it replaces the computed value (docs/core/actor-sheet.md)." },
         "skills": { "type": "object", "description": "Only the skills this monster fights or casts with; any other reads as a starting value (docs/core/actor-sheet.md).", "propertyNames": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" }, "additionalProperties": { "type": "integer", "minimum": 0, "maximum": 100 } },
         "effects": {
           "type": "array",
@@ -76,11 +75,11 @@
         "perks": { "type": "array", "items": { "$ref": "schema.json#/definitions/heldPerk" }, "description": "Perks it holds, from the features table, each at a rank (docs/modules/monsters.md#templates, M3-15)." },
         "maneuvers": { "type": "array", "items": { "$ref": "schema.json#/definitions/maneuverRef" }, "uniqueItems": true, "description": "Combat maneuvers it can use with its attacks, as a player does (docs/modules/monsters.md#maneuvers, M3-24)." },
         "loot": { "type": "array", "minItems": 1, "description": "The rows this monster rolls when defeated (docs/core/loot.md#drops). Replaces what it inherits.", "items": { "$ref": "loot.schema.json#/definitions/lootRow" } },
-        "role": { "type": "string", "enum": ["standard", "boss", "minion"], "description": "Which hits-to-kill band of balance/core.json the HP is checked against; default standard." },
+        "role": { "type": "string", "enum": ["standard", "boss", "minion"], "description": "Which hits-to-kill band of balance/core.json the HP is checked against, and the HP multiplier (progression/core.json monster_hp_multiplier); default standard. HP is computed, never stored (DE_S02_03)." },
         "attacks": { "type": "array", "items": { "$ref": "#/definitions/attack" }, "description": "What the monster hits with, as combat attacks (docs/modules/monsters.md#attacks-resistances-and-role)." },
         "resist": { "type": "object", "description": "Flat resistance by damage type (a key in combat/damage_types.json), the combat pipeline's defender.resist.", "propertyNames": { "$ref": "schema.json#/definitions/damageType" }, "additionalProperties": { "type": "integer", "minimum": 0 } },
         "tags": { "type": "array", "items": { "type": "string" } },
-        "coreDrop": { "$ref": "#/definitions/coreDropShape" }
+        "core_drop": { "$ref": "#/definitions/coreDropShape" }
       }
     },
     "growthDef": {
@@ -94,17 +93,13 @@
           "additionalProperties": {
             "type": "object",
             "properties": {
-              "perLevel": { "type": "number", "description": "Increase per level beyond the template's base level." }
+              "per_level": { "type": "number", "description": "Increase per level beyond the template's base level." }
             },
-            "required": ["perLevel"],
+            "required": ["per_level"],
             "additionalProperties": false
           }
         },
-        "hitPointsPerLevel": {
-          "type": "number",
-          "description": "HP increase per level beyond the template's base level."
-        },
-        "damagePerLevel": {
+        "damage_per_level": {
           "type": "number",
           "minimum": 0,
           "description": "Added per level above a row's level, rounded, to each attack's damage and each damage_* ability's magnitude (docs/modules/monsters.md#attribute-growth--level-scaling)."
@@ -116,15 +111,15 @@
       "type": "object",
       "description": "If present, this monster can drop a spirit core on death. **Hard rule**: undead and humanoids must never have this field. Only monsters with genuine living spiritual or elemental essence may include it.",
       "properties": {
-        "baseChance": {
+        "base_chance": {
           "type": "number",
           "minimum": 0, "maximum": 1,
           "description": "Base drop chance (0.0–1.0)."
         },
-        "minGrade": { "$ref": "schema.json#/definitions/qualityGrade" },
-        "maxGrade": { "$ref": "schema.json#/definitions/qualityGrade" }
+        "min_grade": { "$ref": "schema.json#/definitions/qualityGrade" },
+        "max_grade": { "$ref": "schema.json#/definitions/qualityGrade" }
       },
-      "required": ["baseChance"]
+      "required": ["base_chance"]
     },
     "monster": {
       "description": "A fully self-contained monster entry with all required fields inline.",
@@ -143,7 +138,6 @@
           "propertyNames": { "$ref": "schema.json#/definitions/ability" },
           "additionalProperties": { "type": "integer", "minimum": 1 }
         },
-        "hitPoints": { "type": "integer", "minimum": 1, "description": "Optional authored HP; it replaces the computed value (docs/core/actor-sheet.md)." },
         "skills": { "type": "object", "description": "Only the skills this monster fights or casts with; any other reads as a starting value (docs/core/actor-sheet.md).", "propertyNames": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" }, "additionalProperties": { "type": "integer", "minimum": 0, "maximum": 100 } },
         "effects": {
           "type": "array",
@@ -154,11 +148,11 @@
         "perks": { "type": "array", "items": { "$ref": "schema.json#/definitions/heldPerk" }, "description": "Perks it holds, from the features table, each at a rank (docs/modules/monsters.md#templates, M3-15)." },
         "maneuvers": { "type": "array", "items": { "$ref": "schema.json#/definitions/maneuverRef" }, "uniqueItems": true, "description": "Combat maneuvers it can use with its attacks, as a player does (docs/modules/monsters.md#maneuvers, M3-24)." },
         "loot": { "type": "array", "minItems": 1, "description": "The rows this monster rolls when defeated (docs/core/loot.md#drops). Replaces what it inherits.", "items": { "$ref": "loot.schema.json#/definitions/lootRow" } },
-        "role": { "type": "string", "enum": ["standard", "boss", "minion"], "description": "Which hits-to-kill band of balance/core.json the HP is checked against; default standard." },
+        "role": { "type": "string", "enum": ["standard", "boss", "minion"], "description": "Which hits-to-kill band of balance/core.json the HP is checked against, and the HP multiplier (progression/core.json monster_hp_multiplier); default standard. HP is computed, never stored (DE_S02_03)." },
         "attacks": { "type": "array", "items": { "$ref": "#/definitions/attack" }, "description": "What the monster hits with, as combat attacks (docs/modules/monsters.md#attacks-resistances-and-role)." },
         "resist": { "type": "object", "description": "Flat resistance by damage type (a key in combat/damage_types.json), the combat pipeline's defender.resist.", "propertyNames": { "$ref": "schema.json#/definitions/damageType" }, "additionalProperties": { "type": "integer", "minimum": 0 } },
         "tags": { "type": "array", "items": { "type": "string" } },
-        "coreDrop": { "$ref": "#/definitions/coreDropShape" }
+        "core_drop": { "$ref": "#/definitions/coreDropShape" }
       },
       "required": ["key", "label", "description", "size"],
       "additionalProperties": false

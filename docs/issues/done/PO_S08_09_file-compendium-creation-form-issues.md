@@ -1,5 +1,6 @@
 #### PO_S08_09_file-compendium-creation-form-issues File the compendium, back button, and creation form issues
-- Status: todo
+- Status: done
+- Merged: #247, 2026-11-18
 - Priority: medium
 - Needs: —
 - Modified: 2026-11-19

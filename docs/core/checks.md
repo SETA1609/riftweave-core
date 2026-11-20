@@ -20,7 +20,7 @@ A row has no difficulty. Difficulty is a bonus or penalty on the target, as in [
 
 ## Every skill has a consumer
 
-A skill nothing rolls is dead weight on the sheet. Each skill in `ruleset/data/skills/core.json` needs a governing attribute (`associatedAbility`, required by the schema) and at least one **consumer**:
+A skill nothing rolls is dead weight on the sheet. Each skill in `ruleset/data/skills/core.json` needs a governing attribute (`associated_ability`, required by the schema) and at least one **consumer**:
 
 | Consumer | Where | Skill it names |
 | --- | --- | --- |
@@ -34,7 +34,7 @@ An effect's `color` counts because it is the default school when the effect is c
 
 Background `skill_bonuses` and `suggested_tag_skills` are references, not consumers: a bonus to a skill nothing rolls is still dead weight. A skill with references but no consumer is an orphan, the same as a skill with no references.
 
-`ruleset/scripts/skill_audit.py` lists every skill with its consumers and references, and fails on an orphan. It also fails when the **Seeds skills** lines in [attributes.md](../modules/attributes.md) differ from `associatedAbility` in the data, and when a `core:skill/` ref names no skill. `test_skill_audit.py` runs it against the repository, so `./scripts/test.sh` fails on an orphan.
+`ruleset/scripts/skill_audit.py` lists every skill with its consumers and references, and fails on an orphan. It also fails when the **Seeds skills** lines in [attributes.md](../modules/attributes.md) differ from `associated_ability` in the data, and when a `core:skill/` ref names no skill. `test_skill_audit.py` runs it against the repository, so `./scripts/test.sh` fails on an orphan.
 
 On 2026-11-02 the audit found 18 orphans among 44 skills. Each got a check row, and `orange_magic` got its first effect, `bound_weapon`; none was removed. It now reports 44 skills, 0 problems. **[V 2026-11-02]**
 

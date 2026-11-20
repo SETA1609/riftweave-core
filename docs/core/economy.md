@@ -2,7 +2,7 @@
 
 Modified: 2026-11-15
 
-Buy, sell, and barter as data. Equipment already carries a `cost` (`quantity` and `unit`) and materials a `valueFactor`; this file adds the denominations, the price formula, the merchant rows, and the barter check. The rows are in `ruleset/data/economy/core.json`, the formula in `ruleset/data/formulas/price.json`, the vectors in `ruleset/tests/vectors/economy.json`. Nothing here needs another module loaded: an item with no material is priced at its base cost. [`docs/modules/factions.md`](../modules/factions.md) leaves a standing-based price modifier for later; it would add to the barter shift below, not replace it.
+Buy, sell, and barter as data. Equipment already carries a `cost` (`quantity` and `unit`) and materials a `value_factor`; this file adds the denominations, the price formula, the merchant rows, and the barter check. The rows are in `ruleset/data/economy/core.json`, the formula in `ruleset/data/formulas/price.json`, the vectors in `ruleset/tests/vectors/economy.json`. Nothing here needs another module loaded: an item with no material is priced at its base cost. [`docs/modules/factions.md`](../modules/factions.md) leaves a standing-based price modifier for later; it would add to the barter shift below, not replace it.
 
 ## Currency
 
@@ -24,7 +24,7 @@ base_cp  = cost.quantity * value(cost.unit)
 price_cp = floor(base_cp * value_percent * percent / 10000)
 ```
 
-- `value_percent` is the material's `valueFactor` times 100 (steel `2.0` is `200`), or `100` for an item with no material. The caller reads it from the item; the formula does not look materials up. [A]
+- `value_percent` is the material's `value_factor` times 100 (steel `2.0` is `200`), or `100` for an item with no material. The caller reads it from the item; the formula does not look materials up. [A]
 - `percent` is the merchant's side of the spread, after barter.
 - The formula is a tree ([formula.md](formula.md)) with the vars `base_cp`, `value_percent`, `percent`.
 

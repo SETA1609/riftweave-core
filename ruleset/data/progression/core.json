@@ -82,6 +82,13 @@
         }
       ]
     },
+    "creation": {
+      "attribute_start": 4,
+      "attribute_min": 1,
+      "attribute_points": 10,
+      "attribute_max": 10,
+      "creation_perks_max": 2
+    },
     "perks_per_level": 1,
     "tag_skills": 3,
     "skill_cost": {
@@ -94,6 +101,7 @@
     "monster_skill_growth": {
       "per_level": 17,
       "categories": ["combat", "magic"]
-    }
+    },
+    "monster_hp_multiplier": { "standard": 0.4, "boss": 0.8, "minion": 0.2 }
   }
 }

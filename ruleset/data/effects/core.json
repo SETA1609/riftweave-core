@@ -9,8 +9,8 @@
       "polarity": "harmful",
       "color": "red",
       "phase": "fire",
-      "magnitudeUnit": "points",
-      "baseCost": 5,
+      "magnitude_unit": "points",
+      "base_cost": 5,
       "channels": [
         "spell",
         "coating",
@@ -29,8 +29,8 @@
       "polarity": "harmful",
       "color": "red",
       "phase": "water",
-      "magnitudeUnit": "points",
-      "baseCost": 5,
+      "magnitude_unit": "points",
+      "base_cost": 5,
       "channels": [
         "spell",
         "coating",
@@ -50,8 +50,8 @@
       "polarity": "harmful",
       "color": "red",
       "phase": "wood",
-      "magnitudeUnit": "points",
-      "baseCost": 7,
+      "magnitude_unit": "points",
+      "base_cost": 7,
       "channels": [
         "spell",
         "coating",
@@ -70,8 +70,8 @@
       "polarity": "harmful",
       "color": "red",
       "phase": "metal",
-      "magnitudeUnit": "points",
-      "baseCost": 5,
+      "magnitude_unit": "points",
+      "base_cost": 5,
       "channels": [
         "spell"
       ],
@@ -87,8 +87,8 @@
       "polarity": "harmful",
       "color": "red",
       "phase": "wood",
-      "magnitudeUnit": "points",
-      "baseCost": 8,
+      "magnitude_unit": "points",
+      "base_cost": 8,
       "channels": [
         "spell",
         "poison",
@@ -106,8 +106,8 @@
       "category": "damage",
       "polarity": "harmful",
       "color": "white",
-      "magnitudeUnit": "points",
-      "baseCost": 5,
+      "magnitude_unit": "points",
+      "base_cost": 5,
       "channels": [
         "spell"
       ],
@@ -122,8 +122,8 @@
       "category": "damage",
       "polarity": "harmful",
       "color": "black",
-      "magnitudeUnit": "points",
-      "baseCost": 6,
+      "magnitude_unit": "points",
+      "base_cost": 6,
       "channels": [
         "spell"
       ],
@@ -138,8 +138,8 @@
       "category": "damage",
       "polarity": "harmful",
       "color": "yellow",
-      "magnitudeUnit": "points",
-      "baseCost": 6,
+      "magnitude_unit": "points",
+      "base_cost": 6,
       "channels": [
         "spell"
       ],
@@ -155,8 +155,8 @@
       "category": "damage",
       "polarity": "harmful",
       "color": "indigo",
-      "magnitudeUnit": "points",
-      "baseCost": 5,
+      "magnitude_unit": "points",
+      "base_cost": 5,
       "channels": [
         "spell"
       ],
@@ -173,8 +173,8 @@
       "polarity": "harmful",
       "color": "blue",
       "phase": "earth",
-      "magnitudeUnit": "points",
-      "baseCost": 5,
+      "magnitude_unit": "points",
+      "base_cost": 5,
       "channels": [
         "spell"
       ],
@@ -191,8 +191,8 @@
       "polarity": "harmful",
       "color": "green",
       "phase": "wood",
-      "magnitudeUnit": "points",
-      "baseCost": 5,
+      "magnitude_unit": "points",
+      "base_cost": 5,
       "channels": [
         "spell"
       ],
@@ -209,8 +209,8 @@
       "polarity": "harmful",
       "color": "red",
       "phase": "earth",
-      "magnitudeUnit": "points",
-      "baseCost": 2,
+      "magnitude_unit": "points",
+      "base_cost": 2,
       "channels": [
         "spell",
         "poison",
@@ -223,8 +223,8 @@
       "description": "Restores points to a resource pool (e.g. healing, stamina recovery, mana). Use 'parameter' to specify the resource ('health', 'stamina', 'mana', 'action_points'). Magnitude is the amount restored each second of the duration; duration 1 (the default) is instant, so the total is magnitude times duration. This generalizes the former specific restore_* effects.",
       "category": "restore",
       "polarity": "beneficial",
-      "magnitudeUnit": "points",
-      "baseCost": 5,
+      "magnitude_unit": "points",
+      "base_cost": 5,
       "uncraftable_parameters": [
         "mana"
       ],
@@ -247,9 +247,9 @@
       "category": "control",
       "polarity": "beneficial",
       "color": "yellow",
-      "magnitudeUnit": "seconds",
-      "baseCost": 8,
-      "defaultDuration": 30,
+      "magnitude_unit": "seconds",
+      "base_cost": 8,
+      "default_duration": 30,
       "channels": [
         "spell",
         "potion"
@@ -266,9 +266,9 @@
       "category": "utility",
       "polarity": "neutral",
       "color": "yellow",
-      "magnitudeUnit": "seconds",
-      "baseCost": 0.2,
-      "defaultDuration": 120,
+      "magnitude_unit": "seconds",
+      "base_cost": 0.2,
+      "default_duration": 120,
       "channels": [
         "spell"
       ],
@@ -283,9 +283,9 @@
       "category": "utility",
       "polarity": "beneficial",
       "color": "blue",
-      "magnitudeUnit": "points",
-      "baseCost": 0.02,
-      "defaultDuration": 120,
+      "magnitude_unit": "points",
+      "base_cost": 0.02,
+      "default_duration": 120,
       "channels": [
         "spell",
         "potion",
@@ -303,9 +303,9 @@
       "polarity": "harmful",
       "color": "blue",
       "phase": "earth",
-      "magnitudeUnit": "seconds",
-      "baseCost": 40,
-      "defaultDuration": 4,
+      "magnitude_unit": "seconds",
+      "base_cost": 40,
+      "default_duration": 4,
       "channels": [
         "spell",
         "poison",
@@ -322,9 +322,9 @@
       "category": "control",
       "polarity": "neutral",
       "color": "violet",
-      "magnitudeUnit": "seconds",
-      "baseCost": 1,
-      "defaultDuration": 20,
+      "magnitude_unit": "seconds",
+      "base_cost": 1,
+      "default_duration": 20,
       "channels": [
         "spell"
       ],
@@ -339,9 +339,9 @@
       "description": "Conjures or animates a creature/servant to fight for or assist the caster. Use 'parameter' for the group it calls (core:summon/<key>). Magnitude is typically a count or power rating; duration controls persistence. Generalizes former summon_* effects.",
       "category": "conjure",
       "polarity": "harmful",
-      "magnitudeUnit": "count",
-      "baseCost": 2,
-      "defaultDuration": 120,
+      "magnitude_unit": "count",
+      "base_cost": 2,
+      "default_duration": 120,
       "craftable": false,
       "channels": [
         "spell"
@@ -360,9 +360,9 @@
       "category": "conjure",
       "polarity": "beneficial",
       "color": "orange",
-      "magnitudeUnit": "count",
-      "baseCost": 2,
-      "defaultDuration": 60,
+      "magnitude_unit": "count",
+      "base_cost": 2,
+      "default_duration": 60,
       "craftable": false,
       "channels": [
         "spell"
@@ -380,7 +380,7 @@
       "category": "movement",
       "polarity": "beneficial",
       "color": "white",
-      "baseCost": 100,
+      "base_cost": 100,
       "craftable": false,
       "channels": [
         "spell"
@@ -397,7 +397,7 @@
       "category": "movement",
       "polarity": "neutral",
       "color": "violet",
-      "baseCost": 50,
+      "base_cost": 50,
       "craftable": false,
       "channels": [
         "spell"
@@ -414,7 +414,7 @@
       "category": "movement",
       "polarity": "beneficial",
       "color": "violet",
-      "baseCost": 100,
+      "base_cost": 100,
       "craftable": false,
       "channels": [
         "spell"
@@ -431,7 +431,7 @@
       "category": "utility",
       "polarity": "neutral",
       "color": "orange",
-      "baseCost": 40,
+      "base_cost": 40,
       "craftable": false,
       "channels": [
         "spell"
@@ -532,9 +532,9 @@
       "description": "Reduces damage and/or negative effects from a specific type or source. Use 'parameter' to specify (e.g. 'fire', 'frost', 'poison', 'physical', 'undead', 'magic', or a wuxing phase name). Magnitude is typically percent reduction. Generalizes resist_*, elemental_resist, physical_damage_resist, magic_resistance, etc. Color/phase on the effect are optional and context-specific.",
       "category": "resist",
       "polarity": "beneficial",
-      "magnitudeUnit": "percent",
-      "baseCost": 0.1,
-      "defaultDuration": 60,
+      "magnitude_unit": "percent",
+      "base_cost": 0.1,
+      "default_duration": 60,
       "channels": [
         "innate",
         "spell",
@@ -552,7 +552,7 @@
       "description": "Removes active conditions, poisons, or afflictions. Use 'parameter' to specify the condition (e.g. 'poison'). Generalizes specific cure_* effects.",
       "category": "cure",
       "polarity": "beneficial",
-      "baseCost": 20,
+      "base_cost": 20,
       "channels": [
         "spell",
         "potion",
@@ -568,8 +568,8 @@
       "description": "Grants a chance to absorb incoming hostile magic, converting a portion of the energy into mana.",
       "category": "utility",
       "polarity": "beneficial",
-      "magnitudeUnit": "percent",
-      "baseCost": 0.2,
+      "magnitude_unit": "percent",
+      "base_cost": 0.2,
       "channels": [
         "innate",
         "spell"
@@ -600,8 +600,8 @@
       "description": "Modifies base movement speed (exploration feet/round or combat units/speed rating). Parameter can specify mode ('exploration', 'combat_turnbased', 'action') or be general. Negative values slow the character.",
       "category": "utility",
       "polarity": "beneficial",
-      "magnitudeUnit": "percent",
-      "baseCost": 0.1,
+      "magnitude_unit": "percent",
+      "base_cost": 0.1,
       "channels": [
         "innate",
         "spell",
@@ -616,12 +616,12 @@
       "key": "fortify_skill",
       "parameter_category": "skill",
       "label": "Fortify Skill",
-      "description": "Temporarily or permanently increases a specific skill rating (0-100 scale). Use 'parameter' to specify the skill id (e.g. 'blades', 'red_magic'). Magnitude is the bonus in skill points. When applied, use 'durationType': 'unlimited' (stackable, magnitudes add) or 'temporal' (same effect+parameter override each other; highest magnitude wins as the persistent value, typically with longest duration).",
+      "description": "Temporarily or permanently increases a specific skill rating (0-100 scale). Use 'parameter' to specify the skill id (e.g. 'blades', 'red_magic'). Magnitude is the bonus in skill points. When applied, use 'duration_type': 'unlimited' (stackable, magnitudes add) or 'temporal' (same effect+parameter override each other; highest magnitude wins as the persistent value, typically with longest duration).",
       "category": "fortify",
       "polarity": "beneficial",
-      "magnitudeUnit": "points",
-      "baseCost": 0.2,
-      "defaultDurationType": "unlimited",
+      "magnitude_unit": "points",
+      "base_cost": 0.2,
+      "default_duration_type": "unlimited",
       "channels": [
         "innate",
         "spell",
@@ -639,9 +639,9 @@
       "description": "Temporarily or permanently increases an attribute (1-10 scale). Use 'parameter' to specify the ability id (e.g. 'str', 'wil') or 'all' for every attribute. Magnitude is the bonus.",
       "category": "fortify",
       "polarity": "beneficial",
-      "magnitudeUnit": "points",
-      "baseCost": 2,
-      "defaultDurationType": "unlimited",
+      "magnitude_unit": "points",
+      "base_cost": 2,
+      "default_duration_type": "unlimited",
       "channels": [
         "innate",
         "spell",
@@ -658,12 +658,12 @@
       "key": "fortify_resource",
       "reserved": true,
       "label": "Fortify Resource",
-      "description": "Increases the maximum of a resource pool (e.g. hit points, mana, stamina). Use 'parameter' to specify the resource ('health', 'stamina', 'mana', 'action_points'). Magnitude is the increase in points. Supports durationType for temporal vs unlimited behavior.",
+      "description": "Increases the maximum of a resource pool (e.g. hit points, mana, stamina). Use 'parameter' to specify the resource ('health', 'stamina', 'mana', 'action_points'). Magnitude is the increase in points. Supports duration_type for temporal vs unlimited behavior.",
       "category": "fortify",
       "polarity": "beneficial",
-      "magnitudeUnit": "points",
-      "baseCost": 0.2,
-      "defaultDurationType": "unlimited",
+      "magnitude_unit": "points",
+      "base_cost": 0.2,
+      "default_duration_type": "unlimited",
       "channels": [
         "innate",
         "spell",
@@ -682,8 +682,8 @@
       "description": "Reduces a specific skill (temporary or with duration). Parameter specifies the skill id. Magnitude is the amount drained.",
       "category": "drain",
       "polarity": "harmful",
-      "magnitudeUnit": "points",
-      "baseCost": 0.2,
+      "magnitude_unit": "points",
+      "base_cost": 0.2,
       "channels": [
         "innate",
         "spell",
@@ -702,8 +702,8 @@
       "description": "Reduces a specific attribute (temporary drain). Parameter specifies the ability id. Magnitude is the amount drained (can go below normal min temporarily).",
       "category": "drain",
       "polarity": "harmful",
-      "magnitudeUnit": "points",
-      "baseCost": 1,
+      "magnitude_unit": "points",
+      "base_cost": 1,
       "channels": [
         "innate",
         "spell",
@@ -722,8 +722,8 @@
       "description": "Directly damages/reduces an attribute (like a wound or curse). Parameter for the ability. Can be temporary (with duration) or longer-lasting. Magnitude is the reduction.",
       "category": "damage",
       "polarity": "harmful",
-      "magnitudeUnit": "points",
-      "baseCost": 10,
+      "magnitude_unit": "points",
+      "base_cost": 10,
       "channels": [
         "innate",
         "spell",
@@ -742,8 +742,8 @@
       "description": "Directly damages a skill rating (e.g. crippling a skill). Parameter for the skill id. Magnitude is the reduction in points.",
       "category": "damage",
       "polarity": "harmful",
-      "magnitudeUnit": "points",
-      "baseCost": 1,
+      "magnitude_unit": "points",
+      "base_cost": 1,
       "channels": [
         "innate",
         "spell",
@@ -762,8 +762,8 @@
       "description": "Drains a resource pool (temporary reduction to current or max). Parameter: 'health', 'stamina', 'mana', etc. Magnitude is the amount drained.",
       "category": "drain",
       "polarity": "harmful",
-      "magnitudeUnit": "points",
-      "baseCost": 3,
+      "magnitude_unit": "points",
+      "base_cost": 3,
       "channels": [
         "innate",
         "spell",
@@ -782,8 +782,8 @@
       "description": "Directly damages a resource pool (like a wound reducing max HP). Parameter for the resource. Magnitude is the reduction.",
       "category": "damage",
       "polarity": "harmful",
-      "magnitudeUnit": "points",
-      "baseCost": 8,
+      "magnitude_unit": "points",
+      "base_cost": 8,
       "channels": [
         "innate",
         "spell",
@@ -802,9 +802,9 @@
       "category": "control",
       "polarity": "harmful",
       "phase": "wood",
-      "magnitudeUnit": "points",
-      "baseCost": 1,
-      "defaultDuration": 86400,
+      "magnitude_unit": "points",
+      "base_cost": 1,
+      "default_duration": 86400,
       "channels": [
         "innate",
         "poison",
@@ -822,8 +822,8 @@
       "category": "control",
       "polarity": "harmful",
       "phase": "wood",
-      "magnitudeUnit": "points",
-      "defaultDuration": 43200,
+      "magnitude_unit": "points",
+      "default_duration": 43200,
       "channels": [
         "innate",
         "poison"
@@ -840,8 +840,8 @@
       "category": "control",
       "polarity": "harmful",
       "phase": "wood",
-      "magnitudeUnit": "points",
-      "defaultDuration": 172800,
+      "magnitude_unit": "points",
+      "default_duration": 172800,
       "channels": [
         "innate",
         "poison"
@@ -858,7 +858,7 @@
       "description": "A fast-acting poison that can freeze the target in place. Often used on weapons or in traps. Applies its sub_effects (e.g. paralyze) as symptoms. Resistance (via resist effect with parameter 'poison') can reduce duration or prevent full effect. A poison must not apply other poison effects to avoid recursion.",
       "category": "control",
       "polarity": "harmful",
-      "magnitudeUnit": "seconds",
+      "magnitude_unit": "seconds",
       "channels": [
         "poison",
         "coating"
@@ -877,8 +877,8 @@
       "description": "Saps the target's stamina and strength over a short period. Common in coatings or toxic weapons. Applies its sub_effects (e.g. damage_stamina) as symptoms. Resistance (via resist effect with parameter 'poison') can reduce magnitude or duration. A poison must not apply other poison effects to avoid recursion.",
       "category": "drain",
       "polarity": "harmful",
-      "magnitudeUnit": "points",
-      "defaultDuration": 60,
+      "magnitude_unit": "points",
+      "default_duration": 60,
       "channels": [
         "poison",
         "coating"
@@ -898,8 +898,8 @@
       "description": "Directly damages the target's health over time. Potent versions used by assassins or in deadly traps. Applies its sub_effects (e.g. damage_health) as symptoms. Resistance (via resist effect with parameter 'poison') can reduce magnitude or duration. A poison must not apply other poison effects to avoid recursion.",
       "category": "damage",
       "polarity": "harmful",
-      "magnitudeUnit": "points",
-      "defaultDuration": 30,
+      "magnitude_unit": "points",
+      "default_duration": 30,
       "channels": [
         "poison",
         "coating"
@@ -917,7 +917,7 @@
       "description": "Generic poison delivery mechanism. When applied (via 'poison' or 'coating' channels), applies the effects listed in sub_effects as the symptoms/payload to the target. Supports generic poisons by allowing any poison effect to call other (non-poison) effects recursively as symptoms (damage, drain, control, etc.). A poison effect (any with 'poison' tag or poison/coating channel) must not list other poison effects in sub_effects to prevent recursion or self-poisoning.",
       "category": "control",
       "polarity": "harmful",
-      "magnitudeUnit": "level",
+      "magnitude_unit": "level",
       "channels": [
         "poison",
         "coating"
@@ -934,9 +934,9 @@
       "category": "control",
       "polarity": "harmful",
       "color": "yellow",
-      "magnitudeUnit": "seconds",
-      "baseCost": 10,
-      "defaultDuration": 30,
+      "magnitude_unit": "seconds",
+      "base_cost": 10,
+      "default_duration": 30,
       "channels": [
         "spell",
         "potion",
@@ -955,9 +955,9 @@
       "category": "control",
       "polarity": "harmful",
       "color": "yellow",
-      "magnitudeUnit": "seconds",
-      "baseCost": 3,
-      "defaultDuration": 60,
+      "magnitude_unit": "seconds",
+      "base_cost": 3,
+      "default_duration": 60,
       "channels": [
         "spell",
         "potion"
@@ -974,9 +974,9 @@
       "category": "control",
       "polarity": "harmful",
       "color": "yellow",
-      "magnitudeUnit": "seconds",
-      "baseCost": 5,
-      "defaultDuration": 30,
+      "magnitude_unit": "seconds",
+      "base_cost": 5,
+      "default_duration": 30,
       "channels": [
         "spell",
         "trap"
@@ -992,9 +992,9 @@
       "description": "Holds the target in place, restricting movement and attacks. Escape via contested athletics check.",
       "category": "control",
       "polarity": "harmful",
-      "magnitudeUnit": "seconds",
-      "baseCost": 20,
-      "defaultDuration": 10,
+      "magnitude_unit": "seconds",
+      "base_cost": 20,
+      "default_duration": 10,
       "channels": [
         "spell",
         "innate"
@@ -1011,9 +1011,9 @@
       "category": "control",
       "polarity": "harmful",
       "color": "blue",
-      "magnitudeUnit": "seconds",
-      "baseCost": 30,
-      "defaultDuration": 10,
+      "magnitude_unit": "seconds",
+      "base_cost": 30,
+      "default_duration": 10,
       "channels": [
         "spell",
         "trap",
@@ -1032,9 +1032,9 @@
       "polarity": "harmful",
       "color": "blue",
       "phase": "earth",
-      "magnitudeUnit": "seconds",
-      "baseCost": 50,
-      "defaultDuration": 120,
+      "magnitude_unit": "seconds",
+      "base_cost": 50,
+      "default_duration": 120,
       "channels": [
         "spell",
         "trap"
@@ -1050,9 +1050,9 @@
       "description": "Knocks the target to the ground, rendering them prone.",
       "category": "control",
       "polarity": "harmful",
-      "magnitudeUnit": "seconds",
-      "baseCost": 20,
-      "defaultDuration": 5,
+      "magnitude_unit": "seconds",
+      "base_cost": 20,
+      "default_duration": 5,
       "channels": [
         "spell",
         "innate",
@@ -1072,9 +1072,9 @@
       "polarity": "harmful",
       "color": "blue",
       "phase": "wood",
-      "magnitudeUnit": "seconds",
-      "baseCost": 15,
-      "defaultDuration": 20,
+      "magnitude_unit": "seconds",
+      "base_cost": 15,
+      "default_duration": 20,
       "channels": [
         "spell",
         "trap",
@@ -1092,9 +1092,9 @@
       "category": "control",
       "polarity": "harmful",
       "color": "blue",
-      "magnitudeUnit": "seconds",
-      "baseCost": 30,
-      "defaultDuration": 4,
+      "magnitude_unit": "seconds",
+      "base_cost": 30,
+      "default_duration": 4,
       "channels": [
         "spell",
         "coating",
@@ -1112,9 +1112,9 @@
       "category": "control",
       "polarity": "harmful",
       "color": "blue",
-      "magnitudeUnit": "seconds",
-      "baseCost": 40,
-      "defaultDuration": 60,
+      "magnitude_unit": "seconds",
+      "base_cost": 40,
+      "default_duration": 60,
       "channels": [
         "spell",
         "coating",
@@ -1133,9 +1133,9 @@
       "polarity": "harmful",
       "color": "red",
       "phase": "fire",
-      "magnitudeUnit": "points",
-      "baseCost": 5,
-      "defaultDuration": 10,
+      "magnitude_unit": "points",
+      "base_cost": 5,
+      "default_duration": 10,
       "channels": [
         "spell",
         "coating",
@@ -1156,9 +1156,9 @@
       "category": "damage",
       "polarity": "harmful",
       "phase": "wood",
-      "magnitudeUnit": "points",
-      "baseCost": 5,
-      "defaultDuration": 15,
+      "magnitude_unit": "points",
+      "base_cost": 5,
+      "default_duration": 15,
       "channels": [
         "spell",
         "coating",
@@ -1178,9 +1178,9 @@
       "polarity": "harmful",
       "color": "blue",
       "phase": "water",
-      "magnitudeUnit": "seconds",
-      "baseCost": 10,
-      "defaultDuration": 15,
+      "magnitude_unit": "seconds",
+      "base_cost": 10,
+      "default_duration": 15,
       "channels": [
         "spell",
         "coating",
@@ -1199,9 +1199,9 @@
       "category": "control",
       "polarity": "harmful",
       "color": "yellow",
-      "magnitudeUnit": "seconds",
-      "baseCost": 40,
-      "defaultDuration": 10,
+      "magnitude_unit": "seconds",
+      "base_cost": 40,
+      "default_duration": 10,
       "channels": [
         "spell",
         "trap",
@@ -1219,8 +1219,8 @@
       "category": "utility",
       "polarity": "neutral",
       "color": "violet",
-      "magnitudeUnit": "level",
-      "baseCost": 20,
+      "magnitude_unit": "level",
+      "base_cost": 20,
       "channels": [
         "spell"
       ],
@@ -1235,9 +1235,9 @@
       "category": "control",
       "polarity": "harmful",
       "color": "black",
-      "magnitudeUnit": "seconds",
-      "baseCost": 3,
-      "defaultDuration": 60,
+      "magnitude_unit": "seconds",
+      "base_cost": 3,
+      "default_duration": 60,
       "channels": [
         "spell",
         "trap"
@@ -1254,9 +1254,9 @@
       "category": "control",
       "polarity": "harmful",
       "color": "indigo",
-      "magnitudeUnit": "seconds",
-      "baseCost": 5,
-      "defaultDuration": 10,
+      "magnitude_unit": "seconds",
+      "base_cost": 5,
+      "default_duration": 10,
       "channels": [
         "spell",
         "coating",
@@ -1274,9 +1274,9 @@
       "category": "control",
       "polarity": "harmful",
       "color": "yellow",
-      "magnitudeUnit": "seconds",
-      "baseCost": 5,
-      "defaultDuration": 8,
+      "magnitude_unit": "seconds",
+      "base_cost": 5,
+      "default_duration": 8,
       "channels": [
         "spell",
         "innate"
@@ -1293,9 +1293,9 @@
       "category": "control",
       "polarity": "harmful",
       "color": "blue",
-      "magnitudeUnit": "seconds",
-      "baseCost": 10,
-      "defaultDuration": 4,
+      "magnitude_unit": "seconds",
+      "base_cost": 10,
+      "default_duration": 4,
       "channels": [
         "spell",
         "coating",
@@ -1313,9 +1313,9 @@
       "description": "Partially ignores the target's armor DR. Magnitude is the percentage of armor DR ignored (e.g. magnitude 50 = 50% armor ignored). Common on piercing weapons and dedicated armor-piercing ammunition.",
       "category": "control",
       "polarity": "harmful",
-      "magnitudeUnit": "percent",
-      "baseCost": 0.5,
-      "defaultDuration": 1,
+      "magnitude_unit": "percent",
+      "base_cost": 0.5,
+      "default_duration": 1,
       "channels": [
         "enchantment",
         "coating",
@@ -1335,9 +1335,9 @@
       "description": "Reduces the target's armor DR for a duration. Magnitude is the flat DR reduction. Stacks across multiple applications up to a cap.",
       "category": "control",
       "polarity": "harmful",
-      "magnitudeUnit": "points",
-      "baseCost": 2,
-      "defaultDuration": 10,
+      "magnitude_unit": "points",
+      "base_cost": 2,
+      "default_duration": 10,
       "channels": [
         "enchantment",
         "coating",
@@ -1357,9 +1357,9 @@
       "description": "Causes a deep wound that deals damage over time. More severe than a standard bleed. Magnitude is damage per tick, duration controls total ticks. Common on serrated blades and beast claws.",
       "category": "damage",
       "polarity": "harmful",
-      "magnitudeUnit": "points",
-      "baseCost": 5,
-      "defaultDuration": 12,
+      "magnitude_unit": "points",
+      "base_cost": 5,
+      "default_duration": 12,
       "channels": [
         "enchantment",
         "coating",
@@ -1379,9 +1379,9 @@
       "description": "Reduces the target's movement speed and Agility. Magnitude is the penalty to effective AGI and speed percentage.",
       "category": "control",
       "polarity": "harmful",
-      "magnitudeUnit": "points",
-      "baseCost": 2,
-      "defaultDuration": 8,
+      "magnitude_unit": "points",
+      "base_cost": 2,
+      "default_duration": 8,
       "channels": [
         "enchantment",
         "coating",
@@ -1402,9 +1402,9 @@
       "description": "Temporarily increases the damage dealt by a weapon. Magnitude is added to the weapon's damage roll (flat bonus, not dice). Common from magical enchantments or temporary coatings.",
       "category": "fortify",
       "polarity": "beneficial",
-      "magnitudeUnit": "points",
-      "baseCost": 1,
-      "defaultDuration": 60,
+      "magnitude_unit": "points",
+      "base_cost": 1,
+      "default_duration": 60,
       "channels": [
         "enchantment",
         "coating",
@@ -1422,9 +1422,9 @@
       "description": "Increases attack speed and reduces recovery time. Magnitude is the percentage reduction in recovery.",
       "category": "fortify",
       "polarity": "beneficial",
-      "magnitudeUnit": "percent",
-      "baseCost": 0.5,
-      "defaultDuration": 15,
+      "magnitude_unit": "percent",
+      "base_cost": 0.5,
+      "default_duration": 15,
       "channels": [
         "enchantment",
         "spell",
@@ -1443,9 +1443,9 @@
       "description": "Expands the critical hit window or increases critical damage multiplier. Magnitude is the bonus to the crit range (e.g. +1 = 01-06 instead of 01-05).",
       "category": "fortify",
       "polarity": "beneficial",
-      "magnitudeUnit": "points",
-      "baseCost": 1,
-      "defaultDuration": 60,
+      "magnitude_unit": "points",
+      "base_cost": 1,
+      "default_duration": 60,
       "channels": [
         "enchantment",
         "spell",
@@ -1464,9 +1464,9 @@
       "description": "Increases the target's effective armor DR or evasion. Magnitude is the bonus to DR (if parameter is 'armor') or evasion (if parameter is 'evasion').",
       "category": "fortify",
       "polarity": "beneficial",
-      "magnitudeUnit": "points",
-      "baseCost": 2,
-      "defaultDuration": 30,
+      "magnitude_unit": "points",
+      "base_cost": 2,
+      "default_duration": 30,
       "channels": [
         "enchantment",
         "spell",
@@ -1486,9 +1486,9 @@
       "description": "Converts a percentage of dealt damage into health for the attacker. Magnitude is the percentage converted. Common on necrotic weapons and vampiric enchantments.",
       "category": "restore",
       "polarity": "beneficial",
-      "magnitudeUnit": "percent",
-      "baseCost": 0.5,
-      "defaultDuration": 1,
+      "magnitude_unit": "percent",
+      "base_cost": 0.5,
+      "default_duration": 1,
       "channels": [
         "enchantment",
         "innate",
@@ -1507,9 +1507,9 @@
       "description": "Converts a percentage of dealt damage into mana for the attacker. Magnitude is the percentage converted.",
       "category": "restore",
       "polarity": "beneficial",
-      "magnitudeUnit": "percent",
-      "baseCost": 0.5,
-      "defaultDuration": 1,
+      "magnitude_unit": "percent",
+      "base_cost": 0.5,
+      "default_duration": 1,
       "channels": [
         "enchantment",
         "spell"
@@ -1527,9 +1527,9 @@
       "description": "Marks the target, making them more vulnerable to all damage. Magnitude is the percentage increase in damage taken. Stacks with expose (id 62).",
       "category": "control",
       "polarity": "harmful",
-      "magnitudeUnit": "percent",
-      "baseCost": 0.5,
-      "defaultDuration": 8,
+      "magnitude_unit": "percent",
+      "base_cost": 0.5,
+      "default_duration": 8,
       "channels": [
         "enchantment",
         "coating",
@@ -1549,8 +1549,8 @@
       "description": "On a successful melee hit, the attack also strikes a second adjacent target. Magnitude is the percentage of the original damage dealt to the secondary target.",
       "category": "damage",
       "polarity": "harmful",
-      "magnitudeUnit": "percent",
-      "defaultDuration": 1,
+      "magnitude_unit": "percent",
+      "default_duration": 1,
       "channels": [
         "enchantment",
         "innate"
@@ -1568,9 +1568,9 @@
       "description": "On hit, disrupts the target's current action. Magnitude is a bonus to the interrupt check. Targets with higher END resist more effectively.",
       "category": "control",
       "polarity": "harmful",
-      "magnitudeUnit": "points",
-      "baseCost": 10,
-      "defaultDuration": 1,
+      "magnitude_unit": "points",
+      "base_cost": 10,
+      "default_duration": 1,
       "channels": [
         "enchantment",
         "coating",
@@ -1590,8 +1590,8 @@
       "category": "utility",
       "polarity": "neutral",
       "color": "indigo",
-      "magnitudeUnit": "level",
-      "baseCost": 20,
+      "magnitude_unit": "level",
+      "base_cost": 20,
       "channels": [
         "spell"
       ],
@@ -1607,8 +1607,8 @@
       "category": "utility",
       "polarity": "neutral",
       "color": "indigo",
-      "magnitudeUnit": "level",
-      "baseCost": 20,
+      "magnitude_unit": "level",
+      "base_cost": 20,
       "channels": [
         "spell"
       ],
@@ -1623,9 +1623,9 @@
       "description": "A weapon's edge against one kind of creature: on a hit, +magnitude damage when the defender's creature type is the parameter (undead, beast, ...).",
       "category": "damage",
       "polarity": "harmful",
-      "magnitudeUnit": "points",
-      "baseCost": 1,
-      "defaultDuration": 1,
+      "magnitude_unit": "points",
+      "base_cost": 1,
+      "default_duration": 1,
       "channels": [
         "enchantment"
       ],
@@ -1640,8 +1640,8 @@
       "description": "On a hit, ends the defender if it was summoned: the caller dismisses that summon. A creature that was not summoned is unharmed by it.",
       "category": "control",
       "polarity": "harmful",
-      "baseCost": 20,
-      "defaultDuration": 1,
+      "base_cost": 20,
+      "default_duration": 1,
       "channels": [
         "enchantment"
       ],
@@ -1657,9 +1657,9 @@
       "description": "On a hit, damage over time of the parameter's damage type, magnitude per tick for the duration; on a weapon the parameter is the attack's damage type.",
       "category": "damage",
       "polarity": "harmful",
-      "magnitudeUnit": "points",
-      "baseCost": 5,
-      "defaultDuration": 10,
+      "magnitude_unit": "points",
+      "base_cost": 5,
+      "default_duration": 10,
       "channels": [
         "enchantment"
       ],
@@ -1675,9 +1675,9 @@
       "description": "While the caster holds the spell, every active summon of theirs gains magnitude to its attack rolls (docs/core/commanding.md#the-held-command).",
       "category": "fortify",
       "polarity": "beneficial",
-      "magnitudeUnit": "points",
-      "baseCost": 0.5,
-      "defaultDuration": 60,
+      "magnitude_unit": "points",
+      "base_cost": 0.5,
+      "default_duration": 60,
       "craftable": false,
       "channels": [
         "spell"

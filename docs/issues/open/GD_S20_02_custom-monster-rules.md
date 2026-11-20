@@ -1,0 +1,22 @@
+#### GD_S20_02_custom-monster-rules A custom monster computes like a character, without a player's limits
+- Status: todo
+- Priority: medium
+- Needs: —
+- Modified: 2026-11-20
+- Do: Owner request, 2026-11-20: monsters compute like characters, but a GM building a custom monster has no limits.
+  - **What already holds:** a monster is an actor of the same shape as a player, and `monster_sheet` computes its derived stats, skills, and perks with the player's formulas (docs/core/actor-sheet.md). Since DE_S02_03, HP is the player formula times the role's share. Attributes may pass 10 at high levels [V 2026-11-20, `test_bestiary.py`]. What is not written down is which of a player's limits a GM's own monster drops, so a custom monster editor has no rule to follow.
+  - **The rule:** a section `## A custom monster` in docs/core/actor-sheet.md. A custom monster is a monster row a GM writes: attributes, level, role, skills, perks, attacks, resistances, and the other monster fields.
+  - **What it does not check:**
+    - no point-buy, so `creation` does not apply;
+    - no attribute maximum (only the 1 to 30 schema range, or a new `custom_monster` bound in data if the spec finds one is needed);
+    - no perk prerequisites, ranks, or `perks_per_level`: any perk at any rank;
+    - any level from 1 to 30;
+    - no skill pool: a written skill is the GM's value, up to `skill_cap`.
+  - **What it still checks:** the schema, every reference (a perk, an attack's weapon, a spell must exist), one template per slot, and the role's HP share. So it computes exactly as a core monster does.
+  - **The result:** `monster_sheet` gives a custom monster the same stat block a core row of the same values gets, and the balance report can read it (it may lie outside the role's band; that is shown as a note, not refused) [A].
+  - **The Python reference:** `monster_sheet` vectors for a custom monster past every player limit (attribute 15 at level 5, a perk without its prerequisite, a skill written at 90 at level 1). A `custom_monster` check reports its problems the way `files.Check` does.
+- Keys: `## A custom monster` in actor-sheet.md; the problems a custom monster check reports
+- Files: ~6 (docs/core/actor-sheet.md, docs/modules/monsters.md, ruleset/scripts/kernel_reference.py, ruleset/tests/vectors/monster_sheet.json, docs/decisions/GD_S20_02_custom-monster-rules.md, changes/GD_S20_02_custom-monster-rules.md)
+- See: docs/core/actor-sheet.md, docs/modules/monsters.md, docs/issues/open/BE_S09_07_custom-monster-print.md
+- Done when: actor-sheet.md lists what a custom monster skips and what it keeps; `monster_sheet` vectors cover a monster past each player limit in Python and Go; an unknown perk or weapon is still an error.
+- Open: should the balance report refuse a custom monster far outside its role's band, or only note it [U]?
