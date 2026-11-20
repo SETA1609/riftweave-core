@@ -13,4 +13,4 @@
 - Keys: the `creation` block (`attribute_start`, `attribute_points`, `attribute_max`, `creation_perks_max`, `tag_skills`) [A]
 - Files: ~8 (ruleset/schemas/progression.schema.json, ruleset/data/progression/core.json, docs/modules/character-creation.md, docs/core/progression.md, ruleset/scripts/test_builds.py, ruleset/tests/vectors/progression.json, docs/decisions/GD_S07_07_creation-rules-as-data.md, changes/GD_S07_07_creation-rules-as-data.md)
 - See: docs/modules/character-creation.md#2-assign-attributes, ruleset/data/progression/core.json, ruleset/scripts/test_builds.py
-- Done when: the creation numbers are in the data and validate; the doc reads them from there; a vector rejects 11 points spent, an attribute of 11 before race, and an attribute under 4; every build still passes; `validate.py` and the tests pass.
+- Done when: the creation numbers are in the data and validate; the doc reads them from there; a vector rejects 11 points spent, an attribute of 11 before race, and one under `attribute_min` (1), and shows that lowering an attribute under 4 frees points (owner, 2026-11-20); every build still passes; `validate.py` and the tests pass.

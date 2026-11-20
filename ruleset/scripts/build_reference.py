@@ -55,7 +55,7 @@ def play(build):
         return problems, None
     bought = kernel_reference.point_buy(creation, assigned)
     if "error" in bought or bought["left"] != 0:
-        problems.append(f"attributes: {creation['attribute_start']} each plus {creation['attribute_points']} points, none over {creation['attribute_max']}")
+        problems.append(f"attributes: {creation['attribute_start']} each plus {creation['attribute_points']} points, none under {creation['attribute_min']} or over {creation['attribute_max']}")
     creation_mods = []
     for ref in build.get("creation_perks", []):
         row = features.get(_key(ref))

@@ -99,7 +99,7 @@ class TestTheChecker(unittest.TestCase):
 
     def point_buy_problem(self):
         rules = creation()
-        return f"attributes: {rules['attribute_start']} each plus {rules['attribute_points']} points, none over {rules['attribute_max']}"
+        return f"attributes: {rules['attribute_start']} each plus {rules['attribute_points']} points, none under {rules['attribute_min']} or over {rules['attribute_max']}"
 
     def test_a_point_buy_that_is_not_ten_points(self):
         problems = self.broken(lambda b: b["attributes"].update({"str": 10}))

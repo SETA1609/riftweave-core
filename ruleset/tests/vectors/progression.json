@@ -1384,7 +1384,46 @@
     }
   },
   {
-    "name": "point-buy: an attribute under 4 is rejected",
+    "name": "point-buy: an attribute lowered to 1 frees 3 points to spend elsewhere",
+    "operation": "point_buy",
+    "actor": {
+      "attributes": {
+        "str": 4,
+        "per": 4,
+        "end": 4,
+        "int": 10,
+        "wil": 8,
+        "agi": 7,
+        "cha": 1,
+        "lck": 4
+      }
+    },
+    "expect": {
+      "spent": 10,
+      "left": 0
+    }
+  },
+  {
+    "name": "point-buy: lowered points still count: 14 bought less 3 freed is 11, over the 10",
+    "operation": "point_buy",
+    "actor": {
+      "attributes": {
+        "str": 4,
+        "per": 4,
+        "end": 4,
+        "int": 10,
+        "wil": 9,
+        "agi": 7,
+        "cha": 1,
+        "lck": 4
+      }
+    },
+    "expect": {
+      "error": "11 points spent, more than the 10 to distribute"
+    }
+  },
+  {
+    "name": "point-buy: an attribute under the minimum of 1 is rejected",
     "operation": "point_buy",
     "actor": {
       "attributes": {
@@ -1394,12 +1433,12 @@
         "int": 10,
         "wil": 5,
         "agi": 4,
-        "cha": 3,
+        "cha": 0,
         "lck": 4
       }
     },
     "expect": {
-      "error": "attribute cha is 3, under the start of 4"
+      "error": "attribute cha is 0, under the point-buy min of 1"
     }
   },
   {

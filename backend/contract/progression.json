@@ -140,7 +140,7 @@
       },
       "spent": {
         "type": "integer",
-        "description": "With spend: the points spent. With point_buy: the attribute points spent above creation.attribute_start."
+        "description": "With spend: the points spent. With point_buy: the attribute points spent above creation.attribute_start, less the points freed by attributes under it."
       },
       "left": {
         "type": "integer",

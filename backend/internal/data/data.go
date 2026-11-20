@@ -234,6 +234,7 @@ type Progression struct {
 	// (docs/core/progression.md#character-creation).
 	Creation struct {
 		AttributeStart   int64 `json:"attribute_start"`
+		AttributeMinimum int64 `json:"attribute_min"`
 		AttributePoints  int64 `json:"attribute_points"`
 		AttributeMaximum int64 `json:"attribute_max"`
 		CreationPerksMax int64 `json:"creation_perks_max"`

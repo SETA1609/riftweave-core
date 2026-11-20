@@ -204,18 +204,19 @@ func Run(ruleset *data.Ruleset, input Input) (any, error) {
 
 // pointBuy checks a creation point-buy against the creation block (docs/core/progression.md,
 // rule 7): the attributes as assigned, before race and creation perks. Each attribute must be
-// given and lie from attribute_start to attribute_max, in ability order; then the points spent
-// may not pass attribute_points. Fewer points are a draft, not an error.
+// given and lie from attribute_min to attribute_max, in ability order; then the points spent, each
+// attribute minus attribute_start (an attribute under the start frees points), may not pass
+// attribute_points. Fewer points are a draft, not an error.
 func pointBuy(rules *data.Progression, attributes actor.Attributes) (spendResult, error) {
-	var start, points, highest int64 = rules.Creation.AttributeStart, rules.Creation.AttributePoints, rules.Creation.AttributeMaximum
+	var start, lowest, points, highest int64 = rules.Creation.AttributeStart, rules.Creation.AttributeMinimum, rules.Creation.AttributePoints, rules.Creation.AttributeMaximum
 	var spent int64 = 0
 	for ability := actor.Ability(0); ability < actor.AbilityCount; ability++ {
 		if !attributes.Has(ability) {
 			return spendResult{}, fmt.Errorf("attribute %s is missing", ability)
 		}
 		var value int64 = attributes.Get(ability)
-		if value < start {
-			return spendResult{}, fmt.Errorf("attribute %s is %d, under the start of %d", ability, value, start)
+		if value < lowest {
+			return spendResult{}, fmt.Errorf("attribute %s is %d, under the point-buy min of %d", ability, value, lowest)
 		}
 		if value > highest {
 			return spendResult{}, fmt.Errorf("attribute %s is %d, over the point-buy max of %d", ability, value, highest)

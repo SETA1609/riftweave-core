@@ -84,6 +84,7 @@
     },
     "creation": {
       "attribute_start": 4,
+      "attribute_min": 1,
       "attribute_points": 10,
       "attribute_max": 10,
       "creation_perks_max": 2

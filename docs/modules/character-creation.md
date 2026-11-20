@@ -68,7 +68,9 @@ The eight attributes (`str per end int wil agi cha lck`, defined in
 
 1. **Start** every attribute at **4** (`creation.attribute_start`).
 2. **Distribute 10 points** (`creation.attribute_points`) among them, to a maximum of **10**
-   (`creation.attribute_max`) in any one.
+   (`creation.attribute_max`) in any one. You may also **lower** an attribute below 4, down to
+   **1** (`creation.attribute_min`): each point you take off is one more to spend, so CHA 1
+   gives you 13 points for the rest. That's your choice; the rules don't stop it.
 3. **Apply racial `ability_modifiers`** from step 1 (these can push a stat above the
    point-buy cap or below 4).
 

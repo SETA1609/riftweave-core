@@ -1035,15 +1035,16 @@ POINT_BUY_ABILITIES = ("str", "per", "end", "int", "wil", "agi", "cha", "lck")
 def point_buy(creation, attributes):
     """A creation point-buy checked against progression's `creation` block (docs/core/progression.md,
     rule 7): the attributes as assigned, before race and creation perks. Each attribute must be
-    given and lie from attribute_start to attribute_max, in ability order; then the points spent
-    may not pass attribute_points. Fewer points are a draft, not an error."""
-    start, points, highest = creation["attribute_start"], creation["attribute_points"], creation["attribute_max"]
+    given and lie from attribute_min to attribute_max, in ability order; then the points spent,
+    each attribute minus attribute_start (an attribute under the start frees points), may not pass
+    attribute_points. Fewer points are a draft, not an error."""
+    start, lowest, points, highest = creation["attribute_start"], creation["attribute_min"], creation["attribute_points"], creation["attribute_max"]
     for ability in POINT_BUY_ABILITIES:
         if ability not in attributes:
             return {"error": f"attribute {ability} is missing"}
         value = attributes[ability]
-        if value < start:
-            return {"error": f"attribute {ability} is {value}, under the start of {start}"}
+        if value < lowest:
+            return {"error": f"attribute {ability} is {value}, under the point-buy min of {lowest}"}
         if value > highest:
             return {"error": f"attribute {ability} is {value}, over the point-buy max of {highest}"}
     spent = sum(attributes[ability] - start for ability in POINT_BUY_ABILITIES)

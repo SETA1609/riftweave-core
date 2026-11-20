@@ -46,11 +46,12 @@
           "description": "The point-buy and the creation-perk cap of a new character (docs/core/progression.md#character-creation). The tag-skill count, the level-1 pool, and the skill base ratings are tag_skills, skill_points, and skill_start.",
           "properties": {
             "attribute_start": { "type": "integer", "minimum": 1, "description": "Every attribute before a point is spent." },
+            "attribute_min": { "type": "integer", "minimum": 1, "description": "The lowest attribute a point-buy may set. Each point under attribute_start frees one point to spend elsewhere; a player's choice, not a rule against it." },
             "attribute_points": { "type": "integer", "minimum": 0, "description": "Points to distribute among the eight attributes." },
             "attribute_max": { "type": "integer", "minimum": 1, "description": "The highest attribute the points may reach, before racial modifiers and creation perks." },
             "creation_perks_max": { "type": "integer", "minimum": 0, "description": "Creation perks (features of type creation) a character may take, from 0." }
           },
-          "required": ["attribute_start", "attribute_points", "attribute_max", "creation_perks_max"],
+          "required": ["attribute_start", "attribute_min", "attribute_points", "attribute_max", "creation_perks_max"],
           "additionalProperties": false
         },
         "perks_per_level": { "type": "integer", "minimum": 0 },
