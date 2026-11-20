@@ -9,11 +9,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from jsonschema import Draft7Validator, RefResolver  # noqa: E402
 
 from ancestry_reference import ancestry_modifiers, load_data  # noqa: E402
 from kernel_reference import apply_modifiers  # noqa: E402
-from validate import load_store  # noqa: E402
+from validate import load_store, schema_validator  # noqa: E402
 
 SCHEMAS = Path(__file__).resolve().parent.parent / "schemas"
 
@@ -35,7 +34,7 @@ class TestLineageSchema(unittest.TestCase):
         store = load_store()
         path = SCHEMAS / "race.schema.json"
         schema = store[path.as_uri()]
-        cls.validator = Draft7Validator(schema, resolver=RefResolver(path.as_uri(), schema, store=store))
+        cls.validator = schema_validator(schema, path.as_uri(), store)
 
     def valid(self, row):
         return not list(self.validator.iter_errors({"races": [row]}))

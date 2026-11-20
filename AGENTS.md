@@ -31,6 +31,7 @@ docker run --rm riftweave-validate
 ./scripts/container-image.sh   # image riftweave:python-<version from .toolchain-python-version>
 ./scripts/validate.sh          # python ruleset/scripts/validate.py
 ./scripts/test.sh              # unittest discover ruleset/scripts/test_*.py
+python ruleset/scripts/run_tests.py   # the same, one process per test file in parallel (what CI runs)
 ./scripts/format-json.sh       # lay out the listed JSON files; --check fails on drift (CONTRIBUTING.md#json-format)
 ./scripts/shell.sh             # bash in the toolchain container
 ./scripts/agent.sh             # devops-tools agent image (Claude Code); see tools/devops/README.md
@@ -65,7 +66,7 @@ This is the most important thing to understand before editing schemas or data:
 
 1. `validate.py` loads **every** `ruleset/schemas/*.schema.json` into an in-memory store, keyed by `file://` URI.
 2. For each data file, it reads the **`$schema`** field (a **relative path**, e.g. `"../../schemas/race.schema.json"`), resolves it from the data file's directory, and looks up the resulting `file://` URI in the store.
-3. Cross-schema `$ref`s (e.g. `"schema.json#/definitions/ability"`) are resolved using a `RefResolver` seeded with the full store.
+3. Cross-schema `$ref`s (e.g. `"schema.json#/definitions/ability"`) are resolved through a `referencing` registry seeded with the full store, which loads a schema that is not in the store (`schema.json`) from its file. One validator per schema is reused for every file (`schema_validator` in `validate.py`; tests use it too).
 
 **Consequences you must follow:**
 - Every data file **must** declare a `$schema` field. Files without one are skipped (with a warning) and not validated.

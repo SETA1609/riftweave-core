@@ -10,12 +10,18 @@ import json
 import math
 import os
 import re
+import functools
 from functools import partial
 import sys
 import warnings
 from pathlib import Path
 
-from jsonschema import validate, ValidationError, RefResolver
+from jsonschema import Draft7Validator, ValidationError
+from jsonschema.exceptions import best_match
+from referencing import Registry, Resource
+from referencing.exceptions import NoSuchResource
+from referencing.jsonschema import DRAFT7
+from urllib.parse import unquote, urlparse
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "data"
@@ -136,6 +142,52 @@ def load_store():
     for f in sorted(SCHEMA_DIR.glob("*.schema.json")):
         store[f.as_uri()] = json.loads(f.read_text())
     return store
+
+
+_REGISTRIES = {}
+_VALIDATORS = {}
+
+
+@functools.lru_cache(maxsize=None)
+def _retrieve(uri):
+    """Load a schema that is not in the store from its file, as RefResolver did (schema.json is
+    not a *.schema.json, so it is reached this way). Only local files; cached per uri."""
+    parsed = urlparse(uri)
+    if parsed.scheme != "file":
+        raise NoSuchResource(ref=uri)
+    try:
+        contents = json.loads(Path(unquote(parsed.path)).read_text())
+    except OSError:
+        raise NoSuchResource(ref=uri) from None
+    return Resource(contents=contents, specification=DRAFT7)
+
+
+def schema_registry(store):
+    """A `referencing` registry of every schema in `store` ({file uri: schema}), under its file uri
+    and under its own `$id` where it has one. Built once per store (OPS_S00_06)."""
+    key = id(store)
+    if key not in _REGISTRIES:
+        registry = Registry(retrieve=_retrieve).with_resources(
+            (uri, Resource(contents=schema, specification=DRAFT7)) for uri, schema in store.items()
+        )
+        _REGISTRIES[key] = (store, registry.crawl())
+    return _REGISTRIES[key][1]
+
+
+def schema_validator(schema, uri, store):
+    """A Draft 7 validator for `schema`, read from `uri`: a relative `$ref` resolves against `uri`
+    and the schemas in `store`. One validator per schema and store, so a reference is resolved once,
+    not once per file or vector (OPS_S00_06). Replaces jsonschema's deprecated RefResolver."""
+    key = (id(store), uri, id(schema))
+    if key not in _VALIDATORS:
+        rooted = schema if "$id" in schema else {**schema, "$id": uri}
+        _VALIDATORS[key] = (store, schema, Draft7Validator(rooted, registry=schema_registry(store)))
+    return _VALIDATORS[key][2]
+
+
+def first_schema_error(validator, instance):
+    """The error jsonschema.validate would raise (its best match), or None."""
+    return best_match(validator.iter_errors(instance))
 
 
 def collect_data_files():
@@ -1914,15 +1966,8 @@ def _validate_single_data_file(
         return False, [f"SCHEMA '{schema_path.name}' not in store"], rel
 
     schema = store[schema_uri]
-    resolver = RefResolver(
-        base_uri=schema_uri,
-        referrer=schema,
-        store=store,
-    )
-
-    try:
-        validate(data, schema, resolver=resolver)
-    except ValidationError as e:
+    e = first_schema_error(schema_validator(schema, schema_uri, store), data)
+    if e is not None:
         path = (
             "/" + "/".join(str(p) for p in e.absolute_path) if e.absolute_path else "/"
         )

@@ -11,10 +11,14 @@ import sys
 import unittest
 from pathlib import Path
 
-from jsonschema import Draft7Validator, RefResolver
+import functools
+
+from jsonschema import Draft7Validator
 
 _SCRIPTS = Path(__file__).resolve().parent
 sys.path.insert(0, str(_SCRIPTS))
+
+from validate import schema_validator  # noqa: E402
 
 from kernel_reference import RUNNERS  # noqa: E402
 from test_vectors import VECTOR_DIR, discover_vectors, vector_function  # noqa: E402
@@ -26,8 +30,9 @@ NOT_COMMANDS = {"command.schema.json", "common.json", "settings.schema.json", "m
 VECTOR_ONLY_FIELDS = {"name", "function", "expect"}
 
 
+@functools.cache
 def load_store():
-    """Every ruleset schema and contract file by file URI, for cross-file $ref."""
+    """Every ruleset schema and contract file by file URI, for cross-file $ref. Read once."""
     store = {}
     for path in list(SCHEMA_DIR.glob("*.json")) + list(CONTRACT_DIR.glob("*.json")):
         store[path.resolve().as_uri()] = json.loads(path.read_text())
@@ -45,8 +50,8 @@ def load_commands(contract_dir=CONTRACT_DIR):
 
 
 def validator(schema, path, store):
-    resolver = RefResolver(base_uri=path.resolve().as_uri(), referrer=schema, store=store)
-    return Draft7Validator(schema, resolver=resolver)
+    """One validator per schema and store, so each $ref resolves once (OPS_S00_06)."""
+    return schema_validator(schema, path.resolve().as_uri(), store)
 
 
 def vector_input(vector):
