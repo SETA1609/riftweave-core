@@ -27,7 +27,7 @@ the racial `ability_modifiers` — see [`progression.md`](./progression.md)
 | `phase` | The race's single **element** (Wuxing five-phase). Drives elemental affinity — see §4. |
 | `speed` | Walking speed in abstract units (e.g. 6 for a human). |
 | `size` | `tiny` · `small` · `medium` · `large`. |
-| `traits` | Array of `{ id, label }` references to `racial_trait` rows in the perk table (`data/features/core.json`). See §5. |
+| `traits` | Array of `{ id }` references to `racial_trait` rows in the perk table (`data/features/core.json`). See §5. |
 | `lineage` | How this race relates to others — see §2. **The defining structural field.** |
 
 Every race also carries the standard `id` (integer primary key), `key` (stable symbolic identifier), `label` (human-readable name), `description`, and optional `source`.
@@ -113,7 +113,7 @@ is a string key, e.g. `"core:race/elf"` or `"elf"`):
    otherwise the parent's carries over.
 3. `ability_modifiers`: **sum** per attribute (parent `{end:2}` + subrace `{wil:1}`
    → `{end:2, wil:1}`).
-4. `traits`: the array of `{ id, label }` references is the list of racial traits
+4. `traits`: the array of `{ id }` references is the list of racial traits
    this race entry specifically contributes, added to the parent's. The definitions
    are `racial_trait` rows in `data/features/core.json` (§5).
 
@@ -158,14 +158,16 @@ In a race, `traits` is an array of lightweight references:
 
 ```json
 "traits": [
-  { "id": "core:feature/elf_darkvision", "label": "Darkvision" },
-  { "id": "core:feature/elf_fey_ancestry", "label": "Fey Ancestry" }
+  { "id": "core:feature/elf_darkvision" },
+  { "id": "core:feature/elf_fey_ancestry" }
 ]
 ```
 
-The `id` is a namespaced ref `core:feature/<key>` (or a `module:` ref). The `label` is
-duplicated for readability when looking at race data; the full description lives in
-the feature row.
+The `id` is a namespaced ref `core:feature/<key>` (or a `module:` ref). The trait's
+`label` and description live only in the feature row: a screen or printout that names a
+trait reads the row's `label` (a module override's, when a module overrides it). A copy of
+the label beside the `id` fails `validate.py`, as any field that repeats the row it names
+([integrity.md](../core/integrity.md#8-a-reference-is-the-key-alone), DE_S02_02).
 
 Rules, checked by `validate.py`:
 
@@ -210,7 +212,7 @@ A race and its traits reach the actor only as contract modifiers ([modifier.md](
   "lineage": { "role": "subrace", "parent_race": "core:race/elf" },
   "phase": "wood",
   "ability_modifiers": { "int": 1 },
-  "traits": [ { "id": "core:feature/high_elf_innate_cantrip", "label": "Innate Cantrip" } ]
+  "traits": [ { "id": "core:feature/high_elf_innate_cantrip" } ]
 }
 ```
 

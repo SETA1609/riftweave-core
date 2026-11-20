@@ -312,9 +312,11 @@ names (troll, ghoul, basilisk, hydra, harpy, golem, wraith) are free to use. [V 
 A monster fights with the same numbers as a character ([core/combat.md](../core/combat.md)).
 [V 2026-11-06]
 
-- **`attacks`** — what it hits with. An attack has a `key`, a `label`, and a `weapon`: a
+- **`attacks`** — what it hits with. An attack has a `key` and a `weapon`: a
   natural weapon, `core:natural_weapon/<key>`, or, for a creature that carries one, a
-  weapon, `core:weapon/<key>`. It rolls that row's dice plus the attribute modifier of M3-12
+  weapon, `core:weapon/<key>`. Its `label` is optional and defaults to the weapon's: a bite
+  is "Bite" because the natural weapon row says so, and an attack writes a `label` only
+  when its name differs (a copy fails `validate.py`, [integrity.md](../core/integrity.md#8-a-reference-is-the-key-alone)). It rolls that row's dice plus the attribute modifier of M3-12
   (`attribute − 5`, `formulas/attribute_modifier.json`), with no upper limit. `ability` names
   the attribute and defaults to `str`, so a jaguar's claw uses `agi`, as a finesse weapon
   does, and an elephant's stomp uses `str`. `damage.type` is the weapon's unless the attack
