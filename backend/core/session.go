@@ -34,6 +34,26 @@ type Session struct {
 	Log          []SessionStep  `json:"log"`
 	Actor        stored.Actor   `json:"actor"`
 	Dev          bool           `json:"dev,omitempty"` // a dev operation ran (docs/backend/dev-mode.md)
+	// Party is the characters the GM loaded beside the actor (docs/backend/sessions.md#the-party).
+	// The session carries them through every operation and holds no rule for them.
+	Party []PartyMember `json:"party,omitempty"`
+}
+
+// PartyCharacter is a character file's sync fields (backend/contract/common.json, "character").
+type PartyCharacter struct {
+	ID        string `json:"id"`
+	Name      string `json:"name"`
+	Revision  int64  `json:"revision"`
+	ChangedBy string `json:"changed_by"`
+	ChangedAt string `json:"changed_at"`
+}
+
+// PartyMember is one character in a session's party: its sync fields and actor as loaded, so a
+// replay knows which revision it started from, and the actor now.
+type PartyMember struct {
+	Character PartyCharacter `json:"character"`
+	Start     stored.Actor   `json:"start"`
+	Actor     stored.Actor   `json:"actor"`
 }
 
 // sessionOperation is what a `session` call does. It decodes from its name, so an unknown

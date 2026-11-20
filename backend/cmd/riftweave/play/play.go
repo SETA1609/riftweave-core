@@ -14,6 +14,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 
+	"github.com/SETA1609/riftweave-core/backend/cmd/riftweave/characters"
 	"github.com/SETA1609/riftweave-core/backend/internal/settings"
 )
 
@@ -30,7 +31,8 @@ const (
 	modeSettings // the settings file (docs/backend/app-layout.md)
 	modeModules
 	modeNetwork
-	modePrompt // a one-line input for a setting
+	modePrompt     // a one-line input for a setting
+	modeCharacters // the character list (BE_S07_03)
 )
 
 const maximumLogLines = 6
@@ -131,6 +133,8 @@ type Options struct {
 	Dev      bool
 	// Import reads and checks a file for the Import entry (APP-30); nil leaves the entry inert.
 	Import Importer
+	// Characters is the character list of this device (BE_S07_03); nil shows it as missing.
+	Characters *characters.Library
 }
 
 // Model is the Bubble Tea model.
@@ -165,6 +169,12 @@ type Model struct {
 	line      textinput.Model
 	rolls     []int64
 	character map[string]any
+	// The character list: the library, the rows last read, and an import that diverged and
+	// waits for the person to keep a side.
+	library        *characters.Library
+	saved          []characters.Entry
+	pending        []byte
+	pendingOptions characters.ImportOptions
 }
 
 // New returns the model at the main menu, with the default settings and nothing saved.
@@ -185,7 +195,7 @@ func NewWith(run Runner, options Options) Model {
 		remote = func(url string) Runner { return Remote(url, nil) }
 	}
 	var model Model = Model{run: run, local: run, remote: remote, menu: mainMenu, luck: "5", dev: options.Dev,
-		settings: copyOf(file), save: options.Save, modules: options.Modules, importer: options.Import}
+		settings: copyOf(file), save: options.Save, modules: options.Modules, importer: options.Import, library: options.Characters}
 	return model.follow()
 }
 
@@ -329,6 +339,11 @@ func (model Model) Update(message tea.Msg) (tea.Model, tea.Cmd) {
 			return model.choose()
 		}
 		return model, nil
+	case modeCharacters:
+		if !isKey {
+			return model, nil
+		}
+		return model.charactersKey(key.String())
 	case modePrompt:
 		if isKey {
 			switch key.Type {
@@ -418,6 +433,9 @@ func (model Model) enter(entry menuEntry) (tea.Model, tea.Cmd) {
 	case "import":
 		model.returnCursor, model.problem = model.cursor, ""
 		return model.importFile()
+	case "characters":
+		model.returnCursor, model.cursor, model.problem, model.mode = model.cursor, 0, "", modeCharacters
+		return model.charactersShown(), nil
 	case "character_creation":
 		return model.open(createForm()), textinput.Blink
 	case "skill_resolution":
@@ -675,6 +693,8 @@ func (model Model) View() string {
 		}
 		view.WriteString(model.logView())
 		view.WriteString("\n" + hintStyle.Render("up/down, enter to change, esc to go back; each change is saved") + "\n")
+	case modeCharacters:
+		view.WriteString(model.charactersView())
 	case modePrompt:
 		view.WriteString(model.line.View() + "\n")
 		view.WriteString("\n" + hintStyle.Render("enter to apply, esc to cancel") + "\n")

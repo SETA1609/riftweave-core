@@ -1,6 +1,6 @@
 # Files
 
-Modified: 2026-11-18
+Modified: 2026-11-20
 
 Anything a person makes in one app can be exported as a file and imported into the other
 (APP-30). One envelope holds every kind, defined once in
@@ -17,7 +17,7 @@ Anything a person makes in one app can be exported as a file and imported into t
 
 | `riftweave` | `data` is | Made by |
 | --- | --- | --- |
-| `character` | a stored actor (`common.json#/definitions/stored_actor`) | character creation; the character list (APP-33) |
+| `character` | a stored actor (`common.json#/definitions/stored_actor`), with its sync fields in `character` | character creation; the [character list](#the-character-list) |
 | `session` | a session (`common.json#/definitions/session`), the save of APP-16 | a saved game |
 | `spell` | a spell row as `spells/core.json` holds it, which the `author` command accepts (APP-10) | spell creation (APP-22) |
 
@@ -70,4 +70,77 @@ panel's session. Adding ` --accept-loss` to the path goes on past a missing modu
 `ruleset/tests/fixtures/files/` holds a file of each kind, one that names the factions module,
 and one whose character breaks the contract twice (level 0, which the schema refuses, and a slot that holds no item, which the `stored_actor` command refuses). `test_contract.py` validates them against
 `file.json` and checks their layout; the Go tests import each kind and export it back byte for
-byte, and `files.spec.ts` reads and writes each back the same way. A character file's sync fields come with APP-33. [U]
+byte, and `files.spec.ts` reads and writes each back the same way. `character-synced.riftweave.json` is a player's character with its sync fields; `characters_test.go` carries it from a player's list to a GM's party and back. [V 2026-11-20, `go test ./cmd/riftweave`, `test_contract.py`]
+
+## The character list
+
+The apps work with no connection, so a GM and four players can play offline and pass characters
+by hand (BE_S07_03, owner 2026-11-16). Each app keeps a **character list**: the CLI in
+`os.UserConfigDir()/riftweave/characters/` (or `RIFTWEAVE_CONFIG_DIR/characters/`), one
+character file per character, named `<id>.riftweave.json`; the frontend in IndexedDB
+(`FE_S07_04_character-list-page`). The list shows each character's name, level, last change, and
+who made it, and opens, exports, imports, duplicates, and deletes them.
+
+A character file carries its **sync fields** in `character`, beside `data`
+(`common.json#/definitions/character`):
+
+```json
+"character": { "changed_at": "2026-11-19T18:30:00Z", "changed_by": "player", "id": "5f0c7a52-…", "name": "Mira Vell", "revision": 3 }
+```
+
+- `id` is a UUID made when the character is created; it never changes. [A]
+- `revision` is raised by one on every change; `changed_by` (`gm` or `player`) and `changed_at`
+  (RFC 3339, UTC) say who made the last one and when. [A]
+- Only a character file has them. A character file without them (APP-30's) imports as a new
+  character: a new id, revision 1, the name given (else "Unnamed character"), changed by the
+  importing side (`player` unless told `gm`). [A]
+- A duplicate is a new character: a new id, revision 1, the name plus " (copy)". Exporting
+  changes nothing, so the revision stays.
+
+### The sync rule
+
+An imported character file is compared with the saved character of the same `id`
+[A, owner 2026-11-16]:
+
+| The file's revision | Outcome | What changes |
+| --- | --- | --- |
+| no saved character has the id | `added` | the file is saved |
+| higher than the saved one | `replaced` | the file replaces the saved one |
+| lower than the saved one | `refused` | nothing; the note names both revisions |
+| the same, with the same name and actor | `unchanged` | nothing |
+| the same, with another name or actor (both sides changed it) | `diverged` | nothing: both sides are shown, and the person keeps one (`kept` for the saved side, `replaced` for the incoming one) |
+
+It never merges field by field. Who changed it and when are not compared. A module the file
+names that this device does not load stops the import as for any file
+([above](#rules-both-apps-keep)).
+
+### The hand-off
+
+Before a session each player exports their character and sends the file any way they like (a
+chat, a USB stick, a shared folder). The GM imports each one and adds it to the session's
+**party** ([sessions.md](sessions.md#the-party)). The session plays offline on the GM's device.
+Afterwards the GM exports the party, one file per player: a character the session changed goes
+out one revision higher, changed by `gm`, now; one it did not change goes out as it was loaded.
+The session records the export, so a GM who exports mid-session and again at the end sends
+revision 4 and then 5, never 4 twice with other content.
+Each player imports theirs, a higher revision, so it replaces the saved one. [V 2026-11-20,
+`characters_test.go`]
+
+### In the CLI
+
+```
+riftweave characters list                                    every saved character: id, name, level, revision, changed_by, changed_at
+riftweave characters show <id>                               its sync fields and its stored actor
+riftweave characters export <id> [file]                      its character file, stamped with these rules and the enabled modules
+riftweave characters import <file> [--name <name>] [--as gm|player] [--keep saved|incoming] [--enable-modules | --accept-loss]
+riftweave characters duplicate <id> [--as gm|player]
+riftweave characters delete <id>
+riftweave characters party add <session file> <id>           load a saved character into the session file's party
+riftweave characters party export <session file> <directory> one character file per party member
+```
+
+An import prints its report (`outcome`, `character`, `note`, `warnings`). A `refused` or
+`diverged` import exits 1 with the report on stderr and changes nothing; a diverged report holds
+both sides (`saved`, `incoming`), and `--keep` picks one. The human CLI's **Characters** screen
+does the same ([app-layout.md](app-layout.md#characters)).
+

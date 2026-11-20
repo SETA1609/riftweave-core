@@ -590,6 +590,24 @@ export interface components {
         attributes: {
             [key: string]: number;
         };
+        /** @description A character file's sync fields (BE_S07_03, docs/backend/files.md#the-character-list): who the character is, which revision, and who changed it last, when. */
+        character: {
+            /**
+             * Format: date-time
+             * @description When the last change was made, RFC 3339 in UTC.
+             */
+            changed_at: string;
+            /**
+             * @description Who made the last change.
+             * @enum {unknown}
+             */
+            changed_by: "gm" | "player";
+            /** @description A UUID made when the character is created; it never changes. */
+            id: string;
+            name: string;
+            /** @description Raised by one on every change. */
+            revision: number;
+        };
         cost: {
             quantity: number;
             /** @enum {string} */
@@ -613,6 +631,12 @@ export interface components {
         };
         key: string;
         modifiers: components["schemas"]["ruleset_modifier"][];
+        /** @description One character in a session's party: its sync fields as loaded, the actor as loaded, and the actor now. */
+        party_member: {
+            actor: components["schemas"]["stored_actor"];
+            character: components["schemas"]["character"];
+            start: components["schemas"]["stored_actor"];
+        };
         phase: components["schemas"]["ruleset_phase"];
         pools: {
             hp: number;
@@ -805,6 +829,8 @@ export interface components {
              */
             dev?: true;
             log: components["schemas"]["session_step"][];
+            /** @description The characters the GM loaded beside the session's own actor, each with the revision it was loaded at (BE_S07_03, docs/backend/sessions.md#the-party). The session carries them and holds no rule for them. */
+            party?: components["schemas"]["party_member"][];
             /** @description The rules the session was started on, or last replayed under (docs/backend/sessions.md#the-rules-version). */
             rules_version?: string;
             ruleset: {

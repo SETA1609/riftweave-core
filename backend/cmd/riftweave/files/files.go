@@ -9,9 +9,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/fs"
+	"regexp"
 	"slices"
 	"sort"
 	"strings"
+	"time"
 
 	"github.com/santhosh-tekuri/jsonschema/v6"
 
@@ -45,11 +47,52 @@ type Missing struct {
 	Rows   []string `json:"rows"`
 }
 
+// Character is a character file's sync fields (BE_S07_03, docs/backend/files.md#the-character-list,
+// common.json "character"): a UUID made at creation, a name, a revision raised on every change,
+// and who made the last change, when. The fields are in key order, so a file is written sorted.
+type Character struct {
+	ChangedAt string `json:"changed_at"`
+	ChangedBy string `json:"changed_by"`
+	ID        string `json:"id"`
+	Name      string `json:"name"`
+	Revision  int64  `json:"revision"`
+}
+
+// ChangedBy are who may change a character: the GM, or its player.
+var ChangedBy = []string{"gm", "player"}
+
+var uuidPattern = regexp.MustCompile(`^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$`)
+
+// CheckCharacter is the sync fields against the contract's "character".
+func CheckCharacter(character Character) error {
+	var problems []string
+	if !uuidPattern.MatchString(character.ID) {
+		problems = append(problems, fmt.Sprintf("id %q is not a lowercase UUID", character.ID))
+	}
+	if character.Name == "" {
+		problems = append(problems, "name is empty")
+	}
+	if character.Revision < 1 {
+		problems = append(problems, fmt.Sprintf("revision %d is under 1", character.Revision))
+	}
+	if !slices.Contains(ChangedBy, character.ChangedBy) {
+		problems = append(problems, fmt.Sprintf("changed_by %q is not gm or player", character.ChangedBy))
+	}
+	if _, err := time.Parse(time.RFC3339, character.ChangedAt); err != nil {
+		problems = append(problems, fmt.Sprintf("changed_at %q is not an RFC 3339 time", character.ChangedAt))
+	}
+	if len(problems) > 0 {
+		return fmt.Errorf("the character's sync fields do not match the contract: %s", strings.Join(problems, "; "))
+	}
+	return nil
+}
+
 // Read is what a checked file holds, and what to tell the person before it applies.
 type Read struct {
 	Kind         string          `json:"kind"`
 	RulesVersion string          `json:"rules_version"`
 	Modules      []Module        `json:"modules"`
+	Character    *Character      `json:"character,omitempty"`
 	Data         json.RawMessage `json:"data"`
 	Warnings     []string        `json:"warnings"`
 	Missing      []Missing       `json:"missing"`
@@ -155,8 +198,21 @@ func checkSpell(data json.RawMessage, run Runner) error {
 
 // Wrap checks the data and puts it in an envelope with the rules and modules it was made with.
 func Wrap(kind string, data json.RawMessage, rulesVersion string, modules []Module, checker Checker) ([]byte, error) {
+	return WrapCharacter(kind, nil, data, rulesVersion, modules, checker)
+}
+
+// WrapCharacter is Wrap with a character's sync fields; only a character file carries them.
+func WrapCharacter(kind string, character *Character, data json.RawMessage, rulesVersion string, modules []Module, checker Checker) ([]byte, error) {
 	if err := Check(kind, data, checker); err != nil {
 		return nil, err
+	}
+	if character != nil && kind != "character" {
+		return nil, fmt.Errorf("only a character file has sync fields, not a %s", kind)
+	}
+	if character != nil {
+		if err := CheckCharacter(*character); err != nil {
+			return nil, err
+		}
 	}
 	var value any
 	if err := json.Unmarshal(data, &value); err != nil {
@@ -171,7 +227,11 @@ func Wrap(kind string, data json.RawMessage, rulesVersion string, modules []Modu
 	for _, module := range sorted {
 		list = append(list, map[string]any{"id": module.ID, "version": module.Version})
 	}
-	return Encode(map[string]any{"riftweave": kind, "rules_version": rulesVersion, "modules": list, "data": value}), nil
+	var envelope = map[string]any{"riftweave": kind, "rules_version": rulesVersion, "modules": list, "data": value}
+	if character != nil {
+		envelope["character"] = *character
+	}
+	return Encode(envelope), nil
 }
 
 // Encode writes a file the one way both apps write it: keys sorted, two-space indent, a final
@@ -193,6 +253,7 @@ func Open(content []byte, rulesVersion string, here []Module, checker Checker) (
 		Riftweave    string          `json:"riftweave"`
 		RulesVersion *string         `json:"rules_version"`
 		Modules      *[]Module       `json:"modules"`
+		Character    *Character      `json:"character"`
 		Data         json.RawMessage `json:"data"`
 	}
 	if err := json.Unmarshal(content, &envelope); err != nil {
@@ -207,7 +268,15 @@ func Open(content []byte, rulesVersion string, here []Module, checker Checker) (
 	if err := Check(envelope.Riftweave, envelope.Data, checker); err != nil {
 		return Read{}, err
 	}
-	var read Read = Read{Kind: envelope.Riftweave, RulesVersion: *envelope.RulesVersion, Modules: *envelope.Modules, Data: envelope.Data, Warnings: []string{}, Missing: []Missing{}}
+	if envelope.Character != nil && envelope.Riftweave != "character" {
+		return Read{}, fmt.Errorf("only a character file has sync fields, not a %s", envelope.Riftweave)
+	}
+	if envelope.Character != nil {
+		if err := CheckCharacter(*envelope.Character); err != nil {
+			return Read{}, err
+		}
+	}
+	var read Read = Read{Kind: envelope.Riftweave, RulesVersion: *envelope.RulesVersion, Modules: *envelope.Modules, Character: envelope.Character, Data: envelope.Data, Warnings: []string{}, Missing: []Missing{}}
 	if read.RulesVersion != rulesVersion {
 		read.Warnings = append(read.Warnings, fmt.Sprintf("made with rules %s; this app runs %s", read.RulesVersion, rulesVersion))
 	}

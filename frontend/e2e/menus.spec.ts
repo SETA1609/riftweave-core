@@ -10,7 +10,7 @@ test('the app opens on the home page, and Start opens the tools', async ({ page 
   for (const label of ['Start', 'Settings', 'Modules', 'Network']) {
     await expect(home.getByRole('link', { name: label, exact: true })).toBeVisible();
   }
-  await expect(home.getByText('Characters (APP-33)')).toHaveAttribute('aria-disabled', 'true');
+  await expect(home.getByText('Characters (FE_S07_04_character-list-page)')).toHaveAttribute('aria-disabled', 'true');
   await expect(home.getByText('Quit')).toHaveCount(0);
 
   await home.getByRole('link', { name: 'Start' }).click();

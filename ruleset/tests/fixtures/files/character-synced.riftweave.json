@@ -1,0 +1,91 @@
+{
+  "character": {
+    "changed_at": "2026-11-19T18:30:00Z",
+    "changed_by": "player",
+    "id": "5f0c7a52-3c1e-4b8e-9d2a-7e4b1c6f9a10",
+    "name": "Mira Vell",
+    "revision": 3
+  },
+  "data": {
+    "attributes": {
+      "agi": 7,
+      "cha": 3,
+      "end": 5,
+      "int": 4,
+      "lck": 5,
+      "per": 5,
+      "str": 6,
+      "wil": 5
+    },
+    "conditions": [
+      {
+        "key": "burning",
+        "stacks": 1
+      }
+    ],
+    "equipped": {
+      "main_hand": 1
+    },
+    "flags": [
+      "prone"
+    ],
+    "growth": {
+      "hp": 4,
+      "mp": 2,
+      "sp": 3
+    },
+    "inventory": [
+      {
+        "added_effects": [
+          {
+            "effect": "core:effect/damage_fire",
+            "magnitude": 2,
+            "target": "touch"
+          }
+        ],
+        "base": "core:weapon/longsword",
+        "id": 1,
+        "material": "core:material/steel",
+        "quantity": 1
+      },
+      {
+        "added_effects": [],
+        "base": "core:consumable/potion_healing",
+        "id": 2,
+        "quantity": 3
+      }
+    ],
+    "level": 3,
+    "modifiers": [
+      {
+        "modifier": {
+          "duration": "turns",
+          "operation": "add",
+          "origin": "core:origin/alchemy",
+          "source": "item:potion_strength",
+          "target": "str",
+          "turns": 12,
+          "value": 2
+        },
+        "turns_elapsed": 3
+      }
+    ],
+    "resources": {
+      "ap": 4,
+      "hp": 41,
+      "mp": 20,
+      "sp": 30
+    },
+    "skills": {
+      "blades": 34,
+      "evasion": 28
+    },
+    "tags": [
+      "blades"
+    ],
+    "xp": 450
+  },
+  "modules": [],
+  "riftweave": "character",
+  "rules_version": "0.1.0"
+}
