@@ -1,7 +1,7 @@
 {
   "$schema": "./command.schema.json",
   "name": "progression",
-  "summary": "XP and level, a level-up pool, spending points on a skill or a skill group, reading a skill off a sheet, and taking a perk.",
+  "summary": "XP and level, a level-up pool, spending points on a skill or a skill group, reading a skill off a sheet, taking a perk, and checking a creation point-buy.",
   "documentation": "docs/core/progression.md",
   "input_schema": {
     "type": "object",
@@ -14,7 +14,8 @@
           "level_up",
           "spend",
           "read_skill",
-          "take_perk"
+          "take_perk",
+          "point_buy"
         ]
       },
       "level": {
@@ -26,7 +27,8 @@
         "minimum": 0
       },
       "actor": {
-        "$ref": "common.json#/definitions/actor"
+        "$ref": "common.json#/definitions/actor",
+        "description": "The actor: its attributes for level_up and point_buy (as assigned, before race and creation perks), the sheet for read_skill and take_perk."
       },
       "luck_roll": {
         "type": "integer"
@@ -137,10 +139,12 @@
         "type": "integer"
       },
       "spent": {
-        "type": "integer"
+        "type": "integer",
+        "description": "With spend: the points spent. With point_buy: the attribute points spent above creation.attribute_start."
       },
       "left": {
-        "type": "integer"
+        "type": "integer",
+        "description": "With spend: the points not spent. With point_buy: creation.attribute_points minus spent."
       },
       "value": {
         "type": "integer"
