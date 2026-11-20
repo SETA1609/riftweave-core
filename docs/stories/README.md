@@ -4,8 +4,9 @@ The [roadmap](../../ROADMAP.md) broken into **stories** (a goal that delivers so
 you can check) and **issues** (one role and one pull request each). The repo is the source of truth for
 both. Linear mirrors them and links back; it does not own scope.
 
-Stories near the top (M1, M2) have detailed issues. Later stories are outlines. Refine a
-story's issues when it is next in line, not before; the design will have moved by then.
+Open work lives in the story files `S00` to `S19`, each with a full issue table. The milestone
+files below (`01-kernel.md` to `08-content.md`) keep the goals of the old milestones; they take
+no new issues.
 
 ## Files
 
@@ -53,9 +54,11 @@ milestones by them.
 
 ## Order
 
-Focus: S05, S06
+Focus: S01, S02, S19, S17, S07
 
-The `Focus:` line is the owner's order (S05 and S06 hold the open M3 work). Everything else about order is computed from each
+The `Focus:` line is the owner's order. S05 and S06 are done on `main`. S01 and S02 are the
+highest-priority open work that can start; S19 and S17 finish the turn and ranged rules that S05
+left open; S07 unblocks files between the apps. Everything else about order is computed from each
 issue's `Status` and `Needs`, so it never goes stale by hand:
 
 | Keyword | Meaning |
@@ -136,8 +139,8 @@ the branch, the changelog fragment (`changes/<id>.md`), and the decision file
 | APP-28 | `FE_S11_03_frontend-shared-locales` | split by role: frontend half |
 | APP-29 | `BE_S08_05_bestiary-knowledge-cli` | split by role: backend half |
 | APP-29 | `FE_S08_06_bestiary-page` | split by role: frontend half |
-| APP-30 | `BE_S07_01_file-format-cli` | reserved: open pull request #241, #242; if `APP-30` merges as done it keeps its id, and it takes this one only if it is still open after |
-| APP-30 | `FE_S07_02_file-open-frontend` | reserved: open pull request #241, #242; if `APP-30` merges as done it keeps its id, and it takes this one only if it is still open after |
+| APP-30 | `BE_S07_01_file-format-cli` | kept: finished as `APP-30`, merged #241, #242, 2026-11-18; the reserved new id was never filed |
+| APP-30 | `FE_S07_02_file-open-frontend` | kept: finished as `APP-30`, merged #241, #242, 2026-11-18; the reserved new id was never filed |
 | APP-31 | `BE_S08_01_player-session-cli` | split by role: backend half |
 | APP-31 | `FE_S08_02_player-session-page` | split by role: frontend half |
 | APP-32 | `BE_S08_03_item-lookup-craft-preview` | split by role: backend half |
@@ -156,12 +159,12 @@ the branch, the changelog fragment (`changes/<id>.md`), and the decision file
 | APP-40 | `FE_S09_06_spell-cards-page` | split by role: frontend half |
 | APP-41 | `BE_S09_07_custom-monster-print` | split by role: backend half |
 | APP-41 | `FE_S09_08_custom-monster-page` | split by role: frontend half |
-| APP-43 | `BE_S12_01_telemetry-format-setting` | reserved: open pull request #239; if `APP-43` merges as done it keeps its id, and it takes this one only if it is still open after |
+| APP-43 | `BE_S12_01_telemetry-format-setting` | kept: finished as `APP-43`, merged #239, 2026-11-18; the reserved new id was never filed |
 | APP-44 | `BE_S12_02_server-observability` | renamed |
 | APP-45 | `BE_S12_03_cli-observability` | renamed |
 | APP-46 | `FE_S12_04_frontend-observability` | renamed |
 | APP-47 | `OPS_S12_05_local-telemetry-stack` | renamed |
-| APP-48 | `FE_S12_06_browser-dev-console` | reserved: open pull request #240; if `APP-48` merges as done it keeps its id, and it takes this one only if it is still open after |
+| APP-48 | `FE_S12_06_browser-dev-console` | kept: finished as `APP-48`, merged #240, 2026-11-18; the reserved new id was never filed |
 | M3-09 | `GD_S06_01_bound-weapon-materials` | renamed |
 | M3-21 | `GD_S06_02_bonded-summoner-perks` | renamed |
 | M3-22 | `GD_S06_03_commander-summoner-perks` | renamed |
@@ -179,13 +182,13 @@ the branch, the changelog fragment (`changes/<id>.md`), and the decision file
 | M5-53 | `OPS_S00_03_doc-last-changed-stamp` | renamed |
 | M5-58 | `DE_S04_01_base-perk-schema` | renamed |
 | M5-59 | `DE_S04_02_perks-compose-from-base` | renamed |
-| M5-61 | `GD_S04_04_ranged-builds` | reserved: open pull request #237; if `M5-61` merges as done it keeps its id, and it takes this one only if it is still open after |
+| M5-61 | `GD_S04_04_ranged-builds` | kept: finished as `M5-61`, merged #237, 2026-11-18; the reserved new id was never filed |
 | M5-65 | `DE_S03_01_data-model-diagram-areas` | renamed |
 | M5-66 | `OPS_S03_02_diagrams-as-svg` | renamed |
 | M5-71 | `DE_S02_02_second-normal-form` | renamed |
 | M5-74 | `DE_S02_03_monster-hp-computed` | renamed |
 | M5-75 | `DE_S02_04_descriptions-without-numbers` | renamed |
-| M5-76 | `M5-76` | kept: finished (merged in #217), status review; the close workflow moves it to done, so it keeps its id |
+| M5-76 | `M5-76` | kept: finished, merged #217, 2026-11-17 |
 | M5-77 | `M5-77` | kept: dropped: superseded by PO_S00_01_issue-splitting-by-role |
 | M5-78 | `GD_S04_03_perk-skill-bonuses` | renamed |
 | M6-02 | `GD_S13_01_combat-stealth-perks` | renamed |

@@ -1,5 +1,6 @@
 #### PO_S18_01_file-app-environment-issues File the app environment issues
-- Status: todo
+- Status: done
+- Merged: #246, 2026-11-18
 - Priority: medium
 - Needs: —
 - Modified: 2026-11-18

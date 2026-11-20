@@ -17,4 +17,6 @@ Format, ids, and roles: [README.md](README.md#ids), [ROLES.md](../issues/ROLES.m
 | `BE_S10_05_battle-grid-steps` | BE | Online table: a shared battle grid, and the initiative list in sync (backend) | APP-35 | BE_S10_03_gm-approval-supabase, BE_S08_07_encounter-tracker-cli, GD_S19_02_movement-distance-per-ap |
 | `FE_S10_06_battle-grid-page` | FE | Online table: a shared battle grid, and the initiative list in sync (frontend) | APP-35 | BE_S10_05_battle-grid-steps, FE_S10_04_gm-approval-table, FE_S08_08_encounter-tracker-page |
 
+**GitHub:** story [#267](https://github.com/SETA1609/riftweave-core/issues/267); tasks [`BE_S10_01_room-log-supabase` #322](https://github.com/SETA1609/riftweave-core/issues/322), [`FE_S10_02_room-log-client` #323](https://github.com/SETA1609/riftweave-core/issues/323), [`BE_S10_03_gm-approval-supabase` #324](https://github.com/SETA1609/riftweave-core/issues/324), [`FE_S10_04_gm-approval-table` #325](https://github.com/SETA1609/riftweave-core/issues/325), [`BE_S10_05_battle-grid-steps` #326](https://github.com/SETA1609/riftweave-core/issues/326), [`FE_S10_06_battle-grid-page` #327](https://github.com/SETA1609/riftweave-core/issues/327).
+
 **Done when:** every issue above is done, and five browsers in one room share the log, the GM approves steps, and the grid stays in sync.

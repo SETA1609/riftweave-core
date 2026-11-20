@@ -15,7 +15,7 @@
   - Each build passes `build_reference.play` from creation to level 30 at the lowest luck roll, every tier at or after its gate.
 - Keys: the reworked `archer`, `arbalist`, `gunslinger`, `arcane_trickster`, `ranger` builds; new `skirmisher` and `thrower` builds (and `marksman`, `breacher` if the spec step makes them rows)
 - Files: ~8 (docs/modules/builds/ranged.md, docs/modules/builds/hybrids.md, docs/modules/builds/README.md, ruleset/data/builds/core.json, ruleset/scripts/test_builds.py, docs/playtests/report.json, docs/decisions/GD_S17_12_ranged-builds-new-ladders.md, changes/GD_S17_12_ranged-builds-new-ladders.md)
-- See: docs/decisions/M5-61.md, docs/modules/builds/ranged.md, docs/issues/open/GD_S05_03_defense-perk-ladders.md (the melee builds' rework, the same pattern)
+- See: docs/decisions/M5-61.md, docs/modules/builds/ranged.md, docs/issues/done/GD_S05_03_defense-perk-ladders.md (the melee builds' rework, the same pattern)
 - Done when:
   - Every ranged and ranged-hybrid build passes the legality test, the skirmisher and the thrower included.
   - No ranged build takes Arcane Reservoir, Battle Mage (or its rename), or Quick Caster as a filler.

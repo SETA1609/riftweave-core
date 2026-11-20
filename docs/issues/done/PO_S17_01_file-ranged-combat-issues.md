@@ -1,10 +1,11 @@
 #### PO_S17_01_file-ranged-combat-issues File the ranged combat issues
-- Status: todo
+- Status: done
+- Merged: #244, 2026-11-18
 - Priority: medium
 - Needs: —
 - Modified: 2026-11-18
 - Do: Owner request, 2026-11-18: the ranged builds (M5-61) ran out of ranged perks at level 18. The archer (shortbow or longbow), the gunslinger (pistols, rifles, and the blunderbuss), and a thrower need perks that tell their weapons apart, so a longbow archer plays differently from a shortbow archer. Add sniping and multishot, suppressing-fire maneuvers, extra-strike perks that work at range as well as in melee, elemental bolts and bullets that burst like a grenade but deal the weapon's damage, perks that find more ammunition, and bound ranged weapons and a Bound Ammunition spell that pay mana once for a number of shots. The ranger either switches between a ranged and a melee weapon or holds a one-handed melee weapon and a one-handed ranged one (thrown, pistol, or hand crossbow) together. File story S17 and its issues `GD_S17_02` to `GD_S17_13`; open the extra-strike ladder of `GD_S05_01_loadout-attacks-melee-ladders` to every weapon.
 - Keys: none
-- Files: ~18 (docs/stories/S17-ranged-combat.md, docs/stories/README.md, ROADMAP.md, docs/issues/open/PO_S17_01_file-ranged-combat-issues.md to GD_S17_13_ranger-switch-mixed-ladders.md, docs/issues/open/GD_S05_01_loadout-attacks-melee-ladders.md, docs/decisions/PO_S17_01_file-ranged-combat-issues.md, changes/PO_S17_01_file-ranged-combat-issues.md)
-- See: docs/decisions/M5-61.md (the ranged gaps), docs/modules/builds/ranged.md, docs/modules/weapons.md, docs/core/actions.md#maneuvers, docs/issues/open/GD_S06_01_bound-weapon-materials.md
+- Files: ~18 (docs/stories/S17-ranged-combat.md, docs/stories/README.md, ROADMAP.md, docs/issues/open/PO_S17_01_file-ranged-combat-issues.md to GD_S17_13_ranger-switch-mixed-ladders.md, docs/issues/done/GD_S05_01_loadout-attacks-melee-ladders.md, docs/decisions/PO_S17_01_file-ranged-combat-issues.md, changes/PO_S17_01_file-ranged-combat-issues.md)
+- See: docs/decisions/M5-61.md (the ranged gaps), docs/modules/builds/ranged.md, docs/modules/weapons.md, docs/core/actions.md#maneuvers, docs/issues/done/GD_S06_01_bound-weapon-materials.md
 - Done when: story S17 and its twelve issues exist with their `Needs`; the stories README lists S17; `roadmap-order show` lists the new issues.

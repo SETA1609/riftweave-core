@@ -17,4 +17,6 @@ Format, ids, and roles: [README.md](README.md#ids), [ROLES.md](../issues/ROLES.m
 | `GD_S13_05_spells-indigo-to-black` | GD | Spells for indigo, violet, white, and black: about 65 more | M6-06 | GD_S13_03_effect-pool-150 |
 | `GD_S13_06_d100-bonus-multiples-of-5` | GD | Bonuses on a d100 target are multiples of 5 | M6-11 | PO_S01_01_licensing-audit-tag-v1 |
 
+**GitHub:** story [#270](https://github.com/SETA1609/riftweave-core/issues/270); tasks [`GD_S13_01_combat-stealth-perks` #335](https://github.com/SETA1609/riftweave-core/issues/335), [`GD_S13_02_magic-social-perks` #336](https://github.com/SETA1609/riftweave-core/issues/336), [`GD_S13_03_effect-pool-150` #337](https://github.com/SETA1609/riftweave-core/issues/337), [`GD_S13_04_spells-red-to-blue` #338](https://github.com/SETA1609/riftweave-core/issues/338), [`GD_S13_05_spells-indigo-to-black` #339](https://github.com/SETA1609/riftweave-core/issues/339), [`GD_S13_06_d100-bonus-multiples-of-5` #340](https://github.com/SETA1609/riftweave-core/issues/340).
+
 **Done when:** every issue above is done, and about 220 perks and about 200 spells over about 150 effects pass the balance checks.
