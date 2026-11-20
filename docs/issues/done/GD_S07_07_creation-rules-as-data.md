@@ -1,5 +1,6 @@
 #### GD_S07_07_creation-rules-as-data The character creation numbers as data
-- Status: review
+- Status: done
+- Merged: #393, 2026-11-20
 - Priority: medium
 - Needs: —
 - Modified: 2026-11-20
