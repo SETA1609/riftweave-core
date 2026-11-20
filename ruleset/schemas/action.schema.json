@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Actions",
-  "description": "One AP budget, spent as AP at a table and as AP times stamina_per_ap in stamina in real time. Cast AP is static. A spell also spends its mana cost.",
+  "description": "One AP budget, spent as AP at a table and as AP times stamina_per_ap in stamina in real time. A cast costs AP by the spell's level (casting/core.json cast_ap) and also spends its mana cost.",
   "type": "object",
   "properties": {
     "$schema": { "type": "string" },

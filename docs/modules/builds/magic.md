@@ -1,10 +1,10 @@
 # Magic builds
 
-Modified: 2026-11-19
+Modified: 2026-11-21
 
 Three suggested builds for casters. They are suggestions: nothing here is gated, and any of them can pick up a blade or a bow ([README](README.md)). A blaster can still stab with a dagger at its untrained skill, and a summoner can still cast a bolt. The rows are in [`ruleset/data/builds/core.json`](../../../ruleset/data/builds/core.json); each is checked from creation to level 30 at the lowest luck roll.
 
-All three lean on the same core: the color schools and their `<color>_magic` skills, casting resolution, and mana ([magic.md](../magic.md)); a cast is the `cast` action's 3 AP plus the spell's mana ([actions.md](../../core/actions.md)). All three take **Arcane Reservoir** three times (+10 MP a rank) and **Mana Flow** early, because a caster with no mana is a person in robes. Each lists the spells it leans on (`spells`); every spell is a row of [`spells/core.json`](../../../ruleset/data/spells/core.json) in a color the build raises.
+All three lean on the same core: the color schools and their `<color>_magic` skills, casting resolution, and mana ([magic.md](../magic.md)); a cast is 2 to 4 AP by the spell's level plus its mana ([actions.md](../../core/actions.md#cast-ap-by-level)). All three take **Arcane Reservoir** three times (+10 MP a rank) and **Mana Flow** early, because a caster with no mana is a person in robes. Each lists the spells it leans on (`spells`); every spell is a row of [`spells/core.json`](../../../ruleset/data/spells/core.json) in a color the build raises.
 
 The numbers below are each build's skills at level 30 on the lowest rolls. A real character with average luck rolls, a background, and a race has more. Past level 20 the magic perk table runs thin, so all three take general perks there; the gaps are in the [decision record](../../decisions/M5-60.md).
 
