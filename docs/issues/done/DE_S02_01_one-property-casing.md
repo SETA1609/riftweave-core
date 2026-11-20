@@ -1,5 +1,6 @@
 #### DE_S02_01_one-property-casing One property casing
-- Status: review
+- Status: done
+- Merged: #398, 2026-11-20
 - Priority: low
 - Needs: M5-37
 - Was: M5-40
