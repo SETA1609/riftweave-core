@@ -7,17 +7,22 @@ starting sheet of an actor, after [composition](composition.md).
 ```
 sheet(monster row, skills to read)
 stats   derived(attributes, level)         the same function a player uses
-hp      the row's hitPoints, when it has one, in place of the computed value
+hp      floor(derived hp before perks × monster_hp_multiplier[role]), at least 1, then the perks
 skill   the row's skills[key], when written
         else start = skill_start(associated_ability) = 5 + attribute * 2
              a combat or magic skill: min(skill_cap, start + per_level * (level - 1))
              any other skill: start
 ```
 
-- **Hit points.** `hitPoints` on a monster is an optional authored value that replaces the
-  computed one. Rows written before this rule keep theirs, because computed HP is far above
-  the balance bands: level 3 with END 4 computes 59, where `grove_stalker` is written as 30. The example rows of [monsters.md](../modules/monsters.md#generated-monsters) use the computed value.
-  [V 2026-11-10]
+- **Hit points.** Computed, never stored (DE_S02_03, third normal form: HP is a fact about the
+  level, the attributes, and the role, not about the monster's key). The player formula, the `hp`
+  row of `derived/core.json`, gives the value before perks; the monster's `role` scales it by
+  `monster_hp_multiplier` in `progression/core.json`: `standard` 0.4, `boss` 0.8, `minion` 0.2,
+  rounded down, at least 1. The role term exists because the player formula alone is about 2.5
+  times what the bestiary's fights were built on (level 3 with END 4 computes 59, where
+  `grove_stalker` had 30), and the authored HP followed the role, not the creature type. A
+  monster row, override, creature type, or template that writes `hitPoints` fails `validate.py`.
+  [V 2026-11-20, `monster_sheet` vectors in Python and Go] [A: the three multipliers]
 - **Mana and stamina.** Computed, like every other derived stat. No monster row stores them. [V 2026-11-10]
 - **A reduced skill sheet.** A row writes only the skills it fights or casts with. Any other
   skill reads as a player's starting value, from `skill_start` in `progression/core.json`.
@@ -39,7 +44,8 @@ skill   the row's skills[key], when written
   ([M5-18](../decisions/M5-18.md)). [A]
 - **Perks.** A row's `perks` (M3-15) emit their modifiers at their rank, as a player's do
   ([progression.md](../modules/progression.md#perks-and-traits)), and the sheet applies them: each
-  derived stat, the authored `hitPoints` included, takes the modifiers on its key, and each skill
+  derived stat takes the modifiers on its key (HP after the role multiplier, so Hardened Hide's
+  +15 a rank is whole), and each skill
   read takes the modifiers on its key after its start and growth, a written skill too. [V 2026-11-14,
   `monster_sheet` vectors]
 - **A missing attribute reads 0**, as it does in `derived`.

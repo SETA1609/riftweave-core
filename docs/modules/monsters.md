@@ -42,7 +42,7 @@ Contains all required fields directly:
   "size": "large",
   "level": 6,
   "attributes": { "str": 7, "end": 6, "agi": 6, "per": 5, "wil": 4 },
-  "hitPoints": 78,
+  "role": "boss",
   "effects": [ ... ],
   "tags": ["dragon", "elemental"]
 }
@@ -63,7 +63,6 @@ References a base template and provides only the fields that differ:
     "phase": "water",
     "level": 4,
     "attributes": { "str": 5, "end": 6, "agi": 4, "wil": 6 },
-    "hitPoints": 52,
     "effects": [ { "effect": 2, "magnitude": 14, "target": "ranged" } ]
   }
 }
@@ -112,7 +111,6 @@ scale with level:
   "key": "beast",
   "level": 2,
   "attributes": { "str": 4, "end": 4, "agi": 5, "per": 4, "wil": 2 },
-  "hitPoints": 28,
   "growth": {
     "attributes": {
       "str": { "per_level": 0.5 },
@@ -120,8 +118,7 @@ scale with level:
       "agi": { "per_level": 0.5 },
       "per": { "per_level": 0.3 },
       "wil": { "per_level": 0.2 }
-    },
-    "hitPointsPerLevel": 6
+    }
   }
 }
 ```
@@ -137,7 +134,7 @@ growing. The minimum of 1 stays. [V 2026-11-12, `test_bestiary.py`]
 
 `growth` also holds `damage_per_level`, 0.25 for every creature type [A]. A monster above its
 row's level adds `round(damage_per_level × Δlevel)` to each attack's damage (`damage.bonus`) and
-to the magnitude of each `damage_*` ability, as `hitPointsPerLevel` adds HP. A summoned or
+to the magnitude of each `damage_*` ability; HP needs no growth rule, because it is computed from the grown attributes and the level. A summoned or
 derived creature is where this shows: a fire elemental summoned at level 25 hits 5 harder than
 its level-5 row. [V 2026-11-12, `test_bestiary.py`] Whether 0.25 keeps every row in its damage
 band at every level is not checked yet. [U]
@@ -159,8 +156,18 @@ from the growth curve. Missing attributes are filled in automatically:
 This produces: `{str:6, end:4, agi:6, per:6, wil:2}` — str and per overridden,
 end/agi/wil computed from growth.
 
-HP follows the same pattern with `hitPointsPerLevel`. If an override specifies
-`hitPoints`, that always takes precedence.
+HP is not authored or grown: it is computed from the composed attributes, the level, and the
+role ([hit points](#hit-points)).
+
+### Hit points
+
+A monster's HP is computed by `monster_sheet` ([actor-sheet.md](../core/actor-sheet.md)):
+the player formula (`derived/core.json`, the `hp` row) on its attributes and level, times its
+role's `monster_hp_multiplier` in `progression/core.json` (`standard` 0.4, `boss` 0.8, `minion`
+0.2), rounded down, at least 1, then its perks' `hp` modifiers. No row, override, creature type,
+or template writes `hitPoints`, and a creature type has no `hitPointsPerLevel`: `validate.py`
+fails either (DE_S02_03). A monster that must be tougher or frailer changes its END or its role,
+not a number beside them. [V 2026-11-20] [A: the multipliers]
 
 ### Derived monsters
 
@@ -172,8 +179,8 @@ differs. The creature type is the root's: a derived monster cannot change it. [V
 - **Level.** A derived monster always states its `level` in `overrides`, so a reader of one
   row (the loot budget, the Go loader) never walks the chain. When it differs from the
   base monster's, attributes, HP, and damage move by the type's growth for the difference:
-  `round(base_attr + per_level × Δlevel)`, at least 1, `base_hp + hitPointsPerLevel × Δlevel`,
-  and `round(damage_per_level × Δlevel)` on damage.
+  `round(base_attr + per_level × Δlevel)`, at least 1, and `round(damage_per_level × Δlevel)` on
+  damage; HP follows the grown attributes.
 - **Order.** `core.json` lists the base monsters first (those another row derives from), then
   their variants, family by family, then the one-off monsters, each group by level.
 - **Chains** may be longer than one step; a cycle, or a base monster that does not exist, is
@@ -201,9 +208,10 @@ an element, `phase` and `damage_type`:
   each elemental `damage_*` ability (fire, frost, shock, acid, poison) into the template's
   element. An attack that names its type keeps it, so an elemental's slam stays physical
   under any element. [A]
-- `attributes` are added to the monster's, a missing attribute counting 0. An END add moves
-  an authored `hitPoints` by the `hp` row's `per_point` (END +1 is +8 HP); mana is computed
-  from INT, so an INT add moves it with no step of its own. [A]
+- `attributes` are added to the monster's, a missing attribute counting 0. HP and mana are
+  computed from END and INT, so an add moves them with no step of its own. [A]
+- `role` sets the monster's role, and so its HP multiplier and balance band; the `minion`
+  template sets `minion`.
 - `resist` is added to the monster's, per damage type.
 - `spells` are appended to the monster's `spells`, so a creature with a spell list casts as
   a player does, from mana the `mp` row gives it.
@@ -218,7 +226,7 @@ Fire Ooze is an ooze with the fire template:
 
 ```json
 { "key": "fire_ooze", "base": "core:monster/ooze", "templates": ["fire"],
-  "overrides": { "level": 5, "hitPoints": 32 } }
+  "overrides": { "level": 5, "attributes": { "end": 6 } } }
 ```
 
 A family member that is not a template change is a derived monster with overrides only:
@@ -234,8 +242,8 @@ level the caller gives. A slot the row already fills keeps the row's template, s
 never becomes dire twice. [A] [V 2026-11-12, `test_bestiary.py`]
 
 Only rows kept as examples are written out. They are worked examples of the player formulas
-on a monster: their `hitPoints` is what `derived` gives at average rolls, the `hp` row plus
-`(level − 1) × ⌊⌊LCK / 2⌋ / 2⌋` of growth, and their mana is the `mp` row, never stored.
+on a monster: their HP and mana are computed like every monster's ([hit points](#hit-points)),
+never stored.
 
 | Row | Built from | Level |
 | --- | --- | --- |
@@ -245,9 +253,9 @@ on a monster: their `hitPoints` is what `derived` gives at average rolls, the `h
 | `demonic_hound` | `dog` + `demonic` | 6 |
 | `undead_horse` | the undead type | 4 |
 
-The player formulas put these rows above the hits-to-kill band of `balance/core.json`, as
-[actor-sheet.md](../core/actor-sheet.md) found for every monster; the balance file accepts
-them by name until the balance pass. [V 2026-11-12, `balance_report.py`]
+Before DE_S02_03 these rows took the player formula without the role multiplier, so they sat
+above the hits-to-kill band of `balance/core.json` and were accepted there by name. With the
+multiplier they are ordinary rows. [V 2026-11-20, `balance_report.py`]
 
 ### Loot
 
@@ -291,9 +299,8 @@ refs (`core:monster_template/dire`), because a modifier holds only a number.
 A minion spell ([casting.md](../core/casting.md#minions)) calls its group's row at the caster's
 level, resolved as a derived monster, then the `minion` template: the template slot `minion`, which
 applies last and takes no power, nature, or summon bonus. The template lowers every attribute
-(`attributes`, each never below 1) and cuts HP with `hit_points_multiplier`, applied after the
-attribute adds and rounded down, never below 1, so an ordinary attack drops a minion in one or two
-hits. Its skills follow its lower attributes. The sizes are first numbers, to set against the
+(`attributes`, each never below 1) and sets the `minion` role, whose HP multiplier (0.2) is half a
+standard monster's, so an ordinary attack drops a minion in one or two hits. Its skills follow its lower attributes. The sizes are first numbers, to set against the
 balance bands in the M5-50 pacing pass. [U] A minion keeps its row's attacks and effects, so a
 horde still hits like its kind, only more often and less hard to drop.
 
@@ -327,13 +334,14 @@ A monster fights with the same numbers as a character ([core/combat.md](../core/
   spell-like ability, below.
 - **`spells`** — spells it casts as a player does, `core:spell/<key>`.
 - **`resist`** — a flat number per damage type, the combat pipeline's `defender.resist`.
-- **`role`** — `standard` (the default), `boss`, or `minion`: which hits-to-kill band of
-  `balance/core.json` the monster's HP is checked against.
+- **`role`** — `standard` (the default), `boss`, or `minion`: its HP multiplier
+  ([hit points](#hit-points)) and which hits-to-kill band of `balance/core.json` its HP is
+  checked against.
 - **`perks`** — feats from the one `features` table (M3-15): `{ "perk": "core:feature/<key>",
   "rank": 2 }`, the rank 1 when left out and at most the perk's `ranks`. Players and monsters are
   one actor shape, so a monster's perks emit their modifiers at their rank as a player's do (an
   `add` times the rank, a `multiply` of `m` at `1 + (m − 1) × rank`), and `monster_sheet` applies
-  them to its derived stats, its authored `hitPoints` included, and its skills. A template's perks
+  them to its derived stats, HP after the role multiplier, and its skills. A template's perks
   add to the row's as its spells do, the higher rank kept when both name one; `dire` grants
   Hardened Hide and `elder` Catch Your Breath. Prerequisites are not checked on a monster: an author or a GM
   places a perk on purpose. A perk of the `social` or `utility` category means little on a monster,
@@ -434,7 +442,7 @@ The current data shape is intentionally compatible with a future composition sys
   "id": 12,
   "components": {
     "identity": { "key": "zombie", "label": "Zombie" },
-    "combat": { "attack": 4, "defense": 2, "hitPoints": 30 },
+    "combat": { "attack": 4, "defense": 2, "role": "standard" },
     "effects": [ { "effect": 46, "magnitude": 4, "target": "touch" } ],
     "traits": ["undead", "mindless"],
     "ai": { "behavior": "melee_charge" }
