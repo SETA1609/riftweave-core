@@ -1,5 +1,6 @@
 #### GD_S05_04_trip-and-disarm Trip and disarm: maneuvers a perk unlocks, and rider perks that put one on every attack
-- Status: review
+- Status: done
+- Merged: #256, 2026-11-20
 - Priority: medium
 - Needs: M3-24, GD_S05_01_loadout-attacks-melee-ladders
 - Was: M3-31
