@@ -20,7 +20,7 @@ import (
 	"github.com/SETA1609/riftweave-core/backend/internal/settings"
 )
 
-// press sends keys to the model: "enter", "down", "up", "esc", "clear", or text to type.
+// press sends keys to the model: "enter", "down", "up", "left", "right", "esc", "clear", or text to type.
 func press(model tea.Model, keys ...string) tea.Model {
 	for _, key := range keys {
 		var message tea.KeyMsg
@@ -31,6 +31,10 @@ func press(model tea.Model, keys ...string) tea.Model {
 			message = tea.KeyMsg{Type: tea.KeyDown}
 		case "up":
 			message = tea.KeyMsg{Type: tea.KeyUp}
+		case "left":
+			message = tea.KeyMsg{Type: tea.KeyLeft}
+		case "right":
+			message = tea.KeyMsg{Type: tea.KeyRight}
 		case "esc":
 			message = tea.KeyMsg{Type: tea.KeyEsc}
 		case "clear":
