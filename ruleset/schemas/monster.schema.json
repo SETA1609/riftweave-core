@@ -23,7 +23,7 @@
       "description": "A natural or carried weapon attack: the weapon's dice plus the attribute modifier of ability (docs/modules/monsters.md#attacks-resistances-and-role).",
       "properties": {
         "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
-        "label": { "type": "string", "minLength": 1 },
+        "label": { "type": "string", "minLength": 1, "description": "The attack's name, only where it differs from its weapon's label, which it defaults to (docs/core/integrity.md#8-a-reference-is-the-key-alone)." },
         "weapon": {
           "description": "What the attack rolls: a natural weapon (core:natural_weapon/<key>), sized by the creature, or a carried weapon (core:weapon/<key>).",
           "oneOf": [ { "$ref": "schema.json#/definitions/naturalWeaponRef" }, { "$ref": "schema.json#/definitions/itemRef" } ]
@@ -40,7 +40,7 @@
         "delivery": { "type": "string", "enum": ["single", "area", "instant"], "description": "Which reactions the attack allows (docs/core/combat.md); default single." },
         "phase": { "$ref": "schema.json#/definitions/phase", "description": "The phase the attack carries into the five-phase cycles." }
       },
-      "required": ["key", "label", "weapon"],
+      "required": ["key", "weapon"],
       "additionalProperties": false
     },
     "monsterData": {

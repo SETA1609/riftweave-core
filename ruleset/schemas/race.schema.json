@@ -66,14 +66,14 @@
         },
         "traits": {
           "type": "array",
-          "description": "Racial traits granted by this race entry. Each item references a feature of type `racial_trait` in the perk table (data/features) by namespaced ref. The label is duplicated here for readability when viewing the race data. For parent races these are the base traits; for subraces they stack on the parent's; kin list all of their own.",
+          "description": "Racial traits granted by this race entry. Each item references a feature of type `racial_trait` in the perk table (data/features) by namespaced ref, and nothing else: the trait's label lives in the feature row (docs/core/integrity.md#8-a-reference-is-the-key-alone). For parent races these are the base traits; for subraces they stack on the parent's; kin list all of their own.",
           "items": {
             "type": "object",
             "properties": {
               "id": { "$ref": "schema.json#/definitions/featureRef", "description": "Reference to a racial_trait feature. Use namespaced format core:feature/<key> (or a module: ref)." },
               "label": { "type": "string", "description": "Human-readable label of the trait (duplicated from the feature row for convenience)." }
             },
-            "required": ["id", "label"],
+            "required": ["id"],
             "additionalProperties": false
           }
         }
