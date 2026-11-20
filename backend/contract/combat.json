@@ -38,6 +38,13 @@
               "type": "object"
             },
             "description": "The weapon's on-hit applied effects: armor_pierce, bane, lingering_damage, banish_summoned (docs/core/combat.md#weapon-effects)."
+          },
+          "perks": {
+            "type": "array",
+            "items": {
+              "$ref": "common.json#/definitions/ref"
+            },
+            "description": "The attacker's held perks (feature refs). A rider perk among them whose maneuver fits the attack makes a maneuver attempt after a plain hit (docs/core/actions.md#rider-perks); two riders that fit the same attack are an error."
           }
         },
         "additionalProperties": false,
@@ -282,7 +289,46 @@
         "items": {
           "type": "object"
         },
-        "description": "With a maneuver: its applied effects on a hit, empty on a miss or an evade."
+        "description": "With a maneuver or a rider: its applied effects on a hit, empty on a miss or an evade. With a save, they land only when the defender fails it."
+      },
+      "events": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": [
+            "disarm"
+          ]
+        },
+        "description": "With a maneuver or a rider: its events on a hit (disarm), empty otherwise."
+      },
+      "save": {
+        "type": "object",
+        "properties": {
+          "attribute": {
+            "$ref": "common.json#/definitions/key",
+            "description": "The weapon's attribute (damage.ability) the attempt is made with."
+          },
+          "dc": {
+            "type": "integer",
+            "description": "The attacker's attribute times maneuver_save_multiplier, plus the maneuver's save_bonus (none for a rider)."
+          },
+          "target": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "The defender's d100 save target, 100 minus the DC and never below 0; the caller rolls it, and a failed save lands the effects and events."
+          }
+        },
+        "required": [
+          "attribute",
+          "dc",
+          "target"
+        ],
+        "additionalProperties": false,
+        "description": "A maneuver attempt on a hit (a maneuver with a save_bonus, or a rider), docs/core/actions.md#the-maneuver-attempt; left out otherwise."
+      },
+      "rider": {
+        "$ref": "common.json#/definitions/key",
+        "description": "The maneuver a held rider perk put on this plain attack."
       },
       "weapon_effects": {
         "type": "array",

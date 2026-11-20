@@ -56,6 +56,11 @@
             "minimum": 0,
             "description": "The carried shield's DR: a Boss Strike bash's damage is this plus the damage roll. A bash without it is an error."
           },
+          "perks": {
+            "type": "array",
+            "items": { "$ref": "common.json#/definitions/ref" },
+            "description": "The attacker's perk refs, as combat's attacker.perks: every strike reads them for a rider (docs/core/actions.md#rider-perks)."
+          },
           "modifiers": {
             "$ref": "common.json#/definitions/modifiers",
             "description": "The attacker's perks and fighting stance (the stance command's modifiers): adds on full_attack_strikes, full_attack_off_strikes, mainhand_penalty, offhand_penalty, attack_roll (every strike), attack_single_opponent (every strike with one foe in reach), attack_after_parry (the first main-hand strike when after_parry), and unarmed_damage (an empty main hand), and boss_strike (the Boss Strike tier), and the carry_through, reaping_arc, scissor_cut, can_circle_cut, off_hand_parries, and carry_on_crit grants."
@@ -186,7 +191,11 @@
               "type": "integer",
               "minimum": 0,
               "description": "A bash's stagger: AP the target loses on its next turn (shield_bash.stagger_ap from the stagger tier, on a hit); 0 otherwise. Left out on any other strike."
-            }
+            },
+            "rider": { "type": "string", "description": "The maneuver a held rider perk put on the strike, as combat's; left out when no rider rides." },
+            "effects": { "type": "array", "items": { "type": "object" }, "description": "The rider's effects on a hit, as combat's; left out when no rider rides." },
+            "events": { "type": "array", "items": { "type": "string" }, "description": "The rider's events on a hit, as combat's; left out when no rider rides." },
+            "save": { "type": "object", "description": "The rider's attempt on a hit (attribute, dc, target), as combat's; left out otherwise." }
           },
           "additionalProperties": false,
           "required": [

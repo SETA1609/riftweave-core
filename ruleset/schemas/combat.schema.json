@@ -63,6 +63,11 @@
         "pierce_tag": {
           "type": "string",
           "description": "Damage-type tag that swaps armor DR for pierce_dr."
+        },
+        "maneuver_save_multiplier": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "A maneuver attempt's DC is the attacker's weapon attribute times this, plus the maneuver's save_bonus (a rider adds none); the defender's save target is 100 minus the DC, a d100 roll the caller makes (docs/core/actions.md#the-maneuver-attempt, GD_S05_04)."
         }
       },
       "required": [
@@ -76,7 +81,8 @@
         "crit_damage",
         "pierce_dr",
         "dr_applies_tag",
-        "pierce_tag"
+        "pierce_tag",
+        "maneuver_save_multiplier"
       ],
       "additionalProperties": false
     }
