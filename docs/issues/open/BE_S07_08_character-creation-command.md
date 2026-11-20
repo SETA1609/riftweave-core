@@ -1,8 +1,8 @@
 #### BE_S07_08_character-creation-command Character creation as one command that checks a draft step by step (backend)
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: GD_S07_07_creation-rules-as-data
-- Modified: 2026-11-19
+- Modified: 2026-11-21
 - Do: Owner request, 2026-11-19: character creation becomes a form in both apps, and the form must not hold the rules. Today the frontend's creation screen sends eight attribute numbers and a level and shows the stored actor as JSON [V 2026-11-19, `frontend/src/app/sheet.html`]; no command checks race, background, creation perks, or tag skills.
   - **The `creation` command** (`backend/contract/creation.json`):
     - `rules`: the creation numbers of `GD_S07_07` and the choices with their effects (races, backgrounds, creation perks, skills), so an app draws the form from data.

@@ -1,0 +1,11 @@
+# BE_S07_08_character-creation-command Character creation as one command that checks a draft step by step (backend)
+
+Date: 2026-11-21
+
+- **Decision:** the `creation` command has three operations: `rules` (the numbers and the choices a form is drawn from), `check` (each step's problems in order, the points left, and the sheet), and `finish` (a complete draft becomes a stored actor, or a rule error with the check's messages). Python (`creation_reference.py`) and Go (`backend/internal/creation`) run the same vectors; the human CLI's creation screen runs `check` after every change. The command page is [creation.md](../backend/creation.md). [V 2026-11-21, `creation` vectors and `play_test.go`]
+- **Points:** the draft holds points spent per attribute. The issue said 0 to 6 each; since GD_S07_07 an attribute may be lowered to `attribute_min` (1), so a point entry runs from −3 to +6 and a negative one frees points.
+- **Limits from modifiers:** a race trait or creation perk that adds to `tag_skills` or `creation_perks` raises the limit (Human Versatility, Human Ambition, Genius), so a human picks 4 tag skills and up to 3 creation perks. Only race traits raise `creation_perks`: a creation perk does not make room for itself.
+- **Points left block finish:** a draft with points left is not complete. [A] The point-buy itself (`progression` `point_buy`) still treats fewer points as a draft.
+- **What is stored:** the stored actor has no race field, so the race's ability modifiers are added into `attributes`, and the race traits and creation perks are stored as `perks` at rank 1, which a session emits again. The attributes are stored before those perks' modifiers so they are not counted twice; `check` shows them after. Skills are stored as the start plus the background's bonuses. [A]
+- **Open:** spells, starting equipment, and spending the level-1 skill points (and Genius's `starting_skill_points`) are not steps yet; `BE_S07_05_character-from-build-cli` and the frontend form (`FE_S07_09_character-creation-cv-form`) build on this command. [A] The CLI's perk and tag skill rows take typed keys rather than a picker. [A]
+- **Risk:** a draft from an app built on older rules may name a perk or skill that no longer exists; `check` reports it as not defined, so the form shows it rather than failing. [A]
