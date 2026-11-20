@@ -32,6 +32,7 @@ item 2
 block 2, reserved, refund if unused
 command 2, an order to summons (commanding.md)
 aimed +2 on the attack cost
+draw 1, sheathe 1, drop 0, swap 1 (changing the loadout)
 ```
 
 The attack, the jab, the full attack, and the circle cut cost what the loadout's row of `ruleset/data/attack_sequences/core.json` says (`by_loadout`); the `cost` in `actions/core.json` is the cost with one one-handed weapon, for a caller that knows no loadout. The full attack and the circle cut spend every AP left (`spends_all`). The strikes each makes are in [combat.md](combat.md#attacks-by-loadout) (GD_S05_01).
@@ -55,6 +56,21 @@ A race's `speed` is not a distance per round any more; it says how far each `mov
 What raises the price of a move changes its AP, never its squares. Encumbrance and armor emit `add move +1` ([combat.md §8](../modules/combat.md#8-encumbrance-and-armor-action-costs)); difficult terrain doubles the cost ([combat.md §5](../modules/combat.md#5-cover-flanking-terrain-prone)). An encumbered human (speed 6) pays 2 AP for each move and still covers 3 squares. [V 2026-11-21, `actions` vectors]
 
 The `actions` command takes `speed` and returns `squares`, the squares its moves cover; without a speed it returns no `squares`. A real-time client moves at `floor(speed / 2)` squares per `seconds_per_turn / pool` seconds, so a pool of 4 walks a human 3 squares every 1.25 seconds. [A]
+
+## Changing the loadout
+
+Since the loadout decides what an attack costs and strikes ([combat.md](combat.md#attacks-by-loadout)) and a loadout change ends a stance that no longer fits ([combat.md](combat.md#fighting-stances)), changing it is a priced choice. The four rows carry `changes_loadout`:
+
+```
+draw     1   one weapon or a shield into an empty hand
+sheathe  1   one put away
+drop     0   one let fall; it stays on the ground
+swap     1   to the other of two loadouts set up before the fight, a primary and a secondary
+```
+
+Fallout Tactics charges 2 AP to swap and the Divinity board game 1 AP to equip; at a pool of 4 the cheaper price keeps a swap and an attack in one turn. [A] The Drilled Hands perk (AGI 5, ungated) emits `add swap -1`, so a swap costs 0; a draw is unchanged. [V 2026-11-21, `actions` vectors]
+
+A `stance` loadout event names the action that paid for it in `by`; the step costs that action's AP after the held perks' modifiers on it, and `by` must be a row with `changes_loadout`. Without `by` the change is free, as when an effect disarms the actor. A paid swap to sword and shield costs 1 AP and ends Fencer's Measure. [V 2026-11-21, `stance` vectors] Reloading is not a loadout change; it belongs to ranged combat (`GD_S17_02_ammunition-items-and-reloading`).
 
 ## Maneuvers
 

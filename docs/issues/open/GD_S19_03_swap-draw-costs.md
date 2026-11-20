@@ -1,8 +1,8 @@
 #### GD_S19_03_swap-draw-costs Drawing, sheathing, and swapping a loadout cost AP
-- Status: todo
+- Status: review
 - Priority: medium-high
 - Needs: GD_S05_02_fighting-stances
-- Modified: 2026-11-19
+- Modified: 2026-11-21
 - Do: Owner request, 2026-11-19 (borrowed from Fallout Tactics, 2 AP to swap, and the Divinity board game, 1 AP to equip).
   - **The gap:** since GD_S05_01 the loadout decides what an attack costs and strikes, and since GD_S05_02 a loadout change ends a stance that no longer fits. Changing the loadout is now a tactical move, but no action prices it [V 2026-11-19, `actions/core.json` has no draw, sheathe, or swap row].
   - **New action rows** [A, numbers checked in the spec step]:
