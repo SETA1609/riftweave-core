@@ -21,8 +21,8 @@ SCHEMA_DIR = _SCRIPTS.parent / "schemas"
 # Property names that hold a namespaced reference in the data today. A schema that defines one
 # of them as a plain string accepts a bare string where a key is required.
 REFERENCE_PROPERTIES = {
-    "appliedBy", "removedBy", "effect", "effects", "sub_effects", "reagents", "perks",
-    "parentRace", "starting_spells", "suggested_tag_skills", "base_key", "material_key",
+    "applied_by", "removed_by", "effect", "effects", "sub_effects", "reagents", "perks",
+    "parent_race", "starting_spells", "suggested_tag_skills", "base_key", "material_key",
     "gem_key", "crafted_item_key",
 }
 # A name that is a reference in the data but free text in this one schema.
@@ -407,3 +407,28 @@ class TestADomainIsWrittenOnce(unittest.TestCase):
         skills = json.loads((DATA_DIR / "skills" / "core.json").read_text())["skills"]
         magic = {row["key"].removesuffix("_magic") for row in skills if row["key"].endswith("_magic")}
         self.assertEqual(sorted(enum_of("color")), sorted(magic))
+
+
+class TestOnePropertyCasing(unittest.TestCase):
+    """DE_S02_01 (CONTRIBUTING.md#naming): every property is snake_case."""
+
+    def test_every_schema_property_and_data_key_is_snake_case(self):
+        self.assertEqual(validate.check_property_casing(), [])
+
+    def test_a_camel_case_property_or_key_is_reported(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            schema = Path(tmp) / "thing.schema.json"
+            schema.write_text(json.dumps({"type": "object", "additionalProperties": False, "required": ["dr_base"],
+                                          "properties": {"dr_base": {"type": "integer"}, "valueFactor": {"type": "number"}}}))
+            data = Path(tmp) / "things.json"
+            data.write_text(json.dumps({"things": [{"key": "a", "dr_base": 1, "lineage": {"parentRace": "core:race/elf"}}]}))
+            errors = validate.check_property_casing([schema], [data])
+        self.assertEqual(len(errors), 2, errors)
+        self.assertIn("valueFactor", errors[0])
+        self.assertIn("parentRace", errors[1])
+
+    def test_json_schema_keywords_and_snake_case_names_pass(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            schema = Path(tmp) / "thing.schema.json"
+            schema.write_text(json.dumps({"oneOf": [{"properties": {"max_stacks": {"minimum": 1}}}], "additionalProperties": False}))
+            self.assertEqual(validate.check_property_casing([schema], []), [])
