@@ -3331,6 +3331,8 @@ export interface operations {
                 "application/json": {
                     /** @description The steps, in order. Each needs exactly one of take, end, or loadout; more than one is an error. */
                     events?: {
+                        /** @description The action that paid for the loadout change, one with changes_loadout (draw, sheathe, drop, swap); its AP after the perks' modifiers on it is the step's cost. Without it the change is free. */
+                        by?: components["schemas"]["key"];
                         /** @description End the active stance, for no AP. */
                         end?: boolean;
                         /** @description The hands now hold this (a weapon drawn, dropped, or swapped); a stance it no longer fits ends. */

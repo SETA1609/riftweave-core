@@ -11,7 +11,7 @@ arrow runs from a prerequisite perk to the perk that needs it, labelled with the
 when more than 1. A rounded box is a prerequisite from another category. A ladder that stops
 early, or a perk nothing leads to, shows at a glance.
 
-143 perks: 73 on a ladder, 70 with no perk before or after them.
+144 perks: 73 on a ladder, 71 with no perk before or after them.
 
 ## Combat
 
@@ -241,3 +241,4 @@ attributes, and level only.
 | Survivor | general | Lv 18 · END 6 · WIL 6 |
 | Guardian | combat | Lv 6 · shields 50 |
 | Boss Strike | combat | shields 30 · STR 5 |
+| Drilled Hands | combat | AGI 5 |

@@ -928,6 +928,9 @@ def run_stance(vector):
             return f'stance "{key}" needs a perk that unlocks it'
         return stance_misfit(rows[key], loadout)
 
+    # A loadout change paid by an action (GD_S19_03): its AP after the held perks' modifiers on it.
+    actions = {row["key"]: row for row in load_data("actions/core.json")["actions"]}
+    perk_modifiers = [m for ref in vector.get("perks", []) for m in features[ref.removeprefix("core:feature/")].get("modifiers", [])]
     loadout, held = vector["loadout"], vector.get("stance")
     if held is not None and (error := check(held, loadout)):
         return {"error": error}
@@ -946,6 +949,13 @@ def run_stance(vector):
         elif event.get("end"):
             step["ended"], held = held, None
         elif "loadout" in event:
+            if "by" in event:
+                by = event["by"]
+                if by not in actions:
+                    return {"error": f'action "{by}" is not defined'}
+                if not actions[by].get("changes_loadout"):
+                    return {"error": f'action "{by}" does not change the loadout'}
+                step["ap"] = max(apply_modifiers(actions[by]["cost"], [m for m in perk_modifiers if m["target"] == by]), 0)
             loadout = event["loadout"]
             if held is not None and stance_misfit(rows[held], loadout):
                 step["ended"], held = held, None

@@ -27,7 +27,8 @@
             "take": { "$ref": "common.json#/definitions/key", "description": "Take or change to this stance: stances.rules.turn_start_ap at the start of the actor's own turn, stances.rules.mid_turn_ap with mid_turn. Taking the active one costs nothing." },
             "mid_turn": { "type": "boolean", "description": "The take is not at the start of the actor's own turn." },
             "end": { "type": "boolean", "description": "End the active stance, for no AP." },
-            "loadout": { "$ref": "../../ruleset/schemas/schema.json#/definitions/loadout", "description": "The hands now hold this (a weapon drawn, dropped, or swapped); a stance it no longer fits ends." }
+            "loadout": { "$ref": "../../ruleset/schemas/schema.json#/definitions/loadout", "description": "The hands now hold this (a weapon drawn, dropped, or swapped); a stance it no longer fits ends." },
+            "by": { "$ref": "common.json#/definitions/key", "description": "The action that paid for the loadout change, one with changes_loadout (draw, sheathe, drop, swap); its AP after the perks' modifiers on it is the step's cost. Without it the change is free." }
           },
           "additionalProperties": false
         },

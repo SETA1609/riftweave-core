@@ -94,6 +94,8 @@ type Action struct {
 	Cost int64  `json:"cost"`
 	// SpeedDivisor, when set, makes one of the action cover floor(speed / SpeedDivisor) squares (GD_S19_02).
 	SpeedDivisor int64 `json:"speed_divisor"`
+	// ChangesLoadout marks draw, sheathe, drop, and swap; a stance loadout event may be paid by one (GD_S19_03).
+	ChangesLoadout bool `json:"changes_loadout"`
 }
 
 // ActionPool is the action point pool formula's coefficients.
