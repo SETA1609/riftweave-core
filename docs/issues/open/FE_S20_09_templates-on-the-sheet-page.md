@@ -6,8 +6,9 @@
 - Do: Owner request, 2026-11-20: the browser half of character templates (`BE_S20_08_templates-on-a-character-cli`).
   - **On the sheet:** the character sheet shows its templates, each with what it adds: attributes, skills, pools, perks, tags, and drawbacks. Every number that a template changes shows where it came from, as perks do.
   - **Changing them:** take on, remove, and (for a werebeast) change form.
+  - **Outside the rules:** taking a template sits behind a checkbox, off by default, labelled as building outside the rules (in the rules a template is the GM's grant from a story or game event). A template taken that way is marked on the sheet.
   - **Holds no rule:** everything comes from the core, in the API and the WebAssembly app.
 - Keys: the template panel on `rw-sheet`
 - Files: ~7 (frontend/src/app/sheet.ts, sheet.html, sheet.css, sheet.spec.ts, frontend/e2e/templates.spec.ts, docs/decisions/FE_S20_09_templates-on-the-sheet-page.md, changes/FE_S20_09_templates-on-the-sheet-page.md)
 - See: docs/issues/open/BE_S20_08_templates-on-a-character-cli.md, frontend/src/app/sheet.ts
-- Done when: a Vitest spec shows a template's additions on the sheet; a Playwright spec takes on and removes a template and sees the sheet change and change back.
+- Done when: a Vitest spec shows a template's additions on the sheet, and the take is disabled until the outside-the-rules box is checked; a Playwright spec takes on and removes a template and sees the sheet change and change back.
