@@ -18,8 +18,8 @@ skill   the row's skills[key], when written
   level, the attributes, and the role, not about the monster's key). The player formula, the `hp`
   row of `derived/core.json`, gives the value before perks; the monster's `role` scales it by
   `monster_hp_multiplier` in `progression/core.json`: `standard` 0.4, `boss` 0.8, `minion` 0.2,
-  rounded down, at least 1. The role term exists because the player formula alone is about 2.5
-  times what the bestiary's fights were built on (level 3 with END 4 computes 59, where
+  rounded down, at least 1. The role term exists because the player formula alone is about 2.4
+  times what the bestiary's standard fights were built on (level 3 with END 4 computes 59, where
   `grove_stalker` had 30), and the authored HP followed the role, not the creature type. A
   monster row, override, creature type, or template that writes `hitPoints` fails `validate.py`.
   [V 2026-11-20, `monster_sheet` vectors in Python and Go] [A: the three multipliers]
