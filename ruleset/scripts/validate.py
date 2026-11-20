@@ -2226,9 +2226,8 @@ def check_racial_trait_refs(data_files):
     return errors
 
 
-# Property names are snake_case (CONTRIBUTING.md#naming, DE_S02_01). DE_S02_03 removes these two
-# with the stored monster HP; until it lands they are the only camelCase properties left.
-CAMEL_CASE_ALLOWED = frozenset({"hitPoints", "hitPointsPerLevel"})
+# Property names are snake_case (CONTRIBUTING.md#naming, DE_S02_01). DE_S02_03 removed the stored
+# monster HP, the last camelCase properties, so there is no exception left.
 
 
 def _is_camel_case(name):
@@ -2240,7 +2239,7 @@ def _camel_keys(value, path=""):
     if isinstance(value, dict):
         for key, child in value.items():
             here = f"{path}.{key}" if path else key
-            if _is_camel_case(key) and key not in CAMEL_CASE_ALLOWED:
+            if _is_camel_case(key):
                 yield here, key
             yield from _camel_keys(child, here)
     elif isinstance(value, list):
@@ -2277,7 +2276,7 @@ def check_property_casing(schema_files=None, data_files=None):
     errors = []
     for path in schema_files:
         for where, name in _schema_property_names(json.loads(Path(path).read_text())):
-            if _is_camel_case(name) and name not in CAMEL_CASE_ALLOWED:
+            if _is_camel_case(name):
                 errors.append(f"{Path(path).name}: property '{name}' at {where} is camelCase; use snake_case")
     for path in data_files:
         for where, key in _camel_keys(json.loads(Path(path).read_text())):
