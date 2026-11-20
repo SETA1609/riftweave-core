@@ -159,11 +159,18 @@ classDiagram
     class actions_input {
         List~key~ actions
         actor actor
+        integer carried
+        integer held_spent
         modifiers modifiers
         integer speed
     }
     class actions_result {
+        integer available
+        integer carry
         integer cost
+        integer guard
+        integer held
+        integer next_pool
         integer pool
         integer squares
         integer stamina
