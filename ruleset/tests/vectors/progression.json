@@ -1304,5 +1304,120 @@
         }
       ]
     }
+  },
+  {
+    "name": "point-buy: 4 each plus 10 points leaves none",
+    "operation": "point_buy",
+    "actor": {
+      "attributes": {
+        "str": 7,
+        "per": 5,
+        "end": 8,
+        "int": 4,
+        "wil": 4,
+        "agi": 4,
+        "cha": 4,
+        "lck": 6
+      }
+    },
+    "expect": {
+      "spent": 10,
+      "left": 0
+    }
+  },
+  {
+    "name": "point-buy: a draft with points left",
+    "operation": "point_buy",
+    "actor": {
+      "attributes": {
+        "str": 4,
+        "per": 4,
+        "end": 4,
+        "int": 8,
+        "wil": 6,
+        "agi": 4,
+        "cha": 4,
+        "lck": 4
+      }
+    },
+    "expect": {
+      "spent": 6,
+      "left": 4
+    }
+  },
+  {
+    "name": "point-buy: 11 points spent is rejected",
+    "operation": "point_buy",
+    "actor": {
+      "attributes": {
+        "str": 7,
+        "per": 5,
+        "end": 8,
+        "int": 4,
+        "wil": 4,
+        "agi": 4,
+        "cha": 4,
+        "lck": 7
+      }
+    },
+    "expect": {
+      "error": "11 points spent, more than the 10 to distribute"
+    }
+  },
+  {
+    "name": "point-buy: an attribute of 11 before race is rejected",
+    "operation": "point_buy",
+    "actor": {
+      "attributes": {
+        "str": 11,
+        "per": 7,
+        "end": 4,
+        "int": 4,
+        "wil": 4,
+        "agi": 4,
+        "cha": 4,
+        "lck": 4
+      }
+    },
+    "expect": {
+      "error": "attribute str is 11, over the point-buy max of 10"
+    }
+  },
+  {
+    "name": "point-buy: an attribute under 4 is rejected",
+    "operation": "point_buy",
+    "actor": {
+      "attributes": {
+        "str": 4,
+        "per": 4,
+        "end": 4,
+        "int": 10,
+        "wil": 5,
+        "agi": 4,
+        "cha": 3,
+        "lck": 4
+      }
+    },
+    "expect": {
+      "error": "attribute cha is 3, under the start of 4"
+    }
+  },
+  {
+    "name": "point-buy: a missing attribute is rejected",
+    "operation": "point_buy",
+    "actor": {
+      "attributes": {
+        "str": 4,
+        "per": 4,
+        "end": 4,
+        "int": 4,
+        "wil": 4,
+        "agi": 4,
+        "cha": 4
+      }
+    },
+    "expect": {
+      "error": "attribute lck is missing"
+    }
   }
 ]
