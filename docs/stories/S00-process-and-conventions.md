@@ -14,6 +14,7 @@ Format, ids, and roles: [README.md](README.md#ids), [ROLES.md](../issues/ROLES.m
 | `OPS_S00_02_format-data-files` | OPS | Format the data files | M5-52 | M5-51 |
 | `OPS_S00_03_doc-last-changed-stamp` | OPS | Every doc shows when it last changed | M5-53 | — |
 | `OPS_S00_04_refresh-stale-story-docs` | OPS | Refresh the story and issue docs after S05 and S06 landed | — | — |
+| `FE_S00_05_regenerate-openapi-types` | FE | Regenerate the frontend's API types from the current contract | — | — |
 
 **GitHub:** story [#258](https://github.com/SETA1609/riftweave-core/issues/258); tasks [`OPS_S00_02_format-data-files` #276](https://github.com/SETA1609/riftweave-core/issues/276), [`OPS_S00_03_doc-last-changed-stamp` #277](https://github.com/SETA1609/riftweave-core/issues/277).
 
