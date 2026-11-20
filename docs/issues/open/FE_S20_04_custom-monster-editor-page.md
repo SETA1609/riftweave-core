@@ -1,0 +1,14 @@
+#### FE_S20_04_custom-monster-editor-page Build and save a custom monster in the app (frontend)
+- Status: todo
+- Priority: medium
+- Needs: BE_S20_03_custom-monster-editor-cli, FE_S09_08_custom-monster-page
+- Modified: 2026-11-20
+- Do: Owner request, 2026-11-20: the browser half of the custom monster editor (`BE_S20_03_custom-monster-editor-cli`), over the same commands, in the API and the WebAssembly app.
+  - **The editor page:** start from blank, a creature type, or a core monster, then edit the level, role, attributes, skills, perks, attacks, resistances, and templates, with no player limits.
+  - **Live stat block:** the stat block from `monster_sheet` updates as the GM edits.
+  - **Saving and sharing:** save to the custom monster list, and export or import a monster file.
+  - **Holds no rule:** every number comes from the core; problems show as text.
+- Keys: `rw-monster-editor`
+- Files: ~8 (frontend/src/app/monster-editor.ts, .html, .css, .spec.ts, frontend/src/app/app.routes.ts, frontend/e2e/monster-editor.spec.ts, docs/decisions/FE_S20_04_custom-monster-editor-page.md, changes/FE_S20_04_custom-monster-editor-page.md)
+- See: docs/issues/open/BE_S20_03_custom-monster-editor-cli.md, docs/issues/open/FE_S09_08_custom-monster-page.md
+- Done when: a Vitest spec edits a monster and sees the stat block change; a Playwright spec builds, saves, exports, and re-imports a monster past every player limit, in the API and the WebAssembly app.

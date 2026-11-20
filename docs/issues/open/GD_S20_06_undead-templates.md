@@ -1,0 +1,13 @@
+#### GD_S20_06_undead-templates Undead templates: lich and vampire
+- Status: todo
+- Priority: medium
+- Needs: GD_S20_05_character-template-model
+- Modified: 2026-11-20
+- Do: Owner request, 2026-11-20: the first templates of the `undeath` slot, written as data in the model of `GD_S20_05_character-template-model`.
+  - **Lich:** a caster who traded life for power. More INT and WIL, more MP, a magic skill bonus, and granted perks (for example a phylactery that returns them after death, and a resistance to cold and necrotic damage). It counts as `undead`, so healing, turn-undead, and banes treat it as one. Drawbacks: less CHA, vulnerable to radiant damage [A].
+  - **Vampire:** a predator. More STR, AGI, and CHA, more HP and SP, a bite attack that drains HP, and granted perks (darkvision, regeneration while fed). It counts as `undead`. Drawbacks: sunlight weakness as a condition, vulnerable to radiant damage [A].
+  - **The numbers:** each template is checked against the balance bands: a character at level 5, 10, and 20 with and without the template, in `balance_report.py`, so no template doubles a character's power [A].
+- Keys: `lich`, `vampire` (`slot: undeath`)
+- Files: ~6 (ruleset/data/character_templates/core.json, ruleset/data/features/core.json, ruleset/data/conditions/core.json, docs/modules/templates.md, ruleset/tests/vectors/derived_examples.json, changes/GD_S20_06_undead-templates.md)
+- See: docs/issues/open/GD_S20_05_character-template-model.md, ruleset/data/balance/core.json
+- Done when: both templates validate; `derived` vectors give a sheet with each; the balance report checks them at levels 5, 10, and 20.
