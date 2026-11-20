@@ -1059,7 +1059,7 @@
     {
       "key": "circle_cut",
       "label": "Circle Cut",
-      "description": "With a two-handed weapon: an action that spends all your AP and strikes every foe in reach once, at -10. The one full attack that reaches many foes.",
+      "description": "With a two-handed weapon: an action that spends all your AP and strikes every foe in reach once, at the circle cut's attack penalty. The one full attack that reaches many foes.",
       "type": "perk",
       "category": "combat",
       "prerequisite": {
@@ -1097,7 +1097,7 @@
     {
       "key": "follow_up",
       "label": "Follow-Up",
-      "description": "A full attack gains one more main-hand strike, at -20.",
+      "description": "A full attack gains one more main-hand strike, at the first extra strike's penalty.",
       "type": "perk",
       "category": "combat",
       "prerequisite": {
@@ -1121,7 +1121,7 @@
     {
       "key": "press_on",
       "label": "Press On",
-      "description": "A full attack gains a second extra main-hand strike, at -30.",
+      "description": "A full attack gains a second extra main-hand strike, at the second extra strike's penalty.",
       "type": "perk",
       "category": "combat",
       "prerequisite": {
@@ -1216,7 +1216,7 @@
     {
       "key": "twin_rhythm",
       "label": "Twin Rhythm",
-      "description": "A full attack with two weapons gains a second off-hand strike, at the off-hand value -10.",
+      "description": "A full attack with two weapons gains a second off-hand strike, at the off-hand value with the extra off-hand penalty.",
       "type": "perk",
       "category": "combat",
       "prerequisite": {
@@ -2431,7 +2431,7 @@
     {
       "key": "tempered_conjuring",
       "label": "Tempered Conjuring",
-      "description": "Your conjured weapons come out as steel, not iron: weapon attack 5.",
+      "description": "Your conjured weapons come out as steel, not iron, with steel's weapon attack.",
       "type": "perk",
       "category": "magic",
       "prerequisite": {
@@ -2575,7 +2575,7 @@
     {
       "key": "glassfire_conjuring",
       "label": "Glassfire Conjuring",
-      "description": "Your conjured weapons are volcanic glass: weapon attack 6, and still no phase.",
+      "description": "Your conjured weapons are volcanic glass, with obsidian's weapon attack, and still no phase.",
       "type": "perk",
       "category": "magic",
       "prerequisite": {
@@ -2740,7 +2740,7 @@
     {
       "key": "commanding_summons_magic",
       "label": "Commanding Summons: Magic",
-      "description": "Your will reaches into what you call: each creature you summon adds your CHA modifier (CHA - 5, never below 0) to its INT and WIL, and your Persuasion +5. Take Commanding Summons: Physical as well for its body.",
+      "description": "Your will reaches into what you call: each creature you summon adds your CHA modifier (CHA - 5, never negative) to its INT and WIL, and your Persuasion +5. Take Commanding Summons: Physical as well for its body.",
       "type": "perk",
       "category": "magic",
       "prerequisite": {
@@ -2774,7 +2774,7 @@
     {
       "key": "commanding_summons_physical",
       "label": "Commanding Summons: Physical",
-      "description": "Your presence drives what you call: each creature you summon adds your CHA modifier (CHA - 5, never below 0) to its STR, END, and AGI, and your Intimidation +5. Take Commanding Summons: Magic as well for its mind.",
+      "description": "Your presence drives what you call: each creature you summon adds your CHA modifier (CHA - 5, never negative) to its STR, END, and AGI, and your Intimidation +5. Take Commanding Summons: Magic as well for its mind.",
       "type": "perk",
       "category": "magic",
       "prerequisite": {
@@ -3586,7 +3586,7 @@
     {
       "key": "bardic_inspiration",
       "label": "Bardic Inspiration",
-      "description": "Your voice and your will steady those around you: spend the inspire action and every ally within 6 units adds half your CHA modifier (CHA - 5, never below 0) to INT and WIL for 3 turns, or all of it at rank 2, and your Persuasion +5. Two bards do not add up; the stronger counts.",
+      "description": "Your voice and your will steady those around you: spend the inspire action and every ally within 6 units adds half your CHA modifier (CHA - 5, never negative) to INT and WIL for 3 turns, or all of it at rank 2, and your Persuasion +5. Two bards do not add up; the stronger counts.",
       "type": "perk",
       "category": "social",
       "prerequisite": {
@@ -3641,7 +3641,7 @@
     {
       "key": "skalds_war_chant",
       "label": "Skald's War Chant",
-      "description": "Your chant drives the arms of those around you: spend the inspire action and every ally within 6 units adds half your CHA modifier (CHA - 5, never below 0) to STR, END, and AGI for 3 turns, or all of it at rank 2, and your Intimidation +5. Two skalds do not add up; the stronger counts.",
+      "description": "Your chant drives the arms of those around you: spend the inspire action and every ally within 6 units adds half your CHA modifier (CHA - 5, never negative) to STR, END, and AGI for 3 turns, or all of it at rank 2, and your Intimidation +5. Two skalds do not add up; the stronger counts.",
       "type": "perk",
       "category": "social",
       "prerequisite": {
@@ -3695,7 +3695,7 @@
     {
       "key": "bardic_anthem",
       "label": "Bardic Anthem",
-      "description": "Your song carries across the field: spend the inspire action and every ally within 12 units adds your whole CHA modifier (CHA - 5, never below 0) to INT and WIL for 5 turns, and your Persuasion +5. It does not add to your Bardic Inspiration; the stronger counts.",
+      "description": "Your song carries across the field: spend the inspire action and every ally within 12 units adds your whole CHA modifier (CHA - 5, never negative) to INT and WIL for 5 turns, and your Persuasion +5. It does not add to your Bardic Inspiration; the stronger counts.",
       "type": "perk",
       "category": "social",
       "prerequisite": {
@@ -3740,7 +3740,7 @@
     {
       "key": "skalds_saga",
       "label": "Skald's Saga",
-      "description": "Your saga drives the whole line: spend the inspire action and every ally within 12 units adds your whole CHA modifier (CHA - 5, never below 0) to STR, END, and AGI for 5 turns, and your Intimidation +5. It does not add to your War Chant; the stronger counts.",
+      "description": "Your saga drives the whole line: spend the inspire action and every ally within 12 units adds your whole CHA modifier (CHA - 5, never negative) to STR, END, and AGI for 5 turns, and your Intimidation +5. It does not add to your War Chant; the stronger counts.",
       "type": "perk",
       "category": "social",
       "prerequisite": {
@@ -4634,7 +4634,7 @@
     {
       "key": "guardian",
       "label": "Guardian",
-      "description": "You keep your shield between your friends and harm: while you block, one adjacent ally's evasion band +10; at the second tier the block band also covers attacks on that ally; at the third it covers every adjacent ally. Any shield works.",
+      "description": "You keep your shield between your friends and harm: while you block, one adjacent ally's evasion band widens; at the second tier the block band also covers attacks on that ally; at the third it covers every adjacent ally. Any shield works.",
       "type": "perk",
       "category": "combat",
       "prerequisite": {
@@ -4668,7 +4668,7 @@
     {
       "key": "boss_strike",
       "label": "Boss Strike",
-      "description": "You hit with the shield's boss. Tier 1: a bash is a jab with the shield, blunt damage of the shield's DR + 1d4. Tier 2: the attack also strikes with the shield, as a light off-hand weapon. Tier 3: a bash that hits costs the target 2 AP on its next turn. Tier 4: right after a block in your band, a bash costs 1 AP.",
+      "description": "You hit with the shield's boss. Tier 1: a bash is a jab with the shield, blunt damage of the shield's DR plus the bash roll. Tier 2: the attack also strikes with the shield, as a light off-hand weapon. Tier 3: a bash that hits costs the target 2 AP on its next turn. Tier 4: right after a block in your band, a bash costs 1 AP.",
       "type": "perk",
       "category": "combat",
       "prerequisite": {
@@ -4977,7 +4977,7 @@
     {
       "key": "black_elf_sunless_sight",
       "label": "Sunless Sight",
-      "description": "Your darkvision extends to 24 units, but you have disadvantage on checks in bright sunlight.",
+      "description": "Your darkvision reaches 12 units farther, but you have disadvantage on checks in bright sunlight.",
       "type": "racial_trait",
       "modifiers": [
         {
@@ -5132,7 +5132,7 @@
     {
       "key": "catman_claws",
       "label": "Retractable Claws",
-      "description": "Your claws are natural weapons: the claw row, 1d6 slashing at medium size, rolled with Unarmed.",
+      "description": "Your claws are natural weapons: the claw row's dice and damage type, moved by your size, rolled with Unarmed.",
       "type": "racial_trait",
       "modifiers": [
         {
