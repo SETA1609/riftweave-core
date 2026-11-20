@@ -48,21 +48,21 @@
         "follow_up": 1,
         "hardened_hide": 3,
         "kindred_focus": 1,
+        "kindred_mind": 1,
         "low_guard": 1,
         "mailed_casting": 3,
         "mana_flow": 1,
         "meditative": 1,
         "necromancer": 1,
+        "pincer_strike": 1,
         "polyglot": 1,
         "quick_learner": 1,
         "shared_wellspring": 1,
         "snap_cut": 1,
         "summon_ancient": 1,
         "summon_angelic": 1,
-        "summon_demonic": 1,
         "summon_dire": 1,
-        "summon_elder": 1,
-        "summon_otherworldly": 1
+        "summon_elder": 1
       },
       "replay_matches": true,
       "skills": {
@@ -79,13 +79,14 @@
         "pocket_storage",
         "bone_armor",
         "raise_thrall",
+        "steady_the_host",
         "conjured_blades",
         "wither",
         "bound_bow",
         "summon_elemental",
         "death_grip"
       ],
-      "steps": 948
+      "steps": 949
     },
     "caster_blue_green": {
       "attacks": {
@@ -447,12 +448,13 @@
         "fought level gap +2": 5,
         "fought level gap -1": 2,
         "fought level gap -2": 8,
-        "no eligible perk at a level-up": 7
+        "no eligible perk at a level-up": 5
       },
       "label": "Spellblade",
       "level": 30,
       "perks": {
         "arcane_reservoir": 3,
+        "bind_and_wrench": 1,
         "carry_through": 1,
         "follow_up": 1,
         "forward_guard": 1,
@@ -466,7 +468,8 @@
         "quick_learner": 1,
         "snap_cut": 1,
         "ward_breaker": 1,
-        "wind_up": 1
+        "wind_up": 1,
+        "wrenching_blows": 1
       },
       "replay_matches": true,
       "skills": {
@@ -486,17 +489,17 @@
         "meteor",
         "inferno"
       ],
-      "steps": 1146
+      "steps": 1148
     },
     "melee_blades": {
       "attacks": {
         "monster": {
-          "evaded": 134,
+          "evaded": 129,
           "fumble": 4,
-          "hit": 181,
+          "hit": 186,
           "miss": 20
         },
-        "monster_damage": 645,
+        "monster_damage": 663,
         "player": {
           "evaded": 158,
           "fumble": 2,
@@ -529,6 +532,7 @@
       "perks": {
         "armored_evasion": 3,
         "berserker": 1,
+        "bind_and_wrench": 1,
         "carry_through": 1,
         "catch_breath": 1,
         "crossed_guard": 1,
@@ -547,7 +551,7 @@
         "reaping_arc": 1,
         "sidestep": 1,
         "snap_cut": 1,
-        "unarmored_grace": 4
+        "unarmored_grace": 3
       },
       "replay_matches": true,
       "skills": {
@@ -562,12 +566,12 @@
     "ranged_bows": {
       "attacks": {
         "monster": {
-          "evaded": 135,
+          "evaded": 133,
           "fumble": 3,
-          "hit": 180,
+          "hit": 182,
           "miss": 29
         },
-        "monster_damage": 667,
+        "monster_damage": 672,
         "player": {
           "evaded": 157,
           "fumble": 5,
@@ -609,6 +613,7 @@
         "gap_finder": 1,
         "ghost": 1,
         "hardened_hide": 3,
+        "knuckle_shot": 1,
         "low_guard": 1,
         "night_eyes": 1,
         "off_hand_drill": 1,
@@ -620,8 +625,8 @@
         "snap_cut": 1,
         "sniper": 1,
         "steady_aim": 1,
-        "twin_rhythm": 1,
-        "unarmored_grace": 2
+        "stripping_shots": 1,
+        "twin_rhythm": 1
       },
       "replay_matches": true,
       "skills": {
@@ -634,14 +639,14 @@
       "steps": 1101
     }
   },
-  "calls": 22218,
+  "calls": 23907,
   "findings": {
     "fought level gap +0": 62,
     "fought level gap +1": 48,
     "fought level gap +2": 44,
     "fought level gap -1": 41,
     "fought level gap -2": 45,
-    "no eligible perk at a level-up": 37,
+    "no eligible perk at a level-up": 35,
     "spell damage applied by the driver, not a command": 845
   },
   "perks_taken": {
@@ -651,6 +656,7 @@
     "assassin": 1,
     "backstab": 1,
     "berserker": 1,
+    "bind_and_wrench": 2,
     "carry_through": 2,
     "catch_breath": 1,
     "conjurer": 1,
@@ -672,6 +678,8 @@
     "illusionist": 1,
     "iron_stomach": 1,
     "kindred_focus": 1,
+    "kindred_mind": 1,
+    "knuckle_shot": 1,
     "long_guard": 2,
     "low_guard": 8,
     "mailed_casting": 12,
@@ -681,6 +689,7 @@
     "night_eyes": 1,
     "off_hand_drill": 2,
     "pack_mule": 2,
+    "pincer_strike": 1,
     "polyglot": 6,
     "press_on": 1,
     "pyromancer": 4,
@@ -695,22 +704,22 @@
     "snap_cut": 8,
     "sniper": 1,
     "steady_aim": 1,
+    "stripping_shots": 1,
     "summon_ancient": 1,
     "summon_angelic": 1,
-    "summon_demonic": 1,
     "summon_dire": 1,
     "summon_elder": 1,
-    "summon_otherworldly": 1,
     "survivor": 2,
     "telekinetic": 1,
     "transmuter": 1,
     "twin_rhythm": 1,
-    "unarmored_grace": 6,
+    "unarmored_grace": 3,
     "unraveler": 1,
     "unshaken": 2,
     "ward_breaker": 5,
     "warded_mind": 2,
     "wind_up": 1,
+    "wrenching_blows": 1,
     "zealot": 2
   },
   "seed": "m5-18"

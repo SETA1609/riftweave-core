@@ -22,6 +22,56 @@
       "ranges": ["melee"],
       "weapon_properties": ["light"],
       "effects": []
+    },
+    {
+      "key": "trip",
+      "label": "Trip",
+      "description": "You hook a leg or sweep low instead of cutting deep: a harder roll for half the damage, and a hit puts the target on the ground unless it saves against your weapon's attribute.",
+      "modifies": "attack",
+      "ap": 0,
+      "attack": -10,
+      "damage_multiplier": 0.5,
+      "ranges": ["melee"],
+      "save_bonus": 20,
+      "effects": [{ "effect": "core:effect/knockdown", "duration": 5 }]
+    },
+    {
+      "key": "disarm",
+      "label": "Disarm",
+      "description": "You go for the weapon, not the body: a harder roll for half the damage, and a hit makes the target drop its weapon unless it saves against your weapon's attribute.",
+      "modifies": "attack",
+      "ap": 0,
+      "attack": -15,
+      "damage_multiplier": 0.5,
+      "ranges": ["melee"],
+      "save_bonus": 20,
+      "events": ["disarm"],
+      "effects": []
+    },
+    {
+      "key": "tripping_shot",
+      "label": "Tripping Shot",
+      "description": "You shoot or throw low, at the legs: a harder shot for half the damage, and a hit puts the target on the ground unless it saves against your weapon's attribute.",
+      "modifies": "attack",
+      "ap": 0,
+      "attack": -10,
+      "damage_multiplier": 0.5,
+      "ranges": ["ranged"],
+      "save_bonus": 20,
+      "effects": [{ "effect": "core:effect/knockdown", "duration": 5 }]
+    },
+    {
+      "key": "disarming_shot",
+      "label": "Disarming Shot",
+      "description": "You shoot or throw at the weapon hand: a harder shot for half the damage, and a hit makes the target drop its weapon unless it saves against your weapon's attribute.",
+      "modifies": "attack",
+      "ap": 0,
+      "attack": -15,
+      "damage_multiplier": 0.5,
+      "ranges": ["ranged"],
+      "save_bonus": 20,
+      "events": ["disarm"],
+      "effects": []
     }
   ]
 }

@@ -141,6 +141,7 @@
       ]
     },
     "dr_applies_tag": "armor_dr_applies",
-    "pierce_tag": "armor_pierce_partial"
+    "pierce_tag": "armor_pierce_partial",
+    "maneuver_save_multiplier": 10
   }
 }

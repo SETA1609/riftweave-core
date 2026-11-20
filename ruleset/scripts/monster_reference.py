@@ -201,17 +201,28 @@ def perk_ref(held):
     return held["perk"], held.get("rank", 1)
 
 
+def _ladder_depth(key):
+    """How many rungs below the perk its prerequisite perks reach: dire 0, elder 1, ancient 2."""
+    below = [item["perk"].removeprefix(FEATURE_PREFIX) for item in _features().get(key, {}).get("prerequisite", {}).get("perks", [])]
+    return max((_ladder_depth(other) + 1 for other in below), default=0)
+
+
 def held_templates(bought):
-    """The power and nature a caster holds from the perks bought, in order: the latest per slot."""
-    held = {"power": None, "nature": None}
+    """The power and nature a caster holds from the perks bought (GD_S05_04): the power is the
+    highest rung held, its higher rank overriding the lower ones whatever the buy order, and the
+    natures exclude each other, so two raise ValueError."""
+    rungs = {"power": [], "nature": []}
     for ref, _rank in map(perk_ref, bought):
-        for unlocked in _features().get(ref.removeprefix(FEATURE_PREFIX), {}).get("unlocks", []):
+        perk = ref.removeprefix(FEATURE_PREFIX)
+        for unlocked in _features().get(perk, {}).get("unlocks", []):
             if unlocked.startswith(TEMPLATE_PREFIX):
                 key = unlocked.removeprefix(TEMPLATE_PREFIX)
                 slot = _templates()[key]["slot"]
-                if slot in held:
-                    held[slot] = key
-    return held
+                if slot in rungs:
+                    rungs[slot].append((_ladder_depth(perk), perk, key))
+    if len(rungs["nature"]) > 1:
+        raise ValueError(f"perks {rungs['nature'][0][1]} and {rungs['nature'][1][1]} exclude each other")
+    return {slot: max(found)[2] if found else None for slot, found in rungs.items()}
 
 
 def _chain_templates(rows, key):

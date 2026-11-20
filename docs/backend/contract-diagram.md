@@ -263,12 +263,15 @@ classDiagram
         List~object~ effects
         boolean evaded
         integer evasion_rate
+        List~enum~ events
         integer hp
         integer_or_null margin
         enum outcome
         boolean parried
         integer parry_rate
+        key rider
         List~object~ riders
+        object save
         integer stagger_ap
         integer stamina
         integer target
@@ -537,7 +540,9 @@ classDiagram
         integer carry
         integer hp
         integer initiative
+        List~ref~ maneuvers
         integer mp
+        List~ref~ riders
         object skills
         integer sp
     }

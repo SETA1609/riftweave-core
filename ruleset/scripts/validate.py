@@ -1929,7 +1929,45 @@ def check_monster_perks(monsters, templates):
                     errors.append(f"{kind} '{row.get('key')}': perk {key} at rank {rank}, past its {ranks}")
                 if feature.get("category") in MONSTER_PERK_WARN_CATEGORIES:
                     warnings.append(f"{kind} '{row.get('key')}': perk {key} is {feature['category']}, which means little on a monster")
+            # No two perks that exclude each other, as a player holds (GD_S05_04): the trip line
+            # and the disarm line, or two summon natures.
+            keys = [held["perk"].rsplit("/", 1)[-1] for held in row.get("perks") or []]
+            for first, second in excluded_pairs(keys, features):
+                errors.append(f"{kind} '{row.get('key')}': holds {first} and {second}, which exclude each other")
     return errors, warnings
+
+
+def excluded_pairs(keys, features):
+    """The pairs of held perk keys that exclude each other (`excludes`, either way), in order."""
+    pairs = []
+    for index, first in enumerate(keys):
+        for second in keys[index + 1:]:
+            listed = {ref.rsplit("/", 1)[-1] for ref in (features.get(first, {}).get("excludes") or [])}
+            back = {ref.rsplit("/", 1)[-1] for ref in (features.get(second, {}).get("excludes") or [])}
+            if second in listed or first in back:
+                pairs.append((first, second))
+    return pairs
+
+
+def check_rider_perks(features):
+    """A rider perk (GD_S05_04) names a maneuver and needs a perk that unlocks it; a perk's
+    `excludes` name perks that list it back, so a line blocks a line both ways
+    (docs/core/actions.md#rider-perks)."""
+    rows = {row.get("key"): row for row in features}
+    errors = []
+    for row in features:
+        rider = row.get("rider")
+        if rider:
+            needed = [rows.get(item["perk"].rsplit("/", 1)[-1], {}) for item in (row.get("prerequisite") or {}).get("perks", [])]
+            if not any(rider in (perk.get("unlocks") or []) for perk in needed):
+                errors.append(f"perk '{row['key']}': rides {rider} but needs no perk that unlocks it")
+        for ref in row.get("excludes") or []:
+            other = rows.get(ref.rsplit("/", 1)[-1])
+            if other is None:
+                continue  # the reference check reports it
+            if f"core:feature/{row['key']}" not in (other.get("excludes") or []):
+                errors.append(f"perk '{row['key']}': excludes {other['key']}, which does not exclude it back")
+    return errors
 
 
 def check_maneuver_unlocks(maneuvers, features):
@@ -2154,7 +2192,7 @@ def main():
     for warning in perk_warnings:
         print(f"  \u26a0  {warning}")
     if perk_errors:
-        print("  \u2717  monster perks (rank at most the perk's ranks)")
+        print("  \u2717  monster perks (rank at most the perk's ranks, no excluded pair)")
         for e in perk_errors:
             print(f"       {e}")
         failed += 1
@@ -2166,6 +2204,13 @@ def main():
     if unlock_errors:
         print("  \u2717  maneuvers (each unlocked by a perk)")
         for e in unlock_errors:
+            print(f"       {e}")
+        failed += 1
+
+    rider_errors = check_rider_perks(json.loads((DATA_DIR / "features" / "core.json").read_text())["features"])
+    if rider_errors:
+        print("  \u2717  rider perks and exclusions (the unlock perk, excludes both ways)")
+        for e in rider_errors:
             print(f"       {e}")
         failed += 1
 

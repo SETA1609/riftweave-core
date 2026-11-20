@@ -5,6 +5,7 @@ package derived
 
 import (
 	"encoding/json"
+	"fmt"
 	"slices"
 	"strings"
 
@@ -103,6 +104,49 @@ type MonsterRow struct {
 		Perk string `json:"perk"`
 		Rank *int64 `json:"rank"`
 	} `json:"perks"`
+	// Maneuvers are the ones the row lists (M3-24); its perks may unlock more (GD_S05_04).
+	Maneuvers []string `json:"maneuvers"`
+}
+
+// maneuversAndRiders are the row's maneuvers, listed or unlocked by its perks, sorted, and
+// the maneuvers its held rider perks put on its plain attacks, sorted. Two held perks that
+// exclude each other are an error.
+func maneuversAndRiders(ruleset *data.Ruleset, row *MonsterRow) ([]string, []string, error) {
+	var known map[string]bool = map[string]bool{}
+	for _, ref := range row.Maneuvers {
+		known[ref] = true
+	}
+	var held []*data.Feature
+	var riders []string
+	for _, item := range row.Perks {
+		feature, err := ruleset.Features.Require("perk", item.Perk[strings.LastIndex(item.Perk, "/")+1:])
+		if err != nil {
+			return nil, nil, err
+		}
+		for _, ref := range feature.Unlocks {
+			if strings.HasPrefix(ref, "core:maneuver/") {
+				known[ref] = true
+			}
+		}
+		if feature.Rider != "" {
+			riders = append(riders, feature.Rider)
+		}
+		held = append(held, feature)
+	}
+	for index, first := range held {
+		for _, second := range held[index+1:] {
+			if data.Exclude(first, second) {
+				return nil, nil, fmt.Errorf("perks %s and %s exclude each other", first.Key, second.Key)
+			}
+		}
+	}
+	var maneuvers []string = make([]string, 0, len(known))
+	for ref := range known {
+		maneuvers = append(maneuvers, ref)
+	}
+	slices.Sort(maneuvers)
+	slices.Sort(riders)
+	return maneuvers, riders, nil
 }
 
 // perkModifiers are the row's perks emitted at their rank, in list order.
@@ -192,5 +236,13 @@ func RunMonsterSheet(ruleset *data.Ruleset, input MonsterSheetInput) (map[string
 		skills[key] = value
 	}
 	result["skills"] = skills
+	maneuvers, riders, err := maneuversAndRiders(ruleset, row)
+	if err != nil {
+		return nil, err
+	}
+	result["maneuvers"] = maneuvers
+	if len(riders) > 0 {
+		result["riders"] = riders
+	}
 	return result, nil
 }
