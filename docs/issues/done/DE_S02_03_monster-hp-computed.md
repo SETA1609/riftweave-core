@@ -1,5 +1,6 @@
 #### DE_S02_03_monster-hp-computed Third normal form: monster hit points are computed
-- Status: review
+- Status: done
+- Merged: #397, 2026-11-20
 - Priority: high
 - Needs: M5-73
 - Was: M5-74
