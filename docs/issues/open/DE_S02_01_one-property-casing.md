@@ -1,8 +1,9 @@
 #### DE_S02_01_one-property-casing One property casing
-- Status: todo
+- Status: review
 - Priority: low
 - Needs: M5-37
 - Was: M5-40
+- Modified: 2026-11-20
 - Do: The data mixes 72 `camelCase` property names (`hitPoints`, `appliedBy`) with 85 `snake_case` ones (`enchantment_slots`, `crit_window`), sometimes inside one schema. `CONTRIBUTING.md` defers unifying them to an issue of its own because it renames keys. Pick one casing, rename every property in data, schemas, reference code, the backend's JSON tags, and docs, and fail validation on the other.
 - Keys: every property in the other casing **(breaking)**
 - Files: ~20, splits by collection (ruleset/schemas/, ruleset/data/, ruleset/scripts/, backend/, docs/)
