@@ -209,8 +209,8 @@ creatures are ordinary monster rows ([monsters.md](./monsters.md#summoned-creatu
 | `undead` | Raise Thrall, Raise Horde (minions) | skeleton, zombie |
 
 A creature appears at its caster's level, whatever the spell's level. The row is the base of a
-[derived monster](./monsters.md#derived-monsters) at that level, so its attributes and HP move by
-its creature type's growth. The row still sets the stats: of two creatures at the same level, the
+[derived monster](./monsters.md#derived-monsters) at that level, so its attributes move by
+its creature type's growth, and its HP, computed from them, with them. The row still sets the stats: of two creatures at the same level, the
 weaker row stays weaker. Templates go on top in order: the element, then the caster's power tier,
 then the caster's nature. The caster's power and nature are perks with `unlocks`: the power ladder
 `summon_dire`, `summon_elder`, `summon_ancient`, each needing the one before, and the natures
@@ -228,8 +228,8 @@ not count toward the summon limit ([casting.md](../core/casting.md#minions)). [V
 `summons/bonuses.json`: `magic` adds to INT and WIL, `physical` to STR, END, and AGI. When the
 caster summons, each bonus the caster holds adds the caster's CHA modifier, `CHA − 5`
 ([attributes.md](./attributes.md#the-attribute-modifier)), to every attribute of its group, after
-the power and nature, through the same merge as a template's `attributes`, so END moves an authored
-`hitPoints` and the creature's mana and damage follow its new attributes. A CHA of 5 or below adds
+the power and nature, through the same merge as a template's `attributes`, so the creature's computed HP, mana, and
+damage follow its new attributes. A CHA of 5 or below adds
 nothing; there is no penalty. Without a bonus perk, CHA changes nothing. A caster takes one group
 with one perk; the second perk adds the other group. [V 2026-11-12, `test_spells.py`]
 

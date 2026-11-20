@@ -239,7 +239,7 @@ class Run:
             dice, kind = "1d6", "bludgeoning"
             self.findings["monster with no rollable attack"] += 1
         skill = "unarmed" if "natural_weapon" in attack else "blades"
-        sheet = self.cli.run("monster_sheet", {"monster": {k: row[k] for k in ("attributes", "level", "hitPoints", "skills") if k in row},
+        sheet = self.cli.run("monster_sheet", {"monster": {k: row[k] for k in ("attributes", "level", "role", "skills") if k in row},
                                                 "read_skills": [skill, "evasion"]})
         return {"key": row["key"], "level": row.get("level", 1), "hp": sheet["hp"], "attack": sheet["skills"][skill],
                 "evasion": sheet["skills"]["evasion"], "dice": dice, "type": kind, "resist": row.get("resist") or {},

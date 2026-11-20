@@ -151,7 +151,7 @@ class TestBestiary(unittest.TestCase):
         ])
         base = json.loads((DATA / "monsters" / "bases" / "ooze.json").read_text())
         growth = base["growth"]
-        self.assertEqual(rows["big_blob"]["hitPoints"], rows["blob"]["hitPoints"] + 4 * growth["hitPointsPerLevel"])
+        self.assertNotIn("hitPoints", rows["big_blob"])  # computed by the sheet (DE_S02_03)
         for ability, rule in growth["attributes"].items():
             with self.subTest(ability=ability):
                 expected = max(1, round(rows["blob"]["attributes"][ability] + 4 * rule["per_level"]))
@@ -196,6 +196,17 @@ def summon_group(key):
     return [v.removeprefix("core:monster/") for g in groups if g["key"] == key for v in g["variants"]]
 
 
+class TestScaledHitPoints(unittest.TestCase):
+    """DE_S02_03 review: the role share floors without losing a point to a float just under its decimal."""
+
+    def test_a_share_stored_just_under_its_decimal_does_not_lose_a_point(self):
+        from kernel_reference import scaled_hp
+
+        self.assertEqual(scaled_hp(90, 0.7), 63)
+        self.assertEqual(scaled_hp(180, 0.35), 63)
+        self.assertEqual(scaled_hp(59, 0.4), 23)
+
+
 class TestTemplatesAndGeneratedMonsters(unittest.TestCase):
     """Power and nature templates, generated monsters, and the example rows (M3-10)."""
 
@@ -203,7 +214,7 @@ class TestTemplatesAndGeneratedMonsters(unittest.TestCase):
         dog = ref().generate("core:monster/dog", power="dire", level=3)
         wolf = ref().generate("core:monster/wolf", power="dire", level=3)
         self.assertLess(sum(dog["attributes"].values()), sum(wolf["attributes"].values()))
-        self.assertLess(dog["hitPoints"], wolf["hitPoints"])
+        self.assertLess(ref().hit_points(dog), ref().hit_points(wolf))
         for ability, value in dog["attributes"].items():
             with self.subTest(ability=ability):
                 self.assertLessEqual(value, wolf["attributes"].get(ability, 0))
@@ -287,8 +298,10 @@ class TestTemplatesAndGeneratedMonsters(unittest.TestCase):
         for key in ("dog", "wolf", "dire_wolf", "elder_wolf", "demonic_hound", "undead_horse"):
             with self.subTest(monster=key):
                 row = rows[key]
-                self.assertEqual(row["hitPoints"], ref().example_hp(row))
                 derived = run_derived({"actor": {"attributes": row["attributes"], "level": row["level"]}})
+                # A standard monster: the formula times 0.4, before its perks' hp modifiers (DE_S02_03).
+                before_perks = {field: value for field, value in row.items() if field != "perks"}
+                self.assertEqual(ref().hit_points(before_perks), max(1, int(derived["hp"] * 0.4)))
                 self.assertEqual(run_monster_sheet({"monster": row})["mp"], derived["mp"])
 
     def test_a_skill_missing_from_the_sheet_reads_the_starting_value(self):
@@ -304,6 +317,35 @@ class TestTemplatesAndGeneratedMonsters(unittest.TestCase):
         schema_uri = (validate.SCHEMA_DIR / "monster.schema.json").resolve().as_uri()
         resolver = validate.RefResolver(base_uri=schema_uri, referrer=store[schema_uri], store=store)
         validate.validate({"monsters": [rows["brute"]]}, store[schema_uri], resolver=resolver)
+
+
+class TestHitPointsAreComputed(unittest.TestCase):
+    """DE_S02_03 (docs/modules/monsters.md#hit-points): no monster stores HP; the sheet computes it."""
+
+    def test_no_row_base_or_template_writes_hit_points(self):
+        self.assertEqual(validate.check_monster_hit_points(), [])
+
+    def test_a_row_a_base_or_a_template_that_writes_hit_points_is_reported(self):
+        errors = validate.check_monster_hit_points(
+            monsters=[{"key": "blob", "base": "core:creature_type/ooze", "overrides": {"hitPoints": 30}}],
+            bases={"ooze": {"key": "ooze", "growth": {"hitPointsPerLevel": 4}}},
+            templates=[{"key": "minion", "hit_points_multiplier": 0.25}],
+        )
+        self.assertEqual(len(errors), 3, errors)
+        self.assertTrue(any("blob" in e and "hitPoints" in e for e in errors))
+        self.assertTrue(any("ooze" in e and "hitPointsPerLevel" in e for e in errors))
+        self.assertTrue(any("minion" in e and "hit_points_multiplier" in e for e in errors))
+
+    def test_every_monster_hp_is_the_formula_times_its_role(self):
+        from kernel_reference import load_data, run_derived
+
+        share = load_data("progression/core.json")["progression"]["monster_hp_multiplier"]
+        for row in monsters():
+            if row.get("perks"):
+                continue  # a perk's hp modifier adds after the multiplier (monster_sheet vectors)
+            with self.subTest(monster=row["key"]):
+                formula = run_derived({"actor": {"attributes": row["attributes"], "level": row["level"]}})["hp"]
+                self.assertEqual(ref().hit_points(row), max(1, int(formula * share[row.get("role", "standard")])))
 
 
 class TestAttacksAndAbilities(unittest.TestCase):
@@ -510,7 +552,7 @@ class TestMonstersTakePerks(unittest.TestCase):
         wolf = next(row for row in monsters() if row["key"] == "wolf")
         refs = [held["perk"] for held in wolf["perks"]]
         self.assertEqual(refs, ["core:feature/low_sweep", "core:feature/hooking_blows"])
-        sheet = kernel_reference.run_monster_sheet({"monster": {key: wolf[key] for key in ("attributes", "level", "hitPoints", "perks")}})
+        sheet = kernel_reference.run_monster_sheet({"monster": {key: wolf[key] for key in ("attributes", "level", "perks")}})
         self.assertEqual(sheet["maneuvers"], ["core:maneuver/trip"])
         self.assertEqual(sheet["riders"], ["core:maneuver/trip"])
         bite = kernel_reference.run_combat({

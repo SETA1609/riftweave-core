@@ -55,11 +55,9 @@ in-memory tables. It is a hybrid, and each layer has its own type. [V 2026-11-11
 
 Places where the data does not yet follow the model:
 
-- **Authored monster HP.** 55 of the 59 monster rows store `hitPoints` instead of computing it (M5-74). [V 2026-11-17]
-- **Authored HP growth.** Each creature type in `monsters/bases/` authors `growth.hitPointsPerLevel`, so a monster's HP does not come from the player formula. [V 2026-11-11]
 - **Formulas have no schema.** The four files in `formulas/` name no `$schema`, so `validate.py` skips them with a warning. [V 2026-11-11]
 - **JSON Schema cannot check references.** `validate.py` and tests do that on top of it, and a
   free-text field such as `parameter` is only checked where a test says so. [V 2026-11-11]
 - **Module overrides.** `module_loader.merge_data()` does not read `overrides` yet.
   [V 2026-11-11]
-- **Normal-form gaps.** Enums written beside their tables (M5-72), stored monster HP (M5-74), and descriptions that restate numbers (M5-75); each issue holds its audit counts, and [normal-forms.md](../theory/normal-forms.md) explains the forms. [V 2026-11-17]
+- **Normal-form gaps.** Enums written beside their tables (M5-72) and descriptions that restate numbers (M5-75); each issue holds its audit counts, and [normal-forms.md](../theory/normal-forms.md) explains the forms. [V 2026-11-17]

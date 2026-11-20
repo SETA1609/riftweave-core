@@ -13,7 +13,6 @@
     "per": 6,
     "wil": 3
   },
-  "hitPoints": 8,
   "tags": [
     "familiar"
   ],
@@ -35,7 +34,6 @@
         "per_level": 0.2
       }
     },
-    "hitPointsPerLevel": 2,
     "damage_per_level": 0.25
   }
 }

@@ -35,8 +35,10 @@ def armor(key, category, slot, dr):
     return {"key": key, "armor": {"category": category, "slot": slot, "dr_base": dr}}
 
 
-def monster(key, level, hp, magnitude):
-    return {"key": key, "level": level, "hitPoints": hp, "effects": [{"effect": "core:effect/damage_fire", "magnitude": magnitude}]}
+def monster(key, level, end, magnitude):
+    """A standard monster; its HP is computed, floor((15 + 8 x END + 4 x level) x 0.4) (DE_S02_03)."""
+    return {"key": key, "level": level, "attributes": {"end": end},
+            "effects": [{"effect": "core:effect/damage_fire", "magnitude": magnitude}]}
 
 
 def subjects(findings, check):
@@ -62,7 +64,7 @@ class TestChecks(unittest.TestCase):
         self.assertEqual(gate_failures(findings), [])
 
     def test_a_gate_finding_fails_and_a_warn_finding_does_not(self):
-        findings = report(BANDS, [weapon("dagger", "1d4")], [], [monster("brute", 1, 100, 20)])
+        findings = report(BANDS, [weapon("dagger", "1d4")], [], [monster("brute", 1, 29, 20)])
         self.assertEqual([f["subject"] for f in gate_failures(findings)], ["dagger"])
 
     def test_an_armor_piece_may_not_pass_the_highest_set_dr_of_its_category(self):
@@ -82,11 +84,12 @@ class TestChecks(unittest.TestCase):
         self.assertNotIn("light", by_subject)  # vest 2 + boots 1 + cap 0 = 3
 
     def test_monster_damage_is_read_against_its_level_tier(self):
-        findings = report(BANDS, [], [], [monster("imp", 1, 22, 6), monster("drake", 6, 50, 18)])
+        findings = report(BANDS, [], [], [monster("imp", 1, 5, 6), monster("drake", 6, 11, 18)])
         self.assertEqual(subjects(findings, "monster_damage"), ["drake"])
 
     def test_hits_to_kill_is_hp_over_the_middle_of_the_tier_damage(self):
-        findings = report(BANDS, [], [], [monster("imp", 1, 22, 6), monster("rat", 1, 10, 4), monster("golem", 1, 110, 6)])
+        # Computed HP 23, 10 and 110 over the early tier's middle damage 5.5.
+        findings = report(BANDS, [], [], [monster("imp", 1, 5, 6), monster("rat", 1, 1, 4), monster("golem", 1, 32, 6)])
         self.assertEqual(subjects(findings, "monster_hits_to_kill"), ["golem", "rat"])
 
 

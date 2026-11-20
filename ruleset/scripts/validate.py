@@ -1350,20 +1350,6 @@ def _apply_growth(base, level):
     return computed
 
 
-def _apply_growth_hp(base, level):
-    """Compute expected hit points using hitPointsPerLevel growth."""
-    growth = base.get("growth")
-    if not growth:
-        return None
-    hp_per_level = growth.get("hitPointsPerLevel")
-    if hp_per_level is None:
-        return None
-    base_level = base.get("level", 1)
-    base_hp = base.get("hitPoints", 10)
-    delta = level - base_level
-    return max(1, round(base_hp + hp_per_level * delta))
-
-
 def _merge_field(base_val, override_val):
     """Merge a single field from override into base (docs/core/overrides.md#how-an-override-merges).
 
@@ -1409,12 +1395,6 @@ def _monster_templates():
             for template in json.loads(MONSTER_TEMPLATES_FILE.read_text()).get("monster_templates", []):
                 _MONSTER_TEMPLATES[template["key"]] = template
     return _MONSTER_TEMPLATES
-
-
-def _hp_per_end():
-    """HP per point of END, the hp row's per_point (derived/core.json)."""
-    rows = json.loads((DATA_DIR / "derived" / "core.json").read_text())["derived"]
-    return next(row["per_point"] for row in rows if row["key"] == "hp")
 
 
 def _grow_damage(merged, step):
@@ -1552,11 +1532,9 @@ def _apply_monster_template(merged, template):
         for ability, add in template["attributes"].items():
             attributes[ability] = max(1, attributes.get(ability, 0) + add)
         merged["attributes"] = attributes
-        if "end" in template["attributes"] and "hitPoints" in merged:
-            merged["hitPoints"] = max(1, merged["hitPoints"] + template["attributes"]["end"] * _hp_per_end())
-    if "hit_points_multiplier" in template and "hitPoints" in merged:
-        # After the attribute adds: a minion's HP is cut from what its row would have (M3-25).
-        merged["hitPoints"] = max(1, math.floor(merged["hitPoints"] * template["hit_points_multiplier"]))
+    if "role" in template:
+        # The role sets the HP multiplier the sheet applies (DE_S02_03); HP is never stored.
+        merged["role"] = template["role"]
     if template.get("resist"):
         resist = dict(merged.get("resist") or {})
         for kind, amount in template["resist"].items():
@@ -1670,8 +1648,6 @@ def _resolve_monster_bases(data, errors):
                     if ability in attributes:
                         attributes[ability] = max(1, round(attributes[ability] + rule.get("per_level", 0) * delta))
                 merged["attributes"] = attributes
-                if "hitPointsPerLevel" in growth and "hitPoints" in merged:
-                    merged["hitPoints"] = max(1, round(merged["hitPoints"] + growth["hitPointsPerLevel"] * delta))
                 if delta > 0:
                     _grow_damage(merged, round(growth.get("damage_per_level", 0) * delta))
         else:
@@ -1687,9 +1663,6 @@ def _resolve_monster_bases(data, errors):
             computed_attrs = _apply_growth(type_data, level)
             if computed_attrs is not None:
                 merged["attributes"] = computed_attrs
-            computed_hp = _apply_growth_hp(type_data, level)
-            if computed_hp is not None:
-                merged["hitPoints"] = computed_hp
 
         planned = _template_layers(key, entry.get("templates"), filled, errors)
         if planned is None:
@@ -1978,6 +1951,50 @@ def validate_modules(store, equipment_index=None, effect_channels=None, namespac
     return passed, failed, total, conflicts
 
 
+# A monster's HP is computed by its sheet (DE_S02_03), so no row, base, template or module states it.
+STORED_HP_FIELDS = ("hitPoints", "hitPointsPerLevel", "hit_points_multiplier")
+
+
+def _stored_hp_paths(value, path=""):
+    """The paths under `value` whose key is one of STORED_HP_FIELDS."""
+    if isinstance(value, dict):
+        for key, child in value.items():
+            here = f"{path}.{key}" if path else key
+            if key in STORED_HP_FIELDS:
+                yield here
+            yield from _stored_hp_paths(child, here)
+    elif isinstance(value, list):
+        for index, child in enumerate(value):
+            yield from _stored_hp_paths(child, f"{path}[{index}]")
+
+
+def check_monster_hit_points(monsters=None, bases=None, templates=None, module_files=None):
+    """No monster row, creature-type base, template or module monster writes hitPoints,
+    hitPointsPerLevel or hit_points_multiplier: HP is the player formula times the role's
+    monster_hp_multiplier (docs/modules/monsters.md#hit-points, DE_S02_03). Each argument
+    defaults to the core data; returns the error list."""
+    if monsters is None:
+        monsters = json.loads((DATA_DIR / "monsters" / "core.json").read_text())["monsters"]
+    if bases is None:
+        bases = _base_cache()
+    if templates is None:
+        templates = json.loads(MONSTER_TEMPLATES_FILE.read_text())["monster_templates"]
+    if module_files is None:
+        module_files = [path for path, _module in collect_module_data_files()]
+    sources = [("monster", row.get("key", "?"), row) for row in monsters]
+    sources += [("base", key, row) for key, row in sorted(bases.items())]
+    sources += [("template", row.get("key", "?"), row) for row in templates]
+    for path in module_files:
+        try:
+            content = json.loads(Path(path).read_text())
+        except (json.JSONDecodeError, OSError):
+            continue
+        rows = content.get("monsters", []) if isinstance(content, dict) else []
+        sources += [(f"module {Path(path).name} monster", row.get("key", "?"), row) for row in rows]
+    return [f"{kind} '{key}': {where} is stored; HP is computed (docs/modules/monsters.md#hit-points)"
+            for kind, key, row in sources for where in _stored_hp_paths(row)]
+
+
 # A perk of these categories means little on a monster, so naming one warns (M3-15).
 MONSTER_PERK_WARN_CATEGORIES = ("social", "utility")
 
@@ -2209,9 +2226,8 @@ def check_racial_trait_refs(data_files):
     return errors
 
 
-# Property names are snake_case (CONTRIBUTING.md#naming, DE_S02_01). DE_S02_03 removes these two
-# with the stored monster HP; until it lands they are the only camelCase properties left.
-CAMEL_CASE_ALLOWED = frozenset({"hitPoints", "hitPointsPerLevel"})
+# Property names are snake_case (CONTRIBUTING.md#naming, DE_S02_01). DE_S02_03 removed the stored
+# monster HP, the last camelCase properties, so there is no exception left.
 
 
 def _is_camel_case(name):
@@ -2223,7 +2239,7 @@ def _camel_keys(value, path=""):
     if isinstance(value, dict):
         for key, child in value.items():
             here = f"{path}.{key}" if path else key
-            if _is_camel_case(key) and key not in CAMEL_CASE_ALLOWED:
+            if _is_camel_case(key):
                 yield here, key
             yield from _camel_keys(child, here)
     elif isinstance(value, list):
@@ -2260,7 +2276,7 @@ def check_property_casing(schema_files=None, data_files=None):
     errors = []
     for path in schema_files:
         for where, name in _schema_property_names(json.loads(Path(path).read_text())):
-            if _is_camel_case(name) and name not in CAMEL_CASE_ALLOWED:
+            if _is_camel_case(name):
                 errors.append(f"{Path(path).name}: property '{name}' at {where} is camelCase; use snake_case")
     for path in data_files:
         for where, key in _camel_keys(json.loads(Path(path).read_text())):
@@ -2324,6 +2340,13 @@ def main():
     if perk_errors:
         print("  \u2717  monster perks (rank at most the perk's ranks, no excluded pair)")
         for e in perk_errors:
+            print(f"       {e}")
+        failed += 1
+
+    hp_errors = check_monster_hit_points()
+    if hp_errors:
+        print("  \u2717  monster hit points (computed, never stored)")
+        for e in hp_errors:
             print(f"       {e}")
         failed += 1
 

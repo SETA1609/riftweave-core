@@ -45,9 +45,10 @@
             "type": "integer",
             "minimum": 1
           },
-          "hitPoints": {
-            "type": "integer",
-            "minimum": 1
+          "role": {
+            "type": "string",
+            "enum": ["standard", "boss", "minion"],
+            "description": "Scales the computed HP by progression/core.json monster_hp_multiplier; default standard (DE_S02_03)."
           },
           "size": {
             "type": "string"
