@@ -43,16 +43,19 @@ def play(build):
     the sheet at the last level (level, attributes, skills, perks held)."""
     features = _rows("features/core.json", "features")
     rules = json.loads((DATA / "progression/core.json").read_text())["progression"]
-    creation_rules = rules["tag_skills"]
+    tag_skills = rules["tag_skills"]
+    creation = rules["creation"]
     problems = []
 
-    # Creation: 4 in every attribute plus 10 points, none over 10 (character-creation.md step 2).
+    # Creation: the point-buy and the creation-perk cap from progression's `creation` block
+    # (docs/core/progression.md#character-creation); a finished build leaves no point.
     assigned = build["attributes"]
     if sorted(assigned) != sorted(ABILITIES):
         problems.append("attributes must name the eight abilities")
         return problems, None
-    if any(not 4 <= value <= 10 for value in assigned.values()) or sum(v - 4 for v in assigned.values()) != 10:
-        problems.append("attributes: 4 each plus 10 points, none over 10")
+    bought = kernel_reference.point_buy(creation, assigned)
+    if "error" in bought or bought["left"] != 0:
+        problems.append(f"attributes: {creation['attribute_start']} each plus {creation['attribute_points']} points, none over {creation['attribute_max']}")
     creation_mods = []
     for ref in build.get("creation_perks", []):
         row = features.get(_key(ref))
@@ -60,11 +63,11 @@ def play(build):
             problems.append(f"{ref} is not a creation perk")
             continue
         creation_mods += row.get("modifiers", [])
-    if len(build.get("creation_perks", [])) > 2:
-        problems.append("at most two creation perks")
+    if len(build.get("creation_perks", [])) > creation["creation_perks_max"]:
+        problems.append(f"at most {creation['creation_perks_max']} creation perks")
     attributes = attributes_after_creation(build, features)
     on = lambda target: [m for m in creation_mods if m["target"] == target]
-    tag_count = kernel_reference.apply_modifiers(creation_rules, on("tag_skills"))
+    tag_count = kernel_reference.apply_modifiers(tag_skills, on("tag_skills"))
     tags = [_key(ref) for ref in build["suggested_tag_skills"]]
     if len(tags) != tag_count:
         problems.append(f"suggested_tag_skills: {tag_count} tag skills, not {len(tags)}")

@@ -15,6 +15,11 @@ import build_reference  # noqa: E402
 DATA = _SCRIPTS.parent / "data"
 
 
+def creation():
+    """The point-buy and the creation-perk cap the builds are checked against (GD_S07_07)."""
+    return json.loads((DATA / "progression" / "core.json").read_text())["progression"]["creation"]
+
+
 def builds():
     return json.loads((DATA / "builds" / "core.json").read_text())["builds"]
 
@@ -92,9 +97,23 @@ class TestTheChecker(unittest.TestCase):
         problems = self.broken(lambda b: b["perks_by_level"].pop("17"))
         self.assertIn("level 17: no perk", problems)
 
+    def point_buy_problem(self):
+        rules = creation()
+        return f"attributes: {rules['attribute_start']} each plus {rules['attribute_points']} points, none over {rules['attribute_max']}"
+
     def test_a_point_buy_that_is_not_ten_points(self):
         problems = self.broken(lambda b: b["attributes"].update({"str": 10}))
-        self.assertIn("attributes: 4 each plus 10 points, none over 10", problems)
+        self.assertIn(self.point_buy_problem(), problems)
+
+    def test_a_point_buy_with_points_left(self):
+        problems = self.broken(lambda b: b["attributes"].update({"str": b["attributes"]["str"] - 1}))
+        self.assertIn(self.point_buy_problem(), problems)
+
+    def test_more_creation_perks_than_the_cap(self):
+        perks = ["core:feature/gifted", "core:feature/small_frame", "core:feature/leather_allergy"]
+        self.assertGreater(len(perks), creation()["creation_perks_max"])
+        problems = self.broken(lambda b: b.update(creation_perks=perks))
+        self.assertIn(f"at most {creation()['creation_perks_max']} creation perks", problems)
 
     def test_a_level_perk_as_a_creation_perk(self):
         problems = self.broken(lambda b: b.update(creation_perks=["core:feature/hardened_hide"]))

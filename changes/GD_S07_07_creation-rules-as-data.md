@@ -1,0 +1,4 @@
+### GD_S07_07_creation-rules-as-data The character creation numbers as data
+- Added: a `creation` block in `progression/core.json` (`attribute_start` 4, `attribute_points` 10, `attribute_max` 10, `creation_perks_max` 2) with its schema; docs/modules/character-creation.md quotes it and docs/core/progression.md#character-creation is the rule.
+- Added: the `progression` command's `point_buy` operation, in Python and Go, checks a point-buy against the block and returns `spent` and `left`; vectors reject 11 points, an attribute of 11 before race, an attribute under 4, and a missing one.
+- Changed: the suggested-build checker reads the point-buy and the creation-perk cap from the data instead of constants.

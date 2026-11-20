@@ -1,5 +1,6 @@
 // Package progression is XP, level, the skill points of a level-up, spending them on a skill
-// or a skill group, and reading a skill off a sheet (docs/core/progression.md). The curve, the
+// or a skill group, reading a skill off a sheet, taking a perk, and checking a creation
+// point-buy (docs/core/progression.md). The curve, the
 // caps, and the costs are in the data.
 package progression
 
@@ -182,6 +183,11 @@ func Run(ruleset *data.Ruleset, input Input) (any, error) {
 		}
 		var ranks int64 = min(*input.Points/cost, max(rules.SkillCap-*input.Skill, 0))
 		return spendResult{Ranks: ranks, Spent: ranks * cost, Left: *input.Points - ranks*cost}, nil
+	case "point_buy":
+		if err := requireField(input.Operation, "actor", input.Actor != nil); err != nil {
+			return nil, err
+		}
+		return pointBuy(rules, input.Actor.Attributes)
 	case "read_skill":
 		if err := requireField(input.Operation, "actor and read", input.Actor != nil && input.Read != nil); err != nil {
 			return nil, err
@@ -194,6 +200,32 @@ func Run(ruleset *data.Ruleset, input Input) (any, error) {
 		return takePerk(ruleset, input.Actor, input.Perks, *input.Perk)
 	}
 	return nil, &data.NotDefinedError{Kind: "progression operation", Key: input.Operation}
+}
+
+// pointBuy checks a creation point-buy against the creation block (docs/core/progression.md,
+// rule 7): the attributes as assigned, before race and creation perks. Each attribute must be
+// given and lie from attribute_start to attribute_max, in ability order; then the points spent
+// may not pass attribute_points. Fewer points are a draft, not an error.
+func pointBuy(rules *data.Progression, attributes actor.Attributes) (spendResult, error) {
+	var start, points, highest int64 = rules.Creation.AttributeStart, rules.Creation.AttributePoints, rules.Creation.AttributeMaximum
+	var spent int64 = 0
+	for ability := actor.Ability(0); ability < actor.AbilityCount; ability++ {
+		if !attributes.Has(ability) {
+			return spendResult{}, fmt.Errorf("attribute %s is missing", ability)
+		}
+		var value int64 = attributes.Get(ability)
+		if value < start {
+			return spendResult{}, fmt.Errorf("attribute %s is %d, under the start of %d", ability, value, start)
+		}
+		if value > highest {
+			return spendResult{}, fmt.Errorf("attribute %s is %d, over the point-buy max of %d", ability, value, highest)
+		}
+		spent += value - start
+	}
+	if spent > points {
+		return spendResult{}, fmt.Errorf("%d points spent, more than the %d to distribute", spent, points)
+	}
+	return spendResult{Spent: spent, Left: points - spent}, nil
 }
 
 // readSkill reads one skill off a sheet (docs/core/progression.md#two-sheets-one-rule-set). A

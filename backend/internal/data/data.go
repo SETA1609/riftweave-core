@@ -230,8 +230,16 @@ type Progression struct {
 	} `json:"luck_roll"`
 	LuckMaximumAbility actor.Ability   `json:"-"`
 	SkillStart         formula.Program `json:"skill_start"`
-	PerksPerLevel      int64           `json:"perks_per_level"`
-	SkillCost          struct {
+	// Creation is the point-buy and the creation-perk cap of a new character
+	// (docs/core/progression.md#character-creation).
+	Creation struct {
+		AttributeStart   int64 `json:"attribute_start"`
+		AttributePoints  int64 `json:"attribute_points"`
+		AttributeMaximum int64 `json:"attribute_max"`
+		CreationPerksMax int64 `json:"creation_perks_max"`
+	} `json:"creation"`
+	PerksPerLevel int64 `json:"perks_per_level"`
+	SkillCost     struct {
 		Normal int64 `json:"normal"`
 		Tag    int64 `json:"tag"`
 	} `json:"skill_cost"`
