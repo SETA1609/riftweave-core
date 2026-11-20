@@ -24,6 +24,13 @@ classDiagram
     }
     class attributes {
     }
+    class character {
+        string changed_at
+        enum changed_by
+        string id
+        string name
+        integer revision
+    }
     class cost {
         integer quantity
         enum unit
@@ -39,6 +46,11 @@ classDiagram
         integer quantity
         enum size
     }
+    class party_member {
+        stored_actor actor
+        character character
+        stored_actor start
+    }
     class pools {
         integer hp
         integer mp
@@ -48,6 +60,7 @@ classDiagram
         stored_actor actor
         boolean dev
         List~session_step~ log
+        List~party_member~ party
         string rules_version
         object ruleset
         stored_actor start
@@ -79,6 +92,10 @@ classDiagram
     }
     actor --> attributes : attributes
     actor --> skills : skills
+    party_member --> character : character
+    party_member --> stored_actor : actor
+    party_member --> stored_actor : start
+    session --> party_member : party
     session --> session_step : log
     session --> stored_actor : actor
     session --> stored_actor : start

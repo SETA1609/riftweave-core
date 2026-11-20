@@ -19,12 +19,14 @@
         "additionalProperties": false
       }
     },
+    "character": { "$ref": "common.json#/definitions/character", "description": "With a character: its sync fields (BE_S07_03, docs/backend/files.md#the-character-list). A character file without them imports as a new character." },
     "data": { "description": "A stored actor (character), a session (session), or a spell row as spells/core.json holds it (spell)." }
   },
   "required": ["riftweave", "rules_version", "modules", "data"],
   "additionalProperties": false,
   "allOf": [
     { "if": { "properties": { "riftweave": { "const": "character" } } }, "then": { "properties": { "data": { "$ref": "common.json#/definitions/stored_actor" } } } },
+    { "if": { "properties": { "riftweave": { "not": { "const": "character" } } } }, "then": { "not": { "required": ["character"] } } },
     { "if": { "properties": { "riftweave": { "const": "session" } } }, "then": { "properties": { "data": { "$ref": "common.json#/definitions/session" } } } },
     { "if": { "properties": { "riftweave": { "const": "spell" } } }, "then": { "properties": { "data": { "$ref": "../../ruleset/schemas/spell.schema.json#/definitions/spell" } } } }
   ]
