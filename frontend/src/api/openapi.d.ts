@@ -351,7 +351,7 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * XP and level, a level-up pool, spending points on a skill or a skill group, reading a skill off a sheet, and taking a perk.
+         * XP and level, a level-up pool, spending points on a skill or a skill group, reading a skill off a sheet, taking a perk, and checking a creation point-buy.
          * @description The rules are in docs/core/progression.md.
          */
         post: operations["progression"];
@@ -636,10 +636,10 @@ export interface components {
              * @description For fortify effects (especially on skills/attributes): 'unlimited' effects are normally stackable (magnitudes add). 'temporal' effects of the same type (same effect id + parameter) override each other, taking the highest magnitude as the effective value (and usually the longest duration).
              * @enum {string}
              */
-            durationType?: "temporal" | "unlimited";
+            duration_type?: "temporal" | "unlimited";
             /** @description Effect reference: namespaced format core:effect/<key> (e.g. core:effect/damage_fire) */
             effect: components["schemas"]["ruleset_effectRef"];
-            /** @description Effect strength; interpreted per the effect's magnitudeUnit */
+            /** @description Effect strength; interpreted per the effect's magnitude_unit */
             magnitude?: number;
             /** @description The origin its modifiers carry (core:origin/<key>), when it is not the default for the row's category: a divine spell, holy water. docs/core/modifier.md#origin. */
             origin?: components["schemas"]["ruleset_originRef"];
@@ -2550,6 +2550,7 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
+                    /** @description The actor: its attributes for level_up and point_buy (as assigned, before race and creation perks), the sheet for read_skill and take_perk. */
                     actor?: components["schemas"]["actor"];
                     /** @description With spend: a skill group key (skill_groups/core.json); one rank costs the group cost, and `skill` is the highest member's value. */
                     group?: string;
@@ -2564,7 +2565,7 @@ export interface operations {
                     luck_roll?: number;
                     mp_roll?: number;
                     /** @enum {string} */
-                    operation: "xp" | "level" | "level_up" | "spend" | "read_skill" | "take_perk";
+                    operation: "xp" | "level" | "level_up" | "spend" | "read_skill" | "take_perk" | "point_buy";
                     /** @description With take_perk: the perk to take, a key in features/core.json. */
                     perk?: components["schemas"]["key"];
                     /** @description With take_perk: the perks held, key to rank. */
@@ -2594,6 +2595,7 @@ export interface operations {
                             mp: number;
                             sp: number;
                         };
+                        /** @description With spend: the points not spent. With point_buy: creation.attribute_points minus spent. */
                         left?: number;
                         level?: number;
                         /** @description With take_perk: the perk checked. */
@@ -2605,6 +2607,7 @@ export interface operations {
                         /** @enum {string} */
                         read_from?: "sheet" | "group" | "start";
                         skill_points?: number;
+                        /** @description With spend: the points spent. With point_buy: the attribute points spent above creation.attribute_start, less the points freed by attributes under it. */
                         spent?: number;
                         taken?: boolean;
                         /** @description With take_perk: each requirement that fails, empty when taken. */

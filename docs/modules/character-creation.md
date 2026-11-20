@@ -1,6 +1,6 @@
 # Character Creation
 
-Modified: 2026-11-18
+Modified: 2026-11-20
 
 **Status:** Core (reference procedure)
 
@@ -66,12 +66,20 @@ Record from the resolved race:
 The eight attributes (`str per end int wil agi cha lck`, defined in
 [`abilities/core.json`](../../ruleset/data/abilities/core.json)) run 1–10.
 
-1. **Start** every attribute at **4**.
-2. **Distribute 10 points** among them, to a maximum of **10** in any one.
+1. **Start** every attribute at **4** (`creation.attribute_start`).
+2. **Distribute 10 points** (`creation.attribute_points`) among them, to a maximum of **10**
+   (`creation.attribute_max`) in any one. You may also **lower** an attribute below 4, down to
+   **1** (`creation.attribute_min`): each point you take off is one more to spend, so CHA 1
+   gives you 13 points for the rest. That's your choice; the rules don't stop it.
 3. **Apply racial `ability_modifiers`** from step 1 (these can push a stat above the
    point-buy cap or below 4).
 
 Order matters: spend your 10 points first, then layer the racial deltas on top.
+
+The numbers are data, in the `creation` block of
+[`progression/core.json`](../../ruleset/data/progression/core.json); the figures here quote it, and
+[progression.md](../core/progression.md#character-creation) is the rule. The `progression`
+command's `point_buy` checks a point-buy against them (GD_S07_07).
 
 ---
 
@@ -118,7 +126,8 @@ Every number in the table is a modifier on the trait's row in `features/core.jso
 ([progression.md](progression.md#what-a-perk-emits)). A flag is a `grant` whose rule is
 written once in its `modifier_targets` row. [A] (M5-35)
 
-Take **0–2** (suggested cap: 2). Their attribute bonuses apply now, alongside the
+Take **0–2** (`creation.creation_perks_max` in
+[`progression/core.json`](../../ruleset/data/progression/core.json)). Their attribute bonuses apply now, alongside the
 racial modifiers, and may exceed the normal caps. (*Genius* adds to your tag-skill
 count in step 5 and reduces the pool in step 6.)
 
@@ -130,7 +139,8 @@ The traits do not name shared effects: their modifiers are the rule, and their d
 
 ## 5. Pick 3 tag skills
 
-Choose **3 tag skills** from [`skills/core.json`](../../ruleset/data/skills/core.json)
+Choose **3 tag skills** (`tag_skills` in
+[`progression/core.json`](../../ruleset/data/progression/core.json)) from [`skills/core.json`](../../ruleset/data/skills/core.json)
 (any skill with `"taggable": true` — currently all of them). Humans pick a **4th**
 (Versatility).
 
@@ -145,7 +155,8 @@ The skills span seven categories — combat (`blades`, `blunt`, `piercing`, `una
 
 ## 6. Starting skills & the level-1 pool
 
-**Base rating** for every skill (before spending points):
+**Base rating** for every skill (before spending points), the `skill_start` formula in
+[`progression/core.json`](../../ruleset/data/progression/core.json):
 
 ```
 start = 5 + associated_ability × 2
@@ -153,7 +164,8 @@ start = 5 + associated_ability × 2
 
 Luck is **not** baked in here — it is applied at check time as `+floor(LCK/2)`.
 
-Then spend your **1st-level skill-point pool**:
+Then spend your **1st-level skill-point pool**, the `skill_points` formula there, with its
+`luck_roll` from 0 to LCK:
 
 ```
 points = 5 + INT × 2 + random(0 … LCK)         // Gifted: ×0.9

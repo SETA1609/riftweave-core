@@ -15,6 +15,7 @@ The numbers that turn experience into levels, skill points, and perks. They live
 | `pool_roll_max` | `floor(LCK / 2)` | the highest `hp_roll`, `mp_roll`, or `sp_roll` |
 | `perks_per_level` | 1 | perks chosen on each level gained |
 | `tag_skills` | 3 | skills tagged at creation |
+| `creation` | `attribute_start` 4, `attribute_min` 1, `attribute_points` 10, `attribute_max` 10, `creation_perks_max` 2 | the point-buy and the creation-perk cap ([character creation](#character-creation)) |
 | `skill_cost` | normal 2, tag 1 | points for +1 rating |
 | `skill_start` | `5 + attribute * 2` | a skill's value before any point is spent on it |
 | `skill_group_cost` | `members_per_step` 2 | a group point's price on a grouped sheet (below) |
@@ -38,6 +39,23 @@ The numbers that turn experience into levels, skill points, and perks. They live
 
    How many perks a level grants (`perks_per_level`) is counted by the caller, as the skill-point pool is. [A]
 6. **Tag ratio.** The ratio is 2:1 in favour of tag skills, as in `docs/modules/progression.md`. `AGENTS.md` words it as "+2 per point instead of +1", which is the same ratio on a different scale; the data uses cost, so a point is a point. [V 2026-11-02, read both]
+
+## Character creation
+
+The numbers a new character is built with are in the `creation` block of `progression/core.json`, so an app reads them and holds no rule (GD_S07_07). The steps are in [character-creation.md](../modules/character-creation.md); this section is the rule they read. [V 2026-11-20, `progression` vectors, op `point_buy`]
+
+| key | value | meaning |
+| --- | --- | --- |
+| `creation.attribute_start` | 4 | every attribute before a point is spent |
+| `creation.attribute_min` | 1 | the lowest a point-buy may set; each point under the start frees one to spend |
+| `creation.attribute_points` | 10 | points to distribute among the eight attributes |
+| `creation.attribute_max` | 10 | the highest attribute the points may reach, before racial modifiers |
+| `creation.creation_perks_max` | 2 | creation perks a character may take, from 0 |
+
+The rest of creation is named, not copied: the tag-skill count is `tag_skills` (a creation perk such as Genius adds to it), the level-1 pool is `skill_points` with its `luck_roll`, and a skill's base rating is `skill_start`, all in the table above.
+
+7. **Point-buy.** `point_buy` (`actor.attributes`, the eight attributes as assigned, before race and creation perks) checks the point-buy. Each attribute, in the order `str per end int wil agi cha lck`, must be given, at least `attribute_min`, and at most `attribute_max`; then the points spent, the sum of each attribute minus `attribute_start`, must be at most `attribute_points`. An attribute under `attribute_start` counts negative: lowering one is the player's choice, and each point under the start frees one to spend elsewhere (CHA 1 frees 3) [V 2026-11-20, owner, `progression` vectors]. The first failure is the error. Otherwise the result is `spent` and `left` (`attribute_points - spent`); a finished point-buy leaves 0, and a draft may leave more. Racial `ability_modifiers` and creation perks apply afterwards and may take an attribute past `attribute_max` or below `attribute_start`; `point_buy` does not see them. [V 2026-11-20, `progression` vectors, op `point_buy`]
+8. **Creation perks.** A character takes 0 to `creation_perks_max` features of `type: creation`, at creation only. [A]
 
 ## Ranks override
 

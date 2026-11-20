@@ -1,8 +1,8 @@
 #### GD_S07_07_creation-rules-as-data The character creation numbers as data
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: —
-- Modified: 2026-11-19
+- Modified: 2026-11-20
 - Do: Owner request, 2026-11-19: the creation form only lets a player add or remove the 10 attribute points. The numbers it needs are prose today, in docs/modules/character-creation.md, not data [V 2026-11-19, no `ruleset/data/` file holds them], so the app would have to hard-code them. Move them into the data, unchanged:
   - attributes: every one **starts at 4**, **10 points** to distribute, at most **10** in any one before racial modifiers; racial `abilityModifiers` apply after, and may go past 10 or below 4 (owner kept 4 + 10 on 2026-11-19);
   - creation perks: 0 to 2;
@@ -13,4 +13,4 @@
 - Keys: the `creation` block (`attribute_start`, `attribute_points`, `attribute_max`, `creation_perks_max`, `tag_skills`) [A]
 - Files: ~8 (ruleset/schemas/progression.schema.json, ruleset/data/progression/core.json, docs/modules/character-creation.md, docs/core/progression.md, ruleset/scripts/test_builds.py, ruleset/tests/vectors/progression.json, docs/decisions/GD_S07_07_creation-rules-as-data.md, changes/GD_S07_07_creation-rules-as-data.md)
 - See: docs/modules/character-creation.md#2-assign-attributes, ruleset/data/progression/core.json, ruleset/scripts/test_builds.py
-- Done when: the creation numbers are in the data and validate; the doc reads them from there; a vector rejects 11 points spent, an attribute of 11 before race, and an attribute under 4; every build still passes; `validate.py` and the tests pass.
+- Done when: the creation numbers are in the data and validate; the doc reads them from there; a vector rejects 11 points spent, an attribute of 11 before race, and one under `attribute_min` (1), and shows that lowering an attribute under 4 frees points (owner, 2026-11-20); every build still passes; `validate.py` and the tests pass.

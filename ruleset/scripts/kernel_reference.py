@@ -972,7 +972,8 @@ def landed_weapon_effects(weapon_effects, damage_type, defender):
 
 
 def run_progression(vector):
-    """XP and level, one level-up pool, and spending a pool on one skill; `op` picks which."""
+    """XP and level, one level-up pool, spending a pool on one skill, reading a skill, taking a
+    perk, and checking a creation point-buy; `op` picks which."""
     rules = load_data("progression/core.json")["progression"]
     op = vector["operation"]
     if op == "xp":
@@ -1019,11 +1020,37 @@ def run_progression(vector):
         room = rules["skill_cap"] - vector["skill"]
         ranks = min(vector["points"] // cost, max(room, 0))
         return {"ranks": ranks, "spent": ranks * cost, "left": vector["points"] - ranks * cost}
+    if op == "point_buy":
+        return point_buy(rules["creation"], vector["actor"]["attributes"])
     if op == "read_skill":
         return read_skill(vector["actor"], vector["read"], vector.get("groups"))
     if op == "take_perk":
         return take_perk(vector["actor"], vector.get("perks") or {}, vector["perk"])
     raise ValueError(f"progression operation {op!r} is not defined")
+
+
+POINT_BUY_ABILITIES = ("str", "per", "end", "int", "wil", "agi", "cha", "lck")
+
+
+def point_buy(creation, attributes):
+    """A creation point-buy checked against progression's `creation` block (docs/core/progression.md,
+    rule 7): the attributes as assigned, before race and creation perks. Each attribute must be
+    given and lie from attribute_min to attribute_max, in ability order; then the points spent,
+    each attribute minus attribute_start (an attribute under the start frees points), may not pass
+    attribute_points. Fewer points are a draft, not an error."""
+    start, lowest, points, highest = creation["attribute_start"], creation["attribute_min"], creation["attribute_points"], creation["attribute_max"]
+    for ability in POINT_BUY_ABILITIES:
+        if ability not in attributes:
+            return {"error": f"attribute {ability} is missing"}
+        value = attributes[ability]
+        if value < lowest:
+            return {"error": f"attribute {ability} is {value}, under the point-buy min of {lowest}"}
+        if value > highest:
+            return {"error": f"attribute {ability} is {value}, over the point-buy max of {highest}"}
+    spent = sum(attributes[ability] - start for ability in POINT_BUY_ABILITIES)
+    if spent > points:
+        return {"error": f"{spent} points spent, more than the {points} to distribute"}
+    return {"spent": spent, "left": points - spent}
 
 
 def take_perk(actor, held, key):

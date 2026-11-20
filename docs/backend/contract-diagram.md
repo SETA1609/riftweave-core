@@ -572,7 +572,7 @@ classDiagram
 
 ## progression
 
-XP and level, a level-up pool, spending points on a skill or a skill group, reading a skill off a sheet, and taking a perk.
+XP and level, a level-up pool, spending points on a skill or a skill group, reading a skill off a sheet, taking a perk, and checking a creation point-buy.
 
 ```mermaid
 classDiagram
