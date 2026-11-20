@@ -60,7 +60,7 @@ Accessory data uses `type: "accessory"` with an `accessory` object:
   "type": "accessory",
   "cost": { "quantity": 500, "unit": "gp" }, "weight": 0.1,
   "accessory": {
-    "accessoryType": "ring",
+    "accessory_type": "ring",
     "effects": [
       { "effect": 19, "magnitude": 10, "parameter": "physical" }
     ]
@@ -164,13 +164,13 @@ When an armor piece is crafted from a material:
   - e.g. iron chainmail: base DR 2 + iron's defense 3 = **5 DR**
   - steel plate cuirass: base DR 5 + steel's defense 5 = **10 DR**
   - leather jerkin: base DR 1 + leather's defense 1 = **2 DR**
-- `material.weightFactor` multiplies the piece's base weight.
+- `material.weight_factor` multiplies the piece's base weight.
 - `material.phase` sets the piece's phase for Wuxing interactions.
 - A recipe does not refuse a material; a material with no `armor` block adds no DR.
 
 **DR formula for a single piece:**
 ```
-Piece DR = drBase + material.armor.defense
+Piece DR = dr_base + material.armor.defense
 ```
 
 **Total character DR:**
@@ -192,20 +192,20 @@ The table below shows how different materials modify the same base types into me
 | Elven skirmisher | Chainmail (DR 2) | Coif (DR 1) | Gloves (DR 0) | Boots (DR 1) | — | Elven wood (+3) | **10** (5+4+3+4) |
 
 **Calculation walkthrough (Steel Knight):**
-- Steel plate cuirass: drBase 5 + steel defense 5 = **10 DR**
-- Steel helmet: drBase 2 + steel defense 5 = **7 DR**
-- Steel gauntlets: drBase 1 + steel defense 5 = **6 DR** (errata: steel's attack/defense is 5, see materials/core.json)
-- Steel greaves: drBase 2 + steel defense 5 = **7 DR**
-- Steel standard shield: drBase 2 + steel defense 5 = **7 DR** (active block only)
+- Steel plate cuirass: dr_base 5 + steel defense 5 = **10 DR**
+- Steel helmet: dr_base 2 + steel defense 5 = **7 DR**
+- Steel gauntlets: dr_base 1 + steel defense 5 = **6 DR** (errata: steel's attack/defense is 5, see materials/core.json)
+- Steel greaves: dr_base 2 + steel defense 5 = **7 DR**
+- Steel standard shield: dr_base 2 + steel defense 5 = **7 DR** (active block only)
 - **Total passive DR: 30** (10+7+6+7). With shield block: adds 7 on that hit.
 - **Evasion penalty:** −15 (plate) + 0 (cap) −15 (gauntlets) −15 (greaves) −10 (shield) = −55 total. This is why knights rely on block, not evasion.
 
 **Calculation walkthrough (Iron Footman):**
-- Iron chainmail: drBase 2 + iron defense 3 = **5 DR**
-- Iron coif: drBase 1 + iron defense 3 = **4 DR**
-- Iron gloves: drBase 0 + iron defense 3 = **3 DR** (skin layer, but defense applies)
-- Iron boots: drBase 1 + iron defense 3 = **4 DR**
-- Iron standard shield: drBase 2 + iron defense 3 = **5 DR** (active block only)
+- Iron chainmail: dr_base 2 + iron defense 3 = **5 DR**
+- Iron coif: dr_base 1 + iron defense 3 = **4 DR**
+- Iron gloves: dr_base 0 + iron defense 3 = **3 DR** (skin layer, but defense applies)
+- Iron boots: dr_base 1 + iron defense 3 = **4 DR**
+- Iron standard shield: dr_base 2 + iron defense 3 = **5 DR** (active block only)
 - **Total passive DR: 16** (5+4+3+4)
 - **Evasion penalty:** −5 (chainmail) + 0 (coif) + 0 (gloves) + 0 (boots) −10 (shield) = −15 total. Manageable for a frontliner.
 
@@ -224,7 +224,7 @@ Each armor piece's `category` determines which skill governs wearing it effectiv
 Unarmored characters rely on the **unarmored** skill (AGI), which provides a bonus
 to their evasion layer (see [`combat.md`](./combat.md) §3).
 
-Each piece also carries an `evasionPenalty` that directly reduces the wearer's
+Each piece also carries an `evasion_penalty` that directly reduces the wearer's
 evasion skill. Cumulative across all worn pieces.
 
 ---
@@ -307,12 +307,12 @@ middle, or heavy pieces are worn.
   "slot":       "head" | "torso" | "back" | "hands" | "feet" | "offhand",
   "layer":      "skin" | "middle" | "upper" | "on_top",
   "category":   "light" | "medium" | "heavy",          // omit for back/on_top
-  "drBase":     integer (base DR before material modifier),
-  "evasionPenalty": integer (0 for light, −5 for medium, −15 for heavy),
-  "speedPenalty":   integer (0 for light, −1 for medium, −2 for heavy),
-  "strengthRequirement": integer (1–10, optional),
-  "stealthPenalty": boolean (optional, default false),
-  "requiresLayer": ["skin"] | ["middle"] | null         // layer dependency
+  "dr_base":     integer (base DR before material modifier),
+  "evasion_penalty": integer (0 for light, −5 for medium, −15 for heavy),
+  "speed_penalty":   integer (0 for light, −1 for medium, −2 for heavy),
+  "strength_requirement": integer (1–10, optional),
+  "stealth_penalty": boolean (optional, default false),
+  "requires_layer": ["skin"] | ["middle"] | null         // layer dependency
 }
 ```
 
@@ -320,7 +320,7 @@ middle, or heavy pieces are worn.
 
 ```json
 {
-  "accessoryType": "ring" | "amulet" | "trinket" | "belt" | "misc",
+  "accessory_type": "ring" | "amulet" | "trinket" | "belt" | "misc",
   "effects": [ { "effect": "core:effect/<key>", "magnitude": number, "parameter": "..." } ]
 }
 ```
@@ -350,7 +350,7 @@ Obsidian is weapon-only (too brittle).
 
 ## 9. Encumbrance
 
-Total encumbrance = sum of (base weight × material.weightFactor) for all worn items.
+Total encumbrance = sum of (base weight × material.weight_factor) for all worn items.
 
 | Total weight ([weight units](../core/contract.md#weight)) | Effect |
 |--------------------|--------|
@@ -359,7 +359,7 @@ Total encumbrance = sum of (base weight × material.weightFactor) for all worn i
 | > STR × 15 | Heavily encumbered — speed −2, evasion penalty tripled, cannot sprint or dodge |
 | > STR × 20 | Overburdened — cannot move, cannot take actions other than dropping items |
 
-Each armor piece's `evasionPenalty` and `speedPenalty` apply independently of
+Each armor piece's `evasion_penalty` and `speed_penalty` apply independently of
 encumbrance — they stack additively with encumbrance penalties.
 
 ### Combat Interaction

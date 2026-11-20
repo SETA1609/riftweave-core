@@ -115,11 +115,11 @@ scale with level:
   "hitPoints": 28,
   "growth": {
     "attributes": {
-      "str": { "perLevel": 0.5 },
-      "end": { "perLevel": 0.4 },
-      "agi": { "perLevel": 0.5 },
-      "per": { "perLevel": 0.3 },
-      "wil": { "perLevel": 0.2 }
+      "str": { "per_level": 0.5 },
+      "end": { "per_level": 0.4 },
+      "agi": { "per_level": 0.5 },
+      "per": { "per_level": 0.3 },
+      "wil": { "per_level": 0.2 }
     },
     "hitPointsPerLevel": 6
   }
@@ -128,15 +128,15 @@ scale with level:
 
 The growth formula is:
 ```
-computed = max(1, round(base_attr + perLevel * (level - base_level)))
+computed = max(1, round(base_attr + per_level * (level - base_level)))
 ```
 
 A monster's attribute has no maximum. 10 is a player's cap at character creation only, and a
 player's perks and bonuses pass it too, so a level-30 monster built on a level-4 base keeps
 growing. The minimum of 1 stays. [V 2026-11-12, `test_bestiary.py`]
 
-`growth` also holds `damagePerLevel`, 0.25 for every creature type [A]. A monster above its
-row's level adds `round(damagePerLevel × Δlevel)` to each attack's damage (`damage.bonus`) and
+`growth` also holds `damage_per_level`, 0.25 for every creature type [A]. A monster above its
+row's level adds `round(damage_per_level × Δlevel)` to each attack's damage (`damage.bonus`) and
 to the magnitude of each `damage_*` ability, as `hitPointsPerLevel` adds HP. A summoned or
 derived creature is where this shows: a fire elemental summoned at level 25 hits 5 harder than
 its level-5 row. [V 2026-11-12, `test_bestiary.py`] Whether 0.25 keeps every row in its damage
@@ -172,8 +172,8 @@ differs. The creature type is the root's: a derived monster cannot change it. [V
 - **Level.** A derived monster always states its `level` in `overrides`, so a reader of one
   row (the loot budget, the Go loader) never walks the chain. When it differs from the
   base monster's, attributes, HP, and damage move by the type's growth for the difference:
-  `round(base_attr + perLevel × Δlevel)`, at least 1, `base_hp + hitPointsPerLevel × Δlevel`,
-  and `round(damagePerLevel × Δlevel)` on damage.
+  `round(base_attr + per_level × Δlevel)`, at least 1, `base_hp + hitPointsPerLevel × Δlevel`,
+  and `round(damage_per_level × Δlevel)` on damage.
 - **Order.** `core.json` lists the base monsters first (those another row derives from), then
   their variants, family by family, then the one-off monsters, each group by level.
 - **Chains** may be longer than one step; a cycle, or a base monster that does not exist, is

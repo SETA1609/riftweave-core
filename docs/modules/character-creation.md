@@ -48,11 +48,11 @@ differentiated subraces (green/black elf, hill/mountain dwarf), and the beastfol
 
 For a **subrace**, resolve inheritance against its parent first (see
 [`race.md`](./race.md) §3): the parent's `speed`/`size` carry over unless overridden,
-`abilityModifiers` **sum**, and `traits` form the **union**.
+`ability_modifiers` **sum**, and `traits` form the **union**.
 
 Record from the resolved race:
 
-- **`abilityModifiers`** — applied in step 2.
+- **`ability_modifiers`** — applied in step 2.
 - **`phase`** — your **element / foundation**. This is your Wuxing affinity for elemental interactions (see `magic.md`) and becomes the reference for phase synergy on future breakthroughs (see `advancement.md` § Phase → Growth Affinity and the success formula).
 - **`speed`**, **`size`**.
 - **`traits`** — e.g. an elf's *Darkvision* / *Fey Ancestry*, a catman's *Retractable
@@ -68,7 +68,7 @@ The eight attributes (`str per end int wil agi cha lck`, defined in
 
 1. **Start** every attribute at **4**.
 2. **Distribute 10 points** among them, to a maximum of **10** in any one.
-3. **Apply racial `abilityModifiers`** from step 1 (these can push a stat above the
+3. **Apply racial `ability_modifiers`** from step 1 (these can push a stat above the
    point-buy cap or below 4).
 
 Order matters: spend your 10 points first, then layer the racial deltas on top.
@@ -84,7 +84,7 @@ Backgrounds are **optional**. Choose one from [`backgrounds/core.json`](../../ru
 The bonuses are flat additions at creation only — they do **not** consume your level-1 skill point pool and do not change how you spend points at 2:1 (normal) or 1:1 (tagged) ratios. See [`backgrounds.md`](./backgrounds.md) for the full design and many more suggestions.
 
 Record what the background grants:
-- **Skill bonuses** — add these directly to the affected skills after calculating their normal starting value (`5 + associatedAbility × 2`).
+- **Skill bonuses** — add these directly to the affected skills after calculating their normal starting value (`5 + associated_ability × 2`).
 - **Starting equipment** — add the listed items (and quantities) to your inventory. Equipment refs use `core:<category>/<key>` (e.g. `core:weapons/shortsword`, `core:armors/standard_shield`).
 - **Starting spells** — add these to your known spells (you still need the governing magic skill to cast them well).
 - **Wealth bonus** — add to your starting gold (the reference baseline is 100 gp + basic kit).
@@ -148,7 +148,7 @@ The skills span seven categories — combat (`blades`, `blunt`, `piercing`, `una
 **Base rating** for every skill (before spending points):
 
 ```
-start = 5 + associatedAbility × 2
+start = 5 + associated_ability × 2
 ```
 
 Luck is **not** baked in here — it is applied at check time as `+floor(LCK/2)`.

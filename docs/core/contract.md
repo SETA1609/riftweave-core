@@ -81,8 +81,8 @@ cast(actor, spell):
 ## Distance
 
 Every distance in the data and the docs is in **units**. One unit is one square of a grid.
-Walking speed (`speed`, units per round), weapon range (`rangeNormal`, `rangeLong`), melee
-reach (`attackReach`), area radius (`radius`), and distances in descriptions (darkvision,
+Walking speed (`speed`, units per round), weapon range (`range_normal`, `range_long`), melee
+reach (`attack_reach`), area radius (`radius`), and distances in descriptions (darkvision,
 falls, rope) all count squares. No definition is meant to use feet or metres; the exceptions left are listed in
 [data-model.md](data-model.md#known-exceptions). [V 2026-11-11]
 
@@ -93,7 +93,7 @@ nothing stores it. [A]
 ## Weight
 
 Every weight in the data and the docs is in **weight units**: an item's `weight`, a
-material's `weightFactor` applied to it, the `carry` limit (`derived/core.json`), and the
+material's `weight_factor` applied to it, the `carry` limit (`derived/core.json`), and the
 encumbrance thresholds ([armor.md](../modules/armor.md#9-encumbrance)). No definition is
 meant to use pounds or kilograms. [V 2026-11-11]
 

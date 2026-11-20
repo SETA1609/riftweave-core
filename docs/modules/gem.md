@@ -44,7 +44,7 @@ An engraved item gains a bonus to the **magnitude of effects later enchanted ont
 it**. That bonus is **not** stored on the gem — it comes from the gem's **`tier`**, the
 single source of truth (`data/tiers`):
 
-| Tier | Name | effectMagnitude | valueFactor |
+| Tier | Name | effect_magnitude | value_factor |
 | --- | --- | --- | --- |
 | 1 | Common | +8% | ×1 |
 | 2 | Uncommon | +12% | ×3 |

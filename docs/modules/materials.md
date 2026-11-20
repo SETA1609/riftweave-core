@@ -20,9 +20,9 @@ engraving with a gem can later **overwrite** that element.
 | `phase` | The material's element. The crafted item carries it (until engraving overwrites it) and it resolves through the five-phase cycles in [`data/wuxing`](../../ruleset/modules/wuxing/data/wuxing.json). |
 | `weapon.attack` | Bonus to the item's attack/damage rating (weapons). |
 | `armor.defense` | Bonus to the item's defense/armor rating (armor, shields). |
-| `ingredient.effectMagnitude` | Magic-conduction bonus: a fractional boost to the magnitude of effects enchanted onto the item (e.g. `0.15` = +15%). |
+| `ingredient.effect_magnitude` | Magic-conduction bonus: a fractional boost to the magnitude of effects enchanted onto the item (e.g. `0.15` = +15%). |
 | `tier` | Rarity/quality tier (aligns with the `data/tiers` ladder). |
-| `weightFactor` / `valueFactor` | Multipliers on the item's base weight and value (1.0 = neutral). |
+| `weight_factor` / `value_factor` | Multipliers on the item's base weight and value (1.0 = neutral). |
 
 A material declares **at least one** modifier. The three modifier types map directly
 to the three things a material can improve: **attack**, **defense**, and the
@@ -39,7 +39,7 @@ changing these matchups.
 
 ## 3. The material list
 
-| Material | Element | Attack | Defense | effectMagnitude | Makes | Tier |
+| Material | Element | Attack | Defense | effect_magnitude | Makes | Tier |
 | --- | --- | --- | --- | --- | --- | --- |
 | Copper | metal | +1 | +1 | +10% | weapon, armor, accessory | 1 |
 | Bronze | metal | +2 | +2 | — | weapon, armor | 1 |
@@ -54,7 +54,7 @@ changing these matchups.
 Reading the table: workhorse metals (bronze→iron→steel) climb in attack/defense;
 wood provides 0 combat bonuses (it's for hafts, bows, and shields — light and cheap);
 **conductive** materials (copper, silver, gold, elven wood) trade combat stats for
-`effectMagnitude` — gold is useless as a blade but the best enchanting metal; obsidian
+`effect_magnitude` — gold is useless as a blade but the best enchanting metal; obsidian
 is wickedly sharp but brittle (weapon only, no defense).
 
 ## 4. Materials vs. gems vs. tier

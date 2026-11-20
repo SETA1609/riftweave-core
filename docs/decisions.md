@@ -90,11 +90,11 @@ issue settles them.
   unit), the barter check, and two merchant rows with stock. `ruleset/data/formulas/price.json`
   is the one price tree. A purchase and a sale differ only in which merchant percent they read
   and which way the barter shift goes. Spec: `docs/core/economy.md`.
-- **Why:** equipment had `cost` and materials `valueFactor`, but no rule turned them into a
+- **Why:** equipment had `cost` and materials `value_factor`, but no rule turned them into a
   price or said what a merchant pays.
 - **Open:** every number is a first choice **[U]**: the 1/10/100/1000 ratios, 125 and 40
   percent for the general store, the barter divisor and cap. `value_percent` is
-  `valueFactor * 100` supplied by the caller, not looked up **[A]**. Prices round down, so a
+  `value_factor * 100` supplied by the caller, not looked up **[A]**. Prices round down, so a
   1 cp item sells for 0 **[A]**.
 - **Risk:** `validate.py` does not check merchant stock refs; `test_economy.py` does, until
   [M5-08](stories/05-release.md#m5-08-integrity-gates) covers every category. The issue's

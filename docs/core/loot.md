@@ -1,6 +1,6 @@
 # Loot
 
-What a defeated monster or a treasure cache leaves behind, as data. The rows are in `ruleset/data/loot/core.json`, the vectors in `ruleset/tests/vectors/loot.json`. Values use the price formula of [economy.md](economy.md), so treasure and prices are one scale. Nothing here needs another module: breakthrough cores (`coreDrop` on monster rows) belong to the breakthrough module and are not loot here. [A]
+What a defeated monster or a treasure cache leaves behind, as data. The rows are in `ruleset/data/loot/core.json`, the vectors in `ruleset/tests/vectors/loot.json`. Values use the price formula of [economy.md](economy.md), so treasure and prices are one scale. Nothing here needs another module: breakthrough cores (`core_drop` on monster rows) belong to the breakthrough module and are not loot here. [A]
 
 ## Tables
 
@@ -51,7 +51,7 @@ A loot row composes the items it yields; sized and material variants are not row
 
 - **Material.** Each equipment base lists its `default_materials`, the materials it is found and sold in (a row may list its own). A row's material lands on an item whose defaults include it. Otherwise the item drops in its first default material: the steel hoard yields a steel breastplate and an elven wood longbow, never a steel bow. Any other material is player-crafted only. A row with no material leaves the item as listed, at 100 percent. An item with no defaults keeps the row's material.
 - **Size.** A weapon from a row with a `size` moves its dice one rung of `combat/dice_ladder.json` (down for undersized, up for oversized) and its attack by the size's `attack` (+10, −10). The result names the `size`, the sized `dice`, and the `attack`. Armor and everything else ignore the size.
-- **Value.** `value_percent = material percent × size percent / 100`, rounded down: the material's `valueFactor` times 100 (100 with none) and the size's `value_percent` (75, 100, 150). An oversized elven wood longbow is 400 × 150 / 100 = 600 percent.
+- **Value.** `value_percent = material percent × size percent / 100`, rounded down: the material's `value_factor` times 100 (100 with none) and the size's `value_percent` (75, 100, 150). An oversized elven wood longbow is 400 × 150 / 100 = 600 percent.
 
 **Roll order.** The rolls are one list, used in row order: for each row, first its `chance` roll (if `chance` is below 100), then, if it yields, the table's rolls. A failed chance uses no table rolls. Too few or too many rolls is an error. [V 2026-11-06]
 
@@ -82,7 +82,7 @@ budget_cp(level) = 500 * level * level                          formula tree
 
 - An item is valued at its list price: its `cost` (from its row, its overrides, or its base) through the price formula with no merchant spread, and with no material unless its loot row names one. What a merchant pays for it is the economy's business. [A]
 - **Consistency:** a table's expected value, the mean over its d100 ranges times `rolls`, must not exceed `budget_cp` at the table's level. A monster's expected value, the sum of its loot rows (each row's mean with its shift and material, times its rolls, times `chance / 100`), must not exceed `budget_cp` at the monster's level. A test checks every table and every monster. A single lucky roll may exceed the budget; the average may not. [V 2026-11-06]
-- A material sets `value_percent` to its `valueFactor` times 100, as in [economy.md](economy.md). [A]
+- A material sets `value_percent` to its `value_factor` times 100, as in [economy.md](economy.md). [A]
 - The budget is per encounter. It grows with the square of the level: 5 gp at level 1, 125 gp at level 5, 500 gp at level 10, 2000 gp at level 20, against the 100 gp a character starts with ([character creation](../modules/character-creation.md)). [A]
 
 ## Not covered

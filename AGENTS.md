@@ -122,7 +122,7 @@ This is the most important thing to understand before editing schemas or data:
 
 There is **no** class schema or data — the system is deliberately classless.
 
-Cross-file references (effect IDs, skill IDs, perk prerequisites, `parentRace`, `color` → `<color>_magic` skill, etc.) are strings, which JSON Schema cannot check, so `validate.py` fails on any `core:category/key` that does not resolve (`docs/core/integrity.md`). The per-collection checks include:
+Cross-file references (effect IDs, skill IDs, perk prerequisites, `parent_race`, `color` → `<color>_magic` skill, etc.) are strings, which JSON Schema cannot check, so `validate.py` fails on any `core:category/key` that does not resolve (`docs/core/integrity.md`). The per-collection checks include:
 
 - Crafted item `base_key`, `material_key`, `engraving_jewel.gem_key`
 - Recipe skill, inputs, and output `crafted_item_key`
@@ -131,7 +131,7 @@ Cross-file references (effect IDs, skill IDs, perk prerequisites, `parentRace`, 
 - Effect `sub_effects`
 - All effect refs in spells, consumables, features, ingredients, monsters, conditions
 - Perk and skill prerequisites in features
-- Race `parentRace` and trait refs
+- Race `parent_race` and trait refs
 - Background skill bonuses, suggested tag skills, starting spells, and starting equipment
 - **Effect channel enforcement**: effects used as `ingredient` must declare `"ingredient"` channel; effects used as `enchantment` (in `crafted_items`) must declare `"enchantment"` channel; effects a maneuver applies must declare `"maneuver"`
 

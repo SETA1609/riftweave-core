@@ -52,11 +52,11 @@ from `races/core.json`.
 
 ## Skills (0–100, point-buy)
 
-Defined in `ruleset/data/skills/core.json`, each `associatedAbility`-seeded and
+Defined in `ruleset/data/skills/core.json`, each `associated_ability`-seeded and
 tagged with a `category` (combat, magic, stealth, social, knowledge, survival,
 utility).
 
-- **Starting value** = `5 + associatedAbility × 2` (Luck is applied at check time,
+- **Starting value** = `5 + associated_ability × 2` (Luck is applied at check time,
   not stored in the rating).
 - **XP is almost entirely event-driven**. Direct experience from killing creatures is
   extremely limited by design (see Experience section below). Successful resolution of
@@ -77,7 +77,7 @@ utility).
 
 With a hard level cap of 30, even a character who starts with maximum INT (10) and LCK (10) will only ever receive 30 skill-point pools (including the level-1 pool). Each pool is 25–35 points, for a career total of roughly **750–1,050 skill points** (average ~900). This is the normal source only.
 
-There are currently 36 skills. Bringing every skill from its starting value (base = 5 + associatedAbility × 2, typically 13–25) all the way to the 100 cap requires 75–87 ranks per skill.
+There are currently 36 skills. Bringing every skill from its starting value (base = 5 + associated_ability × 2, typically 13–25) all the way to the 100 cap requires 75–87 ranks per skill.
 
 - Total ranks needed (best-case, all governing abilities 10): 36 × 75 = 2,700 ranks.
 - Minimum normal point cost (3 tagged at 1:1, rest 2:1): **~5,175 points**.
@@ -285,7 +285,7 @@ narrative downtime activity tied to the level-up.
    - For each offered item:
      - Its `phase` determines the governed options (attributes, resource pools such as HP/Mana/Stamina, or skill areas).
      - The player selects **one target** from those options for that item (restrictions apply: attributes only if grade > common, and attributes may only rise by +1 total from all breakthroughs this level).
-     - Breakthrough success for this item is luck-based: base chance from the item's `qualityGrade` (a petty_ember_core has a much lower success % than a refined legendary essence), modified by phase synergy (with foundation or target) and the character's Luck (LCK). Higher Luck and better grade/phase dramatically improve odds, but failure is always possible for any item.
+     - Breakthrough success for this item is luck-based: base chance from the item's `quality_grade` (a petty_ember_core has a much lower success % than a refined legendary essence), modified by phase synergy (with foundation or target) and the character's Luck (LCK). Higher Luck and better grade/phase dramatically improve odds, but failure is always possible for any item.
      - On success:
        - **Attributes**: +1 (only if eligible; max +1 total this level from breakthroughs).
        - **Skills**: bonus in the 0–10 range using the reference tables in `advancement.md` (grade sets floor and ceiling; e.g. petty 0–2, greater 6–8, grand/legendary 8–10). Higher grades also improve success chance on the luck roll.
@@ -426,7 +426,7 @@ shared effect table for the whole game.
 - Each effect declares a `category` (damage, restore, fortify, resist, cure,
   conjure, control, …), a `polarity` (beneficial / harmful / neutral — alchemy
   sorts beneficial → potions, harmful → poisons), an optional default `color`
-  school, a `magnitudeUnit`, and a `channels` list naming which delivery vectors
+  school, a `magnitude_unit`, and a `channels` list naming which delivery vectors
   may use it (`spell`, `potion`, `poison`, `coating`, `ingredient`, …).
 - Consumers reference an effect by string key (namespaced `core:effect/<key>`) through the shared
   `schema.json#/definitions/appliedEffect` shape (`effect` + `magnitude` +
@@ -526,7 +526,7 @@ delivered through the shared **effect system**.
   permanent gains.
 - **Weapons** — Use two classification axes in `equipment/weapons.json` (full details and material variation rules in `docs/modules/weapons.md`):
   - Damage type (`damage.type`: slashing / bludgeoning / piercing) → maps to the split combat skills (`blades` / `blunt` / `piercing`).
-  - Length category (`length`: short / normal / reach) + explicit `attackReach` (1 or 2 units of length). short and normal weapons are typically one-handed; reach weapons are two-handed.
+  - Length category (`length`: short / normal / reach) + explicit `attack_reach` (1 or 2 units of length). short and normal weapons are typically one-handed; reach weapons are two-handed.
   Base damage uses classic 3.5-style dice. Material-based variations (how each material turns the same base weapon into a meaningfully different version, with attack bonuses in the 0 to +10 range — none of the current materials reach the full +10) are explained in `docs/modules/weapons.md`.
   `category` (simple/martial) and free-form `properties` (finesse, versatile, heavy, two_handed, light, thrown, ...) are retained.
   Armor has been replaced with the DR + slot + layer model — see [`armor.md`](./armor.md) and [`combat.md`](./combat.md). No legacy AC fields remain.

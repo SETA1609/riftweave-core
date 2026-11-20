@@ -23,7 +23,7 @@ python -m unittest ruleset/scripts/test_vectors.py
   "type": "weapon", "cost": { "quantity": 500, "unit": "gp" }, "weight": 3,
   "weapon": {
     "category": "martial", "range": "melee", "length": "normal",
-    "attackReach": 1, "skill": "blades",
+    "attack_reach": 1, "skill": "blades",
     "damage": { "dice": "1d8", "type": "slashing" },
     "properties": ["versatile", "magical"],
     "on_hit_effects": [
@@ -43,8 +43,8 @@ On a hit it deals 1d8 slashing through the pipeline and applies `burn`, which ap
   "type": "armor", "cost": { "quantity": 1500, "unit": "gp" }, "weight": 30,
   "armor": {
     "slot": "torso", "layer": "upper", "category": "heavy",
-    "drBase": 5, "evasionPenalty": -15, "speedPenalty": -2,
-    "strengthRequirement": 8,
+    "dr_base": 5, "evasion_penalty": -15, "speed_penalty": -2,
+    "strength_requirement": 8,
     "resistances": { "fire": 8, "frost": -4 }
   }
 }

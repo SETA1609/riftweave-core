@@ -192,10 +192,10 @@ one name.
   `int`, `wil`, `agi`, `cha`, `lck`), `hp`, `mp`, `sp` (stamina), `ap`, `dr`, `xp`, `crit`, `id`,
   `min`, `max`. Anything else is spelled out, coins included (`copper`, `silver`, `gold`,
   `platinum`), so no abbreviation names two things.
-- **Schema property casing** is mixed today: older schemas use `camelCase` (`hitPoints`,
-  `durationType`), newer ones `snake_case` (`base_key`, `enchantment_slots`). A new property
-  follows the schema it extends. Unifying them renames keys, so it is a breaking change for
-  its own issue.
+- **Property names are `snake_case`** in every schema and data file (`base_key`,
+  `duration_type`, `dr_base`), the same as entry keys. `validate.py` and `test_integrity.py`
+  fail a `camelCase` property (DE_S02_01). JSON Schema's own keywords (`additionalProperties`,
+  `oneOf`) are not properties and keep their spelling.
 - **Units in the name** only when a number is not in the neutral unit for its kind. The
   neutral units are units (distance, one square), seconds (time), and weight units
   ([contract.md](docs/core/contract.md#distance)), so `range`, `duration`, and `weight` carry

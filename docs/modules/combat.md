@@ -43,7 +43,7 @@ There is no bonus action and no reaction slot. An attack strikes with everything
 
 ## 2. Opportunity attacks
 
-Leaving an enemy's reach without disengaging provokes one attack from that enemy, resolved as an ordinary attack ([combat.md](../core/combat.md)). Reach weapons (`attackReach` 2) threaten 2 units, others 1.
+Leaving an enemy's reach without disengaging provokes one attack from that enemy, resolved as an ordinary attack ([combat.md](../core/combat.md)). Reach weapons (`attack_reach` 2) threaten 2 units, others 1.
 
 - The attack costs the loadout's attack AP (2 to 5) from the attacker's carried pool. An attacker with fewer than that cost carried does not get it. **[A]** The exact cost, and the rest of the rule, stay open for `GD_S19_04`, which will put opportunity attacks in the pipeline. This replaces the old "reaction" for it; it is also logged in [`docs/decisions/M1-01.md`](../decisions/M1-01.md).
 - Disengage (1 AP) prevents it. Perks may add other triggers (casting in reach, standing up, drinking a potion). **[A]**
@@ -278,5 +278,5 @@ When adding one:
 ## 14. Settled questions
 
 - **Slots and layers.** The slot and layer model in [armor.md](./armor.md) is the data. A client may hide it (auto-equip a skin layer, a three-zone screen); the DR is the same.
-- **Shields.** `slot: "offhand"`, `layer: null`. A carried shield's DR adds to the armor DR against physical types (M3-27); a block stance adds a block band on top. Its `evasionPenalty` applies whenever it is worn. A buckler leaves room for a light off-hand item.
-- **Conditions and effects.** Every condition's `appliedBy` and `removedBy` names a real effect in `ruleset/data/effects/core.json`; the integrity check fails on one that does not resolve ([integrity.md](../core/integrity.md)).
+- **Shields.** `slot: "offhand"`, `layer: null`. A carried shield's DR adds to the armor DR against physical types (M3-27); a block stance adds a block band on top. Its `evasion_penalty` applies whenever it is worn. A buckler leaves room for a light off-hand item.
+- **Conditions and effects.** Every condition's `applied_by` and `removed_by` names a real effect in `ruleset/data/effects/core.json`; the integrity check fails on one that does not resolve ([integrity.md](../core/integrity.md)).

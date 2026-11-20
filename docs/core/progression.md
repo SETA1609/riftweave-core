@@ -62,7 +62,7 @@ A sheet is how a character's skills are written down. Both sheets below read the
 ### Track only what you raise
 
 A sheet writes only the skills the character has raised. Any other skill reads its starting
-value, `skill_start` of its `associatedAbility`, as a monster's unwritten skill already does
+value, `skill_start` of its `associated_ability`, as a monster's unwritten skill already does
 ([actor-sheet.md](actor-sheet.md)). A written skill reads what is written. So a newcomer's sheet
 holds their tag skills and the few they spend on, and a game that tracks all 44 skills gets the
 same numbers. [V 2026-11-12, `progression` vectors, op `read_skill`]
