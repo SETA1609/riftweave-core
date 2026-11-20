@@ -64,7 +64,7 @@ and its revision, then **Import a character file**, **Export the party of the op
 **Back**. On a character, enter opens it (it becomes the character a dev session starts from, as
 Import does), `e` exports it to a path, `d` duplicates it, `x` deletes it after a typed `yes`, and
 `p` adds it to the party of the open session (one imported from a file or started in dev mode).
-Import applies the sync rule; on a divergence it shows both sides' last change, and enter on
+Import applies the sync rule (a file without sync fields is named after its file name); on a divergence it shows both sides' last change, and enter on
 Import again asks which to keep (`saved` or `incoming`; anything else keeps both as they were).
 [V 2026-11-20, `play_test.go`] The frontend page is `FE_S07_04_character-list-page`.
 
