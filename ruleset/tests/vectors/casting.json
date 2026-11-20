@@ -1296,55 +1296,1738 @@
       "save": null
     }
   },
-  {"name": "cast: greater unlock, a spell built on unlock, casts as its flat row (level 15, 30 mana, magnitude 15)", "spell": "greater_unlock", "caster": {"skills": {"indigo_magic": 60}, "attributes": {"lck": 0}, "mana": 40}, "roll": 20, "expect": {"outcome": "cast", "mana": 19, "consumed": [], "check": {"target": 60, "success": true, "margin": 40, "tags": []}, "effects": [{"effect": "core:effect/unlock", "magnitude": 15, "target": "touch"}], "concentration": null, "ended": null, "dispelled": []}},
-  {"name": "summons: with no perk a new summon dismisses the oldest", "spell": "summon_familiar", "caster": {"skills": {"orange_magic": 60}, "attributes": {"lck": 0}, "mana": 80, "summons": ["core:summon/undead"]}, "modifiers": [], "roll": 30, "expect": {"outcome": "cast", "mana": 67, "effects": [], "concentration": null, "summons": ["core:summon/familiar"], "dismissed": ["core:summon/undead"]}},
-  {"name": "summons: Retinue (summon_limit +1) holds two", "spell": "summon_familiar", "caster": {"skills": {"orange_magic": 60}, "attributes": {"lck": 0}, "mana": 80, "summons": ["core:summon/undead"]}, "modifiers": [{"target": "summon_limit", "operation": "add", "value": 1, "source": "feature:summon_retinue", "origin": "core:origin/trained"}], "roll": 30, "expect": {"outcome": "cast", "mana": 67, "effects": [], "concentration": null, "summons": ["core:summon/undead", "core:summon/familiar"], "dismissed": []}},
-  {"name": "summons: Retinue and Host hold three", "spell": "summon_familiar", "caster": {"skills": {"orange_magic": 60}, "attributes": {"lck": 0}, "mana": 80, "summons": ["core:summon/undead", "core:summon/elemental"]}, "modifiers": [{"target": "summon_limit", "operation": "add", "value": 1, "source": "feature:summon_retinue", "origin": "core:origin/trained"}, {"target": "summon_limit", "operation": "add", "value": 1, "source": "feature:summon_host", "origin": "core:origin/trained"}], "roll": 30, "expect": {"outcome": "cast", "mana": 67, "effects": [], "concentration": null, "summons": ["core:summon/undead", "core:summon/elemental", "core:summon/familiar"], "dismissed": []}},
-  {"name": "summons: at the limit of two the oldest goes", "spell": "summon_familiar", "caster": {"skills": {"orange_magic": 60}, "attributes": {"lck": 0}, "mana": 80, "summons": ["core:summon/undead", "core:summon/elemental"]}, "modifiers": [{"target": "summon_limit", "operation": "add", "value": 1, "source": "feature:summon_retinue", "origin": "core:origin/trained"}], "roll": 30, "expect": {"outcome": "cast", "mana": 67, "effects": [], "concentration": null, "summons": ["core:summon/elemental", "core:summon/familiar"], "dismissed": ["core:summon/undead"]}},
-  {"name": "summons: a failed cast summons and dismisses nothing", "spell": "summon_familiar", "caster": {"skills": {"orange_magic": 60}, "attributes": {"lck": 0}, "mana": 80, "summons": ["core:summon/undead"]}, "modifiers": [], "roll": 99, "expect": {"outcome": "failed", "mana": 67, "effects": [], "concentration": null, "summons": ["core:summon/undead"], "dismissed": []}},
-  {"name": "minions: Conjured Legion rolls 1d3+1; count_roll 4 calls four elemental minions, priced for 3 (108 mana, 60 paid at skill 90)", "spell": "conjured_legion", "caster": {"skills": {"orange_magic": 90}, "attributes": {"lck": 0}, "mana": 200}, "modifiers": [], "roll": 30, "count_roll": 4, "expect": {"outcome": "cast", "mana": 140, "effects": [], "summons": [], "dismissed": [], "minions": ["core:summon/elemental", "core:summon/elemental", "core:summon/elemental", "core:summon/elemental"]}},
-  {"name": "minions: they do not count toward the summon limit; at the limit of one the summon stays", "spell": "conjured_legion", "caster": {"skills": {"orange_magic": 90}, "attributes": {"lck": 0}, "mana": 200, "summons": ["core:summon/undead"]}, "modifiers": [], "roll": 30, "count_roll": 2, "expect": {"outcome": "cast", "summons": ["core:summon/undead"], "dismissed": [], "minions": ["core:summon/elemental", "core:summon/elemental"]}},
-  {"name": "minions: a new call adds to the caster's minions, oldest first, with no limit", "spell": "conjured_legion", "caster": {"skills": {"orange_magic": 90}, "attributes": {"lck": 0}, "mana": 200, "minions": ["core:summon/undead", "core:summon/undead", "core:summon/undead", "core:summon/undead", "core:summon/undead", "core:summon/undead"]}, "modifiers": [], "roll": 30, "count_roll": 3, "expect": {"outcome": "cast", "minions": ["core:summon/undead", "core:summon/undead", "core:summon/undead", "core:summon/undead", "core:summon/undead", "core:summon/undead", "core:summon/elemental", "core:summon/elemental", "core:summon/elemental"]}},
-  {"name": "minions: Raise Horde builds on Raise Thrall: its group, duration, and nightshade reagent, with count 1d3+1", "spell": "raise_horde", "caster": {"skills": {"black_magic": 90}, "attributes": {"lck": 0}, "mana": 200, "reagents": ["core:ingredient/nightshade"]}, "modifiers": [], "roll": 30, "count_roll": 2, "expect": {"outcome": "cast", "mana": 140, "consumed": ["core:ingredient/nightshade"], "concentration": "raise_horde", "summons": [], "minions": ["core:summon/undead", "core:summon/undead"]}},
-  {"name": "minions: a failed cast calls none", "spell": "conjured_legion", "caster": {"skills": {"orange_magic": 90}, "attributes": {"lck": 0}, "mana": 200}, "modifiers": [], "roll": 99, "count_roll": 3, "expect": {"outcome": "failed", "minions": []}},
-  {"name": "minions: a dice count needs count_roll", "spell": "conjured_legion", "caster": {"skills": {"orange_magic": 90}, "attributes": {"lck": 0}, "mana": 200}, "modifiers": [], "roll": 30, "expect": {"error": "a minion count of 1d3+1 needs count_roll"}},
-  {"name": "minions: a count_roll its dice cannot make is an error", "spell": "conjured_legion", "caster": {"skills": {"orange_magic": 90}, "attributes": {"lck": 0}, "mana": 200}, "modifiers": [], "roll": 30, "count_roll": 5, "expect": {"error": "count_roll 5 is not a roll of 1d3+1"}},
-  {"name": "summons: a single summon keeps its group and calls one, with no minions", "spell": "summon_elemental", "caster": {"skills": {"orange_magic": 90}, "attributes": {"lck": 0}, "mana": 200}, "modifiers": [], "roll": 30, "expect": {"outcome": "cast", "effects": [], "summons": ["core:summon/elemental"], "minions": []}},
-  {"name": "damage: a fire bolt that lands takes 8 HP from a target with 30", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 100}, "roll": 30, "target": {"hp": 30}, "expect": {"outcome": "cast", "damage": [{"effect": "core:effect/damage_fire", "type": "fire", "amount": 8, "damage": 8, "evaded": false, "blocked": false}], "hp": 22}},
-  {"name": "damage: armor DR does not reduce fire, which bypasses physical armor, but a fire resist does", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 100}, "roll": 30, "target": {"hp": 30, "armor_dr": 5, "resist": {"fire": 3}}, "expect": {"damage": [{"effect": "core:effect/damage_fire", "type": "fire", "amount": 8, "damage": 5, "evaded": false, "blocked": false}], "hp": 25}},
-  {"name": "damage: the cast's margin 20 lands in the target's evasion band of 30, a single spell is dodged", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 100}, "roll": 30, "target": {"hp": 30, "evasion_skill": 60}, "expect": {"damage": [{"effect": "core:effect/damage_fire", "type": "fire", "amount": 8, "damage": 0, "evaded": true, "blocked": false}], "hp": 30}},
-  {"name": "damage: an area spell in the evasion band is halved", "spell": "fire_burst", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 100}, "roll": 30, "target": {"hp": 30, "evasion_skill": 60}, "expect": {"damage": [{"effect": "core:effect/damage_fire", "type": "fire", "amount": 28, "damage": 14, "evaded": true, "blocked": false}], "hp": 16}},
-  {"name": "damage: a partial save halves an instant spell before it reaches the target's HP", "spell": "mind_spike", "caster": {"skills": {"yellow_magic": 50}, "attributes": {"lck": 0}, "mana": 100}, "roll": 30, "target": {"attributes": {"wil": 6, "lck": 0}, "roll": 50, "hp": 30}, "expect": {"damage": [{"effect": "core:effect/damage_psychic", "type": "psychic", "amount": 6, "damage": 6, "evaded": false, "blocked": false}], "hp": 24}},
-  {"name": "damage: a crit cast doubles its damage, the combat crit", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 100}, "roll": 3, "target": {"hp": 30}, "expect": {"damage": [{"effect": "core:effect/damage_fire", "type": "fire", "amount": 8, "damage": 16, "evaded": false, "blocked": false}], "hp": 14}},
-  {"name": "damage: a failed cast deals nothing", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 100}, "roll": 90, "target": {"hp": 30}, "expect": {"outcome": "failed", "damage": [], "hp": 30}},
-  {"name": "damage: an instant spell's save needs the target's roll", "spell": "mind_spike", "caster": {"skills": {"yellow_magic": 50}, "attributes": {"lck": 0}, "mana": 100}, "roll": 30, "target": {"hp": 30}, "expect": {"error": "an instant spell's save needs the target's roll"}},
-  {"name": "bound weapon: Bound Blade conjures an iron longsword with no phase that deals magic", "spell": "bound_blade", "caster": {"skills": {"orange_magic": 60}, "attributes": {"lck": 0}, "mana": 100}, "roll": 30, "expect": {"outcome": "cast", "bound_weapon": {"weapon": "core:weapon/longsword", "skill": "blades", "dice": "1d8", "material": "core:material/iron", "attack": 3, "damage_type": "magic", "phase": null, "effects": []}}},
-  {"name": "bound weapon: Bound Bow follows the same rules: an iron longbow, magic, no phase", "spell": "bound_bow", "caster": {"skills": {"orange_magic": 60}, "attributes": {"lck": 0}, "mana": 100}, "roll": 30, "expect": {"outcome": "cast", "bound_weapon": {"weapon": "core:weapon/longbow", "skill": "bows", "dice": "1d8", "material": "core:material/iron", "attack": 3, "damage_type": "magic", "phase": null, "effects": []}}},
-  {"name": "bound weapon: Tempered Conjuring makes it steel, attack 5", "spell": "bound_blade", "caster": {"skills": {"orange_magic": 60}, "attributes": {"lck": 0}, "mana": 100, "perks": ["core:feature/tempered_conjuring"]}, "roll": 30, "expect": {"bound_weapon": {"weapon": "core:weapon/longsword", "skill": "blades", "dice": "1d8", "material": "core:material/steel", "attack": 5, "damage_type": "magic", "phase": null, "effects": []}}},
-  {"name": "bound weapon: the highest perk that unlocks a material wins: obsidian, attack 6, still no phase", "spell": "bound_blade", "caster": {"skills": {"orange_magic": 60}, "attributes": {"lck": 0}, "mana": 100, "perks": ["core:feature/tempered_conjuring", "core:feature/glassfire_conjuring"]}, "roll": 30, "expect": {"bound_weapon": {"weapon": "core:weapon/longsword", "skill": "blades", "dice": "1d8", "material": "core:material/obsidian", "attack": 6, "damage_type": "magic", "phase": null, "effects": []}}},
-  {"name": "bound weapon: the perks' order does not matter: Glassfire listed first still gives obsidian", "spell": "bound_blade", "caster": {"skills": {"orange_magic": 60}, "attributes": {"lck": 0}, "mana": 100, "perks": ["core:feature/glassfire_conjuring", "core:feature/tempered_conjuring"]}, "roll": 30, "expect": {"bound_weapon": {"weapon": "core:weapon/longsword", "skill": "blades", "dice": "1d8", "material": "core:material/obsidian", "attack": 6, "damage_type": "magic", "phase": null, "effects": []}}},
-  {"name": "bound weapon: a fire coating sets the damage type and the phase", "spell": "bound_blade", "caster": {"skills": {"orange_magic": 60}, "attributes": {"lck": 0}, "mana": 100}, "coating": "core:effect/damage_fire", "roll": 30, "expect": {"bound_weapon": {"weapon": "core:weapon/longsword", "skill": "blades", "dice": "1d8", "material": "core:material/iron", "attack": 3, "damage_type": "fire", "phase": "fire", "effects": []}}},
-  {"name": "bound weapon: a frost enchantment wins over a fire coating: frost, water", "spell": "bound_blade", "caster": {"skills": {"orange_magic": 60}, "attributes": {"lck": 0}, "mana": 100}, "coating": "core:effect/damage_fire", "enchantment": "core:effect/damage_frost", "roll": 30, "expect": {"bound_weapon": {"weapon": "core:weapon/longsword", "skill": "blades", "dice": "1d8", "material": "core:material/iron", "attack": 3, "damage_type": "frost", "phase": "water", "effects": []}}},
-  {"name": "bound weapon: the perk ladder adds its effects in perk order; lingering damage takes magic", "spell": "bound_blade", "caster": {"skills": {"orange_magic": 60}, "attributes": {"lck": 0}, "mana": 100, "perks": ["core:feature/tempered_conjuring", "core:feature/piercing_conjuring", "core:feature/lingering_conjuring", "core:feature/hallowed_conjuring", "core:feature/unbinding_edge"]}, "roll": 30, "expect": {"bound_weapon": {"weapon": "core:weapon/longsword", "skill": "blades", "dice": "1d8", "material": "core:material/steel", "attack": 5, "damage_type": "magic", "phase": null, "effects": [{"effect": "core:effect/armor_pierce", "magnitude": 25}, {"effect": "core:effect/lingering_damage", "parameter": "magic", "magnitude": 2, "duration": 10}, {"effect": "core:effect/bane", "parameter": "undead", "magnitude": 4}, {"effect": "core:effect/banish_summoned"}]}}},
-  {"name": "bound weapon: lingering damage follows a fire coating", "spell": "bound_blade", "caster": {"skills": {"orange_magic": 60}, "attributes": {"lck": 0}, "mana": 100, "perks": ["core:feature/tempered_conjuring", "core:feature/piercing_conjuring", "core:feature/lingering_conjuring", "core:feature/hallowed_conjuring", "core:feature/unbinding_edge"]}, "coating": "core:effect/damage_fire", "roll": 30, "expect": {"bound_weapon": {"weapon": "core:weapon/longsword", "skill": "blades", "dice": "1d8", "material": "core:material/steel", "attack": 5, "damage_type": "fire", "phase": "fire", "effects": [{"effect": "core:effect/armor_pierce", "magnitude": 25}, {"effect": "core:effect/lingering_damage", "parameter": "fire", "magnitude": 2, "duration": 10}, {"effect": "core:effect/bane", "parameter": "undead", "magnitude": 4}, {"effect": "core:effect/banish_summoned"}]}}},
-  {"name": "bound weapon: a coating without the coating channel is an error", "spell": "bound_blade", "caster": {"skills": {"orange_magic": 60}, "attributes": {"lck": 0}, "mana": 100}, "coating": "core:effect/damage_force", "roll": 30, "expect": {"error": "core:effect/damage_force is not a coating"}},
-  {"name": "bound weapon: an enchantment that is not a damage effect is an error", "spell": "bound_blade", "caster": {"skills": {"orange_magic": 60}, "attributes": {"lck": 0}, "mana": 100}, "enchantment": "core:effect/burn", "roll": 30, "expect": {"error": "core:effect/burn is not an elemental damage effect"}},
-  {"name": "bonded: Kindred Focus adds 10 to red magic while a summon is out", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 20, "summons": ["core:summon/elemental"]}, "modifiers": [{"target": "red_magic", "operation": "add", "value": 10, "source": "feature:kindred_focus", "origin": "core:origin/trained", "duration": "while_summoning"}], "roll": 55, "expect": {"outcome": "cast", "check": {"target": 60, "success": true, "margin": 5, "tags": []}}},
-  {"name": "bonded: with no summon out the while_summoning bonus is dropped", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 20}, "modifiers": [{"target": "red_magic", "operation": "add", "value": 10, "source": "feature:kindred_focus", "origin": "core:origin/trained", "duration": "while_summoning"}], "roll": 55, "expect": {"outcome": "failed", "check": {"target": 50, "success": false, "margin": null, "tags": []}}},
-  {"name": "bonded: two summons out give the bonus once, even with Kindred Focus listed twice", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 20, "summons": ["core:summon/elemental", "core:summon/familiar"]}, "modifiers": [{"target": "red_magic", "operation": "add", "value": 10, "source": "feature:kindred_focus", "origin": "core:origin/trained", "duration": "while_summoning"}, {"target": "red_magic", "operation": "add", "value": 10, "source": "feature:kindred_focus", "origin": "core:origin/trained", "duration": "while_summoning"}], "roll": 55, "expect": {"check": {"target": 60, "success": true, "margin": 5, "tags": []}}},
-  {"name": "bonded: a minion is not a summon for the bond", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 20, "minions": ["core:summon/undead"]}, "modifiers": [{"target": "red_magic", "operation": "add", "value": 10, "source": "feature:kindred_focus", "origin": "core:origin/trained", "duration": "while_summoning"}], "roll": 55, "expect": {"check": {"target": 50, "success": false, "margin": null, "tags": []}}},
-  {"name": "bonded: Shared Wellspring takes 20% off the paid cost while a summon is out: 5 becomes 4", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 20, "summons": ["core:summon/elemental"]}, "modifiers": [{"target": "spell_cost", "operation": "multiply", "value": 0.8, "source": "feature:shared_wellspring", "origin": "core:origin/trained", "duration": "while_summoning"}], "roll": 30, "expect": {"outcome": "cast", "mana": 16}},
-  {"name": "bonded: Shared Wellspring does nothing with no summon out", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 20}, "modifiers": [{"target": "spell_cost", "operation": "multiply", "value": 0.8, "source": "feature:shared_wellspring", "origin": "core:origin/trained", "duration": "while_summoning"}], "roll": 30, "expect": {"outcome": "cast", "mana": 15}},
-  {"name": "bonded: Elemental Kinship adds 4 to a fire packet while a fire elemental is out", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 20, "summons": ["core:summon/elemental"], "summon_templates": ["core:monster_template/fire"]}, "modifiers": [{"target": "bonded_element_damage", "operation": "add", "value": 4, "source": "feature:elemental_kinship", "origin": "core:origin/trained", "duration": "while_summoning"}], "roll": 30, "target": {"hp": 30}, "expect": {"damage": [{"effect": "core:effect/damage_fire", "type": "fire", "amount": 12, "damage": 12, "evaded": false, "blocked": false}], "hp": 18}},
-  {"name": "bonded: Elemental Kinship does nothing when the summon's element does not match", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 20, "summons": ["core:summon/elemental"], "summon_templates": ["core:monster_template/frost"]}, "modifiers": [{"target": "bonded_element_damage", "operation": "add", "value": 4, "source": "feature:elemental_kinship", "origin": "core:origin/trained", "duration": "while_summoning"}], "roll": 30, "target": {"hp": 30}, "expect": {"damage": [{"effect": "core:effect/damage_fire", "type": "fire", "amount": 8, "damage": 8, "evaded": false, "blocked": false}], "hp": 22}},
-  {"name": "armor: no armor and no shield, no penalty: 50", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 20}, "roll": 30, "expect": {"outcome": "cast", "check": {"target": 50, "success": true, "margin": 20, "tags": []}}},
-  {"name": "mailed casting: tier 1 (x0.75) turns light -5 into -4 (floored): 46", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 20, "armor": "light"}, "roll": 30, "modifiers": [{"target": "armor_cast_penalty", "operation": "multiply", "value": 0.75, "source": "feature:mailed_casting", "origin": "core:origin/trained"}], "expect": {"outcome": "cast", "check": {"target": 46, "success": true, "margin": 16, "tags": []}}},
-  {"name": "mailed casting: tier 1 turns medium -15 into -12: 38", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 20, "armor": "medium"}, "roll": 30, "modifiers": [{"target": "armor_cast_penalty", "operation": "multiply", "value": 0.75, "source": "feature:mailed_casting", "origin": "core:origin/trained"}], "expect": {"outcome": "cast", "check": {"target": 38, "success": true, "margin": 8, "tags": []}}},
-  {"name": "mailed casting: tier 1 turns heavy -30 into -23: 27", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 20, "armor": "heavy"}, "roll": 30, "modifiers": [{"target": "armor_cast_penalty", "operation": "multiply", "value": 0.75, "source": "feature:mailed_casting", "origin": "core:origin/trained"}], "expect": {"outcome": "failed", "check": {"target": 27, "success": false, "margin": null, "tags": []}}},
-  {"name": "mailed casting: tier 2 (x0.5) turns heavy -30 into -15: 35", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 20, "armor": "heavy"}, "roll": 30, "modifiers": [{"target": "armor_cast_penalty", "operation": "multiply", "value": 0.5, "source": "feature:mailed_casting", "origin": "core:origin/trained"}], "expect": {"outcome": "cast", "check": {"target": 35, "success": true, "margin": 5, "tags": []}}},
-  {"name": "mailed casting: tier 3 (x0.25) turns heavy -30 into -8: 42", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 20, "armor": "heavy"}, "roll": 30, "modifiers": [{"target": "armor_cast_penalty", "operation": "multiply", "value": 0.25, "source": "feature:mailed_casting", "origin": "core:origin/trained"}], "expect": {"outcome": "cast", "check": {"target": 42, "success": true, "margin": 12, "tags": []}}},
-  {"name": "shield: a buckler costs nothing on casting: 50", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 20, "shield": "buckler"}, "roll": 30, "expect": {"outcome": "cast", "check": {"target": 50, "success": true, "margin": 20, "tags": []}}},
-  {"name": "shield: a standard shield is -5: 45", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 20, "shield": "standard"}, "roll": 30, "expect": {"outcome": "cast", "check": {"target": 45, "success": true, "margin": 15, "tags": []}}},
-  {"name": "shield: heavy armor -30 and a tower shield -15, so 30 fails against 5", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 20, "armor": "heavy", "shield": "tower"}, "roll": 30, "expect": {"outcome": "failed", "check": {"target": 5, "success": false, "margin": null, "tags": []}}},
-  {"name": "mailed casting: tier 2 halves both, heavy -15 and tower -8 (floored): 27", "spell": "fire_bolt", "caster": {"skills": {"red_magic": 50}, "attributes": {"lck": 0}, "mana": 20, "armor": "heavy", "shield": "tower"}, "roll": 30, "modifiers": [{"target": "armor_cast_penalty", "operation": "multiply", "value": 0.5, "source": "feature:mailed_casting", "origin": "core:origin/trained"}], "expect": {"outcome": "failed", "check": {"target": 27, "success": false, "margin": null, "tags": []}}}
+  {
+    "name": "cast: greater unlock, a spell built on unlock, casts as its flat row (level 15, 30 mana, magnitude 15)",
+    "spell": "greater_unlock",
+    "caster": {
+      "skills": {
+        "indigo_magic": 60
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 40
+    },
+    "roll": 20,
+    "expect": {
+      "outcome": "cast",
+      "mana": 19,
+      "consumed": [],
+      "check": {
+        "target": 60,
+        "success": true,
+        "margin": 40,
+        "tags": []
+      },
+      "effects": [
+        {
+          "effect": "core:effect/unlock",
+          "magnitude": 15,
+          "target": "touch"
+        }
+      ],
+      "concentration": null,
+      "ended": null,
+      "dispelled": []
+    }
+  },
+  {
+    "name": "summons: with no perk a new summon dismisses the oldest",
+    "spell": "summon_familiar",
+    "caster": {
+      "skills": {
+        "orange_magic": 60
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 80,
+      "summons": [
+        "core:summon/undead"
+      ]
+    },
+    "modifiers": [],
+    "roll": 30,
+    "expect": {
+      "outcome": "cast",
+      "mana": 67,
+      "effects": [],
+      "concentration": null,
+      "summons": [
+        "core:summon/familiar"
+      ],
+      "dismissed": [
+        "core:summon/undead"
+      ]
+    }
+  },
+  {
+    "name": "summons: Retinue (summon_limit +1) holds two",
+    "spell": "summon_familiar",
+    "caster": {
+      "skills": {
+        "orange_magic": 60
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 80,
+      "summons": [
+        "core:summon/undead"
+      ]
+    },
+    "modifiers": [
+      {
+        "target": "summon_limit",
+        "operation": "add",
+        "value": 1,
+        "source": "feature:summon_retinue",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "roll": 30,
+    "expect": {
+      "outcome": "cast",
+      "mana": 67,
+      "effects": [],
+      "concentration": null,
+      "summons": [
+        "core:summon/undead",
+        "core:summon/familiar"
+      ],
+      "dismissed": []
+    }
+  },
+  {
+    "name": "summons: Retinue and Host hold three",
+    "spell": "summon_familiar",
+    "caster": {
+      "skills": {
+        "orange_magic": 60
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 80,
+      "summons": [
+        "core:summon/undead",
+        "core:summon/elemental"
+      ]
+    },
+    "modifiers": [
+      {
+        "target": "summon_limit",
+        "operation": "add",
+        "value": 1,
+        "source": "feature:summon_retinue",
+        "origin": "core:origin/trained"
+      },
+      {
+        "target": "summon_limit",
+        "operation": "add",
+        "value": 1,
+        "source": "feature:summon_host",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "roll": 30,
+    "expect": {
+      "outcome": "cast",
+      "mana": 67,
+      "effects": [],
+      "concentration": null,
+      "summons": [
+        "core:summon/undead",
+        "core:summon/elemental",
+        "core:summon/familiar"
+      ],
+      "dismissed": []
+    }
+  },
+  {
+    "name": "summons: at the limit of two the oldest goes",
+    "spell": "summon_familiar",
+    "caster": {
+      "skills": {
+        "orange_magic": 60
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 80,
+      "summons": [
+        "core:summon/undead",
+        "core:summon/elemental"
+      ]
+    },
+    "modifiers": [
+      {
+        "target": "summon_limit",
+        "operation": "add",
+        "value": 1,
+        "source": "feature:summon_retinue",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "roll": 30,
+    "expect": {
+      "outcome": "cast",
+      "mana": 67,
+      "effects": [],
+      "concentration": null,
+      "summons": [
+        "core:summon/elemental",
+        "core:summon/familiar"
+      ],
+      "dismissed": [
+        "core:summon/undead"
+      ]
+    }
+  },
+  {
+    "name": "summons: a failed cast summons and dismisses nothing",
+    "spell": "summon_familiar",
+    "caster": {
+      "skills": {
+        "orange_magic": 60
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 80,
+      "summons": [
+        "core:summon/undead"
+      ]
+    },
+    "modifiers": [],
+    "roll": 99,
+    "expect": {
+      "outcome": "failed",
+      "mana": 67,
+      "effects": [],
+      "concentration": null,
+      "summons": [
+        "core:summon/undead"
+      ],
+      "dismissed": []
+    }
+  },
+  {
+    "name": "minions: Conjured Legion rolls 1d3+1; count_roll 4 calls four elemental minions, priced for 3 (108 mana, 60 paid at skill 90)",
+    "spell": "conjured_legion",
+    "caster": {
+      "skills": {
+        "orange_magic": 90
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 200
+    },
+    "modifiers": [],
+    "roll": 30,
+    "count_roll": 4,
+    "expect": {
+      "outcome": "cast",
+      "mana": 140,
+      "effects": [],
+      "summons": [],
+      "dismissed": [],
+      "minions": [
+        "core:summon/elemental",
+        "core:summon/elemental",
+        "core:summon/elemental",
+        "core:summon/elemental"
+      ]
+    }
+  },
+  {
+    "name": "minions: they do not count toward the summon limit; at the limit of one the summon stays",
+    "spell": "conjured_legion",
+    "caster": {
+      "skills": {
+        "orange_magic": 90
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 200,
+      "summons": [
+        "core:summon/undead"
+      ]
+    },
+    "modifiers": [],
+    "roll": 30,
+    "count_roll": 2,
+    "expect": {
+      "outcome": "cast",
+      "summons": [
+        "core:summon/undead"
+      ],
+      "dismissed": [],
+      "minions": [
+        "core:summon/elemental",
+        "core:summon/elemental"
+      ]
+    }
+  },
+  {
+    "name": "minions: a new call adds to the caster's minions, oldest first, with no limit",
+    "spell": "conjured_legion",
+    "caster": {
+      "skills": {
+        "orange_magic": 90
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 200,
+      "minions": [
+        "core:summon/undead",
+        "core:summon/undead",
+        "core:summon/undead",
+        "core:summon/undead",
+        "core:summon/undead",
+        "core:summon/undead"
+      ]
+    },
+    "modifiers": [],
+    "roll": 30,
+    "count_roll": 3,
+    "expect": {
+      "outcome": "cast",
+      "minions": [
+        "core:summon/undead",
+        "core:summon/undead",
+        "core:summon/undead",
+        "core:summon/undead",
+        "core:summon/undead",
+        "core:summon/undead",
+        "core:summon/elemental",
+        "core:summon/elemental",
+        "core:summon/elemental"
+      ]
+    }
+  },
+  {
+    "name": "minions: Raise Horde builds on Raise Thrall: its group, duration, and nightshade reagent, with count 1d3+1",
+    "spell": "raise_horde",
+    "caster": {
+      "skills": {
+        "black_magic": 90
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 200,
+      "reagents": [
+        "core:ingredient/nightshade"
+      ]
+    },
+    "modifiers": [],
+    "roll": 30,
+    "count_roll": 2,
+    "expect": {
+      "outcome": "cast",
+      "mana": 140,
+      "consumed": [
+        "core:ingredient/nightshade"
+      ],
+      "concentration": "raise_horde",
+      "summons": [],
+      "minions": [
+        "core:summon/undead",
+        "core:summon/undead"
+      ]
+    }
+  },
+  {
+    "name": "minions: a failed cast calls none",
+    "spell": "conjured_legion",
+    "caster": {
+      "skills": {
+        "orange_magic": 90
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 200
+    },
+    "modifiers": [],
+    "roll": 99,
+    "count_roll": 3,
+    "expect": {
+      "outcome": "failed",
+      "minions": []
+    }
+  },
+  {
+    "name": "minions: a dice count needs count_roll",
+    "spell": "conjured_legion",
+    "caster": {
+      "skills": {
+        "orange_magic": 90
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 200
+    },
+    "modifiers": [],
+    "roll": 30,
+    "expect": {
+      "error": "a minion count of 1d3+1 needs count_roll"
+    }
+  },
+  {
+    "name": "minions: a count_roll its dice cannot make is an error",
+    "spell": "conjured_legion",
+    "caster": {
+      "skills": {
+        "orange_magic": 90
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 200
+    },
+    "modifiers": [],
+    "roll": 30,
+    "count_roll": 5,
+    "expect": {
+      "error": "count_roll 5 is not a roll of 1d3+1"
+    }
+  },
+  {
+    "name": "summons: a single summon keeps its group and calls one, with no minions",
+    "spell": "summon_elemental",
+    "caster": {
+      "skills": {
+        "orange_magic": 90
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 200
+    },
+    "modifiers": [],
+    "roll": 30,
+    "expect": {
+      "outcome": "cast",
+      "effects": [],
+      "summons": [
+        "core:summon/elemental"
+      ],
+      "minions": []
+    }
+  },
+  {
+    "name": "damage: a fire bolt that lands takes 8 HP from a target with 30",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100
+    },
+    "roll": 30,
+    "target": {
+      "hp": 30
+    },
+    "expect": {
+      "outcome": "cast",
+      "damage": [
+        {
+          "effect": "core:effect/damage_fire",
+          "type": "fire",
+          "amount": 8,
+          "damage": 8,
+          "evaded": false,
+          "blocked": false
+        }
+      ],
+      "hp": 22
+    }
+  },
+  {
+    "name": "damage: armor DR does not reduce fire, which bypasses physical armor, but a fire resist does",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100
+    },
+    "roll": 30,
+    "target": {
+      "hp": 30,
+      "armor_dr": 5,
+      "resist": {
+        "fire": 3
+      }
+    },
+    "expect": {
+      "damage": [
+        {
+          "effect": "core:effect/damage_fire",
+          "type": "fire",
+          "amount": 8,
+          "damage": 5,
+          "evaded": false,
+          "blocked": false
+        }
+      ],
+      "hp": 25
+    }
+  },
+  {
+    "name": "damage: the cast's margin 20 lands in the target's evasion band of 30, a single spell is dodged",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100
+    },
+    "roll": 30,
+    "target": {
+      "hp": 30,
+      "evasion_skill": 60
+    },
+    "expect": {
+      "damage": [
+        {
+          "effect": "core:effect/damage_fire",
+          "type": "fire",
+          "amount": 8,
+          "damage": 0,
+          "evaded": true,
+          "blocked": false
+        }
+      ],
+      "hp": 30
+    }
+  },
+  {
+    "name": "damage: an area spell in the evasion band is halved",
+    "spell": "fire_burst",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100
+    },
+    "roll": 30,
+    "target": {
+      "hp": 30,
+      "evasion_skill": 60
+    },
+    "expect": {
+      "damage": [
+        {
+          "effect": "core:effect/damage_fire",
+          "type": "fire",
+          "amount": 28,
+          "damage": 14,
+          "evaded": true,
+          "blocked": false
+        }
+      ],
+      "hp": 16
+    }
+  },
+  {
+    "name": "damage: a partial save halves an instant spell before it reaches the target's HP",
+    "spell": "mind_spike",
+    "caster": {
+      "skills": {
+        "yellow_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100
+    },
+    "roll": 30,
+    "target": {
+      "attributes": {
+        "wil": 6,
+        "lck": 0
+      },
+      "roll": 50,
+      "hp": 30
+    },
+    "expect": {
+      "damage": [
+        {
+          "effect": "core:effect/damage_psychic",
+          "type": "psychic",
+          "amount": 6,
+          "damage": 6,
+          "evaded": false,
+          "blocked": false
+        }
+      ],
+      "hp": 24
+    }
+  },
+  {
+    "name": "damage: a crit cast doubles its damage, the combat crit",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100
+    },
+    "roll": 3,
+    "target": {
+      "hp": 30
+    },
+    "expect": {
+      "damage": [
+        {
+          "effect": "core:effect/damage_fire",
+          "type": "fire",
+          "amount": 8,
+          "damage": 16,
+          "evaded": false,
+          "blocked": false
+        }
+      ],
+      "hp": 14
+    }
+  },
+  {
+    "name": "damage: a failed cast deals nothing",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100
+    },
+    "roll": 90,
+    "target": {
+      "hp": 30
+    },
+    "expect": {
+      "outcome": "failed",
+      "damage": [],
+      "hp": 30
+    }
+  },
+  {
+    "name": "damage: an instant spell's save needs the target's roll",
+    "spell": "mind_spike",
+    "caster": {
+      "skills": {
+        "yellow_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100
+    },
+    "roll": 30,
+    "target": {
+      "hp": 30
+    },
+    "expect": {
+      "error": "an instant spell's save needs the target's roll"
+    }
+  },
+  {
+    "name": "bound weapon: Bound Blade conjures an iron longsword with no phase that deals magic",
+    "spell": "bound_blade",
+    "caster": {
+      "skills": {
+        "orange_magic": 60
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100
+    },
+    "roll": 30,
+    "expect": {
+      "outcome": "cast",
+      "bound_weapon": {
+        "weapon": "core:weapon/longsword",
+        "skill": "blades",
+        "dice": "1d8",
+        "material": "core:material/iron",
+        "attack": 3,
+        "damage_type": "magic",
+        "phase": null,
+        "effects": []
+      }
+    }
+  },
+  {
+    "name": "bound weapon: Bound Bow follows the same rules: an iron longbow, magic, no phase",
+    "spell": "bound_bow",
+    "caster": {
+      "skills": {
+        "orange_magic": 60
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100
+    },
+    "roll": 30,
+    "expect": {
+      "outcome": "cast",
+      "bound_weapon": {
+        "weapon": "core:weapon/longbow",
+        "skill": "bows",
+        "dice": "1d8",
+        "material": "core:material/iron",
+        "attack": 3,
+        "damage_type": "magic",
+        "phase": null,
+        "effects": []
+      }
+    }
+  },
+  {
+    "name": "bound weapon: Tempered Conjuring makes it steel, attack 5",
+    "spell": "bound_blade",
+    "caster": {
+      "skills": {
+        "orange_magic": 60
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100,
+      "perks": [
+        "core:feature/tempered_conjuring"
+      ]
+    },
+    "roll": 30,
+    "expect": {
+      "bound_weapon": {
+        "weapon": "core:weapon/longsword",
+        "skill": "blades",
+        "dice": "1d8",
+        "material": "core:material/steel",
+        "attack": 5,
+        "damage_type": "magic",
+        "phase": null,
+        "effects": []
+      }
+    }
+  },
+  {
+    "name": "bound weapon: the highest perk that unlocks a material wins: obsidian, attack 6, still no phase",
+    "spell": "bound_blade",
+    "caster": {
+      "skills": {
+        "orange_magic": 60
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100,
+      "perks": [
+        "core:feature/tempered_conjuring",
+        "core:feature/glassfire_conjuring"
+      ]
+    },
+    "roll": 30,
+    "expect": {
+      "bound_weapon": {
+        "weapon": "core:weapon/longsword",
+        "skill": "blades",
+        "dice": "1d8",
+        "material": "core:material/obsidian",
+        "attack": 6,
+        "damage_type": "magic",
+        "phase": null,
+        "effects": []
+      }
+    }
+  },
+  {
+    "name": "bound weapon: the perks' order does not matter: Glassfire listed first still gives obsidian",
+    "spell": "bound_blade",
+    "caster": {
+      "skills": {
+        "orange_magic": 60
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100,
+      "perks": [
+        "core:feature/glassfire_conjuring",
+        "core:feature/tempered_conjuring"
+      ]
+    },
+    "roll": 30,
+    "expect": {
+      "bound_weapon": {
+        "weapon": "core:weapon/longsword",
+        "skill": "blades",
+        "dice": "1d8",
+        "material": "core:material/obsidian",
+        "attack": 6,
+        "damage_type": "magic",
+        "phase": null,
+        "effects": []
+      }
+    }
+  },
+  {
+    "name": "bound weapon: a fire coating sets the damage type and the phase",
+    "spell": "bound_blade",
+    "caster": {
+      "skills": {
+        "orange_magic": 60
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100
+    },
+    "coating": "core:effect/damage_fire",
+    "roll": 30,
+    "expect": {
+      "bound_weapon": {
+        "weapon": "core:weapon/longsword",
+        "skill": "blades",
+        "dice": "1d8",
+        "material": "core:material/iron",
+        "attack": 3,
+        "damage_type": "fire",
+        "phase": "fire",
+        "effects": []
+      }
+    }
+  },
+  {
+    "name": "bound weapon: a frost enchantment wins over a fire coating: frost, water",
+    "spell": "bound_blade",
+    "caster": {
+      "skills": {
+        "orange_magic": 60
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100
+    },
+    "coating": "core:effect/damage_fire",
+    "enchantment": "core:effect/damage_frost",
+    "roll": 30,
+    "expect": {
+      "bound_weapon": {
+        "weapon": "core:weapon/longsword",
+        "skill": "blades",
+        "dice": "1d8",
+        "material": "core:material/iron",
+        "attack": 3,
+        "damage_type": "frost",
+        "phase": "water",
+        "effects": []
+      }
+    }
+  },
+  {
+    "name": "bound weapon: the perk ladder adds its effects in perk order; lingering damage takes magic",
+    "spell": "bound_blade",
+    "caster": {
+      "skills": {
+        "orange_magic": 60
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100,
+      "perks": [
+        "core:feature/tempered_conjuring",
+        "core:feature/piercing_conjuring",
+        "core:feature/lingering_conjuring",
+        "core:feature/hallowed_conjuring",
+        "core:feature/unbinding_edge"
+      ]
+    },
+    "roll": 30,
+    "expect": {
+      "bound_weapon": {
+        "weapon": "core:weapon/longsword",
+        "skill": "blades",
+        "dice": "1d8",
+        "material": "core:material/steel",
+        "attack": 5,
+        "damage_type": "magic",
+        "phase": null,
+        "effects": [
+          {
+            "effect": "core:effect/armor_pierce",
+            "magnitude": 25
+          },
+          {
+            "effect": "core:effect/lingering_damage",
+            "parameter": "magic",
+            "magnitude": 2,
+            "duration": 10
+          },
+          {
+            "effect": "core:effect/bane",
+            "parameter": "undead",
+            "magnitude": 4
+          },
+          {
+            "effect": "core:effect/banish_summoned"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "bound weapon: lingering damage follows a fire coating",
+    "spell": "bound_blade",
+    "caster": {
+      "skills": {
+        "orange_magic": 60
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100,
+      "perks": [
+        "core:feature/tempered_conjuring",
+        "core:feature/piercing_conjuring",
+        "core:feature/lingering_conjuring",
+        "core:feature/hallowed_conjuring",
+        "core:feature/unbinding_edge"
+      ]
+    },
+    "coating": "core:effect/damage_fire",
+    "roll": 30,
+    "expect": {
+      "bound_weapon": {
+        "weapon": "core:weapon/longsword",
+        "skill": "blades",
+        "dice": "1d8",
+        "material": "core:material/steel",
+        "attack": 5,
+        "damage_type": "fire",
+        "phase": "fire",
+        "effects": [
+          {
+            "effect": "core:effect/armor_pierce",
+            "magnitude": 25
+          },
+          {
+            "effect": "core:effect/lingering_damage",
+            "parameter": "fire",
+            "magnitude": 2,
+            "duration": 10
+          },
+          {
+            "effect": "core:effect/bane",
+            "parameter": "undead",
+            "magnitude": 4
+          },
+          {
+            "effect": "core:effect/banish_summoned"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "bound weapon: a coating without the coating channel is an error",
+    "spell": "bound_blade",
+    "caster": {
+      "skills": {
+        "orange_magic": 60
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100
+    },
+    "coating": "core:effect/damage_force",
+    "roll": 30,
+    "expect": {
+      "error": "core:effect/damage_force is not a coating"
+    }
+  },
+  {
+    "name": "bound weapon: an enchantment that is not a damage effect is an error",
+    "spell": "bound_blade",
+    "caster": {
+      "skills": {
+        "orange_magic": 60
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 100
+    },
+    "enchantment": "core:effect/burn",
+    "roll": 30,
+    "expect": {
+      "error": "core:effect/burn is not an elemental damage effect"
+    }
+  },
+  {
+    "name": "bonded: Kindred Focus adds 10 to red magic while a summon is out",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 20,
+      "summons": [
+        "core:summon/elemental"
+      ]
+    },
+    "modifiers": [
+      {
+        "target": "red_magic",
+        "operation": "add",
+        "value": 10,
+        "source": "feature:kindred_focus",
+        "origin": "core:origin/trained",
+        "duration": "while_summoning"
+      }
+    ],
+    "roll": 55,
+    "expect": {
+      "outcome": "cast",
+      "check": {
+        "target": 60,
+        "success": true,
+        "margin": 5,
+        "tags": []
+      }
+    }
+  },
+  {
+    "name": "bonded: with no summon out the while_summoning bonus is dropped",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 20
+    },
+    "modifiers": [
+      {
+        "target": "red_magic",
+        "operation": "add",
+        "value": 10,
+        "source": "feature:kindred_focus",
+        "origin": "core:origin/trained",
+        "duration": "while_summoning"
+      }
+    ],
+    "roll": 55,
+    "expect": {
+      "outcome": "failed",
+      "check": {
+        "target": 50,
+        "success": false,
+        "margin": null,
+        "tags": []
+      }
+    }
+  },
+  {
+    "name": "bonded: two summons out give the bonus once, even with Kindred Focus listed twice",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 20,
+      "summons": [
+        "core:summon/elemental",
+        "core:summon/familiar"
+      ]
+    },
+    "modifiers": [
+      {
+        "target": "red_magic",
+        "operation": "add",
+        "value": 10,
+        "source": "feature:kindred_focus",
+        "origin": "core:origin/trained",
+        "duration": "while_summoning"
+      },
+      {
+        "target": "red_magic",
+        "operation": "add",
+        "value": 10,
+        "source": "feature:kindred_focus",
+        "origin": "core:origin/trained",
+        "duration": "while_summoning"
+      }
+    ],
+    "roll": 55,
+    "expect": {
+      "check": {
+        "target": 60,
+        "success": true,
+        "margin": 5,
+        "tags": []
+      }
+    }
+  },
+  {
+    "name": "bonded: a minion is not a summon for the bond",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 20,
+      "minions": [
+        "core:summon/undead"
+      ]
+    },
+    "modifiers": [
+      {
+        "target": "red_magic",
+        "operation": "add",
+        "value": 10,
+        "source": "feature:kindred_focus",
+        "origin": "core:origin/trained",
+        "duration": "while_summoning"
+      }
+    ],
+    "roll": 55,
+    "expect": {
+      "check": {
+        "target": 50,
+        "success": false,
+        "margin": null,
+        "tags": []
+      }
+    }
+  },
+  {
+    "name": "bonded: Shared Wellspring takes 20% off the paid cost while a summon is out: 5 becomes 4",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 20,
+      "summons": [
+        "core:summon/elemental"
+      ]
+    },
+    "modifiers": [
+      {
+        "target": "spell_cost",
+        "operation": "multiply",
+        "value": 0.8,
+        "source": "feature:shared_wellspring",
+        "origin": "core:origin/trained",
+        "duration": "while_summoning"
+      }
+    ],
+    "roll": 30,
+    "expect": {
+      "outcome": "cast",
+      "mana": 16
+    }
+  },
+  {
+    "name": "bonded: Shared Wellspring does nothing with no summon out",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 20
+    },
+    "modifiers": [
+      {
+        "target": "spell_cost",
+        "operation": "multiply",
+        "value": 0.8,
+        "source": "feature:shared_wellspring",
+        "origin": "core:origin/trained",
+        "duration": "while_summoning"
+      }
+    ],
+    "roll": 30,
+    "expect": {
+      "outcome": "cast",
+      "mana": 15
+    }
+  },
+  {
+    "name": "bonded: Elemental Kinship adds 4 to a fire packet while a fire elemental is out",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 20,
+      "summons": [
+        "core:summon/elemental"
+      ],
+      "summon_templates": [
+        "core:monster_template/fire"
+      ]
+    },
+    "modifiers": [
+      {
+        "target": "bonded_element_damage",
+        "operation": "add",
+        "value": 4,
+        "source": "feature:elemental_kinship",
+        "origin": "core:origin/trained",
+        "duration": "while_summoning"
+      }
+    ],
+    "roll": 30,
+    "target": {
+      "hp": 30
+    },
+    "expect": {
+      "damage": [
+        {
+          "effect": "core:effect/damage_fire",
+          "type": "fire",
+          "amount": 12,
+          "damage": 12,
+          "evaded": false,
+          "blocked": false
+        }
+      ],
+      "hp": 18
+    }
+  },
+  {
+    "name": "bonded: Elemental Kinship does nothing when the summon's element does not match",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 20,
+      "summons": [
+        "core:summon/elemental"
+      ],
+      "summon_templates": [
+        "core:monster_template/frost"
+      ]
+    },
+    "modifiers": [
+      {
+        "target": "bonded_element_damage",
+        "operation": "add",
+        "value": 4,
+        "source": "feature:elemental_kinship",
+        "origin": "core:origin/trained",
+        "duration": "while_summoning"
+      }
+    ],
+    "roll": 30,
+    "target": {
+      "hp": 30
+    },
+    "expect": {
+      "damage": [
+        {
+          "effect": "core:effect/damage_fire",
+          "type": "fire",
+          "amount": 8,
+          "damage": 8,
+          "evaded": false,
+          "blocked": false
+        }
+      ],
+      "hp": 22
+    }
+  },
+  {
+    "name": "armor: no armor and no shield, no penalty: 50",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 20
+    },
+    "roll": 30,
+    "expect": {
+      "outcome": "cast",
+      "check": {
+        "target": 50,
+        "success": true,
+        "margin": 20,
+        "tags": []
+      }
+    }
+  },
+  {
+    "name": "mailed casting: tier 1 (x0.75) turns light -5 into -4 (floored): 46",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 20,
+      "armor": "light"
+    },
+    "roll": 30,
+    "modifiers": [
+      {
+        "target": "armor_cast_penalty",
+        "operation": "multiply",
+        "value": 0.75,
+        "source": "feature:mailed_casting",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "outcome": "cast",
+      "check": {
+        "target": 46,
+        "success": true,
+        "margin": 16,
+        "tags": []
+      }
+    }
+  },
+  {
+    "name": "mailed casting: tier 1 turns medium -15 into -12: 38",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 20,
+      "armor": "medium"
+    },
+    "roll": 30,
+    "modifiers": [
+      {
+        "target": "armor_cast_penalty",
+        "operation": "multiply",
+        "value": 0.75,
+        "source": "feature:mailed_casting",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "outcome": "cast",
+      "check": {
+        "target": 38,
+        "success": true,
+        "margin": 8,
+        "tags": []
+      }
+    }
+  },
+  {
+    "name": "mailed casting: tier 1 turns heavy -30 into -23: 27",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 20,
+      "armor": "heavy"
+    },
+    "roll": 30,
+    "modifiers": [
+      {
+        "target": "armor_cast_penalty",
+        "operation": "multiply",
+        "value": 0.75,
+        "source": "feature:mailed_casting",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "outcome": "failed",
+      "check": {
+        "target": 27,
+        "success": false,
+        "margin": null,
+        "tags": []
+      }
+    }
+  },
+  {
+    "name": "mailed casting: tier 2 (x0.5) turns heavy -30 into -15: 35",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 20,
+      "armor": "heavy"
+    },
+    "roll": 30,
+    "modifiers": [
+      {
+        "target": "armor_cast_penalty",
+        "operation": "multiply",
+        "value": 0.5,
+        "source": "feature:mailed_casting",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "outcome": "cast",
+      "check": {
+        "target": 35,
+        "success": true,
+        "margin": 5,
+        "tags": []
+      }
+    }
+  },
+  {
+    "name": "mailed casting: tier 3 (x0.25) turns heavy -30 into -8: 42",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 20,
+      "armor": "heavy"
+    },
+    "roll": 30,
+    "modifiers": [
+      {
+        "target": "armor_cast_penalty",
+        "operation": "multiply",
+        "value": 0.25,
+        "source": "feature:mailed_casting",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "outcome": "cast",
+      "check": {
+        "target": 42,
+        "success": true,
+        "margin": 12,
+        "tags": []
+      }
+    }
+  },
+  {
+    "name": "shield: a buckler costs nothing on casting: 50",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 20,
+      "shield": "buckler"
+    },
+    "roll": 30,
+    "expect": {
+      "outcome": "cast",
+      "check": {
+        "target": 50,
+        "success": true,
+        "margin": 20,
+        "tags": []
+      }
+    }
+  },
+  {
+    "name": "shield: a standard shield is -5: 45",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 20,
+      "shield": "standard"
+    },
+    "roll": 30,
+    "expect": {
+      "outcome": "cast",
+      "check": {
+        "target": 45,
+        "success": true,
+        "margin": 15,
+        "tags": []
+      }
+    }
+  },
+  {
+    "name": "shield: heavy armor -30 and a tower shield -15, so 30 fails against 5",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 20,
+      "armor": "heavy",
+      "shield": "tower"
+    },
+    "roll": 30,
+    "expect": {
+      "outcome": "failed",
+      "check": {
+        "target": 5,
+        "success": false,
+        "margin": null,
+        "tags": []
+      }
+    }
+  },
+  {
+    "name": "mailed casting: tier 2 halves both, heavy -15 and tower -8 (floored): 27",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 50
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 20,
+      "armor": "heavy",
+      "shield": "tower"
+    },
+    "roll": 30,
+    "modifiers": [
+      {
+        "target": "armor_cast_penalty",
+        "operation": "multiply",
+        "value": 0.5,
+        "source": "feature:mailed_casting",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "outcome": "failed",
+      "check": {
+        "target": 27,
+        "success": false,
+        "margin": null,
+        "tags": []
+      }
+    }
+  },
+  {
+    "name": "cast AP: fire bolt (level 1) costs 2 AP",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 60
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 200
+    },
+    "roll": 30,
+    "expect": {
+      "ap": 2,
+      "stamina": 10
+    }
+  },
+  {
+    "name": "cast AP: cleanse (level 10) costs 3 AP",
+    "spell": "cleanse",
+    "caster": {
+      "skills": {
+        "white_magic": 60
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 200
+    },
+    "roll": 30,
+    "expect": {
+      "ap": 3,
+      "stamina": 15
+    }
+  },
+  {
+    "name": "cast AP: meteor (level 24) costs 4 AP",
+    "spell": "meteor",
+    "caster": {
+      "skills": {
+        "red_magic": 60
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 200
+    },
+    "roll": 30,
+    "expect": {
+      "ap": 4,
+      "stamina": 20
+    }
+  },
+  {
+    "name": "cast AP: Quick Caster makes meteor 3 AP",
+    "spell": "meteor",
+    "caster": {
+      "skills": {
+        "red_magic": 60
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 200
+    },
+    "roll": 30,
+    "modifiers": [
+      {
+        "target": "cast",
+        "operation": "add",
+        "value": -1,
+        "source": "feature:quick_caster",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "ap": 3,
+      "stamina": 15
+    }
+  },
+  {
+    "name": "cast AP: Quick Caster makes cleanse 2 AP",
+    "spell": "cleanse",
+    "caster": {
+      "skills": {
+        "white_magic": 60
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 200
+    },
+    "roll": 30,
+    "modifiers": [
+      {
+        "target": "cast",
+        "operation": "add",
+        "value": -1,
+        "source": "feature:quick_caster",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "ap": 2,
+      "stamina": 10
+    }
+  },
+  {
+    "name": "cast AP: a level 1 spell never falls below 1 AP, even with two cuts",
+    "spell": "fire_bolt",
+    "caster": {
+      "skills": {
+        "red_magic": 60
+      },
+      "attributes": {
+        "lck": 0
+      },
+      "mana": 200
+    },
+    "roll": 30,
+    "modifiers": [
+      {
+        "target": "cast",
+        "operation": "add",
+        "value": -1,
+        "source": "feature:quick_caster",
+        "origin": "core:origin/trained"
+      },
+      {
+        "target": "cast",
+        "operation": "add",
+        "value": -1,
+        "source": "feature:example",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "ap": 1,
+      "stamina": 5
+    }
+  }
 ]
