@@ -11,7 +11,8 @@ with no connection, and the network only adds what a shared table needs online (
 ## The menu tree
 
 Each entry has a `key`, the `parent` menu it sits in (`main` for the main menu), a `label`, the
-`issue` that adds it while that issue is not merged, and `apps` when only one app shows it
+`issue` that adds it while that issue is not merged (with `issue_apps` when the issue is one
+app's half, so the other app already shows the entry), and `apps` when only one app shows it
 (`cli` or `web`): Quit is the CLI's, and Saved games and Playthrough are the browser's, which
 keeps its saves in IndexedDB (APP-27). The app adds **Back** at the end of every menu but the
 main one; it is not in the file.
@@ -28,7 +29,7 @@ Main menu
 │   ├── Skill resolution
 │   ├── Bestiary                       APP-29
 │   └── Saved games                    web only
-├── Characters                         APP-33
+├── Characters                         FE_S07_04 (web only; the CLI has it)
 ├── Settings
 ├── Modules
 ├── Network
@@ -54,6 +55,18 @@ In the Angular app the main menu is the home page at `/`, Start is `/play`, a to
   target modifier (an `add` on the skill, source `situation:gm`), and the roll. A blank roll is
   rolled by the app, and the input it sends names that roll, so the check can be replayed with
   the agent CLI and gives the same result.
+
+## Characters
+
+The character list ([files.md](files.md#the-character-list), BE_S07_03). In the human CLI the
+screen lists each saved character with its level, its last change (local time), who made it,
+and its revision, then **Import a character file**, **Export the party of the open session**, and
+**Back**. On a character, enter opens it (it becomes the character a dev session starts from, as
+Import does), `e` exports it to a path, `d` duplicates it, `x` deletes it after a typed `yes`, and
+`p` adds it to the party of the open session (one imported from a file or started in dev mode).
+Import applies the sync rule; on a divergence it shows both sides' last change, and enter on
+Import again asks which to keep (`saved` or `incoming`; anything else keeps both as they were).
+[V 2026-11-20, `play_test.go`] The frontend page is `FE_S07_04_character-list-page`.
 
 ## Settings, Modules, and Network
 

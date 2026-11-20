@@ -58,6 +58,9 @@ settings file the frontend trades ([settings.md](settings.md), APP-25).
 envelope both apps trade, and `riftweave import <file> [--enable-modules | --accept-loss]`
 checks one before it applies and prints `{kind, data, warnings}` ([files.md](files.md), APP-30).
 
+`riftweave characters <list | show | export | import | duplicate | delete | party>` is the
+character list and a session's party ([files.md](files.md#the-character-list), BE_S07_03).
+
 ## Human mode
 
 `riftweave play` is the interactive mode of the same binary (APP-05): a terminal UI built with Bubble Tea, Bubbles, and Lip Gloss. It holds no rule. It prompts for inputs, builds the same JSON the agent CLI reads, calls `core.Run`, and shows the result as a table with a short log of the rolls.
