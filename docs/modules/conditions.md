@@ -28,11 +28,11 @@ effect (e.g. paralyze core:effect/paralyze)
 ```
 
 **Rules:**
-- A condition entry declares which **effect(s)** apply it via `appliedBy` (array of effect refs).
+- A condition entry declares which **effect(s)** apply it via `applied_by` (array of effect refs).
 - The `cure` effect (core:effect/cure) is the primary remover. Its `parameter` specifies which condition to cure.
 - Conditions can also be removed by rest, taking damage (charm breaks), or special actions (stand from prone).
 - A condition's rules are its `description` in words and its `modifiers` and `combat` block in numbers; a rule with no modifier target yet is described only, and the GM or engine applies it.
-- Stacking conditions (like `exhaustion`) have `stacking: true` and `maxStacks`; each additional application increments the stack up to the max.
+- Stacking conditions (like `exhaustion`) have `stacking: true` and `max_stacks`; each additional application increments the stack up to the max.
 
 **Why effects-driven?**
 Conditions do not exist in isolation. They are always the *result* of an effect
@@ -50,12 +50,12 @@ Conditions follow one of three duration behaviors:
 | Type | How It Works | Example |
 |------|-------------|---------|
 | `timed` | Has a finite duration in seconds. Expires automatically when the timer elapses. | Poison, burn, bleed (most combat conditions) |
-| `permanent` | Stays indefinitely until explicitly removed by a `removedBy` effect. | Diseases (blight, fever, plague), curses |
+| `permanent` | Stays indefinitely until explicitly removed by a `removed_by` effect. | Diseases (blight, fever, plague), curses |
 | `until_dispelled` | Permanent in practice, but removable by a specific opposite effect rather than a generic cure. | Haste dispels Slow, frost dispels Burning |
 
 ### Opposite-Effect Dispel Pairs
 
-Certain conditions can be removed by effects that are mechanically opposite, even if those effects are not classified as `cure`. This is data-driven — each condition's `removedBy` array in `conditions/core.json` lists the effect refs that can remove it.
+Certain conditions can be removed by effects that are mechanically opposite, even if those effects are not classified as `cure`. This is data-driven — each condition's `removed_by` array in `conditions/core.json` lists the effect refs that can remove it.
 
 | Condition | Applying Effect | Dispelling Effect | Rationale |
 |-----------|---------------|-------------------|-----------|
@@ -88,10 +88,10 @@ Data in `conditions/core.json` (25 entries). Each entry:
 | `label` | Human-readable name |
 | `description` | The rule in words, the same for every client |
 | `modifiers` | The rule in numbers: a flag named after the condition, and any modifiers |
-| `appliedBy` | Effect refs that can apply this condition |
-| `removedBy` | Effect refs that can remove this condition |
+| `applied_by` | Effect refs that can apply this condition |
+| `removed_by` | Effect refs that can remove this condition |
 | `stacking` | Whether multiple instances stack |
-| `maxStacks` | Maximum stack count |
+| `max_stacks` | Maximum stack count |
 | `combat` | Optional object describing mechanical combat impact. See §9.1 (Combat Object Reference) for all fields, defaults, and examples. Omit for conditions with no direct combat modifiers. |
 
 | # | Key | Rule | Modifiers beside its flag |
@@ -136,8 +136,8 @@ rule reads them. [V 2026-11-12]
    (via `resist` effect core:effect/resist with appropriate parameter, racial traits, or active buffs).
 3. If not resisted/immune, the condition is added to the target's `active_conditions` tracker
    (or its stack counter incremented for stacking conditions).
-4. Duration is derived from the applying effect's `defaultDuration` field. If the effect has
-   no duration, the condition uses `defaultDuration` from the applying effect entry.
+4. Duration is derived from the applying effect's `default_duration` field. If the effect has
+   no duration, the condition uses `default_duration` from the applying effect entry.
 
 ### Active Tracking (Reference Implementation)
 
@@ -161,11 +161,11 @@ The `apply_condition()` method adds conditions; `try_dispel_condition()` removes
 ### Removal
 - **`cure` effect (core:effect/cure):** The primary remover. The spell or item declares which
   condition it cures via `parameter` (e.g. `"poisoned"`, `"paralyzed"`, `"all"`).
-  In the reference resolver, any effect in a condition's `removedBy` array can dispel
-  it — `cure` (core:effect/cure) is in every condition's `removedBy`.
+  In the reference resolver, any effect in a condition's `removed_by` array can dispel
+  it — `cure` (core:effect/cure) is in every condition's `removed_by`.
 - **Opposite-effect dispel:** Certain conditions can be removed by their mechanical
   opposite (frost dispels burn, healing dispels bleeding, haste dispels slow).
-  This is data-driven: the dispelling effect ID is listed in the condition's `removedBy`.
+  This is data-driven: the dispelling effect ID is listed in the condition's `removed_by`.
 - **Rest:** A full rest removes exhaustion (1 level) and most temporary conditions.
 - **Special actions:** Standing removes prone. Breaking line of sight can remove
   frightened. Dealing damage to the charmer breaks charm.
@@ -189,7 +189,7 @@ Some conditions (notably **exhaustion**) are designed to stack:
 | Property | Behavior |
 |----------|----------|
 | `stacking: true` | Multiple applications increment the stack counter |
-| `maxStacks` | Hard cap (exhaustion caps at 6 — death) |
+| `max_stacks` | Hard cap (exhaustion caps at 6 — death) |
 | Stack effects | Each level has cumulative penalties described in the condition's `description` |
 | Removal | Rest removes 1 level per full rest. `cure` with `parameter` can remove all levels or 1 level depending on implementation |
 
@@ -220,12 +220,12 @@ whether the condition is amplified, weakened, or unaffected.
 To add a new condition:
 
 1. Create a new entry in `conditions/core.json` with the next available `id`.
-2. Assign an `appliedBy` effect — either an existing one from `effects/core.json`
+2. Assign an `applied_by` effect — either an existing one from `effects/core.json`
    or a new one (if new, add the effect entry first).
-3. Assign a `removedBy` — typically `cure` (core:effect/cure) with the appropriate `parameter`.
+3. Assign a `removed_by` — typically `cure` (core:effect/cure) with the appropriate `parameter`.
    Optionally add opposite-effect dispels (e.g., healing for bleeding, frost for burn).
 4. Write the rule once in `description`, and its numbers as `modifiers` (add a `modifier_targets` row if no table holds the target).
-5. Set `stacking` and `maxStacks` as appropriate.
+5. Set `stacking` and `max_stacks` as appropriate.
 6. Run `validate.py`.
 
 ---
@@ -240,8 +240,8 @@ vectors in `ruleset/tests/vectors/conditions.json`. The lifecycle below is the s
 ```
 effect lands on target
   → _process_effect_conditions(eff, source_label)
-    → try_dispel_condition(key, eid, label)    # check removedBy
-    → apply_condition(key, eid, dur, label)     # check appliedBy
+    → try_dispel_condition(key, eid, label)    # check removed_by
+    → apply_condition(key, eid, dur, label)     # check applied_by
       → adds to active_conditions dict
         → later: _advance_time(n) removes expired timed conditions
 ```
@@ -251,7 +251,7 @@ effect lands on target
 | Method | Function |
 |--------|----------|
 | `apply_condition(key, effect_id, duration, source)` | Adds to `active_conditions`. Refreshes if already active. Derives duration type and remaining time from the effect. |
-| `try_dispel_condition(key, effect_id, source)` | Checks `removedBy` on the condition. If the effect ID matches and the condition is active, removes it. |
+| `try_dispel_condition(key, effect_id, source)` | Checks `removed_by` on the condition. If the effect ID matches and the condition is active, removes it. |
 | `_advance_time(seconds)` | Decrements `remaining_duration` on all timed conditions. Removes expired entries. |
 | `_process_effect_conditions(eff, label)` | Dispatch: calls dispel first, then apply for any matching condition mappings. |
 | `_list_active_conditions()` | Pretty-prints all active conditions with durations and sources. |
@@ -270,7 +270,7 @@ Condition checks fire automatically after every effect in four processing loops:
 
 **Why two on-hit sources?** The base weapon defines its intrinsic behavior (e.g., every "flaming sword" base always burns). The crafted item's `on_hit_effects` represents modifications made during crafting — the item can add new effects or override base ones without modifying the base weapon template. This separation mirrors the crafting system: a base weapon is a template, a crafted item is the specific instance.
 
-For each effect in any of these loops, the resolver first checks if it dispels any existing condition (via `removedBy`), then checks if it applies any new condition (via `appliedBy`). This means applying frost damage on a burning target both deals damage and extinguishes the fire — in a single hit.
+For each effect in any of these loops, the resolver first checks if it dispels any existing condition (via `removed_by`), then checks if it applies any new condition (via `applied_by`). This means applying frost damage on a burning target both deals damage and extinguishes the fire — in a single hit.
 
 ### Example Output
 
@@ -321,7 +321,7 @@ entire object for conditions with no combat impact (e.g. `charmed`,
 | `defense_bonus` | integer | 0 | Flat bonus added to **attackers'** rolls against the bearer. Represents the condition making the bearer an easier target. Example: `blinded` → `+10`. |
 | `prevents_action` | boolean | false | If true, the bearer cannot spend AP or take a reaction. Used for full-incapacitation conditions. Example: `paralyzed`, `stunned`, `unconscious`. |
 | `auto_crit_when_target` | boolean | false | If true, melee attacks against the bearer automatically become critical hits (damage dice doubled). Typically paired with `prevents_action`. Example: `paralyzed` (helpless target), `unconscious`. |
-| `attack_penalty_per_stack` | integer | 0 | Per-stack attack penalty for **stacking** conditions. The resolver multiplies this by the current stack count (clamped to `maxStacks`). Each stacking condition defines its own rate, allowing different severities (e.g. exhaustion at `-10`/stack, hypothetical poison at `-5`/stack). |
+| `attack_penalty_per_stack` | integer | 0 | Per-stack attack penalty for **stacking** conditions. The resolver multiplies this by the current stack count (clamped to `max_stacks`). Each stacking condition defines its own rate, allowing different severities (e.g. exhaustion at `-10`/stack, hypothetical poison at `-5`/stack). |
 
 ```json
 // Example: a condition with both flat and per-stack penalties
@@ -411,8 +411,8 @@ effect (healing always stops bleeding regardless of which resource is restored).
 
 | Condition | Determined By |
 |-----------|--------------|
-| `permanent` | Effect has tag `"disease"` or `defaultDurationType: "unlimited"` |
-| `timed` | Effect has `duration > 1` or `defaultDuration > 1` (1 is instant) |
+| `permanent` | Effect has tag `"disease"` or `default_duration_type: "unlimited"` |
+| `timed` | Effect has `duration > 1` or `default_duration > 1` (1 is instant) |
 | `until_dispelled` | No duration and no disease tag (fallback) |
 
 ---
@@ -426,11 +426,11 @@ The following items were addressed in the `feat/conditions-integration` branch:
   `cure { parameter: "poisoned" }` only dispels `poisoned`). Use
   `parameter: "all"` to cure all removable conditions.
 - ✅ **Prone special case:** Prone no longer includes `cure` (core:effect/cure) in its
-  `removedBy` array. It can only be removed by the "stand" action (engine/GM
-  responsibility). The schema was updated to allow empty `removedBy` arrays.
+  `removed_by` array. It can only be removed by the "stand" action (engine/GM
+  responsibility). The schema was updated to allow empty `removed_by` arrays.
 - ✅ **Duration type refactored:** `_get_duration_type()` now checks effect tags
-  (`"disease"` → permanent), `defaultDurationType` (`"unlimited"` → permanent),
-  and `defaultDuration` (timed), instead of hardcoded effect ID lists.
+  (`"disease"` → permanent), `default_duration_type` (`"unlimited"` → permanent),
+  and `default_duration` (timed), instead of hardcoded effect ID lists.
 - ✅ **Condition mechanical impact:** Conditions now affect combat resolution:
   attack modifiers, defense bonuses, action blocking (incapacitating conditions),
   auto-crit on paralyzed/unconscious targets, and exhaustion stacking with
@@ -445,8 +445,8 @@ The following items were addressed in the `feat/conditions-integration` branch:
 - ✅ **Exhaustion stacking demo:** Enhanced to show progressive stack accumulation
   (1→5/6) with per-level attack penalty display.
 - ✅ **Condition cross-reference validation:** `validate.py` now validates
-  `appliedBy` and `removedBy` IDs against the effects registry, checks stacking
-  consistency (stacking + maxStacks), detects duplicate effect refs, and
+  `applied_by` and `removed_by` IDs against the effects registry, checks stacking
+  consistency (stacking + max_stacks), detects duplicate effect refs, and
   enforces the prone-no-cure rule.
 - ✅ **Documentation updated:** Both on-hit paths (base weapon vs. crafted item)
   are clearly documented with their purpose and relationship.

@@ -374,7 +374,7 @@
     }
   },
   {
-    "name": "gear: the iron breastplate's DR 7 (drBase 4 + iron 3) reaches the defender",
+    "name": "gear: the iron breastplate's DR 7 (dr_base 4 + iron 3) reaches the defender",
     "function": "combat",
     "attacker": {
       "skill": 50,

@@ -13,7 +13,7 @@ Every weapon in `data/equipment/weapons.json` carries:
 - **`weapon.skill`** — the governing skill for attack rolls (`blades`, `blunt`, `piercing`, `bows`, `crossbows`, `guns`, `throwing_weapons`)
 - **`weapon.damage.dice`** — polyhedral dice expression (e.g. `1d8`, `2d6+3`)
 - **`weapon.damage.type`** — damage type key from `data/combat/damage_types.json`
-- **`weapon.length`** + **`weapon.attackReach`** — engagement distance in units
+- **`weapon.length`** + **`weapon.attack_reach`** — engagement distance in units
 - **`weapon.on_hit_effects`** — optional array of `appliedEffect` shapes (from the shared effect registry) that trigger on a successful hit
 
 ### Damage Type → Armor Interaction
@@ -32,7 +32,7 @@ Armor pieces may define `resistances` (per-damage-type flat DR bonuses or penalt
 {
   "armor": {
     "slot": "torso",
-    "drBase": 5,
+    "dr_base": 5,
     "resistances": { "fire": -3, "frost": 4 }
   }
 }
@@ -54,7 +54,7 @@ All effects in `data/effects/core.json` with the `"spell"`, `"coating"`, `"encha
 | **Perk effects** | Always active or conditional | `features.effects[]` — applied at loadout, removed on un-equip |
 | **Spell effects** | On spell landing | `spells[].effects[]` — resolved vs magic defense tree |
 | **Consumable effects** | On use (drink/eat/apply/throw) | `consumable.effects[]` — applied to the user or target |
-| **Condition effects** | On condition trigger | Conditions reference `appliedBy` effect IDs; the condition applies the effect's consequences |
+| **Condition effects** | On condition trigger | Conditions reference `applied_by` effect IDs; the condition applies the effect's consequences |
 
 ### Combat-Specific Effects (Added in feat/combat-resolution)
 
@@ -113,7 +113,7 @@ At combat resolution time, the engine sums all active `melee_damage` bonuses fro
 
 ## 4. Armor → Combat
 
-Armor DR (`drBase + material.modifiers.defense`) provides the primary physical damage mitigation. Key integration points:
+Armor DR (`dr_base + material.modifiers.defense`) provides the primary physical damage mitigation. Key integration points:
 
 - **DR is slot-summed**: Add DR from all worn pieces (head + torso + hands + feet).
 - **DR is flat subtraction**: Applied after the hit is confirmed and after any block/parry reduction.
@@ -127,7 +127,7 @@ Material phase on armor (e.g. steel = `metal`) interacts with incoming phased ef
 
 ## 5. Conditions → Combat
 
-Conditions (`data/conditions/core.json`) are the "envelope" for combat status effects. Each condition has an `appliedBy` array of effect IDs and an `effects` object describing its impact in prose. The prose is not yet modifiers (M3-03); the `modifiers` array is what the kernel reads ([modifier.md](../core/modifier.md)).
+Conditions (`data/conditions/core.json`) are the "envelope" for combat status effects. Each condition has an `applied_by` array of effect IDs and an `effects` object describing its impact in prose. The prose is not yet modifiers (M3-03); the `modifiers` array is what the kernel reads ([modifier.md](../core/modifier.md)).
 
 ### Combat Impact of Conditions
 
@@ -181,7 +181,7 @@ Attacker declares attack with weapon
             → For each effect: check REMOVEDBY (dispel existing conditions)
             → For each effect: check APPLIEDBY (apply new conditions)
               → Check immunity/resistance before application
-              → For stacking conditions: increment stack counter (up to maxStacks)
+              → For stacking conditions: increment stack counter (up to max_stacks)
           → Apply crafted item on_hit_effects (same condition flow)
           → Apply enchantments (same condition flow)
           → Apply coatings (same condition flow)

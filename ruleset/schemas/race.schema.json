@@ -20,9 +20,9 @@
         "role": {
           "type": "string",
           "enum": ["standalone", "parent", "subrace", "template", "kin"],
-          "description": "standalone: a complete, unrelated race (human). parent: an abstract ancestor that subraces inherit from (elf, dwarf). subrace: descends from and extends a parent via `parentRace` (inherits its defaults, overrides freely). template: an abstract shape for sister races (beastman) — provides structure, not values. kin: a sister race conforming to a template via `parentRace`, sharing nothing mechanical with its siblings."
+          "description": "standalone: a complete, unrelated race (human). parent: an abstract ancestor that subraces inherit from (elf, dwarf). subrace: descends from and extends a parent via `parent_race` (inherits its defaults, overrides freely). template: an abstract shape for sister races (beastman) — provides structure, not values. kin: a sister race conforming to a template via `parent_race`, sharing nothing mechanical with its siblings."
         },
-        "parentRace": {
+        "parent_race": {
           "$ref": "schema.json#/definitions/raceRef",
           "description": "Reference to the parent race when role=subrace, or the template when role=kin. Use namespaced format core:race/<key>."
         }
@@ -32,7 +32,7 @@
       "allOf": [
         {
           "if": { "properties": { "role": { "enum": ["subrace", "kin"] } }, "required": ["role"] },
-          "then": { "required": ["role", "parentRace"] }
+          "then": { "required": ["role", "parent_race"] }
         }
       ]
     },
@@ -48,7 +48,7 @@
           "$ref": "schema.json#/definitions/phase",
           "description": "The race's innate element (Wuxing five-phase). Optional tag for playable races (standalone, parent, subrace, kin); omitted on templates, whose kin each declare their own. A subrace may inherit its parent's phase or override it. Drives elemental affinity via the cycles in data/wuxing."
         },
-        "abilityModifiers": {
+        "ability_modifiers": {
           "type": "object",
           "description": "Attribute modifiers, keyed by attribute id (e.g. { \"end\": 2, \"agi\": -1 }). On a subrace these stack on top of the parent's (engine-resolved).",
           "propertyNames": { "$ref": "schema.json#/definitions/ability" },

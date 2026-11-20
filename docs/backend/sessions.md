@@ -61,7 +61,7 @@ command's result without the caller restating it. A field the step names still w
 - **The attack's skill** is the equipped weapon's `skill` (the first equipped item that is a
   weapon, by slot name, since the stored actor does not name its slots [A]), read as
   `read_skill` reads it: the written value, else its start. With no weapon it is `unarmed`.
-- **Armor DR** is the sum over every equipped armor piece of `drBase` plus the piece's material
+- **Armor DR** is the sum over every equipped armor piece of `dr_base` plus the piece's material
   `armor.defense` ([armor.md](../modules/armor.md)); a piece with no material takes the first of
   its `default_materials`.
 - **Not filled:** the stored actor has no race or background, so their modifiers are not added;

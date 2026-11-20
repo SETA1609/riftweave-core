@@ -154,7 +154,7 @@ class TestBestiary(unittest.TestCase):
         self.assertEqual(rows["big_blob"]["hitPoints"], rows["blob"]["hitPoints"] + 4 * growth["hitPointsPerLevel"])
         for ability, rule in growth["attributes"].items():
             with self.subTest(ability=ability):
-                expected = max(1, round(rows["blob"]["attributes"][ability] + 4 * rule["perLevel"]))
+                expected = max(1, round(rows["blob"]["attributes"][ability] + 4 * rule["per_level"]))
                 self.assertEqual(rows["big_blob"]["attributes"][ability], expected)
 
     def test_a_missing_or_cyclic_base_monster_or_template_fails(self):
@@ -344,7 +344,7 @@ class TestAttacksAndAbilities(unittest.TestCase):
     def test_a_creature_above_its_rows_level_hits_by_damage_per_level(self):
         row = {r["key"]: r for r in monsters()}["fire_elemental"]
         summoned = ref().generate("core:monster/fire_elemental", level=row["level"] + 20)
-        growth = json.loads((DATA / "monsters" / "bases" / "elemental.json").read_text())["growth"]["damagePerLevel"]
+        growth = json.loads((DATA / "monsters" / "bases" / "elemental.json").read_text())["growth"]["damage_per_level"]
         step = round(growth * 20)
         self.assertGreater(step, 0)
         for before, after in zip(row["attacks"], summoned["attacks"]):

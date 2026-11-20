@@ -265,7 +265,7 @@ erDiagram
     CHARACTERS }o--|| SKILLS : "tag_skills[]"
     CHARACTERS }o--|| SPELLS : "levels[].spells[]"
     CHECKS }o--|| SKILLS : "opposed_by, skill"
-    CONDITIONS }o--|| EFFECTS : "appliedBy[], removedBy[]"
+    CONDITIONS }o--|| EFFECTS : "applied_by[], removed_by[]"
     CRAFTED_ITEMS }o--|| EFFECTS : "coatings[].effect, enchantments[].effect"
     CRAFTED_ITEMS }o--|| EQUIPMENT : "base_key"
     CRAFTED_ITEMS }o--|| GEMS : "engraving_jewel.gem_key"
@@ -310,7 +310,7 @@ erDiagram
     MONSTERS }o--|| ORIGINS : "effects[].origin"
     MONSTERS }o--|| SPELLS : "spells[]"
     RACES }o--|| FEATURES : "traits[].id"
-    RACES }o--|| RACES : "lineage.parentRace"
+    RACES }o--|| RACES : "lineage.parent_race"
     RECIPES }o--|| CRAFTED_ITEMS : "output.crafted_item_key"
     RECIPES }o--|| SKILLS : "skill"
     SITUATIONS }o--|| ORIGINS : "melee[].origin, ranged[].origin"
@@ -429,7 +429,7 @@ erDiagram
     FEATURES }o--|| STANCES : "unlocks[]"
     FEATURES }o--|| SUMMON_BONUSES : "share.bonus, summon_bonus"
     RACES }o--|| FEATURES : "traits[].id"
-    RACES }o--|| RACES : "lineage.parentRace"
+    RACES }o--|| RACES : "lineage.parent_race"
     SKILL_GROUPS }o--|| SKILLS : "skills[]"
 ```
 
@@ -479,7 +479,7 @@ erDiagram
         string key PK
         string variants FK
     }
-    CONDITIONS }o--|| EFFECTS : "appliedBy[], removedBy[]"
+    CONDITIONS }o--|| EFFECTS : "applied_by[], removed_by[]"
     EFFECTS }o--|| EFFECTS : "sub_effects[]"
     SPELLS }o--|| EFFECTS : "effects[].effect"
     SPELLS }o--|| INGREDIENTS : "cost.reagents[]"

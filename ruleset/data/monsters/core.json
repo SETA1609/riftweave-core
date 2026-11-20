@@ -242,10 +242,10 @@
           "construct",
           "elemental"
         ],
-        "coreDrop": {
-          "baseChance": 0.08,
-          "minGrade": "lesser",
-          "maxGrade": "common"
+        "core_drop": {
+          "base_chance": 0.08,
+          "min_grade": "lesser",
+          "max_grade": "common"
         },
         "role": "boss",
         "attacks": [
@@ -308,10 +308,10 @@
           "elemental",
           "fire"
         ],
-        "coreDrop": {
-          "baseChance": 0.1,
-          "minGrade": "lesser",
-          "maxGrade": "greater"
+        "core_drop": {
+          "base_chance": 0.1,
+          "min_grade": "lesser",
+          "max_grade": "greater"
         },
         "attacks": [
           {
@@ -404,10 +404,10 @@
           "dragon",
           "elemental"
         ],
-        "coreDrop": {
-          "baseChance": 0.09,
-          "minGrade": "lesser",
-          "maxGrade": "common"
+        "core_drop": {
+          "base_chance": 0.09,
+          "min_grade": "lesser",
+          "max_grade": "common"
         },
         "role": "boss",
         "attacks": [
@@ -1306,10 +1306,10 @@
           "beast",
           "fey"
         ],
-        "coreDrop": {
-          "baseChance": 0.07,
-          "minGrade": "minor",
-          "maxGrade": "lesser"
+        "core_drop": {
+          "base_chance": 0.07,
+          "min_grade": "minor",
+          "max_grade": "lesser"
         },
         "attacks": [
           {
@@ -1446,10 +1446,10 @@
           "elemental",
           "ice"
         ],
-        "coreDrop": {
-          "baseChance": 0.09,
-          "minGrade": "lesser",
-          "maxGrade": "greater"
+        "core_drop": {
+          "base_chance": 0.09,
+          "min_grade": "lesser",
+          "max_grade": "greater"
         },
         "attacks": [
           {
@@ -1592,7 +1592,7 @@
             "magnitude": 2,
             "duration": 20,
             "target": "self",
-            "durationType": "temporal"
+            "duration_type": "temporal"
           },
           {
             "effect": "core:effect/stagger",
@@ -1601,10 +1601,10 @@
             "target": "touch"
           }
         ],
-        "coreDrop": {
-          "baseChance": 0.1,
-          "minGrade": "common",
-          "maxGrade": "major"
+        "core_drop": {
+          "base_chance": 0.1,
+          "min_grade": "common",
+          "max_grade": "major"
         },
         "attacks": [
           {

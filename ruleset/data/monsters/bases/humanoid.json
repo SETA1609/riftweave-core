@@ -11,13 +11,13 @@
   "tags": ["humanoid"],
   "growth": {
     "attributes": {
-      "str": { "perLevel": 0.35 },
-      "end": { "perLevel": 0.35 },
-      "agi": { "perLevel": 0.35 },
-      "per": { "perLevel": 0.35 },
-      "wil": { "perLevel": 0.35 }
+      "str": { "per_level": 0.35 },
+      "end": { "per_level": 0.35 },
+      "agi": { "per_level": 0.35 },
+      "per": { "per_level": 0.35 },
+      "wil": { "per_level": 0.35 }
     },
     "hitPointsPerLevel": 7,
-    "damagePerLevel": 0.25
+    "damage_per_level": 0.25
   }
 }

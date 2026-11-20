@@ -27,7 +27,7 @@
         "tier": {
           "type": "integer",
           "minimum": 1,
-          "description": "Rarity tier — references an id in data/tiers (the source of truth). The tier supplies the gem's engraving bonus (effectMagnitude) and relative value; do not restate those numbers here."
+          "description": "Rarity tier — references an id in data/tiers (the source of truth). The tier supplies the gem's engraving bonus (effect_magnitude) and relative value; do not restate those numbers here."
         },
         "tags": { "type": "array", "items": { "type": "string" } }
       },

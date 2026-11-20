@@ -21,7 +21,7 @@ Weapons use two primary orthogonal classification systems:
    - `normal`: Standard melee weapons (swords, maces, axes). Typically one-handed (or versatile).
    - `reach`: Extended-reach polearms and large two-handed weapons. Can attack **2 units of length** (most weapons attack 1 unit).
 
-   Each weapon also stores an explicit `attackReach` (1 or 2) for clarity in rules resolution.
+   Each weapon also stores an explicit `attack_reach` (1 or 2) for clarity in rules resolution.
 
 Additional properties (in the free-form `properties` array) handle details like:
 - `light`, `finesse`, `thrown`
@@ -114,7 +114,7 @@ attack, an oversized one −10. The weapon emits it as an `add` on `attack`, sou
 `item:<key>`, origin `core:origin/equipment`, while it is used. Small dice, easy to land;
 big dice, hard to land. [A] Size sets the price too: an undersized weapon costs 75% of its
 base, an oversized one 150% (`value_percent`), multiplied with the material's
-`valueFactor`. [A]
+`value_factor`. [A]
 
 | Normal | Undersized (−1, +10 attack, 75% price) | Oversized (+1, −10 attack, 150% price) | Normal examples |
 | --- | --- | --- | --- |
@@ -162,7 +162,7 @@ Materials (see `data/materials/core.json` and `docs/modules/materials.md`) are t
 When a weapon is crafted from a material:
 - Start with the base dice listed above (the "classic 3.5" profile for that weapon type).
 - Apply the material's `weapon.attack` bonus.
-- The material also sets the item's `phase` (for five-phase elemental interactions) and can provide other effects (weight factors, value, special tags like "brittle" or "conductive", and `effectMagnitude` for enchantments).
+- The material also sets the item's `phase` (for five-phase elemental interactions) and can provide other effects (weight factors, value, special tags like "brittle" or "conductive", and `effect_magnitude` for enchantments).
 - Different materials turn the *same* base weapon profile into meaningfully different tools.
 
 ### Material Attack Bonuses (Current Range)
@@ -177,7 +177,7 @@ Materials provide an attack bonus in the range of **0 to +10** depending on the 
 - Bronze: +2.
 - Wood: 0 (no direct combat bonus; light and cheap for hafts, training versions, bows, and shields); Silver: +2 (with special undead properties); Copper: +1 with trade-offs.
 
-Gold gives 0 attack (too soft for arms) but excels at `effectMagnitude` for magical items.
+Gold gives 0 attack (too soft for arms) but excels at `effect_magnitude` for magical items.
 
 ### How Materials Create Variations (Examples)
 
@@ -186,7 +186,7 @@ The same base weapon type becomes a different effective weapon depending on mate
 - **Longsword (base 1d8 slashing)**:
   - Iron: solid, reliable 1d8 +3. Everyday soldier's weapon.
   - Steel: 1d8 +5. Sharper, tougher, the preferred martial blade.
-  - Wood: 1d8 +0 (no combat bonus). Classic training waster / practice sword. Very light (weightFactor 0.5) and cheap, safe for sparring, but poor against real armor. The "variation" comes from low weight and cost rather than stat bonuses.
+  - Wood: 1d8 +0 (no combat bonus). Classic training waster / practice sword. Very light (weight_factor 0.5) and cheap, safe for sparring, but poor against real armor. The "variation" comes from low weight and cost rather than stat bonuses.
   - Obsidian (material): high +6 attack but brittle — risky on a large blade (prone to chipping).
   - Gold: useless for combat (0 attack) but excellent conduction if you want to enchant it heavily.
 
@@ -226,7 +226,7 @@ The same base weapon type becomes a different effective weapon depending on mate
 
 See the table in the "Base Damage" section above for the complete list with dice, length, reach, skill, and key properties.
 
-All entries live in `ruleset/data/equipment/weapons.json`. The schema only enforces the core structure (category, range, length, attackReach, skill, damage dice+type, properties). Material application lives in documentation and the crafting modules, not as schema constraints on the base data.
+All entries live in `ruleset/data/equipment/weapons.json`. The schema only enforces the core structure (category, range, length, attack_reach, skill, damage dice+type, properties). Material application lives in documentation and the crafting modules, not as schema constraints on the base data.
 
 ## Related Systems
 

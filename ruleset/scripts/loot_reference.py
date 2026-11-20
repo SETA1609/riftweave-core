@@ -113,12 +113,12 @@ def takes_material(ref):
 
 
 def value_percent(material):
-    """100, or the material's valueFactor times 100 (docs/core/economy.md)."""
+    """100, or the material's value_factor times 100 (docs/core/economy.md)."""
     if material is None:
         return 100
     key = material.rsplit("/", 1)[-1]
     row = next(m for m in load_data("materials/core.json")["materials"] if m["key"] == key)
-    return round(row["valueFactor"] * 100)
+    return round(row["value_factor"] * 100)
 
 
 def item_value_cp(ref, material=None, size=None):

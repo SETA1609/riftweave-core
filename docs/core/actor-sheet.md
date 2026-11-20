@@ -9,7 +9,7 @@ sheet(monster row, skills to read)
 stats   derived(attributes, level)         the same function a player uses
 hp      the row's hitPoints, when it has one, in place of the computed value
 skill   the row's skills[key], when written
-        else start = skill_start(associatedAbility) = 5 + attribute * 2
+        else start = skill_start(associated_ability) = 5 + attribute * 2
              a combat or magic skill: min(skill_cap, start + per_level * (level - 1))
              any other skill: start
 ```

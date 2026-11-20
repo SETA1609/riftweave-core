@@ -24,7 +24,7 @@
           "enum": ["highest", "add", "replace"],
           "description": "highest: on one target and op, only the strongest bonus and the strongest penalty of this origin count. add: every source of this origin counts, as with no origin. replace: a new source removes every running modifier and tick of this origin first."
         },
-        "defaultFor": {
+        "default_for": {
           "type": "array",
           "uniqueItems": true,
           "description": "Emitters whose modifiers carry this origin when the row names none. item_effect is an applied effect on a weapon, armor, accessory, or crafted item; item_stat is the item's own numbers (DR, damage). Each emitter is the default of at most one origin.",

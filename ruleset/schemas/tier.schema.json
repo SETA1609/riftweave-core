@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Tier",
-  "description": "The rarity ladder — the single source of truth for quality-derived numbers. Each tier has a numeric id (its rank) and a name (the rarity level). Graded content references a tier by id rather than restating the numbers: a gem's engraving bonus (effectMagnitude) and relative value come from its tier.",
+  "description": "The rarity ladder — the single source of truth for quality-derived numbers. Each tier has a numeric id (its rank) and a name (the rarity level). Graded content references a tier by id rather than restating the numbers: a gem's engraving bonus (effect_magnitude) and relative value come from its tier.",
   "type": "object",
   "properties": {
     "$schema": { "type": "string" },
@@ -30,17 +30,17 @@
           "description": "The rarity level (Common, Uncommon, Rare, Epic, Legendary)."
         },
         "description": { "type": "string" },
-        "effectMagnitude": {
+        "effect_magnitude": {
           "type": "number",
           "description": "Fractional bonus to enchanted-effect magnitude conferred at this tier (e.g. a gem's engraving bonus). 0.20 = +20%."
         },
-        "valueFactor": {
+        "value_factor": {
           "type": "number",
           "minimum": 0,
           "description": "Relative value/cost multiplier of content at this tier."
         }
       },
-      "required": ["id", "name", "effectMagnitude", "valueFactor"],
+      "required": ["id", "name", "effect_magnitude", "value_factor"],
       "additionalProperties": false
     }
   }

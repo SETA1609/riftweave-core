@@ -11,7 +11,7 @@
       "phase": "earth",
       "speed": 6,
       "size": "medium",
-      "abilityModifiers": {
+      "ability_modifiers": {
         "cha": 1,
         "lck": 1
       },
@@ -36,7 +36,7 @@
       "phase": "wood",
       "speed": 6,
       "size": "medium",
-      "abilityModifiers": {
+      "ability_modifiers": {
         "agi": 1,
         "int": 1,
         "end": -1
@@ -62,7 +62,7 @@
       "description": "The baseline playable elf. A subrace that overrides nothing — it inherits the elf parent's phase, speed, size, ability modifiers, and traits unchanged. Use this to play a 'plain' elf.",
       "lineage": {
         "role": "subrace",
-        "parentRace": "core:race/elf"
+        "parent_race": "core:race/elf"
       }
     },
     {
@@ -71,9 +71,9 @@
       "description": "Forest-dwelling elves bound to the living wood. Inherits the elf base; speed and size carry over from the parent.",
       "lineage": {
         "role": "subrace",
-        "parentRace": "core:race/elf"
+        "parent_race": "core:race/elf"
       },
-      "abilityModifiers": {
+      "ability_modifiers": {
         "per": 1
       },
       "traits": [
@@ -89,10 +89,10 @@
       "description": "Subterranean elves of the lightless deeps. A subrace that OVERRIDES the elf phase (wood → water), showing how descent need not preserve every trait.",
       "lineage": {
         "role": "subrace",
-        "parentRace": "core:race/elf"
+        "parent_race": "core:race/elf"
       },
       "phase": "water",
-      "abilityModifiers": {
+      "ability_modifiers": {
         "agi": 1,
         "cha": -1
       },
@@ -117,7 +117,7 @@
       "phase": "metal",
       "speed": 5,
       "size": "medium",
-      "abilityModifiers": {
+      "ability_modifiers": {
         "end": 2,
         "str": 1,
         "agi": -1
@@ -143,7 +143,7 @@
       "description": "The baseline playable dwarf. A subrace that overrides nothing — it inherits the dwarf parent's phase, speed, size, ability modifiers, and traits unchanged. Use this to play a 'plain' dwarf.",
       "lineage": {
         "role": "subrace",
-        "parentRace": "core:race/dwarf"
+        "parent_race": "core:race/dwarf"
       }
     },
     {
@@ -152,10 +152,10 @@
       "description": "Dwarves of the rolling foothills, closer to soil than ore. Inherits the dwarf base but OVERRIDES its phase (metal → earth).",
       "lineage": {
         "role": "subrace",
-        "parentRace": "core:race/dwarf"
+        "parent_race": "core:race/dwarf"
       },
       "phase": "earth",
-      "abilityModifiers": {
+      "ability_modifiers": {
         "wil": 1
       },
       "traits": [
@@ -171,9 +171,9 @@
       "description": "Dwarves of the high peaks and deep mines. Inherits the dwarf base, phase included.",
       "lineage": {
         "role": "subrace",
-        "parentRace": "core:race/dwarf"
+        "parent_race": "core:race/dwarf"
       },
-      "abilityModifiers": {
+      "ability_modifiers": {
         "str": 1
       },
       "traits": [
@@ -203,12 +203,12 @@
       "description": "An agile feline beastfolk. A kin of the beastman template — fully self-defined, sharing nothing mechanical with other beastfolk.",
       "lineage": {
         "role": "kin",
-        "parentRace": "core:race/beastman"
+        "parent_race": "core:race/beastman"
       },
       "phase": "metal",
       "speed": 7,
       "size": "medium",
-      "abilityModifiers": {
+      "ability_modifiers": {
         "agi": 2,
         "per": 1,
         "wil": -1
@@ -230,12 +230,12 @@
       "description": "A wild, pack-bonded lupine beastfolk. A sister kin to the catman with an entirely different phase, attributes, and traits — the template imposes shape, not commonality.",
       "lineage": {
         "role": "kin",
-        "parentRace": "core:race/beastman"
+        "parent_race": "core:race/beastman"
       },
       "phase": "wood",
       "speed": 6,
       "size": "medium",
-      "abilityModifiers": {
+      "ability_modifiers": {
         "str": 1,
         "end": 1,
         "int": -1

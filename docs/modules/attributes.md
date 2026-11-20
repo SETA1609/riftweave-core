@@ -39,7 +39,7 @@ which fuels resource regeneration and resistance to hostile magic:
 Attributes run **1–10**: **1** is debilitating, **4** is the unmodified human
 baseline, **5–6** is trained/above-average, **8** is exceptional, **10** is the mortal
 peak. At creation you start every attribute at **4**, distribute **10** points
-(cap 10 each), then apply racial `abilityModifiers` and any creation-perk bonuses — those
+(cap 10 each), then apply racial `ability_modifiers` and any creation-perk bonuses — those
 layers may push a stat above 10 or below 4 (see
 [`character-creation.md`](./character-creation.md) §2).
 
@@ -75,8 +75,8 @@ clock differs.
 ## What each attribute does
 
 Each entry lists what it **governs**, the **skills it seeds** (a skill's starting
-rating is `5 + associatedAbility × 2`), and the **resources/derived stats** it feeds.
-The **Seeds skills** lines match `associatedAbility` in `skills/core.json`
+rating is `5 + associated_ability × 2`), and the **resources/derived stats** it feeds.
+The **Seeds skills** lines match `associated_ability` in `skills/core.json`
 **[V 2026-11-02]**: `ruleset/scripts/skill_audit.py` fails when they differ. What
 consumes each skill (weapon, armor, spell color, check, perk) is in
 [`docs/core/checks.md`](../core/checks.md).
@@ -180,7 +180,7 @@ to sustain longer fights and weather enemy spells. See [`magic.md`](./magic.md).
 
 | Reads an attribute | Formula / rule |
 | --- | --- |
-| Skill starting rating | `5 + associatedAbility × 2` |
+| Skill starting rating | `5 + associated_ability × 2` |
 | Skill points per level | `5 + INT × 2 + random(0…LCK)` |
 | Hit points (END) | `15 + END × 8 + level × 4` |
 | Mana pool (INT) | `INT × 8 + level × 2` |
@@ -195,7 +195,7 @@ to sustain longer fights and weather enemy spells. See [`magic.md`](./magic.md).
 | Magic Resistance (WIL) | WIL-based % or resist bonus + effects |
 | Physical / Elemental Resist (END + effects) | Armor DR + phase resists via Wuxing |
 | Perk prerequisites | `prerequisite.abilities`, e.g. *Alert* needs `per ≥ 6` |
-| Racial modifiers | `race.abilityModifiers`, e.g. dwarf `{ end: +2, str: +1, agi: −1 }` |
+| Racial modifiers | `race.ability_modifiers`, e.g. dwarf `{ end: +2, str: +1, agi: −1 }` |
 
 ## Secondary & Combat Statistics (Derived)
 
@@ -358,9 +358,9 @@ See the sample effects in `effects/core.json` and the resist/cure generalized ef
 | --- | --- | --- |
 | Attribute definitions | `ability.schema.json` | `data/abilities/core.json` |
 | Valid attribute id enum | `schema.json#/definitions/ability` | — |
-| Skill ↔ attribute (`associatedAbility`) | `skill.schema.json` | `data/skills/core.json` |
+| Skill ↔ attribute (`associated_ability`) | `skill.schema.json` | `data/skills/core.json` |
 | Attribute-gated perks (`prerequisite.abilities`) | `feature.schema.json` | `data/features/core.json` |
-| Racial modifiers (`abilityModifiers`) | `race.schema.json` | `data/races/core.json` |
+| Racial modifiers (`ability_modifiers`) | `race.schema.json` | `data/races/core.json` |
 
 ## Open items
 

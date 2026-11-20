@@ -61,7 +61,7 @@
         "value_percent": {
           "type": "integer",
           "minimum": 1,
-          "description": "The weapon's price as a percent of its base price: undersized is cheaper, oversized dearer. It multiplies with the material's valueFactor (docs/core/economy.md)."
+          "description": "The weapon's price as a percent of its base price: undersized is cheaper, oversized dearer. It multiplies with the material's value_factor (docs/core/economy.md)."
         }
       },
       "required": [

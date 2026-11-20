@@ -46,9 +46,9 @@
         "affects": {
           "type": "string",
           "enum": ["actor", "recipient"],
-          "description": "Which participant the magnitudeMultiplier modifies. An edge 'from → to' is the canonical Wuxing relation 'from acts upon to'; 'actor' = the from-phase party, 'recipient' = the to-phase party. Engines map a standing phase + an incoming phase onto from/to by matching the edge."
+          "description": "Which participant the magnitude_multiplier modifies. An edge 'from → to' is the canonical Wuxing relation 'from acts upon to'; 'actor' = the from-phase party, 'recipient' = the to-phase party. Engines map a standing phase + an incoming phase onto from/to by matching the edge."
         },
-        "magnitudeMultiplier": {
+        "magnitude_multiplier": {
           "type": "number",
           "minimum": 0,
           "description": "Reference multiplier applied to the affected participant's magnitude (and/or duration) when this edge fires. >1 boosts, <1 reduces, 0 fully dispels. Tunable per game."
@@ -84,7 +84,7 @@
           }
         }
       },
-      "required": ["id", "name", "interaction", "affects", "magnitudeMultiplier", "edges"],
+      "required": ["id", "name", "interaction", "affects", "magnitude_multiplier", "edges"],
       "additionalProperties": false
     }
   }

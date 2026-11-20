@@ -97,7 +97,7 @@ class TestAnOverrideListsOnlyWhatDiffers(unittest.TestCase):
     def test_a_subrace_field_equal_to_its_parents_fails(self):
         races = {"races": [
             {"key": "elf", "label": "Elf", "lineage": {"role": "parent"}, "phase": "wood"},
-            {"key": "wood_elf", "label": "Wood Elf", "lineage": {"role": "subrace", "parentRace": "core:race/elf"}, "phase": "wood"},
+            {"key": "wood_elf", "label": "Wood Elf", "lineage": {"role": "subrace", "parent_race": "core:race/elf"}, "phase": "wood"},
         ]}
         errors = validate.check_references(races, "races", namespaced_ref_index={"core:race/elf"})
         self.assertEqual(errors, ["subrace 'wood_elf': phase equals its parent's; drop it (M5-73)"])

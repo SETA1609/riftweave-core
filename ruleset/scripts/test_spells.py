@@ -199,7 +199,7 @@ class TestSpells(unittest.TestCase):
         for key, effect in effects().items():
             if "spell" in effect["channels"]:
                 with self.subTest(effect=key):
-                    self.assertGreater(effect.get("baseCost", 0), 0)
+                    self.assertGreater(effect.get("base_cost", 0), 0)
 
     def test_a_spell_is_affordable_at_its_level(self):
         for row in spells():

@@ -57,7 +57,7 @@
         },
         "weapon": {
           "type": "object",
-          "description": "Melee and ranged weapons. Weapons have two primary classification axes: (1) damage.type (slashing/bludgeoning/piercing maps to the blades/blunt/piercing combat skills), and (2) length (short/normal/reach) which also controls attackReach in 'units of length' (reach = 2 units). short + normal are typically one-handed; reach weapons are two-handed. Each weapon declares its governing 'skill' and 'attackReach'. Base damage uses classic D&D 3.5-style dice. Material-based variations and crafting restrictions are documented in docs/modules/weapons.md rather than enforced in the base schema.",
+          "description": "Melee and ranged weapons. Weapons have two primary classification axes: (1) damage.type (slashing/bludgeoning/piercing maps to the blades/blunt/piercing combat skills), and (2) length (short/normal/reach) which also controls attack_reach in 'units of length' (reach = 2 units). short + normal are typically one-handed; reach weapons are two-handed. Each weapon declares its governing 'skill' and 'attack_reach'. Base damage uses classic D&D 3.5-style dice. Material-based variations and crafting restrictions are documented in docs/modules/weapons.md rather than enforced in the base schema.",
           "properties": {
             "category": { "type": "string", "enum": ["simple", "martial"] },
             "range": { "type": "string", "enum": ["melee", "ranged"] },
@@ -70,7 +70,7 @@
               "type": "string",
               "description": "The skill used to make attack rolls with this weapon. For melee this is normally derived from damage.type (slashing → blades, bludgeoning → blunt, piercing → piercing). Ranged weapons use one of the split archery skills (bows, crossbows, guns, or throwing_weapons)."
             },
-            "attackReach": {
+            "attack_reach": {
               "type": "integer", "minimum": 1,
               "description": "How many units of length this weapon can attack in melee. Most weapons (short/normal) have 1; reach weapons have 2. This is determined by the length category but stored explicitly for clarity."
             },
@@ -85,8 +85,8 @@
             },
             "properties": { "type": "array", "items": { "type": "string" } },
             "ability": { "$ref": "schema.json#/definitions/ability", "description": "The attribute whose modifier adds to this weapon's damage. Every ranged weapon names one (docs/modules/attributes.md#the-attribute-modifier); a melee weapon reads str, or agi with the finesse property." },
-            "rangeNormal": { "type": "integer", "minimum": 1, "description": "Normal range in units (grid squares, docs/core/contract.md#distance)." },
-            "rangeLong": { "type": "integer", "minimum": 1, "description": "Long range in units (grid squares)." },
+            "range_normal": { "type": "integer", "minimum": 1, "description": "Normal range in units (grid squares, docs/core/contract.md#distance)." },
+            "range_long": { "type": "integer", "minimum": 1, "description": "Long range in units (grid squares)." },
             "on_hit_effects": {
               "type": "array",
               "description": "Effects from the shared registry that trigger when this weapon lands a hit. Each entry is an appliedEffect shape, exactly like spell effects. Examples: a flaming sword applies burn (id 57), a poisonous blade applies poison_health_drain (id 45). Duration and magnitude may be fixed or scale with weapon quality.",
@@ -98,7 +98,7 @@
         },
         "armor": {
           "type": "object",
-          "description": "An armor piece (or shield) that covers a specific slot and layer. Each piece provides base damage reduction (drBase) modified by the crafting material's modifiers.defense. Shields use slot 'offhand' and layer null (they do not layer on body and provide DR only during active block).",
+          "description": "An armor piece (or shield) that covers a specific slot and layer. Each piece provides base damage reduction (dr_base) modified by the crafting material's modifiers.defense. Shields use slot 'offhand' and layer null (they do not layer on body and provide DR only during active block).",
           "properties": {
             "slot": { "type": "string", "enum": ["head", "torso", "back", "hands", "feet", "offhand"], "description": "Body slot this piece occupies. 'offhand' is for shields." },
             "layer": { "type": ["string", "null"], "enum": ["skin", "middle", "upper", "on_top", null], "description": "Layering position. null for shields (offhand, no body layering) and some back items. Required for torso/head/hands/feet armor." },
@@ -107,12 +107,12 @@
               "enum": ["light", "medium", "heavy"],
               "description": "Governing skill for this piece. Omit for back/on_top items (no skill requirement)."
             },
-            "drBase": { "type": "integer", "minimum": 0, "description": "Base damage reduction before material modifier. Summed across all worn pieces per incoming physical hit." },
-            "evasionPenalty": { "type": "integer", "description": "Penalty to evasion skill while worn. light 0, medium −5, heavy −15.", "default": 0 },
-            "speedPenalty": { "type": "integer", "description": "Movement speed reduction in units. light 0, medium −1, heavy −2.", "default": 0 },
-            "strengthRequirement": { "type": "integer", "minimum": 1, "maximum": 10, "description": "Minimum STR attribute required to wear effectively (1–10 range)." },
-            "stealthPenalty": { "type": "boolean", "description": "Whether this piece imposes stealth penalties.", "default": false },
-            "requiresLayer": {
+            "dr_base": { "type": "integer", "minimum": 0, "description": "Base damage reduction before material modifier. Summed across all worn pieces per incoming physical hit." },
+            "evasion_penalty": { "type": "integer", "description": "Penalty to evasion skill while worn. light 0, medium −5, heavy −15.", "default": 0 },
+            "speed_penalty": { "type": "integer", "description": "Movement speed reduction in units. light 0, medium −1, heavy −2.", "default": 0 },
+            "strength_requirement": { "type": "integer", "minimum": 1, "maximum": 10, "description": "Minimum STR attribute required to wear effectively (1–10 range)." },
+            "stealth_penalty": { "type": "boolean", "description": "Whether this piece imposes stealth penalties.", "default": false },
+            "requires_layer": {
               "type": "array",
               "items": { "type": "string", "enum": ["skin", "middle"] },
               "description": "Layer dependency. e.g. 'middle' layer requires a 'skin' layer in the same slot.",
@@ -125,7 +125,7 @@
               "additionalProperties": { "type": "integer" }
             }
           },
-          "required": ["slot", "drBase"],
+          "required": ["slot", "dr_base"],
           "additionalProperties": false
         },
         "consumable": {
@@ -165,7 +165,7 @@
           "type": "object",
           "description": "A wearable magical or decorative item. Up to 5 accessories may be worn simultaneously, one per type.",
           "properties": {
-            "accessoryType": {
+            "accessory_type": {
               "type": "string",
               "enum": ["ring", "amulet", "trinket", "belt", "misc"],
               "description": "The kind of accessory. Only one of each type can be worn at a time."
@@ -176,7 +176,7 @@
               "description": "Magical effects provided by this accessory."
             }
           },
-          "required": ["accessoryType"],
+          "required": ["accessory_type"],
           "additionalProperties": false
         },
         "gear": {

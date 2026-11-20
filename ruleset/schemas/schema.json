@@ -100,7 +100,7 @@
         },
         "magnitude": {
           "type": "number",
-          "description": "Effect strength; interpreted per the effect's magnitudeUnit"
+          "description": "Effect strength; interpreted per the effect's magnitude_unit"
         },
         "duration": {
           "type": "integer",
@@ -132,7 +132,7 @@
           "$ref": "schema.json#/definitions/originRef",
           "description": "The origin its modifiers carry (core:origin/<key>), when it is not the default for the row's category: a divine spell, holy water. docs/core/modifier.md#origin."
         },
-        "durationType": {
+        "duration_type": {
           "type": "string",
           "enum": [
             "temporal",

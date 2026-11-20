@@ -101,7 +101,7 @@
         "core:effect/essence_fire"
       ],
       "phase": "fire",
-      "qualityGrade": "greater",
+      "quality_grade": "greater",
       "tags": [
         "essence",
         "core",
@@ -116,7 +116,7 @@
         "core:effect/essence_wood"
       ],
       "phase": "wood",
-      "qualityGrade": "major",
+      "quality_grade": "major",
       "tags": [
         "essence",
         "core",
@@ -131,7 +131,7 @@
         "core:effect/essence_earth"
       ],
       "phase": "earth",
-      "qualityGrade": "common",
+      "quality_grade": "common",
       "tags": [
         "essence",
         "core",
@@ -146,7 +146,7 @@
         "core:effect/essence_metal"
       ],
       "phase": "metal",
-      "qualityGrade": "lesser",
+      "quality_grade": "lesser",
       "tags": [
         "essence",
         "core",
@@ -161,7 +161,7 @@
         "core:effect/essence_water"
       ],
       "phase": "water",
-      "qualityGrade": "grand",
+      "quality_grade": "grand",
       "tags": [
         "essence",
         "core",

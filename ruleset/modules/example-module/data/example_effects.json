@@ -7,7 +7,7 @@
       "description": "Test row. A consumer that does not know this opcode ignores it.",
       "category": "damage",
       "polarity": "harmful",
-      "magnitudeUnit": "points",
+      "magnitude_unit": "points",
       "channels": [
         "spell"
       ],

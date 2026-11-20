@@ -23,7 +23,7 @@ The Crafting module adds systems for characters to create equipment, tools, and 
 The **`materials`** collection already exists (`ruleset/data/materials/core.json`,
 schema `material.schema.json`): bronze, copper, iron, steel, wood, elven_wood,
 silver, gold, obsidian, …. Each material carries a five-phase `phase` element and
-`weapon`, `armor`, and `ingredient` blocks (`attack`, `defense`, `effectMagnitude`) it
+`weapon`, `armor`, and `ingredient` blocks (`attack`, `defense`, `effect_magnitude`) it
 confers on what it becomes, plus `tier` and weight/value factors. Recipes will
 consume materials and read these modifiers onto the produced item.
 
