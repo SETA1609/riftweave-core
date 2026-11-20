@@ -2,7 +2,7 @@
 
 Modified: 2026-11-20
 
-What `python ruleset/scripts/validate.py` refuses to pass. JSON Schema alone cannot check that a reference points at something, so the validator and its tests add eight gates on top of it. They close the open items of the data review (`docs/archive/review/findings-data-schemas.md` M3 and M6) and are tested in `ruleset/scripts/test_integrity.py`.
+What `python ruleset/scripts/validate.py` refuses to pass. JSON Schema alone cannot check that a reference points at something, so the validator and its tests add nine gates on top of it. They close the open items of the data review (`docs/archive/review/findings-data-schemas.md` M3 and M6) and are tested in `ruleset/scripts/test_integrity.py`.
 
 ## 1. Every reference resolves
 
@@ -64,6 +64,18 @@ Second normal form ([normal-forms.md](../theory/normal-forms.md#second-normal-fo
 
 What this removed (DE_S02_02): the `label` beside each race trait (`races[].traits[]` is `{ "id" }`), the `label` beside a natural weapon attack that only repeated the weapon's (an attack's `label` is optional and defaults to its weapon's), and a crafted item's `phase` and its engraving jewel's `phase`, which repeated the material's or the gem's (`crafting_reference.py` already reads them from there). [V 2026-11-20]
 
+## 9. A description says only its row's numbers
+
+Third normal form for prose ([normal-forms.md](../theory/normal-forms.md#third-normal-form-3nf-no-fact-about-another-non-key-field)). "+10 to deception" in a description is a copy of the modifier's `value`, and when the value changes the text does not. The rule chosen (DE_S02_04) is a gate, not placeholders: the prose may restate a value, so it stays readable in the JSON and in a diff, but `validate.py` fails a description that says a number the row does not hold. A number in a description passes when it is:
+
+- a number the row holds anywhere outside its `label` and `description` (a modifier's `value`, `rank_values`, a prerequisite's `min` or level, a `share` range, `ranks`, ...);
+- an `add` modifier's value times a rank up to `ranks` ("+5 per tier (5, 10, 15)");
+- a `multiply` modifier's change as a percent at a rank up to `ranks` (1.2 is "20%", 0.8 is "20% less");
+- a tier or rank ordinal ("Tier 3", "at rank 2") up to `ranks`;
+- a dice string (`1d6`) only when the row holds that string.
+
+Signs are ignored, so "-10 evasion" matches a value of -10. A number that belongs to another table (an attack sequence's penalty, a natural weapon's dice, a material's attack) is named, not restated: "at the first extra strike's penalty". A number that matches a row value by coincidence passes, so the gate catches drift, not every restatement. [A] It covers `features` today; the decision record lists the collections to reach next. Tested in `test_integrity.py`. [V 2026-11-20]
+
 ## Not covered
 
-Cross-collection numeric consistency (a perk's skill minimum against the cap), `oneOf` branches that select a structure rather than a key (equipment and monster entries), and the free-text fields above.
+Cross-collection numeric consistency (a perk's skill minimum against the cap), `oneOf` branches that select a structure rather than a key (equipment and monster entries), and the free-text fields above, except the numbers in feature descriptions (gate 9).
