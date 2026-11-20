@@ -63,7 +63,7 @@
     }
   },
   {
-    "name": "buy a steel dagger: material valueFactor 2.0 doubles the price",
+    "name": "buy a steel dagger: material value_factor 2.0 doubles the price",
     "operation": "trade",
     "side": "buy",
     "merchant": "general_store",

@@ -38,8 +38,8 @@ def get_interaction(cycles, actor_phase, recipient_phase, actor_magnitude=None, 
             if _edge_cycle([fallback], recipient_phase, actor_phase) is None:
                 return ("unrelated", "none", 1.0, "none")
             affects = "actor" if fallback["affects"] == "recipient" else "recipient"
-            return (fallback["id"], fallback["interaction"], fallback["magnitudeMultiplier"], affects)
-    return (cycle["id"], cycle["interaction"], cycle["magnitudeMultiplier"], cycle["affects"])
+            return (fallback["id"], fallback["interaction"], fallback["magnitude_multiplier"], affects)
+    return (cycle["id"], cycle["interaction"], cycle["magnitude_multiplier"], cycle["affects"])
 
 
 def load_wuxing():

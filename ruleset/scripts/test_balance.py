@@ -32,7 +32,7 @@ def weapon(key, dice):
 
 
 def armor(key, category, slot, dr):
-    return {"key": key, "armor": {"category": category, "slot": slot, "drBase": dr}}
+    return {"key": key, "armor": {"category": category, "slot": slot, "dr_base": dr}}
 
 
 def monster(key, level, hp, magnitude):

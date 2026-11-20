@@ -87,7 +87,7 @@ func (conditions *activeConditions) remove(key string) {
 }
 
 // Run is the `conditions` command. An effect first removes the conditions it is
-// `removedBy`, then applies the ones it is `appliedBy`, each adding a stack up to its cap.
+// `removed_by`, then applies the ones it is `applied_by`, each adding a stack up to its cap.
 func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	var table *data.Conditions = &ruleset.Conditions
 	var active activeConditions

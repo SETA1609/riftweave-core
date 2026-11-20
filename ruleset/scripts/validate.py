@@ -790,7 +790,7 @@ def check_references(
         for r in data.get("races", []):
             if not isinstance(r, dict) or r.get("lineage", {}).get("role") != "subrace":
                 continue
-            parent = by_key.get(str(r["lineage"].get("parentRace", "")).rsplit("/", 1)[-1], {})
+            parent = by_key.get(str(r["lineage"].get("parent_race", "")).rsplit("/", 1)[-1], {})
             for field, value in r.items():
                 if field not in ("key", "label", "description", "lineage", "source") and parent.get(field) == value:
                     errors.append(f"subrace '{r.get('key')}': {field} equals its parent's; drop it (M5-73)")
@@ -798,12 +798,12 @@ def check_references(
             if not isinstance(r, dict):
                 continue
             lineage = r.get("lineage", {})
-            if "parentRace" in lineage:
-                pid = lineage["parentRace"]
+            if "parent_race" in lineage:
+                pid = lineage["parent_race"]
                 if isinstance(pid, str) and not resolve_namespaced_ref(
                     pid, namespaced_ref_index
                 ):
-                    errors.append(f"parentRace {pid} does not exist in races")
+                    errors.append(f"parent_race {pid} does not exist in races")
             for t in r.get("traits", []):
                 if isinstance(t, dict):
                     tid = t.get("id")
@@ -1016,57 +1016,57 @@ def check_references(
             if not isinstance(c, dict):
                 continue
             ckey = c.get("key", "?")
-            for eid in c.get("appliedBy", []) or []:
+            for eid in c.get("applied_by", []) or []:
                 if isinstance(eid, int):
                     errors.append(
-                        f"condition '{ckey}' appliedBy effect {eid}: numeric refs not allowed (use core:effect/<key>)"
+                        f"condition '{ckey}' applied_by effect {eid}: numeric refs not allowed (use core:effect/<key>)"
                     )
                 elif isinstance(eid, str) and not resolve_namespaced_ref(
                     eid, namespaced_ref_index
                 ):
                     errors.append(
-                        f"condition '{ckey}' appliedBy effect {eid!r} does not resolve"
+                        f"condition '{ckey}' applied_by effect {eid!r} does not resolve"
                     )
-            for eid in c.get("removedBy", []) or []:
+            for eid in c.get("removed_by", []) or []:
                 if isinstance(eid, int):
                     errors.append(
-                        f"condition '{ckey}' removedBy effect {eid}: numeric refs not allowed (use core:effect/<key>)"
+                        f"condition '{ckey}' removed_by effect {eid}: numeric refs not allowed (use core:effect/<key>)"
                     )
                 elif isinstance(eid, str) and not resolve_namespaced_ref(
                     eid, namespaced_ref_index
                 ):
                     errors.append(
-                        f"condition '{ckey}' removedBy effect {eid!r} does not resolve"
+                        f"condition '{ckey}' removed_by effect {eid!r} does not resolve"
                     )
             # Validate stacking consistency
             stacking = c.get("stacking", False)
-            max_stacks = c.get("maxStacks")
+            max_stacks = c.get("max_stacks")
             if stacking and max_stacks is None:
-                errors.append(f"condition '{ckey}' has stacking:true but no maxStacks")
+                errors.append(f"condition '{ckey}' has stacking:true but no max_stacks")
             if not stacking and max_stacks is not None:
                 errors.append(
-                    f"condition '{ckey}' has maxStacks but stacking is not true"
+                    f"condition '{ckey}' has max_stacks but stacking is not true"
                 )
-            # Validate that prone has empty removedBy (special case)
-            if ckey == "prone" and c.get("removedBy"):
+            # Validate that prone has empty removed_by (special case)
+            if ckey == "prone" and c.get("removed_by"):
                 errors.append(
-                    f"condition 'prone' should have empty removedBy (stand action, not effect)"
+                    f"condition 'prone' should have empty removed_by (stand action, not effect)"
                 )
-            # Validate that cure is not in prone's removedBy
-            if ckey == "prone" and "core:effect/cure" in c.get("removedBy", []):
+            # Validate that cure is not in prone's removed_by
+            if ckey == "prone" and "core:effect/cure" in c.get("removed_by", []):
                 errors.append(
-                    f"condition 'prone' must not have cure (core:effect/cure) in removedBy"
+                    f"condition 'prone' must not have cure (core:effect/cure) in removed_by"
                 )
-            # Check for duplicate effect refs in appliedBy and removedBy
-            ab = c.get("appliedBy", [])
+            # Check for duplicate effect refs in applied_by and removed_by
+            ab = c.get("applied_by", [])
             if len(ab) != len(set(ab)):
                 errors.append(
-                    f"condition '{ckey}' has duplicate effect refs in appliedBy"
+                    f"condition '{ckey}' has duplicate effect refs in applied_by"
                 )
-            rb = c.get("removedBy", [])
+            rb = c.get("removed_by", [])
             if len(rb) != len(set(rb)):
                 errors.append(
-                    f"condition '{ckey}' has duplicate effect refs in removedBy"
+                    f"condition '{ckey}' has duplicate effect refs in removed_by"
                 )
 
     elif coll_name == "equipment":
@@ -1257,8 +1257,8 @@ def _apply_growth(base, level):
     """Compute expected attribute values for a monster at a given level using
     the base template's growth rules.
 
-    Growth is defined per ability as a perLevel rate. The formula:
-      attr = round(base_attr + perLevel * (level - base_level)), at least 1 and with no maximum
+    Growth is defined per ability as a per_level rate. The formula:
+      attr = round(base_attr + per_level * (level - base_level)), at least 1 and with no maximum
       (docs/modules/monsters.md#attribute-growth--level-scaling)
 
     Returns a dict of ability -> int, or None if base has no growth section.
@@ -1275,7 +1275,7 @@ def _apply_growth(base, level):
     computed = {}
     for ability in attr_growth:
         base_val = base_attrs.get(ability, 1)
-        per = attr_growth[ability].get("perLevel", 0)
+        per = attr_growth[ability].get("per_level", 0)
         computed[ability] = max(1, round(base_val + per * delta))
     return computed
 
@@ -1598,12 +1598,12 @@ def _resolve_monster_bases(data, errors):
                 attributes = dict(merged.get("attributes") or {})
                 for ability, rule in (growth.get("attributes") or {}).items():
                     if ability in attributes:
-                        attributes[ability] = max(1, round(attributes[ability] + rule.get("perLevel", 0) * delta))
+                        attributes[ability] = max(1, round(attributes[ability] + rule.get("per_level", 0) * delta))
                 merged["attributes"] = attributes
                 if "hitPointsPerLevel" in growth and "hitPoints" in merged:
                     merged["hitPoints"] = max(1, round(merged["hitPoints"] + growth["hitPointsPerLevel"] * delta))
                 if delta > 0:
-                    _grow_damage(merged, round(growth.get("damagePerLevel", 0) * delta))
+                    _grow_damage(merged, round(growth.get("damage_per_level", 0) * delta))
         else:
             type_name = base_key.removeprefix(CREATURE_TYPE_REF_PREFIX)
             if not base_key.startswith(CREATURE_TYPE_REF_PREFIX) or type_name not in _BASE_CACHE:
@@ -2139,6 +2139,65 @@ def check_racial_trait_refs(data_files):
     return errors
 
 
+# Property names are snake_case (CONTRIBUTING.md#naming, DE_S02_01). DE_S02_03 removes these two
+# with the stored monster HP; until it lands they are the only camelCase properties left.
+CAMEL_CASE_ALLOWED = frozenset({"hitPoints", "hitPointsPerLevel"})
+
+
+def _is_camel_case(name):
+    return any(a.islower() and b.isupper() for a, b in zip(name, name[1:]))
+
+
+def _camel_keys(value, path=""):
+    """(path, key) for every object key under `value` that is camelCase."""
+    if isinstance(value, dict):
+        for key, child in value.items():
+            here = f"{path}.{key}" if path else key
+            if _is_camel_case(key) and key not in CAMEL_CASE_ALLOWED:
+                yield here, key
+            yield from _camel_keys(child, here)
+    elif isinstance(value, list):
+        for index, child in enumerate(value):
+            yield from _camel_keys(child, f"{path}[{index}]")
+
+
+def _schema_property_names(schema, path=""):
+    """(path, name) for every property a schema declares or requires; JSON Schema's own
+    keywords (additionalProperties, oneOf, ...) are not properties."""
+    if isinstance(schema, dict):
+        for key, child in schema.items():
+            here = f"{path}.{key}" if path else key
+            if key in ("properties", "patternProperties") and isinstance(child, dict):
+                for name in child:
+                    yield f"{here}.{name}", name
+            if key == "required" and isinstance(child, list):
+                for name in child:
+                    if isinstance(name, str):
+                        yield here, name
+            yield from _schema_property_names(child, here)
+    elif isinstance(schema, list):
+        for index, child in enumerate(schema):
+            yield from _schema_property_names(child, f"{path}[{index}]")
+
+
+def check_property_casing(schema_files=None, data_files=None):
+    """Every property in a schema and every key in a data file (core, bases, and modules with
+    their manifests) is snake_case (CONTRIBUTING.md#naming, DE_S02_01). Returns the errors."""
+    if schema_files is None:
+        schema_files = sorted(SCHEMA_DIR.glob("*.json"))
+    if data_files is None:
+        data_files = sorted(DATA_DIR.rglob("*.json")) + sorted(MODULES_DIR.rglob("*.json"))
+    errors = []
+    for path in schema_files:
+        for where, name in _schema_property_names(json.loads(Path(path).read_text())):
+            if _is_camel_case(name) and name not in CAMEL_CASE_ALLOWED:
+                errors.append(f"{Path(path).name}: property '{name}' at {where} is camelCase; use snake_case")
+    for path in data_files:
+        for where, key in _camel_keys(json.loads(Path(path).read_text())):
+            errors.append(f"{Path(path).name}: key '{key}' at {where} is camelCase; use snake_case")
+    return errors
+
+
 def main():
     store = load_store()
     data_files = list(collect_data_files())
@@ -2221,6 +2280,13 @@ def main():
     if stance_errors:
         print("  \u2717  stances (each unlocked by a perk, martial and while applied)")
         for e in stance_errors:
+            print(f"       {e}")
+        failed += 1
+
+    casing_errors = check_property_casing()
+    if casing_errors:
+        print("  \u2717  property casing (snake_case only)")
+        for e in casing_errors:
             print(f"       {e}")
         failed += 1
 

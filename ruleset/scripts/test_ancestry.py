@@ -21,7 +21,7 @@ SCHEMAS = Path(__file__).resolve().parent.parent / "schemas"
 def race(key, role, **fields):
     row = {"key": key, "label": key.title(), "description": "d", "lineage": {"role": role}}
     if "parent" in fields:
-        row["lineage"]["parentRace"] = fields.pop("parent")
+        row["lineage"]["parent_race"] = fields.pop("parent")
     row.update(fields)
     return row
 

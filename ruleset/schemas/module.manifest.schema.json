@@ -108,7 +108,7 @@
         "type": "string"
       }
     },
-    "loadAfter": {
+    "load_after": {
       "type": "array",
       "items": {
         "type": "string"

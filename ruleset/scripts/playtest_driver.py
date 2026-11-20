@@ -146,13 +146,13 @@ class Run:
         written = self.actor["skills"].get(key)
         if written is not None:
             return written
-        return 5 + 2 * self.actor["attributes"][self.skills[key]["associatedAbility"]]
+        return 5 + 2 * self.actor["attributes"][self.skills[key]["associated_ability"]]
 
     # --- creation ---------------------------------------------------------------------------
     def start(self):
         attributes = dict(self.build["attributes"])
         derived = self.cli.run("derived", {"actor": {"attributes": attributes, "level": 1}})
-        skills = {key: 5 + 2 * attributes[self.skills[key]["associatedAbility"]] for key in self.build["tags"]}
+        skills = {key: 5 + 2 * attributes[self.skills[key]["associated_ability"]] for key in self.build["tags"]}
         actor = {"attributes": attributes, "level": 1, "xp": 0, "skills": skills, "tags": list(self.build["tags"]),
                  "growth": {"hp": 0, "mp": 0, "sp": 0},
                  "resources": {"hp": derived["hp"], "mp": derived["mp"], "sp": derived["sp"], "ap": derived["ap"]},

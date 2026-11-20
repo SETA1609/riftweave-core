@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Monster",
-  "description": "A creature/enemy. A monster may carry one element (Wuxing five-phase), a tag the Wuxing module reads. Its attacks and innate effects are drawn from the shared effect registry through schema.json#/definitions/appliedEffect, exactly like spells and consumables. Certain monsters with living spiritual or elemental essence can also drop spirit cores (see coreDrop); undead and humanoids must never have coreDrop.\n\nSupports a Base + Override pattern: entries may either be flat monsters (all fields inline) or reference a base template and provide only overrides. Base templates live in bases/*.json and are resolved at validation/load time.",
+  "description": "A creature/enemy. A monster may carry one element (Wuxing five-phase), a tag the Wuxing module reads. Its attacks and innate effects are drawn from the shared effect registry through schema.json#/definitions/appliedEffect, exactly like spells and consumables. Certain monsters with living spiritual or elemental essence can also drop spirit cores (see core_drop); undead and humanoids must never have core_drop.\n\nSupports a Base + Override pattern: entries may either be flat monsters (all fields inline) or reference a base template and provide only overrides. Base templates live in bases/*.json and are resolved at validation/load time.",
   "type": "object",
   "properties": {
     "$schema": { "type": "string" },
@@ -33,7 +33,7 @@
           "type": "object",
           "properties": {
             "type": { "$ref": "schema.json#/definitions/damageType", "description": "The damage type, when it is not the weapon's. An element template does not change a type the attack names." },
-            "bonus": { "type": "integer", "description": "Added to the roll: what damagePerLevel gives a creature above its row's level." }
+            "bonus": { "type": "integer", "description": "Added to the roll: what damage_per_level gives a creature above its row's level." }
           },
           "additionalProperties": false
         },
@@ -80,7 +80,7 @@
         "attacks": { "type": "array", "items": { "$ref": "#/definitions/attack" }, "description": "What the monster hits with, as combat attacks (docs/modules/monsters.md#attacks-resistances-and-role)." },
         "resist": { "type": "object", "description": "Flat resistance by damage type (a key in combat/damage_types.json), the combat pipeline's defender.resist.", "propertyNames": { "$ref": "schema.json#/definitions/damageType" }, "additionalProperties": { "type": "integer", "minimum": 0 } },
         "tags": { "type": "array", "items": { "type": "string" } },
-        "coreDrop": { "$ref": "#/definitions/coreDropShape" }
+        "core_drop": { "$ref": "#/definitions/coreDropShape" }
       }
     },
     "growthDef": {
@@ -94,9 +94,9 @@
           "additionalProperties": {
             "type": "object",
             "properties": {
-              "perLevel": { "type": "number", "description": "Increase per level beyond the template's base level." }
+              "per_level": { "type": "number", "description": "Increase per level beyond the template's base level." }
             },
-            "required": ["perLevel"],
+            "required": ["per_level"],
             "additionalProperties": false
           }
         },
@@ -104,7 +104,7 @@
           "type": "number",
           "description": "HP increase per level beyond the template's base level."
         },
-        "damagePerLevel": {
+        "damage_per_level": {
           "type": "number",
           "minimum": 0,
           "description": "Added per level above a row's level, rounded, to each attack's damage and each damage_* ability's magnitude (docs/modules/monsters.md#attribute-growth--level-scaling)."
@@ -116,15 +116,15 @@
       "type": "object",
       "description": "If present, this monster can drop a spirit core on death. **Hard rule**: undead and humanoids must never have this field. Only monsters with genuine living spiritual or elemental essence may include it.",
       "properties": {
-        "baseChance": {
+        "base_chance": {
           "type": "number",
           "minimum": 0, "maximum": 1,
           "description": "Base drop chance (0.0–1.0)."
         },
-        "minGrade": { "$ref": "schema.json#/definitions/qualityGrade" },
-        "maxGrade": { "$ref": "schema.json#/definitions/qualityGrade" }
+        "min_grade": { "$ref": "schema.json#/definitions/qualityGrade" },
+        "max_grade": { "$ref": "schema.json#/definitions/qualityGrade" }
       },
-      "required": ["baseChance"]
+      "required": ["base_chance"]
     },
     "monster": {
       "description": "A fully self-contained monster entry with all required fields inline.",
@@ -158,7 +158,7 @@
         "attacks": { "type": "array", "items": { "$ref": "#/definitions/attack" }, "description": "What the monster hits with, as combat attacks (docs/modules/monsters.md#attacks-resistances-and-role)." },
         "resist": { "type": "object", "description": "Flat resistance by damage type (a key in combat/damage_types.json), the combat pipeline's defender.resist.", "propertyNames": { "$ref": "schema.json#/definitions/damageType" }, "additionalProperties": { "type": "integer", "minimum": 0 } },
         "tags": { "type": "array", "items": { "type": "string" } },
-        "coreDrop": { "$ref": "#/definitions/coreDropShape" }
+        "core_drop": { "$ref": "#/definitions/coreDropShape" }
       },
       "required": ["key", "label", "description", "size"],
       "additionalProperties": false

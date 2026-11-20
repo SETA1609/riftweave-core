@@ -164,11 +164,11 @@ def run_conditions(vector):
             continue
         effect = event["effect"]
         for key, row in rows.items():
-            if effect in row.get("removedBy", []):
+            if effect in row.get("removed_by", []):
                 active.pop(key, None)
         for key, row in rows.items():
-            if effect in row.get("appliedBy", []):
-                cap = row.get("maxStacks", 1) if row.get("stacking") else 1
+            if effect in row.get("applied_by", []):
+                cap = row.get("max_stacks", 1) if row.get("stacking") else 1
                 active[key] = min(active.get(key, 0) + 1, cap)
     modifiers = list(vector.get("modifiers", []))
     for key in active:
@@ -1083,7 +1083,7 @@ def read_skill(actor, key, groups=None):
     """One skill off a sheet (docs/core/progression.md#two-sheets-one-rule-set). A full sheet reads the
     written value, else the skill's start; a grouped sheet (`groups` given) reads the start plus the
     member's group ranks, or the start alone for an untracked group."""
-    governing = {s["key"]: s["associatedAbility"] for s in load_data("skills/core.json")["skills"]}
+    governing = {s["key"]: s["associated_ability"] for s in load_data("skills/core.json")["skills"]}
     if key not in governing:
         return {"error": f'skill "{key}" is not defined'}
     rule = load_data("progression/core.json")["progression"]["skill_start"]
@@ -1144,7 +1144,7 @@ def run_monster_sheet(vector):
         if key in written:
             skills[key] = written[key]
         elif key in rows:
-            start = evaluate_formula(progression["skill_start"], {}, {"attribute": attributes.get(rows[key]["associatedAbility"], 0)})
+            start = evaluate_formula(progression["skill_start"], {}, {"attribute": attributes.get(rows[key]["associated_ability"], 0)})
             if rows[key]["category"] in growth["categories"]:
                 start = min(progression["skill_cap"], start + growth["per_level"] * (level - 1))
             skills[key] = start
@@ -1179,7 +1179,7 @@ def _origin_of(item, effect):
     if "origin" in effect:
         return effect["origin"]
     emitter = "food" if item["type"] == "food" else "consumable"
-    row = next(o for o in load_data("origins/core.json")["origins"] if emitter in o.get("defaultFor", []))
+    row = next(o for o in load_data("origins/core.json")["origins"] if emitter in o.get("default_for", []))
     return f"core:origin/{row['key']}"
 
 

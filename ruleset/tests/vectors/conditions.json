@@ -803,7 +803,7 @@
     }
   },
   {
-    "name": "exhaustion stacks to maxStacks 6 and no further; blight also applies diseased once",
+    "name": "exhaustion stacks to max_stacks 6 and no further; blight also applies diseased once",
     "events": [
       {
         "effect": "core:effect/blight"
@@ -835,7 +835,7 @@
     }
   },
   {
-    "name": "a condition without maxStacks applied twice is one condition",
+    "name": "a condition without max_stacks applied twice is one condition",
     "events": [
       {
         "effect": "core:effect/blind"

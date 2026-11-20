@@ -277,7 +277,7 @@ func attackSkill(ruleset *data.Ruleset, actor *stored.Actor) string {
 	return "unarmed"
 }
 
-// armorDR is the sum over equipped armor of drBase plus the material's armor defense; a piece
+// armorDR is the sum over equipped armor of dr_base plus the material's armor defense; a piece
 // with no material takes the first of its default materials (docs/modules/armor.md).
 func armorDR(ruleset *data.Ruleset, actor *stored.Actor) int64 {
 	var total int64

@@ -56,17 +56,17 @@ def summon_effects(spell):
 
 def spell_cost(spell):
     """A spell's mana cost from its effects alone (docs/modules/magic.md#cost-formula):
-    per effect magnitude_factor x baseCost x magnitude x duration, plus area_factor x baseCost x
+    per effect magnitude_factor x base_cost x magnitude x duration, plus area_factor x base_cost x
     radius for an area, times the target multiplier; the sum rounded up. No caster input."""
     coefficients = load_data("casting/core.json")["casting"]["spell_cost"]
     effects = {e["key"]: e for e in load_data("effects/core.json")["effects"]}
     total = 0.0
     for applied in spell["effects"] + summon_effects(spell):
         effect = effects[applied["effect"].rsplit("/", 1)[-1]]
-        magnitude = 1 if effect.get("magnitudeUnit") in UNPRICED_MAGNITUDE_UNITS else applied.get("magnitude", 1)
-        cost = coefficients["magnitude_factor"] * effect["baseCost"] * magnitude * applied.get("duration", 1)
+        magnitude = 1 if effect.get("magnitude_unit") in UNPRICED_MAGNITUDE_UNITS else applied.get("magnitude", 1)
+        cost = coefficients["magnitude_factor"] * effect["base_cost"] * magnitude * applied.get("duration", 1)
         if applied["target"] == "area":
-            cost += coefficients["area_factor"] * effect["baseCost"] * applied.get("radius", 0)
+            cost += coefficients["area_factor"] * effect["base_cost"] * applied.get("radius", 0)
         total += cost * coefficients["target_multiplier"][applied["target"]]
     return math.ceil(round(total, 6))
 

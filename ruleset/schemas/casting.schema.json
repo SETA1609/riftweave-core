@@ -62,7 +62,7 @@
         },
         "spell_cost": {
           "type": "object",
-          "description": "The spell cost formula's coefficients (docs/modules/magic.md#cost-formula): per effect, magnitude_factor × baseCost × magnitude × duration, plus area_factor × baseCost × radius, times the target multiplier; the spell cost is the sum, rounded up.",
+          "description": "The spell cost formula's coefficients (docs/modules/magic.md#cost-formula): per effect, magnitude_factor × base_cost × magnitude × duration, plus area_factor × base_cost × radius, times the target multiplier; the spell cost is the sum, rounded up.",
           "properties": {
             "magnitude_factor": { "type": "number", "exclusiveMinimum": 0 },
             "area_factor": { "type": "number", "minimum": 0 },

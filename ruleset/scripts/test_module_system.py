@@ -286,7 +286,7 @@ class TestModuleDataMerging(unittest.TestCase):
                     "id": 1,
                     "key": "blades",
                     "label": "Blades",
-                    "associatedAbility": "str",
+                    "associated_ability": "str",
                     "category": "combat",
                     "taggable": True,
                 },

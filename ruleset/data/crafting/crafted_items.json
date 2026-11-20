@@ -80,7 +80,7 @@
     {
       "key": "enchanted_gold_amulet",
       "label": "Enchanted Gold Amulet",
-      "description": "A gold amulet engraved with a diamond, carrying a permanent ward enchantment. Gold's high effectMagnitude (0.30) amplifies the resist effect, and the diamond's Metal phase gives it full generating-cycle benefit for the Metal-phase resist.",
+      "description": "A gold amulet engraved with a diamond, carrying a permanent ward enchantment. Gold's high effect_magnitude (0.30) amplifies the resist effect, and the diamond's Metal phase gives it full generating-cycle benefit for the Metal-phase resist.",
       "base_key": "core:accessory/gold_necklace",
       "material_key": "core:material/gold",
       "phase": "metal",

@@ -94,7 +94,7 @@ classDiagram
     class MONSTERS {
         attacks
         attributes
-        coreDrop
+        core_drop
         description
         effects
         hitPoints
