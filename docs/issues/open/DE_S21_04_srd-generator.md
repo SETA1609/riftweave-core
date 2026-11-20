@@ -1,0 +1,16 @@
+#### DE_S21_04_srd-generator Generate the SRD's source from the outline and the data
+- Status: todo
+- Priority: medium
+- Needs: GD_S21_02_srd-book-outline, GD_S21_03_srd-entry-layouts
+- Modified: 2026-11-21
+- Do: Owner request, 2026-11-21: the code half of the generated SRD, like the diagrams generated from the data.
+  - **`ruleset/scripts/srd_build.py`:** reads `srd/outline.json`, and writes one typesetting source (Typst markup [A], see `OPS_S21_05_srd-typesetting`) into `build/srd/`, never into the repo.
+    - **Prose:** the named Markdown sections, with `[V]/[A]/[U]` tags, issue ids, and links outside the book stripped, and links inside the book turned into cross-references.
+    - **Generated sections:** every entry of a kind, laid out as `GD_S21_03_srd-entry-layouts` says, its values from the existing reference code (`monster_reference`, `casting_reference`, `kernel_reference`, `loot_reference`), not from new formulas.
+    - **Legal page** from `LICENSING.md`, and a title page with `VERSION` and the commit.
+  - **Deterministic:** the same commit gives the same source byte for byte (sorted keys, no dates but the commit's).
+  - **Fast:** a run takes seconds; it does not run the typesetter.
+- Keys: `srd_build.py`, `build/srd/`
+- Files: ~6 (ruleset/scripts/srd_build.py, ruleset/scripts/test_srd_build.py, .gitignore, AGENTS.md, docs/decisions/DE_S21_04_srd-generator.md, changes/DE_S21_04_srd-generator.md)
+- See: ruleset/scripts/data_flowcharts.py, ruleset/scripts/monster_reference.py, docs/srd/layouts.md
+- Done when: `srd_build.py` writes the source for the full outline; a test builds it twice and gets the same bytes; a test checks that a generated stat block's numbers equal `monster_sheet`'s for a sample monster.

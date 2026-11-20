@@ -1,0 +1,18 @@
+#### GD_S21_02_srd-book-outline The SRD book's outline, and which prose a player reads
+- Status: todo
+- Priority: medium
+- Needs: —
+- Modified: 2026-11-21
+- Do: Owner request, 2026-11-21: a System Reference Document as a PDF, like the D&D 5.1 SRD, generated from the ruleset by code and never kept by hand. This issue decides what the book holds and in what order.
+  - **The outline** (`srd/outline.json`, with a schema): the chapters in order. Each entry is either a **prose** source (a file or a section of one, by its heading anchor) or a **generated** section named by kind and filter, such as `{"generate": "spells"}` or `{"generate": "monsters", "tier": 1}`.
+  - **Proposed chapters** [A]: legal and attribution; using this document; character creation; races and backgrounds; attributes, skills, and checks; progression; perks; equipment, armor, and weapons; combat; conditions; magic and spells; rest and hazards; economy and loot; monsters; then the generated lists (spells, perks, monsters, items).
+  - **Player prose:** `docs/modules/` and `docs/core/` are written for builders. They carry `[V]/[A]/[U]` tags, issue ids, and links to code. The rule: the generator strips the tags, the ids, and links outside the book. A section that still reads badly as rules text gets a player version in `docs/srd/<chapter>.md`, which the outline names instead [A]. This issue lists which sections need one, and writes them.
+  - **What stays out:** post-1.0 modules (crafting, alchemy, factions and the rest), unless the outline names a module appendix [A]; the backend and app docs.
+  - **Legal page:** CC BY 4.0 attribution, written from `LICENSING.md` by the generator, never by hand.
+- Keys: `srd/outline.json`, its schema, `docs/srd/`
+- Files: ~10 (srd/outline.json, ruleset/schemas/srd_outline.schema.json, docs/srd/README.md, the player versions in docs/srd/, docs/decisions/GD_S21_02_srd-book-outline.md, changes/GD_S21_02_srd-book-outline.md)
+- See: ROADMAP.md#what-core-srd-means, LICENSING.md, docs/modules/README.md
+- Done when: the outline validates against its schema; every chapter it names exists; `docs/srd/README.md` states the stripping rule and lists each section with a player version.
+- Open:
+  - Does the SRD ship one book, or a player book and a GM book (the bestiary and encounter budgets) [U]?
+  - Do module appendices go in, or only core [U]?

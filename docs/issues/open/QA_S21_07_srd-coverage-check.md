@@ -1,0 +1,14 @@
+#### QA_S21_07_srd-coverage-check Check the generated SRD holds every entry, once, and no builder's notes
+- Status: todo
+- Priority: medium
+- Needs: DE_S21_04_srd-generator
+- Modified: 2026-11-21
+- Do: Owner request, 2026-11-21: a check that the book is whole, run in CI on the generated source, not the PDF.
+  - **Coverage:** every core spell, perk, maneuver, condition, monster, race, background, weapon, armor piece, and item appears exactly once in its generated section; a row the outline leaves out on purpose is listed by name [A].
+  - **Clean text:** no `[V]`, `[A]`, or `[U]` tag, no issue id (`M5-`, `APP-`, `<ROLE>_S`), no link to code or to a file outside the book.
+  - **Same numbers:** for every monster, the stat block's numbers equal `monster_sheet`'s; for every spell, the cost and threshold equal the casting reference's.
+  - **Every prose source exists:** an outline entry whose file or heading is gone fails the check.
+- Keys: `test_srd.py`
+- Files: ~3 (ruleset/scripts/test_srd.py, docs/decisions/QA_S21_07_srd-coverage-check.md, changes/QA_S21_07_srd-coverage-check.md)
+- See: ruleset/scripts/srd_build.py, srd/outline.json
+- Done when: the test passes on development; removing a spell's section, adding a `[U]` to a chapter, or renaming a heading the outline names each makes it fail.

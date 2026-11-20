@@ -1,0 +1,13 @@
+#### OPS_S21_06_srd-release Build the SRD PDF in CI and attach it to each release
+- Status: todo
+- Priority: medium
+- Needs: OPS_S21_05_srd-typesetting
+- Modified: 2026-11-21
+- Do: Owner request, 2026-11-21: the PDF is built by CI and never committed.
+  - **On a release tag:** `release.yml` builds `Riftweave_SRD_<version>.pdf` and attaches it to the GitHub release; `pages.yml` publishes the latest one beside the app [A].
+  - **On a pull request** that changes `ruleset/data/`, `docs/modules/`, `docs/core/`, `docs/srd/`, or `srd/`: the PDF is built and kept as a workflow artifact, so a reviewer can open it [A].
+  - **Never in the repo:** `build/` is ignored, and the docs say where the PDF is found.
+- Keys: the `srd` job in `release.yml` and `validate-ruleset.yml`
+- Files: ~5 (.github/workflows/release.yml, .github/workflows/pages.yml, .github/workflows/validate-ruleset.yml, CONTRIBUTING.md, docs/decisions/OPS_S21_06_srd-release.md, changes/OPS_S21_06_srd-release.md)
+- See: .github/workflows/release.yml, CONTRIBUTING.md#releasing
+- Done when: a test tag's release carries the PDF; a pull request that changes a spell has the PDF as an artifact; no PDF is tracked.

@@ -1,0 +1,14 @@
+#### GD_S21_03_srd-entry-layouts What a stat block, a spell, a perk, and an item show, once for the book and for print
+- Status: todo
+- Priority: medium
+- Needs: —
+- Modified: 2026-11-21
+- Do: Owner request, 2026-11-21: the generated sections of the SRD are built from entries. Each kind of entry is written once, as a list of fields in order, so the book, the app's print pages (S09), and the app itself show the same block.
+  - **The layouts** (a spec, `docs/srd/layouts.md`): for a monster stat block, a spell, a perk, a maneuver, a condition, a weapon, an armor piece, and an item row, the fields in order, each with where its value comes from (a data key, or a command's output such as `monster_sheet` or the spellcraft cost), and how it is worded (a defense as M3-30 words it, a cost with its unit).
+  - **Numbers come from the core:** a stat block's HP, defenses, and attacks are `monster_sheet`'s output; a spell's mana cost and threshold are the casting reference's. No number is computed a second time for the book [A].
+  - **Shared with S09:** `BE_S09_05_spell-cards-print` and `BE_S09_07_custom-monster-print` take their card and block from these layouts [A]; their issues link here.
+  - **Sort and group:** spells by color then level, monsters by tier then name, perks by tree [A].
+- Keys: `docs/srd/layouts.md`
+- Files: ~5 (docs/srd/layouts.md, docs/backend/print.md, docs/issues/open/BE_S09_05_spell-cards-print.md, docs/issues/open/BE_S09_07_custom-monster-print.md, docs/decisions/GD_S21_03_srd-entry-layouts.md, changes/GD_S21_03_srd-entry-layouts.md)
+- See: docs/backend/print.md, docs/core/actor-sheet.md, docs/modules/monsters.md
+- Done when: `layouts.md` gives every entry kind with its fields, sources, and a sample; each field's source names a data key or a command that exists.
