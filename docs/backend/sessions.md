@@ -28,7 +28,9 @@ character file's sync fields as loaded (`character`, with the `revision` it was 
 replay knows which version it started from), its stored actor as loaded (`start`), and its
 stored actor now (`actor`). `riftweave characters party add` loads one from the character list
 and `party export` writes them back out, one file per player, a revision higher when `actor`
-differs from `start`.
+differs from `start`. The export also records itself in the session: each member's `character`
+becomes the exported sync fields and `start` the exported actor, so a second export counts on
+from the first instead of sending the same revision with other content.
 
 The session carries the party through `start`, `step`, and `replay` unchanged and holds no rule
 for it: no step reads or writes a member yet. The encounter tracker

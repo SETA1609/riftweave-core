@@ -44,6 +44,10 @@ func (model Model) charactersShown() Model {
 func (model Model) characterRows() []string {
 	var rows []string
 	for _, entry := range model.saved {
+		if entry.Problem != "" {
+			rows = append(rows, fmt.Sprintf("%-24s cannot be read: %s (x to delete)", entry.ID, entry.Problem))
+			continue
+		}
 		var when string = entry.ChangedAt
 		if parsed, err := time.Parse(time.RFC3339, entry.ChangedAt); err == nil {
 			when = parsed.Local().Format("2006-01-02 15:04")
@@ -240,7 +244,7 @@ func (model Model) exportParty() (Model, tea.Cmd) {
 		return model, nil
 	}
 	return model.prompt("Export the party into the directory", ".", func(model Model, directory string) Model {
-		exported, err := model.library.PartyExport(model.session)
+		exported, updated, err := model.library.PartyExport(model.session)
 		if err != nil {
 			model.problem = err.Error() + "; nothing written"
 			return model
@@ -253,6 +257,8 @@ func (model Model) exportParty() (Model, tea.Cmd) {
 			}
 			names = append(names, name)
 		}
+		// The session records the export, so the next one counts on from it.
+		model.session = updated
 		return model.noted(fmt.Sprintf("exported %d party files into %s", len(names), directory))
 	})
 }

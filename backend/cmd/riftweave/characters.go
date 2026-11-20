@@ -147,12 +147,16 @@ func charactersCommand(args []string, dataFlag string, stdout, stderr io.Writer,
 		if err != nil {
 			return fail(stderr, exitInput, "%v", err)
 		}
-		exported, err := library.PartyExport(session)
+		exported, updated, err := library.PartyExport(session)
 		if err != nil {
 			return fail(stderr, exitInput, "%v; nothing written", err)
 		}
 		written, err := writeAll(positional[2], exported)
 		if err != nil {
+			return fail(stderr, exitInput, "%v", err)
+		}
+		// The session records the export, so the next one counts on from it.
+		if err := os.WriteFile(positional[1], updated, 0o644); err != nil {
 			return fail(stderr, exitInput, "%v", err)
 		}
 		printJSON(stdout, map[string][]string{"written": written})

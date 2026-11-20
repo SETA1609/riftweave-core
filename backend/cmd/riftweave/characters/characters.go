@@ -31,10 +31,13 @@ type Library struct {
 	NewID        func() string    // nil is a random UUID
 }
 
-// Entry is one row of the list: the sync fields and the level, which the list shows.
+// Entry is one row of the list: the sync fields and the level, which the list shows. A saved
+// file that cannot be read is listed with its id and the problem, so one broken file neither
+// hides the others nor stays out of reach of Delete.
 type Entry struct {
 	files.Character
-	Level int64 `json:"level"`
+	Level   int64  `json:"level"`
+	Problem string `json:"problem,omitempty"`
 }
 
 // Saved is one character as the list holds it: its sync fields and its stored actor.
@@ -146,7 +149,30 @@ func (library Library) store(character files.Character, data json.RawMessage, ru
 	if err := os.MkdirAll(library.Directory, 0o755); err != nil {
 		return err
 	}
-	return os.WriteFile(path, encoded, 0o644)
+	return writeAtomically(path, encoded)
+}
+
+// writeAtomically writes a file through a temporary file in the same directory and a rename, so a
+// crash mid-write leaves the old file whole instead of a broken one the list cannot read.
+func writeAtomically(path string, content []byte) error {
+	temporary, err := os.CreateTemp(filepath.Dir(path), ".saving-*")
+	if err != nil {
+		return err
+	}
+	if _, err := temporary.Write(content); err != nil {
+		temporary.Close()
+		os.Remove(temporary.Name())
+		return err
+	}
+	if err := temporary.Close(); err != nil {
+		os.Remove(temporary.Name())
+		return err
+	}
+	if err := os.Chmod(temporary.Name(), 0o644); err != nil {
+		os.Remove(temporary.Name())
+		return err
+	}
+	return os.Rename(temporary.Name(), path)
 }
 
 // List is every saved character, by name and then id.
@@ -157,9 +183,11 @@ func (library Library) List() ([]Entry, error) {
 		return nil, err
 	}
 	for _, name := range names {
-		read, err := library.open(strings.TrimSuffix(filepath.Base(name), ".riftweave.json"))
+		var id string = strings.TrimSuffix(filepath.Base(name), ".riftweave.json")
+		read, err := library.open(id)
 		if err != nil {
-			return nil, err
+			entries = append(entries, Entry{Character: files.Character{ID: id}, Problem: err.Error()})
+			continue
 		}
 		var actor struct {
 			Level int64 `json:"level"`
@@ -298,13 +326,18 @@ func (library Library) Duplicate(id, changedBy string) (files.Character, error) 
 	return copied, nil
 }
 
-// Delete removes a saved character.
+// Delete removes a saved character, even one whose file can no longer be read.
 func (library Library) Delete(id string) error {
-	if _, err := library.open(id); err != nil {
+	path, err := library.path(id)
+	if err != nil {
 		return err
 	}
-	path, _ := library.path(id)
-	return os.Remove(path)
+	if err := os.Remove(path); errors.Is(err, fs.ErrNotExist) {
+		return fmt.Errorf("%s: %w", id, ErrNotFound)
+	} else if err != nil {
+		return err
+	}
+	return nil
 }
 
 // PartyAdd loads a saved character into a session's party, as it is now: the session keeps the
@@ -339,12 +372,15 @@ func (library Library) PartyAdd(session []byte, id string) ([]byte, error) {
 }
 
 // PartyExport is the session's party as character files, one per player, named by the file
-// name it should be saved as (docs/backend/sessions.md#the-party). A character whose actor
-// changed in the session goes out one revision higher, changed by the GM, now; one that did not
-// change goes out as it was loaded.
-func (library Library) PartyExport(session []byte) (map[string][]byte, error) {
+// name it should be saved as (docs/backend/sessions.md#the-party), and the session with the
+// export recorded. A character whose actor changed since it was loaded or last exported goes out
+// one revision higher, changed by the GM, now; one that did not change goes out as it is. The
+// returned session holds each member's exported sync fields and its actor as exported (`start`),
+// so a second export from the same session counts on from the first instead of sending the same
+// revision with other content, which a player would see as a divergence.
+func (library Library) PartyExport(session []byte) (map[string][]byte, []byte, error) {
 	if err := files.Check("session", session, library.Checker); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	var value struct {
 		Party []struct {
@@ -354,13 +390,18 @@ func (library Library) PartyExport(session []byte) (map[string][]byte, error) {
 		} `json:"party"`
 	}
 	if err := json.Unmarshal(session, &value); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	if len(value.Party) == 0 {
-		return nil, errors.New("the session has no party")
+		return nil, nil, errors.New("the session has no party")
 	}
+	var whole map[string]any
+	if err := json.Unmarshal(session, &whole); err != nil {
+		return nil, nil, err
+	}
+	party, _ := whole["party"].([]any)
 	var exported = map[string][]byte{}
-	for _, member := range value.Party {
+	for index, member := range value.Party {
 		var character files.Character = member.Character
 		if !bytes.Equal(canonical(member.Start), canonical(member.Actor)) {
 			character.Revision++
@@ -368,15 +409,27 @@ func (library Library) PartyExport(session []byte) (map[string][]byte, error) {
 		}
 		encoded, err := files.WrapCharacter("character", &character, member.Actor, library.RulesVersion, library.Modules, library.Checker)
 		if err != nil {
-			return nil, fmt.Errorf("%s: %v", character.Name, err)
+			return nil, nil, fmt.Errorf("%s: %v", character.Name, err)
 		}
 		var name string = FileName(character)
 		if _, taken := exported[name]; taken {
-			return nil, fmt.Errorf("two party members would be saved as %s", name)
+			return nil, nil, fmt.Errorf("two party members would be saved as %s", name)
 		}
 		exported[name] = encoded
+		if index >= len(party) {
+			continue
+		}
+		if recorded, ok := party[index].(map[string]any); ok {
+			var actor any
+			_ = json.Unmarshal(member.Actor, &actor)
+			recorded["character"], recorded["start"] = character, actor
+		}
 	}
-	return exported, nil
+	var updated []byte = files.Encode(whole)
+	if err := files.Check("session", updated, library.Checker); err != nil {
+		return nil, nil, err
+	}
+	return exported, updated, nil
 }
 
 var notInFileName = regexp.MustCompile(`[^a-z0-9]+`)

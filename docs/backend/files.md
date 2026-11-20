@@ -121,6 +121,8 @@ chat, a USB stick, a shared folder). The GM imports each one and adds it to the 
 **party** ([sessions.md](sessions.md#the-party)). The session plays offline on the GM's device.
 Afterwards the GM exports the party, one file per player: a character the session changed goes
 out one revision higher, changed by `gm`, now; one it did not change goes out as it was loaded.
+The session records the export, so a GM who exports mid-session and again at the end sends
+revision 4 and then 5, never 4 twice with other content.
 Each player imports theirs, a higher revision, so it replaces the saved one. [V 2026-11-20,
 `characters_test.go`]
 
