@@ -214,7 +214,9 @@ func RunMonsterSheet(ruleset *data.Ruleset, input MonsterSheetInput) (map[string
 		return nil, fmt.Errorf("monster role %q has no monster_hp_multiplier", role)
 	}
 	base, _ := result["hp"].(int64)
-	var scaled int64 = max(1, int64(math.Floor(float64(base)*share)))
+	// The tolerance keeps a share stored just under its decimal (0.7 is 0.6999...) from losing a
+	// point: 90 x 0.7 is 63, not 62. Python's scaled_hp does the same.
+	var scaled int64 = max(1, int64(math.Floor(float64(base)*share+1e-9)))
 	hp, err := modifier.Value(scaled, modifier.Target(perks, "hp"), ruleset.Origins, 0, nil)
 	if err != nil {
 		return nil, err

@@ -196,6 +196,17 @@ def summon_group(key):
     return [v.removeprefix("core:monster/") for g in groups if g["key"] == key for v in g["variants"]]
 
 
+class TestScaledHitPoints(unittest.TestCase):
+    """DE_S02_03 review: the role share floors without losing a point to a float just under its decimal."""
+
+    def test_a_share_stored_just_under_its_decimal_does_not_lose_a_point(self):
+        from kernel_reference import scaled_hp
+
+        self.assertEqual(scaled_hp(90, 0.7), 63)
+        self.assertEqual(scaled_hp(180, 0.35), 63)
+        self.assertEqual(scaled_hp(59, 0.4), 23)
+
+
 class TestTemplatesAndGeneratedMonsters(unittest.TestCase):
     """Power and nature templates, generated monsters, and the example rows (M3-10)."""
 
