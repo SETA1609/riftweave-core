@@ -128,6 +128,17 @@ A maneuver changes how an attack is made rather than where it lands, so it stack
 shot: a Heavy Swing to the head is −30 to hit and ×1.5 then ×1.5 on the damage. The rows, their
 costs, and who may use them are in [core/actions.md](../core/actions.md#maneuvers).
 
+**Trip** (−10, half damage; the target falls prone) and **Disarm** (−15, half damage; the target
+drops its weapon) are the control maneuvers, with **Tripping Shot** and **Disarming Shot** their
+ranged twins, each unlocked by its own perk (Low Sweep, Bind and Wrench, Low Aim, Knuckle Shot).
+The attack resolves as a normal attack; a hit then makes a maneuver attempt, a save the target
+makes against your weapon's attribute × 10 + 20 ([core/actions.md](../core/actions.md#the-maneuver-attempt)).
+A **rider perk** (Hooking Blows, Wrenching Blows, Hamstring Shots, Stripping Shots) makes the
+same attempt after every plain hit of its range, at no cost to the blow, without the +20. In each
+range the trip line and the disarm line exclude each other: with one you cannot take the other,
+unless a respec, at the game's or GM's discretion, swaps them
+([core/progression.md](../core/progression.md#excluded-perks)). **[A]** GD_S05_04.
+
 ## 7. Initiative
 
 Initiative is a derived stat: `PER` plus modifiers ([derived.md](../core/derived.md)). Highest acts first. Ties go to the higher AGI, then to a d100 roll-off, lowest first. **[A]** The *Alert* perk adds 10. There is no d20.

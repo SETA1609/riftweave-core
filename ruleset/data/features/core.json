@@ -707,6 +707,230 @@
       ]
     },
     {
+      "key": "low_sweep",
+      "label": "Low Sweep",
+      "description": "You learn to fight for the legs as well as the body: you can make the Trip maneuver.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "abilities": {
+          "agi": 5
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/blades",
+              "core:skill/blunt",
+              "core:skill/piercing",
+              "core:skill/unarmed"
+            ],
+            "min": 30
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:maneuver/trip"
+      ],
+      "excludes": [
+        "core:feature/bind_and_wrench",
+        "core:feature/wrenching_blows"
+      ]
+    },
+    {
+      "key": "hooking_blows",
+      "label": "Hooking Blows",
+      "description": "Every cut you make reaches for a leg: after each plain melee attack that hits, the target saves against your weapon's attribute or falls, as the Trip maneuver, at no cost to the blow. The trip line and the disarm line exclude each other.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 8,
+        "abilities": {
+          "agi": 6
+        },
+        "perks": [
+          {
+            "perk": "core:feature/low_sweep"
+          }
+        ]
+      },
+      "ranks": 1,
+      "rider": "core:maneuver/trip",
+      "excludes": [
+        "core:feature/bind_and_wrench",
+        "core:feature/wrenching_blows"
+      ]
+    },
+    {
+      "key": "bind_and_wrench",
+      "label": "Bind and Wrench",
+      "description": "You learn to catch a weapon in your own and twist it free: you can make the Disarm maneuver.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "abilities": {
+          "str": 5
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/blades",
+              "core:skill/blunt",
+              "core:skill/piercing",
+              "core:skill/unarmed"
+            ],
+            "min": 30
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:maneuver/disarm"
+      ],
+      "excludes": [
+        "core:feature/low_sweep",
+        "core:feature/hooking_blows"
+      ]
+    },
+    {
+      "key": "wrenching_blows",
+      "label": "Wrenching Blows",
+      "description": "Every blow you land worries at the grip: after each plain melee attack that hits, the target saves against your weapon's attribute or drops its weapon, as the Disarm maneuver, at no cost to the blow. The disarm line and the trip line exclude each other.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 8,
+        "abilities": {
+          "str": 6
+        },
+        "perks": [
+          {
+            "perk": "core:feature/bind_and_wrench"
+          }
+        ]
+      },
+      "ranks": 1,
+      "rider": "core:maneuver/disarm",
+      "excludes": [
+        "core:feature/low_sweep",
+        "core:feature/hooking_blows"
+      ]
+    },
+    {
+      "key": "low_aim",
+      "label": "Low Aim",
+      "description": "You learn to shoot or throw at the legs: you can make the Tripping Shot maneuver.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "abilities": {
+          "per": 5
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/bows",
+              "core:skill/crossbows",
+              "core:skill/guns",
+              "core:skill/throwing_weapons"
+            ],
+            "min": 30
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:maneuver/tripping_shot"
+      ],
+      "excludes": [
+        "core:feature/knuckle_shot",
+        "core:feature/stripping_shots"
+      ]
+    },
+    {
+      "key": "hamstring_shots",
+      "label": "Hamstring Shots",
+      "description": "Every shot you loose goes low: after each plain ranged attack that hits, the target saves against your weapon's attribute or falls, as the Tripping Shot maneuver, at no cost to the shot. The ranged trip line and the ranged disarm line exclude each other.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 8,
+        "abilities": {
+          "per": 6
+        },
+        "perks": [
+          {
+            "perk": "core:feature/low_aim"
+          }
+        ]
+      },
+      "ranks": 1,
+      "rider": "core:maneuver/tripping_shot",
+      "excludes": [
+        "core:feature/knuckle_shot",
+        "core:feature/stripping_shots"
+      ]
+    },
+    {
+      "key": "knuckle_shot",
+      "label": "Knuckle Shot",
+      "description": "You learn to shoot or throw at the weapon hand: you can make the Disarming Shot maneuver.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "abilities": {
+          "per": 5
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/bows",
+              "core:skill/crossbows",
+              "core:skill/guns",
+              "core:skill/throwing_weapons"
+            ],
+            "min": 30
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:maneuver/disarming_shot"
+      ],
+      "excludes": [
+        "core:feature/low_aim",
+        "core:feature/hamstring_shots"
+      ]
+    },
+    {
+      "key": "stripping_shots",
+      "label": "Stripping Shots",
+      "description": "Every shot you loose goes for the hand: after each plain ranged attack that hits, the target saves against your weapon's attribute or drops its weapon, as the Disarming Shot maneuver, at no cost to the shot. The ranged disarm line and the ranged trip line exclude each other.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 8,
+        "abilities": {
+          "per": 6
+        },
+        "perks": [
+          {
+            "perk": "core:feature/knuckle_shot"
+          }
+        ]
+      },
+      "ranks": 1,
+      "rider": "core:maneuver/disarming_shot",
+      "excludes": [
+        "core:feature/low_aim",
+        "core:feature/hamstring_shots"
+      ]
+    },
+    {
       "key": "brutal_charge",
       "label": "Brutal Charge",
       "description": "You barrel through enemies in heavy armor. Power attacks and charges cost stamina equal to a light attack - the heavy surcharge is negated.",
@@ -2743,6 +2967,10 @@
           "source": "feature:summon_demonic",
           "origin": "core:origin/trained"
         }
+      ],
+      "excludes": [
+        "core:feature/summon_angelic",
+        "core:feature/summon_otherworldly"
       ]
     },
     {
@@ -2775,6 +3003,10 @@
           "source": "feature:summon_angelic",
           "origin": "core:origin/trained"
         }
+      ],
+      "excludes": [
+        "core:feature/summon_demonic",
+        "core:feature/summon_otherworldly"
       ]
     },
     {
@@ -2807,6 +3039,10 @@
           "source": "feature:summon_otherworldly",
           "origin": "core:origin/trained"
         }
+      ],
+      "excludes": [
+        "core:feature/summon_demonic",
+        "core:feature/summon_angelic"
       ]
     },
     {

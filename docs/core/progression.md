@@ -33,10 +33,26 @@ The numbers that turn experience into levels, skill points, and perks. They live
    - **level:** `actor.level` is at least `prerequisite.level`; for a tiered perk (one with `rank_levels`, GD_S05_03), the gate of the next tier, `rank_levels[rank held]`, replaces it, so tier 2 of Shield Training (`[1, 6, 12]`) needs level 6. The first gate is the prerequisite level (or 1), and the gates step 3 to 6 levels apart (`validate.py`). [V 2026-11-19, `progression` vectors, op `take_perk`]
    - **attribute:** each attribute in `prerequisite.abilities` is at least its value (a missing attribute reads 0);
    - **skill:** for each entry `{ any_of, min }` of `prerequisite.skills`, one of the skills in `any_of` reads at least `min`, each read as `read_skill` reads it on a full sheet (a written value, else its start); a perk that needs one skill lists one (M5-70);
-   - **perk:** each entry `{ perk, rank }` of `prerequisite.perks` is held at `rank` or more (1 when left out).
+   - **perk:** each entry `{ perk, rank }` of `prerequisite.perks` is held at `rank` or more (1 when left out);
+   - **not_excluded:** no held perk excludes this one, and this one excludes no held perk ([excluded perks](#excluded-perks)); each such held perk is listed by key, sorted.
 
    How many perks a level grants (`perks_per_level`) is counted by the caller, as the skill-point pool is. [A]
 6. **Tag ratio.** The ratio is 2:1 in favour of tag skills, as in `docs/modules/progression.md`. `AGENTS.md` words it as "+2 per point instead of +1", which is the same ratio on a different scale; the data uses cost, so a point is a point. [V 2026-11-02, read both]
+
+## Ranks override
+
+Every perk an actor buys stays in its list (GD_S05_04). A higher rank of a ladder overrides its lower rank where they set the same thing, and nothing is dropped: the summon power ladder (`summon_dire`, `summon_elder`, `summon_ancient`) applies the highest rung held, whatever order they were bought in, while each rung's own modifiers (its add on Orange Magic) still count ([monsters.md](../modules/monsters.md#summoned-creatures)). There is no replace group and no `replaced` result: a perk taken is held. [V 2026-11-19, `test_bestiary.py`]
+
+## Excluded perks
+
+A perk may list `excludes` (GD_S05_04): perk refs it blocks and that block it. `take_perk` refuses a perk that a held perk excludes, or that excludes a held perk, with `unmet` entry `{needs: not_excluded, key}`. Each exclusion is listed on both perks, which `validate.py` checks, and `validate.py` and `monster_sheet` fail a monster or template that holds two perks that exclude each other. [V 2026-11-19, `progression` and `monster_sheet` vectors, op `take_perk`]
+
+- **The trip and disarm lines** of a range exclude each other: with Low Sweep or Hooking Blows you cannot take Bind and Wrench or Wrenching Blows, and the other way round; the ranged lines the same ([actions.md](actions.md#rider-perks)). A melee line does not exclude a ranged line. [A]
+- **Summon natures** (`summon_demonic`, `summon_angelic`, `summon_otherworldly`) exclude each other: a caster holds one nature.
+
+## Perk respec
+
+A GM may allow, and a game may sell, a **perk respec**: the actor gives back perks and buys again with the same number of perk picks, each new pick checked by `take_perk` at the actor's current level and sheet. A respec touches only perks: attributes, tag skills, spent skill points, and anything rolled (HP, MP, and stamina growth, the luck roll) stay as they are. It is the way from one excluded line to the other, or from one summon nature to another. Core sets **no limit** on respecs: when, how often, and at what cost is at the game's or the GM's discretion. [A, GD_S05_04]
 
 ## Two sheets, one rule set
 

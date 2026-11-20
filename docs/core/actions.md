@@ -56,6 +56,9 @@ ap        = max(cost of `modifies` + the maneuver's ap, 1)      real time: ap ×
 attack    = the maneuver's attack, an add on the attack target, as a called shot's
 damage    = floor(damage × damage_multiplier), after the called shot's multiplier
 effects   = listed on a hit that is not evaded, for the caller to apply, as a called shot's riders
+events    = listed with the effects (disarm), for the caller to apply
+save      = with a save_bonus: on a hit, a maneuver attempt the defender saves against
+            (#the-maneuver-attempt); the effects and events land only on a failed save
 needs     = one of its ranges (any when it lists none), and a weapon with one of its
             weapon_properties (any weapon when it lists none)
 ```
@@ -64,6 +67,10 @@ needs     = one of its ranges (any when it lists none), and a weapon with one of
 | --- | --- | --- | --- | --- | --- | --- |
 | Heavy Swing | 4 (attack + 1) | −10 | ×1.5 | melee | staggered (4 s) | Wind-Up (STR 5) |
 | Quick Strike | 2 (attack − 1) | 0 | ×0.5 | melee, a light weapon | — | Snap Cut (AGI 5) |
+| Trip | 3 (attack) | −10 | ×0.5 | melee | knockdown (5 s, prone) on a failed save | Low Sweep (AGI 5, a melee skill 30) |
+| Disarm | 3 (attack) | −15 | ×0.5 | melee | the `disarm` event (drops its weapon) on a failed save | Bind and Wrench (STR 5, a melee skill 30) |
+| Tripping Shot | 3 (attack) | −10 | ×0.5 | ranged | knockdown (5 s, prone) on a failed save | Low Aim (PER 5, a ranged skill 30) |
+| Disarming Shot | 3 (attack) | −15 | ×0.5 | ranged | the `disarm` event on a failed save | Knuckle Shot (PER 5, a ranged skill 30) |
 
 - **AP follows the attack.** The totals are for an attack with one one-handed weapon, 3 AP. The
   maneuver stores only its difference (`ap`), so its AP moves with the loadout's attack AP: a
@@ -80,6 +87,63 @@ needs     = one of its ranges (any when it lists none), and a weapon with one of
   once `power_attack`) stays a passive bonus and does not unlock Heavy Swing. [A]
 - **Monsters** list `maneuvers` on their row or template, and need no perk for them, so a troll
   swings hard with the same row a fighter uses ([monsters.md](../modules/monsters.md#maneuvers)).
+  A monster may also hold the unlock and rider perks in its `perks`, as a player does: its
+  maneuvers are the ones it lists plus the ones its perks unlock (`monster_sheet` reports both,
+  GD_S05_04).
+- **Trip and disarm** (GD_S05_04) trade half the damage and a harder roll for a control effect,
+  in a melee line and a ranged line. Disarm is the same `disarm` event as the arms called shot
+  (`combat/situations.json`). The attack resolves as a normal attack first; a hit then makes the
+  [maneuver attempt](#the-maneuver-attempt).
+
+## The maneuver attempt
+
+A trip or disarm is a normal attack, then a maneuver attempt the defender saves against
+(GD_S05_04). A maneuver with `save_bonus`, or a [rider](#rider-perks), makes one on a hit that is
+not evaded; a miss, an evade, or a block makes none.
+
+```
+attribute = the weapon's attribute, the attack's damage.ability (AGI for a blade, STR for a
+            mace, PER for a bow); an attempt without one is an error
+DC        = attribute × maneuver_save_multiplier (10, combat/pipeline.json)
+            + the maneuver's save_bonus (20 for trip and disarm; a rider adds none)
+target    = max(100 − DC, 0): the defender's d100 save; the caller rolls it
+```
+
+- **The result** reports `save` as `{attribute, dc, target}` with the `effects` and `events`. The
+  caller rolls the save and applies them only when it fails. The kernel does not roll it, as it
+  does not roll the attack. [A]
+- **The attacker's attribute + mods.** The attributes the caller passes are the attacker's
+  modified ones, so a buff to AGI raises a blade's DC. The maneuver's `save_bonus` is what its
+  −10 or −15 on the attack and its half damage buy: a dedicated maneuver lands more often than a
+  rider. No perk or situation modifies the DC or the save yet. [A]
+- **It replaces the clear margin.** The first draft let a rider ride only on a hit that cleared
+  the bands by 20. A save does that job better: every hit makes the attempt, and the attacker's
+  attribute against the defender's save decides it, so the margin rule is gone. [A]
+- **Heavy Swing and Quick Strike** have no `save_bonus`: their effects land on any hit, as before.
+
+## Rider perks
+
+A rider perk puts a maneuver's attempt on the holder's plain attacks (GD_S05_04). It names the
+maneuver in `rider` and needs the maneuver's unlock perk. Each range has a trip line and a disarm
+line, and the two lines of a range exclude each other: with the trip line you cannot take the
+disarm line, and the other way round ([progression.md](progression.md#excluded-perks)). The melee
+lines do not exclude the ranged ones. [A]
+
+| Line | Unlock perk | Rider perk | Rides | Excludes |
+| --- | --- | --- | --- | --- |
+| Melee trip | Low Sweep (AGI 5, a melee skill 30) | Hooking Blows (level 8, AGI 6) | Trip | the melee disarm line |
+| Melee disarm | Bind and Wrench (STR 5, a melee skill 30) | Wrenching Blows (level 8, STR 6) | Disarm | the melee trip line |
+| Ranged trip | Low Aim (PER 5, a ranged skill 30) | Hamstring Shots (level 8, PER 6) | Tripping Shot | the ranged disarm line |
+| Ranged disarm | Knuckle Shot (PER 5, a ranged skill 30) | Stripping Shots (level 8, PER 6) | Disarming Shot | the ranged trip line |
+
+- **A plain attack only.** The `combat` input's `attacker.perks` names the held perks. With no
+  `maneuver`, a held rider whose maneuver fits the attack rides: the attack keeps its own AP,
+  attack, and damage, and a hit makes the attempt with no save bonus. The result reports `rider`
+  and, on a hit, `save`, `effects`, and `events`. An attack performed as a maneuver uses only
+  that maneuver. A melee rider stays off a ranged shot, and a ranged rider off a melee blow.A Boss Strike shield bash carries no rider: a shield has no weapon attribute for the attempt (GD_S05_03). [A]
+- **Two riders that fit one attack are an error.** The exclusions keep it from happening to a
+  built actor; `combat` still fails on it, and `monster_sheet` and `validate.py` fail a monster
+  or template that holds two perks that exclude each other.
 - **Names** are our own, not feat names from other games (CONTRIBUTING.md).
 
 ## One rule set, two clocks

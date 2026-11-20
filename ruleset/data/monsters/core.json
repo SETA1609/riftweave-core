@@ -113,6 +113,7 @@
       "overrides": {
         "label": "Wolf",
         "description": "A grey hunter of the forests that runs in packs and drags down prey by the legs.",
+        "perks": [{"perk": "core:feature/low_sweep"}, {"perk": "core:feature/hooking_blows"}],
         "level": 3,
         "attributes": {
           "str": 6,

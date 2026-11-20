@@ -124,10 +124,12 @@ erDiagram
         string key PK
         string bound_weapon_effects_effect FK
         string bound_weapon_effects_origin FK
+        string excludes FK
         string modifiers_origin FK
         string natural_weapon FK
         string prerequisite_perks_perk FK
         string prerequisite_skills_any_of FK
+        string rider FK
         string share_bonus FK
         string summon_bonus FK
         string unlocks FK
@@ -279,8 +281,8 @@ erDiagram
     EQUIPMENT }o--|| SPELLS : "consumable.spell"
     FACTIONS }o--|| ORIGINS : "ranks[].modifiers[].origin, standings[].modifiers[].origin"
     FEATURES }o--|| EFFECTS : "bound_weapon_effects[].effect"
-    FEATURES }o--|| FEATURES : "prerequisite.perks[].perk"
-    FEATURES }o--|| MANEUVERS : "unlocks[]"
+    FEATURES }o--|| FEATURES : "excludes[], prerequisite.perks[].perk"
+    FEATURES }o--|| MANEUVERS : "rider, unlocks[]"
     FEATURES }o--|| MATERIALS : "unlocks[]"
     FEATURES }o--|| MONSTER_TEMPLATES : "unlocks[]"
     FEATURES }o--|| NATURAL_WEAPONS : "natural_weapon"
@@ -361,10 +363,12 @@ erDiagram
         string key PK
         string bound_weapon_effects_effect FK
         string bound_weapon_effects_origin FK
+        string excludes FK
         string modifiers_origin FK
         string natural_weapon FK
         string prerequisite_perks_perk FK
         string prerequisite_skills_any_of FK
+        string rider FK
         string share_bonus FK
         string summon_bonus FK
         string unlocks FK
@@ -415,8 +419,8 @@ erDiagram
     CHARACTERS }o--|| SKILLS : "tag_skills[]"
     CHARACTERS }o--|| SPELLS : "levels[].spells[]"
     FEATURES }o--|| EFFECTS : "bound_weapon_effects[].effect"
-    FEATURES }o--|| FEATURES : "prerequisite.perks[].perk"
-    FEATURES }o--|| MANEUVERS : "unlocks[]"
+    FEATURES }o--|| FEATURES : "excludes[], prerequisite.perks[].perk"
+    FEATURES }o--|| MANEUVERS : "rider, unlocks[]"
     FEATURES }o--|| MATERIALS : "unlocks[]"
     FEATURES }o--|| MONSTER_TEMPLATES : "unlocks[]"
     FEATURES }o--|| NATURAL_WEAPONS : "natural_weapon"

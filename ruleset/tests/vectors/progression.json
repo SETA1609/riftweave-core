@@ -1095,5 +1095,214 @@
         }
       ]
     }
+  },
+  {
+    "name": "take perk: the trip line blocks the disarm line (Bind and Wrench with Low Sweep held)",
+    "operation": "take_perk",
+    "actor": {
+      "attributes": {
+        "str": 6,
+        "per": 6,
+        "end": 5,
+        "int": 4,
+        "wil": 4,
+        "agi": 6,
+        "cha": 4,
+        "lck": 4
+      },
+      "level": 8,
+      "skills": {
+        "blades": 40,
+        "bows": 40
+      }
+    },
+    "perks": {
+      "low_sweep": 1
+    },
+    "perk": "bind_and_wrench",
+    "expect": {
+      "taken": false,
+      "perk": "bind_and_wrench",
+      "rank": 0,
+      "unmet": [
+        {
+          "needs": "not_excluded",
+          "key": "low_sweep"
+        }
+      ]
+    }
+  },
+  {
+    "name": "take perk: the disarm line blocks the trip line, each held perk listed (Low Sweep with Bind and Wrench and Wrenching Blows held)",
+    "operation": "take_perk",
+    "actor": {
+      "attributes": {
+        "str": 6,
+        "per": 6,
+        "end": 5,
+        "int": 4,
+        "wil": 4,
+        "agi": 6,
+        "cha": 4,
+        "lck": 4
+      },
+      "level": 8,
+      "skills": {
+        "blades": 40,
+        "bows": 40
+      }
+    },
+    "perks": {
+      "bind_and_wrench": 1,
+      "wrenching_blows": 1
+    },
+    "perk": "low_sweep",
+    "expect": {
+      "taken": false,
+      "perk": "low_sweep",
+      "rank": 0,
+      "unmet": [
+        {
+          "needs": "not_excluded",
+          "key": "bind_and_wrench"
+        },
+        {
+          "needs": "not_excluded",
+          "key": "wrenching_blows"
+        }
+      ]
+    }
+  },
+  {
+    "name": "take perk: the melee trip line does not block the ranged disarm line (Knuckle Shot with Low Sweep held)",
+    "operation": "take_perk",
+    "actor": {
+      "attributes": {
+        "str": 6,
+        "per": 6,
+        "end": 5,
+        "int": 4,
+        "wil": 4,
+        "agi": 6,
+        "cha": 4,
+        "lck": 4
+      },
+      "level": 8,
+      "skills": {
+        "blades": 40,
+        "bows": 40
+      }
+    },
+    "perks": {
+      "low_sweep": 1,
+      "hooking_blows": 1
+    },
+    "perk": "knuckle_shot",
+    "expect": {
+      "taken": true,
+      "perk": "knuckle_shot",
+      "rank": 1,
+      "unmet": []
+    }
+  },
+  {
+    "name": "take perk: a rider perk needs its maneuver's unlock perk",
+    "operation": "take_perk",
+    "actor": {
+      "attributes": {
+        "str": 6,
+        "per": 6,
+        "end": 5,
+        "int": 4,
+        "wil": 4,
+        "agi": 6,
+        "cha": 4,
+        "lck": 4
+      },
+      "level": 8,
+      "skills": {
+        "blades": 40,
+        "bows": 40
+      }
+    },
+    "perks": {},
+    "perk": "hooking_blows",
+    "expect": {
+      "taken": false,
+      "perk": "hooking_blows",
+      "rank": 0,
+      "unmet": [
+        {
+          "needs": "perk",
+          "key": "low_sweep"
+        }
+      ]
+    }
+  },
+  {
+    "name": "take perk: a rider perk on its own line is taken (Hooking Blows after Low Sweep)",
+    "operation": "take_perk",
+    "actor": {
+      "attributes": {
+        "str": 6,
+        "per": 6,
+        "end": 5,
+        "int": 4,
+        "wil": 4,
+        "agi": 6,
+        "cha": 4,
+        "lck": 4
+      },
+      "level": 8,
+      "skills": {
+        "blades": 40,
+        "bows": 40
+      }
+    },
+    "perks": {
+      "low_sweep": 1
+    },
+    "perk": "hooking_blows",
+    "expect": {
+      "taken": true,
+      "perk": "hooking_blows",
+      "rank": 1,
+      "unmet": []
+    }
+  },
+  {
+    "name": "take perk: a summon nature blocks the other two (Summon Angelic with Summon Demonic held)",
+    "operation": "take_perk",
+    "actor": {
+      "attributes": {
+        "str": 6,
+        "per": 6,
+        "end": 5,
+        "int": 8,
+        "wil": 8,
+        "agi": 6,
+        "cha": 8,
+        "lck": 4
+      },
+      "level": 12,
+      "skills": {
+        "orange_magic": 60
+      }
+    },
+    "perks": {
+      "summon_demonic": 1
+    },
+    "perk": "summon_angelic",
+    "expect": {
+      "taken": false,
+      "perk": "summon_angelic",
+      "rank": 0,
+      "unmet": [
+        {
+          "needs": "not_excluded",
+          "key": "summon_demonic"
+        }
+      ]
+    }
   }
 ]

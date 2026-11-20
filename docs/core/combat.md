@@ -48,7 +48,10 @@ One attack, in order, from the roll to the HP lost. Every step reads the actor s
               if warded: damage = damage - floor(damage * ward_percent / 100)
 8. hp         lost = max(damage, 0); hp = max(hp - lost, 0)
 9. riders     on a hit (not evaded, not blocked), the called shot's riders are listed for the caller,
-              and a maneuver's effects; with a maneuver the result also gives its ap and stamina
+              and a maneuver's effects and events; with a maneuver the result also gives its ap and
+              stamina; a maneuver with a save_bonus adds its attempt's save (actions.md#the-maneuver-attempt)
+              rider: on a plain attack, a held rider perk's maneuver that fits it (effects, events,
+              and a save with no bonus) on any hit (actions.md#rider-perks)
               weapon_effects: the weapon's lingering_damage (of the attack's damage type) and, against
               a defender with the summoned flag, banish_summoned
 ```
@@ -160,7 +163,7 @@ crossed      a defender holding a weapon in each hand adds its modifiers on two_
 ```
 
 - **Rolls are inputs.** `rolls` holds one attack roll and one damage roll per strike made, in order; a lost strike takes none. Too few rolls is an error. [A]
-- **Each strike is a whole `combat` input.** A strike carries its hand's weapon: `attacker.weapon_properties` and `weapon_effects` for the main hand, `off_weapon_properties` and `off_weapon_effects` for the off hand (none when left out, never the main hand's), so a bound weapon's bane or lingering damage lands per strike, and a strike lists the effects that landed when its hand has any. `situations` and `summoning` go to every strike, as in `combat` (flanking, `beside_summon` for Pincer Strike). [V 2026-11-19]
+- **Each strike is a whole `combat` input.** A strike carries its hand's weapon: `attacker.weapon_properties` and `weapon_effects` for the main hand, `off_weapon_properties` and `off_weapon_effects` for the off hand (none when left out, never the main hand's), so a bound weapon's bane or lingering damage lands per strike, and a strike lists the effects that landed when its hand has any. `situations` and `summoning` go to every strike, as in `combat` (flanking, `beside_summon` for Pincer Strike), and so do `attacker.perks`: a rider perk rides every strike it fits, each its own attempt, and the strike reports `rider`, `effects`, `events`, and `save` as `combat` does ([rider perks](actions.md#rider-perks)). [V 2026-11-19]
 - **AP follows the loadout.** A two-handed attack stays 3 AP, because an AGI 3 character has only 3 AP; a two-handed weapon pays for itself by leaving no hand for a shield. A maneuver's AP is the loadout's attack AP plus its own when the `combat` input names a `loadout`. [A]
 - **Numbers are [A]** until the M5-18 playtest driver reruns a dual-wield build against a one-weapon build of the same level.
 

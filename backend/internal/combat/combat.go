@@ -29,6 +29,9 @@ type Attacker struct {
 	// WeaponEffects are the weapon's on-hit effects (docs/core/combat.md#weapon-effects); nil
 	// when the input names none.
 	WeaponEffects []data.AppliedEffect `json:"weapon_effects"`
+	// Perks are the attacker's held perks (refs); a rider perk among them puts its maneuver
+	// on a plain attack (docs/core/actions.md#rider-perks).
+	Perks []string `json:"perks"`
 }
 
 // Defender is who takes the attack.
@@ -120,9 +123,17 @@ type Result struct {
 	// the maneuver's, at least 1, and that times stamina_per_ap. Left out without a maneuver.
 	AP      *int64 `json:"ap,omitempty"`
 	Stamina *int64 `json:"stamina,omitempty"`
-	// Effects are the maneuver's effects on a hit, and empty on a miss or an evade. Without a
-	// maneuver the field is left out.
+	// Effects are the maneuver's (or the rider's) effects on a hit, and empty on a miss or an
+	// evade. Without a maneuver or a rider the field is left out.
 	Effects *[]json.RawMessage `json:"effects,omitempty"`
+	// Events are the maneuver's (or the rider's) events on a hit, such as disarm; left out
+	// without a maneuver or a rider.
+	Events *[]string `json:"events,omitempty"`
+	// Save is the maneuver attempt on a hit, for a maneuver with a save bonus or a rider;
+	// the caller rolls it and a failed save lands the effects and events.
+	Save *Save `json:"save,omitempty"`
+	// Rider is the maneuver key a held rider perk put on this plain attack.
+	Rider string `json:"rider,omitempty"`
 	// WeaponEffects are the weapon effects that land on a hit, and empty on a miss, an evade,
 	// or a block. Without weapon effects the field is left out.
 	WeaponEffects *[]json.RawMessage `json:"weapon_effects,omitempty"`
@@ -189,6 +200,58 @@ func maneuverOf(ruleset *data.Ruleset, input *Input) (*data.Maneuver, error) {
 		return nil, &data.MissingInputError{Subject: maneuver.Key, Needs: either(maneuver.WeaponProperties, "weapon")}
 	}
 	return maneuver, nil
+}
+
+// riderOf is the maneuver a held rider perk puts on a plain attack: nil when none is held,
+// the attack is a maneuver, or no rider's maneuver fits the attack. Two riders that fit the
+// same attack are an error.
+func riderOf(ruleset *data.Ruleset, input *Input, maneuver *data.Maneuver) (*data.Maneuver, error) {
+	var attackRange string = input.Range
+	if attackRange == "" {
+		attackRange = "melee"
+	}
+	var fitting []string
+	var rider *data.Maneuver
+	for _, ref := range input.Attacker.Perks {
+		feature, err := ruleset.Features.Require("perk", ref[strings.LastIndex(ref, "/")+1:])
+		if err != nil {
+			return nil, err
+		}
+		if feature.Rider == "" {
+			continue
+		}
+		row, err := ruleset.Maneuvers.Require("maneuver", feature.Rider[strings.LastIndex(feature.Rider, "/")+1:])
+		if err != nil {
+			return nil, err
+		}
+		if row.Fits(attackRange, input.Attacker.WeaponProperties) {
+			fitting, rider = append(fitting, feature.Key), row
+		}
+	}
+	if len(fitting) > 1 {
+		return nil, fmt.Errorf("two rider perks fit this attack: %s", strings.Join(fitting, ", "))
+	}
+	if maneuver != nil {
+		return nil, nil
+	}
+	return rider, nil
+}
+
+// Save is a maneuver attempt's save (docs/core/actions.md#the-maneuver-attempt).
+type Save struct {
+	Attribute string `json:"attribute"`
+	DC        int64  `json:"dc"`
+	Target    int64  `json:"target"`
+}
+
+// saveOf is the attempt's save: the DC is the weapon attribute times the pipeline's
+// multiplier plus the bonus, and the defender's target is 100 minus it, at least 0.
+func saveOf(input *Input, multiplier, bonus int64) *Save {
+	var dc int64 = bonus
+	if ability, known := actor.ByKey(input.Damage.Ability); known {
+		dc += input.Attacker.Attributes.Get(ability) * multiplier
+	}
+	return &Save{Attribute: input.Damage.Ability, DC: dc, Target: max(100-dc, 0)}
 }
 
 // either names the choices as "a melee attack or a ranged attack".
@@ -290,6 +353,14 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	if err != nil {
 		return Result{}, err
 	}
+	rider, err := riderOf(ruleset, &input, maneuver)
+	if err != nil {
+		return Result{}, err
+	}
+	// A maneuver attempt (a save bonus row, or a rider) saves against the weapon's attribute.
+	if (rider != nil || (maneuver != nil && maneuver.SaveBonus != nil)) && input.Damage.Ability == "" {
+		return Result{}, fmt.Errorf("a maneuver attempt needs the weapon's attribute (damage.ability)")
+	}
 	var sequence *data.AttackSequence
 	if input.Loadout != nil {
 		if sequence = ruleset.AttackSequences.Covering(input.Loadout.Main, input.Loadout.Off); sequence == nil {
@@ -362,6 +433,15 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		var stamina int64 = actionPoints * ruleset.StaminaPerAP
 		var noEffects []json.RawMessage = []json.RawMessage{}
 		result.AP, result.Stamina, result.Effects = &actionPoints, &stamina, &noEffects
+	}
+	var carried *data.Maneuver = maneuver
+	if rider != nil {
+		var noEffects []json.RawMessage = []json.RawMessage{}
+		carried, result.Rider, result.Effects = rider, rider.Key, &noEffects
+	}
+	if carried != nil {
+		var noEvents []string = []string{}
+		result.Events = &noEvents
 	}
 	if !attack.Success {
 		result.Outcome, result.HitPoints = "miss", defender.HitPoints
@@ -479,6 +559,21 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 			effects = append(effects, applied.Encoded)
 		}
 		result.Effects = &effects
+		var events []string = append([]string{}, maneuver.Events...)
+		result.Events = &events
+		if maneuver.SaveBonus != nil {
+			result.Save = saveOf(&input, pipeline.ManeuverSaveMultiplier, *maneuver.SaveBonus)
+		}
+	}
+	// A rider: the attack resolves as a plain one, then on a hit the maneuver's attempt
+	// follows, with no save bonus.
+	if rider != nil && !result.Evaded {
+		var effects []json.RawMessage = make([]json.RawMessage, 0, len(rider.Effects))
+		for _, applied := range rider.Effects {
+			effects = append(effects, applied.Encoded)
+		}
+		var events []string = append([]string{}, rider.Events...)
+		result.Effects, result.Events, result.Save = &effects, &events, saveOf(&input, pipeline.ManeuverSaveMultiplier, 0)
 	}
 	if input.Attacker.WeaponEffects != nil && !result.Evaded {
 		landed, err := landedWeaponEffects(input.Attacker.WeaponEffects, input.Damage.Type, defender)

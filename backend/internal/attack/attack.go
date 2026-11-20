@@ -32,6 +32,8 @@ type Attacker struct {
 	OffWeaponEffects    []data.AppliedEffect `json:"off_weapon_effects"`
 	// ShieldDR is the carried shield's DR, which a Boss Strike bash adds to its damage roll.
 	ShieldDR *int64 `json:"shield_dr"`
+	// Perks are the attacker's perk refs, which every strike reads for a rider, as in combat.
+	Perks []string `json:"perks"`
 	// Modifiers are the attacker's perks and fighting stance: adds on full_attack_strikes,
 	// full_attack_off_strikes, mainhand_penalty, offhand_penalty, attack_roll,
 	// attack_single_opponent, attack_after_parry, and unarmed_damage, and the carry, circle
@@ -92,6 +94,12 @@ type StrikeResult struct {
 	// it costs the target. Both are left out on any other strike.
 	Bash      bool   `json:"bash,omitempty"`
 	StaggerAP *int64 `json:"stagger_ap,omitempty"`
+	// Rider, Effects, Events, and Save are a rider perk's attempt on the strike, as in combat;
+	// left out on a strike no rider rides.
+	Rider   string             `json:"rider,omitempty"`
+	Effects *[]json.RawMessage `json:"effects,omitempty"`
+	Events  *[]string          `json:"events,omitempty"`
+	Save    *combat.Save       `json:"save,omitempty"`
 }
 
 // Result is the action's outcome.
@@ -386,8 +394,10 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 			damageRoll *= 2
 		}
 		var isBash bool = bashing && strike.hand == "off"
+		var perks []string = input.Attacker.Perks
 		if isBash {
-			damage, damageRoll = Damage{Type: bash.DamageType}, *input.Attacker.ShieldDR+roll.Damage
+			// A shield has no weapon attribute, so no rider rides a bash (GD_S05_04).
+			damage, damageRoll, perks = Damage{Type: bash.DamageType}, *input.Attacker.ShieldDR+roll.Damage, nil
 		}
 		var strikeModifiers []modifier.Modifier = slices.Clone(input.Modifiers)
 		if strike.attack != 0 {
@@ -403,7 +413,7 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		outcome, err := combat.Run(ruleset, combat.Input{
 			Attacker: combat.Attacker{
 				Skill: skill, Roll: roll.Attack, Attributes: input.Attacker.Attributes, Flags: input.Attacker.Flags,
-				WeaponProperties: properties, WeaponEffects: effects,
+				WeaponProperties: properties, WeaponEffects: effects, Perks: perks,
 			},
 			Defender:   defender,
 			Damage:     combat.Damage{Roll: damageRoll, Type: damage.Type, Ability: damage.Ability},
@@ -429,6 +439,7 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 			Hand: strike.hand, Foe: foe, Attack: strike.attack, Outcome: outcome.Outcome, Target: outcome.Target,
 			Margin: outcome.Margin, Crit: outcome.Critical, Damage: outcome.Damage, HP: outcome.HitPoints,
 			Carried: carried, Free: strike.free, Scissor: scissor && hit,
+			Rider: outcome.Rider, Effects: outcome.Effects, Events: outcome.Events, Save: outcome.Save,
 		})
 		if len(effects) > 0 {
 			var landed []json.RawMessage = []json.RawMessage{}

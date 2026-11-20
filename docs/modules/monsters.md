@@ -1,6 +1,6 @@
 # Monsters — Base + Override System
 
-Modified: 2026-11-18
+Modified: 2026-11-19
 
 ## Purpose
 
@@ -272,10 +272,14 @@ uncraftable: a spell names rows, and only a GM or dev adds a new type.
 refs (`core:monster_template/dire`), because a modifier holds only a number.
 
 - **Power is a ladder.** `summon_dire`, then `summon_elder` (needs `summon_dire`), then
-  `summon_ancient` (needs `summon_elder`), by ordinary perk prerequisites. The latest one
-  bought replaces the one before, so the caster holds one power.
+  `summon_ancient` (needs `summon_elder`), by ordinary perk prerequisites. All the rungs stay
+  held, and the highest one overrides the lower ones whatever the buy order, so the caster's
+  summons take one power template; each rung's own modifiers still count
+  ([progression.md](../core/progression.md#ranks-override), GD_S05_04).
 - **Nature is one at a time.** `summon_demonic`, `summon_angelic`, and `summon_otherworldly`
-  need no other nature, and the latest bought replaces the one before; only it is tracked.
+  exclude each other ([progression.md](../core/progression.md#excluded-perks)): with one, a
+  caster cannot take another, and a respec, at the game's or GM's discretion, is the way to
+  change nature ([progression.md](../core/progression.md#perk-respec)).
   Whether a game locks nature as a one-time choice is left for later. [A]
 - **Charisma adds last.** A caster with a summon bonus perk adds `CHA − 5`, never below 0, to the
   attributes of the bonus's group after the power and nature ([magic.md](./magic.md#summon-groups)).
@@ -395,6 +399,14 @@ others (its attack side). [A]
 A monster row or template lists `maneuvers` (`core:maneuver/<key>`) it can attack with, the
 same rows a player uses ([actions.md](../core/actions.md#maneuvers)), with no perk needed; a template's are appended,
 skipping any the row has. The troll has Heavy Swing. [V 2026-11-17, `test_bestiary.py`]
+
+A monster may also hold the unlock and rider perks in its `perks` (M3-15), as a player does
+(GD_S05_04): its maneuvers are the ones it lists plus the ones its perks unlock, and a rider
+perk puts its maneuver on the monster's plain attacks ([actions.md](../core/actions.md#rider-perks)).
+`monster_sheet` returns `maneuvers` and `riders`. The exclusions hold: `validate.py` and
+`monster_sheet` fail a monster or template with two perks that exclude each other (the trip and
+disarm lines, two summon natures). The wolf holds Low Sweep and Hooking Blows, so every bite
+that lands is a trip attempt against its agility. Perk level gates do not apply to monster rows. [V 2026-11-19, `monster_sheet` vectors, `test_bestiary.py`]
 
 ### The floor
 

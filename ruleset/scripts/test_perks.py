@@ -35,13 +35,14 @@ def prerequisite_refs(perk):
 
 
 def emitted(perk):
-    """The (target, operation) pairs a perk's modifiers name, what it unlocks, and the effects it
-    adds to a bound weapon."""
+    """The (target, operation) pairs a perk's modifiers name, what it unlocks, the effects it
+    adds to a bound weapon, and the maneuver it rides (GD_S05_04)."""
     return (
         frozenset((m["target"], m["operation"]) for m in perk.get("modifiers", []))
         | frozenset(("unlocks", ref) for ref in perk.get("unlocks", []))
         | frozenset(("bound_weapon_effects", e["effect"], e.get("parameter")) for e in perk.get("bound_weapon_effects", []))
         | (frozenset({("command", tuple(sorted(perk["command"].items())))}) if "command" in perk else frozenset())
+        | frozenset(("rider", perk["rider"]) for _ in [0] if perk.get("rider"))
     )
 
 
@@ -50,14 +51,15 @@ class TestPerkCatalogue(unittest.TestCase):
         self.assertGreaterEqual(len(perks()), 60)
 
     def test_every_perk_emits_trained_modifiers_from_itself(self):
-        """A perk changes a number, unlocks something (a maneuver, a template, a material), or adds
-        an effect to a bound weapon (docs/modules/magic.md#bound-weapons); an unlock-only perk
-        needs no modifier to justify it (docs/core/actions.md#maneuvers)."""
+        """A perk changes a number, unlocks something (a maneuver, a template, a material), adds
+        an effect to a bound weapon (docs/modules/magic.md#bound-weapons), or rides a maneuver on
+        plain attacks (docs/core/actions.md#rider-perks); an unlock-only or rider perk needs no
+        modifier to justify it (docs/core/actions.md#maneuvers)."""
         for perk in perks():
             with self.subTest(perk=perk["key"]):
                 self.assertTrue(
-                    perk.get("modifiers") or perk.get("unlocks") or perk.get("bound_weapon_effects") or perk.get("command"),
-                    "a perk emits modifiers, unlocks something, adds a bound weapon effect, or gives orders",
+                    perk.get("modifiers") or perk.get("unlocks") or perk.get("bound_weapon_effects") or perk.get("command") or perk.get("rider"),
+                    "a perk emits modifiers, unlocks something, adds a bound weapon effect, gives orders, or rides a maneuver",
                 )
                 for modifier in perk.get("modifiers", []):
                     self.assertEqual(modifier["source"], f"feature:{perk['key']}")
@@ -259,6 +261,50 @@ class TestDefenseLadders(unittest.TestCase):
     def test_bulwark_needs_shield_training_tier_2_not_spell_ward(self):
         row = next(perk for perk in perks() if perk["key"] == "bulwark")
         self.assertEqual(row["prerequisite"]["perks"], [{"perk": "core:feature/shield_training", "rank": 2}])
+
+
+class TestTripAndDisarm(unittest.TestCase):
+    """GD_S05_04: each maneuver has an unlock perk and a rider perk that needs it, a melee line
+    and a ranged line, and the trip line and the disarm line of a range exclude each other."""
+
+    LINES = {
+        "trip": ("low_sweep", "hooking_blows"),
+        "disarm": ("bind_and_wrench", "wrenching_blows"),
+        "tripping_shot": ("low_aim", "hamstring_shots"),
+        "disarming_shot": ("knuckle_shot", "stripping_shots"),
+    }
+    EXCLUDED = (("trip", "disarm"), ("tripping_shot", "disarming_shot"))
+
+    def test_each_maneuver_has_its_unlock_and_rider_perk(self):
+        rows = {perk["key"]: perk for perk in perks()}
+        for maneuver, (unlock, rider) in self.LINES.items():
+            with self.subTest(maneuver=maneuver):
+                self.assertIn(f"core:maneuver/{maneuver}", rows[unlock]["unlocks"])
+                self.assertEqual(rows[rider]["rider"], f"core:maneuver/{maneuver}")
+                self.assertNotIn("group", rows[rider])
+                self.assertEqual(prerequisite_refs(rows[rider]), [f"core:feature/{unlock}"])
+
+    def test_the_trip_line_and_the_disarm_line_exclude_each_other(self):
+        rows = {perk["key"]: perk for perk in perks()}
+        for first, second in self.EXCLUDED:
+            for key in self.LINES[first]:
+                with self.subTest(perk=key):
+                    self.assertEqual(sorted(rows[key]["excludes"]), sorted(f"core:feature/{other}" for other in self.LINES[second]))
+            for key in self.LINES[second]:
+                with self.subTest(perk=key):
+                    self.assertEqual(sorted(rows[key]["excludes"]), sorted(f"core:feature/{other}" for other in self.LINES[first]))
+
+    def test_a_held_line_blocks_the_other_and_a_rank_up_needs_no_more(self):
+        import sys
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from kernel_reference import take_perk
+
+        actor = {"attributes": {"str": 6, "agi": 6, "per": 6}, "level": 8, "skills": {"blades": 40, "bows": 40}}
+        taken = take_perk(actor, {"low_sweep": 1, "hooking_blows": 1}, "bind_and_wrench")
+        self.assertFalse(taken["taken"])
+        self.assertEqual(taken["unmet"], [{"needs": "not_excluded", "key": "hooking_blows"}, {"needs": "not_excluded", "key": "low_sweep"}])
+        self.assertTrue(take_perk(actor, {"low_sweep": 1, "hooking_blows": 1}, "low_aim")["taken"])
+        self.assertNotIn("replaced", take_perk(actor, {"low_sweep": 1}, "hooking_blows"))
 
 
 if __name__ == "__main__":

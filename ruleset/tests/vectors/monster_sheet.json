@@ -349,5 +349,173 @@
     "expect": {
       "error": "skill \"nope\" is not defined"
     }
+  },
+  {
+    "name": "maneuvers: a wolf's Low Sweep unlocks Trip, and Hooking Blows puts it on its plain attacks",
+    "monster": {
+      "attributes": {
+        "str": 6,
+        "agi": 5,
+        "per": 6,
+        "end": 5,
+        "int": 2,
+        "wil": 4,
+        "cha": 2,
+        "lck": 3
+      },
+      "level": 3,
+      "hitPoints": 59,
+      "perks": [
+        {
+          "perk": "core:feature/low_sweep"
+        },
+        {
+          "perk": "core:feature/hooking_blows"
+        }
+      ]
+    },
+    "expect": {
+      "hp": 59,
+      "maneuvers": [
+        "core:maneuver/trip"
+      ],
+      "riders": [
+        "core:maneuver/trip"
+      ]
+    }
+  },
+  {
+    "name": "maneuvers: the ones a row lists and the ones its perks unlock, sorted",
+    "monster": {
+      "attributes": {
+        "str": 6,
+        "agi": 5,
+        "per": 6,
+        "end": 5,
+        "int": 2,
+        "wil": 4,
+        "cha": 2,
+        "lck": 3
+      },
+      "level": 3,
+      "hitPoints": 59,
+      "perks": [
+        {
+          "perk": "core:feature/bind_and_wrench"
+        }
+      ],
+      "maneuvers": [
+        "core:maneuver/heavy_swing"
+      ]
+    },
+    "expect": {
+      "maneuvers": [
+        "core:maneuver/disarm",
+        "core:maneuver/heavy_swing"
+      ]
+    }
+  },
+  {
+    "name": "maneuvers: a melee and a ranged rider, sorted",
+    "monster": {
+      "attributes": {
+        "str": 6,
+        "agi": 5,
+        "per": 6,
+        "end": 5,
+        "int": 2,
+        "wil": 4,
+        "cha": 2,
+        "lck": 3
+      },
+      "level": 3,
+      "hitPoints": 59,
+      "perks": [
+        {
+          "perk": "core:feature/low_sweep"
+        },
+        {
+          "perk": "core:feature/hooking_blows"
+        },
+        {
+          "perk": "core:feature/low_aim"
+        },
+        {
+          "perk": "core:feature/hamstring_shots"
+        }
+      ]
+    },
+    "expect": {
+      "maneuvers": [
+        "core:maneuver/trip",
+        "core:maneuver/tripping_shot"
+      ],
+      "riders": [
+        "core:maneuver/trip",
+        "core:maneuver/tripping_shot"
+      ]
+    }
+  },
+  {
+    "name": "maneuvers: the trip line and the disarm line on one monster are an error",
+    "monster": {
+      "attributes": {
+        "str": 6,
+        "agi": 5,
+        "per": 6,
+        "end": 5,
+        "int": 2,
+        "wil": 4,
+        "cha": 2,
+        "lck": 3
+      },
+      "level": 3,
+      "hitPoints": 59,
+      "perks": [
+        {
+          "perk": "core:feature/low_sweep"
+        },
+        {
+          "perk": "core:feature/hooking_blows"
+        },
+        {
+          "perk": "core:feature/bind_and_wrench"
+        },
+        {
+          "perk": "core:feature/wrenching_blows"
+        }
+      ]
+    },
+    "expect": {
+      "error": "perks low_sweep and bind_and_wrench exclude each other"
+    }
+  },
+  {
+    "name": "maneuvers: two summon natures on one monster are an error",
+    "monster": {
+      "attributes": {
+        "str": 6,
+        "agi": 5,
+        "per": 6,
+        "end": 5,
+        "int": 2,
+        "wil": 4,
+        "cha": 2,
+        "lck": 3
+      },
+      "level": 3,
+      "hitPoints": 59,
+      "perks": [
+        {
+          "perk": "core:feature/summon_demonic"
+        },
+        {
+          "perk": "core:feature/summon_otherworldly"
+        }
+      ]
+    },
+    "expect": {
+      "error": "perks summon_demonic and summon_otherworldly exclude each other"
+    }
   }
 ]

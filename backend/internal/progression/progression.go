@@ -302,6 +302,18 @@ func takePerk(ruleset *data.Ruleset, sheet *actor.Actor, held map[string]int64, 
 			failed = append(failed, entry)
 		}
 	}
+	// A held perk that excludes this one, or that this one excludes, blocks it: the trip line
+	// blocks the disarm line (docs/core/progression.md#excluded-perks, GD_S05_04).
+	var others []string = make([]string, 0, len(held))
+	for other, has := range held {
+		if row, known := ruleset.Features.Get(other); known && has > 0 && data.Exclude(feature, row) {
+			others = append(others, other)
+		}
+	}
+	sort.Strings(others)
+	for _, other := range others {
+		failed = append(failed, unmet{Needs: "not_excluded", Key: other})
+	}
 	if len(failed) > 0 {
 		return perkResult{Perk: key, Rank: rank, Unmet: failed}, nil
 	}

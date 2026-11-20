@@ -11,7 +11,7 @@ arrow runs from a prerequisite perk to the perk that needs it, labelled with the
 when more than 1. A rounded box is a prerequisite from another category. A ladder that stops
 early, or a perk nothing leads to, shows at a glance.
 
-135 perks: 65 on a ladder, 70 with no perk before or after them.
+143 perks: 73 on a ladder, 70 with no perk before or after them.
 
 ## Combat
 
@@ -19,6 +19,14 @@ early, or a perk nothing leads to, shows at a glance.
 graph LR
   full_weight["Full Weight<br/>blades or blunt or piercing 40 · STR 6"]
   gap_finder["Gap Finder<br/>bows or crossbows or guns or throwing_weapons 40 · PER 6"]
+  low_sweep["Low Sweep<br/>blades or blunt or piercing or unarmed 30 · AGI 5"]
+  hooking_blows["Hooking Blows<br/>Lv 8 · AGI 6"]
+  bind_and_wrench["Bind and Wrench<br/>blades or blunt or piercing or unarmed 30 · STR 5"]
+  wrenching_blows["Wrenching Blows<br/>Lv 8 · STR 6"]
+  low_aim["Low Aim<br/>bows or crossbows or guns or throwing_weapons 30 · PER 5"]
+  hamstring_shots["Hamstring Shots<br/>Lv 8 · PER 6"]
+  knuckle_shot["Knuckle Shot<br/>bows or crossbows or guns or throwing_weapons 30 · PER 5"]
+  stripping_shots["Stripping Shots<br/>Lv 8 · PER 6"]
   brutal_charge["Brutal Charge<br/>STR 9"]
   carry_through["Carry Through<br/>Lv 6 · blades or blunt or piercing 50 · STR 6"]
   reaping_arc["Reaping Arc<br/>Lv 12 · blades or blunt or piercing 60 · STR 7"]
@@ -42,6 +50,10 @@ graph LR
   unarmored_grace["Unarmored Grace (ranks 4)<br/>evasion 30 · AGI 6"]
   flowing_step["Flowing Step<br/>Lv 12"]
   riposte["Riposte<br/>Lv 12 · evasion 60 · AGI 7"]
+  low_sweep --> hooking_blows
+  bind_and_wrench --> wrenching_blows
+  low_aim --> hamstring_shots
+  knuckle_shot --> stripping_shots
   hardened_hide(["Hardened Hide<br/>general"])
   hardened_hide --> brutal_charge
   full_weight --> carry_through

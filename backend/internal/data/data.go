@@ -272,6 +272,10 @@ type Pipeline struct {
 	PierceDamageReduction     formula.Program `json:"pierce_dr"`
 	DamageReductionAppliesTag string          `json:"dr_applies_tag"`
 	PierceTag                 string          `json:"pierce_tag"`
+
+	// ManeuverSaveMultiplier times the weapon attribute is a maneuver attempt's DC before
+	// its save bonus (GD_S05_04).
+	ManeuverSaveMultiplier int64 `json:"maneuver_save_multiplier"`
 }
 
 // DamageType is one row of combat/damage_types.json. Physical and Pierce are the pipeline's
@@ -336,6 +340,23 @@ type Maneuver struct {
 	Ranges           []string        `json:"ranges"`            // empty: any range
 	WeaponProperties []string        `json:"weapon_properties"` // empty: any weapon
 	Effects          []AppliedEffect `json:"effects"`
+
+	// SaveBonus is a maneuver attempt's bonus on its DC (GD_S05_04); nil when the row makes
+	// no attempt and its effects land on any hit.
+	SaveBonus *int64 `json:"save_bonus"`
+	// Events are what a landed attempt does beyond effects, for the caller: "disarm".
+	Events []string `json:"events"`
+}
+
+// Fits reports whether an attack at the range with a weapon of the properties fits the
+// maneuver's ranges and weapon properties.
+func (maneuver *Maneuver) Fits(attackRange string, properties []string) bool {
+	if len(maneuver.Ranges) > 0 && !slices.Contains(maneuver.Ranges, attackRange) {
+		return false
+	}
+	return len(maneuver.WeaponProperties) == 0 || slices.ContainsFunc(maneuver.WeaponProperties, func(property string) bool {
+		return slices.Contains(properties, property)
+	})
 }
 
 // Loadout is what an actor's two hands hold, in the mainHand and offHand vocabulary of
@@ -556,6 +577,11 @@ type Feature struct {
 	// BoundWeaponEffects are the on-hit effects the perk adds to the holder's bound weapons
 	// (docs/modules/magic.md#bound-weapons).
 	BoundWeaponEffects []AppliedEffect `json:"bound_weapon_effects"`
+	// Excludes are the perk refs this perk blocks and that block it, both ways: the trip line
+	// and the disarm line (GD_S05_04).
+	Excludes []string `json:"excludes"`
+	// Rider is the maneuver ref a rider perk puts on plain attacks; empty for most.
+	Rider string `json:"rider"`
 }
 
 // Command is a perk's command object: the AP an ordered summon adds to its next turn, whether
@@ -564,6 +590,11 @@ type Command struct {
 	AP    int64  `json:"ap"`
 	Reach string `json:"reach"` // "one" or "all"
 	Turns int64  `json:"turns"`
+}
+
+// Exclude reports whether one of the two perks names the other in its excludes.
+func Exclude(first, second *Feature) bool {
+	return slices.Contains(first.Excludes, "core:feature/"+second.Key) || slices.Contains(second.Excludes, "core:feature/"+first.Key)
 }
 
 // Share is a perk's share object: the group it lends to, how far, and for how long.

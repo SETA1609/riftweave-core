@@ -178,12 +178,13 @@
                 "level",
                 "attribute",
                 "skill",
-                "perk"
+                "perk",
+                "not_excluded"
               ]
             },
             "key": {
               "type": "string",
-              "description": "The attribute or perk key."
+              "description": "The attribute or perk key; with not_excluded, the held perk that excludes this one."
             },
             "keys": {
               "type": "array",

@@ -42,6 +42,13 @@
               ],
               "additionalProperties": false
             }
+          },
+          "maneuvers": {
+            "type": "array",
+            "items": {
+              "$ref": "common.json#/definitions/ref"
+            },
+            "description": "The maneuvers the row lists (M3-24)."
           }
         }
       },
@@ -83,6 +90,20 @@
         "additionalProperties": {
           "type": "integer"
         }
+      },
+      "maneuvers": {
+        "type": "array",
+        "items": {
+          "$ref": "common.json#/definitions/ref"
+        },
+        "description": "The maneuvers the monster can use: the ones it lists and the ones its perks unlock, sorted (GD_S05_04)."
+      },
+      "riders": {
+        "type": "array",
+        "items": {
+          "$ref": "common.json#/definitions/ref"
+        },
+        "description": "The maneuvers its held rider perks put on its plain attacks that fit them, sorted; left out without one. Two perks that exclude each other are an error."
       }
     },
     "required": [

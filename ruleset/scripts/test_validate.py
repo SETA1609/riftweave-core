@@ -27,6 +27,7 @@ from validate import (
     check_build_tiers,
     check_spell_ward_table,
     check_maneuver_unlocks,
+    check_rider_perks,
     check_racial_trait_refs,
     load_canonical_damage_types,
     check_references,
@@ -216,6 +217,28 @@ class TestManeuverUnlocks(unittest.TestCase):
 
     def test_a_maneuver_a_perk_unlocks_passes(self):
         self.assertEqual(check_maneuver_unlocks([{"key": "heavy_swing"}], [{"key": "wind_up", "unlocks": ["core:maneuver/heavy_swing"]}]), [])
+
+
+class TestRiderPerks(unittest.TestCase):
+    """GD_S05_04: a rider perk needs the perk that unlocks its maneuver, and an exclusion is
+    listed both ways."""
+
+    UNLOCK = {"key": "low_sweep", "unlocks": ["core:maneuver/trip"]}
+
+    def test_the_data_passes(self):
+        features = json.loads((Path(__file__).resolve().parent.parent / "data" / "features" / "core.json").read_text())["features"]
+        self.assertEqual(check_rider_perks(features), [])
+
+    def test_a_one_way_exclusion_fails(self):
+        other = {"key": "bind", "unlocks": ["core:maneuver/disarm"]}
+        errors = check_rider_perks([dict(self.UNLOCK, excludes=["core:feature/bind"]), other])
+        self.assertTrue(any("does not exclude it back" in e for e in errors), errors)
+        self.assertEqual(check_rider_perks([dict(self.UNLOCK, excludes=["core:feature/bind"]), dict(other, excludes=["core:feature/low_sweep"])]), [])
+
+    def test_a_rider_that_does_not_need_its_unlock_perk_fails(self):
+        rider = {"key": "hook", "rider": "core:maneuver/trip", "prerequisite": {"perks": []}}
+        errors = check_rider_perks([self.UNLOCK, rider])
+        self.assertTrue(any("needs no perk that unlocks it" in e for e in errors), errors)
 
 
 class TestAttackSequences(unittest.TestCase):

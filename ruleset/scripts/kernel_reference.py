@@ -426,6 +426,47 @@ def maneuver_of(vector):
     return row
 
 
+def maneuver_fits(row, vector):
+    """Whether a plain attack fits a maneuver's ranges and weapon properties."""
+    if vector.get("range", "melee") not in row.get("ranges", [vector.get("range", "melee")]):
+        return False
+    wanted = row.get("weapon_properties")
+    return not wanted or bool(set(wanted) & set(vector["attacker"].get("weapon_properties", [])))
+
+
+def rider_of(vector, maneuver):
+    """The maneuver a held rider perk puts on a plain attack (docs/core/actions.md#rider-perks),
+    or None: none held, the attack is a maneuver, or no rider's maneuver fits the attack (a
+    melee rider on a ranged shot). Two riders that fit the same attack raise ValueError."""
+    refs = vector["attacker"].get("perks", [])
+    if not refs:
+        return None
+    features = {row["key"]: row for row in load_data("features/core.json")["features"]}
+    rows = {row["key"]: row for row in load_data("maneuvers/core.json")["maneuvers"]}
+    fitting = []
+    for ref in refs:
+        key = ref.rsplit("/", 1)[-1]
+        if key not in features:
+            raise ValueError(f'perk "{key}" is not defined')
+        rider = features[key].get("rider")
+        if rider and maneuver_fits(rows[rider.rsplit("/", 1)[-1]], vector):
+            fitting.append(key)
+    if len(fitting) > 1:
+        raise ValueError("two rider perks fit this attack: " + ", ".join(fitting))
+    if not fitting or maneuver is not None:
+        return None
+    return rows[features[fitting[0]]["rider"].rsplit("/", 1)[-1]]
+
+
+def maneuver_save(row, bonus, vector, pipeline):
+    """A maneuver attempt's save (docs/core/actions.md#the-maneuver-attempt): the DC is the
+    attacker's weapon attribute (damage.ability) x maneuver_save_multiplier plus the bonus, and
+    the defender's save target is 100 minus it, never below 0. The caller rolls the save."""
+    ability = vector["damage"]["ability"]
+    dc = vector["attacker"].get("attributes", {}).get(ability, 0) * pipeline["maneuver_save_multiplier"] + bonus
+    return {"attribute": ability, "dc": dc, "target": max(100 - dc, 0)}
+
+
 def holds_two_weapons(loadout):
     """A loadout with a weapon in each hand (docs/core/combat.md#attacks-by-loadout)."""
     return loadout is not None and loadout["main"] in ("light", "one_handed") and loadout["off"] in ("light_weapon", "weapon")
@@ -456,8 +497,13 @@ def run_combat(vector):
     try:
         situation_mods, called = situation_modifiers(vector, delivery)
         maneuver = maneuver_of(vector)
+        rider = rider_of(vector, maneuver)
     except ValueError as error:
         return {"error": str(error)}
+    # A maneuver attempt (a save_bonus row, or a rider) saves against the weapon's attribute.
+    attempt = rider is not None or (maneuver is not None and "save_bonus" in maneuver)
+    if attempt and "ability" not in damage:
+        return {"error": "a maneuver attempt needs the weapon's attribute (damage.ability)"}
     loadout = vector.get("loadout")
     if loadout is not None and attack_sequence_of(loadout) is None:
         return {"error": no_sequence_error(loadout)}
@@ -537,6 +583,12 @@ def run_combat(vector):
     if maneuver is not None:
         result["ap"], result["stamina"] = maneuver_cost(maneuver, vector.get("loadout"))
         result["effects"] = []
+    # A maneuver's or a rider's check and events (GD_S05_04); the caller rolls the check.
+    carried = maneuver if maneuver is not None else rider
+    if rider is not None:
+        result.update(rider=rider["key"], effects=[])
+    if carried is not None:
+        result["events"] = []
     if not attack["success"]:
         result.update(outcome="fumble" if "fumble" in attack["tags"] else "miss", damage=0, hp=defender["hp"])
         return result
@@ -598,6 +650,15 @@ def run_combat(vector):
         result["riders"] = [dict(rider) for rider in called.get("riders", [])]
     if maneuver is not None and not result["evaded"]:
         result["effects"] = [dict(applied) for applied in maneuver["effects"]]
+        result["events"] = list(maneuver.get("events", []))
+        if "save_bonus" in maneuver:
+            result["save"] = maneuver_save(maneuver, maneuver["save_bonus"], vector, pipeline)
+    # A rider: the attack resolves as a plain one, then on a hit the maneuver's attempt
+    # follows, with no save bonus.
+    if rider is not None and not result["evaded"]:
+        result["effects"] = [dict(applied) for applied in rider["effects"]]
+        result["events"] = list(rider.get("events", []))
+        result["save"] = maneuver_save(rider, 0, vector, pipeline)
     if weapon_effects is not None and not result["evaded"]:
         result["weapon_effects"] = landed_weapon_effects(weapon_effects, damage["type"], defender)
     return result
@@ -763,6 +824,8 @@ def run_attack_sequence(vector):
                     "flags": attacker.get("flags", []),
                     "weapon_properties": properties,
                     "weapon_effects": effects,
+                    # A shield has no weapon attribute, so no rider rides a bash (GD_S05_04).
+                    "perks": [] if bashing and hand == "off" else attacker.get("perks", []),
                 },
                 "defender": {**foes[foe], "hp": hp[foe]},
                 "damage": damage,
@@ -798,6 +861,8 @@ def run_attack_sequence(vector):
                 "scissor": scissor and hit,
                 # The landed effects, listed only when the strike's hand has any.
                 **({"weapon_effects": outcome.get("weapon_effects", [])} if effects else {}),
+                # A rider perk's attempt, as in combat; left out on a strike no rider rides.
+                **{key: outcome[key] for key in ("rider", "effects", "events", "save") if key in outcome},
             }
         )
         if bashing and hand == "off":
@@ -1002,6 +1067,13 @@ def take_perk(actor, held, key):
             if wanted > 1:
                 entry.update({"min": wanted, "has": has})
             unmet.append(entry)
+    # A held perk that excludes this one, or that this one excludes, blocks it: the trip line
+    # blocks the disarm line (docs/core/progression.md#excluded-perks, GD_S05_04).
+    for other in sorted(held):
+        listed = {ref.rsplit("/", 1)[-1] for ref in feature.get("excludes") or []}
+        back = {ref.rsplit("/", 1)[-1] for ref in features.get(other, {}).get("excludes") or []}
+        if held[other] > 0 and (other in listed or key in back):
+            unmet.append({"needs": "not_excluded", "key": other})
     if unmet:
         return {"taken": False, "perk": key, "rank": rank, "unmet": unmet}
     return {"taken": True, "perk": key, "rank": rank + 1, "unmet": []}
@@ -1081,6 +1153,20 @@ def run_monster_sheet(vector):
         else:
             return {"error": f'skill "{key}" is not defined'}
     result["skills"] = skills
+    # Its maneuvers: the ones the row lists and the ones its perks unlock; a rider perk puts
+    # its maneuver on the monster's plain attacks that fit it, and no two held perks exclude
+    # each other (GD_S05_04).
+    features = {f["key"]: f for f in load_data("features/core.json")["features"]}
+    held = [features[item["perk"].rsplit("/", 1)[-1]] for item in row.get("perks", [])]
+    unlocked = [ref for feature in held for ref in feature.get("unlocks", []) if ref.startswith("core:maneuver/")]
+    result["maneuvers"] = sorted(set(row.get("maneuvers", [])) | set(unlocked))
+    for index, first in enumerate(held):
+        for second in held[index + 1:]:
+            if f"core:feature/{second['key']}" in first.get("excludes", []) or f"core:feature/{first['key']}" in second.get("excludes", []):
+                return {"error": f"perks {first['key']} and {second['key']} exclude each other"}
+    riders = sorted(feature["rider"] for feature in held if feature.get("rider"))
+    if riders:
+        result["riders"] = riders
     return result
 
 
