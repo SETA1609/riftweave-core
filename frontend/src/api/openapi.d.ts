@@ -2365,7 +2365,6 @@ export interface operations {
                 "application/json": {
                     monster: {
                         attributes?: components["schemas"]["attributes"];
-                        hitPoints?: number;
                         level?: number;
                         /** @description The maneuvers the row lists (M3-24). */
                         maneuvers?: components["schemas"]["ref"][];
@@ -2374,6 +2373,11 @@ export interface operations {
                             perk: components["schemas"]["ref"];
                             rank?: number;
                         }[];
+                        /**
+                         * @description Scales the computed HP by progression/core.json monster_hp_multiplier; default standard (DE_S02_03).
+                         * @enum {string}
+                         */
+                        role?: "standard" | "boss" | "minion";
                         skills?: components["schemas"]["skills"];
                     };
                     read_skills?: components["schemas"]["key"][];
@@ -2470,16 +2474,21 @@ export interface operations {
                             };
                             delivery?: string;
                             key: components["schemas"]["key"];
-                            label: string;
+                            /** @description Only where it differs from the weapon's; left out, the page prints the weapon row's label (DE_S02_02). */
+                            label?: string;
                             phase?: string;
                             weapon: components["schemas"]["ref"];
                         }[];
                         attributes?: components["schemas"]["attributes"];
-                        hitPoints?: number;
                         level?: number;
                         resist?: {
                             [key: string]: number;
                         };
+                        /**
+                         * @description Scales the computed HP by progression/core.json monster_hp_multiplier; default standard (DE_S02_03).
+                         * @enum {string}
+                         */
+                        role?: "standard" | "boss" | "minion";
                         size?: string;
                         skills?: components["schemas"]["skills"];
                     };
