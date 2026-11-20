@@ -63,6 +63,27 @@ jobs:
         working-directory: frontend
         run: npx --yes npm@11.21.1 ci --no-audit --no-fund
 
+      # The API types follow the contract (FE_S00_05): regenerate them from the server started
+      # above and fail on any difference, so a contract change cannot leave openapi.d.ts behind.
+      # The regenerated file is kept as an artifact, so it can be committed without a local server.
+      - name: Check the API types are current
+        id: api-types
+        working-directory: frontend
+        run: |
+          npm run generate
+          git diff --exit-code -- src/api/openapi.d.ts || {
+            echo "::error file=frontend/src/api/openapi.d.ts::openapi.d.ts is behind the contract: run npm run generate against a server built from this branch, or commit the openapi-types artifact of this run"
+            exit 1
+          }
+
+      - name: Keep the regenerated API types
+        if: failure() && steps.api-types.outcome == 'failure'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: openapi-types
+          path: frontend/src/api/openapi.d.ts
+          retention-days: 7
+
       - name: Build
         working-directory: frontend
         run: npm run build

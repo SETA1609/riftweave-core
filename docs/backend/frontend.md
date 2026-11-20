@@ -19,7 +19,9 @@ src/app/api.ts     openapi-fetch over those types: one function per call the app
 ```
 
 The generated file is checked in, so the app builds without a server; `npm run generate` refreshes
-it after a contract change, and a stale file fails the type check where a field moved. [A]
+it after a contract change. The frontend workflow regenerates it against the server it starts and
+fails when the checked-in file differs, keeping the regenerated file as the `openapi-types`
+artifact, so a contract change cannot leave it behind (FE_S00_05). [V 2026-11-20, this workflow]
 `npm run generate` runs `openapi-typescript` 7.13.0 through `npx`, not as a dependency: it pins
 TypeScript 5 as a peer, and Angular 22 needs TypeScript 6. [V 2026-11-14]
 `api.ts` sends every call through a transport: `httpTransport(baseUrl)` over openapi-fetch, or
