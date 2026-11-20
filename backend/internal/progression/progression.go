@@ -250,8 +250,13 @@ func takePerk(ruleset *data.Ruleset, sheet *actor.Actor, held map[string]int64, 
 	if sheet.Level != nil {
 		level = *sheet.Level
 	}
-	if need.Level > level {
-		failed = append(failed, unmet{Needs: "level", Minimum: &need.Level, Has: &level})
+	// A tiered perk's next tier has its own gate (rank_levels, GD_S05_03).
+	var gate int64 = need.Level
+	if rank < int64(len(feature.RankLevels)) {
+		gate = feature.RankLevels[rank]
+	}
+	if gate > level {
+		failed = append(failed, unmet{Needs: "level", Minimum: &gate, Has: &level})
 	}
 	var abilities []string = make([]string, 0, len(need.Abilities))
 	for ability := range need.Abilities {

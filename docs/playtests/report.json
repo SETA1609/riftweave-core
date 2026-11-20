@@ -42,13 +42,14 @@
       "perks": {
         "arcane_reservoir": 3,
         "archmage": 1,
-        "battle_mage": 1,
         "conjurer": 1,
         "elemental_harmony": 1,
         "elemental_kinship": 1,
         "follow_up": 1,
         "hardened_hide": 3,
         "kindred_focus": 1,
+        "low_guard": 1,
+        "mailed_casting": 3,
         "mana_flow": 1,
         "meditative": 1,
         "necromancer": 1,
@@ -61,10 +62,7 @@
         "summon_demonic": 1,
         "summon_dire": 1,
         "summon_elder": 1,
-        "summon_host": 1,
-        "summon_otherworldly": 1,
-        "summon_retinue": 1,
-        "survivor": 1
+        "summon_otherworldly": 1
       },
       "replay_matches": true,
       "skills": {
@@ -124,7 +122,7 @@
         "fought level gap +2": 6,
         "fought level gap -1": 3,
         "fought level gap -2": 2,
-        "no eligible perk at a level-up": 9,
+        "no eligible perk at a level-up": 6,
         "spell damage applied by the driver, not a command": 178
       },
       "label": "Blue and green mage",
@@ -132,11 +130,12 @@
       "perks": {
         "arcane_reservoir": 3,
         "archmage": 1,
-        "battle_mage": 1,
         "elemental_harmony": 1,
         "follow_up": 1,
         "hardened_hide": 3,
         "healer": 2,
+        "low_guard": 1,
+        "mailed_casting": 3,
         "mana_flow": 1,
         "meditative": 1,
         "polyglot": 1,
@@ -170,7 +169,7 @@
         "petrify",
         "renewal"
       ],
-      "steps": 829
+      "steps": 832
     },
     "caster_red": {
       "attacks": {
@@ -205,7 +204,7 @@
         "fought level gap +2": 3,
         "fought level gap -1": 6,
         "fought level gap -2": 8,
-        "no eligible perk at a level-up": 11,
+        "no eligible perk at a level-up": 10,
         "spell damage applied by the driver, not a command": 107
       },
       "label": "Red mage",
@@ -216,6 +215,7 @@
         "elemental_harmony": 1,
         "follow_up": 1,
         "hardened_hide": 3,
+        "low_guard": 1,
         "mana_flow": 1,
         "meditative": 1,
         "polyglot": 1,
@@ -242,7 +242,7 @@
         "meteor",
         "inferno"
       ],
-      "steps": 652
+      "steps": 653
     },
     "caster_white_violet": {
       "attacks": {
@@ -277,17 +277,18 @@
         "fought level gap +2": 7,
         "fought level gap -1": 5,
         "fought level gap -2": 6,
-        "no eligible perk at a level-up": 8,
+        "no eligible perk at a level-up": 5,
         "spell damage applied by the driver, not a command": 164
       },
       "label": "White and violet mage",
       "level": 30,
       "perks": {
         "arcane_reservoir": 3,
-        "battle_mage": 1,
         "elemental_harmony": 1,
         "follow_up": 1,
         "hardened_hide": 3,
+        "low_guard": 1,
+        "mailed_casting": 3,
         "mana_flow": 1,
         "meditative": 1,
         "polyglot": 1,
@@ -325,7 +326,7 @@
         "greater_dispel",
         "divine_shield"
       ],
-      "steps": 764
+      "steps": 767
     },
     "caster_yellow_indigo": {
       "attacks": {
@@ -361,7 +362,7 @@
         "fought level gap +2": 8,
         "fought level gap -1": 4,
         "fought level gap -2": 7,
-        "no eligible perk at a level-up": 10,
+        "no eligible perk at a level-up": 9,
         "spell damage applied by the driver, not a command": 152
       },
       "label": "Yellow and indigo mage",
@@ -373,6 +374,7 @@
         "follow_up": 1,
         "hardened_hide": 3,
         "illusionist": 1,
+        "low_guard": 1,
         "mana_flow": 1,
         "meditative": 1,
         "polyglot": 1,
@@ -408,7 +410,7 @@
         "mass_charm",
         "sonic_boom"
       ],
-      "steps": 816
+      "steps": 817
     },
     "hybrid_blades_red": {
       "attacks": {
@@ -445,17 +447,20 @@
         "fought level gap +2": 5,
         "fought level gap -1": 2,
         "fought level gap -2": 8,
-        "no eligible perk at a level-up": 12
+        "no eligible perk at a level-up": 7
       },
       "label": "Spellblade",
       "level": 30,
       "perks": {
         "arcane_reservoir": 3,
-        "battle_mage": 1,
         "carry_through": 1,
         "follow_up": 1,
+        "forward_guard": 1,
         "full_weight": 1,
         "hardened_hide": 3,
+        "long_guard": 1,
+        "low_guard": 1,
+        "mailed_casting": 3,
         "polyglot": 1,
         "pyromancer": 2,
         "quick_learner": 1,
@@ -481,17 +486,17 @@
         "meteor",
         "inferno"
       ],
-      "steps": 1141
+      "steps": 1146
     },
     "melee_blades": {
       "attacks": {
         "monster": {
-          "evaded": 126,
+          "evaded": 134,
           "fumble": 4,
-          "hit": 189,
+          "hit": 181,
           "miss": 20
         },
-        "monster_damage": 675,
+        "monster_damage": 645,
         "player": {
           "evaded": 158,
           "fumble": 2,
@@ -517,28 +522,32 @@
         "fought level gap +1": 6,
         "fought level gap +2": 10,
         "fought level gap -1": 5,
-        "fought level gap -2": 3,
-        "no eligible perk at a level-up": 10
+        "fought level gap -2": 3
       },
       "label": "Blades fighter",
       "level": 30,
       "perks": {
-        "armored_evasion": 1,
+        "armored_evasion": 3,
         "berserker": 1,
         "carry_through": 1,
         "catch_breath": 1,
         "crossed_guard": 1,
+        "espada_y_daga": 1,
+        "flowing_step": 1,
         "follow_up": 1,
+        "forward_guard": 1,
         "full_weight": 1,
         "hardened_hide": 3,
         "iron_stomach": 1,
+        "long_guard": 1,
+        "low_guard": 1,
         "off_hand_drill": 1,
         "pack_mule": 2,
         "ready_hand": 1,
         "reaping_arc": 1,
         "sidestep": 1,
         "snap_cut": 1,
-        "wind_up": 1
+        "unarmored_grace": 4
       },
       "replay_matches": true,
       "skills": {
@@ -548,17 +557,17 @@
         "heavy_armor": 100
       },
       "spells": [],
-      "steps": 1064
+      "steps": 1074
     },
     "ranged_bows": {
       "attacks": {
         "monster": {
-          "evaded": 133,
+          "evaded": 135,
           "fumble": 3,
-          "hit": 182,
+          "hit": 180,
           "miss": 29
         },
-        "monster_damage": 672,
+        "monster_damage": 667,
         "player": {
           "evaded": 157,
           "fumble": 5,
@@ -584,14 +593,12 @@
         "fought level gap +1": 6,
         "fought level gap +2": 4,
         "fought level gap -1": 4,
-        "fought level gap -2": 7,
-        "no eligible perk at a level-up": 4
+        "fought level gap -2": 7
       },
       "label": "Archer",
       "level": 30,
       "perks": {
-        "acrobat": 1,
-        "armored_evasion": 1,
+        "armored_evasion": 3,
         "assassin": 1,
         "backstab": 1,
         "crossed_guard": 1,
@@ -602,6 +609,7 @@
         "gap_finder": 1,
         "ghost": 1,
         "hardened_hide": 3,
+        "low_guard": 1,
         "night_eyes": 1,
         "off_hand_drill": 1,
         "press_on": 1,
@@ -612,7 +620,8 @@
         "snap_cut": 1,
         "sniper": 1,
         "steady_aim": 1,
-        "twin_rhythm": 1
+        "twin_rhythm": 1,
+        "unarmored_grace": 2
       },
       "replay_matches": true,
       "skills": {
@@ -622,27 +631,25 @@
         "stealth": 100
       },
       "spells": [],
-      "steps": 1097
+      "steps": 1101
     }
   },
-  "calls": 22433,
+  "calls": 22218,
   "findings": {
     "fought level gap +0": 62,
     "fought level gap +1": 48,
     "fought level gap +2": 44,
     "fought level gap -1": 41,
     "fought level gap -2": 45,
-    "no eligible perk at a level-up": 64,
+    "no eligible perk at a level-up": 37,
     "spell damage applied by the driver, not a command": 845
   },
   "perks_taken": {
-    "acrobat": 1,
     "arcane_reservoir": 18,
     "archmage": 4,
-    "armored_evasion": 2,
+    "armored_evasion": 6,
     "assassin": 1,
     "backstab": 1,
-    "battle_mage": 4,
     "berserker": 1,
     "carry_through": 2,
     "catch_breath": 1,
@@ -651,9 +658,12 @@
     "easy_stride": 1,
     "elemental_harmony": 5,
     "elemental_kinship": 1,
+    "espada_y_daga": 1,
     "ever_watchful": 1,
     "fleet_footed": 1,
+    "flowing_step": 1,
     "follow_up": 8,
+    "forward_guard": 2,
     "full_weight": 2,
     "gap_finder": 1,
     "ghost": 1,
@@ -662,6 +672,9 @@
     "illusionist": 1,
     "iron_stomach": 1,
     "kindred_focus": 1,
+    "long_guard": 2,
+    "low_guard": 8,
+    "mailed_casting": 12,
     "mana_flow": 5,
     "meditative": 5,
     "necromancer": 1,
@@ -687,18 +700,17 @@
     "summon_demonic": 1,
     "summon_dire": 1,
     "summon_elder": 1,
-    "summon_host": 1,
     "summon_otherworldly": 1,
-    "summon_retinue": 1,
-    "survivor": 3,
+    "survivor": 2,
     "telekinetic": 1,
     "transmuter": 1,
     "twin_rhythm": 1,
+    "unarmored_grace": 6,
     "unraveler": 1,
     "unshaken": 2,
     "ward_breaker": 5,
     "warded_mind": 2,
-    "wind_up": 2,
+    "wind_up": 1,
     "zealot": 2
   },
   "seed": "m5-18"

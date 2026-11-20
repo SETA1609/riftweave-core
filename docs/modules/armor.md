@@ -1,6 +1,6 @@
 # Armor System
 
-Modified: 2026-11-16
+Modified: 2026-11-19
 
 Core armor is a slot, a base DR, a weight, a skill, and an evasion penalty. Layering is content, not a requirement. The pipeline is one line: DV roll, then DR, then a resist tag. A skin layer is not required to wear chain.
 
@@ -252,7 +252,7 @@ M3-27).
 |------|---------|------------|-------|
 | **Buckler** | 1 | Light (0.5 weight). Allows light off-hand item (dagger, wand). −5 evasion penalty. | block |
 | **Standard shield** | 2 | Normal weight (1.0). Occupies off-hand fully. −10 evasion penalty. | block |
-| **Tower shield** | 4 | Heavy (2.0 weight). Grants half cover to adjacent allies. −20 evasion penalty. Speed −1. STR 8+ required. | block |
+| **Tower shield** | 4 | Heavy (2.0 weight). Covering an adjacent ally is the Guardian perk ([combat.md](../core/combat.md#block-and-dodge-perks)). −20 evasion penalty. Speed −1. STR 8+ required. | block |
 
 Shield DR is further modified by material (`material.armor.defense`) just
 like armor pieces.

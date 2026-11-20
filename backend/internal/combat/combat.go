@@ -51,8 +51,11 @@ type Defender struct {
 	Loadout *data.Loadout `json:"loadout"`
 	// CreatureType is the defender's creature type, which a weapon's bane reads.
 	CreatureType string `json:"creature_type"`
+	// Armor is the heaviest body armor worn: none, light, medium, or heavy; "" reads none.
+	// Unarmored Grace widens the band only with none.
+	Armor string `json:"armor"`
 	// Modifiers are the defender's perks and fighting stance: adds on evasion, evasion_band,
-	// shields, and shield_dr, and the block_magic, bulwark, riposte, parry, and
+	// shields, block_band, shield_dr, unarmored_evasion_band, and spell_ward, and the bulwark, riposte, parry, and
 	// block_with_weapon grants.
 	Modifiers []modifier.Modifier `json:"modifiers"`
 }
@@ -100,8 +103,12 @@ type Result struct {
 	// ParryRate is a parrying stance's band, under the block band; Parried is a hit it stopped.
 	ParryRate int64 `json:"parry_rate"`
 	Parried   bool  `json:"parried"`
-	Damage    int64 `json:"damage"`
-	HitPoints int64 `json:"hp"`
+	// Warded is Spell Ward: a spell whose roll landed in the block band, with WardPercent of
+	// its damage resisted.
+	Warded      bool  `json:"warded"`
+	WardPercent int64 `json:"ward_percent"`
+	Damage      int64 `json:"damage"`
+	HitPoints   int64 `json:"hp"`
 	// Counter is a riposte: a dodge's evade in the window lets the defender attack back.
 	Counter bool `json:"counter"`
 	// StaggerAP is Bulwark: AP the attacker loses on their next turn.
@@ -380,6 +387,16 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 			result.Outcome, result.Damage, result.HitPoints = "evaded", 0, defender.HitPoints
 			return result, nil
 		}
+	case margin < evasionRate+blockRate && !damageType.Physical:
+		tier, err := modifier.Value(0, modifier.Target(defender.Modifiers, "spell_ward"), ruleset.Origins, 0, nil)
+		if err != nil {
+			return Result{}, err
+		}
+		ward, err := pipeline.SpellWardPercent.Evaluate(nil, formula.Variable{Name: "end", Value: defender.Attributes.Get(actor.Endurance)}, formula.Variable{Name: "tier", Value: tier})
+		if err != nil {
+			return Result{}, err
+		}
+		result.Warded, result.WardPercent = true, min(ward, pipeline.SpellWardMaxPercent)
 	case margin < evasionRate+blockRate:
 		result.Outcome, result.Blocked, result.Damage, result.HitPoints = "blocked", true, 0, defender.HitPoints
 		if slices.Contains(perkFlags, "bulwark") && margin >= evasionRate+blockRate-window {
@@ -450,6 +467,7 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		amount = max(amount-damageReduction, 0)
 	}
 	amount = max(amount-defender.Resist[input.Damage.Type], 0)
+	amount -= amount * result.WardPercent / 100
 	result.Damage, result.HitPoints = amount, max(defender.HitPoints-amount, 0)
 	if calledShot != nil && !result.Evaded {
 		var riders []data.Rider = append([]data.Rider{}, calledShot.Riders...)
@@ -473,7 +491,7 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 }
 
 // bands is step 2's rates: the evasion band (doubled by the dodge stance) and the block
-// stance's band (halved against magic with block_magic, none without it). Instant meets
+// stance's band (physical hits, and with Spell Ward the spells it wards). Instant meets
 // neither.
 func bands(ruleset *data.Ruleset, defender *Defender, physical bool, delivery string) (int64, int64, error) {
 	if delivery == "instant" {
@@ -510,8 +528,19 @@ func bands(ruleset *data.Ruleset, defender *Defender, physical bool, delivery st
 		return 0, 0, err
 	}
 	evasionRate = max(banded, 0)
-	var blockMagic bool = slices.Contains(modifier.Flags(defender.Modifiers, 0, nil), "block_magic")
-	if defender.Stance != "block" || (!physical && !blockMagic) {
+	// Unarmored Grace: no body armor widens the band.
+	if defender.Armor == "" || defender.Armor == "none" {
+		unarmored, err := modifier.Value(evasionRate, modifier.Target(defender.Modifiers, "unarmored_evasion_band"), ruleset.Origins, 0, nil)
+		if err != nil {
+			return 0, 0, err
+		}
+		evasionRate = max(unarmored, 0)
+	}
+	wardTier, err := modifier.Value(0, modifier.Target(defender.Modifiers, "spell_ward"), ruleset.Origins, 0, nil)
+	if err != nil {
+		return 0, 0, err
+	}
+	if defender.Stance != "block" || (!physical && wardTier <= 0) {
 		return evasionRate, 0, nil
 	}
 	shields, err := modifier.Value(*defender.ShieldsSkill, modifier.Target(defender.Modifiers, "shields"), ruleset.Origins, 0, nil)
@@ -525,10 +554,9 @@ func bands(ruleset *data.Ruleset, defender *Defender, physical bool, delivery st
 	if err != nil {
 		return 0, 0, err
 	}
-	if !physical {
-		if blockRate, err = pipeline.MagicBlockRate.Evaluate(nil, formula.Variable{Name: "rate", Value: blockRate}); err != nil {
-			return 0, 0, err
-		}
+	widened, err := modifier.Value(blockRate, modifier.Target(defender.Modifiers, "block_band"), ruleset.Origins, 0, nil)
+	if err != nil {
+		return 0, 0, err
 	}
-	return evasionRate, blockRate, nil
+	return evasionRate, max(widened, 0), nil
 }

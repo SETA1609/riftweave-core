@@ -20,12 +20,15 @@ One attack, in order, from the roll to the HP lost. Every step reads the actor s
 2. bands      the defense bands, read on the same roll (none for delivery instant)
               evasion_rate  E = evasion_rate(evasion_skill + defender mods on evasion)     formula tree
                             stance dodge: E = dodge_evasion_rate(E)                         formula tree
+                            defender armor none: E += mods on unarmored_evasion_band (Unarmored Grace)
               block_rate    B = 0, or with stance block: block_rate(shields_skill + mods on shields)
-                            a type without armor_dr_applies: B = 0, or with block_magic
-                            B = magic_block_rate(B)                                          formula tree
+                            + mods on block_band (Shield Wall)                               formula tree
+                            a type without armor_dr_applies: B = 0, unless Spell Ward (tier > 0)
               crit          a crit always hits: no band
               evaded        margin < E           single: no damage, stop   area: halved at step 5
               blocked       E <= margin < E + B  no damage, stop
+              warded        E <= margin < E + B, a type without armor_dr_applies: a hit,
+                            ward_percent = min(spell_ward_percent(END, tier), 50)      formula tree
               hit           margin >= E + B
               riposte       stance dodge, single, evaded, margin >= E - window: counter
               bulwark       stance block, blocked, margin >= E + B - window: stagger
@@ -42,6 +45,7 @@ One attack, in order, from the roll to the HP lost. Every step reads the actor s
               dr = dr - floor(dr * pierce / 100), pierce = the weapon's armor_pierce magnitudes, at most 100
               damage = damage - dr
 7. resist     damage = damage - resist[damage_type]
+              if warded: damage = damage - floor(damage * ward_percent / 100)
 8. hp         lost = max(damage, 0); hp = max(hp - lost, 0)
 9. riders     on a hit (not evaded, not blocked), the called shot's riders are listed for the caller,
               and a maneuver's effects; with a maneuver the result also gives its ap and stamina
@@ -56,9 +60,9 @@ Each subtraction stops at zero before the next step: a step never raises damage.
 - **The evasion rate is always on.** `evasion_rate` is half the Evasion skill, rounded down (`pipeline.json`), after the defender's modifiers on `evasion`, so every point bought in Evasion widens the band by half a number. Armor and encumbrance penalties are modifiers on `evasion` and narrow it [U: not in the vectors yet]. A defender with no `evasion_skill` has a band of 0. The tree is a formula, so a module may change it. [A] The dropped `10 + evasion_skill * 0.15 + AGI * 2` stays dropped: skill points barely moved it.
 - **A crit always hits.** The crit window sits at the bottom of the d100, far from the target, so a band never reaches it in practice; the rule says so outright for a low target. [A]
 - **Delivery, not damage type, decides the dodge.** `single` is one target: a sword cut, an arrow, a fire bolt, a touch spell; in the evaded band it does no damage. `area` is a radius or a cone: a fireball, a breath weapon, a thrown bomb; in the evaded band it is halved (rounded down), dodging or not (owner, 2026-11-16). `instant` meets no band: the effect lands, and a save the spell names decides how it behaves ([casting.md](casting.md#delivery-and-saves)). Physical and magic attacks follow the same rule. [V 2026-11-04, owner decision] A spell effect's `target` shape maps to it: `touch` and `ranged` are `single`, `area` is `area`. [A]
-- **Stances are declared actions.** `defender.stance` is `dodge` or `block`, declared on the defender's turn ([actions.md](actions.md)) and in force until their next turn; without one the defender has only the passive band and the shield's DR. **Dodge** (3 AP) doubles the evasion rate. **Block** (2 AP, reserved, refunded if unused) adds a block band of half the `shields` skill below the evaded band, and needs a carried shield (`shield_dr`). A block band applies only to types with `armor_dr_applies`: a shield does not stop fire unless the defender has Spell Ward, which gives a block band of half the width against magic. A blocked hit does no damage. [V 2026-11-16, owner pick: option a for dodge; the block band is the option a this issue names]
+- **Stances are declared actions.** `defender.stance` is `dodge` or `block`, declared on the defender's turn ([actions.md](actions.md)) and in force until their next turn; without one the defender has only the passive band and the shield's DR. **Dodge** (3 AP) doubles the evasion rate. **Block** (2 AP, reserved, refunded if unused) adds a block band of half the `shields` skill below the evaded band, and needs a carried shield (`shield_dr`). A block band stops only types with `armor_dr_applies`: a shield does not stop fire. With Spell Ward a magic hit in the band is warded: it lands, less a share of its damage (see the perks below). A blocked hit does no damage. [V 2026-11-16, owner pick: option a for dodge; the block band is the option a this issue names]
 - **A carried shield is DR.** `defender.shield_dr` (with the defender's modifiers on `shield_dr`) joins the worn armor DR against types with `armor_dr_applies`, with no action and no roll. A piercing hit halves the total, shield included. [A]
-- **Balance between dodge and block.** Dodging costs more AP and is narrowed by armor; blocking needs a shield and stops only physical hits without a perk; a carried shield always helps through its DR. [A]
+- **Balance between dodge and block.** Dodging costs more AP and is narrowed by armor; blocking needs a shield and stops only physical hits (Spell Ward softens magic in the band); a carried shield always helps through its DR. [A]
 - **Attribute modifier.** An attribute's modifier is `attribute − 5` (`formulas/attribute_modifier.json`): +5 at 10, 0 at 5, −4 at 1. `damage.ability` names the attribute the attack uses, read from `attacker.attributes`; with no `ability` the roll stands alone. The modifier adds before the called-shot multiplier and the crit, so both multiply it [A], and a penalty stops at zero. Which attribute a weapon uses is in [attributes.md](../modules/attributes.md#the-attribute-modifier). [V 2026-11-11, vectors in `combat.json`]
 - **Crit** multiplies damage by 2 (`crit_damage` in `pipeline.json`). It is a consumer of the `crit` tag, not a second roll. Crit multiplies before any reduction. [A]
 - **Armor DR** is the sum of worn pieces ([armor.md](../modules/armor.md)); the pipeline takes the sum as an input. Types tagged `bypasses_armor` or `bypasses_physical_armor` carry no `armor_dr_applies`, so DR skips them. [A]
@@ -67,16 +71,52 @@ Each subtraction stops at zero before the next step: a step never raises damage.
 
 ## Block and dodge perks
 
-The defender's perks reach the pipeline as `defender.modifiers`, stacked by [modifier.md](modifier.md): `add` on `evasion` and `shields` (the skills the bands read) and on `shield_dr`, and three `grant` flags. The rows are perks in `ruleset/data/features/core.json`, each gated by a skill threshold and the perk below it. [V 2026-11-06]
+The defender's perks reach the pipeline as `defender.modifiers`, stacked by [modifier.md](modifier.md): `add` on `evasion`, `shields`, `block_band`, `unarmored_evasion_band`, `spell_ward`, and `shield_dr`, and `grant` flags. The rows are perks in `ruleset/data/features/core.json`. Since GD_S05_03 most are **tiered**: one perk with `ranks` and `rank_levels`, the level each tier opens at, and taking it again raises the tier ([progression.md](progression.md)). A tier emits the perk's value times the tier, or for Shield Training the tier's own value in `rank_values`. [V 2026-11-19]
 
-| Ladder | Perk | Emits | Effect |
+| Ladder | Perk | Tiers (levels) | Emits per tier | Effect |
+| --- | --- | --- | --- | --- |
+| Block | Shield Training | 1, 6, 12 | `add shield_dr` 2, 3, 4 | the carried shield subtracts 2, 3, then 4 more |
+| Block | Shield Wall | 1, 6, 12 | `add block_band 3` | the block band widens by 3, 6, then 9 |
+| Block | Spell Ward | 6, 12, 18 | `add spell_ward 1` | while blocking, a magic hit in the block band is warded: it lands, less END × 2 × tier % of its damage, at most 50 % (`spell_ward_table` in `pipeline.json`) |
+| Block | Bulwark | one (Shield Training tier 2) | `grant bulwark` | while blocking, a block in the band's lowest rolls (as wide as the defender's crit window) also staggers the attacker: `stagger_ap` (2) AP less on their next turn |
+| Block | Guardian | 6, 12, 18 | `add guardian 1` | while blocking, any shield: one adjacent ally's evasion band +10 / the block band also covers attacks on that ally / it covers every adjacent ally; pending, the kernel has no allies yet [U] |
+| Block | Boss Strike | 1, 6, 12, 18 | `add boss_strike 1` | the shield joins the attack as a bash ([the bash](#the-shield-bash)) |
+| Dodge | Sidestep | one | `add dodge -1` | the dodge action costs 1 AP less ([actions.md](actions.md)) |
+| Dodge | Armored Evasion | 6, 12, 18 | `add evasion 5` | offsets the armor penalties on the evasion skill: +5, +10, +15 |
+| Dodge | Unarmored Grace | 1, 6, 12, 18 | `add unarmored_evasion_band 5` | with no body armor (`defender.armor` `none`), the evasion band widens by 5 a tier |
+| Dodge | Flowing Step | one (Unarmored Grace tier 2) | `grant flowing_step` | moving out of reach draws no opportunity attack; pending, the kernel has none [U] |
+| Dodge | Riposte | one | `grant riposte` | while dodging, an evade of a `single` attack in the band's lowest rolls (as wide as the defender's crit window) sets `counter`: the defender may make one attack at no AP cost; the caller runs it as its own attack |
+
+The Spell Ward table, END down and tier across (percent of the damage warded):
+
+| END | 1 | 2 | 3 |
 | --- | --- | --- | --- |
-| Block | Shield Training | `add shield_dr 2` | the carried shield subtracts 2 more |
-| Block | Spell Ward | `grant block_magic` | while blocking, a block band of half the width stops a single or area attack of a type without `armor_dr_applies` (fire, a force dart) |
-| Block | Bulwark | `grant bulwark` | while blocking, a block in the band's lowest rolls (as wide as the defender's crit window) also staggers the attacker: `stagger_ap` (2) AP less on their next turn |
-| Dodge | Sidestep | `add dodge -1` | the dodge action costs 1 AP less ([actions.md](actions.md)) |
-| Dodge | Armored Evasion | `add evasion 10` | offsets the armor penalties on the evasion skill: the band widens by 5 |
-| Dodge | Riposte | `grant riposte` | while dodging, an evade of a `single` attack in the band's lowest rolls (as wide as the defender's crit window) sets `counter`: the defender may make one attack at no AP cost; the caller runs it as its own attack |
+| 1 | 2 | 4 | 6 |
+| 2 | 4 | 8 | 12 |
+| 3 | 6 | 12 | 18 |
+| 4 | 8 | 16 | 24 |
+| 5 | 10 | 20 | 30 |
+| 6 | 12 | 24 | 36 |
+| 7 | 14 | 28 | 42 |
+| 8 | 16 | 32 | 48 |
+| 9 | 18 | 36 | 50 |
+| 10 | 20 | 40 | 50 |
+
+- **The ward rounds down, after resist.** A warded hit takes resist first, then loses `floor(damage × ward_percent / 100)`. A crit is never warded, as it is never blocked. [A, GD_S05_03]
+- **Gone in GD_S05_03.** Acrobat (its `dodge_stamina` had no consumer) and the half-width magic block band (`block_magic`, `magic_block_rate`). Battle Mage is Mailed Casting ([casting.md](casting.md#armor-and-shields)). [A]
+
+### The shield bash
+
+Boss Strike makes the carried shield (a buckler counts) a second weapon in the attack sequence ([attacks by loadout](#attacks-by-loadout)): `shield_bash` in `attack_sequences/core.json`. The off hand reads as a `light_weapon`, so the AP follow the light weapon row, and the bash rolls on the Shields skill (`off_skill`; a bash without it is an error, as without `shield_dr`, so it never rolls on the main-hand weapon's skill). Its damage is `shield_dr` plus the bash roll, bludgeoning. A shield has no weapon dice, so a bash is never the Scissor Cut strike. [V 2026-11-19]
+
+| Tier | Bash |
+| --- | --- |
+| 1 | a jab: the light jab row, -10 to hit, 2 AP |
+| 2 | the attack includes the bash as its off-hand strike |
+| 3 | a bash that hits staggers: the target has `stagger_ap` (2) AP less on its next turn |
+| 4 | after a block this turn (`after_block`), a bash jab costs 1 AP (`after_block_ap`) |
+
+- The bash needs `attacker.shield_dr`; without it the sequence is an error. A strike that is a bash reports `bash: true`, and a staggering one `stagger_ap`. [A]
 
 - **Instant stays out.** An `instant` attack meets no band, so no perk blocks or evades it; its defense is the save ([casting.md](casting.md#delivery-and-saves)). [V 2026-11-06, owner rule in M2-06]
 - **Perks hook on the stances.** With no defender roll there is no crit reaction, so Riposte and Bulwark read a window of the band instead, and only in their stance (owner pick, 2026-11-16). The band's lowest rolls are its highest margins, next to the hit band: the attacker only just failed to hit clean. [A]

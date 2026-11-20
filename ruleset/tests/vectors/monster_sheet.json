@@ -295,7 +295,7 @@
     }
   },
   {
-    "name": "perks: Armored Evasion adds 10 to a grown evasion, and a perk with no rank is rank 1",
+    "name": "perks: Armored Evasion adds 5 to a grown evasion, and a perk with no rank is rank 1",
     "monster": {
       "attributes": {
         "str": 6,
@@ -323,7 +323,7 @@
     ],
     "expect": {
       "skills": {
-        "evasion": 59,
+        "evasion": 54,
         "stealth": 15
       },
       "initiative": 14

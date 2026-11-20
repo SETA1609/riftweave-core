@@ -17,13 +17,13 @@ POUNDS = r"(?i)\b(pounds?|lbs?)\b"
 
 # Perk: (new target, the percent per rank it gave as an `add`, its listed ranks).
 SCALED = {
-    "full_weight": ("melee_damage", 25, 1), "shield_wall": ("block_reduction", 15, 1),
+    "full_weight": ("melee_damage", 25, 1),
     "pyromancer": ("red_magic_magnitude", 15, 2), "ghost": ("detection_chance", -25, 1),
     "field_medic": ("medicine_healing", 50, 1), "heavy_armor_expert": ("heavy_armor_surcharge", -50, 1),
-    "acrobat": ("dodge_stamina", -25, 1), "iron_fist": ("unarmed_strike_damage", 50, 1),
+    "iron_fist": ("unarmed_strike_damage", 50, 1),
     "sniper": ("ranged_range_penalty", -50, 1), "berserker": ("damage_below_half_hp", 20, 1),
     "executioner": ("crit_damage", 50, 1), "mana_flow": ("mp_regen", 25, 1),
-    "battle_mage": ("armor_cast_penalty", -50, 1), "healer": ("green_magic_magnitude", 15, 2),
+    "mailed_casting": ("armor_cast_penalty", -25, 3), "healer": ("green_magic_magnitude", 15, 2),
     "illusionist": ("yellow_magic_duration", 25, 1), "conjurer": ("summon_duration", 50, 1),
     "transmuter": ("blue_magic_duration", 25, 1), "telekinetic": ("indigo_magic_range", 50, 1),
     "zealot": ("white_magic_magnitude", 15, 2), "archmage": ("spell_cost", -20, 1),

@@ -265,7 +265,9 @@ type Pipeline struct {
 	EvasionRate               formula.Program `json:"evasion_rate"`
 	DodgeEvasionRate          formula.Program `json:"dodge_evasion_rate"`
 	BlockRate                 formula.Program `json:"block_rate"`
-	MagicBlockRate            formula.Program `json:"magic_block_rate"`
+	SpellWardPercent          formula.Program `json:"spell_ward_percent"`
+	SpellWardMaxPercent       int64           `json:"spell_ward_max_percent"`
+	SpellWardTable            [][]int64       `json:"spell_ward_table"`
 	BulwarkStaggerAP          int64           `json:"bulwark_stagger_ap"`
 	PierceDamageReduction     formula.Program `json:"pierce_dr"`
 	DamageReductionAppliesTag string          `json:"dr_applies_tag"`
@@ -394,6 +396,20 @@ type AttackSequences struct {
 		Attack int64    `json:"attack"`
 		Main   []string `json:"main"`
 	} `json:"circle_cut"`
+	// ShieldBash is Boss Strike's shield bash, by the attacker's boss_strike tier.
+	ShieldBash struct {
+		Off        []string `json:"off"`
+		AsOff      string   `json:"as_off"`
+		DamageType string   `json:"damage_type"`
+		Tiers      struct {
+			Jab        int64 `json:"jab"`
+			Attack     int64 `json:"attack"`
+			Stagger    int64 `json:"stagger"`
+			AfterBlock int64 `json:"after_block"`
+		} `json:"tiers"`
+		StaggerAP    int64 `json:"stagger_ap"`
+		AfterBlockAP int64 `json:"after_block_ap"`
+	} `json:"shield_bash"`
 	Rows []AttackSequence `json:"attack_sequences"`
 }
 
@@ -520,10 +536,14 @@ type Effect struct {
 
 // Feature is what a dev operation needs of one row of features/core.json: its kind and ranks.
 type Feature struct {
-	Key          string       `json:"key"`
-	Type         string       `json:"type"`
-	Ranks        int64        `json:"ranks"`
-	Prerequisite Prerequisite `json:"prerequisite"`
+	Key   string `json:"key"`
+	Type  string `json:"type"`
+	Ranks int64  `json:"ranks"`
+	// RankLevels is each tier's level gate (GD_S05_03); nil gates every tier at the prerequisite level.
+	RankLevels []int64 `json:"rank_levels"`
+	// RankValues is a modifier's value at each rank, by target, in place of value × rank.
+	RankValues   map[string][]float64 `json:"rank_values"`
+	Prerequisite Prerequisite         `json:"prerequisite"`
 	// Modifiers are the feature's own, as written; a session emits them at the held rank
 	// (docs/backend/sessions.md#what-the-actor-brings-to-a-step-app-13).
 	Modifiers []map[string]any `json:"modifiers"`
@@ -574,7 +594,10 @@ func (feature *Feature) EmitAt(rank int64) []map[string]any {
 		for field, value := range written {
 			modifier[field] = value
 		}
-		if value, isNumber := written["value"].(float64); isNumber {
+		target, _ := written["target"].(string)
+		if byRank, ranked := feature.RankValues[target]; ranked && len(byRank) > 0 {
+			modifier["value"] = byRank[min(max(rank, 1), int64(len(byRank)))-1]
+		} else if value, isNumber := written["value"].(float64); isNumber {
 			switch written["operation"] {
 			case "add":
 				modifier["value"] = value * float64(rank)
@@ -712,6 +735,7 @@ type Casting struct {
 	BoundWeapon   BoundWeapon      `json:"bound_weapon"`
 	Save          CastingSave      `json:"save"`
 	ArmorPenalty  map[string]int64 `json:"armor_penalty"`
+	ShieldPenalty map[string]int64 `json:"shield_penalty"`
 	PreventedBy   []string         `json:"prevented_by"`
 	SkillDiscount SkillDiscount    `json:"skill_discount"`
 	SpellCost     SpellCost        `json:"spell_cost"`

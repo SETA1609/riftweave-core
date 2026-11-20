@@ -24,13 +24,37 @@
       "required": ["attack", "main"],
       "additionalProperties": false
     },
+    "shield_bash": {
+      "type": "object",
+      "description": "Boss Strike's shield bash (GD_S05_03): the shield as an off-hand weapon, by the attacker's boss_strike tier.",
+      "properties": {
+        "off": { "type": "array", "items": { "$ref": "schema.json#/definitions/offHand" }, "minItems": 1, "uniqueItems": true, "description": "The off hands that bash." },
+        "as_off": { "$ref": "schema.json#/definitions/offHand", "description": "The off hand the shield counts as for the attack sequence row (its jab and strikes)." },
+        "damage_type": { "type": "string", "pattern": "^[a-z_]+$", "description": "The bash's damage type; the damage is the shield's DR plus the damage roll (1d4)." },
+        "tiers": {
+          "type": "object",
+          "properties": {
+            "jab": { "type": "integer", "minimum": 1, "description": "The tier from which a jab is a bash." },
+            "attack": { "type": "integer", "minimum": 1, "description": "The tier from which the attack and the full attack also strike with the shield." },
+            "stagger": { "type": "integer", "minimum": 1, "description": "The tier from which a bash that hits costs the target stagger_ap." },
+            "after_block": { "type": "integer", "minimum": 1, "description": "The tier from which a bash right after a block costs after_block_ap." }
+          },
+          "required": ["jab", "attack", "stagger", "after_block"],
+          "additionalProperties": false
+        },
+        "stagger_ap": { "type": "integer", "minimum": 0, "description": "AP a bash that hits costs the target on its next turn." },
+        "after_block_ap": { "type": "integer", "minimum": 0, "description": "The bash's AP right after a block in the attacker's band." }
+      },
+      "required": ["off", "as_off", "damage_type", "tiers", "stagger_ap", "after_block_ap"],
+      "additionalProperties": false
+    },
     "attack_sequences": {
       "type": "array",
       "minItems": 1,
       "items": { "$ref": "#/definitions/attackSequence" }
     }
   },
-  "required": ["full_attack", "circle_cut", "attack_sequences"],
+  "required": ["full_attack", "circle_cut", "shield_bash", "attack_sequences"],
   "additionalProperties": false,
   "definitions": {
     "hand": { "type": "string", "enum": ["main", "off"] },

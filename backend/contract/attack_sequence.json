@@ -23,7 +23,7 @@
           "skill": { "type": "integer", "description": "The main-hand weapon skill." },
           "off_skill": {
             "type": "integer",
-            "description": "The off-hand weapon skill; the main-hand skill when left out."
+            "description": "The off-hand weapon skill; the main-hand skill when left out. A Boss Strike bash rolls on it (the Shields skill) and needs it."
           },
           "attributes": { "$ref": "common.json#/definitions/attributes" },
           "flags": {
@@ -51,9 +51,14 @@
             "items": { "type": "object" },
             "description": "The off-hand weapon's on-hit applied effects; none when left out: an off-hand weapon never borrows the main hand's."
           },
+          "shield_dr": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "The carried shield's DR: a Boss Strike bash's damage is this plus the damage roll. A bash without it is an error."
+          },
           "modifiers": {
             "$ref": "common.json#/definitions/modifiers",
-            "description": "The attacker's perks and fighting stance (the stance command's modifiers): adds on full_attack_strikes, full_attack_off_strikes, mainhand_penalty, offhand_penalty, attack_roll (every strike), attack_single_opponent (every strike with one foe in reach), attack_after_parry (the first main-hand strike when after_parry), and unarmed_damage (an empty main hand), and the carry_through, reaping_arc, scissor_cut, can_circle_cut, off_hand_parries, and carry_on_crit grants."
+            "description": "The attacker's perks and fighting stance (the stance command's modifiers): adds on full_attack_strikes, full_attack_off_strikes, mainhand_penalty, offhand_penalty, attack_roll (every strike), attack_single_opponent (every strike with one foe in reach), attack_after_parry (the first main-hand strike when after_parry), and unarmed_damage (an empty main hand), and boss_strike (the Boss Strike tier), and the carry_through, reaping_arc, scissor_cut, can_circle_cut, off_hand_parries, and carry_on_crit grants."
           }
         },
         "additionalProperties": false,
@@ -119,6 +124,10 @@
         "type": "boolean",
         "description": "Whether the attacker has an active summon (not a minion), for every strike's while_summoning modifiers, as in combat. Default false."
       },
+      "after_block": {
+        "type": "boolean",
+        "description": "The attacker just blocked a hit in their band: from Boss Strike's after_block tier a bash jab costs shield_bash.after_block_ap."
+      },
       "after_parry": {
         "type": "boolean",
         "description": "The attacker parried a hit since their last strike: attack_after_parry adds to the first main-hand strike (Espada y Daga, docs/core/combat.md#fighting-stances)."
@@ -167,6 +176,16 @@
               "type": "array",
               "items": { "type": "object" },
               "description": "The weapon effects that landed, as combat's; listed only when the strike's hand has weapon effects."
+            },
+            "bash": {
+              "type": "boolean",
+              "const": true,
+              "description": "A Boss Strike shield bash: the off-hand strike made with the shield, shield_bash.damage_type damage of shield_dr plus the damage roll. Left out on any other strike."
+            },
+            "stagger_ap": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "A bash's stagger: AP the target loses on its next turn (shield_bash.stagger_ap from the stagger tier, on a hit); 0 otherwise. Left out on any other strike."
             }
           },
           "additionalProperties": false,

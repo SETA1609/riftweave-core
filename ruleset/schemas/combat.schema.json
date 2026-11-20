@@ -31,9 +31,21 @@
           "description": "The block band while the defender holds the block stance, under the evasion band. Reads var `skill`, the shields skill after the defender's modifiers on shields.",
           "$ref": "schema.json#/definitions/formulaNode"
         },
-        "magic_block_rate": {
-          "description": "The block band against a type without the DR tag, with the block_magic grant (Spell Ward). Reads var `rate`, the block_rate.",
+        "spell_ward_percent": {
+          "description": "Spell Ward: the percent of a spell's damage resisted when its roll lands in the block band (GD_S05_03). Reads var `end`, the defender's END, and var `tier`, the Spell Ward tier; capped at spell_ward_max_percent.",
           "$ref": "schema.json#/definitions/formulaNode"
+        },
+        "spell_ward_max_percent": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "The most Spell Ward resists, in percent."
+        },
+        "spell_ward_table": {
+          "type": "array",
+          "description": "The Spell Ward percent to read at a table: one row per END from 1, one column per tier from 1. validate.py checks it is what spell_ward_percent and spell_ward_max_percent give.",
+          "items": { "type": "array", "items": { "type": "integer", "minimum": 0 }, "minItems": 1 },
+          "minItems": 1
         },
         "bulwark_stagger_ap": {
           "type": "integer",
@@ -57,7 +69,9 @@
         "evasion_rate",
         "dodge_evasion_rate",
         "block_rate",
-        "magic_block_rate",
+        "spell_ward_percent",
+        "spell_ward_max_percent",
+        "spell_ward_table",
         "bulwark_stagger_ap",
         "crit_damage",
         "pierce_dr",

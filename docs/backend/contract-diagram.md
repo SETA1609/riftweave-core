@@ -153,6 +153,7 @@ One attack action by loadout: the attack, the jab, the full attack, or the circl
 classDiagram
     class attack_sequence_input {
         enum action
+        boolean after_block
         boolean after_parry
         integer ap
         object attacker
@@ -271,6 +272,8 @@ classDiagram
         integer stagger_ap
         integer stamina
         integer target
+        integer ward_percent
+        boolean warded
         List~object~ weapon_effects
     }
 ```

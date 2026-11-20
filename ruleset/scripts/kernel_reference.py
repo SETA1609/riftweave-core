@@ -467,7 +467,7 @@ def run_combat(vector):
     if delivery not in ("single", "area", "instant"):
         raise ValueError(f"delivery {delivery!r} is not defined")
     physical = pipeline["dr_applies_tag"] in tags
-    # The defender's perks: adds on evasion, shields, and shield_dr, and grant flags.
+    # The defender's perks: adds on evasion, shields, block_band, and shield_dr, and grant flags.
     defender_mods = defender.get("modifiers", [])
     perk_flags = granted_flags(defender_mods)
     stance = defender.get("stance")
@@ -485,14 +485,17 @@ def run_combat(vector):
         evasion_rate = max(apply_modifiers(evasion_rate, on("two_weapon_evasion_band")), 0)
     # A fighting stance's evasion_band (forward, low, and long guard; docs/core/combat.md#fighting-stances).
     evasion_rate = max(apply_modifiers(evasion_rate, on("evasion_band")), 0)
+    # Unarmored Grace: no body armor widens the band (GD_S05_03).
+    if defender.get("armor", "none") == "none":
+        evasion_rate = max(apply_modifiers(evasion_rate, on("unarmored_evasion_band")), 0)
+    # Spell Ward: the block band does not stop a spell, it marks the rolls that are warded.
+    ward_tier = apply_modifiers(0, on("spell_ward"))
     block_rate = 0
-    if stance == "block" and (physical or "block_magic" in perk_flags):
+    if stance == "block" and (physical or ward_tier > 0):
         shields = apply_modifiers(defender["shields_skill"], on("shields"))
         if "block_with_weapon" in perk_flags and "weapon_skill" in defender:
             shields = max(shields, defender["weapon_skill"])
-        block_rate = evaluate_formula(pipeline["block_rate"], {}, {"skill": shields})
-        if not physical:
-            block_rate = evaluate_formula(pipeline["magic_block_rate"], {}, {"rate": block_rate})
+        block_rate = max(apply_modifiers(evaluate_formula(pipeline["block_rate"], {}, {"skill": shields}), on("block_band")), 0)
     # A parrying stance's band sits under the block band, physical hits only.
     parry_rate = 0
     if "parry" in perk_flags and physical:
@@ -522,6 +525,8 @@ def run_combat(vector):
         "block_rate": block_rate,
         "parry_rate": parry_rate,
         "parried": False,
+        "warded": False,
+        "ward_percent": 0,
         "counter": False,
         "stagger_ap": 0,
     }
@@ -545,6 +550,9 @@ def run_combat(vector):
         if delivery == "single":
             result.update(outcome="evaded", damage=0, hp=defender["hp"])
             return result
+    elif not crit and margin < rate + block and not physical:
+        ward = evaluate_formula(pipeline["spell_ward_percent"], {}, {"end": defender.get("attributes", {}).get("end", 0), "tier": ward_tier})
+        result.update(warded=True, ward_percent=min(ward, pipeline["spell_ward_max_percent"]))
     elif not crit and margin < rate + block:
         result.update(outcome="blocked", blocked=True, damage=0, hp=defender["hp"])
         if "bulwark" in perk_flags and margin >= rate + block - window:
@@ -584,6 +592,7 @@ def run_combat(vector):
         dr -= dr * pierce // 100
         amount = max(amount - dr, 0)
     amount = max(amount - defender.get("resist", {}).get(damage["type"], 0), 0)
+    amount -= amount * result["ward_percent"] // 100
     result.update(damage=amount, hp=max(defender["hp"] - amount, 0))
     if called is not None and not result["evaded"]:
         result["riders"] = [dict(rider) for rider in called.get("riders", [])]
@@ -664,6 +673,22 @@ def run_attack_sequence(vector):
     modifiers = attacker.get("modifiers", [])
     flags = granted_flags(modifiers)
     on = lambda target: [m for m in modifiers if m["target"] == target]
+    # Boss Strike (GD_S05_03): from its jab tier a jab with a shield is a bash, and from its
+    # attack tier the attack strikes with the shield too, as the row of a light off-hand weapon.
+    bash = load_data("attack_sequences/core.json")["shield_bash"]
+    tier = apply_modifiers(0, on("boss_strike"))
+    bashing = vector["loadout"]["off"] in bash["off"] and tier >= bash["tiers"]["jab" if action == "jab" else "attack"] and action != "circle_cut"
+    if bashing:
+        if "shield_dr" not in attacker:
+            return {"error": "a shield bash needs shield_dr"}
+        # The bash rolls on the Shields skill, never silently on the main-hand weapon's.
+        if "off_skill" not in attacker:
+            return {"error": "a shield bash needs off_skill"}
+        row = attack_sequence_of({**vector["loadout"], "off": bash["as_off"]})
+        if row is None:
+            return {"error": no_sequence_error({**vector["loadout"], "off": bash["as_off"]})}
+        if action == "jab" and vector.get("after_block") and tier >= bash["tiers"]["after_block"]:
+            row = {**row, "jab": {**row["jab"], "ap": bash["after_block_ap"]}}
     try:
         plan, ap = plan_strikes(vector, row, flags, on)
     except ValueError as error:
@@ -712,9 +737,12 @@ def run_attack_sequence(vector):
             return {"error": f"the {action} needs a roll for strike {len(strikes) + 1}"}
         roll = rolls.pop(0)
         foe, hand = strike["foe"], strike["hand"]
-        scissor = scissor_left and hand == "off" and foe in struck_by_main
+        # A shield has no weapon dice, so a bash is never the Scissor Cut strike.
+        scissor = scissor_left and hand == "off" and foe in struck_by_main and not bashing
         damage = dict(vector["off_damage"] if hand == "off" and "off_damage" in vector else vector["damage"])
         damage["roll"] = (roll["damage"] + unarmed) * (2 if scissor else 1)
+        if bashing and hand == "off":
+            damage = {"type": bash["damage_type"], "roll": attacker["shield_dr"] + roll["damage"]}
         skill = attacker.get("off_skill", attacker["skill"]) if hand == "off" else attacker["skill"]
         # An off-hand weapon has only its own properties and effects, never the main hand's.
         prefix = "off_" if hand == "off" else ""
@@ -772,6 +800,8 @@ def run_attack_sequence(vector):
                 **({"weapon_effects": outcome.get("weapon_effects", [])} if effects else {}),
             }
         )
+        if bashing and hand == "off":
+            strikes[-1].update(bash=True, stagger_ap=bash["stagger_ap"] if hit and tier >= bash["tiers"]["stagger"] else 0)
         if dropped and index == len(queue) and carries > 0 and any(left > 0 for left in hp):
             queue.append({"hand": hand, "attack": strike["attack"], "foe": foe, "free": True, "carried": False})
         # Long Guard: a crit that leaves its foe standing carries as a drop would, to the first
@@ -947,8 +977,12 @@ def take_perk(actor, held, key):
     if rank >= ranks:
         unmet.append({"needs": "rank", "max": ranks, "has": rank})
     level = actor.get("level", 1)
-    if need.get("level", 0) > level:
-        unmet.append({"needs": "level", "min": need["level"], "has": level})
+    # A tiered perk's next tier has its own gate (rank_levels, GD_S05_03).
+    gate = need.get("level", 0)
+    if feature.get("rank_levels") and rank < len(feature["rank_levels"]):
+        gate = feature["rank_levels"][rank]
+    if gate > level:
+        unmet.append({"needs": "level", "min": gate, "has": level})
     attributes = actor.get("attributes", {})
     for ability in sorted(need.get("abilities", {})):
         has = attributes.get(ability, 0)
@@ -995,11 +1029,15 @@ def read_skill(actor, key, groups=None):
 
 def emit_perk(feature, rank):
     """A perk's modifiers at a rank (docs/modules/progression.md#perks-and-traits): an add at
-    value x rank, a multiply of m at 1 + (m - 1) x rank, a grant or a set once."""
+    value x rank, a multiply of m at 1 + (m - 1) x rank, a grant or a set once. A target in
+    rank_values takes that rank's value instead (GD_S05_03)."""
     emitted = []
     for modifier in feature.get("modifiers", []):
         modifier = dict(modifier)
-        if operation_of(modifier) == "add":
+        by_rank = feature.get("rank_values", {}).get(modifier["target"])
+        if by_rank is not None:
+            modifier["value"] = by_rank[min(rank, len(by_rank)) - 1]
+        elif operation_of(modifier) == "add":
             modifier["value"] = modifier["value"] * rank
         elif operation_of(modifier) == "multiply":
             modifier["value"] = 1 + (modifier["value"] - 1) * rank

@@ -355,7 +355,7 @@ the spell's `<color>_magic` skill, after the cast spends its mana and reagents.
 2. **Cost.** Mana (`INT × 8 + level × 2` is the pool; it regenerates with WIL) and the
    spell's reagents are spent before the roll, so a failed cast still costs them.
 3. **Success.** The target is the skill, plus the armor penalty of the heaviest armor
-   worn, plus the modifiers on the skill. Crit and fumble are tags from
+   worn and the shield penalty of the shield carried, plus the modifiers on the skill. Crit and fumble are tags from
    [docs/core/resolution.md](../core/resolution.md). A phase is a tag. It is not
    required to cast.
 4. **Effects.** A success emits the spell's effects at their authored magnitudes. The

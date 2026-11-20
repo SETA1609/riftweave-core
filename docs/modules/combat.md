@@ -57,9 +57,9 @@ The order of one attack is fixed in [docs/core/combat.md](../core/combat.md): on
 The defender rolls nothing. The attacker's d100 decides it all: a miss, a hit, or a success that lands inside the defender's band (owner, 2026-11-16, M3-27). The bands are the attacker's margin read against the defender's numbers:
 
 - **Evasion, always on.** The evasion rate is half the `evasion` skill. A success whose margin is under it is **evaded**: a single-target attack does nothing, an area attack is halved. Instant spells meet no band; their target makes the save the spell names.
-- **A carried shield, always on.** Its DR adds to the armor DR against physical types: buckler DR 1, standard shield DR 2, tower shield DR 4 (and grants cover to an adjacent ally, **[A]**, M3-03). No action, no roll.
+- **A carried shield, always on.** Its DR adds to the armor DR against physical types: buckler DR 1, standard shield DR 2, tower shield DR 4 (covering an adjacent ally is the Guardian perk, GD_S05_03). No action, no roll.
 - **Dodge, a stance** (3 AP, until your next turn): the evasion rate doubles. An area attack in the band is still halved, not avoided.
-- **Block, a stance** (2 AP, reserved, refunded if nobody swings; needs a shield): a block band of half the `shields` skill sits under the evaded band, and a success in it is **blocked**: no damage. It works against physical types only, unless Spell Ward gives a band of half the width against magic.
+- **Block, a stance** (2 AP, reserved, refunded if nobody swings; needs a shield): a block band of half the `shields` skill sits under the evaded band, and a success in it is **blocked**: no damage. It stops physical types only; with Spell Ward a magic hit in the band still lands, less END × 2 % per tier (at most 50 %).
 - A crit always hits: no band reaches it.
 - Delivery decides what is possible, not the damage type: a fire bolt can be dodged; a fireball dodged is halved.
 
@@ -150,7 +150,7 @@ Encumbrance comes from worn weight against STR ([armor.md](./armor.md) §9). Tho
 | Over STR × 15 | each move +1 AP | ×3 | no dodge, −20 athletics |
 | Over STR × 20 | none | evade always fails | only drop items and talk |
 
-A knight in full plate (heavy, AGI 6, pool 4) cannot afford a 5 AP dodge: he blocks (2 AP) and trusts his DR. A skirmisher in leather (light, AGI 9, pool 5) can dodge once and still move twice. *Heavy Armor Expert*, *Light Foot*, and *Acrobat* reduce the surcharges (M2-06).
+A knight in full plate (heavy, AGI 6, pool 4) cannot afford a 5 AP dodge: he blocks (2 AP) and trusts his DR. A skirmisher in leather (light, AGI 9, pool 5) can dodge once and still move twice. *Heavy Armor Expert* and *Light Foot* reduce the surcharges (M2-06); Acrobat is gone (GD_S05_03).
 
 ---
 
@@ -249,7 +249,7 @@ Mounted combat, underwater combat, vehicles, and mass battles are not specified.
 
 ## 13. Combat perks and traits
 
-Perks are rows in `ruleset/data/features/core.json`; each emits modifiers ([contract.md](../core/contract.md)) and so works the same at a table and in an engine. Existing combat perks include Toughness (+15 HP per rank), Alert (+10 initiative), Full Weight, Deadeye, Shield Wall, Fast Shot (creation), and Field Medic. The gated block and dodge ladders are M2-06. The melee ladders (Carry Through, extra strikes, two weapons) are in [core/combat.md](../core/combat.md#attacks-by-loadout).
+Perks are rows in `ruleset/data/features/core.json`; each emits modifiers ([contract.md](../core/contract.md)) and so works the same at a table and in an engine. Existing combat perks include Toughness (+15 HP per rank), Alert (+10 initiative), Full Weight, Deadeye, Fast Shot (creation), and Field Medic. The block and dodge ladders are tiered perks (GD_S05_03, [core/combat.md](../core/combat.md#block-and-dodge-perks)): one perk with `rank_levels`, each tier gated at its own level. The melee ladders (Carry Through, extra strikes, two weapons) are in [core/combat.md](../core/combat.md#attacks-by-loadout).
 
 When adding one:
 
