@@ -1,8 +1,8 @@
 #### GD_S07_07_creation-rules-as-data The character creation numbers as data
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: —
-- Modified: 2026-11-19
+- Modified: 2026-11-20
 - Do: Owner request, 2026-11-19: the creation form only lets a player add or remove the 10 attribute points. The numbers it needs are prose today, in docs/modules/character-creation.md, not data [V 2026-11-19, no `ruleset/data/` file holds them], so the app would have to hard-code them. Move them into the data, unchanged:
   - attributes: every one **starts at 4**, **10 points** to distribute, at most **10** in any one before racial modifiers; racial `abilityModifiers` apply after, and may go past 10 or below 4 (owner kept 4 + 10 on 2026-11-19);
   - creation perks: 0 to 2;
