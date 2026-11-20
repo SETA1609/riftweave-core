@@ -54,6 +54,7 @@ The other fields are the input the function reads. They are listed per function 
 | `casting` | `spell` (a key), `caster` (`skills` with the spell's `<color>_magic`, `attributes.lck`, `mana`, optional `flags`, `armor` (`none`, `light`, `medium`, `heavy`), optional `shield` (`none`, `buckler`, `standard`, `tower`), `reagents` (refs), `concentration` (the held spell key or null), optional `perks` (feature refs), optional `summons` and `summon_templates` (refs)), optional `coating` and `enchantment` (effect refs, for a bound weapon), `modifiers` on the skill or on `spell_cost`, `roll`, optional `standing` (spell keys on the target, for dispel), optional `target` (`attributes`, `skills`, `roll`, for an instant spell's save) | `outcome` (`cast`, `failed`, `prevented`, `no_mana`, `no_reagents`), `mana`, `consumed`, `check` (`target`, `success`, `margin`, `tags`, or null), `effects`, `concentration`, `ended`, `dispelled`, `save`, `bound_weapon` (for a bound weapon spell); or `error` |
 | `spellcraft` | `operation`: `craft` (`caster.known`, `caster.skills`, `spell` with `color` and `effects`), `learn` (`caster.known`, `spell` a key), or `research` (`caster.known`, `caster.skills`, `caster.attributes.lck`, `effect` a ref, optional `color`, `modifiers`, `roll`) | `valid`, `rejected` (`effect`, `reason`), `mana`, `cast_threshold`, `craft_threshold`, `skill_ok`; or `taught`, `known`; or `outcome` (`learned`, `failed`, `refused`), `reason`, `check`, `known`, `days`, `cost` |
 | `command_summons` | `commander` (`name`, optional `perk` with a `command` object, `modifiers`, `concentration`), `summons` (names), optional `order` (`targets`) | `ap` (the order's cost), `modifiers` per summon name, or `error` |
+| `creation` | `operation` (`rules`, `check`, `finish`), `draft` (`name`, `race`, `points` per attribute, `background`, `creation_perks`, `tag_skills`) | `rules`: `creation`, `abilities`, `races`, `backgrounds`, `creation_perks`, `skills`; `check`: `complete`, `problems` (`step`, `message`), `points_left`, `attributes`, `skills`, `derived`; `finish`: `name` and `actor` (a stored actor), or `error` |
 
 Coefficients come from `ruleset/data/`, not from the vector, so a data change that breaks a rule fails a vector.
 
@@ -94,5 +95,6 @@ Every kernel function and the vector file that covers it. The test reads this ta
 | `stored_actor` | `stored_actor.json` | covered |
 | `share` | `share.json` | covered |
 | `command_summons` | `command_summons.json` | covered |
+| `creation` | `creation.json` | covered |
 
 The modifier vectors cover every operation, mixed operations, same-source duplicates, origins, and expiry. The condition vectors apply and remove each of the 24 conditions once, plus stacks and multi-condition effects.

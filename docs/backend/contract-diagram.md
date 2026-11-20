@@ -7,7 +7,7 @@ Run `python ruleset/scripts/contract_diagram.py --write` after a contract change
 `test_contract_diagram.py` fails until the page matches. What the contract is:
 [README.md](README.md#commands) and [contract.md](../core/contract.md).
 
-26 commands. Each is a class diagram of its input and its result; a field whose type is
+27 commands. Each is a class diagram of its input and its result; a field whose type is
 a shared type of `common.json` links to it, and the shared types are drawn once, below.
 
 ## Shared types
@@ -34,6 +34,14 @@ classDiagram
     class cost {
         integer quantity
         enum unit
+    }
+    class creation_draft {
+        ref background
+        List~ref~ creation_perks
+        string name
+        object points
+        ref race
+        List~ref~ tag_skills
     }
     class error {
         string error
@@ -360,6 +368,37 @@ classDiagram
         List~object~ ticks
         integer toxicity
     }
+```
+
+## creation
+
+Character creation: the rules a form is drawn from, a check of a draft step by step, and the stored actor a complete draft becomes.
+
+```mermaid
+classDiagram
+    class creation_input {
+        creation_draft draft
+        enum operation
+    }
+    class creation_result {
+        List~string~ abilities
+        stored_actor actor
+        object attributes
+        List~object~ backgrounds
+        boolean complete
+        object creation
+        List~object~ creation_perks
+        object derived
+        string name
+        integer points_left
+        List~object~ problems
+        List~object~ races
+        List~object~_or_object skills
+    }
+    class creation_draft
+    class stored_actor
+    creation_input --> creation_draft : draft
+    creation_result --> stored_actor : actor
 ```
 
 ## derived
