@@ -39,6 +39,7 @@ const usage = `usage: riftweave [--data <dir>] <command> [file]
        riftweave settings export [file] | import <file>
        riftweave export <character|session|spell> [file]
        riftweave import <file> [--enable-modules | --accept-loss]
+       riftweave characters <list | show | export | import | duplicate | delete | party> ...
 
 A command reads one JSON object from the file, or from stdin, and writes its result to
 stdout. Errors are JSON on stderr. Exit 0 ok, 1 rule error, 2 bad input, 3 no ruleset.
@@ -99,6 +100,9 @@ func run(args []string, stdin io.Reader, stdout, stderr io.Writer, getenv func(s
 	if args[0] == "import" {
 		return importCommand(args[1:], dataFlag, stdout, stderr, getenv)
 	}
+	if args[0] == "characters" {
+		return charactersCommand(args[1:], dataFlag, stdout, stderr, getenv)
+	}
 	if args[0] == "play" {
 		return interactive(dataFlag, devFlag, stdin, stdout, stderr, getenv)
 	}
@@ -149,6 +153,9 @@ func interactive(dataFlag string, devFlag bool, stdin io.Reader, stdout, stderr 
 	}
 	options.Dev = devFlag
 	options.Import = playImport(checkerFor(opened.Run, directory), directory, options.Settings)
+	if library, err := libraryFor(checkerFor(opened.Run, directory), directory, options.Settings, getenv); err == nil {
+		options.Characters = &library
+	}
 	var model play.Model = play.NewWith(opened.Run, options)
 	var program *tea.Program = tea.NewProgram(model, tea.WithInput(stdin), tea.WithOutput(stdout))
 	if _, err := program.Run(); err != nil {

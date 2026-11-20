@@ -124,22 +124,8 @@ func importCommand(args []string, dataFlag string, stdout, stderr io.Writer, get
 	if len(read.Missing) > 0 {
 		switch {
 		case len(args) == 2 && args[1] == "--enable-modules":
-			list, _ := file["modules"].([]any)
-			for _, missing := range read.Missing {
-				if !slices.Contains(moduleIDs(filepath.Join(directory, "..", "modules")), missing.Module) {
-					return fail(stderr, exitInput, "%s: module %s is not in this ruleset; nothing changed", args[0], missing.Module)
-				}
-				list = append(list, missing.Module)
-			}
-			file["modules"] = list
-			if _, err := settings.Parse(file.Encode()); err != nil {
-				return fail(stderr, exitInput, "%v; nothing changed", err)
-			}
-			if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
-				return fail(stderr, exitInput, "%v", err)
-			}
-			if err := os.WriteFile(path, file.Encode(), 0o644); err != nil {
-				return fail(stderr, exitInput, "%v", err)
+			if err := enableModules(read.Missing, directory, file, path); err != nil {
+				return fail(stderr, exitInput, "%s: %v; nothing changed", args[0], err)
 			}
 			read.Warnings = append(read.Warnings, "enabled in the settings file: "+files.Alert(read.Missing))
 		case len(args) == 2 && args[1] == "--accept-loss":
@@ -150,9 +136,33 @@ func importCommand(args []string, dataFlag string, stdout, stderr io.Writer, get
 			return exitInput
 		}
 	}
-	body, _ := json.Marshal(map[string]any{"kind": read.Kind, "data": read.Data, "warnings": read.Warnings})
+	var printed = map[string]any{"kind": read.Kind, "data": read.Data, "warnings": read.Warnings}
+	if read.Character != nil {
+		printed["character"] = read.Character
+	}
+	body, _ := json.Marshal(printed)
 	fmt.Fprintf(stdout, "%s\n", body)
 	return exitOK
+}
+
+// enableModules turns on the missing modules in the settings file at path, when this ruleset
+// has them (docs/backend/files.md#rules-both-apps-keep).
+func enableModules(missing []files.Missing, directory string, file settings.File, path string) error {
+	list, _ := file["modules"].([]any)
+	for _, module := range missing {
+		if !slices.Contains(moduleIDs(filepath.Join(directory, "..", "modules")), module.Module) {
+			return fmt.Errorf("module %s is not in this ruleset", module.Module)
+		}
+		list = append(list, module.Module)
+	}
+	file["modules"] = list
+	if _, err := settings.Parse(file.Encode()); err != nil {
+		return err
+	}
+	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+		return err
+	}
+	return os.WriteFile(path, file.Encode(), 0o644)
 }
 
 // playImport is the human CLI's Import (APP-30): the same check as `riftweave import`, and the
