@@ -62,6 +62,8 @@ type ActionsInput struct {
 	Actor     actor.Actor         `json:"actor"`
 	Actions   []string            `json:"actions"`
 	Modifiers []modifier.Modifier `json:"modifiers"` // adds on an action's key change its cost
+	// Speed is the race's speed; with it the result says how many squares the moves cover (GD_S19_02).
+	Speed *int64 `json:"speed"`
 }
 
 // ActionsResult is the pool and the cost of the named actions, in AP and in real-time stamina.
@@ -69,6 +71,8 @@ type ActionsResult struct {
 	Pool    int64 `json:"pool"`
 	Cost    int64 `json:"cost"`
 	Stamina int64 `json:"stamina"` // Cost times stamina_per_ap (docs/core/actions.md#one-rule-set-two-clocks)
+	// Squares the actions cover, given a speed (docs/core/actions.md#how-far-a-move-goes).
+	Squares *int64 `json:"squares,omitempty"`
 }
 
 // RunActions is the `actions` command: the pool is base + attribute * per_point / divisor.
@@ -79,10 +83,15 @@ func RunActions(ruleset *data.Ruleset, input ActionsInput) (ActionsResult, error
 	}
 	var attributeValue int64 = input.Actor.Attributes.Get(pool.Ability)
 	var result ActionsResult = ActionsResult{Pool: pool.Base + formula.FloorDivide(attributeValue*pool.PerPoint, pool.PerPointDivisor)}
+	var squares int64 = 0
 	for _, key := range input.Actions {
 		action, err := ruleset.Actions.Actions.Require("action", key)
 		if err != nil {
 			return ActionsResult{}, err
+		}
+		// A move's squares come from speed alone; modifiers on it change its AP (GD_S19_02).
+		if input.Speed != nil && action.SpeedDivisor > 0 {
+			squares += formula.FloorDivide(*input.Speed, action.SpeedDivisor)
 		}
 		cost, err := modifier.Value(action.Cost, modifier.Target(input.Modifiers, key), ruleset.Origins, 0, nil)
 		if err != nil {
@@ -91,6 +100,9 @@ func RunActions(ruleset *data.Ruleset, input ActionsInput) (ActionsResult, error
 		result.Cost += max(cost, 0)
 	}
 	result.Stamina = result.Cost * ruleset.StaminaPerAP
+	if input.Speed != nil {
+		result.Squares = &squares
+	}
 	return result, nil
 }
 
