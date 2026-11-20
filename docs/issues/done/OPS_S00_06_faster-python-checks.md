@@ -1,5 +1,6 @@
 #### OPS_S00_06_faster-python-checks Faster Python checks: reuse validators, cache loot values, run test files side by side
-- Status: review
+- Status: done
+- Merged: #401, 2026-11-20
 - Priority: medium
 - Needs: —
 - Modified: 2026-11-20
