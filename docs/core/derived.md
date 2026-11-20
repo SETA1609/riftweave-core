@@ -2,6 +2,8 @@
 
 Author: SETA1609
 
+Modified: 2026-11-21
+
 Derived stats are functions of the actor snapshot. They are not fields a module may write. Fallout stores SPECIAL and recomputes HP, AP, and carry. This file is that recompute. The coefficients live in `ruleset/data/derived/core.json`. A module that wants more HP emits a modifier. It does not edit this file.
 
 ## Function

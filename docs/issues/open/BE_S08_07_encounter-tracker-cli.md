@@ -3,7 +3,7 @@
 - Priority: medium
 - Needs: BE_S07_03_character-list-cli, GD_S19_09_initiative-ties
 - Was: APP-34, split by role on 2026-11-18: this is the backend half (the contract, the Go core, the vectors, and the CLI and TUI with their UX); the browser half is `FE_S08_08_encounter-tracker-page`
-- Modified: 2026-11-16
+- Modified: 2026-11-21
 - Do: Owner request, 2026-11-16: the GM runs a fight on one device with no connection. A GM tool in both apps holds the encounter: the party (APP-33) and the monsters the GM adds from the bestiary (APP-29 when merged, else by key), each with initiative, the derived `initiative` value only, no roll (docs/core/derived.md) (owner, 2026-11-16), HP, SP, mana, AP left, and conditions; the **initiative list** in order, the **current turn**, next turn, and the round count. Every change is a session step (`encounter_start`, `turn_end`, damage and conditions through the existing commands), so the encounter replays, exports with the session (APP-30), and is the same state the online table syncs (APP-35) [A]. A tie breaks by the one rule in [derived.md](../../core/derived.md#initiative-ties) (`GD_S19_09_initiative-ties`): AGI, then LCK, then a d100 roll-off made when the encounter starts and kept in its step, so it replays. No grid offline: positions are what the table says [A].
 - Keys: encounter session steps; the initiative order
 - Files: ~9 (backend/contract/session.json, the session package, ruleset/tests/vectors/session.json, ruleset/scripts/kernel_reference.py, backend/cmd/riftweave/play/encounter.go, play_test.go, docs/backend/sessions.md, docs/core/derived.md, changes/BE_S08_07_encounter-tracker-cli.md)
