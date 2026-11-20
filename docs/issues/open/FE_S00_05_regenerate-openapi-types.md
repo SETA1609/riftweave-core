@@ -1,5 +1,5 @@
 #### FE_S00_05_regenerate-openapi-types Regenerate the frontend's API types from the current contract
-- Status: doing
+- Status: review
 - Priority: medium
 - Needs: —
 - Modified: 2026-11-20
