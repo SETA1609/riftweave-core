@@ -1,5 +1,6 @@
 #### PO_S20_01_file-custom-monster-and-template-issues File the custom monster and character template issues
-- Status: review
+- Status: done
+- Merged: #412, 2026-11-20
 - Priority: medium
 - Needs: —
 - Modified: 2026-11-20
