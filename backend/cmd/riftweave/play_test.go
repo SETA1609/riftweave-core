@@ -14,6 +14,7 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 
+	"github.com/SETA1609/riftweave-core/backend/cmd/riftweave/files"
 	"github.com/SETA1609/riftweave-core/backend/cmd/riftweave/play"
 	"github.com/SETA1609/riftweave-core/backend/core"
 	"github.com/SETA1609/riftweave-core/backend/internal/settings"
@@ -269,7 +270,7 @@ func saved(t *testing.T, path string) settings.File {
 
 func TestPlayOpensOnTheMainMenu(t *testing.T) {
 	var view string = started(t).View()
-	for _, label := range []string{"Start", "Characters (APP-33)", "Settings", "Modules", "Network", "Quit"} {
+	for _, label := range []string{"Start", "Characters", "Settings", "Modules", "Network", "Quit"} {
 		if !strings.Contains(view, label) {
 			t.Errorf("main menu has no %q: %s", label, view)
 		}
@@ -289,7 +290,7 @@ func TestPlayMenusShowEveryEntryAndPendingIssues(t *testing.T) {
 			t.Errorf("GM tools has no %q: %s", label, gm)
 		}
 	}
-	for keys, issue := range map[string]string{"down enter": "APP-33", "enter down down enter": "APP-22", "enter down down down down enter": "APP-29", "enter enter down enter": "APP-34"} {
+	for keys, issue := range map[string]string{"enter down down enter": "APP-22", "enter down down down down enter": "APP-29", "enter enter down enter": "APP-34"} {
 		if view := press(started(t), strings.Fields(keys)...).View(); !strings.Contains(view, "comes with "+issue) {
 			t.Errorf("%s: no pending issue %s shown: %s", keys, issue, view)
 		}
@@ -447,5 +448,75 @@ func TestPlayImportsAFileFromTheMainMenu(t *testing.T) {
 	model = press(model, "enter", "../../../ruleset/tests/fixtures/files/missing-module.riftweave.json", "enter")
 	if view := model.View(); !strings.Contains(view, "module factions is not enabled here") {
 		t.Errorf("no module alert: %s", view)
+	}
+}
+
+// TestPlayListsImportsAndAddsCharactersToTheParty is BE_S07_03 in the human CLI: Characters lists
+// the saved ones with level, last change, and who made it; Import applies the sync rule and asks
+// on a divergence; p adds a character to the open session's party; d duplicates and x deletes.
+func TestPlayListsImportsAndAddsCharactersToTheParty(t *testing.T) {
+	opened, err := core.Open(dataDirectory)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var environment = fileEnvironment(t.TempDir())
+	library, err := libraryFor(checkerFor(opened.Run, dataDirectory), dataDirectory, settings.Default(), environment)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var options = play.Options{Import: playImport(checkerFor(opened.Run, dataDirectory), dataDirectory, settings.Default()), Characters: &library}
+	var model tea.Model = play.NewWith(opened.Run, options)
+	model = press(model, "down", "enter")
+	if view := model.View(); !strings.Contains(view, "no saved characters yet") || !strings.Contains(view, "Import a character file") {
+		t.Fatalf("an empty list: %s", view)
+	}
+	// Import the player's file: it is listed with its level, its last change, and who made it.
+	model = press(model, "enter", syncedFixture, "enter")
+	if view := model.View(); !strings.Contains(view, "added: Mira Vell, revision 3") || !strings.Contains(view, "level 3") || !strings.Contains(view, "by player (revision 3)") {
+		t.Fatalf("after import: %s", view)
+	}
+	// A diverged file (same revision, other content) asks which side to keep.
+	content, _ := os.ReadFile(syncedFixture)
+	var diverged map[string]any
+	_ = json.Unmarshal(content, &diverged)
+	diverged["data"].(map[string]any)["xp"] = float64(900)
+	var divergedFile string = filepath.Join(t.TempDir(), "diverged.riftweave.json")
+	_ = os.WriteFile(divergedFile, files.Encode(diverged), 0o644)
+	model = press(model, "down", "enter", divergedFile, "enter")
+	if view := model.View(); !strings.Contains(view, "both sides changed revision 3") {
+		t.Fatalf("no divergence shown: %s", view)
+	}
+	model = press(model, "enter", "incoming", "enter")
+	if view := model.View(); !strings.Contains(view, "replaced: Mira Vell, revision 3") {
+		t.Fatalf("keeping the incoming side: %s", view)
+	}
+	// Open it: it becomes the character a session starts from.
+	model = press(model, "up", "enter")
+	if view := model.View(); !strings.Contains(view, "opened Mira Vell, level 3, revision 3") {
+		t.Fatalf("open: %s", view)
+	}
+	// p needs an open session; one imported from a file takes the character into its party.
+	model = press(model, "p")
+	if view := model.View(); !strings.Contains(view, "no session is open") {
+		t.Errorf("p without a session: %s", view)
+	}
+	model = press(model, "esc", "down", "down", "down", "down", "enter", filesFixtures+"session.riftweave.json", "enter", "up", "up", "up", "up", "enter", "p")
+	if view := model.View(); !strings.Contains(view, "added Mira Vell (revision 3) to the party") {
+		t.Fatalf("party add: %s", view)
+	}
+	if !strings.Contains(string(model.(play.Model).Session()), `"party"`) {
+		t.Errorf("the session has no party: %s", model.(play.Model).Session())
+	}
+	// Duplicate, then delete the copy.
+	model = press(model, "d")
+	if view := model.View(); !strings.Contains(view, "Mira Vell (copy)") {
+		t.Fatalf("duplicate: %s", view)
+	}
+	model = press(model, "down", "x", "yes", "enter")
+	if view := model.View(); !strings.Contains(view, "deleted Mira Vell (copy)") {
+		t.Errorf("delete: %s", view)
+	}
+	if entries, _ := library.List(); len(entries) != 1 {
+		t.Errorf("after delete the list holds %d", len(entries))
 	}
 }
