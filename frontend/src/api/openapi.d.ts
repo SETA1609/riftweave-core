@@ -636,10 +636,10 @@ export interface components {
              * @description For fortify effects (especially on skills/attributes): 'unlimited' effects are normally stackable (magnitudes add). 'temporal' effects of the same type (same effect id + parameter) override each other, taking the highest magnitude as the effective value (and usually the longest duration).
              * @enum {string}
              */
-            durationType?: "temporal" | "unlimited";
+            duration_type?: "temporal" | "unlimited";
             /** @description Effect reference: namespaced format core:effect/<key> (e.g. core:effect/damage_fire) */
             effect: components["schemas"]["ruleset_effectRef"];
-            /** @description Effect strength; interpreted per the effect's magnitudeUnit */
+            /** @description Effect strength; interpreted per the effect's magnitude_unit */
             magnitude?: number;
             /** @description The origin its modifiers carry (core:origin/<key>), when it is not the default for the row's category: a divine spell, holy water. docs/core/modifier.md#origin. */
             origin?: components["schemas"]["ruleset_originRef"];
