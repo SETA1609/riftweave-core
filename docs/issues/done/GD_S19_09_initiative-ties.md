@@ -1,5 +1,6 @@
 #### GD_S19_09_initiative-ties One rule for initiative ties
-- Status: review
+- Status: done
+- Merged: #431, 2026-11-21
 - Priority: medium
 - Needs: —
 - Modified: 2026-11-21
