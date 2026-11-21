@@ -194,3 +194,38 @@ func TestASummonBlockIsPricedAsTheSummonEffectItReplaces(t *testing.T) {
 		}
 	}
 }
+
+// The effect pool a spell editor offers for a color (BE_S09_01): every effect on that color or on
+// none, each listing the spell channel, as the rows effects/core.json writes.
+func TestTheEffectPoolOfAColorIsItsEffectsAndTheColorlessOnesOnTheSpellChannel(t *testing.T) {
+	opened := authorCore(t)
+	result := author(t, opened, map[string]any{"kind": "spell", "operation": "effects", "color": "red"})
+	listed, _ := result["effects"].([]any)
+	var refs []string
+	for _, item := range listed {
+		entry := item.(map[string]any)
+		row := entry["row"].(map[string]any)
+		refs = append(refs, entry["ref"].(string))
+		if color, has := row["color"]; has && color != "red" {
+			t.Errorf("%s is %v, not red or colorless", entry["ref"], color)
+		}
+		channels, _ := row["channels"].([]any)
+		var spell bool
+		for _, channel := range channels {
+			spell = spell || channel == "spell"
+		}
+		if !spell || entry["ref"] != "core:effect/"+row["key"].(string) {
+			t.Errorf("%v", entry)
+		}
+	}
+	var joined string = strings.Join(refs, " ")
+	if !strings.Contains(joined, "core:effect/damage_fire") || strings.Contains(joined, "core:effect/damage_acid") || strings.Contains(joined, "core:effect/essence_fire") {
+		t.Errorf("red pool: %v", refs)
+	}
+	for input, want := range map[string]string{`{"kind":"spell","operation":"effects","color":"plaid"}`: `color "plaid" is not defined`, `{"kind":"spell","operation":"effects"}`: "author effects needs color"} {
+		out, err := opened.Run("author", []byte(input))
+		if err == nil || !strings.Contains(string(out), want) {
+			t.Errorf("%s: %v %s, want %q", input, err, out, want)
+		}
+	}
+}
