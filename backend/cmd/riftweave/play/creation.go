@@ -128,61 +128,142 @@ func cycle(index, step, count int) int {
 	return (index+1+step+count+1)%(count+1) - 1
 }
 
+// rowKind is what a row of the creation screen holds, and so which keys edit it.
+type rowKind uint8
+
+const (
+	kindText      rowKind = iota // name, creation perks, tag skills: typed
+	kindChoice                   // race, background: left and right cycle
+	kindAttribute                // the eight attributes: + and -, or right and left
+	kindFinish                   // enter sends the draft to finish
+)
+
+// rowKinds is the screen as a state table: a row's kind is one array read.
+var rowKinds = [rowCount]rowKind{
+	rowName: kindText, rowRace: kindChoice, rowBackground: kindChoice,
+	rowFirstAttribute: kindAttribute, rowFirstAttribute + 1: kindAttribute, rowFirstAttribute + 2: kindAttribute,
+	rowFirstAttribute + 3: kindAttribute, rowFirstAttribute + 4: kindAttribute, rowFirstAttribute + 5: kindAttribute,
+	rowFirstAttribute + 6: kindAttribute, rowFirstAttribute + 7: kindAttribute,
+	rowPerks: kindText, rowTags: kindText, rowFinish: kindFinish,
+}
+
+// creatorKey moves between rows on the keys every row shares, then hands the key to the row's
+// kind. Each switch is on an integer (the key type, the row kind), so it compiles to a jump table
+// or a short binary search, never a chain of tests.
 func (model Model) creatorKey(key tea.KeyMsg) (tea.Model, tea.Cmd) {
 	var screen creator = *model.creator
-	var text *string
-	switch screen.row {
-	case rowName:
-		text = &screen.name
-	case rowPerks:
-		text = &screen.perks
-	case rowTags:
-		text = &screen.tags
-	}
-	var attribute string
-	if screen.row >= rowFirstAttribute && screen.row < rowPerks {
-		attribute = attributeKeys[screen.row-rowFirstAttribute]
-	}
-	switch {
-	case key.Type == tea.KeyEsc:
+	switch key.Type {
+	case tea.KeyEsc:
 		model.mode, model.creator, model.problem = modeMenu, nil, ""
 		return model, nil
-	case key.Type == tea.KeyUp:
+	case tea.KeyUp:
 		screen.row = (screen.row + rowCount - 1) % rowCount
-	case key.Type == tea.KeyDown, key.Type == tea.KeyTab:
+		return model.edited(screen)
+	case tea.KeyDown, tea.KeyTab:
 		screen.row = (screen.row + 1) % rowCount
-	case key.Type == tea.KeyEnter && screen.row == rowFinish:
-		return model.finishCreation(), nil
-	case key.Type == tea.KeyEnter:
-		screen.row++
-	case (key.Type == tea.KeyLeft || key.Type == tea.KeyRight) && (screen.row == rowRace || screen.row == rowBackground):
-		var step int = 1
-		if key.Type == tea.KeyLeft {
-			step = -1
+		return model.edited(screen)
+	}
+	var changed bool
+	switch rowKinds[screen.row] {
+	case kindText:
+		changed = screen.typed(key)
+	case kindChoice:
+		changed = screen.chose(key)
+	case kindAttribute:
+		changed = screen.spent(key)
+	case kindFinish:
+		if key.Type == tea.KeyEnter {
+			return model.finishCreation(), nil
 		}
-		if screen.row == rowRace {
-			screen.race = cycle(screen.race, step, len(screen.races))
-		} else {
-			screen.background = cycle(screen.background, step, len(screen.backgrounds))
-		}
-	case attribute != "" && (key.String() == "+" || key.Type == tea.KeyRight):
-		screen.points = clonePoints(screen.points)
-		screen.points[attribute]++
-	case attribute != "" && (key.String() == "-" || key.Type == tea.KeyLeft):
-		screen.points = clonePoints(screen.points)
-		screen.points[attribute]--
-	case text != nil && key.Type == tea.KeyBackspace && *text != "":
-		*text = (*text)[:len(*text)-1]
-	case text != nil && (key.Type == tea.KeyRunes || key.Type == tea.KeySpace):
-		*text += string(key.Runes)
-		if key.Type == tea.KeySpace {
-			*text += " "
-		}
-	default:
+	}
+	if !changed {
 		return model, nil
 	}
+	return model.edited(screen)
+}
+
+func (model Model) edited(screen creator) (tea.Model, tea.Cmd) {
 	model.creator = &screen
 	return model.recheck(), nil
+}
+
+// text is the typed value of a text row.
+func (screen *creator) text() *string {
+	switch screen.row {
+	case rowName:
+		return &screen.name
+	case rowPerks:
+		return &screen.perks
+	}
+	return &screen.tags
+}
+
+func (screen *creator) typed(key tea.KeyMsg) bool {
+	var text *string = screen.text()
+	switch key.Type {
+	case tea.KeyEnter:
+		screen.row++
+	case tea.KeyBackspace:
+		if *text == "" {
+			return false
+		}
+		*text = (*text)[:len(*text)-1]
+	case tea.KeySpace:
+		*text += " "
+	case tea.KeyRunes:
+		*text += string(key.Runes)
+	default:
+		return false
+	}
+	return true
+}
+
+func (screen *creator) chose(key tea.KeyMsg) bool {
+	var step int
+	switch key.Type {
+	case tea.KeyEnter:
+		screen.row++
+		return true
+	case tea.KeyLeft:
+		step = -1
+	case tea.KeyRight:
+		step = 1
+	default:
+		return false
+	}
+	if screen.row == rowRace {
+		screen.race = cycle(screen.race, step, len(screen.races))
+	} else {
+		screen.background = cycle(screen.background, step, len(screen.backgrounds))
+	}
+	return true
+}
+
+func (screen *creator) spent(key tea.KeyMsg) bool {
+	var step int64
+	switch key.Type {
+	case tea.KeyEnter:
+		screen.row++
+		return true
+	case tea.KeyRight:
+		step = 1
+	case tea.KeyLeft:
+		step = -1
+	case tea.KeyRunes:
+		switch key.String() {
+		case "+":
+			step = 1
+		case "-":
+			step = -1
+		default:
+			return false
+		}
+	default:
+		return false
+	}
+	screen.points = clonePoints(screen.points)
+	screen.points[attributeKeys[screen.row-rowFirstAttribute]] += step
+	return true
 }
 
 func clonePoints(points map[string]int64) map[string]int64 {

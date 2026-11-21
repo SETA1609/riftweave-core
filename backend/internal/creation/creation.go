@@ -264,13 +264,15 @@ func check(ruleset *data.Ruleset, draft Draft) (Check, storedParts, error) {
 	} else {
 		key, _ := keyOf(*draft.Race, "race")
 		race, ok := ruleset.Races.Get(key)
-		switch {
-		case !ok:
+		if !ok {
 			problems = append(problems, Problem{"race", fmt.Sprintf("race %q is not defined", *draft.Race)})
-		case race.Lineage.Role == "template":
-			problems = append(problems, Problem{"race", fmt.Sprintf("race %q is a template and is never played", *draft.Race)})
-		default:
-			raceModifiers, traits = raceParts(ruleset, race)
+		} else {
+			switch race.Lineage.Role {
+			case "template":
+				problems = append(problems, Problem{"race", fmt.Sprintf("race %q is a template and is never played", *draft.Race)})
+			default:
+				raceModifiers, traits = raceParts(ruleset, race)
+			}
 		}
 	}
 

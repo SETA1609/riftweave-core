@@ -220,14 +220,19 @@ def run_finish(vector):
     return {"name": vector["draft"]["name"].strip(), "actor": actor}
 
 
+def _checked(vector):
+    result = run_check(vector)
+    result.pop("_stored")
+    return result
+
+
+# The operations by name: one dict lookup (a hash), not a chain of comparisons.
+OPERATIONS = {"rules": run_rules, "check": _checked, "finish": run_finish}
+
+
 def run_creation(vector):
     operation = vector.get("operation")
-    if operation == "rules":
-        return run_rules(vector)
-    if operation == "check":
-        result = run_check(vector)
-        result.pop("_stored")
-        return result
-    if operation == "finish":
-        return run_finish(vector)
-    return {"error": f'creation operation "{operation}" is not defined'}
+    run = OPERATIONS.get(operation)
+    if run is None:
+        return {"error": f'creation operation "{operation}" is not defined'}
+    return run(vector)
