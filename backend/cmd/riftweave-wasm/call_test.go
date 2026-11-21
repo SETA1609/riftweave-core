@@ -82,3 +82,28 @@ func TestDevIsNotServedInTheBrowser(t *testing.T) {
 		t.Errorf("an unknown command: %q", refusal)
 	}
 }
+
+// The browser core opens with ruleset/schemas embedded beside the data (BE_S09_01), so author
+// checks a spell in the page as it does over HTTP.
+func TestTheBrowserCoreAuthorsWithTheSchemas(t *testing.T) {
+	opened, err := openRuleset(os.DirFS(repo))
+	if err != nil {
+		t.Fatal(err)
+	}
+	loaded, refusal := call(opened, "author", `{"kind":"spell","operation":"load","spell":"fire_bolt"}`)
+	if refusal != "" {
+		t.Fatal(refusal)
+	}
+	var row struct{ Row json.RawMessage }
+	_ = json.Unmarshal([]byte(loaded), &row)
+	checked, refusal := call(opened, "author", `{"kind":"spell","spells":[`+string(row.Row)+`]}`)
+	var result struct {
+		Spells []struct {
+			Problems []any
+			Cost     struct{ Mana int64 }
+		}
+	}
+	if refusal != "" || json.Unmarshal([]byte(checked), &result) != nil || len(result.Spells) != 1 || len(result.Spells[0].Problems) != 0 || result.Spells[0].Cost.Mana == 0 {
+		t.Errorf("author in the browser: %s %s", checked, refusal)
+	}
+}
