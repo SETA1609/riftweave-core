@@ -1,0 +1,579 @@
+[
+  {
+    "name": "rules: the creation numbers come from progression",
+    "operation": "rules",
+    "expect": {
+      "creation": {
+        "attribute_start": 4,
+        "attribute_min": 1,
+        "attribute_max": 10,
+        "attribute_points": 10,
+        "creation_perks_max": 2,
+        "tag_skills": 3
+      }
+    }
+  },
+  {
+    "name": "check: an empty draft names every step it needs",
+    "operation": "check",
+    "draft": {},
+    "expect": {
+      "complete": false,
+      "points_left": 10,
+      "problems": [
+        {
+          "step": "name",
+          "message": "a name is needed"
+        },
+        {
+          "step": "race",
+          "message": "a race is needed"
+        },
+        {
+          "step": "attributes",
+          "message": "10 points left"
+        },
+        {
+          "step": "background",
+          "message": "a background is needed"
+        },
+        {
+          "step": "tag_skills",
+          "message": "3 tag skills are needed, 0 chosen"
+        }
+      ]
+    }
+  },
+  {
+    "name": "check: a draft with 2 points left",
+    "operation": "check",
+    "draft": {
+      "name": "Brunna",
+      "race": "core:race/hill_dwarf",
+      "points": {
+        "str": 2,
+        "per": 1,
+        "end": 2,
+        "int": 0,
+        "wil": 0,
+        "agi": 1,
+        "cha": 0,
+        "lck": 2
+      },
+      "background": "core:background/scout",
+      "creation_perks": [
+        "core:feature/small_frame"
+      ],
+      "tag_skills": [
+        "core:skill/survival",
+        "core:skill/stealth",
+        "core:skill/bows"
+      ]
+    },
+    "expect": {
+      "complete": false,
+      "points_left": 2,
+      "problems": [
+        {
+          "step": "attributes",
+          "message": "2 points left"
+        }
+      ]
+    }
+  },
+  {
+    "name": "check: one point over the pool",
+    "operation": "check",
+    "draft": {
+      "name": "Brunna",
+      "race": "core:race/hill_dwarf",
+      "points": {
+        "str": 2,
+        "per": 1,
+        "end": 2,
+        "int": 0,
+        "wil": 0,
+        "agi": 3,
+        "cha": 1,
+        "lck": 2
+      },
+      "background": "core:background/scout",
+      "creation_perks": [
+        "core:feature/small_frame"
+      ],
+      "tag_skills": [
+        "core:skill/survival",
+        "core:skill/stealth",
+        "core:skill/bows"
+      ]
+    },
+    "expect": {
+      "complete": false,
+      "points_left": 0,
+      "problems": [
+        {
+          "step": "attributes",
+          "message": "11 points spent, more than the 10 to distribute"
+        }
+      ]
+    }
+  },
+  {
+    "name": "check: an attribute over its maximum before race",
+    "operation": "check",
+    "draft": {
+      "name": "Brunna",
+      "race": "core:race/hill_dwarf",
+      "points": {
+        "int": 7,
+        "wil": 3
+      },
+      "background": "core:background/scout",
+      "creation_perks": [
+        "core:feature/small_frame"
+      ],
+      "tag_skills": [
+        "core:skill/survival",
+        "core:skill/stealth",
+        "core:skill/bows"
+      ]
+    },
+    "expect": {
+      "complete": false,
+      "problems": [
+        {
+          "step": "attributes",
+          "message": "int is 11, over the maximum of 10"
+        }
+      ]
+    }
+  },
+  {
+    "name": "check: an attribute lowered to 1 frees 3 points",
+    "operation": "check",
+    "draft": {
+      "name": "Brunna",
+      "race": "core:race/hill_dwarf",
+      "points": {
+        "str": 2,
+        "per": 1,
+        "end": 2,
+        "int": 3,
+        "wil": 0,
+        "agi": 3,
+        "cha": -3,
+        "lck": 2
+      },
+      "background": "core:background/scout",
+      "creation_perks": [
+        "core:feature/small_frame"
+      ],
+      "tag_skills": [
+        "core:skill/survival",
+        "core:skill/stealth",
+        "core:skill/bows"
+      ]
+    },
+    "expect": {
+      "complete": true,
+      "points_left": 0,
+      "problems": []
+    }
+  },
+  {
+    "name": "check: an attribute under the minimum of 1",
+    "operation": "check",
+    "draft": {
+      "name": "Brunna",
+      "race": "core:race/hill_dwarf",
+      "points": {
+        "str": 2,
+        "per": 1,
+        "end": 2,
+        "int": 0,
+        "wil": 0,
+        "agi": 3,
+        "cha": -4,
+        "lck": 2
+      },
+      "background": "core:background/scout",
+      "creation_perks": [
+        "core:feature/small_frame"
+      ],
+      "tag_skills": [
+        "core:skill/survival",
+        "core:skill/stealth",
+        "core:skill/bows"
+      ]
+    },
+    "expect": {
+      "complete": false,
+      "problems": [
+        {
+          "step": "attributes",
+          "message": "cha is 0, under the minimum of 1"
+        }
+      ]
+    }
+  },
+  {
+    "name": "check: a template race is never played",
+    "operation": "check",
+    "draft": {
+      "name": "Brunna",
+      "race": "core:race/beastman",
+      "points": {
+        "str": 2,
+        "per": 1,
+        "end": 2,
+        "int": 0,
+        "wil": 0,
+        "agi": 3,
+        "cha": 0,
+        "lck": 2
+      },
+      "background": "core:background/scout",
+      "creation_perks": [
+        "core:feature/small_frame"
+      ],
+      "tag_skills": [
+        "core:skill/survival",
+        "core:skill/stealth",
+        "core:skill/bows"
+      ]
+    },
+    "expect": {
+      "complete": false,
+      "problems": [
+        {
+          "step": "race",
+          "message": "race \"core:race/beastman\" is a template and is never played"
+        }
+      ]
+    }
+  },
+  {
+    "name": "check: a level-up perk is not a creation perk, and two tag skills are too few",
+    "operation": "check",
+    "draft": {
+      "name": "Brunna",
+      "race": "core:race/hill_dwarf",
+      "points": {
+        "str": 2,
+        "per": 1,
+        "end": 2,
+        "int": 0,
+        "wil": 0,
+        "agi": 3,
+        "cha": 0,
+        "lck": 2
+      },
+      "background": "core:background/scout",
+      "creation_perks": [
+        "core:feature/sidestep"
+      ],
+      "tag_skills": [
+        "core:skill/survival",
+        "core:skill/stealth"
+      ]
+    },
+    "expect": {
+      "complete": false,
+      "problems": [
+        {
+          "step": "creation_perks",
+          "message": "feature \"core:feature/sidestep\" is not a creation perk"
+        },
+        {
+          "step": "tag_skills",
+          "message": "3 tag skills are needed, 2 chosen"
+        }
+      ]
+    }
+  },
+  {
+    "name": "check: a human takes 4 tag skills and up to 3 creation perks",
+    "operation": "check",
+    "draft": {
+      "name": "Brunna",
+      "race": "core:race/human",
+      "points": {
+        "str": 2,
+        "per": 1,
+        "end": 2,
+        "int": 0,
+        "wil": 0,
+        "agi": 3,
+        "cha": 0,
+        "lck": 2
+      },
+      "background": "core:background/scout",
+      "creation_perks": [
+        "core:feature/small_frame",
+        "core:feature/leather_allergy",
+        "core:feature/beast_phobia"
+      ],
+      "tag_skills": [
+        "core:skill/survival",
+        "core:skill/stealth",
+        "core:skill/bows"
+      ]
+    },
+    "expect": {
+      "complete": false,
+      "problems": [
+        {
+          "step": "tag_skills",
+          "message": "4 tag skills are needed, 3 chosen"
+        }
+      ]
+    }
+  },
+  {
+    "name": "check: a complete hill dwarf scout: attributes after race and perks, skills, derived",
+    "operation": "check",
+    "draft": {
+      "name": "Brunna",
+      "race": "core:race/hill_dwarf",
+      "points": {
+        "str": 2,
+        "per": 1,
+        "end": 2,
+        "int": 0,
+        "wil": 0,
+        "agi": 3,
+        "cha": 0,
+        "lck": 2
+      },
+      "background": "core:background/scout",
+      "creation_perks": [
+        "core:feature/small_frame"
+      ],
+      "tag_skills": [
+        "core:skill/survival",
+        "core:skill/stealth",
+        "core:skill/bows"
+      ]
+    },
+    "expect": {
+      "complete": true,
+      "points_left": 0,
+      "problems": [],
+      "attributes": {
+        "str": 7,
+        "per": 5,
+        "end": 8,
+        "int": 4,
+        "wil": 5,
+        "agi": 7,
+        "cha": 4,
+        "lck": 6
+      },
+      "derived": {
+        "hp": 83,
+        "mp": 34,
+        "sp": 52,
+        "ap": 4,
+        "carry": 71,
+        "initiative": 5,
+        "toxicity_limit": 60
+      },
+      "skills": {
+        "blades": 19,
+        "blunt": 19,
+        "piercing": 19,
+        "unarmed": 19,
+        "shields": 21,
+        "red_magic": 13,
+        "orange_magic": 13,
+        "yellow_magic": 13,
+        "green_magic": 13,
+        "blue_magic": 13,
+        "indigo_magic": 13,
+        "violet_magic": 13,
+        "white_magic": 13,
+        "black_magic": 13,
+        "stealth": 29,
+        "lockpick": 19,
+        "sleight_of_hand": 19,
+        "persuasion": 13,
+        "deception": 13,
+        "intimidation": 13,
+        "lore": 13,
+        "investigation": 13,
+        "insight": 15,
+        "survival": 27,
+        "animal_handling": 15,
+        "medicine": 13,
+        "athletics": 19,
+        "repair": 13,
+        "alchemy": 13,
+        "blacksmithing": 19,
+        "crafting": 13,
+        "enchanting": 13,
+        "engineering": 13,
+        "building": 19,
+        "farming": 21,
+        "bows": 23,
+        "crossbows": 15,
+        "guns": 15,
+        "throwing_weapons": 15,
+        "light_armor": 19,
+        "medium_armor": 21,
+        "heavy_armor": 19,
+        "unarmored": 19,
+        "evasion": 19
+      }
+    }
+  },
+  {
+    "name": "finish: an illegal draft is refused with the check's messages",
+    "operation": "finish",
+    "draft": {
+      "name": "",
+      "race": "core:race/hill_dwarf",
+      "points": {
+        "str": 2,
+        "per": 1,
+        "end": 2,
+        "int": 0,
+        "wil": 0,
+        "agi": 1,
+        "cha": 0,
+        "lck": 2
+      },
+      "background": "core:background/scout",
+      "creation_perks": [
+        "core:feature/small_frame"
+      ],
+      "tag_skills": [
+        "core:skill/survival",
+        "core:skill/stealth",
+        "core:skill/bows"
+      ]
+    },
+    "expect": {
+      "error": "the draft is not complete: a name is needed; 2 points left"
+    }
+  },
+  {
+    "name": "finish: a complete draft becomes a stored actor",
+    "operation": "finish",
+    "draft": {
+      "name": "Brunna",
+      "race": "core:race/hill_dwarf",
+      "points": {
+        "str": 2,
+        "per": 1,
+        "end": 2,
+        "int": 0,
+        "wil": 0,
+        "agi": 3,
+        "cha": 0,
+        "lck": 2
+      },
+      "background": "core:background/scout",
+      "creation_perks": [
+        "core:feature/small_frame"
+      ],
+      "tag_skills": [
+        "core:skill/survival",
+        "core:skill/stealth",
+        "core:skill/bows"
+      ]
+    },
+    "expect": {
+      "name": "Brunna",
+      "actor": {
+        "attributes": {
+          "str": 7,
+          "per": 5,
+          "end": 8,
+          "int": 4,
+          "wil": 5,
+          "agi": 6,
+          "cha": 4,
+          "lck": 6
+        },
+        "level": 1,
+        "xp": 0,
+        "skills": {
+          "blades": 19,
+          "blunt": 19,
+          "piercing": 19,
+          "unarmed": 19,
+          "shields": 21,
+          "red_magic": 13,
+          "orange_magic": 13,
+          "yellow_magic": 13,
+          "green_magic": 13,
+          "blue_magic": 13,
+          "indigo_magic": 13,
+          "violet_magic": 13,
+          "white_magic": 13,
+          "black_magic": 13,
+          "stealth": 29,
+          "lockpick": 19,
+          "sleight_of_hand": 19,
+          "persuasion": 13,
+          "deception": 13,
+          "intimidation": 13,
+          "lore": 13,
+          "investigation": 13,
+          "insight": 15,
+          "survival": 27,
+          "animal_handling": 15,
+          "medicine": 13,
+          "athletics": 19,
+          "repair": 13,
+          "alchemy": 13,
+          "blacksmithing": 19,
+          "crafting": 13,
+          "enchanting": 13,
+          "engineering": 13,
+          "building": 19,
+          "farming": 21,
+          "bows": 23,
+          "crossbows": 15,
+          "guns": 15,
+          "throwing_weapons": 15,
+          "light_armor": 19,
+          "medium_armor": 21,
+          "heavy_armor": 19,
+          "unarmored": 19,
+          "evasion": 19
+        },
+        "tags": [
+          "survival",
+          "stealth",
+          "bows"
+        ],
+        "growth": {
+          "hp": 0,
+          "mp": 0,
+          "sp": 0
+        },
+        "resources": {
+          "hp": 83,
+          "mp": 34,
+          "sp": 52,
+          "ap": 4
+        },
+        "conditions": [],
+        "modifiers": [],
+        "flags": [],
+        "perks": {
+          "dwarf_darkvision": 1,
+          "dwarf_resilience": 1,
+          "dwarf_stoneworker": 1,
+          "hill_dwarf_toughness": 1,
+          "small_frame": 1
+        },
+        "spells": [],
+        "known_effects": [],
+        "inventory": [],
+        "equipped": {}
+      }
+    }
+  }
+]

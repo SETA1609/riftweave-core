@@ -24,6 +24,7 @@ import (
 	"github.com/SETA1609/riftweave-core/backend/internal/commandsummons"
 	"github.com/SETA1609/riftweave-core/backend/internal/condition"
 	"github.com/SETA1609/riftweave-core/backend/internal/consume"
+	"github.com/SETA1609/riftweave-core/backend/internal/creation"
 	"github.com/SETA1609/riftweave-core/backend/internal/data"
 	"github.com/SETA1609/riftweave-core/backend/internal/derived"
 	"github.com/SETA1609/riftweave-core/backend/internal/economy"
@@ -94,6 +95,7 @@ var commands map[string]commandHandler = map[string]commandHandler{
 	"resolution":      bind(resolution.Run),
 	"derived":         bind(derived.Run),
 	"actions":         bind(derived.RunActions),
+	"creation":        bind(creation.Run),
 	"monster_sheet":   bind(derived.RunMonsterSheet),
 	"formula":         bind(runFormula),
 	"modifiers":       bind(runModifiers),

@@ -1,6 +1,6 @@
 # Character Creation
 
-Modified: 2026-11-20
+Modified: 2026-11-21
 
 **Status:** Core (reference procedure)
 
@@ -19,6 +19,9 @@ Creation choices have long-term weight: your race phase becomes your Wuxing foun
 > `backgrounds`, `features` (traits/perks), `spells`, `equipment`. Nothing here needs new schema.
 
 ---
+
+
+In the apps, steps 1 to 5 and the sheet of steps 6 and 8 are one command, `creation`: an app draws the form from its `rules`, shows what `check` says after every change, and `finish` makes the stored actor ([docs/backend/creation.md](../backend/creation.md)).
 
 ## The sequence at a glance
 

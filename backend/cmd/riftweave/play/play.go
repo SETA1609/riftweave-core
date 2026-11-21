@@ -33,6 +33,7 @@ const (
 	modeNetwork
 	modePrompt     // a one-line input for a setting
 	modeCharacters // the character list (BE_S07_03)
+	modeCreator    // character creation over the creation command (BE_S07_08)
 )
 
 const maximumLogLines = 6
@@ -69,30 +70,6 @@ var attributeKeys = []string{"str", "per", "end", "int", "wil", "agi", "cha", "l
 func number(text string) int64 {
 	value, _ := strconv.ParseInt(text, 10, 64)
 	return value
-}
-
-func createForm() form {
-	var fields []field
-	for _, key := range attributeKeys {
-		fields = append(fields, field{label: strings.ToUpper(key), initial: "5"})
-	}
-	fields = append(fields, field{label: "Level", initial: "1"})
-	return form{
-		title:   "Create a character",
-		command: "derived",
-		fields:  fields,
-		build: func(values []string) map[string]any {
-			attributes := map[string]int64{}
-			for index, key := range attributeKeys {
-				attributes[key] = number(values[index])
-			}
-			return map[string]any{"actor": map[string]any{"attributes": attributes, "level": number(values[len(attributeKeys)])}}
-		},
-		columns: []string{"hp", "mp", "sp", "ap", "carry", "initiative"},
-		logLine: func(values []string, result map[string]any) string {
-			return fmt.Sprintf("created: level %s, %v HP, %v MP", values[len(attributeKeys)], result["hp"], result["mp"])
-		},
-	}
 }
 
 func attackForm(luck string) form {
@@ -175,6 +152,8 @@ type Model struct {
 	saved          []characters.Entry
 	pending        []byte
 	pendingOptions characters.ImportOptions
+	// creator is the character creation screen while it is open.
+	creator *creator
 }
 
 // New returns the model at the main menu, with the default settings and nothing saved.
@@ -344,6 +323,11 @@ func (model Model) Update(message tea.Msg) (tea.Model, tea.Cmd) {
 			return model, nil
 		}
 		return model.charactersKey(key.String())
+	case modeCreator:
+		if !isKey {
+			return model, nil
+		}
+		return model.creatorKey(key)
 	case modePrompt:
 		if isKey {
 			switch key.Type {
@@ -437,7 +421,7 @@ func (model Model) enter(entry menuEntry) (tea.Model, tea.Cmd) {
 		model.returnCursor, model.cursor, model.problem, model.mode = model.cursor, 0, "", modeCharacters
 		return model.charactersShown(), nil
 	case "character_creation":
-		return model.open(createForm()), textinput.Blink
+		return model.openCreator(), nil
 	case "skill_resolution":
 		return model.open(resolutionForm(model.luck)), textinput.Blink
 	case "attack":
@@ -516,6 +500,9 @@ func devOperation(words []string) (map[string]any, error) {
 // every attribute at 5 at level 1, with full pools from the derived command.
 func (model Model) startActor() (map[string]any, error) {
 	var character map[string]any = model.character
+	if _, stored := character["resources"]; stored {
+		return character, nil // a stored actor from the creation screen
+	}
 	if character == nil {
 		attributes := map[string]int64{}
 		for _, key := range attributeKeys {
@@ -695,6 +682,8 @@ func (model Model) View() string {
 		view.WriteString("\n" + hintStyle.Render("up/down, enter to change, esc to go back; each change is saved") + "\n")
 	case modeCharacters:
 		view.WriteString(model.charactersView())
+	case modeCreator:
+		view.WriteString(model.creatorView())
 	case modePrompt:
 		view.WriteString(model.line.View() + "\n")
 		view.WriteString("\n" + hintStyle.Render("enter to apply, esc to cancel") + "\n")

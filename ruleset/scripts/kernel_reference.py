@@ -11,6 +11,7 @@ import math
 from pathlib import Path
 
 from casting_reference import run_casting, run_spellcraft
+from creation_reference import run_creation
 from hazard_reference import run_hazard
 from loot_reference import run_loot
 
@@ -1426,6 +1427,7 @@ RUNNERS = {
     "progression": run_progression,
     "share": run_share,
     "command_summons": run_command_summons,
+    "creation": run_creation,
 }
 
 

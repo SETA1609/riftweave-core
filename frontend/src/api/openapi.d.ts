@@ -181,6 +181,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/commands/creation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Character creation: the rules a form is drawn from, a check of a draft step by step, and the stored actor a complete draft becomes.
+         * @description The rules are in docs/backend/creation.md.
+         */
+        post: operations["creation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/commands/derived": {
         parameters: {
             query?: never;
@@ -612,6 +632,18 @@ export interface components {
             quantity: number;
             /** @enum {string} */
             unit: "copper" | "silver" | "gold" | "platinum";
+        };
+        /** @description A character being made (BE_S07_08, docs/backend/creation.md): any steps, in any order. */
+        creation_draft: {
+            background?: components["schemas"]["ref"];
+            creation_perks?: components["schemas"]["ref"][];
+            name?: string;
+            /** @description Points spent per attribute key; negative when one is lowered under the start, which frees points. */
+            points?: {
+                [key: string]: number;
+            };
+            race?: components["schemas"]["ref"];
+            tag_skills?: components["schemas"]["ref"][];
         };
         d100: number;
         /** @description Any command may return this instead of its result. */
@@ -1874,6 +1906,133 @@ export interface operations {
                             source?: string;
                         }[];
                         toxicity?: number;
+                    };
+                };
+            };
+            /** @description The body is not the command's input, or a rule needs an input it was not given. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description No such command, or the input names a key that does not exist. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The body is over 1 MiB. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The command refused for another rule reason. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+        };
+    };
+    creation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    draft?: components["schemas"]["creation_draft"];
+                    /** @enum {string} */
+                    operation: "rules" | "check" | "finish";
+                };
+            };
+        };
+        responses: {
+            /** @description The result. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description With rules: the eight attribute keys, in order. */
+                        abilities?: string[];
+                        actor?: components["schemas"]["stored_actor"];
+                        /** @description With check: the attributes after race and the starting perks' modifiers. */
+                        attributes?: {
+                            [key: string]: number;
+                        };
+                        backgrounds?: {
+                            background: components["schemas"]["ref"];
+                            label: string;
+                            skill_bonuses: {
+                                bonus: number;
+                                skill: components["schemas"]["ref"];
+                            }[];
+                            suggested_tag_skills: components["schemas"]["ref"][];
+                        }[];
+                        /** @description With check: every step is filled and legal. */
+                        complete?: boolean;
+                        /** @description With rules: progression's creation numbers and tag_skills, before race traits and perks. */
+                        creation?: {
+                            attribute_max: number;
+                            attribute_min: number;
+                            attribute_points: number;
+                            attribute_start: number;
+                            creation_perks_max: number;
+                            tag_skills: number;
+                        };
+                        creation_perks?: {
+                            description: string;
+                            label: string;
+                            perk: components["schemas"]["ref"];
+                        }[];
+                        /** @description With check: the derived stats at the start level (hp, mp, sp, ap, carry, initiative, toxicity_limit). */
+                        derived?: {
+                            [key: string]: number;
+                        };
+                        /** @description With finish: the character's name. */
+                        name?: string;
+                        points_left?: number;
+                        /** @description With check: what each step still needs or gets wrong, in step order. */
+                        problems?: {
+                            message: string;
+                            /** @enum {string} */
+                            step: "name" | "race" | "attributes" | "background" | "creation_perks" | "tag_skills";
+                        }[];
+                        /** @description With rules: every race a player may pick, with its ability modifiers summed with its parent's and its traits. */
+                        races?: {
+                            ability_modifiers: {
+                                [key: string]: number;
+                            };
+                            label: string;
+                            race: components["schemas"]["ref"];
+                            traits: components["schemas"]["ref"][];
+                        }[];
+                        /** @description With rules: every skill and the attribute it starts from. With check: the starting skills by key, the skill start from the attributes plus the background's bonuses. */
+                        skills?: {
+                            ability: string;
+                            label: string;
+                            skill: components["schemas"]["ref"];
+                        }[] | {
+                            [key: string]: number;
+                        };
                     };
                 };
             };

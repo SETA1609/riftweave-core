@@ -213,6 +213,7 @@ func (economy *Economy) ToCopper(cost Cost) (int64, error) {
 // Skill is what the rules need of one row of skills/core.json.
 type Skill struct {
 	Key               string        `json:"key"`
+	Label             string        `json:"label"`
 	AssociatedAbility string        `json:"associated_ability"`
 	Category          string        `json:"category"`
 	Ability           actor.Ability `json:"-"`
@@ -242,7 +243,9 @@ type Progression struct {
 		CreationPerksMax int64 `json:"creation_perks_max"`
 	} `json:"creation"`
 	PerksPerLevel int64 `json:"perks_per_level"`
-	SkillCost     struct {
+	// TagSkills is how many tag skills a new character picks, before race traits and perks.
+	TagSkills int64 `json:"tag_skills"`
+	SkillCost struct {
 		Normal int64 `json:"normal"`
 		Tag    int64 `json:"tag"`
 	} `json:"skill_cost"`
@@ -571,9 +574,11 @@ type Effect struct {
 
 // Feature is what a dev operation needs of one row of features/core.json: its kind and ranks.
 type Feature struct {
-	Key   string `json:"key"`
-	Type  string `json:"type"`
-	Ranks int64  `json:"ranks"`
+	Key         string `json:"key"`
+	Label       string `json:"label"`
+	Description string `json:"description"`
+	Type        string `json:"type"`
+	Ranks       int64  `json:"ranks"`
 	// RankLevels is each tier's level gate (GD_S05_03); nil gates every tier at the prerequisite level.
 	RankLevels []int64 `json:"rank_levels"`
 	// RankValues is a modifier's value at each rank, by target, in place of value × rank.
@@ -596,6 +601,31 @@ type Feature struct {
 	Excludes []string `json:"excludes"`
 	// Rider is the maneuver ref a rider perk puts on plain attacks; empty for most.
 	Rider string `json:"rider"`
+}
+
+// Race is what character creation needs of one row of races/core.json (BE_S07_08).
+type Race struct {
+	Key     string `json:"key"`
+	Label   string `json:"label"`
+	Lineage struct {
+		Role       string `json:"role"`
+		ParentRace string `json:"parent_race"`
+	} `json:"lineage"`
+	AbilityModifiers map[string]int64 `json:"ability_modifiers"`
+	Traits           []struct {
+		ID string `json:"id"`
+	} `json:"traits"`
+}
+
+// Background is what character creation needs of one row of backgrounds/core.json.
+type Background struct {
+	Key          string `json:"key"`
+	Label        string `json:"label"`
+	SkillBonuses []struct {
+		Skill string `json:"skill"`
+		Bonus int64  `json:"bonus"`
+	} `json:"skill_bonuses"`
+	SuggestedTagSkills []string `json:"suggested_tag_skills"`
 }
 
 // Command is a perk's command object: the AP an ordered summon adds to its next turn, whether
@@ -950,6 +980,8 @@ type Ruleset struct {
 	Hazards        Table[Hazard]
 	Spells         Table[Spell]
 	Features       Table[Feature]     // features/core.json, for dev perks (docs/backend/dev-mode.md)
+	Races          Table[Race]        // races/core.json, for character creation (BE_S07_08)
+	Backgrounds    Table[Background]  // backgrounds/core.json, for character creation
 	SummonBonuses  Table[SummonBonus] // summons/bonuses.json, by ref core:summon_bonus/<key>
 	Effects        Table[Effect]      // by ref, core:effect/<key>
 	Casting        Casting
@@ -1258,6 +1290,12 @@ func Load(fileSystem fs.FS, modules ...fs.FS) (*Ruleset, error) {
 	var features struct{ Features []Feature }
 	loader.read("features/core.json", &features)
 	ruleset.Features = newTable(features.Features, func(feature *Feature) string { return feature.Key })
+	var races struct{ Races []Race }
+	loader.read("races/core.json", &races)
+	ruleset.Races = newTable(races.Races, func(race *Race) string { return race.Key })
+	var backgrounds struct{ Backgrounds []Background }
+	loader.read("backgrounds/core.json", &backgrounds)
+	ruleset.Backgrounds = newTable(backgrounds.Backgrounds, func(background *Background) string { return background.Key })
 	var summonBonuses struct {
 		SummonBonuses []SummonBonus `json:"summon_bonuses"`
 	}
