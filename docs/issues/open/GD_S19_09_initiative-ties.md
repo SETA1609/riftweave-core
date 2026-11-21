@@ -1,8 +1,8 @@
 #### GD_S19_09_initiative-ties One rule for initiative ties
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: —
-- Modified: 2026-11-19
+- Modified: 2026-11-21
 - Do: Owner request, 2026-11-19.
   - **The conflict:** initiative is `PER` plus modifiers (`docs/core/derived.md`). Two documents break ties differently [V 2026-11-19]:
     - docs/modules/combat.md §7: ties go to the higher AGI, then a d100 roll-off, lowest first;

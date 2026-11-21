@@ -2,6 +2,8 @@
 
 Author: SETA1609
 
+Modified: 2026-11-21
+
 Derived stats are functions of the actor snapshot. They are not fields a module may write. Fallout stores SPECIAL and recomputes HP, AP, and carry. This file is that recompute. The coefficients live in `ruleset/data/derived/core.json`. A module that wants more HP emits a modifier. It does not edit this file.
 
 ## Function
@@ -43,6 +45,16 @@ toxicity_limit = 20 + 5 * 5   = 45
 ```
 
 A perk `source: perk:tough` with `add hp 8` makes HP 67. It does not change `per_point`. Two copies of the same perk do not stack.
+
+## Initiative ties
+
+Initiative is fixed: the derived `initiative` value, with no roll, as in Fallout's sequence. Highest acts first. When two or more actors have the same initiative, the tie breaks in this order, and the first step that separates them decides:
+
+1. the higher AGI, after its modifiers;
+2. then the higher LCK, after its modifiers;
+3. then a d100 roll-off, lowest first; a tie on the roll is rolled again.
+
+The roll-off is made once, when the encounter starts, by the device that holds the encounter (the GM's, or the player's at a solo table), and it is kept as part of the encounter's session step, so the order replays the same on every device and needs no shared roll between devices. An actor who joins later rolls only against those it ties with. [A] This is the only place the rule is written; [combat.md §7](../modules/combat.md#7-initiative) and the encounter tracker (`BE_S08_07_encounter-tracker-cli`) link here. [V 2026-11-21, `test_initiative_ties.py`]
 
 ## What this file is not
 

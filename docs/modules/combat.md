@@ -145,7 +145,7 @@ unless a respec, at the game's or GM's discretion, swaps them
 
 ## 7. Initiative
 
-Initiative is a derived stat: `PER` plus modifiers ([derived.md](../core/derived.md)). Highest acts first. Ties go to the higher AGI, then to a d100 roll-off, lowest first. **[A]** The *Alert* perk adds 10. There is no d20.
+Initiative is a derived stat: `PER` plus modifiers ([derived.md](../core/derived.md)). Highest acts first; a tie breaks as [derived.md](../core/derived.md#initiative-ties) says. The *Alert* perk adds 10. There is no d20.
 
 ## 8. Encumbrance and armor action costs
 
