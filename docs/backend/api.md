@@ -1,6 +1,6 @@
 # HTTP API
 
-Modified: 2026-11-15
+Modified: 2026-11-21
 
 `riftweave-server` serves the core over HTTP (APP-06). It is an adapter: it parses the request,
 calls `core.Run` with the command name and the body, and writes the result. It holds no rule and
@@ -60,3 +60,34 @@ meant to run beside the frontend or behind a proxy that adds them. [A]
 ## Authoring
 
 `author` (APP-10) checks draft spells and exports a data file ([authoring.md](authoring.md)). It needs `ruleset/schemas` beside the data directory, which `core.Open` finds; a draft that fails is a result with `problems`, not an error.
+
+## Catalog
+
+`catalog` (BE_S08_10) reads the tables a player or a GM studies to plan a build: weapons, armor,
+accessories, consumables, gear, materials, gems, monsters, spells, features (perks and traits),
+races, backgrounds, skills, conditions, and effects. It holds no rule; it reads rows.
+
+- **`collections`** lists them in that order, each with its label, its row count, and its columns.
+- **`list`** returns one collection's rows. A row is resolved as validate.py composes it
+  ([composition.md](../core/composition.md)): its base (a base file under `bases/`, or another row
+  of the collection, such as `core:monster/wolf` or `core:spell/unlock`), then its overrides
+  merged field by field, then its own fields. A base that is an item (`is_item: true`) is a row
+  of its own key. Each row has its `ref` and its `source`: `core`, or the module it comes from.
+- **Modules:** every loaded module's rows follow core's, as `module:<id>/<category>/<key>`. A row
+  whose key the module's manifest lists in `overrides` replaces the core row and keeps its ref
+  ([overrides.md](../core/overrides.md)). A module's equipment row goes to the collection of its
+  type, or of the base it names.
+- **Filters** are generic, so no collection needs code: `field` is a dotted path
+  (`weapon.damage.type`); `equals` matches the value or an item of a list; `min` and `max` bound
+  a number; `text` is found in the label or the description, in any case. A row matches every
+  filter. **`sort`** orders by a field, `descending` if set; a row without the field sorts last.
+- **`get`** returns one row by its ref.
+- **Columns** are display, not rules: `collections` in `backend/internal/catalog/catalog.go`
+  names each collection's, for example weapons: label, skill, damage, type, properties, range,
+  cost, weight.
+- **Not composed yet:** a monster's level growth (attributes and damage scaled from its creature
+  type's or base monster's level) and its templates. A monster row is its base merged with its
+  overrides; `monster_sheet` and BE_S08_05 read the rest. [A]
+
+An unknown collection, operation, or ref is a 404; `list` or `get` without a collection is a 400.
+[V 2026-11-21, `catalog_test.go`, `TestTheCatalogOverHTTP`, `TestTheCatalogThroughCall`]
