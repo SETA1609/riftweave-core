@@ -1,5 +1,6 @@
 #### GD_S19_02_movement-distance-per-ap How far one move goes: squares per AP from the race's speed
-- Status: review
+- Status: done
+- Merged: #427, 2026-11-21
 - Priority: high
 - Needs: —
 - Modified: 2026-11-21
