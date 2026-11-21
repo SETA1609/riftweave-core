@@ -331,3 +331,44 @@ def hit_points(row):
     from kernel_reference import run_monster_sheet
 
     return run_monster_sheet({"monster": {key: row[key] for key in ("attributes", "level", "role", "perks") if key in row}})["hp"]
+
+
+@lru_cache(maxsize=None)
+def _known_refs():
+    """Every core:<category>/<key> a data file, an item, or a base template defines (gate 1)."""
+    files = list(validate.collect_data_files())
+    known = validate.build_namespaced_ref_index(files)
+    known |= validate.build_equipment_index(files)["namespaced_keys"]
+    known |= validate.build_base_refs()
+    return frozenset(known)
+
+
+def custom_monster_problems(row):
+    """Every problem of a monster row a GM writes, as sentences, all at once
+    (docs/core/actor-sheet.md#a-custom-monster); [] when monster_sheet computes it. It keeps
+    what a core row keeps (every reference, one template per slot, the schema) and the two
+    limits a monster has (the level and the skill cap), and drops a player's other limits."""
+    problems = [f"reference {ref} does not resolve"
+                for ref in sorted({s for s in validate._walk_strings(row) if validate.NAMESPACED_REF.match(s) and s not in _known_refs()})]
+    data = {"monsters": [json.loads(json.dumps(row))]}
+    errors = []
+    validate._resolve_monster_bases(data, errors)
+    problems += errors
+    composed = data["monsters"][0] if not errors else {**row, **(row.get("overrides") or {})}
+    if not errors:
+        store = validate.load_store()
+        uri = (validate.SCHEMA_DIR / "monster.schema.json").as_uri()
+        validator = validate.schema_validator(store[uri], uri, store)
+        error = validate.first_schema_error(validator, {"$schema": "../../schemas/monster.schema.json", "monsters": [composed]})
+        if error is not None:
+            path = "/".join(map(str, list(error.absolute_path)[2:]))
+            problems.append(f"{path or 'the row'}: {error.message}" if len(error.message) < 200 else f"{path or 'the row'} does not match monster.schema.json")
+    progression = _load("progression/core.json")["progression"]
+    level = composed.get("level", 1)
+    if level > progression["max_level"]:
+        problems.append(f"level {level} is over the maximum level {progression['max_level']}")
+    # The schema caps a written skill at skill_cap; check it here only when the schema could not run.
+    for key, value in sorted((composed.get("skills") or {}).items()) if errors else []:
+        if value > progression["skill_cap"]:
+            problems.append(f'skill "{key}" {value} is over the skill cap {progression["skill_cap"]}')
+    return problems

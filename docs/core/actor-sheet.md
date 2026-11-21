@@ -84,7 +84,7 @@ written. [V 2026-11-21, `monster_sheet` vectors in Python and Go]
 - **One template per slot**, as for a core row ([monsters.md](../modules/monsters.md#templates)).
 - **The schema** of a monster row (`monster.schema.json`).
 
-**The custom monster check** (`custom_monster_problems` in `kernel_reference.py`) returns every
+**The custom monster check** (`custom_monster_problems` in `monster_reference.py`) returns every
 problem of a written row at once, as a list of sentences, the way `files.Check` reports a file:
 the schema, each unknown reference, two templates in one slot, the level, and a written skill
 over the cap. An empty list is a row `monster_sheet` computes. The Go check for the editor is
