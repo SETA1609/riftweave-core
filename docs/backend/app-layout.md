@@ -1,6 +1,6 @@
 # App layout
 
-Modified: 2026-11-18
+Modified: 2026-11-21
 
 The human CLI (`riftweave play`) and the Angular app (APP-27) show the same menus, so a player
 who learns one finds their way in the other. The menu tree is one file,
@@ -29,7 +29,7 @@ Main menu
 │   ├── Skill resolution
 │   ├── Bestiary                       APP-29
 │   └── Saved games                    web only
-├── Characters                         FE_S07_04 (web only; the CLI has it)
+├── Characters
 ├── Settings
 ├── Modules
 ├── Network
@@ -66,7 +66,11 @@ Import does), `e` exports it to a path, `d` duplicates it, `x` deletes it after 
 `p` adds it to the party of the open session (one imported from a file or started in dev mode).
 Import applies the sync rule (a file without sync fields is named after its file name); on a divergence it shows both sides' last change, and enter on
 Import again asks which to keep (`saved` or `incoming`; anything else keeps both as they were).
-[V 2026-11-20, `play_test.go`] The frontend page is `FE_S07_04_character-list-page`.
+[V 2026-11-20, `play_test.go`] The frontend page (`/characters`, FE_S07_04) lists the same columns
+with **Export**, **Duplicate**, and **Delete** on each row and **Import a character file** below;
+a refused import shows its note, and a diverged one shows both sides with **Keep the saved one**
+and **Keep the incoming one**. [V 2026-11-21, `characters.spec.ts` and `e2e/characters.spec.ts`
+over both transports]
 
 ## Settings, Modules, and Network
 

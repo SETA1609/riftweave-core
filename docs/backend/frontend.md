@@ -1,6 +1,6 @@
 # Frontend
 
-Modified: 2026-11-18
+Modified: 2026-11-21
 
 `frontend/` is an Angular app over the core (APP-07): through the HTTP API ([api.md](api.md)), or
 through the Go core compiled to WebAssembly in the page, so it can be served as a static site with
@@ -97,6 +97,9 @@ A player's games live in their browser (APP-16), in two layers. [V 2026-11-16, `
   the browser to keep its storage (`navigator.storage.persist()`), since a browser may clear site
   data [U: which browsers clear it, and when, is not checked]. `localStorage` is not used for
   saves: it is small, and it blocks the page.
+- **Characters.** The character list keeps its own database, `riftweave-characters` (store
+  `characters`), so adding it needed no upgrade of the saves' database
+  ([files.md](files.md#in-the-frontend)).
 - **Backup files.** "Download backup" writes `<name>.riftweave.json`: the session JSON itself,
   with its `rules_version` ([sessions.md](sessions.md#the-rules-version)), so the agent CLI
   replays it as it is: `jq '{operation: "replay", session: .}' mara.riftweave.json | riftweave

@@ -2,6 +2,7 @@
 // and one route per screen. A route's data sets the component's inputs.
 import type { Routes } from '@angular/router';
 import { Attack } from './attack';
+import { CharacterList } from './character-list';
 import { FileImport } from './file-import';
 import { Playthrough } from './playthrough';
 import { Resolution } from './resolution';
@@ -12,6 +13,7 @@ import { MenuGrid } from './ui/menu-grid';
 
 export const routes: Routes = [
   { path: '', component: MenuGrid, data: { parent: 'main' }, title: 'Riftweave' },
+  { path: 'characters', component: CharacterList, title: 'Characters' },
   { path: 'settings', component: SettingsScreens, data: { section: 'settings' }, title: 'Settings' },
   { path: 'modules', component: SettingsScreens, data: { section: 'modules' }, title: 'Modules' },
   { path: 'network', component: SettingsScreens, data: { section: 'network' }, title: 'Network' },
