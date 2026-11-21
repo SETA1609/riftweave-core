@@ -1,5 +1,6 @@
 #### GD_S19_08_spell-ap-by-level A minor spell costs less AP than a major one
-- Status: review
+- Status: done
+- Merged: #430, 2026-11-21
 - Priority: medium
 - Needs: —
 - Modified: 2026-11-21
