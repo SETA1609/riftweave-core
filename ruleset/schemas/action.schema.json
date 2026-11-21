@@ -39,6 +39,7 @@
         "cost": { "type": "integer", "minimum": 0 },
         "reserved": { "type": "boolean" },
         "refund_if_unused": { "type": "boolean" },
+        "triggers": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "schema.json#/definitions/readyTrigger" }, "description": "The events a readied action may name as its trigger (docs/core/combat.md#attacks-out-of-turn)." },
         "adds_to": { "type": "string" },
         "by_loadout": { "type": "boolean", "description": "The cost is the loadout's, from attack_sequences/core.json (docs/core/combat.md#attacks-by-loadout); `cost` is the cost with one one-handed weapon, for a caller that knows no loadout." },
         "speed_divisor": { "type": "integer", "minimum": 1, "description": "One of this action covers floor(speed / speed_divisor) squares, from the race's speed (docs/core/actions.md#how-far-a-move-goes). Modifiers on the action change its AP, not its squares." },
