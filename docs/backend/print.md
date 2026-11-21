@@ -1,6 +1,6 @@
 # Printouts
 
-Modified: 2026-11-15
+Modified: 2026-11-21
 
 The `print` command renders a printable page from the data (APP-11), so a printed number is the
 number the rules compute and a rule change is a rebuild, not an errata pass. It is an adapter like
@@ -14,7 +14,7 @@ result   title, html: one self-contained page (inline CSS, no script), ready to 
 
 | `kind` | Input | The page shows |
 | --- | --- | --- |
-| `sheet` | `actor`, a stored actor | attributes; every derived stat with the actor's modifiers; each raised skill (one the sheet writes, as M5-49's light sheet allows) with its **target**, the skill plus the actor's modifiers on it, so a player only checks `roll <= target`; perks with their rank; known spells |
+| `sheet` | `actor`, a stored actor, and `state` | attributes; every derived stat with the actor's modifiers; each raised skill (one the sheet writes, as M5-49's light sheet allows) with its **target**, the skill plus the actor's modifiers on it, so a player only checks `roll <= target`; perks with their rank; known spells |
 | `spell` | `spell`, a spell key | label, color and governing skill, level, mana cost and reagents, delivery, concentration, save, and each effect with its magnitude, duration, and target |
 | `monster` | `monster`, a composed monster row (as `monster_sheet` takes), and `label` | level, attributes, HP, MP, AP, evasion, each attack with its **to-hit** (the skill it rolls with: `unarmed` for a natural weapon, the carried weapon's skill otherwise, read as `monster_sheet` reads it) and dice, and its resistances |
 | `condition` | `condition`, a condition key | label, description, what applies and removes it, stacking, and its modifiers |
@@ -31,3 +31,25 @@ evasion, and a spell and a condition card each match the command that computes t
 
 A natural weapon's dice are not printed: they move with the creature's size, a rule the Go core
 does not hold yet, so the stat block names the weapon and its type and leaves the dice to the row. [A]
+
+## Printing a character
+
+A sheet prints the character as it is now, or fresh (BE_S09_03). `state` picks which:
+
+- **`current`** (the default) is the session's state: next to each maximum, the HP, mana, and
+  stamina left (`data-current="hp"`), the held conditions with their stacks
+  (`data-condition="frightened"`), the held modifiers with their source and how long they have
+  run, and the gear with its quantity, material, and the slot it is worn in
+  (`data-item="core:weapon/shortsword"`). Every skill target takes the perks and the held
+  modifiers, as a session step reads them ([sessions.md](sessions.md#what-the-actor-brings-to-a-step-app-13)).
+- **`fresh`** is the same character for a new table: its perks, skills, spells, and gear stay; its
+  conditions and held modifiers go, and the HP, mana, and stamina left are the maximums.
+
+A condition's own modifiers reach a printed number only as a session holds them, in `modifiers`;
+the sheet does not apply a condition a second time. [A]
+
+**The human CLI** prints from the character list: `w` on a character asks for a file (the
+character's name with `.html` by default; add ` --fresh` after the path for a fresh sheet), runs
+`print` on the character as saved, and says where it wrote the page. Open the file in a browser to
+print it or save it as PDF. The browser's Print action is FE_S09_04.
+[V 2026-11-21, `print_test.go` in core and in `cmd/riftweave`]
