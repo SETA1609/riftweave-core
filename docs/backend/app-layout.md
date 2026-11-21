@@ -28,6 +28,7 @@ Main menu
 │   ├── Spell creation                 APP-22
 │   ├── Skill resolution
 │   ├── Bestiary                       APP-29
+│   ├── Compendium                     FE_S08_11 in the web app
 │   └── Saved games                    web only
 ├── Characters
 ├── Settings
@@ -55,6 +56,17 @@ In the Angular app the main menu is the home page at `/`, Start is `/play`, a to
   target modifier (an `add` on the skill, source `situation:gm`), and the roll. A blank roll is
   rolled by the app, and the input it sends names that roll, so the check can be replayed with
   the agent CLI and gives the same result.
+- **Compendium** is every table to study a build, over `catalog` ([api.md](api.md#catalog)).
+
+## Compendium
+
+The human CLI's Compendium (BE_S08_10) lists the collections with their row counts; Enter opens
+one as a table, with the columns the `catalog` command names, scrolled with up and down. `/`
+types a filter, words found in the label or the description; Enter on a row opens it in full,
+its ref, its source (core or a module), and every field of the resolved row. Esc goes back one
+step: from a row to the table, from the table to the collections, from there to Start. The
+screen sends the same input the agent CLI takes, so `riftweave catalog` gives the same rows.
+[V 2026-11-21, `compendium_test.go`] The web app's page is FE_S08_11.
 
 ## Characters
 
