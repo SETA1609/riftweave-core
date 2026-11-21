@@ -22,6 +22,16 @@
         "type": "integer",
         "minimum": 0,
         "description": "The race's speed. With it the result gives the squares the actions cover."
+      },
+      "carried": {
+        "type": "integer",
+        "minimum": 0,
+        "description": "AP carried into this turn from the last, at most pool.carry."
+      },
+      "held_spent": {
+        "type": "integer",
+        "minimum": 0,
+        "description": "Held AP spent before the actor's next turn, on an opportunity or readied attack; at most what is held."
       }
     },
     "additionalProperties": false,
@@ -45,6 +55,26 @@
       "squares": {
         "type": "integer",
         "description": "Given a speed: the squares the actions cover, floor(speed / speed_divisor) per move (docs/core/actions.md#how-far-a-move-goes)."
+      },
+      "available": {
+        "type": "integer",
+        "description": "The pool plus the carried AP, at most pool.cap."
+      },
+      "held": {
+        "type": "integer",
+        "description": "AP left unspent at the end of the turn, held until the next (docs/core/actions.md#held-ap)."
+      },
+      "guard": {
+        "type": "integer",
+        "description": "The evasion the held AP left after held_spent gives, guard_per_ap each."
+      },
+      "carry": {
+        "type": "integer",
+        "description": "The held AP that carries into the next turn, at most pool.carry."
+      },
+      "next_pool": {
+        "type": "integer",
+        "description": "The next turn's pool: pool plus carry, at most pool.cap."
       }
     },
     "additionalProperties": false,

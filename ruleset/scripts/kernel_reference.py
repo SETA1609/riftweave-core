@@ -280,8 +280,23 @@ def run_actions(vector):
         max(apply_modifiers(costs[key], [m for m in modifiers if m["target"] == key]), 0)
         for key in vector.get("actions", [])
     )
+    # Held AP (docs/core/actions.md#held-ap): what is left at the end of the turn guards until the
+    # next one, may pay an opportunity or readied attack, and at most pool.carry of it carries.
+    carried, held_spent = vector.get("carried", 0), vector.get("held_spent", 0)
+    if carried > pool_rules["carry"]:
+        return {"error": f'carried {carried} is more than pool.carry {pool_rules["carry"]}'}
+    available = min(pool + carried, pool_rules["cap"])
+    held = max(available - cost, 0)
+    if held_spent > held:
+        return {"error": f"held_spent {held_spent} is more than the {held} AP held"}
+    left = held - held_spent
+    carry = min(left, pool_rules["carry"])
     # One cost on two clocks: a real-time client pays AP times stamina_per_ap (docs/core/actions.md).
-    result = {"pool": pool, "cost": cost, "stamina": cost * data["stamina_per_ap"]}
+    result = {
+        "pool": pool, "cost": cost, "stamina": cost * data["stamina_per_ap"],
+        "available": available, "held": held, "guard": left * pool_rules["guard_per_ap"],
+        "carry": carry, "next_pool": min(pool + carry, pool_rules["cap"]),
+    }
     if "speed" in vector:
         # How far a move goes (docs/core/actions.md#how-far-a-move-goes): each action with a
         # speed_divisor covers floor(speed / speed_divisor) squares; modifiers change only its AP.

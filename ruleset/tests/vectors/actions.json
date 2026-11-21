@@ -468,5 +468,175 @@
       "pool": 4,
       "cost": 1
     }
+  },
+  {
+    "name": "held: pool 3, a quiet turn holds 3 for +15 guard, and 2 carry into a pool of 5",
+    "actor": {
+      "attributes": {
+        "agi": 3
+      }
+    },
+    "actions": [],
+    "expect": {
+      "pool": 3,
+      "available": 3,
+      "held": 3,
+      "guard": 15,
+      "carry": 2,
+      "next_pool": 5
+    }
+  },
+  {
+    "name": "held: pool 4, a move holds 3 for +15 guard, and 2 carry into a pool of 6",
+    "actor": {
+      "attributes": {
+        "agi": 6
+      }
+    },
+    "actions": [
+      "move"
+    ],
+    "expect": {
+      "pool": 4,
+      "available": 4,
+      "cost": 1,
+      "held": 3,
+      "guard": 15,
+      "carry": 2,
+      "next_pool": 6
+    }
+  },
+  {
+    "name": "held: pool 5, an attack holds 2 for +10 guard, and both carry",
+    "actor": {
+      "attributes": {
+        "agi": 9
+      }
+    },
+    "actions": [
+      "attack"
+    ],
+    "expect": {
+      "pool": 5,
+      "available": 5,
+      "cost": 3,
+      "held": 2,
+      "guard": 10,
+      "carry": 2,
+      "next_pool": 7
+    }
+  },
+  {
+    "name": "held: pool 5, a quiet turn holds 5 for +25 guard, but only 2 carry",
+    "actor": {
+      "attributes": {
+        "agi": 9
+      }
+    },
+    "actions": [],
+    "expect": {
+      "pool": 5,
+      "available": 5,
+      "held": 5,
+      "guard": 25,
+      "carry": 2,
+      "next_pool": 7
+    }
+  },
+  {
+    "name": "carried: pool 3 with 2 carried pays a two-weapon attack of 5 and holds nothing",
+    "actor": {
+      "attributes": {
+        "agi": 3
+      }
+    },
+    "actions": [
+      "attack"
+    ],
+    "carried": 2,
+    "modifiers": [
+      {
+        "target": "attack",
+        "operation": "add",
+        "value": 2,
+        "source": "loadout:two_weapons",
+        "origin": "core:origin/equipment"
+      }
+    ],
+    "expect": {
+      "pool": 3,
+      "available": 5,
+      "cost": 5,
+      "held": 0,
+      "guard": 0,
+      "carry": 0,
+      "next_pool": 3
+    }
+  },
+  {
+    "name": "carried: pool 4 with 2 carried, an attack holds 3, and 2 carry again",
+    "actor": {
+      "attributes": {
+        "agi": 6
+      }
+    },
+    "actions": [
+      "attack"
+    ],
+    "carried": 2,
+    "expect": {
+      "pool": 4,
+      "available": 6,
+      "cost": 3,
+      "held": 3,
+      "guard": 15,
+      "carry": 2,
+      "next_pool": 6
+    }
+  },
+  {
+    "name": "held spent: an opportunity attack of 3 from 4 held leaves +5 guard and 1 to carry",
+    "actor": {
+      "attributes": {
+        "agi": 6
+      }
+    },
+    "actions": [],
+    "held_spent": 3,
+    "expect": {
+      "pool": 4,
+      "held": 4,
+      "guard": 5,
+      "carry": 1,
+      "next_pool": 5
+    }
+  },
+  {
+    "name": "held spent: spending more than is held is an error",
+    "actor": {
+      "attributes": {
+        "agi": 6
+      }
+    },
+    "actions": [
+      "attack"
+    ],
+    "held_spent": 2,
+    "expect": {
+      "error": "held_spent 2 is more than the 1 AP held"
+    }
+  },
+  {
+    "name": "carried: more than pool.carry cannot be carried in",
+    "actor": {
+      "attributes": {
+        "agi": 6
+      }
+    },
+    "actions": [],
+    "carried": 3,
+    "expect": {
+      "error": "carried 3 is more than pool.carry 2"
+    }
   }
 ]

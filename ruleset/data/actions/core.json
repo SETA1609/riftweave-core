@@ -8,7 +8,8 @@
     "per_point_divisor": 3,
     "attribute": "agi",
     "cap": 10,
-    "carry": "min(unspent, cap)",
+    "carry": 2,
+    "guard_per_ap": 5,
     "rest": "refill"
   },
   "actions": [

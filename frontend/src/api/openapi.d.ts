@@ -968,6 +968,10 @@ export interface operations {
                 "application/json": {
                     actions?: components["schemas"]["key"][];
                     actor: components["schemas"]["actor"];
+                    /** @description AP carried into this turn from the last, at most pool.carry. */
+                    carried?: number;
+                    /** @description Held AP spent before the actor's next turn, on an opportunity or readied attack; at most what is held. */
+                    held_spent?: number;
                     modifiers?: components["schemas"]["modifiers"];
                     /** @description The race's speed. With it the result gives the squares the actions cover. */
                     speed?: number;
@@ -982,7 +986,17 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The pool plus the carried AP, at most pool.cap. */
+                        available?: number;
+                        /** @description The held AP that carries into the next turn, at most pool.carry. */
+                        carry?: number;
                         cost: number;
+                        /** @description The evasion the held AP left after held_spent gives, guard_per_ap each. */
+                        guard?: number;
+                        /** @description AP left unspent at the end of the turn, held until the next (docs/core/actions.md#held-ap). */
+                        held?: number;
+                        /** @description The next turn's pool: pool plus carry, at most pool.cap. */
+                        next_pool?: number;
                         pool: number;
                         /** @description Given a speed: the squares the actions cover, floor(speed / speed_divisor) per move (docs/core/actions.md#how-far-a-move-goes). */
                         squares?: number;

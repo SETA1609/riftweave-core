@@ -1,8 +1,8 @@
 #### GD_S19_05_ap-bank-cap-and-guard Carry a little AP, and turn the rest into guard
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: —
-- Modified: 2026-11-19
+- Modified: 2026-11-21
 - Do: Owner request, 2026-11-19 (borrowed from Fallout's unspent AP that becomes armor class, and Divinity: Original Sin 2's maximum near the AP recovered each turn: recover 4, maximum 6).
   - **The gap:** unspent AP carries up to `cap` 10 while a pool is 3 to 5 [V 2026-11-19, `docs/core/actions.md#pool`]. Two quiet turns bank two casts, a "wait, then burst" a real-time client does not have.
   - **The other side:** some loadouts need the bank to attack at all. At pool 3, two one-handed weapons (attack 5) and a sword and dagger (attack 4) cannot attack without saving, and a full attack spends every AP it is given for a fixed number of strikes, so a bank spent on it is wasted [V 2026-11-19, `attack_sequences/core.json`].

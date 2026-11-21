@@ -105,6 +105,8 @@ type ActionPool struct {
 	PerPointDivisor int64         `json:"per_point_divisor"`
 	Attribute       string        `json:"attribute"`
 	Cap             int64         `json:"cap"`
+	Carry           int64         `json:"carry"`        // the most held AP that carries into the next pool (GD_S19_05)
+	GuardPerAP      int64         `json:"guard_per_ap"` // evasion per held AP until the next turn
 	Ability         actor.Ability `json:"-"`
 }
 

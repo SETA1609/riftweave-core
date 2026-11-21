@@ -24,7 +24,7 @@ Rules still in prose here are marked **[A]** and named with the issue that turns
 
 ## 1. The turn
 
-A turn spends action points. The pool is `2 + floor(AGI / 3)`, unspent points carry up to 10, and a short rest refills it ([actions.md](../core/actions.md)). Every action has one cost:
+A turn spends action points. The pool is `2 + floor(AGI / 3)`, unspent points are held for +5 evasion each and at most 2 carry into the next turn ([actions.md](../core/actions.md#held-ap)), and a short rest refills it ([actions.md](../core/actions.md)). Every action has one cost:
 
 | Action | AP |
 | --- | --- |
