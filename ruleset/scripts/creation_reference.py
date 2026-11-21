@@ -14,7 +14,13 @@ from pathlib import Path
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 ABILITIES = ("str", "per", "end", "int", "wil", "agi", "cha", "lck")
-STEPS = ("name", "race", "attributes", "background", "creation_perks", "tag_skills")
+# The steps of a draft, in the order a check lists its problems.
+STEP_NAME, STEP_RACE, STEP_ATTRIBUTES = "name", "race", "attributes"
+STEP_BACKGROUND, STEP_CREATION_PERKS, STEP_TAG_SKILLS = "background", "creation_perks", "tag_skills"
+STEPS = (STEP_NAME, STEP_RACE, STEP_ATTRIBUTES, STEP_BACKGROUND, STEP_CREATION_PERKS, STEP_TAG_SKILLS)
+# The ref categories and lineage roles creation reads (core:<category>/<key>), and the feature type.
+RACE, BACKGROUND, FEATURE, SKILL = "race", "background", "feature", "skill"
+ROLE_TEMPLATE, ROLE_SUBRACE, TYPE_CREATION = "template", "subrace", "creation"
 
 
 def load_data(rel_path):
@@ -32,13 +38,13 @@ def _key(ref, category):
 
 def playable_races(races):
     """Every race a player may pick, in data order: all but templates."""
-    return [race for race in races.values() if race["lineage"]["role"] != "template"]
+    return [race for race in races.values() if race["lineage"]["role"] != ROLE_TEMPLATE]
 
 
 def race_parts(race, races):
     """A race's ability modifiers summed with its parent's, and its traits, parent's first."""
     rows = [race]
-    if race["lineage"]["role"] == "subrace":
+    if race["lineage"]["role"] == ROLE_SUBRACE:
         rows.insert(0, races[race["lineage"]["parent_race"].rsplit("/", 1)[-1]])
     modifiers, traits = {}, []
     for row in rows:
@@ -68,7 +74,7 @@ def run_rules(vector):  # noqa: ARG001  (every runner takes the vector)
         ],
         "creation_perks": [
             {"perk": f"core:feature/{row['key']}", "label": row["label"], "description": row["description"]}
-            for row in features.values() if row["type"] == "creation"
+            for row in features.values() if row["type"] == TYPE_CREATION
         ],
         "skills": [
             {"skill": f"core:skill/{row['key']}", "label": row["label"], "ability": row["associated_ability"]}
@@ -103,72 +109,72 @@ def run_check(vector):
     skills = load_data("skills/core.json")["skills"]
     problems = []
 
-    if not str(draft.get("name", "")).strip():
-        problems.append({"step": "name", "message": "a name is needed"})
+    if not str(draft.get(STEP_NAME, "")).strip():
+        problems.append({"step": STEP_NAME, "message": "a name is needed"})
 
     race_modifiers, traits = {}, []
-    if "race" not in draft:
-        problems.append({"step": "race", "message": "a race is needed"})
+    if STEP_RACE not in draft:
+        problems.append({"step": STEP_RACE, "message": "a race is needed"})
     else:
-        key = _key(draft["race"], "race")
+        key = _key(draft[STEP_RACE], RACE)
         if key not in races:
-            problems.append({"step": "race", "message": f'race "{draft["race"]}" is not defined'})
-        elif races[key]["lineage"]["role"] == "template":
-            problems.append({"step": "race", "message": f'race "{draft["race"]}" is a template and is never played'})
+            problems.append({"step": STEP_RACE, "message": f'race "{draft[STEP_RACE]}" is not defined'})
+        elif races[key]["lineage"]["role"] == ROLE_TEMPLATE:
+            problems.append({"step": STEP_RACE, "message": f'race "{draft[STEP_RACE]}" is a template and is never played'})
         else:
             race_modifiers, traits = race_parts(races[key], races)
 
     points = draft.get("points", {})
     for ability in points:
         if ability not in ABILITIES:
-            problems.append({"step": "attributes", "message": f'attribute "{ability}" is not one of the eight'})
+            problems.append({"step": STEP_ATTRIBUTES, "message": f'attribute "{ability}" is not one of the eight'})
     base = {ability: rules["attribute_start"] + points.get(ability, 0) for ability in ABILITIES}
     in_range = True
     for ability in ABILITIES:
         if base[ability] > rules["attribute_max"]:
-            problems.append({"step": "attributes", "message": f"{ability} is {base[ability]}, over the maximum of {rules['attribute_max']}"})
+            problems.append({"step": STEP_ATTRIBUTES, "message": f"{ability} is {base[ability]}, over the maximum of {rules['attribute_max']}"})
             in_range = False
         elif base[ability] < rules["attribute_min"]:
-            problems.append({"step": "attributes", "message": f"{ability} is {base[ability]}, under the minimum of {rules['attribute_min']}"})
+            problems.append({"step": STEP_ATTRIBUTES, "message": f"{ability} is {base[ability]}, under the minimum of {rules['attribute_min']}"})
             in_range = False
     spent = sum(points.get(ability, 0) for ability in ABILITIES)
     left = max(rules["attribute_points"] - spent, 0)
     if in_range and spent > rules["attribute_points"]:
-        problems.append({"step": "attributes", "message": f"{spent} points spent, more than the {rules['attribute_points']} to distribute"})
+        problems.append({"step": STEP_ATTRIBUTES, "message": f"{spent} points spent, more than the {rules['attribute_points']} to distribute"})
     elif in_range and left > 0:
-        problems.append({"step": "attributes", "message": f"{left} point{'s' if left != 1 else ''} left"})
+        problems.append({"step": STEP_ATTRIBUTES, "message": f"{left} point{'s' if left != 1 else ''} left"})
 
     background = None
-    if "background" not in draft:
-        problems.append({"step": "background", "message": "a background is needed"})
+    if STEP_BACKGROUND not in draft:
+        problems.append({"step": STEP_BACKGROUND, "message": "a background is needed"})
     else:
-        background = _key(draft["background"], "background")
+        background = _key(draft[STEP_BACKGROUND], BACKGROUND)
         if background not in backgrounds:
-            problems.append({"step": "background", "message": f'background "{draft["background"]}" is not defined'})
+            problems.append({"step": STEP_BACKGROUND, "message": f'background "{draft[STEP_BACKGROUND]}" is not defined'})
             background = None
 
     perk_problems = []
-    perks = _chosen(draft.get("creation_perks", []), "feature", "feature", lambda key: key in features, perk_problems, "creation_perks")
+    perks = _chosen(draft.get(STEP_CREATION_PERKS, []), FEATURE, FEATURE, lambda key: key in features, perk_problems, STEP_CREATION_PERKS)
     for key in list(perks):
-        if features[key]["type"] != "creation":
-            perk_problems.append({"step": "creation_perks", "message": f'feature "core:feature/{key}" is not a creation perk'})
+        if features[key]["type"] != TYPE_CREATION:
+            perk_problems.append({"step": STEP_CREATION_PERKS, "message": f'feature "core:feature/{key}" is not a creation perk'})
             perks.remove(key)
 
     # The modifiers the character starts with: its race traits and creation perks, at rank 1.
     held = [key.rsplit("/", 1)[-1] for key in traits] + perks
     modifiers = [m for key in held for m in emit_perk(features[key], 1)]
     trait_modifiers = [m for key in traits for m in emit_perk(features[key.rsplit("/", 1)[-1]], 1)]
-    most_perks = apply_modifiers(rules["creation_perks_max"], [m for m in trait_modifiers if m["target"] == "creation_perks"])
+    most_perks = apply_modifiers(rules["creation_perks_max"], [m for m in trait_modifiers if m["target"] == STEP_CREATION_PERKS])
     if len(perks) > most_perks:
-        perk_problems.append({"step": "creation_perks", "message": f"at most {most_perks} creation perks, {len(perks)} chosen"})
+        perk_problems.append({"step": STEP_CREATION_PERKS, "message": f"at most {most_perks} creation perks, {len(perks)} chosen"})
     problems += perk_problems
 
     known = {row["key"] for row in skills}
     tag_problems = []
-    tags = _chosen(draft.get("tag_skills", []), "skill", "skill", lambda key: key in known, tag_problems, "tag_skills")
-    needed = apply_modifiers(progression["tag_skills"], [m for m in modifiers if m["target"] == "tag_skills"])
-    if len(draft.get("tag_skills", [])) != needed:
-        tag_problems.append({"step": "tag_skills", "message": f"{needed} tag skills are needed, {len(draft.get('tag_skills', []))} chosen"})
+    tags = _chosen(draft.get(STEP_TAG_SKILLS, []), SKILL, SKILL, lambda key: key in known, tag_problems, STEP_TAG_SKILLS)
+    needed = apply_modifiers(progression["tag_skills"], [m for m in modifiers if m["target"] == STEP_TAG_SKILLS])
+    if len(draft.get(STEP_TAG_SKILLS, [])) != needed:
+        tag_problems.append({"step": STEP_TAG_SKILLS, "message": f"{needed} tag skills are needed, {len(draft.get(STEP_TAG_SKILLS, []))} chosen"})
     problems += tag_problems
 
     stored = {ability: base[ability] + race_modifiers.get(ability, 0) for ability in ABILITIES}
@@ -217,7 +223,7 @@ def run_finish(vector):
         "inventory": [],
         "equipped": {},
     }
-    return {"name": vector["draft"]["name"].strip(), "actor": actor}
+    return {"name": vector["draft"][STEP_NAME].strip(), "actor": actor}
 
 
 def _checked(vector):
@@ -227,7 +233,8 @@ def _checked(vector):
 
 
 # The operations by name: one dict lookup (a hash), not a chain of comparisons.
-OPERATIONS = {"rules": run_rules, "check": _checked, "finish": run_finish}
+OPERATION_RULES, OPERATION_CHECK, OPERATION_FINISH = "rules", "check", "finish"
+OPERATIONS = {OPERATION_RULES: run_rules, OPERATION_CHECK: _checked, OPERATION_FINISH: run_finish}
 
 
 def run_creation(vector):

@@ -6,7 +6,12 @@ import (
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
+
+	"github.com/SETA1609/riftweave-core/backend/internal/creation"
 )
+
+// creationCommand is the command the screen runs; its operations are creation.Operation.
+const creationCommand = "creation"
 
 // The creation screen (BE_S07_08): the draft's steps as rows, checked by the `creation`
 // command after every change, and finished into a stored actor. It holds no rule: the races,
@@ -60,24 +65,30 @@ func refs(text, category string) []string {
 	return result
 }
 
-func (screen *creator) draft() map[string]any {
-	var draft map[string]any = map[string]any{"points": screen.points,
-		"creation_perks": refs(screen.perks, "feature"), "tag_skills": refs(screen.tags, "skill")}
+func (screen *creator) draft() *creation.Draft {
+	var draft creation.Draft = creation.Draft{Points: screen.points,
+		CreationPerks: refs(screen.perks, creation.CategoryFeature), TagSkills: refs(screen.tags, creation.CategorySkill)}
 	if screen.name != "" {
-		draft["name"] = screen.name
+		draft.Name = &screen.name
 	}
 	if screen.race >= 0 {
-		draft["race"] = screen.races[screen.race].Ref
+		draft.Race = &screen.races[screen.race].Ref
 	}
 	if screen.background >= 0 {
-		draft["background"] = screen.backgrounds[screen.background].Ref
+		draft.Background = &screen.backgrounds[screen.background].Ref
 	}
-	return draft
+	return &draft
+}
+
+// input is the screen's call to the creation command.
+func input(operation creation.Operation, draft *creation.Draft) []byte {
+	encoded, _ := json.Marshal(creation.Input{Operation: operation, Draft: draft})
+	return encoded
 }
 
 // openCreator reads the rules and opens the screen on an empty draft.
 func (model Model) openCreator() Model {
-	output, err := model.run("creation", []byte(`{"operation":"rules"}`))
+	output, err := model.run(creationCommand, input(creation.OperationRules, nil))
 	if err != nil {
 		model.problem = err.Error()
 		return model
@@ -110,8 +121,8 @@ func (model Model) openCreator() Model {
 // recheck runs `check` on the draft and keeps what it says.
 func (model Model) recheck() Model {
 	var screen creator = *model.creator
-	encoded, _ := json.Marshal(map[string]any{"operation": "check", "draft": screen.draft()})
-	output, err := model.run("creation", encoded)
+	var encoded []byte = input(creation.OperationCheck, screen.draft())
+	output, err := model.run(creationCommand, encoded)
 	if err == nil {
 		err = json.Unmarshal(output, &screen.check)
 	}
@@ -277,8 +288,8 @@ func clonePoints(points map[string]int64) map[string]int64 {
 // finishCreation sends the draft to `finish`; a stored actor becomes the character a dev
 // session and the attack form start from, and a refusal stays on the screen.
 func (model Model) finishCreation() Model {
-	encoded, _ := json.Marshal(map[string]any{"operation": "finish", "draft": model.creator.draft()})
-	output, err := model.run("creation", encoded)
+	var encoded []byte = input(creation.OperationFinish, model.creator.draft())
+	output, err := model.run(creationCommand, encoded)
 	model.lastInput, model.lastOutput = encoded, output
 	var result struct {
 		Error string         `json:"error"`

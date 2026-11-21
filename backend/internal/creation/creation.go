@@ -19,29 +19,60 @@ import (
 	"github.com/SETA1609/riftweave-core/backend/internal/stored"
 )
 
-// steps is the order a check lists its problems in.
-var steps = []string{"name", "race", "attributes", "background", "creation_perks", "tag_skills"}
+// Step is one step of a draft; a check lists its problems in the order of steps.
+type Step string
+
+const (
+	StepName          Step = "name"
+	StepRace          Step = "race"
+	StepAttributes    Step = "attributes"
+	StepBackground    Step = "background"
+	StepCreationPerks Step = "creation_perks"
+	StepTagSkills     Step = "tag_skills"
+)
+
+var steps = []Step{StepName, StepRace, StepAttributes, StepBackground, StepCreationPerks, StepTagSkills}
+
+// Operation is what the command does with the input.
+type Operation string
+
+const (
+	OperationRules  Operation = "rules"
+	OperationCheck  Operation = "check"
+	OperationFinish Operation = "finish"
+)
+
+// The ref categories and lineage roles creation reads (core:<category>/<key>).
+const (
+	CategoryRace       = "race"
+	CategoryBackground = "background"
+	CategoryFeature    = "feature"
+	CategorySkill      = "skill"
+	roleTemplate       = "template"
+	roleSubrace        = "subrace"
+	typeCreation       = "creation" // a feature's type: chosen at creation
+)
 
 // Draft is a character being made: any steps, in any order. Points are spent per attribute,
 // negative when one is lowered under the start.
 type Draft struct {
-	Name          *string          `json:"name"`
-	Race          *string          `json:"race"`
-	Points        map[string]int64 `json:"points"`
-	Background    *string          `json:"background"`
-	CreationPerks []string         `json:"creation_perks"`
-	TagSkills     []string         `json:"tag_skills"`
+	Name          *string          `json:"name,omitempty"`
+	Race          *string          `json:"race,omitempty"`
+	Points        map[string]int64 `json:"points,omitempty"`
+	Background    *string          `json:"background,omitempty"`
+	CreationPerks []string         `json:"creation_perks,omitempty"`
+	TagSkills     []string         `json:"tag_skills,omitempty"`
 }
 
 // Input is the `creation` command's input.
 type Input struct {
-	Operation string `json:"operation"`
-	Draft     Draft  `json:"draft"`
+	Operation Operation `json:"operation"`
+	Draft     *Draft    `json:"draft,omitempty"`
 }
 
 // Problem is one thing a step still needs or gets wrong.
 type Problem struct {
-	Step    string `json:"step"`
+	Step    Step   `json:"step"`
 	Message string `json:"message"`
 }
 
@@ -84,14 +115,18 @@ type Finished struct {
 
 // Run is the `creation` command.
 func Run(ruleset *data.Ruleset, input Input) (any, error) {
+	var draft Draft
+	if input.Draft != nil {
+		draft = *input.Draft
+	}
 	switch input.Operation {
-	case "rules":
+	case OperationRules:
 		return rules(ruleset), nil
-	case "check":
-		checked, _, err := check(ruleset, input.Draft)
+	case OperationCheck:
+		checked, _, err := check(ruleset, draft)
 		return checked, err
-	case "finish":
-		return finish(ruleset, input.Draft)
+	case OperationFinish:
+		return finish(ruleset, draft)
 	}
 	return nil, fmt.Errorf("creation operation %q is not defined", input.Operation)
 }
@@ -104,8 +139,8 @@ func keyOf(ref, category string) (string, bool) {
 // the parent's first.
 func raceParts(ruleset *data.Ruleset, race *data.Race) (map[string]int64, []string) {
 	var rows []*data.Race = []*data.Race{race}
-	if race.Lineage.Role == "subrace" {
-		parentKey, _ := keyOf(race.Lineage.ParentRace, "race")
+	if race.Lineage.Role == roleSubrace {
+		parentKey, _ := keyOf(race.Lineage.ParentRace, CategoryRace)
 		if parent, ok := ruleset.Races.Get(parentKey); ok {
 			rows = []*data.Race{parent, race}
 		}
@@ -179,14 +214,14 @@ func rules(ruleset *data.Ruleset) Rules {
 		result.Abilities = append(result.Abilities, index.String())
 	}
 	for _, race := range ruleset.Races.Rows() {
-		if race.Lineage.Role == "template" {
+		if race.Lineage.Role == roleTemplate {
 			continue
 		}
 		modifiers, traits := raceParts(ruleset, &race)
-		result.Races = append(result.Races, raceRule{Race: "core:race/" + race.Key, Label: race.Label, AbilityModifiers: modifiers, Traits: traits})
+		result.Races = append(result.Races, raceRule{Race: "core:" + CategoryRace + "/" + race.Key, Label: race.Label, AbilityModifiers: modifiers, Traits: traits})
 	}
 	for _, background := range ruleset.Backgrounds.Rows() {
-		var row backgroundRule = backgroundRule{Background: "core:background/" + background.Key, Label: background.Label,
+		var row backgroundRule = backgroundRule{Background: "core:" + CategoryBackground + "/" + background.Key, Label: background.Label,
 			SkillBonuses: background.SkillBonuses, SuggestedTagSkills: background.SuggestedTagSkills}
 		if row.SkillBonuses == nil {
 			row.SkillBonuses = []struct {
@@ -200,12 +235,12 @@ func rules(ruleset *data.Ruleset) Rules {
 		result.Backgrounds = append(result.Backgrounds, row)
 	}
 	for _, feature := range ruleset.Features.Rows() {
-		if feature.Type == "creation" {
-			result.CreationPerks = append(result.CreationPerks, perkRule{Perk: "core:feature/" + feature.Key, Label: feature.Label, Description: feature.Description})
+		if feature.Type == typeCreation {
+			result.CreationPerks = append(result.CreationPerks, perkRule{Perk: "core:" + CategoryFeature + "/" + feature.Key, Label: feature.Label, Description: feature.Description})
 		}
 	}
 	for _, skill := range ruleset.Skills.Rows() {
-		result.Skills = append(result.Skills, skillRule{Skill: "core:skill/" + skill.Key, Label: skill.Label, Ability: skill.AssociatedAbility})
+		result.Skills = append(result.Skills, skillRule{Skill: "core:" + CategorySkill + "/" + skill.Key, Label: skill.Label, Ability: skill.AssociatedAbility})
 	}
 	return result
 }
@@ -222,7 +257,7 @@ func emitted(feature *data.Feature) ([]modifier.Modifier, error) {
 }
 
 // chosen is the keys of a list of refs; each unknown or repeated ref is a problem.
-func chosen(refs []string, category, kind, step string, known func(string) bool, problems *[]Problem) []string {
+func chosen(refs []string, category, kind string, step Step, known func(string) bool, problems *[]Problem) []string {
 	var keys []string = []string{}
 	for _, ref := range refs {
 		key, ok := keyOf(ref, category)
@@ -254,22 +289,22 @@ func check(ruleset *data.Ruleset, draft Draft) (Check, storedParts, error) {
 	}
 
 	if draft.Name == nil || strings.TrimSpace(*draft.Name) == "" {
-		problems = append(problems, Problem{"name", "a name is needed"})
+		problems = append(problems, Problem{StepName, "a name is needed"})
 	}
 
 	var raceModifiers map[string]int64 = map[string]int64{}
 	var traits []string = []string{}
 	if draft.Race == nil {
-		problems = append(problems, Problem{"race", "a race is needed"})
+		problems = append(problems, Problem{StepRace, "a race is needed"})
 	} else {
-		key, _ := keyOf(*draft.Race, "race")
+		key, _ := keyOf(*draft.Race, CategoryRace)
 		race, ok := ruleset.Races.Get(key)
 		if !ok {
-			problems = append(problems, Problem{"race", fmt.Sprintf("race %q is not defined", *draft.Race)})
+			problems = append(problems, Problem{StepRace, fmt.Sprintf("race %q is not defined", *draft.Race)})
 		} else {
 			switch race.Lineage.Role {
-			case "template":
-				problems = append(problems, Problem{"race", fmt.Sprintf("race %q is a template and is never played", *draft.Race)})
+			case roleTemplate:
+				problems = append(problems, Problem{StepRace, fmt.Sprintf("race %q is a template and is never played", *draft.Race)})
 			default:
 				raceModifiers, traits = raceParts(ruleset, race)
 			}
@@ -284,7 +319,7 @@ func check(ruleset *data.Ruleset, draft Draft) (Check, storedParts, error) {
 	}
 	slices.Sort(unknown)
 	for _, ability := range unknown {
-		problems = append(problems, Problem{"attributes", fmt.Sprintf("attribute %q is not one of the eight", ability)})
+		problems = append(problems, Problem{StepAttributes, fmt.Sprintf("attribute %q is not one of the eight", ability)})
 	}
 	var base map[string]int64 = map[string]int64{}
 	var inRange bool = true
@@ -294,41 +329,41 @@ func check(ruleset *data.Ruleset, draft Draft) (Check, storedParts, error) {
 		base[key] = creation.AttributeStart + draft.Points[key]
 		spent += draft.Points[key]
 		if base[key] > creation.AttributeMaximum {
-			problems = append(problems, Problem{"attributes", fmt.Sprintf("%s is %d, over the maximum of %d", key, base[key], creation.AttributeMaximum)})
+			problems = append(problems, Problem{StepAttributes, fmt.Sprintf("%s is %d, over the maximum of %d", key, base[key], creation.AttributeMaximum)})
 			inRange = false
 		} else if base[key] < creation.AttributeMinimum {
-			problems = append(problems, Problem{"attributes", fmt.Sprintf("%s is %d, under the minimum of %d", key, base[key], creation.AttributeMinimum)})
+			problems = append(problems, Problem{StepAttributes, fmt.Sprintf("%s is %d, under the minimum of %d", key, base[key], creation.AttributeMinimum)})
 			inRange = false
 		}
 	}
 	var left int64 = max(creation.AttributePoints-spent, 0)
 	if inRange && spent > creation.AttributePoints {
-		problems = append(problems, Problem{"attributes", fmt.Sprintf("%d points spent, more than the %d to distribute", spent, creation.AttributePoints)})
+		problems = append(problems, Problem{StepAttributes, fmt.Sprintf("%d points spent, more than the %d to distribute", spent, creation.AttributePoints)})
 	} else if inRange && left > 0 {
 		var plural string = "s"
 		if left == 1 {
 			plural = ""
 		}
-		problems = append(problems, Problem{"attributes", fmt.Sprintf("%d point%s left", left, plural)})
+		problems = append(problems, Problem{StepAttributes, fmt.Sprintf("%d point%s left", left, plural)})
 	}
 
 	var background *data.Background
 	if draft.Background == nil {
-		problems = append(problems, Problem{"background", "a background is needed"})
+		problems = append(problems, Problem{StepBackground, "a background is needed"})
 	} else {
-		key, _ := keyOf(*draft.Background, "background")
+		key, _ := keyOf(*draft.Background, CategoryBackground)
 		var ok bool
 		if background, ok = ruleset.Backgrounds.Get(key); !ok {
-			problems = append(problems, Problem{"background", fmt.Sprintf("background %q is not defined", *draft.Background)})
+			problems = append(problems, Problem{StepBackground, fmt.Sprintf("background %q is not defined", *draft.Background)})
 		}
 	}
 
-	var perks []string = chosen(draft.CreationPerks, "feature", "feature", "creation_perks",
+	var perks []string = chosen(draft.CreationPerks, CategoryFeature, CategoryFeature, StepCreationPerks,
 		func(key string) bool { _, ok := ruleset.Features.Get(key); return ok }, &problems)
 	perks = slices.DeleteFunc(perks, func(key string) bool {
 		feature, _ := ruleset.Features.Get(key)
-		if feature.Type != "creation" {
-			problems = append(problems, Problem{"creation_perks", fmt.Sprintf("feature %q is not a creation perk", "core:feature/"+key)})
+		if feature.Type != typeCreation {
+			problems = append(problems, Problem{StepCreationPerks, fmt.Sprintf("feature %q is not a creation perk", "core:"+CategoryFeature+"/"+key)})
 			return true
 		}
 		return false
@@ -353,22 +388,22 @@ func check(ruleset *data.Ruleset, draft Draft) (Check, storedParts, error) {
 			traitModifiers = append(traitModifiers, own...)
 		}
 	}
-	mostPerks, err := value(creation.CreationPerksMax, traitModifiers, "creation_perks")
+	mostPerks, err := value(creation.CreationPerksMax, traitModifiers, string(StepCreationPerks))
 	if err != nil {
 		return Check{}, storedParts{}, err
 	}
 	if int64(len(perks)) > mostPerks {
-		problems = append(problems, Problem{"creation_perks", fmt.Sprintf("at most %d creation perks, %d chosen", mostPerks, len(perks))})
+		problems = append(problems, Problem{StepCreationPerks, fmt.Sprintf("at most %d creation perks, %d chosen", mostPerks, len(perks))})
 	}
 
-	var tags []string = chosen(draft.TagSkills, "skill", "skill", "tag_skills",
+	var tags []string = chosen(draft.TagSkills, CategorySkill, CategorySkill, StepTagSkills,
 		func(key string) bool { _, ok := ruleset.Skills.Get(key); return ok }, &problems)
-	needed, err := value(ruleset.Progression.TagSkills, modifiers, "tag_skills")
+	needed, err := value(ruleset.Progression.TagSkills, modifiers, string(StepTagSkills))
 	if err != nil {
 		return Check{}, storedParts{}, err
 	}
 	if int64(len(draft.TagSkills)) != needed {
-		problems = append(problems, Problem{"tag_skills", fmt.Sprintf("%d tag skills are needed, %d chosen", needed, len(draft.TagSkills))})
+		problems = append(problems, Problem{StepTagSkills, fmt.Sprintf("%d tag skills are needed, %d chosen", needed, len(draft.TagSkills))})
 	}
 
 	var storedAttributes, attributes map[string]int64 = map[string]int64{}, map[string]int64{}
