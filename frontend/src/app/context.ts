@@ -140,3 +140,7 @@ function savedFile(): SettingsFile {
   const saved = parseSettings(load(SETTINGS_KEY) ?? '');
   return 'settings' in saved ? saved.settings : defaultSettings();
 }
+export const LANGUAGES: readonly { value: string; label: string }[] = [];
+export function startLanguage(_saved: string | null, _browser: string | undefined): string {
+  return 'en';
+}

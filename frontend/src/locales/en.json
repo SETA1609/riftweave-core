@@ -1,0 +1,58 @@
+{
+  "app": {
+    "starting": "Starting the rules engine…",
+    "failed": "The rules engine did not start: {{reason}}",
+    "rules": "Rules {{version}}"
+  },
+  "language": {
+    "label": "Language"
+  },
+  "theme": {
+    "light": "light",
+    "dark": "dark",
+    "system": "system",
+    "switch_to": "Switch to {{mode}}",
+    "mode_light": "light mode",
+    "mode_dark": "dark mode",
+    "mode_system": "the system's mode"
+  },
+  "menu": {
+    "start": "Start",
+    "characters": "Characters",
+    "settings": "Settings",
+    "modules": "Modules",
+    "network": "Network",
+    "import": "Import",
+    "quit": "Quit",
+    "gm_tools": "GM tools",
+    "character_creation": "Character creation",
+    "spell_creation": "Spell creation",
+    "skill_resolution": "Skill resolution",
+    "bestiary": "Bestiary",
+    "saved_games": "Saved games",
+    "attack": "Resolve an attack",
+    "encounter_tracker": "Encounter tracker",
+    "playthrough": "Playthrough",
+    "back": "Back"
+  },
+  "settings": {
+    "theme": "Theme",
+    "players_see_only_known": "Players see only the monsters they know",
+    "export": "Export settings",
+    "import": "Import settings",
+    "imported": "Settings imported."
+  },
+  "modules": {
+    "core": "core (always loaded)"
+  },
+  "network": {
+    "offline": "Offline: the core in the page",
+    "offline_notice": "Offline: the core in the page.",
+    "server": "Server: the HTTP API at the server URL",
+    "server_url": "Server URL",
+    "use_server": "Use this server",
+    "server_notice": "Commands now go to the server.",
+    "needs_url": "Set the server URL first.",
+    "room": "Room"
+  }
+}
