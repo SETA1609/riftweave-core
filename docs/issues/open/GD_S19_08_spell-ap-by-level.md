@@ -1,8 +1,8 @@
 #### GD_S19_08_spell-ap-by-level A minor spell costs less AP than a major one
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: —
-- Modified: 2026-11-19
+- Modified: 2026-11-21
 - Do: Owner request, 2026-11-19 (borrowed from Divinity: Original Sin 2, where each skill has its own AP).
   - **The gap:** every cast is 3 AP and only mana scales ([V 2026-11-19, `docs/core/actions.md#costs`]: "a petty spark and a heavy bolt both cost 3 AP"). With a pool of 3 to 5, a minor buff takes the whole turn, so at a table a caster casts only damage.
   - **The rule** [A, numbers checked in the spec step]:

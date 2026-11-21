@@ -55,7 +55,7 @@ attack 3, by loadout (2 to 5)
 jab 2, by loadout (2 or 3, the off hand alone)
 full_attack every AP left, at least attack + 1, by loadout
 circle_cut every AP left, at least attack + 1 (Circle Cut perk, two-handed weapon)
-cast 3
+cast 2 to 4, by the spell's level (cast AP by level, below)
 move 1
 disengage 1
 dodge 3
@@ -70,7 +70,7 @@ The attack, the jab, the full attack, and the circle cut cost what the loadout's
 
 A perk changes a cost with `add` on the action's key: the Sidestep perk emits `add dodge -1`, and the cost is the row's cost after the actor's modifiers on that key, stacked by [modifier.md](modifier.md), never below 0. [V 2026-11-06]
 
-Cast AP is static. A spell also spends its mana cost. AP does not vary by spell. A petty spark and a heavy bolt both cost 3 AP. The bolt costs more mana. A perk that wants a cheaper cast emits `add` on the cast cost. It does not edit the spell.
+A cast costs AP by the spell's level and also spends its mana ([cast AP by level](#cast-ap-by-level)). A perk that wants a cheaper cast emits `add` on `cast`. It does not edit the spell.
 
 Dodge and block are stances, declared on your turn and in force until your next ([combat.md](combat.md#reading-the-steps)). A fighting stance a perk unlocks is another thing, a way of holding the weapons: it costs nothing at the start of your turn, 1 AP later in it, and stands together with dodge or block ([combat.md](combat.md#fighting-stances)). Dodge spends 3 and doubles your evasion rate. Block is a hold on this pool, not a reaction slot: declare it, spend 2, and the unused 2 comes back if nobody swings; while it holds, a block band of half your `shields` skill stops physical hits. Aimed is not a second attack. It adds 2 to the attack cost.
 
@@ -102,6 +102,18 @@ swap     1   to the other of two loadouts set up before the fight, a primary and
 Fallout Tactics charges 2 AP to swap and the Divinity board game 1 AP to equip; at a pool of 4 the cheaper price keeps a swap and an attack in one turn. [A] The Drilled Hands perk (AGI 5, ungated) emits `add swap -1`, so a swap costs 0; a draw is unchanged. [V 2026-11-21, `actions` vectors]
 
 A `stance` loadout event names the action that paid for it in `by`; the step costs that action's AP after the held perks' modifiers on it, and `by` must be a row with `changes_loadout`. Without `by` the change is free, as when an effect disarms the actor. A paid swap to sword and shield costs 1 AP and ends Fencer's Measure. [V 2026-11-21, `stance` vectors] Reloading is not a loadout change; it belongs to ranged combat (`GD_S17_02_ammunition-items-and-reloading`).
+
+## Cast AP by level
+
+```
+level 1 to 5     2 AP
+level 6 to 20    3 AP
+level 21 to 30   4 AP          never below 1, after the caster's modifiers on cast
+```
+
+With every cast at 3 AP and a pool of 3 to 5, a minor buff took the whole turn, so at a table a caster cast only damage (GD_S19_08). Divinity: Original Sin 2 gives each skill its own AP; here the spell's `level` picks the band, so no spell row carries an AP of its own. The bands are `cast_ap` in `ruleset/data/casting/core.json`; the `cast` row in `actions/core.json` keeps 3 for a caller that knows no spell (`by_spell_level`). The `casting` command returns `ap` and `stamina` (AP times `stamina_per_ap`), so real time keeps the same proportion. [V 2026-11-21, `casting` vectors in Python and Go]
+
+Fire Bolt (level 1) costs 2 AP, Cleanse (10) costs 3, and Meteor (24) costs 4. Quick Caster still emits `add cast -1`: Meteor 3, Cleanse 2, and Fire Bolt 1, since a cast never costs 0 (`minimum` 1). Mana still pays for the spell. The issue's alternative, a perk that cuts AP only up to a mana cost, was not taken: the level already says how big a spell is. [A]
 
 ## Maneuvers
 

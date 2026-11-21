@@ -17,7 +17,7 @@
     { "key": "jab", "cost": 2, "by_loadout": true },
     { "key": "full_attack", "cost": 4, "by_loadout": true, "spends_all": true },
     { "key": "circle_cut", "cost": 4, "by_loadout": true, "spends_all": true },
-    { "key": "cast", "cost": 3 },
+    { "key": "cast", "cost": 3, "by_spell_level": true },
     { "key": "move", "cost": 1, "speed_divisor": 2 },
     { "key": "disengage", "cost": 1 },
     { "key": "dodge", "cost": 3 },

@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Actions",
-  "description": "One AP budget, spent as AP at a table and as AP times stamina_per_ap in stamina in real time. Cast AP is static. A spell also spends its mana cost.",
+  "description": "One AP budget, spent as AP at a table and as AP times stamina_per_ap in stamina in real time. A cast costs AP by the spell's level (casting/core.json cast_ap) and also spends its mana cost.",
   "type": "object",
   "properties": {
     "$schema": { "type": "string" },
@@ -43,6 +43,7 @@
         "by_loadout": { "type": "boolean", "description": "The cost is the loadout's, from attack_sequences/core.json (docs/core/combat.md#attacks-by-loadout); `cost` is the cost with one one-handed weapon, for a caller that knows no loadout." },
         "speed_divisor": { "type": "integer", "minimum": 1, "description": "One of this action covers floor(speed / speed_divisor) squares, from the race's speed (docs/core/actions.md#how-far-a-move-goes). Modifiers on the action change its AP, not its squares." },
         "changes_loadout": { "type": "boolean", "description": "The action changes what the hands hold: draw, sheathe, drop, or swap to the secondary loadout (docs/core/actions.md#changing-the-loadout). A stance loadout event names one in `by` to pay for it." },
+        "by_spell_level": { "type": "boolean", "description": "The cost is the spell's, by its level from casting/core.json cast_ap (docs/core/actions.md#cast-ap-by-level); `cost` is the cost for a caller that knows no spell." },
         "spends_all": { "type": "boolean", "description": "The action spends every AP left, at least `cost` (with a loadout, the loadout's attack AP plus full_attack.min_extra_ap)." }
       },
       "required": ["key", "cost"],

@@ -819,6 +819,27 @@ type Casting struct {
 	SkillDiscount SkillDiscount    `json:"skill_discount"`
 	SpellCost     SpellCost        `json:"spell_cost"`
 	Research      Research         `json:"research"`
+	CastAP        CastAP           `json:"cast_ap"` // a cast's AP by the spell's level (GD_S19_08)
+}
+
+// CastAP is a cast's AP by level band (docs/core/actions.md#cast-ap-by-level): the first band
+// whose UpToLevel is at or above the level; a band with no UpToLevel takes every level above.
+type CastAP struct {
+	Bands []struct {
+		UpToLevel *int64 `json:"up_to_level"`
+		AP        int64  `json:"ap"`
+	} `json:"bands"`
+	Minimum int64 `json:"minimum"`
+}
+
+// For is the AP of a spell of the level, before modifiers.
+func (table *CastAP) For(level int64) int64 {
+	for _, band := range table.Bands {
+		if band.UpToLevel == nil || *band.UpToLevel >= level {
+			return band.AP
+		}
+	}
+	return table.Minimum
 }
 
 // BoundWeapon is what a conjured weapon starts as (docs/modules/magic.md#bound-weapons).

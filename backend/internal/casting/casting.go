@@ -103,8 +103,12 @@ type Result struct {
 	Dismissed     []string           `json:"dismissed"`
 	Minions       []string           `json:"minions"`
 	Mana          int64              `json:"mana"`
-	Damage        []Packet           `json:"damage"`
-	HitPoints     *int64             `json:"hp"` // the target's after every packet; nil without a target hp
+	// AP is the cast's AP by the spell's level after the modifiers on cast; Stamina is AP times
+	// stamina_per_ap (docs/core/actions.md#cast-ap-by-level, GD_S19_08).
+	AP        int64    `json:"ap"`
+	Stamina   int64    `json:"stamina"`
+	Damage    []Packet `json:"damage"`
+	HitPoints *int64   `json:"hp"` // the target's after every packet; nil without a target hp
 	// BoundWeapon is the conjured weapon of a bound weapon spell; nil (left out) otherwise.
 	BoundWeapon *BoundWeapon `json:"bound_weapon,omitempty"`
 }
@@ -310,6 +314,12 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		var hp int64 = *input.Target.HitPoints
 		result.HitPoints = &hp
 	}
+	ap, err := modifier.Value(ruleset.Casting.CastAP.For(spell.Level), modifier.Target(input.Modifiers, "cast"), ruleset.Origins, 0, nil)
+	if err != nil {
+		return Result{}, err
+	}
+	result.AP = max(ap, ruleset.Casting.CastAP.Minimum)
+	result.Stamina = result.AP * ruleset.StaminaPerAP
 	for _, flag := range caster.Flags {
 		if slices.Contains(ruleset.Casting.PreventedBy, flag) {
 			result.Outcome = "prevented"

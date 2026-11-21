@@ -199,6 +199,15 @@
         "type": "integer",
         "minimum": 0
       },
+      "ap": {
+        "type": "integer",
+        "minimum": 1,
+        "description": "The cast's AP: the band of the spell's level after the modifiers on cast, never below the minimum (docs/core/actions.md#cast-ap-by-level)."
+      },
+      "stamina": {
+        "type": "integer",
+        "description": "The cast's AP times stamina_per_ap, for a real-time client."
+      },
       "consumed": {
         "type": "array",
         "items": {

@@ -2,6 +2,7 @@
   "$schema": "../../schemas/casting.schema.json",
   "casting": {
     "summon_limit": 1,
+    "cast_ap": { "bands": [{ "up_to_level": 5, "ap": 2 }, { "up_to_level": 20, "ap": 3 }, { "ap": 4 }], "minimum": 1 },
     "bound_weapon": { "material": "core:material/iron", "damage_type": "magic" },
     "prevented_by": ["silenced"],
     "armor_penalty": { "none": 0, "light": -5, "medium": -15, "heavy": -30 },
