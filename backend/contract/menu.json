@@ -3,7 +3,7 @@
   "documentation": "docs/backend/app-layout.md",
   "entries": [
     { "key": "start", "parent": "main", "label": "Start" },
-    { "key": "characters", "parent": "main", "label": "Characters", "issue": "FE_S07_04_character-list-page", "issue_apps": ["web"] },
+    { "key": "characters", "parent": "main", "label": "Characters" },
     { "key": "settings", "parent": "main", "label": "Settings" },
     { "key": "modules", "parent": "main", "label": "Modules" },
     { "key": "network", "parent": "main", "label": "Network" },

@@ -2,7 +2,7 @@
 
 Author: SETA1609
 
-Modified: 2026-11-19
+Modified: 2026-11-21
 
 One budget. Costs live in `ruleset/data/actions/core.json`. A turn spends AP. A real-time client spends stamina for the same actions, at a fixed rate. There is no bonus action and no reaction slot.
 
@@ -11,11 +11,42 @@ One budget. Costs live in `ruleset/data/actions/core.json`. A turn spends AP. A 
 ```
 pool  = 2 + floor(AGI / 3)
 cap   = 10
-carry = min(unspent, cap)
+carry = 2            at most 2 held AP carry into the next pool (held AP, below)
 rest  = refill
 ```
 
-The size matches the derived `ap` function. The cap is why unspent points carry. Without it a module can bank a second turn. A short rest refills the pool. Fallout spends a small pool the same way.
+The size matches the derived `ap` function. A turn starts with at most `cap` AP, carried AP included. A short rest refills the pool. Fallout spends a small pool the same way.
+
+## Held AP
+
+AP left unspent at the end of your turn is **held** until your next turn (GD_S19_05). Fallout turns unspent AP into armor class, and Fallout Tactics into overwatch; here one rule does both:
+
+```
+held       = available − cost              available = min(pool + carried, cap)
+guard      = (held − held_spent) × guard_per_ap      guard_per_ap = 5, on evasion
+carry      = min(held − held_spent, carry)           carry = 2
+next pool  = min(pool + carry, cap)
+```
+
+- **Guard.** While held, each AP gives +5 on `evasion`. A careful turn guards you; dodge (3 AP, double evasion) stays the stronger, deliberate choice.
+- **Spend it.** Held AP may pay an opportunity attack or a readied attack (`GD_S19_04_ready-and-opportunity-attacks`) at the loadout's attack cost. The guard drops by what you spend: 4 held, 3 spent, +5 guard and 1 to carry.
+- **Carry.** At the start of your next turn at most 2 of what is still held join the new pool; the rest is gone. Two quiet turns no longer bank two casts. Divinity: Original Sin 2 keeps the maximum near what a turn recovers (recover 4, maximum 6); a pool of 4 here peaks at 6.
+
+The `actions` command takes `carried` (at most `carry`) and `held_spent` (at most what is held) and returns `available`, `held`, `guard`, `carry`, and `next_pool`. [V 2026-11-21, `actions` vectors for pools 3, 4, and 5 in Python and Go]
+
+Attacks per turn over six turns, attacking whenever the AP allows and holding the rest (`ap` from `attack_sequences/core.json`):
+
+| Loadout | Attack AP | Pool 3 | Pool 4 |
+| --- | --- | --- | --- |
+| Both hands empty | 2 | 1 2 1 2 1 2 | 2 2 2 2 2 2 |
+| One light weapon | 2 | 1 2 1 2 1 2 | 2 2 2 2 2 2 |
+| One one-handed weapon | 3 | 1 1 1 1 1 1 | 1 1 2 1 1 2 |
+| One weapon in both hands | 3 | 1 1 1 1 1 1 | 1 1 2 1 1 2 |
+| Two light weapons | 3 | 1 1 1 1 1 1 | 1 1 2 1 1 2 |
+| A one-handed weapon and a light off-hand weapon | 4 | 0 1 1 0 1 1 | 1 1 1 1 1 1 |
+| Two one-handed weapons | 5 | 0 1 0 1 0 1 | 0 1 1 0 1 1 |
+
+Every loadout attacks at least every second turn at pool 3, so no row needs a lower `ap`; two one-handed weapons at pool 3 is the slowest and lives on the carry. [V 2026-11-21, computed from `attack_sequences/core.json`] The numbers 5 and 2 are [A] until a playtest.
 
 ## Costs
 
@@ -24,7 +55,7 @@ attack 3, by loadout (2 to 5)
 jab 2, by loadout (2 or 3, the off hand alone)
 full_attack every AP left, at least attack + 1, by loadout
 circle_cut every AP left, at least attack + 1 (Circle Cut perk, two-handed weapon)
-cast 3
+cast 2 to 4, by the spell's level (cast AP by level, below)
 move 1
 disengage 1
 dodge 3
@@ -32,17 +63,57 @@ item 2
 block 2, reserved, refund if unused
 command 2, an order to summons (commanding.md)
 aimed +2 on the attack cost
+draw 1, sheathe 1, drop 0, swap 1 (changing the loadout)
 ```
 
 The attack, the jab, the full attack, and the circle cut cost what the loadout's row of `ruleset/data/attack_sequences/core.json` says (`by_loadout`); the `cost` in `actions/core.json` is the cost with one one-handed weapon, for a caller that knows no loadout. The full attack and the circle cut spend every AP left (`spends_all`). The strikes each makes are in [combat.md](combat.md#attacks-by-loadout) (GD_S05_01).
 
 A perk changes a cost with `add` on the action's key: the Sidestep perk emits `add dodge -1`, and the cost is the row's cost after the actor's modifiers on that key, stacked by [modifier.md](modifier.md), never below 0. [V 2026-11-06]
 
-Cast AP is static. A spell also spends its mana cost. AP does not vary by spell. A petty spark and a heavy bolt both cost 3 AP. The bolt costs more mana. A perk that wants a cheaper cast emits `add` on the cast cost. It does not edit the spell.
+A cast costs AP by the spell's level and also spends its mana ([cast AP by level](#cast-ap-by-level)). A perk that wants a cheaper cast emits `add` on `cast`. It does not edit the spell.
 
 Dodge and block are stances, declared on your turn and in force until your next ([combat.md](combat.md#reading-the-steps)). A fighting stance a perk unlocks is another thing, a way of holding the weapons: it costs nothing at the start of your turn, 1 AP later in it, and stands together with dodge or block ([combat.md](combat.md#fighting-stances)). Dodge spends 3 and doubles your evasion rate. Block is a hold on this pool, not a reaction slot: declare it, spend 2, and the unused 2 comes back if nobody swings; while it holds, a block band of half your `shields` skill stops physical hits. Aimed is not a second attack. It adds 2 to the attack cost.
 
 Dash is not an action. Double move is spending 1 AP twice.
+
+## How far a move goes
+
+```
+squares per move = floor(speed / speed_divisor)      speed_divisor = 2 (move row)
+```
+
+A race's `speed` is not a distance per round any more; it says how far each `move` goes. At today's speeds of 5 to 7, one move covers 2 or 3 squares, and a pool of 4 spent on moving covers 8 to 12, close to Fallout's 7 to 10 hexes for the same budget. The divisor is the `speed_divisor` on the `move` row of `actions/core.json`, so a module changes it without code. Divinity: Original Sin 1 and 2 price movement the same way: an AP buys a distance that grows with speed. It differs here in that speed comes from the race, not from an attribute. [V 2026-11-21, `actions` vectors]
+
+What raises the price of a move changes its AP, never its squares. Encumbrance and armor emit `add move +1` ([combat.md §8](../modules/combat.md#8-encumbrance-and-armor-action-costs)); difficult terrain doubles the cost ([combat.md §5](../modules/combat.md#5-cover-flanking-terrain-prone)). An encumbered human (speed 6) pays 2 AP for each move and still covers 3 squares. [V 2026-11-21, `actions` vectors]
+
+The `actions` command takes `speed` and returns `squares`, the squares its moves cover; without a speed it returns no `squares`. A real-time client moves at `floor(speed / 2)` squares per `seconds_per_turn / pool` seconds, so a pool of 4 walks a human 3 squares every 1.25 seconds. [A]
+
+## Changing the loadout
+
+Since the loadout decides what an attack costs and strikes ([combat.md](combat.md#attacks-by-loadout)) and a loadout change ends a stance that no longer fits ([combat.md](combat.md#fighting-stances)), changing it is a priced choice. The four rows carry `changes_loadout`:
+
+```
+draw     1   one weapon or a shield into an empty hand
+sheathe  1   one put away
+drop     0   one let fall; it stays on the ground
+swap     1   to the other of two loadouts set up before the fight, a primary and a secondary
+```
+
+Fallout Tactics charges 2 AP to swap and the Divinity board game 1 AP to equip; at a pool of 4 the cheaper price keeps a swap and an attack in one turn. [A] The Drilled Hands perk (AGI 5, ungated) emits `add swap -1`, so a swap costs 0; a draw is unchanged. [V 2026-11-21, `actions` vectors]
+
+A `stance` loadout event names the action that paid for it in `by`; the step costs that action's AP after the held perks' modifiers on it, and `by` must be a row with `changes_loadout`. Without `by` the change is free, as when an effect disarms the actor. A paid swap to sword and shield costs 1 AP and ends Fencer's Measure. [V 2026-11-21, `stance` vectors] Reloading is not a loadout change; it belongs to ranged combat (`GD_S17_02_ammunition-items-and-reloading`).
+
+## Cast AP by level
+
+```
+level 1 to 5     2 AP
+level 6 to 20    3 AP
+level 21 to 30   4 AP          never below 1, after the caster's modifiers on cast
+```
+
+With every cast at 3 AP and a pool of 3 to 5, a minor buff took the whole turn, so at a table a caster cast only damage (GD_S19_08). Divinity: Original Sin 2 gives each skill its own AP; here the spell's `level` picks the band, so no spell row carries an AP of its own. The bands are `cast_ap` in `ruleset/data/casting/core.json`; the `cast` row in `actions/core.json` keeps 3 for a caller that knows no spell (`by_spell_level`). The `casting` command returns `ap` and `stamina` (AP times `stamina_per_ap`), so real time keeps the same proportion. [V 2026-11-21, `casting` vectors in Python and Go]
+
+Fire Bolt (level 1) costs 2 AP, Cleanse (10) costs 3, and Meteor (24) costs 4. Quick Caster still emits `add cast -1`: Meteor 3, Cleanse 2, and Fire Bolt 1, since a cast never costs 0 (`minimum` 1). Mana still pays for the spell. The issue's alternative, a perk that cuts AP only up to a mana cost, was not taken: the level already says how big a spell is. [A]
 
 ## Maneuvers
 

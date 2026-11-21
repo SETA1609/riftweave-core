@@ -49,7 +49,7 @@ python ruleset/scripts/run_tests.py   # the same, one process per test file in p
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md#workflow) before starting an issue. In short:
 
-- Work comes from `docs/issues/open/` (one file per issue), grouped by the stories `S00` to `S20` in `docs/stories/`, one role each (`docs/issues/ROLES.md`). Merged issues are in `docs/issues/done/`, and `close-merged-issue.yml` moves them there. Format and ids: `docs/stories/README.md`; how an issue closes: `docs/issues/README.md`. Scope and the definition of finished: `ROADMAP.md`.
+- Work comes from `docs/issues/open/` (one file per issue), grouped by the stories `S00` to `S21` in `docs/stories/`, one role each (`docs/issues/ROLES.md`). Merged issues are in `docs/issues/done/`, and `close-merged-issue.yml` moves them there. Format and ids: `docs/stories/README.md`; how an issue closes: `docs/issues/README.md`. Scope and the definition of finished: `ROADMAP.md`.
 - One issue, one PR, at most 20 counted changed files (files with 5 or fewer changed lines do not count). Issue ids are `<ROLE>_<STORY>_<ISSUE>_<short-description>` (roles: `docs/issues/ROLES.md`; ids and splitting: `docs/stories/README.md#ids`), and the branch is the full id (e.g. `BE_S07_03_character-list-cli`); an issue with an old id uses `<issue-id>-<slug>` (e.g. `M1-07-<slug>`). The same for people and agents; no `agent/<name>/` prefix. An issue over 20 files that changes both the ruleset and the backend splits into `<issue-id>-ruleset-<slug>` (merges first, adds the fragment) and `<issue-id>-backend-<slug>` (adds a bullet to the same fragment). What can start now and what runs in parallel: `uv run --project tools/devops --locked --no-dev devops-tools roadmap-order --settings-file tools/devops/pyproject.toml show`. Commit only when the user asks.
 - Five steps, one commit each: **spec** (`docs/core/` or `docs/modules/`), **schema**, failing **vector**, **data** until it passes without changing the vector, **review** (differences listed in the PR).
 - Tag design claims **[V]** (checked in this change, with date), **[A]** (assumption), **[U]** (unverified). Call something verified only after you ran or read it in this session.
@@ -184,6 +184,22 @@ See `docs/modules/README.md` for the philosophy and current state.
    - Accessory base template files use a `_base` suffix (e.g. `ring_base.json`) to distinguish them from their entries, while weapon and armor bases do not. New base templates should always specify `default_materials`, `enchantment_slots`, and `phase`.
    - **Leather** and **Studded Leather** are materials, not base armor types. They apply to bases like `padded`, `brigandine`, or generic armor bases via the `material` field in overrides.
 
+## Code: dispatch and string literals
+
+Why, with the compilers' own sources: [docs/theory/dispatch.md](docs/theory/dispatch.md).
+
+- **Dispatch on one value is a `switch` or a table, never an `if`/`else if` chain over that value.** Pick the form the language makes fastest:
+  - **Go:** `switch` on the value. From 8 dense integer or string cases the compiler emits a jump table (amd64, arm64), below that a binary search. A `switch {}` on conditions compiles as a chain, so do not use it to dispatch. A fixed set of cases is not a `map`; a map is for keys from data.
+  - **Python:** a dict from the value to a function or a result, built once at module level (`OPERATIONS[operation](vector)`). `match` and `if`/`elif` try each case in turn.
+  - **TypeScript:** `switch`. V8 builds a jump table only for 5 or more compact number-literal cases; a fixed mapping from a string to a value is a lookup on an `as const` object.
+  - **State machines:** the state is a small integer (a typed `uint8` in Go, a number in TypeScript), a table indexed by it says what the state holds, and a `switch` on it runs the step.
+  - A chain of different conditions (guards, validation, early returns) stays `if`.
+- **A string that means something to the code is a named constant**, not a literal repeated where it is compared: an operation, a step, an outcome, a role, a category, a kind.
+  - **Go:** a named string type and constants (`type Step string`, `const StepRace Step = "race"`); build JSON from typed structs, not `map[string]any` with string keys.
+  - **Python:** module constants (`STEP_RACE = "race"`), and the tuples and dicts built from them.
+  - **TypeScript:** an `as const` object with its type derived from it (`export const OUTCOME = { Added: 'added' } as const; type Outcome = (typeof OUTCOME)[keyof typeof OUTCOME]`), not an `enum` or a `const enum`; a template reads it through a component property.
+  - **Stays text:** JSON field names a schema or the command contract defines (Go struct tags, result keys), messages, and words shown to a person.
+
 ## Frontend
 
 Changes to `frontend/` follow the conventions in [docs/backend/frontend.md](docs/backend/frontend.md#conventions): Angular 22, signals before RxJS, standalone components split into `.ts`, `.html`, and `.css`, Bootstrap's look in our own CSS, small reusable components, Vitest for unit tests, and Playwright for end-to-end tests.
@@ -211,6 +227,7 @@ AI is welcome as a tool, and a human always reviews before committing ([AI rules
 - `ROADMAP.md`, `docs/stories/`, and `docs/issues/` — scope, milestones, and the issues to work on
 - `CONTRIBUTING.md` — contribution process and rules for changes
 - `docs/core/data-model.md` — the shape of the data; `docs/theory/data-models.md` — why
+- `docs/theory/dispatch.md` — why dispatch is a switch or a table and meaningful strings are constants
 - `docs/core/` — kernel rules; `docs/modules/` — core systems in detail and modules (start here before adding new mechanics)
 - `ruleset/schemas/schema.json` — shared definitions
 - `ruleset/scripts/validate.py` — the validator implementation (read if debugging resolution issues)

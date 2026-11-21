@@ -245,8 +245,8 @@ describe('the menus of backend/contract/menu.json', () => {
 
   it('show the home page: the main menu without the CLI-only Quit', () => {
     const element = menu('main');
-    expect(cards(element)).toEqual(['Start', 'Characters (FE_S07_04_character-list-page)', 'Settings', 'Modules', 'Network', 'Import']);
-    expect(element.querySelector('[aria-disabled="true"]')!.textContent).toContain('FE_S07_04_character-list-page');
+    expect(cards(element)).toEqual(['Start', 'Characters', 'Settings', 'Modules', 'Network', 'Import']);
+    expect(element.querySelector('[aria-disabled="true"]')).toBeNull();
   });
 
   it('show the tools page and GM tools, each with Back to the menu above', () => {

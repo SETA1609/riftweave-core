@@ -1,0 +1,266 @@
+{
+  "$schema": "./command.schema.json",
+  "name": "creation",
+  "summary": "Character creation: the rules a form is drawn from, a check of a draft step by step, and the stored actor a complete draft becomes.",
+  "documentation": "docs/backend/creation.md",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "operation": {
+        "type": "string",
+        "enum": [
+          "rules",
+          "check",
+          "finish"
+        ]
+      },
+      "draft": {
+        "$ref": "common.json#/definitions/creation_draft"
+      }
+    },
+    "required": [
+      "operation"
+    ],
+    "additionalProperties": false
+  },
+  "result_schema": {
+    "type": "object",
+    "properties": {
+      "creation": {
+        "type": "object",
+        "description": "With rules: progression's creation numbers and tag_skills, before race traits and perks.",
+        "properties": {
+          "attribute_start": {
+            "type": "integer"
+          },
+          "attribute_min": {
+            "type": "integer"
+          },
+          "attribute_points": {
+            "type": "integer"
+          },
+          "attribute_max": {
+            "type": "integer"
+          },
+          "creation_perks_max": {
+            "type": "integer"
+          },
+          "tag_skills": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "attribute_start",
+          "attribute_min",
+          "attribute_points",
+          "attribute_max",
+          "creation_perks_max",
+          "tag_skills"
+        ],
+        "additionalProperties": false
+      },
+      "abilities": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "With rules: the eight attribute keys, in order."
+      },
+      "races": {
+        "type": "array",
+        "description": "With rules: every race a player may pick, with its ability modifiers summed with its parent's and its traits.",
+        "items": {
+          "type": "object",
+          "properties": {
+            "race": {
+              "$ref": "common.json#/definitions/ref"
+            },
+            "label": {
+              "type": "string"
+            },
+            "ability_modifiers": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "integer"
+              }
+            },
+            "traits": {
+              "type": "array",
+              "items": {
+                "$ref": "common.json#/definitions/ref"
+              }
+            }
+          },
+          "required": [
+            "race",
+            "label",
+            "ability_modifiers",
+            "traits"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "backgrounds": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "background": {
+              "$ref": "common.json#/definitions/ref"
+            },
+            "label": {
+              "type": "string"
+            },
+            "skill_bonuses": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "skill": {
+                    "$ref": "common.json#/definitions/ref"
+                  },
+                  "bonus": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "skill",
+                  "bonus"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "suggested_tag_skills": {
+              "type": "array",
+              "items": {
+                "$ref": "common.json#/definitions/ref"
+              }
+            }
+          },
+          "required": [
+            "background",
+            "label",
+            "skill_bonuses",
+            "suggested_tag_skills"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "creation_perks": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "perk": {
+              "$ref": "common.json#/definitions/ref"
+            },
+            "label": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "perk",
+            "label",
+            "description"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "skills": {
+        "description": "With rules: every skill and the attribute it starts from. With check: the starting skills by key, the skill start from the attributes plus the background's bonuses.",
+        "anyOf": [
+          {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "skill": {
+                  "$ref": "common.json#/definitions/ref"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "ability": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "skill",
+                "label",
+                "ability"
+              ],
+              "additionalProperties": false
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
+            }
+          }
+        ]
+      },
+      "complete": {
+        "type": "boolean",
+        "description": "With check: every step is filled and legal."
+      },
+      "problems": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "step": {
+              "type": "string",
+              "enum": [
+                "name",
+                "race",
+                "attributes",
+                "background",
+                "creation_perks",
+                "tag_skills"
+              ]
+            },
+            "message": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "step",
+            "message"
+          ],
+          "additionalProperties": false
+        },
+        "description": "With check: what each step still needs or gets wrong, in step order."
+      },
+      "points_left": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "attributes": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "integer"
+        },
+        "description": "With check: the attributes after race and the starting perks' modifiers."
+      },
+      "derived": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "integer"
+        },
+        "description": "With check: the derived stats at the start level (hp, mp, sp, ap, carry, initiative, toxicity_limit)."
+      },
+      "name": {
+        "type": "string",
+        "description": "With finish: the character's name."
+      },
+      "actor": {
+        "$ref": "common.json#/definitions/stored_actor"
+      }
+    },
+    "additionalProperties": false
+  }
+}

@@ -11,6 +11,7 @@ import math
 from pathlib import Path
 
 from casting_reference import run_casting, run_spellcraft
+from creation_reference import run_creation
 from hazard_reference import run_hazard
 from loot_reference import run_loot
 
@@ -279,8 +280,29 @@ def run_actions(vector):
         max(apply_modifiers(costs[key], [m for m in modifiers if m["target"] == key]), 0)
         for key in vector.get("actions", [])
     )
+    # Held AP (docs/core/actions.md#held-ap): what is left at the end of the turn guards until the
+    # next one, may pay an opportunity or readied attack, and at most pool.carry of it carries.
+    carried, held_spent = vector.get("carried", 0), vector.get("held_spent", 0)
+    if carried > pool_rules["carry"]:
+        return {"error": f'carried {carried} is more than pool.carry {pool_rules["carry"]}'}
+    available = min(pool + carried, pool_rules["cap"])
+    held = max(available - cost, 0)
+    if held_spent > held:
+        return {"error": f"held_spent {held_spent} is more than the {held} AP held"}
+    left = held - held_spent
+    carry = min(left, pool_rules["carry"])
     # One cost on two clocks: a real-time client pays AP times stamina_per_ap (docs/core/actions.md).
-    return {"pool": pool, "cost": cost, "stamina": cost * data["stamina_per_ap"]}
+    result = {
+        "pool": pool, "cost": cost, "stamina": cost * data["stamina_per_ap"],
+        "available": available, "held": held, "guard": left * pool_rules["guard_per_ap"],
+        "carry": carry, "next_pool": min(pool + carry, pool_rules["cap"]),
+    }
+    if "speed" in vector:
+        # How far a move goes (docs/core/actions.md#how-far-a-move-goes): each action with a
+        # speed_divisor covers floor(speed / speed_divisor) squares; modifiers change only its AP.
+        divisors = {action["key"]: action["speed_divisor"] for action in data["actions"] if "speed_divisor" in action}
+        result["squares"] = sum(vector["speed"] // divisors[key] for key in vector.get("actions", []) if key in divisors)
+    return result
 
 
 def run_rest(vector):
@@ -921,6 +943,9 @@ def run_stance(vector):
             return f'stance "{key}" needs a perk that unlocks it'
         return stance_misfit(rows[key], loadout)
 
+    # A loadout change paid by an action (GD_S19_03): its AP after the held perks' modifiers on it.
+    actions = {row["key"]: row for row in load_data("actions/core.json")["actions"]}
+    perk_modifiers = [m for ref in vector.get("perks", []) for m in features[ref.removeprefix("core:feature/")].get("modifiers", [])]
     loadout, held = vector["loadout"], vector.get("stance")
     if held is not None and (error := check(held, loadout)):
         return {"error": error}
@@ -939,6 +964,13 @@ def run_stance(vector):
         elif event.get("end"):
             step["ended"], held = held, None
         elif "loadout" in event:
+            if "by" in event:
+                by = event["by"]
+                if by not in actions:
+                    return {"error": f'action "{by}" is not defined'}
+                if not actions[by].get("changes_loadout"):
+                    return {"error": f'action "{by}" does not change the loadout'}
+                step["ap"] = max(apply_modifiers(actions[by]["cost"], [m for m in perk_modifiers if m["target"] == by]), 0)
             loadout = event["loadout"]
             if held is not None and stance_misfit(rows[held], loadout):
                 step["ended"], held = held, None
@@ -1420,6 +1452,7 @@ RUNNERS = {
     "progression": run_progression,
     "share": run_share,
     "command_summons": run_command_summons,
+    "creation": run_creation,
 }
 
 

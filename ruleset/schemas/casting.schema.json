@@ -60,6 +60,28 @@
           "required": ["divisor", "cap", "minimum_paid"],
           "additionalProperties": false
         },
+        "cast_ap": {
+          "type": "object",
+          "description": "A cast's AP by the spell's level (docs/core/actions.md#cast-ap-by-level): the first band whose up_to_level is at or above the level, the last band (no up_to_level) above them all; the actor's modifiers on `cast` apply, and the AP never falls below minimum.",
+          "properties": {
+            "bands": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "properties": {
+                  "up_to_level": { "type": "integer", "minimum": 1 },
+                  "ap": { "type": "integer", "minimum": 1 }
+                },
+                "required": ["ap"],
+                "additionalProperties": false
+              }
+            },
+            "minimum": { "type": "integer", "minimum": 1 }
+          },
+          "required": ["bands", "minimum"],
+          "additionalProperties": false
+        },
         "spell_cost": {
           "type": "object",
           "description": "The spell cost formula's coefficients (docs/modules/magic.md#cost-formula): per effect, magnitude_factor × base_cost × magnitude × duration, plus area_factor × base_cost × radius, times the target multiplier; the spell cost is the sum, rounded up.",
@@ -112,7 +134,7 @@
           "additionalProperties": false
         }
       },
-      "required": ["prevented_by", "armor_penalty", "shield_penalty", "skill_discount", "spell_cost", "bound_weapon"],
+      "required": ["prevented_by", "armor_penalty", "shield_penalty", "skill_discount", "spell_cost", "bound_weapon", "cast_ap"],
       "additionalProperties": false
     }
   },

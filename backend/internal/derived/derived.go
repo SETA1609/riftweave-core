@@ -62,6 +62,12 @@ type ActionsInput struct {
 	Actor     actor.Actor         `json:"actor"`
 	Actions   []string            `json:"actions"`
 	Modifiers []modifier.Modifier `json:"modifiers"` // adds on an action's key change its cost
+	// Speed is the race's speed; with it the result says how many squares the moves cover (GD_S19_02).
+	Speed *int64 `json:"speed"`
+	// Carried is the AP carried into this turn; HeldSpent is held AP spent before the next turn,
+	// on an opportunity or readied attack (docs/core/actions.md#held-ap, GD_S19_05).
+	Carried   int64 `json:"carried"`
+	HeldSpent int64 `json:"held_spent"`
 }
 
 // ActionsResult is the pool and the cost of the named actions, in AP and in real-time stamina.
@@ -69,6 +75,15 @@ type ActionsResult struct {
 	Pool    int64 `json:"pool"`
 	Cost    int64 `json:"cost"`
 	Stamina int64 `json:"stamina"` // Cost times stamina_per_ap (docs/core/actions.md#one-rule-set-two-clocks)
+	// Squares the actions cover, given a speed (docs/core/actions.md#how-far-a-move-goes).
+	Squares *int64 `json:"squares,omitempty"`
+	// Held AP (docs/core/actions.md#held-ap): the pool with carried AP, what the turn leaves held,
+	// the evasion it guards with, what carries, and the next turn's pool.
+	Available int64 `json:"available"`
+	Held      int64 `json:"held"`
+	Guard     int64 `json:"guard"`
+	Carry     int64 `json:"carry"`
+	NextPool  int64 `json:"next_pool"`
 }
 
 // RunActions is the `actions` command: the pool is base + attribute * per_point / divisor.
@@ -79,10 +94,15 @@ func RunActions(ruleset *data.Ruleset, input ActionsInput) (ActionsResult, error
 	}
 	var attributeValue int64 = input.Actor.Attributes.Get(pool.Ability)
 	var result ActionsResult = ActionsResult{Pool: pool.Base + formula.FloorDivide(attributeValue*pool.PerPoint, pool.PerPointDivisor)}
+	var squares int64 = 0
 	for _, key := range input.Actions {
 		action, err := ruleset.Actions.Actions.Require("action", key)
 		if err != nil {
 			return ActionsResult{}, err
+		}
+		// A move's squares come from speed alone; modifiers on it change its AP (GD_S19_02).
+		if input.Speed != nil && action.SpeedDivisor > 0 {
+			squares += formula.FloorDivide(*input.Speed, action.SpeedDivisor)
 		}
 		cost, err := modifier.Value(action.Cost, modifier.Target(input.Modifiers, key), ruleset.Origins, 0, nil)
 		if err != nil {
@@ -91,6 +111,21 @@ func RunActions(ruleset *data.Ruleset, input ActionsInput) (ActionsResult, error
 		result.Cost += max(cost, 0)
 	}
 	result.Stamina = result.Cost * ruleset.StaminaPerAP
+	if input.Speed != nil {
+		result.Squares = &squares
+	}
+	if input.Carried > pool.Carry {
+		return ActionsResult{}, fmt.Errorf("carried %d is more than pool.carry %d", input.Carried, pool.Carry)
+	}
+	result.Available = min(result.Pool+input.Carried, pool.Cap)
+	result.Held = max(result.Available-result.Cost, 0)
+	if input.HeldSpent > result.Held {
+		return ActionsResult{}, fmt.Errorf("held_spent %d is more than the %d AP held", input.HeldSpent, result.Held)
+	}
+	var left int64 = result.Held - input.HeldSpent
+	result.Guard = left * pool.GuardPerAP
+	result.Carry = min(left, pool.Carry)
+	result.NextPool = min(result.Pool+result.Carry, pool.Cap)
 	return result, nil
 }
 

@@ -4734,6 +4734,30 @@
       ]
     },
     {
+      "key": "drilled_hands",
+      "label": "Drilled Hands",
+      "description": "Hours of drill put the second grip where the hand expects it: the swap action costs 1 AP less.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "abilities": {
+          "agi": 5
+        },
+        "skills": [],
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "swap",
+          "operation": "add",
+          "value": -1,
+          "source": "feature:drilled_hands",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
       "key": "armored_evasion",
       "label": "Armored Evasion",
       "description": "You have learned to move in your armor: +5 on the evasion skill per tier (5, 10, 15), which offsets what armor costs you.",

@@ -1,6 +1,6 @@
 # Hybrid builds
 
-Modified: 2026-11-19
+Modified: 2026-11-21
 
 Builds that mix two paths. They are suggestions: nothing here is gated, and a hybrid can lean on either half as the fight needs ([README](README.md)). The rows are in [`ruleset/data/builds/core.json`](../../../ruleset/data/builds/core.json); each is checked from creation to level 30 at the lowest luck roll.
 
@@ -13,7 +13,7 @@ A blade in one hand and fire in the other, in light armor: closes to cut, and bu
 - **Attributes:** STR 7, INT 7, END 6, AGI 6, the rest 4; with Gifted and Iron Allergy (+1 INT), STR 8, INT 9, END 7, AGI 7.
 - **Tag skills:** Blades, Red Magic, Light Armor.
 - **Spells:** Fire Bolt, Frost Lance, Fire Burst, Flame Shield, Chain Lightning, Meteor.
-- **Mechanics:** an attack and a cast cost 3 AP each, and AGI 7 gives a pool of 4 ([actions.md](../../core/actions.md#pool)), so a turn is one or the other plus a move. **Quick Caster** at 18 makes a cast 2 AP: a cast and two moves, or a cast now and the unspent AP carried, so an attack and a cast land in one turn every other turn. Light armor keeps the casting penalty small, and **Mailed Casting** cuts it to three quarters, a half and a quarter as its tiers rise. The blade half is the fencer's (Full Weight, Carry Through, **Fencer's Measure**), the fire half the blaster's (**Pyromancer**, Ward Breaker, **Archmage**).
+- **Mechanics:** an attack costs 3 AP and a fire spell 2 to 4 by its level ([actions.md](../../core/actions.md#cast-ap-by-level)), and AGI 7 gives a pool of 4 ([actions.md](../../core/actions.md#pool)), so a turn is one or the other plus a move. **Quick Caster** at 18 takes 1 AP off a cast, so a level 6 to 20 spell costs 2: a cast and two moves, or a cast now and the unspent AP carried, so an attack and a cast land in one turn every other turn. Light armor keeps the casting penalty small, and **Mailed Casting** cuts it to three quarters, a half and a quarter as its tiers rise. The blade half is the fencer's (Full Weight, Carry Through, **Fencer's Measure**), the fire half the blaster's (**Pyromancer**, Ward Breaker, **Archmage**).
 - **Level by level:**
   - **2–9.** Full Weight (Blades 40), Arcane Reservoir twice, Hardened Hide, **Carry Through** at 6, **Pyromancer** at 7 and 9, Easy Stride (Light Armor 50).
   - **10–19.** Sidestep, Hardened Hide, **Mailed Casting** at 12, **Fencer's Measure** at 13 (Blades 60), Catch Your Breath, Berserker, Ward Breaker, Armored Evasion, **Quick Caster** at 18, the third Hardened Hide.
@@ -28,7 +28,7 @@ A shortbow, yellow magic, and the shadows: blinds and blurs, charms the guard, a
 - **Attributes:** AGI 8, PER 7, INT 7, the rest 4; with Gifted and Iron Allergy (+1 INT), AGI 9, INT 9, PER 8.
 - **Tag skills:** Bows, Yellow Magic, Stealth.
 - **Spells:** Light, Blinding Flash, Blur, Charm Person, Veil, Psychic Scream.
-- **Mechanics:** a cast and an attack cost 3 AP each, and AGI 9 gives a pool of 5 ([actions.md](../../core/actions.md#pool)); **Quick Caster** at 18 makes a cast 2 AP, so a cast and a plain shot fit in one turn. **Steady Aim** makes an aimed shot 4 AP. The opening is a spell (Blinding Flash, Blur) or the dark (Ghost, Backstab, **Assassin**), then the bow. Iron Allergy suits a bow of wood or elven wood. The bow half is the archer's (Gap Finder, Steady Aim), the yellow half the illusionist's (**Illusionist**, Ward Breaker).
+- **Mechanics:** a plain shot costs 3 AP and AGI 9 gives a pool of 5 ([actions.md](../../core/actions.md#pool)); the opening spells, Blinding Flash and Blur, are level 3 and 4, so they cost 2 AP ([actions.md](../../core/actions.md#cast-ap-by-level)) and a cast and a plain shot fit in one turn, and **Quick Caster** at 18 makes them 1. **Steady Aim** makes an aimed shot 4 AP. The opening is a spell (Blinding Flash, Blur) or the dark (Ghost, Backstab, **Assassin**), then the bow. Iron Allergy suits a bow of wood or elven wood. The bow half is the archer's (Gap Finder, Steady Aim), the yellow half the illusionist's (**Illusionist**, Ward Breaker).
 - **Level by level:**
   - **2–10.** Gap Finder, Arcane Reservoir three times, Ever Watchful, **Steady Aim** at 7, **Illusionist** at 8, Ghost, Backstab.
   - **11–19.** Sidestep, Ward Breaker, Fleet-Footed, Hardened Hide three times, Armored Evasion, **Quick Caster** at 18, **Assassin** at 19 (Stealth 70).

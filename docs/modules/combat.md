@@ -1,6 +1,6 @@
 # Combat
 
-Modified: 2026-11-20
+Modified: 2026-11-21
 
 Commentary on the combat rules: what they are for, how they fit together, and worked examples. It holds no rule of its own. Every rule here is owned by a file in `docs/core/`, has its numbers in `ruleset/data/`, and is pinned by a vector in `ruleset/tests/vectors/`. **If this file and `docs/core/` disagree, `docs/core/` wins** and this file is the bug.
 
@@ -24,7 +24,7 @@ Rules still in prose here are marked **[A]** and named with the issue that turns
 
 ## 1. The turn
 
-A turn spends action points. The pool is `2 + floor(AGI / 3)`, unspent points carry up to 10, and a short rest refills it ([actions.md](../core/actions.md)). Every action has one cost:
+A turn spends action points. The pool is `2 + floor(AGI / 3)`, unspent points are held for +5 evasion each and at most 2 carry into the next turn ([actions.md](../core/actions.md#held-ap)), and a short rest refills it ([actions.md](../core/actions.md)). Every action has one cost:
 
 | Action | AP |
 | --- | --- |
@@ -32,7 +32,7 @@ A turn spends action points. The pool is `2 + floor(AGI / 3)`, unspent points ca
 | jab | by loadout, 2 or 3: the off-hand weapon alone |
 | full attack | every AP left, at least the attack + 1 |
 | cast | 3 (plus the spell's mana) |
-| move | 1 per move |
+| move | 1 per move; it covers floor(speed / 2) squares ([actions.md](../core/actions.md#how-far-a-move-goes)) |
 | disengage | 1 |
 | dodge | 3 |
 | item | 2 |
@@ -145,7 +145,7 @@ unless a respec, at the game's or GM's discretion, swaps them
 
 ## 7. Initiative
 
-Initiative is a derived stat: `PER` plus modifiers ([derived.md](../core/derived.md)). Highest acts first. Ties go to the higher AGI, then to a d100 roll-off, lowest first. **[A]** The *Alert* perk adds 10. There is no d20.
+Initiative is a derived stat: `PER` plus modifiers ([derived.md](../core/derived.md)). Highest acts first; a tie breaks as [derived.md](../core/derived.md#initiative-ties) says. The *Alert* perk adds 10. There is no d20.
 
 ## 8. Encumbrance and armor action costs
 

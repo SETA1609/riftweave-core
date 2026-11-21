@@ -1,8 +1,9 @@
 #### GD_S19_02_movement-distance-per-ap How far one move goes: squares per AP from the race's speed
-- Status: todo
+- Status: done
+- Merged: #427, 2026-11-21
 - Priority: high
 - Needs: —
-- Modified: 2026-11-19
+- Modified: 2026-11-21
 - Do: Owner request, 2026-11-19 (borrowed from Divinity: Original Sin 1 and 2, where an AP buys a distance that grows with speed).
   - **The gap:** `move` costs 1 AP (`actions/core.json`) and covers no set distance. A race's `speed` is "units per round" (`race.schema.json`, `docs/core/contract.md#distance`), so the two rules do not meet. The battle grid assumes "one cell is one move" and marks the unit unverified (`BE_S10_05_battle-grid-steps`) [V 2026-11-19].
   - **The rule:** one `move` covers `floor(speed / 2)` squares, which is 2 or 3 for today's speeds of 5 to 7 [A]. A pool of 4 spent on moving then covers 8 to 12 squares, near Fallout's 7 to 10 hexes. The divisor lives in `actions/core.json`, not in code.

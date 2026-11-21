@@ -1,6 +1,6 @@
 # Files
 
-Modified: 2026-11-20
+Modified: 2026-11-21
 
 Anything a person makes in one app can be exported as a file and imported into the other
 (APP-30). One envelope holds every kind, defined once in
@@ -78,7 +78,7 @@ The apps work with no connection, so a GM and four players can play offline and 
 by hand (BE_S07_03, owner 2026-11-16). Each app keeps a **character list**: the CLI in
 `os.UserConfigDir()/riftweave/characters/` (or `RIFTWEAVE_CONFIG_DIR/characters/`), one
 character file per character, named `<id>.riftweave.json`; the frontend in IndexedDB
-(`FE_S07_04_character-list-page`). The list shows each character's name, level, last change, and
+(database `riftweave-characters`, store `characters`, keyed by `character.id`; FE_S07_04). The list shows each character's name, level, last change, and
 who made it, and opens, exports, imports, duplicates, and deletes them.
 
 A character file carries its **sync fields** in `character`, beside `data`
@@ -125,6 +125,15 @@ The session records the export, so a GM who exports mid-session and again at the
 revision 4 and then 5, never 4 twice with other content.
 Each player imports theirs, a higher revision, so it replaces the saved one. [V 2026-11-20,
 `characters_test.go`]
+
+### In the frontend
+
+`Characters` (`frontend/src/app/characters.ts`) applies the same rule with the same outcomes and
+notes, so a file passes from a player's browser to a GM's CLI and back: the export of a saved
+character is its file byte for byte (`character-synced.riftweave.json` round-trips), named as the
+CLI names it (`mira-vell-5f0c7a52.riftweave.json`). The data is checked by the core
+(`stored_actor`) and a module this browser does not load stops the import, as on the Import page.
+[V 2026-11-21, `characters.spec.ts`]
 
 ### In the CLI
 

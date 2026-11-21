@@ -1,6 +1,6 @@
 # Agent CLI
 
-Modified: 2026-11-18
+Modified: 2026-11-21
 
 `riftweave` is one static Go binary for agents and scripts (APP-03). It only parses, calls `core.Run`, and formats ([README.md](README.md)): no rule lives here. No prompts, no colour, and one small start, so an agent can call it thousands of times in a loop. The human CLI (APP-05) is a separate mode and the agent path imports none of it.
 
@@ -68,7 +68,7 @@ character list and a session's party ([files.md](files.md#the-character-list), B
 It opens on the main menu of [app-layout.md](app-layout.md), the same tree the Angular app shows
 (`backend/contract/menu.json`). **Start** opens the tools:
 
-- **Character creation:** eight attributes and a level, run through `derived`.
+- **Character creation:** one row per step (name, race, background, the eight attributes, creation perks, tag skills), checked by the `creation` command after every change and finished into a stored actor ([creation.md](creation.md#the-human-cli)).
 - **GM tools, Resolve an attack:** the rolls and the two sides, run through `combat`. The LCK defaults to the character's.
 - **Skill resolution:** one check through `resolution`; a blank roll is rolled for you, and the input names it.
 

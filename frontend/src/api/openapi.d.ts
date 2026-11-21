@@ -181,6 +181,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/commands/creation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Character creation: the rules a form is drawn from, a check of a draft step by step, and the stored actor a complete draft becomes.
+         * @description The rules are in docs/backend/creation.md.
+         */
+        post: operations["creation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/commands/derived": {
         parameters: {
             query?: never;
@@ -613,6 +633,18 @@ export interface components {
             /** @enum {string} */
             unit: "copper" | "silver" | "gold" | "platinum";
         };
+        /** @description A character being made (BE_S07_08, docs/backend/creation.md): any steps, in any order. */
+        creation_draft: {
+            background?: components["schemas"]["ref"];
+            creation_perks?: components["schemas"]["ref"][];
+            name?: string;
+            /** @description Points spent per attribute key; negative when one is lowered under the start, which frees points. */
+            points?: {
+                [key: string]: number;
+            };
+            race?: components["schemas"]["ref"];
+            tag_skills?: components["schemas"]["ref"][];
+        };
         d100: number;
         /** @description Any command may return this instead of its result. */
         error: {
@@ -936,7 +968,13 @@ export interface operations {
                 "application/json": {
                     actions?: components["schemas"]["key"][];
                     actor: components["schemas"]["actor"];
+                    /** @description AP carried into this turn from the last, at most pool.carry. */
+                    carried?: number;
+                    /** @description Held AP spent before the actor's next turn, on an opportunity or readied attack; at most what is held. */
+                    held_spent?: number;
                     modifiers?: components["schemas"]["modifiers"];
+                    /** @description The race's speed. With it the result gives the squares the actions cover. */
+                    speed?: number;
                 };
             };
         };
@@ -948,8 +986,20 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The pool plus the carried AP, at most pool.cap. */
+                        available?: number;
+                        /** @description The held AP that carries into the next turn, at most pool.carry. */
+                        carry?: number;
                         cost: number;
+                        /** @description The evasion the held AP left after held_spent gives, guard_per_ap each. */
+                        guard?: number;
+                        /** @description AP left unspent at the end of the turn, held until the next (docs/core/actions.md#held-ap). */
+                        held?: number;
+                        /** @description The next turn's pool: pool plus carry, at most pool.cap. */
+                        next_pool?: number;
                         pool: number;
+                        /** @description Given a speed: the squares the actions cover, floor(speed / speed_divisor) per move (docs/core/actions.md#how-far-a-move-goes). */
+                        squares?: number;
                         /** @description The cost in stamina for a real-time client: AP times stamina_per_ap. */
                         stamina?: number;
                     };
@@ -1356,6 +1406,8 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The cast's AP: the band of the spell's level after the modifiers on cast, never below the minimum (docs/core/actions.md#cast-ap-by-level). */
+                        ap?: number;
                         /** @description The conjured weapon, when the spell has a bound_weapon effect (docs/core/casting.md#bound-weapons); left out otherwise. */
                         bound_weapon?: {
                             attack: number;
@@ -1406,6 +1458,8 @@ export interface operations {
                             tags: components["schemas"]["tags"];
                             target: number;
                         };
+                        /** @description The cast's AP times stamina_per_ap, for a real-time client. */
+                        stamina?: number;
                         /** @description The active summons after the cast, oldest first. */
                         summons?: components["schemas"]["ref"][];
                     };
@@ -1870,6 +1924,133 @@ export interface operations {
                             source?: string;
                         }[];
                         toxicity?: number;
+                    };
+                };
+            };
+            /** @description The body is not the command's input, or a rule needs an input it was not given. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description No such command, or the input names a key that does not exist. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The body is over 1 MiB. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The command refused for another rule reason. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+        };
+    };
+    creation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    draft?: components["schemas"]["creation_draft"];
+                    /** @enum {string} */
+                    operation: "rules" | "check" | "finish";
+                };
+            };
+        };
+        responses: {
+            /** @description The result. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description With rules: the eight attribute keys, in order. */
+                        abilities?: string[];
+                        actor?: components["schemas"]["stored_actor"];
+                        /** @description With check: the attributes after race and the starting perks' modifiers. */
+                        attributes?: {
+                            [key: string]: number;
+                        };
+                        backgrounds?: {
+                            background: components["schemas"]["ref"];
+                            label: string;
+                            skill_bonuses: {
+                                bonus: number;
+                                skill: components["schemas"]["ref"];
+                            }[];
+                            suggested_tag_skills: components["schemas"]["ref"][];
+                        }[];
+                        /** @description With check: every step is filled and legal. */
+                        complete?: boolean;
+                        /** @description With rules: progression's creation numbers and tag_skills, before race traits and perks. */
+                        creation?: {
+                            attribute_max: number;
+                            attribute_min: number;
+                            attribute_points: number;
+                            attribute_start: number;
+                            creation_perks_max: number;
+                            tag_skills: number;
+                        };
+                        creation_perks?: {
+                            description: string;
+                            label: string;
+                            perk: components["schemas"]["ref"];
+                        }[];
+                        /** @description With check: the derived stats at the start level (hp, mp, sp, ap, carry, initiative, toxicity_limit). */
+                        derived?: {
+                            [key: string]: number;
+                        };
+                        /** @description With finish: the character's name. */
+                        name?: string;
+                        points_left?: number;
+                        /** @description With check: what each step still needs or gets wrong, in step order. */
+                        problems?: {
+                            message: string;
+                            /** @enum {string} */
+                            step: "name" | "race" | "attributes" | "background" | "creation_perks" | "tag_skills";
+                        }[];
+                        /** @description With rules: every race a player may pick, with its ability modifiers summed with its parent's and its traits. */
+                        races?: {
+                            ability_modifiers: {
+                                [key: string]: number;
+                            };
+                            label: string;
+                            race: components["schemas"]["ref"];
+                            traits: components["schemas"]["ref"][];
+                        }[];
+                        /** @description With rules: every skill and the attribute it starts from. With check: the starting skills by key, the skill start from the attributes plus the background's bonuses. */
+                        skills?: {
+                            ability: string;
+                            label: string;
+                            skill: components["schemas"]["ref"];
+                        }[] | {
+                            [key: string]: number;
+                        };
                     };
                 };
             };
@@ -3168,6 +3349,8 @@ export interface operations {
                 "application/json": {
                     /** @description The steps, in order. Each needs exactly one of take, end, or loadout; more than one is an error. */
                     events?: {
+                        /** @description The action that paid for the loadout change, one with changes_loadout (draw, sheathe, drop, swap); its AP after the perks' modifiers on it is the step's cost. Without it the change is free. */
+                        by?: components["schemas"]["key"];
                         /** @description End the active stance, for no AP. */
                         end?: boolean;
                         /** @description The hands now hold this (a weapon drawn, dropped, or swapped); a stance it no longer fits ends. */

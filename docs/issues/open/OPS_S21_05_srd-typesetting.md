@@ -1,0 +1,14 @@
+#### OPS_S21_05_srd-typesetting Typeset the SRD into a PDF
+- Status: todo
+- Priority: medium
+- Needs: DE_S21_04_srd-generator
+- Modified: 2026-11-21
+- Do: Owner request, 2026-11-21: turn the generated source into the book.
+  - **The typesetter:** Typst [A]: one pinned binary, fast, deterministic, with two columns, boxes, and tables. The spec step compares it with Pandoc and LaTeX, and with HTML and a headless browser (which could share CSS with S09's print pages), and records the choice.
+  - **The theme** (`srd/theme/`): A4 and letter, two columns, chapter and section headings, stat-block and spell boxes, tables that break across pages, a table of contents, running heads, page numbers, and an index of entries [A].
+  - **Fonts:** open fonts only (SIL OFL), kept in the repo or fetched pinned, so the PDF can be shared under CC BY 4.0 [A].
+  - **One command:** `python3 ruleset/scripts/srd_build.py --pdf` runs the generator, then the typesetter, and writes `build/srd/Riftweave_SRD_<version>.pdf`. The container image gets the typesetter.
+- Keys: `srd/theme/`, `--pdf`
+- Files: ~8 (srd/theme/book.typ, srd/theme/blocks.typ, srd/theme/fonts/README.md, ruleset/scripts/srd_build.py, container/Dockerfile, docs/srd/README.md, docs/decisions/OPS_S21_05_srd-typesetting.md, changes/OPS_S21_05_srd-typesetting.md)
+- See: docs/srd/layouts.md, container/
+- Done when: one command writes the PDF; it has a contents page, two-column chapters, and a boxed stat block and spell; the container builds it too.
