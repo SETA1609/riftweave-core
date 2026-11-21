@@ -192,6 +192,8 @@ classDiagram
         integer ap
         object attacker
         object damage
+        boolean disengaged
+        enum event
         List~object~ foes
         loadout loadout
         modifiers modifiers
@@ -200,12 +202,16 @@ classDiagram
         List~key~ situations
         boolean summoning
         List~integer~ targets
+        readyTrigger trigger
     }
     class attack_sequence_result {
         string action
         integer ap
+        boolean fired
+        integer guard_lost
         List~integer~ hp
         integer lost
+        enum reason
         string sequence
         integer stamina
         List~object~ strikes

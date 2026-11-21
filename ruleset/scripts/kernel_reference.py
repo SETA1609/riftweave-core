@@ -743,10 +743,56 @@ def plan_strikes(vector, row, flags, on):
     return strikes, left
 
 
+ACTION_OPPORTUNITY = "opportunity"
+ACTION_READIED = "readied"
+REASON_DISENGAGED = "disengaged"
+REASON_NOT_TRIGGERED = "not_triggered"
+REASON_NOT_ENOUGH_HELD = "not_enough_held"
+OUT_OF_TURN_SUBJECT = {ACTION_OPPORTUNITY: "an opportunity attack", ACTION_READIED: "a readied attack"}
+
+
+def run_out_of_turn(vector):
+    """An opportunity or a readied attack (docs/core/combat.md#attacks-out-of-turn): one attack
+    of the loadout, paid from the AP held (`ap`); with less held than the cost, or when it does not
+    fire, nothing is spent. The guard drops by the cost times guard_per_ap."""
+    action = vector["action"]
+    subject = OUT_OF_TURN_SUBJECT[action]
+    if vector.get("ap") is None:
+        return {"error": f"{subject} needs ap"}
+    if action == ACTION_READIED and not vector.get("trigger"):
+        return {"error": f"{subject} needs trigger"}
+    row = attack_sequence_of(vector["loadout"])
+    if row is None:
+        return {"error": no_sequence_error(vector["loadout"])}
+    cost = row["ap"]
+    if action == ACTION_OPPORTUNITY:
+        modifiers = vector["attacker"].get("modifiers", [])
+        cost = max(0, apply_modifiers(cost, [m for m in modifiers if m["target"] == "opportunity_attack_cost"]))
+    reason = None
+    if action == ACTION_OPPORTUNITY and vector.get("disengaged"):
+        reason = REASON_DISENGAGED
+    elif action == ACTION_READIED and vector.get("event") != vector["trigger"]:
+        reason = REASON_NOT_TRIGGERED
+    elif vector["ap"] < cost:
+        reason = REASON_NOT_ENOUGH_HELD
+    if reason:
+        return {"action": action, "fired": False, "reason": reason, "sequence": row["key"], "ap": 0, "stamina": 0,
+                "guard_lost": 0, "strikes": [], "hp": [foe["hp"] for foe in vector["foes"]], "lost": 0}
+    inner = {key: value for key, value in vector.items() if key not in ("ap", "trigger", "event", "disengaged")}
+    result = run_attack_sequence({**inner, "action": "attack"})
+    if "error" in result:
+        return result
+    actions = load_data("actions/core.json")
+    return {**result, "action": action, "fired": True, "ap": cost, "stamina": cost * actions["stamina_per_ap"],
+            "guard_lost": cost * actions["pool"]["guard_per_ap"]}
+
+
 def run_attack_sequence(vector):
     """One attack action by loadout (docs/core/combat.md#attacks-by-loadout): the loadout's
     strikes, each its own roll through run_combat, against the foes in reach. Rolls are inputs."""
     action = vector["action"]
+    if action in OUT_OF_TURN_SUBJECT:
+        return run_out_of_turn(vector)
     if action not in ("attack", "jab", "full_attack", "circle_cut"):
         return {"error": f'action "{action}" is not defined'}
     row = attack_sequence_of(vector["loadout"])
