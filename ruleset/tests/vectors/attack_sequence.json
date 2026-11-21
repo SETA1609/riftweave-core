@@ -4656,5 +4656,446 @@
       ],
       "lost": 0
     }
+  },
+  {
+    "name": "readied: a foe enters reach, the trigger named, and the readied attack fires from 3 held AP",
+    "action": "readied",
+    "trigger": "enters_reach",
+    "event": "enters_reach",
+    "ap": 3,
+    "loadout": {
+      "main": "one_handed",
+      "off": "empty"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 6
+      }
+    ],
+    "expect": {
+      "action": "readied",
+      "fired": true,
+      "sequence": "one_handed_weapon",
+      "ap": 3,
+      "stamina": 15,
+      "guard_lost": 15,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": 0,
+          "outcome": "hit",
+          "target": 60,
+          "margin": 30,
+          "crit": false,
+          "damage": 4,
+          "hp": 26,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        26
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "readied: the trigger never happens, nothing fires, and the AP stays held",
+    "action": "readied",
+    "trigger": "enters_reach",
+    "event": "none",
+    "ap": 3,
+    "loadout": {
+      "main": "one_handed",
+      "off": "empty"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 6
+      }
+    ],
+    "expect": {
+      "action": "readied",
+      "fired": false,
+      "reason": "not_triggered",
+      "sequence": "one_handed_weapon",
+      "ap": 0,
+      "stamina": 0,
+      "guard_lost": 0,
+      "strikes": [],
+      "hp": [
+        30
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "readied: a foe in reach acting does not fire an attack readied on enters_reach",
+    "action": "readied",
+    "trigger": "enters_reach",
+    "event": "acts_in_reach",
+    "ap": 3,
+    "loadout": {
+      "main": "one_handed",
+      "off": "empty"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 6
+      }
+    ],
+    "expect": {
+      "action": "readied",
+      "fired": false,
+      "reason": "not_triggered",
+      "sequence": "one_handed_weapon",
+      "ap": 0,
+      "stamina": 0,
+      "guard_lost": 0,
+      "strikes": [],
+      "hp": [
+        30
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "opportunity: a foe leaves reach and draws one attack at the loadout's 3 AP from 4 held; the guard drops by 15",
+    "action": "opportunity",
+    "ap": 4,
+    "loadout": {
+      "main": "one_handed",
+      "off": "empty"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 6
+      }
+    ],
+    "expect": {
+      "action": "opportunity",
+      "fired": true,
+      "sequence": "one_handed_weapon",
+      "ap": 3,
+      "stamina": 15,
+      "guard_lost": 15,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": 0,
+          "outcome": "hit",
+          "target": 60,
+          "margin": 30,
+          "crit": false,
+          "damage": 4,
+          "hp": 26,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        26
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "opportunity: Disengage prevents it",
+    "action": "opportunity",
+    "disengaged": true,
+    "ap": 4,
+    "loadout": {
+      "main": "one_handed",
+      "off": "empty"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 6
+      }
+    ],
+    "expect": {
+      "action": "opportunity",
+      "fired": false,
+      "reason": "disengaged",
+      "sequence": "one_handed_weapon",
+      "ap": 0,
+      "stamina": 0,
+      "guard_lost": 0,
+      "strikes": [],
+      "hp": [
+        30
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "opportunity: Phalanx's opportunity_attack_cost -1 makes it 2 AP, paid from 2 held",
+    "action": "opportunity",
+    "ap": 2,
+    "loadout": {
+      "main": "one_handed",
+      "off": "empty"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "opportunity_attack_cost",
+          "operation": "add",
+          "value": -1,
+          "source": "stance:phalanx",
+          "origin": "core:origin/martial"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 6
+      }
+    ],
+    "expect": {
+      "action": "opportunity",
+      "fired": true,
+      "sequence": "one_handed_weapon",
+      "ap": 2,
+      "stamina": 10,
+      "guard_lost": 10,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": 0,
+          "outcome": "hit",
+          "target": 60,
+          "margin": 30,
+          "crit": false,
+          "damage": 4,
+          "hp": 26,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        26
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "opportunity: with 2 held and the attack at 3, there is no attack",
+    "action": "opportunity",
+    "ap": 2,
+    "loadout": {
+      "main": "one_handed",
+      "off": "empty"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 6
+      }
+    ],
+    "expect": {
+      "action": "opportunity",
+      "fired": false,
+      "reason": "not_enough_held",
+      "sequence": "one_handed_weapon",
+      "ap": 0,
+      "stamina": 0,
+      "guard_lost": 0,
+      "strikes": [],
+      "hp": [
+        30
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "error: a readied attack needs its trigger",
+    "action": "readied",
+    "event": "enters_reach",
+    "ap": 3,
+    "loadout": {
+      "main": "one_handed",
+      "off": "empty"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 6
+      }
+    ],
+    "expect": {
+      "error": "a readied attack needs trigger"
+    }
+  },
+  {
+    "name": "error: an attack out of turn needs ap, the AP held",
+    "action": "opportunity",
+    "loadout": {
+      "main": "one_handed",
+      "off": "empty"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 6
+      }
+    ],
+    "expect": {
+      "error": "an opportunity attack needs ap"
+    }
   }
 ]
