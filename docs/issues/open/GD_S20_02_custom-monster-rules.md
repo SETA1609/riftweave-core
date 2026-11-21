@@ -1,8 +1,8 @@
 #### GD_S20_02_custom-monster-rules A custom monster computes like a character, without a player's limits
-- Status: todo
-- Priority: medium
+- Status: review
+- Priority: high
 - Needs: —
-- Modified: 2026-11-20
+- Modified: 2026-11-21
 - Do: Owner request, 2026-11-20: monsters compute like characters, but a GM building a custom monster has no limits.
   - **What already holds:** a monster is an actor of the same shape as a player, and `monster_sheet` computes its derived stats, skills, and perks with the player's formulas (docs/core/actor-sheet.md). Since DE_S02_03, HP is the player formula times the role's share. Attributes may pass 10 at high levels [V 2026-11-20, `test_bestiary.py`]. What is not written down is which of a player's limits a GM's own monster drops, so a custom monster editor has no rule to follow.
   - **The rule:** a section `## A custom monster` in docs/core/actor-sheet.md. A custom monster is a monster row a GM writes: attributes, level, role, skills, perks, attacks, resistances, and the other monster fields.
