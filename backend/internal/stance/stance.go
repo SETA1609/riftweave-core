@@ -6,6 +6,7 @@
 package stance
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"slices"
@@ -22,6 +23,8 @@ type Event struct {
 	MidTurn bool          `json:"mid_turn"`
 	End     bool          `json:"end"`
 	Loadout *data.Loadout `json:"loadout"`
+	// By is the action that paid for a loadout change (draw, sheathe, drop, or swap, GD_S19_03).
+	By *string `json:"by"`
 }
 
 // Input is the `stance` command's input.
@@ -53,6 +56,7 @@ type Result struct {
 func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	var rows *data.Stances = &ruleset.Stances
 	var unlocked []string
+	var perkModifiers []modifier.Modifier
 	for _, ref := range input.Perks {
 		key, isCore := strings.CutPrefix(ref, "core:feature/")
 		var feature *data.Feature
@@ -63,6 +67,15 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 			return Result{}, &data.NotDefinedError{Kind: "feature", Key: ref}
 		}
 		unlocked = append(unlocked, feature.Unlocks...)
+		encoded, err := json.Marshal(feature.EmitAt(1))
+		if err != nil {
+			return Result{}, err
+		}
+		var emitted []modifier.Modifier
+		if err := json.Unmarshal(encoded, &emitted); err != nil {
+			return Result{}, err
+		}
+		perkModifiers = append(perkModifiers, emitted...)
 	}
 	var find func(string) *data.Stance = func(key string) *data.Stance {
 		for index := range rows.Rows {
@@ -116,6 +129,20 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		case event.End:
 			step.Ended, held = held, nil
 		case event.Loadout != nil:
+			if event.By != nil {
+				action, err := ruleset.Actions.Actions.Require("action", *event.By)
+				if err != nil {
+					return Result{}, err
+				}
+				if !action.ChangesLoadout {
+					return Result{}, fmt.Errorf("action %q does not change the loadout", *event.By)
+				}
+				cost, err := modifier.Value(action.Cost, modifier.Target(perkModifiers, *event.By), ruleset.Origins, 0, nil)
+				if err != nil {
+					return Result{}, err
+				}
+				step.AP = max(cost, 0)
+			}
 			loadout = *event.Loadout
 			if held != nil && find(*held).Misfit(loadout) != nil {
 				step.Ended, held = held, nil

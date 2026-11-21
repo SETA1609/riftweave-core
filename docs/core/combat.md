@@ -1,6 +1,6 @@
 # Combat pipeline
 
-Modified: 2026-11-19
+Modified: 2026-11-21
 
 One attack, in order, from the roll to the HP lost. Every step reads the actor snapshot and data; none calls another system ([contract.md](contract.md)). The numbers are in `ruleset/data/combat/pipeline.json` (formula trees), `ruleset/data/combat/damage_types.json` (tags), and `ruleset/data/resolution/core.json` (the d100 function). [`docs/modules/combat.md`](../modules/combat.md) keeps the TTRPG and video-game commentary and the worked examples; this file is the order of operations they share. An attack is a weapon strike or an offensive spell; both run this order, and the attack's `delivery` decides which defense bands it meets. A cast's damage runs steps 2 to 8 with the cast check as its attack roll ([casting.md](casting.md#damage-to-a-target), M3-18). Save rolls for instant spells are in [casting.md](casting.md#delivery-and-saves); the magic layers (absorption, phase resistance) are not specified here. [U]
 
@@ -190,7 +190,8 @@ Owner request, 2026-11-16 (GD_S05_02). A fighting stance is a toggle a perk unlo
 one          at most one fighting stance is active [A]; taking another replaces it
 cost         taking or changing one at the start of the actor's own turn: rules.turn_start_ap (0);
              later in the turn (mid_turn): rules.mid_turn_ap (1) [A]; taking the active one, or ending one, is free
-lasts        until changed or ended; a loadout it no longer fits (a weapon drawn, dropped, or swapped) ends it
+lasts        until changed or ended; a loadout it no longer fits (a weapon drawn, dropped, or swapped) ends it;
+             the event's by names the action that paid (draw 1, sheathe 1, drop 0, swap 1, actions.md#changing-the-loadout)
 loadout      main and off from the loadout vocabulary (any when left out); main_skills and off_skills name the
              weapon's skill (the loadout's main_skill and off_skill) [A]
 modifiers    origin core:origin/martial, source stance:<key>, duration while_applied; validate.py checks all three
