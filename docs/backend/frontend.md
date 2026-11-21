@@ -220,8 +220,9 @@ Every change to `frontend/` follows these (owner, 2026-11-14):
 
 `AppContext` (`src/app/context.ts`, generated with `ng generate service context`) is the one place a
 screen reads the viewer's settings, as signals: `theme` (`light`, `dark`, or `system`) and `locale`
-(an i18next language code, used by APP-24). It starts from the saved choice, else the system's mode
-(`prefers-color-scheme`), and saves each change in `localStorage`, a per-viewer convenience; every
+(an i18next language code, [Languages](#languages)). The mode starts from the saved choice, else the
+system's mode (`prefers-color-scheme`), and the language from the saved one, else the browser's;
+each is saved each change in `localStorage`, a per-viewer convenience; every
 read and write is guarded, so a blocked storage still renders, in the system's mode. No component
 reads `localStorage` or `matchMedia` itself. [V 2026-11-16, `app.spec.ts` and `e2e/app.spec.ts`
 over both transports]
@@ -234,6 +235,41 @@ cycles light, dark, and the system's mode, and its `aria-label` names the mode i
 
 Settings: `exportSettings()` and `importSettings()` trade the settings file with the human CLI
 ([settings.md](settings.md), APP-25).
+
+## Languages
+
+The app's own text is in English, German, and Spanish (FE_S11_01). [V 2026-11-21, `i18n.spec.ts`
+and `e2e/app.spec.ts` over both transports]
+
+- **One source.** `AppContext.locale` holds the language. `I18n` (`src/app/i18n.ts`) is one
+  [i18next](https://www.i18next.com) instance (26.7.2, no Angular wrapper) that follows it, and
+  sets `<html lang>`. A code the app does not offer shows English.
+- **Start language:** the saved one, else the browser's (`navigator.language`, `de-DE` names `de`)
+  if it is offered, else English. The choice is saved like the mode and survives a reload.
+- **Files.** One JSON file per language under `frontend/src/locales/`: `en.json` is the source,
+  then `de.json` and `es.json`. They are bundled with the app, so a static build needs no fetch. A
+  key missing from a language falls back to English. Keys are grouped by screen (`menu.*`,
+  `settings.*`, `network.*`); a menu entry's key is `menu.<key of backend/contract/menu.json>`.
+- **In a template:** `{{ 'menu.back' | t }}`, or `'app.rules' | t: { version: v }` for a key with
+  `{{version}}` in it. The `t` pipe (`src/app/translate-pipe.ts`) is not pure, and the language
+  signal it reads re-renders the view, so a switch changes every string without a reload. In code,
+  `I18n.translate(key, values)` inside a `computed` does the same.
+- **Page titles.** A route's `title` is a key, shown by `TranslatedTitle` in the viewer's language.
+- **The select.** `rw-language-select` (`src/app/ui/language-select`) in the header lists the
+  languages by their own names (English, Deutsch, Español), from `LANGUAGES` in `context.ts`.
+- **Not translated:** ruleset content (spell, perk, and monster labels and descriptions) is data
+  and shows as the data writes it; localizing content is its own issue. Numbers show as the core
+  returns them. The settings file's rule messages are the Go CLI's words, shared with it
+  ([settings.md](settings.md)). [A]
+- **Checked by tests.** `i18n.spec.ts` fails when a key of `en.json` is missing from another
+  language (or a language has a key `en.json` lacks), when a menu entry has no key, and when a
+  template shows a literal word or a written-out `label`, `title`, `message`, `placeholder`,
+  `aria-label`, or `alt`. The game's name is the one word allowed. The screens
+  `FE_S11_04_frontend-screen-strings` still moves to keys are listed in the spec's `PENDING`.
+
+**Who reviews a language** (owner decision, 2026-11-15): the owner reviews German and Spanish. Any
+contributor may add a language, or change one other than those two, in a pull request that adds
+only its locale file and its entry in `LANGUAGES`; the missing-key test checks it.
 
 ## Not covered
 
