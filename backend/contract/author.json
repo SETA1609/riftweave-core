@@ -1,7 +1,7 @@
 {
   "$schema": "./command.schema.json",
   "name": "author",
-  "summary": "Author content rows: check a draft spell as validate.py would, give the spellcraft cost, load a spell to edit, and export a core or module data file.",
+  "summary": "Author content rows: check a draft spell as validate.py would, give the spellcraft cost, load a spell to edit, list the effects a color may use, and export a core or module data file.",
   "documentation": "docs/backend/authoring.md",
   "input_schema": {
     "type": "object",
@@ -16,9 +16,10 @@
         "type": "string",
         "enum": [
           "check",
-          "load"
+          "load",
+          "effects"
         ],
-        "description": "check (the default) a list of drafts, or load one spell by key."
+        "description": "check (the default) a list of drafts, load one spell by key, or list the effects a spell of a color may use."
       },
       "spells": {
         "type": "array",
@@ -31,6 +32,10 @@
       "spell": {
         "$ref": "common.json#/definitions/key",
         "description": "load: the spell to load."
+      },
+      "color": {
+        "type": "string",
+        "description": "effects: the spell's color; the pool is the effects on that color or on none that list the spell channel (BE_S09_01)."
       },
       "export": {
         "type": "object",
@@ -177,6 +182,26 @@
             "problems",
             "warnings",
             "cost"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "effects": {
+        "type": "array",
+        "description": "effects: the pool, in file order, each with its row as effects/core.json writes it.",
+        "items": {
+          "type": "object",
+          "properties": {
+            "ref": {
+              "$ref": "common.json#/definitions/ref"
+            },
+            "row": {
+              "type": "object"
+            }
+          },
+          "required": [
+            "ref",
+            "row"
           ],
           "additionalProperties": false
         }

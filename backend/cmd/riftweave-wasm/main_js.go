@@ -4,37 +4,19 @@ package main
 
 import (
 	"embed"
-	"io/fs"
 	"syscall/js"
 
 	"github.com/SETA1609/riftweave-core/backend/core"
 )
 
-// ruleset is a copy of ruleset/data and ruleset/modules that scripts/build-wasm.sh makes before
-// the build, so the core and its data come from one commit.
+// ruleset is a copy of ruleset/data, ruleset/modules, and ruleset/schemas that
+// scripts/build-wasm.sh makes before the build, so the core, its data, and the schemas the author
+// command checks against come from one commit.
 //
 //go:embed all:ruleset
 var ruleset embed.FS
 
-func open() (*core.Core, error) {
-	data, err := fs.Sub(ruleset, "ruleset/data")
-	if err != nil {
-		return nil, err
-	}
-	var modules []fs.FS
-	entries, _ := fs.ReadDir(ruleset, "ruleset/modules")
-	for _, entry := range entries {
-		var directory string = "ruleset/modules/" + entry.Name()
-		if _, statError := fs.Stat(ruleset, directory+"/manifest.json"); entry.IsDir() && statError == nil {
-			module, err := fs.Sub(ruleset, directory)
-			if err != nil {
-				return nil, err
-			}
-			modules = append(modules, module)
-		}
-	}
-	return core.New(data, modules...)
-}
+func open() (*core.Core, error) { return openRuleset(ruleset) }
 
 // main opens the ruleset, sets globalThis.riftweave = { run }, tells the page through
 // globalThis.riftweaveReady(error or null), and then waits: the Go program must keep running for

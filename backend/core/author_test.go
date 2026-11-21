@@ -224,7 +224,7 @@ func TestTheEffectPoolOfAColorIsItsEffectsAndTheColorlessOnesOnTheSpellChannel(t
 	}
 	for input, want := range map[string]string{`{"kind":"spell","operation":"effects","color":"plaid"}`: `color "plaid" is not defined`, `{"kind":"spell","operation":"effects"}`: "author effects needs color"} {
 		out, err := opened.Run("author", []byte(input))
-		if err == nil || !strings.Contains(string(out), want) {
+		if err == nil || !strings.Contains(err.Error(), want) {
 			t.Errorf("%s: %v %s, want %q", input, err, out, want)
 		}
 	}
