@@ -280,7 +280,13 @@ def run_actions(vector):
         for key in vector.get("actions", [])
     )
     # One cost on two clocks: a real-time client pays AP times stamina_per_ap (docs/core/actions.md).
-    return {"pool": pool, "cost": cost, "stamina": cost * data["stamina_per_ap"]}
+    result = {"pool": pool, "cost": cost, "stamina": cost * data["stamina_per_ap"]}
+    if "speed" in vector:
+        # How far a move goes (docs/core/actions.md#how-far-a-move-goes): each action with a
+        # speed_divisor covers floor(speed / speed_divisor) squares; modifiers change only its AP.
+        divisors = {action["key"]: action["speed_divisor"] for action in data["actions"] if "speed_divisor" in action}
+        result["squares"] = sum(vector["speed"] // divisors[key] for key in vector.get("actions", []) if key in divisors)
+    return result
 
 
 def run_rest(vector):

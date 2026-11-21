@@ -166,5 +166,173 @@
       "cost": 4,
       "stamina": 20
     }
+  },
+  {
+    "name": "speed 5: one move covers 2 squares",
+    "actor": {
+      "attributes": {
+        "agi": 6
+      }
+    },
+    "speed": 5,
+    "actions": [
+      "move"
+    ],
+    "expect": {
+      "pool": 4,
+      "cost": 1,
+      "squares": 2
+    }
+  },
+  {
+    "name": "speed 6: one move covers 3 squares",
+    "actor": {
+      "attributes": {
+        "agi": 6
+      }
+    },
+    "speed": 6,
+    "actions": [
+      "move"
+    ],
+    "expect": {
+      "pool": 4,
+      "cost": 1,
+      "squares": 3
+    }
+  },
+  {
+    "name": "speed 7: one move covers 3 squares",
+    "actor": {
+      "attributes": {
+        "agi": 6
+      }
+    },
+    "speed": 7,
+    "actions": [
+      "move"
+    ],
+    "expect": {
+      "pool": 4,
+      "cost": 1,
+      "squares": 3
+    }
+  },
+  {
+    "name": "speed 6: a pool of 4 spent on moving covers 12 squares",
+    "actor": {
+      "attributes": {
+        "agi": 6
+      }
+    },
+    "speed": 6,
+    "actions": [
+      "move",
+      "move",
+      "move",
+      "move"
+    ],
+    "expect": {
+      "pool": 4,
+      "cost": 4,
+      "squares": 12
+    }
+  },
+  {
+    "name": "speed 5 encumbered: a move costs 2 AP and still covers 2 squares",
+    "actor": {
+      "attributes": {
+        "agi": 6
+      }
+    },
+    "speed": 5,
+    "actions": [
+      "move"
+    ],
+    "modifiers": [
+      {
+        "target": "move",
+        "operation": "add",
+        "value": 1,
+        "source": "core:armor/plate",
+        "origin": "core:origin/equipment"
+      }
+    ],
+    "expect": {
+      "pool": 4,
+      "cost": 2,
+      "squares": 2
+    }
+  },
+  {
+    "name": "speed 6 encumbered: two moves cost 4 AP and cover 6 squares",
+    "actor": {
+      "attributes": {
+        "agi": 6
+      }
+    },
+    "speed": 6,
+    "actions": [
+      "move",
+      "move"
+    ],
+    "modifiers": [
+      {
+        "target": "move",
+        "operation": "add",
+        "value": 1,
+        "source": "core:armor/plate",
+        "origin": "core:origin/equipment"
+      }
+    ],
+    "expect": {
+      "pool": 4,
+      "cost": 4,
+      "squares": 6
+    }
+  },
+  {
+    "name": "speed 7 encumbered: a move costs 2 AP and covers 3 squares",
+    "actor": {
+      "attributes": {
+        "agi": 6
+      }
+    },
+    "speed": 7,
+    "actions": [
+      "move"
+    ],
+    "modifiers": [
+      {
+        "target": "move",
+        "operation": "add",
+        "value": 1,
+        "source": "core:armor/plate",
+        "origin": "core:origin/equipment"
+      }
+    ],
+    "expect": {
+      "pool": 4,
+      "cost": 2,
+      "squares": 3
+    }
+  },
+  {
+    "name": "speed 6: an attack covers no squares",
+    "actor": {
+      "attributes": {
+        "agi": 6
+      }
+    },
+    "speed": 6,
+    "actions": [
+      "attack",
+      "move"
+    ],
+    "expect": {
+      "pool": 4,
+      "cost": 4,
+      "squares": 3
+    }
   }
 ]

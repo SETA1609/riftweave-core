@@ -92,6 +92,8 @@ type DerivedStat struct {
 type Action struct {
 	Key  string `json:"key"`
 	Cost int64  `json:"cost"`
+	// SpeedDivisor, when set, makes one of the action cover floor(speed / SpeedDivisor) squares (GD_S19_02).
+	SpeedDivisor int64 `json:"speed_divisor"`
 }
 
 // ActionPool is the action point pool formula's coefficients.

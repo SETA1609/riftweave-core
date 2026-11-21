@@ -1,6 +1,6 @@
 # Combat
 
-Modified: 2026-11-20
+Modified: 2026-11-21
 
 Commentary on the combat rules: what they are for, how they fit together, and worked examples. It holds no rule of its own. Every rule here is owned by a file in `docs/core/`, has its numbers in `ruleset/data/`, and is pinned by a vector in `ruleset/tests/vectors/`. **If this file and `docs/core/` disagree, `docs/core/` wins** and this file is the bug.
 
@@ -32,7 +32,7 @@ A turn spends action points. The pool is `2 + floor(AGI / 3)`, unspent points ca
 | jab | by loadout, 2 or 3: the off-hand weapon alone |
 | full attack | every AP left, at least the attack + 1 |
 | cast | 3 (plus the spell's mana) |
-| move | 1 per move |
+| move | 1 per move; it covers floor(speed / 2) squares ([actions.md](../core/actions.md#how-far-a-move-goes)) |
 | disengage | 1 |
 | dodge | 3 |
 | item | 2 |

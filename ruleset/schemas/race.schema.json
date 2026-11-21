@@ -58,7 +58,7 @@
         "speed": {
           "type": "integer",
           "minimum": 1,
-          "description": "Walking speed in units (grid squares) per round (docs/core/contract.md#distance)"
+          "description": "Walking speed: one move action covers floor(speed / speed_divisor) squares, speed_divisor from the move row of actions/core.json (docs/core/actions.md#how-far-a-move-goes, docs/core/contract.md#distance)"
         },
         "size": {
           "type": "string",

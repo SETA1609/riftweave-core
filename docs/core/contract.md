@@ -81,12 +81,12 @@ cast(actor, spell):
 ## Distance
 
 Every distance in the data and the docs is in **units**. One unit is one square of a grid.
-Walking speed (`speed`, units per round), weapon range (`range_normal`, `range_long`), melee
+Walking speed (`speed`, the squares a `move` covers times two, [actions.md](actions.md#how-far-a-move-goes)), weapon range (`range_normal`, `range_long`), melee
 reach (`attack_reach`), area radius (`radius`), and distances in descriptions (darkvision,
 falls, rope) all count squares. No definition is meant to use feet or metres; the exceptions left are listed in
 [data-model.md](data-model.md#known-exceptions). [V 2026-11-11]
 
-For tabletop play a square is 1.5 m by 1.5 m: a human walks 6 units (9 m) a round, and a
+For tabletop play a square is 1.5 m by 1.5 m: a human's move covers 3 units (4.5 m), and a
 longbow reaches 30 units (45 m) at normal range. That conversion is for reading aloud only;
 nothing stores it. [A]
 

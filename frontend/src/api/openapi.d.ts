@@ -937,6 +937,8 @@ export interface operations {
                     actions?: components["schemas"]["key"][];
                     actor: components["schemas"]["actor"];
                     modifiers?: components["schemas"]["modifiers"];
+                    /** @description The race's speed. With it the result gives the squares the actions cover. */
+                    speed?: number;
                 };
             };
         };
@@ -950,6 +952,8 @@ export interface operations {
                     "application/json": {
                         cost: number;
                         pool: number;
+                        /** @description Given a speed: the squares the actions cover, floor(speed / speed_divisor) per move (docs/core/actions.md#how-far-a-move-goes). */
+                        squares?: number;
                         /** @description The cost in stamina for a real-time client: AP times stamina_per_ap. */
                         stamina?: number;
                     };

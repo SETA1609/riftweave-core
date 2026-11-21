@@ -152,10 +152,12 @@ classDiagram
         List~key~ actions
         actor actor
         modifiers modifiers
+        integer speed
     }
     class actions_result {
         integer cost
         integer pool
+        integer squares
         integer stamina
     }
     class actor

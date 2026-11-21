@@ -40,6 +40,7 @@
         "refund_if_unused": { "type": "boolean" },
         "adds_to": { "type": "string" },
         "by_loadout": { "type": "boolean", "description": "The cost is the loadout's, from attack_sequences/core.json (docs/core/combat.md#attacks-by-loadout); `cost` is the cost with one one-handed weapon, for a caller that knows no loadout." },
+        "speed_divisor": { "type": "integer", "minimum": 1, "description": "One of this action covers floor(speed / speed_divisor) squares, from the race's speed (docs/core/actions.md#how-far-a-move-goes). Modifiers on the action change its AP, not its squares." },
         "spends_all": { "type": "boolean", "description": "The action spends every AP left, at least `cost` (with a loadout, the loadout's attack AP plus full_attack.min_extra_ap)." }
       },
       "required": ["key", "cost"],

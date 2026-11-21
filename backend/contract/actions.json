@@ -17,6 +17,11 @@
       },
       "modifiers": {
         "$ref": "common.json#/definitions/modifiers"
+      },
+      "speed": {
+        "type": "integer",
+        "minimum": 0,
+        "description": "The race's speed. With it the result gives the squares the actions cover."
       }
     },
     "additionalProperties": false,
@@ -36,6 +41,10 @@
       "stamina": {
         "type": "integer",
         "description": "The cost in stamina for a real-time client: AP times stamina_per_ap."
+      },
+      "squares": {
+        "type": "integer",
+        "description": "Given a speed: the squares the actions cover, floor(speed / speed_divisor) per move (docs/core/actions.md#how-far-a-move-goes)."
       }
     },
     "additionalProperties": false,

@@ -17,7 +17,7 @@
     { "key": "full_attack", "cost": 4, "by_loadout": true, "spends_all": true },
     { "key": "circle_cut", "cost": 4, "by_loadout": true, "spends_all": true },
     { "key": "cast", "cost": 3 },
-    { "key": "move", "cost": 1 },
+    { "key": "move", "cost": 1, "speed_divisor": 2 },
     { "key": "disengage", "cost": 1 },
     { "key": "dodge", "cost": 3 },
     { "key": "item", "cost": 2 },
