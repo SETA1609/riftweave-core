@@ -53,6 +53,24 @@ type Roll struct {
 	Damage int64 `json:"damage"`
 }
 
+// The actions out of turn (docs/core/combat.md#attacks-out-of-turn), and why one did not fire.
+const (
+	ActionOpportunity = "opportunity"
+	ActionReadied     = "readied"
+	// actionAttack is the action an attack out of turn runs: the loadout's attack.
+	actionAttack = "attack"
+
+	ReasonDisengaged    = "disengaged"
+	ReasonNotTriggered  = "not_triggered"
+	ReasonNotEnoughHeld = "not_enough_held"
+
+	// opportunityCost is the modifier target that changes an opportunity attack's AP (Phalanx).
+	opportunityCost = "opportunity_attack_cost"
+)
+
+// outOfTurnSubject names each action out of turn in a refusal.
+var outOfTurnSubject = map[string]string{ActionOpportunity: "an opportunity attack", ActionReadied: "a readied attack"}
+
 // Input is the `attack_sequence` command's input.
 type Input struct {
 	Action    string              `json:"action"`
@@ -72,6 +90,11 @@ type Input struct {
 	AfterParry bool `json:"after_parry"`
 	// AfterBlock is Boss Strike's last tier: the attacker just blocked a hit in their band.
 	AfterBlock bool `json:"after_block"`
+	// Trigger is what a readied attack waits for, and Event what happened (enters_reach,
+	// acts_in_reach, or none); Disengaged is a foe that left reach with Disengage (GD_S19_04).
+	Trigger    string `json:"trigger"`
+	Event      string `json:"event"`
+	Disengaged bool   `json:"disengaged"`
 }
 
 // StrikeResult is one strike made.
@@ -111,6 +134,67 @@ type Result struct {
 	Strikes  []StrikeResult `json:"strikes"`
 	HP       []int64        `json:"hp"`
 	Lost     int64          `json:"lost"`
+	// Fired, Reason, and GuardLost are an attack out of turn's: whether it fired, why not, and
+	// the guard the AP it spent took. Left out on an attack on the actor's own turn.
+	Fired     *bool  `json:"fired,omitempty"`
+	Reason    string `json:"reason,omitempty"`
+	GuardLost *int64 `json:"guard_lost,omitempty"`
+}
+
+// runOutOfTurn is an opportunity or a readied attack: one attack of the loadout, paid from the AP
+// held (`ap`). With less held than the cost, or when it does not fire, nothing is spent.
+func runOutOfTurn(ruleset *data.Ruleset, input Input) (Result, error) {
+	var subject string = outOfTurnSubject[input.Action]
+	if input.AP == nil {
+		return Result{}, &data.MissingInputError{Subject: subject, Needs: "ap"}
+	}
+	if input.Action == ActionReadied && input.Trigger == "" {
+		return Result{}, &data.MissingInputError{Subject: subject, Needs: "trigger"}
+	}
+	var row *data.AttackSequence = ruleset.AttackSequences.Covering(input.Loadout.Main, input.Loadout.Off)
+	if row == nil {
+		return Result{}, &data.NoSequenceError{Loadout: input.Loadout}
+	}
+	var cost int64 = row.AP
+	if input.Action == ActionOpportunity {
+		changed, err := modifier.Value(cost, modifier.Target(input.Attacker.Modifiers, opportunityCost), ruleset.Origins, 0, nil)
+		if err != nil {
+			return Result{}, err
+		}
+		cost = max(0, changed)
+	}
+	var reason string
+	switch {
+	case input.Action == ActionOpportunity && input.Disengaged:
+		reason = ReasonDisengaged
+	case input.Action == ActionReadied && input.Event != input.Trigger:
+		reason = ReasonNotTriggered
+	case *input.AP < cost:
+		reason = ReasonNotEnoughHeld
+	}
+	if reason != "" {
+		var hp []int64 = make([]int64, len(input.Foes))
+		for index, encoded := range input.Foes {
+			var foe combat.Defender
+			if err := json.Unmarshal(encoded, &foe); err != nil {
+				return Result{}, fmt.Errorf("foe %d: %w", index, err)
+			}
+			hp[index] = foe.HitPoints
+		}
+		var fired bool
+		var none int64
+		return Result{Action: input.Action, Sequence: row.Key, Strikes: []StrikeResult{}, HP: hp, Fired: &fired, Reason: reason, GuardLost: &none}, nil
+	}
+	var inner Input = input
+	inner.Action, inner.AP, inner.Trigger, inner.Event, inner.Disengaged = actionAttack, nil, "", "", false
+	result, err := Run(ruleset, inner)
+	if err != nil {
+		return Result{}, err
+	}
+	var fired bool = true
+	var guardLost int64 = cost * ruleset.Actions.Pool.GuardPerAP
+	result.Action, result.AP, result.Stamina, result.Fired, result.GuardLost = input.Action, cost, cost*ruleset.StaminaPerAP, &fired, &guardLost
+	return result, nil
 }
 
 type planned struct {
@@ -218,6 +302,8 @@ func either(mains []string) string {
 // Run is the `attack_sequence` command.
 func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	switch input.Action {
+	case ActionOpportunity, ActionReadied:
+		return runOutOfTurn(ruleset, input)
 	case "attack", "jab", "full_attack", "circle_cut":
 	default:
 		return Result{}, &data.NotDefinedError{Kind: "action", Key: input.Action}
