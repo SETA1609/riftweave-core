@@ -1,5 +1,6 @@
 #### BE_S07_08_character-creation-command Character creation as one command that checks a draft step by step (backend)
-- Status: review
+- Status: done
+- Merged: #426, 2026-11-21
 - Priority: medium
 - Needs: GD_S07_07_creation-rules-as-data
 - Modified: 2026-11-21
