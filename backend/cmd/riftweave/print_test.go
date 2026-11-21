@@ -37,7 +37,7 @@ func TestPlayPrintsASavedCharacter(t *testing.T) {
 		t.Fatal(err)
 	}
 	var model tea.Model = play.NewWith(opened.Run, play.Options{Characters: &library})
-	model = press(model, "down", "enter", "enter", syncedFixture, "enter", "up")
+	model = press(model, "down", "enter", "enter", syncedFixture, "enter")
 	var directory string = t.TempDir()
 	var current string = filepath.Join(directory, "mira.html")
 	model = press(model, "w", "clear", current, "enter")

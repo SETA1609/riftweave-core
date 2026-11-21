@@ -23,7 +23,7 @@ SESSIONS = ROOT / "docs" / "backend" / "sessions.md"
 SESSION_GO = ROOT / "backend" / "core" / "session.go"
 PAGE = ROOT / "docs" / "backend" / "contract-diagram.md"
 # The page's Modified line (M5-53): bump it with the contract change that changes the page.
-MODIFIED = "2026-11-18"
+MODIFIED = "2026-11-21"
 SHARED = "common.json"
 
 
