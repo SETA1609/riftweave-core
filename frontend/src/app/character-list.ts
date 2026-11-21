@@ -3,7 +3,7 @@
 // An import follows the sync rule; a lower revision is refused and a diverged one asks, in the page.
 import { Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { Characters, type ImportReport, type SavedCharacter } from './characters';
+import { AUTHOR, Characters, OUTCOME, SIDE, type ImportReport, type SavedCharacter, type Side } from './characters';
 import { download } from './files';
 import { Alert } from './ui/alert';
 import { Card } from './ui/card';
@@ -16,6 +16,9 @@ import { Card } from './ui/card';
 })
 export class CharacterList {
   readonly characters = inject(Characters);
+  /** For the template: the sides a divergence keeps, and who changed a character. */
+  readonly side = SIDE;
+  readonly author = AUTHOR;
   readonly error = signal('');
   readonly notice = signal('');
   /** A diverged import waiting for the person to keep one side, and the file it came from. */
@@ -58,28 +61,28 @@ export class CharacterList {
   }
 
   /** Keep one side of a divergence; the other is dropped, never merged. */
-  async keep(side: 'saved' | 'incoming'): Promise<void> {
+  async keep(side: Side): Promise<void> {
     const pending = this.diverged();
     if (pending !== null) {
       await this.read('', pending.text, side);
     }
   }
 
-  private async read(name: string, text: string, keep?: 'saved' | 'incoming'): Promise<void> {
+  private async read(name: string, text: string, keep?: Side): Promise<void> {
     await this.run(async () => {
       const report = await this.characters.import(text, { keep });
-      this.diverged.set(report.outcome === 'diverged' ? { report, text } : null);
+      this.diverged.set(report.outcome === OUTCOME.Diverged ? { report, text } : null);
       const said: Record<string, string> = {
-        added: `Added ${report.character.name}, revision ${report.character.revision}.`,
-        replaced: `Replaced ${report.character.name} with revision ${report.character.revision}.`,
-        unchanged: `${report.character.name} is already saved at revision ${report.character.revision}; nothing changed.`,
-        kept: `Kept the saved ${report.character.name}.`,
+        [OUTCOME.Added]: `Added ${report.character.name}, revision ${report.character.revision}.`,
+        [OUTCOME.Replaced]: `Replaced ${report.character.name} with revision ${report.character.revision}.`,
+        [OUTCOME.Unchanged]: `${report.character.name} is already saved at revision ${report.character.revision}; nothing changed.`,
+        [OUTCOME.Kept]: `Kept the saved ${report.character.name}.`,
       };
       switch (report.outcome) {
-        case 'refused':
+        case OUTCOME.Refused:
           this.error.set(report.note ?? '');
           break;
-        case 'diverged':
+        case OUTCOME.Diverged:
           this.notice.set(report.note ?? '');
           break;
         default:

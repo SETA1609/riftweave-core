@@ -5,18 +5,33 @@
 import { InjectionToken, Service, inject, signal } from '@angular/core';
 import { API, type StoredActor } from './api';
 import { AppContext } from './context';
-import { type FileModule, type RiftweaveFile, encodeFile, makeFile, missingModules, moduleAlert, parseFile, rulesWarning } from './files';
+import { type FileKind, type FileModule, type RiftweaveFile, encodeFile, makeFile, missingModules, moduleAlert, parseFile, rulesWarning } from './files';
 import { MODULE_VERSIONS } from './settings-screens';
 
 /** The rules this build ships (angular.json `define`). */
 declare const RIFTWEAVE_RULES_VERSION: string;
+
+/** Who made a character's last change (common.json#/definitions/character, changed_by). */
+export const AUTHOR = { Gm: 'gm', Player: 'player' } as const;
+export type Author = (typeof AUTHOR)[keyof typeof AUTHOR];
+
+/** The side a divergence keeps (the CLI's --keep). */
+export const SIDE = { Saved: 'saved', Incoming: 'incoming' } as const;
+export type Side = (typeof SIDE)[keyof typeof SIDE];
+
+/** The outcomes of an import (docs/backend/files.md#the-sync-rule), as the CLI reports them. */
+export const OUTCOME = { Added: 'added', Replaced: 'replaced', Unchanged: 'unchanged', Kept: 'kept', Refused: 'refused', Diverged: 'diverged' } as const;
+export type Outcome = (typeof OUTCOME)[keyof typeof OUTCOME];
+
+/** The file kind a character travels in. */
+const CHARACTER: FileKind = 'character';
 
 /** A character file's sync fields (common.json#/definitions/character). */
 export interface CharacterSync {
   id: string;
   name: string;
   revision: number;
-  changed_by: 'gm' | 'player';
+  changed_by: Author;
   changed_at: string;
 }
 
@@ -27,8 +42,6 @@ export interface SavedCharacter {
   rules_version: string;
   modules: FileModule[];
 }
-
-export type Outcome = 'added' | 'replaced' | 'unchanged' | 'kept' | 'refused' | 'diverged';
 
 /** What an import did. A refused or diverged import changes nothing; a diverged one holds both sides. */
 export interface ImportReport {
@@ -43,8 +56,8 @@ export interface ImportReport {
 /** The choices an import takes, as the CLI's flags: --name, --as, --keep, --accept-loss. */
 export interface ImportOptions {
   name?: string;
-  changedBy?: 'gm' | 'player';
-  keep?: 'saved' | 'incoming';
+  changedBy?: Author;
+  keep?: Side;
   acceptLoss?: boolean;
 }
 
@@ -69,7 +82,7 @@ type SyncState = (typeof SYNC)[keyof typeof SYNC];
 
 /** Whether two sides hold the same character: the same name and actor. Who and when are not content. */
 function sameContent(left: SavedCharacter, right: SavedCharacter): boolean {
-  return left.character.name === right.character.name && encodeFile(makeFile('character', left.data, '')) === encodeFile(makeFile('character', right.data, ''));
+  return left.character.name === right.character.name && encodeFile(makeFile(CHARACTER, left.data, '')) === encodeFile(makeFile(CHARACTER, right.data, ''));
 }
 
 function request<T>(call: IDBRequest<T>): Promise<T> {
@@ -156,7 +169,7 @@ export class Characters {
   async export(id: string): Promise<{ name: string; text: string }> {
     await this.load();
     const saved = this.find(id);
-    const file: RiftweaveFile & { character: CharacterSync } = { ...makeFile('character', saved.data, saved.rules_version, saved.modules), character: saved.character };
+    const file: RiftweaveFile & { character: CharacterSync } = { ...makeFile(CHARACTER, saved.data, saved.rules_version, saved.modules), character: saved.character };
     return { name: characterFileName(saved.character), text: encodeFile(file) };
   }
 
@@ -166,7 +179,7 @@ export class Characters {
     if ('error' in parsed) throw new Error(parsed.error);
     if ('settings' in parsed) throw new Error('a settings file is not a character');
     const file = parsed.file as RiftweaveFile & { character?: CharacterSync };
-    if (file.riftweave !== 'character') throw new Error(`a ${file.riftweave} file is not a character`);
+    if (file.riftweave !== CHARACTER) throw new Error(`a ${file.riftweave} file is not a character`);
     await this.api.checkActor(file.data as StoredActor);
     const missing = missingModules(file, this.enabled());
     if (missing.length > 0 && !options.acceptLoss) throw new Error(moduleAlert(missing));
@@ -181,44 +194,44 @@ export class Characters {
         id: crypto.randomUUID(),
         name: options.name?.trim() || 'Unnamed character',
         revision: 1,
-        changed_by: options.changedBy ?? 'player',
+        changed_by: options.changedBy ?? AUTHOR.Player,
         changed_at: this.now(),
       };
       await this.put({ character, data: file.data as StoredActor, rules_version: file.rules_version, modules: file.modules });
-      return { outcome: 'added', character, warnings };
+      return { outcome: OUTCOME.Added, character, warnings };
     }
     const incoming: SavedCharacter = { character: file.character, data: file.data as StoredActor, rules_version: file.rules_version, modules: file.modules };
     const found = this.list().find((entry) => entry.character.id === incoming.character.id);
     if (found === undefined) {
-      return this.keepIncoming(incoming, 'added', warnings);
+      return this.keepIncoming(incoming, OUTCOME.Added, warnings);
     }
     const saved: SavedCharacter = found;
     let state = (Math.sign(incoming.character.revision - saved.character.revision) + 1) as SyncState;
     if (state === SYNC.SameRevision) state = sameContent(saved, incoming) ? SYNC.Unchanged : SYNC.Diverged;
     switch (state) {
       case SYNC.Newer:
-        return this.keepIncoming(incoming, 'replaced', warnings);
+        return this.keepIncoming(incoming, OUTCOME.Replaced, warnings);
       case SYNC.Older:
-        return { outcome: 'refused', character: saved.character, warnings,
+        return { outcome: OUTCOME.Refused, character: saved.character, warnings,
           note: `revision ${incoming.character.revision} is older than the saved revision ${saved.character.revision}; nothing changed` };
       case SYNC.Unchanged:
-        return { outcome: 'unchanged', character: saved.character, warnings };
+        return { outcome: OUTCOME.Unchanged, character: saved.character, warnings };
       default:
         // A divergence: the person keeps one side, or is asked. Never merged.
         switch (options.keep) {
-          case 'incoming':
-            return this.keepIncoming(incoming, 'replaced', warnings);
-          case 'saved':
-            return { outcome: 'kept', character: saved.character, warnings };
+          case SIDE.Incoming:
+            return this.keepIncoming(incoming, OUTCOME.Replaced, warnings);
+          case SIDE.Saved:
+            return { outcome: OUTCOME.Kept, character: saved.character, warnings };
           default:
-            return { outcome: 'diverged', character: saved.character, warnings, saved, incoming,
+            return { outcome: OUTCOME.Diverged, character: saved.character, warnings, saved, incoming,
               note: `both sides changed revision ${saved.character.revision}; keep the saved or the incoming one` };
         }
     }
   }
 
   /** A copy under a new id, as a new character at revision 1. */
-  async duplicate(id: string, changedBy: 'gm' | 'player' = 'player'): Promise<CharacterSync> {
+  async duplicate(id: string, changedBy: Author = AUTHOR.Player): Promise<CharacterSync> {
     await this.load();
     const saved = this.find(id);
     const character: CharacterSync = { id: crypto.randomUUID(), name: `${saved.character.name} (copy)`, revision: 1, changed_by: changedBy, changed_at: this.now() };

@@ -11,7 +11,7 @@
             <td>{{ saved.character.name }}</td>
             <td>{{ level(saved) }}</td>
             <td>revision {{ saved.character.revision }}</td>
-            <td>{{ saved.character.changed_at | date: 'medium' }} by the {{ saved.character.changed_by === 'gm' ? 'GM' : 'player' }}</td>
+            <td>{{ saved.character.changed_at | date: 'medium' }} by the {{ saved.character.changed_by === author.Gm ? 'GM' : 'player' }}</td>
             <td class="actions">
               <button type="button" class="btn btn-outline btn-sm" (click)="exportFile(saved)">Export</button>
               <button type="button" class="btn btn-outline btn-sm" (click)="duplicate(saved)">Duplicate</button>
@@ -29,12 +29,12 @@
   <rw-alert kind="info" [message]="notice()" />
   @if (diverged(); as pending) {
     <div class="sides">
-      <div><h3>Saved</h3><p>{{ pending.report.saved?.character?.name }}, revision {{ pending.report.saved?.character?.revision }}, changed by the {{ pending.report.saved?.character?.changed_by === 'gm' ? 'GM' : 'player' }}</p></div>
-      <div><h3>Incoming</h3><p>{{ pending.report.incoming?.character?.name }}, revision {{ pending.report.incoming?.character?.revision }}, changed by the {{ pending.report.incoming?.character?.changed_by === 'gm' ? 'GM' : 'player' }}</p></div>
+      <div><h3>Saved</h3><p>{{ pending.report.saved?.character?.name }}, revision {{ pending.report.saved?.character?.revision }}, changed by the {{ pending.report.saved?.character?.changed_by === author.Gm ? 'GM' : 'player' }}</p></div>
+      <div><h3>Incoming</h3><p>{{ pending.report.incoming?.character?.name }}, revision {{ pending.report.incoming?.character?.revision }}, changed by the {{ pending.report.incoming?.character?.changed_by === author.Gm ? 'GM' : 'player' }}</p></div>
     </div>
     <div class="actions">
-      <button type="button" class="btn btn-outline" (click)="keep('saved')">Keep the saved one</button>
-      <button type="button" class="btn btn-primary" (click)="keep('incoming')">Keep the incoming one</button>
+      <button type="button" class="btn btn-outline" (click)="keep(side.Saved)">Keep the saved one</button>
+      <button type="button" class="btn btn-primary" (click)="keep(side.Incoming)">Keep the incoming one</button>
     </div>
   }
 </rw-card>
