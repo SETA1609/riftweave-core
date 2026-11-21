@@ -26,9 +26,20 @@ type authorExport struct {
 	Module string `json:"module"`
 }
 
+// The author operations (docs/backend/authoring.md#input-and-result).
+const (
+	authorCheck   = "check"
+	authorLoad    = "load"
+	authorEffects = "effects"
+)
+
+// spellChannel is the channel an effect lists to be used in a spell.
+const spellChannel = "spell"
+
 type authorInput struct {
 	Kind      string            `json:"kind"`
 	Operation string            `json:"operation"`
+	Color     string            `json:"color"`
 	Spells    []json.RawMessage `json:"spells"`
 	Spell     string            `json:"spell"`
 	Export    *authorExport     `json:"export"`
@@ -62,10 +73,17 @@ type authorResultExport struct {
 	Refs     []string       `json:"refs"`
 }
 
+// poolEffect is one effect a spell of a color may use, with its row as effects/core.json writes it.
+type poolEffect struct {
+	Ref string          `json:"ref"`
+	Row json.RawMessage `json:"row"`
+}
+
 type authorResult struct {
-	Spells []authoredSpell     `json:"spells,omitempty"`
-	Export *authorResultExport `json:"export,omitempty"`
-	Row    json.RawMessage     `json:"row,omitempty"`
+	Spells  []authoredSpell     `json:"spells,omitempty"`
+	Effects []poolEffect        `json:"effects,omitempty"`
+	Export  *authorResultExport `json:"export,omitempty"`
+	Row     json.RawMessage     `json:"row,omitempty"`
 }
 
 func init() { commands["author"] = bind(runAuthor) }
@@ -75,10 +93,13 @@ func runAuthor(ruleset *data.Ruleset, input authorInput) (authorResult, error) {
 		return authorResult{}, &data.NotDefinedError{Kind: "author kind", Key: input.Kind}
 	}
 	switch input.Operation {
-	case "load":
+	case authorLoad:
 		row, err := loadSpellRow(ruleset, input.Spell)
 		return authorResult{Row: row}, err
-	case "", "check":
+	case authorEffects:
+		effects, err := effectPool(ruleset, input.Color)
+		return authorResult{Effects: effects}, err
+	case "", authorCheck:
 	default:
 		return authorResult{}, &data.NotDefinedError{Kind: "author operation", Key: input.Operation}
 	}
@@ -121,6 +142,39 @@ func loadSpellRow(ruleset *data.Ruleset, key string) (json.RawMessage, error) {
 		}
 	}
 	return nil, &data.NotDefinedError{Kind: "spell", Key: key}
+}
+
+// effectPool is the effects a spell of the color may use, in file order: those on the color or on
+// none (docs/modules/magic.md#the-core-spell-list) that list the spell channel. A color is one a
+// <color>_magic skill governs.
+func effectPool(ruleset *data.Ruleset, color string) ([]poolEffect, error) {
+	if color == "" {
+		return nil, &data.MissingInputError{Subject: "author effects", Needs: "color"}
+	}
+	if _, governed := ruleset.Skills.Get(color + "_magic"); !governed {
+		return nil, &data.NotDefinedError{Kind: "color", Key: color}
+	}
+	content, err := fs.ReadFile(ruleset.Files, "effects/core.json")
+	if err != nil {
+		return nil, err
+	}
+	var file struct{ Effects []json.RawMessage }
+	if err := json.Unmarshal(content, &file); err != nil {
+		return nil, err
+	}
+	var pool []poolEffect = []poolEffect{}
+	for _, row := range file.Effects {
+		var effect struct {
+			Key      string   `json:"key"`
+			Color    string   `json:"color"`
+			Channels []string `json:"channels"`
+		}
+		if json.Unmarshal(row, &effect) != nil || !slices.Contains(effect.Channels, spellChannel) || (effect.Color != "" && effect.Color != color) {
+			continue
+		}
+		pool = append(pool, poolEffect{Ref: "core:effect/" + effect.Key, Row: row})
+	}
+	return pool, nil
 }
 
 // schemaBase is the $id of ruleset/schemas/schema.json, so relative $refs between the schema
