@@ -74,9 +74,10 @@ export function characterFileName(character: CharacterSync): string {
   return `${slug || 'character'}-${character.id.slice(0, 8)}.riftweave.json`;
 }
 
-/** The states of an import with sync fields, as small integers so the decision is one `switch` that
- * V8 compiles to a jump table: the order of the revisions (older, same, newer) is
- * `Math.sign(incoming - saved) + 1`, and a same revision splits on the content. */
+/** The states of an import with sync fields, as small integers read by one `switch`: the order of
+ * the revisions (older, same, newer) is `Math.sign(incoming - saved) + 1`, and a same revision
+ * splits on the content. With three cases V8 compiles compare-jumps; a jump table needs 5 or more
+ * number-literal cases (docs/theory/dispatch.md#typescript-in-v8). */
 const SYNC = { Older: 0, SameRevision: 1, Newer: 2, New: 3, Unchanged: 4, Diverged: 5 } as const;
 type SyncState = (typeof SYNC)[keyof typeof SYNC];
 
