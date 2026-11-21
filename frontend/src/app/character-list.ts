@@ -75,9 +75,16 @@ export class CharacterList {
         unchanged: `${report.character.name} is already saved at revision ${report.character.revision}; nothing changed.`,
         kept: `Kept the saved ${report.character.name}.`,
       };
-      if (report.outcome === 'refused') this.error.set(report.note ?? '');
-      else if (report.outcome === 'diverged') this.notice.set(report.note ?? '');
-      else this.notice.set([said[report.outcome], ...report.warnings].join(' '));
+      switch (report.outcome) {
+        case 'refused':
+          this.error.set(report.note ?? '');
+          break;
+        case 'diverged':
+          this.notice.set(report.note ?? '');
+          break;
+        default:
+          this.notice.set([said[report.outcome], ...report.warnings].join(' '));
+      }
     }, name);
   }
 

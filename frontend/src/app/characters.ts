@@ -61,6 +61,12 @@ export function characterFileName(character: CharacterSync): string {
   return `${slug || 'character'}-${character.id.slice(0, 8)}.riftweave.json`;
 }
 
+/** The states of an import with sync fields, as small integers so the decision is one `switch` that
+ * V8 compiles to a jump table: the order of the revisions (older, same, newer) is
+ * `Math.sign(incoming - saved) + 1`, and a same revision splits on the content. */
+const SYNC = { Older: 0, SameRevision: 1, Newer: 2, New: 3, Unchanged: 4, Diverged: 5 } as const;
+type SyncState = (typeof SYNC)[keyof typeof SYNC];
+
 /** Whether two sides hold the same character: the same name and actor. Who and when are not content. */
 function sameContent(left: SavedCharacter, right: SavedCharacter): boolean {
   return left.character.name === right.character.name && encodeFile(makeFile('character', left.data, '')) === encodeFile(makeFile('character', right.data, ''));
@@ -182,27 +188,33 @@ export class Characters {
       return { outcome: 'added', character, warnings };
     }
     const incoming: SavedCharacter = { character: file.character, data: file.data as StoredActor, rules_version: file.rules_version, modules: file.modules };
-    const saved = this.list().find((entry) => entry.character.id === incoming.character.id);
-    let outcome: Outcome;
-    if (saved === undefined) {
-      outcome = 'added';
-    } else if (incoming.character.revision > saved.character.revision) {
-      outcome = 'replaced';
-    } else if (incoming.character.revision < saved.character.revision) {
-      return { outcome: 'refused', character: saved.character, warnings,
-        note: `revision ${incoming.character.revision} is older than the saved revision ${saved.character.revision}; nothing changed` };
-    } else if (sameContent(saved, incoming)) {
-      return { outcome: 'unchanged', character: saved.character, warnings };
-    } else if (options.keep === 'incoming') {
-      outcome = 'replaced';
-    } else if (options.keep === 'saved') {
-      return { outcome: 'kept', character: saved.character, warnings };
-    } else {
-      return { outcome: 'diverged', character: saved.character, warnings, saved, incoming,
-        note: `both sides changed revision ${saved.character.revision}; keep the saved or the incoming one` };
+    const found = this.list().find((entry) => entry.character.id === incoming.character.id);
+    if (found === undefined) {
+      return this.keepIncoming(incoming, 'added', warnings);
     }
-    await this.put(incoming);
-    return { outcome, character: incoming.character, warnings };
+    const saved: SavedCharacter = found;
+    let state = (Math.sign(incoming.character.revision - saved.character.revision) + 1) as SyncState;
+    if (state === SYNC.SameRevision) state = sameContent(saved, incoming) ? SYNC.Unchanged : SYNC.Diverged;
+    switch (state) {
+      case SYNC.Newer:
+        return this.keepIncoming(incoming, 'replaced', warnings);
+      case SYNC.Older:
+        return { outcome: 'refused', character: saved.character, warnings,
+          note: `revision ${incoming.character.revision} is older than the saved revision ${saved.character.revision}; nothing changed` };
+      case SYNC.Unchanged:
+        return { outcome: 'unchanged', character: saved.character, warnings };
+      default:
+        // A divergence: the person keeps one side, or is asked. Never merged.
+        switch (options.keep) {
+          case 'incoming':
+            return this.keepIncoming(incoming, 'replaced', warnings);
+          case 'saved':
+            return { outcome: 'kept', character: saved.character, warnings };
+          default:
+            return { outcome: 'diverged', character: saved.character, warnings, saved, incoming,
+              note: `both sides changed revision ${saved.character.revision}; keep the saved or the incoming one` };
+        }
+    }
   }
 
   /** A copy under a new id, as a new character at revision 1. */
@@ -222,6 +234,12 @@ export class Characters {
   /** The modules enabled here, with their versions, for a file this app writes. */
   modules(): FileModule[] {
     return MODULE_VERSIONS.filter((module) => this.enabled().includes(module.id));
+  }
+
+  /** Save the incoming side and report the outcome. */
+  private async keepIncoming(incoming: SavedCharacter, outcome: Outcome, warnings: string[]): Promise<ImportReport> {
+    await this.put(incoming);
+    return { outcome, character: incoming.character, warnings };
   }
 
   private async put(saved: SavedCharacter): Promise<void> {
