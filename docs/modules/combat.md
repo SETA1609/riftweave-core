@@ -43,10 +43,11 @@ There is no bonus action and no reaction slot. An attack strikes with everything
 
 ## 2. Opportunity attacks
 
-Leaving an enemy's reach without disengaging provokes one attack from that enemy, resolved as an ordinary attack ([combat.md](../core/combat.md)). Reach weapons (`attack_reach` 2) threaten 2 units, others 1.
+Leaving an enemy's reach without disengaging provokes one attack from that enemy, resolved as an ordinary attack of its loadout. Reach weapons (`attack_reach` 2) threaten 2 units, others 1. The rule is [combat.md#attacks-out-of-turn](../core/combat.md#attacks-out-of-turn) (GD_S19_04).
 
-- The attack costs the loadout's attack AP (2 to 5) from the attacker's carried pool. An attacker with fewer than that cost carried does not get it. **[A]** The exact cost, and the rest of the rule, stay open for `GD_S19_04`, which will put opportunity attacks in the pipeline. This replaces the old "reaction" for it; it is also logged in [`docs/decisions/M1-01.md`](../decisions/M1-01.md).
+- The attack costs the loadout's attack AP (2 to 5), paid from the AP the attacker **held** at the end of its turn, not from its next pool; with less held than that, there is no attack. Phalanx lowers the cost by 1. This replaces the flat 3 AP from the carried pool this section used to name, which predated the loadout costs, and the old "reaction" ([`docs/decisions/M1-01.md`](../decisions/M1-01.md)).
 - Disengage (1 AP) prevents it. Perks may add other triggers (casting in reach, standing up, drinking a potion). **[A]**
+- **Ready** is the same attack on a trigger you name: a foe entering your reach, or a foe in reach acting. A spearman who holds a doorway readies on `enters_reach` and strikes the first foe through it.
 
 ## 3. Defense
 
