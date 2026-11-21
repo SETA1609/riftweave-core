@@ -309,7 +309,7 @@ describe('the settings screens', () => {
     const { fixture, element, context } = screen('network');
     element.querySelectorAll<HTMLInputElement>('input[type="radio"]')[1].click();
     await fixture.whenStable();
-    expect(element.textContent).toContain('set the server URL first');
+    expect(element.textContent).toContain('Set the server URL first.');
     expect(context.networkMode()).toBe('local');
     fixture.componentInstance.url.set('http://127.0.0.1:8080');
     fixture.componentInstance.useServer();

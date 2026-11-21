@@ -3,6 +3,7 @@
 // disabled card with its issue id, as the CLI dims it.
 import { Component, computed, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { TranslatePipe } from '../translate-pipe';
 import tree from '../../../../backend/contract/menu.json';
 
 export type MenuEntry = { readonly key: string; readonly parent: string; readonly label: string; readonly issue?: string; readonly apps?: readonly string[] };
@@ -25,7 +26,7 @@ export function titleOf(key: string): string {
 
 @Component({
   selector: 'rw-menu-grid',
-  imports: [RouterLink],
+  imports: [RouterLink, TranslatePipe],
   templateUrl: './menu-grid.html',
   styleUrl: './menu-grid.css',
 })
@@ -34,5 +35,7 @@ export class MenuGrid {
   readonly parent = input('main');
   readonly entries = computed(() => MENU.filter((entry) => entry.parent === this.parent()).map((entry) => ({ ...entry, path: pathOf(entry.key) })));
   readonly title = computed(() => titleOf(this.parent()));
+  /** The menu's name as a locale key; the main menu is the game's name, which is not translated. */
+  readonly titleKey = computed(() => (this.parent() === 'main' ? titleOf('main') : `menu.${this.parent()}`));
   readonly back = computed(() => (this.parent() === 'main' ? null : pathOf(MENU.find((entry) => entry.key === this.parent())?.parent ?? 'main')));
 }

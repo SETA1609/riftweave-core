@@ -1,5 +1,6 @@
 // The routes (docs/backend/app-layout.md): the menus of backend/contract/menu.json, each a menu grid,
-// and one route per screen. A route's data sets the component's inputs.
+// and one route per screen. A route's data sets the component's inputs; its title is a locale key
+// (TranslatedTitle in i18n.ts), except the game's name.
 import type { Routes } from '@angular/router';
 import { Attack } from './attack';
 import { CharacterList } from './character-list';
@@ -13,17 +14,17 @@ import { MenuGrid } from './ui/menu-grid';
 
 export const routes: Routes = [
   { path: '', component: MenuGrid, data: { parent: 'main' }, title: 'Riftweave' },
-  { path: 'characters', component: CharacterList, title: 'Characters' },
-  { path: 'settings', component: SettingsScreens, data: { section: 'settings' }, title: 'Settings' },
-  { path: 'modules', component: SettingsScreens, data: { section: 'modules' }, title: 'Modules' },
-  { path: 'network', component: SettingsScreens, data: { section: 'network' }, title: 'Network' },
-  { path: 'import', component: FileImport, title: 'Import' },
-  { path: 'play', component: MenuGrid, data: { parent: 'start' }, title: 'Start' },
-  { path: 'play/gm_tools', component: MenuGrid, data: { parent: 'gm_tools' }, title: 'GM tools' },
-  { path: 'play/character_creation', component: Sheet, title: 'Character creation' },
-  { path: 'play/skill_resolution', component: Resolution, title: 'Skill resolution' },
-  { path: 'play/saved_games', component: SavedGames, title: 'Saved games' },
-  { path: 'play/attack', component: Attack, title: 'Resolve an attack' },
-  { path: 'play/playthrough', component: Playthrough, title: 'Playthrough' },
+  { path: 'characters', component: CharacterList, title: 'menu.characters' },
+  { path: 'settings', component: SettingsScreens, data: { section: 'settings' }, title: 'menu.settings' },
+  { path: 'modules', component: SettingsScreens, data: { section: 'modules' }, title: 'menu.modules' },
+  { path: 'network', component: SettingsScreens, data: { section: 'network' }, title: 'menu.network' },
+  { path: 'import', component: FileImport, title: 'menu.import' },
+  { path: 'play', component: MenuGrid, data: { parent: 'start' }, title: 'menu.start' },
+  { path: 'play/gm_tools', component: MenuGrid, data: { parent: 'gm_tools' }, title: 'menu.gm_tools' },
+  { path: 'play/character_creation', component: Sheet, title: 'menu.character_creation' },
+  { path: 'play/skill_resolution', component: Resolution, title: 'menu.skill_resolution' },
+  { path: 'play/saved_games', component: SavedGames, title: 'menu.saved_games' },
+  { path: 'play/attack', component: Attack, title: 'menu.attack' },
+  { path: 'play/playthrough', component: Playthrough, title: 'menu.playthrough' },
   { path: '**', redirectTo: '' },
 ];
