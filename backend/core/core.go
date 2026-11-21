@@ -20,6 +20,7 @@ import (
 	"github.com/SETA1609/riftweave-core/backend/internal/actor"
 	"github.com/SETA1609/riftweave-core/backend/internal/attack"
 	"github.com/SETA1609/riftweave-core/backend/internal/casting"
+	"github.com/SETA1609/riftweave-core/backend/internal/catalog"
 	"github.com/SETA1609/riftweave-core/backend/internal/combat"
 	"github.com/SETA1609/riftweave-core/backend/internal/commandsummons"
 	"github.com/SETA1609/riftweave-core/backend/internal/condition"
@@ -115,6 +116,7 @@ var commands map[string]commandHandler = map[string]commandHandler{
 	"casting":         bind(casting.Run),
 	"spellcraft":      bind(spellcraft.Run),
 	"progression":     bind(progression.Run),
+	"catalog":         bind(catalog.Run),
 }
 
 // Core is an opened ruleset.
