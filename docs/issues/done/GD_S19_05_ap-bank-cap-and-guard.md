@@ -1,5 +1,6 @@
 #### GD_S19_05_ap-bank-cap-and-guard Carry a little AP, and turn the rest into guard
-- Status: review
+- Status: done
+- Merged: #429, 2026-11-21
 - Priority: medium
 - Needs: —
 - Modified: 2026-11-21
