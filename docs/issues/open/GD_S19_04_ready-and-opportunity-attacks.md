@@ -1,8 +1,8 @@
 #### GD_S19_04_ready-and-opportunity-attacks Ready an attack on reserved AP, and opportunity attacks in the pipeline
-- Status: todo
+- Status: review
 - Priority: medium-high
 - Needs: GD_S19_02_movement-distance-per-ap, GD_S19_05_ap-bank-cap-and-guard
-- Modified: 2026-11-19
+- Modified: 2026-11-21
 - Do: Owner request, 2026-11-19 (borrowed from Fallout Tactics' overwatch).
   - **What we have:** no reaction slot, and only a stance, dodge or block, can be declared on your turn [V 2026-11-19, `docs/core/actions.md`]. Block already reserves AP and refunds it if unused (`reserved`, `refund_if_unused` in `actions/core.json`).
   - **Ready (new):** a `ready` action reserves the loadout's attack AP on your turn, with a trigger: a foe enters your reach, or a foe in reach acts. The attack fires as an `attack_sequence` attack when the trigger first happens before your next turn, and the AP comes back at your next turn if it never fires. One readied attack at a time; it ends when you move or are knocked down [A].
