@@ -1,6 +1,6 @@
 # Monsters — Base + Override System
 
-Modified: 2026-11-19
+Modified: 2026-11-21
 
 ## Purpose
 
@@ -453,6 +453,10 @@ The current data shape is intentionally compatible with a future composition sys
 To migrate, the merge logic would stay the same — only the container shape changes.
 
 ## Validating
+
+A GM's own monster, written outside the data, follows [actor-sheet.md](../core/actor-sheet.md#a-custom-monster):
+no point-buy, attribute maximum, or perk prerequisite, and the same references and slots as a
+core row.
 
 Run `python ruleset/scripts/validate.py` as usual. The validator:
 
