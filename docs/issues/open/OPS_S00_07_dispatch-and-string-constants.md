@@ -1,0 +1,13 @@
+#### OPS_S00_07_dispatch-and-string-constants Dispatch by switch or table, and named constants for meaningful strings
+- Status: review
+- Priority: low
+- Needs: —
+- Modified: 2026-11-21
+- Do: Owner request, 2026-11-21: code in the pull requests of S19 and S07 picked between branches with long `if`/`else if` chains and repeated the same strings (steps, operations, outcomes). Write the rule once, for people and agents:
+  - **Dispatch:** a choice on one value is a `switch` (Go, TypeScript) or a dict (Python), and a state machine is a small integer state read from a table, each as the language compiles it fastest; a chain of different conditions (guards, validation) stays `if`.
+  - **String literals:** a string that means something to the code (an operation, a step, an outcome, a role, a category) is a named constant: typed constants in Go, module constants in Python, an `as const` object with its derived type in TypeScript. JSON field names a schema or the contract defines, messages, and display text stay as text.
+  - **Where:** the rules in AGENTS.md; why, with the compilers' own sources, in a theory page.
+- Keys: none
+- Files: ~5 (AGENTS.md, docs/theory/dispatch.md, docs/stories/S00-process-and-conventions.md, docs/decisions/OPS_S00_07_dispatch-and-string-constants.md, changes/OPS_S00_07_dispatch-and-string-constants.md)
+- See: docs/theory/webassembly.md (the theory page format), AGENTS.md
+- Done when: AGENTS.md states both rules and links the theory page; the theory page quotes the Go compiler, the Python docs, the TypeScript handbook, and V8 from pinned copies.

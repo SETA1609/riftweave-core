@@ -184,6 +184,22 @@ See `docs/modules/README.md` for the philosophy and current state.
    - Accessory base template files use a `_base` suffix (e.g. `ring_base.json`) to distinguish them from their entries, while weapon and armor bases do not. New base templates should always specify `default_materials`, `enchantment_slots`, and `phase`.
    - **Leather** and **Studded Leather** are materials, not base armor types. They apply to bases like `padded`, `brigandine`, or generic armor bases via the `material` field in overrides.
 
+## Code: dispatch and string literals
+
+Why, with the compilers' own sources: [docs/theory/dispatch.md](docs/theory/dispatch.md).
+
+- **Dispatch on one value is a `switch` or a table, never an `if`/`else if` chain over that value.** Pick the form the language makes fastest:
+  - **Go:** `switch` on the value. From 8 dense integer or string cases the compiler emits a jump table (amd64, arm64), below that a binary search. A `switch {}` on conditions compiles as a chain, so do not use it to dispatch. A fixed set of cases is not a `map`; a map is for keys from data.
+  - **Python:** a dict from the value to a function or a result, built once at module level (`OPERATIONS[operation](vector)`). `match` and `if`/`elif` try each case in turn.
+  - **TypeScript:** `switch`. V8 builds a jump table only for 5 or more compact number-literal cases; a fixed mapping from a string to a value is a lookup on an `as const` object.
+  - **State machines:** the state is a small integer (a typed `uint8` in Go, a number in TypeScript), a table indexed by it says what the state holds, and a `switch` on it runs the step.
+  - A chain of different conditions (guards, validation, early returns) stays `if`.
+- **A string that means something to the code is a named constant**, not a literal repeated where it is compared: an operation, a step, an outcome, a role, a category, a kind.
+  - **Go:** a named string type and constants (`type Step string`, `const StepRace Step = "race"`); build JSON from typed structs, not `map[string]any` with string keys.
+  - **Python:** module constants (`STEP_RACE = "race"`), and the tuples and dicts built from them.
+  - **TypeScript:** an `as const` object with its type derived from it (`export const OUTCOME = { Added: 'added' } as const; type Outcome = (typeof OUTCOME)[keyof typeof OUTCOME]`), not an `enum` or a `const enum`; a template reads it through a component property.
+  - **Stays text:** JSON field names a schema or the command contract defines (Go struct tags, result keys), messages, and words shown to a person.
+
 ## Frontend
 
 Changes to `frontend/` follow the conventions in [docs/backend/frontend.md](docs/backend/frontend.md#conventions): Angular 22, signals before RxJS, standalone components split into `.ts`, `.html`, and `.css`, Bootstrap's look in our own CSS, small reusable components, Vitest for unit tests, and Playwright for end-to-end tests.
@@ -211,6 +227,7 @@ AI is welcome as a tool, and a human always reviews before committing ([AI rules
 - `ROADMAP.md`, `docs/stories/`, and `docs/issues/` — scope, milestones, and the issues to work on
 - `CONTRIBUTING.md` — contribution process and rules for changes
 - `docs/core/data-model.md` — the shape of the data; `docs/theory/data-models.md` — why
+- `docs/theory/dispatch.md` — why dispatch is a switch or a table and meaningful strings are constants
 - `docs/core/` — kernel rules; `docs/modules/` — core systems in detail and modules (start here before adding new mechanics)
 - `ruleset/schemas/schema.json` — shared definitions
 - `ruleset/scripts/validate.py` — the validator implementation (read if debugging resolution issues)
