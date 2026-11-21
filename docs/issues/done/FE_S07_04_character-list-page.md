@@ -1,5 +1,6 @@
 #### FE_S07_04_character-list-page A character list, and characters travel between players and the GM as files (frontend)
-- Status: review
+- Status: done
+- Merged: #425, 2026-11-21
 - Priority: medium
 - Needs: BE_S07_03_character-list-cli, APP-30
 - Was: APP-33
