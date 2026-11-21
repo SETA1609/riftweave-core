@@ -93,7 +93,7 @@
     {"key": "sneak_attack_crit", "label": "Sneak Attack Crit", "kind": "flag", "description": "The actor's sneak attacks always crit.", "pending": true},
     {"key": "sneak_attack_damage", "label": "Sneak Attack Damage", "kind": "number", "description": "Multiplier on sneak attack damage: 1.25 is 25% more, 0.5 is half.", "pending": true},
     {"key": "social_defense", "label": "Social Defense", "kind": "number", "description": "Points on the actor's side of a social check made against it.", "pending": true},
-    {"key": "speed", "label": "Speed", "kind": "number", "description": "Added to the actor's speed; each move covers floor(speed / 2) squares (docs/core/actions.md#how-far-a-move-goes).", "pending": true},
+    {"key": "speed", "label": "Speed", "kind": "number", "description": "Added to the actor's speed; each move covers floor(speed / the move action's speed_divisor) squares (docs/core/actions.md#how-far-a-move-goes).", "pending": true},
     {"key": "spell_absorption_chance", "label": "Spell Absorption Chance", "kind": "number", "description": "Percent chance that a hostile spell's damage becomes the actor's mana instead.", "pending": true},
     {"key": "spell_cost", "label": "Spell Cost", "kind": "number", "description": "Multiplier on the mana a spell costs the actor; below 1 is cheaper (docs/core/casting.md#paid-cost)."},
     {"key": "staggered_immune", "label": "Unstaggerable", "kind": "flag", "description": "The actor cannot be staggered.", "pending": true},
