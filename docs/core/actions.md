@@ -29,7 +29,7 @@ next pool  = min(pool + carry, cap)
 ```
 
 - **Guard.** While held, each AP gives +5 on `evasion`. A careful turn guards you; dodge (3 AP, double evasion) stays the stronger, deliberate choice.
-- **Spend it.** Held AP may pay an opportunity attack or a readied attack (`GD_S19_04_ready-and-opportunity-attacks`) at the loadout's attack cost. The guard drops by what you spend: 4 held, 3 spent, +5 guard and 1 to carry.
+- **Spend it.** Held AP pays an opportunity attack or a readied attack at the loadout's attack cost ([combat.md](combat.md#attacks-out-of-turn)). The guard drops by what you spend: 4 held, 3 spent, +5 guard and 1 to carry. With less held than the cost, there is no attack.
 - **Carry.** At the start of your next turn at most 2 of what is still held join the new pool; the rest is gone. Two quiet turns no longer bank two casts. Divinity: Original Sin 2 keeps the maximum near what a turn recovers (recover 4, maximum 6); a pool of 4 here peaks at 6.
 
 The `actions` command takes `carried` (at most `carry`) and `held_spent` (at most what is held) and returns `available`, `held`, `guard`, `carry`, and `next_pool`. [V 2026-11-21, `actions` vectors for pools 3, 4, and 5 in Python and Go]
@@ -61,6 +61,7 @@ disengage 1
 dodge 3
 item 2
 block 2, reserved, refund if unused
+ready the attack's cost, by loadout, held for a trigger: enters_reach or acts_in_reach
 command 2, an order to summons (commanding.md)
 aimed +2 on the attack cost
 draw 1, sheathe 1, drop 0, swap 1 (changing the loadout)
@@ -73,6 +74,8 @@ A perk changes a cost with `add` on the action's key: the Sidestep perk emits `a
 A cast costs AP by the spell's level and also spends its mana ([cast AP by level](#cast-ap-by-level)). A perk that wants a cheaper cast emits `add` on `cast`. It does not edit the spell.
 
 Dodge and block are stances, declared on your turn and in force until your next ([combat.md](combat.md#reading-the-steps)). A fighting stance a perk unlocks is another thing, a way of holding the weapons: it costs nothing at the start of your turn, 1 AP later in it, and stands together with dodge or block ([combat.md](combat.md#fighting-stances)). Dodge spends 3 and doubles your evasion rate. Block is a hold on this pool, not a reaction slot: declare it, spend 2, and the unused 2 comes back if nobody swings; while it holds, a block band of half your `shields` skill stops physical hits. Aimed is not a second attack. It adds 2 to the attack cost.
+
+Ready is the attack held for later: on your turn you name a trigger (a foe enters your reach, or a foe in reach acts) and keep the loadout's attack AP held. The attack fires when the trigger first happens before your next turn, paid from that held AP; if it never fires, the AP is still held, guards, and carries like any held AP ([combat.md](combat.md#attacks-out-of-turn)). [A]
 
 Dash is not an action. Double move is spending 1 AP twice.
 
