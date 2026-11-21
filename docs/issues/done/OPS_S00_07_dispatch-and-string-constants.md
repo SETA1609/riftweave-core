@@ -1,5 +1,6 @@
 #### OPS_S00_07_dispatch-and-string-constants Dispatch by switch or table, and named constants for meaningful strings
-- Status: review
+- Status: done
+- Merged: #432, 2026-11-21
 - Priority: low
 - Needs: —
 - Modified: 2026-11-21
