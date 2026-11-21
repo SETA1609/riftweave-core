@@ -1,5 +1,6 @@
 #### GD_S19_03_swap-draw-costs Drawing, sheathing, and swapping a loadout cost AP
-- Status: review
+- Status: done
+- Merged: #428, 2026-11-21
 - Priority: medium-high
 - Needs: GD_S05_02_fighting-stances
 - Modified: 2026-11-21
