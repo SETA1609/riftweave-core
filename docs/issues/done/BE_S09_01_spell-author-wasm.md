@@ -1,5 +1,6 @@
 #### BE_S09_01_spell-author-wasm A spell editor page over the author command (backend)
-- Status: review
+- Status: done
+- Merged: #436, 2026-11-22
 - Priority: high
 - Needs: APP-10, APP-14
 - Was: APP-22, split by role on 2026-11-18: this is the backend half (the contract, the Go core, the vectors, and the CLI and TUI with their UX); the browser half is `FE_S09_02_spell-editor-page`
