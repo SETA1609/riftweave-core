@@ -41,9 +41,21 @@ type printMonster struct {
 	Attacks    []printAttack      `json:"attacks"`
 }
 
+// SheetState is which character a sheet prints (BE_S09_03): the session's state now, or the same
+// character fresh for a new table.
+type SheetState string
+
+const (
+	// SheetCurrent prints the resources spent, the conditions, and the held modifiers.
+	SheetCurrent SheetState = "current"
+	// SheetFresh prints full HP, mana, and stamina, and no condition or held modifier.
+	SheetFresh SheetState = "fresh"
+)
+
 type printInput struct {
 	Kind      string        `json:"kind"`
 	Actor     *stored.Actor `json:"actor"`
+	State     SheetState    `json:"state"`
 	Spell     string        `json:"spell"`
 	Condition string        `json:"condition"`
 	Label     string        `json:"label"`
@@ -82,7 +94,7 @@ func runPrint(ruleset *data.Ruleset, input printInput) (printResult, error) {
 	var err error
 	switch input.Kind {
 	case "sheet":
-		title, sections, err = printSheet(ruleset, input.Actor)
+		title, sections, err = printSheet(ruleset, input.Actor, input.State)
 	case "spell":
 		title, sections, err = printSpell(ruleset, input.Spell)
 	case "monster":
@@ -135,12 +147,26 @@ func attributeRows(attributes map[string]int64) []row {
 	return rows
 }
 
-func printSheet(ruleset *data.Ruleset, actor *stored.Actor) (string, []pageSection, error) {
+func printSheet(ruleset *data.Ruleset, actor *stored.Actor, state SheetState) (string, []pageSection, error) {
 	if actor == nil {
 		return "", nil, &data.MissingInputError{Subject: "print sheet", Needs: "actor"}
 	}
-	modifiers := actorModifiers(ruleset, actor)
-	stats, err := run(ruleset, "derived", map[string]any{"actor": characterOf(actor), "modifiers": modifiers})
+	var fresh bool
+	switch state {
+	case "", SheetCurrent:
+	case SheetFresh:
+		fresh = true
+	default:
+		return "", nil, &data.NotDefinedError{Kind: "print state", Key: string(state)}
+	}
+	// A fresh sheet is the same character with nothing held: its perks stay, its conditions and
+	// held modifiers go, and its resources are full.
+	var sheet stored.Actor = *actor
+	if fresh {
+		sheet.Conditions, sheet.Modifiers = nil, nil
+	}
+	modifiers := actorModifiers(ruleset, &sheet)
+	stats, err := run(ruleset, "derived", map[string]any{"actor": characterOf(&sheet), "modifiers": modifiers})
 	if err != nil {
 		return "", nil, err
 	}
@@ -148,9 +174,18 @@ func printSheet(ruleset *data.Ruleset, actor *stored.Actor) (string, []pageSecti
 	for _, stat := range ruleset.Derived.Rows() {
 		derived = append(derived, row{Label: stat.Key, Attribute: "stat", Name: stat.Key, Value: stats[stat.Key]})
 	}
+	var resources = map[string]any{"hp": sheet.Resources.HitPoints, "mp": sheet.Resources.ManaPoints, "sp": sheet.Resources.Stamina}
+	var current []row
+	for _, pool := range []string{"hp", "mp", "sp"} {
+		var value any = resources[pool]
+		if fresh {
+			value = stats[pool]
+		}
+		current = append(current, row{Label: pool, Attribute: "current", Name: pool, Value: value})
+	}
 	var skills []row
-	for _, key := range sortedKeys(actor.Skills) {
-		value, err := readSkillValue(ruleset, actor, key)
+	for _, key := range sortedKeys(sheet.Skills) {
+		value, err := readSkillValue(ruleset, &sheet, key)
 		if err != nil {
 			return "", nil, err
 		}
@@ -161,18 +196,61 @@ func printSheet(ruleset *data.Ruleset, actor *stored.Actor) (string, []pageSecti
 		skills = append(skills, row{Label: key, Attribute: "target", Name: key, Value: target["value"]})
 	}
 	var perks []row
-	for _, key := range sortedKeys(actor.Perks) {
-		perks = append(perks, row{Label: key, Attribute: "perk", Name: key, Value: actor.Perks[key]})
+	for _, key := range sortedKeys(sheet.Perks) {
+		perks = append(perks, row{Label: key, Attribute: "perk", Name: key, Value: sheet.Perks[key]})
 	}
-	var spells []string = append([]string{}, actor.Spells...)
+	var spells []string = append([]string{}, sheet.Spells...)
 	sort.Strings(spells)
-	return fmt.Sprintf("Character, level %d", actor.Level), []pageSection{
-		{Heading: "Attributes", Rows: attributeRows(actor.Attributes)},
+	var sections = []pageSection{
+		{Heading: "Attributes", Rows: attributeRows(sheet.Attributes)},
 		{Heading: "Derived", Rows: derived},
+		{Heading: "Now: HP, mana, and stamina left", Rows: current},
 		{Heading: "Skills: roll d100 at or under the target", Rows: skills},
 		{Heading: "Perks (rank)", Rows: perks},
 		{Heading: "Spells known", Notes: spells},
-	}, nil
+	}
+	if gear := gearRows(ruleset, &sheet); len(gear) > 0 {
+		sections = append(sections, pageSection{Heading: "Gear (quantity)", Rows: gear})
+	}
+	if len(sheet.Conditions) > 0 {
+		var conditions []row
+		for _, held := range sheet.Conditions {
+			conditions = append(conditions, row{Label: held.Key, Attribute: "condition", Name: held.Key, Value: held.Stacks})
+		}
+		sections = append(sections, pageSection{Heading: "Conditions (stacks)", Rows: conditions})
+	}
+	if len(sheet.Modifiers) > 0 {
+		var held []string
+		for _, active := range sheet.Modifiers {
+			held = append(held, fmt.Sprintf("%s %s %v (%s), %d turns so far", active.Modifier.Target, active.Modifier.Operation, active.Modifier.Value, active.Modifier.Source, active.TurnsElapsed))
+		}
+		sections = append(sections, pageSection{Heading: "Held modifiers", Notes: held})
+	}
+	return fmt.Sprintf("Character, level %d", sheet.Level), sections, nil
+}
+
+// gearRows are the actor's items with their quantity, each by its label, its material, and the
+// slot it is worn in.
+func gearRows(ruleset *data.Ruleset, actor *stored.Actor) []row {
+	var slotOf map[int64]string = map[int64]string{}
+	for _, slot := range sortedKeys(actor.Equipped) {
+		slotOf[actor.Equipped[slot]] = slot
+	}
+	var rows []row
+	for _, item := range actor.Inventory {
+		var label string = item.Base
+		if known, ok := ruleset.Items[item.Base]; ok && known.Label != "" {
+			label = known.Label
+		}
+		if item.Material != "" {
+			label += ", " + item.Material[strings.LastIndex(item.Material, "/")+1:]
+		}
+		if slot, worn := slotOf[item.ID]; worn {
+			label += " (" + slot + ")"
+		}
+		rows = append(rows, row{Label: label, Attribute: "item", Name: item.Base, Value: item.Quantity})
+	}
+	return rows
 }
 
 func printSpell(ruleset *data.Ruleset, key string) (string, []pageSection, error) {

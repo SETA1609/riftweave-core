@@ -19,6 +19,14 @@
         "$ref": "common.json#/definitions/stored_actor",
         "description": "With sheet: the character."
       },
+      "state": {
+        "type": "string",
+        "enum": [
+          "current",
+          "fresh"
+        ],
+        "description": "With sheet: current (the default) prints the resources left, the conditions, and the held modifiers; fresh prints full HP, mana, and stamina, with no condition or held modifier (BE_S09_03)."
+      },
       "spell": {
         "$ref": "common.json#/definitions/key",
         "description": "With spell: a key in spells/core.json."

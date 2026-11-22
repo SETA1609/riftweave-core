@@ -2708,6 +2708,11 @@ export interface operations {
                     };
                     /** @description With spell: a key in spells/core.json. */
                     spell?: components["schemas"]["key"];
+                    /**
+                     * @description With sheet: current (the default) prints the resources left, the conditions, and the held modifiers; fresh prints full HP, mana, and stamina, with no condition or held modifier (BE_S09_03).
+                     * @enum {string}
+                     */
+                    state?: "current" | "fresh";
                 };
             };
         };

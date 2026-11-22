@@ -630,6 +630,7 @@ classDiagram
         string label
         object monster
         key spell
+        enum state
     }
     class print_result {
         string html
