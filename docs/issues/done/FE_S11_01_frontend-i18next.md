@@ -1,5 +1,6 @@
 #### FE_S11_01_frontend-i18next Localize the frontend with i18next
-- Status: review
+- Status: done
+- Merged: #434, 2026-11-22
 - Priority: medium
 - Needs: APP-23
 - Was: APP-24
