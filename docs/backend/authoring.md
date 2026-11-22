@@ -1,6 +1,6 @@
 # Authoring
 
-Modified: 2026-11-15
+Modified: 2026-11-21
 
 The `author` command (APP-10) builds content rows for authors: it checks a draft the way
 `validate.py` would, works out what the formulas say about it, and writes a data file the ruleset
@@ -13,14 +13,22 @@ cost the vectors pin. `spell` is its first `kind`; other collections follow as t
 
 ```
 input   kind       spell
-        operation  check (default) or load
+        operation  check (default), load, or effects
         check:     spells: one or more draft rows, as spells/core.json holds them
                    export: optional { shape: core | module, module: <name> }
         load:      spell: a key in spells/core.json
+        effects:   color: one of the nine colors
 result  check:     spells: per draft { key, row, problems, warnings, cost }
                    export: the data file, and for a module its manifest and the refs to the rows
         load:      row: the spell as written in spells/core.json, ready to edit or copy
+        effects:   effects: per effect { ref, row }, the row as effects/core.json writes it
 ```
+
+**The effect pool** (`effects`, BE_S09_01) is what a spell editor offers once a color is picked:
+every effect on that color or on none ([magic.md](../modules/magic.md#the-core-spell-list)) that
+lists `spell` in its `channels`, in file order. A color is one a `<color>_magic` skill governs; an
+unknown or missing color is refused. Effects from a module are not listed yet. [A]
+[V 2026-11-21, `author_test.go`]
 
 ## Problems
 
@@ -62,5 +70,8 @@ say what `validate.py` will refuse.
 `author` is a command of the contract (`backend/contract/author.json`), so the agent CLI
 (`riftweave run author`), the HTTP API (`POST /v1/commands/author`), MCP, and the browser core give
 the same result for the same draft. It needs the ruleset schemas: `core.Open` reads them from
-`ruleset/schemas` beside the data, and the browser build embeds them. The spell editor page is
-APP-22.
+`ruleset/schemas` beside the data, and the browser build embeds them: `scripts/build-wasm.sh`
+copies `ruleset/schemas` beside the data, and the entry point opens with `core.NewWithSchemas`
+(`openRuleset` in `backend/cmd/riftweave-wasm/open.go`). [V 2026-11-21, `call_test.go`, and the
+built `riftweave.wasm` run under Node: `fire_bolt` checks with no problems at mana 6] The spell
+editor page is FE_S09_02.

@@ -71,7 +71,7 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Author content rows: check a draft spell as validate.py would, give the spellcraft cost, load a spell to edit, and export a core or module data file.
+         * Author content rows: check a draft spell as validate.py would, give the spellcraft cost, load a spell to edit, list the effects a color may use, and export a core or module data file.
          * @description The rules are in docs/backend/authoring.md.
          */
         post: operations["author"];
@@ -1222,6 +1222,8 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
+                    /** @description effects: the spell's color; the pool is the effects on that color or on none that list the spell channel (BE_S09_01). */
+                    color?: string;
                     export?: {
                         /** @description shape module: the module's id. */
                         module?: components["schemas"]["key"];
@@ -1231,10 +1233,10 @@ export interface operations {
                     /** @enum {string} */
                     kind: "spell";
                     /**
-                     * @description check (the default) a list of drafts, or load one spell by key.
+                     * @description check (the default) a list of drafts, load one spell by key, or list the effects a spell of a color may use.
                      * @enum {string}
                      */
-                    operation?: "check" | "load";
+                    operation?: "check" | "load" | "effects";
                     /** @description load: the spell to load. */
                     spell?: components["schemas"]["key"];
                     /** @description check: the draft rows, as spells/core.json holds them; the schema is checked by the command, so a draft may be wrong. */
@@ -1250,6 +1252,11 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description effects: the pool, in file order, each with its row as effects/core.json writes it. */
+                        effects?: {
+                            ref: components["schemas"]["ref"];
+                            row: Record<string, never>;
+                        }[];
                         export?: {
                             /** @description The whole data file: $schema and the spells wrapper. */
                             file: Record<string, never>;
