@@ -8,23 +8,19 @@ import { type SettingsFile, defaultSettings, encodeSettings, parseSettings } fro
 export type Theme = 'light' | 'dark' | 'system';
 export const THEMES: readonly Theme[] = ['light', 'dark', 'system'];
 
-/** The interface languages, each by its own name (docs/backend/frontend.md#languages). A new
- * language adds its locale file and its entry here. */
+// LANGUAGES, FALLBACK_LANGUAGE, offeredLanguage, and startLanguage: see i18n.md.
 export const LANGUAGES: readonly { value: string; label: string }[] = [
   { value: 'en', label: 'English' },
   { value: 'de', label: 'Deutsch' },
   { value: 'es', label: 'Español' },
 ];
-/** The language a missing key falls back to, and the start language when nothing else fits. */
 export const FALLBACK_LANGUAGE = 'en';
 
-/** The offered language a code names (`de-DE` names `de`), or null. */
 export function offeredLanguage(code: string | null | undefined): string | null {
   const base = code?.toLowerCase().split('-')[0];
   return LANGUAGES.find((language) => language.value === base)?.value ?? null;
 }
 
-/** The start language: the saved one, else the browser's if it is offered, else English. */
 export function startLanguage(saved: string | null, browser: string | undefined): string {
   return offeredLanguage(saved) ?? offeredLanguage(browser) ?? FALLBACK_LANGUAGE;
 }

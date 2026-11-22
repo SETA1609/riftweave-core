@@ -1,5 +1,4 @@
-// `key | t` and `key | t: { name: value }` in a template (docs/backend/frontend.md#languages). Not
-// pure: the text changes with the language, and the signal it reads re-renders the view.
+// See translate-pipe.md.
 import { Pipe, type PipeTransform, inject } from '@angular/core';
 import { I18n, type Values } from './i18n';
 

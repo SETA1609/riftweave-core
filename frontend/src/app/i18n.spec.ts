@@ -1,6 +1,4 @@
-// The app's own text in English, German, and Spanish (FE_S11_01, docs/backend/frontend.md#languages):
-// every key of en.json is in every locale, every menu entry has a key, no template keeps a literal
-// string, and switching the language re-renders a screen without a reload.
+// See i18n.spec.md.
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -17,20 +15,14 @@ import { MenuGrid } from './ui/menu-grid';
 
 type Tree = { readonly [key: string]: string | Tree };
 
-/** Every key of a locale file, as a dotted path. */
 function keys(tree: Tree, prefix = ''): string[] {
   return Object.entries(tree).flatMap(([key, value]) => (typeof value === 'string' ? [prefix + key] : keys(value, `${prefix}${key}.`)));
 }
 
-/** The screens FE_S11_04_frontend-screen-strings moves to keys; until then they keep their English. */
 const PENDING = ['attack.html', 'character-list.html', 'file-import.html', 'playthrough.html', 'resolution.html', 'saved-games.html', 'sheet.html'];
-/** Words a template may show as they are: the name of the game. */
 const ALLOWED = ['Riftweave'];
-/** The attributes a person reads, which must be bound to a key, not written out. */
 const READ_ATTRIBUTES = /\s(label|title|message|placeholder|aria-label|alt)="([^"]*)"/g;
 
-/** The few calls of node:fs this spec reads the templates with. The app has no Node types, so the
- * module is loaded at run time, where Vitest runs on Node. */
 type FileSystem = {
   readFileSync(path: string, encoding: 'utf8'): string;
   readdirSync(path: string, options: { withFileTypes: true }): { name: string; isDirectory(): boolean }[];
@@ -47,8 +39,6 @@ function templates(directory = APP): string[] {
   });
 }
 
-/** The literal words a template shows: its text outside tags, interpolations, and control flow,
- * and the read attributes written out. */
 function literals(template: string): string[] {
   const attributes = [...template.matchAll(READ_ATTRIBUTES)].map((match) => match[2]);
   const text = template

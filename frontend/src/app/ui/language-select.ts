@@ -1,5 +1,4 @@
-// The interface language (docs/backend/frontend.md#languages): a select of the offered languages,
-// each by its own name, bound to AppContext.locale. It sits in the header, so every screen has it.
+// See language-select.md.
 import { Component, inject } from '@angular/core';
 import { AppContext, LANGUAGES } from '../context';
 import { I18n } from '../i18n';

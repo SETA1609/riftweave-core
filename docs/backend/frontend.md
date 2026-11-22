@@ -215,6 +215,12 @@ Every change to `frontend/` follows these (owner, 2026-11-14):
 - **Layout.** `src/app/api.ts` is the API and its `API` token, `src/app/context.ts` the app context,
   `src/app/ui/` the shared components, and each screen its three files in `src/app/` (`sheet`,
   `attack`, `playthrough`). [A]
+- **Explanations beside the code, not in it** (owner, 2026-11-22). A `.ts` file starts with one
+  pointer line (`// See i18n.md.`) and carries no other comments; what it does, why, and the
+  links to upstream docs go in a sibling Markdown file of the same name (`i18n.ts` and `i18n.md`,
+  `i18n.spec.ts` and `i18n.spec.md`), with a `Modified:` line. Names and types should say the
+  rest. First done for the i18n files (FE_S11_01); the rest of `frontend/` moves in
+  FE_S00_08_sibling-docs-for-code.
 
 ## The app context
 
