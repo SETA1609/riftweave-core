@@ -1,0 +1,58 @@
+{
+  "app": {
+    "starting": "Iniciando el motor de reglas…",
+    "failed": "El motor de reglas no se inició: {{reason}}",
+    "rules": "Reglas {{version}}"
+  },
+  "language": {
+    "label": "Idioma"
+  },
+  "theme": {
+    "light": "claro",
+    "dark": "oscuro",
+    "system": "sistema",
+    "switch_to": "Cambiar a {{mode}}",
+    "mode_light": "modo claro",
+    "mode_dark": "modo oscuro",
+    "mode_system": "el modo del sistema"
+  },
+  "menu": {
+    "start": "Empezar",
+    "characters": "Personajes",
+    "settings": "Ajustes",
+    "modules": "Módulos",
+    "network": "Red",
+    "import": "Importar",
+    "quit": "Salir",
+    "gm_tools": "Herramientas del DJ",
+    "character_creation": "Creación de personaje",
+    "spell_creation": "Creación de conjuros",
+    "skill_resolution": "Tirada de habilidad",
+    "bestiary": "Bestiario",
+    "saved_games": "Partidas guardadas",
+    "attack": "Resolver un ataque",
+    "encounter_tracker": "Control de encuentros",
+    "playthrough": "Partida de prueba",
+    "back": "Volver"
+  },
+  "settings": {
+    "theme": "Tema",
+    "players_see_only_known": "Los jugadores solo ven los monstruos que conocen",
+    "export": "Exportar ajustes",
+    "import": "Importar ajustes",
+    "imported": "Ajustes importados."
+  },
+  "modules": {
+    "core": "core (siempre cargado)"
+  },
+  "network": {
+    "offline": "Sin conexión: el núcleo en la página",
+    "offline_notice": "Sin conexión: el núcleo en la página.",
+    "server": "Servidor: la API HTTP en la URL del servidor",
+    "server_url": "URL del servidor",
+    "use_server": "Usar este servidor",
+    "server_notice": "Las órdenes van ahora al servidor.",
+    "needs_url": "Primero indica la URL del servidor.",
+    "room": "Sala"
+  }
+}

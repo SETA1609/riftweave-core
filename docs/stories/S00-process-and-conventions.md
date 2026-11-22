@@ -16,6 +16,7 @@ Format, ids, and roles: [README.md](README.md#ids), [ROLES.md](../issues/ROLES.m
 | `OPS_S00_04_refresh-stale-story-docs` | OPS | Refresh the story and issue docs after S05 and S06 landed | — | — |
 | `OPS_S00_06_faster-python-checks` | OPS | Faster Python checks: reuse validators, cache loot values, run test files side by side | — | — |
 | `OPS_S00_07_dispatch-and-string-constants` | OPS | Dispatch by switch or table, and named constants for meaningful strings | — | — |
+| `FE_S00_08_sibling-docs-for-code` | FE | Move the frontend's code comments into sibling Markdown files | — | FE_S11_01_frontend-i18next |
 
 | `FE_S00_05_regenerate-openapi-types` | FE | Regenerate the frontend's API types from the current contract | — | — |
 

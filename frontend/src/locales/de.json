@@ -1,0 +1,58 @@
+{
+  "app": {
+    "starting": "Die Regel-Engine startet…",
+    "failed": "Die Regel-Engine ist nicht gestartet: {{reason}}",
+    "rules": "Regeln {{version}}"
+  },
+  "language": {
+    "label": "Sprache"
+  },
+  "theme": {
+    "light": "hell",
+    "dark": "dunkel",
+    "system": "System",
+    "switch_to": "Wechseln zu {{mode}}",
+    "mode_light": "hellem Modus",
+    "mode_dark": "dunklem Modus",
+    "mode_system": "dem Modus des Systems"
+  },
+  "menu": {
+    "start": "Start",
+    "characters": "Charaktere",
+    "settings": "Einstellungen",
+    "modules": "Module",
+    "network": "Netzwerk",
+    "import": "Importieren",
+    "quit": "Beenden",
+    "gm_tools": "SL-Werkzeuge",
+    "character_creation": "Charaktererschaffung",
+    "spell_creation": "Zaubererschaffung",
+    "skill_resolution": "Fertigkeitsprobe",
+    "bestiary": "Bestiarium",
+    "saved_games": "Spielstände",
+    "attack": "Angriff abhandeln",
+    "encounter_tracker": "Begegnungsverwaltung",
+    "playthrough": "Durchspielen",
+    "back": "Zurück"
+  },
+  "settings": {
+    "theme": "Design",
+    "players_see_only_known": "Spieler sehen nur die Monster, die sie kennen",
+    "export": "Einstellungen exportieren",
+    "import": "Einstellungen importieren",
+    "imported": "Einstellungen importiert."
+  },
+  "modules": {
+    "core": "core (immer geladen)"
+  },
+  "network": {
+    "offline": "Offline: der Kern in der Seite",
+    "offline_notice": "Offline: der Kern in der Seite.",
+    "server": "Server: die HTTP-API unter der Server-URL",
+    "server_url": "Server-URL",
+    "use_server": "Diesen Server verwenden",
+    "server_notice": "Befehle gehen jetzt an den Server.",
+    "needs_url": "Zuerst die Server-URL eintragen.",
+    "room": "Raum"
+  }
+}

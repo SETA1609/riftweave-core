@@ -4,7 +4,9 @@ import { Component, inject, signal } from '@angular/core';
 import { API } from './api';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { Saves } from './saves';
+import { TranslatePipe } from './translate-pipe';
 import { Alert } from './ui/alert';
+import { LanguageSelect } from './ui/language-select';
 import { ThemeToggle } from './ui/theme-toggle';
 
 /** The rules this build ships: the release tag in the Pages build (angular.json `define`). */
@@ -12,13 +14,14 @@ declare const RIFTWEAVE_RULES_VERSION: string;
 
 @Component({
   selector: 'rw-root',
-  imports: [RouterLink, RouterOutlet, Alert, ThemeToggle],
+  imports: [RouterLink, RouterOutlet, Alert, LanguageSelect, ThemeToggle, TranslatePipe],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
 export class App {
   readonly rulesVersion = RIFTWEAVE_RULES_VERSION;
   readonly state = signal<'starting' | 'ready' | 'failed'>('starting');
+  /** Why the core did not start, filled into `app.failed`. */
   readonly failure = signal('');
 
   constructor() {
@@ -28,7 +31,7 @@ export class App {
       // Resume the latest save; a browser without IndexedDB still plays, unsaved.
       () => saves.load().catch(() => undefined).finally(() => this.state.set('ready')),
       (error: unknown) => {
-        this.failure.set(`The rules engine did not start: ${error instanceof Error ? error.message : String(error)}`);
+        this.failure.set(error instanceof Error ? error.message : String(error));
         this.state.set('failed');
       },
     );

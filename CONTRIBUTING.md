@@ -1,6 +1,6 @@
 # Contributing to Riftweave
 
-Modified: 2026-11-18
+Modified: 2026-11-21
 
 Thanks for your interest in Riftweave! This repository is a **data-oriented,
 engine-agnostic cRPG ruleset**. The product *is* the data: a set of JSON files
@@ -92,6 +92,7 @@ wrong. [ROADMAP.md](ROADMAP.md) owns scope and `docs/stories/` owns the work.
    table is named instead ("at the first extra strike's penalty"), and a number the row
    does not hold fails `validate.py`
    ([gate 9](docs/core/integrity.md#9-a-description-says-only-its-rows-numbers)).
+8. **Translations** ([who reviews](docs/backend/frontend.md#languages)): the owner reviews German and Spanish; anyone may add a language, or change another, in a PR with only its locale file and its `LANGUAGES` entry.
 
 ## Workflow
 
