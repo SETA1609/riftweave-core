@@ -1,3 +1,3 @@
 <button type="button" class="btn btn-outline btn-sm" [attr.aria-label]="action()" [title]="action()" (click)="context.cycleTheme()">
-  {{ 'theme.' + current() | t }}
+  <fa-icon [icon]="icon()" />
 </button>

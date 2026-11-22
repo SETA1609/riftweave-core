@@ -1,1 +1,14 @@
-<rw-select-field [label]="'language.label' | t" [options]="languages" [value]="i18n.language()" (valueChange)="context.locale.set($event)" />
+<button type="button" class="btn btn-outline btn-sm" [attr.aria-label]="'language.label' | t" aria-haspopup="menu" [attr.aria-expanded]="open()" (click)="open.set(!open())">
+  <img class="flag" [src]="'flags/' + current().flag + '.svg'" alt="" /> {{ current().label }}
+</button>
+@if (open()) {
+  <ul class="menu" role="menu" [attr.aria-label]="'language.label' | t">
+    @for (language of languages; track language.value) {
+      <li role="none">
+        <button type="button" role="menuitemradio" [attr.aria-checked]="language.value === current().value" (click)="pick(language.value)">
+          <img class="flag" [src]="'flags/' + language.flag + '.svg'" alt="" /> {{ language.label }}
+        </button>
+      </li>
+    }
+  </ul>
+}

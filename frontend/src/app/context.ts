@@ -9,10 +9,10 @@ export type Theme = 'light' | 'dark' | 'system';
 export const THEMES: readonly Theme[] = ['light', 'dark', 'system'];
 
 // LANGUAGES, FALLBACK_LANGUAGE, offeredLanguage, and startLanguage: see i18n.md.
-export const LANGUAGES: readonly { value: string; label: string }[] = [
-  { value: 'en', label: 'English' },
-  { value: 'de', label: 'Deutsch' },
-  { value: 'es', label: 'Español' },
+export const LANGUAGES: readonly { value: string; label: string; flag: string }[] = [
+  { value: 'en', label: 'English', flag: 'us' },
+  { value: 'de', label: 'Deutsch', flag: 'de' },
+  { value: 'es', label: 'Español', flag: 'es' },
 ];
 export const FALLBACK_LANGUAGE = 'en';
 

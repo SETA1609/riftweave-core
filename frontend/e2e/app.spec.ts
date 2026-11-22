@@ -65,14 +65,16 @@ test('the mode toggle switches light and dark, keeps the choice, and goes back t
 test('the language select switches every string without a reload and keeps the choice (FE_S11_01)', async ({ page }) => {
   await page.goto('/#/settings');
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
-  await page.getByLabel('Language').selectOption('de');
+  await page.getByRole('button', { name: 'Language' }).click();
+  await page.getByRole('menuitemradio', { name: 'Deutsch' }).click();
   await expect(page.locator('html')).toHaveAttribute('lang', 'de');
   await expect(page.getByRole('region', { name: 'Einstellungen' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Einstellungen exportieren' })).toBeVisible();
   await expect(page).toHaveTitle('Einstellungen');
   await page.reload();
-  await expect(page.getByLabel('Sprache')).toHaveValue('de');
-  await page.getByLabel('Sprache').selectOption('es');
+  await expect(page.getByRole('button', { name: 'Sprache' })).toContainText('Deutsch');
+  await page.getByRole('button', { name: 'Sprache' }).click();
+  await page.getByRole('menuitemradio', { name: 'Español' }).click();
   await page.goto('/#/play');
   await expect(page.getByRole('link', { name: 'Creación de personaje' })).toBeVisible();
   await expect(page.getByText('Reglas', { exact: false })).toBeVisible();

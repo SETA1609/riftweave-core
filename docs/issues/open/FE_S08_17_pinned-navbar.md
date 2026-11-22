@@ -1,0 +1,15 @@
+#### FE_S08_17_pinned-navbar A navbar pinned on top, with a burger menu on mobile
+- Status: todo
+- Priority: medium
+- Needs: FE_S11_01_frontend-i18next
+- Modified: 2026-11-22
+- Do: Owner request, 2026-11-22: the app's header becomes a navbar.
+  - **Pinned on top:** it stays at the top of the viewport while the page scrolls (`position: sticky`, so content is not hidden under it) [A].
+  - **What it holds:** the game's name as the link home, the language select (`rw-language-select`, FE_S11_01), the theme toggle (`rw-theme-toggle`), and a link to the GitHub repository (https://github.com/SETA1609/riftweave-core) with the GitHub icon (`faGithub` from `@fortawesome/free-brands-svg-icons`, beside the free solid set FE_S11_01 adds), opening in a new tab (`rel="noopener"`), with a localized `aria-label`.
+  - **On a narrow screen** (under Bootstrap's `md` breakpoint, 768px [A]) the items fold into a burger button (`faBars`) that opens them as a dropdown; Escape and a click outside close it, as the language menu does; the button has `aria-expanded` and `aria-controls`.
+  - A reusable `rw-navbar` in `ui/` (`ng generate component ui/navbar --flat`), three files and a sibling `navbar.md` (frontend.md#conventions); its words are locale keys in en, de, and es.
+  - **Later, its own issue:** a donations link in the same navbar.
+- Keys: `rw-navbar`; `nav.github`, `nav.menu`
+- Files: ~10 (frontend/src/app/ui/navbar.ts, .html, .css, .md, frontend/src/app/app.html, app.css, frontend/src/locales/en.json, de.json, es.json, frontend/package.json and package-lock.json, frontend/e2e/app.spec.ts)
+- See: docs/backend/app-layout.md, frontend/src/app/ui/language-select.md, frontend/src/app/ui/theme-toggle.md
+- Done when: the navbar stays on top while a long screen scrolls; at 375px wide the burger opens a dropdown holding the language select, the theme toggle, and the GitHub link, and Escape closes it; at 1024px all three show inline; the GitHub link opens the repository; the Vitest and Playwright specs pass over both transports.

@@ -215,6 +215,10 @@ Every change to `frontend/` follows these (owner, 2026-11-14):
 - **Layout.** `src/app/api.ts` is the API and its `API` token, `src/app/context.ts` the app context,
   `src/app/ui/` the shared components, and each screen its three files in `src/app/` (`sheet`,
   `attack`, `playthrough`). [A]
+- **Icons** (owner, 2026-11-22): Font Awesome's free solid set through `fa-icon`
+  (`@fortawesome/angular-fontawesome`), drawn as inline SVG; flags from `flag-icons`, copied into the
+  build only for the languages offered (`flags/<code>.svg`). Both work offline. A control that shows
+  only an icon has an `aria-label`.
 - **Explanations beside the code, not in it** (owner, 2026-11-22). A `.ts` file starts with one
   pointer line (`// See i18n.md.`) and carries no other comments; what it does, why, and the
   links to upstream docs go in a sibling Markdown file of the same name (`i18n.ts` and `i18n.md`,

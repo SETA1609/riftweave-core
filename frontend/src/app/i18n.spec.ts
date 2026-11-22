@@ -62,11 +62,11 @@ describe('the locale files', () => {
     expect(missing).toEqual([]);
   });
 
-  it('offer English, German, and Spanish, each by its own name', () => {
+  it('offer English, German, and Spanish, each by its own name and flag', () => {
     expect(LANGUAGES).toEqual([
-      { value: 'en', label: 'English' },
-      { value: 'de', label: 'Deutsch' },
-      { value: 'es', label: 'Español' },
+      { value: 'en', label: 'English', flag: 'us' },
+      { value: 'de', label: 'Deutsch', flag: 'de' },
+      { value: 'es', label: 'Español', flag: 'es' },
     ]);
   });
 });
@@ -118,16 +118,24 @@ describe('the language', () => {
     expect(localStorage.getItem('riftweave.locale')).toBe('es');
   });
 
-  it('is picked in the language select, which lists each language by its own name', async () => {
+  it('is picked in the language select, which lists each language by its flag and own name', async () => {
     const fixture = TestBed.createComponent(LanguageSelect);
     fixture.detectChanges();
-    const select = (fixture.nativeElement as HTMLElement).querySelector('select')!;
-    expect(Array.from(select.options).map((option) => option.textContent!.trim())).toEqual(['English', 'Deutsch', 'Español']);
-    select.value = 'de';
-    select.dispatchEvent(new Event('change'));
+    const element = fixture.nativeElement as HTMLElement;
+    const toggle = element.querySelector<HTMLButtonElement>('button[aria-haspopup]')!;
+    expect(toggle.getAttribute('aria-label')).toBe('Language');
+    expect(toggle.querySelector('img')!.getAttribute('src')).toBe('flags/us.svg');
+    toggle.click();
+    await fixture.whenStable();
+    const items = Array.from(element.querySelectorAll<HTMLButtonElement>('[role="menuitemradio"]'));
+    expect(items.map((item) => item.textContent!.trim())).toEqual(['English', 'Deutsch', 'Español']);
+    expect(items.map((item) => item.querySelector('img')!.getAttribute('src'))).toEqual(['flags/us.svg', 'flags/de.svg', 'flags/es.svg']);
+    items[1].click();
     await fixture.whenStable();
     expect(TestBed.inject(AppContext).locale()).toBe('de');
-    expect((fixture.nativeElement as HTMLElement).textContent).toContain('Sprache');
+    expect(element.querySelector('[role="menu"]')).toBeNull();
+    expect(toggle.getAttribute('aria-label')).toBe('Sprache');
+    expect(toggle.querySelector('img')!.getAttribute('src')).toBe('flags/de.svg');
   });
 
   it('changes the settings screens with it', async () => {
