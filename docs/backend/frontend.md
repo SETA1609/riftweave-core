@@ -221,9 +221,9 @@ Every change to `frontend/` follows these (owner, 2026-11-14):
   only an icon has an `aria-label`.
 - **Explanations beside the code, not in it** (owner, 2026-11-22). A `.ts` file starts with one
   pointer line (`// See i18n.md.`) and carries no other comments; what it does, why, and the
-  links to upstream docs go in a sibling Markdown file of the same name (`i18n.ts` and `i18n.md`,
-  `i18n.spec.ts` and `i18n.spec.md`), with a `Modified:` line. Names and types should say the
-  rest. First done for the i18n files (FE_S11_01); the rest of `frontend/` moves in
+  links to upstream docs go in a sibling Markdown file of the same name (`i18n.ts` and `i18n.md`),
+  with a `Modified:` line. Names and types should say the rest. A spec (`*.spec.ts`) is the
+  exception: its comments stay in it, beside the checks they explain, and it has no sibling. First done for the i18n files (FE_S11_01); the rest of `frontend/` moves in
   FE_S00_08_sibling-docs-for-code.
 
 ## The app context
