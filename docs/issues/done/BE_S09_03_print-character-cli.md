@@ -1,5 +1,6 @@
 #### BE_S09_03_print-character-cli Print the current character from both apps (backend)
-- Status: review
+- Status: done
+- Merged: #437, 2026-11-22
 - Priority: medium
 - Needs: BE_S07_03_character-list-cli
 - Was: APP-39, split by role on 2026-11-18: this is the backend half (the contract, the Go core, the vectors, and the CLI and TUI with their UX); the browser half is `FE_S09_04_print-character-page`
