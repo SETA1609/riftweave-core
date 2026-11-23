@@ -4897,7 +4897,7 @@
     {
       "key": "watchful_blade",
       "label": "Watchful Blade",
-      "description": "Every foe who turns their back near you pays for it: between two of your turns you may strike out of turn as often as your agility allows, not just once.",
+      "description": "Every foe who turns their back near you pays for it: between two of your turns you may strike at a foe leaving your reach as often as your agility allows, not just once.",
       "type": "perk",
       "category": "combat",
       "prerequisite": {

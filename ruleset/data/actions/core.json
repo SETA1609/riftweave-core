@@ -24,7 +24,6 @@
     { "key": "dodge", "cost": 3 },
     { "key": "item", "cost": 2 },
     { "key": "block", "cost": 2, "reserved": true, "refund_if_unused": true },
-    { "key": "ready", "cost": 3, "by_loadout": true, "reserved": true, "refund_if_unused": true, "triggers": ["enters_reach", "acts_in_reach"] },
     { "key": "aimed", "cost": 2, "adds_to": "attack" },
     { "key": "draw", "cost": 1, "changes_loadout": true },
     { "key": "sheathe", "cost": 1, "changes_loadout": true },

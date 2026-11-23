@@ -281,7 +281,7 @@ def run_actions(vector):
         for key in vector.get("actions", [])
     )
     # Held AP (docs/core/actions.md#held-ap): what is left at the end of the turn guards until the
-    # next one, may pay an opportunity or readied attack, and at most pool.carry of it carries.
+    # next one, may pay overwatch (Trigger Watch, GD_S17_06), and at most pool.carry of it carries.
     carried, held_spent = vector.get("carried", 0), vector.get("held_spent", 0)
     if carried > pool_rules["carry"]:
         return {"error": f'carried {carried} is more than pool.carry {pool_rules["carry"]}'}
@@ -744,14 +744,10 @@ def plan_strikes(vector, row, flags, on):
 
 
 ACTION_OPPORTUNITY = "opportunity"
-ACTION_READIED = "readied"
 REASON_DISENGAGED = "disengaged"
-REASON_NOT_TRIGGERED = "not_triggered"
 REASON_NO_REACTION_LEFT = "no_reaction_left"
 REACTIONS_FROM_AGI = "reactions_from_agi"
 REACTIONS_PER_ROUND = "reactions_per_round"
-REASON_NOT_ENOUGH_HELD = "not_enough_held"
-OUT_OF_TURN_SUBJECT = {ACTION_OPPORTUNITY: "an opportunity attack", ACTION_READIED: "a readied attack"}
 
 
 def reactions_most(attacker):
@@ -766,47 +762,34 @@ def reactions_most(attacker):
     return apply_modifiers(most, [m for m in modifiers if m["target"] == REACTIONS_PER_ROUND])
 
 
-def run_out_of_turn(vector):
-    """An opportunity or a readied attack (docs/core/combat.md#attacks-out-of-turn): one attack of
-    the loadout. An opportunity attack is a reaction, no AP; a readied attack is paid from the AP
-    held (`ap`) and spends no reaction. When it does not fire, nothing is spent."""
-    action = vector["action"]
-    subject = OUT_OF_TURN_SUBJECT[action]
-    if action == ACTION_READIED and vector.get("ap") is None:
-        return {"error": f"{subject} needs ap"}
-    if action == ACTION_READIED and not vector.get("trigger"):
-        return {"error": f"{subject} needs trigger"}
+def run_opportunity(vector):
+    """An opportunity attack (docs/core/combat.md#opportunity-attacks): one melee attack of the
+    loadout when a foe leaves reach without disengaging, a reaction at no AP. With no reaction left,
+    or when the foe disengaged, it does not fire and nothing is spent."""
     row = attack_sequence_of(vector["loadout"])
     if row is None:
         return {"error": no_sequence_error(vector["loadout"])}
-    cost = row["ap"] if action == ACTION_READIED else 0
     reason = None
-    if action == ACTION_OPPORTUNITY and vector.get("disengaged"):
+    if vector.get("disengaged"):
         reason = REASON_DISENGAGED
-    elif action == ACTION_OPPORTUNITY and vector.get("reactions_used", 0) >= reactions_most(vector["attacker"]):
+    elif vector.get("reactions_used", 0) >= reactions_most(vector["attacker"]):
         reason = REASON_NO_REACTION_LEFT
-    elif action == ACTION_READIED and vector.get("event") != vector["trigger"]:
-        reason = REASON_NOT_TRIGGERED
-    elif action == ACTION_READIED and vector["ap"] < cost:
-        reason = REASON_NOT_ENOUGH_HELD
     if reason:
-        return {"action": action, "fired": False, "reason": reason, "sequence": row["key"], "ap": 0, "stamina": 0,
-                "guard_lost": 0, "strikes": [], "hp": [foe["hp"] for foe in vector["foes"]], "lost": 0}
-    inner = {key: value for key, value in vector.items() if key not in ("ap", "trigger", "event", "disengaged", "reactions_used")}
+        return {"action": ACTION_OPPORTUNITY, "fired": False, "reason": reason, "sequence": row["key"], "ap": 0, "stamina": 0,
+                "strikes": [], "hp": [foe["hp"] for foe in vector["foes"]], "lost": 0}
+    inner = {key: value for key, value in vector.items() if key not in ("ap", "disengaged", "reactions_used")}
     result = run_attack_sequence({**inner, "action": "attack"})
     if "error" in result:
         return result
-    actions = load_data("actions/core.json")
-    return {**result, "action": action, "fired": True, "ap": cost, "stamina": cost * actions["stamina_per_ap"],
-            "guard_lost": cost * actions["pool"]["guard_per_ap"]}
+    return {**result, "action": ACTION_OPPORTUNITY, "fired": True, "ap": 0, "stamina": 0}
 
 
 def run_attack_sequence(vector):
     """One attack action by loadout (docs/core/combat.md#attacks-by-loadout): the loadout's
     strikes, each its own roll through run_combat, against the foes in reach. Rolls are inputs."""
     action = vector["action"]
-    if action in OUT_OF_TURN_SUBJECT:
-        return run_out_of_turn(vector)
+    if action == ACTION_OPPORTUNITY:
+        return run_opportunity(vector)
     if action not in ("attack", "jab", "full_attack", "circle_cut"):
         return {"error": f'action "{action}" is not defined'}
     row = attack_sequence_of(vector["loadout"])

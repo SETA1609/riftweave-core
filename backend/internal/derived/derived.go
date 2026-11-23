@@ -66,7 +66,7 @@ type ActionsInput struct {
 	// Speed is the race's speed; with it the result says how many squares the moves cover (GD_S19_02).
 	Speed *int64 `json:"speed"`
 	// Carried is the AP carried into this turn; HeldSpent is held AP spent before the next turn,
-	// on an opportunity or readied attack (docs/core/actions.md#held-ap, GD_S19_05).
+	// on overwatch (docs/core/actions.md#held-ap, GD_S19_05; Trigger Watch, GD_S17_06).
 	Carried   int64 `json:"carried"`
 	HeldSpent int64 `json:"held_spent"`
 }

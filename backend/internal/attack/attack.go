@@ -54,16 +54,13 @@ type Roll struct {
 	Damage int64 `json:"damage"`
 }
 
-// The actions out of turn (docs/core/combat.md#attacks-out-of-turn), and why one did not fire.
+// The opportunity attack (docs/core/combat.md#opportunity-attacks), and why one did not fire.
 const (
 	ActionOpportunity = "opportunity"
-	ActionReadied     = "readied"
-	// actionAttack is the action an attack out of turn runs: the loadout's attack.
+	// actionAttack is the action an opportunity attack runs: the loadout's attack.
 	actionAttack = "attack"
 
 	ReasonDisengaged     = "disengaged"
-	ReasonNotTriggered   = "not_triggered"
-	ReasonNotEnoughHeld  = "not_enough_held"
 	ReasonNoReactionLeft = "no_reaction_left"
 
 	// reactionsFromAGI is the flag that makes the AGI modifier the most reactions between two turns,
@@ -71,9 +68,6 @@ const (
 	reactionsFromAGI  = "reactions_from_agi"
 	reactionsPerRound = "reactions_per_round"
 )
-
-// outOfTurnSubject names each action out of turn in a refusal.
-var outOfTurnSubject = map[string]string{ActionOpportunity: "an opportunity attack", ActionReadied: "a readied attack"}
 
 // Input is the `attack_sequence` command's input.
 type Input struct {
@@ -94,12 +88,9 @@ type Input struct {
 	AfterParry bool `json:"after_parry"`
 	// AfterBlock is Boss Strike's last tier: the attacker just blocked a hit in their band.
 	AfterBlock bool `json:"after_block"`
-	// Trigger is what a readied attack waits for, and Event what happened (enters_reach,
-	// acts_in_reach, or none); Disengaged is a foe that left reach with Disengage (GD_S19_04).
-	Trigger    string `json:"trigger"`
-	Event      string `json:"event"`
-	Disengaged bool   `json:"disengaged"`
-	// ReactionsUsed is the attacks out of turn the attacker already made since its last turn.
+	// Disengaged is a foe that left reach with Disengage, and ReactionsUsed the reactions the
+	// attacker already used since its last turn; both read only by an opportunity attack (GD_S19_04).
+	Disengaged    bool  `json:"disengaged"`
 	ReactionsUsed int64 `json:"reactions_used"`
 }
 
@@ -140,11 +131,10 @@ type Result struct {
 	Strikes  []StrikeResult `json:"strikes"`
 	HP       []int64        `json:"hp"`
 	Lost     int64          `json:"lost"`
-	// Fired, Reason, and GuardLost are an attack out of turn's: whether it fired, why not, and
-	// the guard the AP it spent took. Left out on an attack on the actor's own turn.
-	Fired     *bool  `json:"fired,omitempty"`
-	Reason    string `json:"reason,omitempty"`
-	GuardLost *int64 `json:"guard_lost,omitempty"`
+	// Fired and Reason are an opportunity attack's: whether it fired, and why not. Left out on an
+	// attack on the actor's own turn.
+	Fired  *bool  `json:"fired,omitempty"`
+	Reason string `json:"reason,omitempty"`
 }
 
 // reactionsMost is the reactions an actor has between two of its turns: reactions_per_round, or the
@@ -161,41 +151,23 @@ func reactionsMost(ruleset *data.Ruleset, attacker Attacker) (int64, error) {
 	return modifier.Value(most, modifier.Target(attacker.Modifiers, reactionsPerRound), ruleset.Origins, 0, nil)
 }
 
-// runOutOfTurn is an opportunity or a readied attack: one attack of the loadout. An opportunity
-// attack is a reaction and costs no AP; a readied attack is paid from the AP held (`ap`) and spends
-// no reaction. When it does not fire, nothing is spent.
-func runOutOfTurn(ruleset *data.Ruleset, input Input) (Result, error) {
-	var subject string = outOfTurnSubject[input.Action]
-	if input.Action == ActionReadied && input.AP == nil {
-		return Result{}, &data.MissingInputError{Subject: subject, Needs: "ap"}
-	}
-	if input.Action == ActionReadied && input.Trigger == "" {
-		return Result{}, &data.MissingInputError{Subject: subject, Needs: "trigger"}
-	}
+// runOpportunity is an opportunity attack: one melee attack of the loadout when a foe leaves reach
+// without disengaging, a reaction at no AP. With no reaction left, or a foe that disengaged, it does
+// not fire and nothing is spent.
+func runOpportunity(ruleset *data.Ruleset, input Input) (Result, error) {
 	var row *data.AttackSequence = ruleset.AttackSequences.Covering(input.Loadout.Main, input.Loadout.Off)
 	if row == nil {
 		return Result{}, &data.NoSequenceError{Loadout: input.Loadout}
 	}
-	var cost int64
+	most, err := reactionsMost(ruleset, input.Attacker)
+	if err != nil {
+		return Result{}, err
+	}
 	var reason string
-	switch input.Action {
-	case ActionOpportunity:
-		most, err := reactionsMost(ruleset, input.Attacker)
-		if err != nil {
-			return Result{}, err
-		}
-		if input.Disengaged {
-			reason = ReasonDisengaged
-		} else if input.ReactionsUsed >= most {
-			reason = ReasonNoReactionLeft
-		}
-	case ActionReadied:
-		cost = row.AP
-		if input.Event != input.Trigger {
-			reason = ReasonNotTriggered
-		} else if *input.AP < cost {
-			reason = ReasonNotEnoughHeld
-		}
+	if input.Disengaged {
+		reason = ReasonDisengaged
+	} else if input.ReactionsUsed >= most {
+		reason = ReasonNoReactionLeft
 	}
 	if reason != "" {
 		var hp []int64 = make([]int64, len(input.Foes))
@@ -207,18 +179,16 @@ func runOutOfTurn(ruleset *data.Ruleset, input Input) (Result, error) {
 			hp[index] = foe.HitPoints
 		}
 		var fired bool
-		var none int64
-		return Result{Action: input.Action, Sequence: row.Key, Strikes: []StrikeResult{}, HP: hp, Fired: &fired, Reason: reason, GuardLost: &none}, nil
+		return Result{Action: input.Action, Sequence: row.Key, Strikes: []StrikeResult{}, HP: hp, Fired: &fired, Reason: reason}, nil
 	}
 	var inner Input = input
-	inner.Action, inner.AP, inner.Trigger, inner.Event, inner.Disengaged, inner.ReactionsUsed = actionAttack, nil, "", "", false, 0
+	inner.Action, inner.AP, inner.Disengaged, inner.ReactionsUsed = actionAttack, nil, false, 0
 	result, err := Run(ruleset, inner)
 	if err != nil {
 		return Result{}, err
 	}
 	var fired bool = true
-	var guardLost int64 = cost * ruleset.Actions.Pool.GuardPerAP
-	result.Action, result.AP, result.Stamina, result.Fired, result.GuardLost = input.Action, cost, cost*ruleset.StaminaPerAP, &fired, &guardLost
+	result.Action, result.AP, result.Stamina, result.Fired = input.Action, 0, 0, &fired
 	return result, nil
 }
 
@@ -327,8 +297,8 @@ func either(mains []string) string {
 // Run is the `attack_sequence` command.
 func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	switch input.Action {
-	case ActionOpportunity, ActionReadied:
-		return runOutOfTurn(ruleset, input)
+	case ActionOpportunity:
+		return runOpportunity(ruleset, input)
 	case "attack", "jab", "full_attack", "circle_cut":
 	default:
 		return Result{}, &data.NotDefinedError{Kind: "action", Key: input.Action}
