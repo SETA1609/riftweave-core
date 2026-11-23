@@ -1,7 +1,8 @@
 #### FE_S09_04_print-character-page Print the current character from both apps (frontend)
-- Status: todo
+- Status: doing
 - Priority: medium
 - Needs: BE_S09_03_print-character-cli, FE_S07_04_character-list-page
+- Modified: 2026-11-23
 - Was: APP-39
 - Do: Frontend half, split by role on 2026-11-18 (PO_S00_01_issue-splitting-by-role): the Angular screens of `BE_S09_03_print-character-cli` and their UX, over the same commands and session steps, built from the shared components (docs/backend/frontend.md#conventions). The behaviour, the keys, and the rules are specified in `BE_S09_03_print-character-cli`; this issue adds no contract or core change.
 - Keys: the frontend screen and its route; no new contract keys
