@@ -2,13 +2,14 @@
 - Status: todo
 - Priority: medium
 - Needs: GD_S05_03_defense-perk-ladders, GD_S17_02_ammunition-items-and-reloading
-- Modified: 2026-11-18
+- Modified: 2026-11-23
 - Do: Owner request, 2026-11-18: ranged fighters need sniping, multishot, and suppressing fire. Each is a maneuver (`maneuvers/core.json`, docs/core/actions.md#maneuvers) and, as every maneuver, needs a perk that unlocks it; an unlock perk gives nothing else. Names are our own (M5-67). The tiers use `rank_levels` (GD_S05_03).
   - **Split Nock** (`split_nock`, multishot): a bow attack +1 AP that looses two arrows, one strike each at -20, at one target or at two within 2 units of each other; two arrows spent. Unlocked by `two_on_the_string` (Lv6, Bows 40, AGI 6). Bows only: the crossbow and the gun load one round [A].
   - **Held Breath** (`held_breath`, sniping): modifies the aimed attack, +1 AP more (aimed 5 AP, 4 with `steady_aim`), +20 to attack, damage x1.5, and the crit window +5 [A]. Needs a weapon with `rangeNormal` 16 or more (longbow, composite bow, crossbow, long gun) and no move this turn before it [A]. Unlocked by `still_hunter` (Lv10, PER 7, Bows, Crossbows, or Guns 50).
   - **Pinning Shot** (`pinning_shot`): an attack at -10; on a hit that is not evaded, the target loses 2 AP on its next turn and cannot disengage [A]. Unlocked by `heads_down` tier 1 (Lv8, any ranged skill 40).
   - **Pinning Fire** (`pinning_fire`, suppressing fire): spends all remaining AP, at least the attack cost + 1, and 3 rounds on a zone of radius 2 in range until the shooter's next turn. A foe in the zone attacks at -20; the first time each foe moves inside it or into it, it takes one strike at -10, while the 3 rounds last [A]. Needs a weapon without `loading`, a repeating crossbow, or two loaded weapons [A]. Unlocked by `heads_down` tier 2 (Lv14).
   - **Trigger Watch** (`trigger_watch`, holding fire): a hold on the pool, like the block stance: declare it and reserve the attack's AP; the first foe that moves or attacks in range before the shooter's next turn draws the shot at -10, and the AP comes back if none does [A]. Unlocked by `watchful_aim` (Lv6, PER 6, any ranged skill 40).
+  - **Trigger Watch is overwatch** (owner, 2026-11-23, from GD_S19_04): it fires when an enemy moves within the weapon's range, is paid from held AP, and spends no reaction; it is not an opportunity attack, which is melee only ([combat.md#opportunity-attacks](../../core/combat.md#opportunity-attacks)).
   - **Monsters** may list these rows with no perk (a bandit crossbowman with Pinning Shot), as for melee maneuvers.
   - **Ammunition:** each maneuver states the rounds it spends, so GD_S17_02's count stays exact.
 - Keys: `split_nock`, `held_breath`, `pinning_shot`, `pinning_fire`, `trigger_watch` maneuvers; `two_on_the_string`, `still_hunter`, `heads_down`, `watchful_aim` perks; any new effect with the `maneuver` channel
