@@ -1,5 +1,6 @@
 #### FE_S09_02_spell-editor-page A spell editor page over the author command (frontend)
-- Status: review
+- Status: done
+- Merged: #447, 2026-11-23
 - Priority: high
 - Needs: BE_S09_01_spell-author-wasm, APP-10, APP-14
 - Modified: 2026-11-23
