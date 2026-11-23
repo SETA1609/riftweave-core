@@ -66,11 +66,10 @@ const (
 	ReasonNotEnoughHeld  = "not_enough_held"
 	ReasonNoReactionLeft = "no_reaction_left"
 
-	// reactionsFromAGI is the flag that makes the AGI modifier the most attacks out of turn a round.
-	reactionsFromAGI = "reactions_from_agi"
-
-	// opportunityCost is the modifier target that changes an opportunity attack's AP (Phalanx).
-	opportunityCost = "opportunity_attack_cost"
+	// reactionsFromAGI is the flag that makes the AGI modifier the most reactions between two turns,
+	// and reactionsPerRound the modifier target that adds to it (Phalanx).
+	reactionsFromAGI  = "reactions_from_agi"
+	reactionsPerRound = "reactions_per_round"
 )
 
 // outOfTurnSubject names each action out of turn in a refusal.
@@ -148,11 +147,26 @@ type Result struct {
 	GuardLost *int64 `json:"guard_lost,omitempty"`
 }
 
-// runOutOfTurn is an opportunity or a readied attack: one attack of the loadout, paid from the AP
-// held (`ap`). With less held than the cost, or when it does not fire, nothing is spent.
+// reactionsMost is the reactions an actor has between two of its turns: reactions_per_round, or the
+// AGI modifier (at least 1) with reactions_from_agi, then its reactions_per_round modifiers (Phalanx).
+func reactionsMost(ruleset *data.Ruleset, attacker Attacker) (int64, error) {
+	var most int64 = ruleset.Actions.Pool.ReactionsPerRound
+	if slices.Contains(modifier.Flags(attacker.Modifiers, 0, nil), reactionsFromAGI) {
+		agility, err := ruleset.AttributeModifier.Evaluate(nil, formula.Variable{Name: "attribute", Value: attacker.Attributes.Get(actor.Agility)})
+		if err != nil {
+			return 0, err
+		}
+		most = max(1, agility)
+	}
+	return modifier.Value(most, modifier.Target(attacker.Modifiers, reactionsPerRound), ruleset.Origins, 0, nil)
+}
+
+// runOutOfTurn is an opportunity or a readied attack: one attack of the loadout. An opportunity
+// attack is a reaction and costs no AP; a readied attack is paid from the AP held (`ap`) and spends
+// no reaction. When it does not fire, nothing is spent.
 func runOutOfTurn(ruleset *data.Ruleset, input Input) (Result, error) {
 	var subject string = outOfTurnSubject[input.Action]
-	if input.AP == nil {
+	if input.Action == ActionReadied && input.AP == nil {
 		return Result{}, &data.MissingInputError{Subject: subject, Needs: "ap"}
 	}
 	if input.Action == ActionReadied && input.Trigger == "" {
@@ -162,32 +176,26 @@ func runOutOfTurn(ruleset *data.Ruleset, input Input) (Result, error) {
 	if row == nil {
 		return Result{}, &data.NoSequenceError{Loadout: input.Loadout}
 	}
-	var cost int64 = row.AP
-	if input.Action == ActionOpportunity {
-		changed, err := modifier.Value(cost, modifier.Target(input.Attacker.Modifiers, opportunityCost), ruleset.Origins, 0, nil)
-		if err != nil {
-			return Result{}, err
-		}
-		cost = max(0, changed)
-	}
-	var most int64 = ruleset.Actions.Pool.ReactionsPerRound
-	if slices.Contains(modifier.Flags(input.Attacker.Modifiers, 0, nil), reactionsFromAGI) {
-		agility, err := ruleset.AttributeModifier.Evaluate(nil, formula.Variable{Name: "attribute", Value: input.Attacker.Attributes.Get(actor.Agility)})
-		if err != nil {
-			return Result{}, err
-		}
-		most = max(1, agility)
-	}
+	var cost int64
 	var reason string
-	switch {
-	case input.Action == ActionOpportunity && input.Disengaged:
-		reason = ReasonDisengaged
-	case input.Action == ActionReadied && input.Event != input.Trigger:
-		reason = ReasonNotTriggered
-	case input.ReactionsUsed >= most:
-		reason = ReasonNoReactionLeft
-	case *input.AP < cost:
-		reason = ReasonNotEnoughHeld
+	switch input.Action {
+	case ActionOpportunity:
+		most, err := reactionsMost(ruleset, input.Attacker)
+		if err != nil {
+			return Result{}, err
+		}
+		if input.Disengaged {
+			reason = ReasonDisengaged
+		} else if input.ReactionsUsed >= most {
+			reason = ReasonNoReactionLeft
+		}
+	case ActionReadied:
+		cost = row.AP
+		if input.Event != input.Trigger {
+			reason = ReasonNotTriggered
+		} else if *input.AP < cost {
+			reason = ReasonNotEnoughHeld
+		}
 	}
 	if reason != "" {
 		var hp []int64 = make([]int64, len(input.Foes))

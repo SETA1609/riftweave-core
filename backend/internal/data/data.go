@@ -107,7 +107,7 @@ type ActionPool struct {
 	Cap             int64  `json:"cap"`
 	Carry           int64  `json:"carry"`        // the most held AP that carries into the next pool (GD_S19_05)
 	GuardPerAP      int64  `json:"guard_per_ap"` // evasion per held AP until the next turn
-	// ReactionsPerRound is the most attacks out of turn between two of an actor's turns (GD_S19_04).
+	// ReactionsPerRound is the reactions (opportunity attacks, no AP) an actor has between two of its turns (GD_S19_04).
 	ReactionsPerRound int64         `json:"reactions_per_round"`
 	Ability           actor.Ability `json:"-"`
 }

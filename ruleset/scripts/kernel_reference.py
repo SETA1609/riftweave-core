@@ -749,41 +749,45 @@ REASON_DISENGAGED = "disengaged"
 REASON_NOT_TRIGGERED = "not_triggered"
 REASON_NO_REACTION_LEFT = "no_reaction_left"
 REACTIONS_FROM_AGI = "reactions_from_agi"
+REACTIONS_PER_ROUND = "reactions_per_round"
 REASON_NOT_ENOUGH_HELD = "not_enough_held"
 OUT_OF_TURN_SUBJECT = {ACTION_OPPORTUNITY: "an opportunity attack", ACTION_READIED: "a readied attack"}
 
 
+def reactions_most(attacker):
+    """The reactions an actor has between two of its turns (docs/core/combat.md#attacks-out-of-turn):
+    reactions_per_round, or the AGI modifier (at least 1) with reactions_from_agi, then its
+    reactions_per_round modifiers (Phalanx +1)."""
+    modifiers = attacker.get("modifiers", [])
+    most = load_data("actions/core.json")["pool"]["reactions_per_round"]
+    if REACTIONS_FROM_AGI in granted_flags(modifiers):
+        agi = attacker.get("attributes", {}).get("agi", 0)
+        most = max(1, math.floor(evaluate_formula(load_data("formulas/attribute_modifier.json")["expression"], {}, {"attribute": agi})))
+    return apply_modifiers(most, [m for m in modifiers if m["target"] == REACTIONS_PER_ROUND])
+
+
 def run_out_of_turn(vector):
-    """An opportunity or a readied attack (docs/core/combat.md#attacks-out-of-turn): one attack
-    of the loadout, paid from the AP held (`ap`); with less held than the cost, or when it does not
-    fire, nothing is spent. The guard drops by the cost times guard_per_ap."""
+    """An opportunity or a readied attack (docs/core/combat.md#attacks-out-of-turn): one attack of
+    the loadout. An opportunity attack is a reaction, no AP; a readied attack is paid from the AP
+    held (`ap`) and spends no reaction. When it does not fire, nothing is spent."""
     action = vector["action"]
     subject = OUT_OF_TURN_SUBJECT[action]
-    if vector.get("ap") is None:
+    if action == ACTION_READIED and vector.get("ap") is None:
         return {"error": f"{subject} needs ap"}
     if action == ACTION_READIED and not vector.get("trigger"):
         return {"error": f"{subject} needs trigger"}
     row = attack_sequence_of(vector["loadout"])
     if row is None:
         return {"error": no_sequence_error(vector["loadout"])}
-    cost = row["ap"]
-    if action == ACTION_OPPORTUNITY:
-        modifiers = vector["attacker"].get("modifiers", [])
-        cost = max(0, apply_modifiers(cost, [m for m in modifiers if m["target"] == "opportunity_attack_cost"]))
+    cost = row["ap"] if action == ACTION_READIED else 0
     reason = None
-    actions = load_data("actions/core.json")
-    most = actions["pool"]["reactions_per_round"]
-    if REACTIONS_FROM_AGI in granted_flags(vector["attacker"].get("modifiers", [])):
-        agi = vector["attacker"].get("attributes", {}).get("agi", 0)
-        agi_modifier = evaluate_formula(load_data("formulas/attribute_modifier.json")["expression"], {}, {"attribute": agi})
-        most = max(1, math.floor(agi_modifier))
     if action == ACTION_OPPORTUNITY and vector.get("disengaged"):
         reason = REASON_DISENGAGED
+    elif action == ACTION_OPPORTUNITY and vector.get("reactions_used", 0) >= reactions_most(vector["attacker"]):
+        reason = REASON_NO_REACTION_LEFT
     elif action == ACTION_READIED and vector.get("event") != vector["trigger"]:
         reason = REASON_NOT_TRIGGERED
-    elif vector.get("reactions_used", 0) >= most:
-        reason = REASON_NO_REACTION_LEFT
-    elif vector["ap"] < cost:
+    elif action == ACTION_READIED and vector["ap"] < cost:
         reason = REASON_NOT_ENOUGH_HELD
     if reason:
         return {"action": action, "fired": False, "reason": reason, "sequence": row["key"], "ap": 0, "stamina": 0,
@@ -792,6 +796,7 @@ def run_out_of_turn(vector):
     result = run_attack_sequence({**inner, "action": "attack"})
     if "error" in result:
         return result
+    actions = load_data("actions/core.json")
     return {**result, "action": action, "fired": True, "ap": cost, "stamina": cost * actions["stamina_per_ap"],
             "guard_lost": cost * actions["pool"]["guard_per_ap"]}
 
