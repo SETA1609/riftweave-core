@@ -5,15 +5,15 @@
 - Modified: 2026-11-23
 - Do: Owner request, 2026-11-18. There are no grenades yet, and the elemental bolts and bullets of GD_S17_04 are defined against them: a grenade bursts for a **fixed** damage, an elemental round bursts for the **weapon's** damage. Add the grenade as a consumable.
   - **The throw:** a grenade is thrown with `throwing_weapons` as an `area` attack at a point in range (`rangeNormal` 6, `rangeLong` 18 [A]); every creature in its radius takes the area roll of [combat.md](../../core/combat.md) (delivery decides the dodge). It costs the `attack` AP, not `item` [A], so it competes with a shot.
-  - **Fixed damage:** the grenade's own dice and damage type, with no attribute, skill, material, or weapon perk added. Only the thrower perks of GD_S17_09 change it.
+  - **Fixed damage** (1d6 for a flask, owner review 2026-11-23; real grenades come later and hit harder): the grenade's own dice and damage type, with no attribute, skill, material, or weapon perk added. Only the thrower perks of GD_S17_09 change it.
   - **Rows** (names our own; damage types from `combat/damage_types.json`) [A]:
 
     | Grenade | Damage | Radius | On a hit |
     | --- | --- | --- | --- |
-    | Fire Flask | 2d6 fire | 1 | `burn` |
-    | Frost Flask | 2d6 frost | 1 | `slow` |
-    | Thunder Flask | 2d6 thunder | 2 | `stagger` |
-    | Acid Flask | 2d6 acid | 1 | `sunder_armor` |
+    | Fire Flask | 1d6 fire | 1 | `burn` |
+    | Frost Flask | 1d6 frost | 1 | `slow` |
+    | Thunder Flask | 1d6 thunder | 2 | `stagger` |
+    | Acid Flask | 1d6 acid | 1 | `sunder_armor` |
     | Smoke Pot | none | 2 | the area blocks sight for 3 turns (a new effect) |
 
     Each rider is an effect in the shared pool, with a channel for grenades that `validate.py` checks (`CHANNEL_REQUIREMENTS`), as it does for `ingredient` and `maneuver`.

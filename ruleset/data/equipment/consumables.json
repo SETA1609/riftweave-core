@@ -536,7 +536,7 @@
       "consumable": {
         "delivery": "throw",
         "damage": {
-          "dice": "2d6",
+          "dice": "1d6",
           "type": "fire"
         },
         "radius": 1,
@@ -564,7 +564,7 @@
       "consumable": {
         "delivery": "throw",
         "damage": {
-          "dice": "2d6",
+          "dice": "1d6",
           "type": "frost"
         },
         "radius": 1,
@@ -591,7 +591,7 @@
       "consumable": {
         "delivery": "throw",
         "damage": {
-          "dice": "2d6",
+          "dice": "1d6",
           "type": "thunder"
         },
         "radius": 2,
@@ -618,7 +618,7 @@
       "consumable": {
         "delivery": "throw",
         "damage": {
-          "dice": "2d6",
+          "dice": "1d6",
           "type": "acid"
         },
         "radius": 1,

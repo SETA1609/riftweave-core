@@ -327,6 +327,8 @@ result         outcome outside   burst_distance over the radius: no roll, no dam
                effects           the grenade's riders on a hit, empty on a miss or an evade
 ```
 
+- **Flasks are the weak end** (owner, 2026-11-23): an alchemist's flask deals 1d6, below an average
+  weapon's die; real grenades come later (their own issue) and must out-damage a flask. [A]
 - **Fixed damage:** the grenade's own dice and damage type, with no attribute, skill, material, or
   weapon perk added. The thrower's skill decides the hit, not the damage; only the thrower perks of
   GD_S17_09 change it. [A]
@@ -340,10 +342,10 @@ result         outcome outside   burst_distance over the radius: no roll, no dam
 
 | Grenade | Damage | Radius | On a hit |
 | --- | --- | --- | --- |
-| Fire Flask | 2d6 fire | 1 | `burn` |
-| Frost Flask | 2d6 frost | 1 | `slow` |
-| Thunder Flask | 2d6 thunder | 2 | `stagger` |
-| Acid Flask | 2d6 acid | 1 | `sunder_armor` |
+| Fire Flask | 1d6 fire | 1 | `burn` |
+| Frost Flask | 1d6 frost | 1 | `slow` |
+| Thunder Flask | 1d6 thunder | 2 | `stagger` |
+| Acid Flask | 1d6 acid | 1 | `sunder_armor` |
 | Smoke Pot | none | 2 | `smoke_screen`, 3 turns |
 
 ## Not covered
