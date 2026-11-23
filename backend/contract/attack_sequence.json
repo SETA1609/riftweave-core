@@ -74,9 +74,9 @@
         "minItems": 1,
         "items": {
           "type": "object",
-          "description": "A combat defender (combat.json input defender), without the attack's rolls."
+          "description": "A combat defender (combat.json input defender), without the attack's rolls, and in_reach: false for a foe in range but not in reach (default true), which only a ranged strike may aim at or carry to (docs/core/combat.md#ranged-loadouts)."
         },
-        "description": "The foes in reach, in the order a carry picks them; foe 0 is a full attack's target."
+        "description": "The foes in reach or in range, in the order a carry picks them; foe 0 is a full attack's target."
       },
       "damage": {
         "type": "object",
@@ -145,6 +145,15 @@
       "after_parry": {
         "type": "boolean",
         "description": "The attacker parried a hit since their last strike: attack_after_parry adds to the first main-hand strike (Espada y Daga, docs/core/combat.md#fighting-stances)."
+      },
+      "ammunition": {
+        "type": "object",
+        "description": "The rounds each ranged hand carries, and for a loading weapon whether it holds one; a hand left out is not counted (docs/core/combat.md#ranged-loadouts).",
+        "properties": {
+          "main": { "type": "object", "properties": { "rounds": { "type": "integer", "minimum": 0 }, "loaded": { "type": "boolean" } }, "required": ["rounds"], "additionalProperties": false },
+          "off": { "type": "object", "properties": { "rounds": { "type": "integer", "minimum": 0 }, "loaded": { "type": "boolean" } }, "required": ["rounds"], "additionalProperties": false }
+        },
+        "additionalProperties": false
       }
     },
     "additionalProperties": false,
@@ -233,8 +242,19 @@
         "minimum": 0,
         "description": "Strikes lost because their foe dropped and nothing carried them."
       },
+      "ammunition": {
+        "type": "object",
+        "description": "With ammunition: the rounds each counted hand has left.",
+        "properties": {
+          "main": { "type": "object", "properties": { "rounds": { "type": "integer", "minimum": 0 }, "loaded": { "type": "boolean" } }, "required": ["rounds"], "additionalProperties": false },
+          "off": { "type": "object", "properties": { "rounds": { "type": "integer", "minimum": 0 }, "loaded": { "type": "boolean" } }, "required": ["rounds"], "additionalProperties": false }
+        },
+        "additionalProperties": false
+      },
+      "reloads": { "type": "integer", "minimum": 0, "description": "With ammunition: the reloads a full attack made from its own AP." },
+      "stopped": { "type": "integer", "minimum": 0, "description": "With ammunition: the strikes a full attack did not make, because a reload did not fit its AP or a hand had no rounds left." },
       "fired": { "type": "boolean", "description": "With opportunity: whether the attack happened." },
-      "reason": { "type": "string", "enum": ["disengaged", "no_reaction_left"], "description": "With opportunity, when it did not fire: why." }
+      "reason": { "type": "string", "enum": ["disengaged", "no_reaction_left", "ranged"], "description": "With opportunity, when it did not fire: why (ranged: a ranged main hand makes no opportunity attack)." }
     },
     "additionalProperties": false,
     "required": ["action", "sequence", "ap", "stamina", "strikes", "hp", "lost"]

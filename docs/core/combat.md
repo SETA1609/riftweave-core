@@ -173,7 +173,7 @@ crossed      a defender holding a weapon in each hand adds its modifiers on two_
 | Carry Through | Carry Through | 6 | `grant carry_through` | one carry per action |
 | Carry Through | Reaping Arc | 12 | `grant reaping_arc` | a carry for every drop |
 | Carry Through | Circle Cut | 18 | `grant can_circle_cut` | the circle cut action |
-| Extra strikes | Follow-Up | 6 | `add full_attack_strikes 1` | a full attack strikes once more at -20 |
+| Extra strikes | Follow-Up | 6 | `add full_attack_strikes 1` | a full attack strikes once more at -20, melee or ranged |
 | Extra strikes | Press On | 18 | `add full_attack_strikes 1` | and once more at -30 |
 | Two weapons | Off-Hand Drill | 4 | `add mainhand_penalty 10`, `add offhand_penalty 10` | both two-weapon penalties are 10 smaller |
 | Two weapons | Crossed Guard | 8 | `add two_weapon_evasion_band 5` | the evasion band +5 while holding two weapons |
@@ -181,6 +181,53 @@ crossed      a defender holding a weapon in each hand adds its modifiers on two_
 | Two weapons | Scissor Cut | 20 | `grant scissor_cut` | the off-hand dice once more |
 
 [V 2026-11-19, `attack_sequence.json` and `combat.json` vectors in Python and Go]
+
+### Ranged loadouts
+
+Owner request, 2026-11-18 (GD_S17_05): the full attack and the extra-strike perks work at range.
+Four hand kinds join the vocabulary for ranged weapons: a main hand `bow`, `hand_gun` (a hand
+crossbow or a pistol), `long_gun` (a two-handed crossbow, the arquebus, or the blunderbuss), or
+`light_thrown` (a light thrown weapon), and an off hand `hand_gun` or `light_thrown`. The four are
+`ranged_hands` in `attack_sequences/core.json`: a strike with one of them is a `ranged` strike
+(`combat`'s `range`), so a situation reads its `ranged` row (shooting into melee). [A]
+
+| Loadout | Attack AP | Strikes |
+| --- | --- | --- |
+| a bow | 3 | main 0 |
+| a hand crossbow or one pistol, off hand empty, a shield, or a buckler | 2 | main 0 |
+| a two-handed crossbow or a long gun | 3 | main 0 |
+| two pistols or two hand crossbows | 3 | main -10, off -20 |
+| one light thrown weapon in each hand | 3 | main -10, off -20 |
+| a light or one-handed melee weapon and a pistol, a hand crossbow, or a light thrown weapon (the mixed hand) | 4 | main -10, off -20 |
+
+```
+foes[i].in_reach   false: the foe is in range, not in reach (default true)
+aim                a melee strike goes to a foe in reach; a ranged strike to any foe
+carry              a melee strike carries to the first standing foe in reach, a ranged one to the
+                   first standing foe (carry_through and reaping_arc read "in range" at range)
+ammunition         optional, per hand: { main: { rounds, loaded }, off: { rounds, loaded } }
+                   each ranged strike of a counted hand spends one round
+loading            a loading hand fires once, then reloads before its next strike
+reload AP          the reload action's cost (2, Fast Reload -1), +1 when the other hand holds
+                   anything (full_attack.one_handed_reload_extra)
+in a full attack   a reload spends AP from the budget over the row's attack AP; a reload that
+                   does not fit ends the full attack, and its strikes left are stopped
+in an attack       a loading hand that is not loaded, or a hand with no rounds left, is an error
+result             ammunition: the rounds left per counted hand; reloads; stopped
+opportunity        a ranged main hand makes no opportunity attack (reason ranged)
+```
+
+- **The mixed hand** (owner 2026-11-18, the ranger): the melee strike goes to a foe in reach and
+  the ranged strike to any target in range, so one attack can cut one foe and shoot another. A
+  shot at a foe an ally is fighting takes the `shooting_into_melee` situation, as any shot does;
+  it reads only on the ranged strike. GD_S17_13's perks soften the penalty and the reload. [A]
+- **The extra-strike ladder is any weapon:** `follow_up` and `press_on` add main-hand strikes,
+  melee or ranged; a loading weapon's added strike needs a reload first. `circle_cut` stays
+  melee. [A]
+- **No opportunity attack at range** (owner, 2026-11-23, from GD_S19_04): a shooter's answer to a
+  moving foe is Trigger Watch (GD_S17_06); GD_S17_13's `ready_steel` is the perk exception.
+- **Aimed and full:** a full attack cannot be aimed; the held-breath maneuver (GD_S17_06) is the
+  aimed shot that spends a turn. [A]
 
 ## Fighting stances
 
