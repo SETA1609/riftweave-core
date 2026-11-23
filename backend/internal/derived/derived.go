@@ -40,10 +40,17 @@ func Compute(ruleset *data.Ruleset, character actor.Actor, modifiers []modifier.
 		if err != nil {
 			return nil, err
 		}
+		// The derived ap is the action pool, kept between its floor and cap (GD_S19_07).
+		if stat.Key == apTarget {
+			modifiedValue = min(max(modifiedValue, ruleset.Actions.Pool.Floor), ruleset.Actions.Pool.Cap)
+		}
 		values[index] = modifiedValue
 	}
 	return values, nil
 }
+
+// apTarget is the modifier target and derived stat of the action pool.
+const apTarget = "ap"
 
 // Run is the `derived` command: one field per derived stat.
 func Run(ruleset *data.Ruleset, input Input) (map[string]int64, error) {
@@ -94,7 +101,12 @@ func RunActions(ruleset *data.Ruleset, input ActionsInput) (ActionsResult, error
 		return ActionsResult{}, &data.MissingInputError{Subject: "actor", Needs: "the " + pool.Ability.String() + " attribute"}
 	}
 	var attributeValue int64 = input.Actor.Attributes.Get(pool.Ability)
-	var result ActionsResult = ActionsResult{Pool: pool.Base + formula.FloorDivide(attributeValue*pool.PerPoint, pool.PerPointDivisor)}
+	// Modifiers on ap change the pool, kept between its floor and cap (GD_S19_07).
+	poolValue, err := modifier.Value(pool.Base+formula.FloorDivide(attributeValue*pool.PerPoint, pool.PerPointDivisor), modifier.Target(input.Modifiers, apTarget), ruleset.Origins, 0, nil)
+	if err != nil {
+		return ActionsResult{}, err
+	}
+	var result ActionsResult = ActionsResult{Pool: min(max(poolValue, pool.Floor), pool.Cap)}
 	var squares int64 = 0
 	for _, key := range input.Actions {
 		action, err := ruleset.Actions.Actions.Require("action", key)
