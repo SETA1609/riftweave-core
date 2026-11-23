@@ -733,5 +733,101 @@
       "pool": 1,
       "available": 1
     }
+  },
+  {
+    "name": "combat start: pool 3 starts a fight on 2 AP",
+    "actor": {
+      "attributes": {
+        "agi": 3
+      }
+    },
+    "start": "combat",
+    "expect": {
+      "pool": 3,
+      "available": 2,
+      "cost": 0,
+      "held": 2,
+      "guard": 10,
+      "carry": 2,
+      "next_pool": 5
+    }
+  },
+  {
+    "name": "combat start: pool 4 starts a fight on 3 AP, one attack and nothing held",
+    "actor": {
+      "attributes": {
+        "agi": 6
+      }
+    },
+    "actions": [
+      "attack"
+    ],
+    "start": "combat",
+    "expect": {
+      "pool": 4,
+      "available": 3,
+      "cost": 3,
+      "held": 0,
+      "guard": 0,
+      "carry": 0,
+      "next_pool": 4
+    }
+  },
+  {
+    "name": "combat start: pool 5 starts a fight on 4 AP",
+    "actor": {
+      "attributes": {
+        "agi": 9
+      }
+    },
+    "start": "combat",
+    "expect": {
+      "pool": 5,
+      "available": 4
+    }
+  },
+  {
+    "name": "combat start: pool 2 is already the minimum, so the fight starts on 2",
+    "actor": {
+      "attributes": {
+        "agi": 0
+      }
+    },
+    "start": "combat",
+    "expect": {
+      "pool": 2,
+      "available": 2
+    }
+  },
+  {
+    "name": "combat start: an ambusher's surprise round has the full pool of 4",
+    "actor": {
+      "attributes": {
+        "agi": 6
+      }
+    },
+    "actions": [
+      "attack"
+    ],
+    "start": "surprise",
+    "expect": {
+      "pool": 4,
+      "available": 4,
+      "cost": 3,
+      "held": 1
+    }
+  },
+  {
+    "name": "combat start: a fight starts with nothing carried",
+    "actor": {
+      "attributes": {
+        "agi": 6
+      }
+    },
+    "start": "combat",
+    "carried": 2,
+    "expect": {
+      "error": "a fight starts with no carried AP"
+    }
   }
 ]

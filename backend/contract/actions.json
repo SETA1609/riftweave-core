@@ -32,7 +32,8 @@
         "type": "integer",
         "minimum": 0,
         "description": "Held AP spent before the actor's next turn, on overwatch (Trigger Watch, GD_S17_06); at most what is held."
-      }
+      },
+      "start": { "type": "string", "enum": ["combat", "surprise"], "description": "The first turn of a fight: combat starts on pool.combat_start, surprise (an ambusher's surprise round) on the full pool; either refuses carried AP (docs/core/actions.md#pool)." }
     },
     "additionalProperties": false,
     "required": [

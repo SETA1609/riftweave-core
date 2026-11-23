@@ -14,6 +14,7 @@ cap   = 10
 carry = 2            at most 2 held AP carry into the next pool (held AP, below)
 rest  = refill
 floor = 1            the pool after its modifiers on ap is never under 1 nor over cap
+start = max(pool - 1, 2), capped at pool    a fight's first turn (combat_start: less 1, minimum 2)
 ```
 
 The size matches the derived `ap` function. A turn starts with at most `cap` AP, carried AP included.
@@ -30,6 +31,16 @@ The size matches the derived `ap` function. A turn starts with at most `cap` AP,
 - **Slowed** already makes every action cost 1 AP more (`action_cost`), so it gains no `ap` modifier: one penalty to AP, not two. [V 2026-11-23, `conditions/core.json`]
 - **Floor and cap:** the pool after its modifiers is at least `pool.floor` (1) and at most `pool.cap` (10). [A]
  A short rest refills the pool. Fallout spends a small pool the same way.
+
+**A fight starts on a partial pool** (owner request, 2026-11-19, GD_S19_06; borrowed from Divinity: Original Sin 2, which starts a fight on 4 of a maximum 6). Each actor's first turn of a fight has `pool - 1` AP, at least 2 and never more than the pool, and nothing carried from before the fight; an ambusher acting in a surprise round has the full pool, also with nothing carried. Before, the actor first in initiative also acted on a full pool and a bank. [A]
+
+```
+actions input   start: combat     the first turn of a fight: available = start, carried refused
+                start: surprise   an ambusher's surprise round: available = pool, carried refused
+```
+
+- **The end of a fight** refills nothing: AP is per turn, and the next fight starts on the partial pool again. A short rest refills the pool, as before. [A]
+- **Perks and surprise:** a perk that changes the start is a later issue; the encounter tracker's `encounter_start` step (`BE_S08_07`) reads this rule for each actor. [A]
 
 ## Held AP
 
