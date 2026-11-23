@@ -285,7 +285,8 @@ def run_casting(vector):
     reagents = list(caster.get("reagents", []))
     if any(flag in rules["prevented_by"] for flag in caster.get("flags", [])):
         return {**result, "outcome": "prevented"}
-    paid = paid_cost(cost.get("mana", 0), caster["skills"][skill], vector.get("modifiers", []), rules)
+    # The mana is computed from the effects, never stored (DE_S02_05).
+    paid = paid_cost(spell_cost(spell), caster["skills"][skill], vector.get("modifiers", []), rules)
     if mana < paid:
         return {**result, "outcome": "no_mana"}
     for ref in cost.get("reagents", []):

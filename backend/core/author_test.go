@@ -71,7 +71,6 @@ func draftSpell() map[string]any {
 		"key": "authored_ember", "label": "Authored Ember", "description": "A test spell: a small flame.",
 		"color": "red", "level": 1, "delivery": "single",
 		"effects": []any{map[string]any{"effect": "core:effect/damage_fire", "magnitude": 6, "target": "ranged"}},
-		"cost":    map[string]any{"mana": 4},
 	}
 }
 

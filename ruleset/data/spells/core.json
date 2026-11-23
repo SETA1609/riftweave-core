@@ -14,10 +14,7 @@
           "magnitude": 8,
           "target": "ranged"
         }
-      ],
-      "cost": {
-        "mana": 6
-      }
+      ]
     },
     {
       "key": "force_dart",
@@ -31,10 +28,7 @@
           "magnitude": 10,
           "target": "ranged"
         }
-      ],
-      "cost": {
-        "mana": 8
-      }
+      ]
     },
     {
       "key": "mend_wounds",
@@ -50,10 +44,7 @@
           "magnitude": 12,
           "target": "touch"
         }
-      ],
-      "cost": {
-        "mana": 6
-      }
+      ]
     },
     {
       "key": "blessing",
@@ -71,10 +62,7 @@
           "target": "touch",
           "duration_type": "temporal"
         }
-      ],
-      "cost": {
-        "mana": 12
-      }
+      ]
     },
     {
       "key": "ward",
@@ -93,9 +81,6 @@
           "duration_type": "temporal"
         }
       ],
-      "cost": {
-        "mana": 5
-      },
       "cooldown": 6
     },
     {
@@ -113,9 +98,6 @@
           "radius": 4
         }
       ],
-      "cost": {
-        "mana": 30
-      },
       "cooldown": 4
     },
     {
@@ -130,7 +112,6 @@
         "duration": 120
       },
       "cost": {
-        "mana": 36,
         "reagents": [
           "core:ingredient/nightshade"
         ]
@@ -149,10 +130,7 @@
           "magnitude": 4,
           "target": "ranged"
         }
-      ],
-      "cost": {
-        "mana": 12
-      }
+      ]
     },
     {
       "key": "frost_lance",
@@ -166,10 +144,7 @@
           "magnitude": 14,
           "target": "ranged"
         }
-      ],
-      "cost": {
-        "mana": 11
-      }
+      ]
     },
     {
       "key": "flame_shield",
@@ -186,10 +161,7 @@
           "duration": 60,
           "target": "self"
         }
-      ],
-      "cost": {
-        "mana": 30
-      }
+      ]
     },
     {
       "key": "chain_lightning",
@@ -204,10 +176,7 @@
           "target": "area",
           "radius": 3
         }
-      ],
-      "cost": {
-        "mana": 45
-      }
+      ]
     },
     {
       "key": "ice_storm",
@@ -222,10 +191,7 @@
           "target": "area",
           "radius": 4
         }
-      ],
-      "cost": {
-        "mana": 47
-      }
+      ]
     },
     {
       "key": "meteor",
@@ -247,10 +213,7 @@
           "target": "area",
           "radius": 4
         }
-      ],
-      "cost": {
-        "mana": 94
-      }
+      ]
     },
     {
       "key": "inferno",
@@ -265,10 +228,7 @@
           "target": "area",
           "radius": 6
         }
-      ],
-      "cost": {
-        "mana": 93
-      }
+      ]
     },
     {
       "key": "summon_familiar",
@@ -280,9 +240,6 @@
       "summon": {
         "group": "core:summon/familiar",
         "duration": 60
-      },
-      "cost": {
-        "mana": 18
       }
     },
     {
@@ -300,10 +257,7 @@
           "duration": 60,
           "target": "self"
         }
-      ],
-      "cost": {
-        "mana": 12
-      }
+      ]
     },
     {
       "key": "conjured_barrier",
@@ -320,10 +274,7 @@
           "duration": 30,
           "target": "self"
         }
-      ],
-      "cost": {
-        "mana": 24
-      }
+      ]
     },
     {
       "key": "steady_the_host",
@@ -339,10 +290,7 @@
           "duration": 60,
           "target": "self"
         }
-      ],
-      "cost": {
-        "mana": 15
-      }
+      ]
     },
     {
       "key": "conjured_blades",
@@ -358,10 +306,7 @@
           "target": "area",
           "radius": 2
         }
-      ],
-      "cost": {
-        "mana": 41
-      }
+      ]
     },
     {
       "key": "bound_bow",
@@ -378,10 +323,7 @@
           "duration": 120,
           "target": "self"
         }
-      ],
-      "cost": {
-        "mana": 24
-      }
+      ]
     },
     {
       "key": "summon_elemental",
@@ -394,9 +336,6 @@
       "summon": {
         "group": "core:summon/elemental",
         "duration": 120
-      },
-      "cost": {
-        "mana": 36
       }
     },
     {
@@ -410,9 +349,6 @@
         "summon": {
           "minion": true,
           "count": "1d3+1"
-        },
-        "cost": {
-          "mana": 108
         }
       }
     },
@@ -429,10 +365,7 @@
           "duration": 120,
           "target": "self"
         }
-      ],
-      "cost": {
-        "mana": 3
-      }
+      ]
     },
     {
       "key": "blinding_flash",
@@ -448,10 +381,7 @@
           "target": "area",
           "radius": 2
         }
-      ],
-      "cost": {
-        "mana": 14
-      }
+      ]
     },
     {
       "key": "blur",
@@ -468,10 +398,7 @@
           "duration": 30,
           "target": "self"
         }
-      ],
-      "cost": {
-        "mana": 9
-      }
+      ]
     },
     {
       "key": "mind_spike",
@@ -485,10 +412,7 @@
           "magnitude": 12,
           "target": "ranged"
         }
-      ],
-      "cost": {
-        "mana": 11
-      }
+      ]
     },
     {
       "key": "charm_person",
@@ -504,10 +428,7 @@
           "duration": 60,
           "target": "ranged"
         }
-      ],
-      "cost": {
-        "mana": 27
-      }
+      ]
     },
     {
       "key": "silence",
@@ -522,10 +443,7 @@
           "duration": 6,
           "target": "ranged"
         }
-      ],
-      "cost": {
-        "mana": 36
-      }
+      ]
     },
     {
       "key": "veil",
@@ -541,10 +459,7 @@
           "duration": 60,
           "target": "self"
         }
-      ],
-      "cost": {
-        "mana": 48
-      }
+      ]
     },
     {
       "key": "psychic_scream",
@@ -566,10 +481,7 @@
           "target": "area",
           "radius": 4
         }
-      ],
-      "cost": {
-        "mana": 49
-      }
+      ]
     },
     {
       "key": "mass_charm",
@@ -586,10 +498,7 @@
           "target": "area",
           "radius": 4
         }
-      ],
-      "cost": {
-        "mana": 38
-      }
+      ]
     },
     {
       "key": "cure_poison",
@@ -604,10 +513,7 @@
           "magnitude": 1,
           "target": "touch"
         }
-      ],
-      "cost": {
-        "mana": 2
-      }
+      ]
     },
     {
       "key": "vigor",
@@ -622,10 +528,7 @@
           "magnitude": 20,
           "target": "touch"
         }
-      ],
-      "cost": {
-        "mana": 10
-      }
+      ]
     },
     {
       "key": "regeneration",
@@ -641,10 +544,7 @@
           "duration": 20,
           "target": "touch"
         }
-      ],
-      "cost": {
-        "mana": 20
-      }
+      ]
     },
     {
       "key": "purity_ward",
@@ -660,10 +560,7 @@
           "duration": 60,
           "target": "touch"
         }
-      ],
-      "cost": {
-        "mana": 30
-      }
+      ]
     },
     {
       "key": "greater_heal",
@@ -678,10 +575,7 @@
           "magnitude": 60,
           "target": "touch"
         }
-      ],
-      "cost": {
-        "mana": 30
-      }
+      ]
     },
     {
       "key": "mass_heal",
@@ -697,10 +591,7 @@
           "target": "area",
           "radius": 4
         }
-      ],
-      "cost": {
-        "mana": 42
-      }
+      ]
     },
     {
       "key": "renewal",
@@ -717,10 +608,7 @@
           "target": "area",
           "radius": 4
         }
-      ],
-      "cost": {
-        "mana": 92
-      }
+      ]
     },
     {
       "key": "feather_fall",
@@ -735,10 +623,7 @@
           "duration": 60,
           "target": "self"
         }
-      ],
-      "cost": {
-        "mana": 6
-      }
+      ]
     },
     {
       "key": "corrode",
@@ -752,10 +637,7 @@
           "magnitude": 12,
           "target": "touch"
         }
-      ],
-      "cost": {
-        "mana": 6
-      }
+      ]
     },
     {
       "key": "slow",
@@ -770,10 +652,7 @@
           "duration": 10,
           "target": "ranged"
         }
-      ],
-      "cost": {
-        "mana": 15
-      }
+      ]
     },
     {
       "key": "stoneskin",
@@ -789,10 +668,7 @@
           "duration": 30,
           "target": "touch"
         }
-      ],
-      "cost": {
-        "mana": 36
-      }
+      ]
     },
     {
       "key": "paralyze",
@@ -807,10 +683,7 @@
           "duration": 6,
           "target": "ranged"
         }
-      ],
-      "cost": {
-        "mana": 36
-      }
+      ]
     },
     {
       "key": "acid_rain",
@@ -825,10 +698,7 @@
           "target": "area",
           "radius": 4
         }
-      ],
-      "cost": {
-        "mana": 32
-      }
+      ]
     },
     {
       "key": "petrify",
@@ -843,10 +713,7 @@
           "duration": 10,
           "target": "ranged"
         }
-      ],
-      "cost": {
-        "mana": 75
-      }
+      ]
     },
     {
       "key": "unlock",
@@ -860,10 +727,7 @@
           "magnitude": 2,
           "target": "touch"
         }
-      ],
-      "cost": {
-        "mana": 4
-      }
+      ]
     },
     {
       "key": "disarm_trap",
@@ -877,10 +741,7 @@
           "magnitude": 4,
           "target": "ranged"
         }
-      ],
-      "cost": {
-        "mana": 12
-      }
+      ]
     },
     {
       "key": "thunderclap",
@@ -895,10 +756,7 @@
           "target": "area",
           "radius": 2
         }
-      ],
-      "cost": {
-        "mana": 13
-      }
+      ]
     },
     {
       "key": "force_push",
@@ -913,10 +771,7 @@
           "duration": 3,
           "target": "ranged"
         }
-      ],
-      "cost": {
-        "mana": 9
-      }
+      ]
     },
     {
       "key": "force_wall",
@@ -933,10 +788,7 @@
           "duration": 30,
           "target": "self"
         }
-      ],
-      "cost": {
-        "mana": 30
-      }
+      ]
     },
     {
       "key": "greater_unlock",
@@ -951,10 +803,7 @@
             "magnitude": 15,
             "target": "touch"
           }
-        ],
-        "cost": {
-          "mana": 30
-        }
+        ]
       }
     },
     {
@@ -969,10 +818,7 @@
           "magnitude": 20,
           "target": "ranged"
         }
-      ],
-      "cost": {
-        "mana": 60
-      }
+      ]
     },
     {
       "key": "sonic_boom",
@@ -994,10 +840,7 @@
           "target": "area",
           "radius": 5
         }
-      ],
-      "cost": {
-        "mana": 80
-      }
+      ]
     },
     {
       "key": "telekinesis",
@@ -1012,10 +855,7 @@
           "duration": 20,
           "target": "ranged"
         }
-      ],
-      "cost": {
-        "mana": 3
-      }
+      ]
     },
     {
       "key": "sap_will",
@@ -1031,10 +871,7 @@
           "duration": 30,
           "target": "ranged"
         }
-      ],
-      "cost": {
-        "mana": 9
-      }
+      ]
     },
     {
       "key": "spell_absorption",
@@ -1050,10 +887,7 @@
           "duration": 30,
           "target": "self"
         }
-      ],
-      "cost": {
-        "mana": 18
-      }
+      ]
     },
     {
       "key": "dispel_ward",
@@ -1068,10 +902,7 @@
           "target": "area",
           "radius": 4
         }
-      ],
-      "cost": {
-        "mana": 56
-      }
+      ]
     },
     {
       "key": "mana_drain",
@@ -1087,10 +918,7 @@
           "duration": 10,
           "target": "ranged"
         }
-      ],
-      "cost": {
-        "mana": 14
-      }
+      ]
     },
     {
       "key": "greater_dispel",
@@ -1104,10 +932,7 @@
           "magnitude": 25,
           "target": "ranged"
         }
-      ],
-      "cost": {
-        "mana": 75
-      }
+      ]
     },
     {
       "key": "holy_light",
@@ -1122,10 +947,7 @@
           "magnitude": 6,
           "target": "touch"
         }
-      ],
-      "cost": {
-        "mana": 3
-      }
+      ]
     },
     {
       "key": "smite",
@@ -1139,10 +961,7 @@
           "magnitude": 12,
           "target": "ranged"
         }
-      ],
-      "cost": {
-        "mana": 9
-      }
+      ]
     },
     {
       "key": "holy_ward",
@@ -1158,10 +977,7 @@
           "duration": 60,
           "target": "touch"
         }
-      ],
-      "cost": {
-        "mana": 18
-      }
+      ]
     },
     {
       "key": "cleanse",
@@ -1176,10 +992,7 @@
           "magnitude": 1,
           "target": "touch"
         }
-      ],
-      "cost": {
-        "mana": 2
-      }
+      ]
     },
     {
       "key": "sunburst",
@@ -1194,10 +1007,7 @@
           "target": "area",
           "radius": 4
         }
-      ],
-      "cost": {
-        "mana": 42
-      }
+      ]
     },
     {
       "key": "divine_shield",
@@ -1214,10 +1024,7 @@
           "duration": 30,
           "target": "touch"
         }
-      ],
-      "cost": {
-        "mana": 72
-      }
+      ]
     },
     {
       "key": "drain_life",
@@ -1231,10 +1038,7 @@
           "magnitude": 8,
           "target": "ranged"
         }
-      ],
-      "cost": {
-        "mana": 8
-      }
+      ]
     },
     {
       "key": "curse",
@@ -1249,10 +1053,7 @@
           "duration": 60,
           "target": "ranged"
         }
-      ],
-      "cost": {
-        "mana": 27
-      }
+      ]
     },
     {
       "key": "bone_armor",
@@ -1268,10 +1069,7 @@
           "duration": 30,
           "target": "self"
         }
-      ],
-      "cost": {
-        "mana": 30
-      }
+      ]
     },
     {
       "key": "wither",
@@ -1287,10 +1085,7 @@
           "duration": 60,
           "target": "ranged"
         }
-      ],
-      "cost": {
-        "mana": 18
-      }
+      ]
     },
     {
       "key": "raise_horde",
@@ -1303,9 +1098,6 @@
         "summon": {
           "minion": true,
           "count": "1d3+1"
-        },
-        "cost": {
-          "mana": 108
         }
       }
     },
@@ -1327,10 +1119,7 @@
           "duration": 3,
           "target": "ranged"
         }
-      ],
-      "cost": {
-        "mana": 63
-      }
+      ]
     },
     {
       "key": "divine_intervention",
@@ -1344,10 +1133,7 @@
           "magnitude": 1,
           "target": "world"
         }
-      ],
-      "cost": {
-        "mana": 30
-      }
+      ]
     },
     {
       "key": "mark",
@@ -1361,10 +1147,7 @@
           "magnitude": 1,
           "target": "self"
         }
-      ],
-      "cost": {
-        "mana": 5
-      }
+      ]
     },
     {
       "key": "recall",
@@ -1378,10 +1161,7 @@
           "magnitude": 1,
           "target": "world"
         }
-      ],
-      "cost": {
-        "mana": 30
-      }
+      ]
     },
     {
       "key": "pocket_storage",
@@ -1395,10 +1175,7 @@
           "magnitude": 1,
           "target": "self"
         }
-      ],
-      "cost": {
-        "mana": 4
-      }
+      ]
     }
   ]
 }

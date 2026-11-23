@@ -250,7 +250,7 @@ class TestSpellKnowledge(unittest.TestCase):
             with self.subTest(shape=shape):
                 row = rows[key]
                 self.assertEqual([applied["target"] for applied in row["effects"]], [target])
-                self.assertNotIn("reagents", row["cost"])
+                self.assertNotIn("reagents", row.get("cost", {}))
                 self.assertFalse(row.get("save") or row.get("concentration"))
 
     def test_a_template_costs_and_thresholds_what_crafting_it_does(self):
@@ -368,7 +368,7 @@ class TestSpellsComposeFromABaseSpell(unittest.TestCase):
 
     BASE = {"key": "raise_thrall", "label": "Raise Thrall", "description": "A base.", "color": "black", "level": 8,
             "effects": [{"effect": "core:effect/summon", "parameter": "core:summon/undead", "magnitude": 1, "target": "ranged"}],
-            "cost": {"mana": 36, "reagents": ["core:ingredient/nightshade"]}, "save": {"attribute": "wil", "skill": "lore"}}
+            "cost": {"reagents": ["core:ingredient/nightshade"]}, "save": {"attribute": "wil", "skill": "lore"}}
 
     def resolve(self, rows):
         import validate
@@ -379,7 +379,7 @@ class TestSpellsComposeFromABaseSpell(unittest.TestCase):
 
     def test_a_composed_spell_is_its_base_plus_its_overrides_with_its_own_identity(self):
         row = {"key": "raise_lord", "label": "Raise Lord", "description": "Its own words.", "base": "core:spell/raise_thrall",
-               "overrides": {"level": 20, "cost": {"mana": 60}}}
+               "overrides": {"level": 20}}
         rows, errors = self.resolve([self.BASE, row])
         self.assertEqual(errors, [])
         composed = rows[1]
@@ -393,9 +393,9 @@ class TestSpellsComposeFromABaseSpell(unittest.TestCase):
 
     def test_an_override_of_one_field_of_a_block_keeps_the_blocks_other_fields(self):
         row = {"key": "raise_lord", "label": "Raise Lord", "base": "core:spell/raise_thrall",
-               "overrides": {"cost": {"mana": 60}, "save": {"skill": "insight"}}}
+               "overrides": {"cost": {"reagents": ["core:ingredient/glowcap"]}, "save": {"skill": "insight"}}}
         composed = self.resolve([self.BASE, row])[0][1]
-        self.assertEqual(composed["cost"], {"mana": 60, "reagents": ["core:ingredient/nightshade"]})
+        self.assertEqual(composed["cost"], {"reagents": ["core:ingredient/glowcap"]})
         self.assertEqual(composed["save"], {"attribute": "wil", "skill": "insight"})
 
     def test_a_base_that_does_not_resolve_or_names_a_base_fails(self):
@@ -410,8 +410,7 @@ class TestSpellsComposeFromABaseSpell(unittest.TestCase):
         self.assertEqual(raw["greater_unlock"].get("base"), "core:spell/unlock")
         composed = {row["key"]: row for row in self.resolve(list(raw.values()))[0]}["greater_unlock"]
         self.assertEqual(composed, {"key": "greater_unlock", "label": "Greater Unlock", "description": "Force a lock of level 15 or below.",
-                                    "color": "indigo", "level": 15, "effects": [{"effect": "core:effect/unlock", "magnitude": 15, "target": "touch"}],
-                                    "cost": {"mana": 30}})
+                                    "color": "indigo", "level": 15, "effects": [{"effect": "core:effect/unlock", "magnitude": 15, "target": "touch"}]})
 
 
 if __name__ == "__main__":

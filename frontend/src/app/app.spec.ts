@@ -121,7 +121,7 @@ const fakeApi = {
 
 /** fire_bolt as spells/core.json writes it, which the fake author loads. */
 const FIRE_BOLT = { key: 'fire_bolt', label: 'Fire Bolt', description: 'Hurl a mote of fire at a target.', color: 'red', level: 1, delivery: 'single',
-  template: true, effects: [{ effect: 'core:effect/damage_fire', magnitude: 8, target: 'ranged' }], cost: { mana: 6 } };
+  template: true, effects: [{ effect: 'core:effect/damage_fire', magnitude: 8, target: 'ranged' }] };
 
 beforeEach(() => {
   sent.length = 0;

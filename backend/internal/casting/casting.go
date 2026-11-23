@@ -15,6 +15,7 @@ import (
 	"github.com/SETA1609/riftweave-core/backend/internal/data"
 	"github.com/SETA1609/riftweave-core/backend/internal/modifier"
 	"github.com/SETA1609/riftweave-core/backend/internal/resolution"
+	"github.com/SETA1609/riftweave-core/backend/internal/spellcraft"
 )
 
 // dispelEffect is the effect whose magnitude ends standing spells of that level or below.
@@ -326,7 +327,12 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 			return result, nil
 		}
 	}
-	paid, err := paidCost(ruleset, spell.Cost.Mana, skillValue, input.Modifiers)
+	// The mana is computed from the effects, never stored (DE_S02_05).
+	mana, err := spellcraft.SpellMana(ruleset, spell)
+	if err != nil {
+		return Result{}, err
+	}
+	paid, err := paidCost(ruleset, mana, skillValue, input.Modifiers)
 	if err != nil {
 		return Result{}, err
 	}

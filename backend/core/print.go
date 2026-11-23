@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/SETA1609/riftweave-core/backend/internal/data"
+	"github.com/SETA1609/riftweave-core/backend/internal/spellcraft"
 	"github.com/SETA1609/riftweave-core/backend/internal/stored"
 )
 
@@ -258,10 +259,15 @@ func printSpell(ruleset *data.Ruleset, key string) (string, []pageSection, error
 	if err != nil {
 		return "", nil, err
 	}
+	// The mana is computed from the effects, never stored (DE_S02_05).
+	mana, err := spellcraft.SpellMana(ruleset, spell)
+	if err != nil {
+		return "", nil, err
+	}
 	rows := []row{
 		{Label: "skill", Value: spell.Color + "_magic"},
 		{Label: "level", Attribute: "stat", Name: "level", Value: spell.Level},
-		{Label: "mana", Attribute: "stat", Name: "mana", Value: spell.Cost.Mana},
+		{Label: "mana", Attribute: "stat", Name: "mana", Value: mana},
 	}
 	if len(spell.Cost.Reagents) > 0 {
 		rows = append(rows, row{Label: "reagents", Value: strings.Join(spell.Cost.Reagents, ", ")})
