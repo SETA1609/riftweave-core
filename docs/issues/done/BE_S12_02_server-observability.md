@@ -1,5 +1,6 @@
 #### BE_S12_02_server-observability The server is observable: OpenTelemetry traces, metrics, and logs, and health endpoints
-- Status: review
+- Status: done
+- Merged: #444, 2026-11-23
 - Priority: medium
 - Needs: APP-43
 - Was: APP-44
