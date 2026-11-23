@@ -1,5 +1,6 @@
 #### GD_S20_02_custom-monster-rules A custom monster computes like a character, without a player's limits
-- Status: review
+- Status: done
+- Merged: #438, 2026-11-23
 - Priority: high
 - Needs: —
 - Modified: 2026-11-21
