@@ -5787,7 +5787,7 @@
     }
   },
   {
-    "name": "grenade: a Fire Flask at the point hits for its own 2d6 fire, and burn lands",
+    "name": "grenade: a Fire Flask at the point hits for its own 1d6 fire, and burn lands",
     "attacker": {
       "skill": 72,
       "roll": 40,
@@ -5804,7 +5804,7 @@
       }
     },
     "damage": {
-      "roll": 7
+      "roll": 5
     },
     "grenade": "core:consumable/fire_flask",
     "delivery": "area",
@@ -5814,8 +5814,8 @@
       "target": 72,
       "margin": 32,
       "evaded": false,
-      "damage": 7,
-      "hp": 23,
+      "damage": 5,
+      "hp": 25,
       "effects": [
         {
           "effect": "core:effect/burn",
@@ -5843,7 +5843,7 @@
       }
     },
     "damage": {
-      "roll": 7
+      "roll": 5
     },
     "grenade": "core:consumable/fire_flask",
     "burst_distance": 1,
@@ -5851,8 +5851,8 @@
       "outcome": "hit",
       "margin": 32,
       "evaded": false,
-      "damage": 7,
-      "hp": 13,
+      "damage": 5,
+      "hp": 15,
       "effects": [
         {
           "effect": "core:effect/burn",
@@ -5880,7 +5880,7 @@
       }
     },
     "damage": {
-      "roll": 7
+      "roll": 5
     },
     "grenade": "core:consumable/fire_flask",
     "burst_distance": 2,
@@ -5909,15 +5909,15 @@
       }
     },
     "damage": {
-      "roll": 7
+      "roll": 5
     },
     "grenade": "core:consumable/fire_flask",
     "expect": {
       "outcome": "hit",
       "margin": 10,
       "evaded": true,
-      "damage": 3,
-      "hp": 27,
+      "damage": 2,
+      "hp": 28,
       "effects": []
     }
   },
@@ -5939,7 +5939,7 @@
       }
     },
     "damage": {
-      "roll": 7,
+      "roll": 5,
       "type": "thunder"
     },
     "grenade": "core:consumable/thunder_flask",
@@ -5947,8 +5947,8 @@
     "expect": {
       "outcome": "hit",
       "evaded": false,
-      "damage": 7,
-      "hp": 23,
+      "damage": 5,
+      "hp": 25,
       "effects": [
         {
           "effect": "core:effect/stagger",
@@ -5976,7 +5976,7 @@
       }
     },
     "damage": {
-      "roll": 7,
+      "roll": 5,
       "ability": "str"
     },
     "grenade": "core:consumable/fire_flask",
@@ -6002,11 +6002,11 @@
       }
     },
     "damage": {
-      "roll": 13
+      "roll": 7
     },
     "grenade": "core:consumable/fire_flask",
     "expect": {
-      "error": "the Fire Flask rolls 2d6: 13 is outside 2 to 12"
+      "error": "the Fire Flask rolls 1d6: 7 is outside 1 to 6"
     }
   },
   {
@@ -6027,7 +6027,7 @@
       }
     },
     "damage": {
-      "roll": 7,
+      "roll": 5,
       "type": "frost"
     },
     "grenade": "core:consumable/fire_flask",
@@ -6053,7 +6053,7 @@
       }
     },
     "damage": {
-      "roll": 7
+      "roll": 5
     },
     "grenade": "core:consumable/fire_flask",
     "delivery": "single",
@@ -6104,7 +6104,7 @@
       }
     },
     "damage": {
-      "roll": 7
+      "roll": 5
     },
     "grenade": "core:consumable/potion_minor_healing",
     "expect": {
@@ -6129,7 +6129,7 @@
       }
     },
     "damage": {
-      "roll": 7
+      "roll": 5
     },
     "grenade": "core:consumable/fire_flask",
     "ammunition": {

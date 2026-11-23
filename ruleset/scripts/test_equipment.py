@@ -195,10 +195,10 @@ class TestGrenades(unittest.TestCase):
         self.assertEqual(
             grenades,
             {
-                "fire_flask": ({"dice": "2d6", "type": "fire"}, 1),
-                "frost_flask": ({"dice": "2d6", "type": "frost"}, 1),
-                "thunder_flask": ({"dice": "2d6", "type": "thunder"}, 2),
-                "acid_flask": ({"dice": "2d6", "type": "acid"}, 1),
+                "fire_flask": ({"dice": "1d6", "type": "fire"}, 1),
+                "frost_flask": ({"dice": "1d6", "type": "frost"}, 1),
+                "thunder_flask": ({"dice": "1d6", "type": "thunder"}, 2),
+                "acid_flask": ({"dice": "1d6", "type": "acid"}, 1),
                 "smoke_pot": (None, 2),
             },
         )
