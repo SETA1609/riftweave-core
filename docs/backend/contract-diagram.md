@@ -254,6 +254,30 @@ classDiagram
     }
 ```
 
+## bestiary
+
+Mark what the players know of each monster, and show the bestiary as the GM or a player sees it.
+
+```mermaid
+classDiagram
+    class bestiary_input {
+        object check
+        List~object~ knowledge
+        enum level
+        string monster
+        List~string~ monsters
+        enum operation
+        string player
+        boolean players_see_only_known
+    }
+    class bestiary_result {
+        object check
+        List~object~ entries
+        List~object~ knowledge
+        enum level
+    }
+```
+
 ## casting
 
 Cast one spell: the gate, the mana and reagent cost, one resolution on the spell's color skill with the armor penalty, then the effects, concentration, and dispel.

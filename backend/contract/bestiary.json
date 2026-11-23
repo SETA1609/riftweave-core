@@ -1,0 +1,237 @@
+{
+  "$schema": "./command.schema.json",
+  "name": "bestiary",
+  "summary": "Mark what the players know of each monster, and show the bestiary as the GM or a player sees it.",
+  "documentation": "docs/backend/bestiary.md",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "operation": {
+        "type": "string",
+        "enum": [
+          "reveal",
+          "view"
+        ]
+      },
+      "knowledge": {
+        "type": "array",
+        "description": "The marks so far; a session fills them from its own.",
+        "items": {
+          "type": "object",
+          "description": "One knowledge mark: a monster at a level, for the table (no player) or one player.",
+          "properties": {
+            "monster": {
+              "type": "string",
+              "description": "The monster's ref, core:monster/<key> or module:<id>/monster/<key>."
+            },
+            "level": {
+              "type": "string",
+              "enum": [
+                "unknown",
+                "seen",
+                "known"
+              ]
+            },
+            "player": {
+              "type": "string",
+              "description": "The player the mark is for; absent, the whole table."
+            }
+          },
+          "required": [
+            "monster",
+            "level"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "monster": {
+        "type": "string",
+        "description": "With reveal: the monster's ref."
+      },
+      "level": {
+        "type": "string",
+        "enum": [
+          "unknown",
+          "seen",
+          "known"
+        ],
+        "description": "With reveal and no check: the new mark."
+      },
+      "player": {
+        "type": "string",
+        "description": "With reveal: whose mark, absent for the whole table. With view: whose view, absent for the GM's."
+      },
+      "check": {
+        "type": "object",
+        "description": "With reveal: a Lore check by the player instead of a level; a success marks the monster known for that player.",
+        "properties": {
+          "actor": {
+            "$ref": "common.json#/definitions/actor"
+          },
+          "modifiers": {
+            "$ref": "common.json#/definitions/modifiers"
+          },
+          "roll": {
+            "$ref": "common.json#/definitions/d100"
+          }
+        },
+        "required": [
+          "actor",
+          "roll"
+        ],
+        "additionalProperties": false
+      },
+      "monsters": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "With view: the monsters to show, in order (a catalog list's refs)."
+      },
+      "players_see_only_known": {
+        "type": "boolean",
+        "description": "With view: the settings box. Off (default), every entry shows in full."
+      }
+    },
+    "required": [
+      "operation"
+    ],
+    "additionalProperties": false
+  },
+  "result_schema": {
+    "type": "object",
+    "properties": {
+      "knowledge": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "description": "One knowledge mark: a monster at a level, for the table (no player) or one player.",
+          "properties": {
+            "monster": {
+              "type": "string",
+              "description": "The monster's ref, core:monster/<key> or module:<id>/monster/<key>."
+            },
+            "level": {
+              "type": "string",
+              "enum": [
+                "unknown",
+                "seen",
+                "known"
+              ]
+            },
+            "player": {
+              "type": "string",
+              "description": "The player the mark is for; absent, the whole table."
+            }
+          },
+          "required": [
+            "monster",
+            "level"
+          ],
+          "additionalProperties": false
+        },
+        "description": "With reveal: the marks after it."
+      },
+      "level": {
+        "type": "string",
+        "enum": [
+          "unknown",
+          "seen",
+          "known"
+        ],
+        "description": "With reveal: what the player (or the table) now knows of the monster, the higher of the table's and the player's mark."
+      },
+      "check": {
+        "type": "object",
+        "description": "With reveal and a check: the Lore check's result, as resolution returns it.",
+        "properties": {
+          "target": {
+            "type": "integer"
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "margin": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "target",
+          "success",
+          "margin",
+          "tags"
+        ],
+        "additionalProperties": false
+      },
+      "entries": {
+        "type": "array",
+        "description": "With view: the monsters the viewer sees, in the order given.",
+        "items": {
+          "type": "object",
+          "properties": {
+            "monster": {
+              "type": "string"
+            },
+            "label": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "size": {
+              "type": "string"
+            },
+            "knowledge": {
+              "type": "string",
+              "enum": [
+                "unknown",
+                "seen",
+                "known"
+              ],
+              "description": "The viewer's mark; for the GM, the table's."
+            },
+            "shows": {
+              "type": "string",
+              "enum": [
+                "seen",
+                "full"
+              ],
+              "description": "seen: name, description, and size; full: the whole sheet, which the caller reads with catalog and monster_sheet."
+            },
+            "players": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string",
+                "enum": [
+                  "unknown",
+                  "seen",
+                  "known"
+                ]
+              },
+              "description": "For the GM: each player's own mark."
+            }
+          },
+          "required": [
+            "monster",
+            "label",
+            "description",
+            "size",
+            "knowledge",
+            "shows"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "additionalProperties": false
+  }
+}
