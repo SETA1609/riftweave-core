@@ -1,5 +1,6 @@
 #### FE_S11_03_frontend-shared-locales One set of i18next locale files for the frontend and the human CLI (frontend)
-- Status: todo
+- Status: dropped
+- Dropped: superseded by PO_S23_02_cli-issues-to-command-and-mcp, with BE_S11_02_cli-shared-locales: with no terminal app the locale files have one reader, the frontend, which keeps them (owner, 2026-11-23).
 - Priority: medium
 - Needs: BE_S11_02_cli-shared-locales, FE_S11_01_frontend-i18next, APP-26
 - Was: APP-28

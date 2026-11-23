@@ -3,13 +3,12 @@
 - Priority: low
 - Needs: APP-43
 - Was: APP-45
-- Modified: 2026-11-18
+- Modified: 2026-11-23
 - Do: Owner request, 2026-11-18: the same OpenTelemetry records from `riftweave` and `riftweave play`, without breaking either.
   - **Agent CLI:** stdout stays the command's JSON and nothing else. With `--telemetry <file>` or `OTEL_EXPORTER_OTLP_ENDPOINT`, one span per command and its log records go to the file (OTLP/JSON lines) or the endpoint; otherwise nothing is emitted [A].
-  - **Human CLI:** the TUI owns the terminal, so records go to a file under the config directory (`riftweave/telemetry/`, rotated) when the `telemetry` setting is `local`, or to the endpoint for `export`; a screen or menu change is a span, and a command a child span.
-  - **Server mode:** the `Remote` runner (APP-26) sends `traceparent`, so a TUI call and the server's work are one trace.
-  - **Later, an SSH app** (the TUI served over SSH) uses the same records with one session id per connection; it needs its own issue first.
+  - **MCP server:** stdout carries the protocol, so records go to a file under the config directory (`riftweave/telemetry/`, rotated) when the `telemetry` setting is `local`, or to the endpoint for `export`; a tool call is a span, and the command it runs a child span. The terminal app is retired (PO_S23_02), so it has no records of its own.
+  - **Server mode:** the `Remote` runner (APP-26) sends `traceparent`, so a client's call and the server's work are one trace.
 - Keys: `--telemetry`
-- Files: ~6 (backend/cmd/riftweave/main.go, backend/cmd/riftweave/telemetry.go, backend/cmd/riftweave/play/network.go, backend/cmd/riftweave/main_test.go, backend/cmd/riftweave/play_test.go, docs/backend/cli.md)
+- Files: ~6 (backend/cmd/riftweave/main.go, backend/cmd/riftweave/telemetry.go, backend/cmd/riftweave/main_test.go, docs/backend/cli.md, docs/backend/mcp.md)
 - See: docs/backend/cli.md, docs/backend/observability.md (APP-43), docs/issues/done/APP-26.md
-- Done when: a CLI run with `--telemetry` writes one command span in OTLP/JSON and its stdout is unchanged; the TUI writes records only to its file; the `Remote` runner's request carries `traceparent`; `go test ./...` passes.
+- Done when: a CLI run with `--telemetry` writes one command span in OTLP/JSON and its stdout is unchanged; the MCP server writes records only to its file and leaves the protocol on stdout unchanged; the `Remote` runner's request carries `traceparent`; `go test ./...` passes.

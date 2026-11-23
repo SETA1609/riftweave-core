@@ -21,4 +21,4 @@ Format, ids, and roles: [README.md](README.md#ids), [ROLES.md](../issues/ROLES.m
 
 **GitHub:** story [#264](https://github.com/SETA1609/riftweave-core/issues/264); tasks [`BE_S07_03_character-list-cli` #295](https://github.com/SETA1609/riftweave-core/issues/295), [`FE_S07_04_character-list-page` #296](https://github.com/SETA1609/riftweave-core/issues/296), [`BE_S07_05_character-from-build-cli` #297](https://github.com/SETA1609/riftweave-core/issues/297), [`FE_S07_06_character-from-build-page` #298](https://github.com/SETA1609/riftweave-core/issues/298), [`GD_S07_07_creation-rules-as-data` #299](https://github.com/SETA1609/riftweave-core/issues/299), [`BE_S07_08_character-creation-command` #300](https://github.com/SETA1609/riftweave-core/issues/300), [`FE_S07_09_character-creation-cv-form` #301](https://github.com/SETA1609/riftweave-core/issues/301).
 
-**Done when:** every issue above is done, and a character made from a build in the frontend opens in the human CLI and back, as files.
+**Done when:** every issue above is done, and a character made from a build in the frontend opens in the agent CLI and back, as files (the human CLI is retired, PO_S23_02).

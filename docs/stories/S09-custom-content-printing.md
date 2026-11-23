@@ -4,7 +4,7 @@ Format, ids, and roles: [README.md](README.md#ids), [ROLES.md](../issues/ROLES.m
 
 ## S09 Custom content and printing
 
-**Goal:** Players and GMs author spells and monsters and print characters, spell cards, and stat blocks from both apps.
+**Goal:** Players and GMs author spells and monsters and print characters, spell cards, and stat blocks from the web app, over commands an agent also calls (PO_S23_02).
 
 **Issues:**
 
@@ -21,4 +21,4 @@ Format, ids, and roles: [README.md](README.md#ids), [ROLES.md](../issues/ROLES.m
 
 **GitHub:** story [#266](https://github.com/SETA1609/riftweave-core/issues/266); tasks [`BE_S09_01_spell-author-wasm` #314](https://github.com/SETA1609/riftweave-core/issues/314), [`FE_S09_02_spell-editor-page` #315](https://github.com/SETA1609/riftweave-core/issues/315), [`BE_S09_03_print-character-cli` #316](https://github.com/SETA1609/riftweave-core/issues/316), [`FE_S09_04_print-character-page` #317](https://github.com/SETA1609/riftweave-core/issues/317), [`BE_S09_05_spell-cards-print` #318](https://github.com/SETA1609/riftweave-core/issues/318), [`FE_S09_06_spell-cards-page` #319](https://github.com/SETA1609/riftweave-core/issues/319), [`BE_S09_07_custom-monster-print` #320](https://github.com/SETA1609/riftweave-core/issues/320), [`FE_S09_08_custom-monster-page` #321](https://github.com/SETA1609/riftweave-core/issues/321).
 
-**Done when:** every issue above is done, and both apps author a spell, print a character, a spell card sheet, and a custom monster, and the printed numbers equal the commands'.
+**Done when:** every issue above is done, and the web app and the commands author a spell, print a character, a spell card sheet, and a custom monster, and the printed numbers equal the commands'.
