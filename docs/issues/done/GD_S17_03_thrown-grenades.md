@@ -1,5 +1,6 @@
 #### GD_S17_03_thrown-grenades Grenades: thrown flasks with a fixed area damage
-- Status: review
+- Status: done
+- Merged: #456, 2026-11-23
 - Priority: medium
 - Needs: —
 - Modified: 2026-11-23
