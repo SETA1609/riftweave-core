@@ -1,6 +1,6 @@
 # Combat pipeline
 
-Modified: 2026-11-21
+Modified: 2026-11-23
 
 One attack, in order, from the roll to the HP lost. Every step reads the actor snapshot and data; none calls another system ([contract.md](contract.md)). The numbers are in `ruleset/data/combat/pipeline.json` (formula trees), `ruleset/data/combat/damage_types.json` (tags), and `ruleset/data/resolution/core.json` (the d100 function). [`docs/modules/combat.md`](../modules/combat.md) keeps the TTRPG and video-game commentary and the worked examples; this file is the order of operations they share. An attack is a weapon strike or an offensive spell; both run this order, and the attack's `delivery` decides which defense bands it meets. A cast's damage runs steps 2 to 8 with the cast check as its attack roll ([casting.md](casting.md#damage-to-a-target), M3-18). Save rolls for instant spells are in [casting.md](casting.md#delivery-and-saves); the magic layers (absorption, phase resistance) are not specified here. [U]
 
@@ -255,6 +255,8 @@ opportunity  a foe in your reach leaves it, and did not disengage:
 readied      the trigger you named with ready happens before your next turn:
              trigger enters_reach (a foe enters your reach) or acts_in_reach (a foe in reach acts)
              cost = the loadout's attack AP
+per round    reactions_used < the most a round allows: reactions_per_round (1), or with
+             reactions_from_agi max(1, the AGI modifier: AGI - 5); else no attack
 paid         from held AP; with less held than the cost, no attack
 fires        one attack, the strikes of the row, as attack_sequence runs on your turn
 held         the held AP drops by the cost, and the guard by cost × guard_per_ap (5 a point)
@@ -262,11 +264,13 @@ not fired    nothing is spent: the AP stays held, guards, and carries as any hel
 ```
 
 - **Opportunity attacks are a base rule, not a perk** (owner, 2026-11-19): they make reach, a held doorway, and Disengage matter. Leaving reach provokes one; Disengage (1 AP) prevents it. A reach weapon (`attack_reach` 2) threatens 2 units, others 1 ([actions.md](actions.md#how-far-a-move-goes)).
-- **Perks extend them**, never grant them: Phalanx lowers the cost (`opportunity_attack_cost`); later perks may add triggers (casting, drinking, or standing up in reach), more than one a round, or a wider threat. [A]
+- **One a round** (owner, 2026-11-23): an actor makes at most `reactions_per_round` (1, `actions/core.json`) attacks out of turn between two of its turns, opportunity and readied attacks together. The caller counts them (`reactions_used`), as it tracks reach. Watchful Blade (level 6, AGI 7) grants `reactions_from_agi`, which raises the most to the AGI modifier (`formulas/attribute_modifier.json`, AGI − 5), never below 1: AGI 8 makes 3 a round. Riposte is not an attack out of turn and does not count. [A]
+- **Perks extend them**, never grant them: Phalanx lowers the cost (`opportunity_attack_cost`), `reactions_from_agi` allows more a round; later perks may add triggers (casting, drinking, or standing up in reach) or a wider threat. [A]
+- **At a table, not in real time** (owner, 2026-11-23): the count and the held AP are the turn-based rule. A real-time game fires an opportunity attack automatically when a foe leaves reach, paid from stamina like any action, or leaves opportunity attacks out; the engine decides, the kernel keeps no clock for it.
 - **A readied attack** is the `ready` action ([actions.md](actions.md#costs)): on your turn you name its trigger and keep the attack's AP held. One readied attack at a time; it ends when you move or are knocked down. A ranged readied attack waits for GD_S17_05; this is melee reach. [A]
 - **Counter-attacks stay perks** (owner, 2026-11-19): Riposte (dodge stance only) is the only counter. A base counter would double the attacks in a fight, add a decision to every miss, and make dodging the best stance.
 
-The `attack_sequence` command runs both as the actions `opportunity` and `readied`, with `ap` as the AP held, and returns `fired`, the `reason` an attack did not fire (`disengaged`, `not_triggered`, or `not_enough_held`), the `ap` spent, and the `guard_lost`. [V 2026-11-21, `attack_sequence` vectors in Python and Go]
+The `attack_sequence` command runs both as the actions `opportunity` and `readied`, with `ap` as the AP held, and returns `fired`, the `reason` an attack did not fire (`disengaged`, `not_triggered`, `no_reaction_left`, or `not_enough_held`), the `ap` spent, and the `guard_lost`. [V 2026-11-21, `attack_sequence` vectors in Python and Go]
 
 ## Not covered
 
