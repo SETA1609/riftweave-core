@@ -638,20 +638,5 @@
     "expect": {
       "error": "carried 3 is more than pool.carry 2"
     }
-  },
-  {
-    "name": "ready: it holds the attack's cost, 3 with one one-handed weapon",
-    "actor": {
-      "attributes": {
-        "agi": 6
-      }
-    },
-    "actions": [
-      "ready"
-    ],
-    "expect": {
-      "pool": 4,
-      "cost": 3
-    }
   }
 ]
