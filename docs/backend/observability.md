@@ -1,6 +1,6 @@
 # Observability
 
-Modified: 2026-11-18
+Modified: 2026-11-23
 
 Every component reports in one format, OpenTelemetry's, so a trace from the frontend through
 the server reads as one trace, and a diagnostics file reads the same whichever app wrote it
@@ -103,6 +103,31 @@ A process that has an environment follows OpenTelemetry's variables over the fil
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | replaces `endpoint` for `export` | exporter.md [V 2026-11-18] |
 
 The page has no environment, so the frontend reads the file only.
+
+## The server
+
+`riftweave-server` emits what this page defines, with the OpenTelemetry Go SDK (otel v1.47.0,
+contrib v0.72.0), in `backend/cmd/riftweave-server` only (BE_S12_02):
+
+- **Traces:** a `SERVER` span per request (`otelhttp`, named `<METHOD> <path>`) that continues an
+  incoming W3C `traceparent`, and a child span `riftweave.command <name>` around each `core.Run`,
+  with `riftweave.command.name`; a refusal sets `error.type` (`unknown_command`, `bad_input`,
+  `not_defined`, `missing_input`, `rule`, `internal`) and the status `ERROR`.
+- **Metrics:** `riftweave.command.duration` per command (with `error.type` on a refusal), the HTTP
+  server metrics `otelhttp` records, and the Go runtime's.
+- **Logs:** `log/slog` as JSON lines on stderr, each with `trace_id` and `span_id` inside a span,
+  and the same records bridged to OpenTelemetry logs (`otelslog`): the startup line
+  (`service.version`, `riftweave.rules_version`) and every 4xx and 5xx with `error.type` and
+  `http.response.status_code`.
+- **Never a message:** a refusal's message may repeat what the player typed, so no record or
+  attribute carries it; only its kind. [V 2026-11-23, `TestARefusalIsLoggedWithTheTraceAndNoPlayerText`]
+- **Where it goes:** OTLP/HTTP when `OTEL_EXPORTER_OTLP_ENDPOINT` is set, through batch processors;
+  the stdout exporters into the file `--telemetry` names, which write the SDK's own JSON, not
+  OTLP/JSON [A]; nothing but the log lines with neither, or with `OTEL_SDK_DISABLED=true`.
+
+[V 2026-11-23, `telemetry_test.go` with in-memory exporters: a request span continuing the
+caller's trace with its command child span, the duration metric, and a log record carrying the
+trace id]
 
 ## The core stays pure
 
