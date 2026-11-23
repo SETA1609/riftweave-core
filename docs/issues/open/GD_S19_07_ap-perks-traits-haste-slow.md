@@ -1,8 +1,8 @@
 #### GD_S19_07_ap-perks-traits-haste-slow Perks, creation traits, and conditions that change the AP pool
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: GD_S19_05_ap-bank-cap-and-guard
-- Modified: 2026-11-19
+- Modified: 2026-11-23
 - Do: Owner request, 2026-11-19 (borrowed from Fallout's Action Boy and Bruiser, and Divinity's Lone Wolf, Glass Cannon, and Haste).
   - **The gap:** only cost reducers exist, and nothing raises the pool. Level never does, and AGI does only at 3, 6, and 9, so AGI points in between are wasted for AP [V 2026-11-19, `docs/core/actions.md#pool`].
   - **A late perk:** an Action Boy-like perk, `add ap 1`, at level 12 or above, once [A].
