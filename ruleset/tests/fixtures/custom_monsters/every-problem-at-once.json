@@ -1,0 +1,22 @@
+{
+  "description": "Two unknown references, two templates in one slot, a level over the maximum, and a skill over the cap, all reported at once.",
+  "row": {
+    "key": "gm_wreck",
+    "base": "core:creature_type/beast",
+    "templates": ["fire", "frost"],
+    "overrides": {
+      "label": "Wreck",
+      "level": 31,
+      "skills": { "blades": 120 },
+      "perks": [{ "perk": "core:feature/no_such_perk" }],
+      "attacks": [{ "key": "bite", "weapon": "core:weapon/no_such_weapon" }]
+    }
+  },
+  "problems": [
+    "reference core:feature/no_such_perk does not resolve",
+    "reference core:weapon/no_such_weapon does not resolve",
+    "monster 'gm_wreck': templates 'fire' and 'frost' are both in the element slot",
+    "level 31 is over the maximum level 30",
+    "skill \"blades\" 120 is over the skill cap 100"
+  ]
+}

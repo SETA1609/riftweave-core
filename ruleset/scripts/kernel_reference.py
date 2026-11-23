@@ -1191,9 +1191,31 @@ def scaled_hp(formula, share):
     return math.floor(formula * share + 1e-9)
 
 
+def monster_sheet_refusal(row):
+    """Why monster_sheet refuses a row, or None: a level over max_level, a written skill over
+    skill_cap, or an unknown perk. A custom monster drops a player's other limits
+    (docs/core/actor-sheet.md#a-custom-monster)."""
+    progression = load_data("progression/core.json")["progression"]
+    level = row.get("level", 1)
+    if level > progression["max_level"]:
+        return f"level {level} is over the maximum level {progression['max_level']}"
+    for key, value in sorted(row.get("skills", {}).items()):
+        if value > progression["skill_cap"]:
+            return f'skill "{key}" {value} is over the skill cap {progression["skill_cap"]}'
+    features = {feature["key"] for feature in load_data("features/core.json")["features"]}
+    for held in row.get("perks", []):
+        key = held["perk"].rsplit("/", 1)[-1]
+        if key not in features:
+            return f'perk "{key}" is not defined'
+    return None
+
+
 def run_monster_sheet(vector):
     """A monster's stats and skills by the player rules (docs/core/actor-sheet.md)."""
     row = vector["monster"]
+    refusal = monster_sheet_refusal(row)
+    if refusal:
+        return {"error": refusal}
     attributes = row.get("attributes", {})
     perk_modifiers = held_perk_modifiers(row.get("perks", []))
     actor = {"attributes": attributes, "level": row.get("level", 1)}

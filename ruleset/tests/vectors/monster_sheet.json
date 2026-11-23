@@ -525,5 +525,241 @@
     "expect": {
       "error": "perks summon_demonic and summon_otherworldly exclude each other"
     }
+  },
+  {
+    "name": "custom: attribute 15 at level 5 computes as written, past a player's creation cap",
+    "monster": {
+      "attributes": {
+        "str": 15,
+        "per": 15,
+        "end": 15,
+        "int": 15,
+        "wil": 15,
+        "agi": 15,
+        "cha": 15,
+        "lck": 15
+      },
+      "level": 5
+    },
+    "read_skills": [
+      "blades"
+    ],
+    "expect": {
+      "hp": 62,
+      "mp": 130,
+      "sp": 95,
+      "ap": 7,
+      "carry": 175,
+      "initiative": 15,
+      "toxicity_limit": 95,
+      "skills": {
+        "blades": 100
+      },
+      "maneuvers": []
+    }
+  },
+  {
+    "name": "custom: a perk without its prerequisite, Hardened Hide at END 3 and Carry Through at level 1",
+    "monster": {
+      "attributes": {
+        "str": 3,
+        "per": 3,
+        "end": 3,
+        "int": 3,
+        "wil": 3,
+        "agi": 3,
+        "cha": 3,
+        "lck": 3
+      },
+      "level": 1,
+      "perks": [
+        {
+          "perk": "core:feature/hardened_hide"
+        },
+        {
+          "perk": "core:feature/carry_through"
+        }
+      ]
+    },
+    "expect": {
+      "hp": 32,
+      "mp": 26,
+      "sp": 27,
+      "ap": 3,
+      "carry": 55,
+      "initiative": 3,
+      "toxicity_limit": 35,
+      "skills": {},
+      "maneuvers": []
+    }
+  },
+  {
+    "name": "custom: any perk at any rank, Hardened Hide at rank 5 where a player stops at 3",
+    "monster": {
+      "attributes": {
+        "str": 5,
+        "per": 5,
+        "end": 5,
+        "int": 5,
+        "wil": 5,
+        "agi": 5,
+        "cha": 5,
+        "lck": 5
+      },
+      "level": 1,
+      "perks": [
+        {
+          "perk": "core:feature/hardened_hide",
+          "rank": 5
+        }
+      ]
+    },
+    "expect": {
+      "hp": 98,
+      "mp": 42,
+      "sp": 37,
+      "ap": 3,
+      "carry": 75,
+      "initiative": 5,
+      "toxicity_limit": 45,
+      "skills": {},
+      "maneuvers": []
+    }
+  },
+  {
+    "name": "custom: a skill written at 90 at level 1 is the GM's value",
+    "monster": {
+      "attributes": {
+        "str": 3,
+        "per": 3,
+        "end": 3,
+        "int": 3,
+        "wil": 3,
+        "agi": 3,
+        "cha": 3,
+        "lck": 3
+      },
+      "level": 1,
+      "skills": {
+        "blades": 90
+      }
+    },
+    "read_skills": [
+      "blades"
+    ],
+    "expect": {
+      "hp": 17,
+      "mp": 26,
+      "sp": 27,
+      "ap": 3,
+      "carry": 55,
+      "initiative": 3,
+      "toxicity_limit": 35,
+      "skills": {
+        "blades": 90
+      },
+      "maneuvers": []
+    }
+  },
+  {
+    "name": "custom: level 30, the maximum",
+    "monster": {
+      "attributes": {
+        "str": 8,
+        "per": 8,
+        "end": 8,
+        "int": 8,
+        "wil": 8,
+        "agi": 8,
+        "cha": 8,
+        "lck": 8
+      },
+      "level": 30,
+      "role": "boss"
+    },
+    "read_skills": [
+      "evasion"
+    ],
+    "expect": {
+      "hp": 159,
+      "mp": 124,
+      "sp": 110,
+      "ap": 4,
+      "carry": 105,
+      "initiative": 8,
+      "toxicity_limit": 60,
+      "skills": {
+        "evasion": 100
+      },
+      "maneuvers": []
+    }
+  },
+  {
+    "name": "error: a custom monster's level over max_level",
+    "monster": {
+      "attributes": {
+        "str": 5,
+        "per": 5,
+        "end": 5,
+        "int": 5,
+        "wil": 5,
+        "agi": 5,
+        "cha": 5,
+        "lck": 5
+      },
+      "level": 31
+    },
+    "expect": {
+      "error": "level 31 is over the maximum level 30"
+    }
+  },
+  {
+    "name": "error: a written skill over skill_cap",
+    "monster": {
+      "attributes": {
+        "str": 5,
+        "per": 5,
+        "end": 5,
+        "int": 5,
+        "wil": 5,
+        "agi": 5,
+        "cha": 5,
+        "lck": 5
+      },
+      "level": 1,
+      "skills": {
+        "blades": 120
+      }
+    },
+    "read_skills": [
+      "blades"
+    ],
+    "expect": {
+      "error": "skill \"blades\" 120 is over the skill cap 100"
+    }
+  },
+  {
+    "name": "error: an unknown perk",
+    "monster": {
+      "attributes": {
+        "str": 5,
+        "per": 5,
+        "end": 5,
+        "int": 5,
+        "wil": 5,
+        "agi": 5,
+        "cha": 5,
+        "lck": 5
+      },
+      "level": 1,
+      "perks": [
+        {
+          "perk": "core:feature/no_such_perk"
+        }
+      ]
+    },
+    "expect": {
+      "error": "perk \"no_such_perk\" is not defined"
+    }
   }
 ]

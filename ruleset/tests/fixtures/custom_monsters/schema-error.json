@@ -1,0 +1,9 @@
+{
+  "description": "A row that resolves but breaks monster.schema.json reports the schema's message with its path.",
+  "row": {
+    "key": "gm_blob",
+    "base": "core:creature_type/ooze",
+    "overrides": { "label": "Blob", "level": 3, "size": "colossal" }
+  },
+  "problems": ["size: 'colossal' is not one of ['tiny', 'small', 'medium', 'large', 'huge']"]
+}
