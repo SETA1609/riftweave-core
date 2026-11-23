@@ -1,5 +1,6 @@
 #### FE_S22_01_design-guide-and-issues A design guide from the mockups, and its issues
-- Status: review
+- Status: done
+- Merged: #442, 2026-11-23
 - Priority: medium
 - Needs: —
 - Modified: 2026-11-23
