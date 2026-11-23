@@ -207,7 +207,7 @@ parry        a parry grant reads the defender's weapon_skill: a parry band of fl
 | Fencer's Measure | 12 | a light or one-handed blade or piercing weapon, off hand empty | `grant parry`, `add attack_single_opponent 10` | a parry band; +10 on every strike while only one foe is in reach. Replaces Duelist |
 | Espada y Daga | 8 | a blade or piercing weapon and a piercing light weapon (a dagger) | `grant parry`, `grant off_hand_parries`, `add attack_after_parry 10` | the dagger makes no strike in a full attack and parries; after a parry (`after_parry`) the first main-hand strike gains +10 |
 | Buckler Play | 6 | a light or one-handed weapon and a buckler | `grant block_with_weapon` | while blocking, the block band reads the better of Shields and the weapon skill. The bash is `boss_strike` (GD_S05_03) |
-| Phalanx | 8 | a piercing (spear) weapon and a shield | `add opportunity_attack_cost -1`, `grant shield_cover_to_ally` | opportunity attacks cost 2 AP ([out of turn](#attacks-out-of-turn)); an adjacent ally gains the shield's cover, which is pending: no kernel step has cover yet [U] |
+| Phalanx | 8 | a piercing (spear) weapon and a shield | `add reactions_per_round 1`, `grant shield_cover_to_ally` | one more reaction a round, so one more opportunity attack ([out of turn](#attacks-out-of-turn)); an adjacent ally gains the shield's cover, which is pending: no kernel step has cover yet [U] |
 | Long Guard | 10 | a weapon in both hands | `grant full_weight_doubled`, `grant carry_on_crit`, `add evasion_band -10` | Full Weight counts twice (pending, as `melee_damage` is); Carry Through also fires on a crit that leaves its foe standing (in an attack, only for a next strike aimed at that foe); the evasion band -10 |
 | Bare Knuckle | 6 | both hands empty | `add unarmed_damage 2`, `add full_attack_strikes 1` | +2 damage on each unarmed strike; one more strike in a full attack at -20 |
 | Forward Guard | 4 | any | `add attack_roll 10`, `add evasion_band -10` | +10 on every strike; the evasion band -10 |
@@ -247,30 +247,36 @@ Cover, flanking, prone, unseen, and shooting into melee are rows in `ruleset/dat
 
 ## Attacks out of turn
 
-Owner request, 2026-11-19 (GD_S19_04). Two attacks happen outside your turn. Both are one `attack` of the loadout, the same strikes at the same values, and both are paid from the AP you **held** at the end of your turn ([actions.md](actions.md#held-ap)), never from a reaction slot. There is still no reaction slot: only AP you chose not to spend. Fallout Tactics' overwatch is the inspiration for the readied attack; unlike it, the trigger is one of two named events, not a cone of fire. [A]
+Owner request, 2026-11-19 (GD_S19_04), changed 2026-11-23. Two attacks happen outside your turn, each one `attack` of the loadout, the same strikes at the same values. They are paid differently (owner, 2026-11-23):
+
+- An **opportunity attack** is a **reaction**: it costs no AP and spends one of the reactions you have between two of your turns.
+- A **readied attack** is AP you **held** at the end of your turn ([actions.md](actions.md#held-ap)): it costs the loadout's attack AP and spends no reaction.
+
+So a character built around reactions is a real choice: high AGI, Watchful Blade, and Phalanx strike every foe that slips past them, and keep their AP for their own turn. Fallout Tactics' overwatch is the inspiration for the readied attack; unlike it, the trigger is one of two named events, not a cone of fire. [A]
 
 ```
-opportunity  a foe in your reach leaves it, and did not disengage:
-             cost = the loadout's attack AP + opportunity_attack_cost (Phalanx -1), never below 0
+opportunity  a foe in your reach leaves it, and did not disengage
+             reactions: reactions_used < most, else no attack (no_reaction_left)
+             most = reactions_per_round (1), or with reactions_from_agi max(1, AGI - 5),
+                    then + each reactions_per_round modifier (Phalanx +1)
+             costs 0 AP, 0 stamina, and no guard
 readied      the trigger you named with ready happens before your next turn:
              trigger enters_reach (a foe enters your reach) or acts_in_reach (a foe in reach acts)
-             cost = the loadout's attack AP
-per round    reactions_used < the most a round allows: reactions_per_round (1), or with
-             reactions_from_agi max(1, the AGI modifier: AGI - 5); else no attack
-paid         from held AP; with less held than the cost, no attack
+             cost = the loadout's attack AP, from held AP; with less held, no attack
+             the held AP drops by the cost, and the guard by cost x guard_per_ap (5 a point)
+             spends no reaction
 fires        one attack, the strikes of the row, as attack_sequence runs on your turn
-held         the held AP drops by the cost, and the guard by cost × guard_per_ap (5 a point)
-not fired    nothing is spent: the AP stays held, guards, and carries as any held AP
+not fired    nothing is spent: no reaction, and the AP stays held, guards, and carries
 ```
 
 - **Opportunity attacks are a base rule, not a perk** (owner, 2026-11-19): they make reach, a held doorway, and Disengage matter. Leaving reach provokes one; Disengage (1 AP) prevents it. A reach weapon (`attack_reach` 2) threatens 2 units, others 1 ([actions.md](actions.md#how-far-a-move-goes)).
-- **One a round** (owner, 2026-11-23): an actor makes at most `reactions_per_round` (1, `actions/core.json`) attacks out of turn between two of its turns, opportunity and readied attacks together. The caller counts them (`reactions_used`), as it tracks reach. Watchful Blade (level 6, AGI 7) grants `reactions_from_agi`, which raises the most to the AGI modifier (`formulas/attribute_modifier.json`, AGI − 5), never below 1: AGI 8 makes 3 a round. Riposte is not an attack out of turn and does not count. [A]
-- **Perks extend them**, never grant them: Phalanx lowers the cost (`opportunity_attack_cost`), `reactions_from_agi` allows more a round; later perks may add triggers (casting, drinking, or standing up in reach) or a wider threat. [A]
-- **At a table, not in real time** (owner, 2026-11-23): the count and the held AP are the turn-based rule. A real-time game fires an opportunity attack automatically when a foe leaves reach, paid from stamina like any action, or leaves opportunity attacks out; the engine decides, the kernel keeps no clock for it.
+- **Reactions** (owner, 2026-11-23): everyone has `reactions_per_round` (1, `actions/core.json`) between two of their turns. The caller counts them (`reactions_used`), as it tracks reach. Watchful Blade (level 6, AGI 7) grants `reactions_from_agi`: the most becomes the AGI modifier (`formulas/attribute_modifier.json`, AGI − 5), never below 1, so AGI 8 has 3. Phalanx adds 1 (`add reactions_per_round 1`) on top of either. Riposte is not a reaction and does not count. [A]
+- **Perks extend them**, never grant them: Watchful Blade and Phalanx allow more a round; later perks may add triggers (casting, drinking, or standing up in reach) or a wider threat. [A]
+- **At a table, not in real time** (owner, 2026-11-23): reactions are the turn-based rule. A real-time game fires an opportunity attack automatically when a foe leaves reach, or leaves opportunity attacks out; the engine decides, and the kernel keeps no clock for it.
 - **A readied attack** is the `ready` action ([actions.md](actions.md#costs)): on your turn you name its trigger and keep the attack's AP held. One readied attack at a time; it ends when you move or are knocked down. A ranged readied attack waits for GD_S17_05; this is melee reach. [A]
 - **Counter-attacks stay perks** (owner, 2026-11-19): Riposte (dodge stance only) is the only counter. A base counter would double the attacks in a fight, add a decision to every miss, and make dodging the best stance.
 
-The `attack_sequence` command runs both as the actions `opportunity` and `readied`, with `ap` as the AP held, and returns `fired`, the `reason` an attack did not fire (`disengaged`, `not_triggered`, `no_reaction_left`, or `not_enough_held`), the `ap` spent, and the `guard_lost`. [V 2026-11-21, `attack_sequence` vectors in Python and Go]
+The `attack_sequence` command runs both as the actions `opportunity` (with `reactions_used`) and `readied` (with `ap`, the AP held), and returns `fired`, the `reason` an attack did not fire (`disengaged`, `not_triggered`, `no_reaction_left`, or `not_enough_held`), the `ap` spent, and the `guard_lost`. [V 2026-11-23, `attack_sequence` vectors in Python and Go]
 
 ## Not covered
 

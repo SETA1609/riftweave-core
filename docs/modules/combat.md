@@ -45,10 +45,9 @@ There is no bonus action and no reaction slot. An attack strikes with everything
 
 Leaving an enemy's reach without disengaging provokes one attack from that enemy, resolved as an ordinary attack of its loadout. Reach weapons (`attack_reach` 2) threaten 2 units, others 1. The rule is [combat.md#attacks-out-of-turn](../core/combat.md#attacks-out-of-turn) (GD_S19_04).
 
-- The attack costs the loadout's attack AP (2 to 5), paid from the AP the attacker **held** at the end of its turn, not from its next pool; with less held than that, there is no attack. Phalanx lowers the cost by 1. This replaces the flat 3 AP from the carried pool this section used to name, which predated the loadout costs, and the old "reaction" ([`docs/decisions/M1-01.md`](../decisions/M1-01.md)).
-- One attack out of turn a round, opportunity and readied together; a perk granting `reactions_from_agi` allows up to the AGI modifier (AGI − 5, at least 1). In real time an engine fires it automatically or leaves it out ([combat.md#attacks-out-of-turn](../core/combat.md#attacks-out-of-turn)).
+- The attack is a **reaction**: it costs no AP. Everyone has 1 reaction between two of their turns; Watchful Blade makes it the AGI modifier (AGI − 5, at least 1), and Phalanx adds 1 ([combat.md#attacks-out-of-turn](../core/combat.md#attacks-out-of-turn)). This replaces the flat 3 AP from the carried pool this section used to name, and the old "reaction slot" ([`docs/decisions/M1-01.md`](../decisions/M1-01.md)). In real time an engine fires it automatically or leaves it out.
 - Disengage (1 AP) prevents it. Perks may add other triggers (casting in reach, standing up, drinking a potion). **[A]**
-- **Ready** is the same attack on a trigger you name: a foe entering your reach, or a foe in reach acting. A spearman who holds a doorway readies on `enters_reach` and strikes the first foe through it.
+- **Ready** is the same attack on a trigger you name, paid from held AP and spending no reaction: a foe entering your reach, or a foe in reach acting. A spearman who holds a doorway readies on `enters_reach` and strikes the first foe through it.
 
 ## 3. Defense
 

@@ -2,7 +2,7 @@
 
 Author: SETA1609
 
-Modified: 2026-11-21
+Modified: 2026-11-23
 
 One budget. Costs live in `ruleset/data/actions/core.json`. A turn spends AP. A real-time client spends stamina for the same actions, at a fixed rate. There is no bonus action and no reaction slot.
 
@@ -29,7 +29,7 @@ next pool  = min(pool + carry, cap)
 ```
 
 - **Guard.** While held, each AP gives +5 on `evasion`. A careful turn guards you; dodge (3 AP, double evasion) stays the stronger, deliberate choice.
-- **Spend it.** Held AP pays an opportunity attack or a readied attack at the loadout's attack cost ([combat.md](combat.md#attacks-out-of-turn)). The guard drops by what you spend: 4 held, 3 spent, +5 guard and 1 to carry. With less held than the cost, there is no attack.
+- **Spend it.** Held AP pays a readied attack at the loadout's attack cost ([combat.md](combat.md#attacks-out-of-turn)); an opportunity attack is a reaction and costs no AP. The guard drops by what you spend: 4 held, 3 spent, +5 guard and 1 to carry. With less held than the cost, there is no attack.
 - **Carry.** At the start of your next turn at most 2 of what is still held join the new pool; the rest is gone. Two quiet turns no longer bank two casts. Divinity: Original Sin 2 keeps the maximum near what a turn recovers (recover 4, maximum 6); a pool of 4 here peaks at 6.
 
 The `actions` command takes `carried` (at most `carry`) and `held_spent` (at most what is held) and returns `available`, `held`, `guard`, `carry`, and `next_pool`. [V 2026-11-21, `actions` vectors for pools 3, 4, and 5 in Python and Go]
