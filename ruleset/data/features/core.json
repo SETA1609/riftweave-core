@@ -4895,6 +4895,29 @@
       ]
     },
     {
+      "key": "watchful_blade",
+      "label": "Watchful Blade",
+      "description": "Every foe who turns their back near you pays for it: between two of your turns you may strike out of turn as often as your agility allows, not just once.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 6,
+        "abilities": {
+          "agi": 7
+        }
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "reactions_from_agi",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:watchful_blade",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
       "key": "human_versatility",
       "label": "Versatility",
       "description": "You begin with one additional tag skill.",

@@ -747,6 +747,8 @@ ACTION_OPPORTUNITY = "opportunity"
 ACTION_READIED = "readied"
 REASON_DISENGAGED = "disengaged"
 REASON_NOT_TRIGGERED = "not_triggered"
+REASON_NO_REACTION_LEFT = "no_reaction_left"
+REACTIONS_FROM_AGI = "reactions_from_agi"
 REASON_NOT_ENOUGH_HELD = "not_enough_held"
 OUT_OF_TURN_SUBJECT = {ACTION_OPPORTUNITY: "an opportunity attack", ACTION_READIED: "a readied attack"}
 
@@ -769,20 +771,27 @@ def run_out_of_turn(vector):
         modifiers = vector["attacker"].get("modifiers", [])
         cost = max(0, apply_modifiers(cost, [m for m in modifiers if m["target"] == "opportunity_attack_cost"]))
     reason = None
+    actions = load_data("actions/core.json")
+    most = actions["pool"]["reactions_per_round"]
+    if REACTIONS_FROM_AGI in granted_flags(vector["attacker"].get("modifiers", [])):
+        agi = vector["attacker"].get("attributes", {}).get("agi", 0)
+        agi_modifier = evaluate_formula(load_data("formulas/attribute_modifier.json")["expression"], {}, {"attribute": agi})
+        most = max(1, math.floor(agi_modifier))
     if action == ACTION_OPPORTUNITY and vector.get("disengaged"):
         reason = REASON_DISENGAGED
     elif action == ACTION_READIED and vector.get("event") != vector["trigger"]:
         reason = REASON_NOT_TRIGGERED
+    elif vector.get("reactions_used", 0) >= most:
+        reason = REASON_NO_REACTION_LEFT
     elif vector["ap"] < cost:
         reason = REASON_NOT_ENOUGH_HELD
     if reason:
         return {"action": action, "fired": False, "reason": reason, "sequence": row["key"], "ap": 0, "stamina": 0,
                 "guard_lost": 0, "strikes": [], "hp": [foe["hp"] for foe in vector["foes"]], "lost": 0}
-    inner = {key: value for key, value in vector.items() if key not in ("ap", "trigger", "event", "disengaged")}
+    inner = {key: value for key, value in vector.items() if key not in ("ap", "trigger", "event", "disengaged", "reactions_used")}
     result = run_attack_sequence({**inner, "action": "attack"})
     if "error" in result:
         return result
-    actions = load_data("actions/core.json")
     return {**result, "action": action, "fired": True, "ap": cost, "stamina": cost * actions["stamina_per_ap"],
             "guard_lost": cost * actions["pool"]["guard_per_ap"]}
 

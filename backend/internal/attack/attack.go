@@ -13,6 +13,7 @@ import (
 	"github.com/SETA1609/riftweave-core/backend/internal/actor"
 	"github.com/SETA1609/riftweave-core/backend/internal/combat"
 	"github.com/SETA1609/riftweave-core/backend/internal/data"
+	"github.com/SETA1609/riftweave-core/backend/internal/formula"
 	"github.com/SETA1609/riftweave-core/backend/internal/modifier"
 )
 
@@ -60,9 +61,13 @@ const (
 	// actionAttack is the action an attack out of turn runs: the loadout's attack.
 	actionAttack = "attack"
 
-	ReasonDisengaged    = "disengaged"
-	ReasonNotTriggered  = "not_triggered"
-	ReasonNotEnoughHeld = "not_enough_held"
+	ReasonDisengaged     = "disengaged"
+	ReasonNotTriggered   = "not_triggered"
+	ReasonNotEnoughHeld  = "not_enough_held"
+	ReasonNoReactionLeft = "no_reaction_left"
+
+	// reactionsFromAGI is the flag that makes the AGI modifier the most attacks out of turn a round.
+	reactionsFromAGI = "reactions_from_agi"
 
 	// opportunityCost is the modifier target that changes an opportunity attack's AP (Phalanx).
 	opportunityCost = "opportunity_attack_cost"
@@ -95,6 +100,8 @@ type Input struct {
 	Trigger    string `json:"trigger"`
 	Event      string `json:"event"`
 	Disengaged bool   `json:"disengaged"`
+	// ReactionsUsed is the attacks out of turn the attacker already made since its last turn.
+	ReactionsUsed int64 `json:"reactions_used"`
 }
 
 // StrikeResult is one strike made.
@@ -163,12 +170,22 @@ func runOutOfTurn(ruleset *data.Ruleset, input Input) (Result, error) {
 		}
 		cost = max(0, changed)
 	}
+	var most int64 = ruleset.Actions.Pool.ReactionsPerRound
+	if slices.Contains(modifier.Flags(input.Attacker.Modifiers, 0, nil), reactionsFromAGI) {
+		agility, err := ruleset.AttributeModifier.Evaluate(nil, formula.Variable{Name: "attribute", Value: input.Attacker.Attributes.Get(actor.Agility)})
+		if err != nil {
+			return Result{}, err
+		}
+		most = max(1, agility)
+	}
 	var reason string
 	switch {
 	case input.Action == ActionOpportunity && input.Disengaged:
 		reason = ReasonDisengaged
 	case input.Action == ActionReadied && input.Event != input.Trigger:
 		reason = ReasonNotTriggered
+	case input.ReactionsUsed >= most:
+		reason = ReasonNoReactionLeft
 	case *input.AP < cost:
 		reason = ReasonNotEnoughHeld
 	}
@@ -186,7 +203,7 @@ func runOutOfTurn(ruleset *data.Ruleset, input Input) (Result, error) {
 		return Result{Action: input.Action, Sequence: row.Key, Strikes: []StrikeResult{}, HP: hp, Fired: &fired, Reason: reason, GuardLost: &none}, nil
 	}
 	var inner Input = input
-	inner.Action, inner.AP, inner.Trigger, inner.Event, inner.Disengaged = actionAttack, nil, "", "", false
+	inner.Action, inner.AP, inner.Trigger, inner.Event, inner.Disengaged, inner.ReactionsUsed = actionAttack, nil, "", "", false, 0
 	result, err := Run(ruleset, inner)
 	if err != nil {
 		return Result{}, err

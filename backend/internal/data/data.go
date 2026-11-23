@@ -100,14 +100,16 @@ type Action struct {
 
 // ActionPool is the action point pool formula's coefficients.
 type ActionPool struct {
-	Base            int64         `json:"base"`
-	PerPoint        int64         `json:"per_point"`
-	PerPointDivisor int64         `json:"per_point_divisor"`
-	Attribute       string        `json:"attribute"`
-	Cap             int64         `json:"cap"`
-	Carry           int64         `json:"carry"`        // the most held AP that carries into the next pool (GD_S19_05)
-	GuardPerAP      int64         `json:"guard_per_ap"` // evasion per held AP until the next turn
-	Ability         actor.Ability `json:"-"`
+	Base            int64  `json:"base"`
+	PerPoint        int64  `json:"per_point"`
+	PerPointDivisor int64  `json:"per_point_divisor"`
+	Attribute       string `json:"attribute"`
+	Cap             int64  `json:"cap"`
+	Carry           int64  `json:"carry"`        // the most held AP that carries into the next pool (GD_S19_05)
+	GuardPerAP      int64  `json:"guard_per_ap"` // evasion per held AP until the next turn
+	// ReactionsPerRound is the most attacks out of turn between two of an actor's turns (GD_S19_04).
+	ReactionsPerRound int64         `json:"reactions_per_round"`
+	Ability           actor.Ability `json:"-"`
 }
 
 // Actions is actions/core.json.
