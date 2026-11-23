@@ -92,6 +92,10 @@ type Input struct {
 	Summoning bool `json:"summoning"`
 	// Loadout is what the attacker holds: a maneuver's AP is then the loadout's attack AP.
 	Loadout *data.Loadout `json:"loadout"`
+	// Grenade is a core:consumable/<key> grenade thrown as an area attack, and BurstDistance the
+	// squares from its burst point to this defender (docs/core/combat.md#grenades, GD_S17_03).
+	Grenade       string `json:"grenade"`
+	BurstDistance int64  `json:"burst_distance"`
 }
 
 // besideSummon is the situation of a summon attacking the same target, so one is out.
@@ -352,6 +356,9 @@ const (
 // Run is one attack. With the ammunition input, a weapon that fires or throws spends one round,
 // and a loading weapon must hold one (docs/core/combat.md#ammunition).
 func Run(ruleset *data.Ruleset, input Input) (Result, error) {
+	if input.Grenade != "" {
+		return throwGrenade(ruleset, input)
+	}
 	var properties []string = input.Attacker.WeaponProperties
 	if input.Ammunition == nil || !(slices.Contains(properties, propertyAmmunition) || slices.Contains(properties, propertyThrown)) {
 		return strike(ruleset, input)

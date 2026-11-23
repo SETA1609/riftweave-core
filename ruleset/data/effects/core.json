@@ -949,6 +949,23 @@
       ]
     },
     {
+      "key": "smoke_screen",
+      "label": "Smoke Screen",
+      "description": "Thick smoke fills an area and blocks sight through it and within it for the duration.",
+      "category": "control",
+      "polarity": "neutral",
+      "magnitude_unit": "seconds",
+      "default_duration": 15,
+      "channels": [
+        "grenade"
+      ],
+      "tags": [
+        "control",
+        "vision",
+        "area"
+      ]
+    },
+    {
       "key": "charm",
       "label": "Charm",
       "description": "Clouds the target's mind, making them view the caster as a friend. Hostile action from the caster breaks the effect.",
@@ -1141,7 +1158,8 @@
         "coating",
         "ingredient",
         "trap",
-        "enchantment"
+        "enchantment",
+        "grenade"
       ],
       "tags": [
         "elemental",
@@ -1185,7 +1203,8 @@
         "spell",
         "coating",
         "trap",
-        "ingredient"
+        "ingredient",
+        "grenade"
       ],
       "tags": [
         "control",
@@ -1300,7 +1319,8 @@
         "spell",
         "coating",
         "innate",
-        "maneuver"
+        "maneuver",
+        "grenade"
       ],
       "tags": [
         "control",
@@ -1330,7 +1350,6 @@
     },
     {
       "key": "sunder_armor",
-      "reserved": true,
       "label": "Sunder Armor",
       "description": "Reduces the target's armor DR for a duration. Magnitude is the flat DR reduction. Stacks across multiple applications up to a cap.",
       "category": "control",
@@ -1342,7 +1361,8 @@
         "enchantment",
         "coating",
         "innate",
-        "spell"
+        "spell",
+        "grenade"
       ],
       "tags": [
         "combat",

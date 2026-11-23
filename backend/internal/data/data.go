@@ -962,6 +962,16 @@ type Consumable struct {
 	Delivery string
 	Effects  []ConsumableEffect
 	Toxicity int64 // what drinking it adds (docs/core/modifier.md#toxicity)
+	// Damage and Radius are a grenade's fixed area damage and burst; Damage is nil for a grenade
+	// that deals none (docs/core/combat.md#grenades).
+	Damage *GrenadeDamage
+	Radius int64
+}
+
+// GrenadeDamage is a grenade's own dice and damage type.
+type GrenadeDamage struct {
+	Dice string
+	Type string
 }
 
 // ConsumableEffect is one applied effect on a consumable; Magnitude is nil when it has none.

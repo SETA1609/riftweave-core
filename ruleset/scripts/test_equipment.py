@@ -164,3 +164,41 @@ class TestAmmunition(unittest.TestCase):
         rows = json.loads((DATA / "equipment" / "ammunition.json").read_text())["equipment"]
         counts = {row["ammunition"]["kind"]: row["ammunition"]["count"] for row in rows if "damage_type" not in row["ammunition"] and "effects" not in row["ammunition"]}
         self.assertEqual(counts, {"arrow": 20, "bolt": 20, "bullet": 10, "scatter": 10, "stone": 20})
+
+
+class TestGrenades(unittest.TestCase):
+    """GD_S17_03 (docs/core/combat.md#grenades): every grenade's riders carry the grenade channel,
+    and the five grenades of the spec are in the data."""
+
+    def test_the_data_has_no_grenade_problem(self):
+        self.assertEqual(validate.check_grenades(), [])
+
+    def test_a_grenade_whose_rider_lacks_the_grenade_channel_fails(self):
+        rows = [{"key": "fire_flask", "type": "grenade", "consumable": {"delivery": "throw", "effects": [{"effect": "core:effect/burn"}]}}]
+        channels = {"core:effect/burn": {"spell", "coating"}}
+        self.assertEqual(
+            validate.grenade_problems(rows, channels),
+            ["grenade fire_flask: effect core:effect/burn lacks the grenade channel"],
+        )
+
+    def test_a_grenade_must_be_thrown(self):
+        rows = [{"key": "fire_flask", "type": "grenade", "consumable": {"delivery": "drink", "effects": []}}]
+        self.assertEqual(validate.grenade_problems(rows, {}), ["grenade fire_flask is not thrown (delivery throw)"])
+
+    def test_the_five_grenades_of_the_spec(self):
+        rows = json.loads((DATA / "equipment" / "consumables.json").read_text())["equipment"]
+        grenades = {
+            row["key"]: (row["consumable"].get("damage"), row["consumable"]["radius"])
+            for row in rows
+            if row["type"] == "grenade"
+        }
+        self.assertEqual(
+            grenades,
+            {
+                "fire_flask": ({"dice": "1d6", "type": "fire"}, 1),
+                "frost_flask": ({"dice": "1d6", "type": "frost"}, 1),
+                "thunder_flask": ({"dice": "1d6", "type": "thunder"}, 2),
+                "acid_flask": ({"dice": "1d6", "type": "acid"}, 1),
+                "smoke_pot": (None, 2),
+            },
+        )

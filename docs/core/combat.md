@@ -308,6 +308,46 @@ result         ammunition: { rounds: rounds - 1, loaded: false for a loading wea
 - **At a table:** counting rounds is the rule; a table may stop counting plain ammunition and count
   only the special rounds, by leaving out the `ammunition` input for plain ones. [A]
 
+## Grenades
+
+Owner request, 2026-11-18 (GD_S17_03). A **grenade** is a consumable of type `grenade`, delivery
+`throw`, in `ruleset/data/equipment/consumables.json` (`core:consumable/<key>`). It is thrown with
+`throwing_weapons` as an `area` attack at a point in range (`range_normal` 6, `range_long` 18), and
+every creature within its `radius` of that point takes the area roll above: delivery, not damage
+type, decides the dodge. A throw costs the `attack` AP, not `item`, so it competes with a shot. [A]
+
+```
+combat input   grenade          core:consumable/<key>, a row of type grenade
+               burst_distance   squares from the burst point to this defender; default 0
+               damage.roll      the grenade's dice, rolled; damage.type may be left out
+refused        damage.ability, a maneuver, a called shot, or ammunition with a grenade
+               a delivery other than area; a grenade with no damage (the Smoke Pot)
+               a roll outside the grenade's dice, or a damage type that is not the grenade's
+result         outcome outside   burst_distance over the radius: no roll, no damage
+               effects           the grenade's riders on a hit, empty on a miss or an evade
+```
+
+- **Flasks are the weak end** (owner, 2026-11-23): an alchemist's flask deals 1d6, below an average
+  weapon's die; real grenades come later (their own issue) and must out-damage a flask. [A]
+- **Fixed damage:** the grenade's own dice and damage type, with no attribute, skill, material, or
+  weapon perk added. The thrower's skill decides the hit, not the damage; only the thrower perks of
+  GD_S17_09 change it. [A]
+- **Riders:** each grenade's `effects` are effects from the shared pool with the `grenade`
+  channel, which `validate.py` checks (`CHANNEL_REQUIREMENTS`). They land on a hit that is not
+  evaded, as a maneuver's do. [A]
+- **The Smoke Pot** deals no damage, so it is no attack: its effect fills the area and blocks
+  sight for 3 turns (`smoke_screen`, 15 seconds). [A]
+- **No toxicity:** a grenade is thrown, not drunk. Merchants stock them by level; crafting them
+  belongs to the alchemy module (GD_S15_02). [A]
+
+| Grenade | Damage | Radius | On a hit |
+| --- | --- | --- | --- |
+| Fire Flask | 1d6 fire | 1 | `burn` |
+| Frost Flask | 1d6 frost | 1 | `slow` |
+| Thunder Flask | 1d6 thunder | 2 | `stagger` |
+| Acid Flask | 1d6 acid | 1 | `sunder_armor` |
+| Smoke Pot | none | 2 | `smoke_screen`, 3 turns |
+
 ## Not covered
 
 Armor and encumbrance penalties on the evasion rate in the vectors, hit quality (`solid` and `glancing` margins), condition riders on a crit, range bands for called shots (the extra −10 beyond short range), the perks that halve called-shot penalties, and the video-game timing windows. Difficult terrain is movement, not an attack term: it belongs to an optional positioning module, and standing up is an action row (2 AP). They add terms to the same steps; none changes the order. [U]

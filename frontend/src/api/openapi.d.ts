@@ -2032,13 +2032,15 @@ export interface operations {
                         /** @description The carried weapon's properties, which a maneuver may need. */
                         weapon_properties?: string[];
                     };
+                    /** @description With a grenade: squares from the burst point to this defender; over the grenade's radius, the outcome is outside. Default 0. */
+                    burst_distance?: number;
                     /** @description A called_shots key in ruleset/data/combat/situations.json. */
                     called_shot?: components["schemas"]["key"];
                     damage: {
                         /** @description The attacker attribute whose modifier adds to the roll. */
                         ability?: components["schemas"]["ruleset_ability"];
                         roll: number;
-                        type: components["schemas"]["key"];
+                        type?: components["schemas"]["key"];
                     };
                     defender: {
                         /**
@@ -2072,6 +2074,8 @@ export interface operations {
                     };
                     /** @enum {string} */
                     delivery?: "single" | "area" | "instant";
+                    /** @description A grenade thrown as an area attack: its own dice and damage type with no ability added, and its riders on a hit (docs/core/combat.md#grenades). With it, delivery is area and damage.type may be left out. */
+                    grenade?: string;
                     /** @description What the attacker holds: a maneuver's AP is then the loadout's attack AP (attack_sequences/core.json) plus its own. A loadout no attack sequence covers is an error. */
                     loadout?: components["schemas"]["ruleset_loadout"];
                     /** @description A maneuvers key in ruleset/data/maneuvers/core.json: the attack is performed as that maneuver (docs/core/actions.md#maneuvers). */
@@ -2086,7 +2090,7 @@ export interface operations {
                     situations?: components["schemas"]["key"][];
                     /** @description Whether the attacker has an active summon (not a minion), for its while_summoning modifiers. Default false; the beside_summon situation implies true (docs/core/modifier.md). */
                     summoning?: boolean;
-                };
+                } & unknown;
             };
         };
         responses: {
@@ -2111,7 +2115,7 @@ export interface operations {
                         counter?: boolean;
                         crit: boolean;
                         damage: number;
-                        /** @description With a maneuver or a rider: its applied effects on a hit, empty on a miss or an evade. With a save, they land only when the defender fails it. */
+                        /** @description With a maneuver, a rider, or a grenade: its applied effects on a hit, empty on a miss or an evade. With a save, they land only when the defender fails it. */
                         effects?: Record<string, never>[];
                         evaded: boolean;
                         /** @description The evasion band: a margin under it is evaded. */
@@ -2121,7 +2125,7 @@ export interface operations {
                         hp: number;
                         margin: number | null;
                         /** @enum {string} */
-                        outcome: "hit" | "miss" | "fumble" | "evaded" | "blocked";
+                        outcome: "hit" | "miss" | "fumble" | "evaded" | "blocked" | "outside";
                         /** @description The parry band stopped the hit (outcome blocked). */
                         parried: boolean;
                         /** @description A parrying stance's band, under the block band: a margin in it is blocked and parried. 0 without a parry grant, against non-physical damage, or for an instant attack. */

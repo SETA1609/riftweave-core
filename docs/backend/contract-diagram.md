@@ -356,10 +356,12 @@ classDiagram
     class combat_input {
         object ammunition
         object attacker
+        integer burst_distance
         key called_shot
         object damage
         object defender
         enum delivery
+        string grenade
         loadout loadout
         key maneuver
         modifiers modifiers

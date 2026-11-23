@@ -36,6 +36,7 @@ CHANNEL_REQUIREMENTS = {
     "ingredient": "ingredient",
     "enchantment": "enchantment",
     "maneuver": "maneuver",
+    "grenade": "grenade",
 }
 
 
@@ -2116,6 +2117,34 @@ def ammunition_problems(bases, rows):
     return problems
 
 
+GRENADE_TYPE = "grenade"
+THROWN = "throw"
+
+
+def grenade_problems(rows, effect_channels):
+    """GD_S17_03 (docs/core/combat.md#grenades): a grenade is thrown, and each of its riders is an
+    effect with the grenade channel (CHANNEL_REQUIREMENTS)."""
+    problems = []
+    for row in rows:
+        if row.get("type") != GRENADE_TYPE:
+            continue
+        consumable = row.get("consumable") or {}
+        if consumable.get("delivery") != THROWN:
+            problems.append(f"grenade {row['key']} is not thrown (delivery {THROWN})")
+            continue
+        for applied in consumable.get("effects", []):
+            ref = applied.get("effect")
+            if not validate_effect_channel(ref, GRENADE_TYPE, effect_channels):
+                problems.append(f"grenade {row['key']}: effect {ref} lacks the {CHANNEL_REQUIREMENTS[GRENADE_TYPE]} channel")
+    return problems
+
+
+def check_grenades():
+    """The grenade gate on the core consumables."""
+    rows = json.loads((DATA_DIR / "equipment" / "consumables.json").read_text())["equipment"]
+    return grenade_problems(rows, build_effect_channels([DATA_DIR / "effects" / "core.json"]))
+
+
 def check_ammunition():
     """The ammunition gates on the core weapon bases and ammunition rows."""
     bases = [json.loads(path.read_text()) for path in sorted(EQUIPMENT_BASES_DIRS["weapons.json"].glob("*.json"))]
@@ -2496,6 +2525,13 @@ def main():
     if perk_errors:
         print("  \u2717  monster perks (rank at most the perk's ranks, no excluded pair)")
         for e in perk_errors:
+            print(f"       {e}")
+        failed += 1
+
+    grenade_errors = check_grenades()
+    if grenade_errors:
+        print("  \u2717  grenades (each is thrown, each rider has the grenade channel)")
+        for e in grenade_errors:
             print(f"       {e}")
         failed += 1
 
