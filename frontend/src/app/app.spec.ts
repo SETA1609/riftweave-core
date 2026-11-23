@@ -158,7 +158,7 @@ describe('the screens', () => {
     expect(sent).toEqual([{ command: 'derived', input: { attributes: { str: 6, per: 5, end: 6, int: 5, wil: 4, agi: 5, cha: 4, lck: 5 }, level: 1 } }]);
   });
 
-  it('load a spell into the spell editor, list its color's effect pool, and check the draft (FE_S09_02)', async () => {
+  it("load a spell into the spell editor, list its color's effect pool, and check the draft (FE_S09_02)", async () => {
     const fixture = TestBed.createComponent(Spells);
     fixture.detectChanges();
     const editor = fixture.componentInstance;

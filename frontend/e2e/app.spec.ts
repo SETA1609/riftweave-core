@@ -196,7 +196,7 @@ test('character creation exports a file in the one layout both apps write (APP-3
 test('the spell editor loads fire_bolt, flags a broken ref as you type, and downloads a core export (FE_S09_02)', async ({ page }) => {
   await page.goto('/#/play/spell_creation');
   await page.getByLabel('spell to load').fill('fire_bolt');
-  await page.getByRole('button', { name: 'Load' }).click();
+  await page.getByRole('button', { name: 'Load', exact: true }).click();
   await expect(page.getByLabel('label', { exact: true })).toHaveValue('Fire Bolt');
   await expect(cell(page, 'Cost', 'mana')).toHaveText('6');
   await expect(page.getByRole('region', { name: 'Problems' })).toContainText('No problems');

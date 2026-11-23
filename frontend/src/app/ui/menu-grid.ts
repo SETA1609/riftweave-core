@@ -6,10 +6,13 @@ import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '../translate-pipe';
 import tree from '../../../../backend/contract/menu.json';
 
-export type MenuEntry = { readonly key: string; readonly parent: string; readonly label: string; readonly issue?: string; readonly apps?: readonly string[] };
+export type MenuEntry = { readonly key: string; readonly parent: string; readonly label: string; readonly issue?: string; readonly apps?: readonly string[]; readonly issue_apps?: readonly string[] };
 
-/** The entries this app shows: the CLI-only ones (Quit) are left out. */
-export const MENU: readonly MenuEntry[] = (tree.entries as MenuEntry[]).filter((entry) => !entry.apps || entry.apps.includes('web'));
+/** The entries this app shows: the CLI-only ones (Quit) are left out, and an issue pending only in
+ * the CLI (`issue_apps` without web) does not hold an entry back here, as the CLI reads it. */
+export const MENU: readonly MenuEntry[] = (tree.entries as MenuEntry[])
+  .filter((entry) => !entry.apps || entry.apps.includes('web'))
+  .map((entry) => (entry.issue_apps && !entry.issue_apps.includes('web') ? { ...entry, issue: undefined } : entry));
 
 /** The route of an entry: `/` for the main menu, `/play` for Start, `/<key>` for the rest of the
  * main menu, and `/play/<key>` for a tool. */

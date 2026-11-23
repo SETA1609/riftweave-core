@@ -11,7 +11,7 @@
     { "key": "quit", "parent": "main", "label": "Quit", "apps": ["cli"] },
     { "key": "gm_tools", "parent": "start", "label": "GM tools" },
     { "key": "character_creation", "parent": "start", "label": "Character creation" },
-    { "key": "spell_creation", "parent": "start", "label": "Spell creation", "issue": "APP-22" },
+    { "key": "spell_creation", "parent": "start", "label": "Spell creation", "issue": "APP-22", "issue_apps": ["cli"] },
     { "key": "skill_resolution", "parent": "start", "label": "Skill resolution" },
     { "key": "bestiary", "parent": "start", "label": "Bestiary", "issue": "APP-29" },
     { "key": "compendium", "parent": "start", "label": "Compendium", "issue": "FE_S08_11_compendium-tables-page", "issue_apps": ["web"] },

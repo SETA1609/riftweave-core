@@ -55,5 +55,31 @@
     "server_notice": "Commands now go to the server.",
     "needs_url": "Set the server URL first.",
     "room": "Room"
+  },
+  "spells": {
+    "title": "Spell editor",
+    "to_load": "spell to load",
+    "load": "Load",
+    "key": "key",
+    "label": "label",
+    "description": "description",
+    "color": "color",
+    "level": "level",
+    "delivery": "delivery",
+    "effects": "Effects",
+    "effect": "effect {{number}}",
+    "magnitude": "magnitude",
+    "duration": "duration",
+    "target": "target",
+    "radius": "radius",
+    "remove_effect": "Remove effect",
+    "no_effects": "No effects yet.",
+    "pool": "effect pool",
+    "add_effect": "Add effect",
+    "cost": "Cost",
+    "no_cost": "No cost: an effect does not resolve.",
+    "problems": "Problems",
+    "no_problems": "No problems.",
+    "download": "Download core export"
   }
 }
