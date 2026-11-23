@@ -5199,8 +5199,8 @@
           "target": 60,
           "margin": 30,
           "crit": false,
-          "damage": 4,
-          "hp": 36,
+          "damage": 5,
+          "hp": 35,
           "carried": false,
           "free": false,
           "scissor": false
@@ -5213,15 +5213,15 @@
           "target": 40,
           "margin": 10,
           "crit": false,
-          "damage": 4,
-          "hp": 32,
+          "damage": 5,
+          "hp": 30,
           "carried": false,
           "free": false,
           "scissor": false
         }
       ],
       "hp": [
-        32
+        30
       ],
       "lost": 0,
       "ammunition": {
@@ -5305,8 +5305,8 @@
           "target": 60,
           "margin": 30,
           "crit": false,
-          "damage": 4,
-          "hp": 36,
+          "damage": 5,
+          "hp": 35,
           "carried": false,
           "free": false,
           "scissor": false
@@ -5319,8 +5319,8 @@
           "target": 40,
           "margin": 10,
           "crit": false,
-          "damage": 4,
-          "hp": 32,
+          "damage": 5,
+          "hp": 30,
           "carried": false,
           "free": false,
           "scissor": false
@@ -5333,15 +5333,15 @@
           "target": 30,
           "margin": 15,
           "crit": false,
-          "damage": 4,
-          "hp": 28,
+          "damage": 5,
+          "hp": 25,
           "carried": false,
           "free": false,
           "scissor": false
         }
       ],
       "hp": [
-        28
+        25
       ],
       "lost": 0,
       "ammunition": {
@@ -5429,8 +5429,8 @@
           "target": 50,
           "margin": 20,
           "crit": false,
-          "damage": 6,
-          "hp": 34,
+          "damage": 7,
+          "hp": 33,
           "carried": false,
           "free": false,
           "scissor": false
@@ -5443,8 +5443,8 @@
           "target": 40,
           "margin": 10,
           "crit": false,
-          "damage": 6,
-          "hp": 28,
+          "damage": 7,
+          "hp": 26,
           "carried": false,
           "free": false,
           "scissor": false
@@ -5457,15 +5457,15 @@
           "target": 40,
           "margin": 10,
           "crit": false,
-          "damage": 6,
-          "hp": 22,
+          "damage": 7,
+          "hp": 19,
           "carried": false,
           "free": false,
           "scissor": false
         }
       ],
       "hp": [
-        22
+        19
       ],
       "lost": 0,
       "ammunition": {
@@ -5554,8 +5554,8 @@
           "target": 50,
           "margin": 20,
           "crit": false,
-          "damage": 6,
-          "hp": 34,
+          "damage": 7,
+          "hp": 33,
           "carried": false,
           "free": false,
           "scissor": false
@@ -5568,15 +5568,15 @@
           "target": 40,
           "margin": 10,
           "crit": false,
-          "damage": 6,
-          "hp": 28,
+          "damage": 7,
+          "hp": 26,
           "carried": false,
           "free": false,
           "scissor": false
         }
       ],
       "hp": [
-        28
+        26
       ],
       "lost": 0,
       "ammunition": {
@@ -5673,8 +5673,8 @@
           "target": 50,
           "margin": 20,
           "crit": false,
-          "damage": 6,
-          "hp": 34,
+          "damage": 7,
+          "hp": 33,
           "carried": false,
           "free": false,
           "scissor": false
@@ -5687,8 +5687,8 @@
           "target": 40,
           "margin": 10,
           "crit": false,
-          "damage": 6,
-          "hp": 28,
+          "damage": 7,
+          "hp": 26,
           "carried": false,
           "free": false,
           "scissor": false
@@ -5701,15 +5701,15 @@
           "target": 40,
           "margin": 10,
           "crit": false,
-          "damage": 6,
-          "hp": 22,
+          "damage": 7,
+          "hp": 19,
           "carried": false,
           "free": false,
           "scissor": false
         }
       ],
       "hp": [
-        22
+        19
       ],
       "ammunition": {
         "main": {
@@ -5793,7 +5793,7 @@
           "target": 60,
           "margin": 30,
           "crit": false,
-          "damage": 4,
+          "damage": 5,
           "hp": 0,
           "carried": false,
           "free": false,
@@ -5807,8 +5807,8 @@
           "target": 40,
           "margin": 10,
           "crit": false,
-          "damage": 4,
-          "hp": 26,
+          "damage": 5,
+          "hp": 25,
           "carried": true,
           "free": false,
           "scissor": false
@@ -5816,7 +5816,7 @@
       ],
       "hp": [
         0,
-        26
+        25
       ],
       "lost": 0
     }
@@ -5979,8 +5979,8 @@
           "target": 40,
           "margin": 10,
           "crit": false,
-          "damage": 6,
-          "hp": 24,
+          "damage": 7,
+          "hp": 23,
           "carried": false,
           "free": false,
           "scissor": false
@@ -5988,7 +5988,7 @@
       ],
       "hp": [
         24,
-        24
+        23
       ],
       "lost": 0,
       "ammunition": {
@@ -6141,8 +6141,8 @@
           "target": 40,
           "margin": 10,
           "crit": false,
-          "damage": 6,
-          "hp": 28,
+          "damage": 7,
+          "hp": 27,
           "carried": false,
           "free": false,
           "scissor": false
@@ -6155,15 +6155,15 @@
           "target": 30,
           "margin": 10,
           "crit": false,
-          "damage": 6,
-          "hp": 22,
+          "damage": 7,
+          "hp": 20,
           "carried": false,
           "free": false,
           "scissor": false
         }
       ],
       "hp": [
-        22
+        20
       ],
       "ammunition": {
         "off": {

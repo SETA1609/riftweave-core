@@ -2331,7 +2331,7 @@ def check_spell_ward_table(pipeline):
     return errors
 
 
-OFF_HAND_WEAPONS = ("light_weapon", "weapon")
+OFF_HAND_WEAPONS = ("light_weapon", "weapon", "hand_gun", "light_thrown")
 
 
 def check_attack_sequences(rows):
