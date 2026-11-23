@@ -76,7 +76,7 @@ card with its issue id. An entry whose issue is pending only in the CLI (`issue_
 | Screen | Calls | Shows |
 | --- | --- | --- |
 | Skill resolution | `resolution` with the skill and its value, LCK, one target modifier, and the roll | the target, success, margin, and tags |
-| Character sheet | `derived` on the attributes and level; `POST /v1/sessions` to create the character | every derived stat, and the stored actor of the new session |
+| Character sheet | `derived` on the attributes and level; `POST /v1/sessions` to create the character; `print` for Print and Print fresh ([print.md](print.md#printing-a-character)) | every derived stat, the stored actor of the new session, and its printed sheet in a new tab |
 | Attack resolver | `combat` with the attacker (skill, roll, LCK), the defender (evasion, armor DR, a carried shield's DR and the shields skill, HP, and a dodge or block stance), the delivery, and the damage roll | each step of the result: the target, the margin, crit, the evasion and block bands, evaded or blocked, the damage after DR, and HP after (M3-27) |
 | Playthrough | `POST /v1/sessions/step` for each step of `ruleset/tests/vectors/playthrough.json`, then `replay` | each step's input and result, and whether the replay matches |
 | Spell editor | `author`: `load` a spell, `effects` for its color's pool, and `check` the draft after each change (debounced), with `export: { shape: core }` for the download ([spells.md](../../frontend/src/app/spells.md), FE_S09_02) | the draft's fields and effects, the cost, the problems and warnings, and a `spells.json` core export |

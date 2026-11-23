@@ -1,6 +1,6 @@
 # Printouts
 
-Modified: 2026-11-21
+Modified: 2026-11-23
 
 The `print` command renders a printable page from the data (APP-11), so a printed number is the
 number the rules compute and a rule change is a rebuild, not an errata pass. It is an adapter like
@@ -51,5 +51,13 @@ the sheet does not apply a condition a second time. [A]
 **The human CLI** prints from the character list: `w` on a character asks for a file (the
 character's name with `.html` by default; add ` --fresh` after the path for a fresh sheet), runs
 `print` on the character as saved, and says where it wrote the page. Open the file in a browser to
-print it or save it as PDF. The browser's Print action is FE_S09_04.
+print it or save it as PDF.
 [V 2026-11-21, `print_test.go` in core and in `cmd/riftweave`]
+
+**The browser** prints from the sheet (the character in play) and from each row of the character
+list (the character as saved): **Print** and **Print fresh** run `print` with the stored actor and
+`state`, and open the page in a new tab with the browser's print dialog, so a PDF is the browser's
+own and the core in the page prints offline (`printPage` and `sheetPrint` in
+`frontend/src/app/files.ts`, FE_S09_04). [V 2026-11-23, `e2e/print.spec.ts` over HTTP and
+WebAssembly: the wounded fixture prints 41 of 71 HP, Blades 34, and burning; fresh prints 71 and no
+condition]

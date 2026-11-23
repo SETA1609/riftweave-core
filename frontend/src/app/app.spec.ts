@@ -21,6 +21,7 @@ import { SelectField } from './ui/select-field';
 import { Sheet } from './sheet';
 import { Spells } from './spells';
 import { SAVE_STORE, Saves, memoryStore } from './saves';
+import { sheetPrint } from './files';
 import { Injector } from '@angular/core';
 import { Router } from '@angular/router';
 import { installDevConsole } from './dev-console';
@@ -192,6 +193,18 @@ describe('the screens', () => {
     const fixture = TestBed.createComponent(Playthrough);
     fixture.detectChanges();
     expect((fixture.nativeElement as HTMLElement).querySelector('rw-card button.btn')).not.toBeNull();
+  });
+
+  it('print a character as its session holds it, or fresh, through the print command (FE_S09_04)', () => {
+    const actor = { level: 3, resources: { hp: 41, mp: 20, sp: 30, ap: 4 } };
+    expect(sheetPrint(actor as never, 'current')).toEqual({ kind: 'sheet', actor, state: 'current' });
+    expect(sheetPrint(actor as never, 'fresh')).toEqual({ kind: 'sheet', actor, state: 'fresh' });
+  });
+
+  it('offer Print on the sheet only once a character is in play (FE_S09_04)', () => {
+    const fixture = TestBed.createComponent(Sheet);
+    fixture.detectChanges();
+    expect(fixture.componentInstance.printInput('current')).toBeNull();
   });
 });
 describe('the app context', () => {
