@@ -1,5 +1,6 @@
 #### BE_S08_05_bestiary-knowledge-cli A bestiary, and the GM decides what the players know (backend)
-- Status: review
+- Status: done
+- Merged: #448, 2026-11-23
 - Priority: high
 - Needs: APP-26, APP-27, BE_S08_10_compendium-catalog-cli
 - Was: APP-29, split by role on 2026-11-18: this is the backend half (the contract, the Go core, the vectors, and the CLI and TUI with their UX); the browser half is `FE_S08_06_bestiary-page`
