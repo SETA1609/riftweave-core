@@ -1,5 +1,6 @@
 #### GD_S17_02_ammunition-items-and-reloading Ammunition items, the reload action, and recovering spent ammunition
-- Status: review
+- Status: done
+- Merged: #445, 2026-11-23
 - Priority: medium
 - Needs: —
 - Modified: 2026-11-23
