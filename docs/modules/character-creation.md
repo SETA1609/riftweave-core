@@ -115,6 +115,8 @@ Currently available:
 | --- | --- | --- |
 | **Gifted** | +1 to every attribute | ×0.9 skill points per level-up pool |
 | **Fast Shot** | ranged attacks ×1.2 faster | no aimed shots (flag) |
+| **Heavy Handed** | melee damage ×1.25 | −1 AP ([actions.md](../core/actions.md#pool)) |
+| **Glass Frame** | +1 AP | ×0.75 HP |
 | **Small Frame** | +1 AGI | ×0.75 carry |
 | **Genius** | +1 tag skill | −15 starting skill points |
 | **Undead Phobia** | +2 WIL; 25% less from undead, poison, and disease | frightened while an undead is in sight |
