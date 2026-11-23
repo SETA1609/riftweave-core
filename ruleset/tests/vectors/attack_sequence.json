@@ -3172,9 +3172,8 @@
     }
   },
   {
-    "name": "opportunity: a foe leaves reach and draws one attack at the loadout's 3 AP from 4 held; the guard drops by 15",
+    "name": "opportunity: a foe leaves reach and draws one attack as a reaction: 0 AP, 0 stamina, no guard lost",
     "action": "opportunity",
-    "ap": 4,
     "loadout": { "main": "one_handed", "off": "empty" },
     "attacker": { "skill": 60, "attributes": { "lck": 0 } },
     "foes": [{ "evasion_skill": 20, "armor_dr": 2, "hp": 30 }],
@@ -3184,9 +3183,9 @@
       "action": "opportunity",
       "fired": true,
       "sequence": "one_handed_weapon",
-      "ap": 3,
-      "stamina": 15,
-      "guard_lost": 15,
+      "ap": 0,
+      "stamina": 0,
+      "guard_lost": 0,
       "strikes": [
         {
           "hand": "main",
@@ -3211,7 +3210,6 @@
     "name": "opportunity: Disengage prevents it",
     "action": "opportunity",
     "disengaged": true,
-    "ap": 4,
     "loadout": { "main": "one_handed", "off": "empty" },
     "attacker": { "skill": 60, "attributes": { "lck": 0 } },
     "foes": [{ "evasion_skill": 20, "armor_dr": 2, "hp": 30 }],
@@ -3231,18 +3229,17 @@
     }
   },
   {
-    "name": "opportunity: Phalanx's opportunity_attack_cost -1 makes it 2 AP, paid from 2 held",
+    "name": "opportunity: Phalanx adds a reaction, so a second one between two turns fires",
     "action": "opportunity",
-    "ap": 2,
     "loadout": { "main": "one_handed", "off": "empty" },
     "attacker": {
       "skill": 60,
       "attributes": { "lck": 0 },
       "modifiers": [
         {
-          "target": "opportunity_attack_cost",
+          "target": "reactions_per_round",
           "operation": "add",
-          "value": -1,
+          "value": 1,
           "source": "stance:phalanx",
           "origin": "core:origin/martial"
         }
@@ -3255,9 +3252,9 @@
       "action": "opportunity",
       "fired": true,
       "sequence": "one_handed_weapon",
-      "ap": 2,
-      "stamina": 10,
-      "guard_lost": 10,
+      "ap": 0,
+      "stamina": 0,
+      "guard_lost": 0,
       "strikes": [
         {
           "hand": "main",
@@ -3276,11 +3273,14 @@
       ],
       "hp": [26],
       "lost": 0
-    }
+    },
+    "reactions_used": 1
   },
   {
-    "name": "opportunity: with 2 held and the attack at 3, there is no attack",
-    "action": "opportunity",
+    "name": "readied: with 2 held and the attack at 3, there is no attack",
+    "action": "readied",
+    "trigger": "enters_reach",
+    "event": "enters_reach",
     "ap": 2,
     "loadout": { "main": "one_handed", "off": "empty" },
     "attacker": { "skill": 60, "attributes": { "lck": 0 } },
@@ -3288,7 +3288,7 @@
     "damage": { "type": "slashing" },
     "rolls": [{ "attack": 30, "damage": 6 }],
     "expect": {
-      "action": "opportunity",
+      "action": "readied",
       "fired": false,
       "reason": "not_enough_held",
       "sequence": "one_handed_weapon",
@@ -3303,7 +3303,6 @@
   {
     "name": "opportunity: a second one between two turns is refused; one a round at a table",
     "action": "opportunity",
-    "ap": 4,
     "loadout": { "main": "one_handed", "off": "empty" },
     "attacker": { "skill": 60, "attributes": { "lck": 0 } },
     "foes": [{ "evasion_skill": 20, "armor_dr": 2, "hp": 30 }],
@@ -3326,7 +3325,6 @@
   {
     "name": "opportunity: reactions_from_agi at AGI 8 allows 3 a round, so the third fires",
     "action": "opportunity",
-    "ap": 4,
     "loadout": { "main": "one_handed", "off": "empty" },
     "attacker": {
       "skill": 60,
@@ -3348,9 +3346,9 @@
       "action": "opportunity",
       "fired": true,
       "sequence": "one_handed_weapon",
-      "ap": 3,
-      "stamina": 15,
-      "guard_lost": 15,
+      "ap": 0,
+      "stamina": 0,
+      "guard_lost": 0,
       "strikes": [
         {
           "hand": "main",
@@ -3375,7 +3373,6 @@
   {
     "name": "opportunity: reactions_from_agi at AGI 8 refuses a fourth",
     "action": "opportunity",
-    "ap": 4,
     "loadout": { "main": "one_handed", "off": "empty" },
     "attacker": {
       "skill": 60,
@@ -3410,7 +3407,6 @@
   {
     "name": "opportunity: reactions_from_agi at AGI 4 still allows 1, never below 1",
     "action": "opportunity",
-    "ap": 4,
     "loadout": { "main": "one_handed", "off": "empty" },
     "attacker": {
       "skill": 60,
@@ -3430,6 +3426,100 @@
     "rolls": [{ "attack": 30, "damage": 6 }],
     "expect": {
       "action": "opportunity",
+      "fired": true,
+      "sequence": "one_handed_weapon",
+      "ap": 0,
+      "stamina": 0,
+      "guard_lost": 0,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": 0,
+          "outcome": "hit",
+          "target": 60,
+          "margin": 30,
+          "crit": false,
+          "damage": 4,
+          "hp": 26,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [26],
+      "lost": 0
+    },
+    "reactions_used": 0
+  },
+  {
+    "name": "opportunity: Watchful Blade at AGI 8 and Phalanx make 4 reactions, so the fourth fires",
+    "action": "opportunity",
+    "loadout": { "main": "one_handed", "off": "empty" },
+    "attacker": {
+      "skill": 60,
+      "attributes": { "lck": 0, "agi": 8 },
+      "modifiers": [
+        {
+          "target": "reactions_from_agi",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:watchful_blade",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "reactions_per_round",
+          "operation": "add",
+          "value": 1,
+          "source": "stance:phalanx",
+          "origin": "core:origin/martial"
+        }
+      ]
+    },
+    "foes": [{ "evasion_skill": 20, "armor_dr": 2, "hp": 30 }],
+    "damage": { "type": "slashing" },
+    "rolls": [{ "attack": 30, "damage": 6 }],
+    "expect": {
+      "action": "opportunity",
+      "fired": true,
+      "sequence": "one_handed_weapon",
+      "ap": 0,
+      "stamina": 0,
+      "guard_lost": 0,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": 0,
+          "outcome": "hit",
+          "target": 60,
+          "margin": 30,
+          "crit": false,
+          "damage": 4,
+          "hp": 26,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [26],
+      "lost": 0
+    },
+    "reactions_used": 3
+  },
+  {
+    "name": "readied: spends no reaction, so it fires with the round's reaction already used",
+    "action": "readied",
+    "trigger": "enters_reach",
+    "event": "enters_reach",
+    "ap": 3,
+    "loadout": { "main": "one_handed", "off": "empty" },
+    "attacker": { "skill": 60, "attributes": { "lck": 0 } },
+    "foes": [{ "evasion_skill": 20, "armor_dr": 2, "hp": 30 }],
+    "damage": { "type": "slashing" },
+    "rolls": [{ "attack": 30, "damage": 6 }],
+    "expect": {
+      "action": "readied",
       "fired": true,
       "sequence": "one_handed_weapon",
       "ap": 3,
@@ -3454,7 +3544,7 @@
       "hp": [26],
       "lost": 0
     },
-    "reactions_used": 0
+    "reactions_used": 1
   },
   {
     "name": "error: a readied attack needs its trigger",
@@ -3469,13 +3559,15 @@
     "expect": { "error": "a readied attack needs trigger" }
   },
   {
-    "name": "error: an attack out of turn needs ap, the AP held",
-    "action": "opportunity",
+    "name": "error: a readied attack needs ap, the AP held",
+    "action": "readied",
+    "event": "enters_reach",
     "loadout": { "main": "one_handed", "off": "empty" },
     "attacker": { "skill": 60, "attributes": { "lck": 0 } },
     "foes": [{ "evasion_skill": 20, "armor_dr": 2, "hp": 30 }],
     "damage": { "type": "slashing" },
     "rolls": [{ "attack": 30, "damage": 6 }],
-    "expect": { "error": "an opportunity attack needs ap" }
+    "expect": { "error": "a readied attack needs ap" },
+    "trigger": "enters_reach"
   }
 ]
