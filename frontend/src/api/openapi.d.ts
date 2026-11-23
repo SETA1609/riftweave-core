@@ -835,11 +835,6 @@ export interface components {
         ruleset_qualityGrade: "petty" | "minor" | "lesser" | "common" | "major" | "greater" | "grand" | "legendary";
         /** @description A reference to a race row (docs/core/integrity.md). */
         ruleset_raceRef: string;
-        /**
-         * @description What fires a readied attack: a foe enters the actor's reach, or a foe in reach acts (docs/core/combat.md#attacks-out-of-turn).
-         * @enum {string}
-         */
-        ruleset_readyTrigger: "enters_reach" | "acts_in_reach";
         /** @description A reference to a skill group row, for the grouped sheet (docs/core/progression.md#the-grouped-sheet-variant). */
         ruleset_skillGroupRef: string;
         /** @description A reference to a skill row (docs/core/integrity.md). */
@@ -975,7 +970,7 @@ export interface operations {
                     actor: components["schemas"]["actor"];
                     /** @description AP carried into this turn from the last, at most pool.carry. */
                     carried?: number;
-                    /** @description Held AP spent before the actor's next turn, on an opportunity or readied attack; at most what is held. */
+                    /** @description Held AP spent before the actor's next turn, on overwatch (Trigger Watch, GD_S17_06); at most what is held. */
                     held_spent?: number;
                     modifiers?: components["schemas"]["modifiers"];
                     /** @description The race's speed. With it the result gives the squares the actions cover. */
@@ -1059,15 +1054,15 @@ export interface operations {
             content: {
                 "application/json": {
                     /**
-                     * @description The action (actions/core.json); its strikes and AP come from the loadout's attack_sequences row. opportunity and readied are one attack out of turn, paid from the AP held (docs/core/combat.md#attacks-out-of-turn).
+                     * @description The action (actions/core.json); its strikes and AP come from the loadout's attack_sequences row. opportunity is one melee attack out of turn, a reaction at no AP (docs/core/combat.md#opportunity-attacks).
                      * @enum {string}
                      */
-                    action: "attack" | "jab" | "full_attack" | "circle_cut" | "opportunity" | "readied";
+                    action: "attack" | "jab" | "full_attack" | "circle_cut" | "opportunity";
                     /** @description The attacker just blocked a hit in their band: from Boss Strike's after_block tier a bash jab costs shield_bash.after_block_ap. */
                     after_block?: boolean;
                     /** @description The attacker parried a hit since their last strike: attack_after_parry adds to the first main-hand strike (Espada y Daga, docs/core/combat.md#fighting-stances). */
                     after_parry?: boolean;
-                    /** @description The attacker's AP left. A full attack and a circle cut spend all of it and need at least the attack AP + full_attack.min_extra_ap; an attack or a jab with fewer than its AP is an error. With readied: the AP held, which pays the attack; with less than its cost, no attack. An opportunity attack is a reaction and needs none. */
+                    /** @description The attacker's AP left. A full attack and a circle cut spend all of it and need at least the attack AP + full_attack.min_extra_ap; an attack or a jab with fewer than its AP is an error. An opportunity attack is a reaction and needs none. */
                     ap?: number;
                     attacker: {
                         attributes?: components["schemas"]["attributes"];
@@ -1099,11 +1094,6 @@ export interface operations {
                     };
                     /** @description With opportunity: the foe left reach with Disengage, so no attack. */
                     disengaged?: boolean;
-                    /**
-                     * @description With readied: what happened before the actor's next turn; the attack fires when it is the trigger.
-                     * @enum {string}
-                     */
-                    event?: "enters_reach" | "acts_in_reach" | "none";
                     /** @description The foes in reach, in the order a carry picks them; foe 0 is a full attack's target. */
                     foes: Record<string, never>[];
                     loadout: components["schemas"]["ruleset_loadout"];
@@ -1114,7 +1104,7 @@ export interface operations {
                         ability?: components["schemas"]["ruleset_ability"];
                         type: components["schemas"]["key"];
                     };
-                    /** @description With opportunity: the reactions the attacker already used since its last turn. Default 0. A readied attack spends none. */
+                    /** @description With opportunity: the reactions the attacker already used since its last turn. Default 0. */
                     reactions_used?: number;
                     /** @description One attack roll and one damage roll per strike made, in order; a lost strike takes none. */
                     rolls: {
@@ -1127,8 +1117,6 @@ export interface operations {
                     summoning?: boolean;
                     /** @description An attack's or a jab's foe per strike (indexes into foes); all 0 when left out. */
                     targets?: number[];
-                    /** @description With readied: the trigger named with ready. */
-                    trigger?: components["schemas"]["ruleset_readyTrigger"];
                 };
             };
         };
@@ -1142,19 +1130,17 @@ export interface operations {
                     "application/json": {
                         action: string;
                         ap: number;
-                        /** @description With opportunity or readied: whether the attack happened. */
+                        /** @description With opportunity: whether the attack happened. */
                         fired?: boolean;
-                        /** @description With readied: the AP spent times guard_per_ap, the guard the held AP no longer gives; 0 with opportunity. */
-                        guard_lost?: number;
                         /** @description Each foe's HP after the action. */
                         hp: number[];
                         /** @description Strikes lost because their foe dropped and nothing carried them. */
                         lost: number;
                         /**
-                         * @description With opportunity or readied, when it did not fire: why.
+                         * @description With opportunity, when it did not fire: why.
                          * @enum {string}
                          */
-                        reason?: "disengaged" | "not_triggered" | "no_reaction_left" | "not_enough_held";
+                        reason?: "disengaged" | "no_reaction_left";
                         /** @description The attack_sequences row key. */
                         sequence: string;
                         /** @description ap times stamina_per_ap. */

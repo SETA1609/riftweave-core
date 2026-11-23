@@ -45,14 +45,6 @@
       ],
       "description": "Color magic school. The governing skill is <color>_magic."
     },
-    "readyTrigger": {
-      "type": "string",
-      "enum": [
-        "enters_reach",
-        "acts_in_reach"
-      ],
-      "description": "What fires a readied attack: a foe enters the actor's reach, or a foe in reach acts (docs/core/combat.md#attacks-out-of-turn)."
-    },
     "phase": {
       "type": "string",
       "enum": [

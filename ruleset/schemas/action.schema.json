@@ -27,7 +27,7 @@
         "cap": { "type": "integer", "minimum": 1, "description": "The most AP a turn can start with, carried AP included." },
         "carry": { "type": "integer", "minimum": 0, "description": "The most held AP that carries into the next turn's pool; the rest is gone (docs/core/actions.md#held-ap)." },
         "guard_per_ap": { "type": "integer", "minimum": 0, "description": "The evasion each held AP gives until the actor's next turn (docs/core/actions.md#held-ap)." },
-        "reactions_per_round": { "type": "integer", "minimum": 1, "description": "The reactions an actor has between two of its turns at a table, each one an opportunity attack at no AP; a reactions_from_agi grant raises it to the AGI modifier (docs/core/combat.md#attacks-out-of-turn)." },
+        "reactions_per_round": { "type": "integer", "minimum": 1, "description": "The reactions an actor has between two of its turns at a table, each one an opportunity attack at no AP; a reactions_from_agi grant raises it to the AGI modifier (docs/core/combat.md#opportunity-attacks)." },
         "rest": { "type": "string" }
       },
       "required": ["base", "per_point", "per_point_divisor", "attribute", "cap", "carry", "guard_per_ap", "reactions_per_round", "rest"],
@@ -40,7 +40,6 @@
         "cost": { "type": "integer", "minimum": 0 },
         "reserved": { "type": "boolean" },
         "refund_if_unused": { "type": "boolean" },
-        "triggers": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "schema.json#/definitions/readyTrigger" }, "description": "The events a readied action may name as its trigger (docs/core/combat.md#attacks-out-of-turn)." },
         "adds_to": { "type": "string" },
         "by_loadout": { "type": "boolean", "description": "The cost is the loadout's, from attack_sequences/core.json (docs/core/combat.md#attacks-by-loadout); `cost` is the cost with one one-handed weapon, for a caller that knows no loadout." },
         "speed_divisor": { "type": "integer", "minimum": 1, "description": "One of this action covers floor(speed / speed_divisor) squares, from the race's speed (docs/core/actions.md#how-far-a-move-goes). Modifiers on the action change its AP, not its squares." },

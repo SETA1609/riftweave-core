@@ -8,14 +8,14 @@
     "properties": {
       "action": {
         "type": "string",
-        "enum": ["attack", "jab", "full_attack", "circle_cut", "opportunity", "readied"],
-        "description": "The action (actions/core.json); its strikes and AP come from the loadout's attack_sequences row. opportunity and readied are one attack out of turn, paid from the AP held (docs/core/combat.md#attacks-out-of-turn)."
+        "enum": ["attack", "jab", "full_attack", "circle_cut", "opportunity"],
+        "description": "The action (actions/core.json); its strikes and AP come from the loadout's attack_sequences row. opportunity is one melee attack out of turn, a reaction at no AP (docs/core/combat.md#opportunity-attacks)."
       },
       "loadout": { "$ref": "../../ruleset/schemas/schema.json#/definitions/loadout" },
       "ap": {
         "type": "integer",
         "minimum": 0,
-        "description": "The attacker's AP left. A full attack and a circle cut spend all of it and need at least the attack AP + full_attack.min_extra_ap; an attack or a jab with fewer than its AP is an error. With readied: the AP held, which pays the attack; with less than its cost, no attack. An opportunity attack is a reaction and needs none."
+        "description": "The attacker's AP left. A full attack and a circle cut spend all of it and need at least the attack AP + full_attack.min_extra_ap; an attack or a jab with fewer than its AP is an error. An opportunity attack is a reaction and needs none."
       },
       "attacker": {
         "type": "object",
@@ -129,15 +129,6 @@
         "type": "boolean",
         "description": "Whether the attacker has an active summon (not a minion), for every strike's while_summoning modifiers, as in combat. Default false."
       },
-      "trigger": {
-        "$ref": "../../ruleset/schemas/schema.json#/definitions/readyTrigger",
-        "description": "With readied: the trigger named with ready."
-      },
-      "event": {
-        "type": "string",
-        "enum": ["enters_reach", "acts_in_reach", "none"],
-        "description": "With readied: what happened before the actor's next turn; the attack fires when it is the trigger."
-      },
       "disengaged": {
         "type": "boolean",
         "description": "With opportunity: the foe left reach with Disengage, so no attack."
@@ -145,7 +136,7 @@
       "reactions_used": {
         "type": "integer",
         "minimum": 0,
-        "description": "With opportunity: the reactions the attacker already used since its last turn. Default 0. A readied attack spends none."
+        "description": "With opportunity: the reactions the attacker already used since its last turn. Default 0."
       },
       "after_block": {
         "type": "boolean",
@@ -242,9 +233,8 @@
         "minimum": 0,
         "description": "Strikes lost because their foe dropped and nothing carried them."
       },
-      "fired": { "type": "boolean", "description": "With opportunity or readied: whether the attack happened." },
-      "reason": { "type": "string", "enum": ["disengaged", "not_triggered", "no_reaction_left", "not_enough_held"], "description": "With opportunity or readied, when it did not fire: why." },
-      "guard_lost": { "type": "integer", "minimum": 0, "description": "With readied: the AP spent times guard_per_ap, the guard the held AP no longer gives; 0 with opportunity." }
+      "fired": { "type": "boolean", "description": "With opportunity: whether the attack happened." },
+      "reason": { "type": "string", "enum": ["disengaged", "no_reaction_left"], "description": "With opportunity, when it did not fire: why." }
     },
     "additionalProperties": false,
     "required": ["action", "sequence", "ap", "stamina", "strikes", "hp", "lost"]
