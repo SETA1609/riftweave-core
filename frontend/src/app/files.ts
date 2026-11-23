@@ -3,11 +3,32 @@
 // already returns. The rules and the messages are the Go CLI's (backend/cmd/riftweave/files), so a
 // file exported by either app imports into the other and exports back byte for byte.
 
+import type { PrintInput, StoredActor } from './api';
+
 export const FILE_KINDS = ['character', 'session', 'spell'] as const;
 export type FileKind = (typeof FILE_KINDS)[number];
 export interface FileModule { id: string; version: string }
 export interface RiftweaveFile { riftweave: FileKind; rules_version: string; modules: FileModule[]; data: unknown }
 export interface MissingModule { module: string; rows: string[] }
+
+/** What a printed sheet shows (BE_S09_03, docs/backend/print.md#printing-a-character): `current`
+ * is the session's state, `fresh` the same character at full resources with no condition. */
+export const PRINT_STATE = { Current: 'current', Fresh: 'fresh' } as const;
+export type PrintState = (typeof PRINT_STATE)[keyof typeof PRINT_STATE];
+export const PRINT_KIND_SHEET = 'sheet';
+
+/** The `print` input for a character's sheet, its stored actor as saved. */
+export function sheetPrint(actor: StoredActor, state: PrintState): PrintInput {
+  return { kind: PRINT_KIND_SHEET, actor, state } as PrintInput;
+}
+
+/** Opens a printed page in a new tab and its print dialog: PDF through the browser, offline with
+ * the core in the page. The page is the `print` command's HTML, inline CSS and no script. */
+export function printPage(html: string): void {
+  const url = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
+  const printout = window.open(url, '_blank');
+  printout?.addEventListener('load', () => printout.print(), { once: true });
+}
 
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);

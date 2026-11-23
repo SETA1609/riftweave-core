@@ -5,7 +5,7 @@ import { JsonPipe } from '@angular/common';
 import { API, type Attributes } from './api';
 import { Saves } from './saves';
 import { AppContext } from './context';
-import { download, encodeFile, makeFile } from './files';
+import { PRINT_STATE, download, encodeFile, makeFile, printPage, sheetPrint, type PrintState } from './files';
 import { MODULE_VERSIONS } from './settings-screens';
 
 /** The rules this build ships (angular.json `define`). */
@@ -58,6 +58,20 @@ export class Sheet {
     if (session === null) return null;
     const modules = MODULE_VERSIONS.filter((module) => this.context.modules().includes(module.id));
     return encodeFile(makeFile('character', session.actor, session.rules_version ?? RIFTWEAVE_RULES_VERSION, modules));
+  }
+
+  readonly printState = PRINT_STATE;
+
+  /** The `print` input for the character in play, as it is now or fresh; none before one is. */
+  printInput(state: PrintState) {
+    const session = this.session();
+    return session === null ? null : sheetPrint(session.actor, state);
+  }
+
+  async print(state: PrintState): Promise<void> {
+    const input = this.printInput(state);
+    if (input === null) return;
+    await this.run(async () => printPage((await this.api.print(input)).html));
   }
 
   exportCharacter(): void {

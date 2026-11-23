@@ -14,6 +14,8 @@
             <td>{{ saved.character.changed_at | date: 'medium' }} by the {{ saved.character.changed_by === author.Gm ? 'GM' : 'player' }}</td>
             <td class="actions">
               <button type="button" class="btn btn-outline btn-sm" (click)="exportFile(saved)">Export</button>
+              <button type="button" class="btn btn-outline btn-sm" (click)="print(saved, printState.Current)">Print</button>
+              <button type="button" class="btn btn-outline btn-sm" (click)="print(saved, printState.Fresh)">Print fresh</button>
               <button type="button" class="btn btn-outline btn-sm" (click)="duplicate(saved)">Duplicate</button>
               <button type="button" class="btn btn-outline btn-sm" (click)="remove(saved)">Delete</button>
             </td>

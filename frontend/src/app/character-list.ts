@@ -4,7 +4,8 @@
 import { Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { AUTHOR, Characters, OUTCOME, SIDE, type ImportReport, type SavedCharacter, type Side } from './characters';
-import { download } from './files';
+import { API } from './api';
+import { PRINT_STATE, download, printPage, sheetPrint, type PrintState } from './files';
 import { Alert } from './ui/alert';
 import { Card } from './ui/card';
 
@@ -16,6 +17,8 @@ import { Card } from './ui/card';
 })
 export class CharacterList {
   readonly characters = inject(Characters);
+  private readonly api = inject(API);
+  readonly printState = PRINT_STATE;
   /** For the template: the sides a divergence keeps, and who changed a character. */
   readonly side = SIDE;
   readonly author = AUTHOR;
@@ -44,6 +47,11 @@ export class CharacterList {
   async exportFile(saved: SavedCharacter): Promise<void> {
     const file = await this.characters.export(saved.character.id);
     download(file.name, file.text);
+  }
+
+  /** Prints the character as saved (BE_S09_03): its session state, or fresh. */
+  async print(saved: SavedCharacter, state: PrintState): Promise<void> {
+    await this.run(async () => printPage((await this.api.print(sheetPrint(saved.data, state))).html), saved.character.name);
   }
 
   async duplicate(saved: SavedCharacter): Promise<void> {

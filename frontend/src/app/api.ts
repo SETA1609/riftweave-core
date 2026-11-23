@@ -16,6 +16,7 @@ type Output<Path extends keyof paths> = Post<Path> extends { responses: { 200: i
 export type StoredActor = components['schemas']['stored_actor'];
 export type Session = components['schemas']['session'];
 export type Attributes = components['schemas']['attributes'];
+export type PrintInput = Input<'/v1/commands/print'>;
 export type DerivedInput = Input<'/v1/commands/derived'>['actor'];
 export type CombatInput = Input<'/v1/commands/combat'>;
 export type CombatResult = Output<'/v1/commands/combat'>;
@@ -100,6 +101,8 @@ export function createApi(over: Transport | string) {
     derived,
     combat: (input: CombatInput) => post('/v1/commands/combat', input),
     resolution: (input: ResolutionInput) => post('/v1/commands/resolution', input),
+    /** A printable page from the data (APP-11): its title and self-contained HTML. */
+    print: (input: PrintInput) => post('/v1/commands/print', input),
 
     /** A new stored actor at level 1: its pools start full, at the maxima `derived` returns. */
     async newCharacter(attributes: Attributes, tags: string[] = []): Promise<StoredActor> {
