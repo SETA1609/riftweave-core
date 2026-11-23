@@ -64,6 +64,7 @@ block 2, reserved, refund if unused
 command 2, an order to summons (commanding.md)
 aimed +2 on the attack cost
 draw 1, sheathe 1, drop 0, swap 1 (changing the loadout)
+reload 2, one round into a loading weapon (combat.md#ammunition)
 ```
 
 The attack, the jab, the full attack, and the circle cut cost what the loadout's row of `ruleset/data/attack_sequences/core.json` says (`by_loadout`); the `cost` in `actions/core.json` is the cost with one one-handed weapon, for a caller that knows no loadout. The full attack and the circle cut spend every AP left (`spends_all`). The strikes each makes are in [combat.md](combat.md#attacks-by-loadout) (GD_S05_01).
@@ -101,7 +102,7 @@ swap     1   to the other of two loadouts set up before the fight, a primary and
 
 Fallout Tactics charges 2 AP to swap and the Divinity board game 1 AP to equip; at a pool of 4 the cheaper price keeps a swap and an attack in one turn. [A] The Drilled Hands perk (AGI 5, ungated) emits `add swap -1`, so a swap costs 0; a draw is unchanged. [V 2026-11-21, `actions` vectors]
 
-A `stance` loadout event names the action that paid for it in `by`; the step costs that action's AP after the held perks' modifiers on it, and `by` must be a row with `changes_loadout`. Without `by` the change is free, as when an effect disarms the actor. A paid swap to sword and shield costs 1 AP and ends Fencer's Measure. [V 2026-11-21, `stance` vectors] Reloading is not a loadout change; it belongs to ranged combat (`GD_S17_02_ammunition-items-and-reloading`).
+A `stance` loadout event names the action that paid for it in `by`; the step costs that action's AP after the held perks' modifiers on it, and `by` must be a row with `changes_loadout`. Without `by` the change is free, as when an effect disarms the actor. A paid swap to sword and shield costs 1 AP and ends Fencer's Measure. [V 2026-11-21, `stance` vectors] Reloading is not a loadout change: it is the `reload` action, 2 AP, which loads one round into a `loading` weapon; Fast Reload emits `add reload -1`, as Sidestep does on `dodge` ([combat.md](combat.md#ammunition)).
 
 ## Cast AP by level
 
