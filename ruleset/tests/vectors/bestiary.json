@@ -1,0 +1,374 @@
+[
+  {
+    "name": "reveal: the GM marks the skeleton seen for the whole table",
+    "operation": "reveal",
+    "knowledge": [],
+    "monster": "core:monster/skeleton",
+    "level": "seen",
+    "expect": {
+      "knowledge": [
+        {
+          "monster": "core:monster/skeleton",
+          "level": "seen"
+        }
+      ],
+      "level": "seen"
+    }
+  },
+  {
+    "name": "reveal: a player's new mark replaces their old one in place",
+    "operation": "reveal",
+    "knowledge": [
+      {
+        "monster": "core:monster/bandit",
+        "level": "seen"
+      },
+      {
+        "monster": "core:monster/skeleton",
+        "level": "seen",
+        "player": "ana"
+      }
+    ],
+    "monster": "core:monster/skeleton",
+    "level": "known",
+    "player": "ana",
+    "expect": {
+      "knowledge": [
+        {
+          "monster": "core:monster/bandit",
+          "level": "seen"
+        },
+        {
+          "monster": "core:monster/skeleton",
+          "level": "known",
+          "player": "ana"
+        }
+      ],
+      "level": "known"
+    }
+  },
+  {
+    "name": "reveal: a player's lower mark does not hide what the table knows",
+    "operation": "reveal",
+    "knowledge": [
+      {
+        "monster": "core:monster/skeleton",
+        "level": "known"
+      }
+    ],
+    "monster": "core:monster/skeleton",
+    "level": "seen",
+    "player": "ana",
+    "expect": {
+      "knowledge": [
+        {
+          "monster": "core:monster/skeleton",
+          "level": "known"
+        },
+        {
+          "monster": "core:monster/skeleton",
+          "level": "seen",
+          "player": "ana"
+        }
+      ],
+      "level": "known"
+    }
+  },
+  {
+    "name": "reveal: a Lore check that meets the target marks the monster known for that player",
+    "operation": "reveal",
+    "knowledge": [
+      {
+        "monster": "core:monster/skeleton",
+        "level": "seen"
+      }
+    ],
+    "monster": "core:monster/skeleton",
+    "player": "ana",
+    "check": {
+      "actor": {
+        "attributes": {
+          "int": 5,
+          "lck": 0
+        },
+        "skills": {
+          "lore": 40
+        }
+      },
+      "roll": 23
+    },
+    "expect": {
+      "knowledge": [
+        {
+          "monster": "core:monster/skeleton",
+          "level": "seen"
+        },
+        {
+          "monster": "core:monster/skeleton",
+          "level": "known",
+          "player": "ana"
+        }
+      ],
+      "level": "known",
+      "check": {
+        "target": 40,
+        "success": true,
+        "margin": 17,
+        "tags": []
+      }
+    }
+  },
+  {
+    "name": "reveal: a failed Lore check changes nothing",
+    "operation": "reveal",
+    "knowledge": [
+      {
+        "monster": "core:monster/skeleton",
+        "level": "seen"
+      }
+    ],
+    "monster": "core:monster/skeleton",
+    "player": "ana",
+    "check": {
+      "actor": {
+        "attributes": {
+          "int": 5,
+          "lck": 0
+        },
+        "skills": {
+          "lore": 40
+        }
+      },
+      "roll": 75
+    },
+    "expect": {
+      "knowledge": [
+        {
+          "monster": "core:monster/skeleton",
+          "level": "seen"
+        }
+      ],
+      "level": "seen",
+      "check": {
+        "target": 40,
+        "success": false,
+        "margin": null,
+        "tags": []
+      }
+    }
+  },
+  {
+    "name": "error: a Lore check needs the player who rolls it",
+    "operation": "reveal",
+    "knowledge": [],
+    "monster": "core:monster/skeleton",
+    "check": {
+      "actor": {
+        "attributes": {
+          "int": 5,
+          "lck": 0
+        },
+        "skills": {
+          "lore": 40
+        }
+      },
+      "roll": 23
+    },
+    "expect": {
+      "error": "a lore check needs player"
+    }
+  },
+  {
+    "name": "error: a reveal needs a level or a check",
+    "operation": "reveal",
+    "knowledge": [],
+    "monster": "core:monster/skeleton",
+    "expect": {
+      "error": "a reveal needs level"
+    }
+  },
+  {
+    "name": "error: a reveal names a monster the ruleset has",
+    "operation": "reveal",
+    "knowledge": [],
+    "monster": "core:monster/no_such_monster",
+    "level": "seen",
+    "expect": {
+      "error": "monster \"core:monster/no_such_monster\" is not defined"
+    }
+  },
+  {
+    "name": "view: with the box off a player sees every entry in full, marks or not",
+    "operation": "view",
+    "knowledge": [
+      {
+        "monster": "core:monster/skeleton",
+        "level": "seen"
+      }
+    ],
+    "monsters": [
+      "core:monster/skeleton",
+      "core:monster/bandit"
+    ],
+    "player": "ana",
+    "players_see_only_known": false,
+    "expect": {
+      "entries": [
+        {
+          "monster": "core:monster/skeleton",
+          "label": "Skeleton",
+          "description": "The animated bones of a long-dead warrior, raised by dark magic. Its attacks chip away at armor and expose weaknesses.",
+          "size": "medium",
+          "knowledge": "seen",
+          "shows": "full"
+        },
+        {
+          "monster": "core:monster/bandit",
+          "label": "Bandit",
+          "description": "A desperate outlaw who preys on travellers. Uses dirty tricks like leg sweeps to knock foes off balance.",
+          "size": "medium",
+          "knowledge": "unknown",
+          "shows": "full"
+        }
+      ]
+    }
+  },
+  {
+    "name": "view: with the box on a player sees seen entries in short, known in full, and no unknown ones",
+    "operation": "view",
+    "knowledge": [
+      {
+        "monster": "core:monster/skeleton",
+        "level": "seen"
+      },
+      {
+        "monster": "core:monster/bandit",
+        "level": "known",
+        "player": "ana"
+      }
+    ],
+    "monsters": [
+      "core:monster/skeleton",
+      "core:monster/bandit",
+      "core:monster/ooze"
+    ],
+    "player": "ana",
+    "players_see_only_known": true,
+    "expect": {
+      "entries": [
+        {
+          "monster": "core:monster/skeleton",
+          "label": "Skeleton",
+          "description": "The animated bones of a long-dead warrior, raised by dark magic. Its attacks chip away at armor and expose weaknesses.",
+          "size": "medium",
+          "knowledge": "seen",
+          "shows": "seen"
+        },
+        {
+          "monster": "core:monster/bandit",
+          "label": "Bandit",
+          "description": "A desperate outlaw who preys on travellers. Uses dirty tricks like leg sweeps to knock foes off balance.",
+          "size": "medium",
+          "knowledge": "known",
+          "shows": "full"
+        }
+      ]
+    }
+  },
+  {
+    "name": "view: another player does not see what only ana was shown",
+    "operation": "view",
+    "knowledge": [
+      {
+        "monster": "core:monster/skeleton",
+        "level": "seen"
+      },
+      {
+        "monster": "core:monster/bandit",
+        "level": "known",
+        "player": "ana"
+      }
+    ],
+    "monsters": [
+      "core:monster/skeleton",
+      "core:monster/bandit",
+      "core:monster/ooze"
+    ],
+    "player": "bo",
+    "players_see_only_known": true,
+    "expect": {
+      "entries": [
+        {
+          "monster": "core:monster/skeleton",
+          "label": "Skeleton",
+          "description": "The animated bones of a long-dead warrior, raised by dark magic. Its attacks chip away at armor and expose weaknesses.",
+          "size": "medium",
+          "knowledge": "seen",
+          "shows": "seen"
+        }
+      ]
+    }
+  },
+  {
+    "name": "view: the GM sees every entry in full, with the table's mark and each player's",
+    "operation": "view",
+    "knowledge": [
+      {
+        "monster": "core:monster/skeleton",
+        "level": "seen"
+      },
+      {
+        "monster": "core:monster/bandit",
+        "level": "known",
+        "player": "ana"
+      }
+    ],
+    "monsters": [
+      "core:monster/skeleton",
+      "core:monster/bandit",
+      "core:monster/ooze"
+    ],
+    "players_see_only_known": true,
+    "expect": {
+      "entries": [
+        {
+          "monster": "core:monster/skeleton",
+          "label": "Skeleton",
+          "description": "The animated bones of a long-dead warrior, raised by dark magic. Its attacks chip away at armor and expose weaknesses.",
+          "size": "medium",
+          "knowledge": "seen",
+          "shows": "full",
+          "players": {}
+        },
+        {
+          "monster": "core:monster/bandit",
+          "label": "Bandit",
+          "description": "A desperate outlaw who preys on travellers. Uses dirty tricks like leg sweeps to knock foes off balance.",
+          "size": "medium",
+          "knowledge": "unknown",
+          "shows": "full",
+          "players": {
+            "ana": "known"
+          }
+        },
+        {
+          "monster": "core:monster/ooze",
+          "label": "Ooze",
+          "description": "A blind, quivering mass that flows over the cave floor and engulfs whatever it touches.",
+          "size": "medium",
+          "knowledge": "unknown",
+          "shows": "full",
+          "players": {}
+        }
+      ]
+    }
+  },
+  {
+    "name": "error: a view needs the monsters to show",
+    "operation": "view",
+    "knowledge": [],
+    "expect": {
+      "error": "a view needs monsters"
+    }
+  }
+]

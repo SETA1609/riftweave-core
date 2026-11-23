@@ -1,9 +1,9 @@
 #### BE_S08_05_bestiary-knowledge-cli A bestiary, and the GM decides what the players know (backend)
-- Status: todo
-- Priority: medium
+- Status: review
+- Priority: high
 - Needs: APP-26, APP-27, BE_S08_10_compendium-catalog-cli
 - Was: APP-29, split by role on 2026-11-18: this is the backend half (the contract, the Go core, the vectors, and the CLI and TUI with their UX); the browser half is `FE_S08_06_bestiary-page`
-- Modified: 2026-11-19
+- Modified: 2026-11-23
 - Do: Owner request, 2026-11-16: a bestiary in both apps lists the monsters (core and enabled modules) with their sheet from the `monster_sheet` command, filterable by creature type, level, and phase. Its settings (in `settings.bestiary`, APP-25) hold one check box, **"Players see only what they know"**. Off (solo play, the default): every entry shows in full. On (playing with friends): the GM marks each monster's knowledge for the table as `unknown` (not listed), `seen` (name, picture or description, size), or `known` (the full sheet) (owner, 2026-11-16), and may instead let a check decide: a Lore check (`resolution`, the `lore` skill) by the player that meets the monster reveals it to `known` for that player [A]. The marks are campaign state, not app settings: they are steps in the session log (`reveal`, with monster, level, and player or table) so they replay, travel in an exported session (APP-16, APP-30), and reach players through a room later (APP-17) [A]. The GM's view always shows everything, with each entry's mark.
 - Keys: `settings.bestiary.players_see_only_known`; a `reveal` session step; knowledge `unknown` | `seen` | `known`
 - Files: ~9 (backend/contract/session.json, backend/internal/... the session step, ruleset/tests/vectors/session.json, ruleset/scripts/kernel_reference.py, backend/cmd/riftweave/play/bestiary.go, play_test.go, docs/backend/bestiary.md, docs/backend/sessions.md, changes/BE_S08_05_bestiary-knowledge-cli.md)

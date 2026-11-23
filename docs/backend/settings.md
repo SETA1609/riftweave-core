@@ -1,6 +1,6 @@
 # Settings
 
-Modified: 2026-11-18
+Modified: 2026-11-23
 
 The Angular app and the human CLI hold the same settings and trade them as one file (APP-25):
 settings exported from the frontend import into `riftweave settings import`, and the other way
@@ -28,7 +28,7 @@ command contract (it is a file format, not a command).
 | `theme` | `light`, `dark`, or `system` (APP-23); the CLI maps it to its own colours (APP-26). |
 | `modules` | The enabled optional modules, by manifest id. Core is always loaded; a file that lists `core` is refused. |
 | `network` | `mode`: `local` (offline, the default), `server` (an API at `server_url`), or `room` (`room_code`, APP-17). |
-| `bestiary` | `players_see_only_known` (APP-29). |
+| `bestiary` | `players_see_only_known`: what a player's bestiary view shows ([bestiary.md](bestiary.md), BE_S08_05). |
 | `telemetry` | `mode`: `off` (the default), `local` (kept on the device, exportable as a diagnostics file), or `export` (sent by OTLP/HTTP to `endpoint`, an http or https URL). What is recorded is in [observability.md](observability.md) (APP-43). |
 
 ## Rules both apps keep

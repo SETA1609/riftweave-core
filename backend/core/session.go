@@ -9,6 +9,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/SETA1609/riftweave-core/backend/internal/bestiary"
 	"github.com/SETA1609/riftweave-core/backend/internal/data"
 	"github.com/SETA1609/riftweave-core/backend/internal/stored"
 )
@@ -37,6 +38,14 @@ type Session struct {
 	// Party is the characters the GM loaded beside the actor (docs/backend/sessions.md#the-party).
 	// The session carries them through every operation and holds no rule for them.
 	Party []PartyMember `json:"party,omitempty"`
+	// Bestiary is what the players know of each monster (docs/backend/bestiary.md), campaign state
+	// beside the actor: `bestiary` reveal steps change it, and a replay rebuilds it from the log.
+	Bestiary *SessionBestiary `json:"bestiary,omitempty"`
+}
+
+// SessionBestiary is the bestiary's marks in a session.
+type SessionBestiary struct {
+	Knowledge []bestiary.Mark `json:"knowledge"`
 }
 
 // PartyCharacter is a character file's sync fields (backend/contract/common.json, "character").
@@ -121,11 +130,10 @@ func runSession(ruleset *data.Ruleset, input sessionInput) (sessionResult, error
 			return sessionResult{}, errors.New("session step needs a session and a step")
 		}
 		var session Session = *input.Session
-		actor, output, err := applyStep(ruleset, session.Actor, *input.Step)
+		output, err := applySessionStep(ruleset, &session, *input.Step)
 		if err != nil {
 			return sessionResult{}, err
 		}
-		session.Actor = actor
 		session.Log = append(slices.Clone(session.Log), *input.Step)
 		session.Dev = session.Dev || input.Step.Command == "dev"
 		return sessionResult{Session: session, Result: output}, nil
@@ -138,14 +146,14 @@ func runSession(ruleset *data.Ruleset, input sessionInput) (sessionResult, error
 		if err != nil {
 			return sessionResult{}, err
 		}
+		var rebuilt Session = Session{Actor: actor}
 		for _, step := range session.Log {
-			if actor, _, err = applyStep(ruleset, actor, step); err != nil {
+			if _, err = applySessionStep(ruleset, &rebuilt, step); err != nil {
 				return sessionResult{}, err
 			}
 		}
-		saved, rebuilt := encodedValue(session.Actor), encodedValue(actor)
-		var matches bool = reflect.DeepEqual(saved, rebuilt)
-		session.Actor = actor
+		var matches bool = reflect.DeepEqual(encodedValue(session.Actor), encodedValue(rebuilt.Actor))
+		session.Actor, session.Bestiary = rebuilt.Actor, rebuilt.Bestiary
 		session.RulesVersion = RulesVersion // rebuilt under these rules, whatever the save said
 		return sessionResult{Session: session, Matches: &matches}, nil
 	}
@@ -537,6 +545,72 @@ func writeConditions(actor *stored.Actor, _ *SessionStep, _, result map[string]a
 func number(value any) int64 {
 	amount, _ := value.(float64)
 	return int64(amount)
+}
+
+// sessionStateAdapter is how a session reads a command that changes campaign state beside the
+// actor: fill adds the session's state to the fields a step did not name, and write keeps the
+// result. The log keeps the step's input as it was given.
+type sessionStateAdapter struct {
+	fill  func(session *Session, input map[string]any)
+	write func(session *Session, result map[string]any)
+}
+
+// sessionStateAdapters is the one table of the commands that read and write a session's own
+// state (docs/backend/sessions.md#campaign-state).
+var sessionStateAdapters = map[string]sessionStateAdapter{
+	"bestiary": {fill: fillBestiary, write: writeBestiary},
+}
+
+func fillBestiary(session *Session, input map[string]any) {
+	var knowledge []bestiary.Mark = []bestiary.Mark{}
+	if session.Bestiary != nil {
+		knowledge = session.Bestiary.Knowledge
+	}
+	setDefault(input, "knowledge", encodedValue(knowledge))
+}
+
+// writeBestiary keeps a reveal's marks; a view returns none and changes nothing.
+func writeBestiary(session *Session, result map[string]any) {
+	marks, revealed := result["knowledge"]
+	if !revealed {
+		return
+	}
+	var knowledge []bestiary.Mark
+	body, _ := json.Marshal(marks)
+	_ = json.Unmarshal(body, &knowledge)
+	session.Bestiary = &SessionBestiary{Knowledge: knowledge}
+}
+
+// applySessionStep runs one step on the session: its state fills the input, the actor runs the
+// step, and the state keeps the result. A step that fails changes nothing.
+func applySessionStep(ruleset *data.Ruleset, session *Session, step SessionStep) (json.RawMessage, error) {
+	var run SessionStep = step
+	adapter, stateful := sessionStateAdapters[step.Command]
+	if stateful {
+		var input map[string]any
+		if err := json.Unmarshal(step.Input, &input); err != nil {
+			return nil, err
+		}
+		adapter.fill(session, input)
+		filled, err := json.Marshal(input)
+		if err != nil {
+			return nil, err
+		}
+		run.Input = filled
+	}
+	actor, output, err := applyStep(ruleset, session.Actor, run)
+	if err != nil {
+		return nil, err
+	}
+	session.Actor = actor
+	if stateful {
+		var result map[string]any
+		if err := json.Unmarshal(output, &result); err != nil {
+			return nil, err
+		}
+		adapter.write(session, result)
+	}
+	return output, nil
 }
 
 // applyStep runs one step on a copy of the actor, so a step that fails changes nothing.

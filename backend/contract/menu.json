@@ -13,7 +13,7 @@
     { "key": "character_creation", "parent": "start", "label": "Character creation" },
     { "key": "spell_creation", "parent": "start", "label": "Spell creation", "issue": "APP-22", "issue_apps": ["cli"] },
     { "key": "skill_resolution", "parent": "start", "label": "Skill resolution" },
-    { "key": "bestiary", "parent": "start", "label": "Bestiary", "issue": "APP-29" },
+    { "key": "bestiary", "parent": "start", "label": "Bestiary", "issue": "FE_S08_06_bestiary-page", "issue_apps": ["web"] },
     { "key": "compendium", "parent": "start", "label": "Compendium", "issue": "FE_S08_11_compendium-tables-page", "issue_apps": ["web"] },
     { "key": "saved_games", "parent": "start", "label": "Saved games", "apps": ["web"] },
     { "key": "attack", "parent": "gm_tools", "label": "Resolve an attack" },

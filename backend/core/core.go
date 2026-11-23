@@ -20,6 +20,7 @@ import (
 	"github.com/SETA1609/riftweave-core/backend/internal/actor"
 	"github.com/SETA1609/riftweave-core/backend/internal/ammunition"
 	"github.com/SETA1609/riftweave-core/backend/internal/attack"
+	"github.com/SETA1609/riftweave-core/backend/internal/bestiary"
 	"github.com/SETA1609/riftweave-core/backend/internal/casting"
 	"github.com/SETA1609/riftweave-core/backend/internal/catalog"
 	"github.com/SETA1609/riftweave-core/backend/internal/combat"
@@ -119,6 +120,7 @@ var commands map[string]commandHandler = map[string]commandHandler{
 	"progression":     bind(progression.Run),
 	"catalog":         bind(catalog.Run),
 	"ammunition":      bind(ammunition.Run),
+	"bestiary":        bind(bestiary.Run),
 }
 
 // Core is an opened ruleset.

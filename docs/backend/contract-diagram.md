@@ -7,7 +7,7 @@ Run `python ruleset/scripts/contract_diagram.py --write` after a contract change
 `test_contract_diagram.py` fails until the page matches. What the contract is:
 [README.md](README.md#commands) and [contract.md](../core/contract.md).
 
-29 commands. Each is a class diagram of its input and its result; a field whose type is
+30 commands. Each is a class diagram of its input and its result; a field whose type is
 a shared type of `common.json` links to it, and the shared types are drawn once, below.
 
 ## Shared types
@@ -54,6 +54,11 @@ classDiagram
         integer quantity
         enum size
     }
+    class knowledge_mark {
+        enum level
+        string monster
+        string player
+    }
     class party_member {
         stored_actor actor
         character character
@@ -66,6 +71,7 @@ classDiagram
     }
     class session {
         stored_actor actor
+        object bestiary
         boolean dev
         List~session_step~ log
         List~party_member~ party
@@ -252,6 +258,33 @@ classDiagram
         object row
         List~object~ spells
     }
+```
+
+## bestiary
+
+Mark what the players know of each monster, and show the bestiary as the GM or a player sees it.
+
+```mermaid
+classDiagram
+    class bestiary_input {
+        object check
+        List~knowledge_mark~ knowledge
+        enum level
+        string monster
+        List~string~ monsters
+        enum operation
+        string player
+        boolean players_see_only_known
+    }
+    class bestiary_result {
+        object check
+        List~object~ entries
+        List~knowledge_mark~ knowledge
+        enum level
+    }
+    class knowledge_mark
+    bestiary_input --> knowledge_mark : knowledge
+    bestiary_result --> knowledge_mark : knowledge
 ```
 
 ## casting

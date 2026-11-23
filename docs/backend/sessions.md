@@ -10,6 +10,7 @@ Session
   actor     the current stored actor
   dev?      true once a dev operation ran ([dev-mode.md](dev-mode.md))
   party?[]  { character, start, actor }   the characters the GM loaded (below)
+  bestiary? { knowledge[] }               what the players know of each monster (below)
 ```
 
 | `operation` | Input | Result |
@@ -36,6 +37,19 @@ The session carries the party through `start`, `step`, and `replay` unchanged an
 for it: no step reads or writes a member yet. The encounter tracker
 (`BE_S08_07_encounter-tracker-cli`) will change members through steps. [A] [V 2026-11-20, a
 `step` keeps the party, `characters_test.go`]
+
+## Campaign state
+
+Some steps change the campaign beside the actor. The session keeps that state and fills it into
+the step, so the log holds the step as it was given and a replay rebuilds the state from it.
+Each such command is one entry in `sessionStateAdapters` in `backend/core/session.go`.
+
+| Command | Filled from the session | Written back |
+| --- | --- | --- |
+| `bestiary` | `knowledge`, from `bestiary.knowledge` | a `reveal`'s `knowledge` into `bestiary.knowledge`; a `view` writes nothing |
+
+A replay's `matches` still compares the actor only; the rebuilt state replaces the saved one.
+[A] [V 2026-11-23, `TestARevealStepKeepsTheMarksAndReplays`, BE_S08_05, [bestiary.md](bestiary.md)]
 
 ## The rules version
 
