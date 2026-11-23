@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Riftweave - Monster Stat Block (Print Layout A4)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* CSS Reset & Variables */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --ink-black: #090d16;
+      --ink-dark: #1f293d;
+      --ink-mid: #4b5563;
+      --ink-light: #9ca3af;
+      --ink-faint: #e5e7eb;
+      --ink-wash: #f8fafc;
+      --ink-wash-dim: #f1f5f9;
+      --paper: #ffffff;
+      
+      --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    body {
+      background-color: #cbd5e1;
+      font-family: var(--font-display);
+      color: var(--ink-black);
+      line-height: 1.25;
+      -webkit-font-smoothing: antialiased;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Screen UI Toolbar for Print Action */
+    .print-toolbar {
+      width: 210mm;
+      max-width: 100%;
+      background: var(--ink-dark);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      font-family: var(--font-mono);
+      font-size: 13px;
+    }
+
+    .print-btn {
+      background: #0d9488;
+      color: #ffffff;
+      border: 1px solid #14b8a6;
+      padding: 8px 18px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: background 0.15s ease;
+    }
+
+    .print-btn:hover {
+      background: #0f766e;
+    }
+
+    /* A4 Sheet Container */
+    .page-sheet {
+      width: 210mm;
+      min-height: 297mm;
+      background: var(--paper);
+      padding: 9mm 10mm;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    /* Print Media Rules */
+    @page {
+      size: A4 portrait;
+      margin: 8mm 9mm;
+    }
+
+    @media print {
+      body {
+        background: transparent !important;
+        padding: 0 !important;
+      }
+      .print-toolbar {
+        display: none !important;
+      }
+      .page-sheet {
+        width: 100% !important;
+        min-height: auto !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        gap: 6px !important;
+      }
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    }
+
+    /* Utility Typography */
+    .font-mono { font-family: var(--font-mono); }
+    .font-sans { font-family: var(--font-display); }
+    .uppercase { text-transform: uppercase; }
+    .tracking-tight { letter-spacing: -0.02em; }
+    .tracking-wide { letter-spacing: 0.05em; }
+
+    /* Core Borders & Boxes */
+    .ink-box {
+      border: 1px solid var(--ink-black);
+      background: var(--paper);
+      position: relative;
+    }
+
+    .ink-box-thick {
+      border: 1.5px solid var(--ink-black);
+      background: var(--paper);
+    }
+
+    .box-header {
+      background: var(--ink-wash);
+      border-bottom: 1px solid var(--ink-black);
+      padding: 3px 6px;
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Layout Sections */
+    .top-meta-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      border-bottom: 2px solid var(--ink-black);
+      padding-bottom: 5px;
+      align-items: end;
+      gap: 12px;
+    }
+
+    .brand-mark {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .brand-badge {
+      border: 1px solid var(--ink-black);
+      padding: 1px 4px;
+      font-size: 8.5px;
+      font-weight: 800;
+      background: var(--ink-wash);
+    }
+
+    /* Monster Banner */
+    .monster-banner {
+      display: grid;
+      grid-template-columns: 1fr 190px;
+      border: 1.5px solid var(--ink-black);
+      background: var(--paper);
+    }
+
+    .monster-id-col {
+      padding: 6px 9px;
+      border-right: 1px solid var(--ink-black);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .monster-tags {
+      display: flex;
+      gap: 5px;
+      font-size: 8.5px;
+      font-family: var(--font-mono);
+      font-weight: 700;
+    }
+
+    .tag-pill {
+      border: 1px solid var(--ink-black);
+      padding: 1px 5px;
+      line-height: 1.1;
+      background: var(--ink-wash);
+    }
+
+    .tag-pill-solid {
+      background: var(--ink-black);
+      color: #fff;
+    }
+
+    .monster-name {
+      font-size: 23px;
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      margin-top: 1px;
+    }
+
+    .monster-habitat {
+      font-size: 8.5px;
+      font-family: var(--font-mono);
+      color: var(--ink-mid);
+    }
+
+    .monster-stats-quick {
+      padding: 6px 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: var(--ink-wash);
+    }
+
+    .quick-stat-line {
+      display: flex;
+      justify-content: space-between;
+      font-size: 9px;
+      font-family: var(--font-mono);
+      border-bottom: 1px dashed var(--ink-light);
+      padding-bottom: 2px;
+    }
+    .quick-stat-line:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .quick-stat-line strong {
+      font-weight: 700;
+      color: var(--ink-black);
+    }
+
+    /* Vitality & Resource Tracker Strip */
+    .resource-strip {
+      display: grid;
+      grid-template-columns: 1fr 220px;
+      gap: 6px;
+    }
+
+    .vitality-container {
+      border: 1.5px solid var(--ink-black);
+      padding: 5px 8px;
+    }
+
+    .vitality-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 4px;
+    }
+
+    .vit-title {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+    }
+
+    .vit-values {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    /* 24-box tracking grid (1 box = 10 HP) */
+    .hp-box-grid {
+      display: grid;
+      grid-template-columns: repeat(24, 1fr);
+      gap: 2px;
+      margin: 4px 0 5px 0;
+    }
+
+    .hp-pip {
+      height: 14px;
+      border: 1px solid var(--ink-black);
+      background: var(--paper);
+      position: relative;
+    }
+    .hp-pip.desperation {
+      background: #fee2e2;
+    }
+    .hp-pip.enraged {
+      background: #fef3c7;
+    }
+
+    .hp-threshold-legend {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 7.5px;
+      color: var(--ink-mid);
+      border-top: 1px dotted var(--ink-light);
+      padding-top: 2px;
+    }
+
+    /* AP & Turn Pool Box */
+    .turn-pool-box {
+      border: 1.5px solid var(--ink-black);
+      padding: 5px 8px;
+      background: var(--ink-wash);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .ap-pips-row {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 2px;
+    }
+
+    .ap-pip {
+      width: 19px;
+      height: 19px;
+      border: 1.5px solid var(--ink-black);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 800;
+      background: var(--paper);
+    }
+    .ap-pip.surge {
+      background: var(--ink-black);
+      color: #fff;
+    }
+
+    /* Core Attributes Grid (8 columns) */
+    .attributes-strip {
+      border: 1.5px solid var(--ink-black);
+    }
+
+    .attributes-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      background: var(--ink-black);
+      gap: 1px;
+    }
+
+    .attr-cell {
+      background: var(--paper);
+      padding: 4px 3px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .attr-code {
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      color: var(--ink-mid);
+    }
+
+    .attr-val {
+      font-family: var(--font-mono);
+      font-size: 15px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .attr-target {
+      font-family: var(--font-mono);
+      font-size: 8.5px;
+      font-weight: 700;
+      background: var(--ink-wash);
+      border-radius: 2px;
+      padding: 1px 0;
+      margin-top: 1px;
+    }
+
+    /* Two-Column Middle Grid: Defenses vs Tactical Rules */
+    .mid-specs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .defense-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 8.5px;
+      font-family: var(--font-mono);
+    }
+
+    .defense-table td {
+      padding: 3px 5px;
+      border-bottom: 1px solid var(--ink-faint);
+    }
+
+    .defense-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .defense-table td.val-col {
+      text-align: right;
+      font-weight: 800;
+      font-size: 9.5px;
+    }
+
+    /* Actions & Offensive Arsenal */
+    .actions-container {
+      border: 1.5px solid var(--ink-black);
+    }
+
+    .action-row {
+      padding: 5px 7px;
+      border-bottom: 1px solid var(--ink-faint);
+      display: grid;
+      grid-template-columns: 46px 1fr 115px;
+      gap: 8px;
+      align-items: start;
+    }
+    .action-row:last-child {
+      border-bottom: none;
+    }
+
+    .action-ap-tag {
+      border: 1px solid var(--ink-black);
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 0;
+      text-align: center;
+      background: var(--ink-wash);
+    }
+
+    .action-ap-tag.area {
+      background: var(--ink-black);
+      color: #fff;
+    }
+
+    .action-main-desc {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .action-title-line {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .action-name {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+
+    .action-specs {
+      font-size: 8px;
+      font-family: var(--font-mono);
+      color: var(--ink-mid);
+    }
+
+    .action-formula {
+      font-size: 8.5px;
+      font-family: var(--font-mono);
+      color: var(--ink-dark);
+      margin-top: 1px;
+    }
+
+    .action-formula strong {
+      font-weight: 700;
+      color: var(--ink-black);
+    }
+
+    .action-target-badge {
+      border: 1px solid var(--ink-black);
+      background: var(--ink-wash);
+      padding: 2px 4px;
+      text-align: right;
+      font-family: var(--font-mono);
+    }
+
+    .action-target-num {
+      font-size: 12px;
+      font-weight: 800;
+      display: block;
+      line-height: 1;
+    }
+
+    .action-target-lbl {
+      font-size: 7px;
+      color: var(--ink-mid);
+      text-transform: uppercase;
+    }
+
+    /* Out of Turn Reactions & Passives Grid */
+    .tactical-dual-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .tactical-card {
+      border: 1px solid var(--ink-black);
+      padding: 5px 7px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      font-size: 8.5px;
+    }
+
+    .tactical-card-title {
+      font-weight: 800;
+      font-size: 9.5px;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--ink-black);
+      padding-bottom: 2px;
+      margin-bottom: 2px;
+    }
+
+    .tactical-desc {
+      font-size: 8.5px;
+      line-height: 1.25;
+      color: var(--ink-dark);
+    }
+
+    /* Table-side D100 Quick Reference & GM Scratchpad */
+    .bottom-utility-grid {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 6px;
+    }
+
+    .scratchpad-box {
+      border: 1px solid var(--ink-black);
+      padding: 4px 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .scratchpad-lines {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 3px;
+      margin-top: 1px;
+    }
+
+    .scratch-cell {
+      height: 18px;
+      border: 1px dashed var(--ink-light);
+      background: var(--paper);
+    }
+
+    /* Footer Sign-off */
+    .footer-audit {
+      border-top: 1px solid var(--ink-black);
+      padding-top: 3px;
+      margin-top: auto;
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 7.5px;
+      color: var(--ink-mid);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Screen UI Toolbar (Hidden automatically in print dialogs) -->
+  <div class="print-toolbar">
+    <div>
+      <span style="font-weight: 700; color: #14b8a6;">RIFTWEAVE</span> &nbsp;•&nbsp; INK-LIGHT A4 PRINT MATRIX &nbsp;•&nbsp; APEX MONSTER STAT BLOCK
+    </div>
+    <div style="display: flex; gap: 12px; align-items: center;">
+      <span style="color: #94a3b8; font-size: 11px;">Format: A4 (210 × 297mm) • 100% Scale B&amp;W</span>
+      <button class="print-btn" onclick="window.print()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+        Print Document
+      </button>
+    </div>
+  </div>
+
+  <!-- A4 Printable Sheet -->
+  <div class="page-sheet">
+
+    <!-- Top Meta Row -->
+    <div class="top-meta-row">
+      <div class="brand-mark">
+        <span class="brand-badge">RIFTWEAVE v2.4</span>
+        <span style="font-weight: 800; letter-spacing: 0.05em;">TACTICAL BESTIARY &amp; ENCOUNTER CODEX</span>
+      </div>
+      <div class="font-mono" style="font-size: 8px;">
+        CLASSIFICATION: <strong>BIO-SCAN S-44 / SECTOR 9</strong>
+      </div>
+      <div class="font-mono" style="font-size: 8px;">
+        RULES ENGINE: <strong>ZERO ARITHMETIC (D100)</strong>
+      </div>
+    </div>
+
+    <!-- Monster Identity Banner -->
+    <div class="monster-banner">
+      <div class="monster-id-col">
+        <div class="monster-tags">
+          <span class="tag-pill tag-pill-solid">APEX BOSS</span>
+          <span class="tag-pill">LVL 12</span>
+          <span class="tag-pill">TIER IV</span>
+          <span class="tag-pill">LARGE (3×3m HEX)</span>
+          <span class="tag-pill">THREAT: S-RANK</span>
+        </div>
+        <div class="monster-name">RIFTBORN DREADSTALKER</div>
+        <div class="monster-habitat">
+          HABITAT: The Abyssal Riftway • Sector 9 Sub-Strata (Anomalous Pressure Trench)
+        </div>
+      </div>
+      <div class="monster-stats-quick">
+        <div class="quick-stat-line">
+          <span>INITIATIVE:</span>
+          <strong>78 (d100+28)</strong>
+        </div>
+        <div class="quick-stat-line">
+          <span>SPEED:</span>
+          <strong>16m (Burrow 8m)</strong>
+        </div>
+        <div class="quick-stat-line">
+          <span>MASS / SCALE:</span>
+          <strong>850 kg [Heavy V]</strong>
+        </div>
+        <div class="quick-stat-line">
+          <span>ELEMENT AFFINITY:</span>
+          <strong>VOID (+3) / FIRE (-2)</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resource Strip: Vitality 24-Pip Tracker + Action Economy -->
+    <div class="resource-strip">
+      <div class="vitality-container">
+        <div class="vitality-header">
+          <span class="vit-title uppercase">Vitality / HP Tracker (1 Box = 10 HP)</span>
+          <span class="vit-values font-mono">240 / 240 <span style="font-size: 9px; font-weight: 500; color: var(--ink-mid);">[100%]</span></span>
+        </div>
+
+        <!-- 24 physical pencil-off boxes -->
+        <div class="hp-box-grid">
+          <!-- 0 to 25% (Desperation) -->
+          <div class="hp-pip desperation"></div>
+          <div class="hp-pip desperation"></div>
+          <div class="hp-pip desperation"></div>
+          <div class="hp-pip desperation"></div>
+          <div class="hp-pip desperation"></div>
+          <div class="hp-pip desperation"></div>
+          <!-- 25% to 50% (Enraged) -->
+          <div class="hp-pip enraged"></div>
+          <div class="hp-pip enraged"></div>
+          <div class="hp-pip enraged"></div>
+          <div class="hp-pip enraged"></div>
+          <div class="hp-pip enraged"></div>
+          <div class="hp-pip enraged"></div>
+          <!-- 50% to 75% -->
+          <div class="hp-pip"></div>
+          <div class="hp-pip"></div>
+          <div class="hp-pip"></div>
+          <div class="hp-pip"></div>
+          <div class="hp-pip"></div>
+          <div class="hp-pip"></div>
+          <!-- 75% to 100% -->
+          <div class="hp-pip"></div>
+          <div class="hp-pip"></div>
+          <div class="hp-pip"></div>
+          <div class="hp-pip"></div>
+          <div class="hp-pip"></div>
+          <div class="hp-pip"></div>
+        </div>
+
+        <div class="hp-threshold-legend">
+          <span>0 HP (DEATH)</span>
+          <span><strong>25% (60 HP)</strong>: DESPERATION PHASE</span>
+          <span><strong>50% (120 HP)</strong>: ENRAGED (+1 AP)</span>
+          <span><strong>75% (180 HP)</strong></span>
+          <span>240 HP (MAX)</span>
+        </div>
+      </div>
+
+      <div class="turn-pool-box">
+        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+          <span style="font-size: 10px; font-weight: 800; text-transform: uppercase;">ACTION POINTS (AP)</span>
+          <span class="font-mono" style="font-size: 10px; font-weight: 800;">6 / 6 <span style="font-size: 8px; color: var(--ink-mid);">[4+2 SURGE]</span></span>
+        </div>
+        <div class="ap-pips-row">
+          <div class="ap-pip">1</div>
+          <div class="ap-pip">2</div>
+          <div class="ap-pip">3</div>
+          <div class="ap-pip">4</div>
+          <div class="ap-pip surge" title="Apex Surge AP">S1</div>
+          <div class="ap-pip surge" title="Apex Surge AP">S2</div>
+          <div style="font-size: 8px; font-family: var(--font-mono); margin-left: 6px; line-height: 1.1;">
+            AETHER: <strong>80/80</strong><br>
+            STAMINA: <strong>65/65</strong>
+          </div>
+        </div>
+        <div style="font-size: 7.5px; font-family: var(--font-mono); color: var(--ink-mid); border-top: 1px dotted var(--ink-light); padding-top: 2px;">
+          TOXICITY: <strong>IMMUNE (RANK IV)</strong> • GUARD POOL: <strong>2 MAX</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- Core Attributes (Pre-computed D100 Roll-Under Targets) -->
+    <div class="attributes-strip">
+      <div class="box-header">
+        <span>CORE ATTRIBUTES &amp; PRE-COMPUTED D100 ROLL-UNDER CHECK TARGETS</span>
+        <span style="font-size: 8px; color: var(--ink-mid);">FORMULA: ATTR × 10</span>
+      </div>
+      <div class="attributes-grid">
+        <div class="attr-cell">
+          <span class="attr-code">STR</span>
+          <span class="attr-val">10</span>
+          <span class="attr-target">≤ 100%</span>
+        </div>
+        <div class="attr-cell">
+          <span class="attr-code">PER</span>
+          <span class="attr-val">9</span>
+          <span class="attr-target">≤ 90%</span>
+        </div>
+        <div class="attr-cell">
+          <span class="attr-code">END</span>
+          <span class="attr-val">9</span>
+          <span class="attr-target">≤ 90%</span>
+        </div>
+        <div class="attr-cell">
+          <span class="attr-code">INT</span>
+          <span class="attr-val">6</span>
+          <span class="attr-target">≤ 60%</span>
+        </div>
+        <div class="attr-cell">
+          <span class="attr-code">WIL</span>
+          <span class="attr-val">8</span>
+          <span class="attr-target">≤ 80%</span>
+        </div>
+        <div class="attr-cell">
+          <span class="attr-code">AGI</span>
+          <span class="attr-val">8</span>
+          <span class="attr-target">≤ 80%</span>
+        </div>
+        <div class="attr-cell">
+          <span class="attr-code">CHA</span>
+          <span class="attr-val">2</span>
+          <span class="attr-target">≤ 20%</span>
+        </div>
+        <div class="attr-cell">
+          <span class="attr-code">LCK</span>
+          <span class="attr-val">5</span>
+          <span class="attr-target">≤ 50%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Middle Grid: Defenses & Soak Metrics vs Elemental / Condition Immunities -->
+    <div class="mid-specs-grid">
+      <!-- Defenses & Soak -->
+      <div class="ink-box">
+        <div class="box-header">
+          <span>DEFENSES &amp; SOAK RESILIENCE</span>
+          <span style="font-size: 8px;">ZERO ARITHMETIC</span>
+        </div>
+        <table class="defense-table">
+          <tr>
+            <td>Physical Armor Soak (Heavy Carapace)</td>
+            <td class="val-col">22 FLAT SOAK</td>
+          </tr>
+          <tr>
+            <td>Arcane Ward (Entropy Void Shell)</td>
+            <td class="val-col">30 VOID WARD <span style="font-size: 7.5px; font-weight: normal;">(Purges 1 buff/rnd)</span></td>
+          </tr>
+          <tr>
+            <td>Evasion Check Threshold (Roll-Under)</td>
+            <td class="val-col">≤ 62%</td>
+          </tr>
+          <tr>
+            <td>Critical Damage Mitigation</td>
+            <td class="val-col">1/2 CRIT DMG <span style="font-size: 7.5px; font-weight: normal;">(Apex Fortitude)</span></td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Resistances & Immunities -->
+      <div class="ink-box">
+        <div class="box-header">
+          <span>ELEMENTAL AFFINITIES &amp; CONDITION IMMUNITIES</span>
+          <span style="font-size: 8px;">RESIST PROFILE</span>
+        </div>
+        <table class="defense-table">
+          <tr>
+            <td>Elemental Matrix</td>
+            <td class="val-col">VOID (+3 ENTROPY) &nbsp;|&nbsp; FIRE (-2 VULN)</td>
+          </tr>
+          <tr>
+            <td>Total Immunities</td>
+            <td class="val-col">STUN IMMUNE &nbsp;•&nbsp; MIND FRACTURE IMMUNE</td>
+          </tr>
+          <tr>
+            <td>Condition Resilience</td>
+            <td class="val-col">POISON IMMUNE &nbsp;•&nbsp; BLEED 50% SOAK</td>
+          </tr>
+          <tr>
+            <td>Minion Doctrine Interaction</td>
+            <td class="val-col">OVERKILL PROJECTION RESISTANT</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Offensive Arsenal & Actions (Total Budget: 6 AP per round) -->
+    <div class="actions-container">
+      <div class="box-header">
+        <span>ACTIONS &amp; OFFENSIVE ARSENAL (TOTAL BUDGET: 6 AP PER ROUND)</span>
+        <span style="font-size: 8px;">PRE-COMPUTED TO-HIT &amp; DAMAGE</span>
+      </div>
+
+      <!-- Action 1 -->
+      <div class="action-row">
+        <div class="action-ap-tag">2 AP</div>
+        <div class="action-main-desc">
+          <div class="action-title-line">
+            <span class="action-name">PHASE-RIFT CLEAVER</span>
+            <span class="action-specs">[Blades / Kinetic • Reach: 3m Melee Arc]</span>
+          </div>
+          <div class="action-formula">
+            Damage: <strong>2d10 + 8 Slashing + 1d8 Void</strong> &nbsp;•&nbsp; Critical Trigger: <strong>≤ 08</strong> (Dimensional Sunder: target loses 2 AP next turn).
+          </div>
+        </div>
+        <div class="action-target-badge">
+          <span class="action-target-lbl">TO-HIT TARGET</span>
+          <span class="action-target-num">≤ 84%</span>
+        </div>
+      </div>
+
+      <!-- Action 2 -->
+      <div class="action-row">
+        <div class="action-ap-tag">2 AP</div>
+        <div class="action-main-desc">
+          <div class="action-title-line">
+            <span class="action-name">ABYSSAL DREAD-GAZE</span>
+            <span class="action-specs">[Mind / Void • 12m Cone Area]</span>
+          </div>
+          <div class="action-formula">
+            Damage: <strong>18 Mental Strain</strong> (Bypasses Physical Armor) &nbsp;•&nbsp; Contest: Target tests <strong>WIL DC 16</strong> or suffers <em>Terrorized</em> (-20% to hit for 2 rounds).
+          </div>
+        </div>
+        <div class="action-target-badge">
+          <span class="action-target-lbl">TO-HIT TARGET</span>
+          <span class="action-target-num">≤ 76%</span>
+        </div>
+      </div>
+
+      <!-- Action 3 -->
+      <div class="action-row">
+        <div class="action-ap-tag area">3 AP</div>
+        <div class="action-main-desc">
+          <div class="action-title-line">
+            <span class="action-name">CATACLYSMIC VOID NOVA</span>
+            <span class="action-specs">[Recharge 5–6 on d6 • 6m Point-Blank Sphere]</span>
+          </div>
+          <div class="action-formula">
+            Damage: <strong>4d8 + 6 Raw Void</strong> (Halves target armor soak) &nbsp;•&nbsp; Ground hazard remains for 2 rounds (dealing 2 flat Void on entry).
+          </div>
+        </div>
+        <div class="action-target-badge" style="background: var(--ink-wash);">
+          <span class="action-target-lbl">TARGET TYPE</span>
+          <span class="action-target-num" style="font-size: 10px; padding-top: 2px;">AUTO-AREA</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reactions & Legendary Traits vs Thresholds -->
+    <div class="tactical-dual-grid">
+      <!-- Out of Turn Reactions -->
+      <div class="tactical-card">
+        <div class="tactical-card-title">
+          <span>REACTIONS &amp; OUT-OF-TURN MANEUVERS</span>
+          <span class="font-mono" style="font-size: 8px;">AP COST</span>
+        </div>
+        <div style="margin-bottom: 3px;">
+          <strong style="font-size: 9px;">PHASE SHIFT (1 AP Reaction):</strong>
+          <span style="font-size: 7.5px; font-family: var(--font-mono); color: var(--ink-mid);">[TRIGGER: RANGED ATTACK TARGETED]</span>
+          <p class="tactical-desc">
+            When targeted by a projectile or spell, roll Evasion (≤62%). On success, instantly teleports 6m; the incoming attack misses completely.
+          </p>
+        </div>
+        <div style="border-top: 1px dotted var(--ink-light); padding-top: 2px;">
+          <strong style="font-size: 9px;">APEX DOMINANCE (LEGENDARY TRAIT):</strong>
+          <span style="font-size: 7.5px; font-family: var(--font-mono); color: var(--ink-mid);">[END OF ANY PLAYER TURN]</span>
+          <p class="tactical-desc">
+            May spend 1 unspent Surge AP at the conclusion of any player's turn to shift 4m without provoking opportunity attacks, or execute a single Claws Swipe.
+          </p>
+        </div>
+      </div>
+
+      <!-- Passive Traits & Phase Shift Triggers -->
+      <div class="tactical-card">
+        <div class="tactical-card-title">
+          <span>PASSIVE TRAITS &amp; PHASE THRESHOLDS</span>
+          <span class="font-mono" style="font-size: 8px;">STATUS FLAGS</span>
+        </div>
+        <div style="margin-bottom: 3px;">
+          <strong style="font-size: 9px;">ENRAGED THRESHOLD (≤ 120 HP / 50%):</strong>
+          <p class="tactical-desc">
+            When reduced to ≤120 Vitality, gains +1 permanent AP per round, attacks deal +1d6 Fire/Void Flare, but base Evasion drops to ≤50%.
+          </p>
+        </div>
+        <div style="border-top: 1px dotted var(--ink-light); padding-top: 2px;">
+          <strong style="font-size: 9px;">ENTROPY VEIL (ALWAYS ACTIVE):</strong>
+          <p class="tactical-desc">
+            Melee combatants striking the Dreadstalker suffer 3 flat Void backlash damage per kinetic impact, eroding active shields.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Section: D100 Quick Resolution Rules & Table Scratchpad -->
+    <div class="bottom-utility-grid">
+      <!-- D100 Resolution Table -->
+      <div class="ink-box" style="padding: 4px 6px;">
+        <div class="box-header" style="padding: 2px 0; border: none; background: transparent;">
+          <span>D100 RESOLUTION TABLE</span>
+          <span class="font-mono" style="font-size: 7.5px;">NO ARITHMETIC</span>
+        </div>
+        <div class="font-mono" style="font-size: 7.5px; line-height: 1.3; color: var(--ink-dark);">
+          • <strong>Critical Success:</strong> Roll ≤ 05 OR double (11, 22, 33...) under target.<br>
+          • <strong>Critical Failure:</strong> Roll ≥ 96 OR double above target.<br>
+          • <strong>Margin:</strong> Target minus Roll = Positive Margin (Degrees of Impact).<br>
+          • <strong>Minion Rule:</strong> Minions operate at 1 HP. Overkill carries to 2m adjacents.
+        </div>
+      </div>
+
+      <!-- GM Tactical Scratchpad (Pencil tracking for rounds, AP & statuses) -->
+      <div class="scratchpad-box">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; font-size: 8px; font-weight: 700; text-transform: uppercase;">
+          <span>GM ROUND &amp; STATUS SCRATCHPAD</span>
+          <span class="font-mono" style="font-size: 7px; color: var(--ink-mid);">ROUNDS: 1  2  3  4  5  6  7  8  9  10</span>
+        </div>
+        <div class="scratchpad-lines">
+          <div class="scratch-cell" title="Round 1"></div>
+          <div class="scratch-cell" title="Round 2"></div>
+          <div class="scratch-cell" title="Round 3"></div>
+          <div class="scratch-cell" title="Round 4"></div>
+          <div class="scratch-cell" title="Round 5"></div>
+          <div class="scratch-cell" title="Round 6"></div>
+          <div class="scratch-cell" title="Round 7"></div>
+          <div class="scratch-cell" title="Round 8"></div>
+          <div class="scratch-cell" title="Round 9"></div>
+          <div class="scratch-cell" title="Round 10"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Audit -->
+    <div class="footer-audit">
+      <span>RIFTWEAVE OFFLINE STANDALONE ENGINE • CORE RULES v2.4</span>
+      <span>ENTITY: RIFTBORN DREADSTALKER (APEX TIER IV / REV 09)</span>
+      <span>GM SESSION DATE: _______________</span>
+      <span>PAGE 1 OF 1 (A4)</span>
+    </div>
+
+  </div>
+
+</body>
+</html>

@@ -1,6 +1,6 @@
 # Frontend
 
-Modified: 2026-11-21
+Modified: 2026-11-23
 
 `frontend/` is an Angular app over the core (APP-07): through the HTTP API ([api.md](api.md)), or
 through the Go core compiled to WebAssembly in the page, so it can be served as a static site with
@@ -197,6 +197,8 @@ Every change to `frontend/` follows these (owner, 2026-11-14):
   the design tokens (custom properties: colors, spacing, radius, font) and the few shared classes
   (`.btn`, `.btn-primary`, `.btn-outline`, `.form-control`, `.card`, `.alert`, `.table`, `.nav`); a
   component's own layout is in its own `.css`.
+- **The design guide** (owner, 2026-11-23): colors, fonts, components, and layouts follow
+  [docs/design/](../design/README.md), from the owner's mockups; their Tailwind is rewritten as plain CSS.
 - **Small reusable components, built up.** Fields, cards, alerts, and lists live in `src/app/ui/`
   and take their values as signal inputs and models; a screen is a composition of them. Add a new
   `ui/` component when a second screen needs the same piece, rather than repeating markup.

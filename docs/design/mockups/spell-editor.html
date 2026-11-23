@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&amp;family=Space+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"secondary-fixed-dim":"#7bd0ff","outline-variant":"#3d4947","on-surface":"#dae2fd","on-error-container":"#ffdad6","error-container":"#93000a","tertiary-container":"#ca8100","primary-fixed-dim":"#6bd8cb","on-background":"#dae2fd","on-tertiary-container":"#3e2400","primary-fixed":"#89f5e7","on-surface-variant":"#bcc9c6","on-secondary-fixed":"#001e2c","on-primary-fixed-variant":"#005049","on-secondary":"#00354a","on-tertiary-fixed":"#2a1700","tertiary-fixed-dim":"#ffb95f","on-error":"#690005","background":"#0b1326","on-secondary-fixed-variant":"#004c69","inverse-on-surface":"#283044","secondary-fixed":"#c4e7ff","error":"#ffb4ab","on-tertiary-fixed-variant":"#653e00","on-tertiary":"#472a00","tertiary-fixed":"#ffddb8","surface-container":"#171f33","inverse-surface":"#dae2fd","surface-container-lowest":"#060e20","surface-tint":"#6bd8cb","primary-container":"#29a195","surface-dim":"#0b1326","inverse-primary":"#006a61","surface-container-low":"#131b2e","on-primary-fixed":"#00201d","outline":"#879391","on-secondary-container":"#00374d","surface-variant":"#2d3449","on-primary":"#003732","tertiary":"#ffb95f","surface-bright":"#31394d","secondary-container":"#00a6e0","surface-container-high":"#222a3d","surface":"#0b1326","primary":"#6bd8cb","surface-container-highest":"#2d3449","on-primary-container":"#00302b","secondary":"#7bd0ff"},"borderRadius":{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},"spacing":{"gutter":"1rem","space-lg":"1.25rem","gutter-desktop":"1.5rem","margin":"1rem","margin-desktop":"2rem","space-md":"0.75rem","space-sm":"0.5rem","space-xs":"0.25rem","space-xl":"2rem"},"fontFamily":{"label-sm":["JetBrains Mono"],"headline-xl-mobile":["Space Grotesk"],"body-md":["JetBrains Mono"],"label-md":["JetBrains Mono"],"headline-lg":["Space Grotesk"],"body-lg":["JetBrains Mono"],"headline-md":["Space Grotesk"],"headline-xl":["Space Grotesk"],"body-sm":["JetBrains Mono"],"headline-lg-mobile":["Space Grotesk"],"label-lg":["JetBrains Mono"]},"fontSize":{"label-sm":["0.625rem",{"lineHeight":"1","letterSpacing":"0.08em","fontWeight":"700"}],"headline-xl-mobile":["1.875rem",{"lineHeight":"1.15","letterSpacing":"-0.02em","fontWeight":"700"}],"body-md":["0.875rem",{"lineHeight":"1.45","letterSpacing":"0em","fontWeight":"400"}],"label-md":["0.75rem",{"lineHeight":"1","letterSpacing":"0.05em","fontWeight":"600"}],"headline-lg":["1.75rem",{"lineHeight":"1.2","letterSpacing":"-0.02em","fontWeight":"600"}],"body-lg":["1rem",{"lineHeight":"1.5","letterSpacing":"-0.01em","fontWeight":"400"}],"headline-md":["1.25rem",{"lineHeight":"1.3","letterSpacing":"-0.01em","fontWeight":"600"}],"headline-xl":["2.5rem",{"lineHeight":"1.1","letterSpacing":"-0.03em","fontWeight":"700"}],"body-sm":["0.75rem",{"lineHeight":"1.4","letterSpacing":"0.01em","fontWeight":"400"}],"headline-lg-mobile":["1.375rem",{"lineHeight":"1.25","letterSpacing":"-0.01em","fontWeight":"600"}],"label-lg":["0.875rem",{"lineHeight":"1","letterSpacing":"0.04em","fontWeight":"600"}]}}}};</script></head><body class="bg-surface text-on-surface font-body-md text-body-md min-h-screen selection:bg-primary selection:text-on-primary"><header class="fixed top-0 left-0 right-0 h-16 z-50 bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.35)] flex items-center justify-between px-gutter-desktop"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-sm"><div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center text-primary"><span class="material-symbols-outlined text-[20px]">deployed_code</span></div><div class="flex flex-col"><span class="font-headline-md text-headline-md tracking-tight text-on-surface uppercase">Riftweave</span><span class="font-label-sm text-label-sm text-outline tracking-wider uppercase">v2.4 Core Rules</span></div></div><div class="hidden xl:flex items-center gap-space-xs bg-surface-container-low px-space-sm py-space-xs rounded"><span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span><span class="font-label-sm text-label-sm text-primary uppercase">ENGINE READY / WASM ACTIVE (OFFLINE)</span></div></div><div class="flex items-center gap-space-md"><div class="hidden lg:flex items-center gap-space-xs bg-surface-container-low px-space-sm py-space-xs rounded"><span class="font-label-sm text-label-sm text-outline uppercase">ACTIVE ENTITY:</span><span class="font-label-md text-label-md text-secondary">AELIN_VAELIS</span><div class="w-2 h-2 rounded-full bg-secondary ml-space-xs"></div><span class="font-label-sm text-label-sm text-outline-variant">| SYNCED</span></div><div class="flex items-center bg-surface-container-low rounded p-0.5"><button class="flex items-center gap-space-xs px-space-sm py-1 rounded font-label-sm text-label-sm text-on-surface hover:bg-surface-container-high hover:text-on-surface transition-colors" type="button"><span class="font-label-sm text-label-sm text-tertiary">EN</span><span class="material-symbols-outlined text-[14px] text-outline">expand_more</span></button></div><div class="flex items-center bg-surface-container-low rounded p-0.5"><button class="p-1 rounded text-primary hover:bg-surface-container-high hover:text-on-surface transition-colors" title="Dark Theme" type="button"><span class="material-symbols-outlined text-[16px]">dark_mode</span></button></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><aside class="fixed left-0 top-0 bottom-0 w-64 pt-16 bg-surface-container-lowest z-40 flex flex-col justify-between shadow-[1px_0_12px_rgba(0,0,0,0.25)]"><div class="flex flex-col py-space-md"><div class="px-gutter mb-space-sm"><span class="font-label-sm text-label-sm text-outline uppercase tracking-widest">TACTICAL CODEX</span></div><nav class="flex flex-col gap-1 px-space-sm" data-active-classes="bg-primary-container text-on-primary-container font-bold"><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="session-play" href="#"><span class="material-symbols-outlined text-[20px]">swords</span><span class="font-label-md text-label-md uppercase tracking-wider">Start / Play</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="character-sheet" href="#"><span class="material-symbols-outlined text-[20px]">badge</span><span class="font-label-md text-label-md uppercase tracking-wider">Character Sheet</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="compendium" href="#"><span class="material-symbols-outlined text-[20px]">auto_stories</span><span class="font-label-md text-label-md uppercase tracking-wider">Compendium</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="encounter-tracker" href="#"><span class="material-symbols-outlined text-[20px]">radar</span><span class="font-label-md text-label-md uppercase tracking-wider">Encounter Tracker</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="bestiary" href="#"><span class="material-symbols-outlined text-[20px]">skull</span><span class="font-label-md text-label-md uppercase tracking-wider">Bestiary</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="engine-settings" href="#"><span class="material-symbols-outlined text-[20px]">settings</span><span class="font-label-md text-label-md uppercase tracking-wider">Settings</span></a></nav></div><div class="p-space-md bg-surface-container-low m-space-sm rounded"><div class="flex items-center justify-between mb-space-xs"><span class="font-label-sm text-label-sm text-outline">LOCAL WASM</span><span class="font-label-sm text-label-sm text-primary">0ms LAT</span></div><div class="w-full bg-surface-container-highest h-1 rounded-full overflow-hidden"><div class="bg-primary h-full w-full"></div></div><div class="mt-space-xs flex justify-between items-center font-label-sm text-label-sm text-on-surface-variant"><span>CACHE: 128MB</span><span class="text-tertiary">STANDALONE</span></div></div></aside><div class="pl-64"><main class="w-full pt-16 bg-surface min-h-screen"><div class="flex flex-col w-full text-on-surface">
+<!-- Top Arcane Header Breadcrumb & Main Matrix Ribbon -->
+<div class="px-gutter-desktop py-space-md bg-surface-container-lowest flex flex-col gap-space-sm shadow-md">
+<div class="flex flex-wrap items-center justify-between gap-space-md">
+<div>
+<div class="flex items-center gap-space-xs font-label-sm text-label-sm text-outline uppercase tracking-widest">
+<span class="hover:text-primary transition-colors cursor-pointer">START / PLAY</span>
+<span class="material-symbols-outlined text-[12px] text-outline-variant">chevron_right</span>
+<span class="text-primary font-bold">SPELL FORGE &amp; ARCANE MATRIX</span>
+<span class="material-symbols-outlined text-[12px] text-outline-variant">chevron_right</span>
+<span class="text-on-surface-variant">V2.4 COMPOSE ENGINE</span>
+</div>
+<div class="flex items-baseline gap-space-md mt-1">
+<h1 class="font-headline-lg text-headline-lg tracking-tight text-on-surface uppercase font-bold flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[28px]">hub</span>
+            Arcane Spell Matrix Editor
+          </h1>
+<span class="font-label-sm text-label-sm text-on-surface-variant hidden md:inline">
+            Classless Spellcrafting Engine • Zero Mental Arithmetic • Instant d100 Telemetry
+          </span>
+</div>
+</div>
+<!-- Action Cluster -->
+<div class="flex items-center gap-space-sm flex-wrap">
+<button class="flex items-center gap-space-xs px-space-sm py-1.5 rounded bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface font-label-md text-label-md uppercase tracking-wider transition-colors shadow-sm" id="reset-matrix-btn" type="button">
+<span class="material-symbols-outlined text-[16px]">restart_alt</span>
+<span>Reset</span>
+</button>
+<button class="flex items-center gap-space-xs px-space-sm py-1.5 rounded bg-surface-container hover:bg-surface-container-high text-secondary font-label-md text-label-md uppercase tracking-wider transition-colors shadow-sm" type="button">
+<span class="material-symbols-outlined text-[16px]">data_object</span>
+<span>Export JSON</span>
+</button>
+<button class="flex items-center gap-space-xs px-space-md py-1.5 rounded bg-surface-container-high hover:bg-surface-variant text-tertiary font-label-md text-label-md uppercase tracking-wider transition-colors shadow-sm" id="test-cast-top-btn" type="button">
+<span class="material-symbols-outlined text-[16px]">casino</span>
+<span>Test Cast (d100)</span>
+</button>
+<button class="flex items-center gap-space-xs px-space-md py-1.5 rounded bg-primary text-on-primary font-label-md text-label-md uppercase tracking-wider hover:brightness-110 shadow-md transition-all font-bold" type="button">
+<span class="material-symbols-outlined text-[18px]">bookmark_add</span>
+<span>Inscribe to Spellbook</span>
+</button>
+</div>
+</div>
+<!-- Active Character Skill Sync Strip -->
+<div class="flex items-center justify-between flex-wrap gap-space-sm bg-surface-container-low px-space-md py-1.5 rounded">
+<div class="flex items-center gap-space-md flex-wrap font-label-sm text-label-sm">
+<div class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="text-outline uppercase">Dominant Entity:</span>
+<span class="text-on-surface font-semibold">AELIN_VAELIS [TIER 3 BINDWEAVER]</span>
+</div>
+<div class="hidden sm:block text-outline-variant">|</div>
+<div>
+<span class="text-outline uppercase">Base Blue Pool:</span>
+<span class="text-secondary font-bold">82%</span>
+<span class="text-outline-variant font-normal">(INT 9 + Inherent Surge + Tag +20%)</span>
+</div>
+<div class="hidden sm:block text-outline-variant">|</div>
+<div>
+<span class="text-outline uppercase">Active Inscriptions:</span>
+<span class="text-primary font-bold">3 / 6 SLOTS OCCUPIED</span>
+</div>
+</div>
+<div class="flex items-center gap-space-sm font-label-sm text-label-sm text-primary">
+<span class="material-symbols-outlined text-[14px]">bolt</span>
+<span class="uppercase tracking-widest">WASM Matrix Solved (1ms)</span>
+</div>
+</div>
+</div>
+<!-- Wizard / 9 Color Magic School Ribbon -->
+<div class="bg-surface-container px-gutter-desktop py-space-sm overflow-x-auto no-scrollbar shadow-inner">
+<div class="flex items-center gap-space-xs min-w-max">
+<!-- 1. Red -->
+<button class="group flex items-center gap-space-xs px-space-sm py-1 rounded bg-surface-container-low hover:bg-surface-container-high transition-colors" type="button">
+<div class="w-4 h-4 rounded-full bg-error flex items-center justify-center text-on-error font-bold text-[9px]">R</div>
+<div class="flex flex-col items-start leading-tight">
+<span class="font-label-sm text-label-sm text-error group-hover:text-on-surface uppercase">Red (Flame)</span>
+<span class="font-label-sm text-[9px] text-outline">Destruction</span>
+</div>
+</button>
+<!-- 2. Orange -->
+<button class="group flex items-center gap-space-xs px-space-sm py-1 rounded bg-surface-container-low hover:bg-surface-container-high transition-colors" type="button">
+<div class="w-4 h-4 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary font-bold text-[9px]">O</div>
+<div class="flex flex-col items-start leading-tight">
+<span class="font-label-sm text-label-sm text-tertiary group-hover:text-on-surface uppercase">Orange (Kinetic)</span>
+<span class="font-label-sm text-[9px] text-outline">Raw Force</span>
+</div>
+</button>
+<!-- 3. Yellow -->
+<button class="group flex items-center gap-space-xs px-space-sm py-1 rounded bg-surface-container-low hover:bg-surface-container-high transition-colors" type="button">
+<div class="w-4 h-4 rounded-full bg-tertiary flex items-center justify-center text-on-tertiary font-bold text-[9px]">Y</div>
+<div class="flex flex-col items-start leading-tight">
+<span class="font-label-sm text-label-sm text-tertiary-fixed-dim group-hover:text-on-surface uppercase">Yellow (Radiance)</span>
+<span class="font-label-sm text-[9px] text-outline">Lightning</span>
+</div>
+</button>
+<!-- 4. Green -->
+<button class="group flex items-center gap-space-xs px-space-sm py-1 rounded bg-surface-container-low hover:bg-surface-container-high transition-colors" type="button">
+<div class="w-4 h-4 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold text-[9px]">G</div>
+<div class="flex flex-col items-start leading-tight">
+<span class="font-label-sm text-label-sm text-primary group-hover:text-on-surface uppercase">Green (Nature)</span>
+<span class="font-label-sm text-[9px] text-outline">Life / Growth</span>
+</div>
+</button>
+<!-- 5. Blue (Selected/Active) -->
+<div class="flex items-center gap-space-xs px-space-md py-1.5 rounded bg-secondary-container text-on-secondary-container shadow-md">
+<div class="w-5 h-5 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-bold text-[10px] animate-pulse">B</div>
+<div class="flex flex-col items-start leading-tight">
+<span class="font-label-sm text-label-sm uppercase tracking-wider font-bold text-on-secondary-container">Blue Magic (Water / Tide)</span>
+<span class="font-label-sm text-[9px] text-on-secondary-container/80">Active Focus • Hydro-kinetic &amp; Wards</span>
+</div>
+<span class="material-symbols-outlined text-[16px] ml-1">water_drop</span>
+</div>
+<!-- 6. Indigo -->
+<button class="group flex items-center gap-space-xs px-space-sm py-1 rounded bg-surface-container-low hover:bg-surface-container-high transition-colors" type="button">
+<div class="w-4 h-4 rounded-full bg-surface-variant flex items-center justify-center text-secondary font-bold text-[9px]">I</div>
+<div class="flex flex-col items-start leading-tight">
+<span class="font-label-sm text-label-sm text-secondary-fixed-dim group-hover:text-on-surface uppercase">Indigo (Rift)</span>
+<span class="font-label-sm text-[9px] text-outline">Space / Gravity</span>
+</div>
+</button>
+<!-- 7. Violet -->
+<button class="group flex items-center gap-space-xs px-space-sm py-1 rounded bg-surface-container-low hover:bg-surface-container-high transition-colors" type="button">
+<div class="w-4 h-4 rounded-full bg-surface-container-high flex items-center justify-center text-tertiary font-bold text-[9px]">V</div>
+<div class="flex flex-col items-start leading-tight">
+<span class="font-label-sm text-label-sm text-on-surface-variant group-hover:text-on-surface uppercase">Violet (Mind)</span>
+<span class="font-label-sm text-[9px] text-outline">Illusion / Psyche</span>
+</div>
+</button>
+<!-- 8. White -->
+<button class="group flex items-center gap-space-xs px-space-sm py-1 rounded bg-surface-container-low hover:bg-surface-container-high transition-colors" type="button">
+<div class="w-4 h-4 rounded-full bg-inverse-surface flex items-center justify-center text-inverse-on-surface font-bold text-[9px]">W</div>
+<div class="flex flex-col items-start leading-tight">
+<span class="font-label-sm text-label-sm text-on-surface group-hover:text-primary uppercase">White (Order)</span>
+<span class="font-label-sm text-[9px] text-outline">Abjuration</span>
+</div>
+</button>
+<!-- 9. Black -->
+<button class="group flex items-center gap-space-xs px-space-sm py-1 rounded bg-surface-container-low hover:bg-surface-container-high transition-colors" type="button">
+<div class="w-4 h-4 rounded-full bg-surface-container-lowest flex items-center justify-center text-error font-bold text-[9px]">K</div>
+<div class="flex flex-col items-start leading-tight">
+<span class="font-label-sm text-label-sm text-error group-hover:text-on-surface uppercase">Black (Entropy)</span>
+<span class="font-label-sm text-[9px] text-outline">Decay / Void</span>
+</div>
+</button>
+</div>
+</div>
+<!-- Main 3-Column Tri-Pane Matrix Workspace -->
+<div class="px-gutter-desktop py-space-lg grid grid-cols-1 lg:grid-cols-12 gap-space-md items-start">
+<!-- ============================================== -->
+<!-- COLUMN 1: Effect Library & Reagents (~320px / 3 cols) -->
+<!-- ============================================== -->
+<div class="lg:col-span-3 flex flex-col gap-space-md">
+<!-- Effect Library Box -->
+<div class="bg-surface-container-low rounded p-space-md flex flex-col gap-space-sm shadow-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary text-[20px]">menu_book</span>
+<span class="font-headline-md text-headline-md tracking-tight uppercase">Blue Pool Library</span>
+</div>
+<span class="font-label-sm text-label-sm text-outline">6 FOUND</span>
+</div>
+<!-- Filter Tags -->
+<div class="flex items-center gap-1 overflow-x-auto pb-1 no-scrollbar">
+<button class="px-space-xs py-0.5 rounded bg-primary text-on-primary font-label-sm text-label-sm uppercase">All</button>
+<button class="px-space-xs py-0.5 rounded bg-surface-container text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm uppercase">Barrier</button>
+<button class="px-space-xs py-0.5 rounded bg-surface-container text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm uppercase">Force</button>
+<button class="px-space-xs py-0.5 rounded bg-surface-container text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm uppercase">Damage</button>
+</div>
+<!-- Search input -->
+<div class="relative">
+<input class="w-full bg-surface-container-lowest text-on-surface font-body-sm text-body-sm px-space-sm py-1.5 pl-8 rounded focus:outline-none focus:ring-1 focus:ring-primary" placeholder="Filter hydrodynamic effects..." type="text" value=""/>
+<span class="material-symbols-outlined absolute left-2 top-2 text-[16px] text-outline">search</span>
+</div>
+<!-- Effect Cards Stack -->
+<div class="flex flex-col gap-space-xs mt-1">
+<!-- Effect 1: Added -->
+<div class="p-space-sm bg-surface-container rounded flex flex-col gap-1 shadow-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-secondary font-bold uppercase">Torrential Barrier</span>
+<span class="px-1.5 py-0.2 rounded bg-primary-container text-on-primary-container font-label-sm text-label-sm">SLOT 1 ACTIVE</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-tight">
+              Dense aqueous envelope absorbing incoming physical &amp; flame impact.
+            </p>
+<div class="flex items-center justify-between font-label-sm text-label-sm pt-1 text-outline">
+<span>Base: 4 MP • Soak</span>
+<span class="text-primary font-bold">IN MATRIX</span>
+</div>
+</div>
+<!-- Effect 2: Unused -->
+<div class="p-space-sm bg-surface-container-lowest rounded hover:bg-surface-container transition-colors flex flex-col gap-1 group">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-on-surface font-bold uppercase group-hover:text-primary transition-colors">Glacial Lance</span>
+<button class="px-1.5 py-0.5 rounded bg-surface-container-high hover:bg-primary hover:text-on-primary text-primary font-label-sm text-label-sm uppercase transition-colors" type="button">+ ADD</button>
+</div>
+<p class="font-body-sm text-body-sm text-outline leading-tight">
+              Crystallized water missile dealing Piercing Cold damage and Chilled debuff.
+            </p>
+<div class="flex items-center justify-between font-label-sm text-label-sm pt-1 text-outline">
+<span>Base: 3 MP • Piercing</span>
+<span class="text-outline-variant">Rank 2 Req.</span>
+</div>
+</div>
+<!-- Effect 3: Added -->
+<div class="p-space-sm bg-surface-container rounded flex flex-col gap-1 shadow-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-secondary font-bold uppercase">Riptide Pull</span>
+<span class="px-1.5 py-0.2 rounded bg-primary-container text-on-primary-container font-label-sm text-label-sm">SLOT 2 ACTIVE</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-tight">
+              Surging undertow pulling targets in zone toward matrix epicenter.
+            </p>
+<div class="flex items-center justify-between font-label-sm text-label-sm pt-1 text-outline">
+<span>Base: 2 MP • Displacement</span>
+<span class="text-primary font-bold">IN MATRIX</span>
+</div>
+</div>
+<!-- Effect 4: Unused -->
+<div class="p-space-sm bg-surface-container-lowest rounded hover:bg-surface-container transition-colors flex flex-col gap-1 group">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-on-surface font-bold uppercase group-hover:text-primary transition-colors">Vapor Shroud</span>
+<button class="px-1.5 py-0.5 rounded bg-surface-container-high hover:bg-primary hover:text-on-primary text-primary font-label-sm text-label-sm uppercase transition-colors" type="button">+ ADD</button>
+</div>
+<p class="font-body-sm text-body-sm text-outline leading-tight">
+              Heavy condensation granting partial obscuration &amp; +20% evasion.
+            </p>
+<div class="flex items-center justify-between font-label-sm text-label-sm pt-1 text-outline">
+<span>Base: 3 MP • Stealth</span>
+<span class="text-outline-variant">Rank 1 Req.</span>
+</div>
+</div>
+<!-- Effect 5: Unused -->
+<div class="p-space-sm bg-surface-container-lowest rounded hover:bg-surface-container transition-colors flex flex-col gap-1 group">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-on-surface font-bold uppercase group-hover:text-primary transition-colors">Pressure Crush</span>
+<button class="px-1.5 py-0.5 rounded bg-surface-container-high hover:bg-primary hover:text-on-primary text-primary font-label-sm text-label-sm uppercase transition-colors" type="button">+ ADD</button>
+</div>
+<p class="font-body-sm text-body-sm text-outline leading-tight">
+              Deep trench hydrostatic compression inflicting Crushing trauma.
+            </p>
+<div class="flex items-center justify-between font-label-sm text-label-sm pt-1 text-outline">
+<span>Base: 5 MP • Heavy Blunt</span>
+<span class="text-outline-variant">Rank 3 Req.</span>
+</div>
+</div>
+<!-- Effect 6: Unused -->
+<div class="p-space-sm bg-surface-container-lowest rounded hover:bg-surface-container transition-colors flex flex-col gap-1 group">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-on-surface font-bold uppercase group-hover:text-primary transition-colors">Tidal Cleansing</span>
+<button class="px-1.5 py-0.5 rounded bg-surface-container-high hover:bg-primary hover:text-on-primary text-primary font-label-sm text-label-sm uppercase transition-colors" type="button">+ ADD</button>
+</div>
+<p class="font-body-sm text-body-sm text-outline leading-tight">
+              Purges up to 2 tier-1 status afflictions (Burn, Poison, Decay).
+            </p>
+<div class="flex items-center justify-between font-label-sm text-label-sm pt-1 text-outline">
+<span>Base: 3 MP • Dispel</span>
+<span class="text-outline-variant">Rank 2 Req.</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Reagent Catalyst Vault -->
+<div class="bg-surface-container-low rounded p-space-md flex flex-col gap-space-sm shadow-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-tertiary text-[20px]">science</span>
+<span class="font-headline-md text-headline-md tracking-tight uppercase">Catalyst Reagents</span>
+</div>
+<span class="font-label-sm text-label-sm text-tertiary">2 SLOTTED</span>
+</div>
+<div class="flex flex-col gap-space-xs">
+<!-- Catalyst 1: Active -->
+<div class="p-space-sm bg-surface-container rounded flex items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded bg-surface-container-highest flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[18px]">diamond</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Focus Crystal of Kragspire</span>
+<span class="font-label-sm text-label-sm text-primary">-1 MP Cost • +4% Cast Threshold</span>
+</div>
+</div>
+<button class="text-outline hover:text-error transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+<!-- Catalyst 2: Active -->
+<div class="p-space-sm bg-surface-container rounded flex items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded bg-surface-container-highest flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[18px]">lens</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Deep Sea Pearl</span>
+<span class="font-label-sm text-label-sm text-secondary">+1 Round Duration (Persistent Ward)</span>
+</div>
+</div>
+<button class="text-outline hover:text-error transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+<!-- Stash summary mini visual -->
+<div class="p-space-xs bg-surface-container-lowest rounded flex items-center justify-between text-outline font-label-sm text-label-sm">
+<span>STASH CAPACITY: 14/20 REAGENTS</span>
+<span class="text-on-surface hover:text-primary cursor-pointer uppercase">Open Vault →</span>
+</div>
+</div>
+</div>
+</div>
+<!-- ============================================== -->
+<!-- COLUMN 2: Spell Construction Matrix (~540px / 5 cols) -->
+<!-- ============================================== -->
+<div class="lg:col-span-5 flex flex-col gap-space-md">
+<!-- Matrix Parameters Deck -->
+<div class="bg-surface-container-low rounded p-space-md flex flex-col gap-space-md shadow-sm">
+<!-- Header & Identity Row -->
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">PRIMARY MATRIX PARAMETERS</span>
+<div class="flex items-center gap-1 text-secondary font-label-sm text-label-sm">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>SYNCHRONIZED</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-sm mt-1">
+<div class="md:col-span-2">
+<label class="font-label-sm text-label-sm text-outline uppercase block mb-1">Matrix Nomenclature</label>
+<input class="w-full bg-surface-container-lowest text-on-surface font-headline-md text-headline-md font-bold px-space-sm py-1 rounded focus:outline-none focus:ring-1 focus:ring-primary" id="spell-name-input" type="text" value="Maelstrom Bastion"/>
+</div>
+<div>
+<label class="font-label-sm text-label-sm text-outline uppercase block mb-1">Circle / Tier</label>
+<div class="flex items-center bg-surface-container-lowest px-space-sm py-1.5 rounded justify-between">
+<span class="font-label-md text-label-md font-bold text-tertiary">RANK 3</span>
+<span class="material-symbols-outlined text-[16px] text-outline">verified</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Delivery & Discipline Tags -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-space-xs">
+<div class="bg-surface-container-lowest p-space-xs rounded flex flex-col">
+<span class="font-label-sm text-[9px] text-outline uppercase">Delivery Mode</span>
+<span class="font-label-md text-label-md text-primary font-bold">REACTION</span>
+</div>
+<div class="bg-surface-container-lowest p-space-xs rounded flex flex-col">
+<span class="font-label-sm text-[9px] text-outline uppercase">Radius Envelope</span>
+<span class="font-label-md text-label-md text-secondary font-bold">6m PERIMETER</span>
+</div>
+<div class="bg-surface-container-lowest p-space-xs rounded flex flex-col">
+<span class="font-label-sm text-[9px] text-outline uppercase">Concentration</span>
+<div class="flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="font-label-md text-label-md text-primary font-bold">REQUIRED</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-space-xs rounded flex flex-col">
+<span class="font-label-sm text-[9px] text-outline uppercase">Channel Lock</span>
+<span class="font-label-md text-label-md text-on-surface-variant">NONE (INSTANT)</span>
+</div>
+</div>
+<!-- Section: Active Effects Stacking Modules -->
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">ACTIVE EFFECTS COMPONENT STACK</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">2 OF 3 MAXIMUM MODULES</span>
+</div>
+<!-- Effect Card 1: Torrential Barrier -->
+<div class="bg-surface-container rounded p-space-md flex flex-col gap-space-sm relative overflow-hidden shadow-sm">
+<div class="absolute top-0 left-0 w-1.5 h-full bg-primary"></div>
+<div class="flex items-center justify-between pl-2">
+<div class="flex items-center gap-space-xs">
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-primary text-on-primary font-bold">01</span>
+<span class="font-headline-md text-headline-md font-bold text-on-surface">BARRIER WARD [PRIMARY]</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="font-label-sm text-label-sm text-primary font-bold">BASE 4 MP</span>
+<button class="text-outline hover:text-error transition-colors p-1" title="Remove Module" type="button">
+<span class="material-symbols-outlined text-[16px]">delete</span>
+</button>
+</div>
+</div>
+<!-- Param Row 1: Magnitude Soak -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-sm pl-2">
+<div class="bg-surface-container-lowest p-space-sm rounded flex items-center justify-between">
+<div>
+<span class="font-label-sm text-[10px] text-outline uppercase block">Shield Magnitude</span>
+<span class="font-headline-md text-headline-md text-secondary font-bold" id="shield-val">35 HP SOAK</span>
+</div>
+<div class="flex items-center gap-1">
+<button class="w-7 h-7 rounded bg-surface-container hover:bg-surface-container-high flex items-center justify-center font-bold text-on-surface transition-colors" id="shield-minus" type="button">-5</button>
+<button class="w-7 h-7 rounded bg-surface-container hover:bg-surface-container-high flex items-center justify-center font-bold text-on-surface transition-colors" id="shield-plus" type="button">+5</button>
+</div>
+</div>
+<!-- Param Row 2: Duration -->
+<div class="bg-surface-container-lowest p-space-sm rounded flex items-center justify-between">
+<div>
+<span class="font-label-sm text-[10px] text-outline uppercase block">Active Duration</span>
+<span class="font-headline-md text-headline-md text-on-surface font-bold" id="duration-val">3 ROUNDS</span>
+</div>
+<div class="flex items-center gap-1">
+<button class="w-7 h-7 rounded bg-surface-container hover:bg-surface-container-high flex items-center justify-center font-bold text-on-surface transition-colors" id="dur-minus" type="button">-1</button>
+<button class="w-7 h-7 rounded bg-surface-container hover:bg-surface-container-high flex items-center justify-center font-bold text-on-surface transition-colors" id="dur-plus" type="button">+1</button>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between pl-2 font-label-sm text-label-sm text-outline">
+<span>Target Vector: Self or Ally within 12m line-of-sight</span>
+<span class="text-on-surface-variant">Absorbs blunt, slash, flame</span>
+</div>
+</div>
+<!-- Effect Card 2: Riptide Vortex -->
+<div class="bg-surface-container rounded p-space-md flex flex-col gap-space-sm relative overflow-hidden shadow-sm">
+<div class="absolute top-0 left-0 w-1.5 h-full bg-secondary"></div>
+<div class="flex items-center justify-between pl-2">
+<div class="flex items-center gap-space-xs">
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-secondary text-on-secondary font-bold">02</span>
+<span class="font-headline-md text-headline-md font-bold text-on-surface">RIPTIDE VORTEX [SECONDARY]</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="font-label-sm text-label-sm text-secondary font-bold">+2 MP MOD</span>
+<button class="text-outline hover:text-error transition-colors p-1" title="Remove Module" type="button">
+<span class="material-symbols-outlined text-[16px]">delete</span>
+</button>
+</div>
+</div>
+<!-- Vortex Parameters -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-sm pl-2">
+<div class="bg-surface-container-lowest p-space-sm rounded flex items-center justify-between">
+<div>
+<span class="font-label-sm text-[10px] text-outline uppercase block">Impact Damage</span>
+<span class="font-headline-md text-headline-md text-tertiary font-bold">12 BLUNT</span>
+</div>
+<div class="flex items-center gap-1 font-label-sm text-label-sm text-outline">
+<span>d6+6</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-space-sm rounded flex items-center justify-between">
+<div>
+<span class="font-label-sm text-[10px] text-outline uppercase block">Displacement</span>
+<span class="font-headline-md text-headline-md text-primary font-bold">4m INWARD PULL</span>
+</div>
+<div class="flex items-center gap-1 font-label-sm text-label-sm text-outline">
+<span>DC 14 STR</span>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between pl-2 font-label-sm text-label-sm text-outline">
+<span>Trigger: All hostiles crossing 6m boundary</span>
+<span class="text-secondary">Zone Hazard (Ground)</span>
+</div>
+</div>
+</div>
+<!-- Modifiers & Metamagic Toggles -->
+<div class="flex flex-col gap-space-xs">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">TACTICAL METAMAGIC MODIFIERS</span>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-xs">
+<!-- Quickcast -->
+<label class="flex items-center justify-between p-space-sm bg-surface-container-lowest hover:bg-surface-container rounded cursor-pointer transition-colors">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-bold text-on-surface">Quickcast</span>
+<span class="font-label-sm text-[10px] text-primary">+2 MP • 0 AP Cost</span>
+</div>
+<input class="w-4 h-4 accent-primary rounded cursor-pointer" id="mod-quickcast" type="checkbox"/>
+</label>
+<!-- Overcharge -->
+<label class="flex items-center justify-between p-space-sm bg-surface-container-lowest hover:bg-surface-container rounded cursor-pointer transition-colors">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-bold text-on-surface">Overcharge</span>
+<span class="font-label-sm text-[10px] text-tertiary">+3 MP • +50% Area</span>
+</div>
+<input class="w-4 h-4 accent-primary rounded cursor-pointer" id="mod-overcharge" type="checkbox"/>
+</label>
+<!-- Stability Ward -->
+<label class="flex items-center justify-between p-space-sm bg-surface-container rounded cursor-pointer transition-colors shadow-sm">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-bold text-secondary">Stability Ward</span>
+<span class="font-label-sm text-[10px] text-secondary">-1 MP • 1 Turn Chant</span>
+</div>
+<input checked="" class="w-4 h-4 accent-primary rounded cursor-pointer" id="mod-stability" type="checkbox"/>
+</label>
+</div>
+</div>
+<!-- Rules Validation Feed -->
+<div class="flex flex-col gap-space-xs">
+<div class="p-space-sm bg-surface-container-lowest rounded flex items-start gap-space-sm">
+<span class="material-symbols-outlined text-secondary text-[20px] shrink-0 mt-0.5">verified_user</span>
+<div class="flex flex-col font-body-sm text-body-sm">
+<span class="font-label-md text-label-md text-secondary font-bold uppercase">Matrix Synthesis Validated</span>
+<p class="text-on-surface-variant">
+                Dual-tier effect (Ward + Field Pull) satisfies Blue Magic harmonics. Concentration slot is actively reserved.
+              </p>
+</div>
+</div>
+<div class="p-space-sm bg-surface-container-lowest rounded flex items-start gap-space-sm">
+<span class="material-symbols-outlined text-tertiary text-[20px] shrink-0 mt-0.5">info</span>
+<div class="flex flex-col font-body-sm text-body-sm">
+<span class="font-label-md text-label-md text-tertiary font-bold uppercase">Resource Consumption Flag</span>
+<p class="text-outline">
+                Spell demands 7 MP of Voss's current 40 MP reserve. Sustainable cast rate: ~5.7 casts per full replenishment.
+              </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- ============================================== -->
+<!-- COLUMN 3: Live Rules Telemetry & Card Preview (~380px / 4 cols) -->
+<!-- ============================================== -->
+<div class="lg:col-span-4 flex flex-col gap-space-md">
+<!-- Telemetry Zero-Math Computation HUD -->
+<div class="bg-surface-container-low rounded p-space-md flex flex-col gap-space-md shadow-md">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">LIVE TELEMETRY HUD</span>
+<span class="px-1.5 py-0.5 rounded bg-primary-container text-on-primary-container font-label-sm text-label-sm font-bold">SOLVER RUNNING</span>
+</div>
+<!-- Main Big Metric Grid -->
+<div class="grid grid-cols-2 gap-space-sm">
+<!-- Mana Computed -->
+<div class="bg-surface-container rounded p-space-md flex flex-col justify-between shadow-sm">
+<span class="font-label-sm text-label-sm text-outline uppercase">Computed Cost</span>
+<div class="flex items-baseline gap-1 my-1">
+<span class="font-headline-xl text-headline-xl text-primary font-bold" id="hud-mp-cost">7</span>
+<span class="font-headline-md text-headline-md text-primary font-bold">MP</span>
+</div>
+<span class="font-label-sm text-[10px] text-on-surface-variant">Base 4 + Sec 2 + Reagent -1 + Mod 2</span>
+</div>
+<!-- Target Roll-Under Threshold -->
+<div class="bg-surface-container rounded p-space-md flex flex-col justify-between shadow-sm">
+<span class="font-label-sm text-label-sm text-outline uppercase">Target Threshold</span>
+<div class="flex items-baseline gap-1 my-1">
+<span class="font-headline-xl text-headline-xl text-secondary font-bold" id="hud-threshold">≤76%</span>
+</div>
+<span class="font-label-sm text-[10px] text-on-surface-variant">Skill 82% − Comp 10% + Reag 4%</span>
+</div>
+</div>
+<!-- Action Economy & Backlash Gauge -->
+<div class="grid grid-cols-2 gap-space-sm">
+<div class="bg-surface-container-lowest p-space-sm rounded flex items-center justify-between">
+<div>
+<span class="font-label-sm text-[10px] text-outline uppercase block">AP Cost</span>
+<span class="font-headline-md text-headline-md text-on-surface font-bold" id="hud-ap-cost">2 AP</span>
+</div>
+<span class="material-symbols-outlined text-outline text-[22px]">timer</span>
+</div>
+<div class="bg-surface-container-lowest p-space-sm rounded flex items-center justify-between">
+<div>
+<span class="font-label-sm text-[10px] text-outline uppercase block">Arcane Strain</span>
+<span class="font-headline-md text-headline-md text-tertiary font-bold">12%</span>
+</div>
+<span class="material-symbols-outlined text-tertiary text-[22px]">warning</span>
+</div>
+</div>
+<!-- Mini Progress Bar for Threshold Risk -->
+<div class="flex flex-col gap-1">
+<div class="flex justify-between font-label-sm text-label-sm">
+<span class="text-outline">Roll-under Success Margin (d100)</span>
+<span class="text-secondary font-bold">76 / 100</span>
+</div>
+<div class="w-full bg-surface-container-lowest h-2 rounded overflow-hidden flex">
+<div class="bg-primary h-full transition-all duration-300" id="hud-progress" style="width: 76%"></div>
+<div class="bg-tertiary h-full" style="width: 19%"></div>
+<div class="bg-error h-full" style="width: 5%"></div>
+</div>
+<div class="flex justify-between font-label-sm text-[9px] text-outline-variant uppercase">
+<span>Critical Margin 01-08</span>
+<span>Success 09-76</span>
+<span class="text-error font-bold">Hazard ≥96</span>
+</div>
+</div>
+</div>
+<!-- Live Interactive In-Game Spell Card Preview -->
+<div class="bg-surface-container-low rounded p-space-md flex flex-col gap-space-sm shadow-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[18px]">badge</span>
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">TACTICAL SPELL CARD PREVIEW</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">WYSIWYG</span>
+</div>
+<!-- Actual In-Game Arcane Card Display -->
+<div class="bg-surface-container-lowest rounded p-space-md flex flex-col gap-space-sm relative overflow-hidden shadow-sm">
+<!-- Card School Watermark Visual -->
+<div class="absolute -right-6 -bottom-6 w-32 h-32 rounded-full bg-secondary/5 blur-xl pointer-events-none"></div>
+<!-- Card Header -->
+<div class="flex items-start justify-between">
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<span class="px-1.5 py-0.5 rounded bg-secondary text-on-secondary font-label-sm text-label-sm font-bold uppercase">Blue Magic</span>
+<span class="font-label-sm text-label-sm text-outline">TIER III</span>
+</div>
+<span class="font-headline-md text-headline-md font-bold text-on-surface mt-1 uppercase tracking-tight" id="preview-spell-name">MAELSTROM BASTION</span>
+</div>
+<div class="flex flex-col items-end">
+<div class="flex items-center gap-1">
+<span class="font-headline-md text-headline-md font-bold text-primary" id="preview-mp">7</span>
+<span class="font-label-sm text-label-sm text-primary uppercase">MP</span>
+</div>
+<span class="font-label-sm text-label-sm text-outline uppercase" id="preview-ap">2 AP • REACTION</span>
+</div>
+</div>
+<!-- Target & Vector Banner -->
+<div class="bg-surface-container px-space-sm py-1 rounded flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>Range: 12m • Self / Ally</span>
+<span class="text-secondary font-semibold">Area: 6m Vortex Aura</span>
+</div>
+<!-- Effects Description in tactical format -->
+<div class="flex flex-col gap-1.5 font-body-sm text-body-sm text-on-surface">
+<div class="flex items-start gap-1.5">
+<span class="text-primary font-bold">•</span>
+<p>
+<strong class="text-primary font-bold">Aqueous Aegis:</strong> Grants <span id="preview-soak">35 HP</span> damage absorption barrier for <span id="preview-rounds">3 rounds</span>.
+              </p>
+</div>
+<div class="flex items-start gap-1.5">
+<span class="text-secondary font-bold">•</span>
+<p>
+<strong class="text-secondary font-bold">Riptide Drag:</strong> Enemies entering the 6m boundary suffer 12 blunt force and must succeed a DC 14 STR test or be displaced 4m toward the core.
+              </p>
+</div>
+</div>
+<!-- Flavor Text -->
+<div class="border-t border-surface-container-highest/20 pt-space-xs">
+<p class="font-body-sm text-[11px] text-outline italic leading-tight">
+              “The ocean bows not to the iron keel, but swallows the hull whole and shields what rests within the deep.”
+            </p>
+</div>
+<!-- Card Footer Action -->
+<div class="pt-1 flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">CODEX ID: #RW-8824-BLU</span>
+<span class="font-label-sm text-label-sm text-primary font-bold uppercase">READY FOR INSCRIBE</span>
+</div>
+</div>
+<!-- Test Cast Engine Console -->
+<div class="bg-surface-container rounded p-space-sm flex flex-col gap-space-xs mt-1">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline uppercase">SIMULATED CAST RESOLVER</span>
+<span class="font-label-sm text-label-sm text-tertiary">d100 ROLL-UNDER</span>
+</div>
+<div class="flex items-center gap-space-sm">
+<button class="flex-1 py-2 rounded bg-tertiary-container hover:bg-tertiary text-on-tertiary font-label-md text-label-md uppercase tracking-wider font-bold transition-all shadow-sm flex items-center justify-center gap-1.5" id="roll-simulate-btn" type="button">
+<span class="material-symbols-outlined text-[18px]">casino</span>
+<span>Roll Cast Test</span>
+</button>
+<div class="w-24 h-9 rounded bg-surface-container-lowest flex items-center justify-center font-headline-md text-headline-md font-bold text-on-surface" id="roll-result-box">
+              --
+            </div>
+</div>
+<div class="font-label-sm text-label-sm text-outline text-center py-0.5" id="roll-status-message">
+            Click to launch instant WASM dice simulation.
+          </div>
+</div>
+</div>
+</div>
+</div>
+<!-- Sticky Mobile Telemetry Bar (360px-767px glanceable HUD) -->
+<div class="lg:hidden fixed bottom-0 left-0 right-0 h-16 bg-surface-container-lowest/95 backdrop-blur-md px-gutter flex items-center justify-between z-30 shadow-lg">
+<div class="flex flex-col">
+<span class="font-label-sm text-[10px] text-outline uppercase">Maelstrom Bastion</span>
+<div class="flex items-center gap-space-xs">
+<span class="font-label-md text-label-md text-primary font-bold">7 MP</span>
+<span class="text-outline">•</span>
+<span class="font-label-md text-label-md text-secondary font-bold">≤76% THRESHOLD</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs">
+<button class="px-space-sm py-1.5 rounded bg-surface-container text-tertiary font-label-sm text-label-sm uppercase font-bold" type="button">
+        Roll
+      </button>
+<button class="px-space-md py-1.5 rounded bg-primary text-on-primary font-label-sm text-label-sm uppercase font-bold shadow-md" type="button">
+        Inscribe
+      </button>
+</div>
+</div>
+<!-- Interactive JavaScript Engine for Spell Matrix Real-time Math -->
+<script>
+    (function initSpellForge() {
+      // Base State variables
+      let baseShield = 35;
+      let durationRounds = 3;
+      let quickcastActive = false;
+      let overchargeActive = false;
+      let stabilityActive = true;
+      const baseSkill = 82;
+
+      // DOM Elements
+      const shieldVal = document.getElementById('shield-val');
+      const durationVal = document.getElementById('duration-val');
+      const hudMpCost = document.getElementById('hud-mp-cost');
+      const hudThreshold = document.getElementById('hud-threshold');
+      const hudApCost = document.getElementById('hud-ap-cost');
+      const hudProgress = document.getElementById('hud-progress');
+      const previewSoak = document.getElementById('preview-soak');
+      const previewRounds = document.getElementById('preview-rounds');
+      const previewMp = document.getElementById('preview-mp');
+      const previewAp = document.getElementById('preview-ap');
+      const previewSpellName = document.getElementById('preview-spell-name');
+      const spellNameInput = document.getElementById('spell-name-input');
+      
+      const modQuickcast = document.getElementById('mod-quickcast');
+      const modOvercharge = document.getElementById('mod-overcharge');
+      const modStability = document.getElementById('mod-stability');
+
+      const rollSimulateBtn = document.getElementById('roll-simulate-btn');
+      const rollResultBox = document.getElementById('roll-result-box');
+      const rollStatusMsg = document.getElementById('roll-status-message');
+      const topTestBtn = document.getElementById('test-cast-top-btn');
+
+      // Math Calculation Logic
+      function recalculateMatrix() {
+        // Base MP: 4 (Ward) + 2 (Vortex) = 6 MP
+        let mp = 6;
+        let complexityPenalty = 10;
+        let catalystBonus = 4; // Kragspire (+4% threshold, -1 MP)
+        
+        // Reagent discount: -1 MP
+        mp -= 1;
+
+        // Metamagic modifiers
+        if (quickcastActive) {
+          mp += 2;
+          complexityPenalty += 5;
+        }
+        if (overchargeActive) {
+          mp += 3;
+          complexityPenalty += 8;
+        }
+        if (stabilityActive) {
+          mp -= 1;
+          complexityPenalty -= 2;
+        }
+
+        // Adjust for magnitude scaling above base 25
+        const magnitudeExcess = Math.max(0, (baseShield - 25) / 10);
+        mp += Math.floor(magnitudeExcess);
+
+        // Adjust for rounds scaling above base 2
+        const roundExcess = Math.max(0, durationRounds - 2);
+        mp += roundExcess;
+
+        // Safe Floor
+        if (mp < 2) mp = 2;
+
+        // Calculate Target Threshold
+        const threshold = Math.max(5, Math.min(95, baseSkill - complexityPenalty + catalystBonus));
+
+        // AP Cost
+        const ap = quickcastActive ? '0 AP' : '2 AP';
+
+        // Update DOM
+        if (hudMpCost) hudMpCost.textContent = mp;
+        if (previewMp) previewMp.textContent = mp;
+        if (hudThreshold) hudThreshold.textContent = '≤' + threshold + '%';
+        if (hudApCost) hudApCost.textContent = ap;
+        if (previewAp) previewAp.textContent = ap + (quickcastActive ? ' • INSTANT' : ' • REACTION');
+        if (hudProgress) hudProgress.style.width = threshold + '%';
+        
+        if (shieldVal) shieldVal.textContent = baseShield + ' HP SOAK';
+        if (previewSoak) previewSoak.textContent = baseShield + ' HP';
+        
+        if (durationVal) durationVal.textContent = durationRounds + (durationRounds === 1 ? ' ROUND' : ' ROUNDS');
+        if (previewRounds) previewRounds.textContent = durationRounds + (durationRounds === 1 ? ' round' : ' rounds');
+      }
+
+      // Shield steppers
+      const shieldPlus = document.getElementById('shield-plus');
+      const shieldMinus = document.getElementById('shield-minus');
+      if (shieldPlus) {
+        shieldPlus.addEventListener('click', () => {
+          if (baseShield < 80) baseShield += 5;
+          recalculateMatrix();
+        });
+      }
+      if (shieldMinus) {
+        shieldMinus.addEventListener('click', () => {
+          if (baseShield > 15) baseShield -= 5;
+          recalculateMatrix();
+        });
+      }
+
+      // Duration steppers
+      const durPlus = document.getElementById('dur-plus');
+      const durMinus = document.getElementById('dur-minus');
+      if (durPlus) {
+        durPlus.addEventListener('click', () => {
+          if (durationRounds < 8) durationRounds += 1;
+          recalculateMatrix();
+        });
+      }
+      if (durMinus) {
+        durMinus.addEventListener('click', () => {
+          if (durationRounds > 1) durationRounds -= 1;
+          recalculateMatrix();
+        });
+      }
+
+      // Toggles
+      if (modQuickcast) {
+        modQuickcast.addEventListener('change', (e) => {
+          quickcastActive = e.target.checked;
+          recalculateMatrix();
+        });
+      }
+      if (modOvercharge) {
+        modOvercharge.addEventListener('change', (e) => {
+          overchargeActive = e.target.checked;
+          recalculateMatrix();
+        });
+      }
+      if (modStability) {
+        modStability.addEventListener('change', (e) => {
+          stabilityActive = e.target.checked;
+          recalculateMatrix();
+        });
+      }
+
+      // Name Sync
+      if (spellNameInput && previewSpellName) {
+        spellNameInput.addEventListener('input', (e) => {
+          previewSpellName.textContent = e.target.value.trim().toUpperCase() || 'UNTITLED SPELL';
+        });
+      }
+
+      // Dice Roll Simulator
+      function runSimulatedRoll() {
+        if (!rollResultBox || !rollStatusMsg) return;
+        
+        rollResultBox.textContent = '...';
+        rollResultBox.className = 'w-24 h-9 rounded bg-surface-container-high flex items-center justify-center font-headline-md text-headline-md font-bold text-on-surface animate-pulse';
+
+        setTimeout(() => {
+          const roll = Math.floor(Math.random() * 100) + 1;
+          const currentThreshold = parseInt(hudThreshold.textContent.replace(/[^\d]/g, ''), 10) || 76;
+          
+          rollResultBox.textContent = roll.toString().padStart(2, '0');
+          rollResultBox.classList.remove('animate-pulse');
+
+          if (roll <= 8) {
+            rollResultBox.className = 'w-24 h-9 rounded bg-primary-container text-on-primary-container flex items-center justify-center font-headline-md text-headline-md font-bold';
+            rollStatusMsg.innerHTML = '<span class="text-primary font-bold">CRITICAL MARGIN:</span> Barrier doubles absorption + 0 MP consumed.';
+          } else if (roll <= currentThreshold) {
+            rollResultBox.className = 'w-24 h-9 rounded bg-secondary-container text-on-secondary-container flex items-center justify-center font-headline-md text-headline-md font-bold';
+            rollStatusMsg.innerHTML = '<span class="text-secondary font-bold">SUCCESS (' + roll + ' ≤ ' + currentThreshold + '):</span> Matrix anchored cleanly in tactical grid.';
+          } else if (roll >= 96) {
+            rollResultBox.className = 'w-24 h-9 rounded bg-error-container text-on-error-container flex items-center justify-center font-headline-md text-headline-md font-bold';
+            rollStatusMsg.innerHTML = '<span class="text-error font-bold">ARCANE BREACH (' + roll + '):</span> Backlash surge! Caster gains 4 Rift Strain.';
+          } else {
+            rollResultBox.className = 'w-24 h-9 rounded bg-surface-container-highest text-on-surface-variant flex items-center justify-center font-headline-md text-headline-md font-bold';
+            rollStatusMsg.innerHTML = '<span class="text-tertiary font-bold">FAILURE (' + roll + ' > ' + currentThreshold + '):</span> Matrix fizzled. 2 MP expended without manifestation.';
+          }
+        }, 220);
+      }
+
+      if (rollSimulateBtn) rollSimulateBtn.addEventListener('click', runSimulatedRoll);
+      if (topTestBtn) topTestBtn.addEventListener('click', runSimulatedRoll);
+
+      // Reset Matrix
+      const resetBtn = document.getElementById('reset-matrix-btn');
+      if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+          baseShield = 35;
+          durationRounds = 3;
+          if (modQuickcast) modQuickcast.checked = false;
+          if (modOvercharge) modOvercharge.checked = false;
+          if (modStability) modStability.checked = true;
+          quickcastActive = false;
+          overchargeActive = false;
+          stabilityActive = true;
+          if (spellNameInput) spellNameInput.value = 'Maelstrom Bastion';
+          if (previewSpellName) previewSpellName.textContent = 'MAELSTROM BASTION';
+          recalculateMatrix();
+        });
+      }
+
+      // Initial calculation
+      recalculateMatrix();
+    })();
+  </script>
+</div></main></div></body></html>

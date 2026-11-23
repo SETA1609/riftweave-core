@@ -1,0 +1,15 @@
+#### FE_S22_09_print-layouts-design Ink-light A4 print for the sheet and the stat block
+- Status: todo
+- Priority: low
+- Needs: FE_S09_04_print-character-page, FE_S09_08_custom-monster-page, FE_S22_02_design-tokens-and-fonts
+- Modified: 2026-11-23
+- Do: A print stylesheet (`@media print`, `@page { size: A4 }`) for the printed character and the printed monster, as in the two print mockups:
+  - Black on white, no fill but light grey, readable without color; the guide's fonts.
+  - **Sheet:** a header row (name, ancestry, level), HP, MP, and SP as rows of boxes to tick, attributes with their targets, defenses, the phase row, skills in two tables (attribute and target, tagged skills starred), spells, equipment, and perks; a footer with the character, page, and a blank for the session date.
+  - **Stat block:** tags, HP boxes, AP boxes, attributes, defenses, affinities, actions with their targets, reactions, traits, and a blank scratchpad for rounds.
+  - **Module blocks:** the phase row and affinities print only with `wuxing` enabled (docs/design/README.md#module-blocks).
+  - Nothing on screen but the print button changes. The mockups' table aids are replaced by the core's own resolution summary, or left out [A].
+- Keys: none
+- Files: ~6 (frontend/src/print.css or the print pages' .css, frontend/angular.json, the print pages' .html, frontend/e2e/print.spec.ts)
+- See: docs/design/mockups/character-sheet-print.png, docs/design/mockups/monster-print.png
+- Done when: printing a character and a monster to PDF gives one A4 page each, readable in greyscale; the print specs pass.
