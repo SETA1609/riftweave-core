@@ -1,5 +1,6 @@
 #### FE_S09_04_print-character-page Print the current character from both apps (frontend)
-- Status: review
+- Status: done
+- Merged: #446, 2026-11-23
 - Priority: medium
 - Needs: BE_S09_03_print-character-cli, FE_S07_04_character-list-page
 - Modified: 2026-11-23
