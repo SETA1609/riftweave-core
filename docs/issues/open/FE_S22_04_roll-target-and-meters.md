@@ -1,0 +1,14 @@
+#### FE_S22_04_roll-target-and-meters The roll target, the resource meter, and the stepper
+- Status: todo
+- Priority: medium
+- Needs: FE_S22_02_design-tokens-and-fonts
+- Modified: 2026-11-23
+- Do: Three shared components in `frontend/src/app/ui/` (docs/design/README.md#components), each with a sibling `.md`:
+  - `rw-roll-target`: the d100 check block of the mockups. Shows the target large (`≤ 74%`), the base and each modifier small with its source, situational modifier buttons, and a roll button; the roll goes to the core (the same command the skill resolution screen sends), and the result shows the roll, the margin, and the core's tags as `CRIT`, `PASS`, `FAIL`, or `FUMBLE`. It computes nothing itself (frontend.md: a number comes from a response).
+  - `rw-resource-meter`: a label, a bar, and the exact fraction (`48 / 52`) in mono with `tabular-nums`; a `model` for the current value.
+  - `rw-stepper`: a value flanked by −/+ buttons of at least 36×36px (44px under 768px), with optional larger steps (−5, +5) as in the mockups' HP rows.
+  - The existing resolution screen (`resolution.ts`) uses `rw-roll-target`, so the component ships with a user.
+- Keys: `rw-roll-target`, `rw-resource-meter`, `rw-stepper`; their locale keys in en, de, and es
+- Files: ~18 (three components × .ts/.html/.css/.md, frontend/src/app/resolution.ts, resolution.html, resolution.css, frontend/src/locales/en.json, de.json, es.json, frontend/src/app/app.spec.ts, frontend/e2e/app.spec.ts)
+- See: docs/design/mockups/character-sheet-desktop.png, docs/core/resolution.md
+- Done when: the skill resolution screen rolls through `rw-roll-target` and shows the core's tags and margin; the meter and the stepper change a value by keyboard and by touch; the Vitest and Playwright specs pass over both transports.

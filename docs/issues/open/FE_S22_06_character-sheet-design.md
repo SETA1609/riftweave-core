@@ -1,0 +1,15 @@
+#### FE_S22_06_character-sheet-design The character sheet in the design guide's layout
+- Status: todo
+- Priority: medium
+- Needs: FE_S22_03_color-and-phase-badges, FE_S22_04_roll-target-and-meters, FE_S22_05_app-shell-navigation
+- Modified: 2026-11-23
+- Do: Lay out the sheet screen (`sheet.ts`) as in the two sheet mockups, built from the shared components:
+  - **Header:** the name, level, ancestry and background, and the export and print buttons; HP, MP, and SP as `rw-resource-meter` with steppers; AP, initiative, load, and move from the core's derived values.
+  - **From 1024px, three panes:** attributes (each with its roll target), the phase matrix, defenses, and active conditions; then `rw-roll-target` for the selected skill and the skill list (search, filter by group, tagged skills marked, a roll button per skill); then spells (with `rw-color-badge` and a cast button), equipment and load, and perks.
+  - **Under 768px:** one column in the mobile mockup's order, tabs for skills, spells, gear, and perks, and a sticky dock with HP, MP, SP, and the selected check.
+  - **Module blocks** (docs/design/README.md#module-blocks): the phase matrix shows only with `wuxing` enabled, under `*rwIfModule`; without it the left pane closes up.
+  - Shows only what the character and the core hold: no fate tokens, no invented resistances (docs/design/README.md#the-mockups-are-a-guide-not-a-spec). A section with nothing to show is hidden.
+- Keys: locale keys for the new labels in en, de, and es
+- Files: ~8 (frontend/src/app/sheet.ts, sheet.html, sheet.css, sheet.md, frontend/src/locales/en.json, de.json, es.json, frontend/e2e/app.spec.ts)
+- See: docs/design/mockups/character-sheet-desktop.png, docs/design/mockups/character-sheet-mobile.png
+- Done when: a saved character opens in three panes at 1280px and in one column with the dock at 375px; every number shown comes from a core response; rolling a skill shows its result; the Playwright specs pass over both transports.

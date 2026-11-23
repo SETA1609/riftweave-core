@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Riftweave - Character Sheet (Print Layout A4)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  @page {
+    size: A4 portrait;
+    margin: 8mm 8mm 8mm 8mm;
+  }
+  @media print {
+    body {
+      background: #ffffff !important;
+      color: #000000 !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .no-print {
+      display: none !important;
+    }
+    .page-sheet {
+      box-shadow: none !important;
+      margin: 0 !important;
+      width: 100% !important;
+      padding: 0 !important;
+    }
+  }
+
+  body {
+    font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #f1f5f9;
+    color: #0f172a;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .font-mono-num {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Ink-saving custom borders */
+  .ink-border {
+    border: 1.25px solid #0f172a;
+  }
+  .ink-border-thin {
+    border: 0.75px solid #334155;
+  }
+  .ink-border-dashed {
+    border: 1px dashed #64748b;
+  }
+
+  .fill-pip {
+    background-color: #0f172a;
+  }
+  .empty-pip {
+    border: 1.25px solid #0f172a;
+    background-color: #ffffff;
+  }
+
+  /* Fixed A4 preview container for screen */
+  .a4-container {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 1.5rem auto;
+    background: #ffffff;
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.15), 0 2px 6px -1px rgba(0, 0, 0, 0.08);
+    padding: 10mm;
+    box-sizing: border-box;
+    position: relative;
+  }
+
+  /* Crisp table lines */
+  table.ink-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  table.ink-table th, table.ink-table td {
+    border: 0.75px solid #1e293b;
+    padding: 3px 5px;
+  }
+  table.ink-table th {
+    background-color: #f8fafc;
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+</style>
+</head>
+<body class="p-0 sm:p-4">
+
+  <!-- Screen-only Print Bar -->
+  <div class="no-print max-w-[210mm] mx-auto mb-4 bg-slate-900 text-white px-5 py-3 rounded-lg flex items-center justify-between shadow-md">
+    <div class="flex items-center space-x-3">
+      <div class="w-7 h-7 border border-teal-400 flex items-center justify-center font-bold text-xs text-teal-400">RW</div>
+      <div>
+        <h1 class="text-sm font-bold tracking-wide uppercase">Riftweave — Ink-Light A4 Print Mode</h1>
+        <p class="text-xs text-slate-400">Classless d100 Roll-Under System • Zero-Arithmetic Layout</p>
+      </div>
+    </div>
+    <div class="flex items-center space-x-3">
+      <span class="text-xs font-mono bg-slate-800 px-2 py-1 rounded text-slate-300 border border-slate-700">A4 • 100% Ink Light (B&amp;W)</span>
+      <button onclick="window.print()" class="bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold px-4 py-1.5 text-xs rounded transition flex items-center space-x-1.5 cursor-pointer">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+        <span>Print Document</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- A4 Print Page Canvas -->
+  <div class="a4-container page-sheet text-black text-[10px] leading-tight">
+
+    <!-- HEADER / IDENTIFIER STRIP -->
+    <header class="ink-border p-2 mb-2 flex items-stretch justify-between relative bg-white">
+      <!-- Title & Branding -->
+      <div class="flex items-center space-x-2 pr-3 border-r-2 border-black">
+        <div class="w-8 h-8 border-2 border-black flex flex-col items-center justify-center text-center p-0.5">
+          <span class="text-[9px] font-black tracking-tighter leading-none">RIFT</span>
+          <span class="text-[7px] font-mono leading-none">v2.4</span>
+        </div>
+        <div>
+          <div class="text-[12px] font-black uppercase tracking-wider leading-none">RIFTWEAVE</div>
+          <div class="text-[7.5px] font-mono text-slate-600 tracking-tight">TACTICAL ARCANE RULES ENGINE</div>
+        </div>
+      </div>
+
+      <!-- Character Meta -->
+      <div class="flex-1 px-3 grid grid-cols-4 gap-2 items-center">
+        <div>
+          <span class="block text-[7px] font-bold uppercase text-slate-600">Character Name</span>
+          <span class="text-[13px] font-bold font-mono tracking-tight text-black block truncate">VAELEN VOSS</span>
+        </div>
+        <div>
+          <span class="block text-[7px] font-bold uppercase text-slate-600">Ancestry &amp; Background</span>
+          <span class="text-[9.5px] font-semibold text-black block truncate">Aether-Touched • Cartographer</span>
+        </div>
+        <div>
+          <span class="block text-[7px] font-bold uppercase text-slate-600">Origin / Affiliation</span>
+          <span class="text-[9.5px] font-semibold text-black block truncate">Kragspire Rift (Echo-4)</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <div class="ink-border px-1.5 py-0.5 text-center flex-1">
+            <span class="block text-[6.5px] font-bold uppercase">LEVEL</span>
+            <span class="text-[11px] font-black font-mono">07</span>
+          </div>
+          <div class="ink-border px-1.5 py-0.5 text-center flex-1">
+            <span class="block text-[6.5px] font-bold uppercase">REV</span>
+            <span class="text-[11px] font-mono font-bold">14</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fate Tokens & Ready Indicator -->
+      <div class="pl-2 border-l-2 border-black flex flex-col justify-between items-end min-w-[70px]">
+        <div class="text-right">
+          <span class="text-[6.5px] font-bold uppercase tracking-wider block">FATE TOKENS</span>
+          <div class="flex space-x-1 mt-0.5 justify-end">
+            <span class="w-3 h-3 rounded-full fill-pip inline-block"></span>
+            <span class="w-3 h-3 rounded-full fill-pip inline-block"></span>
+            <span class="w-3 h-3 rounded-full empty-pip inline-block"></span>
+          </div>
+        </div>
+        <span class="text-[7px] font-mono px-1 py-0.2 ink-border uppercase font-bold">COMBAT READY</span>
+      </div>
+    </header>
+
+    <!-- TOP SECTION: PRIMARY RESOURCES & COMBAT ECONOMY -->
+    <div class="grid grid-cols-12 gap-2 mb-2">
+
+      <!-- Vitality (HP) -->
+      <div class="col-span-3 ink-border p-1.5 relative">
+        <div class="flex justify-between items-center mb-1">
+          <span class="font-bold uppercase text-[8px] flex items-center">
+            <span class="w-2 h-2 inline-block border border-black mr-1 fill-pip"></span> VIT (Vitality)
+          </span>
+          <span class="font-mono text-[11px] font-extrabold">48 <span class="text-[8px] font-normal text-slate-600">/ 52</span></span>
+        </div>
+        <!-- Segmented Tracker Box (Tick off during play) -->
+        <div class="grid grid-cols-10 gap-0.5 mb-1">
+          <div class="h-2.5 ink-border bg-slate-300"></div><div class="h-2.5 ink-border bg-slate-300"></div><div class="h-2.5 ink-border bg-slate-300"></div><div class="h-2.5 ink-border bg-slate-300"></div><div class="h-2.5 ink-border bg-slate-300"></div>
+          <div class="h-2.5 ink-border bg-slate-300"></div><div class="h-2.5 ink-border bg-slate-300"></div><div class="h-2.5 ink-border bg-slate-300"></div><div class="h-2.5 ink-border bg-white"></div><div class="h-2.5 ink-border bg-white"></div>
+        </div>
+        <div class="flex justify-between text-[7px] font-mono text-slate-600">
+          <span>Wound Threshold: 13</span>
+          <span>Death Check: 0</span>
+        </div>
+      </div>
+
+      <!-- Mana (MP) -->
+      <div class="col-span-3 ink-border p-1.5 relative">
+        <div class="flex justify-between items-center mb-1">
+          <span class="font-bold uppercase text-[8px] flex items-center">
+            <span class="w-2 h-2 inline-block border border-black mr-1 bg-white"></span> MP (Mana Points)
+          </span>
+          <span class="font-mono text-[11px] font-extrabold">34 <span class="text-[8px] font-normal text-slate-600">/ 40</span></span>
+        </div>
+        <div class="grid grid-cols-10 gap-0.5 mb-1">
+          <div class="h-2.5 ink-border bg-slate-300"></div><div class="h-2.5 ink-border bg-slate-300"></div><div class="h-2.5 ink-border bg-slate-300"></div><div class="h-2.5 ink-border bg-slate-300"></div><div class="h-2.5 ink-border bg-slate-300"></div>
+          <div class="h-2.5 ink-border bg-slate-300"></div><div class="h-2.5 ink-border bg-slate-300"></div><div class="h-2.5 ink-border bg-white"></div><div class="h-2.5 ink-border bg-white"></div><div class="h-2.5 ink-border bg-white"></div>
+        </div>
+        <div class="flex justify-between text-[7px] font-mono text-slate-600">
+          <span>Arcane Burn: 42+</span>
+          <span>Regen: +5 / Rest</span>
+        </div>
+      </div>
+
+      <!-- Stamina (SP) -->
+      <div class="col-span-3 ink-border p-1.5 relative">
+        <div class="flex justify-between items-center mb-1">
+          <span class="font-bold uppercase text-[8px] flex items-center">
+            <span class="w-2 h-2 inline-block border border-black mr-1 fill-pip"></span> SP (Stamina)
+          </span>
+          <span class="font-mono text-[11px] font-extrabold">26 <span class="text-[8px] font-normal text-slate-600">/ 28</span></span>
+        </div>
+        <div class="grid grid-cols-10 gap-0.5 mb-1">
+          <div class="h-2.5 ink-border bg-slate-300"></div><div class="h-2.5 ink-border bg-slate-300"></div><div class="h-2.5 ink-border bg-slate-300"></div><div class="h-2.5 ink-border bg-slate-300"></div><div class="h-2.5 ink-border bg-slate-300"></div>
+          <div class="h-2.5 ink-border bg-slate-300"></div><div class="h-2.5 ink-border bg-slate-300"></div><div class="h-2.5 ink-border bg-slate-300"></div><div class="h-2.5 ink-border bg-slate-300"></div><div class="h-2.5 ink-border bg-white"></div>
+        </div>
+        <div class="flex justify-between text-[7px] font-mono text-slate-600">
+          <span>Fatigue: SP ≤ 5</span>
+          <span>Exhaustion: 0</span>
+        </div>
+      </div>
+
+      <!-- Action Points & Turn Status -->
+      <div class="col-span-3 ink-border p-1.5 flex flex-col justify-between">
+        <div class="flex justify-between items-center">
+          <span class="font-bold uppercase text-[8px]">AP (Action Points)</span>
+          <div class="flex space-x-1 items-center">
+            <span class="w-3 h-3 rounded-sm fill-pip inline-block"></span>
+            <span class="w-3 h-3 rounded-sm fill-pip inline-block"></span>
+            <span class="w-3 h-3 rounded-sm fill-pip inline-block"></span>
+            <span class="w-3 h-3 rounded-sm fill-pip inline-block"></span>
+            <span class="w-3 h-3 rounded-sm empty-pip inline-block font-mono font-bold text-[7px] text-center leading-none flex items-center justify-center">G</span>
+          </div>
+        </div>
+        <div class="grid grid-cols-4 gap-1 text-center pt-1 border-t border-slate-300">
+          <div><span class="text-[6.5px] block text-slate-600">INIT</span><span class="font-mono font-bold text-[9px]">64</span></div>
+          <div><span class="text-[6.5px] block text-slate-600">GUARD</span><span class="font-mono font-bold text-[9px]">1 AP</span></div>
+          <div><span class="text-[6.5px] block text-slate-600">MOVE</span><span class="font-mono font-bold text-[9px]">12m</span></div>
+          <div><span class="text-[6.5px] block text-slate-600">TOX</span><span class="font-mono font-bold text-[9px]">15%</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- MAIN TWO-COLUMN WORKSPACE -->
+    <div class="grid grid-cols-12 gap-2 mb-2">
+
+      <!-- LEFT COLUMN: 8 ATTRIBUTES + ELEMENTS + DEFENSES (4 COLS) -->
+      <div class="col-span-4 space-y-2">
+
+        <!-- CORE ATTRIBUTES (8) -->
+        <div class="ink-border p-1.5 bg-white">
+          <div class="flex justify-between items-center border-b border-black pb-0.5 mb-1">
+            <h2 class="font-black uppercase tracking-wider text-[8px]">Primary Attributes (Roll Base)</h2>
+            <span class="text-[6.5px] font-mono text-slate-600">CALC: ATTR × 10</span>
+          </div>
+          <div class="grid grid-cols-2 gap-1">
+            <!-- STR -->
+            <div class="ink-border-thin p-1 flex justify-between items-center">
+              <div>
+                <span class="font-bold text-[9px] block">STR</span>
+                <span class="text-[6.5px] text-slate-600 leading-none">Strength</span>
+              </div>
+              <div class="text-right">
+                <span class="font-mono font-bold text-[11px] leading-none">6</span>
+                <span class="font-mono font-bold text-[8px] text-slate-700 block">≤ 60%</span>
+              </div>
+            </div>
+            <!-- PER -->
+            <div class="ink-border-thin p-1 flex justify-between items-center">
+              <div>
+                <span class="font-bold text-[9px] block">PER</span>
+                <span class="text-[6.5px] text-slate-600 leading-none">Perception</span>
+              </div>
+              <div class="text-right">
+                <span class="font-mono font-bold text-[11px] leading-none">8</span>
+                <span class="font-mono font-bold text-[8px] text-slate-700 block">≤ 80%</span>
+              </div>
+            </div>
+            <!-- END -->
+            <div class="ink-border-thin p-1 flex justify-between items-center">
+              <div>
+                <span class="font-bold text-[9px] block">END</span>
+                <span class="text-[6.5px] text-slate-600 leading-none">Endurance</span>
+              </div>
+              <div class="text-right">
+                <span class="font-mono font-bold text-[11px] leading-none">5</span>
+                <span class="font-mono font-bold text-[8px] text-slate-700 block">≤ 50%</span>
+              </div>
+            </div>
+            <!-- INT -->
+            <div class="ink-border-thin p-1 flex justify-between items-center">
+              <div>
+                <span class="font-bold text-[9px] block">INT</span>
+                <span class="text-[6.5px] text-slate-600 leading-none">Intelligence</span>
+              </div>
+              <div class="text-right">
+                <span class="font-mono font-bold text-[11px] leading-none">9</span>
+                <span class="font-mono font-bold text-[8px] text-slate-700 block">≤ 90%</span>
+              </div>
+            </div>
+            <!-- WIL -->
+            <div class="ink-border-thin p-1 flex justify-between items-center">
+              <div>
+                <span class="font-bold text-[9px] block">WIL</span>
+                <span class="text-[6.5px] text-slate-600 leading-none">Willpower</span>
+              </div>
+              <div class="text-right">
+                <span class="font-mono font-bold text-[11px] leading-none">7</span>
+                <span class="font-mono font-bold text-[8px] text-slate-700 block">≤ 70%</span>
+              </div>
+            </div>
+            <!-- AGI -->
+            <div class="ink-border-thin p-1 flex justify-between items-center">
+              <div>
+                <span class="font-bold text-[9px] block">AGI</span>
+                <span class="text-[6.5px] text-slate-600 leading-none">Agility</span>
+              </div>
+              <div class="text-right">
+                <span class="font-mono font-bold text-[11px] leading-none">7</span>
+                <span class="font-mono font-bold text-[8px] text-slate-700 block">≤ 70%</span>
+              </div>
+            </div>
+            <!-- CHA -->
+            <div class="ink-border-thin p-1 flex justify-between items-center">
+              <div>
+                <span class="font-bold text-[9px] block">CHA</span>
+                <span class="text-[6.5px] text-slate-600 leading-none">Charisma</span>
+              </div>
+              <div class="text-right">
+                <span class="font-mono font-bold text-[11px] leading-none">4</span>
+                <span class="font-mono font-bold text-[8px] text-slate-700 block">≤ 40%</span>
+              </div>
+            </div>
+            <!-- LCK -->
+            <div class="ink-border-thin p-1 flex justify-between items-center">
+              <div>
+                <span class="font-bold text-[9px] block">LCK</span>
+                <span class="text-[6.5px] text-slate-600 leading-none">Luck</span>
+              </div>
+              <div class="text-right">
+                <span class="font-mono font-bold text-[11px] leading-none">6</span>
+                <span class="font-mono font-bold text-[8px] text-slate-700 block">≤ 60%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DEFENSES & SOAK METRICS -->
+        <div class="ink-border p-1.5">
+          <h2 class="font-black uppercase tracking-wider text-[8px] border-b border-black pb-0.5 mb-1">Defenses &amp; Soak</h2>
+          <div class="space-y-1 font-mono text-[8px]">
+            <div class="flex justify-between border-b border-slate-200 pb-0.5">
+              <span class="font-sans font-bold">Physical Armor Rating</span>
+              <span class="font-bold">14 Absorb</span>
+            </div>
+            <div class="flex justify-between border-b border-slate-200 pb-0.5">
+              <span class="font-sans font-bold">Arcane Ward (Aether)</span>
+              <span class="font-bold">18 Ward Soak</span>
+            </div>
+            <div class="flex justify-between border-b border-slate-200 pb-0.5">
+              <span class="font-sans font-bold">Evasion Base (d100)</span>
+              <span class="font-bold">≤ 68%</span>
+            </div>
+            <div class="flex justify-between border-b border-slate-200 pb-0.5">
+              <span class="font-sans font-bold">Poison / Hazard Resist</span>
+              <span class="font-bold">20% Soak</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="font-sans font-bold">Mental Barrier</span>
+              <span class="font-bold">35 Threshold</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- WU XING 5-ELEMENTAL AFFINITY MATRIX -->
+        <div class="ink-border p-1.5">
+          <div class="flex justify-between items-center border-b border-black pb-0.5 mb-1">
+            <h2 class="font-black uppercase tracking-wider text-[8px]">Elemental Affinity Matrix</h2>
+            <span class="text-[6.5px] font-mono">WU XING</span>
+          </div>
+          <div class="grid grid-cols-5 gap-1 text-center font-mono">
+            <div class="ink-border-thin py-0.5">
+              <span class="block text-[6px] font-sans font-bold uppercase">WOOD</span>
+              <span class="font-bold text-[9px]">0</span>
+            </div>
+            <div class="ink-border-thin py-0.5 bg-slate-200">
+              <span class="block text-[6px] font-sans font-bold uppercase">FIRE ★</span>
+              <span class="font-extrabold text-[9px]">+2</span>
+            </div>
+            <div class="ink-border-thin py-0.5">
+              <span class="block text-[6px] font-sans font-bold uppercase">EARTH</span>
+              <span class="font-bold text-[9px]">0</span>
+            </div>
+            <div class="ink-border-thin py-0.5 bg-slate-100">
+              <span class="block text-[6px] font-sans font-bold uppercase">METAL</span>
+              <span class="font-bold text-[9px]">+1</span>
+            </div>
+            <div class="ink-border-thin py-0.5">
+              <span class="block text-[6px] font-sans font-bold uppercase">WATER</span>
+              <span class="font-bold text-[9px]">-1</span>
+            </div>
+          </div>
+          <p class="text-[6.5px] text-slate-600 mt-1 leading-tight">Fire Resonant: +10% pyromancy &amp; heat resistance. Opposed to Water.</p>
+        </div>
+
+        <!-- CONDITIONS & ACTIVE TACTICAL MODIFIERS -->
+        <div class="ink-border p-1.5">
+          <h2 class="font-black uppercase tracking-wider text-[8px] border-b border-black pb-0.5 mb-1">Active Conditions &amp; Held Buffs</h2>
+          <div class="space-y-1 text-[7.5px]">
+            <div class="ink-border-thin p-1 bg-slate-50">
+              <div class="flex justify-between font-bold">
+                <span>VEIL RESONANCE</span>
+                <span class="font-mono">2 ROUNDS REMAINING</span>
+              </div>
+              <p class="text-slate-700 text-[7px] leading-tight mt-0.5">+10% to all Blue/Indigo Arcane checks. Ambient ether vibration.</p>
+            </div>
+            <div class="ink-border-thin p-1">
+              <div class="flex justify-between font-bold">
+                <span>PARRYING STEP (HELD REACTION)</span>
+                <span class="font-mono">1 AP SPENT</span>
+              </div>
+              <p class="text-slate-700 text-[7px] leading-tight mt-0.5">Next incoming melee hit provokes instant contested riposte.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- D100 QUICK RESOLUTION REFERENCE -->
+        <div class="ink-border p-1.5 border-dashed">
+          <div class="flex justify-between items-center mb-0.5">
+            <span class="font-bold uppercase text-[7.5px]">d100 Roll-Under Rules</span>
+            <span class="font-mono text-[6.5px]">TABLE AID</span>
+          </div>
+          <div class="text-[7px] leading-tight space-y-0.5 text-slate-700 font-mono">
+            <div>• <strong>Critical Success:</strong> Roll ≤ 05 OR double (11, 22, 33) under target.</div>
+            <div>• <strong>Critical Failure:</strong> Roll ≥ 96 OR double above target.</div>
+            <div>• <strong>Degree of Success:</strong> Target minus Roll = Positive Margin.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN: SKILLS CATALOG TABLE (8 COLS) -->
+      <div class="col-span-8 space-y-2">
+
+        <!-- SKILLS TABLE CONTAINER -->
+        <div class="ink-border p-1.5 bg-white">
+          <div class="flex justify-between items-end border-b border-black pb-1 mb-1">
+            <div>
+              <h2 class="font-black uppercase tracking-wider text-[9px] leading-none">Skills Catalog &amp; Roll Targets (40 Registered)</h2>
+              <span class="text-[7px] text-slate-600 font-mono">Zero Arithmetic Guarantee: Roll d100 ≤ Target Number</span>
+            </div>
+            <div class="text-right">
+              <span class="text-[7px] font-bold font-mono px-1 py-0.5 border border-black uppercase bg-slate-100">★ = TAG SKILL (+20% APPLIED)</span>
+            </div>
+          </div>
+
+          <!-- Two-column split of skills inside the table container for maximum compactness -->
+          <div class="grid grid-cols-2 gap-2">
+
+            <!-- LEFT HALF: Combat, Magic, Stealth -->
+            <div>
+              <table class="ink-table">
+                <thead>
+                  <tr>
+                    <th class="text-left">Skill (Combat &amp; Magic)</th>
+                    <th class="w-7 text-center">Attr</th>
+                    <th class="w-12 text-right">Target</th>
+                  </tr>
+                </thead>
+                <tbody class="font-mono text-[7.5px]">
+                  <!-- Tag Skills First with bold highlight -->
+                  <tr class="bg-slate-100 font-bold">
+                    <td class="font-sans">★ Blades (Swords &amp; Daggers)</td>
+                    <td class="text-center font-normal">AGI</td>
+                    <td class="text-right font-black text-[8.5px]">≤ 74%</td>
+                  </tr>
+                  <tr class="bg-slate-100 font-bold">
+                    <td class="font-sans">★ Blue Magic (Tide / Water)</td>
+                    <td class="text-center font-normal">INT</td>
+                    <td class="text-right font-black text-[8.5px]">≤ 82%</td>
+                  </tr>
+                  <tr class="bg-slate-100 font-bold">
+                    <td class="font-sans">★ Veil Lore &amp; Anomalies</td>
+                    <td class="text-center font-normal">INT</td>
+                    <td class="text-right font-black text-[8.5px]">≤ 78%</td>
+                  </tr>
+                  <tr class="bg-slate-100 font-bold">
+                    <td class="font-sans">★ Evasion &amp; Slip</td>
+                    <td class="text-center font-normal">AGI</td>
+                    <td class="text-right font-black text-[8.5px]">≤ 68%</td>
+                  </tr>
+                  <!-- Standard Combat -->
+                  <tr>
+                    <td class="font-sans">Blunt Implements (Clubs, Hammers)</td>
+                    <td class="text-center text-slate-600">STR</td>
+                    <td class="text-right">≤ 52%</td>
+                  </tr>
+                  <tr>
+                    <td class="font-sans">Piercing Spears &amp; Polearms</td>
+                    <td class="text-center text-slate-600">AGI</td>
+                    <td class="text-right">≤ 50%</td>
+                  </tr>
+                  <tr>
+                    <td class="font-sans">Unarmed &amp; Martial Brawling</td>
+                    <td class="text-center text-slate-600">STR</td>
+                    <td class="text-right">≤ 45%</td>
+                  </tr>
+                  <tr>
+                    <td class="font-sans">Shields &amp; Bucklers</td>
+                    <td class="text-center text-slate-600">STR</td>
+                    <td class="text-right">≤ 58%</td>
+                  </tr>
+                  <tr>
+                    <td class="font-sans">Bows &amp; Crossbows</td>
+                    <td class="text-center text-slate-600">PER</td>
+                    <td class="text-right">≤ 42%</td>
+                  </tr>
+                  <tr>
+                    <td class="font-sans">Guns &amp; Aether Firearms</td>
+                    <td class="text-center text-slate-600">PER</td>
+                    <td class="text-right">≤ 35%</td>
+                  </tr>
+                  <tr>
+                    <td class="font-sans">Light Armor Mastery</td>
+                    <td class="text-center text-slate-600">AGI</td>
+                    <td class="text-right">≤ 65%</td>
+                  </tr>
+                  <tr>
+                    <td class="font-sans">Medium Armor Mastery</td>
+                    <td class="text-center text-slate-600">END</td>
+                    <td class="text-right">≤ 48%</td>
+                  </tr>
+                  <tr>
+                    <td class="font-sans">Heavy Plate Armor</td>
+                    <td class="text-center text-slate-600">END</td>
+                    <td class="text-right">≤ 30%</td>
+                  </tr>
+                  <!-- Magic Schools -->
+                  <tr>
+                    <td class="font-sans">Red Magic (Pyromancy / Flame)</td>
+                    <td class="text-center text-slate-600">INT</td>
+                    <td class="text-right">≤ 40%</td>
+                  </tr>
+                  <tr>
+                    <td class="font-sans">Orange Magic (Kinetic Force)</td>
+                    <td class="text-center text-slate-600">INT</td>
+                    <td class="text-right">≤ 35%</td>
+                  </tr>
+                  <tr>
+                    <td class="font-sans">Yellow Magic (Lightning)</td>
+                    <td class="text-center text-slate-600">INT</td>
+                    <td class="text-right">≤ 30%</td>
+                  </tr>
+                  <tr>
+                    <td class="font-sans">Green Magic (Life / Growth)</td>
+                    <td class="text-center text-slate-600">WIL</td>
+                    <td class="text-right">≤ 45%</td>
+                  </tr>
+                  <tr>
+                    <td class="font-sans">Indigo Magic (Spatial Warp)</td>
+                    <td class="text-center text-slate-600">INT</td>
+                    <td class="text-right">≤ 72%</td>
+                  </tr>
+                  <tr>
+                    <td class="font-sans">Violet Magic (Mind / Illusion)</td>
+                    <td class="text-center text-slate-600">WIL</td>
+                    <td class="text-right">≤ 40%</td>
+                  </tr>
+                  <tr>
+                    <td class="font-sans">White Magic (Abjuration)</td>
+                    <td class="text-center text-slate-600">WIL</td>
+                    <td class="text-right">≤ 55%</td>
+                  </tr>
+                  <tr>
+                    <td class="font-sans">Black Magic (Entropy / Decay)</td>
+                    <td class="text-center text-slate-600">INT</td>
+                    <td class="text-right">≤ 25%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- RIGHT HALF: Stealth, Social, Knowledge, Survival, Utility -->
+            <div>
+              <table class="ink-table">
+                <thead>
+                  <tr>
+                    <th class="text-left">Skill (Utility &amp; Lore)</th>
+                    <th class="w-7 text-center">Attr</th>
+                    <th class="w-12 text-right">Target</th>
+                  </tr>
+                </thead>
+                <tbody class="font-mono text-[7.5px]">
+                  <tr>
+                    <td class="font-sans">Stealth &amp; Prowl</td>
+                    <td class="text-center text-slate-600">AGI</td>
+                    <td class="text-right">≤ 55%</td>
+                  </tr>
+                  <tr>
+                    <td class="font-sans">Lockpick &amp; Tumbler Bypass</td>
+                    <td class="text-center text-slate-600">AGI</td>
+                    <td class="text-right">≤ 48%</td>
+                  </tr>
+                  <tr>
+                    <td class="font-sans">Sleight of Hand &amp; Pilfer</td>
+                    <td class="text-center text-slate-600">AGI</td>
+                    <td class="text-right">≤ 42%</td>
+                  </tr>
+                  <tr>
+                    <td class="font-sans">Persuasion &amp; Diplomacy</td>
+                    <td class="text-center text-slate-600">CHA</td>
+                    <td class="text-right">≤ 45%</td>
+                  </tr>
+                  <tr>
+                    <td class="font-sans">Deception &amp; Falsehood</td>
+                    <td class="text-center text-slate-600">CHA</td>
+                    <td class="text-right">≤ 38%</td>
+                  </tr>
+                  <tr>
+                    <td class="font-sans">Intimidation &amp; Coercion</td>
+                    <td class="text-center text-slate-600">STR</td>
+                    <td class="text-right">≤ 40%</td>
+                  </tr>
+                  <tr>
+                    <td class="font-sans">Investigation &amp; Clues</td>
+                    <td class="text-center text-slate-600">PER</td>
+                    <td class="text-right">≤ 62%</td>
+                  </tr>
+                  <tr>
+                    <td class="font-sans">Insight &amp; Intent Sensing</td>
+                    <td class="text-center text-slate-600">PER</td>
+                    <td class="text-right">≤ 58%</td>
+                  </tr>
+                  <tr>
+                    <td class="font-sans">Engineering &amp; Rift Contraptions</td>
+                    <td class="text-center text-slate-600">INT</td>
+                    <td class="text-right">≤ 50%</td>
+                  </tr>
+                  <tr>
+                    <td class="font-sans">Survival &amp; Wayfinding</td>
+                    <td class="text-center text-slate-600">PER</td>
+                    <td class="text-right">≤ 52%</td>
+                  </tr>
+                  <tr>
+                    <td class="font-sans">Animal Handling</td>
+                    <td class="text-center text-slate-600">WIL</td>
+                    <td class="text-right">≤ 35%</td>
+                  </tr>
+                  <tr>
+                    <td class="font-sans">Medicine &amp; First Aid</td>
+                    <td class="text-center text-slate-600">INT</td>
+                    <td class="text-right">≤ 54%</td>
+                  </tr>
+                  <tr>
+                    <td class="font-sans">Athletics &amp; Clamber</td>
+                    <td class="text-center text-slate-600">STR</td>
+                    <td class="text-right">≤ 58%</td>
+                  </tr>
+                  <tr>
+                    <td class="font-sans">Alchemy &amp; Distillation</td>
+                    <td class="text-center text-slate-600">INT</td>
+                    <td class="text-right">≤ 60%</td>
+                  </tr>
+                  <tr>
+                    <td class="font-sans">Blacksmithing &amp; Forge</td>
+                    <td class="text-center text-slate-600">STR</td>
+                    <td class="text-right">≤ 35%</td>
+                  </tr>
+                  <tr>
+                    <td class="font-sans">Rift Enchanting</td>
+                    <td class="text-center text-slate-600">INT</td>
+                    <td class="text-right">≤ 64%</td>
+                  </tr>
+                  <tr>
+                    <td class="font-sans">Throwing Weapons</td>
+                    <td class="text-center text-slate-600">AGI</td>
+                    <td class="text-right">≤ 38%</td>
+                  </tr>
+                  <tr>
+                    <td class="font-sans">Repair &amp; Field Maintenance</td>
+                    <td class="text-center text-slate-600">INT</td>
+                    <td class="text-right">≤ 48%</td>
+                  </tr>
+                  <tr>
+                    <td class="font-sans">Farming &amp; Botany</td>
+                    <td class="text-center text-slate-600">END</td>
+                    <td class="text-right">≤ 30%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- BOTTOM ROW: SPELLBOOK, ARMORY / LOADOUT & PASSIVE PERKS -->
+    <div class="grid grid-cols-12 gap-2">
+
+      <!-- INSCRIBED SPELLS (4 COLS) -->
+      <div class="col-span-4 ink-border p-1.5 bg-white">
+        <div class="flex justify-between items-center border-b border-black pb-0.5 mb-1">
+          <h2 class="font-black uppercase tracking-wider text-[8px]">Inscribed Spells (3 Linked)</h2>
+          <span class="text-[6.5px] font-mono">MANA FIXED</span>
+        </div>
+        <div class="space-y-1">
+          <!-- Spell 1 -->
+          <div class="ink-border-thin p-1">
+            <div class="flex justify-between items-baseline">
+              <span class="font-bold text-[8.5px]">Veil Blade (Lvl 2)</span>
+              <span class="font-mono font-bold text-[8px]">4 MP</span>
+            </div>
+            <div class="text-[6.5px] text-slate-600 font-mono">Instant • Melee • Check: Blue Magic ≤ 82%</div>
+            <p class="text-[7px] text-slate-800 leading-tight mt-0.5">Enchants weapon with 2d8+3 Aether damage. Ignores 5 physical soak.</p>
+          </div>
+          <!-- Spell 2 -->
+          <div class="ink-border-thin p-1">
+            <div class="flex justify-between items-baseline">
+              <span class="font-bold text-[8.5px]">Tide Barrier (Lvl 3)</span>
+              <span class="font-mono font-bold text-[8px]">6 MP</span>
+            </div>
+            <div class="text-[6.5px] text-slate-600 font-mono">Reaction • Self • Check: Blue Magic ≤ 82%</div>
+            <p class="text-[7px] text-slate-800 leading-tight mt-0.5">+25 HP temporary Ward shield for 3 turns. Dispels burning.</p>
+          </div>
+          <!-- Spell 3 -->
+          <div class="ink-border-thin p-1">
+            <div class="flex justify-between items-baseline">
+              <span class="font-bold text-[8.5px]">Phase Step (Lvl 1)</span>
+              <span class="font-mono font-bold text-[8px]">3 MP</span>
+            </div>
+            <div class="text-[6.5px] text-slate-600 font-mono">Instant • Self • Check: Indigo Magic ≤ 72%</div>
+            <p class="text-[7px] text-slate-800 leading-tight mt-0.5">Teleport 8m through solid rift. Evades opportunity attacks.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- EQUIPPED ARMORY & LOAD (4 COLS) -->
+      <div class="col-span-4 ink-border p-1.5 bg-white">
+        <div class="flex justify-between items-center border-b border-black pb-0.5 mb-1">
+          <h2 class="font-black uppercase tracking-wider text-[8px]">Equipped Armory &amp; Inventory</h2>
+          <span class="text-[6.5px] font-mono font-bold">38.4 / 65.0 kg</span>
+        </div>
+        <div class="space-y-1">
+          <div class="ink-border-thin p-1">
+            <div class="flex justify-between font-bold text-[8px]">
+              <span>Astral Cartographer's Rapier</span>
+              <span class="font-mono">1.8 kg</span>
+            </div>
+            <div class="text-[6.5px] text-slate-600 font-mono">Main-Hand • 1d8+4 Piercing (+5% Crit) • Skill: Blades</div>
+          </div>
+          <div class="ink-border-thin p-1">
+            <div class="flex justify-between font-bold text-[8px]">
+              <span>Focus Crystal of Kragspire</span>
+              <span class="font-mono">0.6 kg</span>
+            </div>
+            <div class="text-[6.5px] text-slate-600 font-mono">Off-Hand • +1 Blue Magic Intensity • Light Source</div>
+          </div>
+          <div class="ink-border-thin p-1">
+            <div class="flex justify-between font-bold text-[8px]">
+              <span>Veil-Stitched Gambeson</span>
+              <span class="font-mono">6.2 kg</span>
+            </div>
+            <div class="text-[6.5px] text-slate-600 font-mono">Torso • +14 Soak • Evasion Penalty: -5%</div>
+          </div>
+          <div class="ink-border-thin p-1 bg-slate-50">
+            <div class="flex justify-between text-[7px] font-mono">
+              <span>Backpack &amp; Rations: 18.2 kg</span>
+              <span>Aether Salves (x3): 1.2 kg</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PERKS & SPECIALIZATIONS (4 COLS) -->
+      <div class="col-span-4 ink-border p-1.5 bg-white">
+        <div class="flex justify-between items-center border-b border-black pb-0.5 mb-1">
+          <h2 class="font-black uppercase tracking-wider text-[8px]">Perks &amp; Specializations</h2>
+          <span class="text-[6.5px] font-mono">RANKS INSCRIBED</span>
+        </div>
+        <div class="space-y-1">
+          <div class="ink-border-thin p-1">
+            <div class="flex justify-between items-baseline font-bold text-[8px]">
+              <span>Hardened Hide II</span>
+              <span class="font-mono text-[7px]">END RANK 2</span>
+            </div>
+            <p class="text-[7px] text-slate-800 leading-tight mt-0.5">+2 flat physical soak added across all localized damage hits.</p>
+          </div>
+          <div class="ink-border-thin p-1">
+            <div class="flex justify-between items-baseline font-bold text-[8px]">
+              <span>Arcane Intuition</span>
+              <span class="font-mono text-[7px]">INT RANK 1</span>
+            </div>
+            <p class="text-[7px] text-slate-800 leading-tight mt-0.5">May reroll 1 failed magic target check per short or long rest cycle.</p>
+          </div>
+          <div class="ink-border-thin p-1">
+            <div class="flex justify-between items-baseline font-bold text-[8px]">
+              <span>Cartographer's Eye</span>
+              <span class="font-mono text-[7px]">PER RANK 1</span>
+            </div>
+            <p class="text-[7px] text-slate-800 leading-tight mt-0.5">Immune to natural subterranean disorientation and maze penalties.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- FOOTER / AUDIT TELEMETRY STRIP -->
+    <footer class="mt-2 pt-1 border-t border-black flex justify-between items-center text-[6.5px] font-mono text-slate-600">
+      <div>RIFTWEAVE OFFLINE STANDALONE ENGINE • CORE RULES v2.4 • CHARACTER: VAELEN VOSS (LVL 07 / REV 14)</div>
+      <div class="flex space-x-3">
+        <span>SESSION DATE: _____________</span>
+        <span>GM APPROVAL: _____________</span>
+        <span>PAGE 1 OF 1 (A4)</span>
+      </div>
+    </footer>
+
+  </div>
+
+</body>
+</html>

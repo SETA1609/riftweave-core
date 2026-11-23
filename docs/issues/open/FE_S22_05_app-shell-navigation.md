@@ -1,0 +1,15 @@
+#### FE_S22_05_app-shell-navigation A side navigation on desktop and a tab bar on mobile
+- Status: todo
+- Priority: medium
+- Needs: FE_S22_02_design-tokens-and-fonts, FE_S08_17_pinned-navbar
+- Modified: 2026-11-23
+- Do: The app's shell as in the mockups (docs/design/README.md#layouts):
+  - **From 1024px:** a side navigation on the left listing the main menu's entries from `backend/contract/menu.json` (the same tree as the CLI, docs/backend/app-layout.md), each with a Font Awesome icon and its locale label, the current one filled in the primary color.
+  - **Under 768px:** the same entries (the first five [A]) as a bottom tab bar with icons and labels, 44px targets, a 1px top keyline, and a blurred surface behind it; the page keeps room for it at the bottom.
+  - **Between:** the side navigation collapses to icons [A].
+  - The top navbar of FE_S08_17 stays: the name, the language, the theme, and the GitHub link. The mockups' "engine ready", "active entity", and cache widgets are left out.
+  - A shared `rw-side-nav` and `rw-tab-bar` in `ui/`, each with a sibling `.md`.
+- Keys: `rw-side-nav`, `rw-tab-bar`
+- Files: ~14 (two components × .ts/.html/.css/.md, frontend/src/app/app.html, app.css, app.ts, frontend/src/locales/en.json, de.json, es.json, frontend/src/app/app.spec.ts, frontend/e2e/app.spec.ts)
+- See: docs/design/mockups/character-sheet-desktop.png, docs/design/mockups/character-sheet-mobile.png, docs/backend/app-layout.md
+- Done when: at 1280px the side navigation lists the main menu and marks the current screen; at 375px the tab bar does, and no content hides under it; both follow `menu.json`; the Vitest and Playwright specs pass.

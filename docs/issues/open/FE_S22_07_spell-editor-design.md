@@ -1,0 +1,16 @@
+#### FE_S22_07_spell-editor-design The spell editor in the design guide's layout
+- Status: todo
+- Priority: low
+- Needs: FE_S09_02_spell-editor-page, FE_S22_03_color-and-phase-badges, FE_S22_04_roll-target-and-meters
+- Modified: 2026-11-23
+- Do: Restyle the spell editor of FE_S09_02 as in the spell editor mockup, with no change to what it sends:
+  - **Color tabs** across the top, one `rw-color-badge` each, filtering the effect library.
+  - **Left:** the effect library of the chosen color (search, filter, an add button per effect, the ones in the spell marked).
+  - **Middle:** the spell's name and its parameters, then its effects as a numbered stack, each with its magnitude and duration on `rw-stepper`s and a remove button.
+  - **Right:** the cost, AP, and the casting target from the author command's response, the spell as a card preview, and a test cast through `rw-roll-target`.
+  - **Module blocks:** an effect's phase shows only with `wuxing` enabled (`*rwIfModule`, docs/design/README.md#module-blocks).
+  - The mockup's metamagic checkboxes, reagents, and "arcane strain" appear only if the author command offers them.
+- Keys: locale keys for the new labels in en, de, and es
+- Files: ~8 (frontend/src/app/spell-editor/*.ts, .html, .css, .md, frontend/src/locales/en.json, de.json, es.json, frontend/e2e/spell-editor.spec.ts)
+- See: docs/design/mockups/spell-editor.png
+- Done when: the editor shows the three panes at 1280px and one column at 375px; every cost and target comes from the author command; the existing spell editor specs pass unchanged.

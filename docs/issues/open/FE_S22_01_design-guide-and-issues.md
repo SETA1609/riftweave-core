@@ -1,0 +1,10 @@
+#### FE_S22_01_design-guide-and-issues A design guide from the mockups, and its issues
+- Status: review
+- Priority: medium
+- Needs: —
+- Modified: 2026-11-23
+- Do: Owner request, 2026-11-23: the owner made mockups of the frontend in Google Stitch (Tailwind HTML and screenshots). Keep them in `docs/design/mockups/`, write a design guide from them in `docs/design/README.md` (tokens, type, shapes, components, layouts, and how a Tailwind class becomes plain CSS), and file story S22 with the issues that build it. The mockups are a guide, not a 1:1 target; their invented rules and names are not copied.
+- Keys: none
+- Files: ~19 counted, plus 6 screenshots (docs/design/README.md, docs/design/mockups/*.html, docs/stories/S22-visual-design-system.md, the nine issue files, docs/decisions/FE_S22_01_design-guide-and-issues.md, changes/FE_S22_01_design-guide-and-issues.md; small edits to docs/stories/README.md, ROADMAP.md, AGENTS.md, docs/backend/frontend.md)
+- See: docs/backend/frontend.md#conventions, docs/backend/app-layout.md
+- Done when: the mockups and the guide are in `docs/design/`; story S22 and its issues exist with their `Needs`; the stories README lists S22; `roadmap-order show` lists the new issues.

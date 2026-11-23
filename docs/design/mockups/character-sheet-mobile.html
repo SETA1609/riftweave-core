@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><style>@layer base{html,body{width:100vw;margin:0;padding:0;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..900&family=Space+Grotesk:wght@100..900&display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "on-primary-fixed": "#00201d", "on-tertiary-fixed": "#2a1700", "on-surface": "#dae2fd", "tertiary-container": "#ca8100", "inverse-primary": "#006a61", "on-tertiary": "#472a00", "surface-container-low": "#131b2e", "inverse-on-surface": "#283044", "surface-container-highest": "#2d3449", "on-error": "#690005", "on-primary": "#003732", "background": "#0b1326", "outline-variant": "#3d4947", "secondary-container": "#00a6e0", "primary": "#6bd8cb", "on-tertiary-container": "#3e2400", "primary-fixed": "#89f5e7", "surface-bright": "#31394d", "tertiary-fixed": "#ffddb8", "on-primary-container": "#00302b", "on-tertiary-fixed-variant": "#653e00", "secondary": "#7bd0ff", "surface-container-high": "#222a3d", "surface-variant": "#2d3449", "on-secondary-fixed": "#001e2c", "error": "#ffb4ab", "on-surface-variant": "#bcc9c6", "on-secondary": "#00354a", "surface-dim": "#0b1326", "on-secondary-fixed-variant": "#004c69", "surface": "#0b1326", "tertiary": "#ffb95f", "surface-container-lowest": "#060e20", "on-primary-fixed-variant": "#005049", "outline": "#879391", "on-background": "#dae2fd", "surface-container": "#171f33", "primary-container": "#29a195", "primary-fixed-dim": "#6bd8cb", "secondary-fixed-dim": "#7bd0ff", "error-container": "#93000a", "surface-tint": "#6bd8cb", "on-error-container": "#ffdad6", "tertiary-fixed-dim": "#ffb95f", "on-secondary-container": "#00374d", "secondary-fixed": "#c4e7ff", "inverse-surface": "#dae2fd" }, borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, spacing: { "space-sm": "0.5rem", "space-md": "0.75rem", "margin": "1rem", "gutter": "1rem", "space-lg": "1.25rem", "margin-desktop": "2rem", "space-xl": "2rem", "gutter-desktop": "1.5rem", "space-xs": "0.25rem" }, fontFamily: { "label-sm": ["JetBrains Mono"], "label-md": ["JetBrains Mono"], "headline-md": ["Space Grotesk"], "headline-xl": ["Space Grotesk"], "headline-xl-mobile": ["Space Grotesk"], "label-lg": ["JetBrains Mono"], "headline-lg": ["Space Grotesk"], "body-sm": ["JetBrains Mono"], "body-md": ["JetBrains Mono"], "body-lg": ["JetBrains Mono"], "headline-lg-mobile": ["Space Grotesk"] }, fontSize: { "label-sm": ["0.625rem", { lineHeight: "1", letterSpacing: "0.08em", fontWeight: "700" }], "label-md": ["0.75rem", { lineHeight: "1", letterSpacing: "0.05em", fontWeight: "600" }], "headline-md": ["1.25rem", { lineHeight: "1.3", letterSpacing: "-0.01em", fontWeight: "600" }], "headline-xl": ["2.5rem", { lineHeight: "1.1", letterSpacing: "-0.03em", fontWeight: "700" }], "headline-xl-mobile": ["1.875rem", { lineHeight: "1.15", letterSpacing: "-0.02em", fontWeight: "700" }], "label-lg": ["0.875rem", { lineHeight: "1", letterSpacing: "0.04em", fontWeight: "600" }], "headline-lg": ["1.75rem", { lineHeight: "1.2", letterSpacing: "-0.02em", fontWeight: "600" }], "body-sm": ["0.75rem", { lineHeight: "1.4", letterSpacing: "0.01em", fontWeight: "400" }], "body-md": ["0.875rem", { lineHeight: "1.45", letterSpacing: "0em", fontWeight: "400" }], "body-lg": ["1rem", { lineHeight: "1.5", letterSpacing: "-0.01em", fontWeight: "400" }], "headline-lg-mobile": ["1.375rem", { lineHeight: "1.25", letterSpacing: "-0.01em", fontWeight: "600" }] } } } };</script></head><body class="bg-surface text-on-surface font-body-md text-body-md flex flex-col min-h-screen selection:bg-primary-container selection:text-on-primary-container"><header class="fixed top-0 w-full z-50 pt-safe bg-surface-container-lowest/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.3)]"><div class="h-16 px-margin flex items-center justify-between gap-space-xs"><div class="flex items-center gap-space-sm min-w-0"><div class="w-7 h-7 rounded-lg bg-surface-container-high flex items-center justify-center text-primary shrink-0"><span class="material-symbols-outlined text-[18px]">token</span></div><div class="flex flex-col min-w-0"><span class="font-headline-md text-headline-md tracking-wider text-on-surface font-bold leading-tight truncate">RIFTWEAVE</span><div class="flex items-center gap-1.5"><span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-lg bg-surface-container text-primary font-label-sm text-label-sm uppercase tracking-widest leading-none"><span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>OFFLINE / WASM</span></div></div></div><div class="flex items-center gap-1 shrink-0"><button aria-label="Change Language" class="min-w-[44px] min-h-[44px] px-2 flex items-center justify-center gap-1 rounded-lg bg-surface-container-low text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors" type="button"><span class="text-xs leading-none">🇺🇸</span><span class="font-label-sm text-label-sm">EN</span></button><button aria-label="Toggle Theme Mode" class="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg bg-surface-container-low text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors" type="button"><span class="material-symbols-outlined text-[18px]">contrast</span></button><button aria-label="Open Arcane Navigation Menu" class="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg bg-surface-container-low text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">menu</span></button><img alt="Profile" class="w-8 h-8 rounded-full object-cover shrink-0 ml-1" src="https://lh3.googleusercontent.com/aida/ALJJyrA0RFiOciPQlHfJmgBLdJ5aClQyD_4I-NUjGclHtot_cAxcxRi9JRzZMUup5F6hZRz5BT6IMAll65iA_qbGzX4nCvnXXp8FljSbZqYahdCPRXqXSBQ7Cf7m_2vA8inipv3z7NuawoL4YBuDdchfyUHlAJ4K4s5xyO-ixDJsMYbmgvVqBbhPSTonP_G3FLcxiv-oFtW2SWFD14Io75f6V-KvSt261VR7ky3JKRIp13rMNQ"/></div></div></header><main class="flex flex-col relative w-full pt-16 pb-24 bg-surface"><div class="px-margin pt-space-sm pb-space-xs flex items-center justify-between"><span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest">// Sheet</span><span class="font-label-sm text-label-sm text-outline">TELEMETRY ACTIVE</span></div><div class="flex flex-col w-full text-on-surface">
+<!-- ==================== STICKY TACTICAL HUD BAR ==================== -->
+<div class="sticky top-0 z-40 w-full bg-surface-container-lowest/95 backdrop-blur-md px-margin py-space-xs shadow-md">
+<div class="flex items-center justify-between gap-space-xs mb-space-xs">
+<!-- HP VITALITY -->
+<div class="flex-1 bg-surface-container-low p-1.5 rounded-lg">
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-error font-bold flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[13px]">favorite</span>VIT
+          </span>
+<span class="text-on-surface" id="hp-val">48<span class="text-outline-variant">/52</span></span>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden mt-1">
+<div class="bg-error h-full rounded-full transition-all" style="width: 92%;"></div>
+</div>
+<div class="flex items-center justify-between mt-1">
+<button class="w-6 h-5 flex items-center justify-center rounded bg-surface-container hover:bg-error-container text-error text-xs" onclick="adjustStat('hp', -1)" type="button">-</button>
+<button class="w-6 h-5 flex items-center justify-center rounded bg-surface-container hover:bg-error-container text-error text-xs" onclick="adjustStat('hp', 1)" type="button">+</button>
+</div>
+</div>
+<!-- MP AETHER -->
+<div class="flex-1 bg-surface-container-low p-1.5 rounded-lg">
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-primary font-bold flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[13px]">bolt</span>MP
+          </span>
+<span class="text-on-surface" id="mp-val">34<span class="text-outline-variant">/40</span></span>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden mt-1">
+<div class="bg-primary h-full rounded-full transition-all" style="width: 85%;"></div>
+</div>
+<div class="flex items-center justify-between mt-1">
+<button class="w-6 h-5 flex items-center justify-center rounded bg-surface-container hover:bg-primary-container text-primary text-xs" onclick="adjustStat('mp', -1)" type="button">-</button>
+<button class="w-6 h-5 flex items-center justify-center rounded bg-surface-container hover:bg-primary-container text-primary text-xs" onclick="adjustStat('mp', 1)" type="button">+</button>
+</div>
+</div>
+<!-- SP STAMINA -->
+<div class="flex-1 bg-surface-container-low p-1.5 rounded-lg">
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-secondary font-bold flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[13px]">cyclone</span>SP
+          </span>
+<span class="text-on-surface" id="sp-val">26<span class="text-outline-variant">/28</span></span>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden mt-1">
+<div class="bg-secondary h-full rounded-full transition-all" style="width: 93%;"></div>
+</div>
+<div class="flex items-center justify-between mt-1">
+<button class="w-6 h-5 flex items-center justify-center rounded bg-surface-container hover:bg-secondary-container text-secondary text-xs" onclick="adjustStat('sp', -1)" type="button">-</button>
+<button class="w-6 h-5 flex items-center justify-center rounded bg-surface-container hover:bg-secondary-container text-secondary text-xs" onclick="adjustStat('sp', 1)" type="button">+</button>
+</div>
+</div>
+</div>
+<!-- ACTION POINT DOCK & SECONDARY VITALS -->
+<div class="flex items-center justify-between bg-surface-container px-2 py-1 rounded-lg">
+<div class="flex items-center gap-1.5">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">AP:</span>
+<div class="flex items-center gap-1" id="ap-dots">
+<span class="w-2.5 h-2.5 rounded-full bg-primary shadow-sm shadow-primary/50"></span>
+<span class="w-2.5 h-2.5 rounded-full bg-primary shadow-sm shadow-primary/50"></span>
+<span class="w-2.5 h-2.5 rounded-full bg-primary shadow-sm shadow-primary/50"></span>
+<span class="w-2.5 h-2.5 rounded-full bg-surface-container-highest"></span>
+</div>
+<span class="font-label-sm text-label-sm bg-surface-container-high px-1 rounded text-tertiary ml-1">GUARD: 1</span>
+</div>
+<div class="flex items-center gap-2 font-label-sm text-label-sm text-on-surface-variant">
+<span>INIT <strong class="text-on-surface">64</strong></span>
+<span class="text-outline-variant">|</span>
+<span>TOX <strong class="text-tertiary">15%</strong></span>
+<span class="text-outline-variant">|</span>
+<span>LOAD <strong class="text-on-surface">38/65k</strong></span>
+</div>
+</div>
+</div>
+<div class="px-margin flex flex-col gap-space-md mt-space-sm">
+<!-- ==================== CHARACTER IDENTITY CARD ==================== -->
+<div class="relative bg-surface-container-low rounded-xl p-space-md shadow-md overflow-hidden">
+<!-- Glow ambient accent -->
+<div class="absolute -right-8 -top-8 w-32 h-32 bg-primary/10 rounded-full blur-2xl pointer-events-none"></div>
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-space-xs mb-0.5">
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-primary-container text-on-primary-container uppercase tracking-wider font-bold">LVL 07</span>
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant uppercase tracking-wider">REV 14</span>
+<span class="font-label-sm text-label-sm text-primary flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[12px]">verified</span>COMBAT-READY
+            </span>
+</div>
+<span class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-on-surface tracking-tight truncate">Vaelen Voss</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+<span class="text-primary">Aether-Touched Humankind</span> • Disgraced Cartographer of the Veil
+          </p>
+<span class="font-label-sm text-label-sm text-outline mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">location_on</span> Kragspire Rift [Echo Sector 4]
+          </span>
+</div>
+<div class="relative shrink-0 w-16 h-16 rounded-lg bg-surface-container-high overflow-hidden shadow-inner flex items-center justify-center">
+<img class="w-full h-full object-cover" data-alt="Tactical painted headshot of Vaelen Voss, a weathered aether-touched male scout with glowing cyan arcane ocular implant and dark obsidian military cowl, moody high-contrast lighting, volumetric bioluminescence" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCj2Uc-bdQ0zzu9g96q0zM5MmlG5J1KknxIav-71zuvoGFX67dqW0kkM3GgEb0jttosYLSLDRhtG2BNtCQKsiG30Sd7haBiXl3H4p6TJBPaU31HWGI5eTt4SbA0R12zI-lBL_lQuKJn0iIzW5W5SJh2HGo5FoTqiqKrLnDUedZg4ylpNVRZCvShxqGyUQZgYA-fkHttZjnqhRK0Zh6RFUzUbhPnlWEiNwr0_42IbJUc"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/80 via-transparent to-transparent"></div>
+<span class="absolute bottom-0.5 right-1 font-label-sm text-label-sm text-primary font-bold">d100</span>
+</div>
+</div>
+<!-- WU XING 5-ELEMENT AFFINITY HARNESS -->
+<div class="mt-space-md pt-space-xs bg-surface-container-lowest/60 rounded-lg p-2">
+<div class="flex items-center justify-between mb-1.5">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px] text-primary">interests</span>WU XING ELEMENTAL MATRIX
+          </span>
+<span class="font-label-sm text-label-sm text-primary">SYNCED 94%</span>
+</div>
+<div class="grid grid-cols-5 gap-1 text-center">
+<!-- Wood -->
+<div class="flex flex-col items-center p-1 rounded bg-surface-container">
+<span class="material-symbols-outlined text-[16px] text-outline">park</span>
+<span class="font-label-sm text-label-sm text-outline-variant mt-0.5">WOOD</span>
+<span class="font-label-md text-label-md text-on-surface font-bold">0</span>
+</div>
+<!-- Fire (Active +2) -->
+<div class="flex flex-col items-center p-1 rounded bg-tertiary-container/30">
+<span class="material-symbols-outlined text-[16px] text-tertiary" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+<span class="font-label-sm text-label-sm text-tertiary mt-0.5">FIRE</span>
+<span class="font-label-md text-label-md text-tertiary font-bold">+2</span>
+</div>
+<!-- Earth -->
+<div class="flex flex-col items-center p-1 rounded bg-surface-container">
+<span class="material-symbols-outlined text-[16px] text-outline">terrain</span>
+<span class="font-label-sm text-label-sm text-outline-variant mt-0.5">EARTH</span>
+<span class="font-label-md text-label-md text-on-surface font-bold">0</span>
+</div>
+<!-- Metal (+1) -->
+<div class="flex flex-col items-center p-1 rounded bg-secondary-container/20">
+<span class="material-symbols-outlined text-[16px] text-secondary">token</span>
+<span class="font-label-sm text-label-sm text-secondary mt-0.5">METAL</span>
+<span class="font-label-md text-label-md text-secondary font-bold">+1</span>
+</div>
+<!-- Water (-1) -->
+<div class="flex flex-col items-center p-1 rounded bg-error-container/20">
+<span class="material-symbols-outlined text-[16px] text-error">water_drop</span>
+<span class="font-label-sm text-label-sm text-error mt-0.5">WATER</span>
+<span class="font-label-md text-label-md text-error font-bold">-1</span>
+</div>
+</div>
+</div>
+</div>
+<!-- ==================== 8 ATTRIBUTES TELEMETRY GRID ==================== -->
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center justify-between px-0.5">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">// PRIMARY CORE ATTRIBUTES (ROLL BASE)</span>
+<span class="font-label-sm text-label-sm text-outline">CALC: (ATTR×10)</span>
+</div>
+<div class="grid grid-cols-4 gap-1.5">
+<!-- STR -->
+<button class="flex flex-col bg-surface-container-low p-2 rounded-lg text-left hover:bg-surface-container transition-colors" onclick="openRollModal('Strength Attribute Check', 60, 'STR Core', 'Physical')" type="button">
+<div class="flex items-center justify-between w-full">
+<span class="font-label-sm text-label-sm text-outline">STR</span>
+<span class="font-headline-md text-headline-md text-on-surface font-bold">6</span>
+</div>
+<span class="font-label-sm text-label-sm text-primary mt-1">≤ 60%</span>
+</button>
+<!-- PER -->
+<button class="flex flex-col bg-surface-container-low p-2 rounded-lg text-left hover:bg-surface-container transition-colors" onclick="openRollModal('Perception Attribute Check', 80, 'PER Core', 'Awareness')" type="button">
+<div class="flex items-center justify-between w-full">
+<span class="font-label-sm text-label-sm text-secondary">PER</span>
+<span class="font-headline-md text-headline-md text-secondary font-bold">8</span>
+</div>
+<span class="font-label-sm text-label-sm text-secondary mt-1">≤ 80%</span>
+</button>
+<!-- END -->
+<button class="flex flex-col bg-surface-container-low p-2 rounded-lg text-left hover:bg-surface-container transition-colors" onclick="openRollModal('Endurance Attribute Check', 50, 'END Core', 'Resilience')" type="button">
+<div class="flex items-center justify-between w-full">
+<span class="font-label-sm text-label-sm text-outline">END</span>
+<span class="font-headline-md text-headline-md text-on-surface font-bold">5</span>
+</div>
+<span class="font-label-sm text-label-sm text-primary mt-1">≤ 50%</span>
+</button>
+<!-- INT -->
+<button class="flex flex-col bg-surface-container-low p-2 rounded-lg text-left hover:bg-surface-container transition-colors" onclick="openRollModal('Intelligence Attribute Check', 90, 'INT Core', 'Arcane / Logic')" type="button">
+<div class="flex items-center justify-between w-full">
+<span class="font-label-sm text-label-sm text-primary">INT</span>
+<span class="font-headline-md text-headline-md text-primary font-bold">9</span>
+</div>
+<span class="font-label-sm text-label-sm text-primary mt-1">≤ 90%</span>
+</button>
+<!-- WIL -->
+<button class="flex flex-col bg-surface-container-low p-2 rounded-lg text-left hover:bg-surface-container transition-colors" onclick="openRollModal('Willpower Attribute Check', 70, 'WIL Core', 'Mental Resolve')" type="button">
+<div class="flex items-center justify-between w-full">
+<span class="font-label-sm text-label-sm text-outline">WIL</span>
+<span class="font-headline-md text-headline-md text-on-surface font-bold">7</span>
+</div>
+<span class="font-label-sm text-label-sm text-primary mt-1">≤ 70%</span>
+</button>
+<!-- AGI -->
+<button class="flex flex-col bg-surface-container-low p-2 rounded-lg text-left hover:bg-surface-container transition-colors" onclick="openRollModal('Agility Attribute Check', 70, 'AGI Core', 'Reflexes')" type="button">
+<div class="flex items-center justify-between w-full">
+<span class="font-label-sm text-label-sm text-outline">AGI</span>
+<span class="font-headline-md text-headline-md text-on-surface font-bold">7</span>
+</div>
+<span class="font-label-sm text-label-sm text-primary mt-1">≤ 70%</span>
+</button>
+<!-- CHA -->
+<button class="flex flex-col bg-surface-container-low p-2 rounded-lg text-left hover:bg-surface-container transition-colors" onclick="openRollModal('Charisma Attribute Check', 40, 'CHA Core', 'Presence')" type="button">
+<div class="flex items-center justify-between w-full">
+<span class="font-label-sm text-label-sm text-outline">CHA</span>
+<span class="font-headline-md text-headline-md text-on-surface font-bold">4</span>
+</div>
+<span class="font-label-sm text-label-sm text-primary mt-1">≤ 40%</span>
+</button>
+<!-- LCK -->
+<button class="flex flex-col bg-surface-container-low p-2 rounded-lg text-left hover:bg-surface-container transition-colors" onclick="openRollModal('Luck Attribute Check', 60, 'LCK Core', 'Fate Margin')" type="button">
+<div class="flex items-center justify-between w-full">
+<span class="font-label-sm text-label-sm text-tertiary">LCK</span>
+<span class="font-headline-md text-headline-md text-tertiary font-bold">6</span>
+</div>
+<span class="font-label-sm text-label-sm text-tertiary mt-1">≤ 60%</span>
+</button>
+</div>
+</div>
+<!-- ==================== LIVE ROLL RESOLVER CARD (INSTANT ACTION DOCK) ==================== -->
+<div class="bg-surface-container-low rounded-xl p-space-md shadow-lg relative overflow-hidden" id="resolver-panel">
+<div class="flex items-center justify-between mb-space-xs">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-primary animate-ping"></span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-primary font-bold" id="res-title">ACTIVE RESOLVER: BLADES CHECK</span>
+</div>
+<span class="font-label-sm text-label-sm bg-surface-container px-2 py-0.5 rounded text-outline font-bold">d100 ROLL-UNDER</span>
+</div>
+<!-- Live resolution readout -->
+<div class="bg-surface-container-lowest p-space-sm rounded-lg flex items-center justify-between gap-space-sm mb-space-sm">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">TARGET THRESHOLD</span>
+<span class="font-headline-xl-mobile text-headline-xl-mobile font-bold text-primary tracking-tight" id="res-target">≤ 74%</span>
+<span class="font-body-sm text-body-sm text-outline" id="res-source">Base 60 (STR) + Tag +14</span>
+</div>
+<div class="flex flex-col items-end text-right">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">OUTCOME</span>
+<div class="flex items-baseline gap-1" id="res-outcome-box">
+<span class="font-headline-xl-mobile text-headline-xl-mobile font-bold text-primary" id="res-die-val">42</span>
+<span class="font-label-sm text-label-sm uppercase font-bold text-primary" id="res-status">PASS</span>
+</div>
+<span class="font-label-sm text-label-sm text-primary" id="res-margin">Margin: +32 (SAFE)</span>
+</div>
+</div>
+<!-- SITUATIONAL MODIFIER STEPPER -->
+<div class="flex items-center justify-between bg-surface-container px-2.5 py-1.5 rounded-lg mb-space-sm">
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">tune</span>SITUATIONAL MODIFIER
+        </span>
+<div class="flex items-center gap-2">
+<button class="w-7 h-6 flex items-center justify-center rounded bg-surface-container-high hover:bg-surface-bright text-on-surface font-bold text-xs" onclick="adjustMod(-10)" type="button">-10</button>
+<span class="font-label-md text-label-md text-primary font-bold min-w-[32px] text-center" id="mod-val">+0%</span>
+<button class="w-7 h-6 flex items-center justify-center rounded bg-surface-container-high hover:bg-surface-bright text-on-surface font-bold text-xs" onclick="adjustMod(10)" type="button">+10</button>
+</div>
+</div>
+<!-- TRIGGER BUTTON -->
+<button class="w-full py-2.5 px-4 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md uppercase tracking-wider font-bold shadow-md flex items-center justify-center gap-2 active:scale-95 transition-all" onclick="executeRoll()" type="button">
+<span class="material-symbols-outlined text-[18px]">casino</span>RESOLVE D100 CHECK NOW
+      </button>
+</div>
+<!-- ==================== SEGMENTED NAVIGATION TABS ==================== -->
+<div class="flex items-center gap-1 bg-surface-container-lowest p-1 rounded-lg overflow-x-auto">
+<button class="flex-1 py-1.5 px-2 rounded font-label-sm text-label-sm font-bold uppercase transition-all bg-surface-container text-primary shadow-sm" id="tab-btn-skills" onclick="switchTab('skills')" type="button">
+        SKILLS (40)
+      </button>
+<button class="flex-1 py-1.5 px-2 rounded font-label-sm text-label-sm font-bold uppercase transition-all text-on-surface-variant hover:text-on-surface" id="tab-btn-spells" onclick="switchTab('spells')" type="button">
+        SPELLS (6)
+      </button>
+<button class="flex-1 py-1.5 px-2 rounded font-label-sm text-label-sm font-bold uppercase transition-all text-on-surface-variant hover:text-on-surface" id="tab-btn-gear" onclick="switchTab('gear')" type="button">
+        GEAR
+      </button>
+<button class="flex-1 py-1.5 px-2 rounded font-label-sm text-label-sm font-bold uppercase transition-all text-on-surface-variant hover:text-on-surface" id="tab-btn-perks" onclick="switchTab('perks')" type="button">
+        PERKS & COND
+      </button>
+</div>
+<!-- ==================== TAB 1: SKILLS LIST (ROLL-UNDER FOCUS) ==================== -->
+<div class="flex flex-col gap-space-xs" id="tab-pane-skills">
+<div class="flex items-center justify-between px-0.5">
+<div class="flex items-center gap-1.5">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">RAISED & TAGGED</span>
+<span class="font-label-sm text-label-sm px-1 rounded bg-tertiary-container/30 text-tertiary font-bold">★ TAGGED: +20%</span>
+</div>
+<button class="font-label-sm text-label-sm text-primary hover:underline" type="button">SHOW ALL 40</button>
+</div>
+<!-- Skill Row: Blades [TAG] -->
+<div class="flex items-center justify-between bg-surface-container-low p-space-sm rounded-lg hover:bg-surface-container transition-all">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-tertiary text-[20px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="font-body-md text-body-md font-bold text-on-surface truncate">Blades</span>
+<span class="font-label-sm text-label-sm px-1 py-0.2 rounded bg-tertiary text-on-tertiary font-bold uppercase">TAG</span>
+</div>
+<span class="font-label-sm text-label-sm text-outline">Combat • STR / AGI Core</span>
+</div>
+</div>
+<div class="flex items-center gap-space-sm shrink-0">
+<span class="font-headline-md text-headline-md font-bold text-primary">≤ 74%</span>
+<button class="h-9 px-3 rounded bg-primary hover:bg-primary-container text-on-primary font-label-sm text-label-sm uppercase font-bold flex items-center gap-1 transition-all" onclick="openRollModal('Blades Check', 74, 'Blades [TAG]', 'Melee Attack')" type="button">
+<span class="material-symbols-outlined text-[16px]">casino</span>ROLL
+          </button>
+</div>
+</div>
+<!-- Skill Row: Blue Magic [TAG] -->
+<div class="flex items-center justify-between bg-surface-container-low p-space-sm rounded-lg hover:bg-surface-container transition-all">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-tertiary text-[20px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="font-body-md text-body-md font-bold text-on-surface truncate">Blue Magic</span>
+<span class="font-label-sm text-label-sm px-1 py-0.2 rounded bg-tertiary text-on-tertiary font-bold uppercase">TAG</span>
+</div>
+<span class="font-label-sm text-label-sm text-outline">Arcane • INT / Force</span>
+</div>
+</div>
+<div class="flex items-center gap-space-sm shrink-0">
+<span class="font-headline-md text-headline-md font-bold text-primary">≤ 82%</span>
+<button class="h-9 px-3 rounded bg-primary hover:bg-primary-container text-on-primary font-label-sm text-label-sm uppercase font-bold flex items-center gap-1 transition-all" onclick="openRollModal('Blue Magic Evocation', 82, 'Blue Magic [TAG]', 'Aether Weave')" type="button">
+<span class="material-symbols-outlined text-[16px]">casino</span>ROLL
+          </button>
+</div>
+</div>
+<!-- Skill Row: Lore [TAG] -->
+<div class="flex items-center justify-between bg-surface-container-low p-space-sm rounded-lg hover:bg-surface-container transition-all">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-tertiary text-[20px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="font-body-md text-body-md font-bold text-on-surface truncate">Veil Lore</span>
+<span class="font-label-sm text-label-sm px-1 py-0.2 rounded bg-tertiary text-on-tertiary font-bold uppercase">TAG</span>
+</div>
+<span class="font-label-sm text-label-sm text-outline">Knowledge • INT Core</span>
+</div>
+</div>
+<div class="flex items-center gap-space-sm shrink-0">
+<span class="font-headline-md text-headline-md font-bold text-primary">≤ 78%</span>
+<button class="h-9 px-3 rounded bg-primary hover:bg-primary-container text-on-primary font-label-sm text-label-sm uppercase font-bold flex items-center gap-1 transition-all" onclick="openRollModal('Veil Lore Recall', 78, 'Veil Lore [TAG]', 'Cognitive')" type="button">
+<span class="material-symbols-outlined text-[16px]">casino</span>ROLL
+          </button>
+</div>
+</div>
+<!-- Skill Row: Evasion [TAG] -->
+<div class="flex items-center justify-between bg-surface-container-low p-space-sm rounded-lg hover:bg-surface-container transition-all">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-tertiary text-[20px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="font-body-md text-body-md font-bold text-on-surface truncate">Evasion</span>
+<span class="font-label-sm text-label-sm px-1 py-0.2 rounded bg-tertiary text-on-tertiary font-bold uppercase">TAG</span>
+</div>
+<span class="font-label-sm text-label-sm text-outline">Defense • AGI Reflex</span>
+</div>
+</div>
+<div class="flex items-center gap-space-sm shrink-0">
+<span class="font-headline-md text-headline-md font-bold text-primary">≤ 68%</span>
+<button class="h-9 px-3 rounded bg-primary hover:bg-primary-container text-on-primary font-label-sm text-label-sm uppercase font-bold flex items-center gap-1 transition-all" onclick="openRollModal('Evasion Dodge', 68, 'Evasion [TAG]', 'Defense Reaction')" type="button">
+<span class="material-symbols-outlined text-[16px]">casino</span>ROLL
+          </button>
+</div>
+</div>
+<!-- Standard Raised Skills -->
+<div class="flex items-center justify-between bg-surface-container-low p-space-sm rounded-lg hover:bg-surface-container transition-all opacity-90">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-outline text-[18px]">visibility</span>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md text-on-surface truncate">Investigation</span>
+<span class="font-label-sm text-label-sm text-outline">PER / Deduction</span>
+</div>
+</div>
+<div class="flex items-center gap-space-sm shrink-0">
+<span class="font-headline-md text-headline-md font-bold text-on-surface">≤ 62%</span>
+<button class="h-9 px-3 rounded bg-surface-container-high hover:bg-surface-bright text-on-surface font-label-sm text-label-sm uppercase font-bold flex items-center gap-1 transition-all" onclick="openRollModal('Investigation Clue Check', 62, 'Investigation', 'Perception Base')" type="button">
+<span class="material-symbols-outlined text-[16px]">casino</span>ROLL
+          </button>
+</div>
+</div>
+<div class="flex items-center justify-between bg-surface-container-low p-space-sm rounded-lg hover:bg-surface-container transition-all opacity-90">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-outline text-[18px]">science</span>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md text-on-surface truncate">Alchemy & Distill</span>
+<span class="font-label-sm text-label-sm text-outline">INT / Crafting</span>
+</div>
+</div>
+<div class="flex items-center gap-space-sm shrink-0">
+<span class="font-headline-md text-headline-md font-bold text-on-surface">≤ 60%</span>
+<button class="h-9 px-3 rounded bg-surface-container-high hover:bg-surface-bright text-on-surface font-label-sm text-label-sm uppercase font-bold flex items-center gap-1 transition-all" onclick="openRollModal('Alchemy Distillation', 60, 'Alchemy', 'Field Craft')" type="button">
+<span class="material-symbols-outlined text-[16px]">casino</span>ROLL
+          </button>
+</div>
+</div>
+<div class="flex items-center justify-between bg-surface-container-low p-space-sm rounded-lg hover:bg-surface-container transition-all opacity-90">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-outline text-[18px]">footprint</span>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md text-on-surface truncate">Stealth & Infiltration</span>
+<span class="font-label-sm text-label-sm text-outline">AGI / Shadow</span>
+</div>
+</div>
+<div class="flex items-center gap-space-sm shrink-0">
+<span class="font-headline-md text-headline-md font-bold text-on-surface">≤ 55%</span>
+<button class="h-9 px-3 rounded bg-surface-container-high hover:bg-surface-bright text-on-surface font-label-sm text-label-sm uppercase font-bold flex items-center gap-1 transition-all" onclick="openRollModal('Stealth Test', 55, 'Stealth', 'Shadow Action')" type="button">
+<span class="material-symbols-outlined text-[16px]">casino</span>ROLL
+          </button>
+</div>
+</div>
+</div>
+<!-- ==================== TAB 2: SPELLS & CANTRIPS DRAWER ==================== -->
+<div class="hidden flex-col gap-space-sm" id="tab-pane-spells">
+<div class="flex items-center justify-between px-0.5">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">// EQUIPPED SPELLBOOK (6 / 8 ATTUNED)</span>
+<span class="font-label-sm text-label-sm text-primary">AETHER POOL: 34 MP</span>
+</div>
+<!-- Spell 1: Rift Bolt -->
+<div class="bg-surface-container-low rounded-lg p-space-sm flex flex-col gap-1.5 shadow-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="w-3 h-3 rounded bg-primary"></span>
+<span class="font-headline-md text-headline-md font-bold text-on-surface">Rift Bolt</span>
+<span class="font-label-sm text-label-sm px-1.5 py-0.2 rounded bg-surface-container text-primary uppercase font-bold">BLUE MAGIC</span>
+</div>
+<span class="font-label-md text-label-md px-2 py-0.5 rounded bg-primary-container text-on-primary-container font-bold">6 MP</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Focuses raw veil rift energy into a piercing lance. Ignores 5 points of kinetic armor.</p>
+<div class="flex items-center justify-between pt-1">
+<span class="font-label-sm text-label-sm text-outline">Target: Single • Range: 24m • 2d8+3 Force</span>
+<button class="px-2.5 py-1 rounded bg-primary hover:bg-primary-container text-on-primary font-label-sm text-label-sm uppercase font-bold" onclick="openRollModal('Cast: Rift Bolt', 82, 'Blue Magic [TAG]', 'Cast Delivery')" type="button">CAST</button>
+</div>
+</div>
+<!-- Spell 2: Pyre Weave -->
+<div class="bg-surface-container-low rounded-lg p-space-sm flex flex-col gap-1.5 shadow-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="w-3 h-3 rounded bg-tertiary"></span>
+<span class="font-headline-md text-headline-md font-bold text-on-surface">Pyre Weave</span>
+<span class="font-label-sm text-label-sm px-1.5 py-0.2 rounded bg-tertiary-container/30 text-tertiary uppercase font-bold">FIRE MAGIC</span>
+</div>
+<span class="font-label-md text-label-md px-2 py-0.5 rounded bg-tertiary-container text-on-tertiary-container font-bold">12 MP</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Erupts explosive cinders across a 6m cone. Applies 'Singed' condition for 2 rounds.</p>
+<div class="flex items-center justify-between pt-1">
+<span class="font-label-sm text-label-sm text-outline">Area Cone • DC 14 Evasion • 3d10 Fire</span>
+<button class="px-2.5 py-1 rounded bg-tertiary hover:bg-tertiary-container text-on-tertiary font-label-sm text-label-sm uppercase font-bold" onclick="openRollModal('Cast: Pyre Weave', 70, 'Fire School (Affinity +2)', 'Area Attack')" type="button">CAST</button>
+</div>
+</div>
+<!-- Spell 3: Ward of Iron -->
+<div class="bg-surface-container-low rounded-lg p-space-sm flex flex-col gap-1.5 shadow-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="w-3 h-3 rounded bg-secondary"></span>
+<span class="font-headline-md text-headline-md font-bold text-on-surface">Ward of Iron</span>
+<span class="font-label-sm text-label-sm px-1.5 py-0.2 rounded bg-secondary-container/20 text-secondary uppercase font-bold">METAL MAGIC</span>
+</div>
+<span class="font-label-md text-label-md px-2 py-0.5 rounded bg-secondary-container text-on-secondary-container font-bold">8 MP</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Crystallizes metallic aether around vital points. Grants +15 Physical Soak for 3 hits.</p>
+<div class="flex items-center justify-between pt-1">
+<span class="font-label-sm text-label-sm text-outline">Self / Instant • 1 AP Reaction • +15 Soak</span>
+<button class="px-2.5 py-1 rounded bg-secondary hover:bg-secondary-container text-on-secondary font-label-sm text-label-sm uppercase font-bold" onclick="openRollModal('Cast: Ward of Iron', 75, 'Metal School (+1 Affinity)', 'Instant Ward')" type="button">CAST</button>
+</div>
+</div>
+</div>
+<!-- ==================== TAB 3: GEAR & ATTACKS DRAWER ==================== -->
+<div class="hidden flex-col gap-space-sm" id="tab-pane-gear">
+<div class="flex items-center justify-between px-0.5">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">// COMBAT ARSENAL & ARMOR</span>
+<span class="font-label-sm text-label-sm text-outline">BULK: 38/65 KG</span>
+</div>
+<!-- Weapon 1 -->
+<div class="bg-surface-container-low rounded-lg p-space-sm flex items-center justify-between">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-9 h-9 rounded bg-surface-container flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[20px]">colorize</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md font-bold text-on-surface truncate">Veil-Forged Shortblade</span>
+<span class="font-label-sm text-label-sm text-outline">1d8+4 Kinetic • Keen (Crit on doubles)</span>
+</div>
+</div>
+<button class="px-3 py-1.5 rounded bg-primary hover:bg-primary-container text-on-primary font-label-sm text-label-sm uppercase font-bold" onclick="openRollModal('Weapon Strike: Shortblade', 74, 'Blades [TAG]', 'Physical Attack')" type="button">STRIKE</button>
+</div>
+<!-- Weapon 2 -->
+<div class="bg-surface-container-low rounded-lg p-space-sm flex items-center justify-between">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-9 h-9 rounded bg-surface-container flex items-center justify-center text-secondary shrink-0">
+<span class="material-symbols-outlined text-[20px]">file_download_done</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md font-bold text-on-surface truncate">Hex-Repeater Hand Crossbow</span>
+<span class="font-label-sm text-label-sm text-outline">1d10+2 Piercing • Clip: 4/5</span>
+</div>
+</div>
+<button class="px-3 py-1.5 rounded bg-surface-container-high hover:bg-surface-bright text-on-surface font-label-sm text-label-sm uppercase font-bold" onclick="openRollModal('Ranged Shot: Hex-Repeater', 64, 'Marksmanship Base', 'Ammunition Check')" type="button">FIRE</button>
+</div>
+<!-- Armor Soak Card -->
+<div class="bg-surface-container-lowest p-space-sm rounded-lg flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">COMPOSITE SOAK</span>
+<span class="font-body-md text-body-md text-on-surface font-bold">Hardened Scout Rig (Tier II)</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm bg-surface-container px-2 py-1 rounded text-primary font-bold">SOAK: 8</span>
+<span class="font-label-sm text-label-sm bg-surface-container px-2 py-1 rounded text-secondary font-bold">ENERGY: 4</span>
+</div>
+</div>
+</div>
+<!-- ==================== TAB 4: PERKS & ACTIVE CONDITIONS ==================== -->
+<div class="hidden flex-col gap-space-sm" id="tab-pane-perks">
+<div class="flex flex-col gap-space-xs">
+<span class="font-label-sm text-label-sm text-tertiary uppercase tracking-wider">// ACTIVE STATUS CONDITIONS (2)</span>
+<div class="flex items-start gap-2 bg-error-container/20 p-2 rounded-lg">
+<span class="material-symbols-outlined text-error text-[18px] shrink-0 mt-0.5">local_fire_department</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-error font-bold">Singed (Duration: 2 Rounds)</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Active burn penalty: -5% to all Agility & Evasion roll thresholds.</span>
+</div>
+</div>
+<div class="flex items-start gap-2 bg-primary-container/20 p-2 rounded-lg">
+<span class="material-symbols-outlined text-primary text-[18px] shrink-0 mt-0.5">flare</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-primary font-bold">Veil-Focused</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">+10% target margin on next immediate Spellcasting check.</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-space-xs mt-space-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">// PERMANENT TRAITS & PERKS</span>
+<div class="bg-surface-container-low p-2.5 rounded-lg">
+<div class="flex items-center justify-between mb-0.5">
+<span class="font-label-md text-label-md text-on-surface font-bold">Hardened Hide II</span>
+<span class="font-label-sm text-label-sm text-primary uppercase">DEFENSIVE</span>
+</div>
+<span class="font-body-sm text-body-sm text-outline">+4 Flat armor soak against non-magical kinetic slashing and bludgeoning damage.</span>
+</div>
+<div class="bg-surface-container-low p-2.5 rounded-lg">
+<div class="flex items-center justify-between mb-0.5">
+<span class="font-label-md text-label-md text-on-surface font-bold">Arcane Conduit I</span>
+<span class="font-label-sm text-label-sm text-secondary uppercase">METAMAGIC</span>
+</div>
+<span class="font-body-sm text-body-sm text-outline">Reduces mana cost by -2 MP (minimum 1 MP) on all Water, Force, and Blue Magic spells.</span>
+</div>
+</div>
+</div>
+<!-- ==================== TACTICAL COMBAT ACTIONS QUICK BAR ==================== -->
+<div class="bg-surface-container-low rounded-xl p-space-sm mb-space-lg shadow-sm">
+<div class="flex items-center justify-between mb-space-xs px-0.5">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">// QUICK AP MANEUVERS</span>
+<span class="font-label-sm text-label-sm text-outline">1-TOUCH TELEMETRY</span>
+</div>
+<div class="grid grid-cols-3 gap-1.5">
+<button class="py-2 px-1 flex flex-col items-center justify-center rounded bg-surface-container hover:bg-surface-container-high transition-colors" onclick="openRollModal('Raise Guard Stance', 70, 'Guard Action', 'Defense Active')" type="button">
+<span class="material-symbols-outlined text-[18px] text-secondary">shield</span>
+<span class="font-label-sm text-label-sm text-on-surface mt-1">HOLD GUARD</span>
+<span class="font-label-sm text-label-sm text-outline">1 AP</span>
+</button>
+<button class="py-2 px-1 flex flex-col items-center justify-center rounded bg-surface-container hover:bg-surface-container-high transition-colors" onclick="openRollModal('Sprint & Reposition', 68, 'Athletics & Agility', 'Mobility Check')" type="button">
+<span class="material-symbols-outlined text-[18px] text-primary">directions_run</span>
+<span class="font-label-sm text-label-sm text-on-surface mt-1">DASH / SLIP</span>
+<span class="font-label-sm text-label-sm text-outline">1 AP</span>
+</button>
+<button class="py-2 px-1 flex flex-col items-center justify-center rounded bg-surface-container hover:bg-surface-container-high transition-colors" onclick="openRollModal('Aether Surge Focus', 80, 'Willpower Channel', 'Mana Recovery')" type="button">
+<span class="material-symbols-outlined text-[18px] text-tertiary">bolt</span>
+<span class="font-label-sm text-label-sm text-on-surface mt-1">AETHER TAP</span>
+<span class="font-label-sm text-label-sm text-outline">2 AP</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Local Micro-Interaction Engine -->
+<script>
+    let currentBaseTarget = 74;
+    let currentModifier = 0;
+    let currentSkillLabel = "Blades [TAG]";
+
+    function adjustStat(type, delta) {
+      const el = document.getElementById(type + '-val');
+      if (!el) return;
+      const parts = el.textContent.split('/');
+      let cur = parseInt(parts[0], 10) + delta;
+      let max = parseInt(parts[1], 10);
+      if (cur < 0) cur = 0;
+      if (cur > max) cur = max;
+      el.innerHTML = cur + '<span class="text-outline-variant">/' + max + '</span>';
+    }
+
+    function switchTab(tab) {
+      const tabs = ['skills', 'spells', 'gear', 'perks'];
+      tabs.forEach(t => {
+        const pane = document.getElementById('tab-pane-' + t);
+        const btn = document.getElementById('tab-btn-' + t);
+        if (t === tab) {
+          pane.classList.remove('hidden');
+          pane.classList.add('flex');
+          btn.classList.add('bg-surface-container', 'text-primary');
+          btn.classList.remove('text-on-surface-variant');
+        } else {
+          pane.classList.add('hidden');
+          pane.classList.remove('flex');
+          btn.classList.remove('bg-surface-container', 'text-primary');
+          btn.classList.add('text-on-surface-variant');
+        }
+      });
+    }
+
+    function openRollModal(title, target, source, sub) {
+      currentBaseTarget = target;
+      currentSkillLabel = source;
+      document.getElementById('res-title').textContent = 'ACTIVE RESOLVER: ' + title.toUpperCase();
+      document.getElementById('res-source').textContent = source + ' (' + sub + ')';
+      updateTargetDisplay();
+      // Scroll smoothly to the resolver panel if tapped on mobile
+      const panel = document.getElementById('resolver-panel');
+      if (panel) {
+        panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+      executeRoll();
+    }
+
+    function adjustMod(delta) {
+      currentModifier += delta;
+      const el = document.getElementById('mod-val');
+      el.textContent = (currentModifier >= 0 ? '+' : '') + currentModifier + '%';
+      updateTargetDisplay();
+    }
+
+    function updateTargetDisplay() {
+      const effective = Math.max(1, Math.min(99, currentBaseTarget + currentModifier));
+      document.getElementById('res-target').innerHTML = '≤ ' + effective + '%';
+    }
+
+    function executeRoll() {
+      const dieEl = document.getElementById('res-die-val');
+      const statusEl = document.getElementById('res-status');
+      const marginEl = document.getElementById('res-margin');
+      
+      const effective = Math.max(1, Math.min(99, currentBaseTarget + currentModifier));
+      const roll = Math.floor(Math.random() * 100) + 1;
+      
+      dieEl.textContent = roll;
+      
+      const isSuccess = roll <= effective;
+      const margin = effective - roll;
+
+      if (roll <= 5 || (roll % 11 === 0 && isSuccess)) {
+        // Critical success
+        statusEl.textContent = 'CRITICAL';
+        statusEl.className = 'font-label-sm text-label-sm uppercase font-bold text-tertiary';
+        dieEl.className = 'font-headline-xl-mobile text-headline-xl-mobile font-bold text-tertiary';
+        marginEl.textContent = 'Critical Margin: +' + margin + ' (TRIUMPH)';
+        marginEl.className = 'font-label-sm text-label-sm text-tertiary';
+      } else if (isSuccess) {
+        statusEl.textContent = 'SUCCESS';
+        statusEl.className = 'font-label-sm text-label-sm uppercase font-bold text-primary';
+        dieEl.className = 'font-headline-xl-mobile text-headline-xl-mobile font-bold text-primary';
+        marginEl.textContent = 'Margin: +' + margin + ' (CLEAR)';
+        marginEl.className = 'font-label-sm text-label-sm text-primary';
+      } else if (roll >= 96 || (roll % 11 === 0 && !isSuccess)) {
+        statusEl.textContent = 'BREACH';
+        statusEl.className = 'font-label-sm text-label-sm uppercase font-bold text-error';
+        dieEl.className = 'font-headline-xl-mobile text-headline-xl-mobile font-bold text-error';
+        marginEl.textContent = 'Hazard Breach: ' + margin + ' (CATASTROPHIC)';
+        marginEl.className = 'font-label-sm text-label-sm text-error';
+      } else {
+        statusEl.textContent = 'FAIL';
+        statusEl.className = 'font-label-sm text-label-sm uppercase font-bold text-outline';
+        dieEl.className = 'font-headline-xl-mobile text-headline-xl-mobile font-bold text-outline';
+        marginEl.textContent = 'Missed by: ' + Math.abs(margin);
+        marginEl.className = 'font-label-sm text-label-sm text-outline';
+      }
+    }
+  </script>
+</div></main><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface-container-lowest/85 backdrop-blur-xl shadow-[0_-2px_12px_rgba(0,0,0,0.4)]" data-active-classes="text-primary bg-surface-container-high/60 shadow-[inset_0_1px_0_rgba(107,216,203,0.3)]"><div class="flex items-center justify-around h-16 px-space-xs"><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] px-2 py-1 rounded-lg text-on-surface-variant hover:text-on-surface transition-all" data-path="home" href="#"><span class="material-symbols-outlined text-[22px]">shield</span><span class="font-label-sm text-label-sm mt-1">HOME</span></a><a aria-current="page" class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] px-2 py-1 rounded-lg transition-all text-primary bg-surface-container-high/60 shadow-[inset_0_1px_0_rgba(107,216,203,0.3)]" data-path="sheet" href="#"><span class="material-symbols-outlined text-[22px]">badge</span><span class="font-label-sm text-label-sm mt-1">SHEET</span></a><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] px-2 py-1 rounded-lg text-on-surface-variant hover:text-on-surface transition-all" data-path="play-combat" href="#"><span class="material-symbols-outlined text-[22px]">swords</span><span class="font-label-sm text-label-sm mt-1">PLAY</span></a><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] px-2 py-1 rounded-lg text-on-surface-variant hover:text-on-surface transition-all" data-path="compendium" href="#"><span class="material-symbols-outlined text-[22px]">menu_book</span><span class="font-label-sm text-label-sm mt-1">RULES</span></a><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] px-2 py-1 rounded-lg text-on-surface-variant hover:text-on-surface transition-all" data-path="settings" href="#"><span class="material-symbols-outlined text-[22px]">tune</span><span class="font-label-sm text-label-sm mt-1">CONFIG</span></a></div></nav></body></html>

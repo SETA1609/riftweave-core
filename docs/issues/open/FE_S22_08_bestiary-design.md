@@ -1,0 +1,14 @@
+#### FE_S22_08_bestiary-design The bestiary and its stat block in the design guide's layout
+- Status: todo
+- Priority: low
+- Needs: FE_S08_06_bestiary-page, FE_S22_03_color-and-phase-badges, FE_S22_04_roll-target-and-meters
+- Modified: 2026-11-23
+- Do: Restyle the bestiary of FE_S08_06 as in the bestiary mockup, with no change to what the GM reveals to players:
+  - **Left:** search, role and phase filters, and the roster as compact cards (name, level, HP, AP, initiative).
+  - **Right, the stat block:** name and tags, HP as `rw-resource-meter` with quick steps, AP, attributes with their targets, defenses, phase affinities as `rw-phase-badge`, then attacks (each with its AP cost, damage, target, and a roll through `rw-roll-target`), reactions, and traits.
+  - **Module blocks:** the phase filter and the phase affinities show only with `wuxing` enabled (`*rwIfModule`, docs/design/README.md#module-blocks).
+  - A field the GM has not revealed stays hidden on a player's screen, as FE_S08_06 decides.
+- Keys: locale keys for the new labels in en, de, and es
+- Files: ~8 (frontend/src/app/bestiary/*.ts, .html, .css, .md, frontend/src/locales/en.json, de.json, es.json, frontend/e2e/bestiary.spec.ts)
+- See: docs/design/mockups/bestiary.png
+- Done when: the bestiary shows the roster and the stat block side by side at 1280px and stacked at 375px; an attack rolls through the core; the bestiary specs pass unchanged.
