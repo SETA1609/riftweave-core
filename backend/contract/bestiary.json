@@ -17,31 +17,7 @@
         "type": "array",
         "description": "The marks so far; a session fills them from its own.",
         "items": {
-          "type": "object",
-          "description": "One knowledge mark: a monster at a level, for the table (no player) or one player.",
-          "properties": {
-            "monster": {
-              "type": "string",
-              "description": "The monster's ref, core:monster/<key> or module:<id>/monster/<key>."
-            },
-            "level": {
-              "type": "string",
-              "enum": [
-                "unknown",
-                "seen",
-                "known"
-              ]
-            },
-            "player": {
-              "type": "string",
-              "description": "The player the mark is for; absent, the whole table."
-            }
-          },
-          "required": [
-            "monster",
-            "level"
-          ],
-          "additionalProperties": false
+          "$ref": "common.json#/definitions/knowledge_mark"
         }
       },
       "monster": {
@@ -104,31 +80,7 @@
       "knowledge": {
         "type": "array",
         "items": {
-          "type": "object",
-          "description": "One knowledge mark: a monster at a level, for the table (no player) or one player.",
-          "properties": {
-            "monster": {
-              "type": "string",
-              "description": "The monster's ref, core:monster/<key> or module:<id>/monster/<key>."
-            },
-            "level": {
-              "type": "string",
-              "enum": [
-                "unknown",
-                "seen",
-                "known"
-              ]
-            },
-            "player": {
-              "type": "string",
-              "description": "The player the mark is for; absent, the whole table."
-            }
-          },
-          "required": [
-            "monster",
-            "level"
-          ],
-          "additionalProperties": false
+          "$ref": "common.json#/definitions/knowledge_mark"
         },
         "description": "With reveal: the marks after it."
       },

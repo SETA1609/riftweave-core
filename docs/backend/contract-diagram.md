@@ -54,6 +54,11 @@ classDiagram
         integer quantity
         enum size
     }
+    class knowledge_mark {
+        enum level
+        string monster
+        string player
+    }
     class party_member {
         stored_actor actor
         character character
@@ -66,6 +71,7 @@ classDiagram
     }
     class session {
         stored_actor actor
+        object bestiary
         boolean dev
         List~session_step~ log
         List~party_member~ party
@@ -262,7 +268,7 @@ Mark what the players know of each monster, and show the bestiary as the GM or a
 classDiagram
     class bestiary_input {
         object check
-        List~object~ knowledge
+        List~knowledge_mark~ knowledge
         enum level
         string monster
         List~string~ monsters
@@ -273,9 +279,12 @@ classDiagram
     class bestiary_result {
         object check
         List~object~ entries
-        List~object~ knowledge
+        List~knowledge_mark~ knowledge
         enum level
     }
+    class knowledge_mark
+    bestiary_input --> knowledge_mark : knowledge
+    bestiary_result --> knowledge_mark : knowledge
 ```
 
 ## casting

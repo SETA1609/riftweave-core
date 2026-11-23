@@ -305,7 +305,7 @@ func TestPlayOpensOnTheMainMenu(t *testing.T) {
 
 func TestPlayMenusShowEveryEntryAndPendingIssues(t *testing.T) {
 	var tools string = press(started(t), "enter").View()
-	for _, label := range []string{"GM tools", "Character creation", "Spell creation (APP-22)", "Skill resolution", "Bestiary (APP-29)", "Back"} {
+	for _, label := range []string{"GM tools", "Character creation", "Spell creation (APP-22)", "Skill resolution", "Bestiary", "Back"} {
 		if !strings.Contains(tools, label) {
 			t.Errorf("tools menu has no %q: %s", label, tools)
 		}
@@ -316,7 +316,7 @@ func TestPlayMenusShowEveryEntryAndPendingIssues(t *testing.T) {
 			t.Errorf("GM tools has no %q: %s", label, gm)
 		}
 	}
-	for keys, issue := range map[string]string{"enter down down enter": "APP-22", "enter down down down down enter": "APP-29", "enter enter down enter": "APP-34"} {
+	for keys, issue := range map[string]string{"enter down down enter": "APP-22", "enter enter down enter": "APP-34"} {
 		if view := press(started(t), strings.Fields(keys)...).View(); !strings.Contains(view, "comes with "+issue) {
 			t.Errorf("%s: no pending issue %s shown: %s", keys, issue, view)
 		}

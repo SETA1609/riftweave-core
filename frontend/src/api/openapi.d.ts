@@ -135,6 +135,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/commands/bestiary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Mark what the players know of each monster, and show the bestiary as the GM or a player sees it.
+         * @description The rules are in docs/backend/bestiary.md.
+         */
+        post: operations["bestiary"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/commands/casting": {
         parameters: {
             query?: never;
@@ -753,6 +773,15 @@ export interface components {
             size?: "undersized" | "normal" | "oversized";
         };
         key: string;
+        /** @description One knowledge mark: a monster at a level, for the table (no player) or one player. */
+        knowledge_mark: {
+            /** @enum {string} */
+            level: "unknown" | "seen" | "known";
+            /** @description The monster's ref, core:monster/<key> or module:<id>/monster/<key>. */
+            monster: string;
+            /** @description The player the mark is for; absent, the whole table. */
+            player?: string;
+        };
         modifiers: components["schemas"]["ruleset_modifier"][];
         /** @description One character in a session's party: its sync fields as loaded, the actor as loaded, and the actor now. */
         party_member: {
@@ -951,6 +980,10 @@ export interface components {
         /** @description One run: a starting actor, a log of commands, and the current snapshot (docs/core/state.md). */
         session: {
             actor: components["schemas"]["stored_actor"];
+            /** @description What the players know of each monster (BE_S08_05, docs/backend/bestiary.md): bestiary reveal steps change it, and a replay rebuilds it from the log. */
+            bestiary?: {
+                knowledge: components["schemas"]["knowledge_mark"][];
+            };
             /**
              * @description Present once a dev operation ran (docs/backend/dev-mode.md).
              * @constant
@@ -1521,6 +1554,126 @@ export interface operations {
                                 path: string;
                             }[];
                         }[];
+                    };
+                };
+            };
+            /** @description The body is not the command's input, or a rule needs an input it was not given. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description No such command, or the input names a key that does not exist. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The body is over 1 MiB. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The command refused for another rule reason. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+        };
+    };
+    bestiary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description With reveal: a Lore check by the player instead of a level; a success marks the monster known for that player. */
+                    check?: {
+                        actor: components["schemas"]["actor"];
+                        modifiers?: components["schemas"]["modifiers"];
+                        roll: components["schemas"]["d100"];
+                    };
+                    /** @description The marks so far; a session fills them from its own. */
+                    knowledge?: components["schemas"]["knowledge_mark"][];
+                    /**
+                     * @description With reveal and no check: the new mark.
+                     * @enum {string}
+                     */
+                    level?: "unknown" | "seen" | "known";
+                    /** @description With reveal: the monster's ref. */
+                    monster?: string;
+                    /** @description With view: the monsters to show, in order (a catalog list's refs). */
+                    monsters?: string[];
+                    /** @enum {string} */
+                    operation: "reveal" | "view";
+                    /** @description With reveal: whose mark, absent for the whole table. With view: whose view, absent for the GM's. */
+                    player?: string;
+                    /** @description With view: the settings box. Off (default), every entry shows in full. */
+                    players_see_only_known?: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description The result. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description With reveal and a check: the Lore check's result, as resolution returns it. */
+                        check?: {
+                            margin: number | null;
+                            success: boolean;
+                            tags: string[];
+                            target: number;
+                        };
+                        /** @description With view: the monsters the viewer sees, in the order given. */
+                        entries?: {
+                            description: string;
+                            /**
+                             * @description The viewer's mark; for the GM, the table's.
+                             * @enum {string}
+                             */
+                            knowledge: "unknown" | "seen" | "known";
+                            label: string;
+                            monster: string;
+                            /** @description For the GM: each player's own mark. */
+                            players?: {
+                                [key: string]: "unknown" | "seen" | "known";
+                            };
+                            /**
+                             * @description seen: name, description, and size; full: the whole sheet, which the caller reads with catalog and monster_sheet.
+                             * @enum {string}
+                             */
+                            shows: "seen" | "full";
+                            size: string;
+                        }[];
+                        /** @description With reveal: the marks after it. */
+                        knowledge?: components["schemas"]["knowledge_mark"][];
+                        /**
+                         * @description With reveal: what the player (or the table) now knows of the monster, the higher of the table's and the player's mark.
+                         * @enum {string}
+                         */
+                        level?: "unknown" | "seen" | "known";
                     };
                 };
             };

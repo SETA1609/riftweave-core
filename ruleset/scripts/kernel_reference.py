@@ -10,6 +10,7 @@ import json
 import math
 from pathlib import Path
 
+from bestiary_reference import run_bestiary
 from casting_reference import run_casting, run_spellcraft
 from creation_reference import run_creation
 from hazard_reference import run_hazard
@@ -1531,6 +1532,7 @@ def run_command_summons(vector):
 
 RUNNERS = {
     "monster_sheet": run_monster_sheet,
+    "bestiary": run_bestiary,
     "resolution": run_resolution,
     "derived": run_derived,
     "formula": run_formula,
