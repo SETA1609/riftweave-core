@@ -27,7 +27,7 @@ Main menu
 │   ├── Character creation
 │   ├── Spell creation                 APP-22 in the CLI
 │   ├── Skill resolution
-│   ├── Bestiary                       APP-29
+│   ├── Bestiary                       FE_S08_06 in the web app
 │   ├── Compendium                     FE_S08_11 in the web app
 │   └── Saved games                    web only
 ├── Characters
@@ -57,6 +57,7 @@ In the Angular app the main menu is the home page at `/`, Start is `/play`, a to
   rolled by the app, and the input it sends names that roll, so the check can be replayed with
   the agent CLI and gives the same result.
 - **Compendium** is every table to study a build, over `catalog` ([api.md](api.md#catalog)).
+- **Bestiary** is the monsters and what the players know of them, over `catalog` and `bestiary` ([bestiary.md](bestiary.md)).
 
 ## Compendium
 
