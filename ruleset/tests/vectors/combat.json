@@ -5785,5 +5785,358 @@
     "expect": {
       "error": "the weapon has no rounds left"
     }
+  },
+  {
+    "name": "grenade: a Fire Flask at the point hits for its own 2d6 fire, and burn lands",
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 7
+    },
+    "grenade": "core:consumable/fire_flask",
+    "delivery": "area",
+    "burst_distance": 0,
+    "expect": {
+      "outcome": "hit",
+      "target": 72,
+      "margin": 32,
+      "evaded": false,
+      "damage": 7,
+      "hp": 23,
+      "effects": [
+        {
+          "effect": "core:effect/burn",
+          "magnitude": 3,
+          "duration": 10
+        }
+      ]
+    }
+  },
+  {
+    "name": "grenade: the same throw reaches a second creature 1 square out, inside the radius of 1",
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 40,
+      "armor_dr": 2,
+      "hp": 20,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 7
+    },
+    "grenade": "core:consumable/fire_flask",
+    "burst_distance": 1,
+    "expect": {
+      "outcome": "hit",
+      "margin": 32,
+      "evaded": false,
+      "damage": 7,
+      "hp": 13,
+      "effects": [
+        {
+          "effect": "core:effect/burn",
+          "magnitude": 3,
+          "duration": 10
+        }
+      ]
+    }
+  },
+  {
+    "name": "grenade: a third creature 2 squares out is outside the radius and takes nothing",
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 7
+    },
+    "grenade": "core:consumable/fire_flask",
+    "burst_distance": 2,
+    "expect": {
+      "outcome": "outside",
+      "damage": 0,
+      "hp": 30,
+      "effects": []
+    }
+  },
+  {
+    "name": "grenade: a weaker thrower's margin falls in the evasion band, so the burst is halved; the dice are the same",
+    "attacker": {
+      "skill": 50,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 7
+    },
+    "grenade": "core:consumable/fire_flask",
+    "expect": {
+      "outcome": "hit",
+      "margin": 10,
+      "evaded": true,
+      "damage": 3,
+      "hp": 27,
+      "effects": []
+    }
+  },
+  {
+    "name": "grenade: a Thunder Flask's radius of 2 reaches 2 squares out, and stagger lands",
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 7,
+      "type": "thunder"
+    },
+    "grenade": "core:consumable/thunder_flask",
+    "burst_distance": 2,
+    "expect": {
+      "outcome": "hit",
+      "evaded": false,
+      "damage": 7,
+      "hp": 23,
+      "effects": [
+        {
+          "effect": "core:effect/stagger",
+          "duration": 4
+        }
+      ]
+    }
+  },
+  {
+    "name": "grenade: the damage adds no ability",
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0,
+        "str": 4
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 7,
+      "ability": "str"
+    },
+    "grenade": "core:consumable/fire_flask",
+    "expect": {
+      "error": "a grenade's damage adds no ability"
+    }
+  },
+  {
+    "name": "grenade: the roll must be one the grenade's dice can give",
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 13
+    },
+    "grenade": "core:consumable/fire_flask",
+    "expect": {
+      "error": "the Fire Flask rolls 2d6: 13 is outside 2 to 12"
+    }
+  },
+  {
+    "name": "grenade: the damage type is the grenade's",
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 7,
+      "type": "frost"
+    },
+    "grenade": "core:consumable/fire_flask",
+    "expect": {
+      "error": "the Fire Flask deals fire damage, not frost"
+    }
+  },
+  {
+    "name": "grenade: it is an area attack",
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 7
+    },
+    "grenade": "core:consumable/fire_flask",
+    "delivery": "single",
+    "expect": {
+      "error": "a grenade is an area attack"
+    }
+  },
+  {
+    "name": "grenade: a Smoke Pot deals no damage, so it is no attack",
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 0
+    },
+    "grenade": "core:consumable/smoke_pot",
+    "expect": {
+      "error": "the Smoke Pot deals no damage: it is no attack"
+    }
+  },
+  {
+    "name": "grenade: a potion is not a grenade",
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 7
+    },
+    "grenade": "core:consumable/potion_minor_healing",
+    "expect": {
+      "error": "core:consumable/potion_minor_healing is not a grenade"
+    }
+  },
+  {
+    "name": "grenade: it is thrown without a maneuver, a called shot, or ammunition",
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 7
+    },
+    "grenade": "core:consumable/fire_flask",
+    "ammunition": {
+      "rounds": 3
+    },
+    "expect": {
+      "error": "a grenade is thrown without a maneuver, a called shot, or ammunition"
+    }
   }
 ]

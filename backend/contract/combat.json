@@ -119,10 +119,7 @@
           "ability": { "$ref": "../../ruleset/schemas/schema.json#/definitions/ability", "description": "The attacker attribute whose modifier adds to the roll." }
         },
         "additionalProperties": false,
-        "required": [
-          "roll",
-          "type"
-        ]
+        "required": ["roll"]
       },
       "delivery": {
         "type": "string",
@@ -173,13 +170,18 @@
       "maneuver": {
         "$ref": "common.json#/definitions/key",
         "description": "A maneuvers key in ruleset/data/maneuvers/core.json: the attack is performed as that maneuver (docs/core/actions.md#maneuvers)."
-      }
+      },
+      "grenade": { "type": "string", "pattern": "^core:consumable/[a-z][a-z0-9_]*$", "description": "A grenade thrown as an area attack: its own dice and damage type with no ability added, and its riders on a hit (docs/core/combat.md#grenades). With it, delivery is area and damage.type may be left out." },
+      "burst_distance": { "type": "integer", "minimum": 0, "description": "With a grenade: squares from the burst point to this defender; over the grenade's radius, the outcome is outside. Default 0." }
     },
     "additionalProperties": false,
     "required": [
       "attacker",
       "defender",
       "damage"
+    ],
+    "allOf": [
+      { "if": { "not": { "required": ["grenade"] } }, "then": { "properties": { "damage": { "required": ["roll", "type"] } }, "not": { "required": ["burst_distance"] } } }
     ]
   },
   "result_schema": {
@@ -192,7 +194,8 @@
           "miss",
           "fumble",
           "evaded",
-          "blocked"
+          "blocked",
+          "outside"
         ]
       },
       "target": {
@@ -309,7 +312,7 @@
         "items": {
           "type": "object"
         },
-        "description": "With a maneuver or a rider: its applied effects on a hit, empty on a miss or an evade. With a save, they land only when the defender fails it."
+        "description": "With a maneuver, a rider, or a grenade: its applied effects on a hit, empty on a miss or an evade. With a save, they land only when the defender fails it."
       },
       "events": {
         "type": "array",

@@ -27,7 +27,7 @@
         "source": { "$ref": "schema.json#/definitions/sourceRef" },
         "type": {
           "type": "string",
-          "enum": ["weapon", "armor", "shield", "accessory", "potion", "poison", "coating", "oil", "food", "scroll", "wand", "tool", "adventuring_gear", "ammunition"]
+          "enum": ["weapon", "armor", "shield", "accessory", "potion", "poison", "coating", "oil", "food", "scroll", "wand", "tool", "adventuring_gear", "ammunition", "grenade"]
         },
         "cost": {
           "type": "object",
@@ -145,7 +145,20 @@
               "items": { "$ref": "schema.json#/definitions/appliedEffect" }
             },
             "uses": { "type": "integer", "minimum": 1, "description": "Number of applications/charges; e.g. a weapon coating may last several hits" },
-            "toxicity": { "type": "integer", "minimum": 0, "description": "What drinking it adds to the drinker's toxicity; every drink row states it, 0 allowed (docs/core/modifier.md#toxicity)." }
+            "toxicity": { "type": "integer", "minimum": 0, "description": "What drinking it adds to the drinker's toxicity; every drink row states it, 0 allowed (docs/core/modifier.md#toxicity)." },
+            "damage": {
+              "type": "object",
+              "description": "A grenade's fixed area damage: its own dice and type, with no attribute, skill, material, or weapon perk added (docs/core/combat.md#grenades). Left out, the grenade deals none (a smoke pot).",
+              "properties": {
+                "dice": { "$ref": "schema.json#/definitions/diceExpression" },
+                "type": { "$ref": "schema.json#/definitions/damageType" }
+              },
+              "required": ["dice", "type"],
+              "additionalProperties": false
+            },
+            "radius": { "type": "integer", "minimum": 1, "description": "A grenade's burst: every creature within this many squares of the point it lands on." },
+            "range_normal": { "type": "integer", "minimum": 1, "description": "A grenade's normal throwing range, in squares." },
+            "range_long": { "type": "integer", "minimum": 1, "description": "A grenade's long throwing range, in squares." }
           },
           "required": ["delivery"],
           "allOf": [
@@ -153,6 +166,11 @@
               "if": { "properties": { "delivery": { "const": "drink" } }, "required": ["delivery"] },
               "then": { "required": ["toxicity"] },
               "else": { "not": { "required": ["toxicity"] } }
+            },
+            {
+              "if": { "properties": { "delivery": { "const": "throw" } }, "required": ["delivery"] },
+              "then": { "required": ["radius", "range_normal", "range_long"] },
+              "else": { "not": { "anyOf": [{ "required": ["damage"] }, { "required": ["radius"] }, { "required": ["range_normal"] }, { "required": ["range_long"] }] } }
             },
             {
               "if": { "properties": { "delivery": { "const": "read" } }, "required": ["delivery"] },

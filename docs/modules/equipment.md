@@ -38,6 +38,9 @@ the same effect takes either duration. [V 2026-11-07, owner decision]
   near a third of the HP of a character of the level where it drops: minor 20, healing 40,
   greater 80; a mana potion restores 15. [A] Stamina has no formula in
   [derived.md](../core/derived.md), so stamina numbers are provisional. [U]
+- **Grenades** (`type: grenade`, delivery `throw`) are thrown, not drunk, so they have no toxicity:
+  a fixed area damage and a rider from the `grenade` channel, set out in
+  [combat.md](../core/combat.md#grenades) (GD_S17_03). [A]
 - **Food** (`type: food`) is always over time; `test_equipment.py` checks that every food
   effect has a duration. [V 2026-11-07] Food can be eaten at any time except in combat, and a
   new dish replaces every effect of the previous one, including effects the new dish does

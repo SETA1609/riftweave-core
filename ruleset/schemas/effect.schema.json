@@ -53,8 +53,8 @@
         "stackable": { "type": "boolean", "description": "Whether multiple instances stack or refresh" },
         "channels": {
           "type": "array",
-          "description": "Delivery vectors permitted to draw this effect from the pool. 'innate' is used for permanent character traits, racial features, and creation boons/drawbacks; 'maneuver' for a combat maneuver's effects (maneuvers/core.json).",
-          "items": { "type": "string", "enum": ["spell", "potion", "poison", "coating", "ingredient", "enchantment", "food", "essence", "innate", "trap", "maneuver"] },
+          "description": "Delivery vectors permitted to draw this effect from the pool. 'innate' is used for permanent character traits, racial features, and creation boons/drawbacks; 'maneuver' for a combat maneuver's effects (maneuvers/core.json); 'grenade' for a thrown grenade's riders (docs/core/combat.md#grenades).",
+          "items": { "type": "string", "enum": ["spell", "potion", "poison", "coating", "ingredient", "enchantment", "food", "essence", "innate", "trap", "maneuver", "grenade"] },
           "minItems": 1,
           "uniqueItems": true
         },
