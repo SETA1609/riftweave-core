@@ -1,0 +1,28 @@
+{
+  "description": "GD_S20_02 (docs/core/actor-sheet.md#a-custom-monster): attribute 15 at level 5, a perk without its prerequisite, a perk past its ranks, and a skill written at 90. A custom monster drops a player's limits, so nothing is a problem.",
+  "row": {
+    "key": "gm_brute",
+    "base": "core:creature_type/humanoid",
+    "overrides": {
+      "label": "GM Brute",
+      "description": "A GM's own.",
+      "level": 5,
+      "attributes": {
+        "str": 15,
+        "per": 15,
+        "end": 15,
+        "int": 15,
+        "wil": 15,
+        "agi": 15,
+        "cha": 15,
+        "lck": 15
+      },
+      "skills": { "blades": 90 },
+      "perks": [
+        { "perk": "core:feature/hardened_hide", "rank": 5 },
+        { "perk": "core:feature/carry_through" }
+      ]
+    }
+  },
+  "problems": []
+}

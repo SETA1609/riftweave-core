@@ -23,6 +23,7 @@ def ref():
     return monster_reference
 
 DATA = _SCRIPTS.parent / "data"
+CUSTOM_MONSTERS = _SCRIPTS.parent / "tests" / "fixtures" / "custom_monsters"
 # Product identity of other games (docs/modules/monsters.md#names): never a monster name.
 PROTECTED_NAMES = (
     "beholder", "mind flayer", "illithid", "displacer", "owlbear", "umber hulk", "carrion crawler",
@@ -322,28 +323,20 @@ class TestTemplatesAndGeneratedMonsters(unittest.TestCase):
 class TestHitPointsAreComputed(unittest.TestCase):
     """DE_S02_03 (docs/modules/monsters.md#hit-points): no monster stores HP; the sheet computes it."""
 
+    def assert_custom_monster_fixture(self, name):
+        # GD_S20_02 (docs/core/actor-sheet.md#a-custom-monster): the row and its expected problems
+        # are in ruleset/tests/fixtures/custom_monsters/<name>.json.
+        fixture = json.loads((CUSTOM_MONSTERS / f"{name}.json").read_text(encoding="utf-8"))
+        self.assertEqual(ref().custom_monster_problems(fixture["row"]), fixture["problems"])
+
     def test_a_custom_monster_past_every_player_limit_has_no_problem(self):
-        # GD_S20_02 (docs/core/actor-sheet.md#a-custom-monster): attribute 15 at level 5, a perk
-        # without its prerequisite, a perk past its ranks, and a skill written at 90.
-        attributes = dict.fromkeys(("str", "per", "end", "int", "wil", "agi", "cha", "lck"), 15)
-        row = {"key": "gm_brute", "base": "core:creature_type/humanoid", "overrides": {
-            "label": "GM Brute", "description": "A GM's own.", "level": 5, "attributes": attributes, "skills": {"blades": 90},
-            "perks": [{"perk": "core:feature/hardened_hide", "rank": 5}, {"perk": "core:feature/carry_through"}]}}
-        self.assertEqual(ref().custom_monster_problems(row), [])
+        self.assert_custom_monster_fixture("past-every-player-limit")
 
     def test_a_custom_monster_reports_every_problem_at_once(self):
-        row = {"key": "gm_wreck", "base": "core:creature_type/beast", "templates": ["fire", "frost"], "overrides": {
-            "label": "Wreck", "level": 31, "skills": {"blades": 120},
-            "perks": [{"perk": "core:feature/no_such_perk"}], "attacks": [{"key": "bite", "weapon": "core:weapon/no_such_weapon"}]}}
-        self.assertEqual(ref().custom_monster_problems(row), [
-            "reference core:feature/no_such_perk does not resolve",
-            "reference core:weapon/no_such_weapon does not resolve",
-            "monster 'gm_wreck': templates 'fire' and 'frost' are both in the element slot",
-            "level 31 is over the maximum level 30",
-            'skill "blades" 120 is over the skill cap 100',
-        ])
-        schema = {"key": "gm_blob", "base": "core:creature_type/ooze", "overrides": {"label": "Blob", "level": 3, "size": "colossal"}}
-        self.assertEqual(ref().custom_monster_problems(schema), ["size: 'colossal' is not one of ['tiny', 'small', 'medium', 'large', 'huge']"])
+        self.assert_custom_monster_fixture("every-problem-at-once")
+
+    def test_a_custom_monster_reports_a_schema_error_with_its_path(self):
+        self.assert_custom_monster_fixture("schema-error")
 
     def test_no_row_base_or_template_writes_hit_points(self):
         self.assertEqual(validate.check_monster_hit_points(), [])
