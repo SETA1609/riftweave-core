@@ -1,9 +1,9 @@
 #### BE_S12_02_server-observability The server is observable: OpenTelemetry traces, metrics, and logs, and health endpoints
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: APP-43
 - Was: APP-44
-- Modified: 2026-11-18
+- Modified: 2026-11-23
 - Do: Owner request, 2026-11-18: `riftweave-server` emits what APP-43 defines, with the OpenTelemetry Go SDK, in `backend/cmd/riftweave-server` only.
   - **Traces:** a span per request (`otelhttp` [A]) and a child span around each `core.Run`, with the command and the outcome; an incoming `traceparent` (W3C Trace Context) continues the caller's trace, so a frontend or CLI call and its server work are one trace.
   - **Metrics:** requests and errors per command and status, and a duration histogram per command (the HTTP semantic conventions), plus the Go runtime's.
