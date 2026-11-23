@@ -55,5 +55,31 @@
     "server_notice": "Befehle gehen jetzt an den Server.",
     "needs_url": "Zuerst die Server-URL eintragen.",
     "room": "Raum"
+  },
+  "spells": {
+    "title": "Zaubereditor",
+    "to_load": "Zauber zum Laden",
+    "load": "Laden",
+    "key": "Schlüssel",
+    "label": "Name",
+    "description": "Beschreibung",
+    "color": "Farbe",
+    "level": "Stufe",
+    "delivery": "Wirkungsart",
+    "effects": "Effekte",
+    "effect": "Effekt {{number}}",
+    "magnitude": "Stärke",
+    "duration": "Dauer",
+    "target": "Ziel",
+    "radius": "Radius",
+    "remove_effect": "Effekt entfernen",
+    "no_effects": "Noch keine Effekte.",
+    "pool": "Effektvorrat",
+    "add_effect": "Effekt hinzufügen",
+    "cost": "Kosten",
+    "no_cost": "Keine Kosten: ein Effekt löst sich nicht auf.",
+    "problems": "Probleme",
+    "no_problems": "Keine Probleme.",
+    "download": "Kern-Export herunterladen"
   }
 }

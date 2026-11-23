@@ -192,3 +192,23 @@ test('character creation exports a file in the one layout both apps write (APP-3
   expect(text).toBe(JSON.stringify(sortKeys(JSON.parse(text)), null, 2) + '\n');
   expect(JSON.parse(text)).toMatchObject({ riftweave: 'character', modules: [] });
 });
+
+test('the spell editor loads fire_bolt, flags a broken ref as you type, and downloads a core export (FE_S09_02)', async ({ page }) => {
+  await page.goto('/#/play/spell_creation');
+  await page.getByLabel('spell to load').fill('fire_bolt');
+  await page.getByRole('button', { name: 'Load', exact: true }).click();
+  await expect(page.getByLabel('label', { exact: true })).toHaveValue('Fire Bolt');
+  await expect(cell(page, 'Cost', 'mana')).toHaveText('6');
+  await expect(page.getByRole('region', { name: 'Problems' })).toContainText('No problems');
+  await page.getByLabel('effect 1').fill('core:effect/no_such_effect');
+  await expect(page.getByRole('region', { name: 'Problems' })).toContainText('core:effect/no_such_effect');
+  await page.getByLabel('effect 1').fill('core:effect/damage_fire');
+  await expect(page.getByRole('region', { name: 'Problems' })).toContainText('No problems');
+  const downloading = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Download core export' }).click();
+  const download = await downloading;
+  expect(download.suggestedFilename()).toBe('spells.json');
+  const file = JSON.parse(await readFile((await download.path())!, 'utf8')) as { $schema: string; spells: { key: string }[] };
+  expect(file.$schema).toBe('../../schemas/spell.schema.json');
+  expect(file.spells.map((spell) => spell.key)).toEqual(['fire_bolt']);
+});

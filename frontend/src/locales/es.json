@@ -55,5 +55,31 @@
     "server_notice": "Las órdenes van ahora al servidor.",
     "needs_url": "Primero indica la URL del servidor.",
     "room": "Sala"
+  },
+  "spells": {
+    "title": "Editor de conjuros",
+    "to_load": "conjuro a cargar",
+    "load": "Cargar",
+    "key": "clave",
+    "label": "nombre",
+    "description": "descripción",
+    "color": "color",
+    "level": "nivel",
+    "delivery": "entrega",
+    "effects": "Efectos",
+    "effect": "efecto {{number}}",
+    "magnitude": "magnitud",
+    "duration": "duración",
+    "target": "objetivo",
+    "radius": "radio",
+    "remove_effect": "Quitar efecto",
+    "no_effects": "Aún no hay efectos.",
+    "pool": "reserva de efectos",
+    "add_effect": "Añadir efecto",
+    "cost": "Coste",
+    "no_cost": "Sin coste: un efecto no se resuelve.",
+    "problems": "Problemas",
+    "no_problems": "Sin problemas.",
+    "download": "Descargar exportación del núcleo"
   }
 }

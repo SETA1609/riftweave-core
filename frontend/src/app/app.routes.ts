@@ -10,6 +10,7 @@ import { Resolution } from './resolution';
 import { SavedGames } from './saved-games';
 import { SettingsScreens } from './settings-screens';
 import { Sheet } from './sheet';
+import { Spells } from './spells';
 import { MenuGrid } from './ui/menu-grid';
 
 export const routes: Routes = [
@@ -23,6 +24,7 @@ export const routes: Routes = [
   { path: 'play/gm_tools', component: MenuGrid, data: { parent: 'gm_tools' }, title: 'menu.gm_tools' },
   { path: 'play/character_creation', component: Sheet, title: 'menu.character_creation' },
   { path: 'play/skill_resolution', component: Resolution, title: 'menu.skill_resolution' },
+  { path: 'play/spell_creation', component: Spells, title: 'menu.spell_creation' },
   { path: 'play/saved_games', component: SavedGames, title: 'menu.saved_games' },
   { path: 'play/attack', component: Attack, title: 'menu.attack' },
   { path: 'play/playthrough', component: Playthrough, title: 'menu.playthrough' },
