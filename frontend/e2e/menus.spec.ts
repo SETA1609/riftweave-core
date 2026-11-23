@@ -14,7 +14,7 @@ test('the app opens on the home page, and Start opens the tools', async ({ page 
 
   await home.getByRole('link', { name: 'Start' }).click();
   const tools = menu(page, 'Start');
-  await expect(tools.getByText('Spell creation (APP-22)')).toHaveAttribute('aria-disabled', 'true');
+  await expect(tools.getByRole('link', { name: 'Spell creation', exact: true })).toBeVisible();
   await expect(tools.getByText('Bestiary (APP-29)')).toHaveAttribute('aria-disabled', 'true');
   await tools.getByRole('link', { name: 'GM tools' }).click();
   const gm = menu(page, 'GM tools');
@@ -30,7 +30,7 @@ test('the app opens on the home page, and Start opens the tools', async ({ page 
 test('every tool route renders', async ({ page }) => {
   const screens: [string, string][] = [
     ['character_creation', 'Compute stats'], ['skill_resolution', 'Resolve'], ['saved_games', 'Open file'],
-    ['attack', 'Resolve'], ['playthrough', 'Run the playthrough'],
+    ['attack', 'Resolve'], ['playthrough', 'Run the playthrough'], ['spell_creation', 'Load'],
   ];
   for (const [route, button] of screens) {
     await page.goto(`/#/play/${route}`);

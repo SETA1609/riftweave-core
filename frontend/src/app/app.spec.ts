@@ -19,6 +19,7 @@ import { MODULE_IDS, SettingsScreens } from './settings-screens';
 import { MENU, MenuGrid, pathOf } from './ui/menu-grid';
 import { SelectField } from './ui/select-field';
 import { Sheet } from './sheet';
+import { Spells } from './spells';
 import { SAVE_STORE, Saves, memoryStore } from './saves';
 import { Injector } from '@angular/core';
 import { Router } from '@angular/router';
@@ -109,7 +110,17 @@ const fakeApi = {
   derived: async (actor: unknown) => { sent.push({ command: 'derived', input: actor }); return { hp: 67, mp: 42, sp: 10, ap: 4 }; },
   combat: async (input: unknown) => { sent.push({ command: 'combat', input }); return { outcome: 'hit', target: 72, damage: 6, hp: 24 }; },
   resolution: async (input: unknown) => { sent.push({ command: 'resolution', input }); return { target: 50, success: true, margin: 17, tags: [] }; },
+  author: async (input: { operation?: string; spells?: { key: string }[] }) => {
+    sent.push({ command: 'author', input });
+    if (input.operation === 'load') return { row: FIRE_BOLT };
+    if (input.operation === 'effects') return { effects: [{ ref: 'core:effect/damage_fire', row: { key: 'damage_fire', label: 'Fire Damage' } }] };
+    return { spells: (input.spells ?? []).map((row) => ({ key: row.key, row, problems: [], warnings: [], cost: { mana: 6, cast_threshold: 6, craft_threshold: 8 } })) };
+  },
 };
+
+/** fire_bolt as spells/core.json writes it, which the fake author loads. */
+const FIRE_BOLT = { key: 'fire_bolt', label: 'Fire Bolt', description: 'Hurl a mote of fire at a target.', color: 'red', level: 1, delivery: 'single',
+  template: true, effects: [{ effect: 'core:effect/damage_fire', magnitude: 8, target: 'ranged' }], cost: { mana: 6 } };
 
 beforeEach(() => {
   sent.length = 0;
@@ -145,6 +156,36 @@ describe('the screens', () => {
     fixture.detectChanges();
     await fixture.componentInstance.compute();
     expect(sent).toEqual([{ command: 'derived', input: { attributes: { str: 6, per: 5, end: 6, int: 5, wil: 4, agi: 5, cha: 4, lck: 5 }, level: 1 } }]);
+  });
+
+  it('load a spell into the spell editor, list its color's effect pool, and check the draft (FE_S09_02)', async () => {
+    const fixture = TestBed.createComponent(Spells);
+    fixture.detectChanges();
+    const editor = fixture.componentInstance;
+    await editor.load('fire_bolt');
+    await editor.check();
+    fixture.detectChanges();
+    expect(sent.map((call) => call.input)).toEqual([
+      { kind: 'spell', operation: 'load', spell: 'fire_bolt' },
+      { kind: 'spell', operation: 'effects', color: 'red' },
+      { kind: 'spell', operation: 'check', spells: [FIRE_BOLT] },
+    ]);
+    expect(editor.pool()).toEqual(['core:effect/damage_fire']);
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.querySelector('[aria-label="Cost"]')!.textContent).toContain('6');
+    expect(element.querySelector('[aria-label="Problems"]')!.textContent).toContain('No problems');
+  });
+
+  it("edit one effect of the draft and keep the row's other fields (FE_S09_02)", async () => {
+    const fixture = TestBed.createComponent(Spells);
+    fixture.detectChanges();
+    const editor = fixture.componentInstance;
+    await editor.load('fire_bolt');
+    editor.setEffect(0, 'effect', 'core:effect/no_such_effect');
+    editor.setEffect(0, 'magnitude', 10);
+    expect(editor.draft().effects).toEqual([{ effect: 'core:effect/no_such_effect', magnitude: 10, target: 'ranged' }]);
+    expect(editor.draft().template).toBe(true);
+    expect(editor.exportInput()).toEqual({ kind: 'spell', operation: 'check', spells: [editor.draft()], export: { shape: 'core' } });
   });
 
   it('render the playthrough runner', () => {
@@ -250,7 +291,7 @@ describe('the menus of backend/contract/menu.json', () => {
   });
 
   it('show the tools page and GM tools, each with Back to the menu above', () => {
-    expect(cards(menu('start'))).toEqual(['GM tools', 'Character creation', 'Spell creation (APP-22)', 'Skill resolution', 'Bestiary (APP-29)', 'Compendium (FE_S08_11_compendium-tables-page)', 'Saved games', 'Back']);
+    expect(cards(menu('start'))).toEqual(['GM tools', 'Character creation', 'Spell creation', 'Skill resolution', 'Bestiary (APP-29)', 'Compendium (FE_S08_11_compendium-tables-page)', 'Saved games', 'Back']);
     TestBed.resetTestingModule();
     const gm = menu('gm_tools');
     expect(cards(gm)).toEqual(['Resolve an attack', 'Encounter tracker (APP-34)', 'Playthrough', 'Back']);
