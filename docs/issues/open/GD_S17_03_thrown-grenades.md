@@ -1,8 +1,8 @@
 #### GD_S17_03_thrown-grenades Grenades: thrown flasks with a fixed area damage
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: —
-- Modified: 2026-11-18
+- Modified: 2026-11-23
 - Do: Owner request, 2026-11-18. There are no grenades yet, and the elemental bolts and bullets of GD_S17_04 are defined against them: a grenade bursts for a **fixed** damage, an elemental round bursts for the **weapon's** damage. Add the grenade as a consumable.
   - **The throw:** a grenade is thrown with `throwing_weapons` as an `area` attack at a point in range (`rangeNormal` 6, `rangeLong` 18 [A]); every creature in its radius takes the area roll of [combat.md](../../core/combat.md) (delivery decides the dodge). It costs the `attack` AP, not `item` [A], so it competes with a shot.
   - **Fixed damage:** the grenade's own dice and damage type, with no attribute, skill, material, or weapon perk added. Only the thrower perks of GD_S17_09 change it.
