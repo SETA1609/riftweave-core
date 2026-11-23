@@ -1150,6 +1150,11 @@ export interface operations {
                     modifiers?: components["schemas"]["modifiers"];
                     /** @description The race's speed. With it the result gives the squares the actions cover. */
                     speed?: number;
+                    /**
+                     * @description The first turn of a fight: combat starts on pool.combat_start, surprise (an ambusher's surprise round) on the full pool; either refuses carried AP (docs/core/actions.md#pool).
+                     * @enum {string}
+                     */
+                    start?: "combat" | "surprise";
                 };
             };
         };
