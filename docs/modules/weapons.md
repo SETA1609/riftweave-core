@@ -66,10 +66,7 @@ All weapons use standard D&D 3.5 / Pathfinder-style dice expressions for their b
 
 These are the **base** dice for the weapon type. They assume a baseline construction (historically often iron or steel quality). The actual performance changes with the material used.
 
-A weapon with `ammunition` names the kind it fires in `weapon.ammo`: the bows `arrow`, the
-crossbows `bolt`, the pistol and the arquebus `bullet`, the blunderbuss `scatter`, and the sling
-`stone`. The rows, spending, reloading, and recovery are in
-[combat.md](../core/combat.md#ammunition) (GD_S17_02).
+A weapon with `ammunition` names its kind in `weapon.ammo` (bows `arrow`, crossbows `bolt`, guns `bullet` or `scatter`, the sling `stone`); rounds, reloading, and recovery: [combat.md](../core/combat.md#ammunition).
 
 ## Damage Dice by Handling and Size
 
