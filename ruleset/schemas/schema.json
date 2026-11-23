@@ -45,6 +45,11 @@
       ],
       "description": "Color magic school. The governing skill is <color>_magic."
     },
+    "ammoKind": {
+      "type": "string",
+      "enum": ["arrow", "bolt", "bullet", "scatter", "stone"],
+      "description": "The kind of round a weapon with the ammunition property fires: arrow (bows), bolt (crossbows), bullet (ball and powder), scatter (a blunderbuss charge), stone (sling) (docs/core/combat.md#ammunition)."
+    },
     "phase": {
       "type": "string",
       "enum": [

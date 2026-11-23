@@ -12,7 +12,7 @@ An entity is a collection of rows, its `key` the primary key. A line is a refere
 other collection, so many rows name one. Composition bases are references too: an equipment row's
 `base` names an equipment base, a monster's `base` a creature type or a monster.
 
-47 collections; 74 pairs of collections joined by a reference.
+48 collections; 74 pairs of collections joined by a reference.
 
 ## Overview
 
@@ -107,6 +107,8 @@ erDiagram
         string key PK
         string accessory_effects_effect FK
         string accessory_effects_origin FK
+        string ammunition_effects_effect FK
+        string ammunition_effects_origin FK
         string base FK
         string consumable_effects_effect FK
         string consumable_effects_origin FK
@@ -207,6 +209,9 @@ erDiagram
         string output_crafted_item_key FK
         string skill FK
     }
+    RECOVERY {
+        string key PK
+    }
     REST {
         string key PK
     }
@@ -275,9 +280,9 @@ erDiagram
     DROPS }o--|| MATERIALS : "loot[].material"
     DROPS }o--|| MONSTERS : "monster"
     EFFECTS }o--|| EFFECTS : "sub_effects[]"
-    EQUIPMENT }o--|| EFFECTS : "accessory.effects[].effect, consumable.effects[].effect, weapon.on_hit_effects[].effect"
+    EQUIPMENT }o--|| EFFECTS : "accessory.effects[].effect, ammunition.effects[].effect, consumable.effects[].effect, weapon.on_hit_effects[].effect"
     EQUIPMENT }o--|| EQUIPMENT : "base"
-    EQUIPMENT }o--|| ORIGINS : "accessory.effects[].origin, consumable.effects[].origin, gear.modifiers[].origin, weapon.on_hit_effects[].origin"
+    EQUIPMENT }o--|| ORIGINS : "accessory.effects[].origin, ammunition.effects[].origin, consumable.effects[].origin, gear.modifiers[].origin, weapon.on_hit_effects[].origin"
     EQUIPMENT }o--|| SPELLS : "consumable.spell"
     FACTIONS }o--|| ORIGINS : "ranks[].modifiers[].origin, standings[].modifiers[].origin"
     FEATURES }o--|| EFFECTS : "bound_weapon_effects[].effect"
@@ -512,6 +517,8 @@ erDiagram
         string key PK
         string accessory_effects_effect FK
         string accessory_effects_origin FK
+        string ammunition_effects_effect FK
+        string ammunition_effects_origin FK
         string base FK
         string consumable_effects_effect FK
         string consumable_effects_origin FK
@@ -555,9 +562,9 @@ erDiagram
     CRAFTED_ITEMS }o--|| GEMS : "engraving_jewel.gem_key"
     CRAFTED_ITEMS }o--|| MATERIALS : "material_key"
     CRAFTED_ITEMS }o--|| ORIGINS : "enchantments[].origin"
-    EQUIPMENT }o--|| EFFECTS : "accessory.effects[].effect, consumable.effects[].effect, weapon.on_hit_effects[].effect"
+    EQUIPMENT }o--|| EFFECTS : "accessory.effects[].effect, ammunition.effects[].effect, consumable.effects[].effect, weapon.on_hit_effects[].effect"
     EQUIPMENT }o--|| EQUIPMENT : "base"
-    EQUIPMENT }o--|| ORIGINS : "accessory.effects[].origin, consumable.effects[].origin, gear.modifiers[].origin, weapon.on_hit_effects[].origin"
+    EQUIPMENT }o--|| ORIGINS : "accessory.effects[].origin, ammunition.effects[].origin, consumable.effects[].origin, gear.modifiers[].origin, weapon.on_hit_effects[].origin"
     EQUIPMENT }o--|| SPELLS : "consumable.spell"
     INGREDIENTS }o--|| EFFECTS : "effects[]"
     RECIPES }o--|| CRAFTED_ITEMS : "output.crafted_item_key"
