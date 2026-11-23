@@ -1,0 +1,14 @@
+#### BE_S23_05_remove-tui Remove the terminal app
+- Status: todo
+- Priority: medium
+- Needs: PO_S23_02_cli-issues-to-command-and-mcp, BE_S23_03_tui-flow-audit, QA_S23_04_port-tui-flow-tests
+- Modified: 2026-11-23
+- Do: Owner decision, 2026-11-23: remove the interactive terminal app once nothing depends on it.
+  - **Removed:** `backend/cmd/riftweave/play/`, the `play` subcommand and `interactive()`, and the Charm modules (`bubbletea`, `bubbles`, `lipgloss` and their indirect ones) from `go.mod`.
+  - **Kept:** the agent CLI (`list`, `describe`, `command`), `riftweave mcp`, and the saved characters and files.
+  - **`riftweave play`** prints that play is in the web app, and that agents use `command` or `mcp`, with exit code `exitInput` [A]; `riftweave` alone prints help, as now.
+  - **Docs:** `docs/backend/README.md`, `cli.md`, `app-layout.md`, `dev-mode.md`, README.md, and APP-05's story row say the terminal app is retired, with the date and this issue.
+- Keys: none
+- Files: ~16 (backend/cmd/riftweave/play/ (10 files, removed), backend/cmd/riftweave/main.go, backend/go.mod, backend/go.sum, the docs above, docs/decisions/BE_S23_05_remove-tui.md, changes/BE_S23_05_remove-tui.md)
+- See: backend/cmd/riftweave/main.go, docs/backend/cli.md
+- Done when: `go build ./...` and CI pass with no Charm module in `go.mod`; `riftweave play` prints the message; `git grep -i bubbletea` finds only the decision records and the changelog.

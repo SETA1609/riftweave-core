@@ -1,0 +1,10 @@
+#### PO_S23_01_file-tui-retirement-issues File the issues that retire the terminal app
+- Status: todo
+- Priority: high
+- Needs: —
+- Modified: 2026-11-23
+- Do: Owner decision, 2026-11-23: the interactive terminal app (the Charm TUI) is an extra; people use the web app, and agents use the JSON commands, a binary tool, or the MCP server. File story S23 with its issues (freeze the screens, move any rule step out of the terminal app, keep its flow tests, then remove it), and mirror the story and its issues as GitHub issues, with the story's sub-issues linked.
+- Keys: none
+- Files: ~12 (docs/stories/S23-retire-the-terminal-app.md, docs/stories/README.md, ROADMAP.md, AGENTS.md, the five issue files, docs/decisions/PO_S23_01_file-tui-retirement-issues.md, changes/PO_S23_01_file-tui-retirement-issues.md)
+- See: docs/backend/README.md, docs/backend/mcp.md
+- Done when: story S23 and its issues exist with their `Needs`; the stories README lists S23; `roadmap-order show` lists the new issues; a GitHub issue exists for the story and for each issue, linked as sub-issues.
