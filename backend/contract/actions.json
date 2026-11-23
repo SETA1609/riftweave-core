@@ -31,7 +31,7 @@
       "held_spent": {
         "type": "integer",
         "minimum": 0,
-        "description": "Held AP spent before the actor's next turn, on an opportunity or readied attack; at most what is held."
+        "description": "Held AP spent before the actor's next turn, on overwatch (Trigger Watch, GD_S17_06); at most what is held."
       }
     },
     "additionalProperties": false,

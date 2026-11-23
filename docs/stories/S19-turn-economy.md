@@ -13,7 +13,7 @@ Format, ids, and roles: [README.md](README.md#ids), [ROLES.md](../issues/ROLES.m
 | `PO_S19_01_file-turn-economy-issues` | PO | File the turn-based action economy issues | — | — |
 | `GD_S19_02_movement-distance-per-ap` | GD | How far one move goes: squares per AP from the race's speed | — | — |
 | `GD_S19_03_swap-draw-costs` | GD | Drawing, sheathing, and swapping a loadout cost AP | — | GD_S05_02_fighting-stances |
-| `GD_S19_04_ready-and-opportunity-attacks` | GD | Ready an attack on reserved AP, and opportunity attacks in the pipeline | — | GD_S19_02_movement-distance-per-ap, GD_S19_05_ap-bank-cap-and-guard |
+| `GD_S19_04_ready-and-opportunity-attacks` | GD | Opportunity attacks as reactions in the pipeline | — | GD_S19_02_movement-distance-per-ap, GD_S19_05_ap-bank-cap-and-guard |
 | `GD_S19_05_ap-bank-cap-and-guard` | GD | Carry a little AP, and turn the rest into guard | — | — |
 | `GD_S19_06_combat-start-ap` | GD | A fight starts on a partial pool | — | GD_S19_05_ap-bank-cap-and-guard |
 | `GD_S19_07_ap-perks-traits-haste-slow` | GD | Perks, creation traits, and conditions that change the AP pool | — | GD_S19_05_ap-bank-cap-and-guard |

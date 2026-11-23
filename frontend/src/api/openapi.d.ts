@@ -970,7 +970,7 @@ export interface operations {
                     actor: components["schemas"]["actor"];
                     /** @description AP carried into this turn from the last, at most pool.carry. */
                     carried?: number;
-                    /** @description Held AP spent before the actor's next turn, on an opportunity or readied attack; at most what is held. */
+                    /** @description Held AP spent before the actor's next turn, on overwatch (Trigger Watch, GD_S17_06); at most what is held. */
                     held_spent?: number;
                     modifiers?: components["schemas"]["modifiers"];
                     /** @description The race's speed. With it the result gives the squares the actions cover. */
@@ -1054,15 +1054,15 @@ export interface operations {
             content: {
                 "application/json": {
                     /**
-                     * @description The action (actions/core.json); its strikes and AP come from the loadout's attack_sequences row.
+                     * @description The action (actions/core.json); its strikes and AP come from the loadout's attack_sequences row. opportunity is one melee attack out of turn, a reaction at no AP (docs/core/combat.md#opportunity-attacks).
                      * @enum {string}
                      */
-                    action: "attack" | "jab" | "full_attack" | "circle_cut";
+                    action: "attack" | "jab" | "full_attack" | "circle_cut" | "opportunity";
                     /** @description The attacker just blocked a hit in their band: from Boss Strike's after_block tier a bash jab costs shield_bash.after_block_ap. */
                     after_block?: boolean;
                     /** @description The attacker parried a hit since their last strike: attack_after_parry adds to the first main-hand strike (Espada y Daga, docs/core/combat.md#fighting-stances). */
                     after_parry?: boolean;
-                    /** @description The attacker's AP left. A full attack and a circle cut spend all of it and need at least the attack AP + full_attack.min_extra_ap; an attack or a jab with fewer than its AP is an error. */
+                    /** @description The attacker's AP left. A full attack and a circle cut spend all of it and need at least the attack AP + full_attack.min_extra_ap; an attack or a jab with fewer than its AP is an error. An opportunity attack is a reaction and needs none. */
                     ap?: number;
                     attacker: {
                         attributes?: components["schemas"]["attributes"];
@@ -1092,6 +1092,8 @@ export interface operations {
                         ability?: components["schemas"]["ruleset_ability"];
                         type: components["schemas"]["key"];
                     };
+                    /** @description With opportunity: the foe left reach with Disengage, so no attack. */
+                    disengaged?: boolean;
                     /** @description The foes in reach, in the order a carry picks them; foe 0 is a full attack's target. */
                     foes: Record<string, never>[];
                     loadout: components["schemas"]["ruleset_loadout"];
@@ -1102,6 +1104,8 @@ export interface operations {
                         ability?: components["schemas"]["ruleset_ability"];
                         type: components["schemas"]["key"];
                     };
+                    /** @description With opportunity: the reactions the attacker already used since its last turn. Default 0. */
+                    reactions_used?: number;
                     /** @description One attack roll and one damage roll per strike made, in order; a lost strike takes none. */
                     rolls: {
                         attack: components["schemas"]["d100"];
@@ -1126,10 +1130,17 @@ export interface operations {
                     "application/json": {
                         action: string;
                         ap: number;
+                        /** @description With opportunity: whether the attack happened. */
+                        fired?: boolean;
                         /** @description Each foe's HP after the action. */
                         hp: number[];
                         /** @description Strikes lost because their foe dropped and nothing carried them. */
                         lost: number;
+                        /**
+                         * @description With opportunity, when it did not fire: why.
+                         * @enum {string}
+                         */
+                        reason?: "disengaged" | "no_reaction_left";
                         /** @description The attack_sequences row key. */
                         sequence: string;
                         /** @description ap times stamina_per_ap. */

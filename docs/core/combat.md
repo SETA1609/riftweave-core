@@ -1,6 +1,6 @@
 # Combat pipeline
 
-Modified: 2026-11-21
+Modified: 2026-11-23
 
 One attack, in order, from the roll to the HP lost. Every step reads the actor snapshot and data; none calls another system ([contract.md](contract.md)). The numbers are in `ruleset/data/combat/pipeline.json` (formula trees), `ruleset/data/combat/damage_types.json` (tags), and `ruleset/data/resolution/core.json` (the d100 function). [`docs/modules/combat.md`](../modules/combat.md) keeps the TTRPG and video-game commentary and the worked examples; this file is the order of operations they share. An attack is a weapon strike or an offensive spell; both run this order, and the attack's `delivery` decides which defense bands it meets. A cast's damage runs steps 2 to 8 with the cast check as its attack roll ([casting.md](casting.md#damage-to-a-target), M3-18). Save rolls for instant spells are in [casting.md](casting.md#delivery-and-saves); the magic layers (absorption, phase resistance) are not specified here. [U]
 
@@ -87,7 +87,7 @@ The defender's perks reach the pipeline as `defender.modifiers`, stacked by [mod
 | Dodge | Sidestep | one | `add dodge -1` | the dodge action costs 1 AP less ([actions.md](actions.md)) |
 | Dodge | Armored Evasion | 6, 12, 18 | `add evasion 5` | offsets the armor penalties on the evasion skill: +5, +10, +15 |
 | Dodge | Unarmored Grace | 1, 6, 12, 18 | `add unarmored_evasion_band 5` | with no body armor (`defender.armor` `none`), the evasion band widens by 5 a tier |
-| Dodge | Flowing Step | one (Unarmored Grace tier 2) | `grant flowing_step` | moving out of reach draws no opportunity attack; pending, the kernel has none [U] |
+| Dodge | Flowing Step | one (Unarmored Grace tier 2) | `grant flowing_step` | moving out of reach draws no opportunity attack; pending: the kernel does not track a turn's first move [U] |
 | Dodge | Riposte | one | `grant riposte` | while dodging, an evade of a `single` attack in the band's lowest rolls (as wide as the defender's crit window) sets `counter`: the defender may make one attack at no AP cost; the caller runs it as its own attack |
 
 The Spell Ward table, END down and tier across (percent of the damage warded):
@@ -207,7 +207,7 @@ parry        a parry grant reads the defender's weapon_skill: a parry band of fl
 | Fencer's Measure | 12 | a light or one-handed blade or piercing weapon, off hand empty | `grant parry`, `add attack_single_opponent 10` | a parry band; +10 on every strike while only one foe is in reach. Replaces Duelist |
 | Espada y Daga | 8 | a blade or piercing weapon and a piercing light weapon (a dagger) | `grant parry`, `grant off_hand_parries`, `add attack_after_parry 10` | the dagger makes no strike in a full attack and parries; after a parry (`after_parry`) the first main-hand strike gains +10 |
 | Buckler Play | 6 | a light or one-handed weapon and a buckler | `grant block_with_weapon` | while blocking, the block band reads the better of Shields and the weapon skill. The bash is `boss_strike` (GD_S05_03) |
-| Phalanx | 8 | a piercing (spear) weapon and a shield | `add opportunity_attack_cost -1`, `grant shield_cover_to_ally` | opportunity attacks cost 2 AP; an adjacent ally gains the shield's cover. Both targets are pending: no kernel step has opportunity attacks or cover yet [U] |
+| Phalanx | 8 | a piercing (spear) weapon and a shield | `add reactions_per_round 1`, `grant shield_cover_to_ally` | one more reaction a round, so one more opportunity attack ([opportunity attacks](#opportunity-attacks)); an adjacent ally gains the shield's cover, which is pending: no kernel step has cover yet [U] |
 | Long Guard | 10 | a weapon in both hands | `grant full_weight_doubled`, `grant carry_on_crit`, `add evasion_band -10` | Full Weight counts twice (pending, as `melee_damage` is); Carry Through also fires on a crit that leaves its foe standing (in an attack, only for a next strike aimed at that foe); the evasion band -10 |
 | Bare Knuckle | 6 | both hands empty | `add unarmed_damage 2`, `add full_attack_strikes 1` | +2 damage on each unarmed strike; one more strike in a full attack at -20 |
 | Forward Guard | 4 | any | `add attack_roll 10`, `add evasion_band -10` | +10 on every strike; the evasion band -10 |
@@ -245,6 +245,31 @@ Cover, flanking, prone, unseen, and shooting into melee are rows in `ruleset/dat
 - **Unseen.** A blinded attacker and an invisible target share the source `situation:unseen`, so both together are still −20. Area attacks ignore it (`deliveries`). [A]
 - **Called shots.** The location's `attack` is an `add` on the attack target; `damage_multiplier` multiplies the damage dice before the crit doubles it (a head crit is ×1.5, then ×2), rounded down. Its `riders` (staggered, slowed, a disarm on a failed STR check, a stun on a failed END check) are listed on a hit; the caller rolls the checks and applies the conditions. [A]
 
+## Opportunity attacks
+
+Owner request, 2026-11-19 (GD_S19_04), changed 2026-11-23. An opportunity attack is one **melee** attack of the loadout, the same strikes at the same values, made outside your turn when a foe in your melee reach leaves it without disengaging. It is a **reaction**: it costs no AP, no stamina, and no guard, and spends one of the reactions you have between two of your turns (owner, 2026-11-23).
+
+```
+trigger      a foe in your melee reach leaves it, and did not disengage
+reactions    reactions_used < most, else no attack (no_reaction_left)
+most         reactions_per_round (1), or with reactions_from_agi max(1, AGI - 5),
+             then + each reactions_per_round modifier (Phalanx +1)
+costs        0 AP, 0 stamina, no guard
+fires        one attack, the strikes of the row, as attack_sequence runs on your turn
+not fired    nothing is spent: no reaction
+```
+
+- **A base rule, not a perk** (owner, 2026-11-19): opportunity attacks make reach, a held doorway, and Disengage matter. Disengage (1 AP) prevents one. A reach weapon (`attack_reach` 2) threatens 2 units, others 1 ([actions.md](actions.md#how-far-a-move-goes)).
+- **Melee only** (owner, 2026-11-23): a ranged loadout makes no opportunity attacks; the shooter's answer to a foe moving in its range is overwatch. Ranged loadouts arrive with GD_S17_05, which refuses them an opportunity attack; GD_S17_13's `ready_steel` (draw a melee weapon for one) is the perk exception. [A]
+- **Reactions** (owner, 2026-11-23): everyone has `reactions_per_round` (1, `actions/core.json`) between two of their turns. The caller counts them (`reactions_used`), as it tracks reach. Watchful Blade (level 6, AGI 7) grants `reactions_from_agi`: the most becomes the AGI modifier (`formulas/attribute_modifier.json`, AGI − 5), never below 1, so AGI 8 has 3. Phalanx adds 1 (`add reactions_per_round 1`) on top of either. A character built around reactions, high AGI with both perks, strikes every foe that slips past and keeps its AP for its own turn. Riposte is not a reaction and does not count. [A]
+- **Perks extend them**, never grant them: Watchful Blade and Phalanx allow more a round; later perks may add triggers (casting, drinking, or standing up in reach) or a wider threat. [A]
+- **At a table, not in real time** (owner, 2026-11-23): reactions are the turn-based rule. A real-time game fires an opportunity attack automatically when a foe leaves reach, or leaves opportunity attacks out; the engine decides, and the kernel keeps no clock for it.
+- **Counter-attacks stay perks** (owner, 2026-11-19): Riposte (dodge stance only) is the only counter. A base counter would double the attacks in a fight, add a decision to every miss, and make dodging the best stance.
+
+**Overwatch is not an opportunity attack** (owner, 2026-11-23). Overwatch is the ranged attacker's: AP held on its turn fires when an enemy moves within its weapon's range. It is paid from held AP, spends no reaction, and needs the ranged loadouts: it is the Trigger Watch maneuver of GD_S17_06_ranged-maneuvers.
+
+The `attack_sequence` command runs it as the action `opportunity`, with `disengaged` and `reactions_used`, and returns `fired`, the `reason` it did not fire (`disengaged` or `no_reaction_left`), and `ap` and `stamina` 0. [V 2026-11-23, `attack_sequence` vectors in Python and Go]
+
 ## Not covered
 
-Opportunity attacks, armor and encumbrance penalties on the evasion rate in the vectors, hit quality (`solid` and `glancing` margins), condition riders on a crit, range bands for called shots (the extra −10 beyond short range), the perks that halve called-shot penalties, and the video-game timing windows. Difficult terrain is movement, not an attack term: it belongs to an optional positioning module, and standing up is an action row (2 AP). They add terms to the same steps; none changes the order. [U]
+Armor and encumbrance penalties on the evasion rate in the vectors, hit quality (`solid` and `glancing` margins), condition riders on a crit, range bands for called shots (the extra −10 beyond short range), the perks that halve called-shot penalties, and the video-game timing windows. Difficult terrain is movement, not an attack term: it belongs to an optional positioning module, and standing up is an action row (2 AP). They add terms to the same steps; none changes the order. [U]

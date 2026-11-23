@@ -1,6 +1,6 @@
 # Combat
 
-Modified: 2026-11-21
+Modified: 2026-11-23
 
 Commentary on the combat rules: what they are for, how they fit together, and worked examples. It holds no rule of its own. Every rule here is owned by a file in `docs/core/`, has its numbers in `ruleset/data/`, and is pinned by a vector in `ruleset/tests/vectors/`. **If this file and `docs/core/` disagree, `docs/core/` wins** and this file is the bug.
 
@@ -43,9 +43,9 @@ There is no bonus action and no reaction slot. An attack strikes with everything
 
 ## 2. Opportunity attacks
 
-Leaving an enemy's reach without disengaging provokes one attack from that enemy, resolved as an ordinary attack ([combat.md](../core/combat.md)). Reach weapons (`attack_reach` 2) threaten 2 units, others 1.
+Leaving an enemy's reach without disengaging provokes one attack from that enemy, resolved as an ordinary attack of its loadout. Reach weapons (`attack_reach` 2) threaten 2 units, others 1. Melee only: a ranged attacker makes none, and has overwatch instead (Trigger Watch, GD_S17_06). The rule is [combat.md#opportunity-attacks](../core/combat.md#opportunity-attacks) (GD_S19_04).
 
-- The attack costs the loadout's attack AP (2 to 5) from the attacker's carried pool. An attacker with fewer than that cost carried does not get it. **[A]** The exact cost, and the rest of the rule, stay open for `GD_S19_04`, which will put opportunity attacks in the pipeline. This replaces the old "reaction" for it; it is also logged in [`docs/decisions/M1-01.md`](../decisions/M1-01.md).
+- The attack is a **reaction**: it costs no AP. Everyone has 1 reaction between two of their turns; Watchful Blade makes it the AGI modifier (AGI − 5, at least 1), and Phalanx adds 1 ([combat.md#opportunity-attacks](../core/combat.md#opportunity-attacks)). This replaces the flat 3 AP from the carried pool this section used to name, and the old "reaction slot" ([`docs/decisions/M1-01.md`](../decisions/M1-01.md)). In real time an engine fires it automatically or leaves it out.
 - Disengage (1 AP) prevents it. Perks may add other triggers (casting in reach, standing up, drinking a potion). **[A]**
 
 ## 3. Defense

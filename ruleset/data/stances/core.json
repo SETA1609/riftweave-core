@@ -83,15 +83,15 @@
     {
       "key": "phalanx",
       "label": "Phalanx",
-      "description": "A spear and a shield: opportunity attacks cost you 2 AP, and an adjacent ally gains your shield's cover.",
+      "description": "A spear and a shield: you have one more reaction between your turns for opportunity attacks, and an adjacent ally gains your shield's cover.",
       "main": ["one_handed", "two_handed"],
       "off": ["shield"],
       "main_skills": ["core:skill/piercing"],
       "modifiers": [
         {
-          "target": "opportunity_attack_cost",
+          "target": "reactions_per_round",
           "operation": "add",
-          "value": -1,
+          "value": 1,
           "source": "stance:phalanx",
           "origin": "core:origin/martial",
           "duration": "while_applied"
