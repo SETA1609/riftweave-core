@@ -1,5 +1,6 @@
 #### GD_S19_04_ready-and-opportunity-attacks Opportunity attacks as reactions in the pipeline
-- Status: review
+- Status: done
+- Merged: #435, 2026-11-23
 - Priority: medium-high
 - Needs: GD_S19_02_movement-distance-per-ap, GD_S19_05_ap-bank-cap-and-guard
 - Modified: 2026-11-23
