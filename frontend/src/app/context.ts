@@ -1,5 +1,5 @@
-// The viewer's settings in one place (docs/backend/frontend.md#the-app-context): the mode here and the
-// language for APP-24. A screen reads them from this service; no component reads localStorage or
+// The viewer's settings in one place (docs/backend/frontend.md#the-app-context): the mode and the
+// interface language (FE_S11_01). A screen reads them from this service; no component reads localStorage or
 // matchMedia itself. Each choice is saved in localStorage, a per-viewer convenience, and every read
 // and write is guarded, so a blocked storage still renders in the system's mode.
 import { DOCUMENT, Service, computed, effect, inject, signal } from '@angular/core';
@@ -7,6 +7,23 @@ import { type SettingsFile, defaultSettings, encodeSettings, parseSettings } fro
 
 export type Theme = 'light' | 'dark' | 'system';
 export const THEMES: readonly Theme[] = ['light', 'dark', 'system'];
+
+// LANGUAGES, FALLBACK_LANGUAGE, offeredLanguage, and startLanguage: see i18n.md.
+export const LANGUAGES: readonly { value: string; label: string; flag: string }[] = [
+  { value: 'en', label: 'English', flag: 'us' },
+  { value: 'de', label: 'Deutsch', flag: 'de' },
+  { value: 'es', label: 'Español', flag: 'es' },
+];
+export const FALLBACK_LANGUAGE = 'en';
+
+export function offeredLanguage(code: string | null | undefined): string | null {
+  const base = code?.toLowerCase().split('-')[0];
+  return LANGUAGES.find((language) => language.value === base)?.value ?? null;
+}
+
+export function startLanguage(saved: string | null, browser: string | undefined): string {
+  return offeredLanguage(saved) ?? offeredLanguage(browser) ?? FALLBACK_LANGUAGE;
+}
 
 const THEME_KEY = 'riftweave.theme';
 const LOCALE_KEY = 'riftweave.locale';
@@ -46,8 +63,8 @@ export class AppContext {
 
   /** The chosen mode: light, dark, or the system's. */
   readonly theme = signal<Theme>(THEMES.find((theme) => theme === load(THEME_KEY)) ?? 'system');
-  /** The interface language, an i18next language code (APP-24). */
-  readonly locale = signal(load(LOCALE_KEY) ?? 'en');
+  /** The interface language, an i18next language code; I18n follows it (FE_S11_01). */
+  readonly locale = signal(startLanguage(load(LOCALE_KEY), globalThis.navigator?.language));
   /** Whether the system asks for dark, kept current as it changes. */
   readonly systemDark = signal(this.query?.matches ?? false);
   /** The mode the page shows: the chosen one, or the system's for `system`. */

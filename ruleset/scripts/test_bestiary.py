@@ -23,6 +23,7 @@ def ref():
     return monster_reference
 
 DATA = _SCRIPTS.parent / "data"
+CUSTOM_MONSTERS = _SCRIPTS.parent / "tests" / "fixtures" / "custom_monsters"
 # Product identity of other games (docs/modules/monsters.md#names): never a monster name.
 PROTECTED_NAMES = (
     "beholder", "mind flayer", "illithid", "displacer", "owlbear", "umber hulk", "carrion crawler",
@@ -321,6 +322,21 @@ class TestTemplatesAndGeneratedMonsters(unittest.TestCase):
 
 class TestHitPointsAreComputed(unittest.TestCase):
     """DE_S02_03 (docs/modules/monsters.md#hit-points): no monster stores HP; the sheet computes it."""
+
+    def assert_custom_monster_fixture(self, name):
+        # GD_S20_02 (docs/core/actor-sheet.md#a-custom-monster): the row and its expected problems
+        # are in ruleset/tests/fixtures/custom_monsters/<name>.json.
+        fixture = json.loads((CUSTOM_MONSTERS / f"{name}.json").read_text(encoding="utf-8"))
+        self.assertEqual(ref().custom_monster_problems(fixture["row"]), fixture["problems"])
+
+    def test_a_custom_monster_past_every_player_limit_has_no_problem(self):
+        self.assert_custom_monster_fixture("past-every-player-limit")
+
+    def test_a_custom_monster_reports_every_problem_at_once(self):
+        self.assert_custom_monster_fixture("every-problem-at-once")
+
+    def test_a_custom_monster_reports_a_schema_error_with_its_path(self):
+        self.assert_custom_monster_fixture("schema-error")
 
     def test_no_row_base_or_template_writes_hit_points(self):
         self.assertEqual(validate.check_monster_hit_points(), [])

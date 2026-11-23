@@ -1,11 +1,13 @@
 #### FE_S11_01_frontend-i18next Localize the frontend with i18next
-- Status: todo
+- Status: done
+- Merged: #434, 2026-11-22
 - Priority: medium
 - Needs: APP-23
 - Was: APP-24
-- Modified: 2026-11-15
+- Modified: 2026-11-21
 - Do: Owner request, 2026-11-15: the app's own text is localized, and the language lives in the app context (APP-23). Add `i18next` (a release at least two weeks old: 26.6.0 when filed, 2026-10-31) with no Angular wrapper: `AppContext.locale` (a signal) is the one source; changing it calls `i18next.changeLanguage`, and a pure-false `t` pipe and a `translate()` helper re-read when it changes, so a screen re-renders with signals. Resources are JSON per language under `frontend/src/locales/` (`en.json` the source, then `de.json` and `es.json`), bundled with the app so a static build needs no fetch; a missing key falls back to English. Every string in the templates and the alerts moves to a key; ruleset content (spell and perk labels, descriptions) is data, not UI, and stays as the data writes it (localizing content is its own issue) [A]. A reusable `rw-language-select` (ui/, split files) in the header lists the languages by their own names; the start language is the saved one, else the browser's (`navigator.language`) if it is offered, else English; `<html lang>` follows it. Numbers stay as the core returns them. Who reviews a language (owner decision, 2026-11-15): the owner reviews German and Spanish; any contributor may add a language or change one other than those, in a PR that adds only its locale file and its entry in the language list, checked by the missing-key test. Write that rule in `docs/backend/frontend.md` and `CONTRIBUTING.md`.
 - Keys: `i18next`; `frontend/src/locales/*.json`; the `t` pipe; `rw-language-select`; `AppContext.locale`
 - Files: ~16 (frontend/package.json, package-lock.json, frontend/src/app/i18n.ts, frontend/src/app/translate.pipe.ts, frontend/src/locales/en.json, de.json, es.json, frontend/src/app/ui/language-select.ts, .html, .css, frontend/src/app/app.html, sheet.html, attack.html, playthrough.html, frontend/src/app/app.spec.ts, frontend/e2e/app.spec.ts, docs/backend/frontend.md, CONTRIBUTING.md); splits by screen if the templates pass 20
 - See: docs/issues/done/APP-23.md, docs/backend/frontend.md#conventions, https://www.i18next.com
+- Split (2026-11-21): this pull request holds i18next, the locale files, the `t` pipe, `rw-language-select`, the shell, the menus, the theme toggle, and Settings, Modules, and Network; the play and character screens moved to `FE_S11_04_frontend-screen-strings`, and the literal-string check skips them until then.
 - Done when: English, German, and Spanish are offered, and switching the language changes every UI string on every screen without a reload; `<html lang>` follows; a test fails when a key is in `en.json` but not in another locale, or a template has a literal string outside the allowed list; the choice survives a reload; the Vitest specs and the Playwright specs pass over both transports.

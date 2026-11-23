@@ -1,0 +1,210 @@
+{
+  "$schema": "./command.schema.json",
+  "name": "catalog",
+  "summary": "Every table a player or a GM studies to plan a build, from core and the loaded modules, each row resolved through its base: list the collections, list one filtered and sorted, or get one row.",
+  "documentation": "docs/backend/api.md",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "operation": {
+        "type": "string",
+        "enum": [
+          "collections",
+          "list",
+          "get"
+        ]
+      },
+      "collection": {
+        "type": "string",
+        "enum": [
+          "weapons",
+          "armor",
+          "accessories",
+          "consumables",
+          "gear",
+          "materials",
+          "gems",
+          "monsters",
+          "spells",
+          "features",
+          "races",
+          "backgrounds",
+          "skills",
+          "conditions",
+          "effects"
+        ],
+        "description": "With list and get: the collection."
+      },
+      "ref": {
+        "type": "string",
+        "description": "With get: the row's ref, core:<category>/<key> or module:<id>/<category>/<key>."
+      },
+      "filters": {
+        "type": "array",
+        "description": "With list: a row matches every filter.",
+        "items": {
+          "type": "object",
+          "properties": {
+            "field": {
+              "type": "string",
+              "description": "A dotted path into the resolved row, such as weapon.damage.type."
+            },
+            "equals": {
+              "description": "The field's value, or an item of a list field."
+            },
+            "min": {
+              "type": "number"
+            },
+            "max": {
+              "type": "number"
+            },
+            "text": {
+              "type": "string",
+              "description": "Found in the label or the description, in any case."
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "sort": {
+        "type": "object",
+        "description": "With list: the order; a row without the field sorts last. Without it, the data's order.",
+        "properties": {
+          "field": {
+            "type": "string"
+          },
+          "descending": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "field"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "required": [
+      "operation"
+    ],
+    "additionalProperties": false
+  },
+  "result_schema": {
+    "type": "object",
+    "properties": {
+      "collections": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "label": {
+              "type": "string"
+            },
+            "count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "columns": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "field": {
+                    "type": "string"
+                  },
+                  "label": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "field",
+                  "label"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "name",
+            "label",
+            "count",
+            "columns"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "collection": {
+        "type": "string"
+      },
+      "columns": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "field": {
+              "type": "string"
+            },
+            "label": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "field",
+            "label"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "rows": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "ref": {
+              "type": "string"
+            },
+            "source": {
+              "type": "string",
+              "description": "core, or the id of the module the row comes from."
+            },
+            "row": {
+              "type": "object",
+              "description": "The row resolved: its base, then its overrides, then its own fields."
+            }
+          },
+          "required": [
+            "ref",
+            "source",
+            "row"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "row": {
+        "type": "object",
+        "properties": {
+          "ref": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string",
+            "description": "core, or the id of the module the row comes from."
+          },
+          "row": {
+            "type": "object",
+            "description": "The row resolved: its base, then its overrides, then its own fields."
+          }
+        },
+        "required": [
+          "ref",
+          "source",
+          "row"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "additionalProperties": false
+  }
+}

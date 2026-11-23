@@ -10,6 +10,7 @@
     "cap": 10,
     "carry": 2,
     "guard_per_ap": 5,
+    "reactions_per_round": 1,
     "rest": "refill"
   },
   "actions": [

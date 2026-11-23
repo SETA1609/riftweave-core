@@ -1,10 +1,10 @@
-<nav class="menu-grid" [attr.aria-label]="title()">
+<nav class="menu-grid" [attr.aria-label]="titleKey() | t">
   @for (entry of entries(); track entry.key) {
     @if (entry.issue) {
-      <span class="card menu-card disabled" aria-disabled="true">{{ entry.label }} <small>({{ entry.issue }})</small></span>
+      <span class="card menu-card disabled" aria-disabled="true">{{ 'menu.' + entry.key | t }} <small>({{ entry.issue }})</small></span>
     } @else {
-      <a class="card menu-card" [routerLink]="entry.path">{{ entry.label }}</a>
+      <a class="card menu-card" [routerLink]="entry.path">{{ 'menu.' + entry.key | t }}</a>
     }
   }
-  @if (back(); as up) { <a class="card menu-card" [routerLink]="up">Back</a> }
+  @if (back(); as up) { <a class="card menu-card" [routerLink]="up">{{ 'menu.back' | t }}</a> }
 </nav>

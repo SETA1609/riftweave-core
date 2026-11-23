@@ -1,0 +1,2 @@
+### FE_S22_01_design-guide-and-issues A design guide from the mockups, and its issues
+- Added: the owner's frontend mockups in `docs/design/mockups/`, a design guide from them in `docs/design/README.md` (tokens, fonts, components, layouts, print, and how a Tailwind class becomes plain CSS), and story S22 Visual design system with issues for the tokens and fonts, the color and phase badges, the roll target and meters, the side navigation and tab bar, and the sheet, spell editor, bestiary, and print layouts.

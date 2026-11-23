@@ -281,7 +281,7 @@ def run_actions(vector):
         for key in vector.get("actions", [])
     )
     # Held AP (docs/core/actions.md#held-ap): what is left at the end of the turn guards until the
-    # next one, may pay an opportunity or readied attack, and at most pool.carry of it carries.
+    # next one, may pay overwatch (Trigger Watch, GD_S17_06), and at most pool.carry of it carries.
     carried, held_spent = vector.get("carried", 0), vector.get("held_spent", 0)
     if carried > pool_rules["carry"]:
         return {"error": f'carried {carried} is more than pool.carry {pool_rules["carry"]}'}
@@ -743,10 +743,53 @@ def plan_strikes(vector, row, flags, on):
     return strikes, left
 
 
+ACTION_OPPORTUNITY = "opportunity"
+REASON_DISENGAGED = "disengaged"
+REASON_NO_REACTION_LEFT = "no_reaction_left"
+REACTIONS_FROM_AGI = "reactions_from_agi"
+REACTIONS_PER_ROUND = "reactions_per_round"
+
+
+def reactions_most(attacker):
+    """The reactions an actor has between two of its turns (docs/core/combat.md#attacks-out-of-turn):
+    reactions_per_round, or the AGI modifier (at least 1) with reactions_from_agi, then its
+    reactions_per_round modifiers (Phalanx +1)."""
+    modifiers = attacker.get("modifiers", [])
+    most = load_data("actions/core.json")["pool"]["reactions_per_round"]
+    if REACTIONS_FROM_AGI in granted_flags(modifiers):
+        agi = attacker.get("attributes", {}).get("agi", 0)
+        most = max(1, math.floor(evaluate_formula(load_data("formulas/attribute_modifier.json")["expression"], {}, {"attribute": agi})))
+    return apply_modifiers(most, [m for m in modifiers if m["target"] == REACTIONS_PER_ROUND])
+
+
+def run_opportunity(vector):
+    """An opportunity attack (docs/core/combat.md#opportunity-attacks): one melee attack of the
+    loadout when a foe leaves reach without disengaging, a reaction at no AP. With no reaction left,
+    or when the foe disengaged, it does not fire and nothing is spent."""
+    row = attack_sequence_of(vector["loadout"])
+    if row is None:
+        return {"error": no_sequence_error(vector["loadout"])}
+    reason = None
+    if vector.get("disengaged"):
+        reason = REASON_DISENGAGED
+    elif vector.get("reactions_used", 0) >= reactions_most(vector["attacker"]):
+        reason = REASON_NO_REACTION_LEFT
+    if reason:
+        return {"action": ACTION_OPPORTUNITY, "fired": False, "reason": reason, "sequence": row["key"], "ap": 0, "stamina": 0,
+                "strikes": [], "hp": [foe["hp"] for foe in vector["foes"]], "lost": 0}
+    inner = {key: value for key, value in vector.items() if key not in ("ap", "disengaged", "reactions_used")}
+    result = run_attack_sequence({**inner, "action": "attack"})
+    if "error" in result:
+        return result
+    return {**result, "action": ACTION_OPPORTUNITY, "fired": True, "ap": 0, "stamina": 0}
+
+
 def run_attack_sequence(vector):
     """One attack action by loadout (docs/core/combat.md#attacks-by-loadout): the loadout's
     strikes, each its own roll through run_combat, against the foes in reach. Rolls are inputs."""
     action = vector["action"]
+    if action == ACTION_OPPORTUNITY:
+        return run_opportunity(vector)
     if action not in ("attack", "jab", "full_attack", "circle_cut"):
         return {"error": f'action "{action}" is not defined'}
     row = attack_sequence_of(vector["loadout"])
@@ -1191,9 +1234,31 @@ def scaled_hp(formula, share):
     return math.floor(formula * share + 1e-9)
 
 
+def monster_sheet_refusal(row):
+    """Why monster_sheet refuses a row, or None: a level over max_level, a written skill over
+    skill_cap, or an unknown perk. A custom monster drops a player's other limits
+    (docs/core/actor-sheet.md#a-custom-monster)."""
+    progression = load_data("progression/core.json")["progression"]
+    level = row.get("level", 1)
+    if level > progression["max_level"]:
+        return f"level {level} is over the maximum level {progression['max_level']}"
+    for key, value in sorted(row.get("skills", {}).items()):
+        if value > progression["skill_cap"]:
+            return f'skill "{key}" {value} is over the skill cap {progression["skill_cap"]}'
+    features = {feature["key"] for feature in load_data("features/core.json")["features"]}
+    for held in row.get("perks", []):
+        key = held["perk"].rsplit("/", 1)[-1]
+        if key not in features:
+            return f'perk "{key}" is not defined'
+    return None
+
+
 def run_monster_sheet(vector):
     """A monster's stats and skills by the player rules (docs/core/actor-sheet.md)."""
     row = vector["monster"]
+    refusal = monster_sheet_refusal(row)
+    if refusal:
+        return {"error": refusal}
     attributes = row.get("attributes", {})
     perk_modifiers = held_perk_modifiers(row.get("perks", []))
     actor = {"attributes": attributes, "level": row.get("level", 1)}

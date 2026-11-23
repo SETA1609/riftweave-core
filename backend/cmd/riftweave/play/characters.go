@@ -16,7 +16,8 @@ import (
 // The Characters screen (BE_S07_03, docs/backend/app-layout.md#characters) is the character
 // list: each saved character with its level, its last change, and who made it, then Import,
 // Export the party, and Back. On a character, enter opens it as the character a session starts
-// from, e exports it, d duplicates it, x deletes it, and p adds it to the open session's party.
+// from, e exports it, d duplicates it, x deletes it, p adds it to the open session's party, and w
+// prints its sheet to a file (print.go).
 
 const (
 	importRow = "Import a character file"
@@ -136,6 +137,10 @@ func (model Model) charactersKey(key string) (Model, tea.Cmd) {
 	case "p":
 		if onCharacter {
 			return model.addToParty(entry), nil
+		}
+	case "w":
+		if onCharacter {
+			return model.printCharacter(entry)
 		}
 	}
 	return model, nil
@@ -281,6 +286,6 @@ func (model Model) charactersView() string {
 		view.WriteString("\n" + errorStyle.Render(model.problem) + "\n")
 	}
 	view.WriteString(model.logView())
-	view.WriteString("\n" + hintStyle.Render("up/down; on a character: enter to open, e export, d duplicate, x delete, p add to the party; esc to go back") + "\n")
+	view.WriteString("\n" + hintStyle.Render("up/down; on a character: enter to open, e export, d duplicate, x delete, p add to the party, w print; esc to go back") + "\n")
 	return view.String()
 }

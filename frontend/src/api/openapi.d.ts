@@ -71,7 +71,7 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Author content rows: check a draft spell as validate.py would, give the spellcraft cost, load a spell to edit, and export a core or module data file.
+         * Author content rows: check a draft spell as validate.py would, give the spellcraft cost, load a spell to edit, list the effects a color may use, and export a core or module data file.
          * @description The rules are in docs/backend/authoring.md.
          */
         post: operations["author"];
@@ -95,6 +95,26 @@ export interface paths {
          * @description The rules are in docs/core/casting.md.
          */
         post: operations["casting"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/commands/catalog": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Every table a player or a GM studies to plan a build, from core and the loaded modules, each row resolved through its base: list the collections, list one filtered and sorted, or get one row.
+         * @description The rules are in docs/backend/api.md.
+         */
+        post: operations["catalog"];
         delete?: never;
         options?: never;
         head?: never;
@@ -970,7 +990,7 @@ export interface operations {
                     actor: components["schemas"]["actor"];
                     /** @description AP carried into this turn from the last, at most pool.carry. */
                     carried?: number;
-                    /** @description Held AP spent before the actor's next turn, on an opportunity or readied attack; at most what is held. */
+                    /** @description Held AP spent before the actor's next turn, on overwatch (Trigger Watch, GD_S17_06); at most what is held. */
                     held_spent?: number;
                     modifiers?: components["schemas"]["modifiers"];
                     /** @description The race's speed. With it the result gives the squares the actions cover. */
@@ -1054,15 +1074,15 @@ export interface operations {
             content: {
                 "application/json": {
                     /**
-                     * @description The action (actions/core.json); its strikes and AP come from the loadout's attack_sequences row.
+                     * @description The action (actions/core.json); its strikes and AP come from the loadout's attack_sequences row. opportunity is one melee attack out of turn, a reaction at no AP (docs/core/combat.md#opportunity-attacks).
                      * @enum {string}
                      */
-                    action: "attack" | "jab" | "full_attack" | "circle_cut";
+                    action: "attack" | "jab" | "full_attack" | "circle_cut" | "opportunity";
                     /** @description The attacker just blocked a hit in their band: from Boss Strike's after_block tier a bash jab costs shield_bash.after_block_ap. */
                     after_block?: boolean;
                     /** @description The attacker parried a hit since their last strike: attack_after_parry adds to the first main-hand strike (Espada y Daga, docs/core/combat.md#fighting-stances). */
                     after_parry?: boolean;
-                    /** @description The attacker's AP left. A full attack and a circle cut spend all of it and need at least the attack AP + full_attack.min_extra_ap; an attack or a jab with fewer than its AP is an error. */
+                    /** @description The attacker's AP left. A full attack and a circle cut spend all of it and need at least the attack AP + full_attack.min_extra_ap; an attack or a jab with fewer than its AP is an error. An opportunity attack is a reaction and needs none. */
                     ap?: number;
                     attacker: {
                         attributes?: components["schemas"]["attributes"];
@@ -1092,6 +1112,8 @@ export interface operations {
                         ability?: components["schemas"]["ruleset_ability"];
                         type: components["schemas"]["key"];
                     };
+                    /** @description With opportunity: the foe left reach with Disengage, so no attack. */
+                    disengaged?: boolean;
                     /** @description The foes in reach, in the order a carry picks them; foe 0 is a full attack's target. */
                     foes: Record<string, never>[];
                     loadout: components["schemas"]["ruleset_loadout"];
@@ -1102,6 +1124,8 @@ export interface operations {
                         ability?: components["schemas"]["ruleset_ability"];
                         type: components["schemas"]["key"];
                     };
+                    /** @description With opportunity: the reactions the attacker already used since its last turn. Default 0. */
+                    reactions_used?: number;
                     /** @description One attack roll and one damage roll per strike made, in order; a lost strike takes none. */
                     rolls: {
                         attack: components["schemas"]["d100"];
@@ -1126,10 +1150,17 @@ export interface operations {
                     "application/json": {
                         action: string;
                         ap: number;
+                        /** @description With opportunity: whether the attack happened. */
+                        fired?: boolean;
                         /** @description Each foe's HP after the action. */
                         hp: number[];
                         /** @description Strikes lost because their foe dropped and nothing carried them. */
                         lost: number;
+                        /**
+                         * @description With opportunity, when it did not fire: why.
+                         * @enum {string}
+                         */
+                        reason?: "disengaged" | "no_reaction_left";
                         /** @description The attack_sequences row key. */
                         sequence: string;
                         /** @description ap times stamina_per_ap. */
@@ -1222,6 +1253,8 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
+                    /** @description effects: the spell's color; the pool is the effects on that color or on none that list the spell channel (BE_S09_01). */
+                    color?: string;
                     export?: {
                         /** @description shape module: the module's id. */
                         module?: components["schemas"]["key"];
@@ -1231,10 +1264,10 @@ export interface operations {
                     /** @enum {string} */
                     kind: "spell";
                     /**
-                     * @description check (the default) a list of drafts, or load one spell by key.
+                     * @description check (the default) a list of drafts, load one spell by key, or list the effects a spell of a color may use.
                      * @enum {string}
                      */
-                    operation?: "check" | "load";
+                    operation?: "check" | "load" | "effects";
                     /** @description load: the spell to load. */
                     spell?: components["schemas"]["key"];
                     /** @description check: the draft rows, as spells/core.json holds them; the schema is checked by the command, so a draft may be wrong. */
@@ -1250,6 +1283,11 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description effects: the pool, in file order, each with its row as effects/core.json writes it. */
+                        effects?: {
+                            ref: components["schemas"]["ref"];
+                            row: Record<string, never>;
+                        }[];
                         export?: {
                             /** @description The whole data file: $schema and the spells wrapper. */
                             file: Record<string, never>;
@@ -1462,6 +1500,121 @@ export interface operations {
                         stamina?: number;
                         /** @description The active summons after the cast, oldest first. */
                         summons?: components["schemas"]["ref"][];
+                    };
+                };
+            };
+            /** @description The body is not the command's input, or a rule needs an input it was not given. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description No such command, or the input names a key that does not exist. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The body is over 1 MiB. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The command refused for another rule reason. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+        };
+    };
+    catalog: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * @description With list and get: the collection.
+                     * @enum {string}
+                     */
+                    collection?: "weapons" | "armor" | "accessories" | "consumables" | "gear" | "materials" | "gems" | "monsters" | "spells" | "features" | "races" | "backgrounds" | "skills" | "conditions" | "effects";
+                    /** @description With list: a row matches every filter. */
+                    filters?: {
+                        /** @description The field's value, or an item of a list field. */
+                        equals?: unknown;
+                        /** @description A dotted path into the resolved row, such as weapon.damage.type. */
+                        field?: string;
+                        max?: number;
+                        min?: number;
+                        /** @description Found in the label or the description, in any case. */
+                        text?: string;
+                    }[];
+                    /** @enum {string} */
+                    operation: "collections" | "list" | "get";
+                    /** @description With get: the row's ref, core:<category>/<key> or module:<id>/<category>/<key>. */
+                    ref?: string;
+                    /** @description With list: the order; a row without the field sorts last. Without it, the data's order. */
+                    sort?: {
+                        descending?: boolean;
+                        field: string;
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description The result. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        collection?: string;
+                        collections?: {
+                            columns: {
+                                field: string;
+                                label: string;
+                            }[];
+                            count: number;
+                            label: string;
+                            name: string;
+                        }[];
+                        columns?: {
+                            field: string;
+                            label: string;
+                        }[];
+                        row?: {
+                            ref: string;
+                            /** @description The row resolved: its base, then its overrides, then its own fields. */
+                            row: Record<string, never>;
+                            /** @description core, or the id of the module the row comes from. */
+                            source: string;
+                        };
+                        rows?: {
+                            ref: string;
+                            /** @description The row resolved: its base, then its overrides, then its own fields. */
+                            row: Record<string, never>;
+                            /** @description core, or the id of the module the row comes from. */
+                            source: string;
+                        }[];
                     };
                 };
             };
@@ -2701,6 +2854,11 @@ export interface operations {
                     };
                     /** @description With spell: a key in spells/core.json. */
                     spell?: components["schemas"]["key"];
+                    /**
+                     * @description With sheet: current (the default) prints the resources left, the conditions, and the held modifiers; fresh prints full HP, mana, and stamina, with no condition or held modifier (BE_S09_03).
+                     * @enum {string}
+                     */
+                    state?: "current" | "fresh";
                 };
             };
         };

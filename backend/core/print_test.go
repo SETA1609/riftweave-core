@@ -165,3 +165,75 @@ func TestThePageInlinesItsStylesheetUnescaped(t *testing.T) {
 		t.Errorf("templates/print.css is not in the page's <style> as written: %.400s", page)
 	}
 }
+
+// woundedActor is mid-campaign (BE_S09_03): HP and mana spent, frightened, a held -10 on blades,
+// and a shortsword worn.
+func woundedActor() map[string]any {
+	actor := equippedActor()
+	actor["skills"] = map[string]any{"blades": 40, "red_magic": 50}
+	actor["perks"] = map[string]any{"hardened_hide": 2}
+	actor["resources"] = map[string]any{"hp": 9, "mp": 4, "sp": 3, "ap": 0}
+	actor["conditions"] = []any{map[string]any{"key": "frightened", "stacks": 1}}
+	actor["modifiers"] = []any{map[string]any{"modifier": map[string]any{"target": "blades", "operation": "add", "value": -10, "source": "situation:gm", "origin": "core:origin/morale"}, "turns_elapsed": 0}}
+	return actor
+}
+
+func TestACurrentSheetPrintsTheSessionsNumbers(t *testing.T) {
+	opened := open(t)
+	actor := woundedActor()
+	html := printPage(t, opened, map[string]any{"kind": "sheet", "actor": actor, "state": "current"})
+	for pool, want := range map[string]int64{"hp": 9, "mp": 4, "sp": 3} {
+		if got := printed(t, html, "current", pool); got != want {
+			t.Errorf("current %s %d, want %d, the session's", pool, got, want)
+		}
+	}
+	// The target is the session's: the skill read as progression reads it, with the perks and
+	// the held modifiers on it, through the modifiers command.
+	stored := mustStored(t, actor)
+	value, err := readSkillValue(opened.rules, stored, "blades")
+	if err != nil {
+		t.Fatal(err)
+	}
+	target := runJSON(t, opened, "modifiers", map[string]any{"value": value, "target": "blades", "modifiers": actorModifiers(opened.rules, stored)})
+	if got := printed(t, html, "target", "blades"); float64(got) != target["value"].(float64) || got != 30 {
+		t.Errorf("blades target %d, the session's %v, want 30", got, target["value"])
+	}
+	if got := printed(t, html, "condition", "frightened"); got != 1 {
+		t.Errorf("frightened stacks %d, want 1", got)
+	}
+	if got := printed(t, html, "item", "core:weapon/shortsword"); got != 1 || !strings.Contains(html, "main_hand") {
+		t.Errorf("the worn shortsword: %d, %s", got, html)
+	}
+	if !strings.Contains(html, "situation:gm") {
+		t.Error("a held modifier is listed with its source")
+	}
+}
+
+func TestAFreshSheetPrintsFullResourcesAndNoConditions(t *testing.T) {
+	opened := open(t)
+	html := printPage(t, opened, map[string]any{"kind": "sheet", "actor": woundedActor(), "state": "fresh"})
+	for _, pool := range []string{"hp", "mp", "sp"} {
+		if current, maximum := printed(t, html, "current", pool), printed(t, html, "stat", pool); current != maximum {
+			t.Errorf("fresh %s %d, want the maximum %d", pool, current, maximum)
+		}
+	}
+	if strings.Contains(html, `data-condition=`) || strings.Contains(html, "situation:gm") {
+		t.Error("a fresh sheet has no conditions and no held modifiers")
+	}
+	if got := printed(t, html, "target", "blades"); got != 40 {
+		t.Errorf("fresh blades target %d, want 40 without the held -10", got)
+	}
+	if got := printed(t, html, "item", "core:weapon/shortsword"); got != 1 {
+		t.Errorf("a fresh sheet keeps the gear: %d", got)
+	}
+}
+
+func TestASheetStateIsCurrentOrFresh(t *testing.T) {
+	body, _ := json.Marshal(map[string]any{"kind": "sheet", "actor": woundedActor(), "state": "tomorrow"})
+	if _, err := open(t).Run("print", body); err == nil || !strings.Contains(err.Error(), "tomorrow") {
+		t.Errorf("an unknown state: %v", err)
+	}
+	if html := printPage(t, open(t), map[string]any{"kind": "sheet", "actor": woundedActor()}); printed(t, html, "current", "hp") != 9 {
+		t.Error("without a state the sheet is current")
+	}
+}

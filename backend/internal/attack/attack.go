@@ -13,6 +13,7 @@ import (
 	"github.com/SETA1609/riftweave-core/backend/internal/actor"
 	"github.com/SETA1609/riftweave-core/backend/internal/combat"
 	"github.com/SETA1609/riftweave-core/backend/internal/data"
+	"github.com/SETA1609/riftweave-core/backend/internal/formula"
 	"github.com/SETA1609/riftweave-core/backend/internal/modifier"
 )
 
@@ -53,6 +54,21 @@ type Roll struct {
 	Damage int64 `json:"damage"`
 }
 
+// The opportunity attack (docs/core/combat.md#opportunity-attacks), and why one did not fire.
+const (
+	ActionOpportunity = "opportunity"
+	// actionAttack is the action an opportunity attack runs: the loadout's attack.
+	actionAttack = "attack"
+
+	ReasonDisengaged     = "disengaged"
+	ReasonNoReactionLeft = "no_reaction_left"
+
+	// reactionsFromAGI is the flag that makes the AGI modifier the most reactions between two turns,
+	// and reactionsPerRound the modifier target that adds to it (Phalanx).
+	reactionsFromAGI  = "reactions_from_agi"
+	reactionsPerRound = "reactions_per_round"
+)
+
 // Input is the `attack_sequence` command's input.
 type Input struct {
 	Action    string              `json:"action"`
@@ -72,6 +88,10 @@ type Input struct {
 	AfterParry bool `json:"after_parry"`
 	// AfterBlock is Boss Strike's last tier: the attacker just blocked a hit in their band.
 	AfterBlock bool `json:"after_block"`
+	// Disengaged is a foe that left reach with Disengage, and ReactionsUsed the reactions the
+	// attacker already used since its last turn; both read only by an opportunity attack (GD_S19_04).
+	Disengaged    bool  `json:"disengaged"`
+	ReactionsUsed int64 `json:"reactions_used"`
 }
 
 // StrikeResult is one strike made.
@@ -111,6 +131,65 @@ type Result struct {
 	Strikes  []StrikeResult `json:"strikes"`
 	HP       []int64        `json:"hp"`
 	Lost     int64          `json:"lost"`
+	// Fired and Reason are an opportunity attack's: whether it fired, and why not. Left out on an
+	// attack on the actor's own turn.
+	Fired  *bool  `json:"fired,omitempty"`
+	Reason string `json:"reason,omitempty"`
+}
+
+// reactionsMost is the reactions an actor has between two of its turns: reactions_per_round, or the
+// AGI modifier (at least 1) with reactions_from_agi, then its reactions_per_round modifiers (Phalanx).
+func reactionsMost(ruleset *data.Ruleset, attacker Attacker) (int64, error) {
+	var most int64 = ruleset.Actions.Pool.ReactionsPerRound
+	if slices.Contains(modifier.Flags(attacker.Modifiers, 0, nil), reactionsFromAGI) {
+		agility, err := ruleset.AttributeModifier.Evaluate(nil, formula.Variable{Name: "attribute", Value: attacker.Attributes.Get(actor.Agility)})
+		if err != nil {
+			return 0, err
+		}
+		most = max(1, agility)
+	}
+	return modifier.Value(most, modifier.Target(attacker.Modifiers, reactionsPerRound), ruleset.Origins, 0, nil)
+}
+
+// runOpportunity is an opportunity attack: one melee attack of the loadout when a foe leaves reach
+// without disengaging, a reaction at no AP. With no reaction left, or a foe that disengaged, it does
+// not fire and nothing is spent.
+func runOpportunity(ruleset *data.Ruleset, input Input) (Result, error) {
+	var row *data.AttackSequence = ruleset.AttackSequences.Covering(input.Loadout.Main, input.Loadout.Off)
+	if row == nil {
+		return Result{}, &data.NoSequenceError{Loadout: input.Loadout}
+	}
+	most, err := reactionsMost(ruleset, input.Attacker)
+	if err != nil {
+		return Result{}, err
+	}
+	var reason string
+	if input.Disengaged {
+		reason = ReasonDisengaged
+	} else if input.ReactionsUsed >= most {
+		reason = ReasonNoReactionLeft
+	}
+	if reason != "" {
+		var hp []int64 = make([]int64, len(input.Foes))
+		for index, encoded := range input.Foes {
+			var foe combat.Defender
+			if err := json.Unmarshal(encoded, &foe); err != nil {
+				return Result{}, fmt.Errorf("foe %d: %w", index, err)
+			}
+			hp[index] = foe.HitPoints
+		}
+		var fired bool
+		return Result{Action: input.Action, Sequence: row.Key, Strikes: []StrikeResult{}, HP: hp, Fired: &fired, Reason: reason}, nil
+	}
+	var inner Input = input
+	inner.Action, inner.AP, inner.Disengaged, inner.ReactionsUsed = actionAttack, nil, false, 0
+	result, err := Run(ruleset, inner)
+	if err != nil {
+		return Result{}, err
+	}
+	var fired bool = true
+	result.Action, result.AP, result.Stamina, result.Fired = input.Action, 0, 0, &fired
+	return result, nil
 }
 
 type planned struct {
@@ -218,6 +297,8 @@ func either(mains []string) string {
 // Run is the `attack_sequence` command.
 func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	switch input.Action {
+	case ActionOpportunity:
+		return runOpportunity(ruleset, input)
 	case "attack", "jab", "full_attack", "circle_cut":
 	default:
 		return Result{}, &data.NotDefinedError{Kind: "action", Key: input.Action}

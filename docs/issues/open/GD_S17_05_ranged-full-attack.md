@@ -2,7 +2,7 @@
 - Status: todo
 - Priority: medium
 - Needs: GD_S05_01_loadout-attacks-melee-ladders, GD_S17_02_ammunition-items-and-reloading
-- Modified: 2026-11-18
+- Modified: 2026-11-23
 - Do: Owner request, 2026-11-18: the extra-attack perks work at range as well as in melee. GD_S05_01 defines the attack by loadout, the full attack, and `attack_sequences` for melee loadouts; this issue adds the ranged loadouts and the rules a ranged strike adds.
   - **Ranged rows in `attack_sequences`** [A]:
 
@@ -19,6 +19,7 @@
   - **A strike needs a round:** each strike spends one round (GD_S17_02). A `loading` weapon fires once and then needs a `reload` (2 AP, or less with `fast_reload`) before it strikes again; inside a full attack, a reload spends AP from the full attack's own budget [A]. Two loaded pistols are the gunslinger's opening pair; a bow, which draws as part of the shot, gains the most from extra strikes.
   - **The extra-strike ladder is any weapon** (GD_S05_01 changes its text to say so): `follow_up` and `press_on` add a strike with the main-hand weapon, melee or ranged; a loading weapon's added strike needs a reload first.
   - **Carry on at range:** `carry_through` and `reaping_arc` read "a foe in reach" as "a foe in range" when the strike was ranged [A]; `circle_cut` stays melee.
+  - **No opportunity attack at range** (owner, 2026-11-23, from GD_S19_04): an `opportunity` with a ranged loadout does not fire; a shooter's answer to a moving foe is Trigger Watch (GD_S17_06). GD_S17_13's `ready_steel` is the perk exception.
   - **Aimed and full:** a full attack cannot be aimed; the held-breath maneuver (GD_S17_06) is the aimed shot that spends a turn [A].
 - Keys: the ranged rows of `attack_sequences`; the reload-inside-a-full-attack rule; the range reading of `carry_through` and `reaping_arc`
 - Files: ~8 (docs/core/combat.md, docs/core/actions.md, ruleset/data/attack_sequences/core.json, ruleset/data/features/core.json (descriptions of `follow_up`, `press_on`, `carry_through`, `reaping_arc`), ruleset/scripts/validate.py, ruleset/tests/vectors/combat.json, docs/decisions/GD_S17_05_ranged-full-attack.md, changes/GD_S17_05_ranged-full-attack.md)

@@ -1,0 +1,16 @@
+#### FE_S00_09_frontend-unit-test-gaps Unit specs for the frontend code that has none
+- Status: todo
+- Priority: low
+- Needs: —
+- Modified: 2026-11-22
+- Do: Owner request, 2026-11-22. Every service has a Vitest spec, but some code is covered only end to end (Playwright) or not at all [V 2026-11-22, the imports of `frontend/src/app/*.spec.ts`]:
+  - **`character-list.ts`** (the Characters screen): the list from `Characters`, export, duplicate, delete, import by the sync rule, and keeping a side on a divergence.
+  - **`file-import.ts`** (Import): a file of each kind, a missing module's alert with "Enable and import" and "Import anyway", the warnings, and a broken file's error.
+  - **`saved-games.ts`** (Saved games): the list, resume, delete, the backup reminder (`stale`), a dropped or opened file that replays to the same character, one from other rules, and an edited one.
+  - **`App`** (the shell): it shows the starting alert, then the router outlet once the core is ready, and the "rules engine did not start" alert when it fails; the footer shows the rules version.
+  - **The `t` pipe** (after FE_S11_01): an empty key gives an empty string, and a key with values fills them.
+  - Each screen gets its own `<name>.spec.ts` beside it, over a fake `API` and an in-memory store as `saves.spec.ts` does, so no server is needed; the specs keep their comments (frontend.md#conventions).
+- Keys: `character-list.spec.ts`, `file-import.spec.ts`, `saved-games.spec.ts`, an `App` spec, a `t` pipe spec
+- Files: ~5 (frontend/src/app/character-list.spec.ts, file-import.spec.ts, saved-games.spec.ts, app-shell.spec.ts, translate-pipe.spec.ts)
+- See: frontend/src/app/saves.spec.ts, frontend/src/app/characters.spec.ts, docs/backend/frontend.md#tests
+- Done when: each item above has a spec that fails if its behavior breaks; `npm test` passes with no server running for these specs; the Playwright specs still pass.

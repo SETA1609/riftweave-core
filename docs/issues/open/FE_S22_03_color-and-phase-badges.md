@@ -1,0 +1,15 @@
+#### FE_S22_03_color-and-phase-badges Badges for the nine colors and the five phases
+- Status: todo
+- Priority: medium
+- Needs: FE_S22_02_design-tokens-and-fonts
+- Modified: 2026-11-23
+- Do: Three shared components in `frontend/src/app/ui/` (docs/design/README.md#components), generated with `ng generate component ui/<name> --flat`, each with a sibling `.md`:
+  - `rw-color-badge`: input a color key (`red` … `black`, the `color` enum of `schema.json`); draws its glyph as inline SVG (the guide's table: triangle down, hexagon, diamond, square, circle, octagon, four-point star, triangle up, plus), its uppercase label from the locale files, a 12% fill and a 1px border in its hue.
+  - `rw-phase-badge`: input a phase key (`wood` … `water`) and an optional value; the phase's hue, dimmed when the value is absent or zero.
+  - `rw-phase-matrix`: the five phases in a row (the mockups' "elemental matrix"), each a `rw-phase-badge` with the character's value; the ring drawing of the desktop mockup is optional [A].
+  - **Module gate** (docs/design/README.md#module-blocks): a shared structural directive `*rwIfModule` in `ui/` (`ng generate directive ui/if-module --flat`, sibling `if-module.md`) renders its block only when `AppContext.modules()` holds the id, and follows the signal. `rw-phase-badge` and `rw-phase-matrix` are used only under `*rwIfModule="'wuxing'"`; `rw-color-badge` is core and never gated.
+  - The glyph carries meaning, so the badge's accessible name is the color's label, and the SVG is `aria-hidden`.
+- Keys: `rw-color-badge`, `rw-phase-badge`, `rw-phase-matrix`, `*rwIfModule`; `color.<color>` and `phase.<phase>` locale keys in en, de, and es
+- Files: ~18 (three components × .ts/.html/.css/.md, frontend/src/app/ui/if-module.ts, if-module.md, frontend/src/locales/en.json, de.json, es.json, frontend/src/app/app.spec.ts)
+- See: docs/design/README.md#the-nine-colors-and-the-five-phases, ruleset/schemas/schema.json
+- Done when: each of the nine colors and five phases renders with its hue and glyph in dark and light mode; a screen reader reads the color's name; a block under `*rwIfModule="'wuxing'"` appears when `wuxing` is enabled and disappears when it is disabled, without a reload; the Vitest specs pass.

@@ -6,6 +6,7 @@ package derived
 import (
 	"encoding/json"
 	"fmt"
+	"maps"
 	"math"
 	"slices"
 	"strings"
@@ -65,7 +66,7 @@ type ActionsInput struct {
 	// Speed is the race's speed; with it the result says how many squares the moves cover (GD_S19_02).
 	Speed *int64 `json:"speed"`
 	// Carried is the AP carried into this turn; HeldSpent is held AP spent before the next turn,
-	// on an opportunity or readied attack (docs/core/actions.md#held-ap, GD_S19_05).
+	// on overwatch (docs/core/actions.md#held-ap, GD_S19_05; Trigger Watch, GD_S17_06).
 	Carried   int64 `json:"carried"`
 	HeldSpent int64 `json:"held_spent"`
 }
@@ -211,6 +212,22 @@ func perkModifiers(ruleset *data.Ruleset, row *MonsterRow) ([]modifier.Modifier,
 	return modifiers, nil
 }
 
+// checkMonsterLimits refuses the two limits a custom monster keeps besides its references: a level
+// over max_level and a written skill over skill_cap (docs/core/actor-sheet.md#a-custom-monster).
+// Point-buy, the attribute cap, and perk prerequisites and ranks do not apply to a monster.
+func checkMonsterLimits(ruleset *data.Ruleset, row *MonsterRow) error {
+	var progression = &ruleset.Progression
+	if row.Level != nil && *row.Level > progression.MaximumLevel {
+		return fmt.Errorf("level %d is over the maximum level %d", *row.Level, progression.MaximumLevel)
+	}
+	for _, key := range slices.Sorted(maps.Keys(row.Skills)) {
+		if row.Skills[key] > progression.SkillCap {
+			return fmt.Errorf("skill %q %d is over the skill cap %d", key, row.Skills[key], progression.SkillCap)
+		}
+	}
+	return nil
+}
+
 // MonsterSheetInput is the `monster_sheet` command's input.
 type MonsterSheetInput struct {
 	Monster    MonsterRow `json:"monster"`
@@ -222,6 +239,9 @@ type MonsterSheetInput struct {
 // role's monster_hp_multiplier, rounded down and at least 1, then its perks' hp modifiers (DE_S02_03).
 func RunMonsterSheet(ruleset *data.Ruleset, input MonsterSheetInput) (map[string]any, error) {
 	var row *MonsterRow = &input.Monster
+	if err := checkMonsterLimits(ruleset, row); err != nil {
+		return nil, err
+	}
 	perks, err := perkModifiers(ruleset, row)
 	if err != nil {
 		return nil, err

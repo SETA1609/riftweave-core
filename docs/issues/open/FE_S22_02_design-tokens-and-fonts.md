@@ -1,0 +1,16 @@
+#### FE_S22_02_design-tokens-and-fonts The design guide's tokens and fonts in styles.css
+- Status: todo
+- Priority: medium
+- Needs: FE_S22_01_design-guide-and-issues
+- Modified: 2026-11-23
+- Do: Replace the Bootstrap palette in `frontend/src/styles.css` with the tokens of the design guide (docs/design/README.md#tokens), dark and light, under the same `data-theme` rules as now.
+  - **Colors:** the surface, text, primary, secondary, tertiary, and danger tokens; the nine color hues and the five phase hues as `--color-<color>` and `--phase-<phase>`. The tokens the components use today (`--body`, `--body-bg`, `--primary`, `--border`, …) keep their names and take the new values, so no screen breaks [A].
+  - **Light mode:** the guide's light set; check every text and background pair reaches WCAG AA (4.5:1, 3:1 for large text) and adjust a value that does not, in the guide too.
+  - **Fonts:** Space Grotesk and JetBrains Mono bundled with the build (for example the `@fontsource` packages [A]), no font CDN, so the app works offline. Check their license (SIL OFL 1.1 [U]) and add them to NOTICE.
+  - **Type, radius, space:** the guide's size, radius, and space tokens; `body` uses the mono font for data and the heading font for `h1`–`h3`; `body` drops its 64rem cap for screens that ask for the wide layout.
+  - **Shared classes:** `.btn`, `.btn-primary`, `.btn-outline`, `.form-control`, `.card`, `.alert`, `.table`, `.nav` take the new look (guide#components): 4px radius, keylines, no shadows, 44px buttons under 768px.
+  - `docs/backend/frontend.md#conventions`: "Bootstrap's look" becomes "the design guide's look", still plain CSS with no package or CDN.
+- Keys: the token names in the guide
+- Files: ~8 (frontend/src/styles.css, frontend/package.json, package-lock.json, frontend/angular.json, NOTICE, docs/backend/frontend.md, docs/design/README.md, frontend/e2e/app.spec.ts)
+- See: docs/design/README.md, docs/design/mockups/
+- Done when: the app renders in the guide's colors and fonts in dark, light, and system mode, with the network off; every text pair passes AA; the Vitest and Playwright specs pass.

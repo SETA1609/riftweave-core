@@ -1,12 +1,15 @@
 <header>
   <h1><a routerLink="/">Riftweave</a></h1>
-  <rw-theme-toggle />
+  <div class="tools">
+    <rw-language-select />
+    <rw-theme-toggle />
+  </div>
 </header>
 <main>
   @switch (state()) {
-    @case ('starting') { <rw-alert kind="info" message="Starting the rules engine…" /> }
-    @case ('failed') { <rw-alert [message]="failure()" /> }
+    @case ('starting') { <rw-alert kind="info" [message]="'app.starting' | t" /> }
+    @case ('failed') { <rw-alert [message]="'app.failed' | t: { reason: failure() }" /> }
     @default { <router-outlet /> }
   }
 </main>
-<footer>Rules {{ rulesVersion }}</footer>
+<footer>{{ 'app.rules' | t: { version: rulesVersion } }}</footer>

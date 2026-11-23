@@ -1,0 +1,17 @@
+#### GD_S19_04_ready-and-opportunity-attacks Opportunity attacks as reactions in the pipeline
+- Status: done
+- Merged: #435, 2026-11-23
+- Priority: medium-high
+- Needs: GD_S19_02_movement-distance-per-ap, GD_S19_05_ap-bank-cap-and-guard
+- Modified: 2026-11-23
+- Do: Owner request, 2026-11-19; reshaped 2026-11-23.
+  - **What we had:** no reaction slot, and only a stance, dodge or block, can be declared on your turn [V 2026-11-19, `docs/core/actions.md`]. docs/modules/combat.md §2 had opportunity attacks (leaving reach provokes one; Disengage, 1 AP, prevents it), and docs/core/combat.md listed them as not built [V 2026-11-19].
+  - **Base rule, not a perk** (owner, 2026-11-19): opportunity attacks are part of the base rules, because they are what makes reach, a held doorway, and Disengage matter.
+  - **Melee only** (owner, 2026-11-23): an opportunity attack is made when a foe leaves your melee reach without disengaging. A ranged attacker makes none.
+  - **A reaction, at no AP** (owner, 2026-11-23): everyone has 1 reaction between two of their turns (`reactions_per_round`); Watchful Blade (`reactions_from_agi`) makes it the AGI modifier, at least 1; Phalanx adds 1 (`add reactions_per_round 1`). A reaction-built character is a real choice. The caller counts the reactions used, as it tracks reach. In real time an engine fires opportunity attacks automatically or leaves them out.
+  - **Overwatch is not this** (owner, 2026-11-23): overwatch is the ranged attacker's held AP, fired when an enemy moves within its weapon's range. It is the Trigger Watch maneuver of `GD_S17_06_ranged-maneuvers`. The melee `ready` action this issue first built (triggers `enters_reach`, `acts_in_reach`) is removed.
+  - **Counter-attacks stay perks** (owner, 2026-11-19): the Riposte perk (dodge stance only, a narrow window of the band) remains the only counter. A base counter would double the attacks in a fight, add a decision to every miss, and make the dodge stance dominant.
+- Keys: the `opportunity` action of `attack_sequence`, `disengaged`, `reactions_used`, `fired`, `reason`; `reactions_per_round` (pool and modifier target), `reactions_from_agi`, Watchful Blade; `opportunity_attack_cost` removed
+- Files: ~14 (docs/core/actions.md, docs/core/combat.md, docs/modules/combat.md, ruleset/data/actions/core.json, ruleset/data/features/core.json, ruleset/data/stances/core.json, ruleset/data/modifier_targets/core.json, ruleset/schemas/action.schema.json, ruleset/scripts/kernel_reference.py, backend/internal/attack/attack.go, backend/internal/data/data.go, backend/contract/attack_sequence.json, ruleset/tests/vectors/attack_sequence.json, docs/issues/open/GD_S17_06_ranged-maneuvers.md)
+- See: docs/modules/combat.md#2-opportunity-attacks, docs/issues/done/GD_S05_02_fighting-stances.md (Phalanx), docs/issues/open/GD_S17_06_ranged-maneuvers.md (Trigger Watch)
+- Done when: vectors cover an opportunity attack on leaving reach at 0 AP, Disengage preventing it, a second one in a round refused, three at AGI 8 with `reactions_from_agi`, at least 1 at AGI 4, Phalanx's extra reaction, and four with both, in Python and Go; docs/modules/combat.md §2 no longer says 3 AP from the carried pool.

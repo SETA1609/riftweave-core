@@ -49,7 +49,7 @@ python ruleset/scripts/run_tests.py   # the same, one process per test file in p
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md#workflow) before starting an issue. In short:
 
-- Work comes from `docs/issues/open/` (one file per issue), grouped by the stories `S00` to `S21` in `docs/stories/`, one role each (`docs/issues/ROLES.md`). Merged issues are in `docs/issues/done/`, and `close-merged-issue.yml` moves them there. Format and ids: `docs/stories/README.md`; how an issue closes: `docs/issues/README.md`. Scope and the definition of finished: `ROADMAP.md`.
+- Work comes from `docs/issues/open/` (one file per issue), grouped by the stories `S00` to `S22` in `docs/stories/`, one role each (`docs/issues/ROLES.md`). Merged issues are in `docs/issues/done/`, and `close-merged-issue.yml` moves them there. Format and ids: `docs/stories/README.md`; how an issue closes: `docs/issues/README.md`. Scope and the definition of finished: `ROADMAP.md`.
 - One issue, one PR, at most 20 counted changed files (files with 5 or fewer changed lines do not count). Issue ids are `<ROLE>_<STORY>_<ISSUE>_<short-description>` (roles: `docs/issues/ROLES.md`; ids and splitting: `docs/stories/README.md#ids`), and the branch is the full id (e.g. `BE_S07_03_character-list-cli`); an issue with an old id uses `<issue-id>-<slug>` (e.g. `M1-07-<slug>`). The same for people and agents; no `agent/<name>/` prefix. An issue over 20 files that changes both the ruleset and the backend splits into `<issue-id>-ruleset-<slug>` (merges first, adds the fragment) and `<issue-id>-backend-<slug>` (adds a bullet to the same fragment). What can start now and what runs in parallel: `uv run --project tools/devops --locked --no-dev devops-tools roadmap-order --settings-file tools/devops/pyproject.toml show`. Commit only when the user asks.
 - Five steps, one commit each: **spec** (`docs/core/` or `docs/modules/`), **schema**, failing **vector**, **data** until it passes without changing the vector, **review** (differences listed in the PR).
 - Tag design claims **[V]** (checked in this change, with date), **[A]** (assumption), **[U]** (unverified). Call something verified only after you ran or read it in this session.
@@ -202,7 +202,7 @@ Why, with the compilers' own sources: [docs/theory/dispatch.md](docs/theory/disp
 
 ## Frontend
 
-Changes to `frontend/` follow the conventions in [docs/backend/frontend.md](docs/backend/frontend.md#conventions): Angular 22, signals before RxJS, standalone components split into `.ts`, `.html`, and `.css`, Bootstrap's look in our own CSS, small reusable components, Vitest for unit tests, and Playwright for end-to-end tests.
+Changes to `frontend/` follow the conventions in [docs/backend/frontend.md](docs/backend/frontend.md#conventions): Angular 22, signals before RxJS, standalone components split into `.ts`, `.html`, and `.css`, Bootstrap's look in our own CSS, small reusable components, Vitest for unit tests, and Playwright for end-to-end tests. Explanations go in a sibling `.md` beside each `.ts` file (`i18n.ts` and `i18n.md`), not in code comments; the file keeps one pointer line. Specs keep their comments and have no sibling.
 
 ## Licensing
 

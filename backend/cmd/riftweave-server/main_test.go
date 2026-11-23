@@ -271,3 +271,17 @@ func TestTheOpenAPIDocumentListsEveryCommandAndStandsAlone(t *testing.T) {
 		}
 	}
 }
+
+// The catalog is served like any command (BE_S08_10): a filtered list over HTTP, and an unknown
+// collection is a 404.
+func TestTheCatalogOverHTTP(t *testing.T) {
+	served := server(t)
+	status, body := call(t, served, http.MethodPost, "/v1/commands/catalog", []byte(`{"operation":"list","collection":"spells","filters":[{"field":"color","equals":"red"}],"sort":{"field":"level"}}`))
+	rows, _ := body["rows"].([]any)
+	if status != http.StatusOK || len(rows) == 0 || rows[0].(map[string]any)["row"].(map[string]any)["color"] != "red" {
+		t.Errorf("status %d, body %v", status, body)
+	}
+	if status, _ := call(t, served, http.MethodPost, "/v1/commands/catalog", []byte(`{"operation":"list","collection":"classes"}`)); status != http.StatusNotFound {
+		t.Errorf("an unknown collection: status %d, want 404", status)
+	}
+}

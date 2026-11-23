@@ -34,6 +34,7 @@ const (
 	modePrompt     // a one-line input for a setting
 	modeCharacters // the character list (BE_S07_03)
 	modeCreator    // character creation over the creation command (BE_S07_08)
+	modeCompendium // the tables over the catalog command (BE_S08_10)
 )
 
 const maximumLogLines = 6
@@ -154,6 +155,8 @@ type Model struct {
 	pendingOptions characters.ImportOptions
 	// creator is the character creation screen while it is open.
 	creator *creator
+	// compendium is the Compendium while it is open.
+	compendium *compendium
 }
 
 // New returns the model at the main menu, with the default settings and nothing saved.
@@ -328,6 +331,8 @@ func (model Model) Update(message tea.Msg) (tea.Model, tea.Cmd) {
 			return model, nil
 		}
 		return model.creatorKey(key)
+	case modeCompendium:
+		return model.compendiumKey(message)
 	case modePrompt:
 		if isKey {
 			switch key.Type {
@@ -422,6 +427,8 @@ func (model Model) enter(entry menuEntry) (tea.Model, tea.Cmd) {
 		return model.charactersShown(), nil
 	case "character_creation":
 		return model.openCreator(), nil
+	case "compendium":
+		return model.openCompendium(), nil
 	case "skill_resolution":
 		return model.open(resolutionForm(model.luck)), textinput.Blink
 	case "attack":
@@ -684,6 +691,8 @@ func (model Model) View() string {
 		view.WriteString(model.charactersView())
 	case modeCreator:
 		view.WriteString(model.creatorView())
+	case modeCompendium:
+		view.WriteString(model.compendiumView())
 	case modePrompt:
 		view.WriteString(model.line.View() + "\n")
 		view.WriteString("\n" + hintStyle.Render("enter to apply, esc to cancel") + "\n")

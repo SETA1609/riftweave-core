@@ -1,9 +1,10 @@
 #### BE_S09_03_print-character-cli Print the current character from both apps (backend)
-- Status: todo
+- Status: done
+- Merged: #437, 2026-11-22
 - Priority: medium
 - Needs: BE_S07_03_character-list-cli
 - Was: APP-39, split by role on 2026-11-18: this is the backend half (the contract, the Go core, the vectors, and the CLI and TUI with their UX); the browser half is `FE_S09_04_print-character-page`
-- Modified: 2026-11-17
+- Modified: 2026-11-21
 - Do: Owner request, 2026-11-17: the `print` command (APP-11) renders a sheet from a stored actor, but no app calls it yet. Add a **Print** action to the character sheet and the character list (APP-33) in both apps. It prints the character as it is now: the current level, perks, spells, gear, and the session's state (HP, mana, and stamina spent, held conditions and modifiers), all read from the session, so every printed number is the one the rules compute. The Angular app opens the page and the browser's print dialog (PDF through the browser, offline through WebAssembly, APP-14); the human CLI writes the HTML to a file and prints its path. A choice between **current** (the session's state) and **fresh** (full HP, mana, and stamina, no conditions) covers both a mid-campaign printout and a sheet for a new table [A].
 - Keys: `print` input `state: current | fresh` [A]; the print action in both apps
 - Files: ~6 (backend/contract/print.json, backend/core/print.go and its test, backend/cmd/riftweave/play/print.go, play_test.go, docs/backend/print.md, changes/BE_S09_03_print-character-cli.md)

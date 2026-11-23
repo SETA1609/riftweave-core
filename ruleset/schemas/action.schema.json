@@ -27,9 +27,10 @@
         "cap": { "type": "integer", "minimum": 1, "description": "The most AP a turn can start with, carried AP included." },
         "carry": { "type": "integer", "minimum": 0, "description": "The most held AP that carries into the next turn's pool; the rest is gone (docs/core/actions.md#held-ap)." },
         "guard_per_ap": { "type": "integer", "minimum": 0, "description": "The evasion each held AP gives until the actor's next turn (docs/core/actions.md#held-ap)." },
+        "reactions_per_round": { "type": "integer", "minimum": 1, "description": "The reactions an actor has between two of its turns at a table, each one an opportunity attack at no AP; a reactions_from_agi grant raises it to the AGI modifier (docs/core/combat.md#opportunity-attacks)." },
         "rest": { "type": "string" }
       },
-      "required": ["base", "per_point", "per_point_divisor", "attribute", "cap", "carry", "guard_per_ap", "rest"],
+      "required": ["base", "per_point", "per_point_divisor", "attribute", "cap", "carry", "guard_per_ap", "reactions_per_round", "rest"],
       "additionalProperties": false
     },
     "action": {
