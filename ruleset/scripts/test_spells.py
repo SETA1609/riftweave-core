@@ -192,10 +192,20 @@ class TestSpells(unittest.TestCase):
                 self.assertEqual(pool[key]["color"], color)
                 self.assertIn(key.removeprefix("damage_"), types)
 
-    def test_every_spell_costs_what_its_effects_cost(self):
+    def test_no_spell_stores_its_mana(self):
+        """DE_S02_05 (docs/modules/magic.md#cost-formula): the mana is a fact about the effects, so
+        every reader computes it; a row keeps only its reagents."""
         for row in spells():
             with self.subTest(spell=row["key"]):
-                self.assertEqual(row["cost"]["mana"], spell_cost(row))
+                self.assertNotIn("mana", row.get("cost", {}))
+
+    def test_the_schema_refuses_a_spell_that_writes_its_mana(self):
+        store = validate.load_store()
+        uri = (validate.SCHEMA_DIR / "spell.schema.json").resolve().as_uri()
+        row = {**spells()[0], "cost": {"mana": 6}}
+        error = validate.first_schema_error(validate.schema_validator(store[uri], uri, store), {"spells": [row]})
+        self.assertIsNotNone(error)
+        self.assertIn("mana", error.message)
 
     def test_every_effect_a_spell_may_draw_has_a_base_cost(self):
         for key, effect in effects().items():
@@ -206,7 +216,7 @@ class TestSpells(unittest.TestCase):
     def test_a_spell_is_affordable_at_its_level(self):
         for row in spells():
             with self.subTest(spell=row["key"]):
-                self.assertLessEqual(row["cost"]["mana"], pool(row["level"]))
+                self.assertLessEqual(spell_cost(row), pool(row["level"]))
 
     def test_over_time_costs_its_total(self):
         heal = lambda magnitude, duration: {"effects": [{"effect": "core:effect/restore_resource", "parameter": "health",
@@ -251,7 +261,7 @@ class TestSpellKnowledge(unittest.TestCase):
                 row = rows[key]
                 crafted = run_spellcraft({"operation": "craft", "spell": {"color": row["color"], "effects": row["effects"]},
                                           "caster": {"known": [a["effect"] for a in row["effects"]], "skills": {}}})
-                self.assertEqual((crafted["mana"], crafted["cast_threshold"]), (row["cost"]["mana"], row["cost"]["mana"]))
+                self.assertEqual((crafted["mana"], crafted["cast_threshold"]), (spell_cost(row), spell_cost(row)))
 
     def test_the_uncraftable_effects_and_the_excluded_mana(self):
         pool = effects()

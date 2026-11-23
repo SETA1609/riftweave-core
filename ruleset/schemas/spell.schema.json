@@ -33,9 +33,8 @@
         "summon": { "$ref": "#/definitions/summon", "description": "What a summon spell calls, in place of a core:effect/summon entry (docs/core/casting.md#summons)." },
         "cost": {
           "type": "object",
-          "description": "Casting cost: mana, and any reagents. Magic is paid in mana at a table and in real time alike; no spell costs stamina (docs/core/actions.md#one-rule-set-two-clocks). Derived in-engine from the sum of effects; stored here as the authored baseline.",
+          "description": "Casting cost: any reagents. The mana is never stored: every reader computes it from the effects by the spellcraft cost formula (docs/modules/magic.md#cost-formula, DE_S02_05), so a row or override that writes mana fails. Magic is paid in mana at a table and in real time alike; no spell costs stamina (docs/core/actions.md#one-rule-set-two-clocks).",
           "properties": {
-            "mana": { "type": "integer", "minimum": 0 },
             "reagents": { "type": "array", "items": { "$ref": "schema.json#/definitions/ingredientRef" }, "description": "Ingredient refs (namespaced core:ingredient/<key>) used as reagents for this spell" }
           },
           "additionalProperties": false

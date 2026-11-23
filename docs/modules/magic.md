@@ -186,7 +186,8 @@ color but green deals damage of its own; each matches a key in `combat/damage_ty
 ([hazards.md](../core/hazards.md#spells-on-a-hazard)). `test_spells.py` checks the floor,
 the colors, the channels, and this table.
 
-Every spell, authored or crafted, costs what §5's formula gives for its effects. A spell's `level`
+Every spell, authored or crafted, costs what §5's formula gives for its effects, and no row stores
+that number: every reader computes it (DE_S02_05). A spell's `level`
 (1–30) is its power band, which dispel reads; it does not set the cost.
 
 ### Summon groups
@@ -464,7 +465,7 @@ per effect
   cost       = 0.1 × base_cost × m × duration          duration in seconds, 1 = instant
   cost      += 0.05 × base_cost × radius               area only
   cost      ×= target multiplier                       self 1, touch 1, ranged 1.5, area 2
-spell cost   = ceil(sum over the effects)              cost.mana on the row
+spell cost   = ceil(sum over the effects)              never on the row: every reader computes it
 ```
 
 - **`base_cost`** is on each effect row: how much one point of it for one second is worth.
@@ -473,6 +474,12 @@ spell cost   = ceil(sum over the effects)              cost.mana on the row
 - **Duration** multiplies, so a pool effect is priced by its total (10 health a second for
   10 seconds costs what 100 at once does) and a buff by how long it holds.
 - **Riders** cost what they do: a 6-second blind on a burst is priced like a blind spell.
+- **Computed, not stored** (DE_S02_05, third normal form): the mana is a fact about the effects, not
+  about the spell's key, so a spell row or override that writes `cost.mana` fails `validate.py`, and
+  the spell author refuses it. `cost.reagents` stays: reagents are primary facts. The compendium's
+  spell table, the spell card, and every command result show the computed number, so no one prices a
+  spell by hand. A summon block is priced as the summon effect it replaces. [V 2026-11-23,
+  `test_spells.py`, the catalog and print tests]
 
 **Sources.** The shape is Morrowind's: OpenMW's `calcEffectCost` multiplies the mean
 magnitude by `0.1 × base_cost` and by the duration, adds `0.05 × area × base_cost`, and

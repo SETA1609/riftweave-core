@@ -102,7 +102,7 @@ func TestABrokenRefAWrongChannelAndABadParameterAreEachAProblem(t *testing.T) {
 	}
 }
 
-func TestTheCostIsTheFormulasAndAnAuthoredCostThatDiffersIsAWarning(t *testing.T) {
+func TestTheCostIsTheFormulasAndAnAuthoredManaIsAProblem(t *testing.T) {
 	opened := authorCore(t)
 	draft := draftSpell()
 	result := author(t, opened, map[string]any{"kind": "spell", "spells": []any{draft}})
@@ -114,14 +114,17 @@ func TestTheCostIsTheFormulasAndAnAuthoredCostThatDiffersIsAWarning(t *testing.T
 	if len(findings(t, result, "problems")) != 0 {
 		t.Errorf("problems: %v", findings(t, result, "problems"))
 	}
-	draft["cost"] = map[string]any{"mana": cost["mana"].(float64) + 3}
-	warned := author(t, opened, map[string]any{"kind": "spell", "spells": []any{draft}})
-	warnings := findings(t, warned, "warnings")
-	if len(warnings) != 1 || warnings[0].Check != "cost" {
-		t.Errorf("want one cost warning, got %v", warnings)
-	}
-	if len(findings(t, warned, "problems")) != 0 {
-		t.Errorf("a different cost is not a problem: %v", findings(t, warned, "problems"))
+	// DE_S02_05: the mana is computed, so a draft that writes it is refused, even with the right number.
+	for _, mana := range []float64{cost["mana"].(float64), cost["mana"].(float64) + 3} {
+		draft["cost"] = map[string]any{"mana": mana}
+		refused := author(t, opened, map[string]any{"kind": "spell", "spells": []any{draft}})
+		var found bool
+		for _, problem := range findings(t, refused, "problems") {
+			found = found || (problem.Check == "cost" && problem.Path == "/cost/mana")
+		}
+		if !found {
+			t.Errorf("mana %v: want a cost problem at /cost/mana, got %v", mana, findings(t, refused, "problems"))
+		}
 	}
 }
 
@@ -182,7 +185,7 @@ func TestASummonBlockIsPricedAsTheSummonEffectItReplaces(t *testing.T) {
 		{map[string]any{"group": "core:summon/elemental", "duration": 120, "minion": true, "count": "1d3+1"}, 108},
 	} {
 		draft := map[string]any{"key": "authored_call", "label": "Authored Call", "description": "A test summon.",
-			"color": "orange", "level": 2, "effects": []any{}, "summon": test.summon, "cost": map[string]any{"mana": test.mana}}
+			"color": "orange", "level": 2, "effects": []any{}, "summon": test.summon}
 		result := author(t, opened, map[string]any{"kind": "spell", "spells": []any{draft}})
 		spell := result["spells"].([]any)[0].(map[string]any)
 		cost, _ := spell["cost"].(map[string]any)

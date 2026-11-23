@@ -7,6 +7,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/SETA1609/riftweave-core/backend/internal/spellcraft"
 	"github.com/SETA1609/riftweave-core/backend/internal/stored"
 )
 
@@ -235,5 +236,21 @@ func TestASheetStateIsCurrentOrFresh(t *testing.T) {
 	}
 	if html := printPage(t, open(t), map[string]any{"kind": "sheet", "actor": woundedActor()}); printed(t, html, "current", "hp") != 9 {
 		t.Error("without a state the sheet is current")
+	}
+}
+
+// DE_S02_05: a spell card prints the mana the spellcraft formula gives, for every core spell.
+func TestEverySpellCardPrintsTheManaTheFormulaGives(t *testing.T) {
+	opened := open(t)
+	ruleset := opened.rules
+	for _, spell := range ruleset.Spells.Rows() {
+		want, err := spellcraft.SpellMana(ruleset, &spell)
+		if err != nil {
+			t.Fatal(err)
+		}
+		page := printPage(t, opened, map[string]any{"kind": "spell", "spell": spell.Key})
+		if got := printed(t, page, "stat", "mana"); got != want {
+			t.Errorf("%s: mana %d, want %d", spell.Key, got, want)
+		}
 	}
 }

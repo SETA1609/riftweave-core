@@ -10,6 +10,7 @@ import (
 	"testing/fstest"
 
 	"github.com/SETA1609/riftweave-core/backend/internal/data"
+	"github.com/SETA1609/riftweave-core/backend/internal/spellcraft"
 )
 
 var repo string = filepath.Join("..", "..", "..")
@@ -192,4 +193,35 @@ func TestRefusals(t *testing.T) {
 func number(value any) float64 {
 	result, _ := value.(float64)
 	return result
+}
+
+// DE_S02_05 (docs/modules/magic.md#cost-formula): no spell row stores its mana, so the spell table
+// shows the mana the spellcraft formula gives, for every core spell, in the cost.mana column.
+func TestTheSpellTableShowsTheManaTheFormulaGives(t *testing.T) {
+	var ruleset *data.Ruleset = load(t)
+	var spells Output = run(t, ruleset, Input{Operation: OperationList, Collection: "spells"})
+	if len(spells.Rows) < 45 {
+		t.Fatalf("%d spells", len(spells.Rows))
+	}
+	for _, row := range spells.Rows {
+		spell, err := ruleset.Spells.Require("spell", row.Row["key"].(string))
+		if err != nil {
+			t.Fatal(err)
+		}
+		want, err := spellcraft.SpellMana(ruleset, spell)
+		if err != nil {
+			t.Fatal(err)
+		}
+		cost, _ := row.Row["cost"].(map[string]any)
+		if cost == nil || cost["mana"] != float64(want) {
+			t.Errorf("%s: cost %v, want mana %d", row.Ref, row.Row["cost"], want)
+		}
+	}
+	// A plain spell, a spell on a base spell, and two summon spells, as casting_reference.spell_cost
+	// prices them.
+	for ref, want := range map[string]float64{"core:spell/fire_bolt": 6, "core:spell/greater_unlock": 30, "core:spell/summon_familiar": 18, "core:spell/raise_thrall": 36} {
+		if row := find(spells.Rows, ref); row == nil || row.Row["cost"].(map[string]any)["mana"] != want {
+			t.Errorf("%s: %+v, want mana %v", ref, row, want)
+		}
+	}
 }
