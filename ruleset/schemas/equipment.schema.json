@@ -232,7 +232,7 @@
             "label": { "type": "string" },
             "description": { "type": "string" },
             "source": { "$ref": "schema.json#/definitions/sourceRef" },
-            "type": { "type": "string", "enum": ["weapon", "armor", "shield", "accessory", "potion", "poison", "coating", "oil", "food", "scroll", "wand", "tool", "adventuring_gear", "ammunition"] },
+            "type": { "type": "string", "enum": ["weapon", "armor", "shield", "accessory", "potion", "poison", "coating", "oil", "food", "scroll", "wand", "tool", "adventuring_gear", "ammunition", "grenade"] },
             "cost": {
               "type": "object",
               "properties": {

@@ -522,6 +522,139 @@
           }
         ]
       }
+    },
+    {
+      "key": "fire_flask",
+      "label": "Fire Flask",
+      "description": "A clay flask of lamp oil and pitch that bursts into flame where it shatters.",
+      "type": "grenade",
+      "cost": {
+        "quantity": 8,
+        "unit": "gold"
+      },
+      "weight": 1,
+      "consumable": {
+        "delivery": "throw",
+        "damage": {
+          "dice": "2d6",
+          "type": "fire"
+        },
+        "radius": 1,
+        "range_normal": 6,
+        "range_long": 18,
+        "effects": [
+          {
+            "effect": "core:effect/burn",
+            "magnitude": 3,
+            "duration": 10
+          }
+        ]
+      }
+    },
+    {
+      "key": "frost_flask",
+      "label": "Frost Flask",
+      "description": "A sealed glass flask of rime salts that freezes the air where it breaks.",
+      "type": "grenade",
+      "cost": {
+        "quantity": 8,
+        "unit": "gold"
+      },
+      "weight": 1,
+      "consumable": {
+        "delivery": "throw",
+        "damage": {
+          "dice": "2d6",
+          "type": "frost"
+        },
+        "radius": 1,
+        "range_normal": 6,
+        "range_long": 18,
+        "effects": [
+          {
+            "effect": "core:effect/slow",
+            "duration": 10
+          }
+        ]
+      }
+    },
+    {
+      "key": "thunder_flask",
+      "label": "Thunder Flask",
+      "description": "A copper-bound flask that cracks with a deafening clap and knocks those near it off their feet.",
+      "type": "grenade",
+      "cost": {
+        "quantity": 12,
+        "unit": "gold"
+      },
+      "weight": 1,
+      "consumable": {
+        "delivery": "throw",
+        "damage": {
+          "dice": "2d6",
+          "type": "thunder"
+        },
+        "radius": 2,
+        "range_normal": 6,
+        "range_long": 18,
+        "effects": [
+          {
+            "effect": "core:effect/stagger",
+            "duration": 4
+          }
+        ]
+      }
+    },
+    {
+      "key": "acid_flask",
+      "label": "Acid Flask",
+      "description": "A waxed flask of caustic spirit that eats into armor where it splashes.",
+      "type": "grenade",
+      "cost": {
+        "quantity": 8,
+        "unit": "gold"
+      },
+      "weight": 1,
+      "consumable": {
+        "delivery": "throw",
+        "damage": {
+          "dice": "2d6",
+          "type": "acid"
+        },
+        "radius": 1,
+        "range_normal": 6,
+        "range_long": 18,
+        "effects": [
+          {
+            "effect": "core:effect/sunder_armor",
+            "magnitude": 2,
+            "duration": 10
+          }
+        ]
+      }
+    },
+    {
+      "key": "smoke_pot",
+      "label": "Smoke Pot",
+      "description": "A clay pot of smouldering resin that fills the space around it with thick grey smoke.",
+      "type": "grenade",
+      "cost": {
+        "quantity": 5,
+        "unit": "gold"
+      },
+      "weight": 1,
+      "consumable": {
+        "delivery": "throw",
+        "radius": 2,
+        "range_normal": 6,
+        "range_long": 18,
+        "effects": [
+          {
+            "effect": "core:effect/smoke_screen",
+            "duration": 15
+          }
+        ]
+      }
     }
   ]
 }

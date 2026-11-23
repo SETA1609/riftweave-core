@@ -512,9 +512,55 @@ NO_ROUNDS_LEFT = "the weapon has no rounds left"
 MUST_RELOAD = "the weapon must reload first"
 
 
+GRENADE_PREFIX = "core:consumable/"
+GRENADE_ALONE = "a grenade is thrown without a maneuver, a called shot, or ammunition"
+
+
+def throw_grenade(vector):
+    """A grenade thrown as an area attack (docs/core/combat.md#grenades): its own dice and damage
+    type with no ability added, nothing past its radius, and its riders on a hit that is not
+    evaded."""
+    ref = vector["grenade"]
+    rows = {GRENADE_PREFIX + row["key"]: row for row in load_data("equipment/consumables.json")["equipment"]}
+    row = rows.get(ref)
+    if row is None or row.get("type") != "grenade":
+        return {"error": f"{ref} is not a grenade"}
+    if any(field in vector for field in ("maneuver", "called_shot", "ammunition")):
+        return {"error": GRENADE_ALONE}
+    if vector.get("delivery", "area") != "area":
+        return {"error": "a grenade is an area attack"}
+    damage, consumable = vector["damage"], row["consumable"]
+    if "ability" in damage:
+        return {"error": "a grenade's damage adds no ability"}
+    dealt = consumable.get("damage")
+    if dealt is None:
+        return {"error": f"the {row['label']} deals no damage: it is no attack"}
+    count, sides = (int(part) for part in dealt["dice"].split("d"))
+    if not count <= damage["roll"] <= count * sides:
+        return {"error": f"the {row['label']} rolls {dealt['dice']}: {damage['roll']} is outside {count} to {count * sides}"}
+    if damage.get("type", dealt["type"]) != dealt["type"]:
+        return {"error": f"the {row['label']} deals {dealt['type']} damage, not {damage['type']}"}
+    if vector.get("burst_distance", 0) > consumable["radius"]:
+        return {
+            "outcome": "outside", "target": 0, "margin": None, "crit": False, "evaded": False, "blocked": False,
+            "evasion_rate": 0, "block_rate": 0, "parry_rate": 0, "parried": False, "warded": False, "ward_percent": 0,
+            "counter": False, "stagger_ap": 0, "damage": 0, "hp": vector["defender"]["hp"], "effects": [],
+        }
+    thrown = {key: value for key, value in vector.items() if key not in ("grenade", "burst_distance")}
+    thrown = {**thrown, "delivery": "area", "damage": {**damage, "type": dealt["type"]}}
+    result = strike(thrown)
+    if "error" in result:
+        return result
+    landed = result["outcome"] == "hit" and not result["evaded"]
+    return {**result, "effects": list(consumable.get("effects", [])) if landed else []}
+
+
 def run_combat(vector):
     """One attack (docs/core/combat.md). With `ammunition`, a weapon that fires or throws spends one
-    round, and a loading weapon must hold one (docs/core/combat.md#ammunition)."""
+    round, and a loading weapon must hold one (docs/core/combat.md#ammunition). With `grenade`, the
+    attack is a thrown grenade (docs/core/combat.md#grenades)."""
+    if "grenade" in vector:
+        return throw_grenade(vector)
     ammunition = vector.get("ammunition")
     properties = vector["attacker"].get("weapon_properties", [])
     if ammunition is None or not any(prop in properties for prop in FIRES):
