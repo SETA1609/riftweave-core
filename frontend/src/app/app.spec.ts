@@ -250,7 +250,7 @@ describe('the menus of backend/contract/menu.json', () => {
   });
 
   it('show the tools page and GM tools, each with Back to the menu above', () => {
-    expect(cards(menu('start'))).toEqual(['GM tools', 'Character creation', 'Spell creation (APP-22)', 'Skill resolution', 'Bestiary (APP-29)', 'Saved games', 'Back']);
+    expect(cards(menu('start'))).toEqual(['GM tools', 'Character creation', 'Spell creation (APP-22)', 'Skill resolution', 'Bestiary (APP-29)', 'Compendium (FE_S08_11_compendium-tables-page)', 'Saved games', 'Back']);
     TestBed.resetTestingModule();
     const gm = menu('gm_tools');
     expect(cards(gm)).toEqual(['Resolve an attack', 'Encounter tracker (APP-34)', 'Playthrough', 'Back']);

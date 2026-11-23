@@ -1,8 +1,8 @@
 #### BE_S08_10_compendium-catalog-cli A compendium of every table to study a build: the catalog command and the CLI screen (backend)
-- Status: todo
-- Priority: medium
+- Status: review
+- Priority: high
 - Needs: APP-27
-- Modified: 2026-11-19
+- Modified: 2026-11-21
 - Do: Owner request, 2026-11-19: a player or a GM studies the tables to plan a build: weapons, armor, accessories, consumables, gear, materials, gems, monsters, spells, perks, races, backgrounds, skills, conditions, and effects. No contract command lists a collection today [V 2026-11-19, `backend/contract/`], so add one, and a Compendium screen in the human CLI over it.
   - **The `catalog` command** (`backend/contract/catalog.json`): `list` takes a collection and returns its rows **resolved** (bases and overrides merged, docs/core/composition.md), from core and every enabled module, each with its namespaced key and its source; `get` returns one row by key. Filters and sort are generic (a field equals, a number in a range, text in the label or description) [A], so the command needs no code per collection.
   - **Columns from the data:** each collection names the columns a table shows (for example weapons: label, skill, damage, properties, range, cost, weight; perks: label, type, level, prerequisites, ranks; spells: label, color, level, mana, delivery) in a small `catalog` view table in the backend, or in the schemas [A, the spec step decides; columns are display, not rules].

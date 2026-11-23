@@ -107,3 +107,16 @@ func TestTheBrowserCoreAuthorsWithTheSchemas(t *testing.T) {
 		t.Errorf("author in the browser: %s %s", checked, refusal)
 	}
 }
+
+// The catalog answers in the browser as over HTTP (BE_S08_10).
+func TestTheCatalogThroughCall(t *testing.T) {
+	opened, err := core.Open(filepath.Join(repo, "ruleset", "data"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	output, refusal := call(opened, "catalog", `{"operation":"get","collection":"weapons","ref":"core:weapon/longsword"}`)
+	var result struct{ Row struct{ Row map[string]any } }
+	if refusal != "" || json.Unmarshal([]byte(output), &result) != nil || result.Row.Row["label"] != "Longsword" {
+		t.Errorf("output %s, refusal %q", output, refusal)
+	}
+}

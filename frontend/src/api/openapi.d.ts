@@ -101,6 +101,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/commands/catalog": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Every table a player or a GM studies to plan a build, from core and the loaded modules, each row resolved through its base: list the collections, list one filtered and sorted, or get one row.
+         * @description The rules are in docs/backend/api.md.
+         */
+        post: operations["catalog"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/commands/combat": {
         parameters: {
             query?: never;
@@ -1480,6 +1500,121 @@ export interface operations {
                         stamina?: number;
                         /** @description The active summons after the cast, oldest first. */
                         summons?: components["schemas"]["ref"][];
+                    };
+                };
+            };
+            /** @description The body is not the command's input, or a rule needs an input it was not given. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description No such command, or the input names a key that does not exist. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The body is over 1 MiB. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The command refused for another rule reason. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+        };
+    };
+    catalog: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * @description With list and get: the collection.
+                     * @enum {string}
+                     */
+                    collection?: "weapons" | "armor" | "accessories" | "consumables" | "gear" | "materials" | "gems" | "monsters" | "spells" | "features" | "races" | "backgrounds" | "skills" | "conditions" | "effects";
+                    /** @description With list: a row matches every filter. */
+                    filters?: {
+                        /** @description The field's value, or an item of a list field. */
+                        equals?: unknown;
+                        /** @description A dotted path into the resolved row, such as weapon.damage.type. */
+                        field?: string;
+                        max?: number;
+                        min?: number;
+                        /** @description Found in the label or the description, in any case. */
+                        text?: string;
+                    }[];
+                    /** @enum {string} */
+                    operation: "collections" | "list" | "get";
+                    /** @description With get: the row's ref, core:<category>/<key> or module:<id>/<category>/<key>. */
+                    ref?: string;
+                    /** @description With list: the order; a row without the field sorts last. Without it, the data's order. */
+                    sort?: {
+                        descending?: boolean;
+                        field: string;
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description The result. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        collection?: string;
+                        collections?: {
+                            columns: {
+                                field: string;
+                                label: string;
+                            }[];
+                            count: number;
+                            label: string;
+                            name: string;
+                        }[];
+                        columns?: {
+                            field: string;
+                            label: string;
+                        }[];
+                        row?: {
+                            ref: string;
+                            /** @description The row resolved: its base, then its overrides, then its own fields. */
+                            row: Record<string, never>;
+                            /** @description core, or the id of the module the row comes from. */
+                            source: string;
+                        };
+                        rows?: {
+                            ref: string;
+                            /** @description The row resolved: its base, then its overrides, then its own fields. */
+                            row: Record<string, never>;
+                            /** @description core, or the id of the module the row comes from. */
+                            source: string;
+                        }[];
                     };
                 };
             };
