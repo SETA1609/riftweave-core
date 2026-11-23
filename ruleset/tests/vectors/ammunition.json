@@ -1,0 +1,42 @@
+[
+  {
+    "name": "recover: half the arrows fired, rounded down, and none of the bullets",
+    "operation": "recover",
+    "fired": {
+      "arrow": 7,
+      "bullet": 4
+    },
+    "expect": {
+      "recovered": {
+        "arrow": 3,
+        "bullet": 0
+      }
+    }
+  },
+  {
+    "name": "recover: half the bolts, none of the stones or scatter, and every thrown weapon",
+    "operation": "recover",
+    "fired": {
+      "bolt": 5,
+      "stone": 6,
+      "scatter": 2,
+      "thrown": 3
+    },
+    "expect": {
+      "recovered": {
+        "bolt": 2,
+        "stone": 0,
+        "scatter": 0,
+        "thrown": 3
+      }
+    }
+  },
+  {
+    "name": "recover: nothing fired, nothing recovered",
+    "operation": "recover",
+    "fired": {},
+    "expect": {
+      "recovered": {}
+    }
+  }
+]

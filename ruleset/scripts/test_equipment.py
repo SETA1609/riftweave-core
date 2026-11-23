@@ -13,6 +13,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from balance_report import sized_dice  # noqa: E402
 from validate import compose_row, equipment_rows  # noqa: E402
+import validate  # noqa: E402  (the ammunition gates)
 
 DATA = Path(__file__).resolve().parent.parent / "data"
 EQUIPMENT = DATA / "equipment"
@@ -141,3 +142,25 @@ class TestToxicity(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestAmmunition(unittest.TestCase):
+    """GD_S17_02 (docs/core/combat.md#ammunition): every weapon that fires names its kind, and every
+    ammunition row fires from some weapon."""
+
+    def test_the_data_has_no_ammunition_problem(self):
+        self.assertEqual(validate.check_ammunition(), [])
+
+    def test_a_base_with_the_ammunition_property_and_no_kind_fails(self):
+        bases = [{"key": "bow", "weapon": {"properties": ["ammunition", "two_handed"]}}]
+        self.assertEqual(validate.ammunition_problems(bases, []), ["weapon base bow has the ammunition property and no weapon.ammo"])
+
+    def test_a_row_whose_kind_no_weapon_loads_fails(self):
+        bases = [{"key": "bow", "weapon": {"properties": ["ammunition"], "ammo": "arrow"}}]
+        rows = [{"key": "sling_stones", "ammunition": {"kind": "stone", "count": 20}}]
+        self.assertEqual(validate.ammunition_problems(bases, rows), ["ammunition sling_stones is stone, which no weapon loads"])
+
+    def test_each_kind_has_a_bundle_of_the_size_the_spec_names(self):
+        rows = json.loads((DATA / "equipment" / "ammunition.json").read_text())["equipment"]
+        counts = {row["ammunition"]["kind"]: row["ammunition"]["count"] for row in rows if "damage_type" not in row["ammunition"] and "effects" not in row["ammunition"]}
+        self.assertEqual(counts, {"arrow": 20, "bolt": 20, "bullet": 10, "scatter": 10, "stone": 20})
