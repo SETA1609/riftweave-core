@@ -897,10 +897,10 @@ export interface components {
             off_skill?: components["schemas"]["ruleset_skillRef"];
         };
         /**
-         * @description What the main hand holds (docs/core/combat.md#attacks-by-loadout): nothing, a weapon with the `light` property, another one-handed weapon, or a weapon held in both hands (a `two_handed` weapon, or a `versatile` one in both hands). One vocabulary for attack sequences and stances.
+         * @description What the main hand holds (docs/core/combat.md#attacks-by-loadout): nothing, a weapon with the `light` property, another one-handed weapon, or a weapon held in both hands (a `two_handed` weapon, or a `versatile` one in both hands); or a ranged weapon: a `bow`, a `hand_gun` (a hand crossbow or a pistol), a `long_gun` (a two-handed crossbow or a long gun), or a `light_thrown` weapon (docs/core/combat.md#ranged-loadouts). One vocabulary for attack sequences and stances.
          * @enum {string}
          */
-        ruleset_mainHand: "empty" | "light" | "one_handed" | "two_handed";
+        ruleset_mainHand: "empty" | "light" | "one_handed" | "two_handed" | "bow" | "hand_gun" | "long_gun" | "light_thrown";
         /** @description A reference to a combat maneuver in maneuvers/core.json (docs/core/actions.md#maneuvers). */
         ruleset_maneuverRef: string;
         /** @description A reference to a material row (docs/core/integrity.md). */
@@ -940,10 +940,10 @@ export interface components {
         /** @description A reference to a natural weapon in natural_weapons/core.json (docs/modules/monsters.md#natural-weapons). Not equipment. */
         ruleset_naturalWeaponRef: string;
         /**
-         * @description What the off hand holds (docs/core/combat.md#attacks-by-loadout): nothing, a shield, a buckler, a light weapon, another one-handed weapon, or the main hand's two-handed grip. One vocabulary for attack sequences and stances.
+         * @description What the off hand holds (docs/core/combat.md#attacks-by-loadout): nothing, a shield, a buckler, a light weapon, another one-handed weapon, or the main hand's two-handed grip; or a `hand_gun` or a `light_thrown` weapon. One vocabulary for attack sequences and stances.
          * @enum {string}
          */
-        ruleset_offHand: "empty" | "shield" | "buckler" | "light_weapon" | "weapon" | "two_handed";
+        ruleset_offHand: "empty" | "shield" | "buckler" | "light_weapon" | "weapon" | "two_handed" | "hand_gun" | "light_thrown";
         /** @description A reference to a origin row (docs/core/integrity.md). */
         ruleset_originRef: string;
         /** @description A d100 roll-under value (skill rating, chance, or resistance), normally 0-100 but allowed above 100 for buffed/legendary values. */
@@ -1310,6 +1310,17 @@ export interface operations {
                     after_block?: boolean;
                     /** @description The attacker parried a hit since their last strike: attack_after_parry adds to the first main-hand strike (Espada y Daga, docs/core/combat.md#fighting-stances). */
                     after_parry?: boolean;
+                    /** @description The rounds each ranged hand carries, and for a loading weapon whether it holds one; a hand left out is not counted (docs/core/combat.md#ranged-loadouts). */
+                    ammunition?: {
+                        main?: {
+                            loaded?: boolean;
+                            rounds: number;
+                        };
+                        off?: {
+                            loaded?: boolean;
+                            rounds: number;
+                        };
+                    };
                     /** @description The attacker's AP left. A full attack and a circle cut spend all of it and need at least the attack AP + full_attack.min_extra_ap; an attack or a jab with fewer than its AP is an error. An opportunity attack is a reaction and needs none. */
                     ap?: number;
                     attacker: {
@@ -1342,7 +1353,7 @@ export interface operations {
                     };
                     /** @description With opportunity: the foe left reach with Disengage, so no attack. */
                     disengaged?: boolean;
-                    /** @description The foes in reach, in the order a carry picks them; foe 0 is a full attack's target. */
+                    /** @description The foes in reach or in range, in the order a carry picks them; foe 0 is a full attack's target. */
                     foes: Record<string, never>[];
                     loadout: components["schemas"]["ruleset_loadout"];
                     /** @description Attack modifiers on every strike (situations). */
@@ -1377,6 +1388,17 @@ export interface operations {
                 content: {
                     "application/json": {
                         action: string;
+                        /** @description With ammunition: the rounds each counted hand has left. */
+                        ammunition?: {
+                            main?: {
+                                loaded?: boolean;
+                                rounds: number;
+                            };
+                            off?: {
+                                loaded?: boolean;
+                                rounds: number;
+                            };
+                        };
                         ap: number;
                         /** @description With opportunity: whether the attack happened. */
                         fired?: boolean;
@@ -1385,14 +1407,18 @@ export interface operations {
                         /** @description Strikes lost because their foe dropped and nothing carried them. */
                         lost: number;
                         /**
-                         * @description With opportunity, when it did not fire: why.
+                         * @description With opportunity, when it did not fire: why (ranged: a ranged main hand makes no opportunity attack).
                          * @enum {string}
                          */
-                        reason?: "disengaged" | "no_reaction_left";
+                        reason?: "disengaged" | "no_reaction_left" | "ranged";
+                        /** @description With ammunition: the reloads a full attack made from its own AP. */
+                        reloads?: number;
                         /** @description The attack_sequences row key. */
                         sequence: string;
                         /** @description ap times stamina_per_ap. */
                         stamina: number;
+                        /** @description With ammunition: the strikes a full attack did not make, because a reload did not fit its AP or a hand had no rounds left. */
+                        stopped?: number;
                         strikes: {
                             /** @description The strike's attack value after the penalty perks. */
                             attack: number;
