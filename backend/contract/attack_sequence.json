@@ -15,7 +15,7 @@
       "ap": {
         "type": "integer",
         "minimum": 0,
-        "description": "The attacker's AP left. A full attack and a circle cut spend all of it and need at least the attack AP + full_attack.min_extra_ap; an attack or a jab with fewer than its AP is an error. With opportunity or readied: the AP held, which pays the attack; with less than its cost, no attack."
+        "description": "The attacker's AP left. A full attack and a circle cut spend all of it and need at least the attack AP + full_attack.min_extra_ap; an attack or a jab with fewer than its AP is an error. With readied: the AP held, which pays the attack; with less than its cost, no attack. An opportunity attack is a reaction and needs none."
       },
       "attacker": {
         "type": "object",
@@ -145,7 +145,7 @@
       "reactions_used": {
         "type": "integer",
         "minimum": 0,
-        "description": "With opportunity or readied: the attacks out of turn the attacker already made since its last turn. Default 0."
+        "description": "With opportunity: the reactions the attacker already used since its last turn. Default 0. A readied attack spends none."
       },
       "after_block": {
         "type": "boolean",
@@ -244,7 +244,7 @@
       },
       "fired": { "type": "boolean", "description": "With opportunity or readied: whether the attack happened." },
       "reason": { "type": "string", "enum": ["disengaged", "not_triggered", "no_reaction_left", "not_enough_held"], "description": "With opportunity or readied, when it did not fire: why." },
-      "guard_lost": { "type": "integer", "minimum": 0, "description": "With opportunity or readied: the AP spent times guard_per_ap, the guard the held AP no longer gives." }
+      "guard_lost": { "type": "integer", "minimum": 0, "description": "With readied: the AP spent times guard_per_ap, the guard the held AP no longer gives; 0 with opportunity." }
     },
     "additionalProperties": false,
     "required": ["action", "sequence", "ap", "stamina", "strikes", "hp", "lost"]

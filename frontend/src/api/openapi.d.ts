@@ -1067,7 +1067,7 @@ export interface operations {
                     after_block?: boolean;
                     /** @description The attacker parried a hit since their last strike: attack_after_parry adds to the first main-hand strike (Espada y Daga, docs/core/combat.md#fighting-stances). */
                     after_parry?: boolean;
-                    /** @description The attacker's AP left. A full attack and a circle cut spend all of it and need at least the attack AP + full_attack.min_extra_ap; an attack or a jab with fewer than its AP is an error. With opportunity or readied: the AP held, which pays the attack; with less than its cost, no attack. */
+                    /** @description The attacker's AP left. A full attack and a circle cut spend all of it and need at least the attack AP + full_attack.min_extra_ap; an attack or a jab with fewer than its AP is an error. With readied: the AP held, which pays the attack; with less than its cost, no attack. An opportunity attack is a reaction and needs none. */
                     ap?: number;
                     attacker: {
                         attributes?: components["schemas"]["attributes"];
@@ -1114,7 +1114,7 @@ export interface operations {
                         ability?: components["schemas"]["ruleset_ability"];
                         type: components["schemas"]["key"];
                     };
-                    /** @description With opportunity or readied: the attacks out of turn the attacker already made since its last turn. Default 0. */
+                    /** @description With opportunity: the reactions the attacker already used since its last turn. Default 0. A readied attack spends none. */
                     reactions_used?: number;
                     /** @description One attack roll and one damage roll per strike made, in order; a lost strike takes none. */
                     rolls: {
@@ -1144,7 +1144,7 @@ export interface operations {
                         ap: number;
                         /** @description With opportunity or readied: whether the attack happened. */
                         fired?: boolean;
-                        /** @description With opportunity or readied: the AP spent times guard_per_ap, the guard the held AP no longer gives. */
+                        /** @description With readied: the AP spent times guard_per_ap, the guard the held AP no longer gives; 0 with opportunity. */
                         guard_lost?: number;
                         /** @description Each foe's HP after the action. */
                         hp: number[];
