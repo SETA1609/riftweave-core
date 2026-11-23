@@ -1,6 +1,6 @@
 # App layout
 
-Modified: 2026-11-21
+Modified: 2026-11-23
 
 The human CLI (`riftweave play`) and the Angular app (APP-27) show the same menus, so a player
 who learns one finds their way in the other. The menu tree is one file,
@@ -25,7 +25,7 @@ Main menu
 │   │   ├── Encounter tracker          APP-34
 │   │   └── Playthrough                web only
 │   ├── Character creation
-│   ├── Spell creation                 APP-22
+│   ├── Spell creation                 APP-22 in the CLI
 │   ├── Skill resolution
 │   ├── Bestiary                       APP-29
 │   ├── Compendium                     FE_S08_11 in the web app
