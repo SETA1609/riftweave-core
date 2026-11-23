@@ -6,6 +6,7 @@ package combat
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"math"
 	"slices"
@@ -73,6 +74,9 @@ type Damage struct {
 
 // Input is the `combat` command's input.
 type Input struct {
+	// Ammunition is the rounds carried and whether a loading weapon holds one; nil, rounds are not
+	// counted (docs/core/combat.md#ammunition, GD_S17_02).
+	Ammunition *Ammunition         `json:"ammunition"`
 	Attacker   Attacker            `json:"attacker"`
 	Defender   Defender            `json:"defender"`
 	Damage     Damage              `json:"damage"`
@@ -95,14 +99,16 @@ const besideSummon = "beside_summon"
 
 // Result is the outcome of the attack.
 type Result struct {
-	Outcome     string `json:"outcome"`
-	Target      int64  `json:"target"`
-	Margin      *int64 `json:"margin"`
-	Critical    bool   `json:"crit"`
-	Evaded      bool   `json:"evaded"`
-	Blocked     bool   `json:"blocked"`
-	EvasionRate int64  `json:"evasion_rate"`
-	BlockRate   int64  `json:"block_rate"`
+	// Ammunition is the rounds left after the strike, with the ammunition input only.
+	Ammunition  *Ammunition `json:"ammunition,omitempty"`
+	Outcome     string      `json:"outcome"`
+	Target      int64       `json:"target"`
+	Margin      *int64      `json:"margin"`
+	Critical    bool        `json:"crit"`
+	Evaded      bool        `json:"evaded"`
+	Blocked     bool        `json:"blocked"`
+	EvasionRate int64       `json:"evasion_rate"`
+	BlockRate   int64       `json:"block_rate"`
 	// ParryRate is a parrying stance's band, under the block band; Parried is a hit it stopped.
 	ParryRate int64 `json:"parry_rate"`
 	Parried   bool  `json:"parried"`
@@ -329,7 +335,50 @@ func situationModifiers(ruleset *data.Ruleset, input *Input, delivery string) ([
 }
 
 // Run is the `combat` command.
+// Ammunition is a weapon's rounds: how many the attacker carries, and for a loading weapon
+// whether it holds one.
+type Ammunition struct {
+	Rounds int64 `json:"rounds"`
+	Loaded *bool `json:"loaded,omitempty"`
+}
+
+// The weapon properties that spend a round, and the one that must hold it first.
+const (
+	propertyAmmunition = "ammunition"
+	propertyThrown     = "thrown"
+	propertyLoading    = "loading"
+)
+
+// Run is one attack. With the ammunition input, a weapon that fires or throws spends one round,
+// and a loading weapon must hold one (docs/core/combat.md#ammunition).
 func Run(ruleset *data.Ruleset, input Input) (Result, error) {
+	var properties []string = input.Attacker.WeaponProperties
+	if input.Ammunition == nil || !(slices.Contains(properties, propertyAmmunition) || slices.Contains(properties, propertyThrown)) {
+		return strike(ruleset, input)
+	}
+	if input.Ammunition.Rounds <= 0 {
+		return Result{}, errors.New("the weapon has no rounds left")
+	}
+	var loading bool = slices.Contains(properties, propertyLoading)
+	if loading && (input.Ammunition.Loaded == nil || !*input.Ammunition.Loaded) {
+		return Result{}, errors.New("the weapon must reload first")
+	}
+	var rounds Ammunition = Ammunition{Rounds: input.Ammunition.Rounds - 1}
+	if loading {
+		var empty bool
+		rounds.Loaded = &empty
+	}
+	input.Ammunition = nil
+	result, err := strike(ruleset, input)
+	if err != nil {
+		return Result{}, err
+	}
+	result.Ammunition = &rounds
+	return result, nil
+}
+
+// strike is one attack, in the order of docs/core/combat.md.
+func strike(ruleset *data.Ruleset, input Input) (Result, error) {
 	// The attacker's while_summoning modifiers, resolved once (docs/core/modifier.md).
 	input.Modifiers = modifier.Summoning(input.Modifiers, input.Summoning || slices.Contains(input.Situations, besideSummon))
 	damageType, err := ruleset.DamageTypes.Require("damage type", input.Damage.Type)

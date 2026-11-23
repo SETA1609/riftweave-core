@@ -638,5 +638,44 @@
     "expect": {
       "error": "carried 3 is more than pool.carry 2"
     }
+  },
+  {
+    "name": "reload: loading one round costs 2 AP",
+    "actor": {
+      "attributes": {
+        "agi": 6
+      }
+    },
+    "actions": [
+      "reload"
+    ],
+    "expect": {
+      "pool": 4,
+      "cost": 2
+    }
+  },
+  {
+    "name": "fast reload: a reload costs 1 AP less",
+    "actor": {
+      "attributes": {
+        "agi": 6
+      }
+    },
+    "actions": [
+      "reload"
+    ],
+    "modifiers": [
+      {
+        "target": "reload",
+        "operation": "add",
+        "value": -1,
+        "source": "feature:fast_reload",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "pool": 4,
+      "cost": 1
+    }
   }
 ]

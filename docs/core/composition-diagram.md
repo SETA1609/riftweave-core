@@ -22,6 +22,7 @@ From `equipment.schema.json`: a row as written, or a row on a base (`weapon_base
 classDiagram
     class EQUIPMENT {
         accessory
+        ammunition
         armor
         consumable
         cost

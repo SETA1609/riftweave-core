@@ -1031,15 +1031,18 @@ type Ruleset struct {
 	AttributeModifier *formula.Program // formulas/attribute_modifier.json
 	Price             *formula.Program
 	LootLuck          *formula.Program
-	Items             map[string]Item      // core:<category>/<key>
-	MaterialPercent   map[string]int64     // material key: value_factor * 100
-	MaterialDefense   map[string]int64     // a material ref: its armor.defense, added to an armor piece's dr_base
-	MaterialAttack    map[string]int64     // a material ref: its weapon.attack (a bound weapon's attack)
-	TemplateDamage    map[string]string    // a monster template ref: its damage_type, "" for none (element templates)
-	DiceLadder        [][]string           // combat/dice_ladder.json: rungs of equal dice, smallest first
-	Sizes             map[string]Size      // combat/dice_ladder.json: undersized, normal, oversized
-	MonsterLevel      map[string]int64     // monster key
-	MonsterLoot       map[string][]DropRow // monster key: its resolved loot rows
+	Items             map[string]Item   // core:<category>/<key>
+	MaterialPercent   map[string]int64  // material key: value_factor * 100
+	MaterialDefense   map[string]int64  // a material ref: its armor.defense, added to an armor piece's dr_base
+	MaterialAttack    map[string]int64  // a material ref: its weapon.attack (a bound weapon's attack)
+	TemplateDamage    map[string]string // a monster template ref: its damage_type, "" for none (element templates)
+	DiceLadder        [][]string        // combat/dice_ladder.json: rungs of equal dice, smallest first
+	// AmmunitionRecovered is combat/ammunition.json: the share of each kind of round, and of thrown
+	// weapons ("thrown"), recovered after a fight (GD_S17_02).
+	AmmunitionRecovered map[string]float64
+	Sizes               map[string]Size      // combat/dice_ladder.json: undersized, normal, oversized
+	MonsterLevel        map[string]int64     // monster key
+	MonsterLoot         map[string][]DropRow // monster key: its resolved loot rows
 
 	// EffectRefs is every ref in effects/core.json, for the refs a dev operation names.
 	EffectRefs map[string]bool
@@ -1664,6 +1667,17 @@ func (loader *rulesetLoader) loadItems(ruleset *Ruleset) {
 	}
 	loader.read("combat/dice_ladder.json", &ladder)
 	ruleset.DiceLadder, ruleset.Sizes = ladder.DiceLadder, ladder.Sizes
+	var recovery struct {
+		Recovery []struct {
+			Kind      string  `json:"kind"`
+			Recovered float64 `json:"recovered"`
+		} `json:"recovery"`
+	}
+	loader.read("combat/ammunition.json", &recovery)
+	ruleset.AmmunitionRecovered = map[string]float64{}
+	for _, row := range recovery.Recovery {
+		ruleset.AmmunitionRecovered[row.Kind] = row.Recovered
+	}
 
 	var materials struct {
 		Materials []struct {

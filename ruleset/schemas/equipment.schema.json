@@ -84,6 +84,7 @@
               "additionalProperties": false
             },
             "properties": { "type": "array", "items": { "type": "string" } },
+            "ammo": { "$ref": "schema.json#/definitions/ammoKind", "description": "The kind of round the weapon fires; required with the ammunition property (validate.py, docs/core/combat.md#ammunition)." },
             "ability": { "$ref": "schema.json#/definitions/ability", "description": "The attribute whose modifier adds to this weapon's damage. Every ranged weapon names one (docs/modules/attributes.md#the-attribute-modifier); a melee weapon reads str, or agi with the finesse property." },
             "range_normal": { "type": "integer", "minimum": 1, "description": "Normal range in units (grid squares, docs/core/contract.md#distance)." },
             "range_long": { "type": "integer", "minimum": 1, "description": "Long range in units (grid squares)." },
@@ -187,6 +188,18 @@
             "uses": { "type": "integer", "minimum": 1, "description": "Uses before the item is spent; omitted means it is not used up." }
           },
           "additionalProperties": false
+        },
+        "ammunition": {
+          "type": "object",
+          "description": "Rounds for a weapon with the ammunition property, sold in a bundle (docs/core/combat.md#ammunition). A row may change the strike's damage type and add effects on a hit; plain rounds change nothing.",
+          "properties": {
+            "kind": { "$ref": "schema.json#/definitions/ammoKind" },
+            "count": { "type": "integer", "minimum": 1, "description": "How many rounds a bundle holds." },
+            "damage_type": { "$ref": "schema.json#/definitions/damageType", "description": "The damage type a strike with these rounds deals instead of the weapon's." },
+            "effects": { "type": "array", "items": { "$ref": "schema.json#/definitions/appliedEffect" }, "description": "Effects on a hit." }
+          },
+          "required": ["kind", "count"],
+          "additionalProperties": false
         }
       }
     },
@@ -220,7 +233,8 @@
             "armor": { "type": "object" },
             "consumable": { "type": "object" },
             "accessory": { "type": "object" },
-            "gear": { "type": "object" }
+            "gear": { "type": "object" },
+            "ammunition": { "type": "object" }
           },
           "required": ["key", "label", "description", "type", "cost", "weight"],
           "additionalProperties": false,
@@ -229,7 +243,8 @@
             { "required": ["armor"] },
             { "required": ["consumable"] },
             { "required": ["accessory"] },
-            { "required": ["gear"] }
+            { "required": ["gear"] },
+            { "required": ["ammunition"] }
           ]
         }
       ]

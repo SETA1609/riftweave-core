@@ -18,6 +18,7 @@ import (
 	"slices"
 
 	"github.com/SETA1609/riftweave-core/backend/internal/actor"
+	"github.com/SETA1609/riftweave-core/backend/internal/ammunition"
 	"github.com/SETA1609/riftweave-core/backend/internal/attack"
 	"github.com/SETA1609/riftweave-core/backend/internal/casting"
 	"github.com/SETA1609/riftweave-core/backend/internal/catalog"
@@ -117,6 +118,7 @@ var commands map[string]commandHandler = map[string]commandHandler{
 	"spellcraft":      bind(spellcraft.Run),
 	"progression":     bind(progression.Run),
 	"catalog":         bind(catalog.Run),
+	"ammunition":      bind(ammunition.Run),
 }
 
 // Core is an opened ruleset.

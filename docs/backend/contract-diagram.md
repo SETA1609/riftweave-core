@@ -7,7 +7,7 @@ Run `python ruleset/scripts/contract_diagram.py --write` after a contract change
 `test_contract_diagram.py` fails until the page matches. What the contract is:
 [README.md](README.md#commands) and [contract.md](../core/contract.md).
 
-28 commands. Each is a class diagram of its input and its result; a field whose type is
+29 commands. Each is a class diagram of its input and its result; a field whose type is
 a shared type of `common.json` links to it, and the shared types are drawn once, below.
 
 ## Shared types
@@ -179,6 +179,22 @@ classDiagram
     actions_input --> actor : actor
 ```
 
+## ammunition
+
+Recover the rounds fired in a fight.
+
+```mermaid
+classDiagram
+    class ammunition_input {
+        object fired
+        modifiers modifiers
+        enum operation
+    }
+    class ammunition_result {
+        object recovered
+    }
+```
+
 ## attack_sequence
 
 One attack action by loadout: the attack, the jab, the full attack, or the circle cut, each strike its own roll through the combat pipeline.
@@ -305,6 +321,7 @@ One attack from the roll to the HP lost: one attack roll read against the defend
 ```mermaid
 classDiagram
     class combat_input {
+        object ammunition
         object attacker
         key called_shot
         object damage
@@ -318,6 +335,7 @@ classDiagram
         boolean summoning
     }
     class combat_result {
+        object ammunition
         integer ap
         integer block_rate
         boolean blocked

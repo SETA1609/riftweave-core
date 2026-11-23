@@ -1873,7 +1873,7 @@
       "ranks": 1,
       "modifiers": [
         {
-          "target": "reload_cost",
+          "target": "reload",
           "operation": "add",
           "value": -1,
           "source": "feature:fast_reload",

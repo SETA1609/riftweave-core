@@ -1,6 +1,6 @@
 # Weapons
 
-Modified: 2026-11-19
+Modified: 2026-11-23
 
 Weapons in Riftweave are defined as base equipment entries in `ruleset/data/equipment/weapons.json` (governed by `equipment.schema.json`). They are deliberately simple and use **classic D&D 3.5-style dice** for damage. Material-based variations and crafting options are **not** encoded as data variations in the schema or base entries. Instead, they are explained here for use by the crafting and magic-crafting modules.
 
@@ -65,6 +65,8 @@ All weapons use standard D&D 3.5 / Pathfinder-style dice expressions for their b
 | Blunderbuss     | 2d6        | piercing  | -      | -            | guns       | ammunition, loading, two_handed |
 
 These are the **base** dice for the weapon type. They assume a baseline construction (historically often iron or steel quality). The actual performance changes with the material used.
+
+A weapon with `ammunition` names its kind in `weapon.ammo` (bows `arrow`, crossbows `bolt`, guns `bullet` or `scatter`, the sling `stone`); rounds, reloading, and recovery: [combat.md](../core/combat.md#ammunition).
 
 ## Damage Dice by Handling and Size
 

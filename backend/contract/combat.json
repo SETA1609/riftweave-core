@@ -143,6 +143,16 @@
         ],
         "description": "Default melee."
       },
+      "ammunition": {
+        "type": "object",
+        "description": "For a weapon that fires or throws (attacker.weapon_properties has ammunition or thrown): the rounds carried, and for a loading weapon whether it holds one. Left out, rounds are not counted (docs/core/combat.md#ammunition).",
+        "properties": {
+          "rounds": { "type": "integer", "minimum": 0 },
+          "loaded": { "type": "boolean" }
+        },
+        "required": ["rounds"],
+        "additionalProperties": false
+      },
       "summoning": {
         "type": "boolean",
         "description": "Whether the attacker has an active summon (not a minion), for its while_summoning modifiers. Default false; the beside_summon situation implies true (docs/core/modifier.md)."
@@ -271,6 +281,16 @@
           "additionalProperties": false
         },
         "description": "A called shot's riders on a hit."
+      },
+      "ammunition": {
+        "type": "object",
+        "description": "With the ammunition input: the rounds left after the strike, and whether a loading weapon still holds one (it never does after a shot).",
+        "properties": {
+          "rounds": { "type": "integer", "minimum": 0 },
+          "loaded": { "type": "boolean" }
+        },
+        "required": ["rounds"],
+        "additionalProperties": false
       },
       "counter": {
         "type": "boolean",

@@ -1,8 +1,8 @@
 #### GD_S17_02_ammunition-items-and-reloading Ammunition items, the reload action, and recovering spent ammunition
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: —
-- Modified: 2026-11-18
+- Modified: 2026-11-23
 - Do: Owner request, 2026-11-18. Every bow, crossbow, gun, and the sling has the `ammunition` property, but no ammunition item exists, and Fast Reload changes a `reload_cost` that no action has. Give ammunition rows, and make the ranged perks after this one able to spend, recover, and find it.
   - **Ammunition kinds:** `arrow`, `bolt`, `bullet` (ball and powder), `scatter` (a blunderbuss charge), and `stone` (sling) [A]. The kind vocabulary goes in `schema.json` once. A weapon base with the `ammunition` property names the kind it loads (`weapon.ammo`); the blunderbuss loads `scatter` [A].
   - **Ammunition rows:** an `ammunition` item type in the equipment files (or a collection of its own; decided in the spec step [A]), sold in bundles: 20 arrows, 20 bolts, 10 bullets, 10 scatter charges, 20 sling stones [A], each with its kind, weight, and cost. A row may change the damage type and add riders (`appliedEffect`) on a hit; plain ammunition changes nothing. This is the hook GD_S17_04 (elemental rounds) and GD_S17_11 (conjured rounds) use.

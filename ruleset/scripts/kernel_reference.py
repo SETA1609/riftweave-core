@@ -505,7 +505,41 @@ def maneuver_cost(maneuver, loadout=None):
     return ap, ap * data["stamina_per_ap"]
 
 
+FIRES = ("ammunition", "thrown")
+LOADING = "loading"
+NO_ROUNDS_LEFT = "the weapon has no rounds left"
+MUST_RELOAD = "the weapon must reload first"
+
+
 def run_combat(vector):
+    """One attack (docs/core/combat.md). With `ammunition`, a weapon that fires or throws spends one
+    round, and a loading weapon must hold one (docs/core/combat.md#ammunition)."""
+    ammunition = vector.get("ammunition")
+    properties = vector["attacker"].get("weapon_properties", [])
+    if ammunition is None or not any(prop in properties for prop in FIRES):
+        return strike(vector)
+    if ammunition["rounds"] <= 0:
+        return {"error": NO_ROUNDS_LEFT}
+    loading = LOADING in properties
+    if loading and not ammunition.get("loaded", False):
+        return {"error": MUST_RELOAD}
+    result = strike({key: value for key, value in vector.items() if key != "ammunition"})
+    if "error" in result:
+        return result
+    left = {"rounds": ammunition["rounds"] - 1}
+    if loading:
+        left["loaded"] = False
+    return {**result, "ammunition": left}
+
+
+def run_ammunition(vector):
+    """Recover the rounds fired in a fight (docs/core/combat.md#ammunition): each kind's share in
+    combat/ammunition.json, rounded down."""
+    shares = {row["kind"]: row["recovered"] for row in load_data("combat/ammunition.json")["recovery"]}
+    return {"recovered": {kind: math.floor(count * shares[kind] + 1e-9) for kind, count in vector["fired"].items()}}
+
+
+def strike(vector):
     """One attack, in the order of docs/core/combat.md. Dice and rolls are inputs."""
     # The attacker's while_summoning modifiers, resolved once; beside_summon means a summon is out.
     summoning = bool(vector.get("summoning")) or "beside_summon" in vector.get("situations", [])
@@ -1508,6 +1542,7 @@ RUNNERS = {
     "stored_actor": run_stored_actor,
     "economy": run_economy,
     "combat": run_combat,
+    "ammunition": run_ammunition,
     "attack_sequence": run_attack_sequence,
     "stance": run_stance,
     "loot": run_loot,

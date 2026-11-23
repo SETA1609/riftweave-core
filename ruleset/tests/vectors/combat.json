@@ -5607,5 +5607,183 @@
         "target": 50
       }
     }
+  },
+  {
+    "name": "ammunition: a bow shot spends one arrow of twenty",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "two_handed"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing"
+    },
+    "ammunition": {
+      "rounds": 20
+    },
+    "expect": {
+      "outcome": "hit",
+      "damage": 7,
+      "hp": 23,
+      "ammunition": {
+        "rounds": 19
+      }
+    }
+  },
+  {
+    "name": "ammunition: a loaded pistol fires its round and must reload",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "loading",
+        "light"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing"
+    },
+    "ammunition": {
+      "rounds": 10,
+      "loaded": true
+    },
+    "expect": {
+      "outcome": "hit",
+      "damage": 7,
+      "hp": 23,
+      "ammunition": {
+        "rounds": 9,
+        "loaded": false
+      }
+    }
+  },
+  {
+    "name": "ammunition: a thrown knife spends itself",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "thrown",
+        "light"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing"
+    },
+    "ammunition": {
+      "rounds": 3
+    },
+    "expect": {
+      "outcome": "hit",
+      "ammunition": {
+        "rounds": 2
+      }
+    }
+  },
+  {
+    "name": "error: a loading weapon cannot fire again before a reload",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "loading",
+        "light"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing"
+    },
+    "ammunition": {
+      "rounds": 9,
+      "loaded": false
+    },
+    "expect": {
+      "error": "the weapon must reload first"
+    }
+  },
+  {
+    "name": "error: a weapon with no rounds left cannot attack",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "two_handed"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing"
+    },
+    "ammunition": {
+      "rounds": 0
+    },
+    "expect": {
+      "error": "the weapon has no rounds left"
+    }
   }
 ]

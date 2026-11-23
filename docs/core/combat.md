@@ -270,6 +270,44 @@ not fired    nothing is spent: no reaction
 
 The `attack_sequence` command runs it as the action `opportunity`, with `disengaged` and `reactions_used`, and returns `fired`, the `reason` it did not fire (`disengaged` or `no_reaction_left`), and `ap` and `stamina` 0. [V 2026-11-23, `attack_sequence` vectors in Python and Go]
 
+## Ammunition
+
+Owner request, 2026-11-18 (GD_S17_02). A weapon with the `ammunition` property fires rounds of one
+**kind**, which its base names in `weapon.ammo`: `arrow` (bows), `bolt` (crossbows), `bullet`
+(ball and powder: the pistol and the arquebus), `scatter` (the blunderbuss's charge), or `stone`
+(the sling). The kinds are one vocabulary, `ammoKind` in `schema.json`. [A]
+
+**Ammunition rows** are equipment items of type `ammunition` in `ruleset/data/equipment/ammunition.json`,
+so a row is `core:ammunition/<key>`. Each names its `kind` and the `count` a bundle holds: 20
+arrows, 20 bolts, 10 bullets, 10 scatter charges, 20 sling stones. A row may change the strike's
+damage type (`damage_type`) and add effects on a hit (`effects`, `appliedEffect`); plain
+ammunition changes nothing. Elemental rounds (GD_S17_04) and conjured rounds (GD_S17_11) are such
+rows. [A]
+
+```
+combat input   ammunition: { rounds, loaded }      optional, for a weapon that fires or throws
+               rounds    the rounds of the weapon's kind the attacker carries (a thrown weapon: how many)
+               loaded    a loading weapon: whether it holds a round
+refused        rounds 0                            no attack: "the weapon has no rounds left"
+               loading and not loaded              no attack: "the weapon must reload first"
+result         ammunition: { rounds: rounds - 1, loaded: false for a loading weapon }
+```
+
+- **Spending:** each strike with an `ammunition` weapon spends one round of its kind; a `thrown`
+  weapon is its own ammunition and spends itself. Without the `ammunition` input the attack runs
+  as before: a table that does not count plain rounds leaves it out. [A]
+- **Loading:** a `loading` weapon (the hand crossbow, the pistol, the arquebus, the blunderbuss)
+  holds one round and must reload after every shot: the `reload` action, 2 AP
+  ([actions.md](actions.md#costs)), which Fast Reload lowers by 1 (`add reload -1`). A weapon
+  without `loading` draws as part of its attack. The repeating crossbow has no `loading`: its
+  magazine feeds each attack, and its size is not counted. [A]
+- **Recovery:** after a fight, the `ammunition` command's `recover` gives back the share of each
+  kind that `ruleset/data/combat/ammunition.json` names, rounded down: half the arrows and bolts,
+  none of the bullets, scatter, and stones, and every thrown weapon. GD_S17_10's perks change that
+  row, so it is data, not prose. [A]
+- **At a table:** counting rounds is the rule; a table may stop counting plain ammunition and count
+  only the special rounds, by leaving out the `ammunition` input for plain ones. [A]
+
 ## Not covered
 
 Armor and encumbrance penalties on the evasion rate in the vectors, hit quality (`solid` and `glancing` margins), condition riders on a crit, range bands for called shots (the extra −10 beyond short range), the perks that halve called-shot penalties, and the video-game timing windows. Difficult terrain is movement, not an attack term: it belongs to an optional positioning module, and standing up is an action row (2 AP). They add terms to the same steps; none changes the order. [U]

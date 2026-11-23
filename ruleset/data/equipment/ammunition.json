@@ -1,0 +1,10 @@
+{
+  "$schema": "../../schemas/equipment.schema.json",
+  "equipment": [
+    {"key": "arrows", "label": "Arrows", "description": "A quiver's bundle of twenty fletched arrows for any bow.", "type": "ammunition", "cost": {"quantity": 1, "unit": "gold"}, "weight": 1, "ammunition": {"kind": "arrow", "count": 20}},
+    {"key": "crossbow_bolts", "label": "Crossbow Bolts", "description": "Twenty short, heavy bolts for any crossbow.", "type": "ammunition", "cost": {"quantity": 1, "unit": "gold"}, "weight": 1.5, "ammunition": {"kind": "bolt", "count": 20}},
+    {"key": "bullets", "label": "Bullets", "description": "Ten lead balls with measured powder, for the pistol and the arquebus.", "type": "ammunition", "cost": {"quantity": 3, "unit": "gold"}, "weight": 1, "ammunition": {"kind": "bullet", "count": 10}},
+    {"key": "scatter_charges", "label": "Scatter Charges", "description": "Ten wrapped charges of shot and powder for the blunderbuss.", "type": "ammunition", "cost": {"quantity": 3, "unit": "gold"}, "weight": 1, "ammunition": {"kind": "scatter", "count": 10}},
+    {"key": "sling_stones", "label": "Sling Stones", "description": "Twenty smooth river stones, chosen for weight and shape.", "type": "ammunition", "cost": {"quantity": 4, "unit": "copper"}, "weight": 1.5, "ammunition": {"kind": "stone", "count": 20}}
+  ]
+}
