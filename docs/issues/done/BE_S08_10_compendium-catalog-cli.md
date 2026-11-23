@@ -1,5 +1,6 @@
 #### BE_S08_10_compendium-catalog-cli A compendium of every table to study a build: the catalog command and the CLI screen (backend)
-- Status: review
+- Status: done
+- Merged: #439, 2026-11-23
 - Priority: high
 - Needs: APP-27
 - Modified: 2026-11-21
