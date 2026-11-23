@@ -41,6 +41,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/commands/ammunition": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Recover the rounds fired in a fight.
+         * @description The rules are in docs/core/combat.md.
+         */
+        post: operations["ammunition"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/commands/attack_sequence": {
         parameters: {
             query?: never;
@@ -701,6 +721,11 @@ export interface components {
          * @enum {string}
          */
         ruleset_ability: "str" | "per" | "end" | "int" | "wil" | "agi" | "cha" | "lck";
+        /**
+         * @description The kind of round a weapon with the ammunition property fires: arrow (bows), bolt (crossbows), bullet (ball and powder), scatter (a blunderbuss charge), stone (sling) (docs/core/combat.md#ammunition).
+         * @enum {string}
+         */
+        ruleset_ammoKind: "arrow" | "bolt" | "bullet" | "scatter" | "stone";
         /** @description An instance of an effect drawn from the effect registry (data/effects), with its applied magnitude and duration. Shared by spells, consumables, ingredients, and enchantments. Use 'parameter' for generic effects (e.g. fortify_skill with a specific skill key, fortify_attribute with an ability, restore_resource with 'health'/'stamina'/'mana', resist with 'fire'/'poison'/'undead'/'magic'/'physical', cure with a condition, summon with a type). */
         ruleset_appliedEffect: {
             /**
@@ -1022,6 +1047,79 @@ export interface operations {
                         squares?: number;
                         /** @description The cost in stamina for a real-time client: AP times stamina_per_ap. */
                         stamina?: number;
+                    };
+                };
+            };
+            /** @description The body is not the command's input, or a rule needs an input it was not given. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description No such command, or the input names a key that does not exist. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The body is over 1 MiB. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The command refused for another rule reason. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+        };
+    };
+    ammunition: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description With recover: the rounds fired by kind, and the thrown weapons thrown (thrown). */
+                    fired: {
+                        [key: string]: number;
+                    };
+                    modifiers?: components["schemas"]["modifiers"];
+                    /** @enum {string} */
+                    operation: "recover";
+                };
+            };
+        };
+        responses: {
+            /** @description The result. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description By kind: the fired rounds times the kind's share in combat/ammunition.json, rounded down. */
+                        recovered: {
+                            [key: string]: number;
+                        };
                     };
                 };
             };
@@ -1666,6 +1764,11 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
+                    /** @description For a weapon that fires or throws (attacker.weapon_properties has ammunition or thrown): the rounds carried, and for a loading weapon whether it holds one. Left out, rounds are not counted (docs/core/combat.md#ammunition). */
+                    ammunition?: {
+                        loaded?: boolean;
+                        rounds: number;
+                    };
                     attacker: {
                         attributes?: components["schemas"]["attributes"];
                         /** @description Flags from conditions (prone, blinded, invisible); a situation row with `when` reads them. */
@@ -1744,6 +1847,11 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description With the ammunition input: the rounds left after the strike, and whether a loading weapon still holds one (it never does after a shot). */
+                        ammunition?: {
+                            loaded?: boolean;
+                            rounds: number;
+                        };
                         /** @description With a maneuver: the attack's AP plus the maneuver's, at least 1. */
                         ap?: number;
                         /** @description The block stance's band, under the evasion band: a margin in it is blocked. */

@@ -107,6 +107,7 @@ EQUIPMENT_FILE_CATEGORIES = {
     "consumables.json": "consumable",
     "accessories.json": "accessory",
     "gear.json": "gear",
+    "ammunition.json": "ammunition",
 }
 
 # Maps collection names to their singular category for namespaced refs.
@@ -2092,6 +2093,36 @@ def _stored_hp_paths(value, path=""):
             yield from _stored_hp_paths(child, f"{path}[{index}]")
 
 
+AMMUNITION_PROPERTY = "ammunition"
+
+
+def ammunition_problems(bases, rows):
+    """GD_S17_02 (docs/core/combat.md#ammunition): every weapon base with the ammunition property
+    names the kind it fires (weapon.ammo), and every ammunition row's kind is one a weapon loads."""
+    problems = []
+    loaded = set()
+    for base in bases:
+        weapon = base.get("weapon") or {}
+        if AMMUNITION_PROPERTY not in weapon.get("properties", []):
+            continue
+        if "ammo" not in weapon:
+            problems.append(f"weapon base {base['key']} has the ammunition property and no weapon.ammo")
+        else:
+            loaded.add(weapon["ammo"])
+    for row in rows:
+        kind = (row.get("ammunition") or {}).get("kind")
+        if kind is not None and kind not in loaded:
+            problems.append(f"ammunition {row['key']} is {kind}, which no weapon loads")
+    return problems
+
+
+def check_ammunition():
+    """The ammunition gates on the core weapon bases and ammunition rows."""
+    bases = [json.loads(path.read_text()) for path in sorted(EQUIPMENT_BASES_DIRS["weapons.json"].glob("*.json"))]
+    rows = json.loads((DATA_DIR / "equipment" / "ammunition.json").read_text())["equipment"]
+    return ammunition_problems(bases, rows)
+
+
 def check_monster_hit_points(monsters=None, bases=None, templates=None, module_files=None):
     """No monster row, creature-type base, template or module monster writes hitPoints,
     hitPointsPerLevel or hit_points_multiplier: HP is the player formula times the role's
@@ -2465,6 +2496,13 @@ def main():
     if perk_errors:
         print("  \u2717  monster perks (rank at most the perk's ranks, no excluded pair)")
         for e in perk_errors:
+            print(f"       {e}")
+        failed += 1
+
+    ammunition_errors = check_ammunition()
+    if ammunition_errors:
+        print("  \u2717  ammunition (each firing weapon names its kind, each kind is loaded)")
+        for e in ammunition_errors:
             print(f"       {e}")
         failed += 1
 

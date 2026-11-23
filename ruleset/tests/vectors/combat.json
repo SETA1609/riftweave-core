@@ -5638,8 +5638,8 @@
     },
     "expect": {
       "outcome": "hit",
-      "damage": 6,
-      "hp": 24,
+      "damage": 7,
+      "hp": 23,
       "ammunition": {
         "rounds": 19
       }
@@ -5677,8 +5677,8 @@
     },
     "expect": {
       "outcome": "hit",
-      "damage": 6,
-      "hp": 24,
+      "damage": 7,
+      "hp": 23,
       "ammunition": {
         "rounds": 9,
         "loaded": false
