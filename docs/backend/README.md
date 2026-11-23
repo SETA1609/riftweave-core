@@ -59,7 +59,9 @@ change under `ruleset/`, `backend/`, or `docs/backend/`. **A rule issue that add
 function updates the Python reference, the Go package, and the contract in the same pull
 request.** [V 2026-11-06, run in this change: 256 of 256 vectors pass in Go]
 
-**Human CLI.** The interactive mode (APP-05) is a terminal UI built with Charm: Bubble Tea, Bubbles, and Lip Gloss. It lives in `backend/cmd/` as an adapter and calls `core.Run` like every other adapter, so it holds no rule and the core and `internal/` never import Charm. The agent CLI must not import it either, so a script that calls the binary thousands of times pays no TUI start cost. [A: owner decision 2026-11-06; the exact libraries and whether `cmd/` needs its own `go.mod` to keep the core dependency-free are settled in APP-05]
+**A feature is a command, an MCP tool, and a web page** (owner, 2026-11-23, PO_S23_02): people use the web app, which runs the same core through WebAssembly, and agents use the JSON commands and `riftweave mcp`. No issue builds a terminal screen; `test_no_terminal_screens.py` keeps the open issues to that, and story S23 removes the human CLI below.
+
+**Human CLI (frozen, retired by S23).** The interactive mode (APP-05) is a terminal UI built with Charm: Bubble Tea, Bubbles, and Lip Gloss. It lives in `backend/cmd/` as an adapter and calls `core.Run` like every other adapter, so it holds no rule and the core and `internal/` never import Charm. The agent CLI must not import it either, so a script that calls the binary thousands of times pays no TUI start cost. [A: owner decision 2026-11-06; the exact libraries and whether `cmd/` needs its own `go.mod` to keep the core dependency-free are settled in APP-05]
 
 Modules: `core.Open` loads each module beside `ruleset/data`, and `internal/wuxing` reads the
 Wuxing module's data. Other modules load their manifest only. [V 2026-11-11]

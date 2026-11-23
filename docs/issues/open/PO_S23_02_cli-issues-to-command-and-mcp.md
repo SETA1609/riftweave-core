@@ -1,5 +1,5 @@
 #### PO_S23_02_cli-issues-to-command-and-mcp Rewrite the open terminal-screen issues as a command and an MCP tool
-- Status: todo
+- Status: review
 - Priority: high
 - Needs: —
 - Modified: 2026-11-23

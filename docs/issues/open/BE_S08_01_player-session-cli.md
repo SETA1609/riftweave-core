@@ -2,10 +2,10 @@
 - Status: todo
 - Priority: low
 - Needs: APP-27, APP-30
-- Was: APP-31, split by role on 2026-11-18: this is the backend half (the contract, the Go core, the vectors, and the CLI and TUI with their UX); the browser half is `FE_S08_02_player-session-page`
-- Modified: 2026-11-16
-- Do: Owner request, 2026-11-16 (later work): besides the tools a GM uses, a player has their own page in both apps for their character between and during sessions: **level up** (the `progression` command: skill points, tag skills, perk choice with unmet prerequisites shown), **perks** (owned, ranks, and what each modifies), **spells** (known spells, mana cost, and the spells they made with APP-22), and **crafting** (what they can craft and its expected result, APP-32). Every change is a session step, so it replays and exports (APP-30), and in a room it is a request the GM approves (APP-18) [A]. Scope to split when started: one issue per area [A].
-- Keys: the `/play/character` route and its CLI screen
+- Was: APP-31, split by role on 2026-11-18: this is the backend half (the contract, the Go core, the vectors, and the MCP tool; nothing for the retired terminal app, PO_S23_02); the browser half is `FE_S08_02_player-session-page`
+- Modified: 2026-11-23
+- Do: Owner request, 2026-11-16 (later work): besides the tools a GM uses, a player has their own page in the web app for their character, over commands an agent also calls as MCP tools, between and during sessions: **level up** (the `progression` command: skill points, tag skills, perk choice with unmet prerequisites shown), **perks** (owned, ranks, and what each modifies), **spells** (known spells, mana cost, and the spells they made with APP-22), and **crafting** (what they can craft and its expected result, APP-32). Every change is a session step, so it replays and exports (APP-30), and in a room it is a request the GM approves (APP-18) [A]. Scope to split when started: one issue per area [A].
+- Keys: the `/play/character` route and its MCP tools (nothing for the retired terminal app, PO_S23_02)
 - Files: to split when started
 - See: backend/contract/progression.json, docs/issues/open/BE_S10_03_gm-approval-supabase.md, docs/issues/open/BE_S08_03_item-lookup-craft-preview.md
 - Done when: split into issues, each with its own done line.

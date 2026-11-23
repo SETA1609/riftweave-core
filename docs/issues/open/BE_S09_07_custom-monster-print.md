@@ -2,13 +2,13 @@
 - Status: todo
 - Priority: low
 - Needs: BE_S08_05_bestiary-knowledge-cli, BE_S09_03_print-character-cli
-- Was: APP-41, split by role on 2026-11-18: this is the backend half (the contract, the Go core, the vectors, and the CLI and TUI with their UX); the browser half is `FE_S09_08_custom-monster-page`
-- Modified: 2026-11-17
+- Was: APP-41, split by role on 2026-11-18: this is the backend half (the contract, the Go core, the vectors, and the MCP tool; nothing for the retired terminal app, PO_S23_02); the browser half is `FE_S09_08_custom-monster-page`
+- Modified: 2026-11-23
 - Do: Owner request, 2026-11-17 (later work): a GM prints the NPCs and monsters of their own campaign, not only the core ones.
   - **Custom monsters:** a monster row the GM writes (a `base` and `overrides`, like `monsters/core.json`) or loads from a module or a JSON file (APP-30, kind `monster`). It is composed and checked as `validate.py` checks a monster row (refs, base, creature type), then printed with `print` kind `monster`, so to-hit, evasion, and DR are computed, never typed. The bestiary (APP-29) lists the GM's custom monsters beside the core ones.
   - **NPC sheets:** an NPC is an actor, made like a character (or from a build, APP-38) but owned by the GM. It prints two ways: the full sheet (APP-39) or a short **NPC block** in the stat-block layout (level, attributes, HP, AP, evasion, its raised skills with targets, attacks with to-hit, and its spells), so a GM fits several on a page.
   - **Editing** custom monsters in the app (a form over the base and overrides, as APP-10 does for spells) is not in this issue; the GM edits the JSON or uses a later `author` kind `monster` [A].
 - Keys: `print` kind `npc` [A]; file kind `monster`; the GM's custom monster list
-- Files: ~8 (backend/contract/print.json, backend/contract/file.json, backend/core/print.go and its test, backend/core/compose.go, backend/cmd/riftweave/play/print.go, play_test.go, docs/backend/print.md, changes/BE_S09_07_custom-monster-print.md)
+- Files: ~8 (backend/contract/print.json, backend/contract/file.json, backend/core/print.go and its test, backend/core/compose.go, the print MCP tool and its test, docs/backend/print.md, changes/BE_S09_07_custom-monster-print.md)
 - See: docs/backend/print.md, docs/issues/open/BE_S08_05_bestiary-knowledge-cli.md, backend/contract/monster_sheet.json, docs/core/composition.md
 - Done when: a custom monster file prints a stat block whose to-hit and evasion equal `monster_sheet`'s; an invalid one is refused with its problems; an NPC prints as a sheet and as a block; the tests pass.
