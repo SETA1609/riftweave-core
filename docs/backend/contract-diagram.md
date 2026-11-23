@@ -169,6 +169,7 @@ classDiagram
         integer held_spent
         modifiers modifiers
         integer speed
+        enum start
     }
     class actions_result {
         integer available

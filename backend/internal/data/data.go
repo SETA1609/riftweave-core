@@ -109,8 +109,14 @@ type ActionPool struct {
 	Carry           int64  `json:"carry"`        // the most held AP that carries into the next pool (GD_S19_05)
 	GuardPerAP      int64  `json:"guard_per_ap"` // evasion per held AP until the next turn
 	// ReactionsPerRound is the reactions (opportunity attacks, no AP) an actor has between two of its turns (GD_S19_04).
-	ReactionsPerRound int64         `json:"reactions_per_round"`
-	Ability           actor.Ability `json:"-"`
+	ReactionsPerRound int64 `json:"reactions_per_round"`
+	// CombatStart is a fight's first turn: pool - Less AP, at least Minimum and at most the pool
+	// (GD_S19_06, docs/core/actions.md#pool).
+	CombatStart struct {
+		Less    int64 `json:"less"`
+		Minimum int64 `json:"minimum"`
+	} `json:"combat_start"`
+	Ability actor.Ability `json:"-"`
 }
 
 // Actions is actions/core.json.
