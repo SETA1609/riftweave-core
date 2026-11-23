@@ -142,6 +142,11 @@
         "type": "boolean",
         "description": "With opportunity: the foe left reach with Disengage, so no attack."
       },
+      "reactions_used": {
+        "type": "integer",
+        "minimum": 0,
+        "description": "With opportunity or readied: the attacks out of turn the attacker already made since its last turn. Default 0."
+      },
       "after_block": {
         "type": "boolean",
         "description": "The attacker just blocked a hit in their band: from Boss Strike's after_block tier a bash jab costs shield_bash.after_block_ap."
@@ -238,7 +243,7 @@
         "description": "Strikes lost because their foe dropped and nothing carried them."
       },
       "fired": { "type": "boolean", "description": "With opportunity or readied: whether the attack happened." },
-      "reason": { "type": "string", "enum": ["disengaged", "not_triggered", "not_enough_held"], "description": "With opportunity or readied, when it did not fire: why." },
+      "reason": { "type": "string", "enum": ["disengaged", "not_triggered", "no_reaction_left", "not_enough_held"], "description": "With opportunity or readied, when it did not fire: why." },
       "guard_lost": { "type": "integer", "minimum": 0, "description": "With opportunity or readied: the AP spent times guard_per_ap, the guard the held AP no longer gives." }
     },
     "additionalProperties": false,

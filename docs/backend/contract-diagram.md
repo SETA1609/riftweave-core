@@ -198,6 +198,7 @@ classDiagram
         loadout loadout
         modifiers modifiers
         object off_damage
+        integer reactions_used
         List~object~ rolls
         List~key~ situations
         boolean summoning

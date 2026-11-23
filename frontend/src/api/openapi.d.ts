@@ -1114,6 +1114,8 @@ export interface operations {
                         ability?: components["schemas"]["ruleset_ability"];
                         type: components["schemas"]["key"];
                     };
+                    /** @description With opportunity or readied: the attacks out of turn the attacker already made since its last turn. Default 0. */
+                    reactions_used?: number;
                     /** @description One attack roll and one damage roll per strike made, in order; a lost strike takes none. */
                     rolls: {
                         attack: components["schemas"]["d100"];
@@ -1152,7 +1154,7 @@ export interface operations {
                          * @description With opportunity or readied, when it did not fire: why.
                          * @enum {string}
                          */
-                        reason?: "disengaged" | "not_triggered" | "not_enough_held";
+                        reason?: "disengaged" | "not_triggered" | "no_reaction_left" | "not_enough_held";
                         /** @description The attack_sequences row key. */
                         sequence: string;
                         /** @description ap times stamina_per_ap. */
