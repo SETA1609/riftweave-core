@@ -736,9 +736,10 @@ type Spell struct {
 	Effects     []AppliedEffect `json:"effects"`
 	// Summon is a summon spell's block, in place of a core:effect/summon entry; nil otherwise.
 	Summon *SummonBlock `json:"summon"`
-	Cost   struct {
+	// Cost holds the reagents only: the mana is never stored, and spellcraft.SpellMana computes it
+	// (DE_S02_05, docs/modules/magic.md#cost-formula).
+	Cost struct {
 		Reagents []string `json:"reagents"`
-		Mana     int64    `json:"mana"`
 	} `json:"cost"`
 	Level         int64  `json:"level"`
 	Concentration bool   `json:"concentration"`

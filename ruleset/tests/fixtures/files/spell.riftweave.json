@@ -1,9 +1,6 @@
 {
   "data": {
     "color": "red",
-    "cost": {
-      "mana": 4
-    },
     "delivery": "single",
     "description": "A test spell: a small flame.",
     "effects": [

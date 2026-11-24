@@ -106,9 +106,9 @@ def heal(amount, duration=1):
 
 
 MANA_POTION = drink("potion_mana", 8, [{"effect": "core:effect/restore_resource", "parameter": "mana", "magnitude": 15}], (40, "gp"))
-HEAL_SPELL = {"key": "mend", "color": "green", "level": 1, "cost": {"mana": 6},
+HEAL_SPELL = {"key": "mend", "color": "green", "level": 1,
               "effects": [{"effect": "core:effect/restore_resource", "parameter": "health", "magnitude": 12, "target": "touch"}]}
-FIRE_BOLT = {"key": "fire_bolt", "color": "red", "level": 1, "cost": {"mana": 6},
+FIRE_BOLT = {"key": "fire_bolt", "color": "red", "level": 1,
              "effects": [{"effect": "core:effect/damage_fire", "magnitude": 8, "target": "ranged"}]}
 POTION_BANDS = {**BANDS, "toxicity": {"tolerance": 5}, "magic_skill": 50, "scroll_gp_per_mana": 5, "checks": [
     {"key": "toxicity_formula", "mode": "gate", "description": "d"},

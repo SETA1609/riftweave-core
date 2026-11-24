@@ -174,7 +174,7 @@ def _restored(effects):
 
 
 def _stock_potion_below_magic(bands, _weapons, _armor, _monsters, consumables, spells):
-    from casting_reference import paid_cost
+    from casting_reference import paid_cost, spell_cost
 
     rules = _json("casting/core.json")["casting"]
     skill = bands["magic_skill"]
@@ -182,7 +182,7 @@ def _stock_potion_below_magic(bands, _weapons, _armor, _monsters, consumables, s
                              for r in _drinks(consumables) if r["consumable"]["toxicity"] > 0), default=0)
     best = {}
     for spell in spells:
-        mana = paid_cost(spell["cost"]["mana"], skill, [], rules)
+        mana = paid_cost(spell_cost(spell), skill, [], rules)
         for pool, total in _restored(spell["effects"]).items():
             best[pool] = max(best.get(pool, 0), total / mana)
     for row in _drinks(consumables):
@@ -199,6 +199,7 @@ def _stock_potion_below_magic(bands, _weapons, _armor, _monsters, consumables, s
 
 def _scroll_price(bands, _weapons, _armor, _monsters, consumables, spells):
     import kernel_reference
+    from casting_reference import spell_cost
 
     economy = _json("economy/core.json")
     gold = kernel_reference.to_copper(economy, {"quantity": 1, "unit": "gold"})
@@ -207,10 +208,11 @@ def _scroll_price(bands, _weapons, _armor, _monsters, consumables, spells):
         spell = by_ref.get(row.get("consumable", {}).get("spell"))
         if row.get("type") != "scroll" or spell is None:
             continue
-        least = bands["scroll_gp_per_mana"] * spell["cost"]["mana"]
+        mana = spell_cost(spell)
+        least = bands["scroll_gp_per_mana"] * mana
         price = kernel_reference.to_copper(economy, row["cost"]) / gold
         if price < least:
-            yield _finding("scroll_price", row["key"], price, [least, None], f"{spell['key']} costs {spell['cost']['mana']} mana")
+            yield _finding("scroll_price", row["key"], price, [least, None], f"{spell['key']} costs {mana} mana")
 
 
 CHECKS = {
