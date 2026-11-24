@@ -395,8 +395,9 @@ refused        a round that is no ammunition row; a burst with a round that does
 | Thunder Bolts, Thunder Bullets | bolt, bullet | 5 | thunder | 2 | `stagger` |
 | Acid Bolts, Acid Bullets | bolt, bullet | 5 | acid | 1 | `sunder_armor` |
 
-A round costs about three times its flask (a bundle of 5 at 120 gold, thunder 180), and the rounds
-come from the level 6 armory cache in `loot/core.json`; merchants list no level gate yet. [A]
+A round costs about three times its flask (a bundle of 5 at 120 gold, thunder 180). They are meant
+for merchants and loot from level 6; loot tables cannot list an ammunition row yet, and merchants
+have no level gate, so that is left to its own issue. [U]
 
 ## Grenades
 
