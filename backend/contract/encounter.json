@@ -1,0 +1,51 @@
+{
+  "$schema": "./command.schema.json",
+  "name": "encounter",
+  "summary": "Run a fight offline: the initiative order, whose turn it is, and the round.",
+  "documentation": "docs/backend/sessions.md",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "operation": { "type": "string", "enum": ["start", "turn_end"] },
+      "combatants": {
+        "type": "array",
+        "minItems": 1,
+        "description": "With start: every actor in the fight, the party's and the GM's monsters.",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": { "type": "string", "minLength": 1, "description": "The table's name for the actor, unique in the fight." },
+            "initiative": { "type": "integer", "description": "The derived initiative value, no roll (docs/core/derived.md)." },
+            "agi": { "type": "integer", "description": "AGI after its modifiers, the first tie-break." },
+            "lck": { "type": "integer", "description": "LCK after its modifiers, the second tie-break." },
+            "rolls": { "type": "array", "items": { "$ref": "common.json#/definitions/d100" }, "description": "The d100 roll-off, made when the encounter starts, kept in the step: lowest first, a tie on a roll read by the next (docs/core/derived.md#initiative-ties)." },
+            "surprise": { "type": "boolean", "description": "An ambusher, who acts in the surprise round. Default false." }
+          },
+          "required": ["id", "initiative", "agi", "lck"],
+          "additionalProperties": false
+        }
+      },
+      "encounter": { "$ref": "common.json#/definitions/encounter", "description": "With turn_end: the fight; a session step fills it from the session." }
+    },
+    "required": ["operation"],
+    "additionalProperties": false
+  },
+  "result_schema": {
+    "type": "object",
+    "properties": {
+      "encounter": { "$ref": "common.json#/definitions/encounter" },
+      "current": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "start": { "type": "string", "enum": ["combat", "surprise"], "description": "The actions command's start for this turn: surprise in the surprise round, combat on the actor's first turn of the fight; absent on a later turn." }
+        },
+        "required": ["id"],
+        "additionalProperties": false
+      },
+      "next": { "type": "string", "description": "The id whose turn comes after the current one." }
+    },
+    "required": ["encounter", "current", "next"],
+    "additionalProperties": false
+  }
+}

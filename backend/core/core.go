@@ -31,6 +31,7 @@ import (
 	"github.com/SETA1609/riftweave-core/backend/internal/data"
 	"github.com/SETA1609/riftweave-core/backend/internal/derived"
 	"github.com/SETA1609/riftweave-core/backend/internal/economy"
+	"github.com/SETA1609/riftweave-core/backend/internal/encounter"
 	"github.com/SETA1609/riftweave-core/backend/internal/formula"
 	"github.com/SETA1609/riftweave-core/backend/internal/hazard"
 	"github.com/SETA1609/riftweave-core/backend/internal/loot"
@@ -121,6 +122,7 @@ var commands map[string]commandHandler = map[string]commandHandler{
 	"catalog":         bind(catalog.Run),
 	"ammunition":      bind(ammunition.Run),
 	"bestiary":        bind(bestiary.Run),
+	"encounter":       bind(encounter.Run),
 }
 
 // Core is an opened ruleset.

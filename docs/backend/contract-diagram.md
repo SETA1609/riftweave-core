@@ -7,7 +7,7 @@ Run `python ruleset/scripts/contract_diagram.py --write` after a contract change
 `test_contract_diagram.py` fails until the page matches. What the contract is:
 [README.md](README.md#commands) and [contract.md](../core/contract.md).
 
-30 commands. Each is a class diagram of its input and its result; a field whose type is
+31 commands. Each is a class diagram of its input and its result; a field whose type is
 a shared type of `common.json` links to it, and the shared types are drawn once, below.
 
 ## Shared types
@@ -43,6 +43,13 @@ classDiagram
         ref race
         List~ref~ tag_skills
     }
+    class encounter {
+        List~string~ acted
+        List~string~ order
+        integer round
+        List~string~ surprise
+        integer turn
+    }
     class error {
         string error
     }
@@ -73,6 +80,7 @@ classDiagram
         stored_actor actor
         object bestiary
         boolean dev
+        encounter encounter
         List~session_step~ log
         List~party_member~ party
         string rules_version
@@ -109,6 +117,7 @@ classDiagram
     party_member --> character : character
     party_member --> stored_actor : actor
     party_member --> stored_actor : start
+    session --> encounter : encounter
     session --> party_member : party
     session --> session_step : log
     session --> stored_actor : actor
@@ -578,6 +587,27 @@ classDiagram
     class cost
     economy_input --> cost : cost
     economy_input --> cost : item_cost
+```
+
+## encounter
+
+Run a fight offline: the initiative order, whose turn it is, and the round.
+
+```mermaid
+classDiagram
+    class encounter_input {
+        List~object~ combatants
+        encounter encounter
+        enum operation
+    }
+    class encounter_result {
+        object current
+        encounter encounter
+        string next
+    }
+    class encounter
+    encounter_input --> encounter : encounter
+    encounter_result --> encounter : encounter
 ```
 
 ## formula

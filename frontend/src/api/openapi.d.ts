@@ -335,6 +335,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/commands/encounter": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Run a fight offline: the initiative order, whose turn it is, and the round.
+         * @description The rules are in docs/backend/sessions.md.
+         */
+        post: operations["encounter"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/commands/formula": {
         parameters: {
             query?: never;
@@ -757,6 +777,19 @@ export interface components {
             tag_skills?: components["schemas"]["ref"][];
         };
         d100: number;
+        /** @description A fight the GM runs (BE_S08_07, docs/backend/sessions.md#encounters): the initiative order, whose turn it is, the round, who has acted, and the ambushers of a surprise round. encounter steps change it, and a replay rebuilds it from the log. */
+        encounter: {
+            /** @description The ids that have ended a turn in this fight. */
+            acted: string[];
+            /** @description Every combatant's id, first to act first. */
+            order: string[];
+            /** @description 0 is the surprise round. */
+            round: number;
+            /** @description The ambushers, who alone act in round 0. */
+            surprise: string[];
+            /** @description The index in order of the actor whose turn it is. */
+            turn: number;
+        };
         /** @description Any command may return this instead of its result. */
         error: {
             error: string;
@@ -989,6 +1022,7 @@ export interface components {
              * @constant
              */
             dev?: true;
+            encounter?: components["schemas"]["encounter"];
             log: components["schemas"]["session_step"][];
             /** @description The characters the GM loaded beside the session's own actor, each with the revision it was loaded at (BE_S07_03, docs/backend/sessions.md#the-party). The session carries them and holds no rule for them. */
             party?: components["schemas"]["party_member"][];
@@ -2747,6 +2781,98 @@ export interface operations {
                         percent?: number;
                         price_cp?: number;
                         shift?: number;
+                    };
+                };
+            };
+            /** @description The body is not the command's input, or a rule needs an input it was not given. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description No such command, or the input names a key that does not exist. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The body is over 1 MiB. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The command refused for another rule reason. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+        };
+    };
+    encounter: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description With start: every actor in the fight, the party's and the GM's monsters. */
+                    combatants?: {
+                        /** @description AGI after its modifiers, the first tie-break. */
+                        agi: number;
+                        /** @description The table's name for the actor, unique in the fight. */
+                        id: string;
+                        /** @description The derived initiative value, no roll (docs/core/derived.md). */
+                        initiative: number;
+                        /** @description LCK after its modifiers, the second tie-break. */
+                        lck: number;
+                        /** @description The d100 roll-off, made when the encounter starts, kept in the step: lowest first, a tie on a roll read by the next (docs/core/derived.md#initiative-ties). */
+                        rolls?: components["schemas"]["d100"][];
+                        /** @description An ambusher, who acts in the surprise round. Default false. */
+                        surprise?: boolean;
+                    }[];
+                    /** @description With turn_end: the fight; a session step fills it from the session. */
+                    encounter?: components["schemas"]["encounter"];
+                    /** @enum {string} */
+                    operation: "start" | "turn_end";
+                };
+            };
+        };
+        responses: {
+            /** @description The result. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        current: {
+                            id: string;
+                            /**
+                             * @description The actions command's start for this turn: surprise in the surprise round, combat on the actor's first turn of the fight; absent on a later turn.
+                             * @enum {string}
+                             */
+                            start?: "combat" | "surprise";
+                        };
+                        encounter: components["schemas"]["encounter"];
+                        /** @description The id whose turn comes after the current one. */
+                        next: string;
                     };
                 };
             };

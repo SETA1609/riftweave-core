@@ -1661,7 +1661,65 @@ def run_command_summons(vector):
     return {"ap": ap, "modifiers": granted}
 
 
+ENCOUNTER_START = "start"
+ENCOUNTER_TURN_END = "turn_end"
+START_COMBAT = "combat"
+START_SURPRISE = "surprise"
+
+
+def initiative_key(combatant):
+    """Highest initiative first, then AGI, then LCK, then the roll-off lowest first
+    (docs/core/derived.md#initiative-ties)."""
+    return (-combatant["initiative"], -combatant["agi"], -combatant["lck"], combatant.get("rolls", []))
+
+
+def encounter_view(state):
+    """The state with whose turn it is (current, with its start) and whose comes next."""
+    order, turn = state["order"], state["turn"]
+    current = {"id": order[turn]}
+    if state["round"] == 0:
+        current["start"] = START_SURPRISE
+    elif order[turn] not in state["acted"]:
+        current["start"] = START_COMBAT
+    return {"encounter": state, "current": current, "next": order[advance(state)["turn"]]}
+
+
+def advance(state):
+    """The state after the current turn ends: the next actor in the round, or round + 1 from the
+    top. In the surprise round only the ambushers act."""
+    order, turn, round_ = state["order"], state["turn"], state["round"]
+    acted = state["acted"] + ([order[turn]] if order[turn] not in state["acted"] else [])
+    for index in range(turn + 1, len(order)):
+        if round_ > 0 or order[index] in state["surprise"]:
+            return {**state, "turn": index, "acted": acted}
+    return {**state, "round": round_ + 1, "turn": 0, "acted": acted}
+
+
+def run_encounter(vector):
+    """An offline fight (docs/backend/sessions.md#encounters): the initiative order, whose turn it
+    is, and the round. It holds no dice: the roll-off is an input, kept in the step."""
+    if vector["operation"] == ENCOUNTER_TURN_END:
+        if "encounter" not in vector:
+            return {"error": "turn_end needs the encounter"}
+        return encounter_view(advance(vector["encounter"]))
+    combatants = vector["combatants"]
+    seen = set()
+    for combatant in combatants:
+        if combatant["id"] in seen:
+            return {"error": f"{combatant['id']} is in the fight twice"}
+        seen.add(combatant["id"])
+    ranked = sorted(combatants, key=initiative_key)
+    for first, second in zip(ranked, ranked[1:]):
+        if initiative_key(first) == initiative_key(second):
+            return {"error": f"{first['id']} and {second['id']} tie: roll off again"}
+    order = [combatant["id"] for combatant in ranked]
+    surprise = [combatant["id"] for combatant in ranked if combatant.get("surprise")]
+    state = {"round": 0 if surprise else 1, "order": order, "turn": order.index(surprise[0]) if surprise else 0, "acted": [], "surprise": surprise}
+    return encounter_view(state)
+
+
 RUNNERS = {
+    "encounter": run_encounter,
     "monster_sheet": run_monster_sheet,
     "bestiary": run_bestiary,
     "resolution": run_resolution,

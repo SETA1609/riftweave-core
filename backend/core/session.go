@@ -11,6 +11,7 @@ import (
 
 	"github.com/SETA1609/riftweave-core/backend/internal/bestiary"
 	"github.com/SETA1609/riftweave-core/backend/internal/data"
+	"github.com/SETA1609/riftweave-core/backend/internal/encounter"
 	"github.com/SETA1609/riftweave-core/backend/internal/stored"
 )
 
@@ -41,6 +42,9 @@ type Session struct {
 	// Bestiary is what the players know of each monster (docs/backend/bestiary.md), campaign state
 	// beside the actor: `bestiary` reveal steps change it, and a replay rebuilds it from the log.
 	Bestiary *SessionBestiary `json:"bestiary,omitempty"`
+	// Encounter is the fight the GM runs (docs/backend/sessions.md#encounters): encounter steps
+	// change it, and a replay rebuilds it from the log.
+	Encounter *encounter.State `json:"encounter,omitempty"`
 }
 
 // SessionBestiary is the bestiary's marks in a session.
@@ -153,7 +157,7 @@ func runSession(ruleset *data.Ruleset, input sessionInput) (sessionResult, error
 			}
 		}
 		var matches bool = reflect.DeepEqual(encodedValue(session.Actor), encodedValue(rebuilt.Actor))
-		session.Actor, session.Bestiary = rebuilt.Actor, rebuilt.Bestiary
+		session.Actor, session.Bestiary, session.Encounter = rebuilt.Actor, rebuilt.Bestiary, rebuilt.Encounter
 		session.RulesVersion = RulesVersion // rebuilt under these rules, whatever the save said
 		return sessionResult{Session: session, Matches: &matches}, nil
 	}
@@ -558,7 +562,24 @@ type sessionStateAdapter struct {
 // sessionStateAdapters is the one table of the commands that read and write a session's own
 // state (docs/backend/sessions.md#campaign-state).
 var sessionStateAdapters = map[string]sessionStateAdapter{
-	"bestiary": {fill: fillBestiary, write: writeBestiary},
+	"bestiary":  {fill: fillBestiary, write: writeBestiary},
+	"encounter": {fill: fillEncounter, write: writeEncounter},
+}
+
+// fillEncounter gives a turn_end step the session's fight.
+func fillEncounter(session *Session, input map[string]any) {
+	if session.Encounter != nil {
+		setDefault(input, "encounter", encodedValue(session.Encounter))
+	}
+}
+
+// writeEncounter keeps the fight the step returns.
+func writeEncounter(session *Session, result map[string]any) {
+	var state encounter.State
+	body, _ := json.Marshal(result["encounter"])
+	if json.Unmarshal(body, &state) == nil {
+		session.Encounter = &state
+	}
 }
 
 func fillBestiary(session *Session, input map[string]any) {

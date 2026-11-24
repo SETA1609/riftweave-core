@@ -1,5 +1,5 @@
 #### BE_S08_07_encounter-tracker-cli An offline encounter tracker: initiative and whose turn it is (backend)
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: BE_S07_03_character-list-cli, GD_S19_09_initiative-ties
 - Was: APP-34, split by role on 2026-11-18: this is the backend half (the contract, the Go core, the vectors, and the MCP tool; nothing for the retired terminal app, PO_S23_02); the browser half is `FE_S08_08_encounter-tracker-page`

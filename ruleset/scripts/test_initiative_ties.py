@@ -16,7 +16,7 @@ ANCHOR = "derived.md#initiative-ties"
 # The places that order initiative and must link to the rule.
 LINKERS = (
     REPO_ROOT / "docs" / "modules" / "combat.md",
-    REPO_ROOT / "docs" / "issues" / "open" / "BE_S08_07_encounter-tracker-cli.md",
+    REPO_ROOT / "docs" / "backend" / "sessions.md",
 )
 # Docs a player or a programmer reads for the rules; issues and decisions quote the history.
 RULE_DOCS = ("docs/core", "docs/modules", "docs/guide", "docs/backend")
