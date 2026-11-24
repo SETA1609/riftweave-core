@@ -33,6 +33,10 @@ type Attacker struct {
 	// Perks are the attacker's held perks (refs); a rider perk among them puts its maneuver
 	// on a plain attack (docs/core/actions.md#rider-perks).
 	Perks []string `json:"perks"`
+	// Maneuvers are the maneuvers a monster's sheet lists, which it makes with no perk.
+	Maneuvers []string `json:"maneuvers"`
+	// RangeNormal is the ranged weapon's range_normal, which Held Breath reads; nil when not given.
+	RangeNormal *int64 `json:"range_normal"`
 }
 
 // Defender is who takes the attack.
@@ -100,6 +104,8 @@ type Input struct {
 	// defender caught in its burst (docs/core/combat.md#elemental-rounds, GD_S17_04).
 	Round string `json:"round"`
 	Burst *Burst `json:"burst"`
+	// Moved is whether the attacker moved this turn; a still maneuver is refused after it.
+	Moved bool `json:"moved"`
 
 	// burstCrit is set inside a burst: the shot's crit, which alone doubles the burst's damage.
 	burstCrit *bool
@@ -211,6 +217,9 @@ func maneuverOf(ruleset *data.Ruleset, input *Input) (*data.Maneuver, error) {
 	if err != nil {
 		return nil, err
 	}
+	if err := ruleset.CheckManeuver(maneuver, data.ManeuverCombat, data.AtRankOne(input.Attacker.Perks), input.Attacker.Maneuvers); err != nil {
+		return nil, err
+	}
 	var attackRange string = input.Range
 	if attackRange == "" {
 		attackRange = "melee"
@@ -223,7 +232,48 @@ func maneuverOf(ruleset *data.Ruleset, input *Input) (*data.Maneuver, error) {
 	}) {
 		return nil, &data.MissingInputError{Subject: maneuver.Key, Needs: either(maneuver.WeaponProperties, "weapon")}
 	}
+	if maneuver.RangeNormalMin > 0 {
+		if input.Attacker.RangeNormal == nil {
+			return nil, &data.MissingInputError{Subject: maneuver.Key, Needs: "attacker.range_normal"}
+		}
+		if *input.Attacker.RangeNormal < maneuver.RangeNormalMin {
+			return nil, &data.MissingInputError{Subject: maneuver.Key, Needs: fmt.Sprintf("a weapon with range_normal %d or more", maneuver.RangeNormalMin)}
+		}
+	}
+	if maneuver.Still && input.Moved {
+		return nil, &data.MissingInputError{Subject: maneuver.Key, Needs: "no move this turn"}
+	}
 	return maneuver, nil
+}
+
+// widenedCrit is a hit inside the crit window a maneuver widens (Held Breath).
+func widenedCrit(ruleset *data.Ruleset, input *Input, maneuver *data.Maneuver, attack resolution.Result) bool {
+	if maneuver == nil || maneuver.CritWindow == 0 || !attack.Success {
+		return false
+	}
+	var window int64 = ruleset.Resolution.CriticalWindow + formula.FloorDivide(input.Attacker.Attributes.Get(actor.Luck), ruleset.Resolution.CriticalWindowPerTwoLuck)
+	return input.Attacker.Roll <= window+maneuver.CritWindow
+}
+
+// maneuverCost is the cost of the action a maneuver modifies, before its own AP: the attack is
+// the loadout's attack AP (the attack action's without one), and an action that adds to the
+// attack (aimed) costs the attack's AP plus its own.
+func maneuverCost(ruleset *data.Ruleset, maneuver *data.Maneuver, action *data.Action, sequence *data.AttackSequence) (int64, error) {
+	attack, err := ruleset.Actions.Actions.Require("action", "attack")
+	if err != nil {
+		return 0, err
+	}
+	var attackAP int64 = attack.Cost
+	if sequence != nil {
+		attackAP = sequence.AP
+	}
+	if maneuver.Modifies == "attack" {
+		return attackAP, nil
+	}
+	if action.AddsTo == "attack" {
+		return attackAP + action.Cost, nil
+	}
+	return action.Cost, nil
 }
 
 // riderOf is the maneuver a held rider perk puts on a plain attack: nil when none is held,
@@ -546,7 +596,7 @@ func strike(ruleset *data.Ruleset, input Input) (Result, error) {
 	var result Result = Result{
 		Target:      attack.Target,
 		Margin:      attack.Margin,
-		Critical:    rolledCrit(&input, attack),
+		Critical:    rolledCrit(&input, attack) || (input.burstCrit == nil && widenedCrit(ruleset, &input, maneuver, attack)),
 		EvasionRate: evasionRate,
 		BlockRate:   blockRate,
 	}
@@ -566,9 +616,9 @@ func strike(ruleset *data.Ruleset, input Input) (Result, error) {
 		if err != nil {
 			return Result{}, err
 		}
-		var cost int64 = action.Cost
-		if sequence != nil && maneuver.Modifies == "attack" {
-			cost = sequence.AP
+		cost, err := maneuverCost(ruleset, maneuver, action, sequence)
+		if err != nil {
+			return Result{}, err
 		}
 		var actionPoints int64 = max(cost+maneuver.AP, 1)
 		var stamina int64 = actionPoints * ruleset.StaminaPerAP

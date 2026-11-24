@@ -36,6 +36,7 @@ import (
 	"github.com/SETA1609/riftweave-core/backend/internal/hazard"
 	"github.com/SETA1609/riftweave-core/backend/internal/loot"
 	"github.com/SETA1609/riftweave-core/backend/internal/modifier"
+	"github.com/SETA1609/riftweave-core/backend/internal/overwatch"
 	"github.com/SETA1609/riftweave-core/backend/internal/progression"
 	"github.com/SETA1609/riftweave-core/backend/internal/resolution"
 	"github.com/SETA1609/riftweave-core/backend/internal/rest"
@@ -121,6 +122,7 @@ var commands map[string]commandHandler = map[string]commandHandler{
 	"progression":     bind(progression.Run),
 	"catalog":         bind(catalog.Run),
 	"ammunition":      bind(ammunition.Run),
+	"overwatch":       bind(overwatch.Run),
 	"bestiary":        bind(bestiary.Run),
 	"encounter":       bind(encounter.Run),
 }

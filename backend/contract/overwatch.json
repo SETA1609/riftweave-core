@@ -2,7 +2,7 @@
   "$schema": "./command.schema.json",
   "name": "overwatch",
   "summary": "Hold a shot or a zone under fire until the shooter's next turn, and say which foes draw a strike.",
-  "documentation": "docs/core/actions.md#ranged-maneuvers",
+  "documentation": "docs/core/actions.md",
   "input_schema": {
     "type": "object",
     "properties": {

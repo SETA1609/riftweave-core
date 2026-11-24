@@ -234,6 +234,7 @@ classDiagram
         boolean disengaged
         List~object~ foes
         loadout loadout
+        key maneuver
         modifiers modifiers
         object off_damage
         integer reactions_used
@@ -386,6 +387,7 @@ classDiagram
         loadout loadout
         key maneuver
         modifiers modifiers
+        boolean moved
         enum range
         string round
         List~key~ situations
@@ -739,6 +741,30 @@ classDiagram
         List~ref~ riders
         object skills
         integer sp
+    }
+```
+
+## overwatch
+
+Hold a shot or a zone under fire until the shooter's next turn, and say which foes draw a strike.
+
+```mermaid
+classDiagram
+    class overwatch_input {
+        integer ap
+        List~object~ events
+        loadout loadout
+        key maneuver
+        integer rounds
+        object shooter
+    }
+    class overwatch_result {
+        integer ap
+        integer ap_returned
+        integer rounds
+        integer rounds_left
+        List~object~ shots
+        List~object~ zone_attacks
     }
 ```
 

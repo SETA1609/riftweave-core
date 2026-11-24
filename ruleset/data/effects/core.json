@@ -1328,6 +1328,23 @@
       ]
     },
     {
+      "key": "pinned",
+      "label": "Pinned",
+      "description": "Pinned down under fire: the target loses AP on its next turn, the magnitude, and cannot disengage.",
+      "category": "control",
+      "polarity": "harmful",
+      "magnitude_unit": "points",
+      "base_cost": 10,
+      "default_duration": 6,
+      "channels": [
+        "maneuver"
+      ],
+      "tags": [
+        "control",
+        "movement"
+      ]
+    },
+    {
       "key": "armor_pierce",
       "label": "Armor Pierce",
       "description": "Partially ignores the target's armor DR. Magnitude is the percentage of armor DR ignored (e.g. magnitude 50 = 50% armor ignored). Common on piercing weapons and dedicated armor-piercing ammunition.",

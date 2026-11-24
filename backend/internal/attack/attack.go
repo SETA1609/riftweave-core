@@ -35,6 +35,8 @@ type Attacker struct {
 	ShieldDR *int64 `json:"shield_dr"`
 	// Perks are the attacker's perk refs, which every strike reads for a rider, as in combat.
 	Perks []string `json:"perks"`
+	// Maneuvers are the maneuvers a monster's sheet lists, as in combat.
+	Maneuvers []string `json:"maneuvers"`
 	// Modifiers are the attacker's perks and fighting stance: adds on full_attack_strikes,
 	// full_attack_off_strikes, mainhand_penalty, offhand_penalty, attack_roll,
 	// attack_single_opponent, attack_after_parry, and unarmed_damage, and the carry, circle
@@ -95,6 +97,8 @@ type Input struct {
 	// Ammunition is the rounds each ranged hand carries; a hand left out is not counted
 	// (docs/core/combat.md#ranged-loadouts, GD_S17_05).
 	Ammunition *HandRounds `json:"ammunition"`
+	// Maneuver is an attack_sequence maneuver made with the attack action (Split Nock, GD_S17_06).
+	Maneuver string `json:"maneuver"`
 }
 
 // StrikeResult is one strike made.
@@ -312,6 +316,37 @@ func plan(ruleset *data.Ruleset, input *Input, row *data.AttackSequence, flags [
 	return table, *input.AP, nil
 }
 
+// withManeuver is the attack made as an attack_sequence maneuver (Split Nock,
+// docs/core/actions.md#ranged-maneuvers): its strikes of the main hand, each at its attack, for
+// the attack's AP plus its own. Without a maneuver the plan stands.
+func withManeuver(ruleset *data.Ruleset, input *Input, strikes []planned, cost int64) ([]planned, int64, error) {
+	if input.Maneuver == "" {
+		return strikes, cost, nil
+	}
+	maneuver, err := ruleset.Maneuvers.Require("maneuver", input.Maneuver)
+	if err != nil {
+		return nil, 0, err
+	}
+	if err := ruleset.CheckManeuver(maneuver, data.ManeuverAttackSequence, data.AtRankOne(input.Attacker.Perks), input.Attacker.Maneuvers); err != nil {
+		return nil, 0, err
+	}
+	if input.Action != "attack" {
+		return nil, 0, fmt.Errorf("a maneuver is made with the attack action")
+	}
+	if len(maneuver.Loadouts) > 0 && !slices.Contains(maneuver.Loadouts, input.Loadout.Main) {
+		return nil, 0, &data.MissingInputError{Subject: maneuver.Key, Needs: either(maneuver.Loadouts)}
+	}
+	var actionPoints int64 = max(cost+maneuver.AP, 1)
+	if input.AP != nil && *input.AP < actionPoints {
+		return nil, 0, fmt.Errorf("%s needs %d AP", maneuver.Key, actionPoints)
+	}
+	var made []planned = make([]planned, max(maneuver.Strikes, 1))
+	for index := range made {
+		made[index] = planned{hand: "main", attack: maneuver.Attack}
+	}
+	return made, actionPoints, nil
+}
+
 // either names the main hands as "a two_handed main hand or ...".
 func either(mains []string) string {
 	var text string
@@ -376,6 +411,9 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	}
 	strikes, actionPoints, err := plan(ruleset, &input, row, flags, on)
 	if err != nil {
+		return Result{}, err
+	}
+	if strikes, actionPoints, err = withManeuver(ruleset, &input, strikes, actionPoints); err != nil {
 		return Result{}, err
 	}
 	// Ranged loadouts (GD_S17_05): a hand of a ranged kind strikes at range, and a melee strike

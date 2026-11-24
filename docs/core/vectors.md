@@ -51,6 +51,7 @@ The other fields are the input the function reads. They are listed per function 
 | `monster_sheet` | `monster` (a composed row: `attributes`, `level`, optional `role` (default `standard`), `skills`, `perks`, `maneuvers`), optional `read_skills` | the derived stats, `skills`, `maneuvers` (listed and unlocked by its perks), and `riders` (with rider perks) (or `error`, as on two perks that exclude each other) |
 | `ammunition` | `operation` `recover`, `fired` (rounds by kind, and `thrown`), optional `modifiers` | `recovered` by kind, rounded down |
 | `encounter` | `operation` `start` with `combatants` (`id`, `initiative`, `agi`, `lck`, optional `rolls`, `surprise`), or `turn_end` with `encounter` | `encounter` (`round`, `order`, `turn`, `acted`, `surprise`), `current` (`id`, optional `start`), `next`, or `error` |
+| `overwatch` | `maneuver` (`pinning_fire` or `trigger_watch`), optional `shooter` (`perks` at ranks, `maneuvers`, `weapon_properties`), optional `loadout`, `ap` (left, or held), optional `rounds`, `events` (`foe`, `kind` `move` or `attack`, `in_zone`, `in_range`) | `ap`, `ap_returned`, `rounds`, optional `rounds_left`, `shots` and `zone_attacks` (`event`, `foe`, `attack`), or `error` |
 | `bestiary` | `operation` `reveal` (`knowledge`, `monster`, `level` or a Lore `check`, optional `player`) or `view` (`knowledge`, `monsters`, optional `player`, `players_see_only_known`) | `reveal`: `knowledge`, `level`, and the `check`; `view`: `entries` (or `error`) |
 | `progression` | `operation`: `xp` (`level`), `level` (`xp`), `level_up` (`actor.attributes`, `luck_roll`, `hp_roll`, `mp_roll`, `sp_roll`), `spend` (`skill`, `tagged`, `points`, optional `group`), `read_skill` (`actor`, `read`, optional `groups`), `take_perk` (`actor`, `perks`, `perk`), `point_buy` (`actor.attributes`, as assigned before race) | `xp_total`, `xp_step`; `level`; `skill_points`, `perks`, `gain` (or `error`); `ranks`, `spent`, `left` (or `error`); `value`, `read_from` (`sheet`, `group`, `start`) (or `error`); `taken`, `perk`, `rank`, `unmet`, and `replaced` (a perk of the same group, GD_S05_04) (or `error`); `spent`, `left` (or `error`) |
 | `hazard` | `hazard` (a key), `operation`: `detect`, `disarm`, or `trigger`; for a check: `actor.skills` (the check's skill), `actor.attributes.lck`, `modifiers`, `roll`; for a trigger: optional `actor` and `roll` (the avoid check) and `damage_roll` | `success`, `target`, `margin`, `tags` (and `triggered` for a disarm); or `avoided`, `packet` (`amount`, `type`, or null), `effects`; or `error` |
@@ -82,6 +83,7 @@ Every kernel function and the vector file that covers it. The test reads this ta
 | `monster_sheet` | `monster_sheet.json` | covered |
 | `ammunition` | `ammunition.json` | covered |
 | `encounter` | `encounter.json` | covered |
+| `overwatch` | `overwatch.json` | covered |
 | `bestiary` | `bestiary.json` | covered |
 | `formula` | `formula.json` | covered |
 | `modifiers` | `modifiers.json` | covered |

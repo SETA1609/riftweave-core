@@ -96,6 +96,8 @@ type Action struct {
 	SpeedDivisor int64 `json:"speed_divisor"`
 	// ChangesLoadout marks draw, sheathe, drop, and swap; a stance loadout event may be paid by one (GD_S19_03).
 	ChangesLoadout bool `json:"changes_loadout"`
+	// AddsTo names the action this one adds its cost to: aimed adds to attack.
+	AddsTo string `json:"adds_to"`
 }
 
 // ActionPool is the action point pool formula's coefficients.
@@ -376,6 +378,107 @@ type Maneuver struct {
 	SaveBonus *int64 `json:"save_bonus"`
 	// Events are what a landed attempt does beyond effects, for the caller: "disarm".
 	Events []string `json:"events"`
+
+	// The ranged maneuvers' fields (GD_S17_06, docs/core/actions.md#ranged-maneuvers).
+	// Command is the command that runs the maneuver; "" reads combat.
+	Command ManeuverCommand `json:"command"`
+	// Strikes is an attack_sequence maneuver's strike count (Split Nock); 0 reads one.
+	Strikes int64 `json:"strikes"`
+	// Rounds is the ammunition one use spends; 0 reads one.
+	Rounds int64 `json:"rounds"`
+	// Loadouts are the main-hand kinds the maneuver needs; empty: any.
+	Loadouts []string `json:"loadouts"`
+	// CritWindow widens the attacker's crit window for this attack.
+	CritWindow int64 `json:"crit_window"`
+	// RangeNormalMin is the least range_normal the weapon may have; 0: no minimum.
+	RangeNormalMin int64 `json:"range_normal_min"`
+	// Still refuses the maneuver after a move this turn.
+	Still bool `json:"still"`
+	// WithoutWeaponProperties refuse a weapon with any of them (Pinning Fire and loading).
+	WithoutWeaponProperties []string `json:"without_weapon_properties"`
+	// SpendsAll spends every AP left (Pinning Fire); Hold reserves the cost from held AP (Trigger Watch).
+	SpendsAll bool `json:"spends_all"`
+	Hold      bool `json:"hold"`
+	// Zone is Pinning Fire's zone; nil for the rest.
+	Zone *ManeuverZone `json:"zone"`
+}
+
+// ManeuverCommand is the command a maneuver runs in.
+type ManeuverCommand string
+
+// The commands a maneuver runs in.
+const (
+	ManeuverCombat         ManeuverCommand = "combat"
+	ManeuverAttackSequence ManeuverCommand = "attack_sequence"
+	ManeuverOverwatch      ManeuverCommand = "overwatch"
+)
+
+// ManeuverZone is a zone held under fire: its radius, and the add on a foe's attack from inside it.
+type ManeuverZone struct {
+	Radius int64 `json:"radius"`
+	Attack int64 `json:"attack"`
+}
+
+// RoundsSpent is the rounds one use spends, at least one.
+func (maneuver *Maneuver) RoundsSpent() int64 {
+	return max(maneuver.Rounds, 1)
+}
+
+// HeldRef is a perk ref held at a rank.
+type HeldRef struct {
+	Perk string `json:"perk"`
+	Rank int64  `json:"rank"`
+}
+
+// AtRankOne reads bare perk refs (combat, attack_sequence) as held at rank 1; nil stays nil.
+func AtRankOne(refs []string) []HeldRef {
+	if refs == nil {
+		return nil
+	}
+	var held []HeldRef = make([]HeldRef, len(refs))
+	for index, ref := range refs {
+		held[index] = HeldRef{Perk: ref, Rank: 1}
+	}
+	return held
+}
+
+// CheckManeuver refuses a maneuver run in another command than its own, or, when the input
+// names the actor's perks or a monster's maneuvers, one none of them unlocks; a perk unlocks
+// at the rank its unlocks_at_rank names, at rank 1 otherwise (docs/core/actions.md#ranged-maneuvers).
+func (ruleset *Ruleset) CheckManeuver(maneuver *Maneuver, command ManeuverCommand, perks []HeldRef, maneuvers []string) error {
+	var own ManeuverCommand = maneuver.Command
+	if own == "" {
+		own = ManeuverCombat
+	}
+	if own != command {
+		var article string = "a"
+		if strings.ContainsRune("aeiou", rune(own[0])) {
+			article = "an"
+		}
+		return fmt.Errorf("%s is %s %s maneuver", maneuver.Key, article, own)
+	}
+	if perks == nil && maneuvers == nil {
+		return nil
+	}
+	if slices.Contains(maneuvers, maneuver.Key) {
+		return nil
+	}
+	var ref string = "core:maneuver/" + maneuver.Key
+	for _, held := range perks {
+		feature, err := ruleset.Features.Require("perk", held.Perk[strings.LastIndex(held.Perk, "/")+1:])
+		if err != nil {
+			return err
+		}
+		var rank int64 = max(held.Rank, 1)
+		var needs int64 = 1
+		if at, ok := feature.UnlocksAtRank[ref]; ok {
+			needs = at
+		}
+		if slices.Contains(feature.Unlocks, ref) && rank >= needs {
+			return nil
+		}
+	}
+	return &MissingInputError{Subject: maneuver.Key, Needs: "a perk that unlocks it"}
 }
 
 // CharacterTemplate is a template a character takes on in play (docs/core/templates.md): what it
@@ -626,6 +729,8 @@ type Feature struct {
 	Command *Command `json:"command"`
 	// Unlocks are the refs the perk unlocks; a core:material ref is a bound weapon's material.
 	Unlocks []string `json:"unlocks"`
+	// UnlocksAtRank is the rank a listed unlock opens at, by ref; one not named opens at rank 1.
+	UnlocksAtRank map[string]int64 `json:"unlocks_at_rank"`
 	// BoundWeaponEffects are the on-hit effects the perk adds to the holder's bound weapons
 	// (docs/modules/magic.md#bound-weapons).
 	BoundWeaponEffects []AppliedEffect `json:"bound_weapon_effects"`

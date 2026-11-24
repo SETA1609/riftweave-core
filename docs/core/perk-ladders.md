@@ -11,7 +11,7 @@ arrow runs from a prerequisite perk to the perk that needs it, labelled with the
 when more than 1. A rounded box is a prerequisite from another category. A ladder that stops
 early, or a perk nothing leads to, shows at a glance.
 
-146 perks: 73 on a ladder, 73 with no perk before or after them.
+150 perks: 73 on a ladder, 77 with no perk before or after them.
 
 ## Combat
 
@@ -179,6 +179,10 @@ attributes, and level only.
 | Easy Stride | combat | light_armor 50 · AGI 7 |
 | Wind-Up | combat | STR 5 |
 | Snap Cut | combat | AGI 5 |
+| Two on the String | combat | Lv 6 · bows 40 · AGI 6 |
+| Still Hunter | combat | Lv 10 · bows or crossbows or guns 50 · PER 7 |
+| Heads Down | combat | Lv 8 · bows or crossbows or guns or throwing_weapons 40 |
+| Watchful Aim | combat | Lv 6 · bows or crossbows or guns or throwing_weapons 40 · PER 6 |
 | Scavenger | survival | LCK 6 |
 | Battle Tempo | combat | Lv 12 |
 | Crushing Blow | combat | Lv 6 · blunt 50 · STR 7 |
