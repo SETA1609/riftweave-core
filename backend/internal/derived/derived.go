@@ -5,6 +5,7 @@ package derived
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"maps"
 	"math"
@@ -76,6 +77,9 @@ type ActionsInput struct {
 	// on overwatch (docs/core/actions.md#held-ap, GD_S19_05; Trigger Watch, GD_S17_06).
 	Carried   int64 `json:"carried"`
 	HeldSpent int64 `json:"held_spent"`
+	// Start is a fight's first turn: combat (pool.combat_start) or surprise (the full pool), with
+	// nothing carried (GD_S19_06, docs/core/actions.md#pool).
+	Start string `json:"start"`
 }
 
 // ActionsResult is the pool and the cost of the named actions, in AP and in real-time stamina.
@@ -131,6 +135,17 @@ func RunActions(ruleset *data.Ruleset, input ActionsInput) (ActionsResult, error
 		return ActionsResult{}, fmt.Errorf("carried %d is more than pool.carry %d", input.Carried, pool.Carry)
 	}
 	result.Available = min(result.Pool+input.Carried, pool.Cap)
+	// A fight's first turn (GD_S19_06): pool - less, at least minimum and at most the pool; an
+	// ambusher's surprise round has the full pool. Nothing carries in.
+	if input.Start != "" && input.Carried > 0 {
+		return ActionsResult{}, errors.New("a fight starts with no carried AP")
+	}
+	switch input.Start {
+	case "combat":
+		result.Available = min(max(result.Pool-pool.CombatStart.Less, pool.CombatStart.Minimum), result.Pool)
+	case "surprise":
+		result.Available = min(result.Pool, pool.Cap)
+	}
 	result.Held = max(result.Available-result.Cost, 0)
 	if input.HeldSpent > result.Held {
 		return ActionsResult{}, fmt.Errorf("held_spent %d is more than the %d AP held", input.HeldSpent, result.Held)

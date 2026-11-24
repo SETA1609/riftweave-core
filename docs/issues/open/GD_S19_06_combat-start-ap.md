@@ -1,8 +1,8 @@
 #### GD_S19_06_combat-start-ap A fight starts on a partial pool
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: GD_S19_05_ap-bank-cap-and-guard
-- Modified: 2026-11-19
+- Modified: 2026-11-23
 - Do: Owner request, 2026-11-19 (borrowed from Divinity: Original Sin 2, which starts a fight on 4 of a maximum 6).
   - **The gap:** initiative is a fixed number (PER), so the same actor always acts first, on a full pool, with a bank carried from before the fight [V 2026-11-19, `docs/core/derived.md`, `docs/core/actions.md#pool`].
   - **The rule** [A]: a fight starts each actor on `pool - 1` AP (at least 2) with no carried AP. A perk or a surprise round may change that; an ambusher acting in a surprise round gets the full pool.

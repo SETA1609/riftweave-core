@@ -295,6 +295,16 @@ def run_actions(vector):
     if carried > pool_rules["carry"]:
         return {"error": f'carried {carried} is more than pool.carry {pool_rules["carry"]}'}
     available = min(pool + carried, pool_rules["cap"])
+    # A fight's first turn (docs/core/actions.md#pool, GD_S19_06): pool - less, at least minimum
+    # and at most the pool; an ambusher's surprise round has the full pool. Nothing carries in.
+    start = vector.get("start")
+    if start is not None and carried:
+        return {"error": "a fight starts with no carried AP"}
+    if start == "combat":
+        rule = pool_rules["combat_start"]
+        available = min(max(pool - rule["less"], rule["minimum"]), pool)
+    elif start == "surprise":
+        available = min(pool, pool_rules["cap"])
     held = max(available - cost, 0)
     if held_spent > held:
         return {"error": f"held_spent {held_spent} is more than the {held} AP held"}

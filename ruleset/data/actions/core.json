@@ -12,7 +12,8 @@
     "carry": 2,
     "guard_per_ap": 5,
     "reactions_per_round": 1,
-    "rest": "refill"
+    "rest": "refill",
+    "combat_start": { "less": 1, "minimum": 2 }
   },
   "actions": [
     { "key": "attack", "cost": 3, "by_loadout": true },
