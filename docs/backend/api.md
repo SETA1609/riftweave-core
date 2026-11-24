@@ -18,6 +18,10 @@ riftweave-server [--data <dir>] [--addr <host:port>]
 
 ## Endpoints
 
+What the API should become, resource by resource, is the proposal in
+[api-guide.yml](api-guide.yml) (PO_S26_01); this file is what the server serves today.
+
+
 | Method and path | Body | Result |
 | --- | --- | --- |
 | `POST /v1/commands/{command}` | the command's input ([README.md](README.md#commands)) | the command's result; every command but `dev` |
