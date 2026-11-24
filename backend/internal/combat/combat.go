@@ -428,6 +428,20 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	return result, nil
 }
 
+// rolledCrit is the roll's own crit, which carries the attack through the bands; in a burst it
+// counts for nothing (docs/core/combat.md#elemental-rounds).
+func rolledCrit(input *Input, attack resolution.Result) bool {
+	return input.burstCrit == nil && slices.Contains(attack.Tags, "crit")
+}
+
+// damageCrit is whether the damage doubles: the roll's crit, or in a burst the shot's.
+func damageCrit(input *Input, rolled bool) bool {
+	if input.burstCrit != nil {
+		return *input.burstCrit
+	}
+	return rolled
+}
+
 // fire is one attack that may spend a round (docs/core/combat.md#ammunition).
 func fire(ruleset *data.Ruleset, input Input) (Result, error) {
 	var properties []string = input.Attacker.WeaponProperties
@@ -532,7 +546,7 @@ func strike(ruleset *data.Ruleset, input Input) (Result, error) {
 	var result Result = Result{
 		Target:      attack.Target,
 		Margin:      attack.Margin,
-		Critical:    slices.Contains(attack.Tags, "crit") && input.burstCrit == nil,
+		Critical:    rolledCrit(&input, attack),
 		EvasionRate: evasionRate,
 		BlockRate:   blockRate,
 	}
@@ -646,10 +660,7 @@ func strike(ruleset *data.Ruleset, input Input) (Result, error) {
 		}
 	}
 	pierce = min(pierce, 100)
-	if input.burstCrit != nil {
-		// In a burst the shot's crit doubles the damage; the burst roll's own counts for nothing.
-		result.Critical = *input.burstCrit
-	}
+	result.Critical = damageCrit(&input, result.Critical)
 	if result.Critical {
 		if amount, err = pipeline.CriticalDamage.Evaluate(nil, formula.Variable{Name: "damage", Value: amount}); err != nil {
 			return Result{}, err
