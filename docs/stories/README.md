@@ -41,6 +41,8 @@ issues (role, old id, `Needs`), and its done-when. The issues themselves are one
 | [S22-visual-design-system.md](S22-visual-design-system.md) | S22 Visual design system |
 | [S23-retire-the-terminal-app.md](S23-retire-the-terminal-app.md) | S23 Retire the terminal app |
 | [S24-go-refactor.md](S24-go-refactor.md) | S24 Go refactor: state machines, dispatch tables, and hash sets |
+| [S25-character-roster-and-creation-flow.md](S25-character-roster-and-creation-flow.md) | S25 Saved characters, the profile, and a step-by-step creation flow |
+
 | [S26-api-guide.md](S26-api-guide.md) | S26 A resource API guide |
 
 The milestone files below hold the goals of the milestones whose done issues kept their old ids

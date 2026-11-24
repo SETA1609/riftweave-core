@@ -1,0 +1,14 @@
+#### GD_S25_02_sex-and-starting-perks Sex and the starting perk as creation rules
+- Status: todo
+- Priority: high
+- Needs: —
+- Modified: 2026-11-24
+- Do: Owner request, 2026-11-24: the creation flow asks for the character's sex and its perks, beside name, background, traits (creation perks), and attributes. Neither is a creation rule yet.
+  - **Sex:** a choice every character makes, kept on the stored actor (`sex`). The options are data in progression's `creation` block (`sexes`, each a key and a label), so a module can add one; the first set is `female`, `male`, and `unspecified` [A]. No rule reads it: it changes no attribute, skill, or pool [A].
+  - **The starting perk:** a normal perk (`type: perk`) taken at creation, whose prerequisites the new character already meets. The count is the new `starting_perks` in the `creation` block, 0 by default, raised by a modifier on the new target `starting_perks` in `modifier_targets/core.json`.
+  - **Ambition:** `human_ambition` says "one bonus perk at 1st level (any perk whose prerequisites you already meet)", but its modifier adds 1 to `creation_perks`, which are the trade-off traits. Its modifier moves to `starting_perks`, so a human picks up to 2 traits and 1 starting perk, as docs/modules/character-creation.md#7-starting-perks says [A, the owner confirms].
+  - **Spec:** docs/modules/character-creation.md (steps 1 and 7) and docs/core/progression.md#character-creation; the vectors of `progression point_buy` and `creation` that read the counts change with it.
+- Keys: `creation.sexes`, `creation.starting_perks`, the `starting_perks` modifier target, the stored actor's `sex`
+- Files: ~10 (ruleset/schemas/progression.schema.json, ruleset/data/progression/core.json, ruleset/data/modifier_targets/core.json, ruleset/data/features/core.json, docs/modules/character-creation.md, docs/core/progression.md, ruleset/tests/vectors/creation.json, docs/decisions/GD_S25_02_sex-and-starting-perks.md, changes/GD_S25_02_sex-and-starting-perks.md)
+- See: docs/modules/character-creation.md#7-starting-perks, ruleset/data/features/core.json (human_ambition)
+- Done when: validate.py passes; the `creation` block lists the sexes and `starting_perks` 0; a human's modifiers give `starting_perks` 1 and `creation_perks_max` 2; the spec names both steps.

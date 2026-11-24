@@ -1,0 +1,15 @@
+#### BE_S25_04_current-character-profile The profile: the current character of a single player (backend)
+- Status: todo
+- Priority: high
+- Needs: —
+- Modified: 2026-11-24
+- Do: Owner request, 2026-11-24: a single player selects a saved character as the profile, the current character, and play starts from it.
+  - **The profile** names one character of the character list by its `id` (docs/backend/files.md#the-character-list); it is not a copy, so a change to the character shows in the profile. It is kept per device, beside the character list, not in the settings file, which travels between devices where the id means nothing [A].
+  - **The contract:** `common.json#/definitions/profile` (`character_id`, `selected_at`), so the agent CLI and the web app keep the same shape.
+  - **The agent CLI:** `riftweave characters select <id>`, `characters current`, and `characters unselect`, kept in `<config>/riftweave/profile.json`; deleting the selected character clears the profile; `session start` with no actor starts from the profile's character, and says so when there is none.
+  - **MCP:** `profile_get`, `profile_select`, and `profile_clear`, and `session_start` with no `start` uses the profile.
+  - **Docs:** a "Profile" section in docs/backend/files.md and the tools in docs/backend/mcp.md.
+- Keys: `common.json#/definitions/profile`; `characters select`, `current`, `unselect`; the profile MCP tools
+- Files: ~10 (backend/contract/common.json, backend/cmd/riftweave/characters/ and its tests, backend/mcp/mcp.go and its test, docs/backend/files.md, docs/backend/mcp.md, docs/backend/cli.md, docs/decisions/BE_S25_04_current-character-profile.md, changes/BE_S25_04_current-character-profile.md)
+- See: docs/backend/files.md#the-character-list, docs/backend/mcp.md
+- Done when: a test selects a character, reads it back as current, starts a session from it with no actor, deletes the character, and finds no profile; the MCP tools do the same.
