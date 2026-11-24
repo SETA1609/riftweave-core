@@ -1,0 +1,106 @@
+{
+  "$schema": "./command.schema.json",
+  "name": "overwatch",
+  "summary": "Hold a shot or a zone under fire until the shooter's next turn, and say which foes draw a strike.",
+  "documentation": "docs/core/actions.md#ranged-maneuvers",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "maneuver": {
+        "$ref": "common.json#/definitions/key",
+        "description": "An overwatch maneuver in ruleset/data/maneuvers/core.json: pinning_fire (a zone) or trigger_watch (a held shot)."
+      },
+      "shooter": {
+        "type": "object",
+        "properties": {
+          "perks": {
+            "type": "array",
+            "items": { "$ref": "../../ruleset/schemas/schema.json#/definitions/heldPerk" },
+            "description": "The shooter's held perks at their ranks; given, one must unlock the maneuver at the rank held (unlocks_at_rank)."
+          },
+          "maneuvers": {
+            "type": "array",
+            "items": { "$ref": "common.json#/definitions/key" },
+            "description": "Maneuvers keys a monster's sheet lists, which it makes with no perk."
+          },
+          "weapon_properties": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "The ranged weapon's properties; the maneuver's without_weapon_properties refuse it."
+          }
+        },
+        "additionalProperties": false
+      },
+      "loadout": {
+        "$ref": "../../ruleset/schemas/schema.json#/definitions/loadout",
+        "description": "What the shooter holds: the attack's AP is the loadout's (attack_sequences/core.json), the attack action's without it. Two hand guns may lay Pinning Fire though they load."
+      },
+      "ap": {
+        "type": "integer",
+        "minimum": 0,
+        "description": "Pinning Fire: the AP left, all spent. Trigger Watch: the held AP the attack's AP is reserved from."
+      },
+      "rounds": {
+        "type": "integer",
+        "minimum": 0,
+        "description": "Rounds carried; the maneuver's rounds come off it. Left out, rounds are not counted."
+      },
+      "events": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "foe": { "type": "integer", "minimum": 0, "description": "Which foe, an index the caller keeps." },
+            "kind": { "type": "string", "enum": ["move", "attack"] },
+            "in_zone": { "type": "boolean", "description": "Pinning Fire: the move ends in the zone or crosses it, or the attack is made from it. Default false." },
+            "in_range": { "type": "boolean", "description": "Trigger Watch: the foe is in the weapon's range. Default false." }
+          },
+          "required": ["foe", "kind"],
+          "additionalProperties": false
+        },
+        "description": "What the table saw until the shooter's next turn, in order."
+      }
+    },
+    "required": ["maneuver", "ap", "events"],
+    "additionalProperties": false
+  },
+  "result_schema": {
+    "type": "object",
+    "properties": {
+      "ap": { "type": "integer", "minimum": 0, "description": "AP spent." },
+      "ap_returned": { "type": "integer", "minimum": 0, "description": "Trigger Watch: the reserved AP back to the pool when no foe drew the shot." },
+      "rounds": { "type": "integer", "minimum": 0, "description": "Rounds spent: Pinning Fire's three, Trigger Watch's one when it fires." },
+      "rounds_left": { "type": "integer", "minimum": 0, "description": "With rounds: what is left." },
+      "shots": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "event": { "type": "integer", "minimum": 0 },
+            "foe": { "type": "integer", "minimum": 0 },
+            "attack": { "type": "integer", "description": "The add on the strike's attack roll, for the caller's combat command." }
+          },
+          "required": ["event", "foe", "attack"],
+          "additionalProperties": false
+        },
+        "description": "The strikes the events drew, in order, for the caller to resolve with combat."
+      },
+      "zone_attacks": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "event": { "type": "integer", "minimum": 0 },
+            "foe": { "type": "integer", "minimum": 0 },
+            "attack": { "type": "integer", "description": "The add on that foe's own attack." }
+          },
+          "required": ["event", "foe", "attack"],
+          "additionalProperties": false
+        },
+        "description": "Pinning Fire: the attacks foes made from the zone, at its penalty."
+      }
+    },
+    "required": ["ap", "ap_returned", "rounds", "shots", "zone_attacks"],
+    "additionalProperties": false
+  }
+}
