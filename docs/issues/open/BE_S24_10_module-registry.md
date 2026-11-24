@@ -1,0 +1,15 @@
+#### BE_S24_10_module-registry One module registry that discovers, orders, and loads every module
+- Status: todo
+- Priority: high
+- Needs: QA_S24_02_go-benchmarks-and-complexity-gate
+- Modified: 2026-11-24
+- Do: Owner request, 2026-11-24. There is no module registry: modules are discovered by scanning `ruleset/modules/*/manifest.json` in four places (`core.Open`, the WebAssembly opener, the CLI's `settings` and `files`), and a manifest is parsed in five (`data.loadModule`, `catalog.layerModule`, `settings`, `files`, `validate.py`). Every module found is loaded, `requires`, `version`, and `extends` are not read in Go, and only Wuxing's data reaches the ruleset, through `if manifest.Identifier == "wuxing"` in `data.loadModule`; the factions and example modules reach only the catalog, for display. [V 2026-11-24]
+  - **The registry** (`backend/internal/module`): discovers each module once from an `fs.FS`, parses its manifest once (id, version, requires, extends, data, schemas), and keeps them by id in a map.
+  - **Order and checks:** modules load in `requires` order; a missing or circular `requires`, or two modules with one id, is an error that names them.
+  - **Enabled modules:** the registry takes the enabled set from settings; a module left out is known but not loaded, and a module whose `requires` is not enabled is refused with its reason. With no setting, every module is enabled, as now. [A]
+  - **One reader:** `data.Load`, the catalog, `files`, `settings`, and the WebAssembly opener take the registry instead of their own scan.
+  - **Data-driven merge:** `data.Load` merges each module's `extends.collections` rows into the ruleset's tables from the manifest, so a module's rows reach the commands, not only the catalog. Wuxing's phases and cycles become its collection handler in a dispatch map, and the hard-coded check goes.
+- Keys: `module.Registry`, `Discover`, `Enabled`, the collection handlers
+- Files: ~12 (backend/internal/module/registry.go and its test, backend/internal/data/data.go, backend/internal/catalog/catalog.go, backend/core/core.go, backend/cmd/riftweave-wasm/open.go, backend/cmd/riftweave/settings.go, backend/cmd/riftweave/files.go, docs/modules/module-system.md, docs/decisions/BE_S24_10_module-registry.md, changes/BE_S24_10_module-registry.md)
+- See: docs/modules/module-system.md, ruleset/schemas/module.manifest.schema.json
+- Done when: one function discovers modules and one parses a manifest; a test refuses a missing and a circular `requires` and loads modules in `requires` order; a factions row is readable by a command, not only the catalog; no `if manifest.Identifier ==` is left; every vector and the module tests pass; the `data.Load` benchmark is no slower.

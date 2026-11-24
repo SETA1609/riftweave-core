@@ -1,0 +1,13 @@
+#### BE_S24_04_attack-sequence-state-machine The attack sequence as a state machine with a per-action table
+- Status: todo
+- Priority: high
+- Needs: BE_S24_03_modifier-applier
+- Modified: 2026-11-24
+- Do: Owner request, 2026-11-24. `attack.Run` is the most branched function in the backend: complexity 133, 383 lines, 61 `if`s, and 13 checks of which action it runs.
+  - **A per-action table:** `full_attack`, `circle_cut`, `attack`, `jab`, and `opportunity` each map to their rules (how strikes aim, whether a drop carries, whether a reload fits inside, whether Scissor Cut applies), so the action checks become one lookup.
+  - **A state machine:** a `sequence` holds the queue, the foes' hit points, the rolls, the rounds, and the AP budget; each strike steps through `retarget`, `load`, `roll`, `strike`, and `after` (drop, carry, free strike, Long Guard), each a method. `Run` is setup and a short loop.
+  - **A hand type:** `main` and `off` become a type with its other hand, weapon properties, skill, and damage, so the nine hand checks become methods.
+- Keys: the action table, `sequence`, `hand`
+- Files: ~5 (backend/internal/attack/attack.go, backend/internal/attack/sequence.go, backend/internal/attack/actions.go, docs/decisions/BE_S24_04_attack-sequence-state-machine.md, changes/BE_S24_04_attack-sequence-state-machine.md)
+- See: docs/core/combat.md#attacks-by-loadout, backend/internal/attack/attack.go
+- Done when: `attack.Run` leaves the allow list (no function in the package over 40); all attack_sequence vectors pass; the benchmark is no slower.

@@ -1,0 +1,10 @@
+#### PO_S24_01_file-go-refactor-issues File the Go refactor issues
+- Status: todo
+- Priority: high
+- Needs: —
+- Modified: 2026-11-24
+- Do: Owner request, 2026-11-24: refactor the Go backend for speed, size, and readability with state machines, dispatch tables, and hash sets. The screening found little copied code; the weight is in five branched functions (`attack.Run` 133, `combat.strike` 89, `casting.Run` 48, `progression.Run` 42, `charactersCommand` 41) and a modifier call repeated 29 times. File story S24 with its issues, benchmarks and a complexity gate first, and mirror them as GitHub issues with the story's sub-issues linked.
+- Keys: none
+- Files: ~13 (docs/stories/S24-go-refactor.md, docs/stories/README.md, ROADMAP.md, AGENTS.md, the nine issue files, docs/decisions/PO_S24_01_file-go-refactor-issues.md, changes/PO_S24_01_file-go-refactor-issues.md)
+- See: docs/backend/README.md
+- Done when: story S24 and its issues exist with their `Needs`; the stories README lists S24; `roadmap-order show` lists the new issues; a GitHub issue exists for the story and for each issue, linked as sub-issues.
