@@ -53,6 +53,10 @@ classDiagram
     class error {
         string error
     }
+    class held_template {
+        enum how
+        string template
+    }
     class item_instance {
         List~appliedEffect~ added_effects
         ref base
@@ -110,6 +114,7 @@ classDiagram
         skills skills
         List~key~ spells
         List~key~ tags
+        List~held_template~ templates
         integer xp
     }
     actor --> attributes : attributes
@@ -123,6 +128,7 @@ classDiagram
     session --> stored_actor : actor
     session --> stored_actor : start
     stored_actor --> attributes : attributes
+    stored_actor --> held_template : templates
     stored_actor --> item_instance : inventory
     stored_actor --> pools : growth
     stored_actor --> skills : skills
@@ -137,7 +143,7 @@ What each session step reads from the stored actor and writes back, from the tab
 flowchart LR
     actor[("stored actor")]
     derived["derived"]
-    actor -- "fills: actor, modifiers (the actor's, below)" --> derived
+    actor -- "fills: actor, modifiers (the actor's, below), and templates (the held character templates, when any)" --> derived
     derived -- "writes back: nothing" --> actor
     combat["combat"]
     actor -- "fills: attacker.attributes, attacker.skill (the equipped weapon's skill), and modifiers (the actor's on that skill); or with as: defender defender.hp, defender.attributes, defender.armor_dr (the worn armor), and defender.modifiers (the actor's)" --> combat
@@ -516,6 +522,7 @@ classDiagram
     class derived_input {
         actor actor
         modifiers modifiers
+        List~held_template~ templates
     }
     class derived_result {
         integer ap
@@ -527,7 +534,9 @@ classDiagram
         integer toxicity_limit
     }
     class actor
+    class held_template
     derived_input --> actor : actor
+    derived_input --> held_template : templates
 ```
 
 ## dev

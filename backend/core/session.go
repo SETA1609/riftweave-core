@@ -239,6 +239,10 @@ var sessionAdapters = map[string]sessionAdapter{
 func fillDerived(ruleset *data.Ruleset, actor *stored.Actor, _ *SessionStep, input map[string]any) error {
 	setDefault(input, "actor", characterOf(actor))
 	setDefault(input, "modifiers", actorModifiers(ruleset, actor))
+	if len(actor.Templates) > 0 {
+		// A held template's sheet (docs/core/templates.md).
+		setDefault(input, "templates", encodedValue(actor.Templates))
+	}
 	return nil
 }
 

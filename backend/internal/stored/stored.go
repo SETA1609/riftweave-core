@@ -70,6 +70,15 @@ type Actor struct {
 	Coins        int64            `json:"coins,omitempty"`
 	Inventory    []ItemInstance   `json:"inventory"`
 	Equipped     map[string]int64 `json:"equipped"`
+	// Templates are the character templates held, and how each came (docs/core/templates.md);
+	// left out when none.
+	Templates []HeldTemplate `json:"templates,omitempty"`
+}
+
+// HeldTemplate is a held character template: its ref, and how it came (granted or outside_rules).
+type HeldTemplate struct {
+	Template string `json:"template"`
+	How      string `json:"how"`
 }
 
 // Input is the `stored_actor` command's input: an actor to check, or a new one to make.

@@ -378,6 +378,21 @@ type Maneuver struct {
 	Events []string `json:"events"`
 }
 
+// CharacterTemplate is a template a character takes on in play (docs/core/templates.md): what it
+// adds on top of the character, one per slot.
+type CharacterTemplate struct {
+	Key        string              `json:"key"`
+	Slot       string              `json:"slot"`
+	Attributes map[string]int64    `json:"attributes"`
+	Skills     map[string]int64    `json:"skills"`
+	Modifiers  []modifier.Modifier `json:"modifiers"`
+	Perks      []struct {
+		Perk string `json:"perk"`
+		Rank int64  `json:"rank"`
+	} `json:"perks"`
+	CreatureType string `json:"creature_type"`
+}
+
 // Fits reports whether an attack at the range with a weapon of the properties fits the
 // maneuver's ranges and weapon properties.
 func (maneuver *Maneuver) Fits(attackRange string, properties []string) bool {
@@ -1078,6 +1093,8 @@ type Ruleset struct {
 
 	// Rounds are equipment/ammunition.json's rows by core:ammunition/<key> (GD_S17_04).
 	Rounds map[string]Round
+	// CharacterTemplates is character_templates/core.json, by key (GD_S20_05).
+	CharacterTemplates Table[CharacterTemplate]
 
 	// EffectRefs is every ref in effects/core.json, for the refs a dev operation names.
 	EffectRefs map[string]bool
@@ -1326,6 +1343,12 @@ func Load(fileSystem fs.FS, modules ...fs.FS) (*Ruleset, error) {
 	loader.read("attack_sequences/core.json", &ruleset.AttackSequences)
 	loader.read("stances/core.json", &ruleset.Stances)
 	ruleset.Maneuvers = newTable(maneuvers.Maneuvers, func(maneuver *Maneuver) string { return maneuver.Key })
+
+	var templates struct {
+		CharacterTemplates []CharacterTemplate `json:"character_templates"`
+	}
+	loader.read("character_templates/core.json", &templates)
+	ruleset.CharacterTemplates = newTable(templates.CharacterTemplates, func(template *CharacterTemplate) string { return template.Key })
 
 	var origins struct {
 		Origins []struct {

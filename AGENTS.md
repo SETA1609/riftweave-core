@@ -148,6 +148,7 @@ Each data file names its schema in `$schema`:
 - kernel and world tables: `actions`, `casting`, `checks`, `combat`, `derived`, `formulas`, `progression`, `resolution`, `rest`, `economy`, `loot`, `hazards`, `balance`
 - `examples` (worked characters and the play loop)
 - `maneuvers` (combat maneuvers: an attack for more or fewer AP, with effects from the shared pool on the `maneuver` channel; `docs/core/actions.md#maneuvers`)
+- `character_templates` (templates a character takes on in play and drops again, one per slot, applied by `derived`; `docs/core/templates.md`)
 - `skill_groups` (the optional grouped sheet: every skill in one group; `docs/core/progression.md#the-grouped-sheet-variant`)
 - `origins` (the kinds of modifier source and their stacking policy, `highest` or `add`)
 - `modifier_targets` (the modifier targets no other table holds: a rule's number or a flag; `docs/core/modifier.md#target`)

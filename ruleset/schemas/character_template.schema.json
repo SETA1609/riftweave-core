@@ -26,11 +26,11 @@
           "skills": { "type": "object", "propertyNames": { "$ref": "schema.json#/definitions/skillRef" }, "additionalProperties": { "type": "integer" }, "description": "Added to each skill where a sheet reads it." },
           "modifiers": { "type": "array", "items": { "$ref": "schema.json#/definitions/modifier" }, "description": "On the derived keys (hp, mp, sp, ap), resistances, and drawbacks; each with the innate origin (validate.py)." },
           "perks": { "type": "array", "items": { "$ref": "schema.json#/definitions/heldPerk" }, "description": "Granted while the template is held, not counted against perks_per_level." },
-          "tags": { "type": "array", "items": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" }, "uniqueItems": true },
+          "tags": { "type": "array", "items": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" }, "minItems": 1, "uniqueItems": true, "description": "Tags beyond the creature type's own, which the type already gives (second normal form)." },
           "creature_type": { "$ref": "schema.json#/definitions/creatureTypeRef", "description": "What the character also counts as (a bane, turn undead, a condition immunity)." },
           "source": { "$ref": "schema.json#/definitions/sourceRef" }
         },
-        "required": ["key", "label", "description", "slot", "attributes", "skills", "modifiers", "perks", "tags"],
+        "required": ["key", "label", "description", "slot", "attributes", "skills", "modifiers", "perks"],
         "additionalProperties": false
       }
     }
