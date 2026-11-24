@@ -1,5 +1,5 @@
 #### GD_S20_05_character-template-model Character templates: a reusable change that adds attributes, skills, pools, and perks
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: —
 - Modified: 2026-11-20
