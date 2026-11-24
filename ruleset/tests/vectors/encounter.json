@@ -1,0 +1,501 @@
+[
+  {
+    "name": "start: four characters and two monsters; cael before bram on LCK, wolf before dove on the second roll-off roll; the first turn is on start combat",
+    "operation": "start",
+    "combatants": [
+      {
+        "id": "aria",
+        "initiative": 12,
+        "agi": 6,
+        "lck": 5
+      },
+      {
+        "id": "bram",
+        "initiative": 10,
+        "agi": 7,
+        "lck": 4
+      },
+      {
+        "id": "cael",
+        "initiative": 10,
+        "agi": 7,
+        "lck": 6
+      },
+      {
+        "id": "dove",
+        "initiative": 9,
+        "agi": 5,
+        "lck": 5,
+        "rolls": [
+          40,
+          70
+        ]
+      },
+      {
+        "id": "ogre",
+        "initiative": 14,
+        "agi": 3,
+        "lck": 2
+      },
+      {
+        "id": "wolf",
+        "initiative": 9,
+        "agi": 5,
+        "lck": 5,
+        "rolls": [
+          40,
+          12
+        ]
+      }
+    ],
+    "expect": {
+      "encounter": {
+        "round": 1,
+        "order": [
+          "ogre",
+          "aria",
+          "cael",
+          "bram",
+          "wolf",
+          "dove"
+        ],
+        "turn": 0,
+        "acted": [],
+        "surprise": []
+      },
+      "current": {
+        "id": "ogre",
+        "start": "combat"
+      },
+      "next": "aria"
+    }
+  },
+  {
+    "name": "turn_end: the turn moves to aria, on her first turn",
+    "operation": "turn_end",
+    "encounter": {
+      "round": 1,
+      "order": [
+        "ogre",
+        "aria",
+        "cael",
+        "bram",
+        "wolf",
+        "dove"
+      ],
+      "turn": 0,
+      "acted": [],
+      "surprise": []
+    },
+    "expect": {
+      "encounter": {
+        "round": 1,
+        "order": [
+          "ogre",
+          "aria",
+          "cael",
+          "bram",
+          "wolf",
+          "dove"
+        ],
+        "turn": 1,
+        "acted": [
+          "ogre"
+        ],
+        "surprise": []
+      },
+      "current": {
+        "id": "aria",
+        "start": "combat"
+      },
+      "next": "cael"
+    }
+  },
+  {
+    "name": "turn_end after the last actor: round 2, and the ogre's second turn reads no start",
+    "operation": "turn_end",
+    "encounter": {
+      "round": 1,
+      "order": [
+        "ogre",
+        "aria",
+        "cael",
+        "bram",
+        "wolf",
+        "dove"
+      ],
+      "turn": 5,
+      "acted": [
+        "ogre",
+        "aria",
+        "cael",
+        "bram",
+        "wolf"
+      ],
+      "surprise": []
+    },
+    "expect": {
+      "encounter": {
+        "round": 2,
+        "order": [
+          "ogre",
+          "aria",
+          "cael",
+          "bram",
+          "wolf",
+          "dove"
+        ],
+        "turn": 0,
+        "acted": [
+          "ogre",
+          "aria",
+          "cael",
+          "bram",
+          "wolf",
+          "dove"
+        ],
+        "surprise": []
+      },
+      "current": {
+        "id": "ogre"
+      },
+      "next": "aria"
+    }
+  },
+  {
+    "name": "start with ambushers: round 0 is the surprise round, the ogre first on start surprise, the wolf next",
+    "operation": "start",
+    "combatants": [
+      {
+        "id": "aria",
+        "initiative": 12,
+        "agi": 6,
+        "lck": 5
+      },
+      {
+        "id": "bram",
+        "initiative": 10,
+        "agi": 7,
+        "lck": 4
+      },
+      {
+        "id": "cael",
+        "initiative": 10,
+        "agi": 7,
+        "lck": 6
+      },
+      {
+        "id": "dove",
+        "initiative": 9,
+        "agi": 5,
+        "lck": 5,
+        "rolls": [
+          40,
+          70
+        ]
+      },
+      {
+        "id": "ogre",
+        "initiative": 14,
+        "agi": 3,
+        "lck": 2,
+        "surprise": true
+      },
+      {
+        "id": "wolf",
+        "initiative": 9,
+        "agi": 5,
+        "lck": 5,
+        "rolls": [
+          40,
+          12
+        ],
+        "surprise": true
+      }
+    ],
+    "expect": {
+      "encounter": {
+        "round": 0,
+        "order": [
+          "ogre",
+          "aria",
+          "cael",
+          "bram",
+          "wolf",
+          "dove"
+        ],
+        "turn": 0,
+        "acted": [],
+        "surprise": [
+          "ogre",
+          "wolf"
+        ]
+      },
+      "current": {
+        "id": "ogre",
+        "start": "surprise"
+      },
+      "next": "wolf"
+    }
+  },
+  {
+    "name": "turn_end in the surprise round skips to the next ambusher",
+    "operation": "turn_end",
+    "encounter": {
+      "round": 0,
+      "order": [
+        "ogre",
+        "aria",
+        "cael",
+        "bram",
+        "wolf",
+        "dove"
+      ],
+      "turn": 0,
+      "acted": [],
+      "surprise": [
+        "ogre",
+        "wolf"
+      ]
+    },
+    "expect": {
+      "encounter": {
+        "round": 0,
+        "order": [
+          "ogre",
+          "aria",
+          "cael",
+          "bram",
+          "wolf",
+          "dove"
+        ],
+        "turn": 4,
+        "acted": [
+          "ogre"
+        ],
+        "surprise": [
+          "ogre",
+          "wolf"
+        ]
+      },
+      "current": {
+        "id": "wolf",
+        "start": "surprise"
+      },
+      "next": "ogre"
+    }
+  },
+  {
+    "name": "turn_end after the last ambusher: round 1 for everyone; the ogre acted, so its turn reads no start, and aria's first will",
+    "operation": "turn_end",
+    "encounter": {
+      "round": 0,
+      "order": [
+        "ogre",
+        "aria",
+        "cael",
+        "bram",
+        "wolf",
+        "dove"
+      ],
+      "turn": 4,
+      "acted": [
+        "ogre"
+      ],
+      "surprise": [
+        "ogre",
+        "wolf"
+      ]
+    },
+    "expect": {
+      "encounter": {
+        "round": 1,
+        "order": [
+          "ogre",
+          "aria",
+          "cael",
+          "bram",
+          "wolf",
+          "dove"
+        ],
+        "turn": 0,
+        "acted": [
+          "ogre",
+          "wolf"
+        ],
+        "surprise": [
+          "ogre",
+          "wolf"
+        ]
+      },
+      "current": {
+        "id": "ogre"
+      },
+      "next": "aria"
+    }
+  },
+  {
+    "name": "a tie the roll-off has not broken is refused",
+    "operation": "start",
+    "combatants": [
+      {
+        "id": "aria",
+        "initiative": 12,
+        "agi": 6,
+        "lck": 5
+      },
+      {
+        "id": "bram",
+        "initiative": 10,
+        "agi": 7,
+        "lck": 4
+      },
+      {
+        "id": "cael",
+        "initiative": 10,
+        "agi": 7,
+        "lck": 6
+      },
+      {
+        "id": "dove",
+        "initiative": 9,
+        "agi": 5,
+        "lck": 5
+      },
+      {
+        "id": "ogre",
+        "initiative": 14,
+        "agi": 3,
+        "lck": 2
+      },
+      {
+        "id": "wolf",
+        "initiative": 9,
+        "agi": 5,
+        "lck": 5
+      }
+    ],
+    "expect": {
+      "error": "dove and wolf tie: roll off again"
+    }
+  },
+  {
+    "name": "a tie on every roll is refused too",
+    "operation": "start",
+    "combatants": [
+      {
+        "id": "aria",
+        "initiative": 12,
+        "agi": 6,
+        "lck": 5
+      },
+      {
+        "id": "bram",
+        "initiative": 10,
+        "agi": 7,
+        "lck": 4
+      },
+      {
+        "id": "cael",
+        "initiative": 10,
+        "agi": 7,
+        "lck": 6
+      },
+      {
+        "id": "dove",
+        "initiative": 9,
+        "agi": 5,
+        "lck": 5,
+        "rolls": [
+          40,
+          12
+        ]
+      },
+      {
+        "id": "ogre",
+        "initiative": 14,
+        "agi": 3,
+        "lck": 2
+      },
+      {
+        "id": "wolf",
+        "initiative": 9,
+        "agi": 5,
+        "lck": 5,
+        "rolls": [
+          40,
+          12
+        ]
+      }
+    ],
+    "expect": {
+      "error": "dove and wolf tie: roll off again"
+    }
+  },
+  {
+    "name": "an id twice is refused",
+    "operation": "start",
+    "combatants": [
+      {
+        "id": "aria",
+        "initiative": 12,
+        "agi": 6,
+        "lck": 5
+      },
+      {
+        "id": "bram",
+        "initiative": 10,
+        "agi": 7,
+        "lck": 4
+      },
+      {
+        "id": "cael",
+        "initiative": 10,
+        "agi": 7,
+        "lck": 6
+      },
+      {
+        "id": "dove",
+        "initiative": 9,
+        "agi": 5,
+        "lck": 5,
+        "rolls": [
+          40,
+          70
+        ]
+      },
+      {
+        "id": "ogre",
+        "initiative": 14,
+        "agi": 3,
+        "lck": 2
+      },
+      {
+        "id": "wolf",
+        "initiative": 9,
+        "agi": 5,
+        "lck": 5,
+        "rolls": [
+          40,
+          12
+        ]
+      },
+      {
+        "id": "aria",
+        "initiative": 1,
+        "agi": 1,
+        "lck": 1
+      }
+    ],
+    "expect": {
+      "error": "aria is in the fight twice"
+    }
+  },
+  {
+    "name": "turn_end needs the encounter",
+    "operation": "turn_end",
+    "expect": {
+      "error": "turn_end needs the encounter"
+    }
+  }
+]
