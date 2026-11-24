@@ -316,6 +316,15 @@ func plan(ruleset *data.Ruleset, input *Input, row *data.AttackSequence, flags [
 	return table, *input.AP, nil
 }
 
+// planWithManeuver is the plan, then the attack_sequence maneuver it is made as, if any.
+func planWithManeuver(ruleset *data.Ruleset, input *Input, row *data.AttackSequence, flags []string, on func(string) (int64, error)) ([]planned, int64, error) {
+	strikes, actionPoints, err := plan(ruleset, input, row, flags, on)
+	if err != nil {
+		return nil, 0, err
+	}
+	return withManeuver(ruleset, input, strikes, actionPoints)
+}
+
 // withManeuver is the attack made as an attack_sequence maneuver (Split Nock,
 // docs/core/actions.md#ranged-maneuvers): its strikes of the main hand, each at its attack, for
 // the attack's AP plus its own. Without a maneuver the plan stands.
@@ -409,11 +418,8 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 			row = &cheap
 		}
 	}
-	strikes, actionPoints, err := plan(ruleset, &input, row, flags, on)
+	strikes, actionPoints, err := planWithManeuver(ruleset, &input, row, flags, on)
 	if err != nil {
-		return Result{}, err
-	}
-	if strikes, actionPoints, err = withManeuver(ruleset, &input, strikes, actionPoints); err != nil {
 		return Result{}, err
 	}
 	// Ranged loadouts (GD_S17_05): a hand of a ranged kind strikes at range, and a melee strike
