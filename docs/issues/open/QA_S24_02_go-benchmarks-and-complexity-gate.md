@@ -1,5 +1,5 @@
 #### QA_S24_02_go-benchmarks-and-complexity-gate Benchmarks and a complexity gate before the Go refactor
-- Status: todo
+- Status: review
 - Priority: high
 - Needs: —
 - Modified: 2026-11-24
