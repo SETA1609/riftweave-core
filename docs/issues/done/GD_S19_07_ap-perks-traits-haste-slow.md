@@ -1,5 +1,6 @@
 #### GD_S19_07_ap-perks-traits-haste-slow Perks, creation traits, and conditions that change the AP pool
-- Status: review
+- Status: done
+- Merged: #459, 2026-11-24
 - Priority: medium
 - Needs: GD_S19_05_ap-bank-cap-and-guard
 - Modified: 2026-11-23
