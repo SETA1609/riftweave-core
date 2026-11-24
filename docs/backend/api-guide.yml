@@ -1,0 +1,393 @@
+# Riftweave API guide: a proposal of the endpoints we want, without code.
+#
+# Status: proposal (PO_S26_01, owner request 2026-11-24). Nothing here is built yet unless an
+# endpoint says `status: exists`. It is the guide the backend and frontend issues follow when
+# they add an endpoint; docs/backend/api.md describes what the server serves today, and the
+# command contracts in backend/contract/ stay the one definition of every input and result.
+#
+# How to read it:
+#   - resources:     the things a person works with, each with its endpoints.
+#   - an endpoint:   method and path, what it does, what it takes and gives (by contract name,
+#                    never a copied schema), which core command does the rule, and whether it
+#                    keeps state.
+#   - status:        exists (served today), new (proposed), or changed (served, but proposed to
+#                    work differently).
+#   - Tags [A] and [U] as in AGENTS.md: an assumption to confirm, or a question still open.
+
+guide:
+  name: Riftweave API
+  version: v1
+  base_path: /v1
+  status: proposal
+  modified: 2026-11-24
+
+principles:
+  - id: rules-in-the-core
+    says: >
+      Every rule is a core command (docs/backend/README.md#commands). An endpoint parses the
+      request, calls the command, stores what it must, and writes the result. No endpoint adds a
+      rule, so the HTTP server, the browser (the same core as WebAssembly), the agent CLI, and the
+      MCP server give the same answer.
+  - id: resources-over-commands
+    says: >
+      People and pages work with resources: a character, a creation draft, the current profile, a
+      saved game. The resource endpoints below are what the frontend and other clients call; the
+      generic POST /v1/commands/{command} stays for calculators and agents. [A]
+  - id: one-shape-two-stores
+    says: >
+      A resource has one shape wherever it is kept. Offline (network mode local) the frontend
+      keeps it in IndexedDB and runs the core in the browser; with a server (network mode server)
+      the server keeps it. The frontend's API service has one method per endpoint here and picks
+      the store, so a page never knows which it talks to. [A]
+  - id: offline-first
+    says: >
+      Every endpoint a single player needs works with no connection. A GM and players pass
+      characters and games as files (docs/backend/files.md); a shared room (APP-17) is a later
+      transport, not another API.
+  - id: shapes-from-contracts
+    says: >
+      A body or a result is named by its contract definition (common.json#/definitions/<name> or
+      a command's input or result). The OpenAPI document is generated from the contracts, never
+      written by hand (docs/backend/api.md#openapi), and this guide adds no schema of its own.
+
+conventions:
+  ids: >
+    A stored resource has a UUID `id`, made when it is created and never changed (characters
+    already do, docs/backend/files.md#the-character-list). Rows of the ruleset are named by their
+    ref, core:<category>/<key> or module:<id>/<category>/<key>.
+  revisions: >
+    A stored resource has a `revision`, raised by one on every change. A change sends the revision
+    it read (If-Match); an older one is refused with 409, so two tabs or two devices never
+    overwrite each other silently. Imports follow the sync rule (added, replaced, unchanged,
+    refused, diverged). [A]
+  lists: >
+    A list is a GET with filters as query parameters (text, a field and a value, a min and a max,
+    sort, descending), the catalog's filters (docs/backend/api.md#catalog). It returns `items` and
+    `total`; `limit` and `offset` page it when a list grows past a few hundred rows. [A]
+  changes: >
+    POST creates (201 and a Location header) or runs an action named in the path; PUT replaces a
+    resource or one part of it; DELETE removes it. An action that changes a character returns the
+    character after it, with its new revision.
+  errors: >
+    The status codes of docs/backend/api.md#status-codes, with {"error": "..."}: 400 a body that
+    is not the input, 404 no such resource or ref, 409 an old revision, 413 a body over 1 MiB, 422
+    a rule refusal with the core's message.
+  roles: >
+    Who is asking (a player or the GM) is not checked yet: a role is a parameter where a result
+    differs (the bestiary's player view). Authentication is a later issue. [U]
+  files: >
+    Any resource that travels has a `file` endpoint that gives the file envelope
+    (docs/backend/files.md), and POST /v1/files/import takes any envelope back.
+
+resources:
+
+  meta:
+    says: Is the server up, what does it serve, and with which rules.
+    endpoints:
+      - { method: GET, path: /healthz, does: the process answers, status: exists }
+      - { method: GET, path: /readyz, does: the ruleset loaded, status: exists }
+      - { method: GET, path: /version, does: the build and the rules version, status: exists }
+      - { method: GET, path: /openapi.json, does: the generated OpenAPI 3.1 document, status: exists }
+      - { method: GET, path: /v1/commands, does: every command with its contract summary, status: exists }
+
+  commands:
+    says: >
+      The generic call: any core command but dev, by name. Calculators (a resolution roll, an
+      attack, a cast, a rest, loot, a price) stay here; a page that only computes and keeps nothing
+      calls it.
+    endpoints:
+      - method: POST
+        path: /v1/commands/{command}
+        does: run one command
+        takes: the command's input
+        gives: the command's result
+        status: exists
+
+  rules:
+    says: What the ruleset holds, read only, from core and the enabled modules.
+    endpoints:
+      - method: GET
+        path: /v1/rules
+        does: the rules version and the loaded modules with their versions
+        status: new
+      - method: GET
+        path: /v1/rules/creation
+        does: everything a creation page is drawn from, and the flow of its steps in order and in groups
+        gives: creation `rules` (with `flow`, BE_S25_03)
+        command: creation rules
+        status: new
+      - method: GET
+        path: /v1/catalog
+        does: the collections a player or a GM studies, with their columns and row counts
+        command: catalog collections
+        status: new
+      - method: GET
+        path: /v1/catalog/{collection}
+        does: one collection's rows, filtered and sorted
+        query: [text, field, equals, min, max, sort, descending, limit, offset]
+        command: catalog list
+        status: new
+      - method: GET
+        path: /v1/catalog/{collection}/{ref}
+        does: one row, composed from its base and overrides
+        command: catalog get
+        status: new
+
+  characters:
+    says: >
+      The roster: every saved character, as the bestiary tracks monsters. A character is a stored
+      actor with its sync fields (common.json#/definitions/character). Offline it is the
+      IndexedDB store riftweave-characters; with a server, the server's store.
+    endpoints:
+      - method: GET
+        path: /v1/characters
+        does: the roster, each character's summary
+        gives: items of { id, name, sex, race, background, level, revision, changed_at, changed_by }
+        query: [text, race, background, level_min, level_max, sort, descending]
+        status: new
+      - method: POST
+        path: /v1/characters
+        does: save a stored actor as a new character (a finished draft, a prebuilt character, a build)
+        takes: "{ name, actor }"
+        gives: the character, revision 1
+        command: stored_actor
+        status: new
+      - method: GET
+        path: /v1/characters/{id}
+        does: one character, its sync fields and its stored actor
+        status: new
+      - method: PUT
+        path: /v1/characters/{id}
+        does: replace the character (a GM's edit), with If-Match on its revision
+        command: stored_actor
+        status: new
+      - method: DELETE
+        path: /v1/characters/{id}
+        does: remove the character; if it is the profile, the profile is cleared
+        status: new
+      - method: POST
+        path: /v1/characters/{id}/duplicate
+        does: a copy with a new id, revision 1, and "(copy)" after the name
+        status: new
+      - method: GET
+        path: /v1/characters/{id}/sheet
+        does: what a sheet shows, all computed by the core
+        gives: attributes, skills, derived stats, perks, held templates
+        command: derived, progression read_skill
+        status: new
+      - method: POST
+        path: /v1/characters/{id}/level-up
+        does: take a level when the XP allows it, with its skill points and its perk
+        command: progression level_up
+        status: new
+      - method: POST
+        path: /v1/characters/{id}/skills/{skill}/points
+        does: spend skill points on one skill
+        command: progression spend
+        status: new
+      - method: POST
+        path: /v1/characters/{id}/perks
+        does: take a perk whose prerequisites the character meets
+        command: progression take_perk
+        status: new
+      - method: PUT
+        path: /v1/characters/{id}/templates/{template}
+        does: take on a character template, granted or outside the rules (BE_S20_08)
+        status: new
+      - method: DELETE
+        path: /v1/characters/{id}/templates/{template}
+        does: remove a held template; the sheet is what it was
+        status: new
+      - method: GET
+        path: /v1/characters/{id}/file
+        does: the character file to export; exporting changes no revision
+        status: new
+      - method: GET
+        path: /v1/characters/{id}/print
+        does: a printable character sheet
+        command: print
+        status: new
+
+  creation:
+    says: >
+      A character made one step at a time: a draft is kept between steps, every change is checked
+      by the core, and finishing it saves a character in the roster. The order and the groups of
+      the steps come from the core (creation rules `flow`), so the page holds no order of its own.
+      The steps, in order [A]: name and sex; race; background; traits (creation perks);
+      attributes; tag skills; perks (a starting perk, such as a human's Ambition); then review.
+    endpoints:
+      - method: POST
+        path: /v1/creation/drafts
+        does: start a draft; optionally from a build or a prebuilt character
+        gives: "{ id, draft, check }"
+        status: new
+      - method: GET
+        path: /v1/creation/drafts
+        does: the unfinished drafts, so one is picked up again after a reload or on another day
+        status: new
+      - method: GET
+        path: /v1/creation/drafts/{id}
+        does: the draft and its check (each step done, with problems, or still to do, and the next step)
+        command: creation check
+        status: new
+      - method: PUT
+        path: /v1/creation/drafts/{id}/steps/{step}
+        does: set one step (name, sex, race, background, creation_perks, points, tag_skills, perks)
+        gives: the draft and its check
+        command: creation check
+        status: new
+      - method: DELETE
+        path: /v1/creation/drafts/{id}
+        does: drop the draft
+        status: new
+      - method: POST
+        path: /v1/creation/drafts/{id}/finish
+        does: finish the draft into a character in the roster; with select true it becomes the profile
+        takes: "{ select? }"
+        gives: the character (201, Location /v1/characters/{id})
+        command: creation finish
+        status: new
+
+  profile:
+    says: >
+      The current character of a single player on this device: the one every play page starts
+      from. It names a character of the roster; it is not a copy. [A]
+    endpoints:
+      - method: GET
+        path: /v1/profile
+        does: the current character's id and summary, or none
+        status: new
+      - method: PUT
+        path: /v1/profile
+        does: make a character of the roster the current one
+        takes: "{ character_id }"
+        status: new
+      - method: DELETE
+        path: /v1/profile
+        does: no current character
+        status: new
+
+  sessions:
+    says: >
+      A run of play, saved as a game: a stored actor and the log of steps, replayed the same
+      anywhere (docs/backend/sessions.md). Today the client holds the session and sends it with
+      each step; the proposal keeps saved games as stored resources like characters.
+    endpoints:
+      - method: POST
+        path: /v1/sessions
+        does: start a session from a character of the roster (the profile when none is named) or a stored actor
+        takes: "{ character_id?, start? }"
+        command: session start
+        status: changed
+        today: POST /v1/sessions with { start }
+      - method: GET
+        path: /v1/sessions
+        does: the saved games, each with its character, its step count, and when it last changed
+        status: new
+      - method: GET
+        path: /v1/sessions/{id}
+        does: one saved game
+        status: new
+      - method: POST
+        path: /v1/sessions/{id}/steps
+        does: run one step and keep it in the log
+        takes: "{ command, input, as? }"
+        command: session step
+        status: changed
+        today: POST /v1/sessions/step with { session, step }
+      - method: POST
+        path: /v1/sessions/{id}/replay
+        does: rebuild the game from its start and log, and say whether it matches
+        command: session replay
+        status: changed
+        today: POST /v1/sessions/replay with { session }
+      - method: POST
+        path: /v1/sessions/{id}/character
+        does: write the session's actor back to its character in the roster (a new revision)
+        status: new
+      - method: GET
+        path: /v1/sessions/{id}/file
+        does: the saved game file to export
+        status: new
+      - method: DELETE
+        path: /v1/sessions/{id}
+        does: remove the saved game
+        status: new
+
+  encounter:
+    says: The fight the GM runs inside a session; every change is a session step (BE_S08_07).
+    endpoints:
+      - method: GET
+        path: /v1/sessions/{id}/encounter
+        does: the initiative order, whose turn it is, and the round
+        status: new
+      - method: POST
+        path: /v1/sessions/{id}/encounter
+        does: start a fight with its combatants and their roll-off
+        command: encounter start
+        status: new
+      - method: POST
+        path: /v1/sessions/{id}/encounter/turns
+        does: end the current turn
+        command: encounter turn_end
+        status: new
+
+  bestiary:
+    says: What the players know of each monster, kept in the session (docs/backend/bestiary.md).
+    endpoints:
+      - method: GET
+        path: /v1/sessions/{id}/bestiary
+        does: the bestiary as the GM sees it, or as one player does
+        query: [player, text, type, level_min, level_max, phase]
+        command: bestiary view, catalog list
+        status: new
+      - method: POST
+        path: /v1/sessions/{id}/bestiary/reveals
+        does: mark a monster seen, known, or unknown, or reveal it by a Lore check
+        command: bestiary reveal
+        status: new
+
+  settings:
+    says: The device's settings, the same file both apps import and export (docs/backend/settings.md).
+    endpoints:
+      - { method: GET, path: /v1/settings, does: the settings, status: new }
+      - { method: PUT, path: /v1/settings, does: replace them; a key an app does not use is kept, status: new }
+      - { method: GET, path: /v1/modules, does: the optional modules with their versions and whether each is enabled, status: new }
+      - { method: PUT, path: "/v1/modules/{id}", does: enable or disable one module, status: new }
+
+  files:
+    says: Any file a person exports, taken back in (docs/backend/files.md).
+    endpoints:
+      - method: POST
+        path: /v1/files/import
+        does: >
+          read the envelope's kind and import it: a character by the sync rule, a saved game, a
+          spell through the author check, or settings
+        gives: the outcome (added, replaced, unchanged, refused, diverged) and any warnings
+        status: new
+      - method: POST
+        path: /v1/files/import/{import_id}/keep
+        does: after a diverged import, keep the saved side or the incoming one
+        takes: "{ side }"
+        status: new
+
+  authoring:
+    says: Content a person makes, checked as validate.py would (docs/backend/authoring.md).
+    endpoints:
+      - { method: POST, path: /v1/authoring/spells/check, does: check a draft spell and give its cost, command: author check, status: new }
+      - { method: GET, path: /v1/authoring/effects, does: the effects a spell may compose, command: author effects, status: new }
+
+open_questions:
+  - Should saved games live on the server at all, or stay with the client and travel as files? [U]
+  - Is the profile per device, or per person once there is sign-in? [U]
+  - Does the generic POST /v1/commands/{command} stay public once every page has its resource
+    endpoint, or only for agents and the MCP server? [U]
+  - Which role may call which endpoint (a player must not reveal a monster) once there is
+    sign-in? [U]
+
+order:
+  says: >
+    How the endpoints could be built, each an issue of its own once this guide is agreed:
+    first characters and profile (they back the roster and the creation flow of story S25), then
+    creation drafts, then sessions as stored resources with encounter and bestiary under them,
+    then settings, modules, files, and authoring. [A]
