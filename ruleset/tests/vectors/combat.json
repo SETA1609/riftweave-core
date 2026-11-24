@@ -5358,7 +5358,8 @@
       },
       "perks": [
         "core:feature/low_sweep",
-        "core:feature/hooking_blows"
+        "core:feature/hooking_blows",
+        "core:feature/wind_up"
       ]
     },
     "defender": {
@@ -6677,6 +6678,339 @@
     "round": "core:ammunition/fire_bolts",
     "expect": {
       "error": "a grenade is thrown, not fired with a round"
+    }
+  },
+  {
+    "attacker": {
+      "skill": 60,
+      "roll": 8,
+      "attributes": {
+        "lck": 0,
+        "per": 7
+      },
+      "range_normal": 20
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 10,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "name": "held breath: the aimed attack +1 AP (6), +20 to attack, damage x1.5, and the crit window +5, so a roll of 8 crits (10 x1.5 x2)",
+    "maneuver": "held_breath",
+    "expect": {
+      "outcome": "hit",
+      "target": 80,
+      "margin": 72,
+      "crit": true,
+      "damage": 30,
+      "hp": 10,
+      "ap": 6,
+      "stamina": 30,
+      "effects": [],
+      "events": []
+    }
+  },
+  {
+    "attacker": {
+      "skill": 60,
+      "roll": 8,
+      "attributes": {
+        "lck": 0,
+        "per": 7
+      },
+      "range_normal": 20
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 10,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "name": "held breath is refused after a move this turn",
+    "maneuver": "held_breath",
+    "moved": true,
+    "expect": {
+      "error": "held_breath needs no move this turn"
+    }
+  },
+  {
+    "attacker": {
+      "skill": 60,
+      "roll": 8,
+      "attributes": {
+        "lck": 0,
+        "per": 7
+      },
+      "range_normal": 3
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 10,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "name": "held breath is refused with a short-ranged weapon (a blunderbuss, range_normal 3)",
+    "maneuver": "held_breath",
+    "expect": {
+      "error": "held_breath needs a weapon with range_normal 16 or more"
+    }
+  },
+  {
+    "attacker": {
+      "skill": 60,
+      "roll": 8,
+      "attributes": {
+        "lck": 0,
+        "per": 7
+      }
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 10,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "name": "held breath needs the weapon's range_normal",
+    "maneuver": "held_breath",
+    "expect": {
+      "error": "held_breath needs attacker.range_normal"
+    }
+  },
+  {
+    "attacker": {
+      "skill": 60,
+      "roll": 30,
+      "attributes": {
+        "lck": 0,
+        "per": 7
+      },
+      "range_normal": 20,
+      "perks": [
+        "core:feature/heads_down"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 10,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "name": "pinning shot: an attack at -10 with Heads Down held; a hit pins the target (2 AP, 6 s)",
+    "maneuver": "pinning_shot",
+    "expect": {
+      "outcome": "hit",
+      "target": 50,
+      "margin": 20,
+      "crit": false,
+      "damage": 10,
+      "hp": 30,
+      "ap": 3,
+      "effects": [
+        {
+          "effect": "core:effect/pinned",
+          "magnitude": 2,
+          "duration": 6
+        }
+      ],
+      "events": []
+    }
+  },
+  {
+    "attacker": {
+      "skill": 60,
+      "roll": 30,
+      "attributes": {
+        "lck": 0,
+        "per": 7
+      },
+      "range_normal": 20,
+      "perks": [
+        "core:feature/low_aim"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 10,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "name": "pinning shot is refused when no held perk unlocks it (Low Aim unlocks the Tripping Shot)",
+    "maneuver": "pinning_shot",
+    "expect": {
+      "error": "pinning_shot needs a perk that unlocks it"
+    }
+  },
+  {
+    "attacker": {
+      "skill": 60,
+      "roll": 30,
+      "attributes": {
+        "lck": 0,
+        "per": 7
+      },
+      "range_normal": 20,
+      "maneuvers": [
+        "pinning_shot"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 10,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "name": "a monster makes the pinning shot its sheet lists, with no perk",
+    "maneuver": "pinning_shot",
+    "expect": {
+      "outcome": "hit",
+      "ap": 3,
+      "effects": [
+        {
+          "effect": "core:effect/pinned",
+          "magnitude": 2,
+          "duration": 6
+        }
+      ]
+    }
+  },
+  {
+    "attacker": {
+      "skill": 60,
+      "roll": 30,
+      "attributes": {
+        "lck": 0,
+        "per": 7
+      },
+      "range_normal": 20,
+      "maneuvers": [
+        "tripping_shot"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 10,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "name": "a monster's sheet that lists another maneuver does not make the pinning shot",
+    "maneuver": "pinning_shot",
+    "expect": {
+      "error": "pinning_shot needs a perk that unlocks it"
+    }
+  },
+  {
+    "attacker": {
+      "skill": 60,
+      "roll": 8,
+      "attributes": {
+        "lck": 0,
+        "per": 7
+      },
+      "range_normal": 20
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 10,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "name": "combat refuses the split nock, an attack_sequence maneuver",
+    "maneuver": "split_nock",
+    "expect": {
+      "error": "split_nock is an attack_sequence maneuver"
+    }
+  },
+  {
+    "attacker": {
+      "skill": 60,
+      "roll": 8,
+      "attributes": {
+        "lck": 0,
+        "per": 7
+      },
+      "range_normal": 20
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 10,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "name": "combat refuses the trigger watch, an overwatch maneuver",
+    "maneuver": "trigger_watch",
+    "expect": {
+      "error": "trigger_watch is an overwatch maneuver"
     }
   }
 ]
