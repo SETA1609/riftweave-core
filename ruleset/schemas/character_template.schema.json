@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Character templates",
+  "description": "Templates a character takes on in play and can drop again, such as a lich, a vampire, or a werebeast: attributes, skills, modifiers, and perks on top of the character (docs/core/templates.md, GD_S20_05).",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "character_templates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "key": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
+          "label": { "type": "string" },
+          "description": { "type": "string" },
+          "slot": { "type": "string", "enum": ["undeath", "lycanthropy"], "description": "One held template per slot." },
+          "prerequisite": {
+            "type": "object",
+            "properties": {
+              "level": { "type": "integer", "minimum": 1 },
+              "perks": { "type": "array", "items": { "$ref": "schema.json#/definitions/heldPerk" } }
+            },
+            "additionalProperties": false
+          },
+          "attributes": { "type": "object", "propertyNames": { "$ref": "schema.json#/definitions/ability" }, "additionalProperties": { "type": "integer" }, "description": "Added to each attribute; a missing one counts 0, and the sum may pass 10." },
+          "skills": { "type": "object", "propertyNames": { "$ref": "schema.json#/definitions/skillRef" }, "additionalProperties": { "type": "integer" }, "description": "Added to each skill where a sheet reads it." },
+          "modifiers": { "type": "array", "items": { "$ref": "schema.json#/definitions/modifier" }, "description": "On the derived keys (hp, mp, sp, ap), resistances, and drawbacks; each with the innate origin (validate.py)." },
+          "perks": { "type": "array", "items": { "$ref": "schema.json#/definitions/heldPerk" }, "description": "Granted while the template is held, not counted against perks_per_level." },
+          "tags": { "type": "array", "items": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" }, "uniqueItems": true },
+          "creature_type": { "$ref": "schema.json#/definitions/creatureTypeRef", "description": "What the character also counts as (a bane, turn undead, a condition immunity)." },
+          "source": { "$ref": "schema.json#/definitions/sourceRef" }
+        },
+        "required": ["key", "label", "description", "slot", "attributes", "skills", "modifiers", "perks", "tags"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["character_templates"],
+  "additionalProperties": false
+}
