@@ -1,5 +1,6 @@
 #### DE_S02_05_spell-mana-computed Third normal form: a spell's mana is computed, and every reader shows the number
-- Status: review
+- Status: done
+- Merged: #461, 2026-11-24
 - Priority: medium
 - Needs: BE_S08_10_compendium-catalog-cli
 - Modified: 2026-11-23
