@@ -162,5 +162,40 @@
       { "target": "ap", "operation": "add", "value": 3, "source": "vector:cap" }
     ],
     "expect": { "ap": 10 }
+  },
+  {
+    "name": "template: the derived.md example as a revenant (granted): END +2, STR +1, CHA -2, +10 HP and +10 SP innate, and Hardened Hide at rank 1 (+15 HP)",
+    "function": "derived",
+    "actor": { "attributes": { "end": 5, "int": 4, "agi": 6, "str": 7, "per": 5 }, "level": 1 },
+    "templates": [{ "template": "core:character_template/revenant", "how": "granted" }],
+    "expect": { "hp": 100, "mp": 34, "sp": 57, "ap": 4, "carry": 105, "initiative": 5, "toxicity_limit": 55 }
+  },
+  {
+    "name": "template: the same character with the revenant removed is the sheet it was",
+    "function": "derived",
+    "actor": { "attributes": { "end": 5, "int": 4, "agi": 6, "str": 7, "per": 5 }, "level": 1 },
+    "templates": [],
+    "expect": { "hp": 59, "mp": 34, "sp": 37, "ap": 4, "carry": 95, "initiative": 5, "toxicity_limit": 45 }
+  },
+  {
+    "name": "template: one taken outside the rules applies the same; how only records it",
+    "function": "derived",
+    "actor": { "attributes": { "end": 5, "int": 4, "agi": 6, "str": 7, "per": 5 }, "level": 1 },
+    "templates": [{ "template": "core:character_template/revenant", "how": "outside_rules" }],
+    "expect": { "hp": 100, "sp": 57 }
+  },
+  {
+    "name": "template: two templates in the undeath slot are refused",
+    "function": "derived",
+    "actor": { "attributes": { "end": 5, "int": 4, "agi": 6, "str": 7, "per": 5 }, "level": 1 },
+    "templates": [{ "template": "core:character_template/revenant", "how": "granted" }, { "template": "core:character_template/ghoul", "how": "outside_rules" }],
+    "expect": { "error": "revenant and ghoul share the undeath slot" }
+  },
+  {
+    "name": "template: a template that is not defined is refused",
+    "function": "derived",
+    "actor": { "attributes": { "end": 5, "int": 4, "agi": 6, "str": 7, "per": 5 }, "level": 1 },
+    "templates": [{ "template": "core:character_template/nope", "how": "granted" }],
+    "expect": { "error": "core:character_template/nope is not a character template" }
   }
 ]
