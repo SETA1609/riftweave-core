@@ -1,0 +1,13 @@
+# The complexity gate's allow list (QA_S24_02): file, function, complexity, nesting depth.
+# Each line is a function over the limits (complexity 40, depth 4) on 2026-11-24. It may not grow, and
+# it must be removed when the function is back under the limits; the list only shrinks (story S24).
+cmd/riftweave/characters.go charactersCommand 41 2
+cmd/riftweave/play/play.go Model.Update 42 4
+core/author.go refIndex 14 5
+internal/attack/attack.go Run 133 5
+internal/casting/casting.go Run 48 3
+internal/catalog/catalog.go layerModule 16 6
+internal/catalog/catalog.go resolver.base 10 5
+internal/combat/combat.go strike 89 3
+internal/progression/progression.go Run 42 3
+mcp/mcp.go standalone 12 5

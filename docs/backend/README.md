@@ -105,6 +105,15 @@ Rolls are inputs, as in the vectors: the caller rolls, or a client draws them fr
 
 ## Checks
 
+**The complexity gate and the benchmarks** (QA_S24_02, story S24). `tools/complexity` fails a non-test
+function over a cyclomatic complexity of 40 (1, each `if`, loop, `case`, and `&&` or `||`) or a nesting depth
+of 4; `tools/complexity/allow.txt` lists the functions over them on 2026-11-24, which may not grow and leave
+the list when they are back under, so it only shrinks. `go test ./...` runs it, so CI does. `BenchmarkCommand`
+(core) replays every vector of `combat`, `attack_sequence`, `casting`, `actions`, and `derived`, and
+`BenchmarkLoad` (internal/data) opens the ruleset; the `Go benchmarks` workflow runs them on request against a
+base and `tools/benchdiff` fails a slowdown over the threshold (5% by default). `go run ./tools/complexity -list`
+prints every function over the limits.
+
 `ruleset/scripts/test_contract.py` runs with the other tests in CI:
 
 - every contract file matches `command.schema.json`, and its `input_schema` and `result_schema` are valid JSON Schemas;

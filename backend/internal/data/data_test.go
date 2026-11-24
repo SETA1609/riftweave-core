@@ -168,3 +168,12 @@ func TestAnOverrideMergesFieldByField(t *testing.T) {
 		t.Errorf("got %v, want %v", got, want)
 	}
 }
+
+// BenchmarkLoad is opening the core ruleset (QA_S24_02): the cost every command pays once.
+func BenchmarkLoad(b *testing.B) {
+	for b.Loop() {
+		if _, err := Load(os.DirFS("../../../ruleset/data")); err != nil {
+			b.Fatal(err)
+		}
+	}
+}
