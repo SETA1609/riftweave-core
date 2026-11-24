@@ -1,5 +1,6 @@
 #### GD_S19_06_combat-start-ap A fight starts on a partial pool
-- Status: review
+- Status: done
+- Merged: #458, 2026-11-24
 - Priority: medium
 - Needs: GD_S19_05_ap-bank-cap-and-guard
 - Modified: 2026-11-23
