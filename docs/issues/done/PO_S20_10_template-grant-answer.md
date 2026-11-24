@@ -1,5 +1,6 @@
 #### PO_S20_10_template-grant-answer Record who may take a character template
-- Status: todo
+- Status: done
+- Merged: #414, 2026-11-20 (moved by PO_S00_10: it merged with Status todo)
 - Priority: medium
 - Needs: —
 - Modified: 2026-11-20

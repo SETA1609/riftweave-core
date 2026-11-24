@@ -1,5 +1,6 @@
 #### PO_S24_01_file-go-refactor-issues File the Go refactor issues
-- Status: todo
+- Status: done
+- Merged: #473, 2026-11-24 (moved by PO_S00_10: it merged with Status todo)
 - Priority: high
 - Needs: —
 - Modified: 2026-11-24

@@ -1,5 +1,6 @@
 #### PO_S23_01_file-tui-retirement-issues File the issues that retire the terminal app
-- Status: todo
+- Status: done
+- Merged: #455, 2026-11-23 (moved by PO_S00_10: it merged with Status todo)
 - Priority: high
 - Needs: —
 - Modified: 2026-11-23
