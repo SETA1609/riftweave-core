@@ -1,5 +1,6 @@
 #### PO_S21_01_file-srd-book-issues File the generated SRD book issues
-- Status: todo
+- Status: done
+- Merged: #424, 2026-11-20 (moved by PO_S00_10: it merged with Status todo)
 - Priority: medium
 - Needs: —
 - Modified: 2026-11-21

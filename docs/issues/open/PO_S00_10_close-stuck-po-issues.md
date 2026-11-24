@@ -1,0 +1,10 @@
+#### PO_S00_10_close-stuck-po-issues Close the four PO issues that merged as todo
+- Status: review
+- Priority: medium
+- Needs: —
+- Modified: 2026-11-24
+- Do: `close-merged-issue.yml` moves an issue to `done/` only when its PR set `Status: review` (docs/issues/README.md#how-an-issue-closes). Four PO filing PRs left their issue at `todo`, so after the merge the issue stayed in `open/` and `roadmap-order` still listed it as ready: `PO_S20_10` (#414), `PO_S21_01` (#424), `PO_S23_01` (#455), and `PO_S24_01` (#473). The workflow reads a PR's own branch only, so it will not come back to them: move them to `done/` by hand with their `Merged:` lines, check it, and say in AGENTS.md that a filing PR sets its own issue to `review` like any other.
+- Keys: `test_issue_files.py`
+- Files: ~9 (the four moved issue files, ruleset/scripts/test_issue_files.py, AGENTS.md, docs/stories/S00-process-and-conventions.md, docs/decisions/PO_S00_10_close-stuck-po-issues.md, changes/PO_S00_10_close-stuck-po-issues.md)
+- See: docs/issues/README.md#how-an-issue-closes, .github/workflows/close-merged-issue.yml
+- Done when: the four are in `done/` with Status done and their `Merged:` line; no issue is in both folders; `roadmap-order show` no longer lists them as ready.
