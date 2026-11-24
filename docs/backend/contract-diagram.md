@@ -920,12 +920,13 @@ classDiagram
 
 ## stored_actor
 
-Check a stored actor and return it unchanged, so a save round-trips.
+Check a stored actor and return it unchanged, so a save round-trips; or make a new one from attributes, with its pools full.
 
 ```mermaid
 classDiagram
     class stored_actor_input {
         stored_actor actor
+        object new
     }
     class stored_actor_result {
         stored_actor actor

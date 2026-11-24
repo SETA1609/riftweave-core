@@ -567,5 +567,111 @@
         "coins": 1250
       }
     }
+  },
+  {
+    "name": "new: attributes at 5 make a level 1 actor with full pools of 59 HP, 42 MP, 37 SP, and 3 AP",
+    "new": {
+      "attributes": {
+        "str": 5,
+        "per": 5,
+        "end": 5,
+        "int": 5,
+        "wil": 5,
+        "agi": 5,
+        "cha": 5,
+        "lck": 5
+      }
+    },
+    "expect": {
+      "actor": {
+        "attributes": {
+          "str": 5,
+          "per": 5,
+          "end": 5,
+          "int": 5,
+          "wil": 5,
+          "agi": 5,
+          "cha": 5,
+          "lck": 5
+        },
+        "level": 1,
+        "xp": 0,
+        "skills": {},
+        "tags": [],
+        "growth": {
+          "hp": 0,
+          "mp": 0,
+          "sp": 0
+        },
+        "resources": {
+          "hp": 59,
+          "mp": 42,
+          "sp": 37,
+          "ap": 3
+        },
+        "conditions": [],
+        "modifiers": [],
+        "flags": [],
+        "inventory": [],
+        "equipped": {}
+      }
+    }
+  },
+  {
+    "name": "new: a level and tags are kept, and the pools are the derived maxima at that level",
+    "new": {
+      "attributes": {
+        "str": 5,
+        "per": 5,
+        "end": 7,
+        "int": 5,
+        "wil": 5,
+        "agi": 6,
+        "cha": 5,
+        "lck": 5
+      },
+      "level": 3,
+      "tags": [
+        "blades",
+        "evasion"
+      ]
+    },
+    "expect": {
+      "actor": {
+        "attributes": {
+          "str": 5,
+          "per": 5,
+          "end": 7,
+          "int": 5,
+          "wil": 5,
+          "agi": 6,
+          "cha": 5,
+          "lck": 5
+        },
+        "level": 3,
+        "xp": 0,
+        "skills": {},
+        "tags": [
+          "blades",
+          "evasion"
+        ],
+        "growth": {
+          "hp": 0,
+          "mp": 0,
+          "sp": 0
+        },
+        "resources": {
+          "hp": 83,
+          "mp": 46,
+          "sp": 51,
+          "ap": 4
+        },
+        "conditions": [],
+        "modifiers": [],
+        "flags": [],
+        "inventory": [],
+        "equipped": {}
+      }
+    }
   }
 ]

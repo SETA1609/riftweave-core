@@ -104,15 +104,9 @@ export function createApi(over: Transport | string) {
     /** A printable page from the data (APP-11): its title and self-contained HTML. */
     print: (input: PrintInput) => post('/v1/commands/print', input),
 
-    /** A new stored actor at level 1: its pools start full, at the maxima `derived` returns. */
+    /** A new stored actor at level 1 from the core (stored_actor's new, BE_S23_03): its pools start full. */
     async newCharacter(attributes: Attributes, tags: string[] = []): Promise<StoredActor> {
-      const stats = await derived({ attributes, level: 1 });
-      return {
-        attributes, level: 1, xp: 0, skills: {}, tags,
-        growth: { hp: 0, mp: 0, sp: 0 },
-        resources: { hp: stats.hp, mp: stats.mp, sp: stats.sp, ap: stats.ap },
-        conditions: [], modifiers: [], flags: [], inventory: [], equipped: {},
-      };
+      return (await post('/v1/commands/stored_actor', { new: { attributes, tags } })).actor;
     },
 
     /** Check a stored actor against the contract (the stored_actor command); it comes back unchanged. */

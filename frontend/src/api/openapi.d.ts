@@ -605,7 +605,7 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Check a stored actor and return it unchanged, so a save round-trips.
+         * Check a stored actor and return it unchanged, so a save round-trips; or make a new one from attributes, with its pools full.
          * @description The rules are in docs/core/state.md.
          */
         post: operations["stored_actor"];
@@ -3991,8 +3991,14 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
-                    actor: components["schemas"]["stored_actor"];
-                };
+                    actor?: components["schemas"]["stored_actor"];
+                    /** @description Make a new stored actor: that level (default 1), xp 0, nothing else held, and every pool full at the maximum derived gives (docs/core/state.md#the-stored-actor). */
+                    new?: {
+                        attributes: components["schemas"]["attributes"];
+                        level?: number;
+                        tags?: components["schemas"]["key"][];
+                    };
+                } & (unknown | unknown);
             };
         };
         responses: {

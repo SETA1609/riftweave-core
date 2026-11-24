@@ -49,6 +49,13 @@ describe.each(transports)('over %s', (_transport, open) => {
     }
   });
 
+  it('makes a new character from the core, at level 1 with its pools full at the derived maxima', async () => {
+    const actor: StoredActor = await api.newCharacter(attributes, ['blades']);
+    const stats = await api.derived({ attributes, level: 1 });
+    expect([actor.level, actor.xp, actor.tags]).toEqual([1, 0, ['blades']]);
+    expect(actor.resources).toEqual({ hp: stats.hp, mp: stats.mp, sp: stats.sp, ap: stats.ap });
+  });
+
   it('creates a character as a session whose actor is the one sent', async () => {
     const actor: StoredActor = await api.newCharacter(attributes);
     const session = await api.startSession(actor);

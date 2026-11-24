@@ -1,5 +1,5 @@
 #### BE_S23_03_tui-flow-audit Move every rule step that lives only in the terminal app into the core
-- Status: todo
+- Status: review
 - Priority: high
 - Needs: —
 - Modified: 2026-11-23
