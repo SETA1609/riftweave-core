@@ -1,5 +1,6 @@
 #### PO_S26_01_api-guide Write the resource API guide
-- Status: review
+- Status: done
+- Merged: #484, 2026-11-24
 - Priority: high
 - Needs: —
 - Modified: 2026-11-24
