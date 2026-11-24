@@ -1,0 +1,12 @@
+#### BE_S24_05_combat-strike-pipeline One combat strike as a pipeline of stages
+- Status: todo
+- Priority: high
+- Needs: BE_S24_03_modifier-applier
+- Modified: 2026-11-24
+- Do: Owner request, 2026-11-24. `combat.strike` (complexity 89, 255 lines) does the to-hit, the defense bands, the damage, and the riders in one body.
+  - **Stages:** `toHit` (target, situations, crit), `defend` (the existing `bands`: evade, block, parry, ward), `damage` (dice, ability, DR, type), and `riders` (maneuver and weapon effects, save), each taking and returning a small struct, run in order by a short `strike`.
+  - **Delivery and range** become a lookup of their rules, not string checks along the way. The grenade and ammunition wrappers stay outside, as they are.
+- Keys: the four stages
+- Files: ~5 (backend/internal/combat/combat.go, backend/internal/combat/stages.go, docs/decisions/BE_S24_05_combat-strike-pipeline.md, changes/BE_S24_05_combat-strike-pipeline.md)
+- See: docs/core/combat.md, backend/internal/combat/combat.go
+- Done when: `combat.strike` leaves the allow list; all combat vectors pass; the benchmark is no slower.

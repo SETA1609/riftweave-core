@@ -1,0 +1,12 @@
+#### BE_S24_03_modifier-applier One helper applies a target's modifiers, with one error
+- Status: todo
+- Priority: high
+- Needs: QA_S24_02_go-benchmarks-and-complexity-gate
+- Modified: 2026-11-24
+- Do: Owner request, 2026-11-24. `modifier.Value(base, modifier.Target(mods, "target"), ruleset.Origins, 0, nil)` and its error check appear 29 times in 12 files, about four lines for one idea.
+  - **The helper:** `apply := modifier.On(mods, ruleset.Origins)`, then `apply.To("evasion_band", rate)` returns the value; the first error is kept and read once with `apply.Err()`, so a rule reads as one line. Flags read through `apply.Has("scissor_cut")`, a set built once instead of a `slices.Contains` over the list each time. [A]
+  - **Every call site** moves to it; the modifier tests cover the helper.
+- Keys: `modifier.On`, `To`, `Has`, `Err`
+- Files: ~14 (backend/internal/modifier/modifier.go and its test, the 12 files that call modifier.Value, docs/decisions/BE_S24_03_modifier-applier.md, changes/BE_S24_03_modifier-applier.md)
+- See: backend/internal/modifier/modifier.go
+- Done when: no `modifier.Value(..., modifier.Target(...))` pair is left outside the package; every vector passes in Go; the benchmarks are no slower.

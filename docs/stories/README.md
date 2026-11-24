@@ -4,13 +4,13 @@ The [roadmap](../../ROADMAP.md) broken into **stories** (a goal that delivers so
 you can check) and **issues** (one role and one pull request each). The repo is the source of truth for
 both. Linear mirrors them and links back; it does not own scope.
 
-Open work lives in the story files `S00` to `S23`, each with a full issue table. The milestone
+Open work lives in the story files `S00` to `S24`, each with a full issue table. The milestone
 files below (`01-kernel.md` to `08-content.md`) keep the goals of the old milestones; they take
 no new issues.
 
 ## Files
 
-Open work is grouped in **stories** `S00` to `S23`, one file each: its goal, the table of its
+Open work is grouped in **stories** `S00` to `S24`, one file each: its goal, the table of its
 issues (role, old id, `Needs`), and its done-when. The issues themselves are one file each in
 [docs/issues/](../issues/README.md), and every issue has one role ([ROLES.md](../issues/ROLES.md)).
 
@@ -40,6 +40,7 @@ issues (role, old id, `Needs`), and its done-when. The issues themselves are one
 | [S21-generated-srd.md](S21-generated-srd.md) | S21 Generated SRD |
 | [S22-visual-design-system.md](S22-visual-design-system.md) | S22 Visual design system |
 | [S23-retire-the-terminal-app.md](S23-retire-the-terminal-app.md) | S23 Retire the terminal app |
+| [S24-go-refactor.md](S24-go-refactor.md) | S24 Go refactor: state machines, dispatch tables, and hash sets |
 
 The milestone files below hold the goals of the milestones whose done issues kept their old ids
 (before 2026-11-18). They take no new issues; the [roadmap](../../ROADMAP.md) still names its
