@@ -63,4 +63,11 @@ that exist. Pools use the derived keys, so stamina is `sp`. There is no actor `i
 holds one actor. [A] The `stored_actor` vectors round-trip it through Python and Go.
 [V 2026-11-11]
 
+**A new actor** (BE_S23_03): `stored_actor` with `new` (`attributes`, and optionally `level`, default 1, and
+`tags`) returns a whole stored actor: that level, `xp` 0, no skills, growth, conditions, modifiers, flags,
+items, or equipment, and every pool full at the maximum `derived` gives. The web app's new character and
+the terminal app's dev panel built this by hand; both read it from the core now, so a new pool or field is
+one change. A call gives `actor` (to check it) or `new` (to make one), never both. [V 2026-11-24, the
+`stored_actor` vectors in Python and Go]
+
 The session's JSON schema is `session` in the backend's contract, and its command is in [sessions.md](../backend/sessions.md).
