@@ -435,8 +435,13 @@ type AttackSequences struct {
 		MinExtraAP       int64   `json:"min_extra_ap"`
 		ExtraMainAttacks []int64 `json:"extra_main_attacks"`
 		ExtraOffAttack   int64   `json:"extra_off_attack"`
+		// OneHandedReloadExtra is what a reload costs over the reload action with the other hand
+		// full (docs/core/combat.md#ranged-loadouts, GD_S17_05).
+		OneHandedReloadExtra int64 `json:"one_handed_reload_extra"`
 	} `json:"full_attack"`
-	CircleCut struct {
+	// RangedHands are the hand kinds that hold a ranged weapon: their strikes are ranged.
+	RangedHands []string `json:"ranged_hands"`
+	CircleCut   struct {
 		Attack int64    `json:"attack"`
 		Main   []string `json:"main"`
 	} `json:"circle_cut"`

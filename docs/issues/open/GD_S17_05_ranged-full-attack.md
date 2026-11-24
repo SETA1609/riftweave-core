@@ -1,5 +1,5 @@
 #### GD_S17_05_ranged-full-attack The full attack and the extra-strike perks with ranged weapons
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: GD_S05_01_loadout-attacks-melee-ladders, GD_S17_02_ammunition-items-and-reloading
 - Modified: 2026-11-23

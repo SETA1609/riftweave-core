@@ -5133,5 +5133,1137 @@
       "lost": 0
     },
     "reactions_used": 3
+  },
+  {
+    "name": "ranged full attack: a bow with Follow-Up strikes twice and spends two arrows",
+    "action": "full_attack",
+    "loadout": {
+      "main": "bow",
+      "off": "two_handed"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "two_handed"
+      ],
+      "modifiers": [
+        {
+          "target": "full_attack_strikes",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:follow_up"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 40
+      }
+    ],
+    "damage": {
+      "type": "piercing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 6
+      },
+      {
+        "attack": 30,
+        "damage": 6
+      }
+    ],
+    "ap": 4,
+    "ammunition": {
+      "main": {
+        "rounds": 10
+      }
+    },
+    "expect": {
+      "action": "full_attack",
+      "sequence": "bow",
+      "ap": 4,
+      "stamina": 20,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": 0,
+          "outcome": "hit",
+          "target": 60,
+          "margin": 30,
+          "crit": false,
+          "damage": 5,
+          "hp": 35,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 10,
+          "crit": false,
+          "damage": 5,
+          "hp": 30,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        30
+      ],
+      "lost": 0,
+      "ammunition": {
+        "main": {
+          "rounds": 8
+        }
+      },
+      "reloads": 0,
+      "stopped": 0
+    }
+  },
+  {
+    "name": "ranged full attack: a bow with Follow-Up and Press On strikes three times and spends three arrows",
+    "action": "full_attack",
+    "loadout": {
+      "main": "bow",
+      "off": "two_handed"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "two_handed"
+      ],
+      "modifiers": [
+        {
+          "target": "full_attack_strikes",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:follow_up"
+        },
+        {
+          "target": "full_attack_strikes",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:press_on"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 40
+      }
+    ],
+    "damage": {
+      "type": "piercing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 6
+      },
+      {
+        "attack": 30,
+        "damage": 6
+      },
+      {
+        "attack": 15,
+        "damage": 6
+      }
+    ],
+    "ap": 4,
+    "ammunition": {
+      "main": {
+        "rounds": 10
+      }
+    },
+    "expect": {
+      "sequence": "bow",
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": 0,
+          "outcome": "hit",
+          "target": 60,
+          "margin": 30,
+          "crit": false,
+          "damage": 5,
+          "hp": 35,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 10,
+          "crit": false,
+          "damage": 5,
+          "hp": 30,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -30,
+          "outcome": "hit",
+          "target": 30,
+          "margin": 15,
+          "crit": false,
+          "damage": 5,
+          "hp": 25,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        25
+      ],
+      "lost": 0,
+      "ammunition": {
+        "main": {
+          "rounds": 7
+        }
+      },
+      "reloads": 0,
+      "stopped": 0
+    }
+  },
+  {
+    "name": "ranged full attack: two loaded pistols fire, then Follow-Up's strike reloads at 3 AP (the other hand full) inside the budget",
+    "action": "full_attack",
+    "loadout": {
+      "main": "hand_gun",
+      "off": "hand_gun"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "loading"
+      ],
+      "off_weapon_properties": [
+        "ammunition",
+        "loading"
+      ],
+      "modifiers": [
+        {
+          "target": "full_attack_strikes",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:follow_up"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 40
+      }
+    ],
+    "damage": {
+      "type": "piercing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 8
+      },
+      {
+        "attack": 30,
+        "damage": 8
+      },
+      {
+        "attack": 30,
+        "damage": 8
+      }
+    ],
+    "ap": 6,
+    "ammunition": {
+      "main": {
+        "rounds": 5,
+        "loaded": true
+      },
+      "off": {
+        "rounds": 5,
+        "loaded": true
+      }
+    },
+    "expect": {
+      "sequence": "two_hand_guns",
+      "ap": 6,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -10,
+          "outcome": "hit",
+          "target": 50,
+          "margin": 20,
+          "crit": false,
+          "damage": 7,
+          "hp": 33,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "off",
+          "foe": 0,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 10,
+          "crit": false,
+          "damage": 7,
+          "hp": 26,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 10,
+          "crit": false,
+          "damage": 7,
+          "hp": 19,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        19
+      ],
+      "lost": 0,
+      "ammunition": {
+        "main": {
+          "rounds": 3,
+          "loaded": false
+        },
+        "off": {
+          "rounds": 4,
+          "loaded": false
+        }
+      },
+      "reloads": 1,
+      "stopped": 0
+    }
+  },
+  {
+    "name": "ranged full attack: two pistols with 5 AP have 2 over the attack, short of the 3 AP reload, so the full attack ends",
+    "action": "full_attack",
+    "loadout": {
+      "main": "hand_gun",
+      "off": "hand_gun"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "loading"
+      ],
+      "off_weapon_properties": [
+        "ammunition",
+        "loading"
+      ],
+      "modifiers": [
+        {
+          "target": "full_attack_strikes",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:follow_up"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 40
+      }
+    ],
+    "damage": {
+      "type": "piercing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 8
+      },
+      {
+        "attack": 30,
+        "damage": 8
+      }
+    ],
+    "ap": 5,
+    "ammunition": {
+      "main": {
+        "rounds": 5,
+        "loaded": true
+      },
+      "off": {
+        "rounds": 5,
+        "loaded": true
+      }
+    },
+    "expect": {
+      "sequence": "two_hand_guns",
+      "ap": 5,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -10,
+          "outcome": "hit",
+          "target": 50,
+          "margin": 20,
+          "crit": false,
+          "damage": 7,
+          "hp": 33,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "off",
+          "foe": 0,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 10,
+          "crit": false,
+          "damage": 7,
+          "hp": 26,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        26
+      ],
+      "lost": 0,
+      "ammunition": {
+        "main": {
+          "rounds": 4,
+          "loaded": false
+        },
+        "off": {
+          "rounds": 4,
+          "loaded": false
+        }
+      },
+      "reloads": 0,
+      "stopped": 1
+    }
+  },
+  {
+    "name": "ranged full attack: Fast Reload makes the reload 2 AP, so 5 AP is enough for the third shot",
+    "action": "full_attack",
+    "loadout": {
+      "main": "hand_gun",
+      "off": "hand_gun"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "loading"
+      ],
+      "off_weapon_properties": [
+        "ammunition",
+        "loading"
+      ],
+      "modifiers": [
+        {
+          "target": "full_attack_strikes",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:follow_up"
+        },
+        {
+          "target": "reload",
+          "operation": "add",
+          "value": -1,
+          "source": "feature:fast_reload"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 40
+      }
+    ],
+    "damage": {
+      "type": "piercing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 8
+      },
+      {
+        "attack": 30,
+        "damage": 8
+      },
+      {
+        "attack": 30,
+        "damage": 8
+      }
+    ],
+    "ap": 5,
+    "ammunition": {
+      "main": {
+        "rounds": 5,
+        "loaded": true
+      },
+      "off": {
+        "rounds": 5,
+        "loaded": true
+      }
+    },
+    "expect": {
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -10,
+          "outcome": "hit",
+          "target": 50,
+          "margin": 20,
+          "crit": false,
+          "damage": 7,
+          "hp": 33,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "off",
+          "foe": 0,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 10,
+          "crit": false,
+          "damage": 7,
+          "hp": 26,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 10,
+          "crit": false,
+          "damage": 7,
+          "hp": 19,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        19
+      ],
+      "ammunition": {
+        "main": {
+          "rounds": 3,
+          "loaded": false
+        },
+        "off": {
+          "rounds": 4,
+          "loaded": false
+        }
+      },
+      "reloads": 1,
+      "stopped": 0
+    }
+  },
+  {
+    "name": "ranged carry: Carry Through sends the next arrow to a second foe in range, out of reach",
+    "action": "full_attack",
+    "loadout": {
+      "main": "bow",
+      "off": "two_handed"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "two_handed"
+      ],
+      "modifiers": [
+        {
+          "target": "full_attack_strikes",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:follow_up"
+        },
+        {
+          "target": "carry_through",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:carry_through"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 4
+      },
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30,
+        "in_reach": false
+      }
+    ],
+    "damage": {
+      "type": "piercing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 6
+      },
+      {
+        "attack": 30,
+        "damage": 6
+      }
+    ],
+    "ap": 4,
+    "expect": {
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": 0,
+          "outcome": "hit",
+          "target": 60,
+          "margin": 30,
+          "crit": false,
+          "damage": 5,
+          "hp": 0,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "main",
+          "foe": 1,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 10,
+          "crit": false,
+          "damage": 5,
+          "hp": 25,
+          "carried": true,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        0,
+        25
+      ],
+      "lost": 0
+    }
+  },
+  {
+    "name": "melee carry: a sword's carry reaches only a foe in reach, so the strike after the drop is lost",
+    "action": "full_attack",
+    "loadout": {
+      "main": "one_handed",
+      "off": "empty"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "modifiers": [
+        {
+          "target": "full_attack_strikes",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:follow_up"
+        },
+        {
+          "target": "carry_through",
+          "operation": "grant",
+          "value": 1,
+          "source": "feature:carry_through"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 4
+      },
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30,
+        "in_reach": false
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 6
+      }
+    ],
+    "ap": 4,
+    "expect": {
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": 0,
+          "outcome": "hit",
+          "target": 60,
+          "margin": 30,
+          "crit": false,
+          "damage": 4,
+          "hp": 0,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        0,
+        30
+      ],
+      "lost": 1
+    }
+  },
+  {
+    "name": "mixed hand: the sword cuts the foe in reach and the hand crossbow shoots a second foe in range",
+    "action": "attack",
+    "loadout": {
+      "main": "one_handed",
+      "off": "hand_gun"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "off_weapon_properties": [
+        "ammunition",
+        "loading"
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      },
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30,
+        "in_reach": false
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "off_damage": {
+      "type": "piercing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 8
+      },
+      {
+        "attack": 30,
+        "damage": 8
+      }
+    ],
+    "targets": [
+      0,
+      1
+    ],
+    "ap": 4,
+    "ammunition": {
+      "off": {
+        "rounds": 5,
+        "loaded": true
+      }
+    },
+    "expect": {
+      "action": "attack",
+      "sequence": "mixed_hand",
+      "ap": 4,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -10,
+          "outcome": "hit",
+          "target": 50,
+          "margin": 20,
+          "crit": false,
+          "damage": 6,
+          "hp": 24,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "off",
+          "foe": 1,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 10,
+          "crit": false,
+          "damage": 7,
+          "hp": 23,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        24,
+        23
+      ],
+      "lost": 0,
+      "ammunition": {
+        "off": {
+          "rounds": 4,
+          "loaded": false
+        }
+      },
+      "reloads": 0,
+      "stopped": 0
+    }
+  },
+  {
+    "name": "mixed hand: the melee strike cannot go to a foe out of reach",
+    "action": "attack",
+    "loadout": {
+      "main": "one_handed",
+      "off": "hand_gun"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "off_weapon_properties": [
+        "ammunition",
+        "loading"
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      },
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30,
+        "in_reach": false
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "off_damage": {
+      "type": "piercing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 8
+      },
+      {
+        "attack": 30,
+        "damage": 8
+      }
+    ],
+    "targets": [
+      1,
+      1
+    ],
+    "ap": 4,
+    "expect": {
+      "error": "foe 1 is out of reach for a melee strike"
+    }
+  },
+  {
+    "name": "mixed hand: with Twin Rhythm the full attack reloads the hand crossbow one-handed at 3 AP from its budget",
+    "action": "full_attack",
+    "loadout": {
+      "main": "one_handed",
+      "off": "hand_gun"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "off_weapon_properties": [
+        "ammunition",
+        "loading"
+      ],
+      "modifiers": [
+        {
+          "target": "full_attack_off_strikes",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:twin_rhythm"
+        }
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 40
+      }
+    ],
+    "damage": {
+      "type": "slashing"
+    },
+    "off_damage": {
+      "type": "piercing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 8
+      },
+      {
+        "attack": 30,
+        "damage": 8
+      },
+      {
+        "attack": 20,
+        "damage": 8
+      }
+    ],
+    "ap": 7,
+    "ammunition": {
+      "off": {
+        "rounds": 5,
+        "loaded": true
+      }
+    },
+    "expect": {
+      "sequence": "mixed_hand",
+      "ap": 7,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -10,
+          "outcome": "hit",
+          "target": 50,
+          "margin": 20,
+          "crit": false,
+          "damage": 6,
+          "hp": 34,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "off",
+          "foe": 0,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 10,
+          "crit": false,
+          "damage": 7,
+          "hp": 27,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "off",
+          "foe": 0,
+          "attack": -30,
+          "outcome": "hit",
+          "target": 30,
+          "margin": 10,
+          "crit": false,
+          "damage": 7,
+          "hp": 20,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        20
+      ],
+      "ammunition": {
+        "off": {
+          "rounds": 3,
+          "loaded": false
+        }
+      },
+      "reloads": 1,
+      "stopped": 0
+    }
+  },
+  {
+    "name": "ranged attack: a loading weapon that is not loaded cannot strike in an attack",
+    "action": "attack",
+    "loadout": {
+      "main": "hand_gun",
+      "off": "empty"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "loading"
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "piercing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 8
+      }
+    ],
+    "ap": 2,
+    "ammunition": {
+      "main": {
+        "rounds": 5,
+        "loaded": false
+      }
+    },
+    "expect": {
+      "error": "the main-hand weapon must reload first"
+    }
+  },
+  {
+    "name": "opportunity: a bow makes no opportunity attack",
+    "action": "opportunity",
+    "loadout": {
+      "main": "bow",
+      "off": "two_handed"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "two_handed"
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 30
+      }
+    ],
+    "damage": {
+      "type": "piercing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 6
+      }
+    ],
+    "expect": {
+      "action": "opportunity",
+      "fired": false,
+      "reason": "ranged",
+      "sequence": "bow",
+      "ap": 0,
+      "stamina": 0,
+      "strikes": [],
+      "hp": [
+        30
+      ],
+      "lost": 0
+    }
   }
 ]

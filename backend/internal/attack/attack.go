@@ -92,6 +92,9 @@ type Input struct {
 	// attacker already used since its last turn; both read only by an opportunity attack (GD_S19_04).
 	Disengaged    bool  `json:"disengaged"`
 	ReactionsUsed int64 `json:"reactions_used"`
+	// Ammunition is the rounds each ranged hand carries; a hand left out is not counted
+	// (docs/core/combat.md#ranged-loadouts, GD_S17_05).
+	Ammunition *HandRounds `json:"ammunition"`
 }
 
 // StrikeResult is one strike made.
@@ -131,6 +134,11 @@ type Result struct {
 	Strikes  []StrikeResult `json:"strikes"`
 	HP       []int64        `json:"hp"`
 	Lost     int64          `json:"lost"`
+	// Ammunition, Reloads, and Stopped come with the ammunition input: the rounds each counted
+	// hand has left, the reloads a full attack made from its AP, and the strikes it did not make.
+	Ammunition *HandRounds `json:"ammunition,omitempty"`
+	Reloads    *int64      `json:"reloads,omitempty"`
+	Stopped    *int64      `json:"stopped,omitempty"`
 	// Fired and Reason are an opportunity attack's: whether it fired, and why not. Left out on an
 	// attack on the actor's own turn.
 	Fired  *bool  `json:"fired,omitempty"`
@@ -154,6 +162,26 @@ func reactionsMost(ruleset *data.Ruleset, attacker Attacker) (int64, error) {
 // runOpportunity is an opportunity attack: one melee attack of the loadout when a foe leaves reach
 // without disengaging, a reaction at no AP. With no reaction left, or a foe that disengaged, it does
 // not fire and nothing is spent.
+// HandRounds is the rounds per hand of a ranged loadout.
+type HandRounds struct {
+	Main *combat.Ammunition `json:"main,omitempty"`
+	Off  *combat.Ammunition `json:"off,omitempty"`
+}
+
+// of is the hand's rounds, nil when the hand is not counted.
+func (rounds *HandRounds) of(hand string) **combat.Ammunition {
+	if hand == "off" {
+		return &rounds.Off
+	}
+	return &rounds.Main
+}
+
+// ReasonRanged is an opportunity a ranged main hand does not make.
+const ReasonRanged = "ranged"
+
+// emptyHands are what an other hand holds when a reload is not one-handed.
+var emptyHands = []string{"empty", "two_handed"}
+
 func runOpportunity(ruleset *data.Ruleset, input Input) (Result, error) {
 	var row *data.AttackSequence = ruleset.AttackSequences.Covering(input.Loadout.Main, input.Loadout.Off)
 	if row == nil {
@@ -164,7 +192,9 @@ func runOpportunity(ruleset *data.Ruleset, input Input) (Result, error) {
 		return Result{}, err
 	}
 	var reason string
-	if input.Disengaged {
+	if slices.Contains(ruleset.AttackSequences.RangedHands, input.Loadout.Main) {
+		reason = ReasonRanged
+	} else if input.Disengaged {
 		reason = ReasonDisengaged
 	} else if input.ReactionsUsed >= most {
 		reason = ReasonNoReactionLeft
@@ -348,20 +378,38 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	if err != nil {
 		return Result{}, err
 	}
+	// Ranged loadouts (GD_S17_05): a hand of a ranged kind strikes at range, and a melee strike
+	// reaches only a foe in reach.
+	var ranged map[string]bool = map[string]bool{
+		"main": slices.Contains(ruleset.AttackSequences.RangedHands, input.Loadout.Main),
+		"off":  slices.Contains(ruleset.AttackSequences.RangedHands, input.Loadout.Off),
+	}
 	var foes []combat.Defender = make([]combat.Defender, len(input.Foes))
+	var inReach []bool = make([]bool, len(input.Foes))
 	for index, encoded := range input.Foes {
+		var reach struct {
+			InReach *bool `json:"in_reach"`
+		}
 		if err := json.Unmarshal(encoded, &foes[index]); err != nil {
 			return Result{}, fmt.Errorf("foe %d: %w", index, err)
 		}
+		if err := json.Unmarshal(encoded, &reach); err != nil {
+			return Result{}, fmt.Errorf("foe %d: %w", index, err)
+		}
+		inReach[index] = reach.InReach == nil || *reach.InReach
 	}
 	var aims []int64
 	switch input.Action {
 	case "full_attack":
 		aims = make([]int64, len(strikes))
 	case "circle_cut":
+		var near []planned
 		for index := range foes {
-			aims = append(aims, int64(index))
+			if inReach[index] {
+				aims, near = append(aims, int64(index)), append(near, strikes[index])
+			}
 		}
+		strikes = near
 	default:
 		aims = input.Targets
 		if aims == nil {
@@ -371,17 +419,64 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 			return Result{}, fmt.Errorf("targets names %d foes for %d strikes", len(aims), len(strikes))
 		}
 	}
-	for _, aim := range aims {
+	for index, aim := range aims {
 		if aim < 0 || aim >= int64(len(foes)) {
 			return Result{}, fmt.Errorf("target %d is not a foe in reach", aim)
 		}
 		if foes[aim].HitPoints == 0 {
 			return Result{}, fmt.Errorf("foe %d is already down", aim)
 		}
+		if !ranged[strikes[index].hand] && !inReach[aim] {
+			return Result{}, fmt.Errorf("foe %d is out of reach for a melee strike", aim)
+		}
 	}
+	// Ammunition per hand: a counted ranged hand spends a round a strike, and a loading one
+	// reloads first; in a full attack the reload spends the budget over the attack AP.
+	var counted HandRounds
+	if input.Ammunition != nil {
+		for _, hand := range []string{"main", "off"} {
+			if given := *input.Ammunition.of(hand); given != nil && ranged[hand] {
+				var copied combat.Ammunition = *given
+				*counted.of(hand) = &copied
+			}
+		}
+	}
+	var loading map[string]bool = map[string]bool{
+		"main": slices.Contains(input.Attacker.WeaponProperties, "loading"),
+		"off":  slices.Contains(input.Attacker.OffWeaponProperties, "loading"),
+	}
+	reloadAction, err := ruleset.Actions.Actions.Require("action", "reload")
+	if err != nil {
+		return Result{}, err
+	}
+	reloadAdd, err := on("reload")
+	if err != nil {
+		return Result{}, err
+	}
+	var reloadCost func(string) int64 = func(hand string) int64 {
+		var other string = input.Loadout.Main
+		if hand == "main" {
+			other = input.Loadout.Off
+		}
+		var extra int64
+		if !slices.Contains(emptyHands, other) {
+			extra = ruleset.AttackSequences.FullAttack.OneHandedReloadExtra
+		}
+		return max(reloadAction.Cost+reloadAdd, 0) + extra
+	}
+	var budget int64
+	if input.Action == "full_attack" {
+		budget = actionPoints - row.AP
+	}
+	var reloads, stopped int64
 	var hitPoints []int64 = make([]int64, len(foes))
 	for index := range foes {
 		hitPoints[index] = foes[index].HitPoints
+	}
+	// reachable is a standing foe the hand may strike: any in range for a ranged hand, one in
+	// reach for a melee hand.
+	var reachable func(string, int) bool = func(hand string, foe int) bool {
+		return hitPoints[foe] > 0 && (ranged[hand] || inReach[foe])
 	}
 	// A circle cut strikes each foe once, so nothing carries.
 	var carries int64
@@ -430,8 +525,8 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		var carried bool = strike.carried
 		if hitPoints[strike.foe] == 0 {
 			var standing int64 = -1
-			for foe, left := range hitPoints {
-				if left > 0 {
+			for foe := range hitPoints {
+				if reachable(strike.hand, foe) {
 					standing = int64(foe)
 					break
 				}
@@ -448,6 +543,30 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 				}
 			}
 			strike.foe = standing
+		}
+		if rounds := *counted.of(strike.hand); rounds != nil {
+			var loaded bool = rounds.Loaded != nil && *rounds.Loaded
+			if rounds.Rounds > 0 && loading[strike.hand] && !loaded && input.Action == "full_attack" && budget >= reloadCost(strike.hand) {
+				budget -= reloadCost(strike.hand)
+				reloads++
+				loaded = true
+			}
+			if rounds.Rounds <= 0 || (loading[strike.hand] && !loaded) {
+				if input.Action != "full_attack" {
+					var why string = "must reload first"
+					if rounds.Rounds <= 0 {
+						why = "has no rounds left"
+					}
+					return Result{}, fmt.Errorf("the %s-hand weapon %s", strike.hand, why)
+				}
+				stopped = int64(len(queue) - index)
+				break
+			}
+			rounds.Rounds--
+			if loading[strike.hand] {
+				var spent bool
+				rounds.Loaded = &spent
+			}
 		}
 		if len(rolls) == 0 {
 			return Result{}, fmt.Errorf("the %s needs a roll for strike %d", input.Action, len(result.Strikes)+1)
@@ -491,7 +610,12 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		}
 		var defender combat.Defender = foes[foe]
 		defender.HitPoints = hitPoints[foe]
+		var strikeRange string
+		if ranged[strike.hand] {
+			strikeRange = "ranged"
+		}
 		outcome, err := combat.Run(ruleset, combat.Input{
+			Range: strikeRange,
 			Attacker: combat.Attacker{
 				Skill: skill, Roll: roll.Attack, Attributes: input.Attacker.Attributes, Flags: input.Attacker.Flags,
 				WeaponProperties: properties, WeaponEffects: effects, Perks: perks,
@@ -536,14 +660,18 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 			}
 			result.Strikes[len(result.Strikes)-1].Bash, result.Strikes[len(result.Strikes)-1].StaggerAP = true, &stagger
 		}
-		if dropped && index == len(queue)-1 && carries > 0 && slices.ContainsFunc(hitPoints, func(left int64) bool { return left > 0 }) {
+		var anyReachable bool
+		for other := range hitPoints {
+			anyReachable = anyReachable || reachable(strike.hand, other)
+		}
+		if dropped && index == len(queue)-1 && carries > 0 && anyReachable {
 			queue = append(queue, planned{hand: strike.hand, attack: strike.attack, foe: foe, free: true})
 		}
 		// Long Guard: a crit that leaves its foe standing carries as a drop would, to the first
 		// other standing foe.
 		var other int64 = -1
-		for index, left := range hitPoints {
-			if left > 0 && int64(index) != foe {
+		for index := range hitPoints {
+			if reachable(strike.hand, index) && int64(index) != foe {
 				other = int64(index)
 				break
 			}
@@ -567,5 +695,16 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		}
 	}
 	result.Stamina = actionPoints * ruleset.StaminaPerAP
+	if input.Ammunition != nil {
+		for _, hand := range []string{"main", "off"} {
+			if rounds := *counted.of(hand); rounds != nil && !loading[hand] {
+				rounds.Loaded = nil
+			} else if rounds != nil && rounds.Loaded == nil {
+				var spent bool
+				rounds.Loaded = &spent
+			}
+		}
+		result.Ammunition, result.Reloads, result.Stopped = &counted, &reloads, &stopped
+	}
 	return result, nil
 }

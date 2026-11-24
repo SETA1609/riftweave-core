@@ -829,6 +829,8 @@ REASON_DISENGAGED = "disengaged"
 REASON_NO_REACTION_LEFT = "no_reaction_left"
 REACTIONS_FROM_AGI = "reactions_from_agi"
 REACTIONS_PER_ROUND = "reactions_per_round"
+REASON_RANGED = "ranged"
+EMPTY_HANDS = ("empty", "two_handed")
 
 
 def reactions_most(attacker):
@@ -851,7 +853,9 @@ def run_opportunity(vector):
     if row is None:
         return {"error": no_sequence_error(vector["loadout"])}
     reason = None
-    if vector.get("disengaged"):
+    if vector["loadout"]["main"] in load_data("attack_sequences/core.json")["ranged_hands"]:
+        reason = REASON_RANGED
+    elif vector.get("disengaged"):
         reason = REASON_DISENGAGED
     elif vector.get("reactions_used", 0) >= reactions_most(vector["attacker"]):
         reason = REASON_NO_REACTION_LEFT
@@ -900,17 +904,39 @@ def run_attack_sequence(vector):
         plan, ap = plan_strikes(vector, row, flags, on)
     except ValueError as error:
         return {"error": str(error)}
+    # Ranged loadouts (GD_S17_05, docs/core/combat.md#ranged-loadouts): a hand of a ranged kind
+    # strikes at range, and a melee strike reaches only a foe in reach.
+    sequences = load_data("attack_sequences/core.json")
+    ranged = {hand: vector["loadout"][hand] in sequences["ranged_hands"] for hand in ("main", "off")}
+    in_reach = [foe.get("in_reach", True) for foe in foes]
+    foes = [{key: value for key, value in foe.items() if key != "in_reach"} for foe in foes]
+    if action == "circle_cut":
+        plan = [strike for strike, near in zip(plan, in_reach) if near]
     if action in ("full_attack", "circle_cut"):
-        aims = [0] * len(plan) if action == "full_attack" else list(range(len(foes)))
+        aims = [0] * len(plan) if action == "full_attack" else [i for i, near in enumerate(in_reach) if near]
     else:
         aims = vector.get("targets", [0] * len(plan))
         if len(aims) != len(plan):
             return {"error": f"targets names {len(aims)} foes for {len(plan)} strikes"}
-    for aim in aims:
+    for (hand, _), aim in zip(plan, aims):
         if aim < 0 or aim >= len(foes):
             return {"error": f"target {aim} is not a foe in reach"}
         if foes[aim]["hp"] == 0:
             return {"error": f"foe {aim} is already down"}
+        if not ranged[hand] and not in_reach[aim]:
+            return {"error": f"foe {aim} is out of reach for a melee strike"}
+    # Ammunition per hand: a counted ranged hand spends a round a strike, and a loading one
+    # reloads first; in a full attack the reload spends the budget over the attack AP.
+    counted = {hand: dict(rounds) for hand, rounds in vector.get("ammunition", {}).items() if ranged[hand]}
+    loading = {hand: "loading" in attacker.get(("off_" if hand == "off" else "") + "weapon_properties", []) for hand in ("main", "off")}
+    costs = {a["key"]: a["cost"] for a in load_data("actions/core.json")["actions"]}
+    def reload_cost(hand):
+        other = vector["loadout"]["off" if hand == "main" else "main"]
+        extra = sequences["full_attack"]["one_handed_reload_extra"] if other not in EMPTY_HANDS else 0
+        return max(apply_modifiers(costs["reload"], on("reload")), 0) + extra
+    budget = (ap - row["ap"]) if action == "full_attack" else 0
+    reloads, stopped = 0, 0
+    reachable = lambda hand, i: hp[i] > 0 and (ranged[hand] or in_reach[i])
     hp = [foe["hp"] for foe in foes]
     # A circle cut strikes each foe once, so nothing carries (its own rule, [A]).
     carries = 0 if action == "circle_cut" else math.inf if "reaping_arc" in flags else 1 if "carry_through" in flags else 0
@@ -929,7 +955,7 @@ def run_attack_sequence(vector):
         index += 1
         carried = strike["carried"]
         if hp[strike["foe"]] == 0:
-            standing = [i for i, left in enumerate(hp) if left > 0]
+            standing = [i for i in range(len(hp)) if reachable(strike["hand"], i)]
             if carries > 0 and standing:
                 carries -= 1
                 carried = True
@@ -940,10 +966,26 @@ def run_attack_sequence(vector):
             else:
                 lost += 1
                 continue
+        hand = strike["hand"]
+        if hand in counted:
+            rounds = counted[hand]
+            if rounds["rounds"] > 0 and loading[hand] and not rounds.get("loaded", False) and action == "full_attack" and budget >= reload_cost(hand):
+                budget -= reload_cost(hand)
+                reloads += 1
+                rounds["loaded"] = True
+            if rounds["rounds"] <= 0 or (loading[hand] and not rounds.get("loaded", False)):
+                if action != "full_attack":
+                    why = "has no rounds left" if rounds["rounds"] <= 0 else "must reload first"
+                    return {"error": f"the {hand}-hand weapon {why}"}
+                stopped = len(queue) - index + 1
+                break
+            rounds["rounds"] -= 1
+            if loading[hand]:
+                rounds["loaded"] = False
         if not rolls:
             return {"error": f"the {action} needs a roll for strike {len(strikes) + 1}"}
         roll = rolls.pop(0)
-        foe, hand = strike["foe"], strike["hand"]
+        foe = strike["foe"]
         # A shield has no weapon dice, so a bash is never the Scissor Cut strike.
         scissor = scissor_left and hand == "off" and foe in struck_by_main and not bashing
         damage = dict(vector["off_damage"] if hand == "off" and "off_damage" in vector else vector["damage"])
@@ -978,6 +1020,7 @@ def run_attack_sequence(vector):
                 "modifiers": strike_modifiers,
                 "situations": vector.get("situations", []),
                 "summoning": vector.get("summoning", False),
+                **({"range": "ranged"} if ranged[hand] else {}),
             }
         )
         if "error" in outcome:
@@ -1013,11 +1056,11 @@ def run_attack_sequence(vector):
         )
         if bashing and hand == "off":
             strikes[-1].update(bash=True, stagger_ap=bash["stagger_ap"] if hit and tier >= bash["tiers"]["stagger"] else 0)
-        if dropped and index == len(queue) and carries > 0 and any(left > 0 for left in hp):
+        if dropped and index == len(queue) and carries > 0 and any(reachable(hand, i) for i in range(len(hp))):
             queue.append({"hand": hand, "attack": strike["attack"], "foe": foe, "free": True, "carried": False})
         # Long Guard: a crit that leaves its foe standing carries as a drop would, to the first
         # other standing foe.
-        others = [i for i, left in enumerate(hp) if left > 0 and i != foe]
+        others = [i for i in range(len(hp)) if reachable(hand, i) and i != foe]
         # In an attack, only a next strike aimed at the critted foe is carried; one the caller
         # aimed elsewhere keeps its foe, and the carry is not spent.
         aimed_elsewhere = action != "full_attack" and index < len(queue) and queue[index]["foe"] != foe
@@ -1030,7 +1073,11 @@ def run_attack_sequence(vector):
             else:
                 queue.append({"hand": hand, "attack": strike["attack"], "foe": others[0], "free": True, "carried": True})
     stamina = ap * load_data("actions/core.json")["stamina_per_ap"]
-    return {"action": action, "sequence": row["key"], "ap": ap, "stamina": stamina, "strikes": strikes, "hp": hp, "lost": lost}
+    result = {"action": action, "sequence": row["key"], "ap": ap, "stamina": stamina, "strikes": strikes, "hp": hp, "lost": lost}
+    if "ammunition" in vector:
+        left = {hand: {"rounds": rounds["rounds"], **({"loaded": rounds.get("loaded", False)} if loading[hand] else {})} for hand, rounds in counted.items()}
+        result.update(ammunition=left, reloads=reloads, stopped=stopped)
+    return result
 
 
 def stance_misfit(row, loadout):

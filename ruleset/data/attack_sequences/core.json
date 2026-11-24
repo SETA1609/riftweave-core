@@ -1,7 +1,8 @@
 {
   "$schema": "../../schemas/attack_sequence.schema.json",
-  "full_attack": { "min_extra_ap": 1, "extra_main_attacks": [-20, -30], "extra_off_attack": -10 },
+  "full_attack": { "min_extra_ap": 1, "extra_main_attacks": [-20, -30], "extra_off_attack": -10, "one_handed_reload_extra": 1 },
   "circle_cut": { "attack": -10, "main": ["two_handed"] },
+  "ranged_hands": ["bow", "hand_gun", "long_gun", "light_thrown"],
   "shield_bash": {
     "off": ["shield", "buckler"],
     "as_off": "light_weapon",
@@ -69,6 +70,57 @@
       "ap": 5,
       "strikes": [{ "hand": "main", "attack": -10 }, { "hand": "off", "attack": -30 }],
       "jab": { "ap": 3, "attack": -20 }
+    },
+    {
+      "key": "bow",
+      "label": "A bow",
+      "main": ["bow"],
+      "off": ["two_handed"],
+      "ap": 3,
+      "strikes": [{ "hand": "main", "attack": 0 }]
+    },
+    {
+      "key": "hand_gun",
+      "label": "A hand crossbow or a pistol",
+      "main": ["hand_gun"],
+      "off": ["empty", "shield", "buckler"],
+      "ap": 2,
+      "strikes": [{ "hand": "main", "attack": 0 }]
+    },
+    {
+      "key": "long_gun",
+      "label": "A two-handed crossbow or a long gun",
+      "main": ["long_gun"],
+      "off": ["two_handed"],
+      "ap": 3,
+      "strikes": [{ "hand": "main", "attack": 0 }]
+    },
+    {
+      "key": "two_hand_guns",
+      "label": "Two pistols or two hand crossbows",
+      "main": ["hand_gun"],
+      "off": ["hand_gun"],
+      "ap": 3,
+      "strikes": [{ "hand": "main", "attack": -10 }, { "hand": "off", "attack": -20 }],
+      "jab": { "ap": 2, "attack": -10 }
+    },
+    {
+      "key": "two_light_thrown",
+      "label": "A light thrown weapon in each hand",
+      "main": ["light_thrown"],
+      "off": ["light_thrown"],
+      "ap": 3,
+      "strikes": [{ "hand": "main", "attack": -10 }, { "hand": "off", "attack": -20 }],
+      "jab": { "ap": 2, "attack": -10 }
+    },
+    {
+      "key": "mixed_hand",
+      "label": "A melee weapon and a pistol, a hand crossbow, or a light thrown weapon",
+      "main": ["light", "one_handed"],
+      "off": ["hand_gun", "light_thrown"],
+      "ap": 4,
+      "strikes": [{ "hand": "main", "attack": -10 }, { "hand": "off", "attack": -20 }],
+      "jab": { "ap": 2, "attack": -10 }
     }
   ]
 }

@@ -64,7 +64,7 @@ block 2, reserved, refund if unused
 command 2, an order to summons (commanding.md)
 aimed +2 on the attack cost
 draw 1, sheathe 1, drop 0, swap 1 (changing the loadout)
-reload 2, one round into a loading weapon (combat.md#ammunition)
+reload 2, one round into a loading weapon (combat.md#ammunition); +1 with the other hand full, and inside a full attack from its budget (combat.md#ranged-loadouts)
 ```
 
 The attack, the jab, the full attack, and the circle cut cost what the loadout's row of `ruleset/data/attack_sequences/core.json` says (`by_loadout`); the `cost` in `actions/core.json` is the cost with one one-handed weapon, for a caller that knows no loadout. The full attack and the circle cut spend every AP left (`spends_all`). The strikes each makes are in [combat.md](combat.md#attacks-by-loadout) (GD_S05_01).

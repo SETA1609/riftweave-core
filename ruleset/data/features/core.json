@@ -983,7 +983,7 @@
     {
       "key": "carry_through",
       "label": "Carry Through",
-      "description": "When a strike drops a foe, the next strike of the same action goes to another foe in reach; after the last strike of an action, one free strike does (docs/core/combat.md#attacks-by-loadout).",
+      "description": "When a strike drops a foe, the next strike of the same action goes to another foe in reach, or in range for a ranged strike; after the last strike of an action, one free strike does (docs/core/combat.md#attacks-by-loadout).",
       "type": "perk",
       "category": "combat",
       "prerequisite": {
@@ -1021,7 +1021,7 @@
     {
       "key": "reaping_arc",
       "label": "Reaping Arc",
-      "description": "The carry repeats for every foe a strike drops, with no limit but the foes in reach.",
+      "description": "The carry repeats for every foe a strike drops, with no limit but the foes in reach, or in range for a ranged strike.",
       "type": "perk",
       "category": "combat",
       "prerequisite": {
@@ -1097,7 +1097,7 @@
     {
       "key": "follow_up",
       "label": "Follow-Up",
-      "description": "A full attack gains one more main-hand strike, at the first extra strike's penalty.",
+      "description": "A full attack gains one more main-hand strike, melee or ranged, at the first extra strike's penalty; a loading weapon reloads for it first.",
       "type": "perk",
       "category": "combat",
       "prerequisite": {
@@ -1121,7 +1121,7 @@
     {
       "key": "press_on",
       "label": "Press On",
-      "description": "A full attack gains a second extra main-hand strike, at the second extra strike's penalty.",
+      "description": "A full attack gains a second extra main-hand strike, melee or ranged, at the second extra strike's penalty.",
       "type": "perk",
       "category": "combat",
       "prerequisite": {

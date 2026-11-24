@@ -211,6 +211,7 @@ classDiagram
         enum action
         boolean after_block
         boolean after_parry
+        object ammunition
         integer ap
         object attacker
         object damage
@@ -227,13 +228,16 @@ classDiagram
     }
     class attack_sequence_result {
         string action
+        object ammunition
         integer ap
         boolean fired
         List~integer~ hp
         integer lost
         enum reason
+        integer reloads
         string sequence
         integer stamina
+        integer stopped
         List~object~ strikes
     }
 ```
