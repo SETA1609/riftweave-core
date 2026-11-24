@@ -1,2 +1,2 @@
 ### PO_S24_01_file-go-refactor-issues File the Go refactor issues
-- Added: story S24 Go refactor, with issues for benchmarks and a complexity gate, a modifier helper, the attack sequence as a state machine, the combat strike as a pipeline, dispatch tables, a table-driven data loader, the casting and creation checks as rule lists, and one copy of the binaries' shared helpers.
+- Added: story S24 Go refactor, with issues for benchmarks and a complexity gate, a modifier helper, the attack sequence as a state machine, the combat strike as a pipeline, dispatch tables, a table-driven data loader, the casting and creation checks as rule lists, one copy of the binaries' shared helpers, and a module registry that discovers, orders, and loads every module.
