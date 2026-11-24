@@ -16,5 +16,5 @@ Date: 2026-11-24
 - **FE_S07_09 dropped:** its one-page CV form is replaced by the flow. Its point stepper, its no-JSON rule, and its kept draft move to FE_S25_05, and FE_S07_06 now needs FE_S25_05.
 - **Ambition** (`human_ambition`) adds to `creation_perks` (traits), but its description and docs/modules/character-creation.md say a bonus normal perk. GD_S25_02 moves it to the new `starting_perks` count [A, the owner confirms].
 - **The profile is per device, beside the character list**, not in the settings file: settings travel between devices, and a character id means nothing on another one. [A]
-- **Sex** (owner, 2026-11-24): male or female, recorded and read by no rule. An artificial or undead being (a golem, an undead, an animated object) has none, shown as "it": the creature types `construct` and `undead` read `none` [A], and a template of one of them lets the player switch to it.
+- **Sex** (owner, 2026-11-24): male or female, recorded and read by no rule. An artificial or undead being (a golem, an undead, an animated object) has none, shown as "it": the creature types `construct`, `undead`, `elemental`, `ooze`, and `plant` read `none`, and a template of one of them lets the player switch to it by choice, never automatically (owner, 2026-11-24).
 - **GitHub issues:** filed for each S25 issue.
