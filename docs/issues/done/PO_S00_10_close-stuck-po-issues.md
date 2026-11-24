@@ -1,5 +1,6 @@
 #### PO_S00_10_close-stuck-po-issues Close the four PO issues that merged as todo
-- Status: review
+- Status: done
+- Merged: #476, 2026-11-24
 - Priority: medium
 - Needs: —
 - Modified: 2026-11-24
