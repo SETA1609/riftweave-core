@@ -1547,8 +1547,28 @@ def run_consume(vector):
     if at_table:
         result.update(ap=table["ap"], pending_ap=table["pending_ap"])
     return result
+POOLS = ("hp", "mp", "sp", "ap")
+
+
+def new_stored_actor(new):
+    """A new stored actor (docs/core/state.md#the-stored-actor, BE_S23_03): that level, xp 0, nothing
+    held, and every pool full at the maximum the derived stats give."""
+    level = new.get("level", 1)
+    derived = run_derived({"actor": {"attributes": new["attributes"], "level": level}})
+    return {
+        "attributes": new["attributes"], "level": level, "xp": 0, "skills": {}, "tags": list(new.get("tags", [])),
+        "growth": {"hp": 0, "mp": 0, "sp": 0}, "resources": {pool: derived[pool] for pool in POOLS},
+        "conditions": [], "modifiers": [], "flags": [], "inventory": [], "equipped": {},
+    }
+
+
 def run_stored_actor(vector):
-    """A stored actor comes back unchanged, if it is consistent (docs/core/state.md)."""
+    """A stored actor comes back unchanged, if it is consistent (docs/core/state.md); with `new`, a new
+    one is made."""
+    if "new" in vector:
+        if "actor" in vector:
+            return {"error": "stored_actor takes actor or new, not both"}
+        return {"actor": new_stored_actor(vector["new"])}
     actor = vector["actor"]
     seen = set()
     for item in actor["inventory"]:

@@ -512,34 +512,38 @@ func devOperation(words []string) (map[string]any, error) {
 }
 
 // startActor is the stored actor a new panel session starts from: the last character created, or
-// every attribute at 5 at level 1, with full pools from the derived command.
+// a new one from the core (stored_actor's new, BE_S23_03), every attribute at 5 unless one was
+// imported.
 func (model Model) startActor() (map[string]any, error) {
 	var character map[string]any = model.character
 	if _, stored := character["resources"]; stored {
 		return character, nil // a stored actor from the creation screen
 	}
+	var start map[string]any = map[string]any{}
 	if character == nil {
 		attributes := map[string]int64{}
 		for _, key := range attributeKeys {
 			attributes[key] = 5
 		}
-		character = map[string]any{"attributes": attributes, "level": int64(1)}
+		start["attributes"] = attributes
+	} else {
+		start["attributes"] = character["attributes"]
+		if level, given := character["level"]; given && level != nil {
+			start["level"] = level
+		}
 	}
-	input, _ := json.Marshal(map[string]any{"actor": character})
-	output, err := model.run("derived", input)
+	input, _ := json.Marshal(map[string]any{"new": start})
+	output, err := model.run("stored_actor", input)
 	if err != nil {
 		return nil, err
 	}
-	var derived map[string]any
-	if err := json.Unmarshal(output, &derived); err != nil {
+	var made struct {
+		Actor map[string]any `json:"actor"`
+	}
+	if err := json.Unmarshal(output, &made); err != nil {
 		return nil, err
 	}
-	return map[string]any{
-		"attributes": character["attributes"], "level": character["level"], "xp": 0, "skills": map[string]any{}, "tags": []any{},
-		"growth":     map[string]any{"hp": 0, "mp": 0, "sp": 0},
-		"resources":  map[string]any{"hp": derived["hp"], "mp": derived["mp"], "sp": derived["sp"], "ap": derived["ap"]},
-		"conditions": []any{}, "modifiers": []any{}, "flags": []any{}, "inventory": []any{}, "equipped": map[string]any{},
-	}, nil
+	return made.Actor, nil
 }
 
 // ensureSession starts the model's session from startActor when it has none yet. The dev panel
