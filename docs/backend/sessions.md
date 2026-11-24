@@ -11,6 +11,7 @@ Session
   dev?      true once a dev operation ran ([dev-mode.md](dev-mode.md))
   party?[]  { character, start, actor }   the characters the GM loaded (below)
   bestiary? { knowledge[] }               what the players know of each monster (below)
+  encounter? { round, order[], turn, acted[], surprise[] }   the fight the GM runs (below)
 ```
 
 | `operation` | Input | Result |
@@ -47,9 +48,44 @@ Each such command is one entry in `sessionStateAdapters` in `backend/core/sessio
 | Command | Filled from the session | Written back |
 | --- | --- | --- |
 | `bestiary` | `knowledge`, from `bestiary.knowledge` | a `reveal`'s `knowledge` into `bestiary.knowledge`; a `view` writes nothing |
+| `encounter` | `encounter`, from `encounter`, for `turn_end` | the result's `encounter` into `encounter` |
 
 A replay's `matches` still compares the actor only; the rebuilt state replaces the saved one.
 [A] [V 2026-11-23, `TestARevealStepKeepsTheMarksAndReplays`, BE_S08_05, [bestiary.md](bestiary.md)]
+
+## Encounters
+
+Owner request, 2026-11-16 (BE_S08_07): the GM runs a fight on one device with no connection, in
+the web app or through the MCP tools. The `encounter` command holds the initiative list and whose
+turn it is; as a session step it keeps the encounter in the session, so the fight replays and
+exports with it. Damage, AP, and conditions stay the existing steps (`combat`, `actions`,
+`conditions`) on each actor. No grid offline: positions are what the table says. [A]
+
+```
+encounter input    operation   start | turn_end
+  start            combatants[]  { id, initiative, agi, lck, rolls?[], surprise? }
+                                 initiative is the derived value, no roll (derived.md); agi and lck
+                                 after modifiers; rolls the d100 roll-off, made when the encounter
+                                 starts and kept in the step; surprise an ambusher
+  turn_end         encounter     the state; a session step fills it from the session
+result             encounter     { round, order[], turn, acted[], surprise[] }
+                   current       { id, start? }   whose turn it is; start: surprise in the surprise
+                                 round, combat on an actor's first turn of the fight, else absent
+                   next          the id after the current one
+refused            an id twice; a tie the rolls do not break
+```
+
+- **Order:** highest initiative first; a tie breaks by [derived.md](../core/derived.md#initiative-ties).
+  Each actor's `rolls` are its roll-off, compared first to first, then second to second for a
+  tie on the roll, lowest first. [A]
+- **The surprise round:** with any ambusher, the fight opens on round 0, in which only the
+  ambushers act, in initiative order, each on `start: surprise`. Round 1 is everyone's. [A]
+- **The first turn:** an actor's first turn of round 1 or later that it has not acted in reads
+  `start: combat`: the caller passes it to `actions` for the partial pool
+  ([actions.md](../core/actions.md#pool)). An ambusher that acted in the surprise round has a
+  normal turn in round 1. [A]
+- **A turn ends** with `turn_end`: the current actor joins `acted`, the turn moves on, and after the
+  last actor the round goes up by one and the order starts again.
 
 ## The rules version
 
