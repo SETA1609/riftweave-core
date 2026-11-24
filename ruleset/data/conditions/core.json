@@ -642,6 +642,33 @@
       ]
     },
     {
+      "key": "hasted",
+      "label": "Hasted",
+      "description": "Quickened: two more action points each turn while it lasts.",
+      "applied_by": [
+        "core:effect/haste"
+      ],
+      "removed_by": [
+        "core:effect/slow"
+      ],
+      "modifiers": [
+        {
+          "target": "hasted",
+          "operation": "grant",
+          "value": 1,
+          "duration": "while_applied",
+          "source": "condition:hasted"
+        },
+        {
+          "target": "ap",
+          "operation": "add",
+          "value": 2,
+          "duration": "while_applied",
+          "source": "condition:hasted"
+        }
+      ]
+    },
+    {
       "key": "silenced",
       "label": "Silenced",
       "description": "Cannot cast spells, and −20 on social checks that need speech.",

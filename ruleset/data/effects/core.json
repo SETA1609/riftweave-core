@@ -1457,6 +1457,25 @@
       ]
     },
     {
+      "key": "haste",
+      "label": "Haste",
+      "description": "Quickens the target: it gains action points while the effect lasts.",
+      "category": "fortify",
+      "polarity": "beneficial",
+      "magnitude_unit": "seconds",
+      "base_cost": 10,
+      "default_duration": 15,
+      "channels": [
+        "spell",
+        "potion"
+      ],
+      "tags": [
+        "combat",
+        "speed",
+        "fortify"
+      ]
+    },
+    {
       "key": "fortify_critical",
       "reserved": true,
       "label": "Fortify Critical",

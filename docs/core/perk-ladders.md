@@ -11,7 +11,7 @@ arrow runs from a prerequisite perk to the perk that needs it, labelled with the
 when more than 1. A rounded box is a prerequisite from another category. A ladder that stops
 early, or a perk nothing leads to, shows at a glance.
 
-145 perks: 73 on a ladder, 72 with no perk before or after them.
+146 perks: 73 on a ladder, 73 with no perk before or after them.
 
 ## Combat
 
@@ -180,6 +180,7 @@ attributes, and level only.
 | Wind-Up | combat | STR 5 |
 | Snap Cut | combat | AGI 5 |
 | Scavenger | survival | LCK 6 |
+| Battle Tempo | combat | Lv 12 |
 | Crushing Blow | combat | Lv 6 · blunt 50 · STR 7 |
 | Precise Thrust | combat | Lv 6 · piercing 50 · AGI 6 |
 | Ready Hand | combat | AGI 6 |

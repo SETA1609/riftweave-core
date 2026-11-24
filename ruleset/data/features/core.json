@@ -378,6 +378,52 @@
       ]
     },
     {
+      "key": "heavy_handed",
+      "label": "Heavy Handed",
+      "description": "You hit like a falling wall but take your time about it: more melee damage, and one action point fewer. Chosen at character creation.",
+      "type": "creation",
+      "category": "combat",
+      "modifiers": [
+        {
+          "target": "melee_damage",
+          "operation": "multiply",
+          "value": 1.25,
+          "source": "feature:heavy_handed",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "ap",
+          "operation": "add",
+          "value": -1,
+          "source": "feature:heavy_handed",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "glass_frame",
+      "label": "Glass Frame",
+      "description": "Quick and slight, you move before others think but break more easily: one more action point, and a quarter less maximum hit points. Chosen at character creation.",
+      "type": "creation",
+      "category": "general",
+      "modifiers": [
+        {
+          "target": "ap",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:glass_frame",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "hp",
+          "operation": "multiply",
+          "value": 0.75,
+          "source": "feature:glass_frame",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
       "key": "small_frame",
       "label": "Small Frame",
       "description": "You are slight of build: +1 Agility, but you carry 25% less. Chosen at character creation.",
@@ -1142,6 +1188,27 @@
           "operation": "add",
           "value": 1,
           "source": "feature:press_on",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "battle_tempo",
+      "label": "Battle Tempo",
+      "description": "Long practice has quickened every motion: your action point pool grows by one.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 12,
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "ap",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:battle_tempo",
           "origin": "core:origin/trained"
         }
       ]

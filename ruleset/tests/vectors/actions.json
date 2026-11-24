@@ -677,5 +677,61 @@
       "pool": 4,
       "cost": 1
     }
+  },
+  {
+    "name": "pool: the actions command reads ap modifiers, Battle Tempo and hasted make a pool of 4 into 7",
+    "actor": {
+      "attributes": {
+        "agi": 6
+      }
+    },
+    "modifiers": [
+      {
+        "target": "ap",
+        "operation": "add",
+        "value": 1,
+        "source": "feature:battle_tempo",
+        "origin": "core:origin/trained"
+      },
+      {
+        "target": "hasted",
+        "operation": "grant",
+        "value": 1,
+        "duration": "while_applied",
+        "source": "condition:hasted"
+      },
+      {
+        "target": "ap",
+        "operation": "add",
+        "value": 2,
+        "duration": "while_applied",
+        "source": "condition:hasted"
+      }
+    ],
+    "expect": {
+      "pool": 7,
+      "available": 7
+    }
+  },
+  {
+    "name": "pool: Heavy Handed at AGI 0 leaves the floor of 1",
+    "actor": {
+      "attributes": {
+        "agi": 0
+      }
+    },
+    "modifiers": [
+      {
+        "target": "ap",
+        "operation": "add",
+        "value": -1,
+        "source": "feature:heavy_handed",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": {
+      "pool": 1,
+      "available": 1
+    }
   }
 ]

@@ -13,9 +13,23 @@ pool  = 2 + floor(AGI / 3)
 cap   = 10
 carry = 2            at most 2 held AP carry into the next pool (held AP, below)
 rest  = refill
+floor = 1            the pool after its modifiers on ap is never under 1 nor over cap
 ```
 
-The size matches the derived `ap` function. A turn starts with at most `cap` AP, carried AP included. A short rest refills the pool. Fallout spends a small pool the same way.
+The size matches the derived `ap` function. A turn starts with at most `cap` AP, carried AP included.
+
+**What changes the pool** (owner request, 2026-11-19, GD_S19_07; borrowed from Fallout's Action Boy and Bruiser, and Divinity's Glass Cannon and Haste). Before, only cost reducers existed: level never raised the pool, and AGI only at 3, 6, and 9. Modifiers on `ap` now do, in the derived `ap` and in the `actions` command's `pool` (the command reads them from its `modifiers`):
+
+| Source | Kind | Emits | Trade |
+| --- | --- | --- | --- |
+| Battle Tempo | perk, level 12, once | `add ap 1` | none |
+| Heavy Handed | creation perk | `multiply melee_damage 1.25`, `add ap -1` | the Bruiser's deal |
+| Glass Frame | creation perk | `add ap 1`, `multiply hp 0.75` | the Glass Cannon's deal |
+| Hasted | condition | `add ap 2` | from the `haste` effect |
+
+- **Slowed** already makes every action cost 1 AP more (`action_cost`), so it gains no `ap` modifier: one penalty to AP, not two. [V 2026-11-23, `conditions/core.json`]
+- **Floor and cap:** the pool after its modifiers is at least `pool.floor` (1) and at most `pool.cap` (10). [A]
+ A short rest refills the pool. Fallout spends a small pool the same way.
 
 ## Held AP
 

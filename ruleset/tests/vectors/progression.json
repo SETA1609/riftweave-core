@@ -1458,5 +1458,97 @@
     "expect": {
       "error": "attribute lck is missing"
     }
+  },
+  {
+    "name": "take perk: Battle Tempo is refused below level 12",
+    "operation": "take_perk",
+    "actor": {
+      "attributes": {
+        "str": 5,
+        "per": 5,
+        "end": 5,
+        "int": 5,
+        "wil": 5,
+        "agi": 6,
+        "cha": 5,
+        "lck": 5
+      },
+      "level": 10,
+      "skills": {}
+    },
+    "perks": {},
+    "perk": "battle_tempo",
+    "expect": {
+      "taken": false,
+      "perk": "battle_tempo",
+      "rank": 0,
+      "unmet": [
+        {
+          "needs": "level",
+          "min": 12,
+          "has": 10
+        }
+      ]
+    }
+  },
+  {
+    "name": "take perk: Battle Tempo at level 12 is taken",
+    "operation": "take_perk",
+    "actor": {
+      "attributes": {
+        "str": 5,
+        "per": 5,
+        "end": 5,
+        "int": 5,
+        "wil": 5,
+        "agi": 6,
+        "cha": 5,
+        "lck": 5
+      },
+      "level": 12,
+      "skills": {}
+    },
+    "perks": {},
+    "perk": "battle_tempo",
+    "expect": {
+      "taken": true,
+      "perk": "battle_tempo",
+      "rank": 1,
+      "unmet": []
+    }
+  },
+  {
+    "name": "take perk: Battle Tempo is taken once",
+    "operation": "take_perk",
+    "actor": {
+      "attributes": {
+        "str": 5,
+        "per": 5,
+        "end": 5,
+        "int": 5,
+        "wil": 5,
+        "agi": 6,
+        "cha": 5,
+        "lck": 5
+      },
+      "level": 14,
+      "skills": {}
+    },
+    "perks": {
+      "battle_tempo": 1
+    },
+    "perk": "battle_tempo",
+    "expect": {
+      "taken": false,
+      "perk": "battle_tempo",
+      "rank": 1,
+      "unmet": [
+        {
+          "needs": "rank",
+          "max": 1,
+          "has": 1
+        }
+      ]
+    }
   }
 ]

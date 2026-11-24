@@ -28,5 +28,139 @@
       { "target": "hp", "operation": "add", "value": 5, "source": "feature:kindred_focus", "origin": "core:origin/trained", "duration": "while_summoning" }
     ],
     "expect": { "hp": 59 }
+  },
+  {
+    "name": "ap: Battle Tempo adds 1 to a pool of 4",
+    "function": "derived",
+    "actor": { "attributes": { "end": 5, "agi": 6 }, "level": 1 },
+    "modifiers": [
+      {
+        "target": "ap",
+        "operation": "add",
+        "value": 1,
+        "source": "feature:battle_tempo",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": { "ap": 5 }
+  },
+  {
+    "name": "ap: Heavy Handed trades 1 AP for melee damage, a pool of 4 is 3",
+    "function": "derived",
+    "actor": { "attributes": { "end": 5, "agi": 6 }, "level": 1 },
+    "modifiers": [
+      {
+        "target": "ap",
+        "operation": "add",
+        "value": -1,
+        "source": "feature:heavy_handed",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": { "ap": 3 }
+  },
+  {
+    "name": "ap: Glass Frame adds 1 AP and takes a quarter of the HP, 59 to 44",
+    "function": "derived",
+    "actor": { "attributes": { "end": 5, "agi": 6 }, "level": 1 },
+    "modifiers": [
+      {
+        "target": "ap",
+        "operation": "add",
+        "value": 1,
+        "source": "feature:glass_frame",
+        "origin": "core:origin/trained"
+      },
+      {
+        "target": "hp",
+        "operation": "multiply",
+        "value": 0.75,
+        "source": "feature:glass_frame",
+        "origin": "core:origin/trained"
+      }
+    ],
+    "expect": { "ap": 5, "hp": 44 }
+  },
+  {
+    "name": "ap: hasted adds 2 to a pool of 4",
+    "function": "derived",
+    "actor": { "attributes": { "end": 5, "agi": 6 }, "level": 1 },
+    "modifiers": [
+      {
+        "target": "hasted",
+        "operation": "grant",
+        "value": 1,
+        "duration": "while_applied",
+        "source": "condition:hasted"
+      },
+      {
+        "target": "ap",
+        "operation": "add",
+        "value": 2,
+        "duration": "while_applied",
+        "source": "condition:hasted"
+      }
+    ],
+    "expect": { "ap": 6 }
+  },
+  {
+    "name": "ap: the pool never falls under the floor of 1",
+    "function": "derived",
+    "actor": { "attributes": { "end": 5, "agi": 0 }, "level": 1 },
+    "modifiers": [
+      {
+        "target": "ap",
+        "operation": "add",
+        "value": -1,
+        "source": "feature:heavy_handed",
+        "origin": "core:origin/trained"
+      },
+      { "target": "ap", "operation": "add", "value": -2, "source": "vector:floor" }
+    ],
+    "expect": { "ap": 1 }
+  },
+  {
+    "name": "ap: the pool never rises over the cap of 10",
+    "function": "derived",
+    "actor": { "attributes": { "end": 5, "agi": 10 }, "level": 1 },
+    "modifiers": [
+      {
+        "target": "ap",
+        "operation": "add",
+        "value": 1,
+        "source": "feature:battle_tempo",
+        "origin": "core:origin/trained"
+      },
+      {
+        "target": "ap",
+        "operation": "add",
+        "value": 1,
+        "source": "feature:glass_frame",
+        "origin": "core:origin/trained"
+      },
+      {
+        "target": "hp",
+        "operation": "multiply",
+        "value": 0.75,
+        "source": "feature:glass_frame",
+        "origin": "core:origin/trained"
+      },
+      {
+        "target": "hasted",
+        "operation": "grant",
+        "value": 1,
+        "duration": "while_applied",
+        "source": "condition:hasted"
+      },
+      {
+        "target": "ap",
+        "operation": "add",
+        "value": 2,
+        "duration": "while_applied",
+        "source": "condition:hasted"
+      },
+      { "target": "ap", "operation": "add", "value": 3, "source": "vector:cap" }
+    ],
+    "expect": { "ap": 10 }
   }
 ]

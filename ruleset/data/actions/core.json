@@ -8,6 +8,7 @@
     "per_point_divisor": 3,
     "attribute": "agi",
     "cap": 10,
+    "floor": 1,
     "carry": 2,
     "guard_per_ap": 5,
     "reactions_per_round": 1,

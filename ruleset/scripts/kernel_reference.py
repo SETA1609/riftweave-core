@@ -213,6 +213,9 @@ def run_resolution(vector):
     }
 
 
+AP_TARGET = "ap"
+
+
 def run_derived(vector):
     actor = vector["actor"]
     attributes = actor.get("attributes", {})
@@ -231,6 +234,9 @@ def run_derived(vector):
         )
         own = [m for m in modifiers if m.get("target") == stat["key"]]
         result[stat["key"]] = apply_modifiers(value, own)
+    # The derived ap is the action pool, kept between its floor and cap (GD_S19_07).
+    pool_rules = load_data("actions/core.json")["pool"]
+    result[AP_TARGET] = min(max(result[AP_TARGET], pool_rules["floor"]), pool_rules["cap"])
     return result
 
 
@@ -277,6 +283,8 @@ def run_actions(vector):
     attribute = vector["actor"]["attributes"][pool_rules["attribute"]]
     pool = pool_rules["base"] + (attribute * pool_rules["per_point"]) // pool_rules["per_point_divisor"]
     modifiers = vector.get("modifiers", [])
+    # Modifiers on ap change the pool, kept between its floor and cap (GD_S19_07).
+    pool = min(max(apply_modifiers(pool, [m for m in modifiers if m["target"] == AP_TARGET]), pool_rules["floor"]), pool_rules["cap"])
     cost = sum(
         max(apply_modifiers(costs[key], [m for m in modifiers if m["target"] == key]), 0)
         for key in vector.get("actions", [])

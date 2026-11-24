@@ -105,6 +105,7 @@ type ActionPool struct {
 	PerPointDivisor int64  `json:"per_point_divisor"`
 	Attribute       string `json:"attribute"`
 	Cap             int64  `json:"cap"`
+	Floor           int64  `json:"floor"`        // the least the pool is after its modifiers on ap (GD_S19_07)
 	Carry           int64  `json:"carry"`        // the most held AP that carries into the next pool (GD_S19_05)
 	GuardPerAP      int64  `json:"guard_per_ap"` // evasion per held AP until the next turn
 	// ReactionsPerRound is the reactions (opportunity attacks, no AP) an actor has between two of its turns (GD_S19_04).
