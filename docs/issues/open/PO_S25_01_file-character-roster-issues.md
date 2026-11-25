@@ -1,0 +1,11 @@
+#### PO_S25_01_file-character-roster-issues File the character roster, profile, and creation flow issues
+- Status: review
+- Priority: high
+- Needs: —
+- Modified: 2026-11-24
+- Do: Owner request, 2026-11-24: for character creation we need something like the bestiary where we track our saved characters; a character has its page flow, with name, sex, background, traits, perks, and attributes, one after the other or in groups, in an order that makes sense; then it is saved, and later a single player selects the profile, which is the current selected character.
+  - **File story S25** with the game-design, backend, and frontend issues below, and drop `FE_S07_09_character-creation-cv-form` (one page laid out like a CV), which the step-by-step flow replaces; its point stepper, its rule that the page shows no JSON, and its kept draft move to `FE_S25_05_creation-flow-page`. `FE_S07_06_character-from-build-page` needs the flow page instead.
+- Keys: story S25
+- Files: ~14 (docs/stories/S25-character-roster-and-creation-flow.md, the S25 issue files, docs/issues/open/FE_S07_09_character-creation-cv-form.md, docs/issues/open/FE_S07_06_character-from-build-page.md, docs/stories/S07-files-between-apps.md, docs/stories/README.md, ROADMAP.md, AGENTS.md, the decision, the changelog fragment)
+- See: docs/backend/creation.md, docs/backend/files.md#the-character-list, docs/backend/bestiary.md, docs/modules/character-creation.md
+- Done when: the story and its issues are filed, `roadmap-order check` passes, and no open issue needs a dropped one.

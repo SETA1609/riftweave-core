@@ -1,0 +1,14 @@
+#### FE_S25_06_character-roster-page The character roster: saved characters tracked like the bestiary (frontend)
+- Status: todo
+- Priority: high
+- Needs: BE_S25_04_current-character-profile
+- Modified: 2026-11-24
+- Do: Owner request, 2026-11-24: like the bestiary, a place where we track our saved characters.
+  - **The roster** is the character list of FE_S07_04 (IndexedDB, the sync rule) shown as the bestiary lists monsters: a card per character with its name, sex, race, background, level, and last change, and a mark on the current one (the profile).
+  - **Find and sort:** a text filter on the name, filters on race, background, and level, and sort by name, level, or last change, as the bestiary page filters (FE_S08_06_bestiary-page); the list component is shared with it, whichever is built first [A].
+  - **Actions on a card:** open the sheet, select as the profile, export, duplicate, and delete (asking first; deleting the profile's character clears the profile). "New character" opens the creation flow; "Import" takes a character file by the sync rule, as today.
+  - **Empty:** with no saved character, the page offers the creation flow and a prebuilt character (GD_S14_05_prebuilt-characters, when it exists).
+- Keys: the `characters` route; the roster card component
+- Files: ~12 (frontend/src/app/character-list.ts, .html, .css, its spec, frontend/src/app/ui/roster-card.*, frontend/src/app/characters.ts, frontend/e2e/characters.spec.ts, frontend/src/locales/*.json, docs/backend/frontend.md)
+- See: docs/backend/files.md#the-character-list, docs/backend/bestiary.md, frontend/src/app/character-list.ts
+- Done when: a Playwright spec saves three characters, filters them by race and by name, sorts them by level, selects one as the profile and sees it marked, and deletes it and sees the profile cleared.
