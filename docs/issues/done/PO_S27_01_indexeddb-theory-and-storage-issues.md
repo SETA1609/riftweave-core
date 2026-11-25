@@ -1,5 +1,6 @@
 #### PO_S27_01_indexeddb-theory-and-storage-issues A theory page on IndexedDB, and the storage issues
-- Status: review
+- Status: done
+- Merged: #500, 2026-11-25
 - Priority: high
 - Needs: —
 - Modified: 2026-11-25
