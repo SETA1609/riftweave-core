@@ -1,5 +1,6 @@
 #### GD_S17_04_elemental-bolts-and-bullets Elemental bolts and bullets: a grenade's burst at the weapon's damage
-- Status: review
+- Status: done
+- Merged: #480, 2026-11-25
 - Priority: medium
 - Needs: GD_S17_02_ammunition-items-and-reloading, GD_S17_03_thrown-grenades
 - Modified: 2026-11-18
