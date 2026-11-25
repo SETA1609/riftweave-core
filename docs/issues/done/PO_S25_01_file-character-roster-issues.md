@@ -1,5 +1,6 @@
 #### PO_S25_01_file-character-roster-issues File the character roster, profile, and creation flow issues
-- Status: review
+- Status: done
+- Merged: #493, 2026-11-25
 - Priority: high
 - Needs: —
 - Modified: 2026-11-24
