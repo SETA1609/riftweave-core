@@ -987,6 +987,15 @@ type GrenadeDamage struct {
 	Type string
 }
 
+// Round is an ammunition row: what a round changes on the strike, and an elemental round's burst
+// (docs/core/combat.md#elemental-rounds).
+type Round struct {
+	Kind        string
+	DamageType  string `json:"damage_type"`
+	BurstRadius int64  `json:"burst_radius"` // 0: the round does not burst
+	Effects     []ConsumableEffect
+}
+
 // ConsumableEffect is one applied effect on a consumable; Magnitude is nil when it has none.
 type ConsumableEffect struct {
 	Effect    string
@@ -1066,6 +1075,9 @@ type Ruleset struct {
 	Sizes               map[string]Size      // combat/dice_ladder.json: undersized, normal, oversized
 	MonsterLevel        map[string]int64     // monster key
 	MonsterLoot         map[string][]DropRow // monster key: its resolved loot rows
+
+	// Rounds are equipment/ammunition.json's rows by core:ammunition/<key> (GD_S17_04).
+	Rounds map[string]Round
 
 	// EffectRefs is every ref in effects/core.json, for the refs a dev operation names.
 	EffectRefs map[string]bool
@@ -1682,6 +1694,18 @@ func (loader *rulesetLoader) loadItems(ruleset *Ruleset) {
 			}
 			ruleset.Items["core:"+category.category+"/"+fields.Key] = item
 		}
+	}
+
+	var rounds struct {
+		Equipment []struct {
+			Key        string
+			Ammunition Round
+		}
+	}
+	loader.read("equipment/ammunition.json", &rounds)
+	ruleset.Rounds = make(map[string]Round, len(rounds.Equipment))
+	for _, row := range rounds.Equipment {
+		ruleset.Rounds["core:ammunition/"+row.Key] = row.Ammunition
 	}
 
 	var ladder struct {

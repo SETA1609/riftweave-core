@@ -214,9 +214,11 @@
             "kind": { "$ref": "schema.json#/definitions/ammoKind" },
             "count": { "type": "integer", "minimum": 1, "description": "How many rounds a bundle holds." },
             "damage_type": { "$ref": "schema.json#/definitions/damageType", "description": "The damage type a strike with these rounds deals instead of the weapon's." },
-            "effects": { "type": "array", "items": { "$ref": "schema.json#/definitions/appliedEffect" }, "description": "Effects on a hit." }
+            "effects": { "type": "array", "items": { "$ref": "schema.json#/definitions/appliedEffect" }, "description": "Effects on a hit." },
+            "burst_radius": { "type": "integer", "minimum": 1, "description": "An elemental round (GD_S17_04): hit or miss, it bursts at the target in this radius, every creature in it taking an area roll and the shot's damage roll as damage_type, and its effects on a hit, which need the grenade channel (docs/core/combat.md#elemental-rounds)." }
           },
           "required": ["kind", "count"],
+          "dependencies": { "burst_radius": ["damage_type"] },
           "additionalProperties": false
         }
       }

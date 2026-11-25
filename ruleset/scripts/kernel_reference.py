@@ -578,23 +578,66 @@ def run_combat(vector):
     round, and a loading weapon must hold one (docs/core/combat.md#ammunition). With `grenade`, the
     attack is a thrown grenade (docs/core/combat.md#grenades)."""
     if "grenade" in vector:
+        if "round" in vector:
+            return {"error": GRENADE_NO_ROUND}
         return throw_grenade(vector)
+    try:
+        vector = with_round(vector)
+    except ValueError as error:
+        return {"error": str(error)}
     ammunition = vector.get("ammunition")
     properties = vector["attacker"].get("weapon_properties", [])
     if ammunition is None or not any(prop in properties for prop in FIRES):
-        return strike(vector)
+        return round_riders(vector, strike(vector))
     if ammunition["rounds"] <= 0:
         return {"error": NO_ROUNDS_LEFT}
     loading = LOADING in properties
     if loading and not ammunition.get("loaded", False):
         return {"error": MUST_RELOAD}
-    result = strike({key: value for key, value in vector.items() if key != "ammunition"})
+    result = round_riders(vector, strike({key: value for key, value in vector.items() if key != "ammunition"}))
     if "error" in result:
         return result
     left = {"rounds": ammunition["rounds"] - 1}
     if loading:
         left["loaded"] = False
     return {**result, "ammunition": left}
+
+
+AMMUNITION_PREFIX = "core:ammunition/"
+GRENADE_NO_ROUND = "a grenade is thrown, not fired with a round"
+OUTSIDE = "outside"
+
+
+def with_round(vector):
+    """The round fired (docs/core/combat.md#elemental-rounds): its damage_type replaces the
+    weapon's, and its effects ride the strike. With burst, this defender is caught in a bursting
+    round's burst: an area roll, outside past the radius, and the shot's crit for the damage."""
+    burst = vector.get("burst")
+    if "round" not in vector:
+        if burst is not None:
+            raise ValueError("a burst needs a bursting round")
+        return vector
+    rows = {AMMUNITION_PREFIX + row["key"]: row for row in load_data("equipment/ammunition.json")["equipment"]}
+    ref = vector["round"]
+    if ref not in rows:
+        raise ValueError(f"{ref} is not an ammunition row")
+    round_ = rows[ref]["ammunition"]
+    if burst is not None and "burst_radius" not in round_:
+        raise ValueError(f"{ref} does not burst")
+    damage = {**vector["damage"], "type": round_.get("damage_type", vector["damage"]["type"])}
+    inner = {key: value for key, value in vector.items() if key not in ("round", "burst")}
+    inner = {**inner, "damage": damage, "_round_effects": list(round_.get("effects", []))}
+    if burst is not None:
+        inner = {**inner, "delivery": "area", "_crit": bool(burst.get("crit", False)), "_outside": burst["distance"] > round_["burst_radius"]}
+    return inner
+
+
+def round_riders(vector, result):
+    """A round's effects on a hit that is not evaded, after a maneuver's (if any)."""
+    if "_round_effects" not in vector or "error" in result:
+        return result
+    landed = result["outcome"] == "hit" and not result["evaded"]
+    return {**result, "effects": result.get("effects", []) + (vector["_round_effects"] if landed else [])}
 
 
 def run_ammunition(vector):
@@ -606,6 +649,13 @@ def run_ammunition(vector):
 
 def strike(vector):
     """One attack, in the order of docs/core/combat.md. Dice and rolls are inputs."""
+    if vector.get("_outside"):
+        # Past a burst's radius: no roll, no damage.
+        return {
+            "outcome": OUTSIDE, "target": 0, "margin": None, "crit": False, "evaded": False, "blocked": False,
+            "evasion_rate": 0, "block_rate": 0, "parry_rate": 0, "parried": False, "warded": False, "ward_percent": 0,
+            "counter": False, "stagger_ap": 0, "damage": 0, "hp": vector["defender"]["hp"],
+        }
     # The attacker's while_summoning modifiers, resolved once; beside_summon means a summon is out.
     summoning = bool(vector.get("summoning")) or "beside_summon" in vector.get("situations", [])
     vector = {**vector, "modifiers": summoning_modifiers(vector.get("modifiers", []), summoning)}
@@ -682,10 +732,15 @@ def strike(vector):
         }
     )
     crit = "crit" in attack["tags"]
+    damage_crit = crit
+    if "_crit" in vector:
+        # In a burst the shot's crit doubles the damage; the burst roll's own crit counts for
+        # nothing, and no crit carries the burst through the bands.
+        crit, damage_crit = False, vector["_crit"] and attack["margin"] is not None
     result = {
         "target": attack["target"],
         "margin": attack["margin"],
-        "crit": crit,
+        "crit": damage_crit,
         "evaded": False,
         "blocked": False,
         "evasion_rate": evasion_rate,
@@ -751,7 +806,7 @@ def strike(vector):
         # A bane needs a parameter, as in Go: no parameter matches no creature type, not a defender without one.
         if applied["effect"] == "core:effect/bane" and applied.get("parameter") and applied["parameter"] == defender.get("creature_type"):
             amount += applied["magnitude"]
-    if crit:
+    if damage_crit:
         amount = evaluate_formula(pipeline["crit_damage"], {}, {"damage": amount})
     if result["evaded"]:
         amount = evaluate_formula(pipeline["area_evade_damage"], {}, {"damage": amount})

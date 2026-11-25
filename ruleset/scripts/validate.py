@@ -2139,10 +2139,32 @@ def grenade_problems(rows, effect_channels):
     return problems
 
 
+BURSTING_KINDS = ("bolt", "bullet")
+
+
+def burst_problems(rows, effect_channels):
+    """GD_S17_04 (docs/core/combat.md#elemental-rounds): only bolts and bullets burst, and a
+    bursting round's riders, like a grenade's, need the grenade channel."""
+    problems = []
+    for row in rows:
+        ammunition = row.get("ammunition") or {}
+        if "burst_radius" not in ammunition:
+            continue
+        if ammunition.get("kind") not in BURSTING_KINDS:
+            problems.append(f"ammunition {row['key']} bursts, but only bolts and bullets do (docs/core/combat.md#elemental-rounds)")
+        for applied in ammunition.get("effects", []):
+            ref = applied.get("effect")
+            if not validate_effect_channel(ref, GRENADE_TYPE, effect_channels):
+                problems.append(f"ammunition {row['key']}: effect {ref} lacks the {CHANNEL_REQUIREMENTS[GRENADE_TYPE]} channel")
+    return problems
+
+
 def check_grenades():
-    """The grenade gate on the core consumables."""
+    """The grenade gate on the core consumables, and the burst gate on the ammunition rows."""
+    channels = build_effect_channels([DATA_DIR / "effects" / "core.json"])
     rows = json.loads((DATA_DIR / "equipment" / "consumables.json").read_text())["equipment"]
-    return grenade_problems(rows, build_effect_channels([DATA_DIR / "effects" / "core.json"]))
+    rounds = json.loads((DATA_DIR / "equipment" / "ammunition.json").read_text())["equipment"]
+    return grenade_problems(rows, channels) + burst_problems(rounds, channels)
 
 
 def check_ammunition():

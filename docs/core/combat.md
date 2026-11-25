@@ -355,6 +355,50 @@ result         ammunition: { rounds: rounds - 1, loaded: false for a loading wea
 - **At a table:** counting rounds is the rule; a table may stop counting plain ammunition and count
   only the special rounds, by leaving out the `ammunition` input for plain ones. [A]
 
+## Elemental rounds
+
+Owner request, 2026-11-18 (GD_S17_04). An **elemental round** is an ammunition row with a
+`burst_radius`: a bolt or a bullet that strikes as the weapon does and then bursts like a grenade,
+but at the weapon's damage instead of a grenade's fixed dice. The burst is a rule of the row
+(`burst_radius`, `damage_type`, `effects`), read by `combat`, so a module's rounds and the Bound
+Ammunition of GD_S17_11 reuse it. [A]
+
+```
+combat input   round      core:ammunition/<key>: the round fired; its damage_type replaces the
+                          weapon's, and its effects land on a hit that is not evaded
+               burst      { distance, crit }: with a bursting round, this defender is caught in the
+                          burst, not the shot's target: an area roll; distance over the radius is
+                          outside; crit is the shot's crit, which doubles the burst's damage too
+refused        a round that is no ammunition row; a burst with a round that does not burst, or
+               with no round; a round with a grenade
+```
+
+- **The shot** is a normal `single` attack at the target, with the weapon's skill, range, and every
+  attack modifier. On a hit the target takes the weapon's damage roll and bonuses as the element.
+- **The burst**, hit or miss, catches every other creature within `burst_radius` of the target:
+  each is one `combat` call with `burst`, the area roll of its own, and the **same damage roll** as
+  the shot's. On a miss the target is in the burst too, as `burst.distance` 0. [A]
+- **Bonuses carry:** the damage is the weapon's (its roll, its attribute modifier, its weapon
+  effects), and a critical shot's multiplier carries to every creature the burst hits. A burst roll
+  that would crit on its own does not double the damage again, and does not hit through the bands. [A]
+- **Riders:** the round's `effects` land on each creature the burst hits that does not evade, as a
+  grenade's do; they need the `grenade` channel (`CHANNEL_REQUIREMENTS`, `ammunition_burst`).
+- **Phase:** the element is a damage type, whose `phase_<phase>` tag gives the shot its phase for
+  the five-phase cycles; the round adds no field for it. [A]
+- **Which weapons:** bolts and bullets only. Bows keep precise single-target arrows; the
+  blunderbuss's scatter burst along its cone is GD_S17_08's. [A]
+
+| Round | Kind | Bundle | Element | Burst radius | On a hit |
+| --- | --- | --- | --- | --- | --- |
+| Fire Bolts, Fire Bullets | bolt, bullet | 5 | fire | 1 | `burn` |
+| Frost Bolts, Frost Bullets | bolt, bullet | 5 | frost | 1 | `slow` |
+| Thunder Bolts, Thunder Bullets | bolt, bullet | 5 | thunder | 2 | `stagger` |
+| Acid Bolts, Acid Bullets | bolt, bullet | 5 | acid | 1 | `sunder_armor` |
+
+A round costs about three times its flask (a bundle of 5 at 120 gold, thunder 180). They are meant
+for merchants and loot from level 6; loot tables cannot list an ammunition row yet, and merchants
+have no level gate, so that is left to its own issue. [U]
+
 ## Grenades
 
 Owner request, 2026-11-18 (GD_S17_03). A **grenade** is a consumable of type `grenade`, delivery

@@ -202,3 +202,30 @@ class TestGrenades(unittest.TestCase):
                 "smoke_pot": (None, 2),
             },
         )
+
+    def test_a_bursting_round_needs_grenade_riders_and_a_bolt_or_a_bullet(self):
+        rows = [
+            {"key": "fire_arrows", "type": "ammunition", "ammunition": {"kind": "arrow", "count": 5, "damage_type": "fire", "burst_radius": 1, "effects": []}},
+            {"key": "fire_bolts", "type": "ammunition", "ammunition": {"kind": "bolt", "count": 5, "damage_type": "fire", "burst_radius": 1, "effects": [{"effect": "core:effect/burn"}]}},
+        ]
+        self.assertEqual(
+            validate.burst_problems(rows, {"core:effect/burn": {"spell"}}),
+            [
+                "ammunition fire_arrows bursts, but only bolts and bullets do (docs/core/combat.md#elemental-rounds)",
+                "ammunition fire_bolts: effect core:effect/burn lacks the grenade channel",
+            ],
+        )
+
+    def test_the_eight_elemental_rounds_of_the_spec(self):
+        rows = json.loads((DATA / "equipment" / "ammunition.json").read_text())["equipment"]
+        rounds = {
+            row["key"]: (row["ammunition"]["kind"], row["ammunition"]["damage_type"], row["ammunition"]["burst_radius"], row["ammunition"]["count"])
+            for row in rows
+            if "burst_radius" in row["ammunition"]
+        }
+        expected = {}
+        for kind in ("bolt", "bullet"):
+            for element, radius in (("fire", 1), ("frost", 1), ("thunder", 2), ("acid", 1)):
+                expected[f"{element}_{kind}s"] = (kind, element, radius, 5)
+        self.assertEqual(rounds, expected)
+        self.assertEqual(validate.check_grenades(), [])

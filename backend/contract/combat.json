@@ -150,6 +150,21 @@
         "required": ["rounds"],
         "additionalProperties": false
       },
+      "round": {
+        "type": "string",
+        "pattern": "^core:ammunition/[a-z][a-z0-9_]*$",
+        "description": "The ammunition row fired: its damage_type replaces damage.type and its effects land on a hit that is not evaded; a row with a burst_radius bursts (docs/core/combat.md#elemental-rounds)."
+      },
+      "burst": {
+        "type": "object",
+        "description": "With a bursting round: this defender is caught in the burst, not the shot's target. An area roll; distance over the round's burst_radius is outside; crit is the shot's, and doubles the burst's damage.",
+        "properties": {
+          "distance": { "type": "integer", "minimum": 0, "description": "Squares from the target; 0 is the target, caught after a miss." },
+          "crit": { "type": "boolean", "description": "Whether the shot crit. Default false." }
+        },
+        "required": ["distance"],
+        "additionalProperties": false
+      },
       "summoning": {
         "type": "boolean",
         "description": "Whether the attacker has an active summon (not a minion), for its while_summoning modifiers. Default false; the beside_summon situation implies true (docs/core/modifier.md)."
@@ -312,7 +327,7 @@
         "items": {
           "type": "object"
         },
-        "description": "With a maneuver, a rider, or a grenade: its applied effects on a hit, empty on a miss or an evade. With a save, they land only when the defender fails it."
+        "description": "With a maneuver, a rider, a grenade, or a round with effects: its applied effects on a hit, empty on a miss or an evade. With a save, they land only when the defender fails it."
       },
       "events": {
         "type": "array",

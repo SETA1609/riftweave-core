@@ -96,6 +96,20 @@ type Input struct {
 	// squares from its burst point to this defender (docs/core/combat.md#grenades, GD_S17_03).
 	Grenade       string `json:"grenade"`
 	BurstDistance int64  `json:"burst_distance"`
+	// Round is the core:ammunition/<key> row fired, and Burst, with a bursting round, this
+	// defender caught in its burst (docs/core/combat.md#elemental-rounds, GD_S17_04).
+	Round string `json:"round"`
+	Burst *Burst `json:"burst"`
+
+	// burstCrit is set inside a burst: the shot's crit, which alone doubles the burst's damage.
+	burstCrit *bool
+}
+
+// Burst is a defender caught in an elemental round's burst: its squares from the target, and
+// whether the shot crit.
+type Burst struct {
+	Distance int64 `json:"distance"`
+	Crit     bool  `json:"crit"`
 }
 
 // besideSummon is the situation of a summon attacking the same target, so one is out.
@@ -357,8 +371,79 @@ const (
 // and a loading weapon must hold one (docs/core/combat.md#ammunition).
 func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	if input.Grenade != "" {
+		if input.Round != "" {
+			return Result{}, errors.New("a grenade is thrown, not fired with a round")
+		}
 		return throwGrenade(ruleset, input)
 	}
+	if input.Round == "" {
+		if input.Burst != nil {
+			return Result{}, errors.New("a burst needs a bursting round")
+		}
+		return fire(ruleset, input)
+	}
+	round, found := ruleset.Rounds[input.Round]
+	if !found {
+		return Result{}, fmt.Errorf("%s is not an ammunition row", input.Round)
+	}
+	if input.Burst != nil && round.BurstRadius == 0 {
+		return Result{}, fmt.Errorf("%s does not burst", input.Round)
+	}
+	if round.DamageType != "" {
+		input.Damage.Type = round.DamageType
+	}
+	var burst *Burst = input.Burst
+	input.Round, input.Burst = "", nil
+	if burst != nil {
+		if burst.Distance > round.BurstRadius {
+			var none []json.RawMessage = []json.RawMessage{}
+			return Result{Outcome: outside, HitPoints: input.Defender.HitPoints, Effects: &none}, nil
+		}
+		var crit bool = burst.Crit
+		input.Delivery, input.burstCrit = areaDelivery, &crit
+	}
+	result, err := fire(ruleset, input)
+	if err != nil {
+		return Result{}, err
+	}
+	if len(round.Effects) > 0 || burst != nil {
+		var effects []json.RawMessage
+		if result.Effects != nil {
+			effects = *result.Effects
+		}
+		if result.Outcome == "hit" && !result.Evaded {
+			for _, applied := range round.Effects {
+				encoded, err := json.Marshal(appliedEffectJSON(applied))
+				if err != nil {
+					return Result{}, err
+				}
+				effects = append(effects, encoded)
+			}
+		}
+		if effects == nil {
+			effects = []json.RawMessage{}
+		}
+		result.Effects = &effects
+	}
+	return result, nil
+}
+
+// rolledCrit is the roll's own crit, which carries the attack through the bands; in a burst it
+// counts for nothing (docs/core/combat.md#elemental-rounds).
+func rolledCrit(input *Input, attack resolution.Result) bool {
+	return input.burstCrit == nil && slices.Contains(attack.Tags, "crit")
+}
+
+// damageCrit is whether the damage doubles: the roll's crit, or in a burst the shot's.
+func damageCrit(input *Input, rolled bool) bool {
+	if input.burstCrit != nil {
+		return *input.burstCrit
+	}
+	return rolled
+}
+
+// fire is one attack that may spend a round (docs/core/combat.md#ammunition).
+func fire(ruleset *data.Ruleset, input Input) (Result, error) {
 	var properties []string = input.Attacker.WeaponProperties
 	if input.Ammunition == nil || !(slices.Contains(properties, propertyAmmunition) || slices.Contains(properties, propertyThrown)) {
 		return strike(ruleset, input)
@@ -461,7 +546,7 @@ func strike(ruleset *data.Ruleset, input Input) (Result, error) {
 	var result Result = Result{
 		Target:      attack.Target,
 		Margin:      attack.Margin,
-		Critical:    slices.Contains(attack.Tags, "crit"),
+		Critical:    rolledCrit(&input, attack),
 		EvasionRate: evasionRate,
 		BlockRate:   blockRate,
 	}
@@ -575,6 +660,7 @@ func strike(ruleset *data.Ruleset, input Input) (Result, error) {
 		}
 	}
 	pierce = min(pierce, 100)
+	result.Critical = damageCrit(&input, result.Critical)
 	if result.Critical {
 		if amount, err = pipeline.CriticalDamage.Evaluate(nil, formula.Variable{Name: "damage", Value: amount}); err != nil {
 			return Result{}, err

@@ -6138,5 +6138,545 @@
     "expect": {
       "error": "a grenade is thrown without a maneuver, a called shot, or ammunition"
     }
+  },
+  {
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "loading"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "round": "core:ammunition/fire_bolts",
+    "name": "elemental round: a Fire bolt that hits deals the weapon's roll as fire (no DR), burn lands, and one bolt is spent",
+    "ammunition": {
+      "rounds": 5,
+      "loaded": true
+    },
+    "expect": {
+      "outcome": "hit",
+      "target": 72,
+      "margin": 32,
+      "crit": false,
+      "evaded": false,
+      "damage": 8,
+      "hp": 22,
+      "effects": [
+        {
+          "effect": "core:effect/burn",
+          "magnitude": 3,
+          "duration": 10
+        }
+      ],
+      "ammunition": {
+        "rounds": 4,
+        "loaded": false
+      }
+    }
+  },
+  {
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "loading"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "round": "core:ammunition/fire_bolts",
+    "name": "elemental round: a creature beside the target, in the burst, takes its own area roll and the same damage roll as fire, and burn",
+    "burst": {
+      "distance": 1
+    },
+    "expect": {
+      "outcome": "hit",
+      "target": 72,
+      "margin": 32,
+      "evaded": false,
+      "damage": 8,
+      "hp": 22,
+      "effects": [
+        {
+          "effect": "core:effect/burn",
+          "magnitude": 3,
+          "duration": 10
+        }
+      ]
+    }
+  },
+  {
+    "attacker": {
+      "skill": 72,
+      "roll": 80,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "loading"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "round": "core:ammunition/fire_bolts",
+    "name": "elemental round: a Fire bolt that misses deals the target nothing as a shot",
+    "expect": {
+      "outcome": "miss",
+      "damage": 0,
+      "hp": 30,
+      "effects": []
+    }
+  },
+  {
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "loading"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "round": "core:ammunition/fire_bolts",
+    "name": "elemental round: after the miss the target is still caught in the burst (distance 0), at its area roll",
+    "burst": {
+      "distance": 0
+    },
+    "expect": {
+      "outcome": "hit",
+      "damage": 8,
+      "hp": 22,
+      "effects": [
+        {
+          "effect": "core:effect/burn",
+          "magnitude": 3,
+          "duration": 10
+        }
+      ]
+    }
+  },
+  {
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "loading"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "round": "core:ammunition/fire_bolts",
+    "name": "elemental round: a creature past the burst radius is outside: no roll, no damage",
+    "burst": {
+      "distance": 2
+    },
+    "expect": {
+      "outcome": "outside",
+      "damage": 0,
+      "hp": 30,
+      "effects": []
+    }
+  },
+  {
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "loading"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "round": "core:ammunition/fire_bolts",
+    "name": "elemental round: the shot's crit carries to the burst, doubling the damage",
+    "burst": {
+      "distance": 1,
+      "crit": true
+    },
+    "expect": {
+      "outcome": "hit",
+      "crit": true,
+      "damage": 16,
+      "hp": 14,
+      "effects": [
+        {
+          "effect": "core:effect/burn",
+          "magnitude": 3,
+          "duration": 10
+        }
+      ]
+    }
+  },
+  {
+    "attacker": {
+      "skill": 72,
+      "roll": 3,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "loading"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "round": "core:ammunition/fire_bolts",
+    "name": "elemental round: a burst roll that would crit on its own does not double the damage",
+    "burst": {
+      "distance": 1
+    },
+    "expect": {
+      "outcome": "hit",
+      "crit": false,
+      "damage": 8,
+      "hp": 22
+    }
+  },
+  {
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "loading"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "round": "core:ammunition/thunder_bolts",
+    "name": "elemental round: a Thunder bolt's burst reaches 2 squares; thunder bypasses armor, and stagger lands",
+    "burst": {
+      "distance": 2
+    },
+    "expect": {
+      "outcome": "hit",
+      "damage": 8,
+      "hp": 22,
+      "effects": [
+        {
+          "effect": "core:effect/stagger",
+          "duration": 4
+        }
+      ]
+    }
+  },
+  {
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0,
+        "per": 7
+      },
+      "weapon_properties": [
+        "ammunition",
+        "loading"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 5,
+      "type": "piercing",
+      "ability": "per"
+    },
+    "range": "ranged",
+    "round": "core:ammunition/fire_bullets",
+    "name": "flask against bullet: a Fire bullet from a pistol adds the weapon's PER modifier (+2 at PER 7) to the roll of 5",
+    "expect": {
+      "outcome": "hit",
+      "damage": 7,
+      "hp": 23,
+      "effects": [
+        {
+          "effect": "core:effect/burn",
+          "magnitude": 3,
+          "duration": 10
+        }
+      ]
+    }
+  },
+  {
+    "name": "flask against bullet: the Fire Flask's roll of 5 stays 5 from the same PER 7 thrower",
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0,
+        "per": 7
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 5
+    },
+    "grenade": "core:consumable/fire_flask",
+    "delivery": "area",
+    "burst_distance": 0,
+    "expect": {
+      "outcome": "hit",
+      "damage": 5,
+      "hp": 25,
+      "effects": [
+        {
+          "effect": "core:effect/burn",
+          "magnitude": 3,
+          "duration": 10
+        }
+      ]
+    }
+  },
+  {
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "loading"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "round": "core:ammunition/nope",
+    "name": "elemental round: a round that is no ammunition row is refused",
+    "expect": {
+      "error": "core:ammunition/nope is not an ammunition row"
+    }
+  },
+  {
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "loading"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "round": "core:ammunition/crossbow_bolts",
+    "name": "elemental round: a plain bolt does not burst",
+    "burst": {
+      "distance": 1
+    },
+    "expect": {
+      "error": "core:ammunition/crossbow_bolts does not burst"
+    }
+  },
+  {
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "loading"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "name": "elemental round: a burst needs the round",
+    "burst": {
+      "distance": 1
+    },
+    "expect": {
+      "error": "a burst needs a bursting round"
+    }
+  },
+  {
+    "name": "a grenade is not fired with a round",
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 5
+    },
+    "grenade": "core:consumable/fire_flask",
+    "delivery": "area",
+    "round": "core:ammunition/fire_bolts",
+    "expect": {
+      "error": "a grenade is thrown, not fired with a round"
+    }
   }
 ]

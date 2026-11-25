@@ -2097,6 +2097,13 @@ export interface operations {
                         /** @description The carried weapon's properties, which a maneuver may need. */
                         weapon_properties?: string[];
                     };
+                    /** @description With a bursting round: this defender is caught in the burst, not the shot's target. An area roll; distance over the round's burst_radius is outside; crit is the shot's, and doubles the burst's damage. */
+                    burst?: {
+                        /** @description Whether the shot crit. Default false. */
+                        crit?: boolean;
+                        /** @description Squares from the target; 0 is the target, caught after a miss. */
+                        distance: number;
+                    };
                     /** @description With a grenade: squares from the burst point to this defender; over the grenade's radius, the outcome is outside. Default 0. */
                     burst_distance?: number;
                     /** @description A called_shots key in ruleset/data/combat/situations.json. */
@@ -2151,6 +2158,8 @@ export interface operations {
                      * @enum {string}
                      */
                     range?: "melee" | "ranged";
+                    /** @description The ammunition row fired: its damage_type replaces damage.type and its effects land on a hit that is not evaded; a row with a burst_radius bursts (docs/core/combat.md#elemental-rounds). */
+                    round?: string;
                     /** @description Keys in ruleset/data/combat/situations.json the caller names (cover, flanking, into melee). */
                     situations?: components["schemas"]["key"][];
                     /** @description Whether the attacker has an active summon (not a minion), for its while_summoning modifiers. Default false; the beside_summon situation implies true (docs/core/modifier.md). */
@@ -2180,7 +2189,7 @@ export interface operations {
                         counter?: boolean;
                         crit: boolean;
                         damage: number;
-                        /** @description With a maneuver, a rider, or a grenade: its applied effects on a hit, empty on a miss or an evade. With a save, they land only when the defender fails it. */
+                        /** @description With a maneuver, a rider, a grenade, or a round with effects: its applied effects on a hit, empty on a miss or an evade. With a save, they land only when the defender fails it. */
                         effects?: Record<string, never>[];
                         evaded: boolean;
                         /** @description The evasion band: a margin under it is evaded. */

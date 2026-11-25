@@ -370,6 +370,7 @@ classDiagram
     class combat_input {
         object ammunition
         object attacker
+        object burst
         integer burst_distance
         key called_shot
         object damage
@@ -380,6 +381,7 @@ classDiagram
         key maneuver
         modifiers modifiers
         enum range
+        string round
         List~key~ situations
         boolean summoning
     }
