@@ -1,0 +1,12 @@
+#### PO_S27_01_indexeddb-theory-and-storage-issues A theory page on IndexedDB, and the storage issues
+- Status: review
+- Priority: high
+- Needs: —
+- Modified: 2026-11-25
+- Do: Owner request, 2026-11-25: how can we use IndexedDB and data-oriented design effectively in the project; push a theory doc for IndexedDB with the sources, how we should use it effectively, and the what, for what, and why.
+  - **The page:** `docs/theory/indexeddb.md`, from the W3C specification, MDN, web.dev, and the Chrome team: what IndexedDB is, what it promises and where it breaks, what data-oriented design means for it and for the Go core, and the stores the web app should have, each with what, for what, and why, and ten rules with their reasons.
+  - **The issues:** story S27, with the upgrade path, the append-only save log, the roster's summary store, and a measured column index for the catalog. FE_S25_05, FE_S25_06, and FE_S25_07 need the S27 store they write to.
+- Keys: `docs/theory/indexeddb.md`, story S27
+- Files: ~14 (docs/theory/indexeddb.md, docs/stories/S27-browser-storage.md, the S27 issue files, docs/issues/open/FE_S25_05, FE_S25_06, FE_S25_07, docs/stories/S25-character-roster-and-creation-flow.md, docs/stories/README.md, ROADMAP.md, AGENTS.md, docs/backend/frontend.md, the decision, the changelog fragment)
+- See: docs/theory/indexeddb.md, frontend/src/app/saves.ts, frontend/src/app/characters.ts
+- Done when: the page names a source for each claim about IndexedDB, it is linked from AGENTS.md and docs/backend/frontend.md, and the S27 issues pass `roadmap-order check`.

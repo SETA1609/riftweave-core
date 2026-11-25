@@ -1,0 +1,15 @@
+#### FE_S27_02_versioned-storage-upgrades Versioned IndexedDB upgrades, tabs, failures, and persistent storage (frontend)
+- Status: todo
+- Priority: high
+- Needs: —
+- Modified: 2026-11-25
+- Do: Every later store change runs on data the page did not write, on devices that may hold any older version, so the upgrade path comes first (docs/theory/indexeddb.md#the-stores-and-what-for-what-and-why).
+  - **One opener per database** (`riftweave`, `riftweave-characters`): `onupgradeneeded` is a `switch` on `oldVersion` with one case per step (0 to 1 creates today's store, unchanged), falling through to the newest. A step that moves data uses a `strict` transaction.
+  - **Other tabs:** every connection closes on `versionchange` and the page says "Riftweave was updated in another tab: reload"; an open that is `blocked` says to close the other tabs.
+  - **Failures:** every write handles `QuotaExceededError`, private browsing, and an aborted transaction with a message the person can act on (export now), and the page keeps working from memory.
+  - **Persistent storage:** the first time a character is saved, from that click, `navigator.storage.persist()` is asked once; the settings page shows whether storage is persistent and `navigator.storage.estimate()`'s usage.
+  - **Tests:** `fake-indexeddb` as a dev dependency in Vitest: open each database at version 1 with today's records and upgrade it; the records survive. A second connection gets `versionchange` and closes.
+- Keys: the database openers; `storage.persist`
+- Files: ~10 (frontend/src/app/storage.ts and storage.md, its spec, frontend/src/app/saves.ts, frontend/src/app/characters.ts, frontend/src/app/settings page, frontend/package.json, frontend/src/locales/*.json, docs/backend/frontend.md)
+- See: docs/theory/indexeddb.md
+- Done when: the Vitest specs upgrade both databases from version 1 with records in them, and a second tab's connection closes on the upgrade; a Playwright spec saves a character and the settings page shows the storage state.

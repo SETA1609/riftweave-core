@@ -1,7 +1,7 @@
 #### FE_S25_05_creation-flow-page Character creation as a step-by-step flow (frontend)
 - Status: todo
 - Priority: high
-- Needs: BE_S25_03_creation-flow-steps, FE_S08_12_back-on-every-screen
+- Needs: BE_S25_03_creation-flow-steps, FE_S08_12_back-on-every-screen, FE_S27_04_character-summary-store
 - Modified: 2026-11-24
 - Do: Owner request, 2026-11-24: creation is a page flow, one step after the other or in groups, in an order that makes sense, and the character is saved at the end. It replaces the one-page CV form of the dropped FE_S07_09_character-creation-cv-form.
   - **The flow** is the core's: the page reads creation `rules.flow` and draws its steps in that order, grouped as it says (a wide screen shows a group on one page; a phone, one step) [A]. A progress bar names each step and marks it done, with problems, or still to do, from `check`; a done step can be opened again.

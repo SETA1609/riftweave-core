@@ -1,0 +1,13 @@
+#### BE_S27_05_catalog-column-index A measured column index for catalog lists (backend)
+- Status: todo
+- Priority: medium
+- Needs: —
+- Modified: 2026-11-25
+- Do: The catalog and the bestiary filter and sort many rows by one field, the one place the core scans; there a struct of arrays pays, and nowhere else in the core (docs/theory/indexeddb.md#what-that-means-for-the-go-core-and-the-ruleset).
+  - **Measure first:** `BenchmarkCatalogList` filters and sorts each collection the way the compendium and the bestiary pages do (a level range, a type, a text search, a sort), in Go and through the WebAssembly build.
+  - **Then the index,** if a list is slower than the page needs: at load, per filterable field a typed slice in row order (levels as `int64`, types as small integers, lowered names), and per sort key the rows' order; a list scans one slice to row indexes and builds `map[string]any` rows only for the page it returns.
+  - **S24's rule:** keep it only if `go-benchmarks.yml` shows it no slower anywhere, and record the numbers in the decision either way.
+- Keys: `BenchmarkCatalogList`; the catalog's column index
+- Files: ~6 (backend/internal/catalog/catalog.go, its test, a bench test, docs/backend/api.md, docs/decisions/BE_S27_05_catalog-column-index.md, changes/BE_S27_05_catalog-column-index.md)
+- See: docs/theory/indexeddb.md#data-oriented-design, docs/stories/S24-go-refactor.md
+- Done when: the benchmark runs in CI's workflow, and the decision records the numbers and either the index with its speedup or why it was not kept.

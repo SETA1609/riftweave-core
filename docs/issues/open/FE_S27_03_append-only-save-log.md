@@ -1,0 +1,14 @@
+#### FE_S27_03_append-only-save-log An append-only save log: one record per step (frontend)
+- Status: todo
+- Priority: high
+- Needs: FE_S27_02_versioned-storage-upgrades
+- Modified: 2026-11-25
+- Do: Autosave puts the whole save record, the session's start, its full log, and its actor, after every step, so a game of n steps writes about n²/2 steps and clones the whole log on the page's thread each time (docs/theory/indexeddb.md#where-we-are-v-2026-11-25).
+  - **Stores** (database `riftweave`, version 2): `saves` keeps per game the id, the start, the step count, the current actor, the character id, and `changed_at`, with an index on `changed_at`; the new `steps` holds one record per step, keyed `[save_id, index]`.
+  - **Autosave** writes the step and the save's count and actor in one `relaxed` transaction; the list reads `saves` only; loading and replay read the steps by the key range of the save.
+  - **Upgrade 1 to 2** splits every existing save's log into `steps` in a `strict` transaction, then rewrites the save without its log.
+  - **Files do not change:** export joins the steps back into today's session JSON, and a backup file imports as before; `riftweave session` replays it unchanged.
+- Keys: the `steps` store; the save record without `log`
+- Files: ~8 (frontend/src/app/saves.ts, saves.md, saves.spec.ts, frontend/src/app/storage.ts, frontend/e2e/app.spec.ts, docs/backend/frontend.md)
+- See: docs/backend/frontend.md#saves, docs/backend/sessions.md
+- Done when: a spec plays 200 steps and each autosave writes one step record; a version 1 database with two saves upgrades and both replay to the same actor; an exported save is byte for byte what version 1 exported.

@@ -1,0 +1,2 @@
+### PO_S27_01_indexeddb-theory-and-storage-issues A theory page on IndexedDB, and the storage issues
+- Added: `docs/theory/indexeddb.md`, on IndexedDB (from the W3C specification, MDN, web.dev, and the Chrome team) and data-oriented design, with the stores the web app should have and why; and story S27, for versioned upgrades, an append-only save log, the roster's summary store, and a measured catalog column index.

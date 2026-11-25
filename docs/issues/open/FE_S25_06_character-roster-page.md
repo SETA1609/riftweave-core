@@ -1,7 +1,7 @@
 #### FE_S25_06_character-roster-page The character roster: saved characters tracked like the bestiary (frontend)
 - Status: todo
 - Priority: high
-- Needs: BE_S25_04_current-character-profile
+- Needs: BE_S25_04_current-character-profile, FE_S27_04_character-summary-store
 - Modified: 2026-11-24
 - Do: Owner request, 2026-11-24: like the bestiary, a place where we track our saved characters.
   - **The roster** is the character list of FE_S07_04 (IndexedDB, the sync rule) shown as the bestiary lists monsters: a card per character with its name, sex, race, background, level, and last change, and a mark on the current one (the profile).

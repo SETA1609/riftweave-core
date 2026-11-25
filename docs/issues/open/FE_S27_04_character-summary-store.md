@@ -1,0 +1,14 @@
+#### FE_S27_04_character-summary-store The roster's summary store and its indexes (frontend)
+- Status: todo
+- Priority: high
+- Needs: FE_S27_02_versioned-storage-upgrades
+- Modified: 2026-11-25
+- Do: The roster (FE_S25_06) lists, filters, and sorts characters; today the list is `getAll()` on full stored actors (docs/theory/indexeddb.md#the-stores-and-what-for-what-and-why).
+  - **Stores** (database `riftweave-characters`, version 2): the new `character_summaries` holds the id, name, lowercased name, sex, race, background, level, revision, and `changed_at`, with indexes on `name_lower`, `race`, `level`, `changed_at`, and `[race, level]`; the new one-record `profile` (BE_S25_04's shape) and `drafts` (one per creation draft) come in the same version, so FE_S25_05 and FE_S25_07 need no upgrade of their own.
+  - **One transaction:** saving, importing, or deleting a character writes `characters` and `character_summaries` together, and deleting the profile's character clears `profile` in it.
+  - **Reads:** a filter or a sort is an index query with a key range and a count; a full actor is read only when one is opened.
+  - **Upgrade 1 to 2** builds a summary for every saved character.
+- Keys: the `character_summaries`, `profile`, and `drafts` stores
+- Files: ~8 (frontend/src/app/characters.ts, characters.md, characters.spec.ts, frontend/src/app/storage.ts, frontend/src/app/character-list.ts, docs/backend/files.md, docs/backend/frontend.md)
+- See: docs/backend/files.md#the-character-list
+- Done when: a spec saves 500 characters and filters by race and a level range through the index without reading a full actor; an upgrade from version 1 builds the summaries; a failed write leaves neither store changed.
