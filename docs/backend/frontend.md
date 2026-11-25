@@ -89,6 +89,9 @@ steps match their vectors and the replay matches. [V 2026-11-14, by hand against
 
 ## Saves
 
+How the app should use IndexedDB, store by store, and why: [docs/theory/indexeddb.md](../theory/indexeddb.md)
+(story S27).
+
 A player's games live in their browser (APP-16), in two layers. [V 2026-11-16, `saves.spec.ts` and
 `e2e/app.spec.ts` over both transports]
 
