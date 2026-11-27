@@ -234,3 +234,50 @@ test('switching the language changes the play and character screens without a re
     await page.getByRole('menuitemradio', { name: 'English' }).click();
   }
 });
+
+test('the navbar stays on top while a long screen scrolls (FE_S08_17)', async ({ page }) => {
+  await page.setViewportSize({ width: 1024, height: 600 });
+  await page.goto('/#/play/character_creation');
+  const navbar = page.locator('rw-navbar');
+  await expect(navbar).toBeVisible();
+  // Make the screen longer than the window, then scroll to its end.
+  await page.locator('main').evaluate((main) => main.append(Object.assign(document.createElement('div'), { style: 'height: 3000px' })));
+  await page.mouse.wheel(0, 2500);
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(1000);
+  expect((await navbar.boundingBox())!.y).toBe(0);
+  await expect(navbar.getByRole('link', { name: 'Riftweave', exact: true })).toBeInViewport();
+});
+
+test('at 1024px the navbar shows its items inline; the GitHub link opens the repository (FE_S08_17)', async ({ page }) => {
+  await page.setViewportSize({ width: 1024, height: 768 });
+  await page.goto('/');
+  const navbar = page.getByRole('navigation', { name: 'Main' });
+  await expect(navbar.getByRole('button', { name: 'Menu' })).toBeHidden();
+  await expect(navbar.getByRole('button', { name: 'Language' })).toBeVisible();
+  const github = navbar.getByRole('link', { name: 'Riftweave on GitHub (opens in a new tab)' });
+  await expect(github).toBeVisible();
+  await expect(github).toHaveAttribute('href', 'https://github.com/SETA1609/riftweave-core');
+  await expect(github).toHaveAttribute('target', '_blank');
+  await expect(github).toHaveAttribute('rel', 'noopener');
+});
+
+test('at 375px the burger opens a dropdown with the language select, the theme toggle, and GitHub; Escape closes it (FE_S08_17)', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 700 });
+  await page.goto('/');
+  const navbar = page.getByRole('navigation', { name: 'Main' });
+  const github = navbar.getByRole('link', { name: 'Riftweave on GitHub (opens in a new tab)' });
+  const burger = navbar.getByRole('button', { name: 'Menu' });
+  await expect(github).toBeHidden();
+  await burger.click();
+  await expect(burger).toHaveAttribute('aria-expanded', 'true');
+  await expect(navbar.getByRole('button', { name: 'Language' })).toBeVisible();
+  await expect(navbar.locator('rw-theme-toggle button')).toBeVisible();
+  await expect(github).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(burger).toHaveAttribute('aria-expanded', 'false');
+  await expect(github).toBeHidden();
+  // A click outside closes it too.
+  await burger.click();
+  await page.locator('footer').click();
+  await expect(github).toBeHidden();
+});

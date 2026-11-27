@@ -27,6 +27,7 @@ import { Router } from '@angular/router';
 import { installDevConsole } from './dev-console';
 import { TextField } from './ui/text-field';
 import { ThemeToggle } from './ui/theme-toggle';
+import { Navbar, REPOSITORY_URL } from './ui/navbar';
 
 function render<T>(host: new () => T) {
   const fixture = TestBed.createComponent(host);
@@ -426,5 +427,52 @@ describe('the dev console (APP-48)', () => {
 
   it('is not on globalThis in a test build, where RIFTWEAVE_DEV is false', () => {
     expect('rw' in globalThis).toBe(false);
+  });
+});
+
+describe('the navbar (FE_S08_17)', () => {
+  function navbar() {
+    TestBed.configureTestingModule({ providers: [provideRouter(routes)] });
+    const fixture = TestBed.createComponent(Navbar);
+    fixture.detectChanges();
+    return { fixture, element: fixture.nativeElement as HTMLElement };
+  }
+
+  it('hold the home link, the language select, the theme toggle, and the GitHub link in a new tab', () => {
+    const { element } = navbar();
+    expect(element.querySelector('h1 a')!.getAttribute('href')).toBe('/');
+    const items = element.querySelector('.items')!;
+    expect(items.querySelector('rw-language-select')).not.toBeNull();
+    expect(items.querySelector('rw-theme-toggle')).not.toBeNull();
+    const github = items.querySelector<HTMLAnchorElement>('a.github')!;
+    expect([github.href, github.target, github.rel, github.getAttribute('aria-label')]).toEqual([REPOSITORY_URL, '_blank', 'noopener', 'Riftweave on GitHub (opens in a new tab)']);
+    expect(github.querySelector('svg')).not.toBeNull();
+  });
+
+  it('open the burger dropdown, and close it on Escape, which goes no further, and on a click outside', () => {
+    const { fixture, element } = navbar();
+    const burger = element.querySelector<HTMLButtonElement>('button.burger')!;
+    expect([burger.getAttribute('aria-expanded'), burger.getAttribute('aria-controls')]).toEqual(['false', 'rw-navbar-items']);
+    burger.click();
+    fixture.detectChanges();
+    expect(burger.getAttribute('aria-expanded')).toBe('true');
+    expect(element.querySelector('#rw-navbar-items')!.classList).toContain('open');
+
+    const reachedDocument = vi.fn();
+    document.addEventListener('keydown', reachedDocument);
+    burger.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    fixture.detectChanges();
+    expect(burger.getAttribute('aria-expanded')).toBe('false');
+    expect(reachedDocument).not.toHaveBeenCalled();
+    // Closed, Escape is free to go on (to the screen header's Back).
+    burger.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    expect(reachedDocument).toHaveBeenCalledTimes(1);
+    document.removeEventListener('keydown', reachedDocument);
+
+    burger.click();
+    fixture.detectChanges();
+    document.body.click();
+    fixture.detectChanges();
+    expect(burger.getAttribute('aria-expanded')).toBe('false');
   });
 });
