@@ -1,0 +1,12 @@
+#### PO_S00_11_json-schema-theory A theory page on JSON Schema: how it works, why, and for what
+- Status: review
+- Priority: high
+- Needs: —
+- Modified: 2026-11-27
+- Do: Owner request, 2026-11-27: a theory page on how JSON Schema works, why the ruleset uses it, and for what, with its source links.
+  - **The page:** `docs/theory/json-schema.md`, from the draft-07 specification (core and validation), the `jsonschema` and `referencing` documentation at the installed versions, and json-schema.org's overview and *Understanding JSON Schema*: what a schema, an instance, and a keyword are; why a ruleset that ships as data needs a contract; assertions, applicators, and annotations; `$id`, `$ref`, and why a URI is a name and not a download; how `validate.py` builds its store and registry; the draft-07 behaviours that surprise; what a schema cannot check; and rules for writing schemas here, each with its reason.
+  - **Links:** from AGENTS.md, next to the validation section and in the references.
+- Keys: `docs/theory/json-schema.md`
+- Files: ~6 (docs/theory/json-schema.md, AGENTS.md, docs/stories/S00-process-and-conventions.md, this issue, the decision, the changelog fragment)
+- See: ruleset/scripts/validate.py, ruleset/schemas/schema.json, docs/core/integrity.md
+- Done when: the page names a pinned source for each claim about JSON Schema or the libraries, the four draft-07 behaviours it warns about were run against the installed library, and it is linked from AGENTS.md.

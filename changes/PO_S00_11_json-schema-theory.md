@@ -1,0 +1,2 @@
+### PO_S00_11_json-schema-theory A theory page on JSON Schema: how it works, why, and for what
+- Added: `docs/theory/json-schema.md`, on JSON Schema (from the draft-07 specification, the `jsonschema` and `referencing` documentation, and json-schema.org): what it is, why the ruleset uses it, how validation and `$ref` work, how `validate.py` wires them, the draft-07 behaviours that surprise, what a schema cannot check, and rules for writing schemas here.
