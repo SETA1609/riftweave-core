@@ -1,5 +1,5 @@
 // See language-select.md.
-import { Component, ElementRef, computed, inject, signal } from '@angular/core';
+import { Component, ElementRef, computed, inject, input, signal } from '@angular/core';
 import { AppContext, LANGUAGES } from '../context';
 import { I18n } from '../i18n';
 import { TranslatePipe } from '../translate-pipe';
@@ -9,7 +9,7 @@ import { TranslatePipe } from '../translate-pipe';
   selector: 'rw-language-select',
   styleUrl: './language-select.css',
   templateUrl: './language-select.html',
-  host: { '(document:click)': 'outside($event)', '(keydown.escape)': 'open.set(false)' },
+  host: { '(document:click)': 'outside($event)', '(keydown.escape)': 'open.set(false)', '[class.compact]': 'compact()' },
 })
 export class LanguageSelect {
   readonly context = inject(AppContext);
@@ -17,6 +17,8 @@ export class LanguageSelect {
   private readonly element = inject<ElementRef<HTMLElement>>(ElementRef);
   readonly languages = LANGUAGES;
   readonly open = signal(false);
+  /** Show the language's code (EN) instead of its name, for a narrow bar. */
+  readonly compact = input(false);
   readonly current = computed(() => LANGUAGES.find((language) => language.value === this.i18n.language()) ?? LANGUAGES[0]);
 
   pick(code: string): void {

@@ -223,6 +223,9 @@
   "nav": {
     "label": "Main",
     "menu": "Menu",
-    "github": "Riftweave on GitHub (opens in a new tab)"
+    "github": "Riftweave on GitHub (opens in a new tab)",
+    "rules": "Rules {{version}}",
+    "playing": "Playing",
+    "github_short": "GitHub"
   }
 }

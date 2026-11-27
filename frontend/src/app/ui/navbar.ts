@@ -1,15 +1,21 @@
 // See navbar.md.
-import { Component, ElementRef, inject, signal } from '@angular/core';
+import { Component, ElementRef, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faCube } from '@fortawesome/free-solid-svg-icons';
+import { Saves } from '../saves';
 import { TranslatePipe } from '../translate-pipe';
 import { LanguageSelect } from './language-select';
+import { MENU, pathOf } from './menu-grid';
 import { ThemeToggle } from './theme-toggle';
 
 export const REPOSITORY_URL = 'https://github.com/SETA1609/riftweave-core';
-export const NAV_ITEMS_ID = 'rw-navbar-items';
+export const NAV_MENU_ID = 'rw-navbar-menu';
+export const MAIN_MENU = 'main';
+
+/** The rules this build ships (angular.json `define`). */
+declare const RIFTWEAVE_RULES_VERSION: string;
 
 @Component({
   imports: [FaIconComponent, LanguageSelect, RouterLink, ThemeToggle, TranslatePipe],
@@ -20,22 +26,33 @@ export const NAV_ITEMS_ID = 'rw-navbar-items';
 })
 export class Navbar {
   private readonly element = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly saves = inject(Saves);
   readonly github = faGithub;
   readonly bars = faBars;
+  readonly cube = faCube;
   readonly repository = REPOSITORY_URL;
-  readonly itemsId = NAV_ITEMS_ID;
-  /** Whether the burger's dropdown is open; on a wide screen the items show inline and this does nothing. */
+  readonly menuId = NAV_MENU_ID;
+  readonly rulesVersion = RIFTWEAVE_RULES_VERSION;
+  /** The main menu of backend/contract/menu.json, the same entries the home page shows. */
+  readonly links = MENU.filter((entry) => entry.parent === MAIN_MENU && !entry.issue).map((entry) => ({ key: entry.key, path: pathOf(entry.key) }));
+  /** The game in play, by its save's name; none before a game starts. */
+  readonly playing = computed(() => this.saves.current()?.name ?? null);
+  /** Whether the burger's menu is open; from 1024px the links show inline and the burger is hidden. */
   readonly open = signal(false);
 
   toggle(): void {
     this.open.update((open) => !open);
   }
 
+  close(): void {
+    this.open.set(false);
+  }
+
   outside(event: Event): void {
     if (!this.element.nativeElement.contains(event.target as Node)) this.open.set(false);
   }
 
-  /** Escape closes the dropdown, and goes no further while it was open. */
+  /** Escape closes the menu, and goes no further while it was open. */
   escape(event: Event): void {
     if (!this.open()) return;
     this.open.set(false);
