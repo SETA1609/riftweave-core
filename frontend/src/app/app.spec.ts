@@ -17,6 +17,8 @@ import { routes } from './app.routes';
 import { Resolution } from './resolution';
 import { MODULE_IDS, SettingsScreens } from './settings-screens';
 import { MENU, MenuGrid, pathOf } from './ui/menu-grid';
+import { ScreenHeader, escapeIsTaken, keyOf, parentPath } from './ui/screen-header';
+import { ask, unsavedWorkGuard } from './unsaved-work-guard';
 import { SelectField } from './ui/select-field';
 import { Sheet } from './sheet';
 import { Spells } from './spells';
@@ -304,12 +306,10 @@ describe('the menus of backend/contract/menu.json', () => {
     expect(element.querySelector('[aria-disabled="true"]')).toBeNull();
   });
 
-  it('show the tools page and GM tools, each with Back to the menu above', () => {
-    expect(cards(menu('start'))).toEqual(['GM tools', 'Character creation', 'Spell creation', 'Skill resolution', 'Bestiary (FE_S08_06_bestiary-page)', 'Compendium (FE_S08_11_compendium-tables-page)', 'Saved games', 'Back']);
+  it('show the tools page and GM tools, with Back in the screen header (FE_S08_12)', () => {
+    expect(cards(menu('start'))).toEqual(['GM tools', 'Character creation', 'Spell creation', 'Skill resolution', 'Bestiary (FE_S08_06_bestiary-page)', 'Compendium (FE_S08_11_compendium-tables-page)', 'Saved games']);
     TestBed.resetTestingModule();
-    const gm = menu('gm_tools');
-    expect(cards(gm)).toEqual(['Resolve an attack', 'Encounter tracker (APP-34)', 'Playthrough', 'Back']);
-    expect(gm.querySelector('a.menu-card:last-child')!.getAttribute('href')).toBe('/play');
+    expect(cards(menu('gm_tools'))).toEqual(['Resolve an attack', 'Encounter tracker (APP-34)', 'Playthrough']);
   });
 
   it('have a route for every entry that is not pending', () => {
@@ -499,5 +499,78 @@ describe('the navbar (FE_S08_17)', () => {
     element.querySelector<HTMLAnchorElement>('#rw-navbar-menu a')!.click();
     fixture.detectChanges();
     expect(element.querySelector('#rw-navbar-menu')).toBeNull();
+  });
+});
+
+describe('the screen header (FE_S08_12)', () => {
+  it("send every route but the main menu back to its parent menu in menu.json, also by its URL alone", () => {
+    const backs = Object.fromEntries(routes.filter((route) => route.path !== '**').map((route) => [`/${route.path}`, parentPath(`/${route.path}`)]));
+    expect(backs['/']).toBeNull();
+    expect(backs['/play']).toBe('/');
+    expect(backs['/characters']).toBe('/');
+    expect(backs['/settings']).toBe('/');
+    expect(backs['/play/gm_tools']).toBe('/play');
+    expect(backs['/play/character_creation']).toBe('/play');
+    expect(backs['/play/attack']).toBe('/play/gm_tools');
+    expect(backs['/play/playthrough']).toBe('/play/gm_tools');
+    // A path with no menu entry goes to the menu its parent path names.
+    expect(parentPath('/play/no_such_tool')).toBe('/play');
+    expect(keyOf('/play/attack?x=1')).toBe('attack');
+    for (const [path, back] of Object.entries(backs)) {
+      if (path !== '/') expect(back, path).not.toBeNull();
+    }
+  });
+
+  it('show Back and the title on a screen, and nothing on the main menu', async () => {
+    TestBed.configureTestingModule({ providers: [provideRouter(routes), { provide: SAVE_STORE, useValue: memoryStore() }] });
+    const router = TestBed.inject(Router);
+    const fixture = TestBed.createComponent(ScreenHeader);
+    await router.navigateByUrl('/play/attack');
+    fixture.detectChanges();
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.querySelector('h2')!.textContent).toBe('Resolve an attack');
+    expect(element.querySelector('a.back')!.getAttribute('href')).toBe('/play/gm_tools');
+    await router.navigateByUrl('/');
+    fixture.detectChanges();
+    expect(element.querySelector('.screen-header')).toBeNull();
+  });
+
+  it('go back on Esc, unless a field or an open dialog has it', async () => {
+    TestBed.configureTestingModule({ providers: [provideRouter(routes), { provide: SAVE_STORE, useValue: memoryStore() }] });
+    const router = TestBed.inject(Router);
+    const fixture = TestBed.createComponent(ScreenHeader);
+    await router.navigateByUrl('/play/gm_tools');
+    fixture.detectChanges();
+    const field = document.createElement('input');
+    document.body.append(field);
+    expect(escapeIsTaken(field, document)).toBe(true);
+    field.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    await fixture.whenStable();
+    expect(router.url).toBe('/play/gm_tools');
+    document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    await fixture.whenStable();
+    expect(router.url).toBe('/play');
+    field.remove();
+  });
+
+  it('ask before leaving a screen with unsaved work, and not without', () => {
+    TestBed.configureTestingModule({ providers: [{ provide: API, useValue: fakeApi }] });
+    const confirm = vi.spyOn(ask, 'confirm').mockReturnValue(false);
+    const guard = (unsaved: boolean) => TestBed.runInInjectionContext(() => unsavedWorkGuard({ hasUnsavedWork: () => unsaved }, null as never, null as never, null as never));
+    expect(guard(false)).toBe(true);
+    expect(confirm).not.toHaveBeenCalled();
+    expect(guard(true)).toBe(false);
+    expect(confirm).toHaveBeenCalledWith(expect.stringContaining('Leave anyway?'));
+    confirm.mockRestore();
+  });
+
+  it('count edits to the character form as unsaved until a character is created from it', async () => {
+    TestBed.configureTestingModule({ providers: [{ provide: API, useValue: { ...fakeApi, newCharacter: async () => ({}), startSession: async () => ({ log: [] }) } }, { provide: SAVE_STORE, useValue: memoryStore() }] });
+    const sheet = TestBed.createComponent(Sheet).componentInstance;
+    expect(sheet.hasUnsavedWork()).toBe(false);
+    sheet.set('str', 8);
+    expect(sheet.hasUnsavedWork()).toBe(true);
+    await sheet.create();
+    expect(sheet.hasUnsavedWork()).toBe(false);
   });
 });

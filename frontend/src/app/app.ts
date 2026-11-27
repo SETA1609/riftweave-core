@@ -7,13 +7,14 @@ import { Saves } from './saves';
 import { TranslatePipe } from './translate-pipe';
 import { Alert } from './ui/alert';
 import { Navbar } from './ui/navbar';
+import { ScreenHeader } from './ui/screen-header';
 
 /** The rules this build ships: the release tag in the Pages build (angular.json `define`). */
 declare const RIFTWEAVE_RULES_VERSION: string;
 
 @Component({
   selector: 'rw-root',
-  imports: [RouterOutlet, Alert, Navbar, TranslatePipe],
+  imports: [RouterOutlet, Alert, Navbar, ScreenHeader, TranslatePipe],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })

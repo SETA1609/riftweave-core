@@ -227,5 +227,8 @@
     "rules": "Rules {{version}}",
     "playing": "Playing",
     "github_short": "GitHub"
+  },
+  "screen": {
+    "leave_unsaved": "The character form has changes no character was created from. Leave anyway?"
   }
 }

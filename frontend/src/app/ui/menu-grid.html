@@ -6,5 +6,4 @@
       <a class="card menu-card" [routerLink]="entry.path">{{ 'menu.' + entry.key | t }}</a>
     }
   }
-  @if (back(); as up) { <a class="card menu-card" [routerLink]="up">{{ 'menu.back' | t }}</a> }
 </nav>

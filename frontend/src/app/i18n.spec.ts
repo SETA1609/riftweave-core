@@ -125,7 +125,7 @@ describe('the language', () => {
     TestBed.inject(AppContext).locale.set('es');
     await fixture.whenStable();
     expect(element.textContent).toContain('Creación de personaje');
-    expect(element.textContent).toContain('Volver');
+    expect(element.textContent).toContain('Partidas guardadas');
     expect(document.documentElement.lang).toBe('es');
     expect(localStorage.getItem('riftweave.locale')).toBe('es');
   });

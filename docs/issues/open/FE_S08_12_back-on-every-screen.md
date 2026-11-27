@@ -1,8 +1,8 @@
 #### FE_S08_12_back-on-every-screen A Back button on every screen
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: —
-- Modified: 2026-11-19
+- Modified: 2026-11-27
 - Do: Owner request, 2026-11-19: every screen always has a way back. Today only a menu grid has **Back** (`frontend/src/app/ui/menu-grid.html`); a tool screen (character creation, skill resolution, attack, saved games, playthrough, settings) has none, and the browser's back is the only way out [V 2026-11-19, `app.routes.ts`].
   - **The rule** (as in the CLI, docs/backend/app-layout.md: Esc goes back one menu, and from a form or a screen to the menu that opened it): every screen but the main menu shows **Back** in the same place, in a shared screen header with the screen's title, and goes to its parent menu from the menu tree (`backend/contract/menu.json`), not to browser history, so a deep link still has a way back [A].
   - **Esc** does the same in the browser, unless a dialog or a field has focus.

@@ -1,0 +1,6 @@
+@if (back(); as up) {
+  <div class="screen-header">
+    <a class="btn btn-outline back" [routerLink]="up">{{ 'menu.back' | t }}</a>
+    <h2 class="title">{{ titleKey() | t }}</h2>
+  </div>
+}
