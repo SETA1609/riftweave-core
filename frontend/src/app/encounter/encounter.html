@@ -1,0 +1,92 @@
+<rw-card [title]="'encounter.combatants' | t">
+  @if (!started()) {
+    <div class="add">
+      @if (characterOptions().length) {
+        <rw-select-field [label]="'encounter.saved_character' | t" [options]="characterOptions()" [(value)]="pickedCharacter" />
+        <button type="button" class="btn btn-outline" (click)="addCharacter()">{{ 'encounter.add_character' | t }}</button>
+      } @else {
+        <p class="hint">{{ 'encounter.no_characters' | t }}</p>
+      }
+    </div>
+    <div class="add">
+      <rw-text-field [label]="'encounter.monster' | t" [(value)]="monster" />
+      <button type="button" class="btn btn-outline" (click)="addMonster()">{{ 'encounter.add_monster' | t }}</button>
+    </div>
+    <div class="add">
+      <rw-text-field [label]="'encounter.name' | t" [(value)]="name" />
+      <rw-number-field [label]="'encounter.initiative' | t" [(value)]="initiative" />
+      <rw-number-field [label]="'encounter.agi' | t" [min]="0" [(value)]="agi" />
+      <rw-number-field [label]="'encounter.lck' | t" [min]="0" [(value)]="lck" />
+      <button type="button" class="btn btn-outline" (click)="addAtTable()">{{ 'encounter.add_at_table' | t }}</button>
+    </div>
+  }
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">{{ 'encounter.name' | t }}</th>
+        <th scope="col">{{ 'encounter.initiative' | t }}</th>
+        <th scope="col">{{ 'encounter.agi' | t }}</th>
+        <th scope="col">{{ 'encounter.lck' | t }}</th>
+        <th scope="col">{{ 'encounter.surprise' | t }}</th>
+        <th scope="col">{{ 'encounter.hp' | t }}</th>
+        <th scope="col">{{ 'encounter.sp' | t }}</th>
+        <th scope="col">{{ 'encounter.mp' | t }}</th>
+        @if (!started()) {
+          <th scope="col"><span class="visually-hidden">{{ 'encounter.remove' | t }}</span></th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (combatant of combatants(); track combatant.id) {
+        <tr [attr.data-combatant]="combatant.id">
+          <td>{{ combatant.id }}</td>
+          <td>{{ combatant.initiative }}</td>
+          <td>{{ combatant.agi }}</td>
+          <td>{{ combatant.lck }}</td>
+          <td><input type="checkbox" [attr.aria-label]="('encounter.surprise' | t) + ' ' + combatant.id" [checked]="combatant.surprise" [disabled]="started()" (change)="update(combatant.id, 'surprise', $any($event.target).checked)" /></td>
+          <td><input class="form-control pool" type="number" [attr.aria-label]="('encounter.hp' | t) + ' ' + combatant.id" [value]="combatant.hp" (input)="update(combatant.id, 'hp', +$any($event.target).value)" /></td>
+          <td><input class="form-control pool" type="number" [attr.aria-label]="('encounter.sp' | t) + ' ' + combatant.id" [value]="combatant.sp" (input)="update(combatant.id, 'sp', +$any($event.target).value)" /></td>
+          <td><input class="form-control pool" type="number" [attr.aria-label]="('encounter.mp' | t) + ' ' + combatant.id" [value]="combatant.mp" (input)="update(combatant.id, 'mp', +$any($event.target).value)" /></td>
+          @if (!started()) {
+            <td><button type="button" class="btn btn-outline btn-sm" (click)="remove(combatant.id)">{{ 'encounter.remove' | t }}</button></td>
+          }
+        </tr>
+      } @empty {
+        <tr><td colspan="9">{{ 'encounter.no_combatants' | t }}</td></tr>
+      }
+    </tbody>
+  </table>
+
+  @if (!session()) {
+    <p class="hint">{{ 'encounter.unsaved' | t }}</p>
+  }
+  <div class="actions">
+    @if (started()) {
+      <button type="button" class="btn btn-outline" (click)="reset()">{{ 'encounter.new_fight' | t }}</button>
+    } @else {
+      <button type="button" class="btn btn-primary" [disabled]="!combatants().length" (click)="start()">{{ 'encounter.start' | t }}</button>
+    }
+  </div>
+  <rw-alert [message]="error()" />
+</rw-card>
+
+@if (fight(); as shown) {
+  <rw-card [title]="'encounter.initiative_order' | t">
+    <p class="round" data-round>{{ (shown.encounter.round === 0 ? 'encounter.surprise_round' : 'encounter.round') | t: { round: shown.encounter.round } }}</p>
+    <ol class="order">
+      @for (entry of order(); track entry.id) {
+        <li [class.current]="entry.current" [class.acted]="entry.acted" [attr.aria-current]="entry.current ? 'step' : null" [attr.data-order]="entry.id">{{ entry.id }}</li>
+      }
+    </ol>
+    <p data-current>{{ 'encounter.current' | t: { id: shown.current.id } }}
+      @if (turnStart() === 'surprise') {
+        <span class="tag">{{ 'encounter.start_surprise' | t }}</span>
+      } @else if (turnStart() === 'combat') {
+        <span class="tag">{{ 'encounter.start_combat' | t }}</span>
+      }
+    </p>
+    <p data-next>{{ 'encounter.next' | t: { id: shown.next } }}</p>
+    <button type="button" class="btn btn-primary" (click)="endTurn()">{{ 'encounter.end_turn' | t }}</button>
+  </rw-card>
+}

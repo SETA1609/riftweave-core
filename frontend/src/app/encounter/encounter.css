@@ -1,0 +1,11 @@
+:host { display: grid; gap: var(--space-3); }
+.add, .actions { display: flex; gap: var(--space-2); align-items: end; flex-wrap: wrap; margin-bottom: var(--space-2); }
+.hint { margin: var(--space-1) 0; color: var(--muted); }
+.table { overflow-x: auto; display: block; }
+.pool { width: 5rem; }
+.order { padding-left: var(--space-3); }
+.order li { padding: var(--space-1) 0; }
+.order .current { font-weight: 600; }
+.order .acted { color: var(--muted); }
+.tag { margin-left: var(--space-1); padding: 0 var(--space-1); border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.875rem; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
