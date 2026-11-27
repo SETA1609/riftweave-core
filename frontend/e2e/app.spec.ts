@@ -212,3 +212,25 @@ test('the spell editor loads fire_bolt, flags a broken ref as you type, and down
   expect(file.$schema).toBe('../../schemas/spell.schema.json');
   expect(file.spells.map((spell) => spell.key)).toEqual(['fire_bolt']);
 });
+
+test('switching the language changes the play and character screens without a reload (FE_S11_04)', async ({ page }) => {
+  const screens: [string, string, string][] = [
+    ['/#/play/character_creation', 'Compute stats', 'Werte berechnen'],
+    ['/#/play/skill_resolution', 'roll for me', 'für mich würfeln'],
+    ['/#/play/attack', 'Defender', 'Verteidiger'],
+    ['/#/play/saved_games', 'Download a backup to keep a game safe', 'Lade eine Sicherung herunter'],
+    ['/#/characters', 'Import a character file', 'Charakterdatei importieren'],
+    ['/#/import', 'Open file', 'Datei öffnen'],
+  ];
+  for (const [path, english, german] of screens) {
+    await page.goto(path);
+    await expect(page.getByText(english).first(), path).toBeVisible();
+    await page.getByRole('button', { name: 'Language' }).click();
+    await page.getByRole('menuitemradio', { name: 'Deutsch' }).click();
+    await expect(page.getByText(german).first(), path).toBeVisible();
+    await expect(page.getByText(english)).toHaveCount(0);
+    // Back to English for the next screen.
+    await page.getByRole('button', { name: 'Sprache' }).click();
+    await page.getByRole('menuitemradio', { name: 'English' }).click();
+  }
+});
