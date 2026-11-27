@@ -219,5 +219,10 @@
     "keep_saved": "Den gespeicherten Charakter behalten",
     "drop_before": "oder lege eine",
     "drop_after": "Datei hier ab"
+  },
+  "nav": {
+    "label": "Hauptnavigation",
+    "menu": "Menü",
+    "github": "Riftweave auf GitHub (öffnet in einem neuen Tab)"
   }
 }

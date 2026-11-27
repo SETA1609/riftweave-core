@@ -219,5 +219,10 @@
     "keep_saved": "Keep the saved character",
     "drop_before": "or drop a",
     "drop_after": "file here"
+  },
+  "nav": {
+    "label": "Main",
+    "menu": "Menu",
+    "github": "Riftweave on GitHub (opens in a new tab)"
   }
 }

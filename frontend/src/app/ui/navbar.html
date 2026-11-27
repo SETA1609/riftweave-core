@@ -1,0 +1,13 @@
+<nav class="navbar" [attr.aria-label]="'nav.label' | t">
+  <h1 class="brand"><a routerLink="/">Riftweave</a></h1>
+  <button type="button" class="btn btn-outline btn-sm burger" [attr.aria-label]="'nav.menu' | t" [attr.aria-expanded]="open()" [attr.aria-controls]="itemsId" (click)="toggle()">
+    <fa-icon [icon]="bars" />
+  </button>
+  <div class="items" [id]="itemsId" [class.open]="open()">
+    <rw-language-select />
+    <rw-theme-toggle />
+    <a class="btn btn-outline btn-sm github" [href]="repository" target="_blank" rel="noopener" [attr.aria-label]="'nav.github' | t" [title]="'nav.github' | t">
+      <fa-icon [icon]="github" />
+    </a>
+  </div>
+</nav>
