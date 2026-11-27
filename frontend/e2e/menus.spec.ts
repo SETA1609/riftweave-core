@@ -22,9 +22,62 @@ test('the app opens on the home page, and Start opens the tools', async ({ page 
   await gm.getByRole('link', { name: 'Resolve an attack' }).click();
   await expect(page.getByRole('button', { name: 'Resolve' })).toBeVisible();
   await page.goBack();
-  await menu(page, 'GM tools').getByRole('link', { name: 'Back' }).click();
-  await menu(page, 'Start').getByRole('link', { name: 'Back' }).click();
+  await back(page).click();
+  await expect(menu(page, 'Start')).toBeVisible();
+  await back(page).click();
   await expect(menu(page, 'Riftweave')).toBeVisible();
+  await expect(back(page)).toHaveCount(0);
+});
+
+/** The screen header's Back (FE_S08_12). */
+const back = (page: Page) => page.getByRole('link', { name: 'Back', exact: true });
+
+test('every screen shows its title and Back, which goes to its parent menu, also when opened by its URL (FE_S08_12)', async ({ page }) => {
+  const screens: [string, string, string, string][] = [
+    ['/play', 'Start', '/', 'Riftweave'],
+    ['/characters', 'Characters', '/', 'Riftweave'],
+    ['/settings', 'Settings', '/', 'Riftweave'],
+    ['/modules', 'Modules', '/', 'Riftweave'],
+    ['/network', 'Network', '/', 'Riftweave'],
+    ['/import', 'Import', '/', 'Riftweave'],
+    ['/play/gm_tools', 'GM tools', '/play', 'Start'],
+    ['/play/character_creation', 'Character creation', '/play', 'Start'],
+    ['/play/skill_resolution', 'Skill resolution', '/play', 'Start'],
+    ['/play/spell_creation', 'Spell creation', '/play', 'Start'],
+    ['/play/saved_games', 'Saved games', '/play', 'Start'],
+    ['/play/attack', 'Resolve an attack', '/play/gm_tools', 'GM tools'],
+    ['/play/playthrough', 'Playthrough', '/play/gm_tools', 'GM tools'],
+  ];
+  for (const [path, title, parent, parentMenu] of screens) {
+    await page.goto(`/#${path}`);
+    await expect(page.locator('rw-screen-header').getByRole('heading', { level: 2 }), path).toHaveText(title);
+    await back(page).click();
+    await expect(page, path).toHaveURL(new RegExp(`#${parent.replace(/\//g, '\\/')}$`));
+    await expect(menu(page, parentMenu), path).toBeVisible();
+  }
+});
+
+test('Esc goes back one menu, but not from a field (FE_S08_12)', async ({ page }) => {
+  await page.goto('/#/play/skill_resolution');
+  await page.getByLabel('value', { exact: true }).focus();
+  await page.keyboard.press('Escape');
+  await expect(page).toHaveURL(/#\/play\/skill_resolution$/);
+  await page.getByLabel('value', { exact: true }).blur();
+  await page.keyboard.press('Escape');
+  await expect(menu(page, 'Start')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(menu(page, 'Riftweave')).toBeVisible();
+});
+
+test('character creation asks before leaving with changes no character was made from (FE_S08_12)', async ({ page }) => {
+  await page.goto('/#/play/character_creation');
+  await page.getByLabel('str', { exact: true }).fill('8');
+  page.once('dialog', (dialog) => dialog.dismiss());
+  await back(page).click();
+  await expect(page).toHaveURL(/#\/play\/character_creation$/);
+  page.once('dialog', (dialog) => dialog.accept());
+  await back(page).click();
+  await expect(menu(page, 'Start')).toBeVisible();
 });
 
 test('every tool route renders', async ({ page }) => {
