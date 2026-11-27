@@ -1,0 +1,14 @@
+#### BE_S11_07_localized-printouts Printouts in the reader's language: a locale for the print command
+- Status: todo
+- Priority: medium
+- Needs: BE_S11_05_shared-locale-catalogs
+- Modified: 2026-11-27
+- Do: Owner request, 2026-11-27: a PDF export is the browser's print of the `print` command's page (docs/backend/print.md), and the same Go code builds that page on the server, in the agent CLI, and as WebAssembly in the page [V 2026-11-27, print.md]. So a printout is localized once, in the Go core, for every app.
+  - **The input:** `print` takes an optional `locale` (`en`, `de`, or `es`; English when absent or not offered), and the page sets `<html lang>`.
+  - **The page's words** (headings, labels, column names, the `@page` running text) come from the shared catalogs through `internal/i18n` (BE_S11_05), under `print.*`. Numbers and the ruleset's own labels and descriptions stay as the core and the data give them; localizing content is its own issue.
+  - **The frontend** passes the viewer's language at its print call sites (the sheet and the character list), a change of a line each.
+  - The `data-` attributes the tests read do not change, so a test of the numbers reads every language.
+- Keys: `print` input `locale`; `print.*` catalog keys
+- Files: ~10 (backend/contract/print.json, backend/core/print.go and its test, the print MCP tool's description, backend/contract/locales/en.json, de.json, es.json, frontend/src/app/files.ts, docs/backend/print.md, docs/decisions/BE_S11_07_localized-printouts.md, changes/BE_S11_07_localized-printouts.md)
+- See: docs/backend/print.md, docs/issues/open/BE_S11_05_shared-locale-catalogs.md, docs/stories/S21-generated-srd.md
+- Done when: a sheet, a spell, a monster, and a condition print in en, de, and es with every word of the page from the catalogs; an absent or unknown locale prints English; the numbers' `data-` attributes are the same in every language; the Go tests and the frontend's print e2e pass.

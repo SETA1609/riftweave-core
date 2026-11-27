@@ -1,0 +1,14 @@
+#### FE_S11_06_frontend-own-i18n-reader The frontend's own catalog reader in place of i18next, with plurals
+- Status: todo
+- Priority: medium
+- Needs: BE_S11_05_shared-locale-catalogs
+- Modified: 2026-11-27
+- Do: Owner request, 2026-11-27: the frontend uses little of i18next (a key lookup, `{{name}}` placeholders, and the English fallback), which costs about 16 KB of the about 129 KB the app transfers on first load [V 2026-11-27, `i18next` 26.7.2 bundled and minified with esbuild, gzip -9: 16,113 bytes; `ng build` initial total: 128.96 kB transfer]. Replace it with a reader of its own over the shared catalogs of BE_S11_05, which does what the Go reader does.
+  - **The reader:** `I18n` in `src/app/i18n.ts` keeps its shape (`translate(key, values)`, the `language` signal, `<html lang>`), so the `t` pipe, `Said`, and every template stay as they are. A lookup walks the nested key; `{{name}}` takes its value; a missing key falls back to English, then to the key.
+  - **Plurals:** a key with a `count` value reads `<key>_<form>`, the form from the browser's `Intl.PluralRules` (CLDR, the same rules as the Go reader), so `saves.steps` says "1 step" and "2 steps" [V 2026-11-27: it says "1 steps" today]. Add the `_one` and `_other` keys where a count is shown.
+  - **The same answers as Go:** a Vitest spec runs every case of `ruleset/tests/vectors/i18n.json`.
+  - **Remove** `i18next` from `package.json`, and record the size after in the decision.
+- Keys: `I18n.translate`, `<key>_one` / `<key>_other`
+- Files: ~8 (frontend/src/app/i18n.ts, i18n.md, i18n.spec.ts, frontend/package.json, package-lock.json, the catalogs' plural keys, docs/backend/frontend.md#languages, docs/decisions/FE_S11_06_frontend-own-i18n-reader.md, changes/FE_S11_06_frontend-own-i18n-reader.md)
+- See: docs/backend/frontend.md#languages, docs/issues/open/BE_S11_05_shared-locale-catalogs.md
+- Done when: `i18next` is gone from `package.json`; the reader passes every case of `i18n.json`; a count shows its plural form in en, de, and es; the Vitest and Playwright specs pass over both transports; the decision records the bundle size before and after.
