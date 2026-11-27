@@ -3,6 +3,7 @@
 // (TranslatedTitle in i18n.ts), except the game's name.
 import type { Routes } from '@angular/router';
 import { Attack } from './attack';
+import { Encounter } from './encounter/encounter';
 import { CharacterList } from './character-list';
 import { FileImport } from './file-import';
 import { Playthrough } from './playthrough';
@@ -28,5 +29,6 @@ export const routes: Routes = [
   { path: 'play/saved_games', component: SavedGames, title: 'menu.saved_games' },
   { path: 'play/attack', component: Attack, title: 'menu.attack' },
   { path: 'play/playthrough', component: Playthrough, title: 'menu.playthrough' },
+  { path: 'play/encounter_tracker', component: Encounter, title: 'menu.encounter_tracker' },
   { path: '**', redirectTo: '' },
 ];
