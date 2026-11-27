@@ -1,6 +1,6 @@
 #### BE_S20_03_custom-monster-editor-cli Build and save a custom monster in the CLI and the TUI (backend)
 - Status: todo
-- Priority: medium
+- Priority: high
 - Needs: GD_S20_02_custom-monster-rules, BE_S09_07_custom-monster-print
 - Modified: 2026-11-23
 - Do: Owner request, 2026-11-20: the backend half of building a custom monster (`GD_S20_02_custom-monster-rules`). BE_S09_07 adds the `monster` file kind and the GM's custom monster list, to print them; this issue writes them.
