@@ -1,8 +1,8 @@
 #### FE_S22_02_design-tokens-and-fonts The design guide's tokens and fonts in styles.css
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: FE_S22_01_design-guide-and-issues
-- Modified: 2026-11-23
+- Modified: 2026-11-27
 - Do: Replace the Bootstrap palette in `frontend/src/styles.css` with the tokens of the design guide (docs/design/README.md#tokens), dark and light, under the same `data-theme` rules as now.
   - **Colors:** the surface, text, primary, secondary, tertiary, and danger tokens; the nine color hues and the five phase hues as `--color-<color>` and `--phase-<phase>`. The tokens the components use today (`--body`, `--body-bg`, `--primary`, `--border`, …) keep their names and take the new values, so no screen breaks [A].
   - **Light mode:** the guide's light set; check every text and background pair reaches WCAG AA (4.5:1, 3:1 for large text) and adjust a value that does not, in the guide too.

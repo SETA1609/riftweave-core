@@ -10,3 +10,12 @@ This product is dual-licensed (see LICENSING.md):
 
 "Riftweave" is the name of this project. The licenses above do not grant rights
 to use the project name or any associated marks (see LICENSING.md § Trademark).
+
+Third-party fonts bundled with the web app (frontend/), each under the SIL Open
+Font License, Version 1.1 (https://openfontlicense.org), whose full text ships in
+the package:
+
+  - Space Grotesk, Copyright 2020 The Space Grotesk Project Authors
+    (https://github.com/floriankarsten/space-grotesk), from @fontsource/space-grotesk.
+  - JetBrains Mono, Copyright 2020 The JetBrains Mono Project Authors
+    (https://github.com/JetBrains/JetBrainsMono), from @fontsource/jetbrains-mono.
