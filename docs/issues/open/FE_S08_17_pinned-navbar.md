@@ -1,8 +1,8 @@
 #### FE_S08_17_pinned-navbar A navbar pinned on top, with a burger menu on mobile
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: FE_S11_01_frontend-i18next
-- Modified: 2026-11-22
+- Modified: 2026-11-27
 - Do: Owner request, 2026-11-22: the app's header becomes a navbar.
   - **Pinned on top:** it stays at the top of the viewport while the page scrolls (`position: sticky`, so content is not hidden under it) [A].
   - **What it holds:** the game's name as the link home, the language select (`rw-language-select`, FE_S11_01), the theme toggle (`rw-theme-toggle`), and a link to the GitHub repository (https://github.com/SETA1609/riftweave-core) with the GitHub icon (`faGithub` from `@fortawesome/free-brands-svg-icons`, beside the free solid set FE_S11_01 adds), opening in a new tab (`rel="noopener"`), with a localized `aria-label`.
