@@ -1,6 +1,6 @@
 # Frontend
 
-Modified: 2026-11-23
+Modified: 2026-11-27
 
 `frontend/` is an Angular app over the core (APP-07): through the HTTP API ([api.md](api.md)), or
 through the Go core compiled to WebAssembly in the page, so it can be served as a static site with
@@ -271,6 +271,12 @@ and `e2e/app.spec.ts` over both transports]
   `{{version}}` in it. The `t` pipe (`src/app/translate-pipe.ts`) is not pure, and the language
   signal it reads re-renders the view, so a switch changes every string without a reload. In code,
   `I18n.translate(key, values)` inside a `computed` does the same.
+- **Messages a screen sets** (a notice, an error) are a `Said`, `{ key, values }` (`i18n.ts`), and
+  the template shows it with `said | t`, so a message already on screen follows a switch too.
+  Words from the core or a store (a refusal's reason) go in as a value, as they came (FE_S11_04).
+- **Abbreviations** of the game (`str`, `LCK`, `HP`, `d100`) are keys under `abbr.*`, the same in
+  every language today, so a language may keep or change them. A command or a file name shown as
+  code (`riftweave export`, `.riftweave.json`) is a named constant, not a word.
 - **Page titles.** A route's `title` is a key, shown by `TranslatedTitle` in the viewer's language.
 - **The select.** `rw-language-select` (`src/app/ui/language-select`) in the header lists the
   languages by their own names (English, Deutsch, Español), from `LANGUAGES` in `context.ts`.
@@ -281,8 +287,8 @@ and `e2e/app.spec.ts` over both transports]
 - **Checked by tests.** `i18n.spec.ts` fails when a key of `en.json` is missing from another
   language (or a language has a key `en.json` lacks), when a menu entry has no key, and when a
   template shows a literal word or a written-out `label`, `title`, `message`, `placeholder`,
-  `aria-label`, or `alt`. The game's name is the one word allowed. The screens
-  `FE_S11_04_frontend-screen-strings` still moves to keys are listed in the spec's `PENDING`.
+  `aria-label`, or `alt`. The game's name is the one word allowed. Every template is checked;
+  `PENDING` is empty since FE_S11_04. [V 2026-11-27]
 
 **Who reviews a language** (owner decision, 2026-11-15): the owner reviews German and Spanish. Any
 contributor may add a language, or change one other than those two, in a pull request that adds
