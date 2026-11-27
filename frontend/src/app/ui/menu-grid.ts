@@ -40,5 +40,4 @@ export class MenuGrid {
   readonly title = computed(() => titleOf(this.parent()));
   /** The menu's name as a locale key; the main menu is the game's name, which is not translated. */
   readonly titleKey = computed(() => (this.parent() === 'main' ? titleOf('main') : `menu.${this.parent()}`));
-  readonly back = computed(() => (this.parent() === 'main' ? null : pathOf(MENU.find((entry) => entry.key === this.parent())?.parent ?? 'main')));
 }

@@ -227,5 +227,8 @@
     "rules": "Regeln {{version}}",
     "playing": "Im Spiel",
     "github_short": "GitHub"
+  },
+  "screen": {
+    "leave_unsaved": "Das Charakterformular hat Änderungen, aus denen noch kein Charakter erstellt wurde. Trotzdem verlassen?"
   }
 }

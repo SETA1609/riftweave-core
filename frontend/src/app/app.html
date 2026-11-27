@@ -3,7 +3,7 @@
   @switch (state()) {
     @case ('starting') { <rw-alert kind="info" [message]="'app.starting' | t" /> }
     @case ('failed') { <rw-alert [message]="'app.failed' | t: { reason: failure() }" /> }
-    @default { <router-outlet /> }
+    @default { <rw-screen-header /><router-outlet /> }
   }
 </main>
 <footer>{{ 'app.rules' | t: { version: rulesVersion } }}</footer>

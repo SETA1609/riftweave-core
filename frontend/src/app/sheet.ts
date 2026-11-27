@@ -32,10 +32,18 @@ export class Sheet {
   readonly keys = KEYS;
   readonly attributes = signal<Attributes>({ str: 6, per: 5, end: 6, int: 5, wil: 4, agi: 5, cha: 4, lck: 5 });
   readonly level = signal(1);
+  /** The form as it was when the page opened or a character was last created from it. */
+  private readonly kept = signal(JSON.stringify([this.attributes(), this.level()]));
+  /** Whether the form holds edits no character was created from (unsaved-work-guard.ts). */
+  readonly unsaved = computed(() => JSON.stringify([this.attributes(), this.level()]) !== this.kept());
   readonly stats = signal<Record<string, unknown> | null>(null);
   /** The game in play: the one just created, or the save a reload resumed. */
   readonly session = computed(() => this.saves.current()?.session ?? null);
   readonly error = signal('');
+
+  hasUnsavedWork(): boolean {
+    return this.unsaved();
+  }
 
   set(key: Key, value: number): void {
     this.attributes.update((current) => ({ ...current, [key]: value }));
@@ -49,6 +57,7 @@ export class Sheet {
     await this.run(async () => {
       const session = await this.api.startSession(await this.api.newCharacter(this.attributes()));
       await this.saves.begin(`Character ${new Date().toLocaleString()}`, session);
+      this.kept.set(JSON.stringify([this.attributes(), this.level()]));
     });
   }
 

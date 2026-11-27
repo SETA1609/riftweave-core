@@ -12,6 +12,7 @@ import { SettingsScreens } from './settings-screens';
 import { Sheet } from './sheet';
 import { Spells } from './spells';
 import { MenuGrid } from './ui/menu-grid';
+import { unsavedWorkGuard } from './unsaved-work-guard';
 
 export const routes: Routes = [
   { path: '', component: MenuGrid, data: { parent: 'main' }, title: 'Riftweave' },
@@ -22,7 +23,7 @@ export const routes: Routes = [
   { path: 'import', component: FileImport, title: 'menu.import' },
   { path: 'play', component: MenuGrid, data: { parent: 'start' }, title: 'menu.start' },
   { path: 'play/gm_tools', component: MenuGrid, data: { parent: 'gm_tools' }, title: 'menu.gm_tools' },
-  { path: 'play/character_creation', component: Sheet, title: 'menu.character_creation' },
+  { path: 'play/character_creation', component: Sheet, title: 'menu.character_creation', canDeactivate: [unsavedWorkGuard] },
   { path: 'play/skill_resolution', component: Resolution, title: 'menu.skill_resolution' },
   { path: 'play/spell_creation', component: Spells, title: 'menu.spell_creation' },
   { path: 'play/saved_games', component: SavedGames, title: 'menu.saved_games' },
