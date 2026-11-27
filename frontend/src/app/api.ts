@@ -25,6 +25,13 @@ export type ResolutionInput = Input<'/v1/commands/resolution'>;
 export type ResolutionResult = Output<'/v1/commands/resolution'>;
 export type AuthorInput = Input<'/v1/commands/author'>;
 export type AuthorResult = Output<'/v1/commands/author'>;
+export type CatalogInput = Input<'/v1/commands/catalog'>;
+export type CatalogResult = Output<'/v1/commands/catalog'>;
+export type BestiaryInput = Input<'/v1/commands/bestiary'>;
+export type BestiaryResult = Output<'/v1/commands/bestiary'>;
+export type MonsterSheetInput = Input<'/v1/commands/monster_sheet'>;
+export type MonsterSheetResult = Output<'/v1/commands/monster_sheet'>;
+export type KnowledgeMark = components['schemas']['knowledge_mark'];
 
 /** One POST of the API: its path and body in, its result out, or an Error with the refusal. */
 export interface Transport {
@@ -113,6 +120,12 @@ export function createApi(over: Transport | string) {
     checkActor: (actor: StoredActor) => post('/v1/commands/stored_actor', { actor }),
     /** Check spell drafts as the author command does (APP-10). */
     author: (input: AuthorInput) => post('/v1/commands/author', input),
+    /** List, filter, and read the rows of a collection (the catalog command, BE_S08_10). */
+    catalog: (input: CatalogInput) => post('/v1/commands/catalog', input),
+    /** Mark what the players know of a monster, or view the bestiary as the GM or a player (BE_S08_05). */
+    bestiary: (input: BestiaryInput) => post('/v1/commands/bestiary', input),
+    /** A monster's derived stats and skills from its row (the monster_sheet command). */
+    monsterSheet: (input: MonsterSheetInput) => post('/v1/commands/monster_sheet', input),
 
     startSession: async (start: StoredActor): Promise<Session> => (await post('/v1/sessions', { start })).session,
     step: (session: Session, step: SessionStep) => post('/v1/sessions/step', { session, step }),
