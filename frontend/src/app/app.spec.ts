@@ -7,6 +7,8 @@ import { API } from './api';
 import { Alert } from './ui/alert';
 import { AppContext } from './context';
 import { Attack } from './attack';
+import { CHARACTER_STORE, memoryCharacterStore } from './characters';
+import { Encounter, monsterRef, startInput, uniqueId } from './encounter/encounter';
 import { Card } from './ui/card';
 import { KeyValueList } from './ui/key-value-list';
 import { NumberField } from './ui/number-field';
@@ -118,7 +120,40 @@ const fakeApi = {
     if (input.operation === 'effects') return { effects: [{ ref: 'core:effect/damage_fire', row: { key: 'damage_fire', label: 'Fire Damage' } }] };
     return { spells: (input.spells ?? []).map((row) => ({ key: row.key, row, problems: [], warnings: [], cost: { mana: 6, cast_threshold: 6, craft_threshold: 8 } })) };
   },
+  catalog: async (input: { operation: string; ref?: string }) => {
+    sent.push({ command: 'catalog', input });
+    return { row: { ref: input.ref, source: 'core', row: { key: 'skeleton', label: 'Skeleton', level: 1, attributes: { agi: 4, lck: 3 }, skills: { blades: 30 } } } };
+  },
+  monsterSheet: async (input: unknown) => { sent.push({ command: 'monster_sheet', input }); return { hp: 30, mp: 5, sp: 20, ap: 3, carry: 50, initiative: 9, skills: {}, maneuvers: [], riders: [] }; },
+  encounter: async (input: { operation: string; combatants?: { id: string; initiative: number }[]; encounter?: { round: number; order: string[]; turn: number; acted: string[]; surprise: string[] } }) => {
+    sent.push({ command: 'encounter', input });
+    if (encounterTies > 0) { encounterTies--; throw new Error('a and b tie: roll off again'); }
+    return fakeFight(input);
+  },
+  step: async (session: { log: unknown[] }, step: { input: Parameters<typeof fakeFight>[0] }) => {
+    sent.push({ command: 'step', input: step });
+    return { session: { ...session, log: [...session.log, step] }, result: fakeFight(step.input.operation === 'turn_end' ? { ...step.input, encounter: lastFight } : step.input) };
+  },
 };
+
+/** How many starts the fake encounter refuses as a tie before it answers. */
+let encounterTies = 0;
+let lastFight: { round: number; order: string[]; turn: number; acted: string[]; surprise: string[] } | undefined;
+
+/** The fake encounter: the highest initiative first, and a turn_end moves to the next, then the next round. */
+function fakeFight(input: { operation: string; combatants?: { id: string; initiative: number }[]; encounter?: typeof lastFight }) {
+  let state = input.encounter!;
+  if (input.operation === 'start') {
+    const order = [...input.combatants!].sort((a, b) => b.initiative - a.initiative).map((one) => one.id);
+    state = { round: 1, order, turn: 0, acted: [], surprise: [] };
+  } else {
+    const acted = [...state.acted, state.order[state.turn]];
+    state = state.turn + 1 < state.order.length ? { ...state, turn: state.turn + 1, acted } : { ...state, round: state.round + 1, turn: 0, acted };
+  }
+  lastFight = state;
+  const current = state.order[state.turn];
+  return { encounter: state, current: { id: current, ...(state.acted.includes(current) ? {} : { start: 'combat' }) }, next: state.order[(state.turn + 1) % state.order.length] };
+}
 
 /** fire_bolt as spells/core.json writes it, which the fake author loads. */
 const FIRE_BOLT = { key: 'fire_bolt', label: 'Fire Bolt', description: 'Hurl a mote of fire at a target.', color: 'red', level: 1, delivery: 'single',
@@ -308,7 +343,7 @@ describe('the menus of backend/contract/menu.json', () => {
     expect(cards(menu('start'))).toEqual(['GM tools', 'Character creation', 'Spell creation', 'Skill resolution', 'Bestiary (FE_S08_06_bestiary-page)', 'Compendium (FE_S08_11_compendium-tables-page)', 'Saved games', 'Back']);
     TestBed.resetTestingModule();
     const gm = menu('gm_tools');
-    expect(cards(gm)).toEqual(['Resolve an attack', 'Encounter tracker (APP-34)', 'Playthrough', 'Back']);
+    expect(cards(gm)).toEqual(['Resolve an attack', 'Encounter tracker', 'Playthrough', 'Back']);
     expect(gm.querySelector('a.menu-card:last-child')!.getAttribute('href')).toBe('/play');
   });
 
@@ -499,5 +534,90 @@ describe('the navbar (FE_S08_17)', () => {
     element.querySelector<HTMLAnchorElement>('#rw-navbar-menu a')!.click();
     fixture.detectChanges();
     expect(element.querySelector('#rw-navbar-menu')).toBeNull();
+  });
+});
+
+describe('the encounter tracker (FE_S08_08)', () => {
+  beforeEach(() => {
+    encounterTies = 0;
+    TestBed.configureTestingModule({ providers: [{ provide: API, useValue: fakeApi }, { provide: SAVE_STORE, useValue: memoryStore() }, { provide: CHARACTER_STORE, useValue: memoryCharacterStore() }] });
+  });
+
+  async function opened() {
+    const fixture = TestBed.createComponent(Encounter);
+    fixture.detectChanges();
+    await fixture.componentInstance.ready;
+    fixture.detectChanges();
+    return { fixture, page: fixture.componentInstance, element: fixture.nativeElement as HTMLElement };
+  }
+
+  function atTable(page: Encounter, name: string, initiative: number) {
+    page.name.set(name);
+    page.initiative.set(initiative);
+    page.addAtTable();
+  }
+
+  it('name each combatant once, read a monster key as a core ref, and send the start the contract takes', () => {
+    expect(uniqueId('Wolf', ['Wolf', 'Wolf 2'])).toBe('Wolf 3');
+    expect(uniqueId('  ', [])).toBe('combatant');
+    expect(monsterRef('skeleton')).toBe('core:monster/skeleton');
+    expect(monsterRef('module:wuxing/monster/fox')).toBe('module:wuxing/monster/fox');
+    expect(startInput([
+      { id: 'Ana', source: 'table', initiative: 12, agi: 6, lck: 5, surprise: true, hp: 0, sp: 0, mp: 0, rolls: [40] },
+    ])).toEqual({ operation: 'start', combatants: [{ id: 'Ana', initiative: 12, agi: 6, lck: 5, rolls: [40], surprise: true }] });
+  });
+
+  it("add a monster with its sheet's initiative and pools, and anyone at the table by their sheet", async () => {
+    const { page } = await opened();
+    await page.addMonster('skeleton');
+    atTable(page, 'Ana', 12);
+    expect(sent.slice(0, 2).map((call) => [call.command, call.input])).toEqual([
+      ['catalog', { operation: 'get', collection: 'monsters', ref: 'core:monster/skeleton' }],
+      ['monster_sheet', { monster: { attributes: { agi: 4, lck: 3 }, skills: { blades: 30 }, level: 1 } }],
+    ]);
+    expect(page.combatants().map(({ id, initiative, agi, lck, hp }) => [id, initiative, agi, lck, hp])).toEqual([['Skeleton', 9, 4, 3, 30], ['Ana', 12, 5, 5, 0]]);
+  });
+
+  it('start the fight with a roll-off kept in the step, then end turns round to round', async () => {
+    const { fixture, page, element } = await opened();
+    atTable(page, 'Ana', 12);
+    atTable(page, 'Bo', 15);
+    await page.start(() => 40);
+    expect(sent.at(-1)).toEqual({ command: 'encounter', input: { operation: 'start', combatants: [
+      { id: 'Ana', initiative: 12, agi: 5, lck: 5, rolls: [40] }, { id: 'Bo', initiative: 15, agi: 5, lck: 5, rolls: [40] },
+    ] } });
+    fixture.detectChanges();
+    expect(Array.from(element.querySelectorAll('[data-order]')).map((item) => item.textContent!.trim())).toEqual(['Bo', 'Ana']);
+    expect(element.querySelector('[data-current]')!.textContent).toContain('first turn');
+    await page.endTurn();
+    await page.endTurn();
+    expect(page.fight()!.encounter.round).toBe(2);
+    expect(page.fight()!.current).toEqual({ id: 'Bo' });
+  });
+
+  it('roll off again while the rolls do not break a tie', async () => {
+    const { page } = await opened();
+    atTable(page, 'Ana', 12);
+    atTable(page, 'Bo', 12);
+    encounterTies = 1;
+    const rolls = [40, 40, 10, 70];
+    await page.start(() => rolls.shift()!);
+    expect(sent.filter((call) => call.command === 'encounter').map((call) => (call.input as ReturnType<typeof startInput>).combatants!.map((one) => one.rolls))).toEqual([[[40], [40]], [[40, 10], [40, 70]]]);
+    expect(page.fight()).not.toBeNull();
+    expect(page.error()).toBe('');
+  });
+
+  it('run the fight as encounter steps of the game in play, and let the session fill a turn_end', async () => {
+    const saves = TestBed.inject(Saves);
+    saves.current.set(await saves.begin('Mara', { rules_version: 'test', ruleset: {}, start: {}, log: [], actor: { attributes: {}, level: 1 } } as never));
+    const { page } = await opened();
+    atTable(page, 'Ana', 12);
+    await page.start(() => 40);
+    await page.endTurn();
+    expect(sent.filter((call) => call.command === 'step').map((call) => call.input)).toEqual([
+      { command: 'encounter', input: { operation: 'start', combatants: [{ id: 'Ana', initiative: 12, agi: 5, lck: 5, rolls: [40] }] } },
+      { command: 'encounter', input: { operation: 'turn_end' } },
+    ]);
+    expect(saves.current()!.session.log).toHaveLength(2);
   });
 });

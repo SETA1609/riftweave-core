@@ -18,7 +18,7 @@ test('the app opens on the home page, and Start opens the tools', async ({ page 
   await expect(tools.getByText('Bestiary (FE_S08_06_bestiary-page)')).toHaveAttribute('aria-disabled', 'true');
   await tools.getByRole('link', { name: 'GM tools' }).click();
   const gm = menu(page, 'GM tools');
-  await expect(gm.getByText('Encounter tracker (APP-34)')).toHaveAttribute('aria-disabled', 'true');
+  await expect(gm.getByRole('link', { name: 'Encounter tracker', exact: true })).toBeVisible();
   await gm.getByRole('link', { name: 'Resolve an attack' }).click();
   await expect(page.getByRole('button', { name: 'Resolve' })).toBeVisible();
   await page.goBack();
