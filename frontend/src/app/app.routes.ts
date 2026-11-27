@@ -3,6 +3,7 @@
 // (TranslatedTitle in i18n.ts), except the game's name.
 import type { Routes } from '@angular/router';
 import { Attack } from './attack';
+import { Bestiary } from './bestiary/bestiary';
 import { CharacterList } from './character-list';
 import { FileImport } from './file-import';
 import { Playthrough } from './playthrough';
@@ -27,6 +28,7 @@ export const routes: Routes = [
   { path: 'play/spell_creation', component: Spells, title: 'menu.spell_creation' },
   { path: 'play/saved_games', component: SavedGames, title: 'menu.saved_games' },
   { path: 'play/attack', component: Attack, title: 'menu.attack' },
+  { path: 'play/bestiary', component: Bestiary, title: 'menu.bestiary' },
   { path: 'play/playthrough', component: Playthrough, title: 'menu.playthrough' },
   { path: '**', redirectTo: '' },
 ];

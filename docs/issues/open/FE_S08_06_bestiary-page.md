@@ -1,8 +1,8 @@
 #### FE_S08_06_bestiary-page A bestiary, and the GM decides what the players know (frontend)
-- Status: todo
+- Status: review
 - Priority: high
 - Needs: BE_S08_05_bestiary-knowledge-cli, APP-26, APP-27
-- Modified: 2026-11-21
+- Modified: 2026-11-27
 - Was: APP-29
 - Do: Frontend half, split by role on 2026-11-18 (PO_S00_01_issue-splitting-by-role): the Angular screens of `BE_S08_05_bestiary-knowledge-cli` and their UX, over the same commands and session steps, built from the shared components (docs/backend/frontend.md#conventions). The behaviour, the keys, and the rules are specified in `BE_S08_05_bestiary-knowledge-cli`; this issue adds no contract or core change.
 - Keys: the frontend screen and its route; no new contract keys

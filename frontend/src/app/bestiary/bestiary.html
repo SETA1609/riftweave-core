@@ -1,0 +1,90 @@
+<rw-card [title]="'bestiary.title' | t">
+  <div class="filters">
+    <rw-text-field [label]="'bestiary.words' | t" [value]="filter().text" (valueChange)="setFilter('text', $event)" />
+    <rw-text-field [label]="'bestiary.type' | t" [value]="filter().type" (valueChange)="setFilter('type', $event)" />
+    <rw-text-field [label]="'bestiary.phase' | t" [value]="filter().phase" (valueChange)="setFilter('phase', $event)" />
+    <rw-number-field [label]="'bestiary.level_min' | t" [min]="0" [value]="filter().levelMin" (valueChange)="setFilter('levelMin', $event)" />
+    <rw-number-field [label]="'bestiary.level_max' | t" [min]="0" [value]="filter().levelMax" (valueChange)="setFilter('levelMax', $event)" />
+    <button type="button" class="btn btn-primary" (click)="list()">{{ 'bestiary.list' | t }}</button>
+  </div>
+  <div class="viewer">
+    <rw-select-field [label]="'bestiary.viewer' | t" [options]="viewerOptions()" [value]="viewer()" (valueChange)="setViewer($event)" />
+    <label class="field"><input type="checkbox" [checked]="context.playersSeeOnlyKnown()" (change)="setPlayersSeeOnlyKnown($any($event.target).checked)" /> {{ 'settings.players_see_only_known' | t }}</label>
+  </div>
+  @if (isGm()) {
+    <div class="marking">
+      <rw-text-field [label]="'bestiary.player' | t" [(value)]="player" />
+      <p class="hint">{{ (player().trim() ? 'bestiary.marks_for_player' : 'bestiary.marks_for_table') | t: { player: player().trim() } }}</p>
+    </div>
+    @if (!session()) {
+      <p class="hint">{{ 'bestiary.unsaved' | t }}</p>
+    }
+  }
+  <rw-alert [message]="error()" />
+</rw-card>
+
+<rw-card [title]="'bestiary.monsters' | t">
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">{{ 'bestiary.name' | t }}</th>
+        <th scope="col">{{ 'bestiary.level' | t }}</th>
+        <th scope="col">{{ 'bestiary.size' | t }}</th>
+        <th scope="col">{{ 'bestiary.phase' | t }}</th>
+        <th scope="col">{{ 'bestiary.type' | t }}</th>
+        <th scope="col">{{ 'bestiary.mark' | t }}</th>
+        @if (isGm()) {
+          <th scope="col">{{ 'bestiary.players' | t }}</th>
+          <th scope="col">{{ 'bestiary.set_mark' | t }}</th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (entry of entries(); track entry.monster) {
+        <tr [attr.data-monster]="entry.monster">
+          <td><button type="button" class="name" (click)="open(entry)">{{ entry.label }}</button></td>
+          <td>{{ shown(entry, 'level') }}</td>
+          <td>{{ entry.size }}</td>
+          <td>{{ shown(entry, 'phase') }}</td>
+          <td>{{ shown(entry, 'type') }}</td>
+          <td class="mark" [attr.data-knowledge]="entry.knowledge">{{ entry.knowledge }}</td>
+          @if (isGm()) {
+            <td class="players">
+              @for (mark of entry.players | keyvalue; track mark.key) {
+                <span class="player-mark">{{ mark.key }}: {{ mark.value }}</span>
+              }
+            </td>
+            <td class="set-mark">
+              @for (level of levelOptions; track level.value) {
+                <button type="button" class="btn btn-outline btn-sm" [attr.aria-label]="('bestiary.mark_as' | t: { level: level.label }) + ' ' + entry.label" (click)="mark(entry.monster, $any(level.value))">{{ level.label }}</button>
+              }
+              @if (session() && player().trim()) {
+                <button type="button" class="btn btn-outline btn-sm" (click)="loreCheck(entry.monster)">{{ 'bestiary.lore_check' | t }}</button>
+              }
+            </td>
+          }
+        </tr>
+      } @empty {
+        <tr><td [attr.colspan]="isGm() ? 8 : 6">{{ 'bestiary.none' | t }}</td></tr>
+      }
+    </tbody>
+  </table>
+  @if (lore(); as check) {
+    <p class="lore">{{ (check.success ? 'bestiary.lore_success' : 'bestiary.lore_failure') | t: { target: check.target } }}</p>
+  }
+</rw-card>
+
+@if (opened(); as shown) {
+  <rw-card [title]="shown.entry.label">
+    <p>{{ shown.entry.description }}</p>
+    <p>{{ 'bestiary.size' | t }}: {{ shown.entry.size }}</p>
+    @if (shown.sheet; as sheet) {
+      <h3>{{ 'bestiary.sheet' | t }}</h3>
+      <rw-key-value-list [entries]="$any(sheet)" />
+    }
+    @if (shown.row; as row) {
+      <h3>{{ 'bestiary.row' | t }}</h3>
+      <rw-key-value-list [entries]="row" />
+    }
+  </rw-card>
+}

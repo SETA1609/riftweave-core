@@ -1,6 +1,6 @@
 # Bestiary
 
-Modified: 2026-11-23
+Modified: 2026-11-27
 
 The bestiary lists the monsters of core and the enabled modules, and the GM decides what the
 players know of each (BE_S08_05, owner request 2026-11-16). The `bestiary` command holds the
@@ -58,3 +58,15 @@ mark.
 The screen marks for the whole table. A player's own mark and a Lore check go through the
 `bestiary` command or a session step; the browser page (FE_S08_06) and a shared room (APP-17)
 add them for each player. [A] [V 2026-11-23, `bestiary_test.go`]
+
+## The page
+
+The web app's Bestiary (Start, then Bestiary, `/play/bestiary`; FE_S08_06) lists the same
+monsters over the same commands, with a form for the filters (creature type, phase, a level
+range, and words), a **view as** choice (the GM, `table`, or a player named in a mark), and the
+settings box. The GM marks a monster for the table, or for the player typed in the form, and
+with a game in play runs a Lore check for that player with the game's character. With a game in
+play every mark is a `bestiary` step of its session and is autosaved, so it replays; with none,
+the marks last until the page closes, and the page says so. An entry that shows in full opens
+with its row and its `monster_sheet` stats. [V 2026-11-27, `app.spec.ts` and
+`e2e/bestiary.spec.ts` over both transports]

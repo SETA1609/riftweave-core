@@ -227,5 +227,33 @@
     "rules": "Reglas {{version}}",
     "playing": "En juego",
     "github_short": "GitHub"
+  },
+  "bestiary": {
+    "title": "Bestiario",
+    "words": "palabras",
+    "type": "tipo de criatura",
+    "phase": "fase",
+    "level_min": "nivel desde",
+    "level_max": "nivel hasta",
+    "list": "Listar",
+    "viewer": "ver como",
+    "player": "jugador",
+    "marks_for_table": "Las marcas son para toda la mesa.",
+    "marks_for_player": "Las marcas son para {{player}}.",
+    "unsaved": "No hay partida en juego: las marcas duran hasta cerrar la página. Empieza o reanuda una partida para conservarlas.",
+    "monsters": "Monstruos",
+    "name": "nombre",
+    "level": "nivel",
+    "size": "tamaño",
+    "mark": "marca",
+    "players": "jugadores",
+    "set_mark": "marcar",
+    "mark_as": "Marcar {{level}}:",
+    "lore_check": "Tirada de Saber",
+    "lore_success": "La tirada de Saber alcanzó su objetivo de {{target}}: el monstruo es conocido.",
+    "lore_failure": "La tirada de Saber falló su objetivo de {{target}}: nada cambia.",
+    "none": "Ningún monstruo que mostrar.",
+    "sheet": "Ficha",
+    "row": "Fila"
   }
 }

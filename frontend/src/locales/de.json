@@ -227,5 +227,33 @@
     "rules": "Regeln {{version}}",
     "playing": "Im Spiel",
     "github_short": "GitHub"
+  },
+  "bestiary": {
+    "title": "Bestiarium",
+    "words": "Wörter",
+    "type": "Kreaturtyp",
+    "phase": "Phase",
+    "level_min": "Stufe ab",
+    "level_max": "Stufe bis",
+    "list": "Auflisten",
+    "viewer": "Ansicht als",
+    "player": "Spieler",
+    "marks_for_table": "Markierungen gelten für den ganzen Tisch.",
+    "marks_for_player": "Markierungen gelten für {{player}}.",
+    "unsaved": "Kein Spiel läuft: Markierungen halten, bis die Seite geschlossen wird. Starte oder setze ein Spiel fort, um sie zu behalten.",
+    "monsters": "Monster",
+    "name": "Name",
+    "level": "Stufe",
+    "size": "Größe",
+    "mark": "Markierung",
+    "players": "Spieler",
+    "set_mark": "markieren",
+    "mark_as": "Markieren als {{level}}:",
+    "lore_check": "Kundeprobe",
+    "lore_success": "Die Kundeprobe hat ihr Ziel von {{target}} erreicht: das Monster ist bekannt.",
+    "lore_failure": "Die Kundeprobe hat ihr Ziel von {{target}} verfehlt: nichts ändert sich.",
+    "none": "Kein Monster anzuzeigen.",
+    "sheet": "Werte",
+    "row": "Datensatz"
   }
 }

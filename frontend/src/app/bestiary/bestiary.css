@@ -1,0 +1,10 @@
+:host { display: grid; gap: var(--space-3); }
+.filters, .viewer, .marking { display: flex; gap: var(--space-2); align-items: end; flex-wrap: wrap; margin-bottom: var(--space-2); }
+.hint { margin: var(--space-1) 0; color: var(--muted); }
+.table { overflow-x: auto; display: block; }
+.name { background: none; border: 0; padding: 0; color: var(--primary); cursor: pointer; text-align: left; font: inherit; text-decoration: underline; }
+.set-mark { display: flex; flex-wrap: wrap; gap: var(--space-1); }
+.player-mark { display: inline-block; margin-right: var(--space-1); }
+.mark[data-knowledge='unknown'] { color: var(--muted); }
+.mark[data-knowledge='known'] { font-weight: 600; }
+.lore { margin: var(--space-2) 0 0; }

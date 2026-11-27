@@ -227,5 +227,33 @@
     "rules": "Rules {{version}}",
     "playing": "Playing",
     "github_short": "GitHub"
+  },
+  "bestiary": {
+    "title": "Bestiary",
+    "words": "words",
+    "type": "creature type",
+    "phase": "phase",
+    "level_min": "level from",
+    "level_max": "level to",
+    "list": "List",
+    "viewer": "view as",
+    "player": "player",
+    "marks_for_table": "Marks are for the whole table.",
+    "marks_for_player": "Marks are for {{player}}.",
+    "unsaved": "No game is in play: marks last until the page closes. Start or resume a game to keep them.",
+    "monsters": "Monsters",
+    "name": "name",
+    "level": "level",
+    "size": "size",
+    "mark": "mark",
+    "players": "players",
+    "set_mark": "set mark",
+    "mark_as": "Mark {{level}}:",
+    "lore_check": "Lore check",
+    "lore_success": "The Lore check met its target of {{target}}: the monster is known.",
+    "lore_failure": "The Lore check missed its target of {{target}}: nothing changes.",
+    "none": "No monster to show.",
+    "sheet": "Sheet",
+    "row": "Row"
   }
 }
