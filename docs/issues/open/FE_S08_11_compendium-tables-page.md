@@ -1,8 +1,8 @@
 #### FE_S08_11_compendium-tables-page A compendium of every table to study a build (frontend)
 - Status: todo
-- Priority: medium
+- Priority: high
 - Needs: BE_S08_10_compendium-catalog-cli, FE_S08_12_back-on-every-screen
-- Modified: 2026-11-19
+- Modified: 2026-11-21
 - Do: Owner request, 2026-11-19: the Angular screens of `BE_S08_10_compendium-catalog-cli`, over the `catalog` command, so a player or GM can study weapons, armor, the other items, the bestiary, spells, perks, races, backgrounds, skills, conditions, and effects before building.
   - **The page** (`/play/compendium`): a tab or list per collection, a sortable table with the command's columns, a filter row (text, and the collection's own fields, such as skill, color, level, phase, or price), and a row that opens its full entry in a side panel or a page of its own (`/play/compendium/<collection>/<key>`, so a link to one perk can be shared).
   - **Links between rows:** a namespaced ref in an entry (a perk's prerequisite perk, a spell's effect, a weapon's material) is a link to that row, so a player can walk a perk ladder.

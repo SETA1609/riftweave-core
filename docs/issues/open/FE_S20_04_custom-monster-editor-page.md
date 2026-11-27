@@ -1,8 +1,8 @@
 #### FE_S20_04_custom-monster-editor-page Build and save a custom monster in the app (frontend)
 - Status: todo
-- Priority: medium
+- Priority: high
 - Needs: BE_S20_03_custom-monster-editor-cli, FE_S09_08_custom-monster-page
-- Modified: 2026-11-20
+- Modified: 2026-11-21
 - Do: Owner request, 2026-11-20: the browser half of the custom monster editor (`BE_S20_03_custom-monster-editor-cli`), over the same commands, in the API and the WebAssembly app.
   - **The editor page:** start from blank, a creature type, or a core monster, then edit the level, role, attributes, skills, perks, attacks, resistances, and templates, with no player limits.
   - **Live stat block:** the stat block from `monster_sheet` updates as the GM edits.
