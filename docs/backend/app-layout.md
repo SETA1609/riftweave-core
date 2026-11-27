@@ -1,6 +1,6 @@
 # App layout
 
-Modified: 2026-11-23
+Modified: 2026-11-27
 
 The human CLI (`riftweave play`) and the Angular app (APP-27) show the same menus, so a player
 who learns one finds their way in the other. The menu tree is one file,
@@ -14,8 +14,9 @@ Each entry has a `key`, the `parent` menu it sits in (`main` for the main menu),
 `issue` that adds it while that issue is not merged (with `issue_apps` when the issue is one
 app's half, so the other app already shows the entry), and `apps` when only one app shows it
 (`cli` or `web`): Quit is the CLI's, and Saved games and Playthrough are the browser's, which
-keeps its saves in IndexedDB (APP-27). The app adds **Back** at the end of every menu but the
-main one; it is not in the file.
+keeps its saves in IndexedDB (APP-27). **Back** is not in the file: the CLI adds it at the end of
+every menu but the main one, and the browser shows it in the screen header of every screen but
+the main menu (FE_S08_12).
 
 ```
 Main menu
@@ -45,6 +46,13 @@ In the Angular app the main menu is the home page at `/`, Start is `/play`, a to
   it says which issue brings it, so the menus are the same in both apps from the start. [A]
 - **Esc** goes back one menu, to the entry it came from. From a form or a screen it goes back
   to the menu that opened it.
+- **Back in the browser** (FE_S08_12): every route but `/` shows the screen header,
+  `rw-screen-header`, with the screen's title and **Back**. Back goes to the menu the screen's
+  entry sits in, read from this file, not to the browser's history, so a screen opened by its URL
+  still has a way back; a path with no entry goes to the menu its parent path names. Esc does the
+  same unless a field or an open dialog has focus. A screen that holds unsaved work (character
+  creation, while its form has edits no character was created from) asks before leaving.
+  [V 2026-11-27, `e2e/menus.spec.ts` walks every screen and back]
 - **Keys** are the menu keys of the file. The i18n keys of APP-28 hang off the same keys. [A]
 
 ## Start: the tools
