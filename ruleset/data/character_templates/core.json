@@ -1,0 +1,71 @@
+{
+  "$schema": "../../schemas/character_template.schema.json",
+  "character_templates": [
+    {
+      "key": "revenant",
+      "label": "Revenant",
+      "description": "Back from the grave by a will that would not rest: tougher and stronger, colder to others, and hard to poison or sicken. An example of the template model; the lich and the vampire come in their own issue.",
+      "slot": "undeath",
+      "attributes": {
+        "end": 2,
+        "str": 1,
+        "cha": -2
+      },
+      "skills": {
+        "core:skill/intimidation": 10
+      },
+      "modifiers": [
+        {
+          "target": "hp",
+          "operation": "add",
+          "value": 10,
+          "source": "template:revenant",
+          "origin": "core:origin/innate"
+        },
+        {
+          "target": "sp",
+          "operation": "add",
+          "value": 10,
+          "source": "template:revenant",
+          "origin": "core:origin/innate"
+        },
+        {
+          "target": "poison_resistance",
+          "operation": "add",
+          "value": 25,
+          "source": "template:revenant",
+          "origin": "core:origin/innate"
+        }
+      ],
+      "perks": [
+        {
+          "perk": "core:feature/hardened_hide",
+          "rank": 1
+        }
+      ],
+      "creature_type": "core:creature_type/undead"
+    },
+    {
+      "key": "ghoul",
+      "label": "Ghoul",
+      "description": "A hunger that outlived death: quicker and hardier, with a nose for the dead. A second example in the undeath slot, so the one-per-slot rule has two rows to refuse.",
+      "slot": "undeath",
+      "attributes": {
+        "agi": 1,
+        "end": 1
+      },
+      "skills": {},
+      "modifiers": [
+        {
+          "target": "disease_resistance",
+          "operation": "add",
+          "value": 25,
+          "source": "template:ghoul",
+          "origin": "core:origin/innate"
+        }
+      ],
+      "perks": [],
+      "creature_type": "core:creature_type/undead"
+    }
+  ]
+}

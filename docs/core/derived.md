@@ -56,6 +56,13 @@ Initiative is fixed: the derived `initiative` value, with no roll, as in Fallout
 
 The roll-off is made once, when the encounter starts, by the device that holds the encounter (the GM's, or the player's at a solo table), and it is kept as part of the encounter's session step, so the order replays the same on every device and needs no shared roll between devices. An actor who joins later rolls only against those it ties with. [A] This is the only place the rule is written; [combat.md §7](../modules/combat.md#7-initiative) and the encounter tracker (`BE_S08_07_encounter-tracker-cli`) link here. [V 2026-11-21, `test_initiative_ties.py`]
 
+## Templates
+
+The `derived` input may name the actor's held character templates (`templates`,
+[templates.md](templates.md)): each adds its attributes before the formulas run, and its modifiers
+and its granted perks' modifiers join `modifiers`, so the same sheet comes back without them once
+a template is removed. Two templates in one slot are refused. [A]
+
 ## What this file is not
 
 Level-up order, XP, and perk cadence stay in `docs/modules/progression.md`. This function is the starting pool; its floor and cap are the pool's own (`actions/core.json`), so the derived `ap` and the `actions` command's `pool` agree (GD_S19_07).

@@ -22,6 +22,62 @@ import (
 type Input struct {
 	Actor     actor.Actor         `json:"actor"`
 	Modifiers []modifier.Modifier `json:"modifiers"`
+	// Templates are the actor's held character templates (docs/core/templates.md).
+	Templates []HeldTemplate `json:"templates"`
+}
+
+// HeldTemplate is a character template the actor holds, and how it came (granted or outside_rules).
+type HeldTemplate struct {
+	Template string `json:"template"`
+	How      string `json:"how"`
+}
+
+// templatePrefix is the ref prefix of a character template.
+const templatePrefix = "core:character_template/"
+
+// WithTemplates applies held character templates: their attributes add to the actor's, and their
+// modifiers and their granted perks' modifiers at rank join the modifiers. Two in one slot are an
+// error (docs/core/templates.md).
+func WithTemplates(ruleset *data.Ruleset, character actor.Actor, modifiers []modifier.Modifier, held []HeldTemplate) (actor.Actor, []modifier.Modifier, error) {
+	if len(held) == 0 {
+		return character, modifiers, nil
+	}
+	var joined []modifier.Modifier = slices.Clone(modifiers)
+	var slots map[string]string = map[string]string{}
+	for _, entry := range held {
+		template, found := ruleset.CharacterTemplates.Get(strings.TrimPrefix(entry.Template, templatePrefix))
+		if !found || !strings.HasPrefix(entry.Template, templatePrefix) {
+			return actor.Actor{}, nil, fmt.Errorf("%s is not a character template", entry.Template)
+		}
+		if other, taken := slots[template.Slot]; taken {
+			return actor.Actor{}, nil, fmt.Errorf("%s and %s share the %s slot", other, template.Key, template.Slot)
+		}
+		slots[template.Slot] = template.Key
+		for _, key := range slices.Sorted(maps.Keys(template.Attributes)) {
+			ability, known := actor.ByKey(key)
+			if !known {
+				return actor.Actor{}, nil, fmt.Errorf("%s: %s is not an attribute", template.Key, key)
+			}
+			character.Attributes = character.Attributes.With(ability, character.Attributes.Get(ability)+template.Attributes[key])
+		}
+		joined = append(joined, template.Modifiers...)
+		for _, perk := range template.Perks {
+			feature, err := ruleset.Features.Require("perk", perk.Perk[strings.LastIndex(perk.Perk, "/")+1:])
+			if err != nil {
+				return actor.Actor{}, nil, err
+			}
+			encoded, err := json.Marshal(feature.EmitAt(max(perk.Rank, 1)))
+			if err != nil {
+				return actor.Actor{}, nil, err
+			}
+			var emitted []modifier.Modifier
+			if err := json.Unmarshal(encoded, &emitted); err != nil {
+				return actor.Actor{}, nil, err
+			}
+			joined = append(joined, emitted...)
+		}
+	}
+	return character, joined, nil
 }
 
 // Compute returns one value per row of ruleset.Derived, in row order: the formula, then the
@@ -55,7 +111,11 @@ const apTarget = "ap"
 
 // Run is the `derived` command: one field per derived stat.
 func Run(ruleset *data.Ruleset, input Input) (map[string]int64, error) {
-	values, err := Compute(ruleset, input.Actor, input.Modifiers)
+	character, modifiers, err := WithTemplates(ruleset, input.Actor, input.Modifiers, input.Templates)
+	if err != nil {
+		return nil, err
+	}
+	values, err := Compute(ruleset, character, modifiers)
 	if err != nil {
 		return nil, err
 	}

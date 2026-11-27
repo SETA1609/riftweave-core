@@ -673,5 +673,180 @@
         "equipped": {}
       }
     }
+  },
+  {
+    "name": "a stored actor keeps its templates and how each came: a revenant taken outside the rules",
+    "actor": {
+      "attributes": {
+        "str": 6,
+        "per": 5,
+        "end": 5,
+        "int": 4,
+        "wil": 5,
+        "agi": 7,
+        "cha": 3,
+        "lck": 5
+      },
+      "level": 3,
+      "xp": 450,
+      "skills": {
+        "blades": 34,
+        "evasion": 28
+      },
+      "tags": [
+        "blades"
+      ],
+      "growth": {
+        "hp": 4,
+        "mp": 2,
+        "sp": 3
+      },
+      "resources": {
+        "hp": 41,
+        "mp": 20,
+        "sp": 30,
+        "ap": 4
+      },
+      "conditions": [
+        {
+          "key": "burning",
+          "stacks": 1
+        }
+      ],
+      "modifiers": [
+        {
+          "modifier": {
+            "target": "str",
+            "operation": "add",
+            "value": 2,
+            "source": "item:potion_strength",
+            "origin": "core:origin/alchemy",
+            "duration": "turns",
+            "turns": 12
+          },
+          "turns_elapsed": 3
+        }
+      ],
+      "flags": [
+        "prone"
+      ],
+      "inventory": [
+        {
+          "id": 1,
+          "base": "core:weapon/longsword",
+          "material": "core:material/steel",
+          "added_effects": [
+            {
+              "effect": "core:effect/damage_fire",
+              "magnitude": 2,
+              "target": "touch"
+            }
+          ],
+          "quantity": 1
+        },
+        {
+          "id": 2,
+          "base": "core:consumable/potion_healing",
+          "added_effects": [],
+          "quantity": 3
+        }
+      ],
+      "equipped": {
+        "main_hand": 1
+      },
+      "templates": [
+        {
+          "template": "core:character_template/revenant",
+          "how": "outside_rules"
+        }
+      ]
+    },
+    "expect": {
+      "actor": {
+        "attributes": {
+          "str": 6,
+          "per": 5,
+          "end": 5,
+          "int": 4,
+          "wil": 5,
+          "agi": 7,
+          "cha": 3,
+          "lck": 5
+        },
+        "level": 3,
+        "xp": 450,
+        "skills": {
+          "blades": 34,
+          "evasion": 28
+        },
+        "tags": [
+          "blades"
+        ],
+        "growth": {
+          "hp": 4,
+          "mp": 2,
+          "sp": 3
+        },
+        "resources": {
+          "hp": 41,
+          "mp": 20,
+          "sp": 30,
+          "ap": 4
+        },
+        "conditions": [
+          {
+            "key": "burning",
+            "stacks": 1
+          }
+        ],
+        "modifiers": [
+          {
+            "modifier": {
+              "target": "str",
+              "operation": "add",
+              "value": 2,
+              "source": "item:potion_strength",
+              "origin": "core:origin/alchemy",
+              "duration": "turns",
+              "turns": 12
+            },
+            "turns_elapsed": 3
+          }
+        ],
+        "flags": [
+          "prone"
+        ],
+        "inventory": [
+          {
+            "id": 1,
+            "base": "core:weapon/longsword",
+            "material": "core:material/steel",
+            "added_effects": [
+              {
+                "effect": "core:effect/damage_fire",
+                "magnitude": 2,
+                "target": "touch"
+              }
+            ],
+            "quantity": 1
+          },
+          {
+            "id": 2,
+            "base": "core:consumable/potion_healing",
+            "added_effects": [],
+            "quantity": 3
+          }
+        ],
+        "equipped": {
+          "main_hand": 1
+        },
+        "templates": [
+          {
+            "template": "core:character_template/revenant",
+            "how": "outside_rules"
+          }
+        ]
+      }
+    }
   }
 ]

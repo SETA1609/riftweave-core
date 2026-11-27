@@ -12,7 +12,7 @@ An entity is a collection of rows, its `key` the primary key. A line is a refere
 other collection, so many rows name one. Composition bases are references too: an equipment row's
 `base` names an equipment base, a monster's `base` a creature type or a monster.
 
-48 collections; 74 pairs of collections joined by a reference.
+49 collections; 77 pairs of collections joined by a reference.
 
 ## Overview
 
@@ -54,6 +54,13 @@ erDiagram
     CALLED_SHOTS {
         string key PK
         string riders_condition FK
+    }
+    CHARACTER_TEMPLATES {
+        string key PK
+        string creature_type FK
+        string modifiers_origin FK
+        string perks_perk FK
+        string prerequisite_perks_perk FK
     }
     CHARACTERS {
         string key PK
@@ -263,6 +270,9 @@ erDiagram
     BUILDS }o--|| SKILLS : "skill_priorities[].skill, suggested_tag_skills[]"
     BUILDS }o--|| SPELLS : "spells[]"
     CALLED_SHOTS }o--|| CONDITIONS : "riders[].condition"
+    CHARACTER_TEMPLATES }o--|| FEATURES : "perks[].perk, prerequisite.perks[].perk"
+    CHARACTER_TEMPLATES }o--|| MONSTERS : "creature_type"
+    CHARACTER_TEMPLATES }o--|| ORIGINS : "modifiers[].origin"
     CHARACTERS }o--|| BACKGROUNDS : "background"
     CHARACTERS }o--|| EQUIPMENT : "levels[].gear[]"
     CHARACTERS }o--|| FEATURES : "creation_perks[], levels[].perk"

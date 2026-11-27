@@ -102,7 +102,7 @@ A field the step names wins; the session fills only what is missing. [A]
 
 | Command | Filled from the actor | Written back |
 | --- | --- | --- |
-| `derived` | `actor`, `modifiers` (the actor's, below) | nothing |
+| `derived` | `actor`, `modifiers` (the actor's, below), and `templates` (the held character templates, when any) | nothing |
 | `combat` | `attacker.attributes`, `attacker.skill` (the equipped weapon's skill), and `modifiers` (the actor's on that skill); or with `as: defender` `defender.hp`, `defender.attributes`, `defender.armor_dr` (the worn armor), and `defender.modifiers` (the actor's) | with `as: defender`, HP |
 | `rest` | `actor`, `current`, `max.stamina` | HP, MP, SP, AP, and any condition the rest cleared |
 | `casting` | `caster.skills`, `caster.attributes`, `caster.mana`, `modifiers` (the actor's) | MP |

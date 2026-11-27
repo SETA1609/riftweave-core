@@ -11,6 +11,11 @@
       },
       "modifiers": {
         "$ref": "common.json#/definitions/modifiers"
+      },
+      "templates": {
+        "type": "array",
+        "items": { "$ref": "common.json#/definitions/held_template" },
+        "description": "The actor's held character templates: their attributes add first, and their modifiers and granted perks join modifiers; two in one slot are refused (docs/core/templates.md)."
       }
     },
     "additionalProperties": false,

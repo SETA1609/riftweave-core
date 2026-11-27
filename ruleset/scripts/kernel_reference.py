@@ -216,7 +216,41 @@ def run_resolution(vector):
 AP_TARGET = "ap"
 
 
+TEMPLATE_PREFIX = "core:character_template/"
+
+
+def with_templates(vector):
+    """The actor's held character templates applied (docs/core/templates.md): attributes added,
+    then the templates' modifiers and their granted perks' modifiers joined to modifiers. Two in
+    one slot raise ValueError."""
+    held = vector.get("templates", [])
+    if not held:
+        return vector
+    rows = {TEMPLATE_PREFIX + row["key"]: row for row in load_data("character_templates/core.json")["character_templates"]}
+    features = {row["key"]: row for row in load_data("features/core.json")["features"]}
+    attributes = dict(vector["actor"].get("attributes", {}))
+    modifiers = list(vector.get("modifiers", []))
+    slots = {}
+    for entry in held:
+        row = rows.get(entry["template"])
+        if row is None:
+            raise ValueError(f"{entry['template']} is not a character template")
+        if row["slot"] in slots:
+            raise ValueError(f"{slots[row['slot']]} and {row['key']} share the {row['slot']} slot")
+        slots[row["slot"]] = row["key"]
+        for ability, value in row["attributes"].items():
+            attributes[ability] = attributes.get(ability, 0) + value
+        modifiers += row["modifiers"]
+        for perk in row["perks"]:
+            modifiers += emit_perk(features[perk["perk"].rsplit("/", 1)[-1]], perk.get("rank", 1))
+    return {**vector, "actor": {**vector["actor"], "attributes": attributes}, "modifiers": modifiers}
+
+
 def run_derived(vector):
+    try:
+        vector = with_templates(vector)
+    except ValueError as error:
+        return {"error": str(error)}
     actor = vector["actor"]
     attributes = actor.get("attributes", {})
     level = actor.get("level", 1)

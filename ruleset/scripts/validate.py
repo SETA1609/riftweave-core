@@ -2117,6 +2117,30 @@ def ammunition_problems(bases, rows):
     return problems
 
 
+INNATE_ORIGIN = "core:origin/innate"
+
+
+def character_template_problems(rows, skills):
+    """GD_S20_05 (docs/core/templates.md): a template's skills resolve (they are object keys, which
+    the reference walk does not see), and every modifier it emits has the innate origin."""
+    problems = []
+    for row in rows:
+        for skill in row.get("skills", {}):
+            if skill not in skills:
+                problems.append(f"character template {row['key']}: skill {skill} does not resolve")
+        for modifier in row.get("modifiers", []):
+            if modifier.get("origin") != INNATE_ORIGIN:
+                problems.append(f"character template {row['key']}: modifier on {modifier['target']} is {modifier.get('origin')}, not {INNATE_ORIGIN}")
+    return problems
+
+
+def check_character_templates():
+    """The character template gate on the core rows."""
+    rows = json.loads((DATA_DIR / "character_templates" / "core.json").read_text())["character_templates"]
+    skills = {"core:skill/" + row["key"] for row in json.loads((DATA_DIR / "skills" / "core.json").read_text())["skills"]}
+    return character_template_problems(rows, skills)
+
+
 GRENADE_TYPE = "grenade"
 THROWN = "throw"
 
@@ -2554,6 +2578,13 @@ def main():
     if grenade_errors:
         print("  \u2717  grenades (each is thrown, each rider has the grenade channel)")
         for e in grenade_errors:
+            print(f"       {e}")
+        failed += 1
+
+    template_errors = check_character_templates()
+    if template_errors:
+        print("  \u2717  character templates (skills resolve, modifiers innate)")
+        for e in template_errors:
             print(f"       {e}")
         failed += 1
 

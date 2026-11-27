@@ -794,6 +794,12 @@ export interface components {
         error: {
             error: string;
         };
+        /** @description A character template the actor holds (GD_S20_05, docs/core/templates.md), and how it came: granted by the GM's story or event, or taken outside the rules. */
+        held_template: {
+            /** @enum {string} */
+            how: "granted" | "outside_rules";
+            template: string;
+        };
         /** @description One item the actor holds: an instance that points at a row. */
         item_instance: {
             /** @description The applied effects added to this instance, such as an enchantment or a coating */
@@ -1084,6 +1090,8 @@ export interface components {
             /** @description Known spells, by spell key. */
             spells?: components["schemas"]["key"][];
             tags: components["schemas"]["key"][];
+            /** @description The character templates held, at most one per slot (docs/core/templates.md); left out when none. */
+            templates?: components["schemas"]["held_template"][];
             xp: number;
         };
         tags: ("crit" | "fumble")[];
@@ -2693,6 +2701,8 @@ export interface operations {
                 "application/json": {
                     actor: components["schemas"]["actor"];
                     modifiers?: components["schemas"]["modifiers"];
+                    /** @description The actor's held character templates: their attributes add first, and their modifiers and granted perks join modifiers; two in one slot are refused (docs/core/templates.md). */
+                    templates?: components["schemas"]["held_template"][];
                 };
             };
         };
