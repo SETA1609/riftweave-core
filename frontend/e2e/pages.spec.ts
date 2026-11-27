@@ -38,3 +38,25 @@ test('the Pages build has no dev console (APP-48)', async ({ page }) => {
   await expect(page.getByRole('button', { name: 'Create character' })).toBeVisible();
   expect(await page.evaluate(() => 'rw' in globalThis)).toBe(false);
 });
+
+test('offline, the Pages build still draws its own fonts (FE_S22_02)', async ({ page, context }) => {
+  await page.goto('./#/');
+  await page.evaluate(async () => {
+    await navigator.serviceWorker.ready;
+    for (let attempt = 0; attempt < 100; attempt++) {
+      const names = await caches.keys();
+      const cached = await Promise.all(names.map(async (name) => (await (await caches.open(name)).keys()).map((key) => key.url)));
+      // The app and the core, and the five faces the build bundles: Space Grotesk 600 and 700, JetBrains Mono 400, 600, and 700.
+      const urls = cached.flat();
+      if (urls.some((url) => url.endsWith('riftweave.wasm')) && urls.filter((url) => url.endsWith('.woff2')).length >= 5) return;
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+    throw new Error('the fonts were never cached');
+  });
+  await context.setOffline(true);
+  await page.reload();
+  await expect(page.getByRole('heading', { name: 'Riftweave' })).toBeVisible();
+  await page.waitForFunction(() => document.fonts.size >= 5);
+  expect(await page.evaluate(async () => [...(await document.fonts.load('16px "JetBrains Mono"', 'A')), ...(await document.fonts.load('600 24px "Space Grotesk"', 'A'))].map((face) => face.status))).toEqual(['loaded', 'loaded']);
+  await context.setOffline(false);
+});
