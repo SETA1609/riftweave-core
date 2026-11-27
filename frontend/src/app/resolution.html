@@ -1,13 +1,13 @@
-<rw-card title="Skill resolution">
-  <rw-text-field label="skill" [(value)]="skill" />
-  <rw-number-field label="value" [(value)]="value" />
-  <rw-number-field label="LCK" [(value)]="luck" />
-  <rw-number-field label="target modifier" [(value)]="bonus" />
-  <rw-number-field label="d100" [min]="1" [max]="100" [(value)]="roll" />
-  <button type="button" class="btn btn-outline btn-sm" (click)="rollForMe()">roll for me</button>
-  <button type="button" class="btn btn-primary" (click)="resolve()">Resolve</button>
+<rw-card [title]="'resolution.title' | t">
+  <rw-text-field [label]="'resolution.skill' | t" [(value)]="skill" />
+  <rw-number-field [label]="'resolution.value' | t" [(value)]="value" />
+  <rw-number-field [label]="'abbr.LCK' | t" [(value)]="luck" />
+  <rw-number-field [label]="'resolution.modifier' | t" [(value)]="bonus" />
+  <rw-number-field [label]="'abbr.d100' | t" [min]="1" [max]="100" [(value)]="roll" />
+  <button type="button" class="btn btn-outline btn-sm" (click)="rollForMe()">{{ 'resolution.roll_for_me' | t }}</button>
+  <button type="button" class="btn btn-primary" (click)="resolve()">{{ 'resolution.resolve' | t }}</button>
   <rw-alert [message]="error()" />
 </rw-card>
 @if (result(); as shown) {
-  <rw-card title="Check"><rw-key-value-list [entries]="$any(shown)" /></rw-card>
+  <rw-card [title]="'resolution.check' | t"><rw-key-value-list [entries]="$any(shown)" /></rw-card>
 }

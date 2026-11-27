@@ -4,6 +4,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { API, type ResolutionInput, type ResolutionResult } from './api';
 import { rollD100 } from './saves';
+import { TranslatePipe } from './translate-pipe';
 import { Alert } from './ui/alert';
 import { Card } from './ui/card';
 import { KeyValueList } from './ui/key-value-list';
@@ -12,7 +13,7 @@ import { TextField } from './ui/text-field';
 
 @Component({
   selector: 'rw-resolution',
-  imports: [Alert, Card, KeyValueList, NumberField, TextField],
+  imports: [Alert, Card, KeyValueList, NumberField, TextField, TranslatePipe],
   templateUrl: './resolution.html',
   styleUrl: './resolution.css',
 })

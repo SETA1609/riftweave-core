@@ -10,6 +10,7 @@ import { MODULE_VERSIONS } from './settings-screens';
 
 /** The rules this build ships (angular.json `define`). */
 declare const RIFTWEAVE_RULES_VERSION: string;
+import { TranslatePipe } from './translate-pipe';
 import { Alert } from './ui/alert';
 import { Card } from './ui/card';
 import { KeyValueList } from './ui/key-value-list';
@@ -20,7 +21,7 @@ type Key = (typeof KEYS)[number];
 
 @Component({
   selector: 'rw-sheet',
-  imports: [JsonPipe, Alert, Card, KeyValueList, NumberField],
+  imports: [JsonPipe, Alert, Card, KeyValueList, NumberField, TranslatePipe],
   templateUrl: './sheet.html',
   styleUrl: './sheet.css',
 })

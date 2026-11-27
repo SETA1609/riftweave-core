@@ -1,28 +1,28 @@
-<rw-card title="Saved games">
-  <p class="note">Saves live in this browser only. Download a backup to keep a game safe, or to hand it to someone else.</p>
+<rw-card [title]="'saves.title' | t">
+  <p class="note">{{ 'saves.note' | t }}</p>
   @if (saves.persisted() === false) {
-    <rw-alert kind="info" message="This browser did not promise to keep the saves; a cleared history may remove them. Keep a backup." />
+    <rw-alert kind="info" [message]="'saves.not_persisted' | t" />
   }
   @if (saves.list().length === 0) {
-    <p>No saved games yet. Create a character or run the playthrough, and it is saved as you play.</p>
+    <p>{{ 'saves.none' | t }}</p>
   } @else {
     <table class="table">
-      <thead><tr><th>Name</th><th>Rules</th><th>Last played</th><th>Last backup</th><th></th></tr></thead>
+      <thead><tr><th>{{ 'saves.name' | t }}</th><th>{{ 'saves.rules' | t }}</th><th>{{ 'saves.last_played' | t }}</th><th>{{ 'saves.last_backup' | t }}</th><th></th></tr></thead>
       <tbody>
         @for (record of saves.list(); track record.id) {
           <tr [class.current]="record.id === saves.current()?.id">
-            <td>{{ record.name }} <small>({{ record.session.log.length }} steps)</small></td>
-            <td>{{ record.rules_version || 'unknown' }}</td>
+            <td>{{ record.name }} <small>({{ 'saves.steps' | t: { count: record.session.log.length } }})</small></td>
+            <td>{{ record.rules_version || ('saves.unknown' | t) }}</td>
             <td>{{ record.last_played | date: 'medium' }}</td>
             <td>
-              {{ record.last_backup ? (record.last_backup | date: 'mediumDate') : 'never' }}
-              @if (stale(record)) { <span class="stale">back it up</span> }
+              {{ record.last_backup ? (record.last_backup | date: 'mediumDate') : ('saves.never' | t) }}
+              @if (stale(record)) { <span class="stale">{{ 'saves.back_it_up' | t }}</span> }
             </td>
             <td class="actions">
-              <button type="button" class="btn btn-outline btn-sm" (click)="saves.resume(record.id)">Resume</button>
-              <button type="button" class="btn btn-outline btn-sm" (click)="download(record)">Download backup</button>
-              <button type="button" class="btn btn-outline btn-sm" (click)="exportFile(record)">Export file</button>
-              <button type="button" class="btn btn-outline btn-sm" (click)="saves.remove(record.id)">Delete</button>
+              <button type="button" class="btn btn-outline btn-sm" (click)="saves.resume(record.id)">{{ 'saves.resume' | t }}</button>
+              <button type="button" class="btn btn-outline btn-sm" (click)="download(record)">{{ 'saves.download' | t }}</button>
+              <button type="button" class="btn btn-outline btn-sm" (click)="exportFile(record)">{{ 'saves.export' | t }}</button>
+              <button type="button" class="btn btn-outline btn-sm" (click)="saves.remove(record.id)">{{ 'saves.delete' | t }}</button>
             </td>
           </tr>
         }
@@ -30,22 +30,22 @@
     </table>
   }
   <div class="drop" [class.dragging]="dragging()" (dragover)="$event.preventDefault(); dragging.set(true)" (dragleave)="dragging.set(false)" (drop)="drop($event)">
-    <label class="btn btn-primary">Open file <input type="file" accept=".json,application/json" (change)="pick($event)" /></label>
-    <span>or drop a <code>.riftweave.json</code> file here</span>
+    <label class="btn btn-primary">{{ 'saves.open_file' | t }} <input type="file" accept=".json,application/json" (change)="pick($event)" /></label>
+    <span>{{ 'saves.drop_before' | t }} <code>{{ fileSuffix }}</code> {{ 'saves.drop_after' | t }}</span>
   </div>
   <rw-alert [message]="error()" />
   @if (opened(); as file) {
     @if (file.savedVersion !== file.currentVersion) {
-      <rw-alert kind="info" [message]="'This save was made with rules ' + file.savedVersion + ' and was replayed under rules ' + file.currentVersion + (file.matches ? '; the result is the same.' : '; the replay gives a different character.')" />
+      <rw-alert kind="info" [message]="(file.matches ? 'saves.other_rules_same' : 'saves.other_rules_differs') | t: { saved: file.savedVersion, current: file.currentVersion }" />
     } @else if (file.matches) {
-      <rw-alert kind="success" message="The file replays to the same character." />
+      <rw-alert kind="success" [message]="'saves.replays' | t" />
     } @else {
-      <rw-alert message="This file does not replay to the character it holds: it was edited, or it is broken." />
+      <rw-alert [message]="'saves.edited' | t" />
     }
     <div class="actions">
-      <button type="button" class="btn btn-primary" (click)="keep('replayed')">Keep the replayed game</button>
+      <button type="button" class="btn btn-primary" (click)="keep('replayed')">{{ 'saves.keep_replayed' | t }}</button>
       @if (!file.matches) {
-        <button type="button" class="btn btn-outline" (click)="keep('saved')">Keep the saved character</button>
+        <button type="button" class="btn btn-outline" (click)="keep('saved')">{{ 'saves.keep_saved' | t }}</button>
       }
     </div>
   }
