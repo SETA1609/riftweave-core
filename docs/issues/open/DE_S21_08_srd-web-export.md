@@ -1,0 +1,15 @@
+#### DE_S21_08_srd-web-export The SRD as web chapters and a search index for the app
+- Status: todo
+- Priority: medium
+- Needs: DE_S21_04_srd-generator
+- Modified: 2026-11-27
+- Do: Owner request, 2026-11-27: players read the SRD inside the app like a wiki, and export it. The app shows the same book the PDF is, from the same generated source, never a second copy kept by hand.
+  - **A second output of `srd_build.py`:** beside the typesetting source, `build/srd/web/`: one HTML fragment per chapter (no `<html>`, no script, no inline style: the app's own CSS styles it), a `toc.json` (chapters and their sections, each with a stable anchor id), and a `search.json` (each section's title, anchor, and plain text, for a search in the page). Built at build time, so the app ships no Markdown parser [A].
+  - **Links:** a cross-reference inside the book is a link to its chapter and anchor (`#/rules/<chapter>#<anchor>`); a generated entry (a monster, a spell, a perk, an item) carries its namespaced ref in a `data-ref` attribute, so the reader can link it to its row (the compendium, FE_S08_11).
+  - **The same rules as the PDF:** the prose stripped of `[V]/[A]/[U]` tags, issue ids, and links outside the book; the entries laid out as `GD_S21_03_srd-entry-layouts`; deterministic, the same commit giving the same bytes.
+  - **Into the app's build:** `frontend/scripts/` copies `build/srd/web/` into the build's assets (`srd/`) before `ng build`, as the WebAssembly core is built in first; nothing generated is committed.
+  - **Language:** English, the language the rules are written in; a translated SRD is its own issue [A].
+- Keys: `build/srd/web/`, `toc.json`, `search.json`, `data-ref`
+- Files: ~7 (ruleset/scripts/srd_build.py, ruleset/scripts/test_srd_build.py, frontend/scripts/copy-srd.mjs, frontend/package.json scripts, docs/srd/README.md, docs/decisions/DE_S21_08_srd-web-export.md, changes/DE_S21_08_srd-web-export.md)
+- See: docs/issues/open/DE_S21_04_srd-generator.md, docs/issues/open/GD_S21_03_srd-entry-layouts.md, docs/issues/open/FE_S21_09_rules-reader-page.md
+- Done when: `srd_build.py` writes the chapters, `toc.json`, and `search.json` for the full outline; a test builds them twice and gets the same bytes; every cross-reference resolves to an anchor that exists; a generated entry carries its `data-ref`.

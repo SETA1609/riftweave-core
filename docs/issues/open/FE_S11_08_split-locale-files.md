@@ -1,0 +1,15 @@
+#### FE_S11_08_split-locale-files One locale folder per area, so a new page adds its own words without touching shared files
+- Status: todo
+- Priority: high
+- Needs: FE_S11_04_frontend-screen-strings
+- Modified: 2026-11-27
+- Do: Owner request, 2026-11-27: every page issue edits the same three files, `frontend/src/locales/en.json`, `de.json`, and `es.json`, so parallel branches conflict on them after each merge [V 2026-11-27: FE_S08_06, FE_S08_08, and FE_S08_12 each conflicted on all three after FE_S11_04 and FE_S08_17 merged]. Split them so a new page adds only files of its own.
+  - **One folder per area (the top-level key, a namespace), one file per language:** `<area>/en.json`, `de.json`, and `es.json`, each holding that area's keys without the area's name (`bestiary/en.json` holds `title`, read as `bestiary.title`). The key a template uses does not change.
+  - **Shared areas** (`app`, `language`, `theme`, `menu`, `nav`, `screen`, `abbr`, `settings`, `modules`, `network`) live in `frontend/src/locales/<area>/` and are loaded by `i18n.ts`; they change rarely.
+  - **A page's area lives with the page** (`frontend/src/app/bestiary/locales/en.json`, and a folder `src/locales/<area>/` for a screen that is a single file such as `sheet.ts`), and the page registers it itself: `I18n.register(area, { en, de, es })` when it is created. So a new page adds its folder and its component, and no shared list grows a line [A: the registration call is checked against i18next's `addResourceBundle`, and kept for the reader of FE_S11_06].
+  - **Checks:** `i18n.spec.ts` finds every locale folder on disk and requires each to have en, de, and es with the same keys, and every area a template reads to be registered by its page or shared; a menu entry still needs its `menu.<key>`.
+  - **Order:** before BE_S11_05, which moves the shared areas into `backend/contract/locales/` for the Go reader; pages' areas stay with the pages, since only the shared and `print` areas are read in Go.
+- Keys: `I18n.register`, `frontend/src/locales/<area>/<lang>.json`, `<page>/locales/<lang>.json`
+- Files: ~12 (frontend/src/app/i18n.ts, i18n.md, i18n.spec.ts, the locale files split by area, each page's register call: bestiary, encounter, spells, sheet, resolution, attack, playthrough, file-import, character-list, saved-games, docs/backend/frontend.md#languages, docs/decisions/FE_S11_08_split-locale-files.md, changes/FE_S11_08_split-locale-files.md)
+- See: docs/backend/frontend.md#languages, docs/issues/open/BE_S11_05_shared-locale-catalogs.md, docs/issues/open/FE_S11_06_frontend-own-i18n-reader.md
+- Done when: no locale file holds two areas; adding a page touches no shared locale file and no shared import list; every screen shows the same words in en, de, and es as before; the Vitest and Playwright specs pass over both transports.

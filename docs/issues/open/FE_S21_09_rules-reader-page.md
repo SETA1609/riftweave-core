@@ -1,0 +1,16 @@
+#### FE_S21_09_rules-reader-page Read the SRD in the app like a wiki
+- Status: todo
+- Priority: medium
+- Needs: DE_S21_08_srd-web-export, FE_S08_12_back-on-every-screen
+- Modified: 2026-11-27
+- Do: Owner request, 2026-11-27: a player or a GM reads the rules in the app, offline, on a phone, a tablet, or a desktop, and jumps from a rule to the entry it names.
+  - **The page** (`/rules`, and `/rules/<chapter>` with `#<anchor>` for a section, so a link to one rule can be shared): the chapter's HTML from `srd/` (DE_S21_08) in the guide's typography (docs/design/README.md), a table of contents from `toc.json`, and previous and next chapter. On a phone the contents fold into a button; from 1024px they stand beside the text, by flex, as the navbar does (FE_S08_17).
+  - **Search:** a field over `search.json` in the page, no server: the matching sections, each a link to its anchor.
+  - **Links:** a link inside the book stays in the reader; an entry with a `data-ref` links to its row in the compendium (FE_S08_11), or shows the row in a side panel until that page exists [A].
+  - **Offline:** the service worker prefetches the chapters, `toc.json`, and `search.json` with the app (`ngsw-config.json`), so the rules read with the network off.
+  - **The menu:** a `rules` entry in `backend/contract/menu.json` under `main` ("Rules"), web only (`apps: ["web"]`), with its `menu.rules` key.
+  - **Words:** the page's own words (contents, search, previous, next) are locale keys in en, de, and es; the SRD's text is English (DE_S21_08).
+- Keys: `/rules`, `/rules/<chapter>`, `menu.rules`
+- Files: ~12 (frontend/src/app/rules/rules.ts, .html, .css, .md, its locales, frontend/src/app/app.routes.ts, backend/contract/menu.json, frontend/ngsw-config.json, frontend/src/app/app.spec.ts, frontend/e2e/rules.spec.ts, docs/backend/frontend.md, docs/decisions/FE_S21_09_rules-reader-page.md, changes/FE_S21_09_rules-reader-page.md)
+- See: docs/issues/open/DE_S21_08_srd-web-export.md, docs/design/README.md, docs/issues/open/FE_S08_11_compendium-tables-page.md
+- Done when: every chapter opens by its URL and by the contents; a search finds a section by a word in it and opens its anchor; an entry links to its row; the rules read offline in the Pages build; at 375px and 1280px nothing scrolls sideways; the Vitest and Playwright specs pass over both transports.

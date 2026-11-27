@@ -1,0 +1,14 @@
+#### OPS_S21_10_srd-pdf-in-app Download the SRD PDF from the app
+- Status: todo
+- Priority: medium
+- Needs: OPS_S21_06_srd-release, FE_S21_09_rules-reader-page
+- Modified: 2026-11-27
+- Do: Owner request, 2026-11-27: export the SRD from the app. The PDF is the one CI builds for the release (OPS_S21_06), not a second build in the browser.
+  - **Published with the site:** the Pages workflow copies the release's `Riftweave_SRD_<version>.pdf` into the site as `srd/riftweave-srd.pdf`, the version the app's rules version names; a dev build without it hides the button.
+  - **In the reader:** a "Download the SRD (PDF)" button on `/rules` (FE_S21_09) with the file's size; the service worker fetches the PDF only when asked (`installMode: lazy`), so the first visit stays small, and once downloaded it opens offline [A].
+  - **One chapter:** "Print this chapter" uses the browser's print with the guide's print CSS, as the printouts do (docs/backend/print.md).
+  - Embedding the PDF in the page is not done: it reads poorly on a phone, cannot be searched or linked from the app, and is large to cache [A, owner open to it, 2026-11-27].
+- Keys: `srd/riftweave-srd.pdf`
+- Files: ~6 (.github/workflows/pages.yml, frontend/ngsw-config.json, frontend/src/app/rules/rules.html and .ts, frontend/e2e/rules.spec.ts, docs/decisions/OPS_S21_10_srd-pdf-in-app.md, changes/OPS_S21_10_srd-pdf-in-app.md)
+- See: docs/issues/open/OPS_S21_06_srd-release.md, docs/issues/open/FE_S21_09_rules-reader-page.md
+- Done when: the Pages site serves the release's SRD PDF; the reader's button downloads it; a chapter prints alone; the Pages e2e checks the button and the file.

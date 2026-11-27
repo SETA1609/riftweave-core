@@ -17,5 +17,8 @@ Format, ids, and roles: [README.md](README.md#ids), [ROLES.md](../issues/ROLES.m
 | `OPS_S21_05_srd-typesetting` | OPS | Typeset the SRD into a PDF | — | DE_S21_04_srd-generator |
 | `OPS_S21_06_srd-release` | OPS | Build the SRD PDF in CI and attach it to each release | — | OPS_S21_05_srd-typesetting |
 | `QA_S21_07_srd-coverage-check` | QA | Check the generated SRD holds every entry, once, and no builder's notes | — | DE_S21_04_srd-generator |
+| `DE_S21_08_srd-web-export` | DE | The SRD as web chapters and a search index for the app | — | DE_S21_04_srd-generator |
+| `FE_S21_09_rules-reader-page` | FE | Read the SRD in the app like a wiki | — | DE_S21_08_srd-web-export, FE_S08_12_back-on-every-screen |
+| `OPS_S21_10_srd-pdf-in-app` | OPS | Download the SRD PDF from the app | — | OPS_S21_06_srd-release, FE_S21_09_rules-reader-page |
 
-**Done when:** every issue above is done; a release tag's GitHub release carries `Riftweave_SRD_<version>.pdf`, built in CI from that commit; no PDF is tracked in the repo; the coverage check passes.
+**Done when:** every issue above is done; a release tag's GitHub release carries `Riftweave_SRD_<version>.pdf`, built in CI from that commit; no PDF is tracked in the repo; the coverage check passes; the app reads the same SRD offline as a wiki at `/rules`, and downloads the release's PDF.
