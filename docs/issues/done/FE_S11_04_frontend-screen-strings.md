@@ -1,5 +1,6 @@
 #### FE_S11_04_frontend-screen-strings Localize the play and character screens
-- Status: review
+- Status: done
+- Merged: #508, 2026-11-27
 - Priority: medium
 - Needs: FE_S11_01_frontend-i18next
 - Modified: 2026-11-27
