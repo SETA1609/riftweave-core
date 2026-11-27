@@ -432,31 +432,47 @@ describe('the dev console (APP-48)', () => {
 
 describe('the navbar (FE_S08_17)', () => {
   function navbar() {
-    TestBed.configureTestingModule({ providers: [provideRouter(routes)] });
+    TestBed.configureTestingModule({ providers: [provideRouter(routes), { provide: SAVE_STORE, useValue: memoryStore() }] });
     const fixture = TestBed.createComponent(Navbar);
     fixture.detectChanges();
     return { fixture, element: fixture.nativeElement as HTMLElement };
   }
 
-  it('hold the home link, the language select, the theme toggle, and the GitHub link in a new tab', () => {
+  it('hold the brand home, the rules version, the main menu, the language, the theme, the burger, and GitHub', () => {
     const { element } = navbar();
     expect(element.querySelector('h1 a')!.getAttribute('href')).toBe('/');
-    const items = element.querySelector('.items')!;
-    expect(items.querySelector('rw-language-select')).not.toBeNull();
-    expect(items.querySelector('rw-theme-toggle')).not.toBeNull();
-    const github = items.querySelector<HTMLAnchorElement>('a.github')!;
+    expect(element.querySelector('.brand .tile svg')).not.toBeNull();
+    expect(element.querySelector('.version')!.textContent).toContain('Rules');
+    expect(Array.from(element.querySelectorAll('.links a')).map((link) => [link.textContent!.trim(), link.getAttribute('href')])).toEqual([
+      ['Start', '/play'], ['Characters', '/characters'], ['Settings', '/settings'], ['Modules', '/modules'], ['Network', '/network'], ['Import', '/import'],
+    ]);
+    const controls = element.querySelector('.controls')!;
+    expect(controls.querySelector('rw-language-select')).not.toBeNull();
+    expect(controls.querySelector('rw-theme-toggle')).not.toBeNull();
+    expect(controls.querySelector('button.burger')).not.toBeNull();
+    const github = controls.querySelector<HTMLAnchorElement>('a.github')!;
     expect([github.href, github.target, github.rel, github.getAttribute('aria-label')]).toEqual([REPOSITORY_URL, '_blank', 'noopener', 'Riftweave on GitHub (opens in a new tab)']);
-    expect(github.querySelector('svg')).not.toBeNull();
   });
 
-  it('open the burger dropdown, and close it on Escape, which goes no further, and on a click outside', () => {
+  it('show the game in play by its save, and nothing without one', async () => {
+    const { fixture, element } = navbar();
+    expect(element.querySelector('.character')).toBeNull();
+    const saves = TestBed.inject(Saves);
+    saves.current.set(await saves.begin('Mara', { rules_version: 'test', ruleset: {}, start: {}, log: [], actor: {} } as never));
+    fixture.detectChanges();
+    expect(element.querySelector('.character')!.textContent).toContain('Mara');
+  });
+
+  it('open the main menu and GitHub from the burger, and close it on Escape, which goes no further, and on a click outside', () => {
     const { fixture, element } = navbar();
     const burger = element.querySelector<HTMLButtonElement>('button.burger')!;
-    expect([burger.getAttribute('aria-expanded'), burger.getAttribute('aria-controls')]).toEqual(['false', 'rw-navbar-items']);
+    expect([burger.getAttribute('aria-expanded'), burger.getAttribute('aria-controls')]).toEqual(['false', 'rw-navbar-menu']);
+    expect(element.querySelector('#rw-navbar-menu')).toBeNull();
     burger.click();
     fixture.detectChanges();
     expect(burger.getAttribute('aria-expanded')).toBe('true');
-    expect(element.querySelector('#rw-navbar-items')!.classList).toContain('open');
+    const menu = element.querySelector('#rw-navbar-menu')!;
+    expect(Array.from(menu.querySelectorAll('a')).map((link) => link.textContent!.trim())).toEqual(['Start', 'Characters', 'Settings', 'Modules', 'Network', 'Import', 'GitHub']);
 
     const reachedDocument = vi.fn();
     document.addEventListener('keydown', reachedDocument);
@@ -473,6 +489,15 @@ describe('the navbar (FE_S08_17)', () => {
     fixture.detectChanges();
     document.body.click();
     fixture.detectChanges();
-    expect(burger.getAttribute('aria-expanded')).toBe('false');
+    expect(element.querySelector('#rw-navbar-menu')).toBeNull();
+  });
+
+  it('close the menu when one of its links is followed', () => {
+    const { fixture, element } = navbar();
+    element.querySelector<HTMLButtonElement>('button.burger')!.click();
+    fixture.detectChanges();
+    element.querySelector<HTMLAnchorElement>('#rw-navbar-menu a')!.click();
+    fixture.detectChanges();
+    expect(element.querySelector('#rw-navbar-menu')).toBeNull();
   });
 });

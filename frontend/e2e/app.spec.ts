@@ -72,12 +72,12 @@ test('the language select switches every string without a reload and keeps the c
   await expect(page.getByRole('button', { name: 'Einstellungen exportieren' })).toBeVisible();
   await expect(page).toHaveTitle('Einstellungen');
   await page.reload();
-  await expect(page.getByRole('button', { name: 'Sprache' })).toContainText('Deutsch');
+  await expect(page.getByRole('button', { name: 'Sprache' })).toContainText('DE');
   await page.getByRole('button', { name: 'Sprache' }).click();
   await page.getByRole('menuitemradio', { name: 'Español' }).click();
   await page.goto('/#/play');
   await expect(page.getByRole('link', { name: 'Creación de personaje' })).toBeVisible();
-  await expect(page.getByText('Reglas', { exact: false })).toBeVisible();
+  await expect(page.getByRole('contentinfo')).toContainText('Reglas');
 });
 
 test("with storage blocked the app still renders, in the system's mode", async ({ page }) => {
@@ -248,36 +248,103 @@ test('the navbar stays on top while a long screen scrolls (FE_S08_17)', async ({
   await expect(navbar.getByRole('link', { name: 'Riftweave', exact: true })).toBeInViewport();
 });
 
-test('at 1024px the navbar shows its items inline; the GitHub link opens the repository (FE_S08_17)', async ({ page }) => {
-  await page.setViewportSize({ width: 1024, height: 768 });
+/** The devices the navbar is laid out for: small phones, phones, tablets both ways, and a desktop. */
+const DEVICES: { name: string; width: number; height: number; burger: boolean; version: boolean }[] = [
+  { name: 'a small phone', width: 320, height: 568, burger: true, version: false },
+  { name: 'an iPhone', width: 375, height: 812, burger: true, version: false },
+  { name: 'a Pixel', width: 412, height: 915, burger: true, version: false },
+  { name: 'an iPad, upright', width: 768, height: 1024, burger: true, version: true },
+  { name: 'an iPad, on its side', width: 1024, height: 768, burger: false, version: true },
+  { name: 'a desktop', width: 1280, height: 800, burger: false, version: true },
+];
+
+for (const device of DEVICES) {
+  test(`on ${device.name} (${device.width}px) the navbar fits in one row with every control in reach (FE_S08_17)`, async ({ page }) => {
+    await page.setViewportSize({ width: device.width, height: device.height });
+    await page.goto('/');
+    const navbar = page.getByRole('navigation', { name: 'Main' });
+    await expect(navbar.getByRole('link', { name: 'Riftweave', exact: true })).toBeVisible();
+    await expect(navbar.getByRole('button', { name: 'Language' })).toBeVisible();
+    await expect(navbar.locator('rw-theme-toggle button')).toBeVisible();
+    // Nothing scrolls sideways, and the bar stays one row.
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+    const height = (await page.locator('rw-navbar').boundingBox())!.height;
+    expect(height).toBeGreaterThanOrEqual(56);
+    expect(height).toBeLessThanOrEqual(80);
+    // Every control is big enough to tap.
+    for (const control of await navbar.locator('.controls button:visible, .controls a:visible').all()) {
+      const box = (await control.boundingBox())!;
+      expect(Math.min(box.width, box.height), await control.getAttribute('aria-label') ?? '').toBeGreaterThanOrEqual(device.burger ? 44 : 32);
+    }
+    await expect(navbar.locator('.version')).toBeVisible({ visible: device.version });
+    await expect(navbar.getByRole('button', { name: 'Menu' })).toBeVisible({ visible: device.burger });
+    await expect(navbar.locator('.links').getByRole('link', { name: 'Characters' })).toBeVisible({ visible: !device.burger });
+    // The whole name shows, and inline every link of the main menu shows whole, the last one too.
+    expect(await navbar.locator('.name').evaluate((name) => name.scrollWidth <= name.clientWidth)).toBe(true);
+    if (!device.burger) {
+      const list = (await navbar.locator('.links').boundingBox())!;
+      for (const link of await navbar.locator('.links a').all()) {
+        const box = (await link.boundingBox())!;
+        expect(box.x + box.width, await link.textContent() ?? '').toBeLessThanOrEqual(list.x + list.width + 0.5);
+      }
+    }
+  });
+}
+
+test('on a phone the burger opens the main menu and GitHub; a link goes there, and Escape closes it (FE_S08_17)', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
   await page.goto('/');
   const navbar = page.getByRole('navigation', { name: 'Main' });
-  await expect(navbar.getByRole('button', { name: 'Menu' })).toBeHidden();
-  await expect(navbar.getByRole('button', { name: 'Language' })).toBeVisible();
-  const github = navbar.getByRole('link', { name: 'Riftweave on GitHub (opens in a new tab)' });
-  await expect(github).toBeVisible();
+  const burger = navbar.getByRole('button', { name: 'Menu' });
+  await burger.click();
+  await expect(burger).toHaveAttribute('aria-expanded', 'true');
+  const menu = page.locator('#rw-navbar-menu');
+  await expect(menu.getByRole('link', { name: 'Characters' })).toBeVisible();
+  const github = menu.getByRole('link', { name: 'Riftweave on GitHub (opens in a new tab)' });
   await expect(github).toHaveAttribute('href', 'https://github.com/SETA1609/riftweave-core');
   await expect(github).toHaveAttribute('target', '_blank');
   await expect(github).toHaveAttribute('rel', 'noopener');
+  // The menu fits on the screen.
+  const box = (await menu.boundingBox())!;
+  expect(box.x).toBeGreaterThanOrEqual(0);
+  expect(box.x + box.width).toBeLessThanOrEqual(375);
+  await page.keyboard.press('Escape');
+  await expect(menu).toHaveCount(0);
+  await burger.click();
+  await menu.getByRole('link', { name: 'Characters' }).click();
+  await expect(page).toHaveURL(/#\/characters$/);
+  await expect(menu).toHaveCount(0);
 });
 
-test('at 375px the burger opens a dropdown with the language select, the theme toggle, and GitHub; Escape closes it (FE_S08_17)', async ({ page }) => {
-  await page.setViewportSize({ width: 375, height: 700 });
+test('on a small phone the language shows only its flag, and on a phone its flag and code (FE_S08_17)', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 });
+  await page.goto('/');
+  const language = page.getByRole('navigation', { name: 'Main' }).getByRole('button', { name: 'Language' });
+  await expect(language.locator('.code')).toBeHidden();
+  await page.setViewportSize({ width: 375, height: 812 });
+  await expect(language.locator('.code')).toHaveText('EN');
+});
+
+test('on a desktop the main menu and GitHub show inline (FE_S08_17)', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto('/');
   const navbar = page.getByRole('navigation', { name: 'Main' });
-  const github = navbar.getByRole('link', { name: 'Riftweave on GitHub (opens in a new tab)' });
-  const burger = navbar.getByRole('button', { name: 'Menu' });
-  await expect(github).toBeHidden();
-  await burger.click();
-  await expect(burger).toHaveAttribute('aria-expanded', 'true');
-  await expect(navbar.getByRole('button', { name: 'Language' })).toBeVisible();
-  await expect(navbar.locator('rw-theme-toggle button')).toBeVisible();
-  await expect(github).toBeVisible();
-  await page.keyboard.press('Escape');
-  await expect(burger).toHaveAttribute('aria-expanded', 'false');
-  await expect(github).toBeHidden();
-  // A click outside closes it too.
-  await burger.click();
-  await page.locator('footer').click();
-  await expect(github).toBeHidden();
+  await navbar.locator('.links').getByRole('link', { name: 'Settings' }).click();
+  await expect(page).toHaveURL(/#\/settings$/);
+  await expect(navbar.locator('.controls').getByRole('link', { name: 'Riftweave on GitHub (opens in a new tab)' })).toBeVisible();
+});
+
+test('in German, the longest labels, an iPad on its side still shows the whole main menu in one row (FE_S08_17)', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('riftweave.locale', 'de'));
+  await page.setViewportSize({ width: 1024, height: 768 });
+  await page.goto('/');
+  const navbar = page.getByRole('navigation', { name: 'Hauptnavigation' });
+  await expect(navbar.locator('.links').getByRole('link', { name: 'Einstellungen' })).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  const list = (await navbar.locator('.links').boundingBox())!;
+  for (const link of await navbar.locator('.links a').all()) {
+    const box = (await link.boundingBox())!;
+    expect(box.x + box.width).toBeLessThanOrEqual(list.x + list.width + 0.5);
+  }
+  expect((await page.locator('rw-navbar').boundingBox())!.height).toBeLessThanOrEqual(80);
 });
