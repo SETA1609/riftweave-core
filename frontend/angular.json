@@ -15,7 +15,7 @@
             "browser": "src/main.ts",
             "index": "src/index.html",
             "tsConfig": "tsconfig.app.json",
-            "styles": ["src/styles.css"],
+            "styles": ["@fontsource/space-grotesk/latin-600.css", "@fontsource/space-grotesk/latin-700.css", "@fontsource/jetbrains-mono/latin-400.css", "@fontsource/jetbrains-mono/latin-600.css", "@fontsource/jetbrains-mono/latin-700.css", "src/styles.css"],
             "assets": [{ "glob": "**/*", "input": "public" }, { "glob": "{us,de,es}.svg", "input": "node_modules/flag-icons/flags/4x3", "output": "flags" }],
             "define": { "RIFTWEAVE_API": "null", "RIFTWEAVE_RULES_VERSION": "'dev'", "RIFTWEAVE_SERVICE_WORKER": "false", "RIFTWEAVE_DEV": "false" }
           },
