@@ -1,0 +1,3 @@
+### FE_S08_08_encounter-tracker-page An offline encounter tracker: initiative and whose turn it is (frontend)
+- Added: the web app's encounter tracker (GM tools): saved characters, monsters by key, and anyone at the table, with their derived initiative; the roll-off made at the start and kept in the step; the initiative order, the round and the surprise round, whose turn it is and who is next, and the first turn's partial pool; and, with a game in play, every start and end of turn as an `encounter` step of its session.
+- Changed: the Encounter tracker menu entry is no longer pending in the web app; it stays pending in the terminal app.

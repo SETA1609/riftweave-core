@@ -1,5 +1,7 @@
 # Sessions
 
+Modified: 2026-11-27
+
 A session is one run of the game as [docs/core/state.md](../core/state.md) defines it: a starting actor and a log of commands, with the current snapshot beside them. The `session` command holds no rule. It fills a step's input from the actor, calls the same core command as any other caller, and writes the result back.
 
 ```
@@ -86,6 +88,11 @@ refused            an id twice; a tie the rolls do not break
   normal turn in round 1. [A]
 - **A turn ends** with `turn_end`: the current actor joins `acted`, the turn moves on, and after the
   last actor the round goes up by one and the order starts again.
+- **The web app's tracker** (GM tools, Encounter tracker; FE_S08_08) adds saved characters,
+  monsters by key, and anyone at the table, makes the roll-off when the fight starts (rolling
+  again for everyone while a tie stands), and with a game in play runs `start` and `turn_end` as
+  steps of its session. The terminal app has no tracker. [V 2026-11-27, `app.spec.ts` and
+  `e2e/encounter.spec.ts` against the Go command, over both transports]
 
 ## The rules version
 
