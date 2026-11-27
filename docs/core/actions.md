@@ -13,9 +13,34 @@ pool  = 2 + floor(AGI / 3)
 cap   = 10
 carry = 2            at most 2 held AP carry into the next pool (held AP, below)
 rest  = refill
+floor = 1            the pool after its modifiers on ap is never under 1 nor over cap
+start = max(pool - 1, 2), capped at pool    a fight's first turn (combat_start: less 1, minimum 2)
 ```
 
-The size matches the derived `ap` function. A turn starts with at most `cap` AP, carried AP included. A short rest refills the pool. Fallout spends a small pool the same way.
+The size matches the derived `ap` function. A turn starts with at most `cap` AP, carried AP included.
+
+**What changes the pool** (owner request, 2026-11-19, GD_S19_07; borrowed from Fallout's Action Boy and Bruiser, and Divinity's Glass Cannon and Haste). Before, only cost reducers existed: level never raised the pool, and AGI only at 3, 6, and 9. Modifiers on `ap` now do, in the derived `ap` and in the `actions` command's `pool` (the command reads them from its `modifiers`):
+
+| Source | Kind | Emits | Trade |
+| --- | --- | --- | --- |
+| Battle Tempo | perk, level 12, once | `add ap 1` | none |
+| Heavy Handed | creation perk | `multiply melee_damage 1.25`, `add ap -1` | the Bruiser's deal |
+| Glass Frame | creation perk | `add ap 1`, `multiply hp 0.75` | the Glass Cannon's deal |
+| Hasted | condition | `add ap 2` | from the `haste` effect |
+
+- **Slowed** already makes every action cost 1 AP more (`action_cost`), so it gains no `ap` modifier: one penalty to AP, not two. [V 2026-11-23, `conditions/core.json`]
+- **Floor and cap:** the pool after its modifiers is at least `pool.floor` (1) and at most `pool.cap` (10). [A]
+ A short rest refills the pool. Fallout spends a small pool the same way.
+
+**A fight starts on a partial pool** (owner request, 2026-11-19, GD_S19_06; borrowed from Divinity: Original Sin 2, which starts a fight on 4 of a maximum 6). Each actor's first turn of a fight has `pool - 1` AP, at least 2 and never more than the pool, and nothing carried from before the fight; an ambusher acting in a surprise round has the full pool, also with nothing carried. Before, the actor first in initiative also acted on a full pool and a bank. [A]
+
+```
+actions input   start: combat     the first turn of a fight: available = start, carried refused
+                start: surprise   an ambusher's surprise round: available = pool, carried refused
+```
+
+- **The end of a fight** refills nothing: AP is per turn, and the next fight starts on the partial pool again. A short rest refills the pool, as before. [A]
+- **Perks and surprise:** a perk that changes the start is a later issue; the encounter tracker's `encounter_start` step (`BE_S08_07`) reads this rule for each actor. [A]
 
 ## Held AP
 
@@ -64,6 +89,7 @@ block 2, reserved, refund if unused
 command 2, an order to summons (commanding.md)
 aimed +2 on the attack cost
 draw 1, sheathe 1, drop 0, swap 1 (changing the loadout)
+reload 2, one round into a loading weapon (combat.md#ammunition); +1 with the other hand full, and inside a full attack from its budget (combat.md#ranged-loadouts)
 ```
 
 The attack, the jab, the full attack, and the circle cut cost what the loadout's row of `ruleset/data/attack_sequences/core.json` says (`by_loadout`); the `cost` in `actions/core.json` is the cost with one one-handed weapon, for a caller that knows no loadout. The full attack and the circle cut spend every AP left (`spends_all`). The strikes each makes are in [combat.md](combat.md#attacks-by-loadout) (GD_S05_01).
@@ -101,7 +127,7 @@ swap     1   to the other of two loadouts set up before the fight, a primary and
 
 Fallout Tactics charges 2 AP to swap and the Divinity board game 1 AP to equip; at a pool of 4 the cheaper price keeps a swap and an attack in one turn. [A] The Drilled Hands perk (AGI 5, ungated) emits `add swap -1`, so a swap costs 0; a draw is unchanged. [V 2026-11-21, `actions` vectors]
 
-A `stance` loadout event names the action that paid for it in `by`; the step costs that action's AP after the held perks' modifiers on it, and `by` must be a row with `changes_loadout`. Without `by` the change is free, as when an effect disarms the actor. A paid swap to sword and shield costs 1 AP and ends Fencer's Measure. [V 2026-11-21, `stance` vectors] Reloading is not a loadout change; it belongs to ranged combat (`GD_S17_02_ammunition-items-and-reloading`).
+A `stance` loadout event names the action that paid for it in `by`; the step costs that action's AP after the held perks' modifiers on it, and `by` must be a row with `changes_loadout`. Without `by` the change is free, as when an effect disarms the actor. A paid swap to sword and shield costs 1 AP and ends Fencer's Measure. [V 2026-11-21, `stance` vectors] Reloading is not a loadout change: it is the `reload` action, 2 AP, which loads one round into a `loading` weapon; Fast Reload emits `add reload -1`, as Sidestep does on `dodge` ([combat.md](combat.md#ammunition)).
 
 ## Cast AP by level
 
@@ -165,6 +191,44 @@ needs     = one of its ranges (any when it lists none), and a weapon with one of
   in a melee line and a ranged line. Disarm is the same `disarm` event as the arms called shot
   (`combat/situations.json`). The attack resolves as a normal attack first; a hit then makes the
   [maneuver attempt](#the-maneuver-attempt).
+
+## Ranged maneuvers
+
+Owner request, 2026-11-18 (GD_S17_06): sniping, multishot, suppressing fire, and holding fire, each a
+maneuver with its unlock perk. Names are our own (M5-67).
+
+| Maneuver | Command | AP | Attack | Damage | Rounds | Needs | Unlocked by |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Split Nock | `attack_sequence` | attack + 1 | −20, two strikes | as the weapon | 2 | a bow | Two on the String (Lv6, AGI 6, Bows 40) |
+| Held Breath | `combat` | aimed + 1 (6) | +20, crit window +5 | ×1.5 | 1 | `range_normal` 16 or more, no move this turn | Still Hunter (Lv10, PER 7, Bows, Crossbows, or Guns 50) |
+| Pinning Shot | `combat` | attack | −10 | as the weapon | 1 | ranged | Heads Down, tier 1 (Lv8, a ranged skill 40) |
+| Pinning Fire | `overwatch` | all left, at least attack + 1 | strikes −10; foes in the zone −20 | as the weapon | 3 | no `loading`, or two hand guns | Heads Down, tier 2 (Lv14) |
+| Trigger Watch | `overwatch` | attack, from held AP | −10 | as the weapon | 1 | ranged | Watchful Aim (Lv6, PER 6, a ranged skill 40) |
+
+```
+unlock        with attacker.perks or attacker.maneuvers given, the maneuver must be one the perks
+              unlock or the list names; a monster passes its sheet's maneuvers [A]
+unlocks_at_rank  a perk's map of a maneuver to the rank that unlocks it (Heads Down: Pinning Fire
+              at 2); read where ranks are known (overwatch, the monster sheet)
+strikes       a maneuver of more than one strike goes through attack_sequence (Split Nock)
+rounds        each maneuver states the rounds a use spends, so the ammunition count stays exact
+crit_window   added to the attacker's crit window (resolution's crit_window modifier)
+still         refused when the attacker moved this turn (combat's moved)
+range_normal_min  the weapon's range_normal (combat's attacker.range_normal) is at least this
+zone          Pinning Fire's radius 2: a foe in it attacks at −20 (for the caller); the first time
+              each foe moves inside it or into it, it takes one strike at −10, while rounds last
+hold          Trigger Watch reserves the attack's AP from held AP; the first foe that moves or
+              attacks in range draws the shot at −10, and the AP comes back when none does
+```
+
+- **Pinning Shot's rider** is the new `pinned` effect: the target loses 2 AP on its next turn and cannot
+  disengage. The caller applies it, as every maneuver's effects. [A]
+- **Overwatch** is `overwatch`'s job: it takes the maneuver, the shooter, the held AP or the AP left,
+  the foes, and the events the table saw (`move` or `attack`, in range or in the zone), and returns
+  each shot and what was spent. It is no opportunity attack and spends no reaction
+  ([combat.md](combat.md#opportunity-attacks)). [A]
+- **Monsters** may list these rows with no perk (a bandit crossbowman with Pinning Shot), as for melee
+  maneuvers; they pass them as `attacker.maneuvers`.
 
 ## The maneuver attempt
 

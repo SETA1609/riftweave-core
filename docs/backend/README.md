@@ -59,12 +59,14 @@ change under `ruleset/`, `backend/`, or `docs/backend/`. **A rule issue that add
 function updates the Python reference, the Go package, and the contract in the same pull
 request.** [V 2026-11-06, run in this change: 256 of 256 vectors pass in Go]
 
-**Human CLI.** The interactive mode (APP-05) is a terminal UI built with Charm: Bubble Tea, Bubbles, and Lip Gloss. It lives in `backend/cmd/` as an adapter and calls `core.Run` like every other adapter, so it holds no rule and the core and `internal/` never import Charm. The agent CLI must not import it either, so a script that calls the binary thousands of times pays no TUI start cost. [A: owner decision 2026-11-06; the exact libraries and whether `cmd/` needs its own `go.mod` to keep the core dependency-free are settled in APP-05]
+**A feature is a command, an MCP tool, and a web page** (owner, 2026-11-23, PO_S23_02): people use the web app, which runs the same core through WebAssembly, and agents use the JSON commands and `riftweave mcp`. No issue builds a terminal screen; `test_no_terminal_screens.py` keeps the open issues to that, and story S23 removes the human CLI below.
+
+**Human CLI (frozen, retired by S23).** The interactive mode (APP-05) is a terminal UI built with Charm: Bubble Tea, Bubbles, and Lip Gloss. It lives in `backend/cmd/` as an adapter and calls `core.Run` like every other adapter, so it holds no rule and the core and `internal/` never import Charm. The agent CLI must not import it either, so a script that calls the binary thousands of times pays no TUI start cost. [A: owner decision 2026-11-06; the exact libraries and whether `cmd/` needs its own `go.mod` to keep the core dependency-free are settled in APP-05]
 
 Modules: `core.Open` loads each module beside `ruleset/data`, and `internal/wuxing` reads the
 Wuxing module's data. Other modules load their manifest only. [V 2026-11-11]
 
-Sessions: the `session` command runs a chain of commands on one stored actor ([sessions.md](sessions.md)). Printouts: the `print` command renders a character sheet, a spell card, a monster stat block, or a condition card as printable HTML from those commands' results ([print.md](print.md)). Dev mode changes a session's actor directly for testing, only with `--dev` ([dev-mode.md](dev-mode.md)). Telemetry: every component reports in the OpenTelemetry format, off unless the settings file turns it on, and never about the player ([observability.md](observability.md)).
+Sessions: the `session` command runs a chain of commands on one stored actor ([sessions.md](sessions.md)). The bestiary: the `bestiary` command marks what the players know of each monster, kept in the session ([bestiary.md](bestiary.md)). Printouts: the `print` command renders a character sheet, a spell card, a monster stat block, or a condition card as printable HTML from those commands' results ([print.md](print.md)). Dev mode changes a session's actor directly for testing, only with `--dev` ([dev-mode.md](dev-mode.md)). Telemetry: every component reports in the OpenTelemetry format, off unless the settings file turns it on, and never about the player ([observability.md](observability.md)).
 
 ## Commands
 
@@ -102,6 +104,15 @@ Any command may return an error instead of its result:
 Rolls are inputs, as in the vectors: the caller rolls, or a client draws them from a seed. A backend that draws rolls itself echoes them in the result under `rolls`, so any call can be saved as a vector and replayed. The Python reference never rolls and neither does the Go core (APP-02): both take every roll as input, so no result has `rolls` yet. Drawing rolls from a seed belongs to the adapters and sessions (APP-03, APP-04). [A]
 
 ## Checks
+
+**The complexity gate and the benchmarks** (QA_S24_02, story S24). `tools/complexity` fails a non-test
+function over a cyclomatic complexity of 40 (1, each `if`, loop, `case`, and `&&` or `||`) or a nesting depth
+of 4; `tools/complexity/allow.txt` lists the functions over them on 2026-11-24, which may not grow and leave
+the list when they are back under, so it only shrinks. `go test ./...` runs it, so CI does. `BenchmarkCommand`
+(core) replays every vector of `combat`, `attack_sequence`, `casting`, `actions`, and `derived`, and
+`BenchmarkLoad` (internal/data) opens the ruleset; the `Go benchmarks` workflow runs them on request against a
+base and `tools/benchdiff` fails a slowdown over the threshold (5% by default). `go run ./tools/complexity -list`
+prints every function over the limits.
 
 `ruleset/scripts/test_contract.py` runs with the other tests in CI:
 

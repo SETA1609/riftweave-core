@@ -1,0 +1,13 @@
+#### FE_S25_07_current-character-profile-page Play as the current character (frontend)
+- Status: todo
+- Priority: high
+- Needs: BE_S25_04_current-character-profile, FE_S25_06_character-roster-page
+- Modified: 2026-11-24
+- Do: Owner request, 2026-11-24: later a single player selects the profile, and the profile is the current selected character.
+  - **Selecting:** from the roster (FE_S25_06), from the end of the creation flow (FE_S25_05), or from a switcher in the header, which shows the current character's name and level and lists the others. The profile is kept in IndexedDB beside the character list, as `common.json#/definitions/profile`.
+  - **Playing as it:** the play pages (the sheet, the attack form, the playthrough, a new session) start from the profile's character, without asking which one; a session's changes are written back to that character with a new revision when the player saves.
+  - **No profile:** a play page with no current character asks the player to pick one from the roster or make a new one, and goes back where it was after.
+- Keys: the header switcher; the profile store in the frontend
+- Files: ~12 (frontend/src/app/profile.ts and its spec, frontend/src/app/ui/profile-switcher.*, frontend/src/app/app.html, frontend/src/app/sheet.ts, attack.ts, playthrough.ts, frontend/e2e/profile.spec.ts, frontend/src/locales/*.json, docs/backend/frontend.md)
+- See: docs/backend/files.md#the-character-list, docs/backend/sessions.md
+- Done when: a Playwright spec makes a character, plays as it from the end of the flow, sees its name in the header, opens the attack form and the sheet with it, switches to another character in the header, and with no profile is asked to pick one.

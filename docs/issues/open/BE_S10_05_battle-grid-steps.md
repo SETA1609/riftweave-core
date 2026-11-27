@@ -2,8 +2,8 @@
 - Status: todo
 - Priority: low
 - Needs: BE_S10_03_gm-approval-supabase, BE_S08_07_encounter-tracker-cli, GD_S19_02_movement-distance-per-ap
-- Was: APP-35, split by role on 2026-11-18: this is the backend half (the contract, the Go core, the vectors, and the CLI and TUI with their UX); the browser half is `FE_S10_06_battle-grid-page`
-- Modified: 2026-11-21
+- Was: APP-35, split by role on 2026-11-18: this is the backend half (the contract, the Go core, the vectors, and the MCP tool; nothing for the retired terminal app, PO_S23_02); the browser half is `FE_S10_06_battle-grid-page`
+- Modified: 2026-11-23
 - Do: Owner request, 2026-11-16: online is an addition, not a requirement. Rules always resolve on each device's own core (APP-14), offline or not; a room (APP-17, APP-18) adds what a table needs to share when its players are apart. **Battle grid:** a square grid (one cell is one square; a `move` covers floor(speed / 2) squares, which the `actions` command returns as `squares`, [actions.md](../../core/actions.md#how-far-a-move-goes) [V 2026-11-21]) with a token per character and monster; the GM sets its size and may hide monsters players have not seen (APP-29's marks); a player drags only their own token, and a move is a step the GM approves when the room says so (APP-18). Token positions are session steps, so they replay [A]; pointing at a cell stays an ephemeral broadcast (APP-18). **Initiative and turn:** APP-34's encounter list, current turn, and round are shown to every member from the room's log, and the player whose turn it is is highlighted on every screen. Both apps show the grid: the CLI draws a visible grid in the terminal (cells, tokens by initial and colour, the current turn highlighted) and moves a token with the arrow keys (owner, 2026-11-16).
 - Keys: grid size and token positions as session steps; the room's encounter view
 - Files: ~8 (backend/contract/session.json, the session package, ruleset/tests/vectors/session.json, ruleset/scripts/kernel_reference.py, supabase/migrations/, docs/backend/rooms.md, docs/backend/sessions.md, changes/BE_S10_05_battle-grid-steps.md) [A]

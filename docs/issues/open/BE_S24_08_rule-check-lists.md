@@ -1,0 +1,12 @@
+#### BE_S24_08_rule-check-lists The casting and creation checks as lists of named rules
+- Status: todo
+- Priority: medium
+- Needs: BE_S24_03_modifier-applier
+- Modified: 2026-11-24
+- Do: Owner request, 2026-11-24. `casting.Run` (complexity 48) and `creation.check` (37, 164 lines) run every rule check inline.
+  - **A rule list:** each check is a named function (`known`, `colorSkill`, `reagents`, `concentration` for a cast; `pointBuy`, `skillCaps`, `background`, `perks` for creation) in a slice run in order, the shape `takePerk` already has.
+  - **The same errors in the same order**, so the vectors do not change.
+- Keys: the two rule lists
+- Files: ~6 (backend/internal/casting/casting.go, backend/internal/casting/checks.go, backend/internal/creation/creation.go, backend/internal/creation/checks.go, docs/decisions/BE_S24_08_rule-check-lists.md, changes/BE_S24_08_rule-check-lists.md)
+- See: backend/internal/progression/progression.go
+- Done when: `casting.Run` leaves the allow list; `creation.check` is under 60 lines; all casting and creation vectors pass.

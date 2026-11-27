@@ -7,7 +7,7 @@ Run `python ruleset/scripts/contract_diagram.py --write` after a contract change
 `test_contract_diagram.py` fails until the page matches. What the contract is:
 [README.md](README.md#commands) and [contract.md](../core/contract.md).
 
-28 commands. Each is a class diagram of its input and its result; a field whose type is
+32 commands. Each is a class diagram of its input and its result; a field whose type is
 a shared type of `common.json` links to it, and the shared types are drawn once, below.
 
 ## Shared types
@@ -43,8 +43,19 @@ classDiagram
         ref race
         List~ref~ tag_skills
     }
+    class encounter {
+        List~string~ acted
+        List~string~ order
+        integer round
+        List~string~ surprise
+        integer turn
+    }
     class error {
         string error
+    }
+    class held_template {
+        enum how
+        string template
     }
     class item_instance {
         List~appliedEffect~ added_effects
@@ -53,6 +64,11 @@ classDiagram
         ref material
         integer quantity
         enum size
+    }
+    class knowledge_mark {
+        enum level
+        string monster
+        string player
     }
     class party_member {
         stored_actor actor
@@ -66,7 +82,9 @@ classDiagram
     }
     class session {
         stored_actor actor
+        object bestiary
         boolean dev
+        encounter encounter
         List~session_step~ log
         List~party_member~ party
         string rules_version
@@ -96,6 +114,7 @@ classDiagram
         skills skills
         List~key~ spells
         List~key~ tags
+        List~held_template~ templates
         integer xp
     }
     actor --> attributes : attributes
@@ -103,11 +122,13 @@ classDiagram
     party_member --> character : character
     party_member --> stored_actor : actor
     party_member --> stored_actor : start
+    session --> encounter : encounter
     session --> party_member : party
     session --> session_step : log
     session --> stored_actor : actor
     session --> stored_actor : start
     stored_actor --> attributes : attributes
+    stored_actor --> held_template : templates
     stored_actor --> item_instance : inventory
     stored_actor --> pools : growth
     stored_actor --> skills : skills
@@ -122,7 +143,7 @@ What each session step reads from the stored actor and writes back, from the tab
 flowchart LR
     actor[("stored actor")]
     derived["derived"]
-    actor -- "fills: actor, modifiers (the actor's, below)" --> derived
+    actor -- "fills: actor, modifiers (the actor's, below), and templates (the held character templates, when any)" --> derived
     derived -- "writes back: nothing" --> actor
     combat["combat"]
     actor -- "fills: attacker.attributes, attacker.skill (the equipped weapon's skill), and modifiers (the actor's on that skill); or with as: defender defender.hp, defender.attributes, defender.armor_dr (the worn armor), and defender.modifiers (the actor's)" --> combat
@@ -163,6 +184,7 @@ classDiagram
         integer held_spent
         modifiers modifiers
         integer speed
+        enum start
     }
     class actions_result {
         integer available
@@ -179,6 +201,22 @@ classDiagram
     actions_input --> actor : actor
 ```
 
+## ammunition
+
+Recover the rounds fired in a fight.
+
+```mermaid
+classDiagram
+    class ammunition_input {
+        object fired
+        modifiers modifiers
+        enum operation
+    }
+    class ammunition_result {
+        object recovered
+    }
+```
+
 ## attack_sequence
 
 One attack action by loadout: the attack, the jab, the full attack, or the circle cut, each strike its own roll through the combat pipeline.
@@ -189,12 +227,14 @@ classDiagram
         enum action
         boolean after_block
         boolean after_parry
+        object ammunition
         integer ap
         object attacker
         object damage
         boolean disengaged
         List~object~ foes
         loadout loadout
+        key maneuver
         modifiers modifiers
         object off_damage
         integer reactions_used
@@ -205,13 +245,16 @@ classDiagram
     }
     class attack_sequence_result {
         string action
+        object ammunition
         integer ap
         boolean fired
         List~integer~ hp
         integer lost
         enum reason
+        integer reloads
         string sequence
         integer stamina
+        integer stopped
         List~object~ strikes
     }
 ```
@@ -236,6 +279,33 @@ classDiagram
         object row
         List~object~ spells
     }
+```
+
+## bestiary
+
+Mark what the players know of each monster, and show the bestiary as the GM or a player sees it.
+
+```mermaid
+classDiagram
+    class bestiary_input {
+        object check
+        List~knowledge_mark~ knowledge
+        enum level
+        string monster
+        List~string~ monsters
+        enum operation
+        string player
+        boolean players_see_only_known
+    }
+    class bestiary_result {
+        object check
+        List~object~ entries
+        List~knowledge_mark~ knowledge
+        enum level
+    }
+    class knowledge_mark
+    bestiary_input --> knowledge_mark : knowledge
+    bestiary_result --> knowledge_mark : knowledge
 ```
 
 ## casting
@@ -305,19 +375,26 @@ One attack from the roll to the HP lost: one attack roll read against the defend
 ```mermaid
 classDiagram
     class combat_input {
+        object ammunition
         object attacker
+        object burst
+        integer burst_distance
         key called_shot
         object damage
         object defender
         enum delivery
+        string grenade
         loadout loadout
         key maneuver
         modifiers modifiers
+        boolean moved
         enum range
+        string round
         List~key~ situations
         boolean summoning
     }
     class combat_result {
+        object ammunition
         integer ap
         integer block_rate
         boolean blocked
@@ -447,6 +524,7 @@ classDiagram
     class derived_input {
         actor actor
         modifiers modifiers
+        List~held_template~ templates
     }
     class derived_result {
         integer ap
@@ -458,7 +536,9 @@ classDiagram
         integer toxicity_limit
     }
     class actor
+    class held_template
     derived_input --> actor : actor
+    derived_input --> held_template : templates
 ```
 
 ## dev
@@ -520,6 +600,27 @@ classDiagram
     class cost
     economy_input --> cost : cost
     economy_input --> cost : item_cost
+```
+
+## encounter
+
+Run a fight offline: the initiative order, whose turn it is, and the round.
+
+```mermaid
+classDiagram
+    class encounter_input {
+        List~object~ combatants
+        encounter encounter
+        enum operation
+    }
+    class encounter_result {
+        object current
+        encounter encounter
+        string next
+    }
+    class encounter
+    encounter_input --> encounter : encounter
+    encounter_result --> encounter : encounter
 ```
 
 ## formula
@@ -640,6 +741,30 @@ classDiagram
         List~ref~ riders
         object skills
         integer sp
+    }
+```
+
+## overwatch
+
+Hold a shot or a zone under fire until the shooter's next turn, and say which foes draw a strike.
+
+```mermaid
+classDiagram
+    class overwatch_input {
+        integer ap
+        List~object~ events
+        loadout loadout
+        key maneuver
+        integer rounds
+        object shooter
+    }
+    class overwatch_result {
+        integer ap
+        integer ap_returned
+        integer rounds
+        integer rounds_left
+        List~object~ shots
+        List~object~ zone_attacks
     }
 ```
 
@@ -862,12 +987,13 @@ classDiagram
 
 ## stored_actor
 
-Check a stored actor and return it unchanged, so a save round-trips.
+Check a stored actor and return it unchanged, so a save round-trips; or make a new one from attributes, with its pools full.
 
 ```mermaid
 classDiagram
     class stored_actor_input {
         stored_actor actor
+        object new
     }
     class stored_actor_result {
         stored_actor actor

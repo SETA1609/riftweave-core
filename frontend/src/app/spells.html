@@ -1,0 +1,54 @@
+<rw-card [title]="'spells.title' | t">
+  <div class="load">
+    <rw-text-field [label]="'spells.to_load' | t" [(value)]="toLoad" />
+    <button type="button" class="btn btn-outline" (click)="load(toLoad())">{{ 'spells.load' | t }}</button>
+  </div>
+  <rw-text-field [label]="'spells.key' | t" [value]="draft().key" (valueChange)="setField('key', $event)" />
+  <rw-text-field [label]="'spells.label' | t" [value]="draft().label" (valueChange)="setField('label', $event)" />
+  <rw-text-field [label]="'spells.description' | t" [value]="draft().description" (valueChange)="setField('description', $event)" />
+  <rw-select-field [label]="'spells.color' | t" [options]="colorOptions" [value]="draft().color" (valueChange)="setField('color', $event)" />
+  <rw-number-field [label]="'spells.level' | t" [min]="1" [value]="draft().level" (valueChange)="setField('level', $event)" />
+  <rw-text-field [label]="'spells.delivery' | t" [value]="draft().delivery ?? ''" (valueChange)="setField('delivery', $event)" />
+  <rw-alert [message]="error()" />
+</rw-card>
+
+<rw-card [title]="'spells.effects' | t">
+  @for (effect of draft().effects; track $index) {
+    <fieldset class="effect">
+      <rw-text-field [label]="'spells.effect' | t: { number: $index + 1 }" [value]="effect.effect" (valueChange)="setEffect($index, 'effect', $event)" />
+      <rw-number-field [label]="'spells.magnitude' | t" [value]="effect.magnitude ?? 0" (valueChange)="setEffect($index, 'magnitude', $event)" />
+      <rw-number-field [label]="'spells.duration' | t" [min]="0" [value]="effect.duration ?? 0" (valueChange)="setEffect($index, 'duration', $event)" />
+      <rw-select-field [label]="'spells.target' | t" [options]="targetOptions" [value]="effect.target ?? ''" (valueChange)="setEffect($index, 'target', $event)" />
+      <rw-number-field [label]="'spells.radius' | t" [min]="0" [value]="effect.radius ?? 0" (valueChange)="setEffect($index, 'radius', $event)" />
+      <button type="button" class="btn btn-outline btn-sm" (click)="removeEffect($index)">{{ 'spells.remove_effect' | t }}</button>
+    </fieldset>
+  } @empty {
+    <p>{{ 'spells.no_effects' | t }}</p>
+  }
+  <div class="add">
+    <rw-select-field [label]="'spells.pool' | t" [options]="poolOptions()" [(value)]="picked" />
+    <button type="button" class="btn btn-outline" (click)="addEffect()">{{ 'spells.add_effect' | t }}</button>
+  </div>
+</rw-card>
+
+<rw-card [title]="'spells.cost' | t">
+  @if (cost(); as shown) {
+    <rw-key-value-list [entries]="$any(shown)" />
+  } @else {
+    <p>{{ 'spells.no_cost' | t }}</p>
+  }
+</rw-card>
+
+<rw-card [title]="'spells.problems' | t">
+  @if (checked(); as result) {
+    @for (problem of result.problems; track $index) {
+      <p class="problem">{{ problem.path }}: {{ problem.message }}</p>
+    } @empty {
+      <p>{{ 'spells.no_problems' | t }}</p>
+    }
+    @for (warning of result.warnings; track $index) {
+      <p class="warning">{{ warning.path }}: {{ warning.message }}</p>
+    }
+  }
+  <button type="button" class="btn btn-primary" (click)="download()">{{ 'spells.download' | t }}</button>
+</rw-card>

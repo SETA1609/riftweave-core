@@ -201,6 +201,17 @@ func buildOpenAPI(schemaPath string) ([]byte, error) {
 		object(map[string]any{"session": ref("session"), "step": ref("session_step")}, "session", "step"), sessionResult)
 	paths["/v1/sessions/replay"] = post("session_replay", "Rebuild a session from its start and log.",
 		object(map[string]any{"session": ref("session")}, "session"), sessionResult)
+	var health = func(operationID, summary string, schema map[string]any) map[string]any {
+		return map[string]any{"get": map[string]any{"operationId": operationID, "summary": summary,
+			"responses": map[string]any{"200": map[string]any{"description": summary, "content": map[string]any{"application/json": map[string]any{"schema": schema}}}}}}
+	}
+	var status = func(value string) map[string]any {
+		return object(map[string]any{"status": map[string]any{"type": "string", "const": value}}, "status")
+	}
+	paths[pathHealth] = health("health", "The process answers (docs/backend/api.md#health).", status("ok"))
+	paths[pathReady] = health("ready", "The ruleset loaded, so commands answer.", status("ready"))
+	paths[pathVersion] = health("version", "The build and the rules version the core runs.",
+		object(map[string]any{"build": map[string]any{"type": "string"}, "rules_version": map[string]any{"type": "string"}}, "build", "rules_version"))
 	paths["/v1/commands"] = map[string]any{"get": map[string]any{
 		"operationId": "list_commands", "summary": "Every command with its contract summary.",
 		"responses": map[string]any{"200": map[string]any{"description": "The commands, sorted by name.", "content": map[string]any{

@@ -1,0 +1,20 @@
+#### GD_S19_07_ap-perks-traits-haste-slow Perks, creation traits, and conditions that change the AP pool
+- Status: done
+- Merged: #459, 2026-11-24
+- Priority: medium
+- Needs: GD_S19_05_ap-bank-cap-and-guard
+- Modified: 2026-11-23
+- Do: Owner request, 2026-11-19 (borrowed from Fallout's Action Boy and Bruiser, and Divinity's Lone Wolf, Glass Cannon, and Haste).
+  - **The gap:** only cost reducers exist, and nothing raises the pool. Level never does, and AGI does only at 3, 6, and 9, so AGI points in between are wasted for AP [V 2026-11-19, `docs/core/actions.md#pool`].
+  - **A late perk:** an Action Boy-like perk, `add ap 1`, at level 12 or above, once [A].
+  - **Two creation traits** (`type: creation`, chosen only at creation, `docs/modules/character-creation.md`) [A]:
+    - one in the shape of Bruiser: more melee damage, `add ap -1`;
+    - one in the shape of Glass Cannon: more AP, less HP.
+  - **Conditions:**
+    - a new `hasted` condition, `add ap 2`;
+    - the existing `slowed` gains `add ap -2` if it does not already change AP, read in the spec step [U].
+  - The pool keeps a floor of 1 and its cap of 10.
+- Keys: the perk and the two traits in `features/core.json`, `hasted` in `conditions/core.json`
+- Files: ~7 (docs/core/actions.md, docs/core/derived.md, ruleset/data/features/core.json, ruleset/data/conditions/core.json, ruleset/tests/vectors/derived_examples.json, ruleset/tests/vectors/progression.json, docs/modules/character-creation.md)
+- See: docs/core/derived.md, ruleset/data/derived/core.json, ruleset/data/conditions/core.json
+- Done when: `derived` vectors give the pool with each perk, trait, and condition, at the floor and the cap; `take_perk` refuses the perk below its level.

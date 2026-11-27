@@ -173,7 +173,7 @@ crossed      a defender holding a weapon in each hand adds its modifiers on two_
 | Carry Through | Carry Through | 6 | `grant carry_through` | one carry per action |
 | Carry Through | Reaping Arc | 12 | `grant reaping_arc` | a carry for every drop |
 | Carry Through | Circle Cut | 18 | `grant can_circle_cut` | the circle cut action |
-| Extra strikes | Follow-Up | 6 | `add full_attack_strikes 1` | a full attack strikes once more at -20 |
+| Extra strikes | Follow-Up | 6 | `add full_attack_strikes 1` | a full attack strikes once more at -20, melee or ranged |
 | Extra strikes | Press On | 18 | `add full_attack_strikes 1` | and once more at -30 |
 | Two weapons | Off-Hand Drill | 4 | `add mainhand_penalty 10`, `add offhand_penalty 10` | both two-weapon penalties are 10 smaller |
 | Two weapons | Crossed Guard | 8 | `add two_weapon_evasion_band 5` | the evasion band +5 while holding two weapons |
@@ -181,6 +181,53 @@ crossed      a defender holding a weapon in each hand adds its modifiers on two_
 | Two weapons | Scissor Cut | 20 | `grant scissor_cut` | the off-hand dice once more |
 
 [V 2026-11-19, `attack_sequence.json` and `combat.json` vectors in Python and Go]
+
+### Ranged loadouts
+
+Owner request, 2026-11-18 (GD_S17_05): the full attack and the extra-strike perks work at range.
+Four hand kinds join the vocabulary for ranged weapons: a main hand `bow`, `hand_gun` (a hand
+crossbow or a pistol), `long_gun` (a two-handed crossbow, the arquebus, or the blunderbuss), or
+`light_thrown` (a light thrown weapon), and an off hand `hand_gun` or `light_thrown`. The four are
+`ranged_hands` in `attack_sequences/core.json`: a strike with one of them is a `ranged` strike
+(`combat`'s `range`), so a situation reads its `ranged` row (shooting into melee). [A]
+
+| Loadout | Attack AP | Strikes |
+| --- | --- | --- |
+| a bow | 3 | main 0 |
+| a hand crossbow or one pistol, off hand empty, a shield, or a buckler | 2 | main 0 |
+| a two-handed crossbow or a long gun | 3 | main 0 |
+| two pistols or two hand crossbows | 3 | main -10, off -20 |
+| one light thrown weapon in each hand | 3 | main -10, off -20 |
+| a light or one-handed melee weapon and a pistol, a hand crossbow, or a light thrown weapon (the mixed hand) | 4 | main -10, off -20 |
+
+```
+foes[i].in_reach   false: the foe is in range, not in reach (default true)
+aim                a melee strike goes to a foe in reach; a ranged strike to any foe
+carry              a melee strike carries to the first standing foe in reach, a ranged one to the
+                   first standing foe (carry_through and reaping_arc read "in range" at range)
+ammunition         optional, per hand: { main: { rounds, loaded }, off: { rounds, loaded } }
+                   each ranged strike of a counted hand spends one round
+loading            a loading hand fires once, then reloads before its next strike
+reload AP          the reload action's cost (2, Fast Reload -1), +1 when the other hand holds
+                   anything (full_attack.one_handed_reload_extra)
+in a full attack   a reload spends AP from the budget over the row's attack AP; a reload that
+                   does not fit ends the full attack, and its strikes left are stopped
+in an attack       a loading hand that is not loaded, or a hand with no rounds left, is an error
+result             ammunition: the rounds left per counted hand; reloads; stopped
+opportunity        a ranged main hand makes no opportunity attack (reason ranged)
+```
+
+- **The mixed hand** (owner 2026-11-18, the ranger): the melee strike goes to a foe in reach and
+  the ranged strike to any target in range, so one attack can cut one foe and shoot another. A
+  shot at a foe an ally is fighting takes the `shooting_into_melee` situation, as any shot does;
+  it reads only on the ranged strike. GD_S17_13's perks soften the penalty and the reload. [A]
+- **The extra-strike ladder is any weapon:** `follow_up` and `press_on` add main-hand strikes,
+  melee or ranged; a loading weapon's added strike needs a reload first. `circle_cut` stays
+  melee. [A]
+- **No opportunity attack at range** (owner, 2026-11-23, from GD_S19_04): a shooter's answer to a
+  moving foe is Trigger Watch (GD_S17_06); GD_S17_13's `ready_steel` is the perk exception.
+- **Aimed and full:** a full attack cannot be aimed; the held-breath maneuver (GD_S17_06) is the
+  aimed shot that spends a turn. [A]
 
 ## Fighting stances
 
@@ -269,6 +316,128 @@ not fired    nothing is spent: no reaction
 **Overwatch is not an opportunity attack** (owner, 2026-11-23). Overwatch is the ranged attacker's: AP held on its turn fires when an enemy moves within its weapon's range. It is paid from held AP, spends no reaction, and needs the ranged loadouts: it is the Trigger Watch maneuver of GD_S17_06_ranged-maneuvers.
 
 The `attack_sequence` command runs it as the action `opportunity`, with `disengaged` and `reactions_used`, and returns `fired`, the `reason` it did not fire (`disengaged` or `no_reaction_left`), and `ap` and `stamina` 0. [V 2026-11-23, `attack_sequence` vectors in Python and Go]
+
+## Ammunition
+
+Owner request, 2026-11-18 (GD_S17_02). A weapon with the `ammunition` property fires rounds of one
+**kind**, which its base names in `weapon.ammo`: `arrow` (bows), `bolt` (crossbows), `bullet`
+(ball and powder: the pistol and the arquebus), `scatter` (the blunderbuss's charge), or `stone`
+(the sling). The kinds are one vocabulary, `ammoKind` in `schema.json`. [A]
+
+**Ammunition rows** are equipment items of type `ammunition` in `ruleset/data/equipment/ammunition.json`,
+so a row is `core:ammunition/<key>`. Each names its `kind` and the `count` a bundle holds: 20
+arrows, 20 bolts, 10 bullets, 10 scatter charges, 20 sling stones. A row may change the strike's
+damage type (`damage_type`) and add effects on a hit (`effects`, `appliedEffect`); plain
+ammunition changes nothing. Elemental rounds (GD_S17_04) and conjured rounds (GD_S17_11) are such
+rows. [A]
+
+```
+combat input   ammunition: { rounds, loaded }      optional, for a weapon that fires or throws
+               rounds    the rounds of the weapon's kind the attacker carries (a thrown weapon: how many)
+               loaded    a loading weapon: whether it holds a round
+refused        rounds 0                            no attack: "the weapon has no rounds left"
+               loading and not loaded              no attack: "the weapon must reload first"
+result         ammunition: { rounds: rounds - 1, loaded: false for a loading weapon }
+```
+
+- **Spending:** each strike with an `ammunition` weapon spends one round of its kind; a `thrown`
+  weapon is its own ammunition and spends itself. Without the `ammunition` input the attack runs
+  as before: a table that does not count plain rounds leaves it out. [A]
+- **Loading:** a `loading` weapon (the hand crossbow, the pistol, the arquebus, the blunderbuss)
+  holds one round and must reload after every shot: the `reload` action, 2 AP
+  ([actions.md](actions.md#costs)), which Fast Reload lowers by 1 (`add reload -1`). A weapon
+  without `loading` draws as part of its attack. The repeating crossbow has no `loading`: its
+  magazine feeds each attack, and its size is not counted. [A]
+- **Recovery:** after a fight, the `ammunition` command's `recover` gives back the share of each
+  kind that `ruleset/data/combat/ammunition.json` names, rounded down: half the arrows and bolts,
+  none of the bullets, scatter, and stones, and every thrown weapon. GD_S17_10's perks change that
+  row, so it is data, not prose. [A]
+- **At a table:** counting rounds is the rule; a table may stop counting plain ammunition and count
+  only the special rounds, by leaving out the `ammunition` input for plain ones. [A]
+
+## Elemental rounds
+
+Owner request, 2026-11-18 (GD_S17_04). An **elemental round** is an ammunition row with a
+`burst_radius`: a bolt or a bullet that strikes as the weapon does and then bursts like a grenade,
+but at the weapon's damage instead of a grenade's fixed dice. The burst is a rule of the row
+(`burst_radius`, `damage_type`, `effects`), read by `combat`, so a module's rounds and the Bound
+Ammunition of GD_S17_11 reuse it. [A]
+
+```
+combat input   round      core:ammunition/<key>: the round fired; its damage_type replaces the
+                          weapon's, and its effects land on a hit that is not evaded
+               burst      { distance, crit }: with a bursting round, this defender is caught in the
+                          burst, not the shot's target: an area roll; distance over the radius is
+                          outside; crit is the shot's crit, which doubles the burst's damage too
+refused        a round that is no ammunition row; a burst with a round that does not burst, or
+               with no round; a round with a grenade
+```
+
+- **The shot** is a normal `single` attack at the target, with the weapon's skill, range, and every
+  attack modifier. On a hit the target takes the weapon's damage roll and bonuses as the element.
+- **The burst**, hit or miss, catches every other creature within `burst_radius` of the target:
+  each is one `combat` call with `burst`, the area roll of its own, and the **same damage roll** as
+  the shot's. On a miss the target is in the burst too, as `burst.distance` 0. [A]
+- **Bonuses carry:** the damage is the weapon's (its roll, its attribute modifier, its weapon
+  effects), and a critical shot's multiplier carries to every creature the burst hits. A burst roll
+  that would crit on its own does not double the damage again, and does not hit through the bands. [A]
+- **Riders:** the round's `effects` land on each creature the burst hits that does not evade, as a
+  grenade's do; they need the `grenade` channel (`CHANNEL_REQUIREMENTS`, `ammunition_burst`).
+- **Phase:** the element is a damage type, whose `phase_<phase>` tag gives the shot its phase for
+  the five-phase cycles; the round adds no field for it. [A]
+- **Which weapons:** bolts and bullets only. Bows keep precise single-target arrows; the
+  blunderbuss's scatter burst along its cone is GD_S17_08's. [A]
+
+| Round | Kind | Bundle | Element | Burst radius | On a hit |
+| --- | --- | --- | --- | --- | --- |
+| Fire Bolts, Fire Bullets | bolt, bullet | 5 | fire | 1 | `burn` |
+| Frost Bolts, Frost Bullets | bolt, bullet | 5 | frost | 1 | `slow` |
+| Thunder Bolts, Thunder Bullets | bolt, bullet | 5 | thunder | 2 | `stagger` |
+| Acid Bolts, Acid Bullets | bolt, bullet | 5 | acid | 1 | `sunder_armor` |
+
+A round costs about three times its flask (a bundle of 5 at 120 gold, thunder 180). They are meant
+for merchants and loot from level 6; loot tables cannot list an ammunition row yet, and merchants
+have no level gate, so that is left to its own issue. [U]
+
+## Grenades
+
+Owner request, 2026-11-18 (GD_S17_03). A **grenade** is a consumable of type `grenade`, delivery
+`throw`, in `ruleset/data/equipment/consumables.json` (`core:consumable/<key>`). It is thrown with
+`throwing_weapons` as an `area` attack at a point in range (`range_normal` 6, `range_long` 18), and
+every creature within its `radius` of that point takes the area roll above: delivery, not damage
+type, decides the dodge. A throw costs the `attack` AP, not `item`, so it competes with a shot. [A]
+
+```
+combat input   grenade          core:consumable/<key>, a row of type grenade
+               burst_distance   squares from the burst point to this defender; default 0
+               damage.roll      the grenade's dice, rolled; damage.type may be left out
+refused        damage.ability, a maneuver, a called shot, or ammunition with a grenade
+               a delivery other than area; a grenade with no damage (the Smoke Pot)
+               a roll outside the grenade's dice, or a damage type that is not the grenade's
+result         outcome outside   burst_distance over the radius: no roll, no damage
+               effects           the grenade's riders on a hit, empty on a miss or an evade
+```
+
+- **Flasks are the weak end** (owner, 2026-11-23): an alchemist's flask deals 1d6, below an average
+  weapon's die; real grenades come later (their own issue) and must out-damage a flask. [A]
+- **Fixed damage:** the grenade's own dice and damage type, with no attribute, skill, material, or
+  weapon perk added. The thrower's skill decides the hit, not the damage; only the thrower perks of
+  GD_S17_09 change it. [A]
+- **Riders:** each grenade's `effects` are effects from the shared pool with the `grenade`
+  channel, which `validate.py` checks (`CHANNEL_REQUIREMENTS`). They land on a hit that is not
+  evaded, as a maneuver's do. [A]
+- **The Smoke Pot** deals no damage, so it is no attack: its effect fills the area and blocks
+  sight for 3 turns (`smoke_screen`, 15 seconds). [A]
+- **No toxicity:** a grenade is thrown, not drunk. Merchants stock them by level; crafting them
+  belongs to the alchemy module (GD_S15_02). [A]
+
+| Grenade | Damage | Radius | On a hit |
+| --- | --- | --- | --- |
+| Fire Flask | 1d6 fire | 1 | `burn` |
+| Frost Flask | 1d6 frost | 1 | `slow` |
+| Thunder Flask | 1d6 thunder | 2 | `stagger` |
+| Acid Flask | 1d6 acid | 1 | `sunder_armor` |
+| Smoke Pot | none | 2 | `smoke_screen`, 3 turns |
 
 ## Not covered
 

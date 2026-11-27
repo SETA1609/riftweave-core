@@ -192,10 +192,20 @@ class TestSpells(unittest.TestCase):
                 self.assertEqual(pool[key]["color"], color)
                 self.assertIn(key.removeprefix("damage_"), types)
 
-    def test_every_spell_costs_what_its_effects_cost(self):
+    def test_no_spell_stores_its_mana(self):
+        """DE_S02_05 (docs/modules/magic.md#cost-formula): the mana is a fact about the effects, so
+        every reader computes it; a row keeps only its reagents."""
         for row in spells():
             with self.subTest(spell=row["key"]):
-                self.assertEqual(row["cost"]["mana"], spell_cost(row))
+                self.assertNotIn("mana", row.get("cost", {}))
+
+    def test_the_schema_refuses_a_spell_that_writes_its_mana(self):
+        store = validate.load_store()
+        uri = (validate.SCHEMA_DIR / "spell.schema.json").resolve().as_uri()
+        row = {**spells()[0], "cost": {"mana": 6}}
+        error = validate.first_schema_error(validate.schema_validator(store[uri], uri, store), {"spells": [row]})
+        self.assertIsNotNone(error)
+        self.assertIn("mana", error.message)
 
     def test_every_effect_a_spell_may_draw_has_a_base_cost(self):
         for key, effect in effects().items():
@@ -206,7 +216,7 @@ class TestSpells(unittest.TestCase):
     def test_a_spell_is_affordable_at_its_level(self):
         for row in spells():
             with self.subTest(spell=row["key"]):
-                self.assertLessEqual(row["cost"]["mana"], pool(row["level"]))
+                self.assertLessEqual(spell_cost(row), pool(row["level"]))
 
     def test_over_time_costs_its_total(self):
         heal = lambda magnitude, duration: {"effects": [{"effect": "core:effect/restore_resource", "parameter": "health",
@@ -240,7 +250,7 @@ class TestSpellKnowledge(unittest.TestCase):
             with self.subTest(shape=shape):
                 row = rows[key]
                 self.assertEqual([applied["target"] for applied in row["effects"]], [target])
-                self.assertNotIn("reagents", row["cost"])
+                self.assertNotIn("reagents", row.get("cost", {}))
                 self.assertFalse(row.get("save") or row.get("concentration"))
 
     def test_a_template_costs_and_thresholds_what_crafting_it_does(self):
@@ -251,7 +261,7 @@ class TestSpellKnowledge(unittest.TestCase):
                 row = rows[key]
                 crafted = run_spellcraft({"operation": "craft", "spell": {"color": row["color"], "effects": row["effects"]},
                                           "caster": {"known": [a["effect"] for a in row["effects"]], "skills": {}}})
-                self.assertEqual((crafted["mana"], crafted["cast_threshold"]), (row["cost"]["mana"], row["cost"]["mana"]))
+                self.assertEqual((crafted["mana"], crafted["cast_threshold"]), (spell_cost(row), spell_cost(row)))
 
     def test_the_uncraftable_effects_and_the_excluded_mana(self):
         pool = effects()
@@ -358,7 +368,7 @@ class TestSpellsComposeFromABaseSpell(unittest.TestCase):
 
     BASE = {"key": "raise_thrall", "label": "Raise Thrall", "description": "A base.", "color": "black", "level": 8,
             "effects": [{"effect": "core:effect/summon", "parameter": "core:summon/undead", "magnitude": 1, "target": "ranged"}],
-            "cost": {"mana": 36, "reagents": ["core:ingredient/nightshade"]}, "save": {"attribute": "wil", "skill": "lore"}}
+            "cost": {"reagents": ["core:ingredient/nightshade"]}, "save": {"attribute": "wil", "skill": "lore"}}
 
     def resolve(self, rows):
         import validate
@@ -369,7 +379,7 @@ class TestSpellsComposeFromABaseSpell(unittest.TestCase):
 
     def test_a_composed_spell_is_its_base_plus_its_overrides_with_its_own_identity(self):
         row = {"key": "raise_lord", "label": "Raise Lord", "description": "Its own words.", "base": "core:spell/raise_thrall",
-               "overrides": {"level": 20, "cost": {"mana": 60}}}
+               "overrides": {"level": 20}}
         rows, errors = self.resolve([self.BASE, row])
         self.assertEqual(errors, [])
         composed = rows[1]
@@ -383,9 +393,9 @@ class TestSpellsComposeFromABaseSpell(unittest.TestCase):
 
     def test_an_override_of_one_field_of_a_block_keeps_the_blocks_other_fields(self):
         row = {"key": "raise_lord", "label": "Raise Lord", "base": "core:spell/raise_thrall",
-               "overrides": {"cost": {"mana": 60}, "save": {"skill": "insight"}}}
+               "overrides": {"cost": {"reagents": ["core:ingredient/glowcap"]}, "save": {"skill": "insight"}}}
         composed = self.resolve([self.BASE, row])[0][1]
-        self.assertEqual(composed["cost"], {"mana": 60, "reagents": ["core:ingredient/nightshade"]})
+        self.assertEqual(composed["cost"], {"reagents": ["core:ingredient/glowcap"]})
         self.assertEqual(composed["save"], {"attribute": "wil", "skill": "insight"})
 
     def test_a_base_that_does_not_resolve_or_names_a_base_fails(self):
@@ -400,8 +410,7 @@ class TestSpellsComposeFromABaseSpell(unittest.TestCase):
         self.assertEqual(raw["greater_unlock"].get("base"), "core:spell/unlock")
         composed = {row["key"]: row for row in self.resolve(list(raw.values()))[0]}["greater_unlock"]
         self.assertEqual(composed, {"key": "greater_unlock", "label": "Greater Unlock", "description": "Force a lock of level 15 or below.",
-                                    "color": "indigo", "level": 15, "effects": [{"effect": "core:effect/unlock", "magnitude": 15, "target": "touch"}],
-                                    "cost": {"mana": 30}})
+                                    "color": "indigo", "level": 15, "effects": [{"effect": "core:effect/unlock", "magnitude": 15, "target": "touch"}]})
 
 
 if __name__ == "__main__":

@@ -366,11 +366,16 @@ func checkSpell(ruleset *data.Ruleset, schema *jsonschema.Schema, refs map[strin
 	if len(drafted.Effects) > 0 {
 		if mana, cast, craftThreshold, err := spellcraft.Cost(ruleset, drafted.Effects); err == nil {
 			spell.Cost = &authorCost{Mana: mana, CastThreshold: cast, CraftThreshold: craftThreshold}
-			if drafted.Cost != nil && drafted.Cost.Mana != nil && int64(*drafted.Cost.Mana) != mana {
-				spell.Warnings = append(spell.Warnings, authorFinding{Check: "cost", Path: "/cost/mana",
-					Message: fmt.Sprintf("the authored mana is %d; the spellcraft formula gives %d", int64(*drafted.Cost.Mana), mana)})
-			}
 		}
+	}
+	// The mana is computed, never stored (DE_S02_05): a draft that writes it is refused, whatever
+	// the number, and the result's cost shows the formula's.
+	if drafted.Cost != nil && drafted.Cost.Mana != nil {
+		var message string = "a spell does not store its mana; leave out cost.mana"
+		if spell.Cost != nil {
+			message = fmt.Sprintf("%s (the spellcraft formula gives %d)", message, spell.Cost.Mana)
+		}
+		spell.Problems = append(spell.Problems, authorFinding{Check: "cost", Path: "/cost/mana", Message: message})
 	}
 	return spell
 }

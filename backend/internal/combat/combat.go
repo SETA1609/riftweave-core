@@ -6,6 +6,7 @@ package combat
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"math"
 	"slices"
@@ -32,6 +33,10 @@ type Attacker struct {
 	// Perks are the attacker's held perks (refs); a rider perk among them puts its maneuver
 	// on a plain attack (docs/core/actions.md#rider-perks).
 	Perks []string `json:"perks"`
+	// Maneuvers are the maneuvers a monster's sheet lists, which it makes with no perk.
+	Maneuvers []string `json:"maneuvers"`
+	// RangeNormal is the ranged weapon's range_normal, which Held Breath reads; nil when not given.
+	RangeNormal *int64 `json:"range_normal"`
 }
 
 // Defender is who takes the attack.
@@ -73,6 +78,9 @@ type Damage struct {
 
 // Input is the `combat` command's input.
 type Input struct {
+	// Ammunition is the rounds carried and whether a loading weapon holds one; nil, rounds are not
+	// counted (docs/core/combat.md#ammunition, GD_S17_02).
+	Ammunition *Ammunition         `json:"ammunition"`
 	Attacker   Attacker            `json:"attacker"`
 	Defender   Defender            `json:"defender"`
 	Damage     Damage              `json:"damage"`
@@ -88,6 +96,26 @@ type Input struct {
 	Summoning bool `json:"summoning"`
 	// Loadout is what the attacker holds: a maneuver's AP is then the loadout's attack AP.
 	Loadout *data.Loadout `json:"loadout"`
+	// Grenade is a core:consumable/<key> grenade thrown as an area attack, and BurstDistance the
+	// squares from its burst point to this defender (docs/core/combat.md#grenades, GD_S17_03).
+	Grenade       string `json:"grenade"`
+	BurstDistance int64  `json:"burst_distance"`
+	// Round is the core:ammunition/<key> row fired, and Burst, with a bursting round, this
+	// defender caught in its burst (docs/core/combat.md#elemental-rounds, GD_S17_04).
+	Round string `json:"round"`
+	Burst *Burst `json:"burst"`
+	// Moved is whether the attacker moved this turn; a still maneuver is refused after it.
+	Moved bool `json:"moved"`
+
+	// burstCrit is set inside a burst: the shot's crit, which alone doubles the burst's damage.
+	burstCrit *bool
+}
+
+// Burst is a defender caught in an elemental round's burst: its squares from the target, and
+// whether the shot crit.
+type Burst struct {
+	Distance int64 `json:"distance"`
+	Crit     bool  `json:"crit"`
 }
 
 // besideSummon is the situation of a summon attacking the same target, so one is out.
@@ -95,14 +123,16 @@ const besideSummon = "beside_summon"
 
 // Result is the outcome of the attack.
 type Result struct {
-	Outcome     string `json:"outcome"`
-	Target      int64  `json:"target"`
-	Margin      *int64 `json:"margin"`
-	Critical    bool   `json:"crit"`
-	Evaded      bool   `json:"evaded"`
-	Blocked     bool   `json:"blocked"`
-	EvasionRate int64  `json:"evasion_rate"`
-	BlockRate   int64  `json:"block_rate"`
+	// Ammunition is the rounds left after the strike, with the ammunition input only.
+	Ammunition  *Ammunition `json:"ammunition,omitempty"`
+	Outcome     string      `json:"outcome"`
+	Target      int64       `json:"target"`
+	Margin      *int64      `json:"margin"`
+	Critical    bool        `json:"crit"`
+	Evaded      bool        `json:"evaded"`
+	Blocked     bool        `json:"blocked"`
+	EvasionRate int64       `json:"evasion_rate"`
+	BlockRate   int64       `json:"block_rate"`
 	// ParryRate is a parrying stance's band, under the block band; Parried is a hit it stopped.
 	ParryRate int64 `json:"parry_rate"`
 	Parried   bool  `json:"parried"`
@@ -187,6 +217,9 @@ func maneuverOf(ruleset *data.Ruleset, input *Input) (*data.Maneuver, error) {
 	if err != nil {
 		return nil, err
 	}
+	if err := ruleset.CheckManeuver(maneuver, data.ManeuverCombat, data.AtRankOne(input.Attacker.Perks), input.Attacker.Maneuvers); err != nil {
+		return nil, err
+	}
 	var attackRange string = input.Range
 	if attackRange == "" {
 		attackRange = "melee"
@@ -199,7 +232,49 @@ func maneuverOf(ruleset *data.Ruleset, input *Input) (*data.Maneuver, error) {
 	}) {
 		return nil, &data.MissingInputError{Subject: maneuver.Key, Needs: either(maneuver.WeaponProperties, "weapon")}
 	}
+	if maneuver.RangeNormalMin > 0 {
+		if input.Attacker.RangeNormal == nil {
+			return nil, &data.MissingInputError{Subject: maneuver.Key, Needs: "attacker.range_normal"}
+		}
+		if *input.Attacker.RangeNormal < maneuver.RangeNormalMin {
+			return nil, &data.MissingInputError{Subject: maneuver.Key, Needs: fmt.Sprintf("a weapon with range_normal %d or more", maneuver.RangeNormalMin)}
+		}
+	}
+	if maneuver.Still && input.Moved {
+		return nil, &data.MissingInputError{Subject: maneuver.Key, Needs: "no move this turn"}
+	}
 	return maneuver, nil
+}
+
+// widenedCrit is a hit inside the crit window a maneuver widens (Held Breath); like the roll's
+// own crit, it counts for nothing in a burst.
+func widenedCrit(ruleset *data.Ruleset, input *Input, maneuver *data.Maneuver, attack resolution.Result) bool {
+	if maneuver == nil || maneuver.CritWindow == 0 || !attack.Success || input.burstCrit != nil {
+		return false
+	}
+	var window int64 = ruleset.Resolution.CriticalWindow + formula.FloorDivide(input.Attacker.Attributes.Get(actor.Luck), ruleset.Resolution.CriticalWindowPerTwoLuck)
+	return input.Attacker.Roll <= window+maneuver.CritWindow
+}
+
+// maneuverCost is the cost of the action a maneuver modifies, before its own AP: the attack is
+// the loadout's attack AP (the attack action's without one), and an action that adds to the
+// attack (aimed) costs the attack's AP plus its own.
+func maneuverCost(ruleset *data.Ruleset, maneuver *data.Maneuver, action *data.Action, sequence *data.AttackSequence) (int64, error) {
+	attack, err := ruleset.Actions.Actions.Require("action", "attack")
+	if err != nil {
+		return 0, err
+	}
+	var attackAP int64 = attack.Cost
+	if sequence != nil {
+		attackAP = sequence.AP
+	}
+	if maneuver.Modifies == "attack" {
+		return attackAP, nil
+	}
+	if action.AddsTo == "attack" {
+		return attackAP + action.Cost, nil
+	}
+	return action.Cost, nil
 }
 
 // riderOf is the maneuver a held rider perk puts on a plain attack: nil when none is held,
@@ -329,7 +404,124 @@ func situationModifiers(ruleset *data.Ruleset, input *Input, delivery string) ([
 }
 
 // Run is the `combat` command.
+// Ammunition is a weapon's rounds: how many the attacker carries, and for a loading weapon
+// whether it holds one.
+type Ammunition struct {
+	Rounds int64 `json:"rounds"`
+	Loaded *bool `json:"loaded,omitempty"`
+}
+
+// The weapon properties that spend a round, and the one that must hold it first.
+const (
+	propertyAmmunition = "ammunition"
+	propertyThrown     = "thrown"
+	propertyLoading    = "loading"
+)
+
+// Run is one attack. With the ammunition input, a weapon that fires or throws spends one round,
+// and a loading weapon must hold one (docs/core/combat.md#ammunition).
 func Run(ruleset *data.Ruleset, input Input) (Result, error) {
+	if input.Grenade != "" {
+		if input.Round != "" {
+			return Result{}, errors.New("a grenade is thrown, not fired with a round")
+		}
+		return throwGrenade(ruleset, input)
+	}
+	if input.Round == "" {
+		if input.Burst != nil {
+			return Result{}, errors.New("a burst needs a bursting round")
+		}
+		return fire(ruleset, input)
+	}
+	round, found := ruleset.Rounds[input.Round]
+	if !found {
+		return Result{}, fmt.Errorf("%s is not an ammunition row", input.Round)
+	}
+	if input.Burst != nil && round.BurstRadius == 0 {
+		return Result{}, fmt.Errorf("%s does not burst", input.Round)
+	}
+	if round.DamageType != "" {
+		input.Damage.Type = round.DamageType
+	}
+	var burst *Burst = input.Burst
+	input.Round, input.Burst = "", nil
+	if burst != nil {
+		if burst.Distance > round.BurstRadius {
+			var none []json.RawMessage = []json.RawMessage{}
+			return Result{Outcome: outside, HitPoints: input.Defender.HitPoints, Effects: &none}, nil
+		}
+		var crit bool = burst.Crit
+		input.Delivery, input.burstCrit = areaDelivery, &crit
+	}
+	result, err := fire(ruleset, input)
+	if err != nil {
+		return Result{}, err
+	}
+	if len(round.Effects) > 0 || burst != nil {
+		var effects []json.RawMessage
+		if result.Effects != nil {
+			effects = *result.Effects
+		}
+		if result.Outcome == "hit" && !result.Evaded {
+			for _, applied := range round.Effects {
+				encoded, err := json.Marshal(appliedEffectJSON(applied))
+				if err != nil {
+					return Result{}, err
+				}
+				effects = append(effects, encoded)
+			}
+		}
+		if effects == nil {
+			effects = []json.RawMessage{}
+		}
+		result.Effects = &effects
+	}
+	return result, nil
+}
+
+// rolledCrit is the roll's own crit, which carries the attack through the bands; in a burst it
+// counts for nothing (docs/core/combat.md#elemental-rounds).
+func rolledCrit(input *Input, attack resolution.Result) bool {
+	return input.burstCrit == nil && slices.Contains(attack.Tags, "crit")
+}
+
+// damageCrit is whether the damage doubles: the roll's crit, or in a burst the shot's.
+func damageCrit(input *Input, rolled bool) bool {
+	if input.burstCrit != nil {
+		return *input.burstCrit
+	}
+	return rolled
+}
+
+// fire is one attack that may spend a round (docs/core/combat.md#ammunition).
+func fire(ruleset *data.Ruleset, input Input) (Result, error) {
+	var properties []string = input.Attacker.WeaponProperties
+	if input.Ammunition == nil || !(slices.Contains(properties, propertyAmmunition) || slices.Contains(properties, propertyThrown)) {
+		return strike(ruleset, input)
+	}
+	if input.Ammunition.Rounds <= 0 {
+		return Result{}, errors.New("the weapon has no rounds left")
+	}
+	var loading bool = slices.Contains(properties, propertyLoading)
+	if loading && (input.Ammunition.Loaded == nil || !*input.Ammunition.Loaded) {
+		return Result{}, errors.New("the weapon must reload first")
+	}
+	var rounds Ammunition = Ammunition{Rounds: input.Ammunition.Rounds - 1}
+	if loading {
+		var empty bool
+		rounds.Loaded = &empty
+	}
+	input.Ammunition = nil
+	result, err := strike(ruleset, input)
+	if err != nil {
+		return Result{}, err
+	}
+	result.Ammunition = &rounds
+	return result, nil
+}
+
+// strike is one attack, in the order of docs/core/combat.md.
+func strike(ruleset *data.Ruleset, input Input) (Result, error) {
 	// The attacker's while_summoning modifiers, resolved once (docs/core/modifier.md).
 	input.Modifiers = modifier.Summoning(input.Modifiers, input.Summoning || slices.Contains(input.Situations, besideSummon))
 	damageType, err := ruleset.DamageTypes.Require("damage type", input.Damage.Type)
@@ -405,7 +597,7 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 	var result Result = Result{
 		Target:      attack.Target,
 		Margin:      attack.Margin,
-		Critical:    slices.Contains(attack.Tags, "crit"),
+		Critical:    rolledCrit(&input, attack) || widenedCrit(ruleset, &input, maneuver, attack),
 		EvasionRate: evasionRate,
 		BlockRate:   blockRate,
 	}
@@ -425,9 +617,9 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		if err != nil {
 			return Result{}, err
 		}
-		var cost int64 = action.Cost
-		if sequence != nil && maneuver.Modifies == "attack" {
-			cost = sequence.AP
+		cost, err := maneuverCost(ruleset, maneuver, action, sequence)
+		if err != nil {
+			return Result{}, err
 		}
 		var actionPoints int64 = max(cost+maneuver.AP, 1)
 		var stamina int64 = actionPoints * ruleset.StaminaPerAP
@@ -519,6 +711,7 @@ func Run(ruleset *data.Ruleset, input Input) (Result, error) {
 		}
 	}
 	pierce = min(pierce, 100)
+	result.Critical = damageCrit(&input, result.Critical)
 	if result.Critical {
 		if amount, err = pipeline.CriticalDamage.Evaluate(nil, formula.Variable{Name: "damage", Value: amount}); err != nil {
 			return Result{}, err

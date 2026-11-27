@@ -21,7 +21,7 @@ Division is integer division. `per_point_divisor` defaults to 1. `attribute` is 
 | hp | END | `15 + END * 8 + level * 4` |
 | mp | INT | `INT * 8 + level * 2` |
 | sp | END | `10 + END * 5 + level * 2` [A] |
-| ap | AGI | `2 + floor(AGI / 3)` |
+| ap | AGI | `2 + floor(AGI / 3)`, then its modifiers, kept between `pool.floor` and `pool.cap` ([actions.md](actions.md#pool)) |
 | carry | STR | `25 + STR * 10` [weight units](contract.md#weight) |
 | initiative | PER | `PER` |
 | toxicity_limit | END | `20 + END * 5` [A], the most toxicity before an overdose ([modifier.md](modifier.md#toxicity)) |
@@ -56,6 +56,13 @@ Initiative is fixed: the derived `initiative` value, with no roll, as in Fallout
 
 The roll-off is made once, when the encounter starts, by the device that holds the encounter (the GM's, or the player's at a solo table), and it is kept as part of the encounter's session step, so the order replays the same on every device and needs no shared roll between devices. An actor who joins later rolls only against those it ties with. [A] This is the only place the rule is written; [combat.md §7](../modules/combat.md#7-initiative) and the encounter tracker (`BE_S08_07_encounter-tracker-cli`) link here. [V 2026-11-21, `test_initiative_ties.py`]
 
+## Templates
+
+The `derived` input may name the actor's held character templates (`templates`,
+[templates.md](templates.md)): each adds its attributes before the formulas run, and its modifiers
+and its granted perks' modifiers join `modifiers`, so the same sheet comes back without them once
+a template is removed. Two templates in one slot are refused. [A]
+
 ## What this file is not
 
-Level-up order, XP, and perk cadence stay in `docs/modules/progression.md`. The turn cap of 10 on the action-point pool stays there too. This function is the starting pool. The cap is a consumer rule.
+Level-up order, XP, and perk cadence stay in `docs/modules/progression.md`. This function is the starting pool; its floor and cap are the pool's own (`actions/core.json`), so the derived `ap` and the `actions` command's `pool` agree (GD_S19_07).

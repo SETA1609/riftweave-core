@@ -16,12 +16,15 @@ type Output<Path extends keyof paths> = Post<Path> extends { responses: { 200: i
 export type StoredActor = components['schemas']['stored_actor'];
 export type Session = components['schemas']['session'];
 export type Attributes = components['schemas']['attributes'];
+export type PrintInput = Input<'/v1/commands/print'>;
 export type DerivedInput = Input<'/v1/commands/derived'>['actor'];
 export type CombatInput = Input<'/v1/commands/combat'>;
 export type CombatResult = Output<'/v1/commands/combat'>;
 export type SessionStep = components['schemas']['session_step'];
 export type ResolutionInput = Input<'/v1/commands/resolution'>;
 export type ResolutionResult = Output<'/v1/commands/resolution'>;
+export type AuthorInput = Input<'/v1/commands/author'>;
+export type AuthorResult = Output<'/v1/commands/author'>;
 
 /** One POST of the API: its path and body in, its result out, or an Error with the refusal. */
 export interface Transport {
@@ -98,22 +101,18 @@ export function createApi(over: Transport | string) {
     derived,
     combat: (input: CombatInput) => post('/v1/commands/combat', input),
     resolution: (input: ResolutionInput) => post('/v1/commands/resolution', input),
+    /** A printable page from the data (APP-11): its title and self-contained HTML. */
+    print: (input: PrintInput) => post('/v1/commands/print', input),
 
-    /** A new stored actor at level 1: its pools start full, at the maxima `derived` returns. */
+    /** A new stored actor at level 1 from the core (stored_actor's new, BE_S23_03): its pools start full. */
     async newCharacter(attributes: Attributes, tags: string[] = []): Promise<StoredActor> {
-      const stats = await derived({ attributes, level: 1 });
-      return {
-        attributes, level: 1, xp: 0, skills: {}, tags,
-        growth: { hp: 0, mp: 0, sp: 0 },
-        resources: { hp: stats.hp, mp: stats.mp, sp: stats.sp, ap: stats.ap },
-        conditions: [], modifiers: [], flags: [], inventory: [], equipped: {},
-      };
+      return (await post('/v1/commands/stored_actor', { new: { attributes, tags } })).actor;
     },
 
     /** Check a stored actor against the contract (the stored_actor command); it comes back unchanged. */
     checkActor: (actor: StoredActor) => post('/v1/commands/stored_actor', { actor }),
     /** Check spell drafts as the author command does (APP-10). */
-    author: (input: Input<'/v1/commands/author'>) => post('/v1/commands/author', input),
+    author: (input: AuthorInput) => post('/v1/commands/author', input),
 
     startSession: async (start: StoredActor): Promise<Session> => (await post('/v1/sessions', { start })).session,
     step: (session: Session, step: SessionStep) => post('/v1/sessions/step', { session, step }),

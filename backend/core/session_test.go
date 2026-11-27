@@ -255,3 +255,74 @@ func TestABackupFileReplaysAsTheSessionCommandsInput(t *testing.T) {
 		t.Errorf("replay of a backup: %s, %v", out, err)
 	}
 }
+
+// A reveal is a session step: the session fills the marks so far, keeps the new ones in
+// `bestiary.knowledge`, and a replay rebuilds them from the log (BE_S08_05).
+func TestARevealStepKeepsTheMarksAndReplays(t *testing.T) {
+	opened := open(t)
+	var session any = sessionCall(t, opened, map[string]any{"operation": "start", "start": startingActor()})["session"]
+	var steps = []map[string]any{
+		{"command": "bestiary", "input": map[string]any{"operation": "reveal", "monster": "core:monster/skeleton", "level": "seen"}},
+		{"command": "bestiary", "input": map[string]any{"operation": "reveal", "monster": "core:monster/skeleton", "player": "ana",
+			"check": map[string]any{"actor": map[string]any{"attributes": map[string]any{"lck": 0}, "skills": map[string]any{"lore": 40}}, "roll": 23}}},
+	}
+	for _, step := range steps {
+		session = sessionCall(t, opened, map[string]any{"operation": "step", "session": session, "step": step})["session"]
+	}
+	var want = []any{
+		map[string]any{"monster": "core:monster/skeleton", "level": "seen"},
+		map[string]any{"monster": "core:monster/skeleton", "level": "known", "player": "ana"},
+	}
+	bestiary, _ := session.(map[string]any)["bestiary"].(map[string]any)
+	if got := bestiary["knowledge"]; !reflect.DeepEqual(got, want) {
+		t.Fatalf("knowledge after the steps: %v, want %v", got, want)
+	}
+	viewed := sessionCall(t, opened, map[string]any{"operation": "step", "session": session, "step": map[string]any{"command": "bestiary",
+		"input": map[string]any{"operation": "view", "monsters": []any{"core:monster/skeleton", "core:monster/bandit"}, "player": "bo", "players_see_only_known": true}}})
+	entries, _ := viewed["result"].(map[string]any)["entries"].([]any)
+	if len(entries) != 1 || entries[0].(map[string]any)["shows"] != "seen" {
+		t.Errorf("bo sees the table's mark only: %v", entries)
+	}
+	replayed := sessionCall(t, opened, map[string]any{"operation": "replay", "session": session})
+	rebuilt, _ := replayed["session"].(map[string]any)["bestiary"].(map[string]any)
+	if replayed["matches"] != true || !reflect.DeepEqual(rebuilt["knowledge"], want) {
+		t.Errorf("replay: matches %v, knowledge %v", replayed["matches"], rebuilt["knowledge"])
+	}
+}
+
+// An encounter runs as session steps (BE_S08_07): the session keeps it, a turn_end step is filled
+// from it, and a replay rebuilds the same order and turn.
+func TestAnEncounterRunsAsStepsAndReplays(t *testing.T) {
+	opened := open(t)
+	var session any = sessionCall(t, opened, map[string]any{"operation": "start", "start": startingActor()})["session"]
+	var steps = []map[string]any{
+		{"command": "encounter", "input": map[string]any{"operation": "start", "combatants": []any{
+			map[string]any{"id": "ana", "initiative": 10, "agi": 6, "lck": 5},
+			map[string]any{"id": "bo", "initiative": 10, "agi": 6, "lck": 5, "rolls": []any{30}},
+			map[string]any{"id": "cy", "initiative": 8, "agi": 5, "lck": 5},
+			map[string]any{"id": "di", "initiative": 7, "agi": 5, "lck": 5},
+			map[string]any{"id": "skeleton", "initiative": 12, "agi": 4, "lck": 2},
+			map[string]any{"id": "bandit", "initiative": 9, "agi": 5, "lck": 3},
+		}}},
+		{"command": "encounter", "input": map[string]any{"operation": "turn_end"}},
+		{"command": "encounter", "input": map[string]any{"operation": "turn_end"}},
+	}
+	steps[0]["input"].(map[string]any)["combatants"].([]any)[0].(map[string]any)["rolls"] = []any{55}
+	var result map[string]any
+	for _, step := range steps {
+		called := sessionCall(t, opened, map[string]any{"operation": "step", "session": session, "step": step})
+		session, result = called["session"], called["result"].(map[string]any)
+	}
+	var want = map[string]any{"round": float64(1), "order": []any{"skeleton", "bo", "ana", "bandit", "cy", "di"}, "turn": float64(2),
+		"acted": []any{"skeleton", "bo"}, "surprise": []any{}}
+	if got := session.(map[string]any)["encounter"]; !reflect.DeepEqual(got, want) {
+		t.Fatalf("encounter after the steps: %v, want %v", got, want)
+	}
+	if current := result["current"]; !reflect.DeepEqual(current, map[string]any{"id": "ana", "start": "combat"}) {
+		t.Errorf("current: %v", current)
+	}
+	replayed := sessionCall(t, opened, map[string]any{"operation": "replay", "session": session})
+	if replayed["matches"] != true || !reflect.DeepEqual(replayed["session"].(map[string]any)["encounter"], want) {
+		t.Errorf("replay: matches %v, encounter %v", replayed["matches"], replayed["session"].(map[string]any)["encounter"])
+	}
+}

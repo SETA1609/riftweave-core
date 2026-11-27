@@ -1,0 +1,15 @@
+#### PO_S26_01_api-guide Write the resource API guide
+- Status: done
+- Merged: #484, 2026-11-24
+- Priority: high
+- Needs: —
+- Modified: 2026-11-24
+- Do: Owner request, 2026-11-24: a schema or proposal of how the API should look, a YAML or Markdown file with the endpoints and no code, only an abstraction of what we want, as a guide.
+  - **The guide:** `docs/backend/api-guide.yml`, the endpoints grouped by resource (meta, commands, rules, characters, creation, profile, sessions, encounter, bestiary, settings, files, authoring), each with its method, path, what it does, what it takes and gives by contract name, the core command that holds its rule, and `exists`, `new`, or `changed`.
+  - **Principles:** rules stay in the core commands; pages call resources, and `POST /v1/commands/{command}` stays for calculators and agents; one shape whether IndexedDB or the server keeps it; offline first; shapes come from the contracts.
+  - **Conventions:** UUID ids, revisions with If-Match and 409, lists with the catalog's filters, the status codes of `docs/backend/api.md`.
+  - **Open questions** are listed in the guide: where saved games live, whether the profile is per device or per person, whether the generic command endpoint stays public, and roles once there is sign-in.
+- Keys: `docs/backend/api-guide.yml`
+- Files: ~8 (docs/backend/api-guide.yml, docs/backend/api.md, docs/stories/S26-api-guide.md, docs/stories/README.md, ROADMAP.md, AGENTS.md, docs/decisions/PO_S26_01_api-guide.md, changes/PO_S26_01_api-guide.md)
+- See: docs/backend/api.md, docs/backend/files.md, docs/backend/sessions.md, backend/contract/
+- Done when: the guide parses as YAML, every endpoint has a method, path, purpose, and status, the endpoints served today are marked `exists`, and `docs/backend/api.md` links it.

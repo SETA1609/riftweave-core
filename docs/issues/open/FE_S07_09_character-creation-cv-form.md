@@ -1,5 +1,6 @@
 #### FE_S07_09_character-creation-cv-form Character creation as a form laid out like a CV (frontend)
-- Status: todo
+- Status: dropped
+- Dropped: superseded by FE_S25_05_creation-flow-page (owner, 2026-11-24: creation is a step-by-step page flow, not one page laid out like a CV); its point stepper, its page without JSON, and its kept draft moved there.
 - Priority: medium
 - Needs: BE_S07_08_character-creation-command, FE_S08_12_back-on-every-screen
 - Modified: 2026-11-19

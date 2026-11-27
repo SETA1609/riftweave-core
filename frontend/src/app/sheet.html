@@ -18,5 +18,7 @@
   <rw-card title="Stored actor">
     <pre>{{ created.actor | json }}</pre>
     <button type="button" class="btn btn-outline" (click)="exportCharacter()">Export character</button>
+    <button type="button" class="btn btn-outline" (click)="print(printState.Current)">Print</button>
+    <button type="button" class="btn btn-outline" (click)="print(printState.Fresh)">Print fresh</button>
   </rw-card>
 }

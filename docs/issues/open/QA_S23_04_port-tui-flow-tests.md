@@ -1,0 +1,12 @@
+#### QA_S23_04_port-tui-flow-tests Keep the terminal app's flow tests as core vectors and web end-to-end tests
+- Status: todo
+- Priority: high
+- Needs: BE_S23_03_tui-flow-audit
+- Modified: 2026-11-23
+- Do: Owner decision, 2026-11-23, to retire the terminal app. Its tests (`play_test.go`, `compendium_test.go`, `print_test.go`, about 650 lines) are the only tests of whole flows: create a character, save and load it, play a turn, print. They go with it unless moved.
+  - **Each test** becomes a core vector (when it checks a rule or an order of commands), a command test in `backend/cmd/riftweave/` (when it checks the agent CLI), or a web end-to-end test in `frontend/e2e/` (when it checks a person's flow) [A].
+  - **The list** of tests and where each went is in the decision record.
+- Keys: the test list
+- Files: ~8 (ruleset/tests/vectors/, backend/cmd/riftweave/*_test.go, frontend/e2e/, docs/decisions/QA_S23_04_port-tui-flow-tests.md, changes/QA_S23_04_port-tui-flow-tests.md)
+- See: backend/cmd/riftweave/play_test.go, frontend/e2e/
+- Done when: every test of `play/` has a named replacement that passes in CI before the removal.

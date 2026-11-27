@@ -10,9 +10,10 @@
       "properties": {
         "min_extra_ap": { "type": "integer", "minimum": 0, "description": "A full attack spends every AP left, and needs at least the loadout's attack AP plus this." },
         "extra_main_attacks": { "type": "array", "items": { "type": "integer", "maximum": 0 }, "minItems": 1, "description": "The attack value of each extra main-hand strike full_attack_strikes adds, in order; no more strikes than listed." },
-        "extra_off_attack": { "type": "integer", "maximum": 0, "description": "Added to the loadout's off-hand strike value for the extra off-hand strike full_attack_off_strikes adds (at most one)." }
+        "extra_off_attack": { "type": "integer", "maximum": 0, "description": "Added to the loadout's off-hand strike value for the extra off-hand strike full_attack_off_strikes adds (at most one)." },
+        "one_handed_reload_extra": { "type": "integer", "minimum": 0, "description": "AP a reload costs over the reload action when the other hand holds anything (docs/core/combat.md#ranged-loadouts)." }
       },
-      "required": ["min_extra_ap", "extra_main_attacks", "extra_off_attack"],
+      "required": ["min_extra_ap", "extra_main_attacks", "extra_off_attack", "one_handed_reload_extra"],
       "additionalProperties": false
     },
     "circle_cut": {
@@ -23,6 +24,12 @@
       },
       "required": ["attack", "main"],
       "additionalProperties": false
+    },
+    "ranged_hands": {
+      "type": "array",
+      "items": { "anyOf": [{ "$ref": "schema.json#/definitions/mainHand" }, { "$ref": "schema.json#/definitions/offHand" }] },
+      "uniqueItems": true,
+      "description": "The hand kinds that hold a ranged weapon: a strike with one is a ranged strike (docs/core/combat.md#ranged-loadouts)."
     },
     "shield_bash": {
       "type": "object",
@@ -54,7 +61,7 @@
       "items": { "$ref": "#/definitions/attackSequence" }
     }
   },
-  "required": ["full_attack", "circle_cut", "shield_bash", "attack_sequences"],
+  "required": ["full_attack", "circle_cut", "ranged_hands", "shield_bash", "attack_sequences"],
   "additionalProperties": false,
   "definitions": {
     "hand": { "type": "string", "enum": ["main", "off"] },

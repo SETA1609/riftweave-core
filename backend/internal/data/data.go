@@ -96,6 +96,8 @@ type Action struct {
 	SpeedDivisor int64 `json:"speed_divisor"`
 	// ChangesLoadout marks draw, sheathe, drop, and swap; a stance loadout event may be paid by one (GD_S19_03).
 	ChangesLoadout bool `json:"changes_loadout"`
+	// AddsTo names the action this one adds its cost to: aimed adds to attack.
+	AddsTo string `json:"adds_to"`
 }
 
 // ActionPool is the action point pool formula's coefficients.
@@ -105,11 +107,18 @@ type ActionPool struct {
 	PerPointDivisor int64  `json:"per_point_divisor"`
 	Attribute       string `json:"attribute"`
 	Cap             int64  `json:"cap"`
+	Floor           int64  `json:"floor"`        // the least the pool is after its modifiers on ap (GD_S19_07)
 	Carry           int64  `json:"carry"`        // the most held AP that carries into the next pool (GD_S19_05)
 	GuardPerAP      int64  `json:"guard_per_ap"` // evasion per held AP until the next turn
 	// ReactionsPerRound is the reactions (opportunity attacks, no AP) an actor has between two of its turns (GD_S19_04).
-	ReactionsPerRound int64         `json:"reactions_per_round"`
-	Ability           actor.Ability `json:"-"`
+	ReactionsPerRound int64 `json:"reactions_per_round"`
+	// CombatStart is a fight's first turn: pool - Less AP, at least Minimum and at most the pool
+	// (GD_S19_06, docs/core/actions.md#pool).
+	CombatStart struct {
+		Less    int64 `json:"less"`
+		Minimum int64 `json:"minimum"`
+	} `json:"combat_start"`
+	Ability actor.Ability `json:"-"`
 }
 
 // Actions is actions/core.json.
@@ -369,6 +378,122 @@ type Maneuver struct {
 	SaveBonus *int64 `json:"save_bonus"`
 	// Events are what a landed attempt does beyond effects, for the caller: "disarm".
 	Events []string `json:"events"`
+
+	// The ranged maneuvers' fields (GD_S17_06, docs/core/actions.md#ranged-maneuvers).
+	// Command is the command that runs the maneuver; "" reads combat.
+	Command ManeuverCommand `json:"command"`
+	// Strikes is an attack_sequence maneuver's strike count (Split Nock); 0 reads one.
+	Strikes int64 `json:"strikes"`
+	// Rounds is the ammunition one use spends; 0 reads one.
+	Rounds int64 `json:"rounds"`
+	// Loadouts are the main-hand kinds the maneuver needs; empty: any.
+	Loadouts []string `json:"loadouts"`
+	// CritWindow widens the attacker's crit window for this attack.
+	CritWindow int64 `json:"crit_window"`
+	// RangeNormalMin is the least range_normal the weapon may have; 0: no minimum.
+	RangeNormalMin int64 `json:"range_normal_min"`
+	// Still refuses the maneuver after a move this turn.
+	Still bool `json:"still"`
+	// WithoutWeaponProperties refuse a weapon with any of them (Pinning Fire and loading).
+	WithoutWeaponProperties []string `json:"without_weapon_properties"`
+	// SpendsAll spends every AP left (Pinning Fire); Hold reserves the cost from held AP (Trigger Watch).
+	SpendsAll bool `json:"spends_all"`
+	Hold      bool `json:"hold"`
+	// Zone is Pinning Fire's zone; nil for the rest.
+	Zone *ManeuverZone `json:"zone"`
+}
+
+// ManeuverCommand is the command a maneuver runs in.
+type ManeuverCommand string
+
+// The commands a maneuver runs in.
+const (
+	ManeuverCombat         ManeuverCommand = "combat"
+	ManeuverAttackSequence ManeuverCommand = "attack_sequence"
+	ManeuverOverwatch      ManeuverCommand = "overwatch"
+)
+
+// ManeuverZone is a zone held under fire: its radius, and the add on a foe's attack from inside it.
+type ManeuverZone struct {
+	Radius int64 `json:"radius"`
+	Attack int64 `json:"attack"`
+}
+
+// RoundsSpent is the rounds one use spends, at least one.
+func (maneuver *Maneuver) RoundsSpent() int64 {
+	return max(maneuver.Rounds, 1)
+}
+
+// HeldRef is a perk ref held at a rank.
+type HeldRef struct {
+	Perk string `json:"perk"`
+	Rank int64  `json:"rank"`
+}
+
+// AtRankOne reads bare perk refs (combat, attack_sequence) as held at rank 1; nil stays nil.
+func AtRankOne(refs []string) []HeldRef {
+	if refs == nil {
+		return nil
+	}
+	var held []HeldRef = make([]HeldRef, len(refs))
+	for index, ref := range refs {
+		held[index] = HeldRef{Perk: ref, Rank: 1}
+	}
+	return held
+}
+
+// CheckManeuver refuses a maneuver run in another command than its own, or, when the input
+// names the actor's perks or a monster's maneuvers, one none of them unlocks; a perk unlocks
+// at the rank its unlocks_at_rank names, at rank 1 otherwise (docs/core/actions.md#ranged-maneuvers).
+func (ruleset *Ruleset) CheckManeuver(maneuver *Maneuver, command ManeuverCommand, perks []HeldRef, maneuvers []string) error {
+	var own ManeuverCommand = maneuver.Command
+	if own == "" {
+		own = ManeuverCombat
+	}
+	if own != command {
+		var article string = "a"
+		if strings.ContainsRune("aeiou", rune(own[0])) {
+			article = "an"
+		}
+		return fmt.Errorf("%s is %s %s maneuver", maneuver.Key, article, own)
+	}
+	if perks == nil && maneuvers == nil {
+		return nil
+	}
+	if slices.Contains(maneuvers, maneuver.Key) {
+		return nil
+	}
+	var ref string = "core:maneuver/" + maneuver.Key
+	for _, held := range perks {
+		feature, err := ruleset.Features.Require("perk", held.Perk[strings.LastIndex(held.Perk, "/")+1:])
+		if err != nil {
+			return err
+		}
+		var rank int64 = max(held.Rank, 1)
+		var needs int64 = 1
+		if at, ok := feature.UnlocksAtRank[ref]; ok {
+			needs = at
+		}
+		if slices.Contains(feature.Unlocks, ref) && rank >= needs {
+			return nil
+		}
+	}
+	return &MissingInputError{Subject: maneuver.Key, Needs: "a perk that unlocks it"}
+}
+
+// CharacterTemplate is a template a character takes on in play (docs/core/templates.md): what it
+// adds on top of the character, one per slot.
+type CharacterTemplate struct {
+	Key        string              `json:"key"`
+	Slot       string              `json:"slot"`
+	Attributes map[string]int64    `json:"attributes"`
+	Skills     map[string]int64    `json:"skills"`
+	Modifiers  []modifier.Modifier `json:"modifiers"`
+	Perks      []struct {
+		Perk string `json:"perk"`
+		Rank int64  `json:"rank"`
+	} `json:"perks"`
+	CreatureType string `json:"creature_type"`
 }
 
 // Fits reports whether an attack at the range with a weapon of the properties fits the
@@ -435,8 +560,13 @@ type AttackSequences struct {
 		MinExtraAP       int64   `json:"min_extra_ap"`
 		ExtraMainAttacks []int64 `json:"extra_main_attacks"`
 		ExtraOffAttack   int64   `json:"extra_off_attack"`
+		// OneHandedReloadExtra is what a reload costs over the reload action with the other hand
+		// full (docs/core/combat.md#ranged-loadouts, GD_S17_05).
+		OneHandedReloadExtra int64 `json:"one_handed_reload_extra"`
 	} `json:"full_attack"`
-	CircleCut struct {
+	// RangedHands are the hand kinds that hold a ranged weapon: their strikes are ranged.
+	RangedHands []string `json:"ranged_hands"`
+	CircleCut   struct {
 		Attack int64    `json:"attack"`
 		Main   []string `json:"main"`
 	} `json:"circle_cut"`
@@ -599,6 +729,8 @@ type Feature struct {
 	Command *Command `json:"command"`
 	// Unlocks are the refs the perk unlocks; a core:material ref is a bound weapon's material.
 	Unlocks []string `json:"unlocks"`
+	// UnlocksAtRank is the rank a listed unlock opens at, by ref; one not named opens at rank 1.
+	UnlocksAtRank map[string]int64 `json:"unlocks_at_rank"`
 	// BoundWeaponEffects are the on-hit effects the perk adds to the holder's bound weapons
 	// (docs/modules/magic.md#bound-weapons).
 	BoundWeaponEffects []AppliedEffect `json:"bound_weapon_effects"`
@@ -736,9 +868,10 @@ type Spell struct {
 	Effects     []AppliedEffect `json:"effects"`
 	// Summon is a summon spell's block, in place of a core:effect/summon entry; nil otherwise.
 	Summon *SummonBlock `json:"summon"`
-	Cost   struct {
+	// Cost holds the reagents only: the mana is never stored, and spellcraft.SpellMana computes it
+	// (DE_S02_05, docs/modules/magic.md#cost-formula).
+	Cost struct {
 		Reagents []string `json:"reagents"`
-		Mana     int64    `json:"mana"`
 	} `json:"cost"`
 	Level         int64  `json:"level"`
 	Concentration bool   `json:"concentration"`
@@ -962,6 +1095,25 @@ type Consumable struct {
 	Delivery string
 	Effects  []ConsumableEffect
 	Toxicity int64 // what drinking it adds (docs/core/modifier.md#toxicity)
+	// Damage and Radius are a grenade's fixed area damage and burst; Damage is nil for a grenade
+	// that deals none (docs/core/combat.md#grenades).
+	Damage *GrenadeDamage
+	Radius int64
+}
+
+// GrenadeDamage is a grenade's own dice and damage type.
+type GrenadeDamage struct {
+	Dice string
+	Type string
+}
+
+// Round is an ammunition row: what a round changes on the strike, and an elemental round's burst
+// (docs/core/combat.md#elemental-rounds).
+type Round struct {
+	Kind        string
+	DamageType  string `json:"damage_type"`
+	BurstRadius int64  `json:"burst_radius"` // 0: the round does not burst
+	Effects     []ConsumableEffect
 }
 
 // ConsumableEffect is one applied effect on a consumable; Magnitude is nil when it has none.
@@ -1031,15 +1183,23 @@ type Ruleset struct {
 	AttributeModifier *formula.Program // formulas/attribute_modifier.json
 	Price             *formula.Program
 	LootLuck          *formula.Program
-	Items             map[string]Item      // core:<category>/<key>
-	MaterialPercent   map[string]int64     // material key: value_factor * 100
-	MaterialDefense   map[string]int64     // a material ref: its armor.defense, added to an armor piece's dr_base
-	MaterialAttack    map[string]int64     // a material ref: its weapon.attack (a bound weapon's attack)
-	TemplateDamage    map[string]string    // a monster template ref: its damage_type, "" for none (element templates)
-	DiceLadder        [][]string           // combat/dice_ladder.json: rungs of equal dice, smallest first
-	Sizes             map[string]Size      // combat/dice_ladder.json: undersized, normal, oversized
-	MonsterLevel      map[string]int64     // monster key
-	MonsterLoot       map[string][]DropRow // monster key: its resolved loot rows
+	Items             map[string]Item   // core:<category>/<key>
+	MaterialPercent   map[string]int64  // material key: value_factor * 100
+	MaterialDefense   map[string]int64  // a material ref: its armor.defense, added to an armor piece's dr_base
+	MaterialAttack    map[string]int64  // a material ref: its weapon.attack (a bound weapon's attack)
+	TemplateDamage    map[string]string // a monster template ref: its damage_type, "" for none (element templates)
+	DiceLadder        [][]string        // combat/dice_ladder.json: rungs of equal dice, smallest first
+	// AmmunitionRecovered is combat/ammunition.json: the share of each kind of round, and of thrown
+	// weapons ("thrown"), recovered after a fight (GD_S17_02).
+	AmmunitionRecovered map[string]float64
+	Sizes               map[string]Size      // combat/dice_ladder.json: undersized, normal, oversized
+	MonsterLevel        map[string]int64     // monster key
+	MonsterLoot         map[string][]DropRow // monster key: its resolved loot rows
+
+	// Rounds are equipment/ammunition.json's rows by core:ammunition/<key> (GD_S17_04).
+	Rounds map[string]Round
+	// CharacterTemplates is character_templates/core.json, by key (GD_S20_05).
+	CharacterTemplates Table[CharacterTemplate]
 
 	// EffectRefs is every ref in effects/core.json, for the refs a dev operation names.
 	EffectRefs map[string]bool
@@ -1288,6 +1448,12 @@ func Load(fileSystem fs.FS, modules ...fs.FS) (*Ruleset, error) {
 	loader.read("attack_sequences/core.json", &ruleset.AttackSequences)
 	loader.read("stances/core.json", &ruleset.Stances)
 	ruleset.Maneuvers = newTable(maneuvers.Maneuvers, func(maneuver *Maneuver) string { return maneuver.Key })
+
+	var templates struct {
+		CharacterTemplates []CharacterTemplate `json:"character_templates"`
+	}
+	loader.read("character_templates/core.json", &templates)
+	ruleset.CharacterTemplates = newTable(templates.CharacterTemplates, func(template *CharacterTemplate) string { return template.Key })
 
 	var origins struct {
 		Origins []struct {
@@ -1658,12 +1824,35 @@ func (loader *rulesetLoader) loadItems(ruleset *Ruleset) {
 		}
 	}
 
+	var rounds struct {
+		Equipment []struct {
+			Key        string
+			Ammunition Round
+		}
+	}
+	loader.read("equipment/ammunition.json", &rounds)
+	ruleset.Rounds = make(map[string]Round, len(rounds.Equipment))
+	for _, row := range rounds.Equipment {
+		ruleset.Rounds["core:ammunition/"+row.Key] = row.Ammunition
+	}
+
 	var ladder struct {
 		DiceLadder [][]string      `json:"dice_ladder"`
 		Sizes      map[string]Size `json:"sizes"`
 	}
 	loader.read("combat/dice_ladder.json", &ladder)
 	ruleset.DiceLadder, ruleset.Sizes = ladder.DiceLadder, ladder.Sizes
+	var recovery struct {
+		Recovery []struct {
+			Kind      string  `json:"kind"`
+			Recovered float64 `json:"recovered"`
+		} `json:"recovery"`
+	}
+	loader.read("combat/ammunition.json", &recovery)
+	ruleset.AmmunitionRecovered = map[string]float64{}
+	for _, row := range recovery.Recovery {
+		ruleset.AmmunitionRecovered[row.Kind] = row.Recovered
+	}
 
 	var materials struct {
 		Materials []struct {

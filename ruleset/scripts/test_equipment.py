@@ -13,6 +13,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from balance_report import sized_dice  # noqa: E402
 from validate import compose_row, equipment_rows  # noqa: E402
+import validate  # noqa: E402  (the ammunition gates)
 
 DATA = Path(__file__).resolve().parent.parent / "data"
 EQUIPMENT = DATA / "equipment"
@@ -141,3 +142,90 @@ class TestToxicity(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestAmmunition(unittest.TestCase):
+    """GD_S17_02 (docs/core/combat.md#ammunition): every weapon that fires names its kind, and every
+    ammunition row fires from some weapon."""
+
+    def test_the_data_has_no_ammunition_problem(self):
+        self.assertEqual(validate.check_ammunition(), [])
+
+    def test_a_base_with_the_ammunition_property_and_no_kind_fails(self):
+        bases = [{"key": "bow", "weapon": {"properties": ["ammunition", "two_handed"]}}]
+        self.assertEqual(validate.ammunition_problems(bases, []), ["weapon base bow has the ammunition property and no weapon.ammo"])
+
+    def test_a_row_whose_kind_no_weapon_loads_fails(self):
+        bases = [{"key": "bow", "weapon": {"properties": ["ammunition"], "ammo": "arrow"}}]
+        rows = [{"key": "sling_stones", "ammunition": {"kind": "stone", "count": 20}}]
+        self.assertEqual(validate.ammunition_problems(bases, rows), ["ammunition sling_stones is stone, which no weapon loads"])
+
+    def test_each_kind_has_a_bundle_of_the_size_the_spec_names(self):
+        rows = json.loads((DATA / "equipment" / "ammunition.json").read_text())["equipment"]
+        counts = {row["ammunition"]["kind"]: row["ammunition"]["count"] for row in rows if "damage_type" not in row["ammunition"] and "effects" not in row["ammunition"]}
+        self.assertEqual(counts, {"arrow": 20, "bolt": 20, "bullet": 10, "scatter": 10, "stone": 20})
+
+
+class TestGrenades(unittest.TestCase):
+    """GD_S17_03 (docs/core/combat.md#grenades): every grenade's riders carry the grenade channel,
+    and the five grenades of the spec are in the data."""
+
+    def test_the_data_has_no_grenade_problem(self):
+        self.assertEqual(validate.check_grenades(), [])
+
+    def test_a_grenade_whose_rider_lacks_the_grenade_channel_fails(self):
+        rows = [{"key": "fire_flask", "type": "grenade", "consumable": {"delivery": "throw", "effects": [{"effect": "core:effect/burn"}]}}]
+        channels = {"core:effect/burn": {"spell", "coating"}}
+        self.assertEqual(
+            validate.grenade_problems(rows, channels),
+            ["grenade fire_flask: effect core:effect/burn lacks the grenade channel"],
+        )
+
+    def test_a_grenade_must_be_thrown(self):
+        rows = [{"key": "fire_flask", "type": "grenade", "consumable": {"delivery": "drink", "effects": []}}]
+        self.assertEqual(validate.grenade_problems(rows, {}), ["grenade fire_flask is not thrown (delivery throw)"])
+
+    def test_the_five_grenades_of_the_spec(self):
+        rows = json.loads((DATA / "equipment" / "consumables.json").read_text())["equipment"]
+        grenades = {
+            row["key"]: (row["consumable"].get("damage"), row["consumable"]["radius"])
+            for row in rows
+            if row["type"] == "grenade"
+        }
+        self.assertEqual(
+            grenades,
+            {
+                "fire_flask": ({"dice": "1d6", "type": "fire"}, 1),
+                "frost_flask": ({"dice": "1d6", "type": "frost"}, 1),
+                "thunder_flask": ({"dice": "1d6", "type": "thunder"}, 2),
+                "acid_flask": ({"dice": "1d6", "type": "acid"}, 1),
+                "smoke_pot": (None, 2),
+            },
+        )
+
+    def test_a_bursting_round_needs_grenade_riders_and_a_bolt_or_a_bullet(self):
+        rows = [
+            {"key": "fire_arrows", "type": "ammunition", "ammunition": {"kind": "arrow", "count": 5, "damage_type": "fire", "burst_radius": 1, "effects": []}},
+            {"key": "fire_bolts", "type": "ammunition", "ammunition": {"kind": "bolt", "count": 5, "damage_type": "fire", "burst_radius": 1, "effects": [{"effect": "core:effect/burn"}]}},
+        ]
+        self.assertEqual(
+            validate.burst_problems(rows, {"core:effect/burn": {"spell"}}),
+            [
+                "ammunition fire_arrows bursts, but only bolts and bullets do (docs/core/combat.md#elemental-rounds)",
+                "ammunition fire_bolts: effect core:effect/burn lacks the grenade channel",
+            ],
+        )
+
+    def test_the_eight_elemental_rounds_of_the_spec(self):
+        rows = json.loads((DATA / "equipment" / "ammunition.json").read_text())["equipment"]
+        rounds = {
+            row["key"]: (row["ammunition"]["kind"], row["ammunition"]["damage_type"], row["ammunition"]["burst_radius"], row["ammunition"]["count"])
+            for row in rows
+            if "burst_radius" in row["ammunition"]
+        }
+        expected = {}
+        for kind in ("bolt", "bullet"):
+            for element, radius in (("fire", 1), ("frost", 1), ("thunder", 2), ("acid", 1)):
+                expected[f"{element}_{kind}s"] = (kind, element, radius, 5)
+        self.assertEqual(rounds, expected)
+        self.assertEqual(validate.check_grenades(), [])

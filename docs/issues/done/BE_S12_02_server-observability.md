@@ -1,0 +1,17 @@
+#### BE_S12_02_server-observability The server is observable: OpenTelemetry traces, metrics, and logs, and health endpoints
+- Status: done
+- Merged: #444, 2026-11-23
+- Priority: medium
+- Needs: APP-43
+- Was: APP-44
+- Modified: 2026-11-23
+- Do: Owner request, 2026-11-18: `riftweave-server` emits what APP-43 defines, with the OpenTelemetry Go SDK, in `backend/cmd/riftweave-server` only.
+  - **Traces:** a span per request (`otelhttp` [A]) and a child span around each `core.Run`, with the command and the outcome; an incoming `traceparent` (W3C Trace Context) continues the caller's trace, so a frontend or CLI call and its server work are one trace.
+  - **Metrics:** requests and errors per command and status, and a duration histogram per command (the HTTP semantic conventions), plus the Go runtime's.
+  - **Logs:** `log/slog` as JSON, bridged to OpenTelemetry logs, with the trace and span ids on each record; the startup line and every 4xx and 5xx with its error kind.
+  - **Health:** `GET /healthz` (the process answers), `GET /readyz` (the ruleset loaded), and `GET /version` (the build and the rules version), added to the OpenAPI document and docs/backend/api.md.
+  - Off unless `OTEL_EXPORTER_OTLP_ENDPOINT` is set or `--telemetry` names a file; a server with neither emits only its slog lines [A].
+- Keys: `/healthz`, `/readyz`, `/version`
+- Files: ~8 (backend/cmd/riftweave-server/main.go, backend/cmd/riftweave-server/telemetry.go, backend/cmd/riftweave-server/openapi.go, backend/cmd/riftweave-server/main_test.go, backend/go.mod, backend/go.sum, docs/backend/api.md, docs/backend/observability.md)
+- See: docs/backend/api.md, docs/backend/observability.md (APP-43)
+- Done when: a test server run with an in-memory exporter shows a request span with its command child span, the duration metric, and a log record carrying the trace id; the health endpoints answer and are in the OpenAPI document; the core still imports no telemetry package; `go test ./...` passes.

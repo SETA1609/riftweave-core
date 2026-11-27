@@ -1,0 +1,18 @@
+#### DE_S02_05_spell-mana-computed Third normal form: a spell's mana is computed, and every reader shows the number
+- Status: done
+- Merged: #461, 2026-11-24
+- Priority: medium
+- Needs: BE_S08_10_compendium-catalog-cli
+- Modified: 2026-11-23
+- Do: Owner request, 2026-11-22. A spell's `effects` list is the junction table between spells and effects (key: the spell and the position; `effect` is the foreign key; magnitude, duration, target, radius, and parameter are facts about the link), and it meets 1NF and 2NF ([theory](../../theory/normal-forms.md#first-normal-form-1nf-one-value-of-one-kind-per-field)). `cost.mana` breaks 3NF: it is a fact about the effects, given by the spellcraft cost formula ([magic.md](../../modules/magic.md#cost-formula): "every spell, authored or crafted, costs what §5's formula gives for its effects"), not about the spell's key. All 75 spell rows store it [V 2026-11-22]; `test_spells.py::test_every_spell_costs_what_its_effects_cost` keeps core data equal to the formula, but `validate.py` does not, so a module or imported spell can carry a wrong number. It is the same case as monster HP ([DE_S02_03](../done/DE_S02_03_monster-hp-computed.md)).
+  - **Compute mana** with the spellcraft formula (`backend/internal/spellcraft`, `casting_reference.py`) wherever a spell is read. `cost.reagents` stays: reagents are primary facts.
+  - **Every reader shows the number.** A player or GM never computes a cost by hand, so each output a person reads prints the computed mana as a plain number: the compendium's spell table (the `cost.mana` column in `backend/internal/catalog/catalog.go`, from BE_S08_10), the print sheet's known spells (`backend/core/print.go`), the spell cards (BE_S09_05), the generated SRD's spell list (S21), and the frontend pages built on them. The command results keep a `cost.mana` field, filled by the formula.
+  - **Readers in code:** `casting.go` (`paidCost` reads `spell.Cost.Mana`), `data.go` (the `Spell.Cost.Mana` field), `balance_report.py`, `kernel_reference.py`, `playtest_driver.py`, and any other reader `git grep` finds.
+  - **The gate:** a spell row or override that writes `cost.mana` fails `validate.py`; the spell author (`backend/core/author.go`) turns its mana-differs warning into a refusal of the field.
+- Keys: `cost.mana` on spells **(breaking, removed)**
+- Files: ~16 (ruleset/schemas/spell.schema.json, ruleset/data/spells/core.json, module spell files, ruleset/scripts/validate.py, ruleset/scripts/casting_reference.py, ruleset/scripts/kernel_reference.py, ruleset/scripts/balance_report.py, ruleset/scripts/test_spells.py, backend/internal/data/data.go, backend/internal/casting/casting.go, backend/internal/catalog/catalog.go, backend/core/print.go, backend/core/author.go, ruleset/tests/vectors/, docs/modules/magic.md, docs/core/data-model.md, changes/DE_S02_05_spell-mana-computed.md, docs/decisions/DE_S02_05_spell-mana-computed.md). Over 20 counted files splits into `-ruleset-` and `-backend-` branches (CONTRIBUTING.md#workflow).
+- See: docs/theory/normal-forms.md, docs/modules/magic.md#cost-formula, docs/core/casting.md
+- Done when:
+  - No spell row or override authors `cost.mana`, and `validate.py` refuses one that does.
+  - A vector checks, for every core spell, that the compendium row and the print sheet show the mana the formula gives.
+  - `validate.py`, the Python tests, `go test ./...`, and the frontend tests pass.

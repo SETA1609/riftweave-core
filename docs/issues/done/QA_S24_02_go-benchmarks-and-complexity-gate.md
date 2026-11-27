@@ -1,0 +1,14 @@
+#### QA_S24_02_go-benchmarks-and-complexity-gate Benchmarks and a complexity gate before the Go refactor
+- Status: done
+- Merged: #477, 2026-11-24
+- Priority: high
+- Needs: —
+- Modified: 2026-11-24
+- Do: Owner request, 2026-11-24: refactor the Go backend with state machines, dispatch tables, and hash sets, so it is faster, leaner, and easier to read. First measure, so every later PR shows it kept or improved the numbers.
+  - **Benchmarks:** `go test -bench` for the hot commands, driven by their vectors: `combat`, `attack_sequence`, `casting`, `actions`, `derived`, and `data.Load`. A script runs them on `development` and on a branch and writes the difference; a refactor PR quotes it.
+  - **The complexity gate:** a small `go/ast` check (no new module) fails a non-test function over a cyclomatic complexity of 40, or a nesting depth over 4. The functions over it today are listed in an allow list that only shrinks: `attack.Run` (133), `combat.strike` (89), `casting.Run` (48), `progression.Run` (42), and `charactersCommand` (41), at 2026-11-24. [A]
+  - **CI:** the gate runs in `validate-ruleset.yml` beside `go vet`; the benchmarks run on request (`workflow_dispatch`), not on every push.
+- Keys: the benchmarks, `tools/gocheck` (or a script), the allow list
+- Files: ~8 (backend/internal/*/bench_test.go, backend/tools/complexity/main.go, backend/tools/complexity/allow.txt, .github/workflows/validate-ruleset.yml, docs/backend/README.md, docs/decisions/QA_S24_02_go-benchmarks-and-complexity-gate.md, changes/QA_S24_02_go-benchmarks-and-complexity-gate.md)
+- See: docs/backend/README.md
+- Done when: the benchmarks run for the six; the gate fails a new function over its limits and passes `development` with the allow list; CI runs the gate.

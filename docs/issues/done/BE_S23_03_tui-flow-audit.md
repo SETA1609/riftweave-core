@@ -1,0 +1,14 @@
+#### BE_S23_03_tui-flow-audit Move every rule step that lives only in the terminal app into the core
+- Status: done
+- Merged: #478, 2026-11-24
+- Priority: high
+- Needs: —
+- Modified: 2026-11-23
+- Do: Owner decision, 2026-11-23, to retire the terminal app. An adapter only parses and formats, but flows grew inside `backend/cmd/riftweave/play/` (about 2,300 lines): creation's steps, the session's turn loop, import, print, resolution, settings. Before it is removed, nothing it does may be lost to the web app and MCP.
+  - **The audit** (`docs/decisions/BE_S23_03_tui-flow-audit.md`): each screen of `play/`, what it calls, and any step that is not a core command call (a computed value, a check, an order of steps, a default).
+  - **The move:** each such step becomes part of a core command, or a new one, with its vectors; the web app's matching page is checked to use it.
+  - **Kept:** `backend/cmd/riftweave/characters/` and `files/`, which the agent commands use too.
+- Keys: the audit table
+- Files: ~10 (docs/decisions/BE_S23_03_tui-flow-audit.md, backend/internal/ and backend/core/ where a step moves, ruleset/tests/vectors/, changes/BE_S23_03_tui-flow-audit.md)
+- See: backend/cmd/riftweave/play/, docs/backend/README.md
+- Done when: the audit lists every screen; each step it flags is a core command call with a vector, or is recorded as formatting only.

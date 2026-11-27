@@ -1,0 +1,12 @@
+#### BE_S08_07_encounter-tracker-cli An offline encounter tracker: initiative and whose turn it is (backend)
+- Status: done
+- Merged: #481, 2026-11-24
+- Priority: medium
+- Needs: BE_S07_03_character-list-cli, GD_S19_09_initiative-ties
+- Was: APP-34, split by role on 2026-11-18: this is the backend half (the contract, the Go core, the vectors, and the MCP tool; nothing for the retired terminal app, PO_S23_02); the browser half is `FE_S08_08_encounter-tracker-page`
+- Modified: 2026-11-23
+- Do: Owner request, 2026-11-16: the GM runs a fight on one device with no connection. A GM tool in the web app holds the encounter, over session steps an agent also drives as MCP tools (PO_S23_02): the party (APP-33) and the monsters the GM adds from the bestiary (APP-29 when merged, else by key), each with initiative, the derived `initiative` value only, no roll (docs/core/derived.md) (owner, 2026-11-16), HP, SP, mana, AP left, and conditions; the **initiative list** in order, the **current turn**, next turn, and the round count. Every change is a session step (`encounter_start`, `turn_end`, damage and conditions through the existing commands), so the encounter replays, exports with the session (APP-30), and is the same state the online table syncs (APP-35) [A]. A tie breaks by the one rule in [derived.md](../../core/derived.md#initiative-ties) (`GD_S19_09_initiative-ties`): AGI, then LCK, then a d100 roll-off made when the encounter starts and kept in its step, so it replays. Each actor's first turn has the partial pool of [actions.md](../../core/actions.md#pool) (`GD_S19_06_combat-start-ap`): the `actions` command's `start: combat`, or `start: surprise` for an ambusher acting in a surprise round. No grid offline: positions are what the table says [A].
+- Keys: encounter session steps; the initiative order
+- Files: ~9 (backend/contract/session.json, the session package, ruleset/tests/vectors/session.json, ruleset/scripts/kernel_reference.py, the encounter MCP tools and their test, docs/backend/sessions.md, docs/core/derived.md, changes/BE_S08_07_encounter-tracker-cli.md)
+- See: docs/core/derived.md, docs/modules/combat.md, docs/issues/open/BE_S08_05_bestiary-knowledge-cli.md
+- Done when: a GM runs an encounter of four characters and two monsters offline in each app; the initiative order and turns replay the same in Python and Go; the tests pass.

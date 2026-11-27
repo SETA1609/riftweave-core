@@ -1,0 +1,11 @@
+{
+  "$schema": "../../schemas/ammunition_recovery.schema.json",
+  "recovery": [
+    {"kind": "arrow", "recovered": 0.5},
+    {"kind": "bolt", "recovered": 0.5},
+    {"kind": "bullet", "recovered": 0},
+    {"kind": "scatter", "recovered": 0},
+    {"kind": "stone", "recovered": 0},
+    {"kind": "thrown", "recovered": 1}
+  ]
+}

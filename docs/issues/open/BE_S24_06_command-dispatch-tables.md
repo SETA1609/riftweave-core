@@ -1,0 +1,13 @@
+#### BE_S24_06_command-dispatch-tables Dispatch tables for commands, operations, routes, and dev steps
+- Status: todo
+- Priority: medium
+- Needs: QA_S24_02_go-benchmarks-and-complexity-gate
+- Modified: 2026-11-24
+- Do: Owner request, 2026-11-24: switches and else-if chains that pick a handler by a name become a map from the name to the handler, so adding a command is one row.
+  - **The binaries:** `cmd/riftweave`'s `run` and `command` (an else-if chain of 4), `charactersCommand` (complexity 41), and the server's `ServeHTTP` route switch.
+  - **The core:** `progression.Run`'s seven operations, `rest.Run`'s occasions, and `core/dev.go`'s `applyDev` (a switch of 13).
+  - **One shape:** `map[string]func(...) (any, error)` built once, with an unknown name answered from the map's keys, so the error lists what exists.
+- Keys: the dispatch maps
+- Files: ~10 (backend/cmd/riftweave/main.go, backend/cmd/riftweave/characters.go, backend/cmd/riftweave-server/main.go, backend/internal/progression/progression.go, backend/internal/rest/rest.go, backend/core/dev.go, docs/decisions/BE_S24_06_command-dispatch-tables.md, changes/BE_S24_06_command-dispatch-tables.md)
+- See: backend/cmd/riftweave/main.go, docs/backend/cli.md
+- Done when: none of the named functions picks a handler with a switch or an else-if chain; `charactersCommand` and `progression.Run` leave the allow list; every command's tests pass.

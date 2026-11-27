@@ -1,0 +1,15 @@
+#### BE_S25_03_creation-flow-steps The creation command leads a draft step by step (backend)
+- Status: todo
+- Priority: high
+- Needs: GD_S25_02_sex-and-starting-perks
+- Modified: 2026-11-24
+- Do: Owner request, 2026-11-24: the creation page asks one step at a time, or a few together, in an order that makes sense; the order is a rule, so it lives in the `creation` command and both the page and an agent follow it.
+  - **The order** [A], each step after the ones its choices depend on: 1 **who** (name, sex); 2 **race** (its ability modifiers, its traits, and how many tag skills and traits it allows); 3 **background** (its skill bonuses, before tag skills); 4 **traits** (creation perks, which move attributes and limits); 5 **attributes** (the point buy, showing the race and traits already added); 6 **tag skills**; 7 **perks** (the starting perk, whose prerequisites read the attributes and skills); 8 **review** (the sheet, then finish).
+  - **`rules` gains `flow`:** the steps in order, each with its key, its group, and the draft fields it sets, so the page draws them and holds no order of its own. A group (`who`, `origin`, `abilities`, `perks`, `review`) is shown together on a wide screen and one step at a time on a phone [A].
+  - **`check` gains per-step status:** each step `done`, `problems` (its messages), or `todo`, and `next`, the first step not done. A step may be revisited; changing an earlier step marks a later one `problems` when it no longer holds (a trait that drops an attribute under its minimum).
+  - **New steps:** `sex` (`male` or `female` from `creation.sexes`, or `none` when the race is of a sexless creature type, and then not asked) and `perks` (up to `starting_perks`, each a perk the draft meets the prerequisites of, checked as `progression take_perk` does). `finish` stores `sex` and the starting perks (rank 1) on the stored actor.
+  - **Both cores:** `creation_reference.py` and `backend/internal/creation`, with new `creation.json` vectors; the contract and `docs/backend/creation.md` change; the MCP tool follows the contract.
+- Keys: creation `rules.flow`; check's `steps` and `next`; the draft's `sex` and `perks`; the stored actor's `sex`
+- Files: ~12 (backend/contract/creation.json, backend/contract/common.json, ruleset/scripts/creation_reference.py, backend/internal/creation/creation.go, its test, ruleset/tests/vectors/creation.json, docs/backend/creation.md, frontend/src/api/openapi.d.ts, docs/decisions/BE_S25_03_creation-flow-steps.md, changes/BE_S25_03_creation-flow-steps.md)
+- See: docs/backend/creation.md, docs/modules/character-creation.md#the-sequence-at-a-glance
+- Done when: a `creation.json` vector walks a draft through every step in the flow's order, with `next` moving one step at a time and every step `done` before `finish`; a vector changes an earlier step and a later one reports its problem; the vectors pass in Python and Go.

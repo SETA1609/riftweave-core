@@ -10,6 +10,7 @@ import json
 import math
 from pathlib import Path
 
+from bestiary_reference import run_bestiary
 from casting_reference import run_casting, run_spellcraft
 from creation_reference import run_creation
 from hazard_reference import run_hazard
@@ -212,7 +213,44 @@ def run_resolution(vector):
     }
 
 
+AP_TARGET = "ap"
+
+
+TEMPLATE_PREFIX = "core:character_template/"
+
+
+def with_templates(vector):
+    """The actor's held character templates applied (docs/core/templates.md): attributes added,
+    then the templates' modifiers and their granted perks' modifiers joined to modifiers. Two in
+    one slot raise ValueError."""
+    held = vector.get("templates", [])
+    if not held:
+        return vector
+    rows = {TEMPLATE_PREFIX + row["key"]: row for row in load_data("character_templates/core.json")["character_templates"]}
+    features = {row["key"]: row for row in load_data("features/core.json")["features"]}
+    attributes = dict(vector["actor"].get("attributes", {}))
+    modifiers = list(vector.get("modifiers", []))
+    slots = {}
+    for entry in held:
+        row = rows.get(entry["template"])
+        if row is None:
+            raise ValueError(f"{entry['template']} is not a character template")
+        if row["slot"] in slots:
+            raise ValueError(f"{slots[row['slot']]} and {row['key']} share the {row['slot']} slot")
+        slots[row["slot"]] = row["key"]
+        for ability, value in row["attributes"].items():
+            attributes[ability] = attributes.get(ability, 0) + value
+        modifiers += row["modifiers"]
+        for perk in row["perks"]:
+            modifiers += emit_perk(features[perk["perk"].rsplit("/", 1)[-1]], perk.get("rank", 1))
+    return {**vector, "actor": {**vector["actor"], "attributes": attributes}, "modifiers": modifiers}
+
+
 def run_derived(vector):
+    try:
+        vector = with_templates(vector)
+    except ValueError as error:
+        return {"error": str(error)}
     actor = vector["actor"]
     attributes = actor.get("attributes", {})
     level = actor.get("level", 1)
@@ -230,6 +268,9 @@ def run_derived(vector):
         )
         own = [m for m in modifiers if m.get("target") == stat["key"]]
         result[stat["key"]] = apply_modifiers(value, own)
+    # The derived ap is the action pool, kept between its floor and cap (GD_S19_07).
+    pool_rules = load_data("actions/core.json")["pool"]
+    result[AP_TARGET] = min(max(result[AP_TARGET], pool_rules["floor"]), pool_rules["cap"])
     return result
 
 
@@ -276,6 +317,8 @@ def run_actions(vector):
     attribute = vector["actor"]["attributes"][pool_rules["attribute"]]
     pool = pool_rules["base"] + (attribute * pool_rules["per_point"]) // pool_rules["per_point_divisor"]
     modifiers = vector.get("modifiers", [])
+    # Modifiers on ap change the pool, kept between its floor and cap (GD_S19_07).
+    pool = min(max(apply_modifiers(pool, [m for m in modifiers if m["target"] == AP_TARGET]), pool_rules["floor"]), pool_rules["cap"])
     cost = sum(
         max(apply_modifiers(costs[key], [m for m in modifiers if m["target"] == key]), 0)
         for key in vector.get("actions", [])
@@ -286,6 +329,16 @@ def run_actions(vector):
     if carried > pool_rules["carry"]:
         return {"error": f'carried {carried} is more than pool.carry {pool_rules["carry"]}'}
     available = min(pool + carried, pool_rules["cap"])
+    # A fight's first turn (docs/core/actions.md#pool, GD_S19_06): pool - less, at least minimum
+    # and at most the pool; an ambusher's surprise round has the full pool. Nothing carries in.
+    start = vector.get("start")
+    if start is not None and carried:
+        return {"error": "a fight starts with no carried AP"}
+    if start == "combat":
+        rule = pool_rules["combat_start"]
+        available = min(max(pool - rule["less"], rule["minimum"]), pool)
+    elif start == "surprise":
+        available = min(pool, pool_rules["cap"])
     held = max(available - cost, 0)
     if held_spent > held:
         return {"error": f"held_spent {held_spent} is more than the {held} AP held"}
@@ -438,6 +491,7 @@ def maneuver_of(vector):
     if key not in rows:
         raise ValueError(f'maneuver "{key}" is not defined')
     row = rows[key]
+    check_maneuver(row, COMMAND_COMBAT, held_refs(vector["attacker"].get("perks")), vector["attacker"].get("maneuvers"))
     range_ = vector.get("range", "melee")
     if range_ not in row.get("ranges", [range_]):
         raise ValueError(f"{key} needs " + " or ".join(f"a {r} attack" for r in row["ranges"]))
@@ -445,7 +499,50 @@ def maneuver_of(vector):
     wanted = row.get("weapon_properties")
     if wanted and not set(wanted) & set(properties):
         raise ValueError(f"{key} needs " + " or ".join(f"a {p} weapon" for p in wanted))
+    if "range_normal_min" in row:
+        if "range_normal" not in vector["attacker"]:
+            raise ValueError(f"{key} needs attacker.range_normal")
+        if vector["attacker"]["range_normal"] < row["range_normal_min"]:
+            raise ValueError(f"{key} needs a weapon with range_normal {row['range_normal_min']} or more")
+    if row.get("still") and vector.get("moved"):
+        raise ValueError(f"{key} needs no move this turn")
     return row
+
+
+COMMAND_COMBAT = "combat"
+COMMAND_ATTACK_SEQUENCE = "attack_sequence"
+COMMAND_OVERWATCH = "overwatch"
+MANEUVER_PREFIX = "core:maneuver/"
+
+
+def held_refs(perks):
+    """Held perks as (ref, rank): a bare ref (combat, attack_sequence) is held at rank 1, a held
+    perk { perk, rank } at its rank. None when the input names no perks."""
+    if perks is None:
+        return None
+    return [(perk, 1) if isinstance(perk, str) else (perk["perk"], perk.get("rank", 1)) for perk in perks]
+
+
+def check_maneuver(row, command, perks, maneuvers):
+    """A maneuver runs in its own command, and, when the input names the actor's perks or a
+    monster's maneuvers, only when one of them unlocks it (docs/core/actions.md#ranged-maneuvers).
+    A perk unlocks at the rank its unlocks_at_rank names, at rank 1 otherwise."""
+    key, own = row["key"], row.get("command", COMMAND_COMBAT)
+    if own != command:
+        raise ValueError(f"{key} is {'an' if own[0] in 'aeiou' else 'a'} {own} maneuver")
+    if perks is None and maneuvers is None:
+        return
+    if key in (maneuvers or []):
+        return
+    features = {f["key"]: f for f in load_data("features/core.json")["features"]}
+    ref = MANEUVER_PREFIX + key
+    for perk, rank in perks or []:
+        feature = features.get(perk.rsplit("/", 1)[-1])
+        if feature is None:
+            raise ValueError(f'perk "{perk}" is not defined')
+        if ref in feature.get("unlocks", []) and rank >= feature.get("unlocks_at_rank", {}).get(ref, 1):
+            return
+    raise ValueError(f"{key} needs a perk that unlocks it")
 
 
 def maneuver_fits(row, vector):
@@ -498,15 +595,151 @@ def maneuver_cost(maneuver, loadout=None):
     """The AP of an action performed as the maneuver, at least 1, and its stamina in real time.
     With a loadout the attack costs the loadout's attack AP (attack_sequences/core.json)."""
     data = load_data("actions/core.json")
-    base = next(a["cost"] for a in data["actions"] if a["key"] == maneuver["modifies"])
-    if loadout is not None and maneuver["modifies"] == "attack":
-        base = attack_sequence_of(loadout)["ap"]
+    actions = {a["key"]: a for a in data["actions"]}
+    action = actions[maneuver["modifies"]]
+    attack = attack_sequence_of(loadout)["ap"] if loadout is not None else actions["attack"]["cost"]
+    base = action["cost"]
+    if maneuver["modifies"] == "attack":
+        base = attack
+    elif action.get("adds_to") == "attack":
+        # Held Breath: the aimed attack is the attack's AP plus the aimed action's.
+        base = attack + action["cost"]
     ap = max(base + maneuver["ap"], 1)
     return ap, ap * data["stamina_per_ap"]
 
 
+FIRES = ("ammunition", "thrown")
+LOADING = "loading"
+NO_ROUNDS_LEFT = "the weapon has no rounds left"
+MUST_RELOAD = "the weapon must reload first"
+
+
+GRENADE_PREFIX = "core:consumable/"
+GRENADE_ALONE = "a grenade is thrown without a maneuver, a called shot, or ammunition"
+
+
+def throw_grenade(vector):
+    """A grenade thrown as an area attack (docs/core/combat.md#grenades): its own dice and damage
+    type with no ability added, nothing past its radius, and its riders on a hit that is not
+    evaded."""
+    ref = vector["grenade"]
+    rows = {GRENADE_PREFIX + row["key"]: row for row in load_data("equipment/consumables.json")["equipment"]}
+    row = rows.get(ref)
+    if row is None or row.get("type") != "grenade":
+        return {"error": f"{ref} is not a grenade"}
+    if any(field in vector for field in ("maneuver", "called_shot", "ammunition")):
+        return {"error": GRENADE_ALONE}
+    if vector.get("delivery", "area") != "area":
+        return {"error": "a grenade is an area attack"}
+    damage, consumable = vector["damage"], row["consumable"]
+    if "ability" in damage:
+        return {"error": "a grenade's damage adds no ability"}
+    dealt = consumable.get("damage")
+    if dealt is None:
+        return {"error": f"the {row['label']} deals no damage: it is no attack"}
+    count, sides = (int(part) for part in dealt["dice"].split("d"))
+    if not count <= damage["roll"] <= count * sides:
+        return {"error": f"the {row['label']} rolls {dealt['dice']}: {damage['roll']} is outside {count} to {count * sides}"}
+    if damage.get("type", dealt["type"]) != dealt["type"]:
+        return {"error": f"the {row['label']} deals {dealt['type']} damage, not {damage['type']}"}
+    if vector.get("burst_distance", 0) > consumable["radius"]:
+        return {
+            "outcome": "outside", "target": 0, "margin": None, "crit": False, "evaded": False, "blocked": False,
+            "evasion_rate": 0, "block_rate": 0, "parry_rate": 0, "parried": False, "warded": False, "ward_percent": 0,
+            "counter": False, "stagger_ap": 0, "damage": 0, "hp": vector["defender"]["hp"], "effects": [],
+        }
+    thrown = {key: value for key, value in vector.items() if key not in ("grenade", "burst_distance")}
+    thrown = {**thrown, "delivery": "area", "damage": {**damage, "type": dealt["type"]}}
+    result = strike(thrown)
+    if "error" in result:
+        return result
+    landed = result["outcome"] == "hit" and not result["evaded"]
+    return {**result, "effects": list(consumable.get("effects", [])) if landed else []}
+
+
 def run_combat(vector):
+    """One attack (docs/core/combat.md). With `ammunition`, a weapon that fires or throws spends one
+    round, and a loading weapon must hold one (docs/core/combat.md#ammunition). With `grenade`, the
+    attack is a thrown grenade (docs/core/combat.md#grenades)."""
+    if "grenade" in vector:
+        if "round" in vector:
+            return {"error": GRENADE_NO_ROUND}
+        return throw_grenade(vector)
+    try:
+        vector = with_round(vector)
+    except ValueError as error:
+        return {"error": str(error)}
+    ammunition = vector.get("ammunition")
+    properties = vector["attacker"].get("weapon_properties", [])
+    if ammunition is None or not any(prop in properties for prop in FIRES):
+        return round_riders(vector, strike(vector))
+    if ammunition["rounds"] <= 0:
+        return {"error": NO_ROUNDS_LEFT}
+    loading = LOADING in properties
+    if loading and not ammunition.get("loaded", False):
+        return {"error": MUST_RELOAD}
+    result = round_riders(vector, strike({key: value for key, value in vector.items() if key != "ammunition"}))
+    if "error" in result:
+        return result
+    left = {"rounds": ammunition["rounds"] - 1}
+    if loading:
+        left["loaded"] = False
+    return {**result, "ammunition": left}
+
+
+AMMUNITION_PREFIX = "core:ammunition/"
+GRENADE_NO_ROUND = "a grenade is thrown, not fired with a round"
+OUTSIDE = "outside"
+
+
+def with_round(vector):
+    """The round fired (docs/core/combat.md#elemental-rounds): its damage_type replaces the
+    weapon's, and its effects ride the strike. With burst, this defender is caught in a bursting
+    round's burst: an area roll, outside past the radius, and the shot's crit for the damage."""
+    burst = vector.get("burst")
+    if "round" not in vector:
+        if burst is not None:
+            raise ValueError("a burst needs a bursting round")
+        return vector
+    rows = {AMMUNITION_PREFIX + row["key"]: row for row in load_data("equipment/ammunition.json")["equipment"]}
+    ref = vector["round"]
+    if ref not in rows:
+        raise ValueError(f"{ref} is not an ammunition row")
+    round_ = rows[ref]["ammunition"]
+    if burst is not None and "burst_radius" not in round_:
+        raise ValueError(f"{ref} does not burst")
+    damage = {**vector["damage"], "type": round_.get("damage_type", vector["damage"]["type"])}
+    inner = {key: value for key, value in vector.items() if key not in ("round", "burst")}
+    inner = {**inner, "damage": damage, "_round_effects": list(round_.get("effects", []))}
+    if burst is not None:
+        inner = {**inner, "delivery": "area", "_crit": bool(burst.get("crit", False)), "_outside": burst["distance"] > round_["burst_radius"]}
+    return inner
+
+
+def round_riders(vector, result):
+    """A round's effects on a hit that is not evaded, after a maneuver's (if any)."""
+    if "_round_effects" not in vector or "error" in result:
+        return result
+    landed = result["outcome"] == "hit" and not result["evaded"]
+    return {**result, "effects": result.get("effects", []) + (vector["_round_effects"] if landed else [])}
+
+
+def run_ammunition(vector):
+    """Recover the rounds fired in a fight (docs/core/combat.md#ammunition): each kind's share in
+    combat/ammunition.json, rounded down."""
+    shares = {row["kind"]: row["recovered"] for row in load_data("combat/ammunition.json")["recovery"]}
+    return {"recovered": {kind: math.floor(count * shares[kind] + 1e-9) for kind, count in vector["fired"].items()}}
+
+
+def strike(vector):
     """One attack, in the order of docs/core/combat.md. Dice and rolls are inputs."""
+    if vector.get("_outside"):
+        # Past a burst's radius: no roll, no damage.
+        return {
+            "outcome": OUTSIDE, "target": 0, "margin": None, "crit": False, "evaded": False, "blocked": False,
+            "evasion_rate": 0, "block_rate": 0, "parry_rate": 0, "parried": False, "warded": False, "ward_percent": 0,
+            "counter": False, "stagger_ap": 0, "damage": 0, "hp": vector["defender"]["hp"],
+        }
     # The attacker's while_summoning modifiers, resolved once; beside_summon means a summon is out.
     summoning = bool(vector.get("summoning")) or "beside_summon" in vector.get("situations", [])
     vector = {**vector, "modifiers": summoning_modifiers(vector.get("modifiers", []), summoning)}
@@ -583,10 +816,19 @@ def run_combat(vector):
         }
     )
     crit = "crit" in attack["tags"]
+    if maneuver is not None and "crit_window" in maneuver and attack["margin"] is not None:
+        # Held Breath: the attacker's crit window, widened by the maneuver's.
+        window = rules["crit_window"] + attacker.get("attributes", {}).get("lck", 0) // rules["crit_window_per_two_luck"]
+        crit = crit or attacker["roll"] <= window + maneuver["crit_window"]
+    damage_crit = crit
+    if "_crit" in vector:
+        # In a burst the shot's crit doubles the damage; the burst roll's own crit counts for
+        # nothing, and no crit carries the burst through the bands.
+        crit, damage_crit = False, vector["_crit"] and attack["margin"] is not None
     result = {
         "target": attack["target"],
         "margin": attack["margin"],
-        "crit": crit,
+        "crit": damage_crit,
         "evaded": False,
         "blocked": False,
         "evasion_rate": evasion_rate,
@@ -652,7 +894,7 @@ def run_combat(vector):
         # A bane needs a parameter, as in Go: no parameter matches no creature type, not a defender without one.
         if applied["effect"] == "core:effect/bane" and applied.get("parameter") and applied["parameter"] == defender.get("creature_type"):
             amount += applied["magnitude"]
-    if crit:
+    if damage_crit:
         amount = evaluate_formula(pipeline["crit_damage"], {}, {"damage": amount})
     if result["evaded"]:
         amount = evaluate_formula(pipeline["area_evade_damage"], {}, {"damage": amount})
@@ -743,11 +985,34 @@ def plan_strikes(vector, row, flags, on):
     return strikes, left
 
 
+def sequence_maneuver(vector, plan, ap):
+    """An attack_sequence maneuver (Split Nock, docs/core/actions.md#ranged-maneuvers): with the
+    attack action, its strikes of the main hand, each at its attack, for the attack's AP plus its own."""
+    if "maneuver" not in vector:
+        return plan, ap
+    rows = {row["key"]: row for row in load_data("maneuvers/core.json")["maneuvers"]}
+    key = vector["maneuver"]
+    if key not in rows:
+        raise ValueError(f'maneuver "{key}" is not defined')
+    row = rows[key]
+    check_maneuver(row, COMMAND_ATTACK_SEQUENCE, held_refs(vector["attacker"].get("perks")), vector["attacker"].get("maneuvers"))
+    if vector["action"] != "attack":
+        raise ValueError("a maneuver is made with the attack action")
+    if "loadouts" in row and vector["loadout"]["main"] not in row["loadouts"]:
+        raise ValueError(f"{key} needs " + " or ".join(f"a {kind} main hand" for kind in row["loadouts"]))
+    cost = max(ap + row["ap"], 1)
+    if vector.get("ap") is not None and vector["ap"] < cost:
+        raise ValueError(f"{key} needs {cost} AP")
+    return [("main", row.get("attack", 0))] * row.get("strikes", 1), cost
+
+
 ACTION_OPPORTUNITY = "opportunity"
 REASON_DISENGAGED = "disengaged"
 REASON_NO_REACTION_LEFT = "no_reaction_left"
 REACTIONS_FROM_AGI = "reactions_from_agi"
 REACTIONS_PER_ROUND = "reactions_per_round"
+REASON_RANGED = "ranged"
+EMPTY_HANDS = ("empty", "two_handed")
 
 
 def reactions_most(attacker):
@@ -770,7 +1035,9 @@ def run_opportunity(vector):
     if row is None:
         return {"error": no_sequence_error(vector["loadout"])}
     reason = None
-    if vector.get("disengaged"):
+    if vector["loadout"]["main"] in load_data("attack_sequences/core.json")["ranged_hands"]:
+        reason = REASON_RANGED
+    elif vector.get("disengaged"):
         reason = REASON_DISENGAGED
     elif vector.get("reactions_used", 0) >= reactions_most(vector["attacker"]):
         reason = REASON_NO_REACTION_LEFT
@@ -817,19 +1084,42 @@ def run_attack_sequence(vector):
             row = {**row, "jab": {**row["jab"], "ap": bash["after_block_ap"]}}
     try:
         plan, ap = plan_strikes(vector, row, flags, on)
+        plan, ap = sequence_maneuver(vector, plan, ap)
     except ValueError as error:
         return {"error": str(error)}
+    # Ranged loadouts (GD_S17_05, docs/core/combat.md#ranged-loadouts): a hand of a ranged kind
+    # strikes at range, and a melee strike reaches only a foe in reach.
+    sequences = load_data("attack_sequences/core.json")
+    ranged = {hand: vector["loadout"][hand] in sequences["ranged_hands"] for hand in ("main", "off")}
+    in_reach = [foe.get("in_reach", True) for foe in foes]
+    foes = [{key: value for key, value in foe.items() if key != "in_reach"} for foe in foes]
+    if action == "circle_cut":
+        plan = [strike for strike, near in zip(plan, in_reach) if near]
     if action in ("full_attack", "circle_cut"):
-        aims = [0] * len(plan) if action == "full_attack" else list(range(len(foes)))
+        aims = [0] * len(plan) if action == "full_attack" else [i for i, near in enumerate(in_reach) if near]
     else:
         aims = vector.get("targets", [0] * len(plan))
         if len(aims) != len(plan):
             return {"error": f"targets names {len(aims)} foes for {len(plan)} strikes"}
-    for aim in aims:
+    for (hand, _), aim in zip(plan, aims):
         if aim < 0 or aim >= len(foes):
             return {"error": f"target {aim} is not a foe in reach"}
         if foes[aim]["hp"] == 0:
             return {"error": f"foe {aim} is already down"}
+        if not ranged[hand] and not in_reach[aim]:
+            return {"error": f"foe {aim} is out of reach for a melee strike"}
+    # Ammunition per hand: a counted ranged hand spends a round a strike, and a loading one
+    # reloads first; in a full attack the reload spends the budget over the attack AP.
+    counted = {hand: dict(rounds) for hand, rounds in vector.get("ammunition", {}).items() if ranged[hand]}
+    loading = {hand: "loading" in attacker.get(("off_" if hand == "off" else "") + "weapon_properties", []) for hand in ("main", "off")}
+    costs = {a["key"]: a["cost"] for a in load_data("actions/core.json")["actions"]}
+    def reload_cost(hand):
+        other = vector["loadout"]["off" if hand == "main" else "main"]
+        extra = sequences["full_attack"]["one_handed_reload_extra"] if other not in EMPTY_HANDS else 0
+        return max(apply_modifiers(costs["reload"], on("reload")), 0) + extra
+    budget = (ap - row["ap"]) if action == "full_attack" else 0
+    reloads, stopped = 0, 0
+    reachable = lambda hand, i: hp[i] > 0 and (ranged[hand] or in_reach[i])
     hp = [foe["hp"] for foe in foes]
     # A circle cut strikes each foe once, so nothing carries (its own rule, [A]).
     carries = 0 if action == "circle_cut" else math.inf if "reaping_arc" in flags else 1 if "carry_through" in flags else 0
@@ -848,7 +1138,7 @@ def run_attack_sequence(vector):
         index += 1
         carried = strike["carried"]
         if hp[strike["foe"]] == 0:
-            standing = [i for i, left in enumerate(hp) if left > 0]
+            standing = [i for i in range(len(hp)) if reachable(strike["hand"], i)]
             if carries > 0 and standing:
                 carries -= 1
                 carried = True
@@ -859,10 +1149,26 @@ def run_attack_sequence(vector):
             else:
                 lost += 1
                 continue
+        hand = strike["hand"]
+        if hand in counted:
+            rounds = counted[hand]
+            if rounds["rounds"] > 0 and loading[hand] and not rounds.get("loaded", False) and action == "full_attack" and budget >= reload_cost(hand):
+                budget -= reload_cost(hand)
+                reloads += 1
+                rounds["loaded"] = True
+            if rounds["rounds"] <= 0 or (loading[hand] and not rounds.get("loaded", False)):
+                if action != "full_attack":
+                    why = "has no rounds left" if rounds["rounds"] <= 0 else "must reload first"
+                    return {"error": f"the {hand}-hand weapon {why}"}
+                stopped = len(queue) - index + 1
+                break
+            rounds["rounds"] -= 1
+            if loading[hand]:
+                rounds["loaded"] = False
         if not rolls:
             return {"error": f"the {action} needs a roll for strike {len(strikes) + 1}"}
         roll = rolls.pop(0)
-        foe, hand = strike["foe"], strike["hand"]
+        foe = strike["foe"]
         # A shield has no weapon dice, so a bash is never the Scissor Cut strike.
         scissor = scissor_left and hand == "off" and foe in struck_by_main and not bashing
         damage = dict(vector["off_damage"] if hand == "off" and "off_damage" in vector else vector["damage"])
@@ -897,6 +1203,7 @@ def run_attack_sequence(vector):
                 "modifiers": strike_modifiers,
                 "situations": vector.get("situations", []),
                 "summoning": vector.get("summoning", False),
+                **({"range": "ranged"} if ranged[hand] else {}),
             }
         )
         if "error" in outcome:
@@ -932,11 +1239,11 @@ def run_attack_sequence(vector):
         )
         if bashing and hand == "off":
             strikes[-1].update(bash=True, stagger_ap=bash["stagger_ap"] if hit and tier >= bash["tiers"]["stagger"] else 0)
-        if dropped and index == len(queue) and carries > 0 and any(left > 0 for left in hp):
+        if dropped and index == len(queue) and carries > 0 and any(reachable(hand, i) for i in range(len(hp))):
             queue.append({"hand": hand, "attack": strike["attack"], "foe": foe, "free": True, "carried": False})
         # Long Guard: a crit that leaves its foe standing carries as a drop would, to the first
         # other standing foe.
-        others = [i for i, left in enumerate(hp) if left > 0 and i != foe]
+        others = [i for i in range(len(hp)) if reachable(hand, i) and i != foe]
         # In an attack, only a next strike aimed at the critted foe is carried; one the caller
         # aimed elsewhere keeps its foe, and the carry is not spent.
         aimed_elsewhere = action != "full_attack" and index < len(queue) and queue[index]["foe"] != foe
@@ -949,7 +1256,11 @@ def run_attack_sequence(vector):
             else:
                 queue.append({"hand": hand, "attack": strike["attack"], "foe": others[0], "free": True, "carried": True})
     stamina = ap * load_data("actions/core.json")["stamina_per_ap"]
-    return {"action": action, "sequence": row["key"], "ap": ap, "stamina": stamina, "strikes": strikes, "hp": hp, "lost": lost}
+    result = {"action": action, "sequence": row["key"], "ap": ap, "stamina": stamina, "strikes": strikes, "hp": hp, "lost": lost}
+    if "ammunition" in vector:
+        left = {hand: {"rounds": rounds["rounds"], **({"loaded": rounds.get("loaded", False)} if loading[hand] else {})} for hand, rounds in counted.items()}
+        result.update(ammunition=left, reloads=reloads, stopped=stopped)
+    return result
 
 
 def stance_misfit(row, loadout):
@@ -1401,8 +1712,28 @@ def run_consume(vector):
     if at_table:
         result.update(ap=table["ap"], pending_ap=table["pending_ap"])
     return result
+POOLS = ("hp", "mp", "sp", "ap")
+
+
+def new_stored_actor(new):
+    """A new stored actor (docs/core/state.md#the-stored-actor, BE_S23_03): that level, xp 0, nothing
+    held, and every pool full at the maximum the derived stats give."""
+    level = new.get("level", 1)
+    derived = run_derived({"actor": {"attributes": new["attributes"], "level": level}})
+    return {
+        "attributes": new["attributes"], "level": level, "xp": 0, "skills": {}, "tags": list(new.get("tags", [])),
+        "growth": {"hp": 0, "mp": 0, "sp": 0}, "resources": {pool: derived[pool] for pool in POOLS},
+        "conditions": [], "modifiers": [], "flags": [], "inventory": [], "equipped": {},
+    }
+
+
 def run_stored_actor(vector):
-    """A stored actor comes back unchanged, if it is consistent (docs/core/state.md)."""
+    """A stored actor comes back unchanged, if it is consistent (docs/core/state.md); with `new`, a new
+    one is made."""
+    if "new" in vector:
+        if "actor" in vector:
+            return {"error": "stored_actor takes actor or new, not both"}
+        return {"actor": new_stored_actor(vector["new"])}
     actor = vector["actor"]
     seen = set()
     for item in actor["inventory"]:
@@ -1495,8 +1826,126 @@ def run_command_summons(vector):
     return {"ap": ap, "modifiers": granted}
 
 
+ENCOUNTER_START = "start"
+ENCOUNTER_TURN_END = "turn_end"
+START_COMBAT = "combat"
+START_SURPRISE = "surprise"
+
+
+def initiative_key(combatant):
+    """Highest initiative first, then AGI, then LCK, then the roll-off lowest first
+    (docs/core/derived.md#initiative-ties)."""
+    return (-combatant["initiative"], -combatant["agi"], -combatant["lck"], combatant.get("rolls", []))
+
+
+def encounter_view(state):
+    """The state with whose turn it is (current, with its start) and whose comes next."""
+    order, turn = state["order"], state["turn"]
+    current = {"id": order[turn]}
+    if state["round"] == 0:
+        current["start"] = START_SURPRISE
+    elif order[turn] not in state["acted"]:
+        current["start"] = START_COMBAT
+    return {"encounter": state, "current": current, "next": order[advance(state)["turn"]]}
+
+
+def advance(state):
+    """The state after the current turn ends: the next actor in the round, or round + 1 from the
+    top. In the surprise round only the ambushers act."""
+    order, turn, round_ = state["order"], state["turn"], state["round"]
+    acted = state["acted"] + ([order[turn]] if order[turn] not in state["acted"] else [])
+    for index in range(turn + 1, len(order)):
+        if round_ > 0 or order[index] in state["surprise"]:
+            return {**state, "turn": index, "acted": acted}
+    return {**state, "round": round_ + 1, "turn": 0, "acted": acted}
+
+
+def run_encounter(vector):
+    """An offline fight (docs/backend/sessions.md#encounters): the initiative order, whose turn it
+    is, and the round. It holds no dice: the roll-off is an input, kept in the step."""
+    if vector["operation"] == ENCOUNTER_TURN_END:
+        if "encounter" not in vector:
+            return {"error": "turn_end needs the encounter"}
+        return encounter_view(advance(vector["encounter"]))
+    combatants = vector["combatants"]
+    seen = set()
+    for combatant in combatants:
+        if combatant["id"] in seen:
+            return {"error": f"{combatant['id']} is in the fight twice"}
+        seen.add(combatant["id"])
+    ranked = sorted(combatants, key=initiative_key)
+    for first, second in zip(ranked, ranked[1:]):
+        if initiative_key(first) == initiative_key(second):
+            return {"error": f"{first['id']} and {second['id']} tie: roll off again"}
+    order = [combatant["id"] for combatant in ranked]
+    surprise = [combatant["id"] for combatant in ranked if combatant.get("surprise")]
+    state = {"round": 0 if surprise else 1, "order": order, "turn": order.index(surprise[0]) if surprise else 0, "acted": [], "surprise": surprise}
+    return encounter_view(state)
+
+
+EVENT_MOVE = "move"
+EVENT_ATTACK = "attack"
+HAND_GUN = "hand_gun"
+
+
+def run_overwatch(vector):
+    """Pinning Fire and Trigger Watch (docs/core/actions.md#ranged-maneuvers): which events draw a
+    strike until the shooter's next turn, and the AP and rounds spent. The caller resolves each
+    strike with combat at its attack."""
+    rows = {row["key"]: row for row in load_data("maneuvers/core.json")["maneuvers"]}
+    key = vector["maneuver"]
+    if key not in rows:
+        return {"error": f'maneuver "{key}" is not defined'}
+    row = rows[key]
+    shooter = vector.get("shooter", {})
+    try:
+        check_maneuver(row, COMMAND_OVERWATCH, held_refs(shooter.get("perks")), shooter.get("maneuvers"))
+    except ValueError as error:
+        return {"error": str(error)}
+    loadout = vector.get("loadout")
+    if loadout is not None and attack_sequence_of(loadout) is None:
+        return {"error": no_sequence_error(loadout)}
+    two_hand_guns = loadout is not None and loadout["main"] == HAND_GUN and loadout["off"] == HAND_GUN
+    for refused in row.get("without_weapon_properties", []):
+        if refused in shooter.get("weapon_properties", []) and not two_hand_guns:
+            return {"error": f"{key} is refused with a {refused} weapon"}
+    cost, _ = maneuver_cost(row, loadout)
+    rounds = row.get("rounds", 1)
+    if "rounds" in vector and vector["rounds"] < rounds:
+        return {"error": f"{key} needs {rounds} rounds"}
+    left, events = vector["ap"], vector["events"]
+    shots, zone_attacks = [], []
+    if row.get("hold"):
+        if left < cost:
+            return {"error": f"{key} needs {cost} held AP"}
+        drawn = next((i for i, event in enumerate(events) if event.get("in_range")), None)
+        if drawn is not None:
+            shots.append({"event": drawn, "foe": events[drawn]["foe"], "attack": row.get("attack", 0)})
+        spent, back, used = (cost, 0, rounds) if shots else (0, cost, 0)
+    else:
+        if left < cost:
+            return {"error": f"{key} needs {cost} AP"}
+        struck = set()
+        for i, event in enumerate(events):
+            if not event.get("in_zone"):
+                continue
+            if event["kind"] == EVENT_ATTACK:
+                zone_attacks.append({"event": i, "foe": event["foe"], "attack": row["zone"]["attack"]})
+            elif event["foe"] not in struck and len(shots) < rounds:
+                struck.add(event["foe"])
+                shots.append({"event": i, "foe": event["foe"], "attack": row.get("attack", 0)})
+        spent, back, used = left, 0, rounds
+    result = {"ap": spent, "ap_returned": back, "rounds": used, "shots": shots, "zone_attacks": zone_attacks}
+    if "rounds" in vector:
+        result["rounds_left"] = vector["rounds"] - used
+    return result
+
+
 RUNNERS = {
+    "encounter": run_encounter,
+    "overwatch": run_overwatch,
     "monster_sheet": run_monster_sheet,
+    "bestiary": run_bestiary,
     "resolution": run_resolution,
     "derived": run_derived,
     "formula": run_formula,
@@ -1508,6 +1957,7 @@ RUNNERS = {
     "stored_actor": run_stored_actor,
     "economy": run_economy,
     "combat": run_combat,
+    "ammunition": run_ammunition,
     "attack_sequence": run_attack_sequence,
     "stance": run_stance,
     "loot": run_loot,

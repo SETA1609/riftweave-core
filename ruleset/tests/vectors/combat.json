@@ -5358,7 +5358,8 @@
       },
       "perks": [
         "core:feature/low_sweep",
-        "core:feature/hooking_blows"
+        "core:feature/hooking_blows",
+        "core:feature/wind_up"
       ]
     },
     "defender": {
@@ -5606,6 +5607,1410 @@
         "dc": 50,
         "target": 50
       }
+    }
+  },
+  {
+    "name": "ammunition: a bow shot spends one arrow of twenty",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "two_handed"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing"
+    },
+    "ammunition": {
+      "rounds": 20
+    },
+    "expect": {
+      "outcome": "hit",
+      "damage": 7,
+      "hp": 23,
+      "ammunition": {
+        "rounds": 19
+      }
+    }
+  },
+  {
+    "name": "ammunition: a loaded pistol fires its round and must reload",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "loading",
+        "light"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing"
+    },
+    "ammunition": {
+      "rounds": 10,
+      "loaded": true
+    },
+    "expect": {
+      "outcome": "hit",
+      "damage": 7,
+      "hp": 23,
+      "ammunition": {
+        "rounds": 9,
+        "loaded": false
+      }
+    }
+  },
+  {
+    "name": "ammunition: a thrown knife spends itself",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "thrown",
+        "light"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing"
+    },
+    "ammunition": {
+      "rounds": 3
+    },
+    "expect": {
+      "outcome": "hit",
+      "ammunition": {
+        "rounds": 2
+      }
+    }
+  },
+  {
+    "name": "error: a loading weapon cannot fire again before a reload",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "loading",
+        "light"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing"
+    },
+    "ammunition": {
+      "rounds": 9,
+      "loaded": false
+    },
+    "expect": {
+      "error": "the weapon must reload first"
+    }
+  },
+  {
+    "name": "error: a weapon with no rounds left cannot attack",
+    "attacker": {
+      "skill": 72,
+      "roll": 47,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "two_handed"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing"
+    },
+    "ammunition": {
+      "rounds": 0
+    },
+    "expect": {
+      "error": "the weapon has no rounds left"
+    }
+  },
+  {
+    "name": "grenade: a Fire Flask at the point hits for its own 1d6 fire, and burn lands",
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 5
+    },
+    "grenade": "core:consumable/fire_flask",
+    "delivery": "area",
+    "burst_distance": 0,
+    "expect": {
+      "outcome": "hit",
+      "target": 72,
+      "margin": 32,
+      "evaded": false,
+      "damage": 5,
+      "hp": 25,
+      "effects": [
+        {
+          "effect": "core:effect/burn",
+          "magnitude": 3,
+          "duration": 10
+        }
+      ]
+    }
+  },
+  {
+    "name": "grenade: the same throw reaches a second creature 1 square out, inside the radius of 1",
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 40,
+      "armor_dr": 2,
+      "hp": 20,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 5
+    },
+    "grenade": "core:consumable/fire_flask",
+    "burst_distance": 1,
+    "expect": {
+      "outcome": "hit",
+      "margin": 32,
+      "evaded": false,
+      "damage": 5,
+      "hp": 15,
+      "effects": [
+        {
+          "effect": "core:effect/burn",
+          "magnitude": 3,
+          "duration": 10
+        }
+      ]
+    }
+  },
+  {
+    "name": "grenade: a third creature 2 squares out is outside the radius and takes nothing",
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 5
+    },
+    "grenade": "core:consumable/fire_flask",
+    "burst_distance": 2,
+    "expect": {
+      "outcome": "outside",
+      "damage": 0,
+      "hp": 30,
+      "effects": []
+    }
+  },
+  {
+    "name": "grenade: a weaker thrower's margin falls in the evasion band, so the burst is halved; the dice are the same",
+    "attacker": {
+      "skill": 50,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 5
+    },
+    "grenade": "core:consumable/fire_flask",
+    "expect": {
+      "outcome": "hit",
+      "margin": 10,
+      "evaded": true,
+      "damage": 2,
+      "hp": 28,
+      "effects": []
+    }
+  },
+  {
+    "name": "grenade: a Thunder Flask's radius of 2 reaches 2 squares out, and stagger lands",
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 5,
+      "type": "thunder"
+    },
+    "grenade": "core:consumable/thunder_flask",
+    "burst_distance": 2,
+    "expect": {
+      "outcome": "hit",
+      "evaded": false,
+      "damage": 5,
+      "hp": 25,
+      "effects": [
+        {
+          "effect": "core:effect/stagger",
+          "duration": 4
+        }
+      ]
+    }
+  },
+  {
+    "name": "grenade: the damage adds no ability",
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0,
+        "str": 4
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 5,
+      "ability": "str"
+    },
+    "grenade": "core:consumable/fire_flask",
+    "expect": {
+      "error": "a grenade's damage adds no ability"
+    }
+  },
+  {
+    "name": "grenade: the roll must be one the grenade's dice can give",
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 7
+    },
+    "grenade": "core:consumable/fire_flask",
+    "expect": {
+      "error": "the Fire Flask rolls 1d6: 7 is outside 1 to 6"
+    }
+  },
+  {
+    "name": "grenade: the damage type is the grenade's",
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 5,
+      "type": "frost"
+    },
+    "grenade": "core:consumable/fire_flask",
+    "expect": {
+      "error": "the Fire Flask deals fire damage, not frost"
+    }
+  },
+  {
+    "name": "grenade: it is an area attack",
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 5
+    },
+    "grenade": "core:consumable/fire_flask",
+    "delivery": "single",
+    "expect": {
+      "error": "a grenade is an area attack"
+    }
+  },
+  {
+    "name": "grenade: a Smoke Pot deals no damage, so it is no attack",
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 0
+    },
+    "grenade": "core:consumable/smoke_pot",
+    "expect": {
+      "error": "the Smoke Pot deals no damage: it is no attack"
+    }
+  },
+  {
+    "name": "grenade: a potion is not a grenade",
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 5
+    },
+    "grenade": "core:consumable/potion_minor_healing",
+    "expect": {
+      "error": "core:consumable/potion_minor_healing is not a grenade"
+    }
+  },
+  {
+    "name": "grenade: it is thrown without a maneuver, a called shot, or ammunition",
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 5
+    },
+    "grenade": "core:consumable/fire_flask",
+    "ammunition": {
+      "rounds": 3
+    },
+    "expect": {
+      "error": "a grenade is thrown without a maneuver, a called shot, or ammunition"
+    }
+  },
+  {
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "loading"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "round": "core:ammunition/fire_bolts",
+    "name": "elemental round: a Fire bolt that hits deals the weapon's roll as fire (no DR), burn lands, and one bolt is spent",
+    "ammunition": {
+      "rounds": 5,
+      "loaded": true
+    },
+    "expect": {
+      "outcome": "hit",
+      "target": 72,
+      "margin": 32,
+      "crit": false,
+      "evaded": false,
+      "damage": 8,
+      "hp": 22,
+      "effects": [
+        {
+          "effect": "core:effect/burn",
+          "magnitude": 3,
+          "duration": 10
+        }
+      ],
+      "ammunition": {
+        "rounds": 4,
+        "loaded": false
+      }
+    }
+  },
+  {
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "loading"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "round": "core:ammunition/fire_bolts",
+    "name": "elemental round: a creature beside the target, in the burst, takes its own area roll and the same damage roll as fire, and burn",
+    "burst": {
+      "distance": 1
+    },
+    "expect": {
+      "outcome": "hit",
+      "target": 72,
+      "margin": 32,
+      "evaded": false,
+      "damage": 8,
+      "hp": 22,
+      "effects": [
+        {
+          "effect": "core:effect/burn",
+          "magnitude": 3,
+          "duration": 10
+        }
+      ]
+    }
+  },
+  {
+    "attacker": {
+      "skill": 72,
+      "roll": 80,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "loading"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "round": "core:ammunition/fire_bolts",
+    "name": "elemental round: a Fire bolt that misses deals the target nothing as a shot",
+    "expect": {
+      "outcome": "miss",
+      "damage": 0,
+      "hp": 30,
+      "effects": []
+    }
+  },
+  {
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "loading"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "round": "core:ammunition/fire_bolts",
+    "name": "elemental round: after the miss the target is still caught in the burst (distance 0), at its area roll",
+    "burst": {
+      "distance": 0
+    },
+    "expect": {
+      "outcome": "hit",
+      "damage": 8,
+      "hp": 22,
+      "effects": [
+        {
+          "effect": "core:effect/burn",
+          "magnitude": 3,
+          "duration": 10
+        }
+      ]
+    }
+  },
+  {
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "loading"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "round": "core:ammunition/fire_bolts",
+    "name": "elemental round: a creature past the burst radius is outside: no roll, no damage",
+    "burst": {
+      "distance": 2
+    },
+    "expect": {
+      "outcome": "outside",
+      "damage": 0,
+      "hp": 30,
+      "effects": []
+    }
+  },
+  {
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "loading"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "round": "core:ammunition/fire_bolts",
+    "name": "elemental round: the shot's crit carries to the burst, doubling the damage",
+    "burst": {
+      "distance": 1,
+      "crit": true
+    },
+    "expect": {
+      "outcome": "hit",
+      "crit": true,
+      "damage": 16,
+      "hp": 14,
+      "effects": [
+        {
+          "effect": "core:effect/burn",
+          "magnitude": 3,
+          "duration": 10
+        }
+      ]
+    }
+  },
+  {
+    "attacker": {
+      "skill": 72,
+      "roll": 3,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "loading"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "round": "core:ammunition/fire_bolts",
+    "name": "elemental round: a burst roll that would crit on its own does not double the damage",
+    "burst": {
+      "distance": 1
+    },
+    "expect": {
+      "outcome": "hit",
+      "crit": false,
+      "damage": 8,
+      "hp": 22
+    }
+  },
+  {
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "loading"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "round": "core:ammunition/thunder_bolts",
+    "name": "elemental round: a Thunder bolt's burst reaches 2 squares; thunder bypasses armor, and stagger lands",
+    "burst": {
+      "distance": 2
+    },
+    "expect": {
+      "outcome": "hit",
+      "damage": 8,
+      "hp": 22,
+      "effects": [
+        {
+          "effect": "core:effect/stagger",
+          "duration": 4
+        }
+      ]
+    }
+  },
+  {
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0,
+        "per": 7
+      },
+      "weapon_properties": [
+        "ammunition",
+        "loading"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 5,
+      "type": "piercing",
+      "ability": "per"
+    },
+    "range": "ranged",
+    "round": "core:ammunition/fire_bullets",
+    "name": "flask against bullet: a Fire bullet from a pistol adds the weapon's PER modifier (+2 at PER 7) to the roll of 5",
+    "expect": {
+      "outcome": "hit",
+      "damage": 7,
+      "hp": 23,
+      "effects": [
+        {
+          "effect": "core:effect/burn",
+          "magnitude": 3,
+          "duration": 10
+        }
+      ]
+    }
+  },
+  {
+    "name": "flask against bullet: the Fire Flask's roll of 5 stays 5 from the same PER 7 thrower",
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0,
+        "per": 7
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 5
+    },
+    "grenade": "core:consumable/fire_flask",
+    "delivery": "area",
+    "burst_distance": 0,
+    "expect": {
+      "outcome": "hit",
+      "damage": 5,
+      "hp": 25,
+      "effects": [
+        {
+          "effect": "core:effect/burn",
+          "magnitude": 3,
+          "duration": 10
+        }
+      ]
+    }
+  },
+  {
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "loading"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "round": "core:ammunition/nope",
+    "name": "elemental round: a round that is no ammunition row is refused",
+    "expect": {
+      "error": "core:ammunition/nope is not an ammunition row"
+    }
+  },
+  {
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "loading"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "round": "core:ammunition/crossbow_bolts",
+    "name": "elemental round: a plain bolt does not burst",
+    "burst": {
+      "distance": 1
+    },
+    "expect": {
+      "error": "core:ammunition/crossbow_bolts does not burst"
+    }
+  },
+  {
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "loading"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 8,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "name": "elemental round: a burst needs the round",
+    "burst": {
+      "distance": 1
+    },
+    "expect": {
+      "error": "a burst needs a bursting round"
+    }
+  },
+  {
+    "name": "a grenade is not fired with a round",
+    "attacker": {
+      "skill": 72,
+      "roll": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "defender": {
+      "evasion_skill": 25,
+      "armor_dr": 2,
+      "hp": 30,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 5
+    },
+    "grenade": "core:consumable/fire_flask",
+    "delivery": "area",
+    "round": "core:ammunition/fire_bolts",
+    "expect": {
+      "error": "a grenade is thrown, not fired with a round"
+    }
+  },
+  {
+    "attacker": {
+      "skill": 60,
+      "roll": 8,
+      "attributes": {
+        "lck": 0,
+        "per": 7
+      },
+      "range_normal": 20
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 10,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "name": "held breath: the aimed attack +1 AP (6), +20 to attack, damage x1.5, and the crit window +5, so a roll of 8 crits (10 x1.5 x2)",
+    "maneuver": "held_breath",
+    "expect": {
+      "outcome": "hit",
+      "target": 80,
+      "margin": 72,
+      "crit": true,
+      "damage": 30,
+      "hp": 10,
+      "ap": 6,
+      "stamina": 30,
+      "effects": [],
+      "events": []
+    }
+  },
+  {
+    "attacker": {
+      "skill": 60,
+      "roll": 8,
+      "attributes": {
+        "lck": 0,
+        "per": 7
+      },
+      "range_normal": 20
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 10,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "name": "held breath is refused after a move this turn",
+    "maneuver": "held_breath",
+    "moved": true,
+    "expect": {
+      "error": "held_breath needs no move this turn"
+    }
+  },
+  {
+    "attacker": {
+      "skill": 60,
+      "roll": 8,
+      "attributes": {
+        "lck": 0,
+        "per": 7
+      },
+      "range_normal": 3
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 10,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "name": "held breath is refused with a short-ranged weapon (a blunderbuss, range_normal 3)",
+    "maneuver": "held_breath",
+    "expect": {
+      "error": "held_breath needs a weapon with range_normal 16 or more"
+    }
+  },
+  {
+    "attacker": {
+      "skill": 60,
+      "roll": 8,
+      "attributes": {
+        "lck": 0,
+        "per": 7
+      }
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 10,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "name": "held breath needs the weapon's range_normal",
+    "maneuver": "held_breath",
+    "expect": {
+      "error": "held_breath needs attacker.range_normal"
+    }
+  },
+  {
+    "attacker": {
+      "skill": 60,
+      "roll": 30,
+      "attributes": {
+        "lck": 0,
+        "per": 7
+      },
+      "range_normal": 20,
+      "perks": [
+        "core:feature/heads_down"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 10,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "name": "pinning shot: an attack at -10 with Heads Down held; a hit pins the target (2 AP, 6 s)",
+    "maneuver": "pinning_shot",
+    "expect": {
+      "outcome": "hit",
+      "target": 50,
+      "margin": 20,
+      "crit": false,
+      "damage": 10,
+      "hp": 30,
+      "ap": 3,
+      "effects": [
+        {
+          "effect": "core:effect/pinned",
+          "magnitude": 2,
+          "duration": 6
+        }
+      ],
+      "events": []
+    }
+  },
+  {
+    "attacker": {
+      "skill": 60,
+      "roll": 30,
+      "attributes": {
+        "lck": 0,
+        "per": 7
+      },
+      "range_normal": 20,
+      "perks": [
+        "core:feature/low_aim"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 10,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "name": "pinning shot is refused when no held perk unlocks it (Low Aim unlocks the Tripping Shot)",
+    "maneuver": "pinning_shot",
+    "expect": {
+      "error": "pinning_shot needs a perk that unlocks it"
+    }
+  },
+  {
+    "attacker": {
+      "skill": 60,
+      "roll": 30,
+      "attributes": {
+        "lck": 0,
+        "per": 7
+      },
+      "range_normal": 20,
+      "maneuvers": [
+        "pinning_shot"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 10,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "name": "a monster makes the pinning shot its sheet lists, with no perk",
+    "maneuver": "pinning_shot",
+    "expect": {
+      "outcome": "hit",
+      "ap": 3,
+      "effects": [
+        {
+          "effect": "core:effect/pinned",
+          "magnitude": 2,
+          "duration": 6
+        }
+      ]
+    }
+  },
+  {
+    "attacker": {
+      "skill": 60,
+      "roll": 30,
+      "attributes": {
+        "lck": 0,
+        "per": 7
+      },
+      "range_normal": 20,
+      "maneuvers": [
+        "tripping_shot"
+      ]
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 10,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "name": "a monster's sheet that lists another maneuver does not make the pinning shot",
+    "maneuver": "pinning_shot",
+    "expect": {
+      "error": "pinning_shot needs a perk that unlocks it"
+    }
+  },
+  {
+    "attacker": {
+      "skill": 60,
+      "roll": 8,
+      "attributes": {
+        "lck": 0,
+        "per": 7
+      },
+      "range_normal": 20
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 10,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "name": "combat refuses the split nock, an attack_sequence maneuver",
+    "maneuver": "split_nock",
+    "expect": {
+      "error": "split_nock is an attack_sequence maneuver"
+    }
+  },
+  {
+    "attacker": {
+      "skill": 60,
+      "roll": 8,
+      "attributes": {
+        "lck": 0,
+        "per": 7
+      },
+      "range_normal": 20
+    },
+    "defender": {
+      "evasion_skill": 20,
+      "armor_dr": 0,
+      "hp": 40,
+      "attributes": {
+        "lck": 0
+      }
+    },
+    "damage": {
+      "roll": 10,
+      "type": "piercing"
+    },
+    "range": "ranged",
+    "name": "combat refuses the trigger watch, an overwatch maneuver",
+    "maneuver": "trigger_watch",
+    "expect": {
+      "error": "trigger_watch is an overwatch maneuver"
     }
   }
 ]

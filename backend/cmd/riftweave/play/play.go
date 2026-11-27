@@ -35,6 +35,7 @@ const (
 	modeCharacters // the character list (BE_S07_03)
 	modeCreator    // character creation over the creation command (BE_S07_08)
 	modeCompendium // the tables over the catalog command (BE_S08_10)
+	modeBestiary   // the monsters and what the players know of them (BE_S08_05)
 )
 
 const maximumLogLines = 6
@@ -157,6 +158,8 @@ type Model struct {
 	creator *creator
 	// compendium is the Compendium while it is open.
 	compendium *compendium
+	// bestiary is the Bestiary while it is open.
+	bestiary *bestiaryScreen
 }
 
 // New returns the model at the main menu, with the default settings and nothing saved.
@@ -187,7 +190,8 @@ func (model Model) Menu() string { return model.menu }
 // Settings is the settings the model holds.
 func (model Model) Settings() settings.File { return model.settings }
 
-// Session is the dev panel's session as JSON, nil before the first dev command.
+// Session is the model's session as JSON (the dev panel's, and the bestiary's marks), nil before
+// the first dev command or mark.
 func (model Model) Session() []byte { return model.session }
 
 // Init is part of tea.Model.
@@ -333,6 +337,8 @@ func (model Model) Update(message tea.Msg) (tea.Model, tea.Cmd) {
 		return model.creatorKey(key)
 	case modeCompendium:
 		return model.compendiumKey(message)
+	case modeBestiary:
+		return model.bestiaryKey(message)
 	case modePrompt:
 		if isKey {
 			switch key.Type {
@@ -429,6 +435,8 @@ func (model Model) enter(entry menuEntry) (tea.Model, tea.Cmd) {
 		return model.openCreator(), nil
 	case "compendium":
 		return model.openCompendium(), nil
+	case "bestiary":
+		return model.openBestiary(), nil
 	case "skill_resolution":
 		return model.open(resolutionForm(model.luck)), textinput.Blink
 	case "attack":
@@ -504,34 +512,61 @@ func devOperation(words []string) (map[string]any, error) {
 }
 
 // startActor is the stored actor a new panel session starts from: the last character created, or
-// every attribute at 5 at level 1, with full pools from the derived command.
+// a new one from the core (stored_actor's new, BE_S23_03), every attribute at 5 unless one was
+// imported.
 func (model Model) startActor() (map[string]any, error) {
 	var character map[string]any = model.character
 	if _, stored := character["resources"]; stored {
 		return character, nil // a stored actor from the creation screen
 	}
+	var start map[string]any = map[string]any{}
 	if character == nil {
 		attributes := map[string]int64{}
 		for _, key := range attributeKeys {
 			attributes[key] = 5
 		}
-		character = map[string]any{"attributes": attributes, "level": int64(1)}
+		start["attributes"] = attributes
+	} else {
+		start["attributes"] = character["attributes"]
+		if level, given := character["level"]; given && level != nil {
+			start["level"] = level
+		}
 	}
-	input, _ := json.Marshal(map[string]any{"actor": character})
-	output, err := model.run("derived", input)
+	input, _ := json.Marshal(map[string]any{"new": start})
+	output, err := model.run("stored_actor", input)
 	if err != nil {
 		return nil, err
 	}
-	var derived map[string]any
-	if err := json.Unmarshal(output, &derived); err != nil {
+	var made struct {
+		Actor map[string]any `json:"actor"`
+	}
+	if err := json.Unmarshal(output, &made); err != nil {
 		return nil, err
 	}
-	return map[string]any{
-		"attributes": character["attributes"], "level": character["level"], "xp": 0, "skills": map[string]any{}, "tags": []any{},
-		"growth":     map[string]any{"hp": 0, "mp": 0, "sp": 0},
-		"resources":  map[string]any{"hp": derived["hp"], "mp": derived["mp"], "sp": derived["sp"], "ap": derived["ap"]},
-		"conditions": []any{}, "modifiers": []any{}, "flags": []any{}, "inventory": []any{}, "equipped": map[string]any{},
-	}, nil
+	return made.Actor, nil
+}
+
+// ensureSession starts the model's session from startActor when it has none yet. The dev panel
+// and the bestiary's marks share it.
+func (model *Model) ensureSession() error {
+	if model.session != nil {
+		return nil
+	}
+	actor, err := model.startActor()
+	if err != nil {
+		return err
+	}
+	input, _ := json.Marshal(map[string]any{"operation": "start", "start": actor})
+	output, err := model.run("session", input)
+	if err != nil {
+		return err
+	}
+	var started map[string]json.RawMessage
+	if err := json.Unmarshal(output, &started); err != nil {
+		return err
+	}
+	model.session = started["session"]
+	return nil
 }
 
 // command runs one dev short command and returns to the menu, or stays with the problem shown.
@@ -563,21 +598,9 @@ func (model Model) command(line string) Model {
 		model.problem = err.Error()
 		return model
 	}
-	if model.session == nil {
-		actor, err := model.startActor()
-		if err != nil {
-			model.problem = err.Error()
-			return model
-		}
-		input, _ := json.Marshal(map[string]any{"operation": "start", "start": actor})
-		output, err := model.run("session", input)
-		if err != nil {
-			model.problem = err.Error()
-			return model
-		}
-		var started map[string]json.RawMessage
-		_ = json.Unmarshal(output, &started)
-		model.session = started["session"]
+	if err := model.ensureSession(); err != nil {
+		model.problem = err.Error()
+		return model
 	}
 	operation["session"] = model.session
 	input, _ := json.Marshal(operation)
@@ -693,6 +716,8 @@ func (model Model) View() string {
 		view.WriteString(model.creatorView())
 	case modeCompendium:
 		view.WriteString(model.compendiumView())
+	case modeBestiary:
+		view.WriteString(model.bestiaryView())
 	case modePrompt:
 		view.WriteString(model.line.View() + "\n")
 		view.WriteString("\n" + hintStyle.Render("enter to apply, esc to cancel") + "\n")

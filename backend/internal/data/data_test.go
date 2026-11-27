@@ -103,7 +103,7 @@ func TestASpellBuiltOnASpellLoadsAsItsFlatRow(t *testing.T) {
 	var rows []any = spells["spells"].([]any)
 	rows = append(rows, map[string]any{
 		"key": "raise_lord", "label": "Raise Lord", "base": "core:spell/raise_thrall",
-		"overrides": map[string]any{"level": 20, "cost": map[string]any{"mana": 60}},
+		"overrides": map[string]any{"level": 20},
 	})
 	spells["spells"] = rows
 	encoded, _ := json.Marshal(spells)
@@ -118,16 +118,16 @@ func TestASpellBuiltOnASpellLoadsAsItsFlatRow(t *testing.T) {
 	if !exists {
 		t.Fatal("raise_lord is not loaded")
 	}
-	if lord.Level != 20 || lord.Cost.Mana != 60 || lord.Color != base.Color {
-		t.Errorf("level 20, mana 60, and the base's color: %+v", lord)
+	if lord.Level != 20 || lord.Color != base.Color {
+		t.Errorf("level 20 and the base's color: %+v", lord)
 	}
 	if !reflect.DeepEqual(lord.Cost.Reagents, base.Cost.Reagents) || len(base.Cost.Reagents) == 0 {
-		t.Errorf("an override of cost.mana keeps the base's reagents: %v", lord.Cost.Reagents)
+		t.Errorf("an override that leaves cost alone keeps the base's reagents: %v", lord.Cost.Reagents)
 	}
 	if !reflect.DeepEqual(lord.Effects, base.Effects) {
 		t.Errorf("the base's effects: %v", lord.Effects)
 	}
-	if base.Level != 8 || base.Cost.Mana != 36 {
+	if base.Level != 8 {
 		t.Errorf("the base is unchanged: %+v", base)
 	}
 }
@@ -166,5 +166,14 @@ func TestAnOverrideMergesFieldByField(t *testing.T) {
 	}
 	if got := MergeOverride(base, override); !reflect.DeepEqual(got, want) {
 		t.Errorf("got %v, want %v", got, want)
+	}
+}
+
+// BenchmarkLoad is opening the core ruleset (QA_S24_02): the cost every command pays once.
+func BenchmarkLoad(b *testing.B) {
+	for b.Loop() {
+		if _, err := Load(os.DirFS("../../../ruleset/data")); err != nil {
+			b.Fatal(err)
+		}
 	}
 }

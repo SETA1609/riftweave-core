@@ -9,11 +9,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/fs"
+	"maps"
 	"slices"
 	"strings"
 	"sync"
 
 	"github.com/SETA1609/riftweave-core/backend/internal/data"
+	"github.com/SETA1609/riftweave-core/backend/internal/spellcraft"
 )
 
 // Operation is what the command does.
@@ -243,10 +245,42 @@ func build(ruleset *data.Ruleset) tables {
 		var entry *collection = &collections[index]
 		var resolver = resolver{files: ruleset.Files, entry: entry, raw: raw[entry.name], done: map[int]map[string]any{}}
 		for position, row := range raw[entry.name] {
-			result[entry.name] = append(result[entry.name], Row{Ref: row.ref, Source: row.source, Row: resolver.resolve(position, map[int]bool{})})
+			var composed map[string]any = resolver.resolve(position, map[int]bool{})
+			if entry.name == spellsCollection {
+				composed = withMana(ruleset, composed)
+			}
+			result[entry.name] = append(result[entry.name], Row{Ref: row.ref, Source: row.source, Row: composed})
 		}
 	}
 	return result
+}
+
+// spellsCollection is the table whose rows show a computed mana.
+const spellsCollection = "spells"
+
+// withMana is a composed spell row with cost.mana filled by the spellcraft formula, which no row
+// stores (DE_S02_05). A row the formula cannot price is shown without it.
+func withMana(ruleset *data.Ruleset, row map[string]any) map[string]any {
+	encoded, err := json.Marshal(row)
+	if err != nil {
+		return row
+	}
+	var spell data.Spell
+	if json.Unmarshal(encoded, &spell) != nil {
+		return row
+	}
+	mana, err := spellcraft.SpellMana(ruleset, &spell)
+	if err != nil {
+		return row
+	}
+	var shown map[string]any = maps.Clone(row)
+	var cost map[string]any = map[string]any{}
+	if stored, ok := row["cost"].(map[string]any); ok {
+		cost = maps.Clone(stored)
+	}
+	cost["mana"] = float64(mana)
+	shown["cost"] = cost
+	return shown
 }
 
 func ref(source, category, key string) string {

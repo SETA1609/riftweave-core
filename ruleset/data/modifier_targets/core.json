@@ -79,7 +79,6 @@
     {"key": "ranged_range_penalty", "label": "Range Penalty", "kind": "number", "description": "Multiplier on range penalty: 1.25 is 25% more, 0.5 is half.", "pending": true},
     {"key": "reaping_arc", "label": "Reaping Arc", "kind": "flag", "description": "With carry_through: the carry repeats for every foe a strike drops (docs/core/combat.md#attacks-by-loadout)."},
     {"key": "red_magic_magnitude", "label": "Red Magic Magnitude", "kind": "number", "description": "Multiplier on red magic magnitude: 1.25 is 25% more, 0.5 is half.", "pending": true},
-    {"key": "reload_cost", "label": "Reload Cost", "kind": "number", "description": "AP added to the cost of reloading; reloading has no action row yet.", "pending": true},
     {"key": "reroll_per_rest", "label": "Rerolls per Rest", "kind": "number", "description": "Checks per rest the actor may roll again, keeping the second roll.", "pending": true},
     {"key": "rest_mp", "label": "Rest MP", "kind": "number", "description": "Multiplier on rest mp: 1.25 is 25% more, 0.5 is half.", "pending": true},
     {"key": "riposte", "label": "Riposte", "kind": "flag", "description": "While dodging, an evade of a single attack in the band's window lets the actor attack back at no AP cost (docs/core/combat.md)."},

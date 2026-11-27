@@ -1,0 +1,45 @@
+# Benchmarks of the Go hot paths, on request (QA_S24_02): the branch against a base, compared by
+# tools/benchdiff, which fails a slowdown over the threshold. A refactor PR quotes the table.
+name: Go benchmarks
+
+on:
+  workflow_dispatch:
+    inputs:
+      base:
+        description: The branch to compare against
+        default: development
+      threshold:
+        description: The slowdown in percent that fails
+        default: "5"
+
+permissions:
+  contents: read
+
+jobs:
+  benchmarks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          path: head
+
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ inputs.base }}
+          path: base
+
+      - name: Set up Go
+        uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+        with:
+          go-version-file: head/backend/go.mod
+          cache: false
+
+      - name: Run the benchmarks on both
+        run: |
+          for side in base head; do
+            (cd "$side/backend" && go test -run '^$' -bench . -benchtime 2s -count 3 ./core/ ./internal/data/) | tee "$side.txt"
+          done
+
+      - name: Compare
+        working-directory: head/backend
+        run: go run ./tools/benchdiff -threshold "${{ inputs.threshold }}" ../../base.txt ../../head.txt

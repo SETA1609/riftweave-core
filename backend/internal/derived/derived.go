@@ -5,6 +5,7 @@ package derived
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"maps"
 	"math"
@@ -21,6 +22,62 @@ import (
 type Input struct {
 	Actor     actor.Actor         `json:"actor"`
 	Modifiers []modifier.Modifier `json:"modifiers"`
+	// Templates are the actor's held character templates (docs/core/templates.md).
+	Templates []HeldTemplate `json:"templates"`
+}
+
+// HeldTemplate is a character template the actor holds, and how it came (granted or outside_rules).
+type HeldTemplate struct {
+	Template string `json:"template"`
+	How      string `json:"how"`
+}
+
+// templatePrefix is the ref prefix of a character template.
+const templatePrefix = "core:character_template/"
+
+// WithTemplates applies held character templates: their attributes add to the actor's, and their
+// modifiers and their granted perks' modifiers at rank join the modifiers. Two in one slot are an
+// error (docs/core/templates.md).
+func WithTemplates(ruleset *data.Ruleset, character actor.Actor, modifiers []modifier.Modifier, held []HeldTemplate) (actor.Actor, []modifier.Modifier, error) {
+	if len(held) == 0 {
+		return character, modifiers, nil
+	}
+	var joined []modifier.Modifier = slices.Clone(modifiers)
+	var slots map[string]string = map[string]string{}
+	for _, entry := range held {
+		template, found := ruleset.CharacterTemplates.Get(strings.TrimPrefix(entry.Template, templatePrefix))
+		if !found || !strings.HasPrefix(entry.Template, templatePrefix) {
+			return actor.Actor{}, nil, fmt.Errorf("%s is not a character template", entry.Template)
+		}
+		if other, taken := slots[template.Slot]; taken {
+			return actor.Actor{}, nil, fmt.Errorf("%s and %s share the %s slot", other, template.Key, template.Slot)
+		}
+		slots[template.Slot] = template.Key
+		for _, key := range slices.Sorted(maps.Keys(template.Attributes)) {
+			ability, known := actor.ByKey(key)
+			if !known {
+				return actor.Actor{}, nil, fmt.Errorf("%s: %s is not an attribute", template.Key, key)
+			}
+			character.Attributes = character.Attributes.With(ability, character.Attributes.Get(ability)+template.Attributes[key])
+		}
+		joined = append(joined, template.Modifiers...)
+		for _, perk := range template.Perks {
+			feature, err := ruleset.Features.Require("perk", perk.Perk[strings.LastIndex(perk.Perk, "/")+1:])
+			if err != nil {
+				return actor.Actor{}, nil, err
+			}
+			encoded, err := json.Marshal(feature.EmitAt(max(perk.Rank, 1)))
+			if err != nil {
+				return actor.Actor{}, nil, err
+			}
+			var emitted []modifier.Modifier
+			if err := json.Unmarshal(encoded, &emitted); err != nil {
+				return actor.Actor{}, nil, err
+			}
+			joined = append(joined, emitted...)
+		}
+	}
+	return character, joined, nil
 }
 
 // Compute returns one value per row of ruleset.Derived, in row order: the formula, then the
@@ -40,14 +97,25 @@ func Compute(ruleset *data.Ruleset, character actor.Actor, modifiers []modifier.
 		if err != nil {
 			return nil, err
 		}
+		// The derived ap is the action pool, kept between its floor and cap (GD_S19_07).
+		if stat.Key == apTarget {
+			modifiedValue = min(max(modifiedValue, ruleset.Actions.Pool.Floor), ruleset.Actions.Pool.Cap)
+		}
 		values[index] = modifiedValue
 	}
 	return values, nil
 }
 
+// apTarget is the modifier target and derived stat of the action pool.
+const apTarget = "ap"
+
 // Run is the `derived` command: one field per derived stat.
 func Run(ruleset *data.Ruleset, input Input) (map[string]int64, error) {
-	values, err := Compute(ruleset, input.Actor, input.Modifiers)
+	character, modifiers, err := WithTemplates(ruleset, input.Actor, input.Modifiers, input.Templates)
+	if err != nil {
+		return nil, err
+	}
+	values, err := Compute(ruleset, character, modifiers)
 	if err != nil {
 		return nil, err
 	}
@@ -69,6 +137,9 @@ type ActionsInput struct {
 	// on overwatch (docs/core/actions.md#held-ap, GD_S19_05; Trigger Watch, GD_S17_06).
 	Carried   int64 `json:"carried"`
 	HeldSpent int64 `json:"held_spent"`
+	// Start is a fight's first turn: combat (pool.combat_start) or surprise (the full pool), with
+	// nothing carried (GD_S19_06, docs/core/actions.md#pool).
+	Start string `json:"start"`
 }
 
 // ActionsResult is the pool and the cost of the named actions, in AP and in real-time stamina.
@@ -94,7 +165,12 @@ func RunActions(ruleset *data.Ruleset, input ActionsInput) (ActionsResult, error
 		return ActionsResult{}, &data.MissingInputError{Subject: "actor", Needs: "the " + pool.Ability.String() + " attribute"}
 	}
 	var attributeValue int64 = input.Actor.Attributes.Get(pool.Ability)
-	var result ActionsResult = ActionsResult{Pool: pool.Base + formula.FloorDivide(attributeValue*pool.PerPoint, pool.PerPointDivisor)}
+	// Modifiers on ap change the pool, kept between its floor and cap (GD_S19_07).
+	poolValue, err := modifier.Value(pool.Base+formula.FloorDivide(attributeValue*pool.PerPoint, pool.PerPointDivisor), modifier.Target(input.Modifiers, apTarget), ruleset.Origins, 0, nil)
+	if err != nil {
+		return ActionsResult{}, err
+	}
+	var result ActionsResult = ActionsResult{Pool: min(max(poolValue, pool.Floor), pool.Cap)}
 	var squares int64 = 0
 	for _, key := range input.Actions {
 		action, err := ruleset.Actions.Actions.Require("action", key)
@@ -119,6 +195,17 @@ func RunActions(ruleset *data.Ruleset, input ActionsInput) (ActionsResult, error
 		return ActionsResult{}, fmt.Errorf("carried %d is more than pool.carry %d", input.Carried, pool.Carry)
 	}
 	result.Available = min(result.Pool+input.Carried, pool.Cap)
+	// A fight's first turn (GD_S19_06): pool - less, at least minimum and at most the pool; an
+	// ambusher's surprise round has the full pool. Nothing carries in.
+	if input.Start != "" && input.Carried > 0 {
+		return ActionsResult{}, errors.New("a fight starts with no carried AP")
+	}
+	switch input.Start {
+	case "combat":
+		result.Available = min(max(result.Pool-pool.CombatStart.Less, pool.CombatStart.Minimum), result.Pool)
+	case "surprise":
+		result.Available = min(result.Pool, pool.Cap)
+	}
 	result.Held = max(result.Available-result.Cost, 0)
 	if input.HeldSpent > result.Held {
 		return ActionsResult{}, fmt.Errorf("held_spent %d is more than the %d AP held", input.HeldSpent, result.Held)

@@ -45,6 +45,11 @@
       ],
       "description": "Color magic school. The governing skill is <color>_magic."
     },
+    "ammoKind": {
+      "type": "string",
+      "enum": ["arrow", "bolt", "bullet", "scatter", "stone"],
+      "description": "The kind of round a weapon with the ammunition property fires: arrow (bows), bolt (crossbows), bullet (ball and powder), scatter (a blunderbuss charge), stone (sling) (docs/core/combat.md#ammunition)."
+    },
     "phase": {
       "type": "string",
       "enum": [
@@ -303,13 +308,13 @@
     },
     "mainHand": {
       "type": "string",
-      "enum": ["empty", "light", "one_handed", "two_handed"],
-      "description": "What the main hand holds (docs/core/combat.md#attacks-by-loadout): nothing, a weapon with the `light` property, another one-handed weapon, or a weapon held in both hands (a `two_handed` weapon, or a `versatile` one in both hands). One vocabulary for attack sequences and stances."
+      "enum": ["empty", "light", "one_handed", "two_handed", "bow", "hand_gun", "long_gun", "light_thrown"],
+      "description": "What the main hand holds (docs/core/combat.md#attacks-by-loadout): nothing, a weapon with the `light` property, another one-handed weapon, or a weapon held in both hands (a `two_handed` weapon, or a `versatile` one in both hands); or a ranged weapon: a `bow`, a `hand_gun` (a hand crossbow or a pistol), a `long_gun` (a two-handed crossbow or a long gun), or a `light_thrown` weapon (docs/core/combat.md#ranged-loadouts). One vocabulary for attack sequences and stances."
     },
     "offHand": {
       "type": "string",
-      "enum": ["empty", "shield", "buckler", "light_weapon", "weapon", "two_handed"],
-      "description": "What the off hand holds (docs/core/combat.md#attacks-by-loadout): nothing, a shield, a buckler, a light weapon, another one-handed weapon, or the main hand's two-handed grip. One vocabulary for attack sequences and stances."
+      "enum": ["empty", "shield", "buckler", "light_weapon", "weapon", "two_handed", "hand_gun", "light_thrown"],
+      "description": "What the off hand holds (docs/core/combat.md#attacks-by-loadout): nothing, a shield, a buckler, a light weapon, another one-handed weapon, or the main hand's two-handed grip; or a `hand_gun` or a `light_thrown` weapon. One vocabulary for attack sequences and stances."
     },
     "loadout": {
       "type": "object",

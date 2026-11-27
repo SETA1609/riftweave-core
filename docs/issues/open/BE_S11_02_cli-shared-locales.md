@@ -1,9 +1,10 @@
 #### BE_S11_02_cli-shared-locales One set of i18next locale files for the frontend and the human CLI (backend)
-- Status: todo
+- Status: dropped
+- Dropped: superseded by PO_S23_02_cli-issues-to-command-and-mcp: the terminal app is retired, and the agent CLI and MCP tools print JSON and keys, not prose, so the frontend's own locale files (FE_S11_01) have no second reader (owner, 2026-11-23).
 - Priority: medium
 - Needs: FE_S11_01_frontend-i18next, APP-26
-- Was: APP-28, split by role on 2026-11-18: this is the backend half (the contract, the Go core, the vectors, and the CLI and TUI with their UX); the browser half is `FE_S11_03_frontend-shared-locales`
-- Modified: 2026-11-16
+- Was: APP-28, split by role on 2026-11-18: this is the backend half (the contract, the Go core, the vectors, and the MCP tool; nothing for the retired terminal app, PO_S23_02); the browser half is `FE_S11_03_frontend-shared-locales`
+- Modified: 2026-11-23
 - Do: Owner request, 2026-11-16: the CLI speaks the same languages as the frontend, from the same files. APP-24's `frontend/src/locales/<lng>.json` move to `backend/locales/<lng>.json` (owner, 2026-11-16): not the repo root, where they would sit among the Markdown rules and docs a tabletop player with no technical background reads. The CLI embeds them with `go:embed` (they are inside the Go module); the frontend bundles them from there (an `angular.json` asset or a JSON import of `../backend/locales`) [A]. The files are i18next JSON v4 limited to what both sides read: nested keys, `{{name}}` interpolation, and plural keys with `_one` / `_other` (and the other CLDR suffixes a language needs). No `$t()` nesting, formatters, or context suffixes [A]; a test in both apps refuses a file that uses them. The Go side is a small reader in `backend/internal/i18n` over `golang.org/x/text` (already a dependency) for the plural rules, no new package [A]. The CLI's menus (APP-26), labels, and messages move to keys; the language comes from `settings.locale` (APP-25), else `LANG`, else English, and a missing key falls back to English. Review: German and Spanish are reviewed by the owner; other contributors may add or change other languages (as APP-24). Ruleset content stays as the data writes it.
 - Keys: `backend/locales/<lng>.json`; `backend/internal/i18n`
 - Files: ~8 (backend/locales/en.json, backend/locales/de.json, backend/locales/es.json, backend/internal/i18n/i18n.go, backend/internal/i18n/i18n_test.go, backend/cmd/riftweave/play/*.go, docs/backend/i18n.md, changes/BE_S11_02_cli-shared-locales.md)

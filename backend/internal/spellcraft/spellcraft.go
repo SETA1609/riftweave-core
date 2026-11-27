@@ -130,6 +130,20 @@ func Cost(ruleset *data.Ruleset, effects []data.AppliedEffect) (mana, castThresh
 	return mana, mana, roundHalfUp(float64(mana) * 1.25), nil
 }
 
+// SpellMana is a spell's mana, which no row stores (DE_S02_05): the cost formula on its effects,
+// with a summon block priced as the summon effect it replaces (docs/core/casting.md#summons).
+func SpellMana(ruleset *data.Ruleset, spell *data.Spell) (int64, error) {
+	var effects []data.AppliedEffect = spell.Effects
+	if spell.Summon != nil {
+		summon, err := spell.Summon.AsEffect()
+		if err != nil {
+			return 0, err
+		}
+		effects = append(slices.Clone(effects), summon)
+	}
+	return spellCost(ruleset, effects)
+}
+
 func spellCost(ruleset *data.Ruleset, effects []data.AppliedEffect) (int64, error) {
 	var rule *data.SpellCost = &ruleset.Casting.SpellCost
 	var total float64

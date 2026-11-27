@@ -1,6 +1,6 @@
 # HTTP API
 
-Modified: 2026-11-21
+Modified: 2026-11-23
 
 `riftweave-server` serves the core over HTTP (APP-06). It is an adapter: it parses the request,
 calls `core.Run` with the command name and the body, and writes the result. It holds no rule and
@@ -18,6 +18,10 @@ riftweave-server [--data <dir>] [--addr <host:port>]
 
 ## Endpoints
 
+What the API should become, resource by resource, is the proposal in
+[api-guide.yml](api-guide.yml) (PO_S26_01); this file is what the server serves today.
+
+
 | Method and path | Body | Result |
 | --- | --- | --- |
 | `POST /v1/commands/{command}` | the command's input ([README.md](README.md#commands)) | the command's result; every command but `dev` |
@@ -30,6 +34,26 @@ riftweave-server [--data <dir>] [--addr <host:port>]
 The session endpoints are the `session` command with its `operation` filled in from the path. The
 client holds the session JSON and sends it back with each step; the server keeps nothing between
 calls ([sessions.md](sessions.md)).
+
+## Health
+
+Three GET endpoints say whether the server can answer, for a load balancer, a container's health
+check, or a person (BE_S12_02). They are in the OpenAPI document.
+
+| Path | Answers |
+| --- | --- |
+| `/healthz` | `{"status": "ok"}`: the process answers |
+| `/readyz` | `{"status": "ready"}`: the ruleset loaded; the server listens only after it has |
+| `/version` | `{"build", "rules_version"}`: the build (`-ldflags "-X main.build=..."`, `dev` otherwise) and `core.RulesVersion` |
+
+[V 2026-11-23, `TestTheHealthEndpointsAnswerAndAreDocumented`]
+
+## Telemetry
+
+The server reports traces, metrics, and logs in OpenTelemetry's format
+([observability.md](observability.md#the-server)): off unless `OTEL_EXPORTER_OTLP_ENDPOINT` is set
+(OTLP/HTTP) or `--telemetry <file>` names a file; `OTEL_SDK_DISABLED=true` turns it off whatever
+else is set. With neither, it writes only its log lines, as JSON on stderr.
 
 ## Status codes
 

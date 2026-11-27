@@ -36,6 +36,7 @@ CHANNEL_REQUIREMENTS = {
     "ingredient": "ingredient",
     "enchantment": "enchantment",
     "maneuver": "maneuver",
+    "grenade": "grenade",
 }
 
 
@@ -107,6 +108,7 @@ EQUIPMENT_FILE_CATEGORIES = {
     "consumables.json": "consumable",
     "accessories.json": "accessory",
     "gear.json": "gear",
+    "ammunition.json": "ammunition",
 }
 
 # Maps collection names to their singular category for namespaced refs.
@@ -2092,6 +2094,110 @@ def _stored_hp_paths(value, path=""):
             yield from _stored_hp_paths(child, f"{path}[{index}]")
 
 
+AMMUNITION_PROPERTY = "ammunition"
+
+
+def ammunition_problems(bases, rows):
+    """GD_S17_02 (docs/core/combat.md#ammunition): every weapon base with the ammunition property
+    names the kind it fires (weapon.ammo), and every ammunition row's kind is one a weapon loads."""
+    problems = []
+    loaded = set()
+    for base in bases:
+        weapon = base.get("weapon") or {}
+        if AMMUNITION_PROPERTY not in weapon.get("properties", []):
+            continue
+        if "ammo" not in weapon:
+            problems.append(f"weapon base {base['key']} has the ammunition property and no weapon.ammo")
+        else:
+            loaded.add(weapon["ammo"])
+    for row in rows:
+        kind = (row.get("ammunition") or {}).get("kind")
+        if kind is not None and kind not in loaded:
+            problems.append(f"ammunition {row['key']} is {kind}, which no weapon loads")
+    return problems
+
+
+INNATE_ORIGIN = "core:origin/innate"
+
+
+def character_template_problems(rows, skills):
+    """GD_S20_05 (docs/core/templates.md): a template's skills resolve (they are object keys, which
+    the reference walk does not see), and every modifier it emits has the innate origin."""
+    problems = []
+    for row in rows:
+        for skill in row.get("skills", {}):
+            if skill not in skills:
+                problems.append(f"character template {row['key']}: skill {skill} does not resolve")
+        for modifier in row.get("modifiers", []):
+            if modifier.get("origin") != INNATE_ORIGIN:
+                problems.append(f"character template {row['key']}: modifier on {modifier['target']} is {modifier.get('origin')}, not {INNATE_ORIGIN}")
+    return problems
+
+
+def check_character_templates():
+    """The character template gate on the core rows."""
+    rows = json.loads((DATA_DIR / "character_templates" / "core.json").read_text())["character_templates"]
+    skills = {"core:skill/" + row["key"] for row in json.loads((DATA_DIR / "skills" / "core.json").read_text())["skills"]}
+    return character_template_problems(rows, skills)
+
+
+GRENADE_TYPE = "grenade"
+THROWN = "throw"
+
+
+def grenade_problems(rows, effect_channels):
+    """GD_S17_03 (docs/core/combat.md#grenades): a grenade is thrown, and each of its riders is an
+    effect with the grenade channel (CHANNEL_REQUIREMENTS)."""
+    problems = []
+    for row in rows:
+        if row.get("type") != GRENADE_TYPE:
+            continue
+        consumable = row.get("consumable") or {}
+        if consumable.get("delivery") != THROWN:
+            problems.append(f"grenade {row['key']} is not thrown (delivery {THROWN})")
+            continue
+        for applied in consumable.get("effects", []):
+            ref = applied.get("effect")
+            if not validate_effect_channel(ref, GRENADE_TYPE, effect_channels):
+                problems.append(f"grenade {row['key']}: effect {ref} lacks the {CHANNEL_REQUIREMENTS[GRENADE_TYPE]} channel")
+    return problems
+
+
+BURSTING_KINDS = ("bolt", "bullet")
+
+
+def burst_problems(rows, effect_channels):
+    """GD_S17_04 (docs/core/combat.md#elemental-rounds): only bolts and bullets burst, and a
+    bursting round's riders, like a grenade's, need the grenade channel."""
+    problems = []
+    for row in rows:
+        ammunition = row.get("ammunition") or {}
+        if "burst_radius" not in ammunition:
+            continue
+        if ammunition.get("kind") not in BURSTING_KINDS:
+            problems.append(f"ammunition {row['key']} bursts, but only bolts and bullets do (docs/core/combat.md#elemental-rounds)")
+        for applied in ammunition.get("effects", []):
+            ref = applied.get("effect")
+            if not validate_effect_channel(ref, GRENADE_TYPE, effect_channels):
+                problems.append(f"ammunition {row['key']}: effect {ref} lacks the {CHANNEL_REQUIREMENTS[GRENADE_TYPE]} channel")
+    return problems
+
+
+def check_grenades():
+    """The grenade gate on the core consumables, and the burst gate on the ammunition rows."""
+    channels = build_effect_channels([DATA_DIR / "effects" / "core.json"])
+    rows = json.loads((DATA_DIR / "equipment" / "consumables.json").read_text())["equipment"]
+    rounds = json.loads((DATA_DIR / "equipment" / "ammunition.json").read_text())["equipment"]
+    return grenade_problems(rows, channels) + burst_problems(rounds, channels)
+
+
+def check_ammunition():
+    """The ammunition gates on the core weapon bases and ammunition rows."""
+    bases = [json.loads(path.read_text()) for path in sorted(EQUIPMENT_BASES_DIRS["weapons.json"].glob("*.json"))]
+    rows = json.loads((DATA_DIR / "equipment" / "ammunition.json").read_text())["equipment"]
+    return ammunition_problems(bases, rows)
+
+
 def check_monster_hit_points(monsters=None, bases=None, templates=None, module_files=None):
     """No monster row, creature-type base, template or module monster writes hitPoints,
     hitPointsPerLevel or hit_points_multiplier: HP is the player formula times the role's
@@ -2271,7 +2377,7 @@ def check_spell_ward_table(pipeline):
     return errors
 
 
-OFF_HAND_WEAPONS = ("light_weapon", "weapon")
+OFF_HAND_WEAPONS = ("light_weapon", "weapon", "hand_gun", "light_thrown")
 
 
 def check_attack_sequences(rows):
@@ -2465,6 +2571,27 @@ def main():
     if perk_errors:
         print("  \u2717  monster perks (rank at most the perk's ranks, no excluded pair)")
         for e in perk_errors:
+            print(f"       {e}")
+        failed += 1
+
+    grenade_errors = check_grenades()
+    if grenade_errors:
+        print("  \u2717  grenades (each is thrown, each rider has the grenade channel)")
+        for e in grenade_errors:
+            print(f"       {e}")
+        failed += 1
+
+    template_errors = check_character_templates()
+    if template_errors:
+        print("  \u2717  character templates (skills resolve, modifiers innate)")
+        for e in template_errors:
+            print(f"       {e}")
+        failed += 1
+
+    ammunition_errors = check_ammunition()
+    if ammunition_errors:
+        print("  \u2717  ammunition (each firing weapon names its kind, each kind is loaded)")
+        for e in ammunition_errors:
             print(f"       {e}")
         failed += 1
 

@@ -378,6 +378,52 @@
       ]
     },
     {
+      "key": "heavy_handed",
+      "label": "Heavy Handed",
+      "description": "You hit like a falling wall but take your time about it: more melee damage, and one action point fewer. Chosen at character creation.",
+      "type": "creation",
+      "category": "combat",
+      "modifiers": [
+        {
+          "target": "melee_damage",
+          "operation": "multiply",
+          "value": 1.25,
+          "source": "feature:heavy_handed",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "ap",
+          "operation": "add",
+          "value": -1,
+          "source": "feature:heavy_handed",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "glass_frame",
+      "label": "Glass Frame",
+      "description": "Quick and slight, you move before others think but break more easily: one more action point, and a quarter less maximum hit points. Chosen at character creation.",
+      "type": "creation",
+      "category": "general",
+      "modifiers": [
+        {
+          "target": "ap",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:glass_frame",
+          "origin": "core:origin/trained"
+        },
+        {
+          "target": "hp",
+          "operation": "multiply",
+          "value": 0.75,
+          "source": "feature:glass_frame",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
       "key": "small_frame",
       "label": "Small Frame",
       "description": "You are slight of build: +1 Agility, but you carry 25% less. Chosen at character creation.",
@@ -819,6 +865,123 @@
       ]
     },
     {
+      "key": "two_on_the_string",
+      "label": "Two on the String",
+      "description": "You learn to nock and loose two arrows at once: you can make the Split Nock maneuver.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 6,
+        "abilities": {
+          "agi": 6
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/bows"
+            ],
+            "min": 40
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:maneuver/split_nock"
+      ]
+    },
+    {
+      "key": "still_hunter",
+      "label": "Still Hunter",
+      "description": "You learn to wait out a breath for the one long shot: you can make the Held Breath maneuver.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 10,
+        "abilities": {
+          "per": 7
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/bows",
+              "core:skill/crossbows",
+              "core:skill/guns"
+            ],
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:maneuver/held_breath"
+      ]
+    },
+    {
+      "key": "heads_down",
+      "label": "Heads Down",
+      "description": "You learn to shoot to keep a foe down: you can make the Pinning Shot maneuver, and from the second tier the Pinning Fire maneuver.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 8,
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/bows",
+              "core:skill/crossbows",
+              "core:skill/guns",
+              "core:skill/throwing_weapons"
+            ],
+            "min": 40
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 2,
+      "rank_levels": [
+        8,
+        14
+      ],
+      "unlocks": [
+        "core:maneuver/pinning_shot",
+        "core:maneuver/pinning_fire"
+      ],
+      "unlocks_at_rank": {
+        "core:maneuver/pinning_fire": 2
+      }
+    },
+    {
+      "key": "watchful_aim",
+      "label": "Watchful Aim",
+      "description": "You learn to hold a shot for the first foe that stirs: you can make the Trigger Watch maneuver.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 6,
+        "abilities": {
+          "per": 6
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/bows",
+              "core:skill/crossbows",
+              "core:skill/guns",
+              "core:skill/throwing_weapons"
+            ],
+            "min": 40
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:maneuver/trigger_watch"
+      ]
+    },
+    {
       "key": "low_aim",
       "label": "Low Aim",
       "description": "You learn to shoot or throw at the legs: you can make the Tripping Shot maneuver.",
@@ -983,7 +1146,7 @@
     {
       "key": "carry_through",
       "label": "Carry Through",
-      "description": "When a strike drops a foe, the next strike of the same action goes to another foe in reach; after the last strike of an action, one free strike does (docs/core/combat.md#attacks-by-loadout).",
+      "description": "When a strike drops a foe, the next strike of the same action goes to another foe in reach, or in range for a ranged strike; after the last strike of an action, one free strike does (docs/core/combat.md#attacks-by-loadout).",
       "type": "perk",
       "category": "combat",
       "prerequisite": {
@@ -1021,7 +1184,7 @@
     {
       "key": "reaping_arc",
       "label": "Reaping Arc",
-      "description": "The carry repeats for every foe a strike drops, with no limit but the foes in reach.",
+      "description": "The carry repeats for every foe a strike drops, with no limit but the foes in reach, or in range for a ranged strike.",
       "type": "perk",
       "category": "combat",
       "prerequisite": {
@@ -1097,7 +1260,7 @@
     {
       "key": "follow_up",
       "label": "Follow-Up",
-      "description": "A full attack gains one more main-hand strike, at the first extra strike's penalty.",
+      "description": "A full attack gains one more main-hand strike, melee or ranged, at the first extra strike's penalty; a loading weapon reloads for it first.",
       "type": "perk",
       "category": "combat",
       "prerequisite": {
@@ -1121,7 +1284,7 @@
     {
       "key": "press_on",
       "label": "Press On",
-      "description": "A full attack gains a second extra main-hand strike, at the second extra strike's penalty.",
+      "description": "A full attack gains a second extra main-hand strike, melee or ranged, at the second extra strike's penalty.",
       "type": "perk",
       "category": "combat",
       "prerequisite": {
@@ -1142,6 +1305,27 @@
           "operation": "add",
           "value": 1,
           "source": "feature:press_on",
+          "origin": "core:origin/trained"
+        }
+      ]
+    },
+    {
+      "key": "battle_tempo",
+      "label": "Battle Tempo",
+      "description": "Long practice has quickened every motion: your action point pool grows by one.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 12,
+        "perks": []
+      },
+      "ranks": 1,
+      "modifiers": [
+        {
+          "target": "ap",
+          "operation": "add",
+          "value": 1,
+          "source": "feature:battle_tempo",
           "origin": "core:origin/trained"
         }
       ]
@@ -1873,7 +2057,7 @@
       "ranks": 1,
       "modifiers": [
         {
-          "target": "reload_cost",
+          "target": "reload",
           "operation": "add",
           "value": -1,
           "source": "feature:fast_reload",

@@ -949,6 +949,23 @@
       ]
     },
     {
+      "key": "smoke_screen",
+      "label": "Smoke Screen",
+      "description": "Thick smoke fills an area and blocks sight through it and within it for the duration.",
+      "category": "control",
+      "polarity": "neutral",
+      "magnitude_unit": "seconds",
+      "default_duration": 15,
+      "channels": [
+        "grenade"
+      ],
+      "tags": [
+        "control",
+        "vision",
+        "area"
+      ]
+    },
+    {
       "key": "charm",
       "label": "Charm",
       "description": "Clouds the target's mind, making them view the caster as a friend. Hostile action from the caster breaks the effect.",
@@ -1141,7 +1158,8 @@
         "coating",
         "ingredient",
         "trap",
-        "enchantment"
+        "enchantment",
+        "grenade"
       ],
       "tags": [
         "elemental",
@@ -1185,7 +1203,8 @@
         "spell",
         "coating",
         "trap",
-        "ingredient"
+        "ingredient",
+        "grenade"
       ],
       "tags": [
         "control",
@@ -1300,6 +1319,24 @@
         "spell",
         "coating",
         "innate",
+        "maneuver",
+        "grenade"
+      ],
+      "tags": [
+        "control",
+        "movement"
+      ]
+    },
+    {
+      "key": "pinned",
+      "label": "Pinned",
+      "description": "Pinned down under fire: the target loses AP on its next turn, the magnitude, and cannot disengage.",
+      "category": "control",
+      "polarity": "harmful",
+      "magnitude_unit": "points",
+      "base_cost": 10,
+      "default_duration": 6,
+      "channels": [
         "maneuver"
       ],
       "tags": [
@@ -1330,7 +1367,6 @@
     },
     {
       "key": "sunder_armor",
-      "reserved": true,
       "label": "Sunder Armor",
       "description": "Reduces the target's armor DR for a duration. Magnitude is the flat DR reduction. Stacks across multiple applications up to a cap.",
       "category": "control",
@@ -1342,7 +1378,8 @@
         "enchantment",
         "coating",
         "innate",
-        "spell"
+        "spell",
+        "grenade"
       ],
       "tags": [
         "combat",
@@ -1427,6 +1464,25 @@
       "default_duration": 15,
       "channels": [
         "enchantment",
+        "spell",
+        "potion"
+      ],
+      "tags": [
+        "combat",
+        "speed",
+        "fortify"
+      ]
+    },
+    {
+      "key": "haste",
+      "label": "Haste",
+      "description": "Quickens the target: it gains action points while the effect lasts.",
+      "category": "fortify",
+      "polarity": "beneficial",
+      "magnitude_unit": "seconds",
+      "base_cost": 10,
+      "default_duration": 15,
+      "channels": [
         "spell",
         "potion"
       ],

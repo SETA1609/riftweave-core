@@ -12,7 +12,7 @@ An entity is a collection of rows, its `key` the primary key. A line is a refere
 other collection, so many rows name one. Composition bases are references too: an equipment row's
 `base` names an equipment base, a monster's `base` a creature type or a monster.
 
-47 collections; 74 pairs of collections joined by a reference.
+49 collections; 77 pairs of collections joined by a reference.
 
 ## Overview
 
@@ -54,6 +54,13 @@ erDiagram
     CALLED_SHOTS {
         string key PK
         string riders_condition FK
+    }
+    CHARACTER_TEMPLATES {
+        string key PK
+        string creature_type FK
+        string modifiers_origin FK
+        string perks_perk FK
+        string prerequisite_perks_perk FK
     }
     CHARACTERS {
         string key PK
@@ -107,6 +114,8 @@ erDiagram
         string key PK
         string accessory_effects_effect FK
         string accessory_effects_origin FK
+        string ammunition_effects_effect FK
+        string ammunition_effects_origin FK
         string base FK
         string consumable_effects_effect FK
         string consumable_effects_origin FK
@@ -207,6 +216,9 @@ erDiagram
         string output_crafted_item_key FK
         string skill FK
     }
+    RECOVERY {
+        string key PK
+    }
     REST {
         string key PK
     }
@@ -258,6 +270,9 @@ erDiagram
     BUILDS }o--|| SKILLS : "skill_priorities[].skill, suggested_tag_skills[]"
     BUILDS }o--|| SPELLS : "spells[]"
     CALLED_SHOTS }o--|| CONDITIONS : "riders[].condition"
+    CHARACTER_TEMPLATES }o--|| FEATURES : "perks[].perk, prerequisite.perks[].perk"
+    CHARACTER_TEMPLATES }o--|| MONSTERS : "creature_type"
+    CHARACTER_TEMPLATES }o--|| ORIGINS : "modifiers[].origin"
     CHARACTERS }o--|| BACKGROUNDS : "background"
     CHARACTERS }o--|| EQUIPMENT : "levels[].gear[]"
     CHARACTERS }o--|| FEATURES : "creation_perks[], levels[].perk"
@@ -275,9 +290,9 @@ erDiagram
     DROPS }o--|| MATERIALS : "loot[].material"
     DROPS }o--|| MONSTERS : "monster"
     EFFECTS }o--|| EFFECTS : "sub_effects[]"
-    EQUIPMENT }o--|| EFFECTS : "accessory.effects[].effect, consumable.effects[].effect, weapon.on_hit_effects[].effect"
+    EQUIPMENT }o--|| EFFECTS : "accessory.effects[].effect, ammunition.effects[].effect, consumable.effects[].effect, weapon.on_hit_effects[].effect"
     EQUIPMENT }o--|| EQUIPMENT : "base"
-    EQUIPMENT }o--|| ORIGINS : "accessory.effects[].origin, consumable.effects[].origin, gear.modifiers[].origin, weapon.on_hit_effects[].origin"
+    EQUIPMENT }o--|| ORIGINS : "accessory.effects[].origin, ammunition.effects[].origin, consumable.effects[].origin, gear.modifiers[].origin, weapon.on_hit_effects[].origin"
     EQUIPMENT }o--|| SPELLS : "consumable.spell"
     FACTIONS }o--|| ORIGINS : "ranks[].modifiers[].origin, standings[].modifiers[].origin"
     FEATURES }o--|| EFFECTS : "bound_weapon_effects[].effect"
@@ -512,6 +527,8 @@ erDiagram
         string key PK
         string accessory_effects_effect FK
         string accessory_effects_origin FK
+        string ammunition_effects_effect FK
+        string ammunition_effects_origin FK
         string base FK
         string consumable_effects_effect FK
         string consumable_effects_origin FK
@@ -555,9 +572,9 @@ erDiagram
     CRAFTED_ITEMS }o--|| GEMS : "engraving_jewel.gem_key"
     CRAFTED_ITEMS }o--|| MATERIALS : "material_key"
     CRAFTED_ITEMS }o--|| ORIGINS : "enchantments[].origin"
-    EQUIPMENT }o--|| EFFECTS : "accessory.effects[].effect, consumable.effects[].effect, weapon.on_hit_effects[].effect"
+    EQUIPMENT }o--|| EFFECTS : "accessory.effects[].effect, ammunition.effects[].effect, consumable.effects[].effect, weapon.on_hit_effects[].effect"
     EQUIPMENT }o--|| EQUIPMENT : "base"
-    EQUIPMENT }o--|| ORIGINS : "accessory.effects[].origin, consumable.effects[].origin, gear.modifiers[].origin, weapon.on_hit_effects[].origin"
+    EQUIPMENT }o--|| ORIGINS : "accessory.effects[].origin, ammunition.effects[].origin, consumable.effects[].origin, gear.modifiers[].origin, weapon.on_hit_effects[].origin"
     EQUIPMENT }o--|| SPELLS : "consumable.spell"
     INGREDIENTS }o--|| EFFECTS : "effects[]"
     RECIPES }o--|| CRAFTED_ITEMS : "output.crafted_item_key"

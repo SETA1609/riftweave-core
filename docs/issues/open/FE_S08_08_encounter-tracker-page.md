@@ -7,4 +7,4 @@
 - Keys: the frontend screen and its route; no new contract keys
 - Files: ~3 (frontend/src/app/encounter/, frontend/src/app/app.spec.ts, frontend/e2e/encounter.spec.ts)
 - See: docs/issues/open/BE_S08_07_encounter-tracker-cli.md
-- Done when: a GM runs an encounter of four characters and two monsters offline in the frontend, with the same initiative order and turns as the human CLI for the same log; the specs and the Playwright test pass.
+- Done when: a GM runs an encounter of four characters and two monsters offline in the frontend, with the same initiative order and turns as the encounter commands give in Go for the same log; the specs and the Playwright test pass.

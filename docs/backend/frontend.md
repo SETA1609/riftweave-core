@@ -63,21 +63,23 @@ static Pages build reloads any page and works offline with no server-side fallba
 | Route | Shows |
 | --- | --- |
 | `/` | the home page: Start, Characters (APP-33), Settings, Modules, Network |
-| `/play` | the tools: GM tools, Character creation, Spell creation (APP-22), Skill resolution, Bestiary (APP-29), Saved games |
+| `/play` | the tools: GM tools, Character creation, Spell creation, Skill resolution, Bestiary (APP-29), Saved games |
 | `/play/gm_tools` | Resolve an attack, Encounter tracker (APP-34), Playthrough |
 | `/play/<tool>` | the tool's screen below |
 | `/settings`, `/modules`, `/network` | the settings file of APP-25, one screen each |
 
 The three menus are one component, `rw-menu-grid` (`ui/menu-grid`), which reads
 `backend/contract/menu.json` and shows a menu's entries as cards; a pending entry is a disabled
-card with its issue id.
+card with its issue id. An entry whose issue is pending only in the CLI (`issue_apps` without
+`web`) is a link here, as the CLI reads it (FE_S09_02).
 
 | Screen | Calls | Shows |
 | --- | --- | --- |
 | Skill resolution | `resolution` with the skill and its value, LCK, one target modifier, and the roll | the target, success, margin, and tags |
-| Character sheet | `derived` on the attributes and level; `POST /v1/sessions` to create the character | every derived stat, and the stored actor of the new session |
+| Character sheet | `derived` on the attributes and level; `POST /v1/sessions` to create the character; `print` for Print and Print fresh ([print.md](print.md#printing-a-character)) | every derived stat, the stored actor of the new session, and its printed sheet in a new tab |
 | Attack resolver | `combat` with the attacker (skill, roll, LCK), the defender (evasion, armor DR, a carried shield's DR and the shields skill, HP, and a dodge or block stance), the delivery, and the damage roll | each step of the result: the target, the margin, crit, the evasion and block bands, evaded or blocked, the damage after DR, and HP after (M3-27) |
 | Playthrough | `POST /v1/sessions/step` for each step of `ruleset/tests/vectors/playthrough.json`, then `replay` | each step's input and result, and whether the replay matches |
+| Spell editor | `author`: `load` a spell, `effects` for its color's pool, and `check` the draft after each change (debounced), with `export: { shape: core }` for the download ([spells.md](../../frontend/src/app/spells.md), FE_S09_02) | the draft's fields and effects, the cost, the problems and warnings, and a `spells.json` core export |
 | Saved games | `replay` on an opened file | the saves in this browser (name, rules, last played, last backup), a backup file for each, and what opening a file found |
 
 Every roll is an input field, as in the vectors: the app rolls nothing unless asked, and a rolled
@@ -86,6 +88,9 @@ The playthrough runner sends each vector's input as a session step, as given, an
 steps match their vectors and the replay matches. [V 2026-11-14, by hand against the server]
 
 ## Saves
+
+How the app should use IndexedDB, store by store, and why: [docs/theory/indexeddb.md](../theory/indexeddb.md)
+(story S27).
 
 A player's games live in their browser (APP-16), in two layers. [V 2026-11-16, `saves.spec.ts` and
 `e2e/app.spec.ts` over both transports]

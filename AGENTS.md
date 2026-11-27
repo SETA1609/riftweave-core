@@ -8,7 +8,7 @@ This file provides guidance to AI coding agents (Grok, Claude Code, Cursor, etc.
 
 - All game content lives as **JSON** under `ruleset/data/`.
 - All content is validated against **JSON Schema (draft-07)** under `ruleset/schemas/`.
-- There is **no game engine** here. The deliverable is the data + schemas + documentation. A reference backend in Go (story APP, `docs/stories/07-backend.md`, in `backend/`) serves the ruleset to an agent CLI, a human CLI, an HTTP API, and an Angular frontend; it adds no rules.
+- There is **no game engine** here. The deliverable is the data + schemas + documentation. A reference backend in Go (story APP, `docs/stories/07-backend.md`, in `backend/`) serves the ruleset to an agent CLI, an MCP server, an HTTP API, and an Angular frontend; it adds no rules. A new feature is a core command, its MCP tool, and a web page, never a terminal screen: the human CLI (the Charm TUI) is frozen and is being retired (story S23, PO_S23_02).
 - Design ethos: **declarative data first**. New mechanics are expressed as JSON + schema extensions, not code or special-cased behavior.
 
 The same data is intended to drive both computer games and TTRPG/virtual tabletop use.
@@ -49,7 +49,7 @@ python ruleset/scripts/run_tests.py   # the same, one process per test file in p
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md#workflow) before starting an issue. In short:
 
-- Work comes from `docs/issues/open/` (one file per issue), grouped by the stories `S00` to `S22` in `docs/stories/`, one role each (`docs/issues/ROLES.md`). Merged issues are in `docs/issues/done/`, and `close-merged-issue.yml` moves them there. Format and ids: `docs/stories/README.md`; how an issue closes: `docs/issues/README.md`. Scope and the definition of finished: `ROADMAP.md`.
+- Work comes from `docs/issues/open/` (one file per issue), grouped by the stories `S00` to `S27` in `docs/stories/`, one role each (`docs/issues/ROLES.md`). Merged issues are in `docs/issues/done/`, and `close-merged-issue.yml` moves them there, but only when the PR set its issue to `Status: review`; a PO PR that files issues sets its own filing issue to `review` too, or it stays open (PO_S00_10). Format and ids: `docs/stories/README.md`; how an issue closes: `docs/issues/README.md`. Scope and the definition of finished: `ROADMAP.md`.
 - One issue, one PR, at most 20 counted changed files (files with 5 or fewer changed lines do not count). Issue ids are `<ROLE>_<STORY>_<ISSUE>_<short-description>` (roles: `docs/issues/ROLES.md`; ids and splitting: `docs/stories/README.md#ids`), and the branch is the full id (e.g. `BE_S07_03_character-list-cli`); an issue with an old id uses `<issue-id>-<slug>` (e.g. `M1-07-<slug>`). The same for people and agents; no `agent/<name>/` prefix. An issue over 20 files that changes both the ruleset and the backend splits into `<issue-id>-ruleset-<slug>` (merges first, adds the fragment) and `<issue-id>-backend-<slug>` (adds a bullet to the same fragment). What can start now and what runs in parallel: `uv run --project tools/devops --locked --no-dev devops-tools roadmap-order --settings-file tools/devops/pyproject.toml show`. Commit only when the user asks.
 - Five steps, one commit each: **spec** (`docs/core/` or `docs/modules/`), **schema**, failing **vector**, **data** until it passes without changing the vector, **review** (differences listed in the PR).
 - Tag design claims **[V]** (checked in this change, with date), **[A]** (assumption), **[U]** (unverified). Call something verified only after you ran or read it in this session.
@@ -62,7 +62,7 @@ Read [CONTRIBUTING.md](CONTRIBUTING.md#workflow) before starting an issue. In sh
 
 ## Critical: How Validation Works (Major Footgun)
 
-This is the most important thing to understand before editing schemas or data:
+This is the most important thing to understand before editing schemas or data (how JSON Schema itself works, and why: [docs/theory/json-schema.md](docs/theory/json-schema.md)):
 
 1. `validate.py` loads **every** `ruleset/schemas/*.schema.json` into an in-memory store, keyed by `file://` URI.
 2. For each data file, it reads the **`$schema`** field (a **relative path**, e.g. `"../../schemas/race.schema.json"`), resolves it from the data file's directory, and looks up the resulting `file://` URI in the store.
@@ -148,6 +148,7 @@ Each data file names its schema in `$schema`:
 - kernel and world tables: `actions`, `casting`, `checks`, `combat`, `derived`, `formulas`, `progression`, `resolution`, `rest`, `economy`, `loot`, `hazards`, `balance`
 - `examples` (worked characters and the play loop)
 - `maneuvers` (combat maneuvers: an attack for more or fewer AP, with effects from the shared pool on the `maneuver` channel; `docs/core/actions.md#maneuvers`)
+- `character_templates` (templates a character takes on in play and drops again, one per slot, applied by `derived`; `docs/core/templates.md`)
 - `skill_groups` (the optional grouped sheet: every skill in one group; `docs/core/progression.md#the-grouped-sheet-variant`)
 - `origins` (the kinds of modifier source and their stacking policy, `highest` or `add`)
 - `modifier_targets` (the modifier targets no other table holds: a rule's number or a flag; `docs/core/modifier.md#target`)
@@ -228,6 +229,8 @@ AI is welcome as a tool, and a human always reviews before committing ([AI rules
 - `CONTRIBUTING.md` — contribution process and rules for changes
 - `docs/core/data-model.md` — the shape of the data; `docs/theory/data-models.md` — why
 - `docs/theory/dispatch.md` — why dispatch is a switch or a table and meaningful strings are constants
+- `docs/theory/indexeddb.md` — how the web app keeps data in IndexedDB, store by store, and data-oriented design
+- `docs/theory/json-schema.md` — how JSON Schema validates and resolves `$ref`, why the ruleset uses it, and where draft-07 surprises
 - `docs/core/` — kernel rules; `docs/modules/` — core systems in detail and modules (start here before adding new mechanics)
 - `ruleset/schemas/schema.json` — shared definitions
 - `ruleset/scripts/validate.py` — the validator implementation (read if debugging resolution issues)

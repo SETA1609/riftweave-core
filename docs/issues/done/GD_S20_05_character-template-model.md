@@ -1,0 +1,31 @@
+#### GD_S20_05_character-template-model Character templates: a reusable change that adds attributes, skills, pools, and perks
+- Status: done
+- Merged: #482, 2026-11-27
+- Priority: medium
+- Needs: —
+- Modified: 2026-11-20
+- Do: Owner request, 2026-11-20: a character can take on a template later in play, such as lich, vampire, or werebeast. A template improves the base: it adds attributes, skills, MP, SP, AP, or HP, and extra perks.
+  - **What exists:** monsters have templates (`monsters/templates.json`: `element`, `power`, `nature` slots, attributes and resistances added, applied at composition). A monster's creature type never changes, so there is no `undead` monster template [V 2026-11-20, docs/modules/monsters.md#templates]. Characters have no template at all.
+  - **The model** (a spec in docs/core/, schema, data, vectors). A character template is a row in a new collection `character_templates` (or the monster template table with an `applies_to`, decided in the spec step [U]). A template has:
+    - `key`, `label`, `description`;
+    - a `slot`: one template per slot, so `undeath` (lich, vampire) and `lycanthropy` (the werebeasts) cannot both be held twice [A];
+    - an optional `prerequisite` (a level, a perk) [A];
+    - **attributes added** (a missing one counts 0, and may pass 10, as racial modifiers may);
+    - **skills added**;
+    - **pools added**: `hp`, `mp`, `sp`, `ap` as `add` modifiers on the derived keys, so they go through the modifier pipeline like any perk;
+    - **granted perks**, each at a rank, held while the template is held and not counted against `perks_per_level`;
+    - **tags** and a **creature type** it makes the character count as (`undead` for a lich), so a bane, a turn-undead, or a condition immunity sees it;
+    - optional **resistances** and **drawbacks** (a vulnerability, a condition such as sunlight weakness), as negative modifiers or flags.
+  - **Where it applies:** all of it emits modifiers with an `innate` origin, so the stacking rules of `origins/core.json` apply and nothing is added twice.
+  - **Taking and removing:** a template is taken or removed on the actor and is not baked into the character's attributes; removing it removes every modifier, perk, and tag it gave, and the sheet goes back to what it was [A].
+  - **Who may take one** (owner answer, 2026-11-20):
+    - **Rules as written:** a player cannot pick a template. It is not a level-up choice; the GM grants it through a story or game event.
+    - **Outside the rules:** the app has a checkbox, off by default, that lets anyone take a template anyway, to build a supposed character (a GM's NPC, a one-shot, a what-if build). It lifts only the grant rule; one template per slot still holds [A].
+    - **Recorded:** a held template keeps how it came (`granted` or `outside_rules`), so the sheet can show that a character was built outside the rules [A].
+  - **One shape with monsters?** The spec says whether monster templates move to the same shape (so a GM's vampire monster and a vampire PC use one row), or stay separate [U].
+- Keys: `character_templates` collection (or `applies_to`), `slot`, `grants`, a stored actor's `templates`; origin `innate`
+- Files: ~10 (docs/core/templates.md, docs/core/derived.md, ruleset/schemas/character_template.schema.json, ruleset/data/character_templates/core.json, ruleset/scripts/validate.py, ruleset/scripts/kernel_reference.py, ruleset/tests/vectors/derived_examples.json, backend/contract/common.json, docs/decisions/GD_S20_05_character-template-model.md, changes/GD_S20_05_character-template-model.md)
+- See: docs/modules/monsters.md#templates, docs/core/modifier.md, docs/core/derived.md, ruleset/data/origins/core.json
+- Done when: the schema and one example template validate; `derived` vectors give a character's sheet with a template and again without it, in Python and Go; two templates in one slot are refused; a template taken outside the rules is recorded as such; the spec answers the monster-template question.
+- Open:
+  - Does a template cost anything (XP, a perk pick, a drawback) [U]?

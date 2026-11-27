@@ -4,6 +4,40 @@
  */
 
 export interface paths {
+    "/healthz": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The process answers (docs/backend/api.md#health). */
+        get: operations["health"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/readyz": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The ruleset loaded, so commands answer. */
+        get: operations["ready"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/commands": {
         parameters: {
             query?: never;
@@ -35,6 +69,26 @@ export interface paths {
          * @description The rules are in docs/core/actions.md.
          */
         post: operations["actions"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/commands/ammunition": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Recover the rounds fired in a fight.
+         * @description The rules are in docs/core/combat.md.
+         */
+        post: operations["ammunition"];
         delete?: never;
         options?: never;
         head?: never;
@@ -75,6 +129,26 @@ export interface paths {
          * @description The rules are in docs/backend/authoring.md.
          */
         post: operations["author"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/commands/bestiary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Mark what the players know of each monster, and show the bestiary as the GM or a player sees it.
+         * @description The rules are in docs/backend/bestiary.md.
+         */
+        post: operations["bestiary"];
         delete?: never;
         options?: never;
         head?: never;
@@ -261,6 +335,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/commands/encounter": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Run a fight offline: the initiative order, whose turn it is, and the round.
+         * @description The rules are in docs/backend/sessions.md.
+         */
+        post: operations["encounter"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/commands/formula": {
         parameters: {
             query?: never;
@@ -355,6 +449,26 @@ export interface paths {
          * @description The rules are in docs/core/actor-sheet.md.
          */
         post: operations["monster_sheet"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/commands/overwatch": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Hold a shot or a zone under fire until the shooter's next turn, and say which foes draw a strike.
+         * @description The rules are in docs/core/actions.md.
+         */
+        post: operations["overwatch"];
         delete?: never;
         options?: never;
         head?: never;
@@ -531,7 +645,7 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Check a stored actor and return it unchanged, so a save round-trips.
+         * Check a stored actor and return it unchanged, so a save round-trips; or make a new one from attributes, with its pools full.
          * @description The rules are in docs/core/state.md.
          */
         post: operations["stored_actor"];
@@ -612,6 +726,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/version": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The build and the rules version the core runs. */
+        get: operations["version"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -666,9 +797,28 @@ export interface components {
             tag_skills?: components["schemas"]["ref"][];
         };
         d100: number;
+        /** @description A fight the GM runs (BE_S08_07, docs/backend/sessions.md#encounters): the initiative order, whose turn it is, the round, who has acted, and the ambushers of a surprise round. encounter steps change it, and a replay rebuilds it from the log. */
+        encounter: {
+            /** @description The ids that have ended a turn in this fight. */
+            acted: string[];
+            /** @description Every combatant's id, first to act first. */
+            order: string[];
+            /** @description 0 is the surprise round. */
+            round: number;
+            /** @description The ambushers, who alone act in round 0. */
+            surprise: string[];
+            /** @description The index in order of the actor whose turn it is. */
+            turn: number;
+        };
         /** @description Any command may return this instead of its result. */
         error: {
             error: string;
+        };
+        /** @description A character template the actor holds (GD_S20_05, docs/core/templates.md), and how it came: granted by the GM's story or event, or taken outside the rules. */
+        held_template: {
+            /** @enum {string} */
+            how: "granted" | "outside_rules";
+            template: string;
         };
         /** @description One item the actor holds: an instance that points at a row. */
         item_instance: {
@@ -682,6 +832,15 @@ export interface components {
             size?: "undersized" | "normal" | "oversized";
         };
         key: string;
+        /** @description One knowledge mark: a monster at a level, for the table (no player) or one player. */
+        knowledge_mark: {
+            /** @enum {string} */
+            level: "unknown" | "seen" | "known";
+            /** @description The monster's ref, core:monster/<key> or module:<id>/monster/<key>. */
+            monster: string;
+            /** @description The player the mark is for; absent, the whole table. */
+            player?: string;
+        };
         modifiers: components["schemas"]["ruleset_modifier"][];
         /** @description One character in a session's party: its sync fields as loaded, the actor as loaded, and the actor now. */
         party_member: {
@@ -701,6 +860,11 @@ export interface components {
          * @enum {string}
          */
         ruleset_ability: "str" | "per" | "end" | "int" | "wil" | "agi" | "cha" | "lck";
+        /**
+         * @description The kind of round a weapon with the ammunition property fires: arrow (bows), bolt (crossbows), bullet (ball and powder), scatter (a blunderbuss charge), stone (sling) (docs/core/combat.md#ammunition).
+         * @enum {string}
+         */
+        ruleset_ammoKind: "arrow" | "bolt" | "bullet" | "scatter" | "stone";
         /** @description An instance of an effect drawn from the effect registry (data/effects), with its applied magnitude and duration. Shared by spells, consumables, ingredients, and enchantments. Use 'parameter' for generic effects (e.g. fortify_skill with a specific skill key, fortify_attribute with an ability, restore_resource with 'health'/'stamina'/'mana', resist with 'fire'/'poison'/'undead'/'magic'/'physical', cure with a condition, summon with a type). */
         ruleset_appliedEffect: {
             /**
@@ -792,10 +956,10 @@ export interface components {
             off_skill?: components["schemas"]["ruleset_skillRef"];
         };
         /**
-         * @description What the main hand holds (docs/core/combat.md#attacks-by-loadout): nothing, a weapon with the `light` property, another one-handed weapon, or a weapon held in both hands (a `two_handed` weapon, or a `versatile` one in both hands). One vocabulary for attack sequences and stances.
+         * @description What the main hand holds (docs/core/combat.md#attacks-by-loadout): nothing, a weapon with the `light` property, another one-handed weapon, or a weapon held in both hands (a `two_handed` weapon, or a `versatile` one in both hands); or a ranged weapon: a `bow`, a `hand_gun` (a hand crossbow or a pistol), a `long_gun` (a two-handed crossbow or a long gun), or a `light_thrown` weapon (docs/core/combat.md#ranged-loadouts). One vocabulary for attack sequences and stances.
          * @enum {string}
          */
-        ruleset_mainHand: "empty" | "light" | "one_handed" | "two_handed";
+        ruleset_mainHand: "empty" | "light" | "one_handed" | "two_handed" | "bow" | "hand_gun" | "long_gun" | "light_thrown";
         /** @description A reference to a combat maneuver in maneuvers/core.json (docs/core/actions.md#maneuvers). */
         ruleset_maneuverRef: string;
         /** @description A reference to a material row (docs/core/integrity.md). */
@@ -835,10 +999,10 @@ export interface components {
         /** @description A reference to a natural weapon in natural_weapons/core.json (docs/modules/monsters.md#natural-weapons). Not equipment. */
         ruleset_naturalWeaponRef: string;
         /**
-         * @description What the off hand holds (docs/core/combat.md#attacks-by-loadout): nothing, a shield, a buckler, a light weapon, another one-handed weapon, or the main hand's two-handed grip. One vocabulary for attack sequences and stances.
+         * @description What the off hand holds (docs/core/combat.md#attacks-by-loadout): nothing, a shield, a buckler, a light weapon, another one-handed weapon, or the main hand's two-handed grip; or a `hand_gun` or a `light_thrown` weapon. One vocabulary for attack sequences and stances.
          * @enum {string}
          */
-        ruleset_offHand: "empty" | "shield" | "buckler" | "light_weapon" | "weapon" | "two_handed";
+        ruleset_offHand: "empty" | "shield" | "buckler" | "light_weapon" | "weapon" | "two_handed" | "hand_gun" | "light_thrown";
         /** @description A reference to a origin row (docs/core/integrity.md). */
         ruleset_originRef: string;
         /** @description A d100 roll-under value (skill rating, chance, or resistance), normally 0-100 but allowed above 100 for buffed/legendary values. */
@@ -875,11 +1039,16 @@ export interface components {
         /** @description One run: a starting actor, a log of commands, and the current snapshot (docs/core/state.md). */
         session: {
             actor: components["schemas"]["stored_actor"];
+            /** @description What the players know of each monster (BE_S08_05, docs/backend/bestiary.md): bestiary reveal steps change it, and a replay rebuilds it from the log. */
+            bestiary?: {
+                knowledge: components["schemas"]["knowledge_mark"][];
+            };
             /**
              * @description Present once a dev operation ran (docs/backend/dev-mode.md).
              * @constant
              */
             dev?: true;
+            encounter?: components["schemas"]["encounter"];
             log: components["schemas"]["session_step"][];
             /** @description The characters the GM loaded beside the session's own actor, each with the revision it was loaded at (BE_S07_03, docs/backend/sessions.md#the-party). The session carries them and holds no rule for them. */
             party?: components["schemas"]["party_member"][];
@@ -941,6 +1110,8 @@ export interface components {
             /** @description Known spells, by spell key. */
             spells?: components["schemas"]["key"][];
             tags: components["schemas"]["key"][];
+            /** @description The character templates held, at most one per slot (docs/core/templates.md); left out when none. */
+            templates?: components["schemas"]["held_template"][];
             xp: number;
         };
         tags: ("crit" | "fumble")[];
@@ -953,6 +1124,52 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    health: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The process answers (docs/backend/api.md#health). */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        status: "ok";
+                    };
+                };
+            };
+        };
+    };
+    ready: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The ruleset loaded, so commands answer. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        status: "ready";
+                    };
+                };
+            };
+        };
+    };
     list_commands: {
         parameters: {
             query?: never;
@@ -995,6 +1212,11 @@ export interface operations {
                     modifiers?: components["schemas"]["modifiers"];
                     /** @description The race's speed. With it the result gives the squares the actions cover. */
                     speed?: number;
+                    /**
+                     * @description The first turn of a fight: combat starts on pool.combat_start, surprise (an ambusher's surprise round) on the full pool; either refuses carried AP (docs/core/actions.md#pool).
+                     * @enum {string}
+                     */
+                    start?: "combat" | "surprise";
                 };
             };
         };
@@ -1063,6 +1285,79 @@ export interface operations {
             };
         };
     };
+    ammunition: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description With recover: the rounds fired by kind, and the thrown weapons thrown (thrown). */
+                    fired: {
+                        [key: string]: number;
+                    };
+                    modifiers?: components["schemas"]["modifiers"];
+                    /** @enum {string} */
+                    operation: "recover";
+                };
+            };
+        };
+        responses: {
+            /** @description The result. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description By kind: the fired rounds times the kind's share in combat/ammunition.json, rounded down. */
+                        recovered: {
+                            [key: string]: number;
+                        };
+                    };
+                };
+            };
+            /** @description The body is not the command's input, or a rule needs an input it was not given. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description No such command, or the input names a key that does not exist. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The body is over 1 MiB. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The command refused for another rule reason. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+        };
+    };
     attack_sequence: {
         parameters: {
             query?: never;
@@ -1082,12 +1377,25 @@ export interface operations {
                     after_block?: boolean;
                     /** @description The attacker parried a hit since their last strike: attack_after_parry adds to the first main-hand strike (Espada y Daga, docs/core/combat.md#fighting-stances). */
                     after_parry?: boolean;
+                    /** @description The rounds each ranged hand carries, and for a loading weapon whether it holds one; a hand left out is not counted (docs/core/combat.md#ranged-loadouts). */
+                    ammunition?: {
+                        main?: {
+                            loaded?: boolean;
+                            rounds: number;
+                        };
+                        off?: {
+                            loaded?: boolean;
+                            rounds: number;
+                        };
+                    };
                     /** @description The attacker's AP left. A full attack and a circle cut spend all of it and need at least the attack AP + full_attack.min_extra_ap; an attack or a jab with fewer than its AP is an error. An opportunity attack is a reaction and needs none. */
                     ap?: number;
                     attacker: {
                         attributes?: components["schemas"]["attributes"];
                         /** @description Flags from conditions, as in combat. */
                         flags?: components["schemas"]["key"][];
+                        /** @description Maneuvers keys a monster's sheet lists, as combat's attacker.maneuvers. */
+                        maneuvers?: components["schemas"]["key"][];
                         /** @description The attacker's perks and fighting stance (the stance command's modifiers): adds on full_attack_strikes, full_attack_off_strikes, mainhand_penalty, offhand_penalty, attack_roll (every strike), attack_single_opponent (every strike with one foe in reach), attack_after_parry (the first main-hand strike when after_parry), and unarmed_damage (an empty main hand), and boss_strike (the Boss Strike tier), and the carry_through, reaping_arc, scissor_cut, can_circle_cut, off_hand_parries, and carry_on_crit grants. */
                         modifiers?: components["schemas"]["modifiers"];
                         /** @description The off-hand weapon skill; the main-hand skill when left out. A Boss Strike bash rolls on it (the Shields skill) and needs it. */
@@ -1096,7 +1404,7 @@ export interface operations {
                         off_weapon_effects?: Record<string, never>[];
                         /** @description The off-hand weapon's properties; none when left out. */
                         off_weapon_properties?: components["schemas"]["key"][];
-                        /** @description The attacker's perk refs, as combat's attacker.perks: every strike reads them for a rider (docs/core/actions.md#rider-perks). */
+                        /** @description The attacker's perk refs, as combat's attacker.perks: every strike reads them for a rider (docs/core/actions.md#rider-perks). Given with a maneuver, one of them (or attacker.maneuvers) must unlock it. */
                         perks?: components["schemas"]["ref"][];
                         /** @description The carried shield's DR: a Boss Strike bash's damage is this plus the damage roll. A bash without it is an error. */
                         shield_dr?: number;
@@ -1114,9 +1422,11 @@ export interface operations {
                     };
                     /** @description With opportunity: the foe left reach with Disengage, so no attack. */
                     disengaged?: boolean;
-                    /** @description The foes in reach, in the order a carry picks them; foe 0 is a full attack's target. */
+                    /** @description The foes in reach or in range, in the order a carry picks them; foe 0 is a full attack's target. */
                     foes: Record<string, never>[];
                     loadout: components["schemas"]["ruleset_loadout"];
+                    /** @description With attack: an attack_sequence maneuver in ruleset/data/maneuvers/core.json (Split Nock): its strikes, each at its attack, for the attack AP plus its own; its loadouts name the main hand it needs (docs/core/actions.md#ranged-maneuvers). */
+                    maneuver?: components["schemas"]["key"];
                     /** @description Attack modifiers on every strike (situations). */
                     modifiers?: components["schemas"]["modifiers"];
                     /** @description The off-hand damage type and attribute; damage when left out. */
@@ -1149,6 +1459,17 @@ export interface operations {
                 content: {
                     "application/json": {
                         action: string;
+                        /** @description With ammunition: the rounds each counted hand has left. */
+                        ammunition?: {
+                            main?: {
+                                loaded?: boolean;
+                                rounds: number;
+                            };
+                            off?: {
+                                loaded?: boolean;
+                                rounds: number;
+                            };
+                        };
                         ap: number;
                         /** @description With opportunity: whether the attack happened. */
                         fired?: boolean;
@@ -1157,14 +1478,18 @@ export interface operations {
                         /** @description Strikes lost because their foe dropped and nothing carried them. */
                         lost: number;
                         /**
-                         * @description With opportunity, when it did not fire: why.
+                         * @description With opportunity, when it did not fire: why (ranged: a ranged main hand makes no opportunity attack).
                          * @enum {string}
                          */
-                        reason?: "disengaged" | "no_reaction_left";
+                        reason?: "disengaged" | "no_reaction_left" | "ranged";
+                        /** @description With ammunition: the reloads a full attack made from its own AP. */
+                        reloads?: number;
                         /** @description The attack_sequences row key. */
                         sequence: string;
                         /** @description ap times stamina_per_ap. */
                         stamina: number;
+                        /** @description With ammunition: the strikes a full attack did not make, because a reload did not fit its AP or a hand had no rounds left. */
+                        stopped?: number;
                         strikes: {
                             /** @description The strike's attack value after the penalty perks. */
                             attack: number;
@@ -1326,6 +1651,126 @@ export interface operations {
                                 path: string;
                             }[];
                         }[];
+                    };
+                };
+            };
+            /** @description The body is not the command's input, or a rule needs an input it was not given. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description No such command, or the input names a key that does not exist. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The body is over 1 MiB. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The command refused for another rule reason. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+        };
+    };
+    bestiary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description With reveal: a Lore check by the player instead of a level; a success marks the monster known for that player. */
+                    check?: {
+                        actor: components["schemas"]["actor"];
+                        modifiers?: components["schemas"]["modifiers"];
+                        roll: components["schemas"]["d100"];
+                    };
+                    /** @description The marks so far; a session fills them from its own. */
+                    knowledge?: components["schemas"]["knowledge_mark"][];
+                    /**
+                     * @description With reveal and no check: the new mark.
+                     * @enum {string}
+                     */
+                    level?: "unknown" | "seen" | "known";
+                    /** @description With reveal: the monster's ref. */
+                    monster?: string;
+                    /** @description With view: the monsters to show, in order (a catalog list's refs). */
+                    monsters?: string[];
+                    /** @enum {string} */
+                    operation: "reveal" | "view";
+                    /** @description With reveal: whose mark, absent for the whole table. With view: whose view, absent for the GM's. */
+                    player?: string;
+                    /** @description With view: the settings box. Off (default), every entry shows in full. */
+                    players_see_only_known?: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description The result. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description With reveal and a check: the Lore check's result, as resolution returns it. */
+                        check?: {
+                            margin: number | null;
+                            success: boolean;
+                            tags: string[];
+                            target: number;
+                        };
+                        /** @description With view: the monsters the viewer sees, in the order given. */
+                        entries?: {
+                            description: string;
+                            /**
+                             * @description The viewer's mark; for the GM, the table's.
+                             * @enum {string}
+                             */
+                            knowledge: "unknown" | "seen" | "known";
+                            label: string;
+                            monster: string;
+                            /** @description For the GM: each player's own mark. */
+                            players?: {
+                                [key: string]: "unknown" | "seen" | "known";
+                            };
+                            /**
+                             * @description seen: name, description, and size; full: the whole sheet, which the caller reads with catalog and monster_sheet.
+                             * @enum {string}
+                             */
+                            shows: "seen" | "full";
+                            size: string;
+                        }[];
+                        /** @description With reveal: the marks after it. */
+                        knowledge?: components["schemas"]["knowledge_mark"][];
+                        /**
+                         * @description With reveal: what the player (or the table) now knows of the monster, the higher of the table's and the player's mark.
+                         * @enum {string}
+                         */
+                        level?: "unknown" | "seen" | "known";
                     };
                 };
             };
@@ -1666,12 +2111,21 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
+                    /** @description For a weapon that fires or throws (attacker.weapon_properties has ammunition or thrown): the rounds carried, and for a loading weapon whether it holds one. Left out, rounds are not counted (docs/core/combat.md#ammunition). */
+                    ammunition?: {
+                        loaded?: boolean;
+                        rounds: number;
+                    };
                     attacker: {
                         attributes?: components["schemas"]["attributes"];
                         /** @description Flags from conditions (prone, blinded, invisible); a situation row with `when` reads them. */
                         flags?: components["schemas"]["key"][];
-                        /** @description The attacker's held perks (feature refs). A rider perk among them whose maneuver fits the attack makes a maneuver attempt after a plain hit (docs/core/actions.md#rider-perks); two riders that fit the same attack are an error. */
+                        /** @description Maneuvers keys a monster's sheet lists, which it makes with no perk; given with a maneuver, it must name it, or a perk in attacker.perks must unlock it. */
+                        maneuvers?: components["schemas"]["key"][];
+                        /** @description The attacker's held perks (feature refs). A rider perk among them whose maneuver fits the attack makes a maneuver attempt after a plain hit (docs/core/actions.md#rider-perks); two riders that fit the same attack are an error. Given with a maneuver, one of them (or attacker.maneuvers) must unlock it, or the maneuver is refused (docs/core/actions.md#ranged-maneuvers). */
                         perks?: components["schemas"]["ref"][];
+                        /** @description The ranged weapon's range_normal, which a maneuver's range_normal_min reads (Held Breath). */
+                        range_normal?: number;
                         roll: components["schemas"]["d100"];
                         skill: number;
                         /** @description The weapon's on-hit applied effects: armor_pierce, bane, lingering_damage, banish_summoned (docs/core/combat.md#weapon-effects). */
@@ -1679,13 +2133,22 @@ export interface operations {
                         /** @description The carried weapon's properties, which a maneuver may need. */
                         weapon_properties?: string[];
                     };
+                    /** @description With a bursting round: this defender is caught in the burst, not the shot's target. An area roll; distance over the round's burst_radius is outside; crit is the shot's, and doubles the burst's damage. */
+                    burst?: {
+                        /** @description Whether the shot crit. Default false. */
+                        crit?: boolean;
+                        /** @description Squares from the target; 0 is the target, caught after a miss. */
+                        distance: number;
+                    };
+                    /** @description With a grenade: squares from the burst point to this defender; over the grenade's radius, the outcome is outside. Default 0. */
+                    burst_distance?: number;
                     /** @description A called_shots key in ruleset/data/combat/situations.json. */
                     called_shot?: components["schemas"]["key"];
                     damage: {
                         /** @description The attacker attribute whose modifier adds to the roll. */
                         ability?: components["schemas"]["ruleset_ability"];
                         roll: number;
-                        type: components["schemas"]["key"];
+                        type?: components["schemas"]["key"];
                     };
                     defender: {
                         /**
@@ -1719,21 +2182,27 @@ export interface operations {
                     };
                     /** @enum {string} */
                     delivery?: "single" | "area" | "instant";
+                    /** @description A grenade thrown as an area attack: its own dice and damage type with no ability added, and its riders on a hit (docs/core/combat.md#grenades). With it, delivery is area and damage.type may be left out. */
+                    grenade?: string;
                     /** @description What the attacker holds: a maneuver's AP is then the loadout's attack AP (attack_sequences/core.json) plus its own. A loadout no attack sequence covers is an error. */
                     loadout?: components["schemas"]["ruleset_loadout"];
                     /** @description A maneuvers key in ruleset/data/maneuvers/core.json: the attack is performed as that maneuver (docs/core/actions.md#maneuvers). */
                     maneuver?: components["schemas"]["key"];
                     modifiers?: components["schemas"]["modifiers"];
+                    /** @description Whether the attacker moved this turn before the attack; a still maneuver (Held Breath) is refused after a move. Default false. */
+                    moved?: boolean;
                     /**
                      * @description Default melee.
                      * @enum {string}
                      */
                     range?: "melee" | "ranged";
+                    /** @description The ammunition row fired: its damage_type replaces damage.type and its effects land on a hit that is not evaded; a row with a burst_radius bursts (docs/core/combat.md#elemental-rounds). */
+                    round?: string;
                     /** @description Keys in ruleset/data/combat/situations.json the caller names (cover, flanking, into melee). */
                     situations?: components["schemas"]["key"][];
                     /** @description Whether the attacker has an active summon (not a minion), for its while_summoning modifiers. Default false; the beside_summon situation implies true (docs/core/modifier.md). */
                     summoning?: boolean;
-                };
+                } & unknown;
             };
         };
         responses: {
@@ -1744,6 +2213,11 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description With the ammunition input: the rounds left after the strike, and whether a loading weapon still holds one (it never does after a shot). */
+                        ammunition?: {
+                            loaded?: boolean;
+                            rounds: number;
+                        };
                         /** @description With a maneuver: the attack's AP plus the maneuver's, at least 1. */
                         ap?: number;
                         /** @description The block stance's band, under the evasion band: a margin in it is blocked. */
@@ -1753,7 +2227,7 @@ export interface operations {
                         counter?: boolean;
                         crit: boolean;
                         damage: number;
-                        /** @description With a maneuver or a rider: its applied effects on a hit, empty on a miss or an evade. With a save, they land only when the defender fails it. */
+                        /** @description With a maneuver, a rider, a grenade, or a round with effects: its applied effects on a hit, empty on a miss or an evade. With a save, they land only when the defender fails it. */
                         effects?: Record<string, never>[];
                         evaded: boolean;
                         /** @description The evasion band: a margin under it is evaded. */
@@ -1763,7 +2237,7 @@ export interface operations {
                         hp: number;
                         margin: number | null;
                         /** @enum {string} */
-                        outcome: "hit" | "miss" | "fumble" | "evaded" | "blocked";
+                        outcome: "hit" | "miss" | "fumble" | "evaded" | "blocked" | "outside";
                         /** @description The parry band stopped the hit (outcome blocked). */
                         parried: boolean;
                         /** @description A parrying stance's band, under the block band: a margin in it is blocked and parried. 0 without a parry grant, against non-physical damage, or for an instant attack. */
@@ -2257,6 +2731,8 @@ export interface operations {
                 "application/json": {
                     actor: components["schemas"]["actor"];
                     modifiers?: components["schemas"]["modifiers"];
+                    /** @description The actor's held character templates: their attributes add first, and their modifiers and granted perks join modifiers; two in one slot are refused (docs/core/templates.md). */
+                    templates?: components["schemas"]["held_template"][];
                 };
             };
         };
@@ -2354,6 +2830,98 @@ export interface operations {
                         percent?: number;
                         price_cp?: number;
                         shift?: number;
+                    };
+                };
+            };
+            /** @description The body is not the command's input, or a rule needs an input it was not given. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description No such command, or the input names a key that does not exist. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The body is over 1 MiB. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The command refused for another rule reason. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+        };
+    };
+    encounter: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description With start: every actor in the fight, the party's and the GM's monsters. */
+                    combatants?: {
+                        /** @description AGI after its modifiers, the first tie-break. */
+                        agi: number;
+                        /** @description The table's name for the actor, unique in the fight. */
+                        id: string;
+                        /** @description The derived initiative value, no roll (docs/core/derived.md). */
+                        initiative: number;
+                        /** @description LCK after its modifiers, the second tie-break. */
+                        lck: number;
+                        /** @description The d100 roll-off, made when the encounter starts, kept in the step: lowest first, a tie on a roll read by the next (docs/core/derived.md#initiative-ties). */
+                        rolls?: components["schemas"]["d100"][];
+                        /** @description An ambusher, who acts in the surprise round. Default false. */
+                        surprise?: boolean;
+                    }[];
+                    /** @description With turn_end: the fight; a session step fills it from the session. */
+                    encounter?: components["schemas"]["encounter"];
+                    /** @enum {string} */
+                    operation: "start" | "turn_end";
+                };
+            };
+        };
+        responses: {
+            /** @description The result. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        current: {
+                            id: string;
+                            /**
+                             * @description The actions command's start for this turn: surprise in the surprise round, combat on the actor's first turn of the fight; absent on a later turn.
+                             * @enum {string}
+                             */
+                            start?: "combat" | "surprise";
+                        };
+                        encounter: components["schemas"]["encounter"];
+                        /** @description The id whose turn comes after the current one. */
+                        next: string;
                     };
                 };
             };
@@ -2765,6 +3333,117 @@ export interface operations {
                             [key: string]: number;
                         };
                         sp: number;
+                    };
+                };
+            };
+            /** @description The body is not the command's input, or a rule needs an input it was not given. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description No such command, or the input names a key that does not exist. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The body is over 1 MiB. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The command refused for another rule reason. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+        };
+    };
+    overwatch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description Pinning Fire: the AP left, all spent. Trigger Watch: the held AP the attack's AP is reserved from. */
+                    ap: number;
+                    /** @description What the table saw until the shooter's next turn, in order. */
+                    events: {
+                        /** @description Which foe, an index the caller keeps. */
+                        foe: number;
+                        /** @description Trigger Watch: the foe is in the weapon's range. Default false. */
+                        in_range?: boolean;
+                        /** @description Pinning Fire: the move ends in the zone or crosses it, or the attack is made from it. Default false. */
+                        in_zone?: boolean;
+                        /** @enum {string} */
+                        kind: "move" | "attack";
+                    }[];
+                    /** @description What the shooter holds: the attack's AP is the loadout's (attack_sequences/core.json), the attack action's without it. Two hand guns may lay Pinning Fire though they load. */
+                    loadout?: components["schemas"]["ruleset_loadout"];
+                    /** @description An overwatch maneuver in ruleset/data/maneuvers/core.json: pinning_fire (a zone) or trigger_watch (a held shot). */
+                    maneuver: components["schemas"]["key"];
+                    /** @description Rounds carried; the maneuver's rounds come off it. Left out, rounds are not counted. */
+                    rounds?: number;
+                    shooter?: {
+                        /** @description Maneuvers keys a monster's sheet lists, which it makes with no perk. */
+                        maneuvers?: components["schemas"]["key"][];
+                        /** @description The shooter's held perks at their ranks; given, one must unlock the maneuver at the rank held (unlocks_at_rank). */
+                        perks?: components["schemas"]["ruleset_heldPerk"][];
+                        /** @description The ranged weapon's properties; the maneuver's without_weapon_properties refuse it. */
+                        weapon_properties?: string[];
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description The result. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description AP spent. */
+                        ap: number;
+                        /** @description Trigger Watch: the reserved AP back to the pool when no foe drew the shot. */
+                        ap_returned: number;
+                        /** @description Rounds spent: Pinning Fire's three, Trigger Watch's one when it fires. */
+                        rounds: number;
+                        /** @description With rounds: what is left. */
+                        rounds_left?: number;
+                        /** @description The strikes the events drew, in order, for the caller to resolve with combat. */
+                        shots: {
+                            /** @description The add on the strike's attack roll, for the caller's combat command. */
+                            attack: number;
+                            event: number;
+                            foe: number;
+                        }[];
+                        /** @description Pinning Fire: the attacks foes made from the zone, at its penalty. */
+                        zone_attacks: {
+                            /** @description The add on that foe's own attack. */
+                            attack: number;
+                            event: number;
+                            foe: number;
+                        }[];
                     };
                 };
             };
@@ -3598,8 +4277,14 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
-                    actor: components["schemas"]["stored_actor"];
-                };
+                    actor?: components["schemas"]["stored_actor"];
+                    /** @description Make a new stored actor: that level (default 1), xp 0, nothing else held, and every pool full at the maximum derived gives (docs/core/state.md#the-stored-actor). */
+                    new?: {
+                        attributes: components["schemas"]["attributes"];
+                        level?: number;
+                        tags?: components["schemas"]["key"][];
+                    };
+                } & (unknown | unknown);
             };
         };
         responses: {
@@ -3924,6 +4609,29 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["error"];
+                };
+            };
+        };
+    };
+    version: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The build and the rules version the core runs. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        build: string;
+                        rules_version: string;
+                    };
                 };
             };
         };

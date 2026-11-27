@@ -1,0 +1,70 @@
+{
+  "$schema": "./command.schema.json",
+  "name": "ammunition",
+  "summary": "Recover the rounds fired in a fight.",
+  "documentation": "docs/core/combat.md",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "operation": {
+        "type": "string",
+        "enum": [
+          "recover"
+        ]
+      },
+      "fired": {
+        "type": "object",
+        "propertyNames": {
+          "anyOf": [
+            {
+              "$ref": "../../ruleset/schemas/schema.json#/definitions/ammoKind"
+            },
+            {
+              "const": "thrown"
+            }
+          ]
+        },
+        "additionalProperties": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "description": "With recover: the rounds fired by kind, and the thrown weapons thrown (thrown)."
+      },
+      "modifiers": {
+        "$ref": "common.json#/definitions/modifiers"
+      }
+    },
+    "required": [
+      "operation",
+      "fired"
+    ],
+    "additionalProperties": false
+  },
+  "result_schema": {
+    "type": "object",
+    "properties": {
+      "recovered": {
+        "type": "object",
+        "propertyNames": {
+          "anyOf": [
+            {
+              "$ref": "../../ruleset/schemas/schema.json#/definitions/ammoKind"
+            },
+            {
+              "const": "thrown"
+            }
+          ]
+        },
+        "additionalProperties": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "description": "By kind: the fired rounds times the kind's share in combat/ammunition.json, rounded down."
+      }
+    },
+    "required": [
+      "recovered"
+    ],
+    "additionalProperties": false
+  }
+}

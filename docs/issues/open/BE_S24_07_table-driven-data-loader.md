@@ -1,0 +1,12 @@
+#### BE_S24_07_table-driven-data-loader A table-driven ruleset loader
+- Status: todo
+- Priority: medium
+- Needs: QA_S24_02_go-benchmarks-and-complexity-gate
+- Modified: 2026-11-24
+- Do: Owner request, 2026-11-24. `data.Load` (200 lines) and `loadItems` (227) read each file with the same read, check, and build-table steps, three of them as copies.
+  - **A generic loader:** `loadTable[Row](loader, file, key)` and a list of the files with their checks, so a new data file is one row.
+  - **Hash sets for flags:** row fields that are looked up by membership (weapon properties, tags, flags) get a set beside the list at load time, so the 79 `slices.Contains` reads in the core can become a lookup where it is hot. [A]
+- Keys: `loadTable`, the file list, the sets
+- Files: ~6 (backend/internal/data/data.go, backend/internal/data/load.go, backend/internal/data/data_test.go, docs/decisions/BE_S24_07_table-driven-data-loader.md, changes/BE_S24_07_table-driven-data-loader.md)
+- See: backend/internal/data/data.go
+- Done when: `Load` and `loadItems` are each under 80 lines; the data tests pass; the `data.Load` benchmark is no slower.

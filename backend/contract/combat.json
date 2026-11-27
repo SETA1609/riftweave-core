@@ -44,7 +44,17 @@
             "items": {
               "$ref": "common.json#/definitions/ref"
             },
-            "description": "The attacker's held perks (feature refs). A rider perk among them whose maneuver fits the attack makes a maneuver attempt after a plain hit (docs/core/actions.md#rider-perks); two riders that fit the same attack are an error."
+            "description": "The attacker's held perks (feature refs). A rider perk among them whose maneuver fits the attack makes a maneuver attempt after a plain hit (docs/core/actions.md#rider-perks); two riders that fit the same attack are an error. Given with a maneuver, one of them (or attacker.maneuvers) must unlock it, or the maneuver is refused (docs/core/actions.md#ranged-maneuvers)."
+          },
+          "maneuvers": {
+            "type": "array",
+            "items": { "$ref": "common.json#/definitions/key" },
+            "description": "Maneuvers keys a monster's sheet lists, which it makes with no perk; given with a maneuver, it must name it, or a perk in attacker.perks must unlock it."
+          },
+          "range_normal": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "The ranged weapon's range_normal, which a maneuver's range_normal_min reads (Held Breath)."
           }
         },
         "additionalProperties": false,
@@ -119,10 +129,7 @@
           "ability": { "$ref": "../../ruleset/schemas/schema.json#/definitions/ability", "description": "The attacker attribute whose modifier adds to the roll." }
         },
         "additionalProperties": false,
-        "required": [
-          "roll",
-          "type"
-        ]
+        "required": ["roll"]
       },
       "delivery": {
         "type": "string",
@@ -142,6 +149,31 @@
           "ranged"
         ],
         "description": "Default melee."
+      },
+      "ammunition": {
+        "type": "object",
+        "description": "For a weapon that fires or throws (attacker.weapon_properties has ammunition or thrown): the rounds carried, and for a loading weapon whether it holds one. Left out, rounds are not counted (docs/core/combat.md#ammunition).",
+        "properties": {
+          "rounds": { "type": "integer", "minimum": 0 },
+          "loaded": { "type": "boolean" }
+        },
+        "required": ["rounds"],
+        "additionalProperties": false
+      },
+      "round": {
+        "type": "string",
+        "pattern": "^core:ammunition/[a-z][a-z0-9_]*$",
+        "description": "The ammunition row fired: its damage_type replaces damage.type and its effects land on a hit that is not evaded; a row with a burst_radius bursts (docs/core/combat.md#elemental-rounds)."
+      },
+      "burst": {
+        "type": "object",
+        "description": "With a bursting round: this defender is caught in the burst, not the shot's target. An area roll; distance over the round's burst_radius is outside; crit is the shot's, and doubles the burst's damage.",
+        "properties": {
+          "distance": { "type": "integer", "minimum": 0, "description": "Squares from the target; 0 is the target, caught after a miss." },
+          "crit": { "type": "boolean", "description": "Whether the shot crit. Default false." }
+        },
+        "required": ["distance"],
+        "additionalProperties": false
       },
       "summoning": {
         "type": "boolean",
@@ -163,13 +195,19 @@
       "maneuver": {
         "$ref": "common.json#/definitions/key",
         "description": "A maneuvers key in ruleset/data/maneuvers/core.json: the attack is performed as that maneuver (docs/core/actions.md#maneuvers)."
-      }
+      },
+      "moved": { "type": "boolean", "description": "Whether the attacker moved this turn before the attack; a still maneuver (Held Breath) is refused after a move. Default false." },
+      "grenade": { "type": "string", "pattern": "^core:consumable/[a-z][a-z0-9_]*$", "description": "A grenade thrown as an area attack: its own dice and damage type with no ability added, and its riders on a hit (docs/core/combat.md#grenades). With it, delivery is area and damage.type may be left out." },
+      "burst_distance": { "type": "integer", "minimum": 0, "description": "With a grenade: squares from the burst point to this defender; over the grenade's radius, the outcome is outside. Default 0." }
     },
     "additionalProperties": false,
     "required": [
       "attacker",
       "defender",
       "damage"
+    ],
+    "allOf": [
+      { "if": { "not": { "required": ["grenade"] } }, "then": { "properties": { "damage": { "required": ["roll", "type"] } }, "not": { "required": ["burst_distance"] } } }
     ]
   },
   "result_schema": {
@@ -182,7 +220,8 @@
           "miss",
           "fumble",
           "evaded",
-          "blocked"
+          "blocked",
+          "outside"
         ]
       },
       "target": {
@@ -272,6 +311,16 @@
         },
         "description": "A called shot's riders on a hit."
       },
+      "ammunition": {
+        "type": "object",
+        "description": "With the ammunition input: the rounds left after the strike, and whether a loading weapon still holds one (it never does after a shot).",
+        "properties": {
+          "rounds": { "type": "integer", "minimum": 0 },
+          "loaded": { "type": "boolean" }
+        },
+        "required": ["rounds"],
+        "additionalProperties": false
+      },
       "counter": {
         "type": "boolean",
         "description": "A riposte: the defender may make one attack at no AP cost."
@@ -289,7 +338,7 @@
         "items": {
           "type": "object"
         },
-        "description": "With a maneuver or a rider: its applied effects on a hit, empty on a miss or an evade. With a save, they land only when the defender fails it."
+        "description": "With a maneuver, a rider, a grenade, or a round with effects: its applied effects on a hit, empty on a miss or an evade. With a save, they land only when the defender fails it."
       },
       "events": {
         "type": "array",

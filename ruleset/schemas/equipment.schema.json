@@ -27,7 +27,7 @@
         "source": { "$ref": "schema.json#/definitions/sourceRef" },
         "type": {
           "type": "string",
-          "enum": ["weapon", "armor", "shield", "accessory", "potion", "poison", "coating", "oil", "food", "scroll", "wand", "tool", "adventuring_gear", "ammunition"]
+          "enum": ["weapon", "armor", "shield", "accessory", "potion", "poison", "coating", "oil", "food", "scroll", "wand", "tool", "adventuring_gear", "ammunition", "grenade"]
         },
         "cost": {
           "type": "object",
@@ -84,6 +84,7 @@
               "additionalProperties": false
             },
             "properties": { "type": "array", "items": { "type": "string" } },
+            "ammo": { "$ref": "schema.json#/definitions/ammoKind", "description": "The kind of round the weapon fires; required with the ammunition property (validate.py, docs/core/combat.md#ammunition)." },
             "ability": { "$ref": "schema.json#/definitions/ability", "description": "The attribute whose modifier adds to this weapon's damage. Every ranged weapon names one (docs/modules/attributes.md#the-attribute-modifier); a melee weapon reads str, or agi with the finesse property." },
             "range_normal": { "type": "integer", "minimum": 1, "description": "Normal range in units (grid squares, docs/core/contract.md#distance)." },
             "range_long": { "type": "integer", "minimum": 1, "description": "Long range in units (grid squares)." },
@@ -144,7 +145,20 @@
               "items": { "$ref": "schema.json#/definitions/appliedEffect" }
             },
             "uses": { "type": "integer", "minimum": 1, "description": "Number of applications/charges; e.g. a weapon coating may last several hits" },
-            "toxicity": { "type": "integer", "minimum": 0, "description": "What drinking it adds to the drinker's toxicity; every drink row states it, 0 allowed (docs/core/modifier.md#toxicity)." }
+            "toxicity": { "type": "integer", "minimum": 0, "description": "What drinking it adds to the drinker's toxicity; every drink row states it, 0 allowed (docs/core/modifier.md#toxicity)." },
+            "damage": {
+              "type": "object",
+              "description": "A grenade's fixed area damage: its own dice and type, with no attribute, skill, material, or weapon perk added (docs/core/combat.md#grenades). Left out, the grenade deals none (a smoke pot).",
+              "properties": {
+                "dice": { "$ref": "schema.json#/definitions/diceExpression" },
+                "type": { "$ref": "schema.json#/definitions/damageType" }
+              },
+              "required": ["dice", "type"],
+              "additionalProperties": false
+            },
+            "radius": { "type": "integer", "minimum": 1, "description": "A grenade's burst: every creature within this many squares of the point it lands on." },
+            "range_normal": { "type": "integer", "minimum": 1, "description": "A grenade's normal throwing range, in squares." },
+            "range_long": { "type": "integer", "minimum": 1, "description": "A grenade's long throwing range, in squares." }
           },
           "required": ["delivery"],
           "allOf": [
@@ -152,6 +166,11 @@
               "if": { "properties": { "delivery": { "const": "drink" } }, "required": ["delivery"] },
               "then": { "required": ["toxicity"] },
               "else": { "not": { "required": ["toxicity"] } }
+            },
+            {
+              "if": { "properties": { "delivery": { "const": "throw" } }, "required": ["delivery"] },
+              "then": { "required": ["radius", "range_normal", "range_long"] },
+              "else": { "not": { "anyOf": [{ "required": ["damage"] }, { "required": ["radius"] }, { "required": ["range_normal"] }, { "required": ["range_long"] }] } }
             },
             {
               "if": { "properties": { "delivery": { "const": "read" } }, "required": ["delivery"] },
@@ -187,6 +206,20 @@
             "uses": { "type": "integer", "minimum": 1, "description": "Uses before the item is spent; omitted means it is not used up." }
           },
           "additionalProperties": false
+        },
+        "ammunition": {
+          "type": "object",
+          "description": "Rounds for a weapon with the ammunition property, sold in a bundle (docs/core/combat.md#ammunition). A row may change the strike's damage type and add effects on a hit; plain rounds change nothing.",
+          "properties": {
+            "kind": { "$ref": "schema.json#/definitions/ammoKind" },
+            "count": { "type": "integer", "minimum": 1, "description": "How many rounds a bundle holds." },
+            "damage_type": { "$ref": "schema.json#/definitions/damageType", "description": "The damage type a strike with these rounds deals instead of the weapon's." },
+            "effects": { "type": "array", "items": { "$ref": "schema.json#/definitions/appliedEffect" }, "description": "Effects on a hit." },
+            "burst_radius": { "type": "integer", "minimum": 1, "description": "An elemental round (GD_S17_04): hit or miss, it bursts at the target in this radius, every creature in it taking an area roll and the shot's damage roll as damage_type, and its effects on a hit, which need the grenade channel (docs/core/combat.md#elemental-rounds)." }
+          },
+          "required": ["kind", "count"],
+          "dependencies": { "burst_radius": ["damage_type"] },
+          "additionalProperties": false
         }
       }
     },
@@ -201,7 +234,7 @@
             "label": { "type": "string" },
             "description": { "type": "string" },
             "source": { "$ref": "schema.json#/definitions/sourceRef" },
-            "type": { "type": "string", "enum": ["weapon", "armor", "shield", "accessory", "potion", "poison", "coating", "oil", "food", "scroll", "wand", "tool", "adventuring_gear", "ammunition"] },
+            "type": { "type": "string", "enum": ["weapon", "armor", "shield", "accessory", "potion", "poison", "coating", "oil", "food", "scroll", "wand", "tool", "adventuring_gear", "ammunition", "grenade"] },
             "cost": {
               "type": "object",
               "properties": {
@@ -220,7 +253,8 @@
             "armor": { "type": "object" },
             "consumable": { "type": "object" },
             "accessory": { "type": "object" },
-            "gear": { "type": "object" }
+            "gear": { "type": "object" },
+            "ammunition": { "type": "object" }
           },
           "required": ["key", "label", "description", "type", "cost", "weight"],
           "additionalProperties": false,
@@ -229,7 +263,8 @@
             { "required": ["armor"] },
             { "required": ["consumable"] },
             { "required": ["accessory"] },
-            { "required": ["gear"] }
+            { "required": ["gear"] },
+            { "required": ["ammunition"] }
           ]
         }
       ]

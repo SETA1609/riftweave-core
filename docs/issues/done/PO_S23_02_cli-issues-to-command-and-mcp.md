@@ -1,0 +1,15 @@
+#### PO_S23_02_cli-issues-to-command-and-mcp Rewrite the open terminal-screen issues as a command and an MCP tool
+- Status: done
+- Merged: #462, 2026-11-23
+- Priority: high
+- Needs: —
+- Modified: 2026-11-23
+- Do: Owner decision, 2026-11-23: the interactive terminal app (the Charm TUI, APP-05) is retired; people use the web app, agents use the JSON commands and the MCP server. Freeze it first, so no new screen is built:
+  - **The `_cli` issues** (`BE_S07_05`, `BE_S08_01`, `BE_S08_05`, `BE_S08_07`, `BE_S08_15`, `BE_S20_03`, `BE_S20_08`, and every other open issue that asks for a terminal screen): each keeps its core command and gains its MCP tool; the screen step is struck. The issue ids stay, so no `Needs` edge breaks.
+  - **The terminal-only issues:** `BE_S11_02_cli-shared-locales` is superseded (the commands print JSON and keys, not prose), and `BE_S12_03_cli-observability` keeps the command and MCP paths and drops the screen.
+  - **The alpha playtest** (`QA_S01_02_alpha-playtest-human-cli`) moves to the web app with dev mode; if a run is under way in the terminal app, it finishes there first.
+  - **The rule:** AGENTS.md and `docs/backend/README.md` say a feature is a core command, an MCP tool, and a web page; never a terminal screen.
+- Keys: none
+- Files: ~20 (the open issue files above, docs/stories/ rows that name a screen, AGENTS.md, docs/backend/README.md, docs/decisions/PO_S23_02_cli-issues-to-command-and-mcp.md, changes/PO_S23_02_cli-issues-to-command-and-mcp.md); split by story if it passes 20.
+- See: docs/backend/README.md, docs/backend/mcp.md, docs/backend/cli.md
+- Done when: `git grep -il "human CLI\|TUI\|terminal screen" docs/issues/open` finds no step that builds a screen; every rewritten issue names its MCP tool.
