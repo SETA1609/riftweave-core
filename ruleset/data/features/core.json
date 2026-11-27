@@ -865,6 +865,123 @@
       ]
     },
     {
+      "key": "two_on_the_string",
+      "label": "Two on the String",
+      "description": "You learn to nock and loose two arrows at once: you can make the Split Nock maneuver.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 6,
+        "abilities": {
+          "agi": 6
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/bows"
+            ],
+            "min": 40
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:maneuver/split_nock"
+      ]
+    },
+    {
+      "key": "still_hunter",
+      "label": "Still Hunter",
+      "description": "You learn to wait out a breath for the one long shot: you can make the Held Breath maneuver.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 10,
+        "abilities": {
+          "per": 7
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/bows",
+              "core:skill/crossbows",
+              "core:skill/guns"
+            ],
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:maneuver/held_breath"
+      ]
+    },
+    {
+      "key": "heads_down",
+      "label": "Heads Down",
+      "description": "You learn to shoot to keep a foe down: you can make the Pinning Shot maneuver, and from the second tier the Pinning Fire maneuver.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 8,
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/bows",
+              "core:skill/crossbows",
+              "core:skill/guns",
+              "core:skill/throwing_weapons"
+            ],
+            "min": 40
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 2,
+      "rank_levels": [
+        8,
+        14
+      ],
+      "unlocks": [
+        "core:maneuver/pinning_shot",
+        "core:maneuver/pinning_fire"
+      ],
+      "unlocks_at_rank": {
+        "core:maneuver/pinning_fire": 2
+      }
+    },
+    {
+      "key": "watchful_aim",
+      "label": "Watchful Aim",
+      "description": "You learn to hold a shot for the first foe that stirs: you can make the Trigger Watch maneuver.",
+      "type": "perk",
+      "category": "combat",
+      "prerequisite": {
+        "level": 6,
+        "abilities": {
+          "per": 6
+        },
+        "skills": [
+          {
+            "any_of": [
+              "core:skill/bows",
+              "core:skill/crossbows",
+              "core:skill/guns",
+              "core:skill/throwing_weapons"
+            ],
+            "min": 40
+          }
+        ],
+        "perks": []
+      },
+      "ranks": 1,
+      "unlocks": [
+        "core:maneuver/trigger_watch"
+      ]
+    },
+    {
       "key": "low_aim",
       "label": "Low Aim",
       "description": "You learn to shoot or throw at the legs: you can make the Tripping Shot maneuver.",

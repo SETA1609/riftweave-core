@@ -1,5 +1,5 @@
 #### GD_S17_06_ranged-maneuvers Ranged maneuvers: the split nock, the held breath, pinning fire, and the trigger watch
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: GD_S05_03_defense-perk-ladders, GD_S17_02_ammunition-items-and-reloading
 - Modified: 2026-11-23

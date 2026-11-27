@@ -6265,5 +6265,402 @@
       ],
       "lost": 0
     }
+  },
+  {
+    "action": "attack",
+    "loadout": {
+      "main": "bow",
+      "off": "two_handed"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "two_handed"
+      ],
+      "perks": [
+        "core:feature/two_on_the_string"
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 40
+      }
+    ],
+    "damage": {
+      "type": "piercing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 6
+      },
+      {
+        "attack": 30,
+        "damage": 6
+      }
+    ],
+    "maneuver": "split_nock",
+    "ap": 4,
+    "ammunition": {
+      "main": {
+        "rounds": 10
+      }
+    },
+    "name": "split nock: a bow attack +1 AP (4) looses two arrows, a strike each at -20, two arrows spent",
+    "expect": {
+      "action": "attack",
+      "sequence": "bow",
+      "ap": 4,
+      "stamina": 20,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 10,
+          "crit": false,
+          "damage": 5,
+          "hp": 35,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 10,
+          "crit": false,
+          "damage": 5,
+          "hp": 30,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        30
+      ],
+      "lost": 0,
+      "ammunition": {
+        "main": {
+          "rounds": 8
+        }
+      },
+      "reloads": 0,
+      "stopped": 0
+    }
+  },
+  {
+    "action": "attack",
+    "loadout": {
+      "main": "bow",
+      "off": "two_handed"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "two_handed"
+      ],
+      "perks": [
+        "core:feature/two_on_the_string"
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 40
+      },
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 40
+      }
+    ],
+    "damage": {
+      "type": "piercing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 6
+      },
+      {
+        "attack": 30,
+        "damage": 6
+      }
+    ],
+    "maneuver": "split_nock",
+    "ap": 4,
+    "ammunition": {
+      "main": {
+        "rounds": 10
+      }
+    },
+    "name": "split nock at two targets: one arrow each",
+    "targets": [
+      0,
+      1
+    ],
+    "expect": {
+      "ap": 4,
+      "strikes": [
+        {
+          "hand": "main",
+          "foe": 0,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 10,
+          "crit": false,
+          "damage": 5,
+          "hp": 35,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        },
+        {
+          "hand": "main",
+          "foe": 1,
+          "attack": -20,
+          "outcome": "hit",
+          "target": 40,
+          "margin": 10,
+          "crit": false,
+          "damage": 5,
+          "hp": 35,
+          "carried": false,
+          "free": false,
+          "scissor": false
+        }
+      ],
+      "hp": [
+        35,
+        35
+      ],
+      "ammunition": {
+        "main": {
+          "rounds": 8
+        }
+      }
+    }
+  },
+  {
+    "action": "attack",
+    "loadout": {
+      "main": "long_gun",
+      "off": "two_handed"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "loading",
+        "two_handed"
+      ],
+      "perks": [
+        "core:feature/two_on_the_string"
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 40
+      }
+    ],
+    "damage": {
+      "type": "piercing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 6
+      },
+      {
+        "attack": 30,
+        "damage": 6
+      }
+    ],
+    "maneuver": "split_nock",
+    "ap": 4,
+    "ammunition": {
+      "main": {
+        "rounds": 10
+      }
+    },
+    "name": "split nock is refused with a crossbow: it needs a bow",
+    "expect": {
+      "error": "split_nock needs a bow main hand"
+    }
+  },
+  {
+    "action": "attack",
+    "loadout": {
+      "main": "bow",
+      "off": "two_handed"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "two_handed"
+      ],
+      "perks": []
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 40
+      }
+    ],
+    "damage": {
+      "type": "piercing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 6
+      },
+      {
+        "attack": 30,
+        "damage": 6
+      }
+    ],
+    "maneuver": "split_nock",
+    "ap": 4,
+    "ammunition": {
+      "main": {
+        "rounds": 10
+      }
+    },
+    "name": "split nock is refused without Two on the String",
+    "expect": {
+      "error": "split_nock needs a perk that unlocks it"
+    }
+  },
+  {
+    "action": "attack",
+    "loadout": {
+      "main": "bow",
+      "off": "two_handed"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "two_handed"
+      ],
+      "perks": [
+        "core:feature/heads_down"
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 40
+      }
+    ],
+    "damage": {
+      "type": "piercing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 6
+      },
+      {
+        "attack": 30,
+        "damage": 6
+      }
+    ],
+    "maneuver": "pinning_shot",
+    "ap": 4,
+    "ammunition": {
+      "main": {
+        "rounds": 10
+      }
+    },
+    "name": "attack_sequence refuses a combat maneuver",
+    "expect": {
+      "error": "pinning_shot is a combat maneuver"
+    }
+  },
+  {
+    "action": "full_attack",
+    "loadout": {
+      "main": "bow",
+      "off": "two_handed"
+    },
+    "attacker": {
+      "skill": 60,
+      "attributes": {
+        "lck": 0
+      },
+      "weapon_properties": [
+        "ammunition",
+        "two_handed"
+      ],
+      "perks": [
+        "core:feature/two_on_the_string"
+      ]
+    },
+    "foes": [
+      {
+        "evasion_skill": 20,
+        "armor_dr": 2,
+        "hp": 40
+      }
+    ],
+    "damage": {
+      "type": "piercing"
+    },
+    "rolls": [
+      {
+        "attack": 30,
+        "damage": 6
+      },
+      {
+        "attack": 30,
+        "damage": 6
+      }
+    ],
+    "maneuver": "split_nock",
+    "ap": 4,
+    "ammunition": {
+      "main": {
+        "rounds": 10
+      }
+    },
+    "name": "a maneuver rides only an attack, not a full attack",
+    "expect": {
+      "error": "a maneuver is made with the attack action"
+    }
   }
 ]

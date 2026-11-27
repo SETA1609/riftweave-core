@@ -1,0 +1,378 @@
+[
+  {
+    "maneuver": "pinning_fire",
+    "shooter": {
+      "perks": [
+        {
+          "perk": "core:feature/heads_down",
+          "rank": 2
+        }
+      ],
+      "weapon_properties": [
+        "ammunition",
+        "two_handed"
+      ]
+    },
+    "loadout": {
+      "main": "bow",
+      "off": "two_handed"
+    },
+    "ap": 7,
+    "rounds": 10,
+    "name": "pinning fire: all 7 AP and 3 rounds; each foe's first move in the zone draws a strike at -10, not its second; a foe attacking from it is at -20; the strikes stop when the 3 rounds are spent",
+    "events": [
+      {
+        "foe": 0,
+        "kind": "move",
+        "in_zone": true
+      },
+      {
+        "foe": 0,
+        "kind": "move",
+        "in_zone": true
+      },
+      {
+        "foe": 1,
+        "kind": "attack",
+        "in_zone": true
+      },
+      {
+        "foe": 1,
+        "kind": "move",
+        "in_zone": true
+      },
+      {
+        "foe": 2,
+        "kind": "move",
+        "in_zone": false
+      },
+      {
+        "foe": 3,
+        "kind": "move",
+        "in_zone": true
+      },
+      {
+        "foe": 4,
+        "kind": "move",
+        "in_zone": true
+      }
+    ],
+    "expect": {
+      "ap": 7,
+      "ap_returned": 0,
+      "rounds": 3,
+      "rounds_left": 7,
+      "shots": [
+        {
+          "event": 0,
+          "foe": 0,
+          "attack": -10
+        },
+        {
+          "event": 3,
+          "foe": 1,
+          "attack": -10
+        },
+        {
+          "event": 5,
+          "foe": 3,
+          "attack": -10
+        }
+      ],
+      "zone_attacks": [
+        {
+          "event": 2,
+          "foe": 1,
+          "attack": -20
+        }
+      ]
+    }
+  },
+  {
+    "maneuver": "pinning_fire",
+    "shooter": {
+      "perks": [
+        {
+          "perk": "core:feature/heads_down",
+          "rank": 2
+        }
+      ],
+      "weapon_properties": [
+        "ammunition",
+        "two_handed"
+      ]
+    },
+    "loadout": {
+      "main": "bow",
+      "off": "two_handed"
+    },
+    "ap": 3,
+    "rounds": 10,
+    "name": "pinning fire needs at least the attack's AP + 1",
+    "events": [],
+    "expect": {
+      "error": "pinning_fire needs 4 AP"
+    }
+  },
+  {
+    "maneuver": "pinning_fire",
+    "shooter": {
+      "perks": [
+        {
+          "perk": "core:feature/heads_down",
+          "rank": 2
+        }
+      ],
+      "weapon_properties": [
+        "ammunition",
+        "two_handed"
+      ]
+    },
+    "loadout": {
+      "main": "bow",
+      "off": "two_handed"
+    },
+    "ap": 7,
+    "rounds": 2,
+    "name": "pinning fire needs its 3 rounds",
+    "events": [],
+    "expect": {
+      "error": "pinning_fire needs 3 rounds"
+    }
+  },
+  {
+    "maneuver": "pinning_fire",
+    "shooter": {
+      "perks": [
+        {
+          "perk": "core:feature/heads_down",
+          "rank": 2
+        }
+      ],
+      "weapon_properties": [
+        "ammunition",
+        "loading",
+        "two_handed"
+      ]
+    },
+    "loadout": {
+      "main": "long_gun",
+      "off": "two_handed"
+    },
+    "ap": 7,
+    "rounds": 10,
+    "name": "pinning fire is refused with a loading weapon (an arquebus)",
+    "events": [],
+    "expect": {
+      "error": "pinning_fire is refused with a loading weapon"
+    }
+  },
+  {
+    "maneuver": "pinning_fire",
+    "shooter": {
+      "perks": [
+        {
+          "perk": "core:feature/heads_down",
+          "rank": 2
+        }
+      ],
+      "weapon_properties": [
+        "ammunition",
+        "loading"
+      ]
+    },
+    "loadout": {
+      "main": "hand_gun",
+      "off": "hand_gun"
+    },
+    "ap": 7,
+    "rounds": 10,
+    "name": "pinning fire with two loaded hand guns: they load, but two of them hold the zone",
+    "events": [],
+    "expect": {
+      "ap": 7,
+      "rounds": 3,
+      "shots": [],
+      "zone_attacks": []
+    }
+  },
+  {
+    "maneuver": "pinning_fire",
+    "shooter": {
+      "perks": [
+        {
+          "perk": "core:feature/heads_down",
+          "rank": 1
+        }
+      ],
+      "weapon_properties": [
+        "ammunition",
+        "two_handed"
+      ]
+    },
+    "loadout": {
+      "main": "bow",
+      "off": "two_handed"
+    },
+    "ap": 7,
+    "rounds": 10,
+    "name": "pinning fire is refused at Heads Down's first tier: it opens at the second",
+    "events": [],
+    "expect": {
+      "error": "pinning_fire needs a perk that unlocks it"
+    }
+  },
+  {
+    "maneuver": "trigger_watch",
+    "shooter": {
+      "perks": [
+        {
+          "perk": "core:feature/watchful_aim"
+        }
+      ]
+    },
+    "loadout": {
+      "main": "bow",
+      "off": "two_handed"
+    },
+    "ap": 3,
+    "name": "trigger watch: the first foe that moves or attacks in range draws the shot at -10, from 3 held AP; one out of range does not",
+    "events": [
+      {
+        "foe": 0,
+        "kind": "move",
+        "in_range": false
+      },
+      {
+        "foe": 1,
+        "kind": "attack",
+        "in_range": true
+      },
+      {
+        "foe": 2,
+        "kind": "move",
+        "in_range": true
+      }
+    ],
+    "expect": {
+      "ap": 3,
+      "ap_returned": 0,
+      "rounds": 1,
+      "shots": [
+        {
+          "event": 1,
+          "foe": 1,
+          "attack": -10
+        }
+      ],
+      "zone_attacks": []
+    }
+  },
+  {
+    "maneuver": "trigger_watch",
+    "shooter": {
+      "perks": [
+        {
+          "perk": "core:feature/watchful_aim"
+        }
+      ]
+    },
+    "loadout": {
+      "main": "bow",
+      "off": "two_handed"
+    },
+    "ap": 3,
+    "name": "trigger watch: no foe moves, so the 3 held AP come back and no round is spent",
+    "events": [],
+    "expect": {
+      "ap": 0,
+      "ap_returned": 3,
+      "rounds": 0,
+      "shots": [],
+      "zone_attacks": []
+    }
+  },
+  {
+    "maneuver": "trigger_watch",
+    "shooter": {
+      "perks": [
+        {
+          "perk": "core:feature/watchful_aim"
+        }
+      ]
+    },
+    "loadout": {
+      "main": "bow",
+      "off": "two_handed"
+    },
+    "ap": 2,
+    "name": "trigger watch needs the attack's AP held",
+    "events": [],
+    "expect": {
+      "error": "trigger_watch needs 3 held AP"
+    }
+  },
+  {
+    "maneuver": "trigger_watch",
+    "shooter": {
+      "perks": []
+    },
+    "loadout": {
+      "main": "bow",
+      "off": "two_handed"
+    },
+    "ap": 3,
+    "name": "trigger watch is refused without Watchful Aim",
+    "events": [],
+    "expect": {
+      "error": "trigger_watch needs a perk that unlocks it"
+    }
+  },
+  {
+    "maneuver": "trigger_watch",
+    "shooter": {
+      "maneuvers": [
+        "trigger_watch"
+      ]
+    },
+    "loadout": {
+      "main": "bow",
+      "off": "two_handed"
+    },
+    "ap": 3,
+    "name": "a monster holds the trigger watch its sheet lists",
+    "events": [
+      {
+        "foe": 0,
+        "kind": "move",
+        "in_range": true
+      }
+    ],
+    "expect": {
+      "ap": 3,
+      "ap_returned": 0,
+      "rounds": 1,
+      "shots": [
+        {
+          "event": 0,
+          "foe": 0,
+          "attack": -10
+        }
+      ]
+    }
+  },
+  {
+    "maneuver": "pinning_shot",
+    "shooter": {},
+    "loadout": {
+      "main": "bow",
+      "off": "two_handed"
+    },
+    "ap": 3,
+    "name": "overwatch refuses a combat maneuver",
+    "events": [],
+    "expect": {
+      "error": "pinning_shot is a combat maneuver"
+    }
+  }
+]

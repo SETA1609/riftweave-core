@@ -59,7 +59,12 @@
           "perks": {
             "type": "array",
             "items": { "$ref": "common.json#/definitions/ref" },
-            "description": "The attacker's perk refs, as combat's attacker.perks: every strike reads them for a rider (docs/core/actions.md#rider-perks)."
+            "description": "The attacker's perk refs, as combat's attacker.perks: every strike reads them for a rider (docs/core/actions.md#rider-perks). Given with a maneuver, one of them (or attacker.maneuvers) must unlock it."
+          },
+          "maneuvers": {
+            "type": "array",
+            "items": { "$ref": "common.json#/definitions/key" },
+            "description": "Maneuvers keys a monster's sheet lists, as combat's attacker.maneuvers."
           },
           "modifiers": {
             "$ref": "common.json#/definitions/modifiers",
@@ -128,6 +133,10 @@
       "summoning": {
         "type": "boolean",
         "description": "Whether the attacker has an active summon (not a minion), for every strike's while_summoning modifiers, as in combat. Default false."
+      },
+      "maneuver": {
+        "$ref": "common.json#/definitions/key",
+        "description": "With attack: an attack_sequence maneuver in ruleset/data/maneuvers/core.json (Split Nock): its strikes, each at its attack, for the attack AP plus its own; its loadouts name the main hand it needs (docs/core/actions.md#ranged-maneuvers)."
       },
       "disengaged": {
         "type": "boolean",

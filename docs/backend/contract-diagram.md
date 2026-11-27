@@ -7,7 +7,7 @@ Run `python ruleset/scripts/contract_diagram.py --write` after a contract change
 `test_contract_diagram.py` fails until the page matches. What the contract is:
 [README.md](README.md#commands) and [contract.md](../core/contract.md).
 
-31 commands. Each is a class diagram of its input and its result; a field whose type is
+32 commands. Each is a class diagram of its input and its result; a field whose type is
 a shared type of `common.json` links to it, and the shared types are drawn once, below.
 
 ## Shared types
@@ -234,6 +234,7 @@ classDiagram
         boolean disengaged
         List~object~ foes
         loadout loadout
+        key maneuver
         modifiers modifiers
         object off_damage
         integer reactions_used
@@ -386,6 +387,7 @@ classDiagram
         loadout loadout
         key maneuver
         modifiers modifiers
+        boolean moved
         enum range
         string round
         List~key~ situations
@@ -739,6 +741,30 @@ classDiagram
         List~ref~ riders
         object skills
         integer sp
+    }
+```
+
+## overwatch
+
+Hold a shot or a zone under fire until the shooter's next turn, and say which foes draw a strike.
+
+```mermaid
+classDiagram
+    class overwatch_input {
+        integer ap
+        List~object~ events
+        loadout loadout
+        key maneuver
+        integer rounds
+        object shooter
+    }
+    class overwatch_result {
+        integer ap
+        integer ap_returned
+        integer rounds
+        integer rounds_left
+        List~object~ shots
+        List~object~ zone_attacks
     }
 ```
 

@@ -192,6 +192,44 @@ needs     = one of its ranges (any when it lists none), and a weapon with one of
   (`combat/situations.json`). The attack resolves as a normal attack first; a hit then makes the
   [maneuver attempt](#the-maneuver-attempt).
 
+## Ranged maneuvers
+
+Owner request, 2026-11-18 (GD_S17_06): sniping, multishot, suppressing fire, and holding fire, each a
+maneuver with its unlock perk. Names are our own (M5-67).
+
+| Maneuver | Command | AP | Attack | Damage | Rounds | Needs | Unlocked by |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Split Nock | `attack_sequence` | attack + 1 | −20, two strikes | as the weapon | 2 | a bow | Two on the String (Lv6, AGI 6, Bows 40) |
+| Held Breath | `combat` | aimed + 1 (6) | +20, crit window +5 | ×1.5 | 1 | `range_normal` 16 or more, no move this turn | Still Hunter (Lv10, PER 7, Bows, Crossbows, or Guns 50) |
+| Pinning Shot | `combat` | attack | −10 | as the weapon | 1 | ranged | Heads Down, tier 1 (Lv8, a ranged skill 40) |
+| Pinning Fire | `overwatch` | all left, at least attack + 1 | strikes −10; foes in the zone −20 | as the weapon | 3 | no `loading`, or two hand guns | Heads Down, tier 2 (Lv14) |
+| Trigger Watch | `overwatch` | attack, from held AP | −10 | as the weapon | 1 | ranged | Watchful Aim (Lv6, PER 6, a ranged skill 40) |
+
+```
+unlock        with attacker.perks or attacker.maneuvers given, the maneuver must be one the perks
+              unlock or the list names; a monster passes its sheet's maneuvers [A]
+unlocks_at_rank  a perk's map of a maneuver to the rank that unlocks it (Heads Down: Pinning Fire
+              at 2); read where ranks are known (overwatch, the monster sheet)
+strikes       a maneuver of more than one strike goes through attack_sequence (Split Nock)
+rounds        each maneuver states the rounds a use spends, so the ammunition count stays exact
+crit_window   added to the attacker's crit window (resolution's crit_window modifier)
+still         refused when the attacker moved this turn (combat's moved)
+range_normal_min  the weapon's range_normal (combat's attacker.range_normal) is at least this
+zone          Pinning Fire's radius 2: a foe in it attacks at −20 (for the caller); the first time
+              each foe moves inside it or into it, it takes one strike at −10, while rounds last
+hold          Trigger Watch reserves the attack's AP from held AP; the first foe that moves or
+              attacks in range draws the shot at −10, and the AP comes back when none does
+```
+
+- **Pinning Shot's rider** is the new `pinned` effect: the target loses 2 AP on its next turn and cannot
+  disengage. The caller applies it, as every maneuver's effects. [A]
+- **Overwatch** is `overwatch`'s job: it takes the maneuver, the shooter, the held AP or the AP left,
+  the foes, and the events the table saw (`move` or `attack`, in range or in the zone), and returns
+  each shot and what was spent. It is no opportunity attack and spends no reaction
+  ([combat.md](combat.md#opportunity-attacks)). [A]
+- **Monsters** may list these rows with no perk (a bandit crossbowman with Pinning Shot), as for melee
+  maneuvers; they pass them as `attacker.maneuvers`.
+
 ## The maneuver attempt
 
 A trip or disarm is a normal attack, then a maneuver attempt the defender saves against

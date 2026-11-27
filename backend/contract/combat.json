@@ -44,7 +44,17 @@
             "items": {
               "$ref": "common.json#/definitions/ref"
             },
-            "description": "The attacker's held perks (feature refs). A rider perk among them whose maneuver fits the attack makes a maneuver attempt after a plain hit (docs/core/actions.md#rider-perks); two riders that fit the same attack are an error."
+            "description": "The attacker's held perks (feature refs). A rider perk among them whose maneuver fits the attack makes a maneuver attempt after a plain hit (docs/core/actions.md#rider-perks); two riders that fit the same attack are an error. Given with a maneuver, one of them (or attacker.maneuvers) must unlock it, or the maneuver is refused (docs/core/actions.md#ranged-maneuvers)."
+          },
+          "maneuvers": {
+            "type": "array",
+            "items": { "$ref": "common.json#/definitions/key" },
+            "description": "Maneuvers keys a monster's sheet lists, which it makes with no perk; given with a maneuver, it must name it, or a perk in attacker.perks must unlock it."
+          },
+          "range_normal": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "The ranged weapon's range_normal, which a maneuver's range_normal_min reads (Held Breath)."
           }
         },
         "additionalProperties": false,
@@ -186,6 +196,7 @@
         "$ref": "common.json#/definitions/key",
         "description": "A maneuvers key in ruleset/data/maneuvers/core.json: the attack is performed as that maneuver (docs/core/actions.md#maneuvers)."
       },
+      "moved": { "type": "boolean", "description": "Whether the attacker moved this turn before the attack; a still maneuver (Held Breath) is refused after a move. Default false." },
       "grenade": { "type": "string", "pattern": "^core:consumable/[a-z][a-z0-9_]*$", "description": "A grenade thrown as an area attack: its own dice and damage type with no ability added, and its riders on a hit (docs/core/combat.md#grenades). With it, delivery is area and damage.type may be left out." },
       "burst_distance": { "type": "integer", "minimum": 0, "description": "With a grenade: squares from the burst point to this defender; over the grenade's radius, the outcome is outside. Default 0." }
     },

@@ -455,6 +455,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/commands/overwatch": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Hold a shot or a zone under fire until the shooter's next turn, and say which foes draw a strike.
+         * @description The rules are in docs/core/actions.md.
+         */
+        post: operations["overwatch"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/commands/print": {
         parameters: {
             query?: never;
@@ -1374,6 +1394,8 @@ export interface operations {
                         attributes?: components["schemas"]["attributes"];
                         /** @description Flags from conditions, as in combat. */
                         flags?: components["schemas"]["key"][];
+                        /** @description Maneuvers keys a monster's sheet lists, as combat's attacker.maneuvers. */
+                        maneuvers?: components["schemas"]["key"][];
                         /** @description The attacker's perks and fighting stance (the stance command's modifiers): adds on full_attack_strikes, full_attack_off_strikes, mainhand_penalty, offhand_penalty, attack_roll (every strike), attack_single_opponent (every strike with one foe in reach), attack_after_parry (the first main-hand strike when after_parry), and unarmed_damage (an empty main hand), and boss_strike (the Boss Strike tier), and the carry_through, reaping_arc, scissor_cut, can_circle_cut, off_hand_parries, and carry_on_crit grants. */
                         modifiers?: components["schemas"]["modifiers"];
                         /** @description The off-hand weapon skill; the main-hand skill when left out. A Boss Strike bash rolls on it (the Shields skill) and needs it. */
@@ -1382,7 +1404,7 @@ export interface operations {
                         off_weapon_effects?: Record<string, never>[];
                         /** @description The off-hand weapon's properties; none when left out. */
                         off_weapon_properties?: components["schemas"]["key"][];
-                        /** @description The attacker's perk refs, as combat's attacker.perks: every strike reads them for a rider (docs/core/actions.md#rider-perks). */
+                        /** @description The attacker's perk refs, as combat's attacker.perks: every strike reads them for a rider (docs/core/actions.md#rider-perks). Given with a maneuver, one of them (or attacker.maneuvers) must unlock it. */
                         perks?: components["schemas"]["ref"][];
                         /** @description The carried shield's DR: a Boss Strike bash's damage is this plus the damage roll. A bash without it is an error. */
                         shield_dr?: number;
@@ -1403,6 +1425,8 @@ export interface operations {
                     /** @description The foes in reach or in range, in the order a carry picks them; foe 0 is a full attack's target. */
                     foes: Record<string, never>[];
                     loadout: components["schemas"]["ruleset_loadout"];
+                    /** @description With attack: an attack_sequence maneuver in ruleset/data/maneuvers/core.json (Split Nock): its strikes, each at its attack, for the attack AP plus its own; its loadouts name the main hand it needs (docs/core/actions.md#ranged-maneuvers). */
+                    maneuver?: components["schemas"]["key"];
                     /** @description Attack modifiers on every strike (situations). */
                     modifiers?: components["schemas"]["modifiers"];
                     /** @description The off-hand damage type and attribute; damage when left out. */
@@ -2096,8 +2120,12 @@ export interface operations {
                         attributes?: components["schemas"]["attributes"];
                         /** @description Flags from conditions (prone, blinded, invisible); a situation row with `when` reads them. */
                         flags?: components["schemas"]["key"][];
-                        /** @description The attacker's held perks (feature refs). A rider perk among them whose maneuver fits the attack makes a maneuver attempt after a plain hit (docs/core/actions.md#rider-perks); two riders that fit the same attack are an error. */
+                        /** @description Maneuvers keys a monster's sheet lists, which it makes with no perk; given with a maneuver, it must name it, or a perk in attacker.perks must unlock it. */
+                        maneuvers?: components["schemas"]["key"][];
+                        /** @description The attacker's held perks (feature refs). A rider perk among them whose maneuver fits the attack makes a maneuver attempt after a plain hit (docs/core/actions.md#rider-perks); two riders that fit the same attack are an error. Given with a maneuver, one of them (or attacker.maneuvers) must unlock it, or the maneuver is refused (docs/core/actions.md#ranged-maneuvers). */
                         perks?: components["schemas"]["ref"][];
+                        /** @description The ranged weapon's range_normal, which a maneuver's range_normal_min reads (Held Breath). */
+                        range_normal?: number;
                         roll: components["schemas"]["d100"];
                         skill: number;
                         /** @description The weapon's on-hit applied effects: armor_pierce, bane, lingering_damage, banish_summoned (docs/core/combat.md#weapon-effects). */
@@ -2161,6 +2189,8 @@ export interface operations {
                     /** @description A maneuvers key in ruleset/data/maneuvers/core.json: the attack is performed as that maneuver (docs/core/actions.md#maneuvers). */
                     maneuver?: components["schemas"]["key"];
                     modifiers?: components["schemas"]["modifiers"];
+                    /** @description Whether the attacker moved this turn before the attack; a still maneuver (Held Breath) is refused after a move. Default false. */
+                    moved?: boolean;
                     /**
                      * @description Default melee.
                      * @enum {string}
@@ -3303,6 +3333,117 @@ export interface operations {
                             [key: string]: number;
                         };
                         sp: number;
+                    };
+                };
+            };
+            /** @description The body is not the command's input, or a rule needs an input it was not given. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description No such command, or the input names a key that does not exist. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The body is over 1 MiB. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+            /** @description The command refused for another rule reason. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["error"];
+                };
+            };
+        };
+    };
+    overwatch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description Pinning Fire: the AP left, all spent. Trigger Watch: the held AP the attack's AP is reserved from. */
+                    ap: number;
+                    /** @description What the table saw until the shooter's next turn, in order. */
+                    events: {
+                        /** @description Which foe, an index the caller keeps. */
+                        foe: number;
+                        /** @description Trigger Watch: the foe is in the weapon's range. Default false. */
+                        in_range?: boolean;
+                        /** @description Pinning Fire: the move ends in the zone or crosses it, or the attack is made from it. Default false. */
+                        in_zone?: boolean;
+                        /** @enum {string} */
+                        kind: "move" | "attack";
+                    }[];
+                    /** @description What the shooter holds: the attack's AP is the loadout's (attack_sequences/core.json), the attack action's without it. Two hand guns may lay Pinning Fire though they load. */
+                    loadout?: components["schemas"]["ruleset_loadout"];
+                    /** @description An overwatch maneuver in ruleset/data/maneuvers/core.json: pinning_fire (a zone) or trigger_watch (a held shot). */
+                    maneuver: components["schemas"]["key"];
+                    /** @description Rounds carried; the maneuver's rounds come off it. Left out, rounds are not counted. */
+                    rounds?: number;
+                    shooter?: {
+                        /** @description Maneuvers keys a monster's sheet lists, which it makes with no perk. */
+                        maneuvers?: components["schemas"]["key"][];
+                        /** @description The shooter's held perks at their ranks; given, one must unlock the maneuver at the rank held (unlocks_at_rank). */
+                        perks?: components["schemas"]["ruleset_heldPerk"][];
+                        /** @description The ranged weapon's properties; the maneuver's without_weapon_properties refuse it. */
+                        weapon_properties?: string[];
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description The result. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description AP spent. */
+                        ap: number;
+                        /** @description Trigger Watch: the reserved AP back to the pool when no foe drew the shot. */
+                        ap_returned: number;
+                        /** @description Rounds spent: Pinning Fire's three, Trigger Watch's one when it fires. */
+                        rounds: number;
+                        /** @description With rounds: what is left. */
+                        rounds_left?: number;
+                        /** @description The strikes the events drew, in order, for the caller to resolve with combat. */
+                        shots: {
+                            /** @description The add on the strike's attack roll, for the caller's combat command. */
+                            attack: number;
+                            event: number;
+                            foe: number;
+                        }[];
+                        /** @description Pinning Fire: the attacks foes made from the zone, at its penalty. */
+                        zone_attacks: {
+                            /** @description The add on that foe's own attack. */
+                            attack: number;
+                            event: number;
+                            foe: number;
+                        }[];
                     };
                 };
             };

@@ -72,6 +72,71 @@
       "save_bonus": 20,
       "events": ["disarm"],
       "effects": []
+    },
+    {
+      "key": "split_nock",
+      "label": "Split Nock",
+      "description": "You nock two arrows at once and loose them together: one more AP, two arrows spent, a strike each at a harder roll, at one target or at two standing close together.",
+      "modifies": "attack",
+      "ap": 1,
+      "attack": -20,
+      "ranges": ["ranged"],
+      "command": "attack_sequence",
+      "strikes": 2,
+      "rounds": 2,
+      "loadouts": ["bow"],
+      "effects": []
+    },
+    {
+      "key": "held_breath",
+      "label": "Held Breath",
+      "description": "You take the aimed shot and hold your breath for the moment it needs: one more AP on the aimed attack, a far easier roll, half again the damage, and a wider crit window, with a long-ranged weapon and only when you have not moved this turn.",
+      "modifies": "aimed",
+      "ap": 1,
+      "attack": 20,
+      "damage_multiplier": 1.5,
+      "ranges": ["ranged"],
+      "crit_window": 5,
+      "range_normal_min": 16,
+      "still": true,
+      "effects": []
+    },
+    {
+      "key": "pinning_shot",
+      "label": "Pinning Shot",
+      "description": "You put the shot where the target has to duck: a harder roll, and a hit that is not evaded pins it, so it loses AP on its next turn and cannot disengage.",
+      "modifies": "attack",
+      "ap": 0,
+      "attack": -10,
+      "ranges": ["ranged"],
+      "effects": [{"effect": "core:effect/pinned", "magnitude": 2, "duration": 6}]
+    },
+    {
+      "key": "pinning_fire",
+      "label": "Pinning Fire",
+      "description": "You spend the rest of your turn and a volley of rounds on a patch of ground until your next turn: a foe in it attacks at a penalty, and each foe that first moves in it or into it takes a strike, while the rounds last.",
+      "modifies": "attack",
+      "ap": 1,
+      "attack": -10,
+      "ranges": ["ranged"],
+      "command": "overwatch",
+      "spends_all": true,
+      "rounds": 3,
+      "without_weapon_properties": ["loading"],
+      "zone": {"radius": 2, "attack": -20},
+      "effects": []
+    },
+    {
+      "key": "trigger_watch",
+      "label": "Trigger Watch",
+      "description": "You hold the shot from your held AP until your next turn: the first foe that moves or attacks in range draws it at a harder roll, and the AP comes back when none does. It is no opportunity attack and spends no reaction.",
+      "modifies": "attack",
+      "ap": 0,
+      "attack": -10,
+      "ranges": ["ranged"],
+      "command": "overwatch",
+      "hold": true,
+      "effects": []
     }
   ]
 }
