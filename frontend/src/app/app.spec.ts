@@ -7,6 +7,7 @@ import { API } from './api';
 import { Alert } from './ui/alert';
 import { AppContext } from './context';
 import { Attack } from './attack';
+import { Bestiary, catalogFilters, playersOf, revealInput, sheetInput } from './bestiary/bestiary';
 import { Card } from './ui/card';
 import { KeyValueList } from './ui/key-value-list';
 import { NumberField } from './ui/number-field';
@@ -118,7 +119,26 @@ const fakeApi = {
     if (input.operation === 'effects') return { effects: [{ ref: 'core:effect/damage_fire', row: { key: 'damage_fire', label: 'Fire Damage' } }] };
     return { spells: (input.spells ?? []).map((row) => ({ key: row.key, row, problems: [], warnings: [], cost: { mana: 6, cast_threshold: 6, craft_threshold: 8 } })) };
   },
+  catalog: async (input: { operation: string; ref?: string }) => {
+    sent.push({ command: 'catalog', input });
+    if (input.operation === 'get') return { row: { ref: input.ref, source: 'core', row: SKELETON } };
+    return { rows: [{ ref: 'core:monster/skeleton', source: 'core', row: SKELETON }, { ref: 'core:monster/goblin', source: 'core', row: GOBLIN }] };
+  },
+  bestiary: async (input: { operation: string; monster?: string; level?: string; player?: string; knowledge?: unknown[] }) => {
+    sent.push({ command: 'bestiary', input });
+    if (input.operation === 'reveal') return { knowledge: [...(input.knowledge ?? []), { monster: input.monster, level: input.level, ...(input.player ? { player: input.player } : {}) }], level: input.level };
+    return { entries: [
+      { monster: 'core:monster/skeleton', label: 'Skeleton', description: 'Animated bones.', size: 'medium', knowledge: 'known', shows: 'full', players: {} },
+      { monster: 'core:monster/goblin', label: 'Goblin', description: 'A small raider.', size: 'small', knowledge: 'seen', shows: 'seen', players: { ana: 'known' } },
+    ] };
+  },
+  monsterSheet: async (input: unknown) => { sent.push({ command: 'monster_sheet', input }); return { hp: 30, mp: 5, sp: 20, ap: 3, carry: 50, initiative: 9, skills: {}, maneuvers: [], riders: [] }; },
+  step: async (session: { log: unknown[] }, step: unknown) => { sent.push({ command: 'step', input: step }); return { session: { ...session, log: [...session.log, step] }, result: {} }; },
 };
+
+/** Two monster rows as the catalog resolves them, which the fake catalog lists. */
+const SKELETON = { key: 'skeleton', label: 'Skeleton', level: 1, size: 'medium', phase: 'metal', tags: ['undead', 'skeletal'], attributes: { end: 5, agi: 4 }, skills: { blades: 30 }, loot: [] };
+const GOBLIN = { key: 'goblin', label: 'Goblin', level: 2, size: 'small', phase: 'wood', tags: ['humanoid'] };
 
 /** fire_bolt as spells/core.json writes it, which the fake author loads. */
 const FIRE_BOLT = { key: 'fire_bolt', label: 'Fire Bolt', description: 'Hurl a mote of fire at a target.', color: 'red', level: 1, delivery: 'single',
@@ -305,7 +325,7 @@ describe('the menus of backend/contract/menu.json', () => {
   });
 
   it('show the tools page and GM tools, each with Back to the menu above', () => {
-    expect(cards(menu('start'))).toEqual(['GM tools', 'Character creation', 'Spell creation', 'Skill resolution', 'Bestiary (FE_S08_06_bestiary-page)', 'Compendium (FE_S08_11_compendium-tables-page)', 'Saved games', 'Back']);
+    expect(cards(menu('start'))).toEqual(['GM tools', 'Character creation', 'Spell creation', 'Skill resolution', 'Bestiary', 'Compendium (FE_S08_11_compendium-tables-page)', 'Saved games', 'Back']);
     TestBed.resetTestingModule();
     const gm = menu('gm_tools');
     expect(cards(gm)).toEqual(['Resolve an attack', 'Encounter tracker (APP-34)', 'Playthrough', 'Back']);
@@ -499,5 +519,98 @@ describe('the navbar (FE_S08_17)', () => {
     element.querySelector<HTMLAnchorElement>('#rw-navbar-menu a')!.click();
     fixture.detectChanges();
     expect(element.querySelector('#rw-navbar-menu')).toBeNull();
+  });
+});
+
+describe('the bestiary (FE_S08_06)', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    TestBed.configureTestingModule({ providers: [{ provide: API, useValue: fakeApi }, { provide: SAVE_STORE, useValue: memoryStore() }] });
+  });
+
+  async function opened() {
+    const fixture = TestBed.createComponent(Bestiary);
+    await fixture.componentInstance.ready;
+    fixture.detectChanges();
+    return { fixture, page: fixture.componentInstance, element: fixture.nativeElement as HTMLElement };
+  }
+
+  it('turn the filter form into catalog filters, and leave out what is empty', () => {
+    expect(catalogFilters({ text: ' bones ', type: 'undead', phase: 'metal', levelMin: 1, levelMax: 3 })).toEqual([
+      { field: 'tags', equals: 'undead' }, { field: 'phase', equals: 'metal' }, { field: 'level', min: 1, max: 3 }, { text: 'bones' },
+    ]);
+    expect(catalogFilters({ text: '', type: '', phase: '', levelMin: 0, levelMax: 4 })).toEqual([{ field: 'level', max: 4 }]);
+    expect(catalogFilters({ text: '', type: '', phase: '', levelMin: 0, levelMax: 0 })).toEqual([]);
+  });
+
+  it('reveal for the table without a player, and read the sheet fields from a row', () => {
+    expect(revealInput('core:monster/goblin', 'seen', '')).toEqual({ operation: 'reveal', monster: 'core:monster/goblin', level: 'seen' });
+    expect(revealInput('core:monster/goblin', 'known', 'ana')).toEqual({ operation: 'reveal', monster: 'core:monster/goblin', level: 'known', player: 'ana' });
+    expect(sheetInput(SKELETON)).toEqual({ monster: { attributes: { end: 5, agi: 4 }, skills: { blades: 30 }, level: 1 } });
+    expect(playersOf([{ monster: 'm', level: 'seen' }, { monster: 'm', level: 'known', player: 'ben' }, { monster: 'n', level: 'seen', player: 'ana' }])).toEqual(['ana', 'ben']);
+  });
+
+  it('list every monster on open and show it in the GM view with each mark', async () => {
+    const { element } = await opened();
+    expect(sent.map((call) => call.input)).toEqual([
+      { operation: 'list', collection: 'monsters' },
+      { operation: 'view', knowledge: [], monsters: ['core:monster/skeleton', 'core:monster/goblin'], players_see_only_known: false },
+    ]);
+    const rows = Array.from(element.querySelectorAll('tbody tr[data-monster]'));
+    expect(rows.map((row) => row.getAttribute('data-monster'))).toEqual(['core:monster/skeleton', 'core:monster/goblin']);
+    expect(rows[0].textContent).toContain('metal');
+    // A seen entry hides its level, phase, and type.
+    expect(rows[1].textContent).toContain('?');
+    expect(rows[1].querySelector('.players')!.textContent).toContain('ana: known');
+    expect(element.textContent).toContain('No game is in play');
+  });
+
+  it('mark a monster with no game in play, and view it with the new marks', async () => {
+    const { page } = await opened();
+    sent.length = 0;
+    await page.mark('core:monster/goblin', 'seen');
+    expect(sent.map((call) => call.input)).toEqual([
+      { operation: 'reveal', monster: 'core:monster/goblin', level: 'seen', knowledge: [] },
+      { operation: 'view', knowledge: [{ monster: 'core:monster/goblin', level: 'seen' }], monsters: ['core:monster/skeleton', 'core:monster/goblin'], players_see_only_known: false },
+    ]);
+  });
+
+  it('mark a monster for a player as a bestiary step of the game in play, and autosave it', async () => {
+    const saves = TestBed.inject(Saves);
+    const record = await saves.begin('Mara', { rules_version: 'test', ruleset: {}, start: {}, log: [], actor: { attributes: {}, level: 1 } } as never);
+    saves.current.set(record);
+    const { page } = await opened();
+    sent.length = 0;
+    page.player.set('ana');
+    await page.mark('core:monster/skeleton', 'known');
+    expect(sent[0]).toEqual({ command: 'step', input: { command: 'bestiary', input: { operation: 'reveal', monster: 'core:monster/skeleton', level: 'known', player: 'ana' } } });
+    expect(saves.current()!.session.log).toHaveLength(1);
+  });
+
+  it("show a player's view with the box on, and no marking controls", async () => {
+    const { fixture, page, element } = await opened();
+    sent.length = 0;
+    await page.setPlayersSeeOnlyKnown(true);
+    await page.setViewer('table');
+    fixture.detectChanges();
+    expect(sent.at(-1)!.input).toEqual({ operation: 'view', knowledge: [], monsters: ['core:monster/skeleton', 'core:monster/goblin'], players_see_only_known: true, player: 'table' });
+    expect(element.querySelector('.set-mark')).toBeNull();
+    expect(TestBed.inject(AppContext).playersSeeOnlyKnown()).toBe(true);
+  });
+
+  it('open a full entry with its row and its sheet, and a seen one with only what is seen', async () => {
+    const { fixture, page, element } = await opened();
+    sent.length = 0;
+    await page.open(page.entries()[0]);
+    expect(sent.map((call) => [call.command, call.input])).toEqual([
+      ['catalog', { operation: 'get', collection: 'monsters', ref: 'core:monster/skeleton' }],
+      ['monster_sheet', { monster: { attributes: { end: 5, agi: 4 }, skills: { blades: 30 }, level: 1 } }],
+    ]);
+    fixture.detectChanges();
+    expect(element.querySelector('[aria-label="Skeleton"]')!.textContent).toContain('hp');
+    sent.length = 0;
+    await page.open(page.entries()[1]);
+    expect(sent).toEqual([]);
+    expect(page.opened()!.sheet).toBeNull();
   });
 });
