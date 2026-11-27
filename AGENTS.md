@@ -62,7 +62,7 @@ Read [CONTRIBUTING.md](CONTRIBUTING.md#workflow) before starting an issue. In sh
 
 ## Critical: How Validation Works (Major Footgun)
 
-This is the most important thing to understand before editing schemas or data:
+This is the most important thing to understand before editing schemas or data (how JSON Schema itself works, and why: [docs/theory/json-schema.md](docs/theory/json-schema.md)):
 
 1. `validate.py` loads **every** `ruleset/schemas/*.schema.json` into an in-memory store, keyed by `file://` URI.
 2. For each data file, it reads the **`$schema`** field (a **relative path**, e.g. `"../../schemas/race.schema.json"`), resolves it from the data file's directory, and looks up the resulting `file://` URI in the store.
@@ -230,6 +230,7 @@ AI is welcome as a tool, and a human always reviews before committing ([AI rules
 - `docs/core/data-model.md` — the shape of the data; `docs/theory/data-models.md` — why
 - `docs/theory/dispatch.md` — why dispatch is a switch or a table and meaningful strings are constants
 - `docs/theory/indexeddb.md` — how the web app keeps data in IndexedDB, store by store, and data-oriented design
+- `docs/theory/json-schema.md` — how JSON Schema validates and resolves `$ref`, why the ruleset uses it, and where draft-07 surprises
 - `docs/core/` — kernel rules; `docs/modules/` — core systems in detail and modules (start here before adding new mechanics)
 - `ruleset/schemas/schema.json` — shared definitions
 - `ruleset/scripts/validate.py` — the validator implementation (read if debugging resolution issues)

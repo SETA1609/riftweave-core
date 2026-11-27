@@ -18,6 +18,7 @@ Format, ids, and roles: [README.md](README.md#ids), [ROLES.md](../issues/ROLES.m
 | `OPS_S00_07_dispatch-and-string-constants` | OPS | Dispatch by switch or table, and named constants for meaningful strings | — | — |
 | `FE_S00_09_frontend-unit-test-gaps` | FE | Unit specs for the frontend code that has none | — | — |
 | `PO_S00_10_close-stuck-po-issues` | PO | Close the four PO issues that merged as todo | — | — |
+| `PO_S00_11_json-schema-theory` | PO | A theory page on JSON Schema: how it works, why, and for what | — | — |
 
 | `FE_S00_08_sibling-docs-for-code` | FE | Move the frontend's code comments into sibling Markdown files | — | FE_S11_01_frontend-i18next |
 
