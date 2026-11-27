@@ -1,0 +1,42 @@
+<nav class="navbar" [attr.aria-label]="'nav.label' | t">
+  <div class="brand">
+    <span class="tile" aria-hidden="true"><fa-icon [icon]="cube" /></span>
+    <div class="brand-text">
+      <h1 class="name"><a routerLink="/">Riftweave</a></h1>
+      <span class="version">{{ 'nav.rules' | t: { version: rulesVersion } }}</span>
+    </div>
+  </div>
+
+  <ul class="links">
+    @for (link of links; track link.key) {
+      <li><a [routerLink]="link.path">{{ 'menu.' + link.key | t }}</a></li>
+    }
+  </ul>
+
+  @if (playing(); as name) {
+    <span class="character" [title]="name"><span class="dot" aria-hidden="true"></span><span class="label">{{ 'nav.playing' | t }}</span> <span class="who">{{ name }}</span></span>
+  }
+
+  <div class="controls">
+    <rw-language-select [compact]="true" />
+    <rw-theme-toggle />
+    <a class="btn btn-outline btn-sm github" [href]="repository" target="_blank" rel="noopener" [attr.aria-label]="'nav.github' | t" [title]="'nav.github' | t">
+      <fa-icon [icon]="github" />
+    </a>
+    <button type="button" class="btn btn-outline btn-sm burger" [attr.aria-label]="'nav.menu' | t" [attr.aria-expanded]="open()" [attr.aria-controls]="menuId" (click)="toggle()">
+      <fa-icon [icon]="bars" />
+    </button>
+  </div>
+
+  @if (open()) {
+    <ul class="menu" [id]="menuId">
+      @for (link of links; track link.key) {
+        <li><a [routerLink]="link.path" (click)="close()">{{ 'menu.' + link.key | t }}</a></li>
+      }
+      <li class="divider" role="separator"></li>
+      <li>
+        <a [href]="repository" target="_blank" rel="noopener" [attr.aria-label]="'nav.github' | t" (click)="close()"><fa-icon [icon]="github" /> {{ 'nav.github_short' | t }}</a>
+      </li>
+    </ul>
+  }
+</nav>

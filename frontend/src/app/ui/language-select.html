@@ -1,5 +1,10 @@
 <button type="button" class="btn btn-outline btn-sm" [attr.aria-label]="'language.label' | t" aria-haspopup="menu" [attr.aria-expanded]="open()" (click)="open.set(!open())">
-  <img class="flag" [src]="'flags/' + current().flag + '.svg'" alt="" /> {{ current().label }}
+  <img class="flag" [src]="'flags/' + current().flag + '.svg'" alt="" />
+  @if (compact()) {
+    <span class="code">{{ current().value.toUpperCase() }}</span>
+  } @else {
+    {{ current().label }}
+  }
 </button>
 @if (open()) {
   <ul class="menu" role="menu" [attr.aria-label]="'language.label' | t">

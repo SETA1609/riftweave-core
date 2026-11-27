@@ -1,0 +1,58 @@
+/* Mobile first: the smallest phone (320px) is the base, and wider screens add to it. */
+:host {
+  position: sticky; top: 0; z-index: 20; display: block;
+  margin: 0 calc(-1 * var(--page-margin, var(--space-3))) var(--space-3);
+  padding: env(safe-area-inset-top, 0) calc(var(--page-margin, var(--space-3)) + env(safe-area-inset-right, 0)) 0 calc(var(--page-margin, var(--space-3)) + env(safe-area-inset-left, 0));
+  background: var(--body-bg); border-bottom: 1px solid var(--border);
+}
+.navbar { position: relative; display: flex; align-items: center; gap: var(--space-2); min-height: 56px; }
+
+/* The brand takes the room that is left and gives it up first: its name truncates before anything wraps. */
+.brand { display: flex; align-items: center; gap: var(--space-2); flex: 1 1 auto; min-width: 0; }
+.tile { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 28px; height: 28px; color: var(--primary); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+.brand-text { display: flex; flex-direction: column; min-width: 0; }
+.name { margin: 0; font-size: clamp(0.95rem, 4.5vw, 1.125rem); line-height: 1.2; letter-spacing: clamp(0.01em, 0.5vw, 0.04em); text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.name a { color: inherit; text-decoration: none; }
+.version { display: none; font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+
+.links { display: none; }
+.character { display: none; }
+
+.controls { display: flex; align-items: center; gap: var(--space-1); flex: none; }
+.controls .github { display: none; }
+
+.menu {
+  position: absolute; top: 100%; right: 0; z-index: 20;
+  display: flex; flex-direction: column;
+  width: min(18rem, calc(100vw - 2 * var(--page-margin, var(--space-3))));
+  margin: var(--space-1) 0 0; padding: var(--space-1) 0; list-style: none;
+  background: var(--body-bg); border: 1px solid var(--border); border-radius: var(--radius);
+}
+.menu a { display: flex; align-items: center; gap: var(--space-2); min-height: 44px; padding: 0 var(--space-3); color: var(--body); text-decoration: none; }
+.menu a:hover, .menu a:focus-visible { background: var(--surface); }
+.divider { margin: var(--space-1) 0; border-top: 1px solid var(--border); }
+
+/* A tablet, upright and up: a taller bar, the rules version, and the game in play. */
+@media (min-width: 768px) {
+  .navbar { min-height: 64px; gap: var(--space-3); }
+  .tile { width: 32px; height: 32px; }
+  .name { font-size: 1.25rem; }
+  .version { display: block; }
+  .character { display: inline-flex; align-items: center; gap: var(--space-1); flex: 0 1 auto; min-width: 0; max-width: 14rem; padding: var(--space-1) var(--space-2); font-size: 0.75rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+  .character .label { color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap; }
+  .character .who { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .character .dot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--primary); }
+}
+
+/* A tablet on its side and a desktop: the main menu inline, GitHub as an icon, no burger. */
+@media (min-width: 1024px) {
+  /* The brand keeps its whole name; the playing chip gives up its label and width first. */
+  .brand { flex: 0 0 auto; }
+  .character { flex: 1 1 0; max-width: 11rem; margin-left: auto; }
+  .character .label { display: none; }
+  .links { display: flex; flex-wrap: nowrap; gap: var(--space-1); flex: 0 0 auto; margin: 0; padding: 0; list-style: none; }
+  .links a { display: inline-flex; align-items: center; min-height: 36px; padding: 0 var(--space-2); color: var(--body); text-decoration: none; border-radius: var(--radius); white-space: nowrap; }
+  .links a:hover { background: var(--surface); }
+  .controls .github { display: inline-flex; }
+  .controls .burger { display: none; }
+}

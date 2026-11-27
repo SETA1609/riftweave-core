@@ -219,5 +219,13 @@
     "keep_saved": "Conservar el personaje guardado",
     "drop_before": "o suelta aquí un archivo",
     "drop_after": ""
+  },
+  "nav": {
+    "label": "Principal",
+    "menu": "Menú",
+    "github": "Riftweave en GitHub (se abre en una pestaña nueva)",
+    "rules": "Reglas {{version}}",
+    "playing": "En juego",
+    "github_short": "GitHub"
   }
 }

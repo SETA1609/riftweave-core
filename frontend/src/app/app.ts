@@ -2,19 +2,18 @@
 // once the core can answer (at once over HTTP, after the WebAssembly core starts in a static build).
 import { Component, inject, signal } from '@angular/core';
 import { API } from './api';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { Saves } from './saves';
 import { TranslatePipe } from './translate-pipe';
 import { Alert } from './ui/alert';
-import { LanguageSelect } from './ui/language-select';
-import { ThemeToggle } from './ui/theme-toggle';
+import { Navbar } from './ui/navbar';
 
 /** The rules this build ships: the release tag in the Pages build (angular.json `define`). */
 declare const RIFTWEAVE_RULES_VERSION: string;
 
 @Component({
   selector: 'rw-root',
-  imports: [RouterLink, RouterOutlet, Alert, LanguageSelect, ThemeToggle, TranslatePipe],
+  imports: [RouterOutlet, Alert, Navbar, TranslatePipe],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })

@@ -223,7 +223,8 @@ Every change to `frontend/` follows these (owner, 2026-11-14):
   `src/app/ui/` the shared components, and each screen its three files in `src/app/` (`sheet`,
   `attack`, `playthrough`). [A]
 - **Icons** (owner, 2026-11-22): Font Awesome's free solid set through `fa-icon`
-  (`@fortawesome/angular-fontawesome`), drawn as inline SVG; flags from `flag-icons`, copied into the
+  (`@fortawesome/angular-fontawesome`), and its free brands set for the GitHub link (FE_S08_17),
+  drawn as inline SVG; flags from `flag-icons`, copied into the
   build only for the languages offered (`flags/<code>.svg`). Both work offline. A control that shows
   only an icon has an `aria-label`.
 - **Explanations beside the code, not in it** (owner, 2026-11-22). A `.ts` file starts with one

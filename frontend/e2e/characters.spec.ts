@@ -18,7 +18,7 @@ async function edited(change: Record<string, unknown>): Promise<string> {
 
 test('the character list imports, exports, and follows the sync rule (FE_S07_04)', async ({ page }) => {
   await page.goto('/#/');
-  await page.getByRole('link', { name: 'Characters' }).click();
+  await page.getByRole('navigation', { name: 'Riftweave' }).getByRole('link', { name: 'Characters' }).click();
   await expect(page.getByRole('heading', { name: 'Characters' })).toBeVisible();
 
   await page.locator('input[type=file]').setInputFiles(fixture);

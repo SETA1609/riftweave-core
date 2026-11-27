@@ -52,3 +52,10 @@ body { margin: 0 auto; max-width: 64rem; padding: var(--space-3); font-family: v
 .nav { display: flex; gap: var(--space-1); border-bottom: 1px solid var(--border); }
 .nav-link { padding: var(--space-2) var(--space-3); font: inherit; color: var(--primary); background: none; border: 1px solid transparent; border-radius: var(--radius) var(--radius) 0 0; cursor: pointer; }
 .nav-link.active { color: var(--body); background: var(--body-bg); border-color: var(--border) var(--border) var(--body-bg); margin-bottom: -1px; }
+
+/* The navbar's controls (FE_S08_17), which sit inside the language select and the theme toggle:
+   44px touch targets below 1024px, 36px from there. */
+rw-navbar .controls .btn { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; }
+@media (min-width: 1024px) {
+  rw-navbar .controls .btn { min-width: 36px; min-height: 36px; }
+}

@@ -4,3 +4,7 @@
 .menu button { display: flex; align-items: center; gap: var(--space-2); width: 100%; padding: var(--space-1) var(--space-3); color: var(--body); background: none; border: 0; text-align: left; cursor: pointer; white-space: nowrap; }
 .menu button:hover, .menu button:focus-visible { background: var(--surface); }
 .menu button[aria-checked="true"] { font-weight: 600; }
+
+.code { margin-left: var(--space-1); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; }
+/* The smallest phones show only the flag. */
+@media (max-width: 359.98px) { :host(.compact) .code { display: none; } }

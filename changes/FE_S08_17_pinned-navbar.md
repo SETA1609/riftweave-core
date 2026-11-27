@@ -1,0 +1,3 @@
+### FE_S08_17_pinned-navbar A navbar pinned on top, with a burger menu on mobile
+- Added: a navbar pinned to the top of the window, laid out as the design mockups from small phones to a desktop: an icon tile and the game's name home, the language (flag and code) and the theme in the bar at every size, the rules version and the game in play from tablet width, the main menu inline from 1024px, and below that a burger that opens the main menu and the GitHub link; Escape, a click outside, and a followed link close it.
+- Added: the dependency `@fortawesome/free-brands-svg-icons` 7.3.1, for the GitHub icon.

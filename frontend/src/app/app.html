@@ -1,10 +1,4 @@
-<header>
-  <h1><a routerLink="/">Riftweave</a></h1>
-  <div class="tools">
-    <rw-language-select />
-    <rw-theme-toggle />
-  </div>
-</header>
+<rw-navbar />
 <main>
   @switch (state()) {
     @case ('starting') { <rw-alert kind="info" [message]="'app.starting' | t" /> }
