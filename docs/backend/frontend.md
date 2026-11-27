@@ -198,8 +198,10 @@ Every change to `frontend/` follows these (owner, 2026-11-14):
   cancellation, debouncing, a Realtime or WebSocket feed.
 - **Three files per component.** `name.ts`, `name.html`, `name.css`, joined with `templateUrl` and
   `styleUrl`. No inline `template` or `styles`.
-- **Bootstrap's look, in our own CSS.** No Bootstrap package, CDN, or script. `src/styles.css` holds
-  the design tokens (custom properties: colors, spacing, radius, font) and the few shared classes
+- **The design guide's look, in our own CSS** (FE_S22_02). No CSS framework, package, CDN, or
+  script; the two fonts are bundled from `@fontsource`, so the app works offline. `src/styles.css` holds
+  the design guide's tokens (docs/design/README.md#tokens: colors, the nine colors and five phases,
+  type, spacing, radius) and the few shared classes
   (`.btn`, `.btn-primary`, `.btn-outline`, `.form-control`, `.card`, `.alert`, `.table`, `.nav`); a
   component's own layout is in its own `.css`.
 - **The design guide** (owner, 2026-11-23): colors, fonts, components, and layouts follow

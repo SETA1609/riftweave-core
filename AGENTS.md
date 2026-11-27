@@ -203,7 +203,7 @@ Why, with the compilers' own sources: [docs/theory/dispatch.md](docs/theory/disp
 
 ## Frontend
 
-Changes to `frontend/` follow the conventions in [docs/backend/frontend.md](docs/backend/frontend.md#conventions): Angular 22, signals before RxJS, standalone components split into `.ts`, `.html`, and `.css`, Bootstrap's look in our own CSS, small reusable components, Vitest for unit tests, and Playwright for end-to-end tests. Explanations go in a sibling `.md` beside each `.ts` file (`i18n.ts` and `i18n.md`), not in code comments; the file keeps one pointer line. Specs keep their comments and have no sibling.
+Changes to `frontend/` follow the conventions in [docs/backend/frontend.md](docs/backend/frontend.md#conventions): Angular 22, signals before RxJS, standalone components split into `.ts`, `.html`, and `.css`, the design guide's look in our own CSS, small reusable components, Vitest for unit tests, and Playwright for end-to-end tests. Explanations go in a sibling `.md` beside each `.ts` file (`i18n.ts` and `i18n.md`), not in code comments; the file keeps one pointer line. Specs keep their comments and have no sibling.
 
 ## Licensing
 

@@ -54,12 +54,12 @@ test('the mode toggle switches light and dark, keeps the choice, and goes back t
   await expect(html).toHaveAttribute('data-theme', 'light');
   await page.getByRole('button', { name: 'Switch to dark mode' }).click();
   await expect(html).toHaveAttribute('data-theme', 'dark');
-  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(33, 37, 41)');
+  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(11, 19, 38)');
   await page.reload();
   await expect(html).toHaveAttribute('data-theme', 'dark');
   await page.getByRole('button', { name: "Switch to the system's mode" }).click();
   await expect(html).not.toHaveAttribute('data-theme');
-  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(248, 250, 252)');
 });
 
 test('the language select switches every string without a reload and keeps the choice (FE_S11_01)', async ({ page }) => {
@@ -87,7 +87,7 @@ test("with storage blocked the app still renders, in the system's mode", async (
   await page.emulateMedia({ colorScheme: 'dark' });
   await page.goto('/');
   await expect(page.getByRole('heading', { name: 'Riftweave' })).toBeVisible();
-  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(33, 37, 41)');
+  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(11, 19, 38)');
   await page.getByRole('button', { name: 'Switch to light mode' }).click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
 });
@@ -347,4 +347,24 @@ test('in German, the longest labels, an iPad on its side still shows the whole m
     expect(box.x + box.width).toBeLessThanOrEqual(list.x + list.width + 0.5);
   }
   expect((await page.locator('rw-navbar').boundingBox())!.height).toBeLessThanOrEqual(80);
+});
+
+test("the app renders in the design guide's colors and fonts, dark, light, and the system's (FE_S22_02)", async ({ page }) => {
+  const look = () => page.evaluate(() => {
+    const body = getComputedStyle(document.body);
+    return { background: body.backgroundColor, color: body.color, font: body.fontFamily, heading: getComputedStyle(document.querySelector('h1')!).fontFamily };
+  });
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await page.goto('/');
+  await page.evaluate(() => document.fonts.ready);
+  // The system's mode, dark: the guide's canvas and text.
+  expect(await look()).toEqual({ background: 'rgb(11, 19, 38)', color: 'rgb(218, 226, 253)', font: expect.stringContaining('JetBrains Mono'), heading: expect.stringContaining('Space Grotesk') });
+  // The faces the page draws are the bundled ones, loaded.
+  expect(await page.evaluate(async () => [...(await document.fonts.load('16px "JetBrains Mono"', 'A')), ...(await document.fonts.load('600 24px "Space Grotesk"', 'A'))].map((face) => face.status))).toEqual(['loaded', 'loaded']);
+
+  await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'light'));
+  expect(await look()).toMatchObject({ background: 'rgb(248, 250, 252)', color: 'rgb(15, 23, 42)' });
+  await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
+  await page.emulateMedia({ colorScheme: 'light' });
+  expect(await look()).toMatchObject({ background: 'rgb(11, 19, 38)' });
 });

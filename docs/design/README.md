@@ -1,6 +1,6 @@
 # Design guide
 
-Modified: 2026-11-23
+Modified: 2026-11-27
 
 How the Angular app looks: the colors, type, shapes, components, and layouts every screen
 uses (story [S22](../stories/S22-visual-design-system.md)). The guide is adapted from a set of
@@ -71,7 +71,9 @@ The values come from the mockups' design file; the token names are ours. Token i
 ### Color, light
 
 The design file only says "alabaster `#F8FAFC` with slate ink `#0F172A`, same hues". The light set
-is ours [A]; FE_S22_02 checks it reaches WCAG AA contrast:
+is ours [A]. FE_S22_02 checked every text and background pair against WCAG AA and darkened
+primary (from `#0f766e`) and tertiary (from `#b45309`), the two that fell short on the highest
+surface; `tokens.spec.ts` keeps both sets at AA [V 2026-11-27]:
 
 | Token | Value |
 | --- | --- |
@@ -79,9 +81,9 @@ is ours [A]; FE_S22_02 checks it reaches WCAG AA contrast:
 | `--surface-container-low` / `--surface-container` / `--surface-container-high` | `#ffffff` / `#f1f5f9` / `#e2e8f0` |
 | `--outline-variant` / `--outline` | `#cbd5e1` / `#64748b` |
 | `--on-surface` / `--muted` | `#0f172a` / `#475569` |
-| `--primary` / `--on-primary` | `#0f766e` / `#ffffff` |
+| `--primary` / `--on-primary` | `#0f746c` / `#ffffff` |
 | `--secondary` | `#0369a1` |
-| `--tertiary` | `#b45309` |
+| `--tertiary` | `#a94e08` |
 | `--danger` / `--danger-bg` | `#b91c1c` / `#fee2e2` |
 
 ### The nine colors and the five phases
@@ -118,7 +120,8 @@ A phase the character does not hold is drawn in `#475569`, dimmed. The phases be
 - **JetBrains Mono** for every number and every data field: targets, dice, tables, logs, tags.
   Numbers use `tabular-nums`, so a changing HP value never shifts its box.
 - Both are bundled with the app (no font CDN), so the app works offline. Both are under the SIL
-  Open Font License [A, FE_S22_02 checks and adds them to NOTICE].
+  Open Font License 1.1, bundled from the `@fontsource` packages and listed in NOTICE
+  [V 2026-11-27, the packages' LICENSE files].
 
 | Token | Size / weight / line | Font |
 | --- | --- | --- |
