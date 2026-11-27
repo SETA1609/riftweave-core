@@ -1,5 +1,6 @@
 #### FE_S08_17_pinned-navbar A navbar pinned on top, with a burger menu on mobile
-- Status: review
+- Status: done
+- Merged: #503, 2026-11-27
 - Priority: medium
 - Needs: FE_S11_01_frontend-i18next
 - Modified: 2026-11-27
