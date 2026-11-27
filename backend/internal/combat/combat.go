@@ -246,9 +246,10 @@ func maneuverOf(ruleset *data.Ruleset, input *Input) (*data.Maneuver, error) {
 	return maneuver, nil
 }
 
-// widenedCrit is a hit inside the crit window a maneuver widens (Held Breath).
+// widenedCrit is a hit inside the crit window a maneuver widens (Held Breath); like the roll's
+// own crit, it counts for nothing in a burst.
 func widenedCrit(ruleset *data.Ruleset, input *Input, maneuver *data.Maneuver, attack resolution.Result) bool {
-	if maneuver == nil || maneuver.CritWindow == 0 || !attack.Success {
+	if maneuver == nil || maneuver.CritWindow == 0 || !attack.Success || input.burstCrit != nil {
 		return false
 	}
 	var window int64 = ruleset.Resolution.CriticalWindow + formula.FloorDivide(input.Attacker.Attributes.Get(actor.Luck), ruleset.Resolution.CriticalWindowPerTwoLuck)
@@ -596,7 +597,7 @@ func strike(ruleset *data.Ruleset, input Input) (Result, error) {
 	var result Result = Result{
 		Target:      attack.Target,
 		Margin:      attack.Margin,
-		Critical:    rolledCrit(&input, attack) || (input.burstCrit == nil && widenedCrit(ruleset, &input, maneuver, attack)),
+		Critical:    rolledCrit(&input, attack) || widenedCrit(ruleset, &input, maneuver, attack),
 		EvasionRate: evasionRate,
 		BlockRate:   blockRate,
 	}
