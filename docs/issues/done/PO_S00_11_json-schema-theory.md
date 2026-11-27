@@ -1,5 +1,6 @@
 #### PO_S00_11_json-schema-theory A theory page on JSON Schema: how it works, why, and for what
-- Status: review
+- Status: done
+- Merged: #502, 2026-11-27
 - Priority: high
 - Needs: —
 - Modified: 2026-11-27
