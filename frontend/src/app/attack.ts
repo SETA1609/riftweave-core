@@ -2,7 +2,9 @@
 // in pipeline order (docs/core/combat.md).
 import { Component, computed, inject, signal } from '@angular/core';
 import { API, type CombatInput, type CombatResult } from './api';
+import { I18n } from './i18n';
 import { rollD100 } from './saves';
+import { TranslatePipe } from './translate-pipe';
 import { Alert } from './ui/alert';
 import { Card } from './ui/card';
 import { KeyValueList } from './ui/key-value-list';
@@ -15,14 +17,16 @@ const STEPS = ['outcome', 'target', 'margin', 'crit', 'evasion_rate', 'block_rat
 
 @Component({
   selector: 'rw-attack',
-  imports: [Alert, Card, KeyValueList, NumberField, SelectField, TextField],
+  imports: [Alert, Card, KeyValueList, NumberField, SelectField, TextField, TranslatePipe],
   templateUrl: './attack.html',
   styleUrl: './attack.css',
 })
 export class Attack {
   private readonly api = inject(API);
-  readonly stances: readonly Option[] = [{ value: '', label: 'none' }, { value: 'dodge', label: 'dodge' }, { value: 'block', label: 'block' }];
-  readonly deliveries: readonly Option[] = [{ value: 'single', label: 'single' }, { value: 'area', label: 'area' }, { value: 'instant', label: 'instant' }];
+  private readonly i18n = inject(I18n);
+  /** The stances by their rule keys, which stay as the data writes them; only "none" is a word of the app. */
+  readonly stances = computed<readonly Option[]>(() => [{ value: '', label: this.i18n.translate('attack.no_stance') }, { value: 'dodge', label: 'dodge' }, { value: 'block', label: 'block' }]);
+  readonly deliveries = computed<readonly Option[]>(() => [{ value: 'single', label: 'single' }, { value: 'area', label: 'area' }, { value: 'instant', label: 'instant' }]);
 
   readonly attackerSkill = signal(72);
   readonly attackerRoll = signal(47);

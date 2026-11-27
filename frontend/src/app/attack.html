@@ -1,29 +1,29 @@
-<rw-card title="Attack">
+<rw-card [title]="'attack.title' | t">
   <fieldset>
-    <legend>Attacker</legend>
-    <rw-number-field label="skill" [(value)]="attackerSkill" />
-    <rw-number-field label="d100" [min]="1" [max]="100" [(value)]="attackerRoll" />
-    <button type="button" class="btn btn-outline btn-sm" (click)="rollAttack()">roll</button>
-    <rw-number-field label="LCK" [(value)]="luck" />
+    <legend>{{ 'attack.attacker' | t }}</legend>
+    <rw-number-field [label]="'attack.skill' | t" [(value)]="attackerSkill" />
+    <rw-number-field [label]="'abbr.d100' | t" [min]="1" [max]="100" [(value)]="attackerRoll" />
+    <button type="button" class="btn btn-outline btn-sm" (click)="rollAttack()">{{ 'attack.roll_button' | t }}</button>
+    <rw-number-field [label]="'abbr.LCK' | t" [(value)]="luck" />
   </fieldset>
   <fieldset>
-    <legend>Defender</legend>
-    <rw-number-field label="evasion" [(value)]="evasion" />
-    <rw-number-field label="armor DR" [(value)]="armor" />
-    <rw-number-field label="HP" [(value)]="hp" />
-    <rw-number-field label="shield DR" [min]="0" [(value)]="shield" />
-    <rw-number-field label="shields" [(value)]="shields" />
-    <rw-select-field label="stance" [options]="stances" [(value)]="stance" />
+    <legend>{{ 'attack.defender' | t }}</legend>
+    <rw-number-field [label]="'attack.evasion' | t" [(value)]="evasion" />
+    <rw-number-field [label]="'attack.armor_dr' | t" [(value)]="armor" />
+    <rw-number-field [label]="'abbr.HP' | t" [(value)]="hp" />
+    <rw-number-field [label]="'attack.shield_dr' | t" [min]="0" [(value)]="shield" />
+    <rw-number-field [label]="'attack.shields' | t" [(value)]="shields" />
+    <rw-select-field [label]="'attack.stance' | t" [options]="stances()" [(value)]="stance" />
   </fieldset>
   <fieldset>
-    <legend>Damage</legend>
-    <rw-number-field label="roll" [(value)]="damageRoll" />
-    <rw-text-field label="type" [(value)]="damageType" />
-    <rw-select-field label="delivery" [options]="deliveries" [(value)]="delivery" />
+    <legend>{{ 'attack.damage' | t }}</legend>
+    <rw-number-field [label]="'attack.damage_roll' | t" [(value)]="damageRoll" />
+    <rw-text-field [label]="'attack.type' | t" [(value)]="damageType" />
+    <rw-select-field [label]="'attack.delivery' | t" [options]="deliveries()" [(value)]="delivery" />
   </fieldset>
-  <button type="button" class="btn btn-primary" (click)="resolve()">Resolve</button>
+  <button type="button" class="btn btn-primary" (click)="resolve()">{{ 'attack.resolve' | t }}</button>
   <rw-alert [message]="error()" />
 </rw-card>
 @if (steps(); as shown) {
-  <rw-card title="Result"><rw-key-value-list [entries]="shown" /></rw-card>
+  <rw-card [title]="'attack.result' | t"><rw-key-value-list [entries]="shown" /></rw-card>
 }

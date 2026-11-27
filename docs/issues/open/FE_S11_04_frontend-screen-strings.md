@@ -1,8 +1,8 @@
 #### FE_S11_04_frontend-screen-strings Localize the play and character screens
-- Status: todo
+- Status: review
 - Priority: medium
 - Needs: FE_S11_01_frontend-i18next
-- Modified: 2026-11-21
+- Modified: 2026-11-27
 - Was: split from FE_S11_01_frontend-i18next, 2026-11-21 (the whole issue passed 20 counted files; it splits by screen, as it said)
 - Do: Move every string of the screens FE_S11_01 left in English to keys in `frontend/src/locales/` (en, de, es): the character sheet, skill resolution, attack, playthrough, import, the character list, and saved games, their templates and the alerts and notices their `.ts` files set. Field labels that are the game's own abbreviations (`str`, `LCK`, `HP`, `DR`, `d100`) get keys too, so a language may keep or change them. Empty `PENDING` in `i18n.spec.ts`, so the literal-string check covers every template. Ruleset content stays as the data writes it (FE_S11_01).
 - Keys: `sheet.*`, `resolution.*`, `attack.*`, `playthrough.*`, `import.*`, `characters.*`, `saves.*`

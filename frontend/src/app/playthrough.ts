@@ -5,6 +5,7 @@ import { JsonPipe } from '@angular/common';
 import playthrough from '../../../ruleset/tests/vectors/playthrough.json';
 import { API, type Session } from './api';
 import { Saves } from './saves';
+import { TranslatePipe } from './translate-pipe';
 import { Alert } from './ui/alert';
 import { Card } from './ui/card';
 
@@ -13,7 +14,7 @@ type Row = { name: string; input: Record<string, unknown>; result: Record<string
 
 @Component({
   selector: 'rw-playthrough',
-  imports: [JsonPipe, Alert, Card],
+  imports: [JsonPipe, Alert, Card, TranslatePipe],
   templateUrl: './playthrough.html',
   styleUrl: './playthrough.css',
 })

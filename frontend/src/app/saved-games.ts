@@ -9,17 +9,22 @@ import { MODULE_VERSIONS } from './settings-screens';
 
 /** The rules this build ships (angular.json `define`). */
 declare const RIFTWEAVE_RULES_VERSION: string;
+import { TranslatePipe } from './translate-pipe';
 import { Alert } from './ui/alert';
 import { Card } from './ui/card';
 
+/** The ending of a backup file this screen opens. */
+export const FILE_SUFFIX = '.riftweave.json';
+
 @Component({
   selector: 'rw-saved-games',
-  imports: [DatePipe, Alert, Card],
+  imports: [DatePipe, Alert, Card, TranslatePipe],
   templateUrl: './saved-games.html',
   styleUrl: './saved-games.css',
 })
 export class SavedGames {
   readonly saves = inject(Saves);
+  readonly fileSuffix = FILE_SUFFIX;
   private readonly context = inject(AppContext);
   readonly opened = signal<Opened | null>(null);
   readonly error = signal('');

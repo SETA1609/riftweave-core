@@ -1,18 +1,18 @@
-<rw-card title="Import">
-  <p class="note">A character, a session, a spell, or a settings file exported by this app or by the CLI (<code>riftweave export</code>).</p>
-  <label class="btn btn-primary">Open file <input type="file" accept=".json,application/json" (change)="pick($event)" /></label>
-  <rw-alert [message]="error()" />
+<rw-card [title]="'import.title' | t">
+  <p class="note">{{ 'import.note' | t }} (<code>{{ exportCommand }}</code>).</p>
+  <label class="btn btn-primary">{{ 'import.open_file' | t }} <input type="file" accept=".json,application/json" (change)="pick($event)" /></label>
+  <rw-alert [message]="error() | t" />
   @if (alert(); as text) {
     <rw-alert kind="info" [message]="text" />
     <div class="actions">
-      <button type="button" class="btn btn-primary" (click)="enable()">Enable and import</button>
-      <button type="button" class="btn btn-outline" (click)="acceptLoss()">Import anyway</button>
+      <button type="button" class="btn btn-primary" (click)="enable()">{{ 'import.enable' | t }}</button>
+      <button type="button" class="btn btn-outline" (click)="acceptLoss()">{{ 'import.anyway' | t }}</button>
     </div>
   }
-  @for (warning of warnings(); track warning) {
-    <rw-alert kind="info" [message]="warning" />
+  @for (warning of warnings(); track $index) {
+    <rw-alert kind="info" [message]="warning | t" />
   }
-  @if (notice()) {
-    <rw-alert kind="success" [message]="notice()" />
+  @if (notice(); as said) {
+    <rw-alert kind="success" [message]="said | t" />
   }
 </rw-card>

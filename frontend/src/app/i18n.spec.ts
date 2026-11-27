@@ -10,8 +10,10 @@ import en from '../locales/en.json';
 import es from '../locales/es.json';
 import { routes } from './app.routes';
 import { AppContext, LANGUAGES, startLanguage } from './context';
+import { FileImport } from './file-import';
 import { I18n } from './i18n';
 import { SettingsScreens } from './settings-screens';
+import { Sheet } from './sheet';
 import { LanguageSelect } from './ui/language-select';
 import { MenuGrid } from './ui/menu-grid';
 
@@ -23,7 +25,7 @@ function keys(tree: Tree, prefix = ''): string[] {
 }
 
 /** The screens FE_S11_04_frontend-screen-strings moves to keys; until then they keep their English. */
-const PENDING = ['attack.html', 'character-list.html', 'file-import.html', 'playthrough.html', 'resolution.html', 'saved-games.html', 'sheet.html'];
+const PENDING: string[] = [];
 /** Words a template may show as they are: the name of the game. */
 const ALLOWED = ['Riftweave'];
 /** The attributes a person reads, which must be bound to a key, not written out. */
@@ -159,3 +161,35 @@ describe('the language', () => {
     expect(text).toContain('Diesen Server verwenden');
   });
 });
+
+describe('the play and character screens (FE_S11_04)', () => {
+  beforeEach(() => localStorage.clear());
+
+  it('re-render their own words when the language changes, and keep the game\'s abbreviations', async () => {
+    TestBed.configureTestingModule({ providers: [provideRouter(routes)] });
+    const fixture = TestBed.createComponent(Sheet);
+    fixture.detectChanges();
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.textContent).toContain('Character sheet');
+    TestBed.inject(AppContext).locale.set('de');
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(element.textContent).toContain('Charakterbogen');
+    expect(element.textContent).toContain('Werte berechnen');
+    expect(Array.from(element.querySelectorAll('.form-label')).map((label) => label.textContent!.trim())).toContain('str');
+  });
+
+  it('say a message already shown in the new language', async () => {
+    TestBed.configureTestingModule({ providers: [provideRouter(routes)] });
+    const fixture = TestBed.createComponent(FileImport);
+    fixture.componentInstance.notice.set({ key: 'import.character_imported', values: { label: 'mara' } });
+    fixture.detectChanges();
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.textContent).toContain('Imported a character file as the save "mara".');
+    TestBed.inject(AppContext).locale.set('es');
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(element.textContent).toContain('Archivo de personaje importado como la partida «mara».');
+  });
+});
+

@@ -1,24 +1,24 @@
-<rw-card title="Character sheet">
+<rw-card [title]="'sheet.title' | t">
   <div class="fields">
     @for (key of keys; track key) {
-      <rw-number-field [label]="key" [min]="1" [value]="attributes()[key]" (valueChange)="set(key, $event)" />
+      <rw-number-field [label]="'abbr.' + key | t" [min]="1" [value]="attributes()[key]" (valueChange)="set(key, $event)" />
     }
-    <rw-number-field label="level" [min]="1" [(value)]="level" />
+    <rw-number-field [label]="'sheet.level' | t" [min]="1" [(value)]="level" />
   </div>
   <div class="actions">
-    <button type="button" class="btn btn-primary" (click)="compute()">Compute stats</button>
-    <button type="button" class="btn btn-outline" (click)="create()">Create character</button>
+    <button type="button" class="btn btn-primary" (click)="compute()">{{ 'sheet.compute' | t }}</button>
+    <button type="button" class="btn btn-outline" (click)="create()">{{ 'sheet.create' | t }}</button>
   </div>
   <rw-alert [message]="error()" />
 </rw-card>
 @if (stats(); as values) {
-  <rw-card title="Derived stats"><rw-key-value-list [entries]="values" /></rw-card>
+  <rw-card [title]="'sheet.derived' | t"><rw-key-value-list [entries]="values" /></rw-card>
 }
 @if (session(); as created) {
-  <rw-card title="Stored actor">
+  <rw-card [title]="'sheet.stored' | t">
     <pre>{{ created.actor | json }}</pre>
-    <button type="button" class="btn btn-outline" (click)="exportCharacter()">Export character</button>
-    <button type="button" class="btn btn-outline" (click)="print(printState.Current)">Print</button>
-    <button type="button" class="btn btn-outline" (click)="print(printState.Fresh)">Print fresh</button>
+    <button type="button" class="btn btn-outline" (click)="exportCharacter()">{{ 'sheet.export' | t }}</button>
+    <button type="button" class="btn btn-outline" (click)="print(printState.Current)">{{ 'sheet.print' | t }}</button>
+    <button type="button" class="btn btn-outline" (click)="print(printState.Fresh)">{{ 'sheet.print_fresh' | t }}</button>
   </rw-card>
 }

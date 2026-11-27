@@ -1,23 +1,23 @@
-<rw-card title="Characters">
-  <p class="note">Characters live in this browser. Export one to hand it to the GM, and import the file the GM sends back: a higher revision replaces yours.</p>
+<rw-card [title]="'characters.title' | t">
+  <p class="note">{{ 'characters.note' | t }}</p>
   @if (characters.list().length === 0) {
-    <p>No characters yet. Import a character file from a player, the GM, or the other app.</p>
+    <p>{{ 'characters.none' | t }}</p>
   } @else {
     <table class="table">
-      <thead><tr><th>Name</th><th>Level</th><th>Revision</th><th>Last change</th><th></th></tr></thead>
+      <thead><tr><th>{{ 'characters.name' | t }}</th><th>{{ 'characters.level' | t }}</th><th>{{ 'characters.revision' | t }}</th><th>{{ 'characters.last_change' | t }}</th><th></th></tr></thead>
       <tbody>
         @for (saved of characters.list(); track saved.character.id) {
           <tr>
             <td>{{ saved.character.name }}</td>
             <td>{{ level(saved) }}</td>
-            <td>revision {{ saved.character.revision }}</td>
-            <td>{{ saved.character.changed_at | date: 'medium' }} by the {{ saved.character.changed_by === author.Gm ? 'GM' : 'player' }}</td>
+            <td>{{ 'characters.revision_n' | t: { revision: saved.character.revision } }}</td>
+            <td>{{ (saved.character.changed_by === author.Gm ? 'characters.changed_by_gm' : 'characters.changed_by_player') | t: { when: (saved.character.changed_at | date: 'medium') ?? '' } }}</td>
             <td class="actions">
-              <button type="button" class="btn btn-outline btn-sm" (click)="exportFile(saved)">Export</button>
-              <button type="button" class="btn btn-outline btn-sm" (click)="print(saved, printState.Current)">Print</button>
-              <button type="button" class="btn btn-outline btn-sm" (click)="print(saved, printState.Fresh)">Print fresh</button>
-              <button type="button" class="btn btn-outline btn-sm" (click)="duplicate(saved)">Duplicate</button>
-              <button type="button" class="btn btn-outline btn-sm" (click)="remove(saved)">Delete</button>
+              <button type="button" class="btn btn-outline btn-sm" (click)="exportFile(saved)">{{ 'characters.export' | t }}</button>
+              <button type="button" class="btn btn-outline btn-sm" (click)="print(saved, printState.Current)">{{ 'characters.print' | t }}</button>
+              <button type="button" class="btn btn-outline btn-sm" (click)="print(saved, printState.Fresh)">{{ 'characters.print_fresh' | t }}</button>
+              <button type="button" class="btn btn-outline btn-sm" (click)="duplicate(saved)">{{ 'characters.duplicate' | t }}</button>
+              <button type="button" class="btn btn-outline btn-sm" (click)="remove(saved)">{{ 'characters.delete' | t }}</button>
             </td>
           </tr>
         }
@@ -25,18 +25,18 @@
     </table>
   }
   <div class="drop">
-    <label class="btn btn-primary">Import a character file <input type="file" accept=".json,application/json" (change)="pick($event)" /></label>
+    <label class="btn btn-primary">{{ 'characters.import' | t }} <input type="file" accept=".json,application/json" (change)="pick($event)" /></label>
   </div>
-  <rw-alert [message]="error()" />
-  <rw-alert kind="info" [message]="notice()" />
+  <rw-alert [message]="error() | t" />
+  <rw-alert kind="info" [message]="((notice() | t) + ' ' + notes()).trim()" />
   @if (diverged(); as pending) {
     <div class="sides">
-      <div><h3>Saved</h3><p>{{ pending.report.saved?.character?.name }}, revision {{ pending.report.saved?.character?.revision }}, changed by the {{ pending.report.saved?.character?.changed_by === author.Gm ? 'GM' : 'player' }}</p></div>
-      <div><h3>Incoming</h3><p>{{ pending.report.incoming?.character?.name }}, revision {{ pending.report.incoming?.character?.revision }}, changed by the {{ pending.report.incoming?.character?.changed_by === author.Gm ? 'GM' : 'player' }}</p></div>
+      <div><h3>{{ 'characters.saved' | t }}</h3><p>{{ (pending.report.saved?.character?.changed_by === author.Gm ? 'characters.side_by_gm' : 'characters.side_by_player') | t: { name: pending.report.saved?.character?.name ?? '', revision: pending.report.saved?.character?.revision ?? '' } }}</p></div>
+      <div><h3>{{ 'characters.incoming' | t }}</h3><p>{{ (pending.report.incoming?.character?.changed_by === author.Gm ? 'characters.side_by_gm' : 'characters.side_by_player') | t: { name: pending.report.incoming?.character?.name ?? '', revision: pending.report.incoming?.character?.revision ?? '' } }}</p></div>
     </div>
     <div class="actions">
-      <button type="button" class="btn btn-outline" (click)="keep(side.Saved)">Keep the saved one</button>
-      <button type="button" class="btn btn-primary" (click)="keep(side.Incoming)">Keep the incoming one</button>
+      <button type="button" class="btn btn-outline" (click)="keep(side.Saved)">{{ 'characters.keep_saved' | t }}</button>
+      <button type="button" class="btn btn-primary" (click)="keep(side.Incoming)">{{ 'characters.keep_incoming' | t }}</button>
     </div>
   }
 </rw-card>

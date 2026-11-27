@@ -10,6 +10,8 @@ import { AppContext, FALLBACK_LANGUAGE, offeredLanguage } from './context';
 const RESOURCES = { en: { translation: en }, de: { translation: de }, es: { translation: es } };
 
 export type Values = Readonly<Record<string, string | number>>;
+/** Something a screen says: a locale key and its values, translated where it shows, so it follows the language. */
+export type Said = { readonly key: string; readonly values?: Values };
 
 @Service()
 export class I18n {
